@@ -220,10 +220,12 @@ async function submit() {
       throw new Error("queueClipFromPreset returned no job");
     }
     toast({
-      title: "Highlight queued",
+      title: t("render_queue_status.highlight_queued_title"),
       description: props.targetName
-        ? `${props.targetName}'s highlight will render once a slot is free — find it in Highlights when it's done.`
-        : "Your highlight will render once a slot is free — find it in Highlights when it's done.",
+        ? t("render_queue_status.highlight_queued_desc_named", {
+            name: props.targetName,
+          })
+        : t("render_queue_status.highlight_queued_desc"),
     });
     close(false);
   } catch (e) {

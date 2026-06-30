@@ -676,7 +676,7 @@ const utilClusters = computed(() => {
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                title="Following on the map"
+                :title="$t('match.replay.chrome.following_on_map')"
               >
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
                 <circle cx="12" cy="12" r="3" />
@@ -748,13 +748,13 @@ const utilClusters = computed(() => {
                   v-if="r.kit"
                   src="/img/equipment/defuser.svg"
                   class="eq kit"
-                  title="Defuse kit"
+                  :title="$t('match.replay.defuse_kit')"
                 />
                 <img
                   v-if="r.bomb"
                   src="/img/equipment/c4.svg"
                   class="eq c4"
-                  title="Bomb carrier"
+                  :title="$t('match.replay.chrome.bomb_carrier')"
                 />
               </span>
             </div>

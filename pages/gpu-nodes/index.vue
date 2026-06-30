@@ -12,7 +12,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import NodeGpuMetrics from "~/components/system-metrics/NodeGpuMetrics.vue";
 import {
-  Cpu,
   Square,
   Settings2,
   Trash2,
@@ -326,6 +325,7 @@ async function stopGpuSession(nodeId: string) {
   <PageTransition :delay="0">
     <TacticalPageHeader>
       <template #title>{{ $t("pages.gpu_nodes.title") }}</template>
+      <template #subtitle>{{ $t("pages.gpu_nodes.description") }}</template>
       <template #actions>
         <div class="gpu-stats">
           <div class="gpu-stat">
@@ -677,7 +677,6 @@ async function stopGpuSession(nodeId: string) {
     </div>
 
     <div v-else-if="!loading" class="gpu-empty">
-      <Cpu class="w-9 h-9 text-muted-foreground/50" />
       <div class="gpu-empty-title">{{ $t("pages.gpu_nodes.empty.title") }}</div>
       <p class="gpu-empty-sub">{{ $t("pages.gpu_nodes.empty.description") }}</p>
     </div>
@@ -898,9 +897,14 @@ export default {
         if (!stream.game_server_node_id) continue;
         map[stream.game_server_node_id] = {
           kind: "live",
-          label: stream.mode === "tv" ? "Live (GOTV)" : "Live (Direct)",
-          who: matchupOf(stream.match) || "Live match",
-          subline: matchupOf(stream.match) || "Live match",
+          label:
+            stream.mode === "tv"
+              ? this.$t("gpu_pool_status.live_gotv")
+              : this.$t("gpu_pool_status.live_direct"),
+          who:
+            matchupOf(stream.match) || this.$t("gpu_pool_status.live_match"),
+          subline:
+            matchupOf(stream.match) || this.$t("gpu_pool_status.live_match"),
           matchId: stream.match_id,
           snapshotKind: "live",
           snapshotId: stream.match_id,
@@ -912,12 +916,15 @@ export default {
       for (const session of this.demoSessions) {
         if (!session.game_server_node_id) continue;
         if (map[session.game_server_node_id]) continue;
-        const watcher = session.watcher?.name || "Unknown user";
+        const watcher =
+          session.watcher?.name || this.$t("gpu_pool_status.unknown_user");
         map[session.game_server_node_id] = {
           kind: "demo",
-          label: "Demo Playback",
+          label: this.$t("gpu_pool_status.demo_playback_label"),
           who: watcher,
-          subline: matchupOf(session.match) || "Demo playback",
+          subline:
+            matchupOf(session.match) ||
+            this.$t("gpu_pool_status.demo_playback_subline"),
           matchId: session.match_id,
           snapshotKind: "demo",
           snapshotId: session.id,
@@ -931,12 +938,17 @@ export default {
         if (!job.game_server_node_id) continue;
         if (map[job.game_server_node_id]) continue;
         const who =
-          job.user?.name || (job.user_steam_id ? "Unknown user" : "System");
+          job.user?.name ||
+          (job.user_steam_id
+            ? this.$t("gpu_pool_status.unknown_user")
+            : this.$t("gpu_pool_status.system_user"));
         map[job.game_server_node_id] = {
           kind: "highlights",
-          label: "Highlights Render",
+          label: this.$t("gpu_pool_status.highlights_render_label"),
           who,
-          subline: matchupOf(job.match_map?.match) || "Highlight render",
+          subline:
+            matchupOf(job.match_map?.match) ||
+            this.$t("gpu_pool_status.highlight_render_subline"),
           matchId: job.match_map?.match?.id,
           snapshotKind: "clips",
           snapshotId: job.id,
@@ -990,6 +1002,7 @@ export default {
               label: true,
               status: true,
               enabled: true,
+              enabled_for_match_making: true,
               region: true,
               gpu: true,
               gpu_info: true,

@@ -7,14 +7,21 @@ import {
   Trophy,
   Swords,
   SlidersHorizontal,
+  ChevronDown,
+  Check,
 } from "lucide-vue-next";
-import { FormItem, FormControl } from "@/components/ui/form";
-import { Button } from "~/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import FilterBar from "~/components/common/FilterBar.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import Pagination from "@/components/Pagination.vue";
@@ -23,15 +30,13 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
-import { Switch } from "~/components/ui/switch";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
 import {
   tacticalCtaButtonClasses,
   tacticalHeaderActionClasses,
+  filterTriggerBase,
+  filterTriggerIdle,
+  filterTriggerActive,
+  filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
 </script>
 
@@ -58,227 +63,93 @@ import {
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div>
-      <form @submit.prevent="viewTopTeam" class="space-y-3">
-        <FormField v-slot="{ componentField }" name="teamQuery">
-          <FormItem>
-            <FormControl>
-              <InputGroup class="h-12 bg-card/60 backdrop-blur border-border">
-                <InputGroupAddon class="pl-4">
-                  <Search class="w-5 h-5" />
-                </InputGroupAddon>
+    <FilterBar>
+      <!-- Search (always visible — type instantly) -->
+      <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
+        <InputGroupAddon class="pl-2.5">
+          <Search class="h-3.5 w-3.5" />
+        </InputGroupAddon>
+        <InputGroupInput
+          :model-value="form.values.teamQuery"
+          @update:model-value="
+            (value) => form.setFieldValue('teamQuery', String(value ?? ''))
+          "
+          :placeholder="$t('pages.teams.search')"
+          class="h-full text-sm"
+        />
+        <InputGroupAddon align="inline-end" class="pr-2">
+          <button
+            v-if="form.values.teamQuery"
+            type="button"
+            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            @click="form.setFieldValue('teamQuery', '')"
+          >
+            <X class="h-3.5 w-3.5" />
+          </button>
+        </InputGroupAddon>
+      </InputGroup>
 
-                <InputGroupInput
-                  type="text"
-                  :placeholder="$t('pages.teams.search')"
-                  class="h-full text-base"
-                  v-bind="componentField"
-                />
+      <!-- My Teams Only — used frequently, kept on the left -->
+      <button
+        v-if="me"
+        type="button"
+        @click="toggleShowOnlyMyTeams"
+        :class="[
+          filterTriggerBase,
+          showOnlyMyTeams ? filterTriggerActive : filterTriggerIdle,
+        ]"
+      >
+        <Users class="h-3.5 w-3.5" />
+        {{ $t("team.search.my_teams_only") }}
+      </button>
 
-                <InputGroupAddon align="inline-end" class="pr-2">
-                  <button
-                    v-if="form.values.teamQuery"
-                    type="button"
-                    @click="form.setFieldValue('teamQuery', '')"
-                    class="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <X class="w-4 h-4" />
-                  </button>
-                </InputGroupAddon>
-              </InputGroup>
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <div class="hidden md:flex flex-wrap gap-2">
-          <div
-            class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
+      <!-- Filters (bundled, pinned right) + grouped reset -->
+      <FilterMenu
+        class="ml-auto"
+        :count="teamsFilterCount"
+        :active="teamsFilterCount > 0"
+        :show-reset="hasActiveTeamFilters"
+        content-class="w-64 space-y-0.5 p-2"
+        @reset="resetTeamFilters"
+      >
+          <button
+            type="button"
+            @click="toggleTournamentWinners"
+            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
             :class="
               tournamentWinnersOnly
-                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-foreground/90'
             "
-            @click="toggleTournamentWinners"
           >
-            <Trophy class="h-3.5 w-3.5 shrink-0" />
-            <span id="teams-tournament-winners-label" class="truncate">
+            <span class="flex items-center gap-2">
+              <Trophy class="h-3.5 w-3.5" />
               {{ $t("team.search.tournament_winners") }}
             </span>
-            <Switch
-              v-model="tournamentWinnersOnly"
-              aria-labelledby="teams-tournament-winners-label"
-              class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-              @click.stop
-            />
-          </div>
-
-          <div
-            class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
-            :class="
-              scrimsOnly
-                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-            "
-            @click="toggleScrimsOnly"
-          >
-            <Swords class="h-3.5 w-3.5 shrink-0" />
-            <span id="teams-scrims-only-label" class="truncate">
-              {{ $t("team.search.scrims_only") }}
-            </span>
-            <Switch
-              v-model="scrimsOnly"
-              aria-labelledby="teams-scrims-only-label"
-              class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-              @click.stop
-            />
-          </div>
-
-          <div
-            v-if="me"
-            class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
-            :class="
-              showOnlyMyTeams
-                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-            "
-            @click="toggleShowOnlyMyTeams"
-          >
-            <Users class="h-3.5 w-3.5 shrink-0" />
-            <span id="teams-my-teams-only-label" class="truncate">
-              {{ $t("team.search.my_teams_only") }}
-            </span>
-            <Switch
-              v-model="showOnlyMyTeams"
-              aria-labelledby="teams-my-teams-only-label"
-              class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-              @click.stop
-            />
-          </div>
-        </div>
-
-        <!-- Mobile: collapse toggles behind a Filters button + chips -->
-        <div class="md:hidden space-y-3">
-          <Popover>
-            <PopoverTrigger as-child>
-              <Button
-                variant="outline"
-                class="h-11 w-full justify-center gap-2 bg-card/60 backdrop-blur"
-                :class="{
-                  'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
-                    teamsFilterCount > 0,
-                }"
-              >
-                <SlidersHorizontal class="w-4 h-4" />
-                <span>{{ $t("common.filters") }}</span>
-                <span
-                  v-if="teamsFilterCount > 0"
-                  class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.65rem] font-semibold bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))] border border-[hsl(var(--tac-amber)/0.45)]"
-                >
-                  {{ teamsFilterCount }}
-                </span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              class="w-[min(92vw,420px)] p-3 space-y-2"
-            >
-              <div
-                class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
-                :class="
-                  tournamentWinnersOnly
-                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                    : 'border-border bg-muted/30 text-muted-foreground'
-                "
-                @click="toggleTournamentWinners"
-              >
-                <Trophy class="h-4 w-4 shrink-0" />
-                <span class="truncate">{{
-                  $t("team.search.tournament_winners")
-                }}</span>
-                <Switch
-                  v-model="tournamentWinnersOnly"
-                  class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-                  @click.stop
-                />
-              </div>
-              <div
-                class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
-                :class="
-                  scrimsOnly
-                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                    : 'border-border bg-muted/30 text-muted-foreground'
-                "
-                @click="toggleScrimsOnly"
-              >
-                <Swords class="h-4 w-4 shrink-0" />
-                <span class="truncate">{{ $t("team.search.scrims_only") }}</span>
-                <Switch
-                  v-model="scrimsOnly"
-                  class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-                  @click.stop
-                />
-              </div>
-              <div
-                v-if="me"
-                class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
-                :class="
-                  showOnlyMyTeams
-                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                    : 'border-border bg-muted/30 text-muted-foreground'
-                "
-                @click="toggleShowOnlyMyTeams"
-              >
-                <Users class="h-4 w-4 shrink-0" />
-                <span class="truncate">{{
-                  $t("team.search.my_teams_only")
-                }}</span>
-                <Switch
-                  v-model="showOnlyMyTeams"
-                  class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-                  @click.stop
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
-
-          <div
-            v-if="teamsFilterCount > 0"
-            class="flex flex-wrap items-center gap-2"
-          >
-            <button
+            <Check
               v-if="tournamentWinnersOnly"
-              type="button"
-              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-              @click="toggleTournamentWinners"
-            >
-              <Trophy class="h-3 w-3" />
-              {{ $t("team.search.tournament_winners") }}
-              <X class="h-3 w-3 opacity-70" />
-            </button>
-            <button
-              v-if="scrimsOnly"
-              type="button"
-              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-              @click="toggleScrimsOnly"
-            >
-              <Swords class="h-3 w-3" />
+              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+            />
+          </button>
+          <button
+            type="button"
+            @click="toggleScrimsOnly"
+            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+            :class="
+              scrimsOnly ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
+            "
+          >
+            <span class="flex items-center gap-2">
+              <Swords class="h-3.5 w-3.5" />
               {{ $t("team.search.scrims_only") }}
-              <X class="h-3 w-3 opacity-70" />
-            </button>
-            <button
-              v-if="me && showOnlyMyTeams"
-              type="button"
-              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-              @click="toggleShowOnlyMyTeams"
-            >
-              <Users class="h-3 w-3" />
-              {{ $t("team.search.my_teams_only") }}
-              <X class="h-3 w-3 opacity-70" />
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+            </span>
+            <Check
+              v-if="scrimsOnly"
+              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+            />
+          </button>
+      </FilterMenu>
+    </FilterBar>
   </PageTransition>
 
   <!-- Results -->
@@ -393,8 +264,10 @@ export default {
       let n = 0;
       if (this.tournamentWinnersOnly) n++;
       if (this.scrimsOnly) n++;
-      if (this.me && this.showOnlyMyTeams) n++;
       return n;
+    },
+    hasActiveTeamFilters(): boolean {
+      return !!this.form.values.teamQuery || this.teamsFilterCount > 0;
     },
   },
   watch: {
@@ -593,6 +466,12 @@ export default {
     },
     toggleScrimsOnly() {
       this.scrimsOnly = !this.scrimsOnly;
+    },
+    resetTeamFilters() {
+      this.form.setFieldValue("teamQuery", "");
+      this.tournamentWinnersOnly = false;
+      this.scrimsOnly = false;
+      this.showOnlyMyTeams = false;
     },
     viewTopTeam() {
       const team = this.teams?.at(0);

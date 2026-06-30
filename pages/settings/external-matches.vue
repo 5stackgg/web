@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { gql } from "@apollo/client/core";
 import {
@@ -17,6 +18,7 @@ import {
   AlertCircle,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import { Skeleton } from "~/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import {
@@ -538,18 +540,7 @@ async function uploadDemo(file: File) {
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <div>
-      <h3 class="text-base font-semibold uppercase tracking-wide">
-        {{ $t("pages.settings.external_matches.heading") }}
-      </h3>
-      <p class="text-sm text-muted-foreground mt-0.5">
-        {{ $t("pages.settings.external_matches.heading_description") }}
-      </p>
-    </div>
-  </PageTransition>
-
-  <PageTransition v-if="!externalMatchesEnabled" :delay="100">
+  <PageTransition v-if="!externalMatchesEnabled" :delay="0">
     <div
       class="max-w-xl rounded-lg border border-border bg-card/50 px-4 py-3 text-sm text-muted-foreground"
     >
@@ -558,15 +549,32 @@ async function uploadDemo(file: File) {
   </PageTransition>
 
   <PageTransition v-if="externalMatchesEnabled" :delay="100">
-    <div
-      v-if="!linkLoaded"
-      class="flex items-center gap-2 text-sm text-muted-foreground max-w-xl"
-    >
-      <Spinner class="w-4 h-4" />
-      {{ $t("pages.settings.external_matches.checking_link") }}
+    <FadeSwap>
+    <div v-if="!linkLoaded" key="loading" class="grid gap-4 max-w-xl">
+      <div class="rounded-lg border border-border bg-card/50 overflow-hidden">
+        <div
+          class="flex items-center justify-between gap-3 px-4 py-3 border-b border-border/60"
+        >
+          <div class="flex items-center gap-2.5 min-w-0">
+            <Skeleton class="h-7 w-7 shrink-0 rounded-md" />
+            <div class="space-y-1.5">
+              <Skeleton class="h-3.5 w-32" />
+              <Skeleton class="h-3 w-44" />
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <Skeleton class="h-8 w-8 rounded-md" />
+            <Skeleton class="h-8 w-8 rounded-md" />
+          </div>
+        </div>
+        <div class="space-y-2.5 px-4 py-3">
+          <Skeleton class="h-3 w-full" />
+          <Skeleton class="h-3 w-2/3" />
+        </div>
+      </div>
     </div>
 
-    <div v-else-if="!isLinked" class="grid gap-4 max-w-xl">
+    <div v-else-if="!isLinked" key="form" class="grid gap-4 max-w-xl">
       <p class="text-sm text-muted-foreground">
         {{ $t("pages.settings.external_matches.need_two_codes") }}
       </p>
@@ -639,7 +647,7 @@ async function uploadDemo(file: File) {
       </div>
     </div>
 
-    <div v-else class="grid gap-4 max-w-xl">
+    <div v-else key="linked" class="grid gap-4 max-w-xl">
       <div class="rounded-lg border border-border bg-card/50 overflow-hidden">
         <div
           class="flex items-center justify-between gap-3 px-4 py-3 border-b border-border/60"
@@ -752,6 +760,7 @@ async function uploadDemo(file: File) {
         </dl>
       </div>
     </div>
+    </FadeSwap>
   </PageTransition>
 
   <AlertDialog v-model:open="showUnlinkConfirm">

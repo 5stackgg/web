@@ -3,13 +3,48 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import SidebarMobileSync from "./SidebarMobileSync.vue";
 import SystemAlertBanner from "@/components/SystemAlertBanner.vue";
-import { inject, computed, defineAsyncComponent } from "vue";
+import {
+  inject,
+  computed,
+  defineAsyncComponent,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 
 const AppSidebar = defineAsyncComponent(
   () => import("@/components/AppSidebar.vue"),
 );
 
 const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
+
+// Publish the height of the bottom dock (e.g. MatchAdminBottomBar teleports
+// into #main-bottom-dock) as a CSS variable so fixed bottom chrome — like the
+// floating SettingsSaveBar — can lift itself above it. Defaults to 0 when the
+// dock is empty / on pages without one.
+const bottomDock = ref<HTMLElement | null>(null);
+let dockRO: ResizeObserver | null = null;
+
+function publishDockHeight() {
+  const h = bottomDock.value?.offsetHeight ?? 0;
+  document.documentElement.style.setProperty(
+    "--main-bottom-dock-height",
+    `${h}px`,
+  );
+}
+
+onMounted(() => {
+  publishDockHeight();
+  if (typeof ResizeObserver !== "undefined" && bottomDock.value) {
+    dockRO = new ResizeObserver(() => publishDockHeight());
+    dockRO.observe(bottomDock.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  dockRO?.disconnect();
+  document.documentElement.style.removeProperty("--main-bottom-dock-height");
+});
 
 // Inject values from default.vue
 const containContent =
@@ -42,7 +77,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
             <slot></slot>
           </div>
         </div>
-        <div id="main-bottom-dock" class="shrink-0"></div>
+        <div id="main-bottom-dock" ref="bottomDock" class="shrink-0"></div>
       </SidebarInset>
 
       <AppSidebar side="right" />

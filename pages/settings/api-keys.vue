@@ -15,19 +15,7 @@ import {
   <!-- API Keys Table -->
   <PageTransition :delay="0">
     <div>
-      <div class="flex items-center justify-between mb-4">
-        <div>
-          <h3 class="text-base font-semibold uppercase tracking-wide">
-            {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
-          </h3>
-          <p class="text-sm text-muted-foreground mt-0.5">
-            {{
-              $t(
-                "pages.settings.account.api_keys_management.api_keys_description",
-              )
-            }}
-          </p>
-        </div>
+      <div class="flex items-center justify-end mb-4">
         <Button size="sm" @click="openAddDialog">
           <PlusIcon class="w-4 h-4 mr-2" />
           {{ $t("pages.settings.account.api_keys_management.add_api_key") }}

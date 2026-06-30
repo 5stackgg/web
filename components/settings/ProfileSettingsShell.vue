@@ -23,6 +23,7 @@ import {
 import { Link, Unlink } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 
 const { t: $t } = useI18n();
 
@@ -110,22 +111,12 @@ async function unlinkDiscord() {
 </script>
 
 <template>
-  <div class="space-y-1">
-    <div
-      class="inline-flex items-center gap-2 text-[0.65rem] font-mono font-bold uppercase tracking-[0.24em] text-muted-foreground mb-1"
-    >
-      <span
-        class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
-      ></span>
-      {{ $t("layouts.account_settings.label") }}
-    </div>
-    <h2 class="text-xl font-bold tracking-tight">
-      {{ $t("layouts.account_settings.title") }}
-    </h2>
-    <p class="text-sm text-muted-foreground">
-      {{ $t("layouts.account_settings.description") }}
-    </p>
-  </div>
+  <TacticalPageHeader>
+    <template #title>{{ $t("layouts.account_settings.title") }}</template>
+    <template #subtitle>{{
+      $t("layouts.account_settings.description")
+    }}</template>
+  </TacticalPageHeader>
   <Separator v-if="showSeparators" class="my-6" />
   <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
     <aside class="w-full shrink-0 lg:w-auto">

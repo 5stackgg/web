@@ -15,6 +15,10 @@ export default {
       type: Object,
       required: true,
     },
+    highlight: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -40,7 +44,12 @@ export default {
       v-if="server.connection_link"
       @click="handleClick"
     >
-      <Button variant="outline" class="min-w-32" :loading="isLoading">
+      <Button
+        :variant="highlight ? 'default' : 'outline'"
+        class="min-w-32"
+        :class="highlight ? 'tac-amber-cta' : ''"
+        :loading="isLoading"
+      >
         <ExternalLink class="w-4 h-4 mr-1" />
         {{ $t("server.join_server") }}
       </Button>

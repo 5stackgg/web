@@ -74,6 +74,13 @@ const tacticalTabs = {
             <slot name="title"></slot>
           </span>
         </h1>
+
+        <p
+          v-if="$slots.subtitle"
+          class="m-0 max-w-2xl text-sm text-muted-foreground"
+        >
+          <slot name="subtitle"></slot>
+        </p>
       </div>
 
       <div

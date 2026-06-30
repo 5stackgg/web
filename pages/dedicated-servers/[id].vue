@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MoreHorizontal, Trash, FolderOpen } from "lucide-vue-next";
-import PageHeading from "~/components/PageHeading.vue";
+import { MoreHorizontal, Trash, FolderOpen, Pencil } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +14,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
@@ -58,92 +55,58 @@ const isManager = computed(() =>
 const isAdmin = computed(() => authStore.isAdmin);
 
 const serverMenu = ref(false);
+
+const heroClasses =
+  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
+
+const statusBaseClasses =
+  "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
+
+const statusTierClasses: Record<string, string> = {
+  connected:
+    "bg-[hsl(var(--success)/0.15)] border-[hsl(var(--success)/0.5)] text-success",
+  warning:
+    "bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]",
+  disconnected:
+    "bg-[hsl(var(--destructive)/0.15)] border-[hsl(var(--destructive)/0.6)] text-destructive",
+};
+
+const chipClasses =
+  "inline-flex items-center px-[0.7rem] py-[0.25rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground";
+
+const titleClasses =
+  "relative m-0 font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[0.95] tracking-[0.02em] uppercase break-words bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
 </script>
 <template>
   <PageTransition :delay="0">
-    <PageHeading v-if="server">
-      <template #title>
-        <div class="flex items-center justify-between gap-4">
-          <div class="flex flex-col">
-            <div>
-              <Badge>{{ server.region }}</Badge>
-            </div>
-            <div class="flex gap-4">
-              <div class="flex gap-2 items-center">
-                <ServerStatus :server="server" />
+    <header v-if="server" :class="heroClasses">
+      <!-- Status + meta chips + primary actions -->
+      <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-4">
+        <span :class="[statusBaseClasses, statusTierClasses[statusTier]]">
+          <ServerStatus :server="server" />
+          {{ statusLabel }}
+        </span>
 
-                <div>
-                  <span class="truncate">
-                    {{ server.label }}
-                    ({{ server.host }}:{{ server.port }})
-                  </span>
-                </div>
-              </div>
+        <span :class="chipClasses">{{ server.region }}</span>
+        <span v-if="server.type" :class="chipClasses">{{ server.type }}</span>
 
-              <div v-if="isManager" class="flex items-center space-x-2">
-                <Switch
-                  @click="toggleServerEnabled"
-                  :model-value="server.enabled"
-                />
-                <Label>{{
-                  $t("pages.dedicated_servers.detail.enabled")
-                }}</Label>
-              </div>
-            </div>
+        <div class="inline-flex items-center gap-2 ml-auto">
+          <div
+            v-if="isManager"
+            class="inline-flex items-center gap-2 mr-1 max-sm:hidden"
+          >
+            <Switch
+              :model-value="server.enabled"
+              @click="toggleServerEnabled"
+            />
+            <Label
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.dedicated_servers.detail.enabled") }}
+            </Label>
           </div>
-        </div>
-      </template>
 
-      <template #description>
-        <div
-          v-if="server && server.type === 'Ranked' && isAdmin"
-          class="bg-muted rounded-md p-4 my-4"
-        >
-          <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold">
-                {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
-              </h3>
-              <div class="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  @click="showConfig = !showConfig"
-                >
-                  <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
-                  <EyeOff v-else class="mr-2 h-4 w-4" />
-                  {{
-                    showConfig
-                      ? $t("pages.dedicated_servers.detail.hide_config")
-                      : $t("pages.dedicated_servers.detail.show_config")
-                  }}
-                </Button>
-              </div>
-            </div>
-
-            <p class="text-sm text-muted-foreground">
-              {{ $t("pages.dedicated_servers.detail.config_location") }}
-              <Badge>
-                addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
-              </Badge>
-            </p>
-
-            <div v-if="showConfig" class="relative">
-              <pre
-                class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
-                >{{ config }}</pre
-              >
-              <div class="absolute top-2 right-2">
-                <Clipboard :data="config"></Clipboard>
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <template #actions>
-        <div v-if="server" class="flex flex-wrap items-center gap-2">
-          <QuickServerConnect :server="server" />
+          <QuickServerConnect :server="server" highlight />
 
           <template v-if="isManager">
             <TooltipProvider v-if="server?.game_server_node_id">
@@ -172,6 +135,7 @@ const serverMenu = ref(false);
               <DropdownMenuContent align="end" class="w-[200px]">
                 <DropdownMenuGroup>
                   <DropdownMenuItem @click="editServerSheet = true">
+                    <Pencil class="mr-2 h-4 w-4 inline" />
                     {{ $t("common.actions.edit") }}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -187,8 +151,77 @@ const serverMenu = ref(false);
             </DropdownMenu>
           </template>
         </div>
-      </template>
-    </PageHeading>
+      </div>
+
+      <!-- Title + address -->
+      <div class="flex flex-col gap-[0.4rem] min-w-0">
+        <span
+          class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+        >
+          {{ $t("pages.dedicated_servers.detail.eyebrow") }}
+        </span>
+        <h1 :class="titleClasses">{{ server.label }}</h1>
+        <div
+          class="flex items-center gap-2 font-mono text-[0.8rem] tracking-[0.05em] text-muted-foreground"
+        >
+          <span class="truncate">{{ server.host }}:{{ server.port }}</span>
+          <Clipboard :data="`${server.host}:${server.port}`" />
+        </div>
+      </div>
+
+      <!-- Enabled toggle (mobile, full-width row) -->
+      <div
+        v-if="isManager"
+        class="sm:hidden mt-4 pt-4 border-t border-border flex items-center justify-between"
+      >
+        <Label
+          class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+        >
+          {{ $t("pages.dedicated_servers.detail.enabled") }}
+        </Label>
+        <Switch :model-value="server.enabled" @click="toggleServerEnabled" />
+      </div>
+    </header>
+  </PageTransition>
+
+  <PageTransition
+    v-if="server && server.type === 'Ranked' && isAdmin"
+    :delay="100"
+    class="mt-6"
+  >
+    <div class="rounded-lg border border-border bg-muted/30 p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">
+          {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
+        </h3>
+        <Button variant="ghost" size="sm" @click="showConfig = !showConfig">
+          <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
+          <EyeOff v-else class="mr-2 h-4 w-4" />
+          {{
+            showConfig
+              ? $t("pages.dedicated_servers.detail.hide_config")
+              : $t("pages.dedicated_servers.detail.show_config")
+          }}
+        </Button>
+      </div>
+
+      <p class="mt-2 text-sm text-muted-foreground">
+        {{ $t("pages.dedicated_servers.detail.config_location") }}
+        <code class="rounded bg-secondary px-1.5 py-0.5 text-xs">
+          addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
+        </code>
+      </p>
+
+      <div v-if="showConfig" class="relative mt-3">
+        <pre
+          class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
+          >{{ config }}</pre
+        >
+        <div class="absolute top-2 right-2">
+          <Clipboard :data="config"></Clipboard>
+        </div>
+      </div>
+    </div>
   </PageTransition>
 
   <PageTransition :delay="150" class="mt-6">
@@ -199,14 +232,26 @@ const serverMenu = ref(false);
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
-    <RconCommander :server-id="$route.params.id as string" :online="true" />
+    <RconCommander
+      :server-id="$route.params.id as string"
+      :online="rconOnline"
+    />
   </PageTransition>
 
-  <PageTransition :delay="300" class="mt-6">
+  <PageTransition
+    v-if="isManager && server?.game_server_node_id"
+    :delay="300"
+    class="mt-8"
+  >
+    <div
+      class="mb-3 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+    >
+      <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+      {{ $t("ui.logs.title") }}
+    </div>
     <ServiceLogs
       :service="`dedicated-server-${$route.params.id}`"
       :compact="true"
-      v-if="isManager && server?.game_server_node_id"
     />
   </PageTransition>
 
@@ -214,13 +259,13 @@ const serverMenu = ref(false);
     :open="editServerSheet"
     @update:open="(open) => (editServerSheet = open)"
   >
-    <SheetContent>
+    <SheetContent class="flex flex-col gap-0 sm:max-w-lg">
       <SheetHeader>
         <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
-        <SheetDescription>
-          <ServerForm :server="server" @updated="editServerSheet = false" />
-        </SheetDescription>
       </SheetHeader>
+      <div class="-mx-4 mt-4 flex-1 overflow-y-auto px-4 py-1">
+        <ServerForm :server="server" @updated="editServerSheet = false" />
+      </div>
     </SheetContent>
   </Sheet>
 
@@ -330,6 +375,41 @@ export default {
     };
   },
   computed: {
+    pluginVersionMismatch() {
+      if (!this.server || this.server.type !== "Ranked") {
+        return false;
+      }
+      return (
+        this.server.plugin_version !=
+        useApplicationSettingsStore().currentPluginVersion
+      );
+    },
+    rconOnline() {
+      return !!(this.server?.connected && this.server?.rcon_status);
+    },
+    statusTier() {
+      if (!this.server?.connected) {
+        return "disconnected";
+      }
+      if (!this.server.rcon_status || this.pluginVersionMismatch) {
+        return "warning";
+      }
+      return "connected";
+    },
+    statusLabel() {
+      if (!this.server?.connected) {
+        return this.$t("pages.dedicated_servers.detail.status_label.disconnected");
+      }
+      if (!this.server.rcon_status) {
+        return this.$t("pages.dedicated_servers.detail.status_label.no_rcon");
+      }
+      if (this.pluginVersionMismatch) {
+        return this.$t(
+          "pages.dedicated_servers.detail.status_label.version_mismatch",
+        );
+      }
+      return this.$t("pages.dedicated_servers.detail.status_label.connected");
+    },
     config() {
       return `
 {

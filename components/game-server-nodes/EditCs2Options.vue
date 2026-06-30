@@ -15,6 +15,7 @@ import {
   FormSection,
 } from "~/components/ui/form";
 import SettingHeader from "~/components/match/SettingHeader.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -29,7 +30,7 @@ import {
 
 <template>
   <Sheet :open="open" @update:open="(o) => o === false && $emit('close')">
-    <SheetContent class="overflow-y-auto sm:max-w-2xl">
+    <SheetContent class="flex flex-col gap-0 sm:max-w-2xl">
       <SheetHeader>
         <SheetTitle>{{ $t("game_server.cs2_options.title") }}</SheetTitle>
         <SheetDescription>
@@ -37,7 +38,8 @@ import {
         </SheetDescription>
       </SheetHeader>
 
-      <form @submit.prevent="save" class="space-y-4 pt-4">
+      <form @submit.prevent="save" class="flex min-h-0 flex-1 flex-col">
+        <div class="-mx-4 flex-1 space-y-4 overflow-y-auto px-4 pt-4">
         <p class="text-sm text-muted-foreground">
           {{ $t("game_server.cs2_options.section_video_description") }}
         </p>
@@ -211,15 +213,15 @@ import {
             </FormItem>
           </FormField>
         </fieldset>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" @click="$emit('close')">
-            {{ $t("common.cancel") }}
-          </Button>
-          <Button variant="tactical" type="submit" :loading="submitting">
-            {{ $t("game_server.cs2_options.save") }}
-          </Button>
         </div>
+
+        <SettingsSaveBar
+          contained
+          :dirty="isDirty"
+          :submitting="submitting"
+          @save="save"
+          @discard="discardChanges"
+        />
       </form>
     </SheetContent>
   </Sheet>
@@ -450,6 +452,8 @@ export default {
       presetNames: PRESET_NAMES,
       presetLabels: PRESET_LABELS,
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -464,27 +468,17 @@ export default {
     gameServerNode: {
       immediate: true,
       handler(node) {
-        // Empty JSONB (or no overrides) ⇒ auto mode: every FORM_KEY is
-        // null so `activePreset` returns "auto" and the controls render
-        // disabled. Any stored value snaps the form back to explicit.
-        const stored = (node.cs2_video_settings ?? {}) as Record<
-          string,
-          number | null
-        >;
-        const isAuto = Object.keys(stored).length === 0;
-        const videoFilled: VideoForm = {};
-        for (const k of FORM_KEYS) {
-          videoFilled[k] = isAuto
-            ? null
-            : (stored[`setting.${k}`] ?? PRESETS.low[k] ?? null);
+        if (this.baseline === null || !this.isDirty) {
+          this.populateOptions(node);
         }
-        this.form.setValues({
-          resolution: resolutionKey(
-            stored["setting.defaultres"] as number | undefined,
-            stored["setting.defaultresheight"] as number | undefined,
-          ),
-          video: videoFilled,
-        });
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
       },
     },
   },
@@ -523,6 +517,39 @@ export default {
     },
   },
   methods: {
+    populateOptions(node: any) {
+      // Empty JSONB (or no overrides) ⇒ auto mode: every FORM_KEY is
+      // null so `activePreset` returns "auto" and the controls render
+      // disabled. Any stored value snaps the form back to explicit.
+      const stored = (node.cs2_video_settings ?? {}) as Record<
+        string,
+        number | null
+      >;
+      const isAuto = Object.keys(stored).length === 0;
+      const videoFilled: VideoForm = {};
+      for (const k of FORM_KEYS) {
+        videoFilled[k] = isAuto
+          ? null
+          : (stored[`setting.${k}`] ?? PRESETS.low[k] ?? null);
+      }
+      this.form.setValues({
+        resolution: resolutionKey(
+          stored["setting.defaultres"] as number | undefined,
+          stored["setting.defaultresheight"] as number | undefined,
+        ),
+        video: videoFilled,
+      });
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      this.populateOptions(this.gameServerNode);
+    },
     setAntialiasing(value: string) {
       const opt = AA_OPTIONS.find((o) => o.value === value);
       if (!opt) return;
@@ -551,8 +578,15 @@ export default {
         return;
       }
 
-      const { valid } = await this.form.validate();
-      if (!valid) return;
+      const { valid, errors } = await this.form.validate();
+      if (!valid) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: Object.values(errors ?? {})[0] as string,
+        });
+        return;
+      }
 
       this.submitting = true;
       try {
@@ -599,6 +633,7 @@ export default {
         });
 
         toast({ title: this.$t("game_server.toast.cs2_options_updated") });
+        this.takeSnapshot();
         this.$emit("close");
       } finally {
         this.submitting = false;

@@ -358,7 +358,7 @@ function playerAvatarSrc(player: {
             }}</span>
             <span
               class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >KILLS</span
+              >{{ $t("common.stats.kills") }}</span
             >
           </div>
           <div
@@ -369,7 +369,7 @@ function playerAvatarSrc(player: {
             }}</span>
             <span
               class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >ASSISTS</span
+              >{{ $t("common.stats.assists") }}</span
             >
           </div>
           <div
@@ -380,7 +380,7 @@ function playerAvatarSrc(player: {
             }}</span>
             <span
               class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >DEATHS</span
+              >{{ $t("common.stats.deaths") }}</span
             >
           </div>
           <div class="flex flex-col items-center px-4 py-2">

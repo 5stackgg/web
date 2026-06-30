@@ -4,6 +4,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import {
   Drawer,
   DrawerContent,
@@ -300,14 +301,20 @@ import {
                       <th class="text-left py-2 px-3 font-medium">
                         {{ $t("common.player") }}
                       </th>
-                      <th class="text-center py-2 px-2 font-medium w-10">K</th>
-                      <th class="text-center py-2 px-2 font-medium w-10">D</th>
-                      <th class="text-center py-2 px-2 font-medium w-10">A</th>
-                      <th class="text-center py-2 px-2 font-medium w-14">
-                        DMG
+                      <th class="text-center py-2 px-2 font-medium w-10">
+                        <StatLabel stat="k" label="K" />
                       </th>
                       <th class="text-center py-2 px-2 font-medium w-10">
-                        K/D
+                        <StatLabel stat="d" label="D" />
+                      </th>
+                      <th class="text-center py-2 px-2 font-medium w-10">
+                        <StatLabel stat="a" label="A" />
+                      </th>
+                      <th class="text-center py-2 px-2 font-medium w-14">
+                        <StatLabel stat="total_damage" label="DMG" />
+                      </th>
+                      <th class="text-center py-2 px-2 font-medium w-10">
+                        <StatLabel stat="kd" label="K/D" />
                       </th>
                     </tr>
                   </thead>

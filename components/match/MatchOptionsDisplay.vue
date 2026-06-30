@@ -24,7 +24,7 @@ const BooleanPill = defineComponent({
 <template>
   <template v-if="options.map_veto">
     <div class="my-3">
-      <div class="flex gap-4">
+      <div class="flex flex-wrap gap-2">
         <MiniMapDisplay
           v-for="map in options.map_pool.maps"
           :key="map.id"
@@ -271,7 +271,13 @@ export default {
 .settings-grid {
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@container (min-width: 32rem) {
+  .settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @container (min-width: 56rem) {
@@ -281,6 +287,7 @@ export default {
 }
 
 .settings-panel {
+  container-type: inline-size;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -328,9 +335,9 @@ export default {
 
 .settings-row {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid hsl(var(--border) / 0.3);
 }
@@ -352,11 +359,27 @@ export default {
 }
 
 .settings-row__value {
-  flex: 0 0 auto;
-  text-align: right;
+  flex: 0 1 auto;
+  min-width: 0;
+  text-align: left;
   font-size: 0.8rem;
   font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
   color: hsl(var(--foreground));
+}
+
+@container (min-width: 12rem) {
+  .settings-row {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .settings-row__value {
+    text-align: right;
+  }
 }
 
 .settings-row__unit {

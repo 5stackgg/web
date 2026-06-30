@@ -14,7 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-import { DownloadIcon, Clock, Maximize2, Minimize2 } from "lucide-vue-next";
+import {
+  DownloadIcon,
+  Clock,
+  Maximize2,
+  Minimize2,
+} from "lucide-vue-next";
 
 const config = useRuntimeConfig();
 
@@ -176,8 +181,20 @@ async function downloadFullLogs(service: string) {
         class="pointer-events-none absolute inset-x-0 top-0 h-5 bg-gradient-to-b from-background/60 to-transparent"
       />
 
+      <div
+        v-if="podCount === 0"
+        class="flex min-h-[160px] flex-1 flex-col items-center justify-center gap-2 py-10 text-center"
+      >
+        <p class="text-sm font-medium text-muted-foreground">
+          {{ $t("ui.logs.empty") }}
+        </p>
+        <p class="max-w-xs text-xs text-muted-foreground/70">
+          {{ $t("ui.logs.empty_hint") }}
+        </p>
+      </div>
+
       <Tabs
-        v-if="podCount > 1"
+        v-else-if="podCount > 1"
         v-model="activePod"
         :class="[
           'flex flex-col',

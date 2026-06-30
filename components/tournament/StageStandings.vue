@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { ChevronRight } from "lucide-vue-next";
 import { kdColor } from "~/utils/statTiers";
 </script>
@@ -117,17 +118,23 @@ import { kdColor } from "~/utils/statTiers";
                             <th class="px-4 py-2 text-left font-normal">
                               {{ $t("common.player") }}
                             </th>
-                            <th class="px-2 py-2 text-center font-normal">K</th>
-                            <th class="px-2 py-2 text-center font-normal">D</th>
-                            <th class="px-2 py-2 text-center font-normal">A</th>
                             <th class="px-2 py-2 text-center font-normal">
-                              K/D
+                              <StatLabel stat="k" label="K" />
                             </th>
                             <th class="px-2 py-2 text-center font-normal">
-                              HS%
+                              <StatLabel stat="d" label="D" />
                             </th>
                             <th class="px-2 py-2 text-center font-normal">
-                              MP
+                              <StatLabel stat="a" label="A" />
+                            </th>
+                            <th class="px-2 py-2 text-center font-normal">
+                              <StatLabel stat="kd" label="K/D" />
+                            </th>
+                            <th class="px-2 py-2 text-center font-normal">
+                              <StatLabel stat="hs" label="HS%" />
+                            </th>
+                            <th class="px-2 py-2 text-center font-normal">
+                              <StatLabel stat="mp" label="MP" />
                             </th>
                           </tr>
                         </thead>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "@/components/ui/button";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import {
   FormControl,
   FormDescription,
@@ -724,13 +725,22 @@ import { $ } from "~/generated/zeus";
     </Collapsible>
 
     <Button
+      v-if="!stage"
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
       :loading="submitting"
     >
-      <template v-if="stage">{{ $t("tournament.stage.update") }}</template>
-      <template v-else>{{ $t("tournament.stage.create") }}</template>
+      {{ $t("tournament.stage.create") }}
     </Button>
+
+    <SettingsSaveBar
+      v-else
+      contained
+      :dirty="isDirty"
+      :submitting="submitting"
+      @save="updateCreateStage"
+      @discard="discardChanges"
+    />
   </form>
 </template>
 
@@ -749,6 +759,7 @@ import {
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { toast } from "@/components/ui/toast";
 
 interface Region {
   value: string;
@@ -806,6 +817,8 @@ export default {
   data() {
     return {
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       showAdvancedSettings: false,
       advHeight: "0px",
       select_single_region: null as string | null,
@@ -877,72 +890,24 @@ export default {
     stage: {
       immediate: true,
       handler(stage) {
-        if (stage) {
-          this.form.setValues({
-            stage_type: stage.type,
-            groups: stage.groups,
-            min_teams: stage.min_teams.toString(),
-            max_teams: stage.max_teams.toString(),
-            default_best_of: (stage.default_best_of || 1).toString(),
-            third_place_match: stage.third_place_match || false,
-            decider_best_of: stage.decider_best_of
-              ? stage.decider_best_of.toString()
-              : null,
-          });
-
-          // Load per-round best_of from settings
-          if (stage.settings?.round_best_of) {
-            this.roundBestOf = { ...stage.settings.round_best_of };
-            // Convert numeric values to strings for the form
-            for (const key in this.roundBestOf) {
-              this.roundBestOf[key] = this.roundBestOf[key].toString();
-            }
-          } else {
-            this.roundBestOf = {};
-          }
-
-          // Load advanced settings from stage options or tournament options
-          const options = stage.options || this.tournament?.options;
-          if (options) {
-            this.form.setValues({
-              tv_delay:
-                stage.options?.tv_delay ??
-                this.tournament?.options?.tv_delay ??
-                115,
-              region_veto:
-                stage.options?.region_veto ??
-                this.tournament?.options?.region_veto ??
-                true,
-              regions:
-                stage.options?.regions ??
-                this.tournament?.options?.regions ??
-                [],
-              check_in_setting:
-                stage.options?.check_in_setting ??
-                this.tournament?.options?.check_in_setting ??
-                e_check_in_settings_enum.Players,
-              ready_setting:
-                stage.options?.ready_setting ??
-                this.tournament?.options?.ready_setting ??
-                e_ready_settings_enum.Players,
-              tech_timeout_setting:
-                stage.options?.tech_timeout_setting ??
-                this.tournament?.options?.tech_timeout_setting ??
-                e_timeout_settings_enum.Admin,
-              match_mode:
-                stage.options?.match_mode ??
-                this.tournament?.options?.match_mode ??
-                e_match_mode_enum.auto,
-            });
-          }
-        } else {
-          this.form.setValues({
-            groups: 1,
-            default_best_of: "1",
-            stage_type: e_tournament_stage_types_enum.SingleElimination,
-          });
-          this.setDefaultAdvancedSettings();
+        // `stage` comes from the subscription-backed tournament; don't clobber
+        // in-progress edits on a re-emit.
+        if (this.baseline !== null && this.isDirty) {
+          return;
         }
+        this.populateStage(stage);
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.recomputeDirty();
+      },
+    },
+    roundBestOf: {
+      deep: true,
+      handler() {
+        this.recomputeDirty();
       },
     },
     tournament: {
@@ -1151,6 +1116,92 @@ export default {
     },
   },
   methods: {
+    populateStage(stage: any) {
+      if (stage) {
+        this.form.setValues({
+          stage_type: stage.type,
+          groups: stage.groups,
+          min_teams: stage.min_teams.toString(),
+          max_teams: stage.max_teams.toString(),
+          default_best_of: (stage.default_best_of || 1).toString(),
+          third_place_match: stage.third_place_match || false,
+          decider_best_of: stage.decider_best_of
+            ? stage.decider_best_of.toString()
+            : null,
+        });
+
+        // Load per-round best_of from settings
+        if (stage.settings?.round_best_of) {
+          this.roundBestOf = { ...stage.settings.round_best_of };
+          for (const key in this.roundBestOf) {
+            this.roundBestOf[key] = this.roundBestOf[key].toString();
+          }
+        } else {
+          this.roundBestOf = {};
+        }
+
+        // Load advanced settings from stage options or tournament options
+        const options = stage.options || this.tournament?.options;
+        if (options) {
+          this.form.setValues({
+            tv_delay:
+              stage.options?.tv_delay ??
+              this.tournament?.options?.tv_delay ??
+              115,
+            region_veto:
+              stage.options?.region_veto ??
+              this.tournament?.options?.region_veto ??
+              true,
+            regions:
+              stage.options?.regions ?? this.tournament?.options?.regions ?? [],
+            check_in_setting:
+              stage.options?.check_in_setting ??
+              this.tournament?.options?.check_in_setting ??
+              e_check_in_settings_enum.Players,
+            ready_setting:
+              stage.options?.ready_setting ??
+              this.tournament?.options?.ready_setting ??
+              e_ready_settings_enum.Players,
+            tech_timeout_setting:
+              stage.options?.tech_timeout_setting ??
+              this.tournament?.options?.tech_timeout_setting ??
+              e_timeout_settings_enum.Admin,
+            match_mode:
+              stage.options?.match_mode ??
+              this.tournament?.options?.match_mode ??
+              e_match_mode_enum.auto,
+          });
+        }
+      } else {
+        this.form.setValues({
+          groups: 1,
+          default_best_of: "1",
+          stage_type: e_tournament_stage_types_enum.SingleElimination,
+        });
+        this.setDefaultAdvancedSettings();
+      }
+
+      this.takeSnapshot();
+    },
+    serializeState() {
+      return JSON.stringify({
+        values: this.form.values,
+        roundBestOf: this.roundBestOf,
+      });
+    },
+    recomputeDirty() {
+      this.isDirty =
+        this.baseline !== null && this.serializeState() !== this.baseline;
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = this.serializeState();
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      this.populateStage(this.stage);
+    },
     animateAdvanced(open: boolean) {
       const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
       if (!wrap) {
@@ -1415,9 +1466,14 @@ export default {
       }
       this.submitLock = true;
       try {
-        const { valid } = await this.form.validate();
+        const { valid, errors } = await this.form.validate();
 
         if (!valid) {
+          toast({
+            variant: "destructive",
+            title: this.$t("common.error"),
+            description: Object.values(errors ?? {})[0] as string,
+          });
           return;
         }
 
@@ -1507,6 +1563,7 @@ export default {
             }),
           });
 
+          this.takeSnapshot();
           this.$emit("updated");
           return;
         }

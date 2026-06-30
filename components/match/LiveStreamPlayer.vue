@@ -2,6 +2,8 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { ExternalLink, PictureInPicture } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import { loginLinks } from "~/utilities/loginLinks";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
@@ -9,6 +11,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useStreamerStore } from "~/stores/StreamerStore";
+import { useMatchPopout } from "~/composables/useMatchPopout";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const props = defineProps<{
@@ -100,6 +103,47 @@ function teardownLocalSubscription() {
   localStream.value = null;
 }
 
+// Anti-cheat: players (and coaches) in this match's lineup must never
+// see the live feed — not even admins. `is_in_lineup` / `is_coach` are
+// backend computed fields evaluated for the authenticated session, so
+// they're false for anonymous viewers and correctly true for staff who
+// are also rostered. Gated here (not just on the match page) so the
+// popout window and floating PiP honor it too.
+const isInLineup = ref(false);
+let lineupSubscription: { unsubscribe: () => void } | undefined;
+
+function ensureLineupSubscription() {
+  if (lineupSubscription) return;
+  if (!authStore.me?.steam_id) {
+    isInLineup.value = false;
+    return;
+  }
+  lineupSubscription = apolloClient
+    .subscribe({
+      query: generateSubscription({
+        matches_by_pk: [
+          { id: props.matchId },
+          { is_in_lineup: true, is_coach: true },
+        ],
+      } as any),
+    })
+    .subscribe({
+      next: (result: any) => {
+        const m = result?.data?.matches_by_pk;
+        isInLineup.value = !!(m?.is_in_lineup || m?.is_coach);
+      },
+      error: (err: any) => {
+        // eslint-disable-next-line no-console
+        console.error("[live-stream-player] lineup subscription error", err);
+      },
+    });
+}
+
+function teardownLineupSubscription() {
+  lineupSubscription?.unsubscribe();
+  lineupSubscription = undefined;
+}
+
 const coarsePointer = ref(false);
 
 onMounted(() => {
@@ -107,6 +151,7 @@ onMounted(() => {
     coarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
   }
   if (shouldRunLocalSubscription()) ensureLocalSubscription();
+  ensureLineupSubscription();
 });
 
 // React to store readiness: if the shared feed shows up after we
@@ -135,6 +180,7 @@ watch(
 
 onBeforeUnmount(() => {
   teardownLocalSubscription();
+  teardownLineupSubscription();
 });
 
 const displayStream = computed(() => stream.value ?? lastGoodStream.value);
@@ -153,11 +199,61 @@ const canSeeBoot = computed(() =>
 );
 
 const applicationSettings = useApplicationSettingsStore();
-const isPoppedOut = computed(() => {
-  if (props.inGlobal) return false;
+const matchPopout = useMatchPopout();
+
+// (Re)evaluate lineup membership when the viewer signs in/out.
+watch(
+  () => authStore.me?.steam_id,
+  () => {
+    teardownLineupSubscription();
+    isInLineup.value = false;
+    ensureLineupSubscription();
+  },
+);
+
+// Anti-cheat gates. A rostered player/coach is blocked everywhere; when
+// the server requires sign-in, anonymous viewers are blocked too.
+const isSignedIn = computed(() => !!authStore.me?.steam_id);
+// Blocked purely because the viewer is signed out — we surface a
+// "log in to watch" prompt for this case (vs. a rostered player, who
+// just gets nothing).
+const needsLogin = computed(
+  () => applicationSettings.requireLoginForLiveStreams && !isSignedIn.value,
+);
+const canViewStream = computed(() => {
+  if (isInLineup.value) return false;
+  if (needsLogin.value) return false;
+  return true;
+});
+
+function loginToView() {
+  if (typeof window === "undefined") return;
+  window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(
+    window.location.toString(),
+  )}`;
+}
+
+// True when this stream is already playing in a separate popped-out
+// window — used to collapse the inline slot to a placeholder.
+const poppedToWindow = computed(() => {
+  if (props.inGlobal || props.inPopout) return false;
+  return matchPopout.isOpen(props.matchId);
+});
+
+// True when this stream is currently pinned to the floating PiP overlay.
+const inGlobalPip = computed(() => {
+  if (props.inGlobal || props.inPopout) return false;
   const gs: any = applicationSettings.globalStream;
   return !!gs && gs.is_game_streamer === true && gs.match_id === props.matchId;
 });
+
+const isPoppedOut = computed(
+  () => inGlobalPip.value || poppedToWindow.value,
+);
+
+function returnFromPip() {
+  applicationSettings.setGlobalStream();
+}
 
 const compact = computed(() => props.inGlobal || props.inPopout);
 
@@ -172,19 +268,17 @@ function promoteToPip() {
 }
 
 function openPopoutWindow() {
-  if (typeof window === "undefined") return;
-  const url = `/match-popout/${props.matchId}`;
-  window.open(
-    url,
-    `match-popout-${props.matchId}`,
-    "popup=yes,width=960,height=640,resizable=yes,scrollbars=no",
-  );
+  matchPopout.openPopout(props.matchId);
+}
+
+function focusPopoutWindow() {
+  matchPopout.focusPopout(props.matchId);
 }
 </script>
 
 <template>
   <div
-    v-if="hasStream && !isPoppedOut && (isLive || canSeeBoot)"
+    v-if="hasStream && canViewStream && !isPoppedOut && (isLive || canSeeBoot)"
     class="overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
     :class="compact ? 'flex h-full w-full flex-col' : ''"
   >
@@ -237,5 +331,51 @@ function openPopoutWindow() {
         <StreamViewerBadge :match-id="matchId" size="md" />
       </div>
     </StreamCanvas>
+  </div>
+
+  <div
+    v-else-if="hasStream && canViewStream && poppedToWindow"
+    class="flex items-center justify-center gap-3 rounded-lg border border-border/70 bg-black/40 px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+    :class="compact ? 'h-full w-full' : 'aspect-video'"
+  >
+    <div class="flex flex-col items-center gap-2">
+      <ExternalLink class="size-5 text-white/50" />
+      <span>{{ $t("ui.playing_in_popout") }}</span>
+      <Button size="sm" variant="outline" @click="focusPopoutWindow">
+        {{ $t("ui.focus_window") }}
+      </Button>
+    </div>
+  </div>
+
+  <div
+    v-else-if="hasStream && canViewStream && inGlobalPip"
+    class="flex items-center justify-center gap-3 rounded-lg border border-border/70 bg-black/40 px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+    :class="compact ? 'h-full w-full' : 'aspect-video'"
+  >
+    <div class="flex flex-col items-center gap-2">
+      <PictureInPicture class="size-5 text-white/50" />
+      <span>{{ $t("ui.playing_in_pip") }}</span>
+      <Button size="sm" variant="outline" @click="returnFromPip">
+        {{ $t("ui.return_here") }}
+      </Button>
+    </div>
+  </div>
+
+  <div
+    v-else-if="hasStream && needsLogin && isLive"
+    role="button"
+    tabindex="0"
+    class="flex cursor-pointer items-center justify-center gap-3 rounded-lg border border-border/70 bg-black px-4 text-center text-sm text-white/80 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+    :class="compact ? 'h-full w-full' : 'aspect-video'"
+    @click="loginToView"
+    @keydown.enter="loginToView"
+    @keydown.space.prevent="loginToView"
+  >
+    <div class="flex flex-col items-center gap-2">
+      <span>{{ $t("ui.login_to_watch") }}</span>
+      <Button size="sm" variant="outline" @click.stop="loginToView">
+        {{ $t("ui.login_to_watch_action") }}
+      </Button>
+    </div>
   </div>
 </template>

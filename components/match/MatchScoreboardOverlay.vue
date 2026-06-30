@@ -5,6 +5,7 @@ import { ChevronDown, Trophy } from "lucide-vue-next";
 import { order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import { kdColor } from "~/utils/statTiers";
 
@@ -391,13 +392,27 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
                     <th class="px-2 py-1 text-left font-normal">
                       {{ $t("common.player") }}
                     </th>
-                    <th class="px-1 py-1 text-center font-normal">K</th>
-                    <th class="px-1 py-1 text-center font-normal">D</th>
-                    <th class="px-1 py-1 text-center font-normal">A</th>
-                    <th class="px-1 py-1 text-center font-normal">K/D</th>
-                    <th class="px-1 py-1 text-center font-normal">HS%</th>
-                    <th class="px-1 py-1 text-center font-normal">DMG</th>
-                    <th class="px-1 py-1 text-center font-normal">ADR</th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="k" label="K" />
+                    </th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="d" label="D" />
+                    </th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="a" label="A" />
+                    </th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="kd" label="K/D" />
+                    </th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="hs" label="HS%" />
+                    </th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="total_damage" label="DMG" />
+                    </th>
+                    <th class="px-1 py-1 text-center font-normal">
+                      <StatLabel stat="adr" label="ADR" />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

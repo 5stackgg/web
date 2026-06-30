@@ -260,7 +260,7 @@ export default {
             "
             @click="submitAdd"
           >
-            {{ saving ? "Saving…" : "Save" }}
+            {{ saving ? $t("common.saving") : $t("common.save") }}
           </Button>
         </div>
         <div class="flex items-end">

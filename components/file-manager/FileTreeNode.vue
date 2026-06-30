@@ -88,45 +88,62 @@
       </DropdownMenuContent>
     </DropdownMenu>
 
-    <div v-if="item.isDirectory && expanded" class="ml-4">
-      <!-- Inline create input -->
-      <div
-        v-if="store.pendingCreate?.parentPath === item.path"
-        class="flex items-center gap-2 px-2 py-1"
-      >
-        <span class="w-4"></span>
-        <component
-          :is="store.pendingCreate.type === 'directory' ? Folder : File"
-          class="w-4 h-4 text-muted-foreground"
-        />
-        <Input
-          ref="inlineInput"
-          v-model="inlineCreateName"
-          class="h-6 text-sm py-0 px-1"
-          :placeholder="
-            store.pendingCreate.type === 'directory'
-              ? 'folder name'
-              : 'file name'
-          "
-          @keydown.enter="confirmInlineCreate"
-          @keydown.escape="cancelInlineCreate"
-          @blur="handleInlineBlur"
-        />
+    <Transition
+      @enter="onExpandEnter"
+      @after-enter="onExpandAfterEnter"
+      @leave="onExpandLeave"
+    >
+      <div v-if="item.isDirectory && expanded" class="ml-4 overflow-hidden">
+        <!-- Inline create input -->
+        <div
+          v-if="store.pendingCreate?.parentPath === item.path"
+          class="flex items-center gap-2 px-2 py-1"
+        >
+          <span class="w-4"></span>
+          <component
+            :is="store.pendingCreate.type === 'directory' ? Folder : File"
+            class="w-4 h-4 text-muted-foreground"
+          />
+          <Input
+            ref="inlineInput"
+            v-model="inlineCreateName"
+            class="h-6 text-sm py-0 px-1"
+            :placeholder="
+              store.pendingCreate.type === 'directory'
+                ? 'folder name'
+                : 'file name'
+            "
+            @keydown.enter="confirmInlineCreate"
+            @keydown.escape="cancelInlineCreate"
+            @blur="handleInlineBlur"
+          />
+        </div>
+        <!-- Loading indicator while the folder is being scanned -->
+        <div
+          v-if="isLoadingChildren"
+          class="flex items-center gap-2 px-2 py-1 text-sm text-muted-foreground"
+        >
+          <span class="w-4"></span>
+          <Spinner class="w-4 h-4 text-primary" />
+          <span>{{ $t("common.loading") }}</span>
+        </div>
+        <TransitionGroup v-else name="tree-item" appear>
+          <FileTreeNode
+            v-for="child in children"
+            :key="child.path"
+            :item="child"
+            @select="$emit('select', $event)"
+            @edit-file="$emit('edit-file', $event)"
+            @create-file="$emit('create-file', $event)"
+            @create-folder="$emit('create-folder', $event)"
+            @delete="$emit('delete', $event)"
+            @rename-item="$emit('rename-item', $event)"
+            @drop-files="$emit('drop-files', $event)"
+            @move-item="$emit('move-item', $event)"
+          />
+        </TransitionGroup>
       </div>
-      <FileTreeNode
-        v-for="child in children"
-        :key="child.path"
-        :item="child"
-        @select="$emit('select', $event)"
-        @edit-file="$emit('edit-file', $event)"
-        @create-file="$emit('create-file', $event)"
-        @create-folder="$emit('create-folder', $event)"
-        @delete="$emit('delete', $event)"
-        @rename-item="$emit('rename-item', $event)"
-        @drop-files="$emit('drop-files', $event)"
-        @move-item="$emit('move-item', $event)"
-      />
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -144,6 +161,7 @@ import {
   Trash2,
 } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "~/components/ui/spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -291,6 +309,12 @@ const children = computed(() => {
   return store.fileTree.get(props.item.path) || [];
 });
 
+// Show a spinner only when the folder is being scanned and we have nothing cached yet
+const isLoadingChildren = computed(
+  () =>
+    store.loadingPaths.has(props.item.path) && children.value.length === 0,
+);
+
 const isSelected = computed(() => store.selectedItem?.path === props.item.path);
 
 function toggleExpand() {
@@ -375,4 +399,78 @@ function handleDragOver(event: DragEvent) {
     event.dataTransfer.dropEffect = "move";
   }
 }
+
+// Expand/collapse height animation
+function onExpandEnter(el: Element) {
+  const node = el as HTMLElement;
+  node.style.height = "0";
+  node.style.opacity = "0";
+  void node.offsetHeight;
+  node.style.transition = "height 0.22s ease, opacity 0.22s ease";
+  node.style.height = `${node.scrollHeight}px`;
+  node.style.opacity = "1";
+}
+
+function onExpandAfterEnter(el: Element) {
+  const node = el as HTMLElement;
+  node.style.height = "";
+  node.style.opacity = "";
+  node.style.transition = "";
+}
+
+function onExpandLeave(el: Element) {
+  const node = el as HTMLElement;
+  node.style.height = `${node.scrollHeight}px`;
+  node.style.opacity = "1";
+  void node.offsetHeight;
+  node.style.transition = "height 0.18s ease, opacity 0.18s ease";
+  node.style.height = "0";
+  node.style.opacity = "0";
+}
 </script>
+
+<style scoped>
+.tree-item-enter-active,
+.tree-item-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.tree-item-enter-from,
+.tree-item-leave-to {
+  opacity: 0;
+  transform: translateX(-6px);
+}
+.tree-item-leave-active {
+  position: absolute;
+  width: 100%;
+}
+.tree-item-move {
+  transition: transform 0.18s ease;
+}
+/* Stagger the cascade as files scan in */
+.tree-item-enter-active:nth-child(1) {
+  transition-delay: 0ms;
+}
+.tree-item-enter-active:nth-child(2) {
+  transition-delay: 25ms;
+}
+.tree-item-enter-active:nth-child(3) {
+  transition-delay: 50ms;
+}
+.tree-item-enter-active:nth-child(4) {
+  transition-delay: 75ms;
+}
+.tree-item-enter-active:nth-child(5) {
+  transition-delay: 100ms;
+}
+.tree-item-enter-active:nth-child(6) {
+  transition-delay: 125ms;
+}
+.tree-item-enter-active:nth-child(7) {
+  transition-delay: 150ms;
+}
+.tree-item-enter-active:nth-child(n + 8) {
+  transition-delay: 175ms;
+}
+</style>

@@ -118,11 +118,20 @@ async function fetchRoster() {
       registeredPlayers.value = {};
     }
   } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("common.error"),
-      description: getErrorMessage(error),
-    });
+    const message = getErrorMessage(error);
+    // RCON being unavailable is already surfaced by the server status + RCON
+    // console (both read "disconnected"), so don't spam a toast for it —
+    // especially since this fetch polls every 30s. Just clear the roster.
+    if (/unable to connect to rcon/i.test(message)) {
+      roster.value = [];
+      registeredPlayers.value = {};
+    } else {
+      toast({
+        variant: "destructive",
+        title: t("common.error"),
+        description: message,
+      });
+    }
   } finally {
     loading.value = false;
   }

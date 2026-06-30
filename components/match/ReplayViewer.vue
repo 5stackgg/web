@@ -2880,8 +2880,11 @@ const hoveredPlayerSid = ref<string | null>(null);
 // dropper name as a small typed object so the template can format
 // each line independently.
 function groundKitTooltip(k: DemoKitDrop): { title: string; sub: string } {
-  const who = k.player ? playerName(k.player) : "unknown";
-  return { title: "Defuse kit", sub: `Dropped by ${who}` };
+  const who = k.player ? playerName(k.player) : t("match.replay.unknown_player");
+  return {
+    title: t("match.replay.defuse_kit"),
+    sub: t("match.replay.kit_dropped_by", { name: who }),
+  };
 }
 // Tooltip content for the bomb-on-ground marker. Walks the active
 // round's bomb timeline up to the cursor to find the event that
@@ -2900,15 +2903,22 @@ const groundBombTooltip = computed<{ title: string; sub: string }>(() => {
     )
       last = null;
   }
-  if (!last) return { title: "Bomb", sub: "" };
-  const who = last.player ? playerName(last.player) : "unknown";
+  if (!last) return { title: t("match.replay.phase_bomb"), sub: "" };
+  const who = last.player
+    ? playerName(last.player)
+    : t("match.replay.unknown_player");
   if (last.type === "planted") {
     return {
-      title: `Bomb planted${last.site ? ` (${last.site})` : ""}`,
-      sub: `By ${who}`,
+      title: `${t("match.replay.bomb_planted_label")}${
+        last.site ? ` (${last.site})` : ""
+      }`,
+      sub: t("match.replay.bomb_dropped_by", { name: who }),
     };
   }
-  return { title: "Bomb dropped", sub: `By ${who}` };
+  return {
+    title: t("match.replay.bomb_dropped"),
+    sub: t("match.replay.bomb_dropped_by", { name: who }),
+  };
 });
 
 // Structured player tooltip data. The template renders this as a

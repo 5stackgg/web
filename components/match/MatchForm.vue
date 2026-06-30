@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { Spinner } from "@/components/ui/spinner";
 import { Info, Swords, PlayIcon } from "lucide-vue-next";
 
@@ -47,8 +48,10 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
           </FormItem>
         </FormField>
 
+        <Transition name="lineup-expand">
+        <div v-if="!form.values.pug" class="lineup-expand grid">
+        <div class="min-h-0 overflow-hidden">
         <div
-          v-if="!form.values.pug"
           class="relative p-5 border border-border rounded-lg [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px]"
         >
           <div
@@ -129,11 +132,15 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
             </span>
           </div>
         </div>
+        </div>
+        </div>
+        </Transition>
       </template>
     </MatchOptions>
 
     <div class="mt-8 flex justify-center pb-24">
       <button
+        v-if="!match"
         type="submit"
         :disabled="submitting"
         class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(var(--tac-amber-foreground))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
@@ -159,6 +166,14 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
         ></span>
       </button>
     </div>
+
+    <SettingsSaveBar
+      v-if="match"
+      :dirty="isDirty"
+      :submitting="submitting"
+      @save="updateMatch"
+      @discard="discardChanges"
+    />
   </form>
 </template>
 
@@ -190,6 +205,8 @@ export default {
   data() {
     return {
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       form: useForm({
         keepValuesOnUnmount: true,
         validationSchema: toTypedSchema(
@@ -214,41 +231,21 @@ export default {
         if (!match) {
           return;
         }
-        const matchOptions = match.options;
-
-        setupOptions(this.form, matchOptions);
-
-        for (const key in this.form.values) {
-          switch (key) {
-            case "pug":
-              if (match.lineup_1.team_id || match.lineup_2.team_id) {
-                this.form.setFieldValue(key, false);
-              }
-              break;
-            case "team_1":
-              if (match.lineup_1.team_id) {
-                this.form.setFieldValue(key, match.lineup_1.team_id);
-              }
-              break;
-            case "team_2":
-              if (match.lineup_2.team_id) {
-                this.form.setFieldValue(key, match.lineup_2.team_id);
-              }
-              break;
-            case "map_pool":
-              // do nothing, custom map pool will handle this.
-              break;
-            case "custom_map_pool":
-              if (matchOptions.map_pool.type === e_map_pool_types_enum.Custom) {
-                this.form.setFieldValue(key, true);
-                this.form.setFieldValue(
-                  "map_pool",
-                  matchOptions.map_pool.maps.map((map) => map.id),
-                );
-              }
-              break;
-          }
+        // `match` is backed by a live subscription, so it re-emits a new object
+        // periodically. Only (re)load the form from the server copy when the
+        // user has no in-progress edits, otherwise a re-emit would wipe their
+        // changes and reset the unsaved-changes bar.
+        if (this.baseline === null || !this.isDirty) {
+          this.populateForm(match);
         }
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
       },
     },
   },
@@ -261,6 +258,56 @@ export default {
     },
   },
   methods: {
+    populateForm(match: any) {
+      const matchOptions = match.options;
+
+      setupOptions(this.form, matchOptions);
+
+      for (const key in this.form.values) {
+        switch (key) {
+          case "pug":
+            if (match.lineup_1.team_id || match.lineup_2.team_id) {
+              this.form.setFieldValue(key, false);
+            }
+            break;
+          case "team_1":
+            if (match.lineup_1.team_id) {
+              this.form.setFieldValue(key, match.lineup_1.team_id);
+            }
+            break;
+          case "team_2":
+            if (match.lineup_2.team_id) {
+              this.form.setFieldValue(key, match.lineup_2.team_id);
+            }
+            break;
+          case "map_pool":
+            // do nothing, custom map pool will handle this.
+            break;
+          case "custom_map_pool":
+            if (matchOptions.map_pool.type === e_map_pool_types_enum.Custom) {
+              this.form.setFieldValue(key, true);
+              this.form.setFieldValue(
+                "map_pool",
+                matchOptions.map_pool.maps.map((map: any) => map.id),
+              );
+            }
+            break;
+        }
+      }
+
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      if (this.match) {
+        this.populateForm(this.match);
+      }
+    },
     async updateMatch() {
       if (this.submitting) {
         return;
@@ -268,9 +315,14 @@ export default {
 
       this.submitting = true;
 
-      const { valid } = await this.form.validate();
+      const { valid, errors } = await this.form.validate();
 
       if (!valid) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: Object.values(errors ?? {})[0] as string,
+        });
         this.submitting = false;
         return;
       }
@@ -429,6 +481,8 @@ export default {
         toast({
           title: this.$t("pages.matches.match_updated"),
         });
+
+        this.takeSnapshot();
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -485,3 +539,24 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Smooth expand/collapse when toggling between team lineups (PUG off) and
+   individual/PUG mode — animate the grid row from 0fr→1fr so the block grows
+   and shrinks its real height instead of popping in/out. */
+.lineup-expand {
+  grid-template-rows: 1fr;
+}
+.lineup-expand-enter-active,
+.lineup-expand-leave-active {
+  transition:
+    grid-template-rows 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 240ms ease,
+    margin 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lineup-expand-enter-from,
+.lineup-expand-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+</style>

@@ -30,7 +30,16 @@ import debounce from "~/utilities/debounce";
         <Terminal class="w-5 h-5" />
         {{ $t("rcon.console") }}
       </h4>
-      <Badge variant="outline" class="text-xs">
+      <Badge
+        variant="outline"
+        class="text-xs gap-1.5"
+        :class="
+          online
+            ? 'border-[hsl(var(--success)/0.5)] bg-[hsl(var(--success)/0.15)] text-success'
+            : 'border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-destructive'
+        "
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
         {{ online ? $t("common.connected") : $t("common.disconnected") }}
       </Badge>
     </div>
@@ -242,7 +251,6 @@ import debounce from "~/utilities/debounce";
             v-if="logs.length === 0"
             class="text-center py-12 text-muted-foreground"
           >
-            <Terminal class="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p class="text-sm">{{ $t("server.rcon.no_commands_yet") }}</p>
             <p class="text-xs mt-1">
               {{ $t("server.rcon.enter_command_hint") }}

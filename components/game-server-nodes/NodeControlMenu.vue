@@ -143,7 +143,7 @@ async function setWorkload(
         </label>
 
         <label
-          v-if="hasPorts"
+          v-if="hasPorts && node.enabled_for_match_making"
           class="ncm-row"
           :data-on="node.status === 'Online'"
           :data-disabled="!node.enabled"

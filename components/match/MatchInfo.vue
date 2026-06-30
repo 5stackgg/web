@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Card, CardContent } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
@@ -27,17 +26,6 @@ import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
       :hide-booting="hideBooting"
       v-if="showQuickConnectSection"
     />
-
-    <!-- Scheduled badge -->
-    <div
-      v-if="match.scheduled_at && isPreLiveStatus"
-      class="flex flex-col gap-2"
-    >
-      <Badge variant="secondary" class="flex items-center gap-2 w-fit">
-        <span>{{ $t("common.scheduled") }}</span>
-        <span>{{ new Date(match.scheduled_at).toLocaleString() }}</span>
-      </Badge>
-    </div>
 
     <!-- Coaches -->
     <Card v-if="match.options.coaches">
@@ -84,16 +72,6 @@ export default {
     },
   },
   computed: {
-    isPreLiveStatus() {
-      const preLive = [
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.PickingPlayers,
-        e_match_status_enum.WaitingForCheckIn,
-        e_match_status_enum.WaitingForServer,
-        e_match_status_enum.Veto,
-      ];
-      return preLive.includes(this.match.status);
-    },
     me() {
       return useAuthStore().me;
     },
@@ -127,15 +105,8 @@ export default {
         this.showQuickConnectSection
       );
     },
-    hasScheduledBadge() {
-      return this.match.scheduled_at && this.isPreLiveStatus;
-    },
     hasContent() {
-      return (
-        this.showAnyActionSection ||
-        this.hasScheduledBadge ||
-        this.match.options.coaches
-      );
+      return this.showAnyActionSection || this.match.options.coaches;
     },
     excludePlayers() {
       const players = [];

@@ -52,11 +52,11 @@ const inactivePageItemClass =
       <PaginationContent v-slot="{ items }" class="flex-nowrap gap-1 pr-2">
         <PaginationFirst :class="navControlClass">
           <DoubleArrowLeftIcon class="size-3.5" />
-          <span class="sr-only">First page</span>
+          <span class="sr-only">{{ $t("pagination.first_page") }}</span>
         </PaginationFirst>
         <PaginationPrevious :class="navControlClass">
           <ChevronLeftIcon class="size-3.5" />
-          <span class="sr-only">Previous page</span>
+          <span class="sr-only">{{ $t("pagination.previous_page") }}</span>
         </PaginationPrevious>
 
         <template v-for="(item, index) in items">
@@ -79,17 +79,17 @@ const inactivePageItemClass =
             class="h-9 w-7 shrink-0 text-muted-foreground"
           >
             <span aria-hidden="true" class="text-sm font-semibold">...</span>
-            <span class="sr-only">More pages</span>
+            <span class="sr-only">{{ $t("pagination.more_pages") }}</span>
           </PaginationEllipsis>
         </template>
 
         <PaginationNext :class="navControlClass">
           <ChevronRightIcon class="size-3.5" />
-          <span class="sr-only">Next page</span>
+          <span class="sr-only">{{ $t("pagination.next_page") }}</span>
         </PaginationNext>
         <PaginationLast :class="navControlClass">
           <DoubleArrowRightIcon class="size-3.5" />
-          <span class="sr-only">Last page</span>
+          <span class="sr-only">{{ $t("pagination.last_page") }}</span>
         </PaginationLast>
       </PaginationContent>
     </PaginationRoot>

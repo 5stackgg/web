@@ -12,7 +12,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
       }}</template>
     </PageHeading>
   </PageTransition>
-  <PageTransition :delay="100" class="mt-6 w-1/2 p-4">
+  <PageTransition :delay="100" class="mx-auto mt-6 w-full max-w-2xl">
     <server-form></server-form>
   </PageTransition>
 </template>

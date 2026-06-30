@@ -378,7 +378,7 @@ export default {
                 :disabled="saving[p]"
                 @click="save(p as 0 | 1 | 2 | 3)"
               >
-                {{ saving[p] ? "Saving…" : "Save" }}
+                {{ saving[p] ? $t("common.saving") : $t("common.save") }}
               </Button>
               <Button
                 variant="outline"

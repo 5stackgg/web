@@ -12,6 +12,8 @@ import {
   X,
 } from "lucide-vue-next";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import FilterBar from "~/components/common/FilterBar.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
 import {
@@ -32,7 +34,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { Separator } from "~/components/ui/separator";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
@@ -40,7 +41,7 @@ const { isMobile } = useSidebar();
 
 // Compact filter-bar trigger buttons — each opens a popover.
 const filterTriggerBase =
-  "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.14em] leading-none transition-colors duration-150 cursor-pointer";
+  "inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 font-mono text-[0.64rem] uppercase tracking-[0.14em] leading-none transition-colors duration-150 cursor-pointer";
 const filterTriggerIdle =
   "border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground";
 const filterTriggerActive =
@@ -61,6 +62,9 @@ function optionRowClass(active: boolean) {
   <PageTransition :delay="0">
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.manage_tournaments.title") }}</template>
+      <template #subtitle>{{
+        $t("pages.manage_tournaments.description")
+      }}</template>
       <template v-if="canCreateTournament" #actions>
         <button
           type="button"
@@ -81,231 +85,130 @@ function optionRowClass(active: boolean) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="60" class="mt-4">
-    <p class="text-sm text-muted-foreground">
-      {{ $t("pages.manage_tournaments.description") }}
-    </p>
-  </PageTransition>
-
-  <Separator v-if="showSeparators" class="my-4" />
-
   <!-- Filters Section -->
-  <PageTransition :delay="100" class="mb-4">
-    <div
-      class="relative rounded-md border border-border bg-card/40 [backdrop-filter:blur(6px)] px-3 py-2.5"
-    >
-      <!-- Trigger row — each filter opens a self-contained popover. -->
-      <div class="flex flex-wrap items-center gap-1.5">
-        <span
-          :class="tacticalSectionTickClasses"
-          class="mr-1 hidden shrink-0 sm:inline-block"
-        />
-
-        <!-- Status (multi) -->
-        <Popover>
-          <PopoverTrigger as-child>
+  <PageTransition :delay="100" class="mt-6 mb-4">
+    <FilterBar>
+      <!-- Status (multi) — widely used, left -->
+      <Popover>
+        <PopoverTrigger as-child>
+          <button
+            type="button"
+            :class="[
+              filterTriggerBase,
+              form.values.statuses?.length
+                ? filterTriggerActive
+                : filterTriggerIdle,
+            ]"
+          >
+            <Activity class="h-3.5 w-3.5" />
+            {{ $t("common.status") }}
+            <span v-if="form.values.statuses?.length" :class="filterBadgeClasses">
+              {{ form.values.statuses.length }}
+            </span>
+            <ChevronDown class="h-3 w-3 opacity-50" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" class="w-60 p-2">
+          <div class="max-h-60 space-y-0.5 overflow-y-auto">
             <button
+              v-for="status in tournamentStatusOptions"
+              :key="status.value"
               type="button"
-              :class="[
-                filterTriggerBase,
-                form.values.statuses?.length
-                  ? filterTriggerActive
-                  : filterTriggerIdle,
-              ]"
+              @click="toggleStatus(status.value)"
+              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
-              <Activity class="h-3.5 w-3.5" />
-              {{ $t("common.status") }}
-              <span
-                v-if="form.values.statuses?.length"
-                :class="filterBadgeClasses"
-              >
-                {{ form.values.statuses.length }}
-              </span>
-              <ChevronDown class="h-3 w-3 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" class="w-60 p-2">
-            <div class="max-h-60 space-y-0.5 overflow-y-auto">
-              <button
-                v-for="status in tournamentStatusOptions"
-                :key="status.value"
-                type="button"
-                @click="toggleStatus(status.value)"
-                class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-              >
-                <span>{{ status.label }}</span>
-                <Check
-                  v-if="form.values.statuses?.includes(status.value)"
-                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-                />
-              </button>
-            </div>
-            <button
-              v-if="form.values.statuses?.length"
-              type="button"
-              @click="clearAllStatuses"
-              class="mt-2 flex w-full items-center justify-center gap-1 rounded border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <X class="h-3 w-3" />
-              {{ $t("pages.manage_tournaments.clear_all") }}
-            </button>
-          </PopoverContent>
-        </Popover>
-
-        <!-- Search (Name + ID) -->
-        <Popover>
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              :class="[
-                filterTriggerBase,
-                form.values.tournamentName || form.values.tournamentId
-                  ? filterTriggerActive
-                  : filterTriggerIdle,
-              ]"
-            >
-              <Search class="h-3.5 w-3.5" />
-              {{ $t("common.search") }}
-              <ChevronDown class="h-3 w-3 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" class="w-72 space-y-2 p-3">
-            <div class="space-y-1">
-              <span
-                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ $t("pages.manage_tournaments.search_by_name") }}
-              </span>
-              <Input
-                :model-value="form.values.tournamentName"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue('tournamentName', value);
-                    onFilterChange();
-                  }
-                "
-                :placeholder="
-                  $t('pages.manage_tournaments.enter_tournament_name')
-                "
-                class="h-9 text-sm"
-              />
-            </div>
-            <div class="space-y-1">
-              <span
-                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ $t("pages.manage_tournaments.search_by_id") }}
-              </span>
-              <Input
-                :model-value="form.values.tournamentId"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue('tournamentId', value);
-                    onFilterChange();
-                  }
-                "
-                :placeholder="
-                  $t('pages.manage_tournaments.enter_tournament_id')
-                "
-                class="h-9 font-mono text-xs"
-              />
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        <!-- Options -->
-        <Popover>
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              :class="[
-                filterTriggerBase,
-                showOnlyMyTournaments ? filterTriggerActive : filterTriggerIdle,
-              ]"
-            >
-              <SlidersHorizontal class="h-3.5 w-3.5" />
-              {{ $t("common.options") }}
-              <ChevronDown class="h-3 w-3 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" class="w-64 p-2">
-            <button
-              type="button"
-              @click="showOnlyMyTournaments = !showOnlyMyTournaments"
-              :class="optionRowClass(showOnlyMyTournaments)"
-            >
-              <span>{{
-                $t("pages.manage_tournaments.only_my_tournaments")
-              }}</span>
+              <span>{{ status.label }}</span>
               <Check
-                v-if="showOnlyMyTournaments"
+                v-if="form.values.statuses?.includes(status.value)"
                 class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
               />
             </button>
-          </PopoverContent>
-        </Popover>
-
-        <div class="ml-auto flex items-center gap-3 pl-2">
+          </div>
           <button
+            v-if="form.values.statuses?.length"
             type="button"
-            @click="resetFilters"
-            class="inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+            @click="clearAllStatuses"
+            class="mt-2 flex w-full items-center justify-center gap-1 rounded border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
           >
             <X class="h-3 w-3" />
-            {{ $t("common.reset_filters") }}
+            {{ $t("pages.manage_tournaments.clear_all") }}
+          </button>
+        </PopoverContent>
+      </Popover>
+
+      <!-- Filters (search + options) bundled, pinned right + grouped reset -->
+      <FilterMenu
+        class="ml-auto"
+        :count="
+          (form.values.tournamentName ? 1 : 0) +
+          (form.values.tournamentId ? 1 : 0) +
+          (showOnlyMyTournaments ? 1 : 0)
+        "
+        :active="
+          !!form.values.tournamentName ||
+          !!form.values.tournamentId ||
+          showOnlyMyTournaments
+        "
+        :show-reset="hasActiveFilters || showOnlyMyTournaments"
+        content-class="w-72 space-y-3 p-3"
+        @reset="resetFilters"
+      >
+        <div class="space-y-1">
+          <span
+            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("pages.manage_tournaments.search_by_name") }}
+          </span>
+          <Input
+            :model-value="form.values.tournamentName"
+            @update:model-value="
+              (value) => {
+                form.setFieldValue('tournamentName', value);
+                onFilterChange();
+              }
+            "
+            :placeholder="$t('pages.manage_tournaments.enter_tournament_name')"
+            class="h-8 text-sm"
+          />
+        </div>
+        <div class="space-y-1">
+          <span
+            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("pages.manage_tournaments.search_by_id") }}
+          </span>
+          <Input
+            :model-value="form.values.tournamentId"
+            @update:model-value="
+              (value) => {
+                form.setFieldValue('tournamentId', value);
+                onFilterChange();
+              }
+            "
+            :placeholder="$t('pages.manage_tournaments.enter_tournament_id')"
+            class="h-8 font-mono text-xs"
+          />
+        </div>
+        <div class="space-y-0.5 border-t border-border/50 pt-3">
+          <span
+            class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("common.options") }}
+          </span>
+          <button
+            type="button"
+            @click="showOnlyMyTournaments = !showOnlyMyTournaments"
+            :class="optionRowClass(showOnlyMyTournaments)"
+          >
+            <span>{{ $t("pages.manage_tournaments.only_my_tournaments") }}</span>
+            <Check
+              v-if="showOnlyMyTournaments"
+              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+            />
           </button>
         </div>
-      </div>
-
-      <!-- Active filters — removable chips -->
-      <div
-        v-if="chipFilterActive"
-        class="mt-2.5 flex flex-wrap items-center gap-1.5 border-t border-border/50 pt-2.5"
-      >
-        <span v-if="form.values.tournamentName" class="tac-chip">
-          <span class="text-xs text-foreground/90 truncate max-w-[180px]">
-            "{{ form.values.tournamentName }}"
-          </span>
-          <button
-            type="button"
-            @click="
-              form.setFieldValue('tournamentName', '');
-              onFilterChange();
-            "
-            class="tac-chip-x"
-          >
-            <X class="h-3 w-3" />
-          </button>
-        </span>
-        <span v-if="form.values.tournamentId" class="tac-chip">
-          <span class="text-xs text-foreground/90 truncate max-w-[180px]">
-            ID: {{ form.values.tournamentId }}
-          </span>
-          <button
-            type="button"
-            @click="
-              form.setFieldValue('tournamentId', '');
-              onFilterChange();
-            "
-            class="tac-chip-x"
-          >
-            <X class="h-3 w-3" />
-          </button>
-        </span>
-        <span v-if="showOnlyMyTournaments" class="tac-chip">
-          <span class="text-xs text-foreground/90">{{
-            $t("pages.manage_tournaments.only_my_tournaments")
-          }}</span>
-          <button
-            type="button"
-            @click="showOnlyMyTournaments = false"
-            class="tac-chip-x"
-          >
-            <X class="h-3 w-3" />
-          </button>
-        </span>
-      </div>
-    </div>
+      </FilterMenu>
+    </FilterBar>
   </PageTransition>
 
   <!-- Sort Controls -->
@@ -345,11 +248,6 @@ function optionRowClass(active: boolean) {
               : $t("pages.manage_tournaments.oldest_first")
           }}</span>
         </Button>
-      </div>
-
-      <div class="text-sm text-muted-foreground md:text-right">
-        {{ $t("pages.manage_tournaments.showing") }} {{ tournaments.length }}
-        {{ $t("pages.manage_tournaments.tournaments") }}
       </div>
     </div>
   </PageTransition>
@@ -760,9 +658,6 @@ export default {
     },
   },
   computed: {
-    showSeparators() {
-      return useApplicationSettingsStore().showSeparators;
-    },
     canCreateTournament() {
       const me = useAuthStore().me;
       if (!me) return false;
@@ -776,14 +671,6 @@ export default {
         formValues.tournamentId?.trim() ||
         formValues.tournamentName?.trim() ||
         (formValues.statuses && formValues.statuses.length > 0)
-      );
-    },
-    chipFilterActive(): boolean {
-      const formValues = this.form.values;
-      return !!(
-        formValues.tournamentId?.trim() ||
-        formValues.tournamentName?.trim() ||
-        this.showOnlyMyTournaments
       );
     },
     tournamentStatusOptions() {

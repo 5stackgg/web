@@ -1,8 +1,27 @@
 <script setup lang="ts">
+import { computed, watch } from "vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ArrowUpRight } from "lucide-vue-next";
+import { useMatchPopout } from "~/composables/useMatchPopout";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+
+// A popout window and the floating PiP playing the same match is just
+// noise (two players, double bandwidth). Popout wins: whenever a popout
+// is open for the match currently in the PiP, close the PiP — no prompt.
+const matchPopout = useMatchPopout();
+const applicationSettings = useApplicationSettingsStore();
+const pipMatchId = computed(
+  () => (applicationSettings.globalStream as any)?.match_id ?? null,
+);
+watch(
+  () => pipMatchId.value && matchPopout.isOpen(pipMatchId.value),
+  (collides) => {
+    if (collides) applicationSettings.setGlobalStream();
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

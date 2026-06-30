@@ -50,32 +50,15 @@ const handleLocaleChange = (
 
 <template>
   <PageTransition :delay="0">
-    <div>
-      <h3 class="text-base font-semibold uppercase tracking-wide">
-        {{ $t("pages.settings.account.title") }}
-      </h3>
-      <p class="text-sm text-muted-foreground mt-0.5">
-        {{ $t("pages.settings.account.description") }}
-      </p>
-    </div>
-  </PageTransition>
-
-  <PageTransition :delay="100">
     <form @submit.prevent="updateMe" class="grid gap-6">
-      <FormField v-slot="{ componentField }" name="name">
-        <FormItem>
-          <FormLabel class="flex items-center gap-2">
-            {{ $t("pages.settings.account.name") }}
-          </FormLabel>
-          <FormControl>
-            <Input v-bind="componentField" readonly disabled />
-            <FormMessage />
-          </FormControl>
-          <FormDescription>
-            <PlayerChangeName :player="me" />
-          </FormDescription>
-        </FormItem>
-      </FormField>
+      <div class="space-y-2">
+        <label
+          class="font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          {{ $t("pages.settings.account.name") }}
+        </label>
+        <PlayerChangeName :player="me" />
+      </div>
 
       <FormField v-slot="{ componentField }" name="avatar_url">
         <FormItem>
@@ -217,11 +200,14 @@ const handleLocaleChange = (
         </FormItem>
       </FormField>
 
-      <div class="flex justify-start">
-        <Button type="submit" :loading="submitting" :disabled="Object.keys(form.errors).length > 0">
-          {{ $t("pages.settings.account.update") }}
-        </Button>
-      </div>
+      <div class="pb-24"></div>
+
+      <SettingsSaveBar
+        :dirty="isDirty"
+        :submitting="submitting"
+        @save="updateMe"
+        @discard="discardChanges"
+      />
     </form>
   </PageTransition>
 </template>
@@ -242,6 +228,8 @@ export default {
       countries: getAllCountries(),
       isLanguagePopoverOpen: false,
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -258,16 +246,40 @@ export default {
     me: {
       immediate: true,
       handler() {
-        this.form.setValues({
-          steam_id: this.me.steam_id,
-          name: this.me.name,
-          avatar_url: this.me.avatar_url,
-          country: this.me.country,
-        });
+        // `me` comes from the auth store and can refresh; don't clobber edits.
+        if (this.baseline === null || !this.isDirty) {
+          this.populateForm();
+        }
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
       },
     },
   },
   methods: {
+    populateForm() {
+      this.form.setValues({
+        steam_id: this.me.steam_id,
+        name: this.me.name,
+        avatar_url: this.me.avatar_url,
+        country: this.me.country,
+      });
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      this.populateForm();
+    },
     async updateMe() {
       if (this.submitting) {
         return;
@@ -306,6 +318,8 @@ export default {
         toast({
           title: this.$t("pages.settings.account.update_success"),
         });
+
+        this.takeSnapshot();
       } finally {
         this.submitting = false;
       }

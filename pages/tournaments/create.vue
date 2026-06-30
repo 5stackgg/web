@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <PageHeading>
+    <TacticalPageHeader>
       <template #title>{{ $t("tournament.form.create") }}</template>
-      <template #description>{{
-        $t("tournament.form.description_help")
-      }}</template>
-    </PageHeading>
+    </TacticalPageHeader>
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">

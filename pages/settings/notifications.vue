@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useSound } from "~/composables/useSound";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Volume2, VolumeX } from "lucide-vue-next";
@@ -47,26 +46,10 @@ const testCountdownSound = () => {
 const isAdmin = computed(() => {
   return useAuthStore().isAdmin;
 });
-
-const showSeparators = computed(
-  () => useApplicationSettingsStore().showSeparators,
-);
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <div>
-      <h3 class="text-base font-semibold uppercase tracking-wide">
-        {{ $t("pages.settings.notifications.title") }}
-      </h3>
-      <p class="text-sm text-muted-foreground mt-0.5">
-        {{ $t("pages.settings.notifications.description") }}
-      </p>
-    </div>
-  </PageTransition>
-  <Separator v-if="showSeparators" />
-
-  <PageTransition :delay="100">
     <div class="space-y-6">
       <!-- Chat Sound -->
       <div

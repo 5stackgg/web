@@ -8,49 +8,15 @@ defineProps<{ title?: string }>();
       <span class="tac-form-section__tick"></span>
       <slot name="title">{{ title }}</slot>
     </div>
-    <div :class="title || $slots.title ? 'mt-5' : ''">
+    <div :class="title || $slots.title ? 'mt-4' : ''">
       <slot />
     </div>
   </div>
 </template>
 
 <style scoped>
-.tac-form-section {
-  position: relative;
-  border-radius: var(--radius);
-  border: 1px solid hsl(var(--border));
-  padding: 1.25rem;
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.55) 0%,
-    hsl(var(--card) / 0.25) 100%
-  );
-  backdrop-filter: blur(6px);
-}
-
-.tac-form-section::before,
-.tac-form-section::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  pointer-events: none;
-}
-
-.tac-form-section::before {
-  left: 0.5rem;
-  top: 0.5rem;
-  border-left: 2px solid hsl(var(--tac-amber));
-  border-top: 2px solid hsl(var(--tac-amber));
-}
-
-.tac-form-section::after {
-  right: 0.5rem;
-  bottom: 0.5rem;
-  border-right: 2px solid hsl(var(--tac-amber));
-  border-bottom: 2px solid hsl(var(--tac-amber));
-}
-
+/* A section is just a dash header + its fields — no card/box wrapper, in line
+   with the rest of the app. */
 .tac-form-section__head {
   display: inline-flex;
   align-items: center;

@@ -8,111 +8,83 @@ import { Cpu, MemoryStick, HardDrive, Network } from "lucide-vue-next";
 <template>
   <div
     v-if="metricsData"
-    class="mt-2 rounded-2xl border border-border/60 bg-muted/10 p-2.5 sm:p-3"
+    class="grid grid-cols-2 gap-px bg-border/60 sm:grid-cols-4"
   >
-    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="min-w-0 bg-card px-3 py-3">
       <div
-        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
+        class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
       >
-        <div
-          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          <span class="flex items-center gap-2 min-w-0">
-            <Cpu class="h-3.5 w-3.5 shrink-0" />
-            {{ $t("pages.system_metrics.cpu_short") }}
-          </span>
-          <span class="truncate">{{ cpuStateLabel }}</span>
-        </div>
-        <div class="mt-3 flex items-end justify-between gap-3">
-          <div class="text-lg font-semibold tabular-nums">
-            {{ latestCpuUsage }}%
-          </div>
-          <div class="text-[11px] text-muted-foreground">current load</div>
-        </div>
-        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div
-            class="h-full rounded-full bg-primary"
-            :style="{ width: `${latestCpuUsage}%` }"
-          />
-        </div>
+        <Cpu class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.cpu_short") }}
       </div>
-
       <div
-        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
+        class="mt-2 text-lg font-semibold tabular-nums"
+        :class="cpuTextClass"
       >
-        <div
-          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          <span class="flex items-center gap-2 min-w-0">
-            <MemoryStick class="h-3.5 w-3.5 shrink-0" />
-            {{ $t("pages.system_metrics.memory_short") }}
-          </span>
-          <span class="truncate">{{ latestMemoryUsage }}% used</span>
-        </div>
-        <div
-          class="mt-3 text-[12px] sm:text-[13px] font-medium tabular-nums leading-snug break-words"
-        >
-          {{ memoryUsageDisplay }}
-        </div>
-        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div
-            class="h-full rounded-full bg-primary/80"
-            :style="{ width: `${latestMemoryUsage}%` }"
-          />
-        </div>
+        {{ latestCpuUsage }}%
       </div>
-
-      <div
-        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
-      >
+      <div class="mt-2 h-1.5 overflow-hidden bg-muted">
         <div
-          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          <span class="flex items-center gap-2 min-w-0">
-            <HardDrive class="h-3.5 w-3.5 shrink-0" />
-            {{ $t("pages.system_metrics.disk_short") }}
-          </span>
-          <span class="truncate">{{ diskLabel }}</span>
-        </div>
-        <div
-          class="mt-3 text-[12px] sm:text-[13px] font-medium tabular-nums leading-snug break-words"
-        >
-          {{ diskUsageDisplay }}
-        </div>
-        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div
-            class="h-full rounded-full bg-primary/60"
-            :style="{ width: `${latestDiskUsage}%` }"
-          />
-        </div>
+          class="h-full"
+          :class="cpuBarClass"
+          :style="{ width: `${latestCpuUsage}%` }"
+        />
       </div>
+    </div>
 
+    <div class="min-w-0 bg-card px-3 py-3">
       <div
-        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
+        class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
       >
+        <MemoryStick class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.memory_short") }}
+      </div>
+      <div class="mt-2 truncate text-[13px] font-medium tabular-nums">
+        {{ memoryUsageDisplay }}
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden bg-muted">
         <div
-          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          <span class="flex items-center gap-2 min-w-0">
-            <Network class="h-3.5 w-3.5 shrink-0" />
-            {{ $t("pages.system_metrics.network_short") }}
-          </span>
-          <span class="truncate">{{ $t("system_metrics.aggregate") }}</span>
-        </div>
-        <div class="mt-3 flex items-end justify-between gap-3">
-          <div class="text-lg font-semibold tabular-nums">
-            {{ networkUsageDisplay }}
-          </div>
-          <div class="text-[11px] text-muted-foreground">
-            {{ $t("system_metrics.rx_tx") }}
-          </div>
-        </div>
-        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div
-            class="h-full rounded-full bg-primary/40"
-            :style="{ width: `${Math.min(latestNetworkUsage, 100)}%` }"
-          />
-        </div>
+          class="h-full"
+          :class="memoryBarClass"
+          :style="{ width: `${latestMemoryUsage}%` }"
+        />
+      </div>
+    </div>
+
+    <div class="min-w-0 bg-card px-3 py-3">
+      <div
+        class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+      >
+        <HardDrive class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.disk_short") }}
+      </div>
+      <div class="mt-2 truncate text-[13px] font-medium tabular-nums">
+        {{ diskUsageDisplay }}
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden bg-muted">
+        <div
+          class="h-full"
+          :class="diskBarClass"
+          :style="{ width: `${latestDiskUsage}%` }"
+        />
+      </div>
+    </div>
+
+    <div class="min-w-0 bg-card px-3 py-3">
+      <div
+        class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+      >
+        <Network class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.network_short") }}
+      </div>
+      <div class="mt-2 text-lg font-semibold tabular-nums">
+        {{ networkUsageDisplay }}
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden bg-muted">
+        <div
+          class="h-full bg-primary/40"
+          :style="{ width: `${Math.min(latestNetworkUsage, 100)}%` }"
+        />
       </div>
     </div>
   </div>
@@ -134,11 +106,27 @@ export default {
       metricsData: null as any | null,
     };
   },
+  methods: {
+    barTone(value: number): string {
+      if (value >= 85) return "bg-destructive";
+      if (value >= 70) return "bg-[hsl(var(--tac-amber))]";
+      return "bg-emerald-500/90";
+    },
+  },
   computed: {
-    cpuStateLabel(): string {
-      if (this.latestCpuUsage >= 90) return "critical";
-      if (this.latestCpuUsage >= 75) return "elevated";
-      return "stable";
+    cpuBarClass(): string {
+      return this.barTone(this.latestCpuUsage);
+    },
+    cpuTextClass(): string {
+      if (this.latestCpuUsage >= 85) return "text-destructive";
+      if (this.latestCpuUsage >= 70) return "text-[hsl(var(--tac-amber))]";
+      return "";
+    },
+    memoryBarClass(): string {
+      return this.barTone(this.latestMemoryUsage);
+    },
+    diskBarClass(): string {
+      return this.barTone(this.latestDiskUsage);
     },
     diskWithMaxPercent(): any | null {
       if (!this.metricsData?.disks?.length) return null;
@@ -178,11 +166,6 @@ export default {
         Number(d.used || 0) * 1024,
         Number(d.size) * 1024,
       );
-    },
-    diskLabel(): string {
-      const d = this.diskWithMaxPercent;
-      if (!d) return "no disk data";
-      return d.mountpoint || d.filesystem || "disk usage";
     },
     latestCpuUsage(): number {
       if (!this.metricsData?.cpu?.length) return 0;

@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
 import { useSettingsNav } from "~/composables/useSettingsNav";
 
@@ -44,14 +45,12 @@ const selectedPath = computed({
 
 <template>
   <PageTransition :delay="0">
-    <div class="space-y-0.5">
-      <h2 class="text-2xl font-bold tracking-tight">
-        {{ $t("layouts.application_settings.title") }}
-      </h2>
-      <p class="text-muted-foreground">
-        {{ $t("layouts.application_settings.description") }}
-      </p>
-    </div>
+    <TacticalPageHeader>
+      <template #title>{{ $t("layouts.application_settings.title") }}</template>
+      <template #subtitle>{{
+        $t("layouts.application_settings.description")
+      }}</template>
+    </TacticalPageHeader>
   </PageTransition>
   <Separator v-if="showSeparators" class="my-6" />
   <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">

@@ -199,7 +199,7 @@ const canManage = computed(() =>
                     <div
                       class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
                     >
-                      <QuickServerConnect :server="server" />
+                      <QuickServerConnect :server="server" highlight />
                     </div>
                     <Button
                       v-if="canManage"
@@ -311,7 +311,7 @@ const canManage = computed(() =>
               <div
                 class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
               >
-                <QuickServerConnect :server="server" />
+                <QuickServerConnect :server="server" highlight />
               </div>
               <Button
                 v-if="canManage"

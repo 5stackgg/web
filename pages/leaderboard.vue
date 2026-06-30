@@ -5,6 +5,7 @@ import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import Pagination from "~/components/Pagination.vue";
 import {
   Trophy,
@@ -68,6 +69,10 @@ const CATEGORY_CONFIG: Record<
       tertiary_value?: string;
       matches_played?: string;
     };
+    // Maps a column to a `stat_glossary` key so its header shows the
+    // dotted-underline hover tooltip. Only cryptic stat abbreviations get one;
+    // word columns (Wins, Rounds, Trophies…) are left plain.
+    glossary?: Partial<Record<SortField, string>>;
     sortable: SortField[];
   }
 > = {
@@ -78,6 +83,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.win_streak",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "elo", secondary_value: "elo_change" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_kdr: {
@@ -87,6 +93,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.deaths",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "kd" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_win_rate: {
@@ -104,6 +111,7 @@ const CATEGORY_CONFIG: Record<
       secondary_value: "pages.leaderboard.col.total_kills",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "hs" },
     sortable: ["value", "secondary_value", "matches_played"],
   },
   trophies: {
@@ -122,6 +130,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.rounds",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "hltv", secondary_value: "adr" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_adr: {
@@ -131,6 +140,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.rounds",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "adr", secondary_value: "hltv" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_kpr: {
@@ -140,6 +150,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.rounds",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "kpr", secondary_value: "dpr" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_kast: {
@@ -149,6 +160,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.rounds",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "kast", secondary_value: "hltv" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_udr: {
@@ -158,6 +170,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.rounds",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    glossary: { value: "udr" },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
 };
@@ -353,6 +366,12 @@ const columnLabels = computed(() => {
   };
 });
 
+// Glossary key per column for the current category (empty object if none),
+// so headers can render a StatLabel tooltip on the cryptic stat columns.
+const columnGlossary = computed<Partial<Record<SortField, string>>>(
+  () => config.value.glossary ?? {},
+);
+
 const offset = computed(() => (page.value - 1) * perPage.value);
 
 const orderBy = computed(() => {
@@ -376,9 +395,7 @@ const queryVariables = computed(() => ({
   match_type: matchType.value === "all" ? null : matchType.value,
   exclude_tournaments: Boolean(excludeTournaments.value),
   role:
-    supportsRole.value && roleFilter.value !== "all"
-      ? roleFilter.value
-      : null,
+    supportsRole.value && roleFilter.value !== "all" ? roleFilter.value : null,
   limit: perPage.value,
   offset: offset.value,
   order_by: orderBy.value,
@@ -684,89 +701,87 @@ onMounted(() => {
   <!-- Compact filter bar -->
   <PageTransition :delay="100" class="mt-6">
     <div
-      class="rounded-lg bg-card/40 backdrop-blur border border-border p-2"
+      class="rounded-md border border-border bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
     >
       <!-- Desktop: inline filter row -->
       <div class="hidden md:flex flex-wrap items-center gap-2">
+        <span
+          aria-hidden="true"
+          class="mr-1 hidden h-[2px] w-[10px] shrink-0 bg-[hsl(var(--tac-amber))] sm:inline-block"
+        ></span>
+
+        <Select v-model="windowDays">
+          <SelectTrigger class="h-8 w-[180px]">
+            <SelectValue
+              :placeholder="$t('pages.leaderboard.time_periods.last_30_days')"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="7">{{
+              $t("pages.leaderboard.time_periods.last_7_days")
+            }}</SelectItem>
+            <SelectItem value="30">{{
+              $t("pages.leaderboard.time_periods.last_30_days")
+            }}</SelectItem>
+            <SelectItem value="0">{{
+              $t("pages.leaderboard.time_periods.all_time")
+            }}</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select v-model="matchType">
+          <SelectTrigger class="h-8 w-[180px]">
+            <SelectValue
+              :placeholder="$t('pages.leaderboard.match_types.all')"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{{
+              $t("pages.leaderboard.match_types.all")
+            }}</SelectItem>
+            <SelectItem value="Competitive">{{
+              $t("pages.leaderboard.match_types.competitive")
+            }}</SelectItem>
+            <SelectItem value="Wingman">{{
+              $t("pages.leaderboard.match_types.wingman")
+            }}</SelectItem>
+            <SelectItem value="Duel">{{
+              $t("pages.leaderboard.match_types.duel")
+            }}</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select v-if="supportsRole" v-model="roleFilter">
+          <SelectTrigger class="h-8 w-[160px]">
+            <SelectValue :placeholder="$t('pages.leaderboard.roles.all')" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem v-for="opt of ROLE_OPTIONS" :key="opt" :value="opt">
+              {{ $t(`pages.leaderboard.roles.${opt}`) }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+
         <div
-          class="flex items-center gap-2 px-2 text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
+          class="ml-auto flex h-8 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
+          :class="
+            excludeTournaments
+              ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+              : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+          "
+          @click="toggleExcludeTournaments"
         >
-          <span
-            class="inline-block h-[2px] w-2 bg-[hsl(var(--tac-amber))]"
-          ></span>
-          {{ $t("common.filters") }}
-        </div>
-
-      <Select v-model="windowDays">
-        <SelectTrigger class="h-9 w-[180px]">
-          <SelectValue
-            :placeholder="$t('pages.leaderboard.time_periods.last_30_days')"
+          <Trophy class="h-3.5 w-3.5" />
+          <span id="leaderboard-exclude-tournaments-label">
+            {{ $t("pages.leaderboard.exclude_tournaments") }}
+          </span>
+          <Switch
+            v-model="excludeTournaments"
+            aria-labelledby="leaderboard-exclude-tournaments-label"
+            class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+            @click.stop
           />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="7">{{
-            $t("pages.leaderboard.time_periods.last_7_days")
-          }}</SelectItem>
-          <SelectItem value="30">{{
-            $t("pages.leaderboard.time_periods.last_30_days")
-          }}</SelectItem>
-          <SelectItem value="0">{{
-            $t("pages.leaderboard.time_periods.all_time")
-          }}</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select v-model="matchType">
-        <SelectTrigger class="h-9 w-[180px]">
-          <SelectValue :placeholder="$t('pages.leaderboard.match_types.all')" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">{{
-            $t("pages.leaderboard.match_types.all")
-          }}</SelectItem>
-          <SelectItem value="Competitive">{{
-            $t("pages.leaderboard.match_types.competitive")
-          }}</SelectItem>
-          <SelectItem value="Wingman">{{
-            $t("pages.leaderboard.match_types.wingman")
-          }}</SelectItem>
-          <SelectItem value="Duel">{{
-            $t("pages.leaderboard.match_types.duel")
-          }}</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select v-if="supportsRole" v-model="roleFilter">
-        <SelectTrigger class="h-9 w-[160px]">
-          <SelectValue :placeholder="$t('pages.leaderboard.roles.all')" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem v-for="opt of ROLE_OPTIONS" :key="opt" :value="opt">
-            {{ $t(`pages.leaderboard.roles.${opt}`) }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
-
-      <div
-        class="ml-auto flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
-        :class="
-          excludeTournaments
-            ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-            : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-        "
-        @click="toggleExcludeTournaments"
-      >
-        <Trophy class="h-3.5 w-3.5" />
-        <span id="leaderboard-exclude-tournaments-label">
-          {{ $t("pages.leaderboard.exclude_tournaments") }}
-        </span>
-        <Switch
-          v-model="excludeTournaments"
-          aria-labelledby="leaderboard-exclude-tournaments-label"
-          class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-          @click.stop
-        />
-      </div>
+        </div>
       </div>
 
       <!-- Mobile: collapse filters behind a Filters button + chips -->
@@ -990,7 +1005,13 @@ onMounted(() => {
                         boxShadow: `0 0 4px ${trophyTierColor('value')}`,
                       }"
                     ></span>
-                    {{ columnLabels.value }}
+                    <StatLabel
+                      v-if="columnGlossary.value"
+                      :stat="columnGlossary.value"
+                      :label="columnLabels.value"
+                      header
+                    />
+                    <template v-else>{{ columnLabels.value }}</template>
                     <component
                       v-if="isSortable('value')"
                       :is="sortIcon('value')"
@@ -1023,7 +1044,15 @@ onMounted(() => {
                         boxShadow: `0 0 4px ${trophyTierColor('secondary_value')}`,
                       }"
                     ></span>
-                    {{ columnLabels.secondary_value }}
+                    <StatLabel
+                      v-if="columnGlossary.secondary_value"
+                      :stat="columnGlossary.secondary_value"
+                      :label="columnLabels.secondary_value ?? ''"
+                      header
+                    />
+                    <template v-else>{{
+                      columnLabels.secondary_value
+                    }}</template>
                     <component
                       v-if="isSortable('secondary_value')"
                       :is="sortIcon('secondary_value')"

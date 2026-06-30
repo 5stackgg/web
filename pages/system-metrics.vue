@@ -18,44 +18,26 @@ import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import {
-  Activity,
   ArrowDownAZ,
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
   ArrowUpZA,
+  ChevronDown,
   Cpu,
   HardDrive,
   Logs,
-  Microchip,
   Search,
-  Server,
   Signal,
 } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
-  <div class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]">
-    <div
-      aria-hidden="true"
-      class="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(hsl(var(--tac-amber))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--tac-amber))_1px,transparent_1px)] [background-size:64px_64px]"
-    />
-
+  <div class="relative space-y-8 [--tac-clip:14px] [--tac-clip-sm:10px]">
     <PageTransition :delay="0">
-      <section
-        class="relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
-      >
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-        />
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-        />
-
+      <section class="space-y-4">
         <header
-          class="flex flex-col gap-4 border-b border-border/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
+          class="flex flex-col gap-3 border-b border-border/60 pb-3 lg:flex-row lg:items-center lg:justify-between"
         >
           <div class="flex items-center gap-3">
             <span
@@ -115,7 +97,9 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 <SelectContent>
                   <SelectItem value="cpu">CPU</SelectItem>
                   <SelectItem value="memory">MEM</SelectItem>
-                  <SelectItem value="name">NAME</SelectItem>
+                  <SelectItem value="name">{{
+                    $t("system_metrics.col_name")
+                  }}</SelectItem>
                 </SelectContent>
               </Select>
               <FiveStackToolTip>
@@ -145,7 +129,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           </div>
         </header>
 
-        <div class="p-4 sm:p-5">
+        <div>
           <div
             v-if="filteredNodes && filteredNodes.length"
             class="grid grid-cols-1 gap-4 md:grid-cols-2"
@@ -160,34 +144,11 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   : '',
               ]"
             >
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2"
-                :class="
-                  isNodeExpanded(node)
-                    ? 'border-[hsl(var(--tac-amber))]'
-                    : 'border-border/60'
-                "
-              />
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2"
-                :class="
-                  isNodeExpanded(node)
-                    ? 'border-[hsl(var(--tac-amber))]'
-                    : 'border-border/60'
-                "
-              />
-
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0 flex-1">
                   <div
                     class="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em]"
                   >
-                    <span class="text-[hsl(var(--tac-amber))]">
-                      N-{{ String(idx + 1).padStart(2, "0") }}
-                    </span>
-                    <span class="text-border">//</span>
                     <span class="flex items-center gap-1.5">
                       <span
                         class="inline-block h-1.5 w-1.5"
@@ -287,20 +248,9 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     </PageTransition>
 
     <PageTransition v-if="gpuNodes.length" :delay="40">
-      <section
-        class="relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
-      >
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-        />
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-        />
-
+      <section class="space-y-4">
         <header
-          class="flex flex-col gap-4 border-b border-border/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
+          class="flex flex-col gap-3 border-b border-border/60 pb-3 lg:flex-row lg:items-center lg:justify-between"
         >
           <div class="flex items-center gap-3">
             <span
@@ -308,9 +258,8 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             />
             <div>
               <h2
-                class="flex items-center gap-2 font-sans text-lg font-bold uppercase tracking-[0.08em]"
+                class="font-sans text-lg font-bold uppercase tracking-[0.08em]"
               >
-                <Microchip class="h-4 w-4" />
                 GPUs
                 <span
                   class="ml-2 font-mono text-xs font-normal tracking-[0.15em] text-[hsl(var(--tac-amber))]"
@@ -322,71 +271,32 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           </div>
         </header>
 
-        <div class="p-4 sm:p-5">
-          <div class="grid grid-cols-1 gap-4">
-            <article
+        <div>
+          <div class="border border-border">
+            <div
               v-for="(node, idx) in gpuNodes"
               :key="`gpu-${node.id}`"
-              :class="[
-                'group relative border border-border bg-background/40 p-4',
-                isGpuExpanded(node)
-                  ? 'border-[hsl(var(--tac-amber)/0.55)]'
-                  : '',
-              ]"
+              class="border-b border-border/50 bg-background/40 p-4 last:border-b-0"
             >
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2"
-                :class="
-                  isGpuExpanded(node)
-                    ? 'border-[hsl(var(--tac-amber))]'
-                    : 'border-border/60'
-                "
-              />
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2"
-                :class="
-                  isGpuExpanded(node)
-                    ? 'border-[hsl(var(--tac-amber))]'
-                    : 'border-border/60'
-                "
-              />
-
-              <div class="mb-3 flex items-start justify-between gap-3">
+              <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0 flex-1">
-                  <div
-                    class="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em]"
+                  <NuxtLink
+                    :to="`/game-server-nodes`"
+                    class="truncate font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
                   >
-                    <span class="text-[hsl(var(--tac-amber))]">
-                      G-{{ String(idx + 1).padStart(2, "0") }}
-                    </span>
-                    <span class="text-border">//</span>
-                    <span class="text-muted-foreground">node</span>
-                    <NuxtLink
-                      :to="`/game-server-nodes`"
-                      class="truncate text-foreground hover:text-[hsl(var(--tac-amber))]"
-                    >
-                      {{ nodeDisplayName(node) }}
-                    </NuxtLink>
-                  </div>
-
+                    {{ nodeDisplayName(node) }}
+                  </NuxtLink>
                   <div
-                    class="mt-1.5 truncate font-sans text-base font-semibold tracking-tight"
+                    class="mt-1 truncate font-sans text-sm font-semibold tracking-tight"
                   >
                     {{ gpuDevicesLabel(node) }}
-                  </div>
-                  <div
-                    class="truncate font-mono text-[11px] text-muted-foreground"
-                  >
-                    {{ nodeSubtitle(node) }}
                   </div>
                 </div>
 
                 <FiveStackToolTip>
                   <template #trigger>
                     <button
-                      class="grid h-8 w-8 place-items-center border transition-colors"
+                      class="grid h-8 w-8 shrink-0 place-items-center border transition-colors"
                       :class="
                         isGpuExpanded(node)
                           ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
@@ -394,7 +304,10 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                       "
                       @click="toggleGpuExpanded(node)"
                     >
-                      <Activity class="h-3.5 w-3.5" />
+                      <ChevronDown
+                        class="h-4 w-4 transition-transform"
+                        :class="isGpuExpanded(node) ? 'rotate-180' : ''"
+                      />
                     </button>
                   </template>
                   <span>
@@ -408,32 +321,22 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
               </div>
 
               <NodeGpuMetrics
+                class="mt-3"
                 :node-id="node.id"
                 :show-label="false"
                 :show-quick-stats="true"
                 :show-charts="isGpuExpanded(node)"
               />
-            </article>
+            </div>
           </div>
         </div>
       </section>
     </PageTransition>
 
     <PageTransition :delay="60">
-      <section
-        class="relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
-      >
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-        />
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-        />
-
+      <section class="space-y-4">
         <header
-          class="flex flex-col gap-4 border-b border-border/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
+          class="flex flex-col gap-3 border-b border-border/60 pb-3 lg:flex-row lg:items-center lg:justify-between"
         >
           <div class="flex items-center gap-3">
             <span
@@ -447,7 +350,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 <span
                   class="ml-2 font-mono text-xs font-normal tracking-[0.15em] text-[hsl(var(--tac-amber))]"
                 >
-                  [ {{ filteredServices.length }} / {{ totalServices }} ]
+                  [ {{ totalServices }} ]
                 </span>
               </h2>
             </div>
@@ -502,7 +405,9 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 <SelectContent>
                   <SelectItem value="cpu">CPU</SelectItem>
                   <SelectItem value="memory">MEM</SelectItem>
-                  <SelectItem value="name">NAME</SelectItem>
+                  <SelectItem value="name">{{
+                    $t("system_metrics.col_name")
+                  }}</SelectItem>
                 </SelectContent>
               </Select>
               <FiveStackToolTip>
@@ -532,64 +437,149 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           </div>
         </header>
 
-        <div class="p-4 sm:p-5">
+        <div>
           <div
             v-if="filteredServices && filteredServices.length"
-            class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+            class="border border-border"
           >
-            <article
-              v-for="(service, idx) in filteredServices"
-              :key="`${service.node}-${service.name}`"
-              :class="[
-                'group relative border bg-background/40 p-4',
-                serviceCpuStatus(service) === 'critical'
-                  ? 'border-destructive/70'
-                  : serviceCpuStatus(service) === 'warning'
-                    ? 'border-[hsl(var(--tac-amber)/0.55)]'
-                    : 'border-border',
-                isServiceExpanded(service) ? 'md:col-span-2 xl:col-span-3' : '',
-              ]"
+            <div
+              class="hidden gap-4 border-b border-border/70 bg-background/40 px-4 py-2.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground sm:grid sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1.5fr)_4rem] sm:items-center"
             >
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2"
+              <button
+                class="flex items-center gap-1.5 text-left uppercase tracking-[0.2em] transition-colors hover:text-[hsl(var(--tac-amber))]"
                 :class="
-                  serviceCpuStatus(service) === 'critical'
-                    ? 'border-destructive'
-                    : serviceCpuStatus(service) === 'warning'
-                      ? 'border-[hsl(var(--tac-amber))]'
-                      : 'border-border/60'
+                  serviceSortBy === 'name' ? 'text-[hsl(var(--tac-amber))]' : ''
                 "
-              />
-              <span
-                aria-hidden="true"
-                class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2"
+                @click="setServiceSort('name')"
+              >
+                {{ $t("pages.system_metrics.service") }}
+                <component
+                  :is="sortIconFor('name', serviceSortDirection)"
+                  v-if="serviceSortBy === 'name'"
+                  class="h-3 w-3"
+                />
+              </button>
+              <span>node</span>
+              <button
+                class="flex items-center gap-1.5 text-left uppercase tracking-[0.2em] transition-colors hover:text-[hsl(var(--tac-amber))]"
                 :class="
-                  serviceCpuStatus(service) === 'critical'
-                    ? 'border-destructive'
-                    : serviceCpuStatus(service) === 'warning'
-                      ? 'border-[hsl(var(--tac-amber))]'
-                      : 'border-border/60'
+                  serviceSortBy === 'cpu' ? 'text-[hsl(var(--tac-amber))]' : ''
                 "
-              />
+                @click="setServiceSort('cpu')"
+              >
+                <Cpu class="h-3 w-3" />
+                {{ $t("pages.system_metrics.cpu_short") }}
+                <component
+                  :is="sortIconFor('cpu', serviceSortDirection)"
+                  v-if="serviceSortBy === 'cpu'"
+                  class="h-3 w-3"
+                />
+              </button>
+              <button
+                class="flex items-center gap-1.5 text-left uppercase tracking-[0.2em] transition-colors hover:text-[hsl(var(--tac-amber))]"
+                :class="
+                  serviceSortBy === 'memory'
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : ''
+                "
+                @click="setServiceSort('memory')"
+              >
+                <HardDrive class="h-3 w-3" />
+                {{ $t("pages.system_metrics.memory_short") }}
+                <component
+                  :is="sortIconFor('memory', serviceSortDirection)"
+                  v-if="serviceSortBy === 'memory'"
+                  class="h-3 w-3"
+                />
+              </button>
+              <span />
+            </div>
 
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0 flex-1">
-                  <div
-                    class="truncate font-sans text-base font-semibold tracking-tight"
-                  >
+            <template
+              v-for="service in filteredServices"
+              :key="`${service.node}-${service.name}`"
+            >
+              <div
+                :class="[
+                  'items-center gap-3 border-b border-l-2 border-border/40 px-4 py-3 transition-colors last:border-b-0 hover:bg-[hsl(var(--tac-amber)/0.04)] sm:grid sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1.5fr)_4rem] sm:gap-4',
+                  serviceCpuStatus(service) === 'critical'
+                    ? 'border-l-destructive'
+                    : serviceCpuStatus(service) === 'warning'
+                      ? 'border-l-[hsl(var(--tac-amber))]'
+                      : 'border-l-transparent',
+                ]"
+              >
+                <div class="min-w-0">
+                  <div class="truncate text-sm font-semibold tracking-tight">
                     {{ service.name }}
                   </div>
-                  <div class="font-mono text-[11px] text-muted-foreground">
-                    node // {{ service.node }}
+                  <div
+                    class="truncate font-mono text-[10px] text-muted-foreground sm:hidden"
+                  >
+                    {{ service.node }}
                   </div>
                 </div>
 
-                <div class="flex flex-shrink-0 items-start gap-1">
+                <div
+                  class="hidden min-w-0 truncate font-mono text-[11px] text-muted-foreground sm:block"
+                >
+                  {{ service.node }}
+                </div>
+
+                <div class="mt-2 flex items-center gap-2 sm:mt-0">
+                  <span
+                    class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground sm:hidden"
+                  >
+                    CPU
+                  </span>
+                  <div class="h-1.5 flex-1 overflow-hidden bg-border/30">
+                    <div
+                      class="h-full"
+                      :class="serviceCpuBarClass(service)"
+                      :style="{ width: `${latestCpuUsage(service)}%` }"
+                    />
+                  </div>
+                  <span
+                    class="w-9 shrink-0 text-right text-xs font-semibold tabular-nums"
+                    :class="{
+                      'text-destructive':
+                        serviceCpuStatus(service) === 'critical',
+                      'text-[hsl(var(--tac-amber))]':
+                        serviceCpuStatus(service) === 'warning',
+                    }"
+                  >
+                    {{ String(latestCpuUsage(service)).padStart(2, "0") }}%
+                  </span>
+                </div>
+
+                <div
+                  class="mt-2 flex items-center gap-2 sm:mt-0"
+                  :title="serviceMemoryUsageLabel(service)"
+                >
+                  <span
+                    class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground sm:hidden"
+                  >
+                    MEM
+                  </span>
+                  <div class="h-1.5 flex-1 overflow-hidden bg-border/30">
+                    <div
+                      class="h-full"
+                      :class="serviceMemBarClass(service)"
+                      :style="{ width: `${latestMemoryUsage(service)}%` }"
+                    />
+                  </div>
+                  <span
+                    class="w-9 shrink-0 text-right text-xs font-semibold tabular-nums text-foreground"
+                  >
+                    {{ String(latestMemoryUsage(service)).padStart(2, "0") }}%
+                  </span>
+                </div>
+
+                <div class="mt-3 flex items-center justify-end gap-1 sm:mt-0">
                   <FiveStackToolTip>
                     <template #trigger>
                       <button
-                        class="grid h-8 w-8 place-items-center border transition-colors"
+                        class="grid h-7 w-7 place-items-center border transition-colors"
                         :class="
                           isServiceExpanded(service)
                             ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
@@ -597,7 +587,10 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                         "
                         @click="toggleServiceExpanded(service)"
                       >
-                        <Activity class="h-3.5 w-3.5" />
+                        <ChevronDown
+                          class="h-3.5 w-3.5 transition-transform"
+                          :class="isServiceExpanded(service) ? 'rotate-180' : ''"
+                        />
                       </button>
                     </template>
                     <span>
@@ -611,7 +604,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   <FiveStackToolTip>
                     <template #trigger>
                       <button
-                        class="grid h-8 w-8 place-items-center border border-border bg-background/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                        class="grid h-7 w-7 place-items-center border border-border bg-background/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
                         @click="
                           $router.push({
                             path: '/system-logs',
@@ -627,87 +620,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 </div>
               </div>
 
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <div>
-                  <div
-                    class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
-                  >
-                    <span class="flex items-center gap-1.5">
-                      <Cpu class="h-3 w-3" />
-                      {{ $t("pages.system_metrics.cpu_short") }}
-                    </span>
-                    <span
-                      class="font-bold tabular-nums"
-                      :class="{
-                        'text-destructive':
-                          serviceCpuStatus(service) === 'critical',
-                        'text-[hsl(var(--tac-amber))]':
-                          serviceCpuStatus(service) === 'warning',
-                        'text-foreground':
-                          serviceCpuStatus(service) === 'normal',
-                      }"
-                    >
-                      {{ String(latestCpuUsage(service)).padStart(2, "0") }}%
-                    </span>
-                  </div>
-                  <div class="mt-2 flex h-2 gap-[2px]">
-                    <span
-                      v-for="i in 10"
-                      :key="`cpu-${i}`"
-                      class="flex-1"
-                      :class="
-                        i > Math.ceil(latestCpuUsage(service) / 10)
-                          ? 'bg-border/30'
-                          : latestCpuUsage(service) >= 85
-                            ? 'bg-destructive'
-                            : latestCpuUsage(service) >= 70
-                              ? 'bg-[hsl(var(--tac-amber))]'
-                              : 'bg-emerald-500/90'
-                      "
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
-                  >
-                    <span class="flex items-center gap-1.5">
-                      <HardDrive class="h-3 w-3" />
-                      {{ $t("pages.system_metrics.memory_short") }}
-                    </span>
-                    <span class="font-bold tabular-nums text-foreground">
-                      {{ String(latestMemoryUsage(service)).padStart(2, "0") }}%
-                    </span>
-                  </div>
-                  <div class="mt-2 flex h-2 gap-[2px]">
-                    <span
-                      v-for="i in 10"
-                      :key="`mem-${i}`"
-                      class="flex-1"
-                      :class="
-                        i > Math.ceil(latestMemoryUsage(service) / 10)
-                          ? 'bg-border/30'
-                          : latestMemoryUsage(service) >= 85
-                            ? 'bg-destructive/90'
-                            : 'bg-[hsl(var(--tac-amber)/0.7)]'
-                      "
-                    />
-                  </div>
-                  <div
-                    class="mt-1.5 truncate font-mono text-[10px] tabular-nums text-muted-foreground"
-                  >
-                    {{ serviceMemoryUsageLabel(service) }}
-                  </div>
-                </div>
-              </div>
-
               <div
                 v-if="isServiceExpanded(service)"
-                class="mt-4 border border-border/60 bg-background/30 p-3 sm:p-4"
+                class="border-b border-border/40 bg-background/20 p-4 last:border-b-0 sm:px-5"
               >
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div class="border border-border/50 bg-background/30 p-3">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
                     <div
                       class="mb-2 flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
                     >
@@ -716,11 +634,11 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                       />
                       {{ $t("pages.system_metrics.cpu_usage") }}
                     </div>
-                    <div class="h-[260px]">
+                    <div class="h-[240px]">
                       <CpuChart :metrics="service.cpu" />
                     </div>
                   </div>
-                  <div class="border border-border/50 bg-background/30 p-3">
+                  <div>
                     <div
                       class="mb-2 flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
                     >
@@ -729,13 +647,13 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                       />
                       {{ $t("pages.system_metrics.memory_usage") }}
                     </div>
-                    <div class="h-[260px]">
+                    <div class="h-[240px]">
                       <MemoryChart :metrics="service.memory" label="MB" />
                     </div>
                   </div>
                 </div>
               </div>
-            </article>
+            </template>
           </div>
 
           <div
@@ -880,6 +798,25 @@ export default {
         return "warning";
       }
       return "normal";
+    },
+    setServiceSort(field: "cpu" | "memory" | "name") {
+      if (this.serviceSortBy === field) {
+        this.serviceSortDirection =
+          this.serviceSortDirection === "asc" ? "desc" : "asc";
+      } else {
+        this.serviceSortBy = field;
+      }
+    },
+    serviceCpuBarClass(service: any): string {
+      const cpu = this.latestCpuUsage(service);
+      if (cpu >= 85) return "bg-destructive";
+      if (cpu >= 70) return "bg-[hsl(var(--tac-amber))]";
+      return "bg-emerald-500/90";
+    },
+    serviceMemBarClass(service: any): string {
+      const mem = this.latestMemoryUsage(service);
+      if (mem >= 85) return "bg-destructive/90";
+      return "bg-[hsl(var(--tac-amber)/0.7)]";
     },
     serviceCpuStateLabel(service: any): string {
       const status = this.serviceCpuStatus(service);
@@ -1078,7 +1015,12 @@ export default {
     gpuNodes(): any[] {
       if (!this.game_server_nodes) return [];
       return this.game_server_nodes
-        .filter((node: any) => node.gpu)
+        .filter((node: any) => {
+          if (!node.gpu) return false;
+          if (this.onlyEnabledNodes && !node.enabled) return false;
+          if (this.onlyOnlineNodes && node.offline_at) return false;
+          return true;
+        })
         .sort((a: any, b: any) => {
           const nameA = (a.label || a.id || "") as string;
           const nameB = (b.label || b.id || "") as string;

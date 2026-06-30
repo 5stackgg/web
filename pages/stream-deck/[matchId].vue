@@ -938,9 +938,10 @@ watch(spectatedSteamId, (sid) => {
         >
           <AlertTriangle class="size-4 flex-shrink-0 mt-px" />
           <p>
-            <span class="font-semibold">Auto-director is on.</span>
-            CS2 is choosing the camera — clicking a target or pressing a key
-            will turn this off and take manual control.
+            <span class="font-semibold">{{
+              $t("stream_deck.autodirector_on")
+            }}</span>
+            {{ $t("stream_deck.autodirector_hint") }}
           </p>
         </div>
 

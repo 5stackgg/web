@@ -83,17 +83,19 @@
 
     <div class="p-4 flex-1 overflow-auto">
       <div class="space-y-1">
-        <FileTreeNode
-          v-for="item in store.rootItems"
-          :key="item.path"
-          :item="item"
-          @select="handleSelect"
-          @edit-file="handleEditFile"
-          @delete="handleDelete"
-          @rename-item="handleRename"
-          @drop-files="handleDropFiles"
-          @move-item="handleMoveItem"
-        />
+        <TransitionGroup name="tree-item" appear>
+          <FileTreeNode
+            v-for="item in store.rootItems"
+            :key="item.path"
+            :item="item"
+            @select="handleSelect"
+            @edit-file="handleEditFile"
+            @delete="handleDelete"
+            @rename-item="handleRename"
+            @drop-files="handleDropFiles"
+            @move-item="handleMoveItem"
+          />
+        </TransitionGroup>
 
         <!-- Inline create at root level (move dummy/file-input to bottom) -->
         <div
@@ -512,3 +514,49 @@ async function confirmDelete() {
   }
 }
 </script>
+
+<style scoped>
+.tree-item-enter-active,
+.tree-item-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.tree-item-enter-from,
+.tree-item-leave-to {
+  opacity: 0;
+  transform: translateX(-6px);
+}
+.tree-item-leave-active {
+  position: absolute;
+  width: 100%;
+}
+.tree-item-move {
+  transition: transform 0.2s ease;
+}
+/* Stagger the cascade as files scan in */
+.tree-item-enter-active:nth-child(1) {
+  transition-delay: 0ms;
+}
+.tree-item-enter-active:nth-child(2) {
+  transition-delay: 25ms;
+}
+.tree-item-enter-active:nth-child(3) {
+  transition-delay: 50ms;
+}
+.tree-item-enter-active:nth-child(4) {
+  transition-delay: 75ms;
+}
+.tree-item-enter-active:nth-child(5) {
+  transition-delay: 100ms;
+}
+.tree-item-enter-active:nth-child(6) {
+  transition-delay: 125ms;
+}
+.tree-item-enter-active:nth-child(7) {
+  transition-delay: 150ms;
+}
+.tree-item-enter-active:nth-child(n + 8) {
+  transition-delay: 175ms;
+}
+</style>

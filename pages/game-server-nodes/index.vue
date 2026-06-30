@@ -1,32 +1,50 @@
 <script setup lang="ts">
-import { Button } from "~/components/ui/button";
-import PageHeading from "~/components/PageHeading.vue";
 import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.vue";
 import SetupDialog from "~/components/game-server-nodes/SetupDialog.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import { PlusCircle, ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
-import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
-import { Info } from "lucide-vue-next";
-import { Switch } from "~/components/ui/switch";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import FilterBar from "~/components/common/FilterBar.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+  PlusCircle,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  Info,
+  Search,
+  X,
+  Globe,
+  SlidersHorizontal,
+  ChevronDown,
+  Check,
+  Activity,
+  CircleDot,
+} from "lucide-vue-next";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import Pagination from "~/components/Pagination.vue";
-import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import {
+  tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
+  tacticalSectionTickClasses,
+  filterTriggerBase,
+  filterTriggerIdle,
+  filterTriggerActive,
+  filterBadgeClasses,
+} from "~/utilities/tacticalClasses";
 
-const { isMobile } = useSidebar();
 const fadeTransition = {
   enterActiveClass: "transition-opacity duration-200 ease-out",
   leaveActiveClass: "transition-opacity duration-200 ease-out",
@@ -37,190 +55,234 @@ const fadeTransition = {
 
 <template>
   <PageTransition :delay="0">
-    <PageHeading>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.game_server_nodes.title") }}</template>
-
-      <template #description>{{
+      <template #subtitle>{{
         $t("pages.game_server_nodes.description")
       }}</template>
       <template #actions>
-        <div class="flex items-center gap-2">
-          <div
-            class="flex items-center gap-2 cursor-pointer"
-            @click="toggleNodeMetrics()"
-          >
-            <div class="flex items-center gap-1">
-              {{ $t("pages.game_server_nodes.display_metrics") }}
-            </div>
-            <Switch :model-value="displayMetrics" />
-          </div>
-
-          <Button
-            :size="isMobile ? 'default' : 'lg'"
-            @click="createGameServerNode"
-            :disabled="!supportsGameServerNodes"
-          >
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.game_server_nodes.create")
-            }}</span>
-          </Button>
-        </div>
+        <button
+          type="button"
+          @click="createGameServerNode"
+          :disabled="!supportsGameServerNodes"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+            !supportsGameServerNodes && 'pointer-events-none opacity-50',
+          ]"
+          :title="$t('pages.game_server_nodes.create')"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline">{{
+            $t("pages.game_server_nodes.create")
+          }}</span>
+        </button>
       </template>
-    </PageHeading>
+    </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6" v-if="!supportsGameServerNodes">
-    <Card variant="gradient">
-      <Alert class="bg-transparent border-0">
-        <Info class="h-4 w-4" />
-        <AlertTitle>{{
-          $t("pages.game_server_nodes.not_supported.title")
-        }}</AlertTitle>
-        <AlertDescription>
+  <!-- Not supported notice -->
+  <PageTransition :delay="80" class="mt-6" v-if="!supportsGameServerNodes">
+    <div
+      class="flex items-start gap-3 rounded-md border border-[hsl(var(--warning)/0.4)] bg-[hsl(var(--warning)/0.08)] px-4 py-3 text-sm"
+    >
+      <Info class="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+      <div class="space-y-0.5">
+        <p class="font-semibold">
+          {{ $t("pages.game_server_nodes.not_supported.title") }}
+        </p>
+        <p class="text-muted-foreground">
           {{ $t("pages.game_server_nodes.not_supported.description") }}
           <a
             target="_blank"
-            class="underline"
+            class="underline underline-offset-2 hover:text-foreground"
             href="https://docs.5stack.gg/servers/game-server-nodes/"
             >{{ $t("layouts.app_nav.administration.game_server_nodes") }}</a
           >.
-        </AlertDescription>
-      </Alert>
-    </Card>
+        </p>
+      </div>
+    </div>
   </PageTransition>
 
-  <PageTransition :delay="200" class="mt-6">
-    <Card variant="gradient">
-      <div class="p-4 flex items-center gap-4">
-        <div class="flex items-center gap-2">
-          <Info class="h-4 w-4 shrink-0" />
-          <span class="font-medium">{{
-            $t("pages.game_server_nodes.cs_version_info")
-          }}</span>
-        </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{{
-            $t("pages.game_server_nodes.build_id", {
-              id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
-            })
-          }}</span>
-          <span>•</span>
-          <span>{{
-            $t("pages.game_server_nodes.last_updated", {
-              date: new Date(currentGameVersion?.updated_at).toLocaleString(),
-            })
-          }}</span>
-        </div>
-      </div>
-    </Card>
+  <!-- CS version info strip -->
+  <PageTransition :delay="120" class="mt-6" v-if="currentGameVersion">
+    <div
+      class="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-border bg-card/40 px-3 py-2 text-xs [backdrop-filter:blur(6px)]"
+    >
+      <span
+        class="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.16em] text-muted-foreground"
+      >
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("pages.game_server_nodes.cs_version_info") }}
+      </span>
+      <span class="font-semibold text-foreground">
+        {{ currentGameVersion.version }} ({{ currentGameVersion.build_id }})
+      </span>
+      <span class="text-muted-foreground/50">•</span>
+      <span class="text-muted-foreground">
+        {{
+          $t("pages.game_server_nodes.last_updated", {
+            date: new Date(currentGameVersion.updated_at).toLocaleString(),
+          })
+        }}
+      </span>
+    </div>
   </PageTransition>
 
   <!-- Filters -->
-  <PageTransition :delay="300" class="mt-6">
-    <Card variant="gradient" class="p-4 mb-4">
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold">
-            {{ $t("common.filters") }}
-          </h3>
-          <Button variant="outline" size="sm" @click="resetFilters">
-            {{ $t("common.reset_filters") }}
-          </Button>
-        </div>
+  <PageTransition :delay="160" class="mt-6">
+    <FilterBar>
+      <!-- Name search (always visible) -->
+      <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
+        <InputGroupAddon class="pl-2.5">
+          <Search class="h-3.5 w-3.5" />
+        </InputGroupAddon>
+        <InputGroupInput
+          :model-value="form.values.name"
+          @update:model-value="
+            (value) => {
+              form.setFieldValue('name', String(value ?? ''));
+              onFilterChange();
+            }
+          "
+          :placeholder="$t('pages.manage_matches.enter_name')"
+          class="h-full text-sm"
+        />
+        <InputGroupAddon align="inline-end" class="pr-2">
+          <button
+            v-if="form.values.name"
+            type="button"
+            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            @click="
+              form.setFieldValue('name', '');
+              onFilterChange();
+            "
+          >
+            <X class="h-3.5 w-3.5" />
+          </button>
+        </InputGroupAddon>
+      </InputGroup>
 
-        <form @submit.prevent class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <!-- Name search -->
-            <div class="space-y-2">
-              <Label for="node-name-search">{{
-                $t("pages.manage_matches.search_by_name")
-              }}</Label>
-              <Input
-                id="node-name-search"
-                :model-value="form.values.name"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue('name', value);
-                    onFilterChange();
-                  }
-                "
-                :placeholder="$t('pages.manage_matches.enter_name')"
-              />
-            </div>
+      <!-- Regions multi-select -->
+      <Popover>
+        <PopoverTrigger as-child>
+          <button
+            type="button"
+            :class="[
+              filterTriggerBase,
+              selectedRegions.length ? filterTriggerActive : filterTriggerIdle,
+            ]"
+          >
+            <Globe class="h-3.5 w-3.5" />
+            {{ $t("common.region") }}
+            <span v-if="selectedRegions.length" :class="filterBadgeClasses">
+              {{ selectedRegions.length }}
+            </span>
+            <ChevronDown class="h-3 w-3 opacity-50" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          class="max-h-72 w-56 space-y-0.5 overflow-y-auto p-2"
+        >
+          <span
+            class="block px-1 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+          >
+            {{ $t("pages.manage_matches.filter_by_regions") }}
+          </span>
+          <button
+            v-for="region in availableRegions"
+            :key="region.value"
+            type="button"
+            @click="toggleRegion(region.value)"
+            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+            :class="
+              isRegionSelected(region.value)
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-foreground/90'
+            "
+          >
+            <span>{{ region.description || region.value }}</span>
+            <Check
+              v-if="isRegionSelected(region.value)"
+              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+            />
+          </button>
+        </PopoverContent>
+      </Popover>
 
-            <!-- Regions multi-select -->
-            <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <Label for="regions-filter">{{
-                  $t("pages.manage_matches.filter_by_regions")
-                }}</Label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  @click="clearAllRegions"
-                  class="text-xs h-6 px-2"
-                  :class="{ 'opacity-50': !form.values.regions?.length }"
-                >
-                  {{ $t("pages.manage_matches.clear_all") }}
-                </Button>
-              </div>
-              <Select
-                :model-value="form.values.regions"
-                @update:model-value="onRegionsChange"
-                multiple
-              >
-                <SelectTrigger id="regions-filter">
-                  <SelectValue
-                    :placeholder="$t('pages.manage_matches.select_regions')"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="region in availableRegions"
-                    :key="region.value"
-                    :value="region.value"
-                  >
-                    {{ region.description || region.value }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <!-- Enabled toggle -->
-            <div class="space-y-2">
-              <Label>{{ $t("pages.game_server_nodes.only_enabled") }}</Label>
-              <div class="flex items-center gap-2">
-                <Switch
-                  :model-value="onlyEnabled"
-                  @update:model-value="onlyEnabled = !onlyEnabled"
-                />
-                <span class="text-sm text-muted-foreground">{{
-                  onlyEnabled ? $t("common.enabled") : $t("common.all")
-                }}</span>
-              </div>
-            </div>
-            <!-- Hide Offline toggle -->
-            <div class="space-y-2">
-              <Label>{{ $t("pages.game_server_nodes.hide_offline") }}</Label>
-              <div class="flex items-center gap-2">
-                <Switch
-                  :model-value="hideOffline"
-                  @update:model-value="hideOffline = !hideOffline"
-                />
-                <span class="text-sm text-muted-foreground">{{
-                  hideOffline ? $t("common.online") : $t("common.offline")
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </Card>
+      <!-- Filters (bundled, pinned right) + grouped reset -->
+      <FilterMenu
+        class="ml-auto"
+        :count="optionsActiveCount"
+        :active="optionsActiveCount > 0"
+        :show-reset="hasActiveFilters"
+        content-class="w-60 space-y-0.5 p-2"
+        @reset="resetFilters"
+      >
+        <button
+          type="button"
+          @click="toggleOnlyEnabled"
+          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+          :class="
+            onlyEnabled ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
+          "
+        >
+          <span class="flex items-center gap-2">
+            <CircleDot class="h-3.5 w-3.5" />
+            {{ $t("pages.game_server_nodes.only_enabled") }}
+          </span>
+          <Check
+            v-if="onlyEnabled"
+            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+          />
+        </button>
+        <button
+          type="button"
+          @click="toggleHideOffline"
+          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+          :class="
+            hideOffline ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
+          "
+        >
+          <span class="flex items-center gap-2">
+            <Activity class="h-3.5 w-3.5" />
+            {{ $t("pages.game_server_nodes.hide_offline") }}
+          </span>
+          <Check
+            v-if="hideOffline"
+            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+          />
+        </button>
+        <button
+          type="button"
+          @click="toggleNodeMetrics"
+          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+          :class="
+            displayMetrics
+              ? 'text-[hsl(var(--tac-amber))]'
+              : 'text-foreground/90'
+          "
+        >
+          <span class="flex items-center gap-2">
+            <Activity class="h-3.5 w-3.5" />
+            {{ $t("pages.game_server_nodes.display_metrics") }}
+          </span>
+          <Check
+            v-if="displayMetrics"
+            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+          />
+        </button>
+      </FilterMenu>
+    </FilterBar>
   </PageTransition>
 
-  <PageTransition :delay="400" class="mt-6">
-    <Card variant="gradient" class="p-4">
+  <!-- Results -->
+  <PageTransition :delay="220" class="mt-6">
+    <div
+      class="rounded-md border border-border bg-card/40 [backdrop-filter:blur(6px)]"
+    >
       <Transition v-bind="fadeTransition" mode="out-in">
         <Empty v-if="loading" key="loading" class="min-h-[200px]">
           <div class="space-y-3 w-full max-w-md">
@@ -254,17 +316,12 @@ const fadeTransition = {
                 <TableHead class="hidden xl:table-cell">{{
                   $t("common.region")
                 }}</TableHead>
-                <TableHead class="hidden xl:table-cell text-center">
-                  <div class="flex flex-col items-center gap-1">
-                    <span>{{
-                      $t("pages.game_server_nodes.table.capacity")
-                    }}</span>
-                    <div class="flex items-center gap-1">
-                      {{ $t("pages.game_server_nodes.table.ports") }}
-                      <FiveStackToolTip>{{
-                        $t("pages.game_server_nodes.table.ports_tooltip")
-                      }}</FiveStackToolTip>
-                    </div>
+                <TableHead class="hidden xl:table-cell whitespace-nowrap">
+                  <div class="flex items-center gap-1">
+                    {{ $t("pages.game_server_nodes.table.capacity") }}
+                    <FiveStackToolTip>{{
+                      $t("pages.game_server_nodes.table.ports_tooltip")
+                    }}</FiveStackToolTip>
                   </div>
                 </TableHead>
                 <TableHead class="hidden xl:table-cell pr-1">
@@ -296,11 +353,12 @@ const fadeTransition = {
           }}</EmptyDescription>
         </Empty>
       </Transition>
-    </Card>
+    </div>
   </PageTransition>
 
   <Pagination
     v-if="nodesAggregate && nodesAggregate > 0"
+    class="mt-6"
     :page="page"
     :per-page="perPage"
     @page="
@@ -404,6 +462,7 @@ export default {
               status: true,
               region: true,
               enabled: true,
+              enabled_for_match_making: true,
               build_id: true,
               csgo_build_id: true,
               pin_build_id: true,
@@ -547,7 +606,6 @@ export default {
   },
   methods: {
     resetFilters() {
-      // Check if any filters would actually change
       const currentName = this.form.values.name || "";
       const currentRegions = this.form.values.regions || [];
       const hasChanges =
@@ -559,7 +617,6 @@ export default {
         this.sortField !== "label" ||
         this.page !== 1;
 
-      // Only reset if there are actual changes
       if (!hasChanges) {
         return;
       }
@@ -606,30 +663,41 @@ export default {
         }
       }
     },
-    onSortChange() {
-      this.saveFiltersToStorage();
-    },
     onFilterChange() {
       this.page = 1;
       this.saveFiltersToStorage();
-      this.updatePagedNodes();
     },
     toggleSortDirection() {
       this.sortDirection = this.sortDirection === "desc" ? "asc" : "desc";
       this.saveFiltersToStorage();
     },
-    onRegionsChange(regions: any) {
+    isRegionSelected(value: string) {
+      return (this.form.values.regions || []).includes(value);
+    },
+    regionDescription(value: string) {
+      const region = this.availableRegions.find((r: any) => r.value === value);
+      return region?.description || value;
+    },
+    toggleRegion(value: string) {
+      const current = [...(this.form.values.regions || [])];
+      const index = current.indexOf(value);
+      if (index >= 0) {
+        current.splice(index, 1);
+      } else {
+        current.push(value);
+      }
       this.form.setValues({
         ...this.form.values,
-        regions: regions || [],
+        regions: current,
       });
       this.onFilterChange();
     },
-    clearAllRegions() {
-      this.form.setValues({
-        ...this.form.values,
-        regions: [],
-      });
+    toggleOnlyEnabled() {
+      this.onlyEnabled = !this.onlyEnabled;
+      this.onFilterChange();
+    },
+    toggleHideOffline() {
+      this.hideOffline = !this.hideOffline;
       this.onFilterChange();
     },
     toggleNodeMetrics() {
@@ -651,7 +719,6 @@ export default {
     },
     closeSetupDialog() {
       this.showSetupDialog = false;
-      // Reset after a delay to avoid flash of empty content
       setTimeout(() => {
         this.setupGameServer = null;
       }, 300);
@@ -662,6 +729,21 @@ export default {
       return this.gameVersions.find((version) => {
         return version.current === true;
       });
+    },
+    selectedRegions() {
+      return this.form.values.regions || [];
+    },
+    optionsActiveCount() {
+      return (this.onlyEnabled ? 1 : 0) + (this.hideOffline ? 1 : 0);
+    },
+    hasActiveFilters() {
+      return (
+        (this.form.values.name || "") !== "" ||
+        this.selectedRegions.length > 0 ||
+        this.onlyEnabled ||
+        this.hideOffline ||
+        this.sortDirection !== "asc"
+      );
     },
     supportsGameServerNodes() {
       return useApplicationSettingsStore().supportsGameServerNodes;
@@ -674,7 +756,6 @@ export default {
         if (stored !== null) {
           this.displayMetrics = stored === "true";
         }
-        // Ensure defaults for filters if not set
         const saved = this.loadFiltersFromStorage();
         if (!this.form.values.regions) {
           this.form.setValues({

@@ -217,7 +217,7 @@ import cleanMapName from "~/utilities/cleanMapName";
             </a>
           </template>
         </template>
-        <DropdownMenu v-if="match.is_organizer">
+        <DropdownMenu v-if="canSetMapWinner">
           <DropdownMenuTrigger as-child>
             <Button
               size="xs"
@@ -390,6 +390,12 @@ export default {
       return (
         this.match.is_organizer ||
         useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
+      );
+    },
+    canSetMapWinner() {
+      return (
+        this.match.is_organizer &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
       );
     },
     hasDemoMetadata() {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
+import LoadingScreen from "~/components/LoadingScreen.vue";
 
 // Redirect at the MIDDLEWARE stage — before this page component mounts.
 // Previously the redirect lived in an `immediate: true` watcher in setup();

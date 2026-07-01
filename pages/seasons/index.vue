@@ -696,7 +696,6 @@ export default {
         (s) => s.ends_at && new Date(s.ends_at).getTime() <= this.now,
       );
     },
-    // Upcoming (newest first) then past — one flat ledger list, flagged.
     ledgerSeasons(): Array<Season & { __upcoming: boolean }> {
       return [
         ...this.upcomingSeasons.map((s) => ({ ...s, __upcoming: true })),

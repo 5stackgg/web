@@ -1151,9 +1151,12 @@ const start = () => {
                 </template>
               </DraftPlayerCard>
 
+              <!-- Key by absolute grid position (pool.length + n), not relative
+                   index, so adding a player only removes the boundary slot — the
+                   rest keep their key and position and never reflow. -->
               <DraftOpenSlot
                 v-for="n in canInvite && !isHostMode ? openSlots : 0"
-                :key="`slot-${n}`"
+                :key="`slot-${pool.length + n}`"
                 class="draft-open-slot"
                 :exclude="memberIds"
                 @selected="add"
@@ -1615,23 +1618,23 @@ const start = () => {
   font-weight: 700;
   color: hsl(var(--tac-amber));
 }
-.pool-move,
-.pool-enter-active,
-.pool-leave-active {
+/* Only fade cards in/out — deliberately no `pool-move` rule so the grid never
+   FLIP-slides on add/pick/kick (the reflow settles instantly instead of every
+   card sliding, which shifted anything anchored to the grid and read as jank).
+   Leave fades in place (no `position: absolute`, which in a multi-column grid
+   would snap the departing card to full width and yank the rest up). */
+.pool-enter-active {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pool-leave-active {
+  transition: all 0.18s ease;
 }
 .pool-enter-from,
 .pool-leave-to {
   opacity: 0;
   transform: scale(0.96) translateY(-4px);
 }
-.pool-leave-active {
-  position: absolute;
-  width: 100%;
-}
-/* Open slots are placeholders — don't let them slide around when a real player
-   card is inserted before them (the new card's enter animation is enough). */
-.draft-open-slot.pool-move,
+/* Open slots are placeholders — no enter/leave flash either. */
 .draft-open-slot.pool-enter-active,
 .draft-open-slot.pool-leave-active {
   transition: none;

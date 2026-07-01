@@ -114,6 +114,12 @@ const accentVar = computed(() => {
 .draft-player-card:hover {
   border-color: hsl(var(--accent) / 0.5);
 }
+/* PlayerDisplay reserves 26px for the role/elo row; with no role shown that
+   stretches the name+elo block and pins the name to the top of the card. Drop
+   the reserve so the two lines sit centered as a tight pair. */
+.draft-player-card :deep(.min-h-\[26px\]) {
+  min-height: 0;
+}
 .accent-rail {
   position: absolute;
   left: 0;

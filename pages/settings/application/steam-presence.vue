@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, Trash2, ShieldAlert, Bot } from "lucide-vue-next";
+import { Plus, Trash2, ShieldAlert } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -150,11 +150,6 @@ definePageMeta({
           v-if="status && status.bots.length === 0"
           class="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/60 py-10 text-center"
         >
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))]/10"
-          >
-            <Bot class="h-6 w-6 text-[hsl(var(--tac-amber))]" />
-          </div>
           <div class="space-y-1">
             <p class="text-sm font-medium">
               {{ $t("pages.settings.application.steam_presence.no_bots") }}

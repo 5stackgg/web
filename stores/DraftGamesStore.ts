@@ -43,6 +43,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     max_elo: true,
     match_id: true,
     current_pick_lineup: true,
+    pattern: true,
     pick_deadline: true,
     expires_at: true,
     host: playerFields,

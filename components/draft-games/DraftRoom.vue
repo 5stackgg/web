@@ -339,6 +339,24 @@ const statusLabel = computed(() => {
   return "draft_games.room.standby";
 });
 
+const draftedCount = computed(
+  () =>
+    props.room.players.filter((p: any) => !p.is_captain && p.lineup != null)
+      .length,
+);
+
+const pickTimeline = computed(() =>
+  (props.room.pattern ?? []).map((lineup: number, index: number) => ({
+    lineup,
+    state:
+      index < draftedCount.value
+        ? "done"
+        : index === draftedCount.value
+          ? "current"
+          : "upcoming",
+  })),
+);
+
 const remainingToFill = computed(
   () => props.room.capacity - accepted.value.length,
 );
@@ -643,7 +661,7 @@ const start = () => {
       </div>
     </div>
 
-    <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch">
+    <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
       <div class="min-w-0 space-y-4">
         <Transition name="phase">
           <MatchInfo v-if="match" :match="match" hide-booting />
@@ -920,6 +938,25 @@ const start = () => {
                   {{ $t(statusLabel) }}
                 </template>
               </div>
+
+              <div v-if="pickTimeline.length" class="pick-order-strip">
+                <span class="pick-order-label">
+                  {{ $t("draft_games.room.pick_order") }}
+                </span>
+                <div class="pick-order-track">
+                  <span
+                    v-for="(slot, index) in pickTimeline"
+                    :key="index"
+                    class="pick-order-chip"
+                    :class="[
+                      `is-${slot.state}`,
+                      slot.lineup === 1 ? 'is-alpha' : 'is-bravo',
+                    ]"
+                  >
+                    {{ slot.lineup === 1 ? "T1" : "T2" }}
+                  </span>
+                </div>
+              </div>
             </template>
 
             <Button
@@ -1051,8 +1088,12 @@ const start = () => {
                   <div class="flex items-center gap-1.5">
                     <Button
                       v-if="isMyTurn"
-                      size="sm"
-                      class="h-7 gap-1 px-2.5 text-xs"
+                      variant="tactical"
+                      type="button"
+                      :class="[
+                        tacticalCtaButtonClasses,
+                        'h-7 gap-1 !px-3 !py-0 text-[0.7rem]',
+                      ]"
                       :disabled="isPending('pick')"
                       @click="draftPick(player.steam_id)"
                     >
@@ -1113,6 +1154,7 @@ const start = () => {
               <DraftOpenSlot
                 v-for="n in canInvite && !isHostMode ? openSlots : 0"
                 :key="`slot-${n}`"
+                class="draft-open-slot"
                 :exclude="memberIds"
                 @selected="add"
               />
@@ -1239,7 +1281,7 @@ const start = () => {
       </div>
 
       <div
-        class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:h-full"
+        class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:max-h-[calc(100vh-6rem)] xl:sticky xl:top-4"
       >
         <div v-if="showQueue" class="flex min-h-0 flex-1 flex-col">
           <div
@@ -1427,6 +1469,53 @@ const start = () => {
 .status-banner {
   color: hsl(var(--muted-foreground));
 }
+.pick-order-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.pick-order-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: hsl(var(--muted-foreground));
+}
+.pick-order-track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+}
+.pick-order-chip {
+  --chip: var(--tac-amber);
+  min-width: 1.9rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.375rem;
+  border: 1px solid hsl(var(--chip) / 0.5);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: hsl(var(--chip));
+  background: hsl(var(--chip) / 0.08);
+  transition: all 0.15s ease;
+}
+.pick-order-chip.is-bravo {
+  --chip: 200 90% 62%;
+}
+.pick-order-chip.is-done {
+  opacity: 0.4;
+}
+.pick-order-chip.is-current {
+  background: hsl(var(--chip) / 0.22);
+  box-shadow: 0 0 12px hsl(var(--chip) / 0.5);
+  transform: scale(1.08);
+}
 .status-banner.is-mine {
   color: hsl(var(--accent));
   text-shadow: 0 0 16px hsl(var(--accent) / 0.5);
@@ -1539,6 +1628,18 @@ const start = () => {
 .pool-leave-active {
   position: absolute;
   width: 100%;
+}
+/* Open slots are placeholders — don't let them slide around when a real player
+   card is inserted before them (the new card's enter animation is enough). */
+.draft-open-slot.pool-move,
+.draft-open-slot.pool-enter-active,
+.draft-open-slot.pool-leave-active {
+  transition: none;
+}
+.draft-open-slot.pool-enter-from,
+.draft-open-slot.pool-leave-to {
+  opacity: 1;
+  transform: none;
 }
 .phase-enter-active {
   transition:

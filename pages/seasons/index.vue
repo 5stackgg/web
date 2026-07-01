@@ -143,7 +143,6 @@ const dangerBtn = [
             <span :class="tacticalSectionTickClasses"></span>
             {{ $t("pages.seasons.create_title") }}
           </span>
-          <!-- Live season-number preview -->
           <div
             class="flex h-11 min-w-[3.25rem] flex-col items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-2 leading-none"
           >
@@ -171,13 +170,10 @@ const dangerBtn = [
               :placeholder="$t('pages.seasons.description_placeholder')"
             />
           </div>
-
-          <!-- Connected from → to range control -->
           <div class="flex items-stretch gap-2">
             <div
               class="flex flex-1 items-stretch overflow-hidden rounded-md border border-border bg-muted/20"
             >
-              <!-- Start half -->
               <div class="flex-1">
                 <Popover>
                   <PopoverTrigger as-child>
@@ -215,15 +211,11 @@ const dangerBtn = [
                   </PopoverContent>
                 </Popover>
               </div>
-
-              <!-- Divider arrow -->
               <div
                 class="flex items-center border-x border-border bg-muted/20 px-2 text-[hsl(var(--tac-amber)/0.7)]"
               >
                 <ArrowRight class="h-3.5 w-3.5" />
               </div>
-
-              <!-- End half -->
               <div class="flex-1">
                 <Popover>
                   <PopoverTrigger as-child>
@@ -267,8 +259,6 @@ const dangerBtn = [
                 </Popover>
               </div>
             </div>
-
-            <!-- Clear end -->
             <button
               v-if="newSeasonEnd"
               type="button"
@@ -314,7 +304,6 @@ const dangerBtn = [
         v-if="activeSeason"
         class="relative overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.07)_0%,hsl(var(--card)/0.25)_100%)] p-5 sm:p-6 [backdrop-filter:blur(6px)]"
       >
-        <!-- Recovery-only rebuild (top-right), confirm-gated -->
         <button
           type="button"
           :title="$t('pages.seasons.rebuild')"
@@ -335,7 +324,6 @@ const dangerBtn = [
         ></span>
 
         <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
-          <!-- Monogram -->
           <div
             class="relative flex h-[4.5rem] w-[4.5rem] shrink-0 flex-col items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.1)]"
           >
@@ -372,8 +360,6 @@ const dangerBtn = [
             >
               {{ activeSeason.description }}
             </p>
-
-            <!-- Timeline -->
             <div class="space-y-1.5">
               <div
                 class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
@@ -399,8 +385,6 @@ const dangerBtn = [
                 ></div>
               </div>
             </div>
-
-            <!-- Countdown -->
             <div
               v-if="activeSeason.ends_at"
               class="flex items-baseline gap-2.5"
@@ -414,8 +398,6 @@ const dangerBtn = [
                 >{{ countdown(activeSeason.ends_at) }}</span
               >
             </div>
-
-            <!-- Actions -->
             <div class="flex flex-wrap items-center gap-2 pt-1">
               <Popover>
                 <PopoverTrigger as-child>
@@ -499,7 +481,6 @@ const dangerBtn = [
             :key="season.id"
             class="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
           >
-            <!-- Mini monogram -->
             <div
               class="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-muted/30 font-sans text-xs font-bold text-muted-foreground [font-stretch:85%]"
             >
@@ -757,7 +738,6 @@ export default {
         number: season.number ?? "?",
       }) as string;
     },
-    // Percent of the active season elapsed (null when ongoing / open-ended).
     seasonProgress(season: Season): number | null {
       if (!season.ends_at) return null;
       const start = new Date(season.starts_at).getTime();
@@ -806,7 +786,6 @@ export default {
     dvMs(dv: { year: number; month: number; day: number }): number {
       return Date.UTC(dv.year, dv.month - 1, dv.day);
     },
-    // Does [startMs, endMs) overlap any season other than excludeId?
     overlapsOtherSeason(
       startMs: number,
       endMs: number,
@@ -819,8 +798,7 @@ export default {
         return startMs < sEnd && sStart < endMs;
       });
     },
-    // Calendar is-date-disabled guards — block picking any date that would make
-    // the season overlap another. The DB exclusion constraint is the backstop.
+    // The DB exclusion constraint is the backstop; these just guide the pickers.
     createStartDisabled(dv: { year: number; month: number; day: number }) {
       const ms = this.dvMs(dv);
       const endMs = this.newSeasonEnd

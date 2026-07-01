@@ -17,6 +17,7 @@ import {
   AlertTriangle,
   ArrowRight,
   X,
+  Trash2,
 } from "lucide-vue-next";
 import {
   tacticalCtaButtonClasses,
@@ -207,7 +208,11 @@ const dangerBtn = [
                     </button>
                   </PopoverTrigger>
                   <PopoverContent class="w-auto p-0">
-                    <Calendar v-model="newSeasonStart" initial-focus />
+                    <Calendar
+                      v-model="newSeasonStart"
+                      :is-date-disabled="createStartDisabled"
+                      initial-focus
+                    />
                   </PopoverContent>
                 </Popover>
               </div>
@@ -254,7 +259,11 @@ const dangerBtn = [
                     </button>
                   </PopoverTrigger>
                   <PopoverContent class="w-auto p-0">
-                    <Calendar v-model="newSeasonEnd" initial-focus />
+                    <Calendar
+                      v-model="newSeasonEnd"
+                      :is-date-disabled="createEndDisabled"
+                      initial-focus
+                    />
                   </PopoverContent>
                 </Popover>
               </div>
@@ -419,6 +428,7 @@ const dangerBtn = [
                 <PopoverContent class="w-auto p-0">
                   <Calendar
                     :model-value="editStartDate"
+                    :is-date-disabled="editStartDisabled"
                     @update:model-value="onEditStartDate(activeSeason.id, $event)"
                     initial-focus
                   />
@@ -438,6 +448,7 @@ const dangerBtn = [
                 <PopoverContent class="w-auto p-0">
                   <Calendar
                     :model-value="editEndDate"
+                    :is-date-disabled="editEndDisabled"
                     @update:model-value="onEditEndDate(activeSeason.id, $event)"
                     initial-focus
                   />
@@ -459,6 +470,14 @@ const dangerBtn = [
               >
                 <Ban class="h-3.5 w-3.5" />
                 {{ $t("pages.seasons.end_now") }}
+              </button>
+              <button
+                type="button"
+                :class="dangerBtn"
+                @click="confirmDelete(activeSeason.id)"
+              >
+                <Trash2 class="h-3.5 w-3.5" />
+                {{ $t("pages.seasons.delete") }}
               </button>
             </div>
           </div>
@@ -529,6 +548,14 @@ const dangerBtn = [
                 >
               </p>
             </div>
+            <button
+              type="button"
+              :title="$t('pages.seasons.delete')"
+              class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--destructive)/0.5)] hover:text-destructive"
+              @click="confirmDelete(season.id)"
+            >
+              <Trash2 class="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
       </section>
@@ -560,6 +587,28 @@ const dangerBtn = [
             <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
             <AlertDialogAction @click="doRebuild">
               {{ $t("pages.seasons.rebuild") }}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog v-model:open="showDeleteConfirm">
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {{ $t("pages.seasons.delete_confirm_title") }}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {{ $t("pages.seasons.delete_confirm_description") }}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+            <AlertDialogAction
+              class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              @click="doDelete"
+            >
+              {{ $t("pages.seasons.delete") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -606,6 +655,7 @@ export default {
         }),
         result: function ({ data }: { data: any }) {
           this.seasons = data.seasons || [];
+          this.updateCreateDefault();
         },
       },
     },
@@ -623,6 +673,8 @@ export default {
       earliestMatchMs: null as number | null,
       showRebuildConfirm: false,
       rebuildSeasonId: null as string | null,
+      showDeleteConfirm: false,
+      deleteSeasonId: null as string | null,
     };
   },
   computed: {
@@ -751,11 +803,103 @@ export default {
       return days > 0 ? `${days}d ${hms}` : hms;
     },
     rangeConflicts(startMs: number, endMs: number): boolean {
+      return this.overlapsOtherSeason(startMs, endMs, null);
+    },
+    dvMs(dv: { year: number; month: number; day: number }): number {
+      return Date.UTC(dv.year, dv.month - 1, dv.day);
+    },
+    // Does [startMs, endMs) overlap any season other than excludeId?
+    overlapsOtherSeason(
+      startMs: number,
+      endMs: number,
+      excludeId: string | null,
+    ): boolean {
       return this.seasons.some((s) => {
+        if (excludeId && s.id === excludeId) return false;
         const sStart = new Date(s.starts_at).getTime();
         const sEnd = s.ends_at ? new Date(s.ends_at).getTime() : Infinity;
         return startMs < sEnd && sStart < endMs;
       });
+    },
+    // Calendar is-date-disabled guards — block picking any date that would make
+    // the season overlap another. The DB exclusion constraint is the backstop.
+    createStartDisabled(dv: { year: number; month: number; day: number }) {
+      const ms = this.dvMs(dv);
+      const endMs = this.newSeasonEnd
+        ? this.calendarDateToUtcMs(this.newSeasonEnd)
+        : ms + 86_400_000;
+      return this.overlapsOtherSeason(ms, endMs, null);
+    },
+    createEndDisabled(dv: { year: number; month: number; day: number }) {
+      if (!this.newSeasonStart) return false;
+      const ms = this.dvMs(dv);
+      const startMs = this.calendarDateToUtcMs(this.newSeasonStart);
+      if (ms <= startMs) return true;
+      return this.overlapsOtherSeason(startMs, ms, null);
+    },
+    editStartDisabled(dv: { year: number; month: number; day: number }) {
+      if (!this.activeSeason) return false;
+      const ms = this.dvMs(dv);
+      const endMs = this.activeSeason.ends_at
+        ? new Date(this.activeSeason.ends_at).getTime()
+        : Infinity;
+      if (ms >= endMs) return true;
+      return this.overlapsOtherSeason(ms, endMs, this.activeSeason.id);
+    },
+    editEndDisabled(dv: { year: number; month: number; day: number }) {
+      if (!this.activeSeason) return false;
+      const ms = this.dvMs(dv);
+      const startMs = new Date(this.activeSeason.starts_at).getTime();
+      if (ms <= startMs) return true;
+      return this.overlapsOtherSeason(startMs, ms, this.activeSeason.id);
+    },
+    async deleteSeason(seasonId: string) {
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            delete_seasons_by_pk: [{ id: seasonId }, { id: true }],
+          }),
+        });
+        toast({ title: this.$t("pages.seasons.deleted") });
+      } catch (error) {
+        toast({
+          title:
+            (error as Error)?.message || this.$t("pages.seasons.error_generic"),
+          variant: "destructive",
+        });
+      }
+    },
+    confirmDelete(seasonId: string) {
+      this.deleteSeasonId = seasonId;
+      this.showDeleteConfirm = true;
+    },
+    doDelete() {
+      if (this.deleteSeasonId) {
+        void this.deleteSeason(this.deleteSeasonId);
+      }
+      this.showDeleteConfirm = false;
+    },
+    // First season defaults to the earliest match (covers history); later ones
+    // start where the latest ended. Ongoing latest → left empty.
+    cdFromMs(ms: number): CalendarDate {
+      const d = new Date(ms);
+      return new CalendarDate(
+        d.getUTCFullYear(),
+        d.getUTCMonth() + 1,
+        d.getUTCDate(),
+      );
+    },
+    updateCreateDefault() {
+      if (this.seasons.length === 0) {
+        if (this.earliestMatchMs) {
+          this.newSeasonStart = this.cdFromMs(this.earliestMatchMs);
+        }
+        return;
+      }
+      const latest = this.seasons[0];
+      this.newSeasonStart = latest?.ends_at
+        ? this.cdFromMs(new Date(latest.ends_at).getTime())
+        : undefined;
     },
     async fetchEarliestMatch() {
       try {
@@ -774,16 +918,7 @@ export default {
         });
         const ended = data?.matches?.[0]?.ended_at;
         this.earliestMatchMs = ended ? new Date(ended).getTime() : null;
-        // Pre-fill the first season's start with the earliest match date so it
-        // covers all history by default.
-        if (this.earliestMatchMs && !this.seasons.length && !this.newSeasonStart) {
-          const d = new Date(this.earliestMatchMs);
-          this.newSeasonStart = new CalendarDate(
-            d.getUTCFullYear(),
-            d.getUTCMonth() + 1,
-            d.getUTCDate(),
-          );
-        }
+        this.updateCreateDefault();
       } catch {
         this.earliestMatchMs = null;
       }

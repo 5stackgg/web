@@ -114,11 +114,20 @@ const accentVar = computed(() => {
 .draft-player-card:hover {
   border-color: hsl(var(--accent) / 0.5);
 }
-/* PlayerDisplay reserves 26px for the role/elo row; with no role shown that
-   stretches the name+elo block and pins the name to the top of the card. Drop
-   the reserve so the two lines sit centered as a tight pair. */
-.draft-player-card :deep(.min-h-\[26px\]) {
-  min-height: 0;
+/* PlayerDisplay's grid row top-anchors inside its own min-height, so the
+   leftover space falls to the bottom of the fixed-height card (uneven top/bottom
+   padding). Center both the row and each column so content sits centered
+   regardless of the name/elo block height. */
+.draft-player-card :deep(.min-h-12) {
+  align-items: center;
+  align-content: center;
+}
+/* The avatar root is inline-flex, so it sits on the parent's text baseline — and
+   an inline-flex box's synthesized baseline differs between an <img> (bottom
+   edge) and the text fallback (text baseline), shifting the avatar vertically
+   and unbalancing the card. Make it block-level flex so both render identically. */
+.draft-player-card :deep(.h-10.w-10) {
+  display: flex;
 }
 .accent-rail {
   position: absolute;

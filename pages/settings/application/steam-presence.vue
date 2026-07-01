@@ -1,74 +1,13 @@
 <script setup lang="ts">
-import { gql } from "@apollo/client/core";
 import { Plus, Trash2, ShieldAlert, Bot } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 
 definePageMeta({
   middleware: "admin",
 });
-
-// Recent events: real-time over websockets (Hasura subscription), not polling.
-const apolloClient = useApolloClient().client;
-const presenceEvents = ref<
-  Array<{ id: string; type: string; message: string; created_at: string }>
->([]);
-let eventsSub: { unsubscribe: () => void } | null = null;
-
-const EVENTS_SUBSCRIPTION = gql`
-  subscription SteamPresenceEvents {
-    steam_presence_events(order_by: { created_at: desc }, limit: 50) {
-      id
-      type
-      message
-      created_at
-    }
-  }
-`;
-
-// Only subscribe / fetch when the bot is enabled — no data requests otherwise.
-const presenceOn = computed(
-  () =>
-    useApplicationSettingsStore().settings.find(
-      (s) => s.name === "public.steam_presence_enabled",
-    )?.value !== "false",
-);
-
-function startEvents() {
-  if (eventsSub) return;
-  eventsSub = apolloClient
-    .subscribe({ query: EVENTS_SUBSCRIPTION })
-    .subscribe({
-      next: ({ data }: any) => {
-        presenceEvents.value = data?.steam_presence_events ?? [];
-      },
-    });
-}
-
-function stopEvents() {
-  eventsSub?.unsubscribe();
-  eventsSub = null;
-  presenceEvents.value = [];
-}
-
-watch(
-  presenceOn,
-  (on) => {
-    if (on) startEvents();
-    else stopEvents();
-  },
-  { immediate: true },
-);
-
-onUnmounted(stopEvents);
-
-// Restrained palette: everything muted except real problems.
-function eventTone(type: string): string {
-  return type === "bot_error" ? "text-destructive" : "text-muted-foreground";
-}
 </script>
 
 <template>
@@ -354,42 +293,6 @@ function eventTone(type: string): string {
                 </Button>
               </form>
             </div>
-          </div>
-        </div>
-      </SettingsSection>
-    </PageTransition>
-
-    <!-- Activity feed (live over websockets) -->
-    <PageTransition v-if="enabled" :delay="180">
-      <SettingsSection
-        id="steam-presence-events"
-        :title="$t('pages.settings.application.steam_presence.events')"
-        :description="$t('pages.settings.application.steam_presence.events_description')"
-      >
-        <div
-          v-if="presenceEvents.length === 0"
-          class="py-6 text-center text-sm text-muted-foreground"
-        >
-          {{ $t("pages.settings.application.steam_presence.no_events") }}
-        </div>
-        <div v-else class="max-h-96 space-y-px overflow-y-auto">
-          <div
-            v-for="event in presenceEvents"
-            :key="event.id"
-            class="flex items-center gap-4 rounded px-2 py-1.5 text-sm hover:bg-muted/40"
-          >
-            <span class="w-24 shrink-0 text-xs text-muted-foreground">
-              <TimeAgo :date="event.created_at" hide-icon />
-            </span>
-            <span
-              class="w-40 shrink-0 truncate font-mono text-[11px] uppercase tracking-wider"
-              :class="eventTone(event.type)"
-            >
-              {{ event.type }}
-            </span>
-            <span class="min-w-0 flex-1 truncate text-muted-foreground">{{
-              event.message
-            }}</span>
           </div>
         </div>
       </SettingsSection>

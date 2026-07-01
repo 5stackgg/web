@@ -1810,9 +1810,6 @@
                     "pending_tooltip": "Players who were assigned a bot but haven't added it as a Steam friend yet.",
                     "capacity": "Capacity",
                     "capacity_tooltip": "Total friend slots across all bots. Auto-detected from each bot's Steam level (250 + 5 × level, max 2000).",
-                    "events": "Recent Events",
-                    "events_description": "Live feed of bot activity (most recent first).",
-                    "no_events": "No recent events.",
                     "fetch_failed": "Failed to load presence status",
                     "fetch_hint": "Make sure the API is running the latest build, migrations and Hasura metadata are applied, and the web GraphQL types are regenerated (yarn codegen)."
                 },

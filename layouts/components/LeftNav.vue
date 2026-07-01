@@ -25,6 +25,7 @@ import {
   ListVideo,
   AlertTriangle,
   Megaphone,
+  Leaf,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -703,6 +704,26 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuItem>
 
               <SidebarMenuItem
+                v-if="seasonsEnabled"
+                :tooltip="$t('layouts.app_nav.administration.seasons')"
+              >
+                <SidebarMenuButton
+                  as-child
+                  :tooltip="$t('layouts.app_nav.administration.seasons')"
+                >
+                  <NuxtLink
+                    :to="{ name: 'seasons' }"
+                    :class="{
+                      'router-link-active': isRouteActive('seasons'),
+                    }"
+                  >
+                    <Leaf />
+                    {{ $t("layouts.app_nav.administration.seasons") }}
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem
                 :tooltip="$t('layouts.app_nav.tooltips.app_settings')"
               >
                 <SidebarMenuButton
@@ -1065,6 +1086,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    seasonsEnabled() {
+      return useApplicationSettingsStore().seasonsEnabled;
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;

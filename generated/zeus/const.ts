@@ -4048,10 +4048,10 @@ export const AllTypesProps: Record<string,any> = {
 		where:"gamedata_signature_validations_bool_exp"
 	},
 	get_leaderboard_args:{
-
+		_season_id:"uuid"
 	},
 	get_player_leaderboard_rank_args:{
-
+		_season_id:"uuid"
 	},
 	inet: `scalar.inet` as const,
 	inet_comparison_exp:{
@@ -7632,6 +7632,9 @@ export const AllTypesProps: Record<string,any> = {
 		approveNameChange:{
 			steam_id:"bigint"
 		},
+		backfillSeasonElo:{
+
+		},
 		bakeShaders:{
 			game_server_node_id:"uuid"
 		},
@@ -10807,10 +10810,12 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"plugin_versions_updates"
 		},
 		update_seasons:{
+			_inc:"seasons_inc_input",
 			_set:"seasons_set_input",
 			where:"seasons_bool_exp"
 		},
 		update_seasons_by_pk:{
+			_inc:"seasons_inc_input",
 			_set:"seasons_set_input",
 			pk_columns:"seasons_pk_columns_input"
 		},
@@ -20083,14 +20088,18 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"seasons_bool_exp",
 		_or:"seasons_bool_exp",
 		created_at:"timestamptz_comparison_exp",
+		description:"String_comparison_exp",
 		ends_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
-		name:"String_comparison_exp",
+		number:"Int_comparison_exp",
 		player_season_stats:"player_season_stats_bool_exp",
 		player_season_stats_aggregate:"player_season_stats_aggregate_bool_exp",
 		starts_at:"timestamptz_comparison_exp"
 	},
 	seasons_constraint: "enum" as const,
+	seasons_inc_input:{
+
+	},
 	seasons_insert_input:{
 		created_at:"timestamptz",
 		ends_at:"timestamptz",
@@ -20109,9 +20118,10 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	seasons_order_by:{
 		created_at:"order_by",
+		description:"order_by",
 		ends_at:"order_by",
 		id:"order_by",
-		name:"order_by",
+		number:"order_by",
 		player_season_stats_aggregate:"player_season_stats_aggregate_order_by",
 		starts_at:"order_by"
 	},
@@ -20137,6 +20147,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	seasons_update_column: "enum" as const,
 	seasons_updates:{
+		_inc:"seasons_inc_input",
 		_set:"seasons_set_input",
 		where:"seasons_bool_exp"
 	},
@@ -29880,6 +29891,17 @@ export const ReturnTypes: Record<string,any> = {
 	ScrimCalendarOutput:{
 		url:"String"
 	},
+	SeasonBackfillStatusOutput:{
+		canceled:"Boolean",
+		completed:"Int",
+		current_match_id:"String",
+		failed:"Int",
+		finished_at:"String",
+		running:"Boolean",
+		season_id:"String",
+		started_at:"String",
+		total:"Int"
+	},
 	ServerPlayer:{
 		name:"String",
 		steam_id:"String"
@@ -33788,8 +33810,11 @@ export const ReturnTypes: Record<string,any> = {
 		approveNameChange:"SuccessOutput",
 		assignSteamPresenceBot:"SteamPresenceBotAssignment",
 		attachDemo:"WatchDemoOutput",
+		backfillSeasonElo:"RecomputeEloStartedOutput",
+		backfillSeasonEloStatus:"SeasonBackfillStatusOutput",
 		bakeShaders:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
+		cancelBackfillSeasonElo:"SuccessOutput",
 		cancelBakeShaders:"SuccessOutput",
 		cancelClipRender:"SuccessOutput",
 		cancelClipRenderBatch:"SuccessOutput",
@@ -40831,9 +40856,10 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	seasons:{
 		created_at:"timestamptz",
+		description:"String",
 		ends_at:"timestamptz",
 		id:"uuid",
-		name:"String",
+		number:"Int",
 		player_season_stats:"player_season_stats",
 		player_season_stats_aggregate:"player_season_stats_aggregate",
 		starts_at:"timestamptz"
@@ -40843,27 +40869,61 @@ export const ReturnTypes: Record<string,any> = {
 		nodes:"seasons"
 	},
 	seasons_aggregate_fields:{
+		avg:"seasons_avg_fields",
 		count:"Int",
 		max:"seasons_max_fields",
-		min:"seasons_min_fields"
+		min:"seasons_min_fields",
+		stddev:"seasons_stddev_fields",
+		stddev_pop:"seasons_stddev_pop_fields",
+		stddev_samp:"seasons_stddev_samp_fields",
+		sum:"seasons_sum_fields",
+		var_pop:"seasons_var_pop_fields",
+		var_samp:"seasons_var_samp_fields",
+		variance:"seasons_variance_fields"
+	},
+	seasons_avg_fields:{
+		number:"Float"
 	},
 	seasons_max_fields:{
 		created_at:"timestamptz",
+		description:"String",
 		ends_at:"timestamptz",
 		id:"uuid",
-		name:"String",
+		number:"Int",
 		starts_at:"timestamptz"
 	},
 	seasons_min_fields:{
 		created_at:"timestamptz",
+		description:"String",
 		ends_at:"timestamptz",
 		id:"uuid",
-		name:"String",
+		number:"Int",
 		starts_at:"timestamptz"
 	},
 	seasons_mutation_response:{
 		affected_rows:"Int",
 		returning:"seasons"
+	},
+	seasons_stddev_fields:{
+		number:"Float"
+	},
+	seasons_stddev_pop_fields:{
+		number:"Float"
+	},
+	seasons_stddev_samp_fields:{
+		number:"Float"
+	},
+	seasons_sum_fields:{
+		number:"Int"
+	},
+	seasons_var_pop_fields:{
+		number:"Float"
+	},
+	seasons_var_samp_fields:{
+		number:"Float"
+	},
+	seasons_variance_fields:{
+		number:"Float"
 	},
 	server_regions:{
 		available_server_count:"Int",

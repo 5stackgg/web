@@ -58,6 +58,10 @@ import {
   filterTriggerActive,
   filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
+
+const seasonsEnabled = computed(
+  () => useApplicationSettingsStore().seasonsEnabled,
+);
 </script>
 
 <template>
@@ -408,6 +412,7 @@ import {
                   />
                 </div>
                 <Select
+                  v-if="seasonsEnabled"
                   :model-value="eloTrack"
                   @update:model-value="onEloTrackChange"
                   @click.stop
@@ -416,8 +421,12 @@ import {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="season">Season</SelectItem>
-                    <SelectItem value="tournament">Tournament</SelectItem>
+                    <SelectItem value="season">{{
+                      $t("pages.players.table.elo_track_season")
+                    }}</SelectItem>
+                    <SelectItem value="tournament">{{
+                      $t("pages.players.table.elo_track_tournament")
+                    }}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -480,14 +489,19 @@ import {
               </TableCell>
               <TableCell>
                 <PlayerElo
-                  :elo="{
-                    competitive: player.elo_competitive,
-                    wingman: player.elo_wingman,
-                    duel: player.elo_duel,
-                    tournament_competitive: player.tournament_elo_competitive,
-                    tournament_wingman: player.tournament_elo_wingman,
-                    tournament_duel: player.tournament_elo_duel,
-                  }"
+                  :elo="
+                    seasonsEnabled && eloTrack === 'tournament'
+                      ? {
+                          competitive: player.tournament_elo_competitive,
+                          wingman: player.tournament_elo_wingman,
+                          duel: player.tournament_elo_duel,
+                        }
+                      : {
+                          competitive: player.elo_competitive,
+                          wingman: player.elo_wingman,
+                          duel: player.elo_duel,
+                        }
+                  "
                 ></PlayerElo>
               </TableCell>
             </NuxtLink>

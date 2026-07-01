@@ -34,11 +34,6 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "pages.settings.application.chat.title",
         order: 1,
       },
-      {
-        path: "/settings/application/seasons",
-        labelKey: "layouts.application_settings.seasons_nav",
-        order: 3,
-      },
     ],
   },
   {
@@ -110,6 +105,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
       {
         path: "/settings/application/steam-presence",
         labelKey: "pages.settings.application.steam_presence.title",
+      },
+      {
+        path: "/settings/application/seasons",
+        labelKey: "pages.settings.application.seasons.title",
+        order: 3,
       },
     ],
   },

@@ -250,6 +250,16 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Competitive seasons: season-scoped ELO + stats. Off by default; when on,
+    // season filtering is shown across the app.
+    const seasonsEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.seasons_enabled",
+        )?.value === "true"
+      );
+    });
+
     // Anti-cheat: require viewers to be signed in before live game
     // streams are shown. Enabled by default — only an explicit "false"
     // disables it.
@@ -468,6 +478,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerVersionPinning,
       playerNameRegistration,
       newsEnabled,
+      seasonsEnabled,
       requireLoginForLiveStreams,
       newsLabel,
       postNewsRole,

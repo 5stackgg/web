@@ -41,6 +41,8 @@ import { Kbd } from "~/components/ui/kbd";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import { useStreamerStore } from "~/stores/StreamerStore";
+import { useAuthStore } from "~/stores/AuthStore";
+import { Lock } from "lucide-vue-next";
 import {
   specSlotsForMatchType,
   resolveKeyToRealSlot,
@@ -71,6 +73,45 @@ const stream = computed<any | null>(() => {
   const list: any[] = streamerStore.liveStreams ?? [];
   return list.find((s) => s?.match_id === matchId.value) ?? null;
 });
+
+// Anti-cheat: a rostered player/coach — even an admin/streamer — must
+// never see the live feed of a match they're in. The server enforces
+// this with a 401 on the WHEP endpoint; we gate here so we NEVER try
+// to connect (no nginx 401 page) and show a clear reason instead.
+// `is_in_lineup` / `is_coach` are backend computed fields for the
+// authenticated session.
+const authStore = useAuthStore();
+const isInLineup = ref(false);
+let lineupSub: { unsubscribe: () => void } | undefined;
+
+function ensureLineupSubscription() {
+  lineupSub?.unsubscribe();
+  lineupSub = undefined;
+  if (!authStore.me?.steam_id) {
+    isInLineup.value = false;
+    return;
+  }
+  lineupSub = apolloClient
+    .subscribe({
+      query: generateSubscription({
+        matches_by_pk: [
+          { id: matchId.value },
+          { is_in_lineup: true, is_coach: true },
+        ],
+      } as any),
+    })
+    .subscribe({
+      next: (result: any) => {
+        const m = result?.data?.matches_by_pk;
+        isInLineup.value = !!(m?.is_in_lineup || m?.is_coach);
+      },
+      error: (err: any) => {
+        console.error("[stream-deck] lineup subscription error", err);
+      },
+    });
+}
+
+const canView = computed(() => !isInLineup.value);
 
 // Mirror the persisted DB autodirector flag into our local toggle so
 // the switch starts in the correct state, but suppress the sync
@@ -307,6 +348,7 @@ const otherLiveMatches = ref<
 let liveMatchesSub: { unsubscribe: () => void } | undefined;
 
 onMounted(() => {
+  ensureLineupSubscription();
   liveMatchesSub = apolloClient
     .subscribe({
       query: generateSubscription({
@@ -331,6 +373,12 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   liveMatchesSub?.unsubscribe();
+  lineupSub?.unsubscribe();
+});
+
+// Re-evaluate when the viewed match or the signed-in user changes.
+watch([matchId, () => authStore.me?.steam_id], () => {
+  ensureLineupSubscription();
 });
 
 const SWITCH_LIVE_MATCH_MUTATION = gql`
@@ -895,7 +943,28 @@ watch(spectatedSteamId, (sid) => {
     <!-- ============ MAIN BODY ============ -->
     <PageTransition :delay="0" class="flex-1">
       <div class="mx-auto max-w-7xl w-full px-4 py-6 space-y-5">
+        <!-- Rostered player/coach: never connect the feed (anti-cheat). -->
+        <div
+          v-if="!canView"
+          class="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-lg border border-border/70 bg-black px-6 text-center shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+        >
+          <div
+            class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
+          >
+            <Lock class="size-5 text-muted-foreground" />
+          </div>
+          <p
+            class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
+          >
+            {{ $t("match.stream.access_denied") }}
+          </p>
+          <p class="max-w-xs text-[0.7rem] leading-relaxed text-muted-foreground">
+            {{ $t("match.stream.access_denied_hint") }}
+          </p>
+        </div>
+
         <StreamCanvas
+          v-else
           :stream="stream"
           :is-live="isLiveRef"
           mode="live"

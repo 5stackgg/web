@@ -35,6 +35,7 @@ import {
   Tv,
   Dot,
   RefreshCw,
+  Lock,
 } from "lucide-vue-next";
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
@@ -177,6 +178,12 @@ onMounted(() => {
             server_id: true,
             is_server_online: true,
             server_region: true,
+            // Anti-cheat: a rostered player/coach (even an admin) must
+            // never see the feed of a match they're in. Per-session
+            // computed fields — used to gate the preview so we NEVER
+            // connect and hit the server-side 401.
+            is_in_lineup: true,
+            is_coach: true,
           },
         ],
       }),
@@ -216,6 +223,19 @@ const streamByMatchId = computed(() => {
   }
   return out;
 });
+
+// Match ids where the signed-in viewer is rostered (player or coach)
+// and therefore must not see the live feed. Sourced from the board
+// subscription's per-session computed fields.
+const blockedMatchIds = computed(() => {
+  const out = new Set<string>();
+  for (const m of liveMatches.value) {
+    if (m.is_in_lineup || m.is_coach) out.add(m.id);
+  }
+  return out;
+});
+const canViewMatch = (matchId: string | null | undefined) =>
+  !matchId || !blockedMatchIds.value.has(matchId);
 
 const activeStream = computed(() => liveStreams.value[0] ?? null);
 const activeMatchId = computed(() => activeStream.value?.match_id ?? null);
@@ -746,7 +766,30 @@ function matchStatusLabel(m: LiveMatch): string {
           <div
             class="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start"
           >
+            <!-- Rostered player/coach: never connect the feed (anti-cheat). -->
+            <div
+              v-if="!canViewMatch(stream.match_id)"
+              class="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-md border border-border/60 bg-black px-6 text-center"
+            >
+              <div
+                class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
+              >
+                <Lock class="size-5 text-muted-foreground" />
+              </div>
+              <p
+                class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
+              >
+                {{ $t("match.stream.access_denied") }}
+              </p>
+              <p
+                class="max-w-xs text-[0.7rem] leading-relaxed text-muted-foreground"
+              >
+                {{ $t("match.stream.access_denied_hint") }}
+              </p>
+            </div>
+
             <StreamCanvas
+              v-else
               :stream="stream"
               :is-live="!!stream.is_live"
               mode="live"

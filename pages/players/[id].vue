@@ -2,9 +2,6 @@
 import { useI18n } from "vue-i18n";
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import DemoUpload from "~/components/DemoUpload.vue";
-
-// Demo-upload modal (own profile + admin), opened from a subtle link by matches.
-const showDemoUpload = ref(false);
 import PlayerIntroDashboard from "~/components/player/PlayerIntroDashboard.vue";
 import PlayerMapsGrid from "~/components/player/PlayerMapsGrid.vue";
 import PlayerWeaponsTable from "~/components/player/PlayerWeaponsTable.vue";
@@ -17,6 +14,9 @@ import PlayerCareerDuels from "~/components/player/PlayerCareerDuels.vue";
 import PlayerCareerClutches from "~/components/player/PlayerCareerClutches.vue";
 
 const { t } = useI18n();
+
+// Demo-upload modal (own profile + admin), opened from a subtle link by matches.
+const showDemoUpload = ref(false);
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";

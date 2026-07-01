@@ -737,77 +737,107 @@ function formatPendingDate(date: string): string {
         </dl>
       </div>
 
-      <!-- Instant imports via presence bot (only shown once linked) -->
-      <div class="space-y-2 rounded-lg border border-border bg-card/50 px-4 py-3">
-        <div class="flex items-center gap-2">
-          <CheckCircle2
-            v-if="presenceConnected"
-            class="h-4 w-4 text-emerald-400"
-          />
-          <Zap v-else class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-          <h3 class="text-sm font-medium">
-            {{ $t("pages.settings.external_matches.presence_title") }}
-          </h3>
+      <!-- 5stack Steam bot — presence link that powers instant imports.
+           Header mirrors the linked-account card above for visual consistency;
+           the connected state previews the exact friend-list row (role + rank +
+           live status) that friends see. -->
+      <div class="rounded-lg border border-border bg-card/50 overflow-hidden">
+        <div
+          class="flex items-center gap-2.5 px-4 py-3"
+          :class="{ 'border-b border-border/60': presenceConnected }"
+        >
+          <span
+            class="shrink-0 w-7 h-7 rounded-md flex items-center justify-center"
+            :class="
+              presenceConnected
+                ? 'bg-emerald-500/15 text-emerald-400'
+                : 'bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+            "
+          >
+            <CheckCircle2 v-if="presenceConnected" class="w-4 h-4" />
+            <Zap v-else class="w-4 h-4" />
+          </span>
+          <div class="min-w-0">
+            <div class="text-sm font-medium leading-tight">
+              {{ $t("pages.settings.external_matches.presence_title") }}
+            </div>
+            <div
+              class="text-xs"
+              :class="
+                presenceConnected ? 'text-emerald-400' : 'text-muted-foreground'
+              "
+            >
+              {{
+                presenceConnected
+                  ? $t("pages.settings.external_matches.presence_connected")
+                  : $t("pages.settings.external_matches.presence_not_connected")
+              }}
+            </div>
+          </div>
         </div>
-        <p class="text-sm text-muted-foreground">
-          {{ $t("pages.settings.external_matches.presence_description") }}
-        </p>
 
         <template v-if="presenceConnected">
-          <div class="flex items-center gap-1.5 text-sm text-emerald-400">
-            <CheckCircle2 class="h-4 w-4" />
-            {{ $t("pages.settings.external_matches.presence_connected") }}
-          </div>
-          <!-- Rendered like a Steam friends-list entry: your avatar/name + the
-               live status only friends can see. -->
-          <div class="rounded-md border border-border/60 bg-background/40 px-3 py-2.5">
-            <div class="mb-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-              {{ $t("pages.settings.external_matches.presence_self_label") }}
+          <!-- Rendered like a friends-list entry: your avatar, name, role and
+               rank plus the live status only friends can see. -->
+          <div class="px-4 py-3">
+            <div
+              class="rounded-md border border-border/60 bg-background/40 px-3 py-2.5"
+            >
+              <div
+                class="mb-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground"
+              >
+                {{ $t("pages.settings.external_matches.presence_self_label") }}
+              </div>
+              <PlayerDisplay
+                :player="me"
+                :show-online="false"
+                :linkable="false"
+                :truncate-name="true"
+                size="sm"
+              />
+              <PlayerLiveStatus
+                :player="selfPresencePlayer"
+                online
+                show-offline
+                class="mt-1.5"
+              />
             </div>
-            <PlayerDisplay
-              :player="me"
-              :show-elo="false"
-              :show-role="false"
-              :show-online="false"
-              :linkable="false"
-              size="sm"
-            />
-            <PlayerLiveStatus
-              :player="selfPresencePlayer"
-              online
-              show-offline
-              class="mt-1.5"
-            />
           </div>
         </template>
         <template v-else>
-          <a
-            v-if="presenceAddUrl"
-            :href="presenceAddUrl"
-            target="_blank"
-            rel="noopener"
-          >
-            <Button size="sm" variant="tactical">
+          <div class="px-4 py-3 space-y-3">
+            <p class="text-sm text-muted-foreground">
+              {{ $t("pages.settings.external_matches.presence_description") }}
+            </p>
+            <a
+              v-if="presenceAddUrl"
+              :href="presenceAddUrl"
+              target="_blank"
+              rel="noopener"
+              class="inline-block"
+            >
+              <Button size="sm" variant="tactical">
+                <UserPlus class="h-4 w-4" />
+                {{ $t("pages.settings.external_matches.presence_add_bot") }}
+              </Button>
+            </a>
+            <Button
+              v-else
+              size="sm"
+              variant="tactical"
+              :disabled="presenceConnecting"
+              @click="connectPresence"
+            >
               <UserPlus class="h-4 w-4" />
-              {{ $t("pages.settings.external_matches.presence_add_bot") }}
+              {{ $t("pages.settings.external_matches.presence_connect") }}
             </Button>
-          </a>
-          <Button
-            v-else
-            size="sm"
-            variant="tactical"
-            :disabled="presenceConnecting"
-            @click="connectPresence"
-          >
-            <UserPlus class="h-4 w-4" />
-            {{ $t("pages.settings.external_matches.presence_connect") }}
-          </Button>
-          <p
-            v-if="presenceFriend && !presenceConnected"
-            class="text-xs text-muted-foreground"
-          >
-            {{ $t("pages.settings.external_matches.presence_pending") }}
-          </p>
+            <p
+              v-if="presenceFriend && !presenceConnected"
+              class="text-xs text-muted-foreground"
+            >
+              {{ $t("pages.settings.external_matches.presence_pending") }}
+            </p>
+          </div>
         </template>
       </div>
     </div>

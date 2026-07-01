@@ -204,8 +204,9 @@ const dangerBtn = [
                   </PopoverTrigger>
                   <PopoverContent class="w-auto p-0">
                     <Calendar
-                      v-model="newSeasonStart"
+                      :model-value="newSeasonStart"
                       :is-date-disabled="createStartDisabled"
+                      @update:model-value="onNewSeasonStart"
                       initial-focus
                     />
                   </PopoverContent>
@@ -655,6 +656,7 @@ export default {
       rebuildSeasonId: null as string | null,
       showDeleteConfirm: false,
       deleteSeasonId: null as string | null,
+      createStartTouched: false,
     };
   },
   computed: {
@@ -865,7 +867,12 @@ export default {
         d.getUTCDate(),
       );
     },
+    onNewSeasonStart(cd: CalendarDate | undefined) {
+      this.newSeasonStart = cd;
+      this.createStartTouched = true;
+    },
     updateCreateDefault() {
+      if (this.createStartTouched) return;
       if (this.seasons.length === 0) {
         if (this.earliestMatchMs) {
           this.newSeasonStart = this.cdFromMs(this.earliestMatchMs);
@@ -955,6 +962,7 @@ export default {
         this.newSeasonDescription = "";
         this.newSeasonStart = undefined;
         this.newSeasonEnd = undefined;
+        this.createStartTouched = false;
 
         toast({ title: this.$t("pages.seasons.created") });
       } catch (error) {

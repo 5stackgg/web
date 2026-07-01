@@ -106,6 +106,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
             avatar_url: true,
             status: true,
             invited_by_steam_id: true,
+            last_presence_state: true,
+            presence_updated_at: true,
             player: {
               steam_id: true,
               is_in_lobby: true,

@@ -52,7 +52,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
       :title="$t('common.region')"
       v-if="availableRegions.length > 0"
     >
-      <div class="flex justify-end mb-4">
+      <template #actions>
         <Button
           variant="outline"
           size="sm"
@@ -63,7 +63,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
           <RefreshCw v-else class="h-4 w-4 mr-2" />
           {{ $t("common.refresh") }}
         </Button>
-      </div>
+      </template>
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-border">
           <thead>

@@ -115,29 +115,9 @@ function eventTone(type: string): string {
           />
         </div>
 
-        <!-- Status lives here, only when enabled (no data fetched otherwise). -->
+        <!-- Status tiles, only when enabled (no data fetched otherwise). -->
         <template v-if="enabled">
           <div class="border-t border-border/60 pt-5">
-            <div class="mb-3 flex items-center justify-between">
-              <h4
-                class="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
-              >
-                {{ $t("pages.settings.application.steam_presence.status") }}
-              </h4>
-              <span
-                v-if="status && !error"
-                class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-green-400"
-              >
-                <span class="relative flex h-2 w-2">
-                  <span
-                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"
-                  />
-                  <span class="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
-                </span>
-                {{ $t("pages.settings.application.steam_presence.live") }}
-              </span>
-            </div>
-
             <div v-if="!status && loading" class="text-sm text-muted-foreground">
               {{ $t("common.loading", "Loading…") }}
             </div>
@@ -251,11 +231,15 @@ function eventTone(type: string): string {
         </div>
 
         <!-- Bot list -->
-        <div v-else-if="status" class="divide-y divide-border/40">
-          <div v-for="bot in status.bots" :key="bot.id" class="py-4 first:pt-0">
-            <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <!-- identity -->
-              <div class="min-w-0 flex-1">
+        <div v-else-if="status" class="space-y-3">
+          <div
+            v-for="bot in status.bots"
+            :key="bot.id"
+            class="rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <!-- identity + remove -->
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
                 <div class="flex items-center gap-2">
                   <span class="truncate font-medium">{{ bot.username }}</span>
                   <span
@@ -290,23 +274,30 @@ function eventTone(type: string): string {
                 </a>
               </div>
 
-              <!-- watching -->
-              <div class="text-right">
-                <div class="text-lg font-semibold leading-none tabular-nums">
-                  {{ bot.watching }}
-                </div>
-                <div class="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-                  {{ $t("pages.settings.application.steam_presence.watching") }}
-                </div>
-              </div>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                class="-mr-1 -mt-1 shrink-0 text-muted-foreground hover:text-destructive"
+                @click="removeAccount(bot)"
+              >
+                <Trash2 class="h-4 w-4" />
+              </Button>
+            </div>
 
-              <!-- capacity -->
-              <div class="w-40">
+            <!-- watching + capacity -->
+            <div class="mt-4 flex items-center gap-5">
+              <div class="shrink-0 leading-none">
+                <span class="text-lg font-semibold tabular-nums">{{ bot.watching }}</span>
+                <span class="ml-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  {{ $t("pages.settings.application.steam_presence.watching") }}
+                </span>
+              </div>
+              <div class="flex-1">
                 <div class="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
                   <span>{{ $t("pages.settings.application.steam_presence.capacity") }}</span>
-                  <span class="tabular-nums">
-                    {{ bot.assigned }}/{{ bot.capacity }}
-                    <span v-if="bot.steamLevel" class="normal-case tracking-normal">
+                  <span class="tabular-nums normal-case tracking-normal text-foreground/70">
+                    {{ bot.assigned }} / {{ bot.capacity }}
+                    <span v-if="bot.steamLevel" class="text-muted-foreground">
                       · lvl {{ bot.steamLevel }}
                     </span>
                   </span>
@@ -326,15 +317,6 @@ function eventTone(type: string): string {
                   />
                 </div>
               </div>
-
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                class="text-muted-foreground hover:text-destructive"
-                @click="removeAccount(bot)"
-              >
-                <Trash2 class="h-4 w-4" />
-              </Button>
             </div>
 
             <!-- Steam Guard prompt -->

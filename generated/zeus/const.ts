@@ -4048,10 +4048,10 @@ export const AllTypesProps: Record<string,any> = {
 		where:"gamedata_signature_validations_bool_exp"
 	},
 	get_leaderboard_args:{
-
+		_season_id:"uuid"
 	},
 	get_player_leaderboard_rank_args:{
-
+		_season_id:"uuid"
 	},
 	inet: `scalar.inet` as const,
 	inet_comparison_exp:{
@@ -7632,6 +7632,9 @@ export const AllTypesProps: Record<string,any> = {
 		approveNameChange:{
 			steam_id:"bigint"
 		},
+		backfillSeasonElo:{
+
+		},
 		bakeShaders:{
 			game_server_node_id:"uuid"
 		},
@@ -8226,6 +8229,13 @@ export const AllTypesProps: Record<string,any> = {
 			created_at:"timestamptz",
 			id:"uuid"
 		},
+		delete_player_season_stats:{
+			where:"player_season_stats_bool_exp"
+		},
+		delete_player_season_stats_by_pk:{
+			player_steam_id:"bigint",
+			season_id:"uuid"
+		},
 		delete_player_stats:{
 			where:"player_stats_bool_exp"
 		},
@@ -8270,6 +8280,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_plugin_versions_by_pk:{
 
+		},
+		delete_seasons:{
+			where:"seasons_bool_exp"
+		},
+		delete_seasons_by_pk:{
+			id:"uuid"
 		},
 		delete_server_regions:{
 			where:"server_regions_bool_exp"
@@ -9113,6 +9129,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"player_sanctions_insert_input",
 			on_conflict:"player_sanctions_on_conflict"
 		},
+		insert_player_season_stats:{
+			objects:"player_season_stats_insert_input",
+			on_conflict:"player_season_stats_on_conflict"
+		},
+		insert_player_season_stats_one:{
+			object:"player_season_stats_insert_input",
+			on_conflict:"player_season_stats_on_conflict"
+		},
 		insert_player_stats:{
 			objects:"player_stats_insert_input",
 			on_conflict:"player_stats_on_conflict"
@@ -9168,6 +9192,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_plugin_versions_one:{
 			object:"plugin_versions_insert_input",
 			on_conflict:"plugin_versions_on_conflict"
+		},
+		insert_seasons:{
+			objects:"seasons_insert_input",
+			on_conflict:"seasons_on_conflict"
+		},
+		insert_seasons_one:{
+			object:"seasons_insert_input",
+			on_conflict:"seasons_on_conflict"
 		},
 		insert_server_regions:{
 			objects:"server_regions_insert_input",
@@ -10663,6 +10695,19 @@ export const AllTypesProps: Record<string,any> = {
 		update_player_sanctions_many:{
 			updates:"player_sanctions_updates"
 		},
+		update_player_season_stats:{
+			_inc:"player_season_stats_inc_input",
+			_set:"player_season_stats_set_input",
+			where:"player_season_stats_bool_exp"
+		},
+		update_player_season_stats_by_pk:{
+			_inc:"player_season_stats_inc_input",
+			_set:"player_season_stats_set_input",
+			pk_columns:"player_season_stats_pk_columns_input"
+		},
+		update_player_season_stats_many:{
+			updates:"player_season_stats_updates"
+		},
 		update_player_stats:{
 			_inc:"player_stats_inc_input",
 			_set:"player_stats_set_input",
@@ -10763,6 +10808,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_plugin_versions_many:{
 			updates:"plugin_versions_updates"
+		},
+		update_seasons:{
+			_inc:"seasons_inc_input",
+			_set:"seasons_set_input",
+			where:"seasons_bool_exp"
+		},
+		update_seasons_by_pk:{
+			_inc:"seasons_inc_input",
+			_set:"seasons_set_input",
+			pk_columns:"seasons_pk_columns_input"
+		},
+		update_seasons_many:{
+			updates:"seasons_updates"
 		},
 		update_server_regions:{
 			_set:"server_regions_set_input",
@@ -12872,6 +12930,8 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8_comparison_exp",
 		player:"players_bool_exp",
 		player_team_elo_avg:"float8_comparison_exp",
+		season:"seasons_bool_exp",
+		season_id:"uuid_comparison_exp",
 		series_multiplier:"Int_comparison_exp",
 		steam_id:"bigint_comparison_exp",
 		team_avg_kda:"float8_comparison_exp",
@@ -12907,6 +12967,8 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8",
 		player:"players_obj_rel_insert_input",
 		player_team_elo_avg:"float8",
+		season:"seasons_obj_rel_insert_input",
+		season_id:"uuid",
 		steam_id:"bigint",
 		team_avg_kda:"float8",
 		type:"e_match_types_enum"
@@ -12938,6 +13000,8 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player:"players_order_by",
 		player_team_elo_avg:"order_by",
+		season:"seasons_order_by",
+		season_id:"order_by",
 		series_multiplier:"order_by",
 		steam_id:"order_by",
 		team_avg_kda:"order_by",
@@ -12962,6 +13026,7 @@ export const AllTypesProps: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		steam_id:"bigint",
 		team_avg_kda:"float8",
 		type:"e_match_types_enum"
@@ -12983,6 +13048,7 @@ export const AllTypesProps: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		steam_id:"bigint",
 		team_avg_kda:"float8",
 		type:"e_match_types_enum"
@@ -16264,6 +16330,265 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		sanctioned_by_steam_id:"order_by"
 	},
+	player_season_stats_aggregate_bool_exp:{
+		avg:"player_season_stats_aggregate_bool_exp_avg",
+		corr:"player_season_stats_aggregate_bool_exp_corr",
+		count:"player_season_stats_aggregate_bool_exp_count",
+		covar_samp:"player_season_stats_aggregate_bool_exp_covar_samp",
+		max:"player_season_stats_aggregate_bool_exp_max",
+		min:"player_season_stats_aggregate_bool_exp_min",
+		stddev_samp:"player_season_stats_aggregate_bool_exp_stddev_samp",
+		sum:"player_season_stats_aggregate_bool_exp_sum",
+		var_samp:"player_season_stats_aggregate_bool_exp_var_samp"
+	},
+	player_season_stats_aggregate_bool_exp_avg:{
+		arguments:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_avg_arguments_columns",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_corr:{
+		arguments:"player_season_stats_aggregate_bool_exp_corr_arguments",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_corr_arguments:{
+		X:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_corr_arguments_columns",
+		Y:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_corr_arguments_columns"
+	},
+	player_season_stats_aggregate_bool_exp_count:{
+		arguments:"player_season_stats_select_column",
+		filter:"player_season_stats_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_covar_samp:{
+		arguments:"player_season_stats_aggregate_bool_exp_covar_samp_arguments",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_covar_samp_arguments:{
+		X:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_covar_samp_arguments_columns",
+		Y:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_covar_samp_arguments_columns"
+	},
+	player_season_stats_aggregate_bool_exp_max:{
+		arguments:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_max_arguments_columns",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_min:{
+		arguments:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_min_arguments_columns",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_stddev_samp:{
+		arguments:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_stddev_samp_arguments_columns",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_sum:{
+		arguments:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_sum_arguments_columns",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_bool_exp_var_samp:{
+		arguments:"player_season_stats_select_column_player_season_stats_aggregate_bool_exp_var_samp_arguments_columns",
+		filter:"player_season_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	player_season_stats_aggregate_fields:{
+		count:{
+			columns:"player_season_stats_select_column"
+		}
+	},
+	player_season_stats_aggregate_order_by:{
+		avg:"player_season_stats_avg_order_by",
+		count:"order_by",
+		max:"player_season_stats_max_order_by",
+		min:"player_season_stats_min_order_by",
+		stddev:"player_season_stats_stddev_order_by",
+		stddev_pop:"player_season_stats_stddev_pop_order_by",
+		stddev_samp:"player_season_stats_stddev_samp_order_by",
+		sum:"player_season_stats_sum_order_by",
+		var_pop:"player_season_stats_var_pop_order_by",
+		var_samp:"player_season_stats_var_samp_order_by",
+		variance:"player_season_stats_variance_order_by"
+	},
+	player_season_stats_arr_rel_insert_input:{
+		data:"player_season_stats_insert_input",
+		on_conflict:"player_season_stats_on_conflict"
+	},
+	player_season_stats_avg_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_bool_exp:{
+		_and:"player_season_stats_bool_exp",
+		_not:"player_season_stats_bool_exp",
+		_or:"player_season_stats_bool_exp",
+		assists:"bigint_comparison_exp",
+		deaths:"bigint_comparison_exp",
+		headshot_percentage:"float8_comparison_exp",
+		headshots:"bigint_comparison_exp",
+		kills:"bigint_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		season:"seasons_bool_exp",
+		season_id:"uuid_comparison_exp"
+	},
+	player_season_stats_constraint: "enum" as const,
+	player_season_stats_inc_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_season_stats_insert_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		season:"seasons_obj_rel_insert_input",
+		season_id:"uuid"
+	},
+	player_season_stats_max_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by",
+		season_id:"order_by"
+	},
+	player_season_stats_min_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by",
+		season_id:"order_by"
+	},
+	player_season_stats_on_conflict:{
+		constraint:"player_season_stats_constraint",
+		update_columns:"player_season_stats_update_column",
+		where:"player_season_stats_bool_exp"
+	},
+	player_season_stats_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		season:"seasons_order_by",
+		season_id:"order_by"
+	},
+	player_season_stats_pk_columns_input:{
+		player_steam_id:"bigint",
+		season_id:"uuid"
+	},
+	player_season_stats_select_column: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_avg_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_corr_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_covar_samp_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_max_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_min_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_stddev_samp_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
+	player_season_stats_select_column_player_season_stats_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
+	player_season_stats_set_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint",
+		season_id:"uuid"
+	},
+	player_season_stats_stddev_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_stddev_pop_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_stddev_samp_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_stream_cursor_input:{
+		initial_value:"player_season_stats_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_season_stats_stream_cursor_value_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint",
+		season_id:"uuid"
+	},
+	player_season_stats_sum_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_update_column: "enum" as const,
+	player_season_stats_updates:{
+		_inc:"player_season_stats_inc_input",
+		_set:"player_season_stats_set_input",
+		where:"player_season_stats_bool_exp"
+	},
+	player_season_stats_var_pop_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_var_samp_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_season_stats_variance_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player_steam_id:"order_by"
+	},
 	player_stats_aggregate_fields:{
 		count:{
 			columns:"player_stats_select_column"
@@ -17314,6 +17639,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_sanctions_order_by",
 			where:"player_sanctions_bool_exp"
 		},
+		season_stats:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
+		season_stats_aggregate:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
 		team_invites:{
 			distinct_on:"team_invites_select_column",
 			order_by:"team_invites_order_by",
@@ -17507,6 +17842,8 @@ export const AllTypesProps: Record<string,any> = {
 		roster_image_url:"String_comparison_exp",
 		sanctions:"player_sanctions_bool_exp",
 		sanctions_aggregate:"player_sanctions_aggregate_bool_exp",
+		season_stats:"player_season_stats_bool_exp",
+		season_stats_aggregate:"player_season_stats_aggregate_bool_exp",
 		show_match_ready_modal:"Boolean_comparison_exp",
 		stats:"player_stats_bool_exp",
 		steam_bans_checked_at:"timestamptz_comparison_exp",
@@ -17577,6 +17914,7 @@ export const AllTypesProps: Record<string,any> = {
 		premier_rank_updated_at:"timestamptz",
 		role:"e_player_roles_enum",
 		sanctions:"player_sanctions_arr_rel_insert_input",
+		season_stats:"player_season_stats_arr_rel_insert_input",
 		stats:"player_stats_obj_rel_insert_input",
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
@@ -17667,6 +18005,7 @@ export const AllTypesProps: Record<string,any> = {
 		role:"order_by",
 		roster_image_url:"order_by",
 		sanctions_aggregate:"player_sanctions_aggregate_order_by",
+		season_stats_aggregate:"player_season_stats_aggregate_order_by",
 		show_match_ready_modal:"order_by",
 		stats:"player_stats_order_by",
 		steam_bans_checked_at:"order_by",
@@ -18977,6 +19316,20 @@ export const AllTypesProps: Record<string,any> = {
 			created_at:"timestamptz",
 			id:"uuid"
 		},
+		player_season_stats:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
+		player_season_stats_aggregate:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
+		player_season_stats_by_pk:{
+			player_steam_id:"bigint",
+			season_id:"uuid"
+		},
 		player_stats:{
 			distinct_on:"player_stats_select_column",
 			order_by:"player_stats_order_by",
@@ -19086,6 +19439,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		scrimCalendarUrl:{
 			team_id:"uuid"
+		},
+		seasons:{
+			distinct_on:"seasons_select_column",
+			order_by:"seasons_order_by",
+			where:"seasons_bool_exp"
+		},
+		seasons_aggregate:{
+			distinct_on:"seasons_select_column",
+			order_by:"seasons_order_by",
+			where:"seasons_bool_exp"
+		},
+		seasons_by_pk:{
+			id:"uuid"
 		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
@@ -19699,6 +20065,93 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	recalculate_tournament_trophies_args:{
 		_tournament_id:"uuid"
+	},
+	seasons:{
+		player_season_stats:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
+		player_season_stats_aggregate:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		}
+	},
+	seasons_aggregate_fields:{
+		count:{
+			columns:"seasons_select_column"
+		}
+	},
+	seasons_bool_exp:{
+		_and:"seasons_bool_exp",
+		_not:"seasons_bool_exp",
+		_or:"seasons_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		description:"String_comparison_exp",
+		ends_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		needs_rebuild:"Boolean_comparison_exp",
+		number:"Int_comparison_exp",
+		player_season_stats:"player_season_stats_bool_exp",
+		player_season_stats_aggregate:"player_season_stats_aggregate_bool_exp",
+		starts_at:"timestamptz_comparison_exp"
+	},
+	seasons_constraint: "enum" as const,
+	seasons_inc_input:{
+
+	},
+	seasons_insert_input:{
+		created_at:"timestamptz",
+		ends_at:"timestamptz",
+		id:"uuid",
+		player_season_stats:"player_season_stats_arr_rel_insert_input",
+		starts_at:"timestamptz"
+	},
+	seasons_obj_rel_insert_input:{
+		data:"seasons_insert_input",
+		on_conflict:"seasons_on_conflict"
+	},
+	seasons_on_conflict:{
+		constraint:"seasons_constraint",
+		update_columns:"seasons_update_column",
+		where:"seasons_bool_exp"
+	},
+	seasons_order_by:{
+		created_at:"order_by",
+		description:"order_by",
+		ends_at:"order_by",
+		id:"order_by",
+		needs_rebuild:"order_by",
+		number:"order_by",
+		player_season_stats_aggregate:"player_season_stats_aggregate_order_by",
+		starts_at:"order_by"
+	},
+	seasons_pk_columns_input:{
+		id:"uuid"
+	},
+	seasons_select_column: "enum" as const,
+	seasons_set_input:{
+		created_at:"timestamptz",
+		ends_at:"timestamptz",
+		id:"uuid",
+		starts_at:"timestamptz"
+	},
+	seasons_stream_cursor_input:{
+		initial_value:"seasons_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	seasons_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		ends_at:"timestamptz",
+		id:"uuid",
+		starts_at:"timestamptz"
+	},
+	seasons_update_column: "enum" as const,
+	seasons_updates:{
+		_inc:"seasons_inc_input",
+		_set:"seasons_set_input",
+		where:"seasons_bool_exp"
 	},
 	server_regions:{
 		game_server_nodes:{
@@ -21798,6 +22251,24 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"player_sanctions_stream_cursor_input",
 			where:"player_sanctions_bool_exp"
 		},
+		player_season_stats:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
+		player_season_stats_aggregate:{
+			distinct_on:"player_season_stats_select_column",
+			order_by:"player_season_stats_order_by",
+			where:"player_season_stats_bool_exp"
+		},
+		player_season_stats_by_pk:{
+			player_steam_id:"bigint",
+			season_id:"uuid"
+		},
+		player_season_stats_stream:{
+			cursor:"player_season_stats_stream_cursor_input",
+			where:"player_season_stats_bool_exp"
+		},
 		player_stats:{
 			distinct_on:"player_stats_select_column",
 			order_by:"player_stats_order_by",
@@ -21933,6 +22404,23 @@ export const AllTypesProps: Record<string,any> = {
 		plugin_versions_stream:{
 			cursor:"plugin_versions_stream_cursor_input",
 			where:"plugin_versions_bool_exp"
+		},
+		seasons:{
+			distinct_on:"seasons_select_column",
+			order_by:"seasons_order_by",
+			where:"seasons_bool_exp"
+		},
+		seasons_aggregate:{
+			distinct_on:"seasons_select_column",
+			order_by:"seasons_order_by",
+			where:"seasons_bool_exp"
+		},
+		seasons_by_pk:{
+			id:"uuid"
+		},
+		seasons_stream:{
+			cursor:"seasons_stream_cursor_input",
+			where:"seasons_bool_exp"
 		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
@@ -26859,6 +27347,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"String_comparison_exp",
 		player_steam_id:"bigint_comparison_exp",
 		player_team_elo_avg:"float8_comparison_exp",
+		season_id:"uuid_comparison_exp",
 		series_multiplier:"Int_comparison_exp",
 		team_avg_kda:"float8_comparison_exp",
 		type:"String_comparison_exp",
@@ -26877,6 +27366,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		team_avg_kda:"float8"
 	},
 	v_player_elo_max_order_by:{
@@ -26902,6 +27392,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		season_id:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		type:"order_by",
@@ -26930,6 +27421,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		season_id:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		type:"order_by",
@@ -26959,6 +27451,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		season_id:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		type:"order_by",
@@ -27058,6 +27551,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		team_avg_kda:"float8"
 	},
 	v_player_elo_sum_order_by:{
@@ -29398,6 +29892,17 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	ScrimCalendarOutput:{
 		url:"String"
+	},
+	SeasonBackfillStatusOutput:{
+		canceled:"Boolean",
+		completed:"Int",
+		current_match_id:"String",
+		failed:"Int",
+		finished_at:"String",
+		running:"Boolean",
+		season_id:"String",
+		started_at:"String",
+		total:"Int"
 	},
 	ServerPlayer:{
 		name:"String",
@@ -33307,8 +33812,11 @@ export const ReturnTypes: Record<string,any> = {
 		approveNameChange:"SuccessOutput",
 		assignSteamPresenceBot:"SteamPresenceBotAssignment",
 		attachDemo:"WatchDemoOutput",
+		backfillSeasonElo:"RecomputeEloStartedOutput",
+		backfillSeasonEloStatus:"SeasonBackfillStatusOutput",
 		bakeShaders:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
+		cancelBackfillSeasonElo:"SuccessOutput",
 		cancelBakeShaders:"SuccessOutput",
 		cancelClipRender:"SuccessOutput",
 		cancelClipRenderBatch:"SuccessOutput",
@@ -33500,6 +34008,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_premier_rank_history_by_pk:"player_premier_rank_history",
 		delete_player_sanctions:"player_sanctions_mutation_response",
 		delete_player_sanctions_by_pk:"player_sanctions",
+		delete_player_season_stats:"player_season_stats_mutation_response",
+		delete_player_season_stats_by_pk:"player_season_stats",
 		delete_player_stats:"player_stats_mutation_response",
 		delete_player_stats_by_pk:"player_stats",
 		delete_player_steam_bot_friend:"player_steam_bot_friend_mutation_response",
@@ -33514,6 +34024,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_players_by_pk:"players",
 		delete_plugin_versions:"plugin_versions_mutation_response",
 		delete_plugin_versions_by_pk:"plugin_versions",
+		delete_seasons:"seasons_mutation_response",
+		delete_seasons_by_pk:"seasons",
 		delete_server_regions:"server_regions_mutation_response",
 		delete_server_regions_by_pk:"server_regions",
 		delete_servers:"servers_mutation_response",
@@ -33740,6 +34252,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_premier_rank_history_one:"player_premier_rank_history",
 		insert_player_sanctions:"player_sanctions_mutation_response",
 		insert_player_sanctions_one:"player_sanctions",
+		insert_player_season_stats:"player_season_stats_mutation_response",
+		insert_player_season_stats_one:"player_season_stats",
 		insert_player_stats:"player_stats_mutation_response",
 		insert_player_stats_one:"player_stats",
 		insert_player_steam_bot_friend:"player_steam_bot_friend_mutation_response",
@@ -33754,6 +34268,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_players_one:"players",
 		insert_plugin_versions:"plugin_versions_mutation_response",
 		insert_plugin_versions_one:"plugin_versions",
+		insert_seasons:"seasons_mutation_response",
+		insert_seasons_one:"seasons",
 		insert_server_regions:"server_regions_mutation_response",
 		insert_server_regions_one:"server_regions",
 		insert_servers:"servers_mutation_response",
@@ -34141,6 +34657,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_sanctions:"player_sanctions_mutation_response",
 		update_player_sanctions_by_pk:"player_sanctions",
 		update_player_sanctions_many:"player_sanctions_mutation_response",
+		update_player_season_stats:"player_season_stats_mutation_response",
+		update_player_season_stats_by_pk:"player_season_stats",
+		update_player_season_stats_many:"player_season_stats_mutation_response",
 		update_player_stats:"player_stats_mutation_response",
 		update_player_stats_by_pk:"player_stats",
 		update_player_stats_many:"player_stats_mutation_response",
@@ -34162,6 +34681,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_plugin_versions:"plugin_versions_mutation_response",
 		update_plugin_versions_by_pk:"plugin_versions",
 		update_plugin_versions_many:"plugin_versions_mutation_response",
+		update_seasons:"seasons_mutation_response",
+		update_seasons_by_pk:"seasons",
+		update_seasons_many:"seasons_mutation_response",
 		update_server_regions:"server_regions_mutation_response",
 		update_server_regions_by_pk:"server_regions",
 		update_server_regions_many:"server_regions_mutation_response",
@@ -35665,6 +36187,8 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"float8",
 		player:"players",
 		player_team_elo_avg:"float8",
+		season:"seasons",
+		season_id:"uuid",
 		series_multiplier:"Int",
 		steam_id:"bigint",
 		team_avg_kda:"float8",
@@ -35729,6 +36253,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		series_multiplier:"Int",
 		steam_id:"bigint",
 		team_avg_kda:"float8"
@@ -35753,6 +36278,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		series_multiplier:"Int",
 		steam_id:"bigint",
 		team_avg_kda:"float8"
@@ -38777,6 +39303,120 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float",
 		sanctioned_by_steam_id:"Float"
 	},
+	player_season_stats:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player:"players",
+		player_steam_id:"bigint",
+		season:"seasons",
+		season_id:"uuid"
+	},
+	player_season_stats_aggregate:{
+		aggregate:"player_season_stats_aggregate_fields",
+		nodes:"player_season_stats"
+	},
+	player_season_stats_aggregate_fields:{
+		avg:"player_season_stats_avg_fields",
+		count:"Int",
+		max:"player_season_stats_max_fields",
+		min:"player_season_stats_min_fields",
+		stddev:"player_season_stats_stddev_fields",
+		stddev_pop:"player_season_stats_stddev_pop_fields",
+		stddev_samp:"player_season_stats_stddev_samp_fields",
+		sum:"player_season_stats_sum_fields",
+		var_pop:"player_season_stats_var_pop_fields",
+		var_samp:"player_season_stats_var_samp_fields",
+		variance:"player_season_stats_variance_fields"
+	},
+	player_season_stats_avg_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_season_stats_max_fields:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint",
+		season_id:"uuid"
+	},
+	player_season_stats_min_fields:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint",
+		season_id:"uuid"
+	},
+	player_season_stats_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_season_stats"
+	},
+	player_season_stats_stddev_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_season_stats_stddev_pop_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_season_stats_stddev_samp_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_season_stats_sum_fields:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_season_stats_var_pop_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_season_stats_var_samp_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_season_stats_variance_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
 	player_stats:{
 		assists:"bigint",
 		deaths:"bigint",
@@ -39435,6 +40075,8 @@ export const ReturnTypes: Record<string,any> = {
 		roster_image_url:"String",
 		sanctions:"player_sanctions",
 		sanctions_aggregate:"player_sanctions_aggregate",
+		season_stats:"player_season_stats",
+		season_stats_aggregate:"player_season_stats_aggregate",
 		show_match_ready_modal:"Boolean",
 		stats:"player_stats",
 		steam_bans_checked_at:"timestamptz",
@@ -40049,6 +40691,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_sanctions:"player_sanctions",
 		player_sanctions_aggregate:"player_sanctions_aggregate",
 		player_sanctions_by_pk:"player_sanctions",
+		player_season_stats:"player_season_stats",
+		player_season_stats_aggregate:"player_season_stats_aggregate",
+		player_season_stats_by_pk:"player_season_stats",
 		player_stats:"player_stats",
 		player_stats_aggregate:"player_stats_aggregate",
 		player_stats_by_pk:"player_stats",
@@ -40074,6 +40719,9 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions_by_pk:"plugin_versions",
 		readServerFile:"FileContentResponse",
 		scrimCalendarUrl:"ScrimCalendarOutput",
+		seasons:"seasons",
+		seasons_aggregate:"seasons_aggregate",
+		seasons_by_pk:"seasons",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",
@@ -40207,6 +40855,78 @@ export const ReturnTypes: Record<string,any> = {
 		v_team_tournament_results_aggregate:"v_team_tournament_results_aggregate",
 		v_tournament_player_stats:"v_tournament_player_stats",
 		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate"
+	},
+	seasons:{
+		created_at:"timestamptz",
+		description:"String",
+		ends_at:"timestamptz",
+		id:"uuid",
+		needs_rebuild:"Boolean",
+		number:"Int",
+		player_season_stats:"player_season_stats",
+		player_season_stats_aggregate:"player_season_stats_aggregate",
+		starts_at:"timestamptz"
+	},
+	seasons_aggregate:{
+		aggregate:"seasons_aggregate_fields",
+		nodes:"seasons"
+	},
+	seasons_aggregate_fields:{
+		avg:"seasons_avg_fields",
+		count:"Int",
+		max:"seasons_max_fields",
+		min:"seasons_min_fields",
+		stddev:"seasons_stddev_fields",
+		stddev_pop:"seasons_stddev_pop_fields",
+		stddev_samp:"seasons_stddev_samp_fields",
+		sum:"seasons_sum_fields",
+		var_pop:"seasons_var_pop_fields",
+		var_samp:"seasons_var_samp_fields",
+		variance:"seasons_variance_fields"
+	},
+	seasons_avg_fields:{
+		number:"Float"
+	},
+	seasons_max_fields:{
+		created_at:"timestamptz",
+		description:"String",
+		ends_at:"timestamptz",
+		id:"uuid",
+		number:"Int",
+		starts_at:"timestamptz"
+	},
+	seasons_min_fields:{
+		created_at:"timestamptz",
+		description:"String",
+		ends_at:"timestamptz",
+		id:"uuid",
+		number:"Int",
+		starts_at:"timestamptz"
+	},
+	seasons_mutation_response:{
+		affected_rows:"Int",
+		returning:"seasons"
+	},
+	seasons_stddev_fields:{
+		number:"Float"
+	},
+	seasons_stddev_pop_fields:{
+		number:"Float"
+	},
+	seasons_stddev_samp_fields:{
+		number:"Float"
+	},
+	seasons_sum_fields:{
+		number:"Int"
+	},
+	seasons_var_pop_fields:{
+		number:"Float"
+	},
+	seasons_var_samp_fields:{
+		number:"Float"
+	},
+	seasons_variance_fields:{
+		number:"Float"
 	},
 	server_regions:{
 		available_server_count:"Int",
@@ -40939,6 +41659,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_sanctions_aggregate:"player_sanctions_aggregate",
 		player_sanctions_by_pk:"player_sanctions",
 		player_sanctions_stream:"player_sanctions",
+		player_season_stats:"player_season_stats",
+		player_season_stats_aggregate:"player_season_stats_aggregate",
+		player_season_stats_by_pk:"player_season_stats",
+		player_season_stats_stream:"player_season_stats",
 		player_stats:"player_stats",
 		player_stats_aggregate:"player_stats_aggregate",
 		player_stats_by_pk:"player_stats",
@@ -40970,6 +41694,10 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions_aggregate:"plugin_versions_aggregate",
 		plugin_versions_by_pk:"plugin_versions",
 		plugin_versions_stream:"plugin_versions",
+		seasons:"seasons",
+		seasons_aggregate:"seasons_aggregate",
+		seasons_by_pk:"seasons",
+		seasons_stream:"seasons",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",
@@ -43987,6 +44715,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_name:"String",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
 		type:"String",
@@ -44055,6 +44784,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_name:"String",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
 		type:"String",
@@ -44083,6 +44813,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_name:"String",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		season_id:"uuid",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
 		type:"String",

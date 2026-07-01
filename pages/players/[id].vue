@@ -51,6 +51,7 @@ import {
   UserPlus,
   UserCheck,
   Calendar as CalendarIcon,
+  ChevronDown,
 } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -97,7 +98,15 @@ import {
 } from "~/components/ui/select";
 import { parseDate, type DateValue } from "@internationalized/date";
 
-type RangeKey = "l30" | "7d" | "30d" | "90d" | "1y" | "all" | "custom";
+type RangeKey =
+  | "l30"
+  | "7d"
+  | "30d"
+  | "90d"
+  | "1y"
+  | "all"
+  | "custom"
+  | "season";
 
 interface WindowedEloEntry {
   current_elo: number | null;
@@ -150,6 +159,114 @@ function openEloTab() {
   });
 }
 const eloRange = ref<RangeKey>("l30");
+
+// Season quick-filter: sets the stat window to a season's [starts_at, ends_at).
+const seasons = ref<
+  Array<{
+    id: string;
+    number: number | null;
+    description: string | null;
+    starts_at: string;
+    ends_at: string | null;
+  }>
+>([]);
+const selectedSeasonId = ref<string | null>(null);
+const selectedSeason = computed(
+  () => seasons.value.find((s) => s.id === selectedSeasonId.value) || null,
+);
+const seasonsEnabled = computed(() => appSettings.seasonsEnabled);
+// Ascending (S1, S2, S3…) for the dropdown; the fetch itself is desc.
+const seasonsAsc = computed(() =>
+  [...seasons.value].sort((a, b) => (a.number ?? 0) - (b.number ?? 0)),
+);
+// The season containing "now" (falls back to the latest when off-season).
+const activeSeason = computed(() => {
+  const now = Date.now();
+  return (
+    seasons.value.find(
+      (s) =>
+        new Date(s.starts_at).getTime() <= now &&
+        (!s.ends_at || new Date(s.ends_at).getTime() > now),
+    ) ||
+    seasons.value[0] ||
+    null
+  );
+});
+// Left segment always shows a season number: the selected season while season
+// mode is on, otherwise the current/active season (the one a click would pick).
+const seasonButtonLabel = computed(() => {
+  const s =
+    (eloRange.value === "season" ? selectedSeason.value : null) ??
+    activeSeason.value;
+  return "S" + (s?.number ?? "?");
+});
+const seasonMenuOpen = ref(false);
+
+// Selecting a season activates the season range.
+function pickSeason(id: string) {
+  selectedSeasonId.value = id;
+  eloRange.value = "season";
+  seasonMenuOpen.value = false;
+}
+// Left-segment click: enter season mode at the current/selected season.
+function activateSeason() {
+  if (eloRange.value === "season") return;
+  const id =
+    selectedSeasonId.value ??
+    activeSeason.value?.id ??
+    seasons.value[0]?.id ??
+    null;
+  if (id) pickSeason(id);
+}
+function seasonRange(s: {
+  description: string | null;
+  starts_at: string;
+  ends_at: string | null;
+}): string {
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+  const range = `${fmt(s.starts_at)} – ${
+    s.ends_at ? fmt(s.ends_at) : t("pages.seasons.ongoing")
+  }`;
+  return s.description ? `${range} · ${s.description}` : range;
+}
+
+onMounted(async () => {
+  if (!seasonsEnabled.value) {
+    return;
+  }
+  try {
+    const { data } = await apolloClient.query({
+      query: gql`
+        query PlayerSeasonsFilter {
+          seasons(order_by: { starts_at: desc }) {
+            id
+            number
+            description
+            starts_at
+            ends_at
+          }
+        }
+      `,
+      fetchPolicy: "no-cache",
+    });
+    seasons.value = (data as any)?.seasons ?? [];
+    const now = Date.now();
+    const active = seasons.value.find(
+      (s) =>
+        new Date(s.starts_at).getTime() <= now &&
+        (!s.ends_at || new Date(s.ends_at).getTime() > now),
+    );
+    selectedSeasonId.value = active?.id ?? seasons.value[0]?.id ?? null;
+  } catch {
+    seasons.value = [];
+  }
+});
 
 const statsMatchLimit = computed<number | null>(() => {
   if (eloRange.value === "custom") {
@@ -548,6 +665,11 @@ const playerIdRef = computed<string | null>(() => {
 watch(playerIdRef, () => clearCompareTarget());
 
 const sinceTimestamp = computed<string | null>(() => {
+  if (eloRange.value === "season") {
+    return selectedSeason.value
+      ? new Date(selectedSeason.value.starts_at).toISOString()
+      : null;
+  }
   if (eloRange.value === "custom") {
     return customFrom.value
       ? new Date(customFrom.value + "T00:00:00").toISOString()
@@ -559,6 +681,11 @@ const sinceTimestamp = computed<string | null>(() => {
 });
 
 const untilTimestamp = computed<string | null>(() => {
+  if (eloRange.value === "season") {
+    return selectedSeason.value?.ends_at
+      ? new Date(selectedSeason.value.ends_at).toISOString()
+      : null;
+  }
   if (eloRange.value === "custom" && customTo.value) {
     return new Date(customTo.value + "T23:59:59.999").toISOString();
   }
@@ -2177,6 +2304,82 @@ const playerHeroTeamChipDotClasses =
               >
                 {{ r.label }}
               </button>
+              <!-- Season split-control: left segment shows the current/selected
+                   season, the right chevron opens a dropdown to switch. -->
+              <div
+                v-if="seasonsEnabled && seasons.length"
+                class="inline-flex shrink-0 items-stretch overflow-hidden rounded border font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                :class="
+                  eloRange === 'season'
+                    ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
+                    : 'border-border/60 text-muted-foreground'
+                "
+              >
+                <button
+                  type="button"
+                  class="px-2.5 py-1 transition-colors"
+                  :class="
+                    eloRange === 'season'
+                      ? 'bg-[hsl(var(--tac-amber)/0.16)]'
+                      : 'bg-card/40 hover:text-foreground'
+                  "
+                  @click="activateSeason"
+                >
+                  {{ seasonButtonLabel }}
+                </button>
+                <Popover v-model:open="seasonMenuOpen">
+                  <PopoverTrigger as-child>
+                    <button
+                      type="button"
+                      class="flex items-center border-l px-1 transition-colors"
+                      :class="
+                        eloRange === 'season'
+                          ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.16)]'
+                          : 'border-border/60 bg-card/40 hover:text-foreground'
+                      "
+                      :aria-label="$t('pages.players.detail.range_season')"
+                    >
+                      <ChevronDown class="h-3.5 w-3.5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" class="w-56 p-1">
+                    <button
+                      v-for="s in seasonsAsc"
+                      :key="s.id"
+                      type="button"
+                      class="flex w-full flex-col items-start gap-0.5 rounded px-2 py-1.5 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
+                      :class="{
+                        'bg-[hsl(var(--tac-amber)/0.12)]':
+                          eloRange === 'season' && s.id === selectedSeasonId,
+                      }"
+                      @click="pickSeason(s.id)"
+                    >
+                      <span
+                        class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
+                        :class="
+                          eloRange === 'season' && s.id === selectedSeasonId
+                            ? 'text-[hsl(var(--tac-amber))]'
+                            : 'text-foreground'
+                        "
+                      >
+                        {{
+                          $t("pages.seasons.season_number", {
+                            number: s.number ?? "?",
+                          })
+                        }}<span
+                          v-if="activeSeason && s.id === activeSeason.id"
+                          class="text-[hsl(var(--tac-amber))]"
+                        >
+                          · {{ $t("pages.players.detail.season_current") }}</span
+                        >
+                      </span>
+                      <span class="text-[0.62rem] normal-case text-muted-foreground">
+                        {{ seasonRange(s) }}
+                      </span>
+                    </button>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <span
                 v-if="eloRange === 'custom'"
                 class="shrink-0 rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"

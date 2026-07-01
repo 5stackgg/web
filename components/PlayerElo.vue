@@ -184,6 +184,11 @@ export default {
         competitive?: number;
         wingman?: number;
         duel?: number;
+        // Tournament ELO track — currently passed through but not yet surfaced
+        // in this redesigned card (see seasons-feature tweak list).
+        tournament_competitive?: number;
+        tournament_wingman?: number;
+        tournament_duel?: number;
       },
       required: false,
     },

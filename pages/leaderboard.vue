@@ -216,6 +216,7 @@ const LEADERBOARD_QUERY = gql`
     $match_type: String
     $exclude_tournaments: Boolean!
     $role: String
+    $season_id: uuid
     $limit: Int
     $offset: Int
     $order_by: [leaderboard_entries_order_by!]
@@ -227,6 +228,7 @@ const LEADERBOARD_QUERY = gql`
         _match_type: $match_type
         _exclude_tournaments: $exclude_tournaments
         _role: $role
+        _season_id: $season_id
       }
       limit: $limit
       offset: $offset
@@ -248,6 +250,7 @@ const LEADERBOARD_QUERY = gql`
         _match_type: $match_type
         _exclude_tournaments: $exclude_tournaments
         _role: $role
+        _season_id: $season_id
       }
     ) {
       aggregate {
@@ -263,6 +266,7 @@ const PLAYER_RANK_QUERY = gql`
     $window_days: Int!
     $match_type: String
     $exclude_tournaments: Boolean!
+    $season_id: uuid
     $player_steam_id: String!
   ) {
     get_player_leaderboard_rank(
@@ -271,6 +275,7 @@ const PLAYER_RANK_QUERY = gql`
         _window_days: $window_days
         _match_type: $match_type
         _exclude_tournaments: $exclude_tournaments
+        _season_id: $season_id
         _player_steam_id: $player_steam_id
       }
     ) {
@@ -291,7 +296,6 @@ const category = useRouteTab({
   tabs: Object.keys(CATEGORY_CONFIG),
 });
 
-const WINDOW_OPTIONS = ["0", "7", "30"] as const;
 const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
 const ROLE_OPTIONS = ["all", "Sniper", "Entry", "Support", "Rifler"] as const;
 // Categories backed by per-map stats — the only ones the role view can scope.
@@ -316,7 +320,41 @@ function readQueryParam<T extends string>(
     : fallback;
 }
 
-const windowDays = ref<string>(readQueryParam("period", WINDOW_OPTIONS, "0"));
+// Seasons power the unified "scope" selector. Scope is one of:
+//   "0" (all time) | "7" | "30" | "season:<uuid>"
+// Season and rolling-window scopes are mutually exclusive.
+type Season = {
+  id: string;
+  number: number | null;
+  description: string | null;
+  starts_at: string;
+  ends_at: string | null;
+};
+const seasonsEnabled = computed(
+  () => useApplicationSettingsStore().seasonsEnabled,
+);
+const seasons = ref<Season[]>([]);
+const activeSeason = computed(() => {
+  const now = Date.now();
+  return (
+    seasons.value.find(
+      (s) =>
+        new Date(s.starts_at).getTime() <= now &&
+        (!s.ends_at || new Date(s.ends_at).getTime() > now),
+    ) || null
+  );
+});
+const scope = ref<string>(
+  typeof route.query.period === "string" ? route.query.period : "",
+);
+const derivedWindowDays = computed(() =>
+  scope.value === "7" || scope.value === "30" ? parseInt(scope.value) : 0,
+);
+const derivedSeasonId = computed(() =>
+  scope.value.startsWith("season:")
+    ? scope.value.slice("season:".length)
+    : null,
+);
 const matchType = ref<string>(
   readQueryParam("type", MATCH_TYPE_OPTIONS, "Competitive"),
 );
@@ -324,23 +362,53 @@ const excludeTournaments = ref(false);
 const roleFilter = ref<string>(readQueryParam("role", ROLE_OPTIONS, "all"));
 const supportsRole = computed(() => ROLE_CATEGORIES.has(category.value));
 
+// Default to the current season when seasons are on and one is active; otherwise
+// fall back to All Time (systems without a current season).
+const defaultScope = computed(() =>
+  seasonsEnabled.value && activeSeason.value
+    ? `season:${activeSeason.value.id}`
+    : "0",
+);
+function seasonScopeLabel(s: Season): string {
+  return t("pages.seasons.season_number", { number: s.number ?? "?" });
+}
+function seasonRangeLabel(s: Season): string {
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+  const range = `${fmt(s.starts_at)} – ${
+    s.ends_at ? fmt(s.ends_at) : t("pages.seasons.ongoing")
+  }`;
+  return s.description ? `${range} · ${s.description}` : range;
+}
 // Mobile filter helpers — badge count + chip labels relative to defaults.
 const leaderboardFilterCount = computed(() => {
   let n = 0;
-  if (windowDays.value !== "0") n++;
+  if (scope.value && scope.value !== defaultScope.value) n++;
   if (matchType.value !== "Competitive") n++;
   if (excludeTournaments.value) n++;
   if (supportsRole.value && roleFilter.value !== "all") n++;
   return n;
 });
-const windowDaysLabel = computed(
-  () =>
-    ({
+const scopeLabel = computed(() => {
+  if (derivedSeasonId.value) {
+    const s = seasons.value.find((x) => x.id === derivedSeasonId.value);
+    return s
+      ? seasonScopeLabel(s)
+      : t("pages.leaderboard.time_periods.all_time");
+  }
+  return (
+    {
       "0": t("pages.leaderboard.time_periods.all_time"),
       "7": t("pages.leaderboard.time_periods.last_7_days"),
       "30": t("pages.leaderboard.time_periods.last_30_days"),
-    })[windowDays.value],
-);
+    }[scope.value] ?? t("pages.leaderboard.time_periods.all_time")
+  );
+});
 const matchTypeLabel = computed(() =>
   t(
     `pages.leaderboard.match_types.${
@@ -418,7 +486,8 @@ const orderBy = computed(() => {
 
 const queryVariables = computed(() => ({
   category: category.value,
-  window_days: parseInt(windowDays.value),
+  window_days: derivedWindowDays.value,
+  season_id: derivedSeasonId.value,
   match_type: matchType.value === "all" ? null : matchType.value,
   exclude_tournaments: Boolean(excludeTournaments.value),
   role:
@@ -501,7 +570,8 @@ async function alignPageToHighlightedPlayer(): Promise<boolean> {
       query: PLAYER_RANK_QUERY,
       variables: {
         category: category.value,
-        window_days: parseInt(windowDays.value),
+        window_days: derivedWindowDays.value,
+        season_id: derivedSeasonId.value,
         match_type: matchType.value === "all" ? null : matchType.value,
         exclude_tournaments: Boolean(excludeTournaments.value),
         player_steam_id: sid,
@@ -651,7 +721,7 @@ watch(category, () => {
   }
   onFilterChange();
 });
-watch(windowDays, onFilterChange);
+watch(scope, onFilterChange);
 watch(matchType, onFilterChange);
 watch(excludeTournaments, onFilterChange);
 watch(roleFilter, onFilterChange);
@@ -695,8 +765,40 @@ watch([entries, highlightedSteamId], () => {
   });
 });
 
-onMounted(() => {
-  fetchLeaderboard();
+async function fetchSeasons() {
+  try {
+    const { data } = await apolloClient.query({
+      query: gql`
+        query LeaderboardSeasons {
+          seasons(order_by: { starts_at: desc }) {
+            id
+            number
+            description
+            starts_at
+            ends_at
+          }
+        }
+      `,
+      fetchPolicy: "cache-first",
+    });
+    seasons.value = (data as any)?.seasons ?? [];
+  } catch {
+    seasons.value = [];
+  }
+}
+
+onMounted(async () => {
+  if (seasonsEnabled.value) {
+    await fetchSeasons();
+  }
+  if (scope.value) {
+    // Scope came from the URL — the scope watcher won't fire, so fetch directly.
+    fetchLeaderboard();
+  } else {
+    // Default to All Time (today's behavior). Setting scope fires its watcher,
+    // which triggers the initial fetch.
+    scope.value = defaultScope.value;
+  }
 });
 </script>
 
@@ -750,21 +852,38 @@ onMounted(() => {
           class="mr-1 hidden h-[2px] w-[10px] shrink-0 bg-[hsl(var(--tac-amber))] sm:inline-block"
         ></span>
 
-        <Select v-model="windowDays">
-          <SelectTrigger class="h-8 w-[180px]">
-            <SelectValue
-              :placeholder="$t('pages.leaderboard.time_periods.last_30_days')"
-            />
+        <Select v-model="scope">
+          <SelectTrigger class="h-8 w-[200px]">
+            <span class="truncate">{{ scopeLabel }}</span>
           </SelectTrigger>
           <SelectContent>
+            <SelectItem
+              v-for="s in seasons"
+              :key="s.id"
+              :value="`season:${s.id}`"
+            >
+              <div class="flex flex-col">
+                <span>
+                  {{ seasonScopeLabel(s) }}
+                  <span
+                    v-if="activeSeason && s.id === activeSeason.id"
+                    class="text-[hsl(var(--tac-amber))]"
+                    >· {{ $t("pages.seasons.active") }}</span
+                  >
+                </span>
+                <span class="text-[0.65rem] text-muted-foreground">
+                  {{ seasonRangeLabel(s) }}
+                </span>
+              </div>
+            </SelectItem>
+            <SelectItem value="0">{{
+              $t("pages.leaderboard.time_periods.all_time")
+            }}</SelectItem>
             <SelectItem value="7">{{
               $t("pages.leaderboard.time_periods.last_7_days")
             }}</SelectItem>
             <SelectItem value="30">{{
               $t("pages.leaderboard.time_periods.last_30_days")
-            }}</SelectItem>
-            <SelectItem value="0">{{
-              $t("pages.leaderboard.time_periods.all_time")
             }}</SelectItem>
           </SelectContent>
         </Select>
@@ -856,19 +975,32 @@ onMounted(() => {
               >
                 {{ $t("common.date") }}
               </span>
-              <Select v-model="windowDays">
+              <Select v-model="scope">
                 <SelectTrigger class="w-full">
-                  <SelectValue />
+                  <span class="truncate">{{ scopeLabel }}</span>
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem
+                    v-for="s in seasons"
+                    :key="s.id"
+                    :value="`season:${s.id}`"
+                  >
+                    {{ seasonScopeLabel(s)
+                    }}<span
+                      v-if="activeSeason && s.id === activeSeason.id"
+                      class="text-[hsl(var(--tac-amber))]"
+                    >
+                      · {{ $t("pages.seasons.active") }}</span
+                    >
+                  </SelectItem>
+                  <SelectItem value="0">{{
+                    $t("pages.leaderboard.time_periods.all_time")
+                  }}</SelectItem>
                   <SelectItem value="7">{{
                     $t("pages.leaderboard.time_periods.last_7_days")
                   }}</SelectItem>
                   <SelectItem value="30">{{
                     $t("pages.leaderboard.time_periods.last_30_days")
-                  }}</SelectItem>
-                  <SelectItem value="0">{{
-                    $t("pages.leaderboard.time_periods.all_time")
                   }}</SelectItem>
                 </SelectContent>
               </Select>
@@ -950,12 +1082,12 @@ onMounted(() => {
           class="flex flex-wrap items-center gap-2"
         >
           <button
-            v-if="windowDays !== '0'"
+            v-if="scope && scope !== defaultScope"
             type="button"
             class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-            @click="windowDays = '0'"
+            @click="scope = defaultScope"
           >
-            {{ windowDaysLabel }}
+            {{ scopeLabel }}
             <X class="h-3 w-3 opacity-70" />
           </button>
           <button

@@ -2,13 +2,16 @@
 import { computed } from "vue";
 import { useNow } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
+import { Tv } from "lucide-vue-next";
 
 const { t } = useI18n();
 
 const props = defineProps<{
   match: {
+    id: string;
     type: string | null;
     startedAt: string | null;
+    hasLiveStream: boolean;
     bestOf: number;
     isSeries: boolean;
     mapName: string | null;
@@ -19,14 +22,12 @@ const props = defineProps<{
   };
 }>();
 
-// Friend is winning the current map (drives the score tint).
 const leading = computed(() => {
   const f = props.match.friendScore ?? 0;
   const o = props.match.oppScore ?? 0;
   return f === o ? 0 : f > o ? 1 : -1;
 });
 
-// Live elapsed time since the match went live — ticks every second.
 const now = useNow({ interval: 1000 });
 const elapsed = computed(() => {
   if (!props.match.startedAt) return null;
@@ -42,12 +43,10 @@ const elapsed = computed(() => {
 </script>
 
 <template>
-  <div class="match-readout">
-    <!-- pulsing left accent rail -->
+  <NuxtLink :to="`/matches/${match.id}`" class="match-readout">
     <span class="match-readout__rail" />
 
     <div class="relative flex flex-col gap-1 font-mono">
-      <!-- header: LIVE · TYPE · series — with the match clock pinned right -->
       <div
         class="flex items-center gap-1.5 text-[0.5rem] font-bold uppercase leading-none tracking-[0.18em]"
       >
@@ -76,13 +75,21 @@ const elapsed = computed(() => {
         </template>
 
         <span
+          v-if="match.hasLiveStream"
+          class="ml-auto flex items-center gap-1 text-red-400"
+        >
+          <Tv class="h-2.5 w-2.5" />
+          <span>{{ t("matchmaking.friends.watch") }}</span>
+        </span>
+
+        <span
           v-if="elapsed"
-          class="match-readout__clock ml-auto tabular-nums tracking-[0.1em]"
+          class="match-readout__clock tabular-nums tracking-[0.1em]"
+          :class="{ 'ml-auto': !match.hasLiveStream }"
           >{{ elapsed }}</span
         >
       </div>
 
-      <!-- body: map name + live scoreboard -->
       <div class="flex items-center gap-2">
         <span
           v-if="match.mapName"
@@ -111,18 +118,19 @@ const elapsed = computed(() => {
         </span>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <style scoped>
 .match-readout {
+  display: block;
   position: relative;
   overflow: hidden;
   border-radius: 0.375rem;
   padding: 0.4rem 0.5rem 0.4rem 0.6rem;
   border: 1px solid hsl(var(--tac-amber) / 0.22);
+  transition: border-color 0.2s ease;
   background:
-    /* faint tactical scanlines */
     repeating-linear-gradient(
       0deg,
       hsl(var(--tac-amber) / 0.04) 0px,
@@ -138,7 +146,10 @@ const elapsed = computed(() => {
     );
 }
 
-/* glowing animated accent rail on the left edge */
+.match-readout:hover {
+  border-color: hsl(var(--tac-amber) / 0.5);
+}
+
 .match-readout__rail {
   position: absolute;
   inset: 0 auto 0 0;

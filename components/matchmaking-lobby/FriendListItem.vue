@@ -151,7 +151,6 @@ async function inviteToDraft() {
   toast({ title: t("draft_games.room.invite_sent", { name: props.player.name }) });
 }
 
-// Full-width status banner accent per state (left bar + fading tint).
 const STATUS_BANNER: Record<string, string> = {
   in_cs2: "border-green-500 from-green-500/15 text-green-300",
   in_lobby: "border-sky-500 from-sky-500/15 text-sky-300",
@@ -192,10 +191,6 @@ const amberHover =
           :linkable="true"
           :truncate-name="true"
         />
-        <!-- No avatar presence dot: friends are already grouped under
-             ONLINE / OFFLINE, and live activity shows in the banner below. -->
-
-        <!-- Action cluster -->
         <div class="flex shrink-0 items-center gap-0.5">
           <!-- Invite to lobby — any invitable player except incoming requests -->
           <Tooltip v-if="canInviteToLobby && rel !== 'incoming'">
@@ -336,8 +331,6 @@ const amberHover =
         </div>
         </div>
 
-        <!-- Full-width status banner. Only shown for a meaningful state
-             (in a game, lobby, or draft) — "available"/offline show nothing. -->
         <div
           v-if="showBanner"
           class="px-2 pb-2 pt-0.5 transition-opacity duration-200"
@@ -348,13 +341,11 @@ const amberHover =
             :match="currentMatch"
             class="w-full"
           />
-          <!-- CS2 presence uses the shared component (identical to the self page). -->
           <Cs2PresenceStatus
             v-else-if="statusKey === 'in_cs2'"
             :state="player.last_presence_state"
             class="w-full"
           />
-          <!-- 5stack lobby / draft banner. -->
           <div
             v-else
             class="flex items-center gap-2 rounded-md border-l-2 bg-gradient-to-r to-transparent px-2.5 py-1.5"

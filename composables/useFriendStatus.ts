@@ -38,29 +38,21 @@ const LABEL_KEY: Record<FriendStatusKey, string> = {
   in_cs2: "matchmaking.friends.playing_cs2",
 };
 
-/**
- * Derives a friend's live presence status from the computed activity fields
- * (`is_in_another_match` / `is_in_draft` / `is_in_lobby`) plus online presence.
- * Precedence when online: match > draft > lobby > available.
- */
 export function useFriendStatus(
   player: MaybeRefOrGetter<any>,
   online: MaybeRefOrGetter<boolean>,
 ) {
-  // CS2 presence (from the friend bot), independent of 5stack web presence — a
-  // friend can be in CS2 without having 5stack open. The text is rendered by the
-  // shared <Cs2PresenceStatus> component; here we only need the on/off flag.
   const inCs2 = computed(() => isInCs2(toValue(player)?.last_presence_state));
 
   const statusKey = computed<FriendStatusKey>(() => {
     const p = toValue(player)?.player;
-    // 5stack activities take precedence (when on 5stack web).
+    // A live 5stack match is our own data — it wins over Steam rich presence
+    // regardless of whether they have 5stack web open.
+    if (currentMatch.value) return "in_match";
     if (toValue(online)) {
-      if (p?.is_in_another_match) return "in_match";
       if (p?.is_in_draft) return "in_draft";
       if (p?.is_in_lobby) return "in_lobby";
     }
-    // Then live CS2 presence, even if they aren't on 5stack web.
     if (inCs2.value) return "in_cs2";
     if (toValue(online)) return "available";
     return "offline";
@@ -86,10 +78,8 @@ export function useFriendStatus(
     };
   });
 
-  // Friend's current live match, normalized + oriented to the friend's lineup
-  // (their score/maps-won shown first). Null unless they're in a Live match.
+  // Friend's current live match, oriented to their lineup (their score first).
   const currentMatch = computed(() => {
-    if (statusKey.value !== "in_match") return null;
     const entry = toValue(player)?.player?.player_lineup?.[0];
     const match = entry?.lineup?.match;
     if (!match) return null;
@@ -117,6 +107,7 @@ export function useFriendStatus(
       id: match.id as string,
       type: match.options?.type ?? null,
       startedAt: match.started_at ?? null,
+      hasLiveStream: (match.streams?.length ?? 0) > 0,
       bestOf,
       isSeries: bestOf > 1,
       mapName: currentMap?.map?.label ?? currentMap?.map?.name ?? null,

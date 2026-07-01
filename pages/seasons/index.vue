@@ -45,7 +45,6 @@ definePageMeta({
 // Shared singleton; also used from the Options API block via useSeasonBackfill().
 const backfill = useSeasonBackfill();
 
-// Tactical action button used across season controls.
 const actionBtn = [filterTriggerBase, filterTriggerIdle, "h-8"];
 const dangerBtn = [
   filterTriggerBase,

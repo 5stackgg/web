@@ -5803,9 +5803,9 @@
             "manual": "Manual"
         },
         "draft_order": {
-            "snake": "Snake (1-2-2-2-1)",
-            "alternating": "Alternating",
-            "front_loaded": "Front-Loaded (1-2-1-1)"
+            "snake": "Snake (1-2-2-1)",
+            "alternating": "Alternating (1-2-1-2)",
+            "front_loaded": "Front-Loaded (1-2-2-1-2-1)"
         },
         "card": {
             "pool": "Pool",
@@ -5852,6 +5852,7 @@
             "alpha_picking": "Team 1 Picking",
             "bravo_picking": "Team 2 Picking",
             "standby": "Standby",
+            "pick_order": "Pick Order",
             "on_the_clock": "On The Clock",
             "draft": "Draft",
             "comms": "Lobby Chat",

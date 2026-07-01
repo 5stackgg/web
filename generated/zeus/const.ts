@@ -978,6 +978,9 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"order_by"
 	},
 	draft_games:{
+		pattern:{
+
+		},
 		picks:{
 			distinct_on:"draft_game_picks_select_column",
 			order_by:"draft_game_picks_order_by",
@@ -1079,6 +1082,7 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"Int_comparison_exp",
 		mode:"e_draft_game_mode_enum_comparison_exp",
 		options:"match_options_bool_exp",
+		pattern:"jsonb_comparison_exp",
 		pick_deadline:"timestamptz_comparison_exp",
 		picks:"draft_game_picks_bool_exp",
 		picks_aggregate:"draft_game_picks_aggregate_bool_exp",
@@ -1210,6 +1214,7 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		mode:"order_by",
 		options:"match_options_order_by",
+		pattern:"order_by",
 		pick_deadline:"order_by",
 		picks_aggregate:"draft_game_picks_aggregate_order_by",
 		players_aggregate:"draft_game_players_aggregate_order_by",
@@ -30050,6 +30055,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		mode:"e_draft_game_mode_enum",
 		options:"match_options",
+		pattern:"jsonb",
 		pick_deadline:"timestamptz",
 		picks:"draft_game_picks",
 		picks_aggregate:"draft_game_picks_aggregate",

@@ -16,7 +16,7 @@ const props = withDefaults(
 );
 
 const remaining = ref<number>(0);
-let interval: ReturnType<typeof setInterval> | null = null;
+let raf: number | null = null;
 
 const RADIUS = 52;
 const CIRC = 2 * Math.PI * RADIUS;
@@ -30,28 +30,31 @@ const fraction = computed(() => {
 
 const dashOffset = computed(() => CIRC * (1 - fraction.value));
 
+// Drive the ring off requestAnimationFrame so the stroke interpolates every
+// frame — a setInterval tick makes it visibly step.
 const tick = () => {
   if (!props.deadline) {
     remaining.value = 0;
+    raf = null;
     return;
   }
   const ms = new Date(props.deadline).getTime() - Date.now();
   remaining.value = Math.max(0, ms / 1000);
+  raf = remaining.value > 0 ? requestAnimationFrame(tick) : null;
 };
 
 const start = () => {
-  if (interval) {
-    clearInterval(interval);
+  if (raf) {
+    cancelAnimationFrame(raf);
   }
   tick();
-  interval = setInterval(tick, 250);
 };
 
 watch(() => props.deadline, start, { immediate: true });
 
 onUnmounted(() => {
-  if (interval) {
-    clearInterval(interval);
+  if (raf) {
+    cancelAnimationFrame(raf);
   }
 });
 
@@ -84,7 +87,6 @@ const urgent = computed(() => remaining.value <= 6 && remaining.value > 0);
         stroke-linecap="round"
         :stroke-dasharray="CIRC"
         :stroke-dashoffset="dashOffset"
-        class="transition-[stroke-dashoffset] duration-100 ease-linear"
         :style="{
           filter: `drop-shadow(0 0 6px ${urgent ? 'hsl(var(--destructive) / 0.7)' : `hsl(${accent} / 0.7)`})`,
         }"

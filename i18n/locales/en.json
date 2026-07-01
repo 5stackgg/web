@@ -3939,7 +3939,9 @@
             "rendering_clip": "Rendering clip",
             "acquiring_signal": "Acquiring signal",
             "signal_lost": "Signal lost",
-            "idle": "Idle"
+            "idle": "Idle",
+            "access_denied": "Stream unavailable",
+            "access_denied_hint": "You don't have access to this live stream — players can't watch a match they're in."
         },
         "elo_details": {
             "title": "Elo Change Details",

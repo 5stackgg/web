@@ -44,40 +44,6 @@ export function useFriendStatus(
 ) {
   const inCs2 = computed(() => isInCs2(toValue(player)?.last_presence_state));
 
-  const statusKey = computed<FriendStatusKey>(() => {
-    const p = toValue(player)?.player;
-    // A live 5stack match is our own data — it wins over Steam rich presence
-    // regardless of whether they have 5stack web open.
-    if (currentMatch.value) return "in_match";
-    if (toValue(online)) {
-      if (p?.is_in_draft) return "in_draft";
-      if (p?.is_in_lobby) return "in_lobby";
-    }
-    if (inCs2.value) return "in_cs2";
-    if (toValue(online)) return "available";
-    return "offline";
-  });
-
-  const dotClass = computed(() => DOT_CLASS[statusKey.value]);
-  const statusIcon = computed(() => ICON[statusKey.value] ?? null);
-  const statusLabelKey = computed(() => LABEL_KEY[statusKey.value]);
-
-  // A draft the current user can drop into: the subscription only returns
-  // Open + Friends/Open-access drafts the friend is in, so presence here means
-  // joinable — unless it's already at capacity.
-  const joinableDraft = computed(() => {
-    if (statusKey.value !== "in_draft") return null;
-    const entry = toValue(player)?.player?.draft_game_players?.[0];
-    const draft = entry?.draft_game;
-    if (!draft) return null;
-    const count = draft.players?.length ?? 0;
-    return {
-      id: draft.id as string,
-      full: draft.capacity != null && count >= draft.capacity,
-      requireApproval: !!draft.require_approval,
-    };
-  });
-
   // Friend's current live match, oriented to their lineup (their score first).
   const currentMatch = computed(() => {
     const entry = toValue(player)?.player?.player_lineup?.[0];
@@ -122,6 +88,36 @@ export function useFriendStatus(
         : null,
       friendMapsWon: mapsWonBy(true),
       oppMapsWon: mapsWonBy(false),
+    };
+  });
+
+  const statusKey = computed<FriendStatusKey>(() => {
+    const p = toValue(player)?.player;
+    // A live 5stack match is our own data — it wins over Steam rich presence.
+    if (currentMatch.value) return "in_match";
+    if (toValue(online)) {
+      if (p?.is_in_draft) return "in_draft";
+      if (p?.is_in_lobby) return "in_lobby";
+    }
+    if (inCs2.value) return "in_cs2";
+    if (toValue(online)) return "available";
+    return "offline";
+  });
+
+  const dotClass = computed(() => DOT_CLASS[statusKey.value]);
+  const statusIcon = computed(() => ICON[statusKey.value] ?? null);
+  const statusLabelKey = computed(() => LABEL_KEY[statusKey.value]);
+
+  const joinableDraft = computed(() => {
+    if (statusKey.value !== "in_draft") return null;
+    const entry = toValue(player)?.player?.draft_game_players?.[0];
+    const draft = entry?.draft_game;
+    if (!draft) return null;
+    const count = draft.players?.length ?? 0;
+    return {
+      id: draft.id as string,
+      full: draft.capacity != null && count >= draft.capacity,
+      requireApproval: !!draft.require_approval,
     };
   });
 

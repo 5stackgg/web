@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import Cs2PresenceStatus from "~/components/Cs2PresenceStatus.vue";
+import PlayerLiveStatus from "~/components/matchmaking-lobby/PlayerLiveStatus.vue";
 import { Button } from "~/components/ui/button";
 import {
   Tooltip,
@@ -21,7 +21,6 @@ import {
 } from "lucide-vue-next";
 import { useFriendActions } from "~/composables/useFriendActions";
 import { useFriendStatus } from "~/composables/useFriendStatus";
-import FriendMatchPreview from "~/components/matchmaking-lobby/FriendMatchPreview.vue";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { toast } from "~/components/ui/toast";
 
@@ -336,15 +335,10 @@ const amberHover =
           class="px-2 pb-2 pt-0.5 transition-opacity duration-200"
           :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
         >
-          <FriendMatchPreview
-            v-if="currentMatch"
-            :match="currentMatch"
-            class="w-full"
-          />
-          <Cs2PresenceStatus
-            v-else-if="statusKey === 'in_cs2'"
-            :state="player.last_presence_state"
-            class="w-full"
+          <PlayerLiveStatus
+            v-if="currentMatch || statusKey === 'in_cs2'"
+            :player="player"
+            :online="isOnline"
           />
           <div
             v-else

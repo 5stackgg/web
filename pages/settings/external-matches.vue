@@ -7,7 +7,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import Cs2PresenceStatus from "~/components/Cs2PresenceStatus.vue";
+import PlayerLiveStatus from "~/components/matchmaking-lobby/PlayerLiveStatus.vue";
 import { gql } from "@apollo/client/core";
 import {
   RefreshCw,
@@ -143,6 +143,50 @@ const PRESENCE_FRIEND_SUBSCRIPTION = gql`
   }
 `;
 
+// Your own live 5stack match, in the same shape the friends list normalizes, so
+// "as your friends see you" shows the match preview exactly like friends do.
+const MY_LIVE_MATCH_SUBSCRIPTION = gql`
+  subscription MyLiveMatch($steam_id: bigint!) {
+    players_by_pk(steam_id: $steam_id) {
+      player_lineup(
+        limit: 1
+        where: { lineup: { match: { status: { _eq: Live } } } }
+      ) {
+        lineup {
+          id
+          match {
+            id
+            status
+            started_at
+            lineup_1_id
+            lineup_2_id
+            options {
+              type
+              best_of
+            }
+            streams(where: { is_live: { _eq: true } }, limit: 1) {
+              id
+            }
+            match_maps(order_by: { order: asc }) {
+              id
+              order
+              status
+              is_current_map
+              map {
+                name
+                label
+              }
+              lineup_1_score
+              lineup_2_score
+              winning_lineup_id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 type PresenceState = {
   inCs2?: boolean;
   inGame?: boolean;
@@ -165,8 +209,18 @@ const presenceFriend = ref<{
   last_presence_state: PresenceState | null;
   updated_at: string | null;
 } | null>(null);
+const myLiveMatchLineup = ref<any>(null);
 const presenceConnecting = ref(false);
 let presenceSubHandle: { unsubscribe: () => void } | null = null;
+let myMatchSubHandle: { unsubscribe: () => void } | null = null;
+
+// Shaped like a my_friends row so <PlayerLiveStatus> renders it identically.
+const selfPresencePlayer = computed(() => ({
+  last_presence_state: presenceFriend.value?.last_presence_state ?? null,
+  player: {
+    player_lineup: myLiveMatchLineup.value ? [myLiveMatchLineup.value] : [],
+  },
+}));
 
 const presenceConnected = computed(
   () => presenceFriend.value?.status === "friends",
@@ -225,6 +279,8 @@ function teardownSubs() {
   pendingSubHandle = null;
   presenceSubHandle?.unsubscribe();
   presenceSubHandle = null;
+  myMatchSubHandle?.unsubscribe();
+  myMatchSubHandle = null;
 }
 
 watch(
@@ -254,6 +310,18 @@ watch(
       .subscribe({
         next: ({ data }: any) => {
           presenceFriend.value = data?.player_steam_bot_friend_by_pk ?? null;
+        },
+      });
+
+    myMatchSubHandle = apolloClient
+      .subscribe({
+        query: MY_LIVE_MATCH_SUBSCRIPTION,
+        variables: { steam_id: steamId },
+      })
+      .subscribe({
+        next: ({ data }: any) => {
+          myLiveMatchLineup.value =
+            data?.players_by_pk?.player_lineup?.[0] ?? null;
         },
       });
 
@@ -704,8 +772,9 @@ function formatPendingDate(date: string): string {
               :linkable="false"
               size="sm"
             />
-            <Cs2PresenceStatus
-              :state="presenceFriend?.last_presence_state"
+            <PlayerLiveStatus
+              :player="selfPresencePlayer"
+              online
               show-offline
               class="mt-1.5"
             />

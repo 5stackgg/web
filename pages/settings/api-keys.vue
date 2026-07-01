@@ -1,73 +1,134 @@
 <script setup lang="ts">
-import { TrashIcon, PlusIcon, TriangleAlert } from "lucide-vue-next";
+import {
+  TrashIcon,
+  PlusIcon,
+  TriangleAlert,
+  ExternalLink,
+} from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import {
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "~/components/ui/card";
 </script>
 
 <template>
-  <!-- API Keys Table -->
+  <!-- API Keys -->
   <PageTransition :delay="0">
-    <div>
-      <div class="flex items-center justify-end mb-4">
-        <Button size="sm" @click="openAddDialog">
-          <PlusIcon class="w-4 h-4 mr-2" />
+    <div class="space-y-5">
+      <!-- Section header -->
+      <div class="flex items-start justify-between gap-4">
+        <p class="max-w-prose text-sm text-muted-foreground">
+          {{ $t("pages.settings.account.api_keys_management.description") }}
+          <a
+            href="https://docs.5stack.gg/advanced/api"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-1 font-medium text-[hsl(var(--tac-amber))] underline-offset-2 hover:underline"
+          >
+            {{ $t("pages.settings.account.api_keys_management.view_docs") }}
+            <ExternalLink class="h-3.5 w-3.5" />
+          </a>
+        </p>
+        <Button
+          v-if="loaded && apiKeys.length > 0"
+          variant="tactical"
+          size="sm"
+          class="shrink-0"
+          @click="openAddDialog"
+        >
+          <PlusIcon class="h-4 w-4" />
           {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
         </Button>
       </div>
-      <CardContent>
-        <Table v-if="apiKeys.length > 0">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{
-                $t("pages.settings.account.api_keys_management.label")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.settings.account.api_keys_management.created")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.settings.account.api_keys_management.last_used")
-              }}</TableHead>
-              <TableHead class="w-[100px]">{{
-                $t("pages.settings.account.api_keys_management.actions")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow v-for="apiKey in apiKeys" :key="apiKey.id">
-              <TableCell class="font-medium">
-                {{ apiKey.label }}
-              </TableCell>
-              <TableCell>
-                <TimeAgo :date="apiKey.created_at" />
-              </TableCell>
-              <TableCell>
-                <template v-if="apiKey.last_used_at">
-                  <TimeAgo :date="apiKey.last_used_at" />
-                </template>
-                <template v-else>
-                  {{ $t("pages.settings.account.api_keys_management.never") }}
-                </template>
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  @click="openDeleteDialog(apiKey)"
+
+      <!-- Loading skeleton -->
+      <div v-if="!loaded" class="space-y-3">
+        <div
+          v-for="n in 3"
+          :key="n"
+          class="flex items-center gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
+        >
+          <div class="min-w-0 flex-1 space-y-2">
+            <div class="h-4 w-40 animate-pulse rounded bg-muted" />
+            <div class="h-3 w-56 animate-pulse rounded bg-muted/60" />
+          </div>
+          <div class="h-8 w-8 shrink-0 animate-pulse rounded bg-muted" />
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div
+        v-else-if="apiKeys.length === 0"
+        class="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border/60 bg-card/20 py-14 text-center"
+      >
+        <div class="space-y-1">
+          <p class="text-sm font-medium">
+            {{ $t("pages.settings.account.api_keys_management.no_api_keys") }}
+          </p>
+          <p class="mx-auto max-w-sm text-xs text-muted-foreground">
+            {{
+              $t("pages.settings.account.api_keys_management.no_api_keys_hint")
+            }}
+          </p>
+        </div>
+        <Button variant="tactical" size="sm" @click="openAddDialog">
+          <PlusIcon class="h-4 w-4" />
+          {{
+            $t("pages.settings.account.api_keys_management.add_first_api_key")
+          }}
+        </Button>
+      </div>
+
+      <!-- Key list -->
+      <div v-else class="space-y-3">
+        <div
+          v-for="apiKey in apiKeys"
+          :key="apiKey.id"
+          class="group flex items-center gap-4 rounded-lg border border-border/60 bg-card/40 p-4 transition-colors hover:border-[hsl(var(--tac-amber))]/40"
+        >
+          <div class="min-w-0 flex-1">
+            <div class="truncate font-medium">{{ apiKey.label }}</div>
+            <div
+              class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-muted-foreground"
+            >
+              <span class="inline-flex items-center gap-1.5">
+                <span
+                  class="text-[10px] uppercase tracking-widest text-muted-foreground/60"
                 >
-                  <TrashIcon class="w-4 h-4" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
+                  {{ $t("pages.settings.account.api_keys_management.created") }}
+                </span>
+                <TimeAgo :date="apiKey.created_at" />
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <span
+                  class="text-[10px] uppercase tracking-widest text-muted-foreground/60"
+                >
+                  {{
+                    $t("pages.settings.account.api_keys_management.last_used")
+                  }}
+                </span>
+                <TimeAgo v-if="apiKey.last_used_at" :date="apiKey.last_used_at" />
+                <span v-else class="italic text-muted-foreground/70">
+                  {{ $t("pages.settings.account.api_keys_management.never") }}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            class="shrink-0 text-muted-foreground opacity-70 transition hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+            :aria-label="
+              $t(
+                'pages.settings.account.api_keys_management.delete_api_key_action',
+              )
+            "
+            @click="openDeleteDialog(apiKey)"
+          >
+            <TrashIcon class="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   </PageTransition>
 
@@ -130,7 +191,7 @@ import {
             <Button type="button" variant="outline" @click="closeAddDialog">
               {{ $t("common.cancel") }}
             </Button>
-            <Button type="submit" :loading="submitting">
+            <Button type="submit" variant="tactical" :loading="submitting">
               {{
                 $t("pages.settings.account.api_keys_management.create_api_key")
               }}
@@ -165,27 +226,50 @@ import {
             </div>
           </div>
 
-          <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-            <div class="flex">
-              <TriangleAlert class="w-5 h-5 text-yellow-400 mr-2 mt-0.5" />
-              <div class="text-sm text-yellow-800">
-                <p class="font-medium">
-                  {{
-                    $t(
-                      "pages.settings.account.api_keys_management.copy_key_dialog.warning_title",
-                    )
-                  }}
-                </p>
-                <p>
-                  {{
-                    $t(
-                      "pages.settings.account.api_keys_management.copy_key_dialog.warning_message",
-                    )
-                  }}
-                </p>
-              </div>
+          <div
+            class="flex gap-2.5 rounded-md border border-[hsl(var(--tac-amber))]/30 bg-[hsl(var(--tac-amber))]/5 p-3"
+          >
+            <TriangleAlert
+              class="mt-0.5 h-5 w-5 shrink-0 text-[hsl(var(--tac-amber))]"
+            />
+            <div class="space-y-0.5 text-sm">
+              <p class="font-medium text-foreground">
+                {{
+                  $t(
+                    "pages.settings.account.api_keys_management.copy_key_dialog.warning_title",
+                  )
+                }}
+              </p>
+              <p class="text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.account.api_keys_management.copy_key_dialog.warning_message",
+                  )
+                }}
+              </p>
             </div>
           </div>
+
+          <p class="text-sm text-muted-foreground">
+            {{
+              $t(
+                "pages.settings.account.api_keys_management.copy_key_dialog.docs_hint",
+              )
+            }}
+            <a
+              href="https://docs.5stack.gg/advanced/api"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1 font-medium text-[hsl(var(--tac-amber))] underline-offset-2 hover:underline"
+            >
+              {{
+                $t(
+                  "pages.settings.account.api_keys_management.copy_key_dialog.docs_link",
+                )
+              }}
+              <ExternalLink class="h-3.5 w-3.5" />
+            </a>
+          </p>
         </div>
 
         <DialogFooter>
@@ -279,6 +363,7 @@ export default {
         },
         result({ data }) {
           this.apiKeys = data?.api_keys || [];
+          this.loaded = true;
         },
       },
     },
@@ -302,6 +387,7 @@ export default {
       apiKeyToDelete: null,
       newApiKey: null,
       apiKeys: [],
+      loaded: false,
     };
   },
   computed: {

@@ -4,11 +4,18 @@ defineProps<{ title?: string }>();
 
 <template>
   <div class="tac-form-section">
-    <div v-if="title || $slots.title" class="tac-form-section__head">
+    <div
+      v-if="title || $slots.title || $slots.actions"
+      class="tac-form-section__head"
+      :class="{ 'tac-form-section__head--spread': $slots.actions }"
+    >
       <span class="tac-form-section__tick"></span>
       <slot name="title">{{ title }}</slot>
+      <div v-if="$slots.actions" class="tac-form-section__actions">
+        <slot name="actions" />
+      </div>
     </div>
-    <div :class="title || $slots.title ? 'mt-4' : ''">
+    <div :class="title || $slots.title || $slots.actions ? 'mt-4' : ''">
       <slot />
     </div>
   </div>
@@ -33,5 +40,19 @@ defineProps<{ title?: string }>();
   height: 2px;
   width: 10px;
   background: hsl(var(--tac-amber));
+}
+
+/* When actions are present the head spans full width so they sit on the far
+   right, on the same row as the title. */
+.tac-form-section__head--spread {
+  display: flex;
+  width: 100%;
+}
+
+.tac-form-section__actions {
+  margin-left: auto;
+  /* reset the head's uppercase/tracking so action labels render normally */
+  text-transform: none;
+  letter-spacing: normal;
 }
 </style>

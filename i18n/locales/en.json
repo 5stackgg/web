@@ -1365,9 +1365,14 @@
             "account": {
                 "my_account": "My Account",
                 "api_keys": "API Keys",
-                "external_matches": "External Matches",
+                "external_matches": "Linked Accounts",
                 "api_keys_management": {
                     "add_api_key": "Add API Key",
+                    "description": "Keys authenticate requests to the 5Stack API — treat them like passwords.",
+                    "view_docs": "View API docs",
+                    "no_api_keys": "No API keys yet",
+                    "no_api_keys_hint": "Create your first key to start making authenticated requests to the 5Stack API.",
+                    "add_first_api_key": "Create your first key",
                     "create_new_api_key": "Create New API Key",
                     "create_new_description": "Create a new API key with a descriptive label to identify its purpose.",
                     "label": "Label",
@@ -1393,7 +1398,9 @@
                         "api_key_label": "API Key",
                         "copied_button": "I've Copied the Key",
                         "warning_title": "Important:",
-                        "warning_message": "This is the only time you'll be able to see this API key. Make sure to copy and store it securely."
+                        "warning_message": "This is the only time you'll be able to see this API key. Make sure to copy and store it securely.",
+                        "docs_hint": "New to the API?",
+                        "docs_link": "Read the API docs"
                     }
                 },
                 "name": "Name",
@@ -1417,19 +1424,36 @@
                 }
             },
             "notifications": {
-                "title": "Notifications",
-                "chat_sound": {
-                    "title": "Chat Sound",
-                    "description": "Play a sound when receiving new chat messages"
+                "title": "Sound Settings",
+                "description": "Preview and adjust the alert sounds 5Stack plays for chat, matches, and more.",
+                "enabled": {
+                    "title": "Notification sounds",
+                    "description": "Play a sound for chat messages, match events, and other alerts."
                 },
                 "test": "Test",
                 "volume": {
                     "title": "Volume"
                 },
-                "test_chat_sound": "Test Chat Sound",
-                "test_match_found_sound": "Test Match Found Sound",
-                "test_tick_sound": "Test Tick Sound",
-                "test_countdown_sound": "Test Countdown Sound"
+                "preview": "Preview sounds",
+                "play": "Play",
+                "sounds": {
+                    "chat": {
+                        "title": "Chat message",
+                        "description": "New chat messages"
+                    },
+                    "match_found": {
+                        "title": "Match found",
+                        "description": "A match is ready to play"
+                    },
+                    "tick": {
+                        "title": "Tick",
+                        "description": "Ready-up tick"
+                    },
+                    "countdown": {
+                        "title": "Countdown",
+                        "description": "Match start countdown"
+                    }
+                }
             },
             "application": {
                 "update_success": "Updated",
@@ -1484,7 +1508,7 @@
                     "post_news_role": "Who can post news"
                 },
                 "discord": {
-                    "title": "Discord / Notifications",
+                    "title": "Discord Notifications",
                     "support_section": "Defaults",
                     "support_section_description": "The default Discord webhook and role used for support and invite notifications, plus your Discord invite link. Every other Discord notification below falls back to these when it doesn't have its own webhook or role set.",
                     "invite_link": "Discord Invite Link",
@@ -1722,8 +1746,8 @@
                     "updated": "Updated highlight settings"
                 },
                 "external_matches": {
-                    "title": "External Matches",
-                    "section": "External Matches",
+                    "title": "Match Imports",
+                    "section": "Match Imports",
                     "enabled": "Allow CS2 match imports",
                     "enabled_description": "Let players link their Steam match-history auth code to import official CS2 matches, and allow demo uploads. Turn this off to hide the auth-code form and block external imports.",
                     "updated": "Updated external match settings",
@@ -1739,6 +1763,55 @@
                     "faceit_data_api": "Data API",
                     "faceit_downloads_api": "Downloads API",
                     "faceit_test_failed": "Faceit test failed"
+                },
+                "steam_presence": {
+                    "title": "Steam Presence",
+                    "section": "Steam Presence",
+                    "enabled": "Enable Presence",
+                    "enabled_description": "On by default. Friend bots watch linked players' live Steam presence and import their matches the moment they finish, instead of waiting for the hourly poll. Turn off as a kill-switch.",
+                    "updated": "Updated steam presence settings",
+                    "active": "Active",
+                    "disabled": "Disabled",
+                    "live": "Live",
+                    "setup": "How it works",
+                    "setup_step1": "Dedicate a Steam account for the bot with Steam Guard enabled. Don't reuse your STEAM_USER account — that one is used elsewhere and would conflict.",
+                    "setup_step2": "Add it below. It logs in automatically; if Steam Guard prompts, a 2FA box appears on the bot — enter the code from email or the Steam app. After the first login it stays signed in and won't ask again.",
+                    "setup_step3": "Players add the bot as a Steam friend (from their settings or the profile link). Once friends, their matches import the moment they finish.",
+                    "add_bot": "Add Bot",
+                    "add_bot_description": "Add a Steam account to the presence pool. Its credentials are stored to keep it signed in.",
+                    "username": "Steam username",
+                    "password": "Password",
+                    "add": "Add",
+                    "account_added": "Bot account added — it will log in shortly",
+                    "account_add_failed": "Failed to add bot account",
+                    "account_removed": "Bot account removed",
+                    "account_remove_failed": "Failed to remove bot account",
+                    "remove_confirm": "Remove bot account {name}? Players assigned to it will be reassigned.",
+                    "needs_2fa": "Needs 2FA",
+                    "needs_2fa_email": "Enter the Steam Guard code emailed to this account to finish login.",
+                    "needs_2fa_app": "Enter the Steam Guard code from the Steam mobile app for this account to finish login.",
+                    "code_wrong": "Previous code was incorrect — try again.",
+                    "code_placeholder": "Code",
+                    "submit_code": "Submit",
+                    "code_submitted": "Code submitted — logging in…",
+                    "code_failed": "Failed to submit Steam Guard code",
+                    "status": "Status",
+                    "bots": "Bots",
+                    "bots_description": "Steam accounts in the presence pool and their live status.",
+                    "no_bots": "No bots yet",
+                    "no_bots_hint": "Add a Steam account to start watching players' matches.",
+                    "add_first_bot": "Add your first bot",
+                    "bot": "Bot",
+                    "online": "Online",
+                    "online_yes": "Online",
+                    "online_no": "Offline",
+                    "watching": "Watching",
+                    "pending": "Pending",
+                    "pending_tooltip": "Players who were assigned a bot but haven't added it as a Steam friend yet.",
+                    "capacity": "Capacity",
+                    "capacity_tooltip": "Total friend slots across all bots. Auto-detected from each bot's Steam level (250 + 5 × level, max 2000).",
+                    "fetch_failed": "Failed to load presence status",
+                    "fetch_hint": "Make sure the API is running the latest build, migrations and Hasura metadata are applied, and the web GraphQL types are regenerated (yarn codegen)."
                 },
                 "scrim_finder": {
                     "title": "Scrim Finder",
@@ -1874,6 +1947,15 @@
                 }
             },
             "external_matches": {
+                "presence_title": "5stack Steam bot",
+                "presence_description": "Add the bot as a Steam friend to auto-import your Competitive & Premier matches the moment they end.",
+                "presence_connect": "Add bot as friend",
+                "presence_add_bot": "Open the bot on Steam",
+                "presence_pending": "Once you send the request the bot accepts within a minute — this flips to Connected automatically.",
+                "presence_connected": "Connected — imports are instant.",
+                "presence_not_connected": "Not connected yet.",
+                "presence_self_label": "As your friends see you",
+                "presence_unavailable": "The 5stack bot isn't available right now — please try again later or contact an admin.",
                 "need_two_codes": "You'll need two codes from Valve:",
                 "step_auth_prefix": "Your",
                 "steam_auth_code": "Steam Game Authentication Code",
@@ -2859,9 +2941,10 @@
             "fixtures_nav": "Fixtures",
             "groups": {
                 "general": "General",
-                "match_setup": "Match Setup",
+                "match_setup": "Fixture Setup",
                 "media": "Recording & Media",
                 "infrastructure": "Infrastructure",
+                "additional_features": "Additional Features",
                 "integrations": "Integrations",
                 "theme": "Theme",
                 "developer": "Developer"
@@ -3857,7 +3940,9 @@
             "rendering_clip": "Rendering clip",
             "acquiring_signal": "Acquiring signal",
             "signal_lost": "Signal lost",
-            "idle": "Idle"
+            "idle": "Idle",
+            "access_denied": "Stream unavailable",
+            "access_denied_hint": "You don't have access to this live stream — players can't watch a match they're in."
         },
         "elo_details": {
             "title": "Elo Change Details",
@@ -5023,9 +5108,11 @@
             "in_match": "In a match",
             "in_lobby": "In a lobby",
             "in_draft": "In draft lobby",
+            "playing_cs2": "Playing Counter-Strike 2",
             "available": "Available",
             "join": "Join",
             "live": "Live",
+            "watch": "Watch",
             "accept": "Accept",
             "decline": "Decline",
             "requested": "Requested",

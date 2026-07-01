@@ -279,6 +279,13 @@ div[role="menuitem"] {
   }
 }
 
+/* Give the right hub (friends / social / chat / etc.) more room than the left
+   nav so the friends list can show richer live status. Only the right sidebar
+   carries data-side="right", so this scopes the override to it. */
+[data-side="right"] {
+  --sidebar-width: 26rem;
+}
+
 @layer base {
   * {
     @apply border-border;

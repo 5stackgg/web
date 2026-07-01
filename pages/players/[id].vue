@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
+import DemoUpload from "~/components/DemoUpload.vue";
 import PlayerIntroDashboard from "~/components/player/PlayerIntroDashboard.vue";
 import PlayerMapsGrid from "~/components/player/PlayerMapsGrid.vue";
 import PlayerWeaponsTable from "~/components/player/PlayerWeaponsTable.vue";
@@ -13,6 +14,9 @@ import PlayerCareerDuels from "~/components/player/PlayerCareerDuels.vue";
 import PlayerCareerClutches from "~/components/player/PlayerCareerClutches.vue";
 
 const { t } = useI18n();
+
+// Demo-upload modal (own profile + admin), opened from a subtle link by matches.
+const showDemoUpload = ref(false);
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
@@ -2521,29 +2525,55 @@ const playerHeroTeamChipDotClasses =
       </PageTransition>
       <PageTransition :delay="500">
         <div>
-          <div class="mb-1 flex flex-wrap items-center justify-between gap-3">
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div :class="[tacticalSectionLabelClasses, 'mb-0']">
               <span :class="tacticalSectionTickClasses"></span>
               {{ $t("pages.players.detail.matches_section") }}
             </div>
             <div
-              class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
+              class="flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
             >
-              <span class="text-[hsl(var(--tac-amber))]">{{
-                sourceRef === "external"
-                  ? "External"
-                  : sourceRef === "all"
+              <button
+                v-if="isSelfProfile && isAdmin"
+                type="button"
+                class="underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))]"
+                @click="showDemoUpload = true"
+              >
+                {{ $t("pages.settings.external_matches.upload_demo") }}
+              </button>
+              <span class="flex items-center gap-1.5">
+                <span class="text-[hsl(var(--tac-amber))]">{{
+                  sourceRef === "external"
+                    ? "External"
+                    : sourceRef === "all"
+                      ? $t("pages.players.detail.all_short")
+                      : "5Stack"
+                }}</span>
+                <span class="opacity-40">·</span>
+                <span>{{
+                  selectedModeRef === "all"
                     ? $t("pages.players.detail.all_short")
-                    : "5Stack"
-              }}</span>
-              <span class="opacity-40">·</span>
-              <span>{{
-                selectedModeRef === "all"
-                  ? $t("pages.players.detail.all_short")
-                  : selectedModeRef
-              }}</span>
+                    : selectedModeRef
+                }}</span>
+              </span>
             </div>
           </div>
+
+          <!-- Demo upload modal (own profile, admins only — matches API gate). -->
+          <Dialog v-if="isSelfProfile && isAdmin" v-model:open="showDemoUpload">
+            <DialogContent class="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>
+                  {{ $t("pages.settings.external_matches.upload_demo") }}
+                </DialogTitle>
+                <DialogDescription>
+                  {{ $t("pages.settings.external_matches.upload_demo_description") }}
+                </DialogDescription>
+              </DialogHeader>
+              <DemoUpload />
+            </DialogContent>
+          </Dialog>
+
           <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
             <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
             <EmptyDescription>

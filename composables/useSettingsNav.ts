@@ -34,11 +34,6 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "pages.settings.application.chat.title",
         order: 1,
       },
-      {
-        path: "/settings/application/news",
-        labelKey: "pages.settings.application.news.title",
-        order: 2,
-      },
     ],
   },
   {
@@ -56,15 +51,6 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
       {
         path: "/settings/application/map-pools",
         labelKey: "pages.map_pools.title",
-      },
-      {
-        path: "/settings/application/external-matches",
-        labelKey: "pages.settings.application.external_matches.title",
-      },
-      {
-        path: "/settings/application/scrim-finder",
-        labelKey: "pages.settings.application.scrim_finder.title",
-        order: 9999,
       },
     ],
   },
@@ -95,6 +81,30 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
       {
         path: "/settings/application/telemetry",
         labelKey: "pages.settings.application.telemetry.title",
+      },
+    ],
+  },
+  {
+    labelKey: "layouts.application_settings.groups.additional_features",
+    items: [
+      {
+        path: "/settings/application/news",
+        labelKey: "pages.settings.application.news.title",
+        order: 0,
+      },
+      {
+        path: "/settings/application/scrim-finder",
+        labelKey: "pages.settings.application.scrim_finder.title",
+        order: 1,
+      },
+      {
+        path: "/settings/application/external-matches",
+        labelKey: "pages.settings.application.external_matches.title",
+        order: 2,
+      },
+      {
+        path: "/settings/application/steam-presence",
+        labelKey: "pages.settings.application.steam_presence.title",
       },
     ],
   },

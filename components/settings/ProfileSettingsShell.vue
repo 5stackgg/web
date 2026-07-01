@@ -48,16 +48,16 @@ const navItems = computed(() => {
       label: $t("pages.settings.account.matchmaking"),
     },
     {
-      path: "/settings/api-keys",
-      label: $t("pages.settings.account.api_keys"),
-    },
-    {
       path: "/settings/external-matches",
       label: $t("pages.settings.account.external_matches"),
     },
     {
       path: "/settings/notifications",
       label: $t("pages.settings.notifications.title"),
+    },
+    {
+      path: "/settings/api-keys",
+      label: $t("pages.settings.account.api_keys"),
     },
   ];
   return items;

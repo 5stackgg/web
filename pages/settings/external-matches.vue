@@ -6,20 +6,19 @@ import { toast } from "@/components/ui/toast";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerLiveStatus from "~/components/matchmaking-lobby/PlayerLiveStatus.vue";
 import { gql } from "@apollo/client/core";
 import {
-  Upload,
-  FileCheck2,
-  FileWarning,
-  X,
   RefreshCw,
   Unlink,
   CheckCircle2,
   AlertCircle,
+  UserPlus,
+  Zap,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Progress } from "@/components/ui/progress";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import {
   AlertDialog,
@@ -121,6 +120,141 @@ const CLEAR_PENDING_MUTATION = gql`
   }
 `;
 
+// Presence bot: adding it as a Steam friend gives instant imports.
+const ASSIGN_PRESENCE_BOT_MUTATION = gql`
+  mutation AssignSteamPresenceBot {
+    assignSteamPresenceBot {
+      enabled
+      steamId
+      addUrl
+      status
+    }
+  }
+`;
+
+const PRESENCE_FRIEND_SUBSCRIPTION = gql`
+  subscription PlayerSteamBotFriend($steam_id: bigint!) {
+    player_steam_bot_friend_by_pk(steam_id: $steam_id) {
+      status
+      bot_steamid64
+      last_presence_state
+      updated_at
+    }
+  }
+`;
+
+// Your own live 5stack match, in the same shape the friends list normalizes, so
+// "as your friends see you" shows the match preview exactly like friends do.
+const MY_LIVE_MATCH_SUBSCRIPTION = gql`
+  subscription MyLiveMatch($steam_id: bigint!) {
+    players_by_pk(steam_id: $steam_id) {
+      player_lineup(
+        limit: 1
+        where: { lineup: { match: { status: { _eq: Live } } } }
+      ) {
+        lineup {
+          id
+          match {
+            id
+            status
+            started_at
+            lineup_1_id
+            lineup_2_id
+            options {
+              type
+              best_of
+            }
+            streams(where: { is_live: { _eq: true } }, limit: 1) {
+              id
+            }
+            match_maps(order_by: { order: asc }) {
+              id
+              order
+              status
+              is_current_map
+              map {
+                name
+                label
+              }
+              lineup_1_score
+              lineup_2_score
+              winning_lineup_id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+type PresenceState = {
+  inCs2?: boolean;
+  inGame?: boolean;
+  inMatch?: boolean;
+  mode?: string | null;
+  map?: string | null;
+  score?: string | null;
+};
+
+// Friendly labels for CS2 game:mode values.
+const presenceBot = ref<{
+  enabled: boolean;
+  steamId: string | null;
+  addUrl: string | null;
+  status: string | null;
+} | null>(null);
+const presenceFriend = ref<{
+  status: string;
+  bot_steamid64: string | null;
+  last_presence_state: PresenceState | null;
+  updated_at: string | null;
+} | null>(null);
+const myLiveMatchLineup = ref<any>(null);
+const presenceConnecting = ref(false);
+let presenceSubHandle: { unsubscribe: () => void } | null = null;
+let myMatchSubHandle: { unsubscribe: () => void } | null = null;
+
+// Shaped like a my_friends row so <PlayerLiveStatus> renders it identically.
+const selfPresencePlayer = computed(() => ({
+  last_presence_state: presenceFriend.value?.last_presence_state ?? null,
+  player: {
+    player_lineup: myLiveMatchLineup.value ? [myLiveMatchLineup.value] : [],
+  },
+}));
+
+const presenceConnected = computed(
+  () => presenceFriend.value?.status === "friends",
+);
+const presenceAddUrl = computed(() => {
+  if (presenceBot.value?.addUrl) return presenceBot.value.addUrl;
+  if (presenceFriend.value?.bot_steamid64) {
+    return `https://steamcommunity.com/profiles/${presenceFriend.value.bot_steamid64}`;
+  }
+  return null;
+});
+
+async function connectPresence() {
+  presenceConnecting.value = true;
+  try {
+    const { data } = await apolloClient.mutate({
+      mutation: ASSIGN_PRESENCE_BOT_MUTATION,
+    });
+    const result = data?.assignSteamPresenceBot;
+    presenceBot.value = result ?? null;
+    if (!result?.enabled || !result?.addUrl) {
+      toast({
+        title: t("pages.settings.external_matches.presence_unavailable"),
+        variant: "destructive",
+      });
+      return;
+    }
+    // Open the bot's Steam profile so the user can send the friend request.
+    window.open(result.addUrl, "_blank", "noopener");
+  } finally {
+    presenceConnecting.value = false;
+  }
+}
+
 const linkQuery = ref<any>(null);
 const linkLoaded = ref(false);
 const pendingImports = ref<
@@ -143,6 +277,10 @@ function teardownSubs() {
   linkSubHandle = null;
   pendingSubHandle?.unsubscribe();
   pendingSubHandle = null;
+  presenceSubHandle?.unsubscribe();
+  presenceSubHandle = null;
+  myMatchSubHandle?.unsubscribe();
+  myMatchSubHandle = null;
 }
 
 watch(
@@ -161,6 +299,29 @@ watch(
         next: ({ data }: any) => {
           linkQuery.value = data?.player_steam_match_auth_by_pk ?? null;
           linkLoaded.value = true;
+        },
+      });
+
+    presenceSubHandle = apolloClient
+      .subscribe({
+        query: PRESENCE_FRIEND_SUBSCRIPTION,
+        variables: { steam_id: steamId },
+      })
+      .subscribe({
+        next: ({ data }: any) => {
+          presenceFriend.value = data?.player_steam_bot_friend_by_pk ?? null;
+        },
+      });
+
+    myMatchSubHandle = apolloClient
+      .subscribe({
+        query: MY_LIVE_MATCH_SUBSCRIPTION,
+        variables: { steam_id: steamId },
+      })
+      .subscribe({
+        next: ({ data }: any) => {
+          myLiveMatchLineup.value =
+            data?.players_by_pk?.player_lineup?.[0] ?? null;
         },
       });
 
@@ -272,7 +433,6 @@ async function submitPoll() {
 }
 
 const isLinked = computed(() => !!linkQuery.value);
-const isAdmin = computed(() => me.value?.role === "administrator");
 
 const busyImportId = ref<string | null>(null);
 const autoClearedIds = new Set<string>();
@@ -353,189 +513,6 @@ function formatPendingDate(date: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
-
-const uploadingDemo = ref(false);
-const uploadProgress = ref(0);
-const uploadedFile = ref<{ name: string; size: number } | null>(null);
-const uploadResult = ref<{
-  status: "success" | "error";
-  message: string;
-} | null>(null);
-const isDragging = ref(false);
-const apiDomain = useRuntimeConfig().public.apiDomain;
-const fileInput = ref<HTMLInputElement | null>(null);
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-}
-
-function triggerFileInput() {
-  if (uploadingDemo.value) return;
-  fileInput.value?.click();
-}
-
-function handleFileSelect(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (file) void uploadDemo(file);
-  target.value = "";
-}
-
-function handleDrop(event: DragEvent) {
-  event.preventDefault();
-  isDragging.value = false;
-  if (uploadingDemo.value) return;
-  const file = event.dataTransfer?.files?.[0];
-  if (!file) return;
-  if (!file.name.toLowerCase().endsWith(".dem")) {
-    toast({
-      title: t("pages.settings.external_matches.toast_wrong_file_type"),
-      description: t("pages.settings.external_matches.toast_drop_dem_file"),
-      variant: "destructive",
-    });
-    return;
-  }
-  void uploadDemo(file);
-}
-
-function clearUpload() {
-  uploadedFile.value = null;
-  uploadResult.value = null;
-  uploadProgress.value = 0;
-}
-
-function putChunk(
-  url: string,
-  chunk: Blob,
-  onProgress: (loaded: number) => void,
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("PUT", url);
-    xhr.upload.onprogress = (e) => {
-      if (e.lengthComputable) {
-        onProgress(e.loaded);
-      }
-    };
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve();
-      } else {
-        reject(new Error(`chunk upload failed (${xhr.status})`));
-      }
-    };
-    xhr.onerror = () => reject(new Error("Network error during upload"));
-    xhr.send(chunk);
-  });
-}
-
-async function uploadDemo(file: File) {
-  uploadingDemo.value = true;
-  uploadProgress.value = 0;
-  uploadedFile.value = { name: file.name, size: file.size };
-  uploadResult.value = null;
-
-  let uploadId: string | null = null;
-  let key: string | null = null;
-
-  try {
-    const magic = [0x50, 0x42, 0x44, 0x45, 0x4d, 0x53, 0x32, 0x00];
-    const header = new Uint8Array(
-      await file.slice(0, magic.length).arrayBuffer(),
-    );
-    if (
-      header.length < magic.length ||
-      !magic.every((b, i) => header[i] === b)
-    ) {
-      throw new Error(t("pages.settings.external_matches.error_invalid_demo"));
-    }
-
-    const initiate = await fetch(
-      `https://${apiDomain}/steam-match-history/upload/initiate`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName: file.name, fileSize: file.size }),
-      },
-    );
-    if (!initiate.ok) {
-      throw new Error(
-        (await initiate.text()) ||
-          `could not start upload (${initiate.status})`,
-      );
-    }
-    const session = (await initiate.json()) as {
-      uploadId: string;
-      key: string;
-      chunkSize: number;
-      parts: Array<{ partNumber: number; url: string }>;
-    };
-    uploadId = session.uploadId;
-    key = session.key;
-
-    let uploadedBytes = 0;
-    for (const part of session.parts) {
-      const start = (part.partNumber - 1) * session.chunkSize;
-      const chunk = file.slice(start, start + session.chunkSize);
-      await putChunk(part.url, chunk, (loaded) => {
-        uploadProgress.value = Math.round(
-          ((uploadedBytes + loaded) / file.size) * 100,
-        );
-      });
-      uploadedBytes += chunk.size;
-    }
-
-    uploadProgress.value = 100;
-
-    const complete = await fetch(
-      `https://${apiDomain}/steam-match-history/upload/complete`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uploadId, key, fileName: file.name }),
-      },
-    );
-    if (!complete.ok) {
-      throw new Error(
-        (await complete.text()) || `import failed (${complete.status})`,
-      );
-    }
-    await complete.json();
-
-    uploadResult.value = {
-      status: "success",
-      message: t("pages.settings.external_matches.upload_success_message"),
-    };
-    toast({
-      title: t("pages.settings.external_matches.toast_demo_uploaded"),
-      description: t(
-        "pages.settings.external_matches.toast_demo_uploaded_description",
-      ),
-    });
-  } catch (err) {
-    const message = (err as Error).message;
-    uploadResult.value = { status: "error", message };
-    toast({
-      title: t("pages.settings.external_matches.toast_upload_failed"),
-      description: message,
-      variant: "destructive",
-    });
-    if (uploadId && key) {
-      void fetch(`https://${apiDomain}/steam-match-history/upload/abort`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uploadId, key }),
-      }).catch(() => {});
-    }
-  } finally {
-    uploadingDemo.value = false;
-  }
 }
 </script>
 
@@ -759,6 +736,110 @@ async function uploadDemo(file: File) {
           </div>
         </dl>
       </div>
+
+      <!-- 5stack Steam bot — presence link that powers instant imports.
+           Header mirrors the linked-account card above for visual consistency;
+           the connected state previews the exact friend-list row (role + rank +
+           live status) that friends see. -->
+      <div class="rounded-lg border border-border bg-card/50 overflow-hidden">
+        <div
+          class="flex items-center gap-2.5 px-4 py-3"
+          :class="{ 'border-b border-border/60': presenceConnected }"
+        >
+          <span
+            class="shrink-0 w-7 h-7 rounded-md flex items-center justify-center"
+            :class="
+              presenceConnected
+                ? 'bg-emerald-500/15 text-emerald-400'
+                : 'bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+            "
+          >
+            <CheckCircle2 v-if="presenceConnected" class="w-4 h-4" />
+            <Zap v-else class="w-4 h-4" />
+          </span>
+          <div class="min-w-0">
+            <div class="text-sm font-medium leading-tight">
+              {{ $t("pages.settings.external_matches.presence_title") }}
+            </div>
+            <div
+              class="text-xs"
+              :class="
+                presenceConnected ? 'text-emerald-400' : 'text-muted-foreground'
+              "
+            >
+              {{
+                presenceConnected
+                  ? $t("pages.settings.external_matches.presence_connected")
+                  : $t("pages.settings.external_matches.presence_not_connected")
+              }}
+            </div>
+          </div>
+        </div>
+
+        <template v-if="presenceConnected">
+          <!-- Rendered like a friends-list entry: your avatar, name, role and
+               rank plus the live status only friends can see. -->
+          <div class="px-4 py-3">
+            <div
+              class="rounded-md border border-border/60 bg-background/40 px-3 py-2.5"
+            >
+              <div
+                class="mb-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground"
+              >
+                {{ $t("pages.settings.external_matches.presence_self_label") }}
+              </div>
+              <PlayerDisplay
+                :player="me"
+                :show-online="false"
+                :linkable="false"
+                :truncate-name="true"
+                size="sm"
+              />
+              <PlayerLiveStatus
+                :player="selfPresencePlayer"
+                online
+                show-offline
+                class="mt-1.5"
+              />
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="px-4 py-3 space-y-3">
+            <p class="text-sm text-muted-foreground">
+              {{ $t("pages.settings.external_matches.presence_description") }}
+            </p>
+            <a
+              v-if="presenceAddUrl"
+              :href="presenceAddUrl"
+              target="_blank"
+              rel="noopener"
+              class="inline-block"
+            >
+              <Button size="sm" variant="tactical">
+                <UserPlus class="h-4 w-4" />
+                {{ $t("pages.settings.external_matches.presence_add_bot") }}
+              </Button>
+            </a>
+            <Button
+              v-else
+              size="sm"
+              variant="tactical"
+              :disabled="presenceConnecting"
+              @click="connectPresence"
+            >
+              <UserPlus class="h-4 w-4" />
+              {{ $t("pages.settings.external_matches.presence_connect") }}
+            </Button>
+            <p
+              v-if="presenceFriend && !presenceConnected"
+              class="text-xs text-muted-foreground"
+            >
+              {{ $t("pages.settings.external_matches.presence_pending") }}
+            </p>
+          </div>
+        </template>
+      </div>
     </div>
     </FadeSwap>
   </PageTransition>
@@ -912,136 +993,6 @@ async function uploadDemo(file: File) {
             })
           }}</template>
         </button>
-      </div>
-    </div>
-  </PageTransition>
-
-  <PageTransition v-if="externalMatchesEnabled && isAdmin" :delay="200">
-    <div class="grid gap-3 max-w-xl mt-8">
-      <div>
-        <h3 class="text-base font-semibold uppercase tracking-wide">
-          {{ $t("pages.settings.external_matches.upload_demo") }}
-        </h3>
-        <p class="text-sm text-muted-foreground mt-0.5">
-          {{ $t("pages.settings.external_matches.upload_demo_description") }}
-        </p>
-      </div>
-
-      <div
-        class="rounded-lg border-2 border-dashed transition-colors p-6 text-center"
-        :class="[
-          isDragging
-            ? 'border-primary bg-primary/5'
-            : 'border-border hover:border-border/80 hover:bg-accent/30',
-          uploadingDemo ? 'cursor-progress opacity-80' : 'cursor-pointer',
-        ]"
-        role="button"
-        tabindex="0"
-        @click="triggerFileInput"
-        @keydown.enter.prevent="triggerFileInput"
-        @keydown.space.prevent="triggerFileInput"
-        @drop="handleDrop"
-        @dragover.prevent
-        @dragenter.prevent="isDragging = true"
-        @dragleave.prevent="isDragging = false"
-      >
-        <Upload
-          class="w-10 h-10 mx-auto mb-3"
-          :class="isDragging ? 'text-primary' : 'text-muted-foreground'"
-        />
-        <p class="text-sm font-medium mb-1">
-          <template v-if="isDragging">{{
-            $t("pages.settings.external_matches.drop_to_upload")
-          }}</template>
-          <template v-else>{{
-            $t("pages.settings.external_matches.click_to_choose")
-          }}</template>
-        </p>
-        <p class="text-xs text-muted-foreground">
-          {{ $t("pages.settings.external_matches.demo_files_only") }}
-        </p>
-      </div>
-
-      <input
-        ref="fileInput"
-        type="file"
-        accept=".dem"
-        :disabled="uploadingDemo"
-        class="hidden"
-        @change="handleFileSelect"
-      />
-
-      <div
-        v-if="uploadedFile"
-        class="rounded-lg border border-border bg-card/50 p-3 space-y-2"
-      >
-        <div class="flex items-center gap-3">
-          <div
-            class="shrink-0 w-9 h-9 rounded-md flex items-center justify-center"
-            :class="[
-              uploadResult?.status === 'success'
-                ? 'bg-emerald-500/15 text-emerald-400'
-                : uploadResult?.status === 'error'
-                  ? 'bg-destructive/15 text-destructive'
-                  : 'bg-muted text-muted-foreground',
-            ]"
-          >
-            <FileCheck2
-              v-if="uploadResult?.status === 'success'"
-              class="w-5 h-5"
-            />
-            <FileWarning
-              v-else-if="uploadResult?.status === 'error'"
-              class="w-5 h-5"
-            />
-            <Upload v-else class="w-5 h-5" />
-          </div>
-
-          <div class="min-w-0 flex-1">
-            <div class="text-sm font-medium truncate">
-              {{ uploadedFile.name }}
-            </div>
-            <div class="text-xs text-muted-foreground font-mono">
-              {{ formatBytes(uploadedFile.size) }}
-              <template v-if="uploadingDemo">
-                ·
-                {{
-                  uploadProgress < 100
-                    ? $t("pages.settings.external_matches.uploading")
-                    : $t("pages.settings.external_matches.finishing")
-                }}
-              </template>
-            </div>
-          </div>
-
-          <Button
-            v-if="!uploadingDemo"
-            variant="ghost"
-            size="icon"
-            class="shrink-0 h-7 w-7"
-            @click.stop="clearUpload"
-          >
-            <X class="w-4 h-4" />
-          </Button>
-        </div>
-
-        <Progress
-          v-if="uploadingDemo || uploadProgress > 0"
-          :model-value="uploadProgress"
-          class="h-1.5"
-        />
-
-        <p
-          v-if="uploadResult && !uploadingDemo"
-          class="text-xs font-mono break-all"
-          :class="
-            uploadResult.status === 'success'
-              ? 'text-emerald-400'
-              : 'text-destructive'
-          "
-        >
-          {{ uploadResult.message }}
-        </p>
       </div>
     </div>
   </PageTransition>

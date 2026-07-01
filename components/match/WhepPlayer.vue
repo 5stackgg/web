@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-import { Volume2, VolumeX, Maximize2, Minimize2 } from "lucide-vue-next";
+import { Volume2, VolumeX, Maximize2, Minimize2, Lock } from "lucide-vue-next";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
 const { active: clipRenderActive } = useClipRenderActive();
@@ -24,9 +24,9 @@ const props = defineProps<{
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
-const status = ref<"idle" | "connecting" | "playing" | "error" | "rendering">(
-  "idle",
-);
+const status = ref<
+  "idle" | "connecting" | "playing" | "error" | "rendering" | "unauthorized"
+>("idle");
 const useFallback = ref(false);
 let failureCount = 0;
 const MAX_WHEP_FAILURES = 3;
@@ -257,6 +257,19 @@ async function connect() {
       headers: { "Content-Type": "application/sdp" },
       body: pc.localDescription?.sdp ?? "",
     });
+    // Anti-cheat / permission block: the stream is gated server-side
+    // (eg. a rostered player — even an admin — can't watch a match
+    // they're in). Don't retry and don't fall back to the iframe, which
+    // would render nginx's raw "401 Authorization Required" page. Show a
+    // clear reason instead.
+    if (res.status === 401 || res.status === 403) {
+      status.value = "unauthorized";
+      errorMessage.value = null;
+      isRetrying.value = false;
+      cancelRetries();
+      await teardown();
+      return;
+    }
     if (!res.ok) {
       throw new Error(
         `WHEP ${res.status}: ${await res.text().catch(() => "")}`,
@@ -720,8 +733,34 @@ defineExpose({ connect, teardown });
       </span>
     </div>
 
+    <!-- Permission block (WHEP 401/403). Replaces the raw nginx 401
+         page that the iframe fallback would otherwise show. -->
     <div
-      v-if="status !== 'playing' && status !== 'rendering' && !useFallback"
+      v-if="status === 'unauthorized'"
+      class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black px-6 text-center"
+    >
+      <div
+        class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
+      >
+        <Lock class="size-5 text-muted-foreground" />
+      </div>
+      <p
+        class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
+      >
+        {{ $t("match.stream.access_denied") }}
+      </p>
+      <p class="max-w-xs text-[0.7rem] leading-relaxed text-muted-foreground">
+        {{ $t("match.stream.access_denied_hint") }}
+      </p>
+    </div>
+
+    <div
+      v-if="
+        status !== 'playing' &&
+        status !== 'rendering' &&
+        status !== 'unauthorized' &&
+        !useFallback
+      "
       class="absolute inset-0 overflow-hidden pointer-events-none"
     >
       <!-- Ambient color wash — amber while connecting, red on error -->

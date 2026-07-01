@@ -7621,6 +7621,9 @@ export const AllTypesProps: Record<string,any> = {
 		addDraftPlayer:{
 			draftGameId:"uuid"
 		},
+		addSteamPresenceBotAccount:{
+
+		},
 		approveNameChange:{
 			steam_id:"bigint"
 		},
@@ -8223,6 +8226,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_player_stats_by_pk:{
 			player_steam_id:"bigint"
+		},
+		delete_player_steam_bot_friend:{
+			where:"player_steam_bot_friend_bool_exp"
+		},
+		delete_player_steam_bot_friend_by_pk:{
+			steam_id:"bigint"
 		},
 		delete_player_steam_match_auth:{
 			where:"player_steam_match_auth_bool_exp"
@@ -9107,6 +9116,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"player_stats_insert_input",
 			on_conflict:"player_stats_on_conflict"
 		},
+		insert_player_steam_bot_friend:{
+			objects:"player_steam_bot_friend_insert_input",
+			on_conflict:"player_steam_bot_friend_on_conflict"
+		},
+		insert_player_steam_bot_friend_one:{
+			object:"player_steam_bot_friend_insert_input",
+			on_conflict:"player_steam_bot_friend_on_conflict"
+		},
 		insert_player_steam_match_auth:{
 			objects:"player_steam_match_auth_insert_input",
 			on_conflict:"player_steam_match_auth_on_conflict"
@@ -9422,6 +9439,9 @@ export const AllTypesProps: Record<string,any> = {
 		registerName:{
 
 		},
+		removeSteamPresenceBotAccount:{
+
+		},
 		renameServerItem:{
 
 		},
@@ -9533,6 +9553,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		stopWatchDemo:{
 			match_map_id:"uuid"
+		},
+		submitSteamPresenceSteamGuard:{
+
 		},
 		swapLineups:{
 			match_id:"uuid"
@@ -10648,6 +10671,29 @@ export const AllTypesProps: Record<string,any> = {
 		update_player_stats_many:{
 			updates:"player_stats_updates"
 		},
+		update_player_steam_bot_friend:{
+			_append:"player_steam_bot_friend_append_input",
+			_delete_at_path:"player_steam_bot_friend_delete_at_path_input",
+			_delete_elem:"player_steam_bot_friend_delete_elem_input",
+			_delete_key:"player_steam_bot_friend_delete_key_input",
+			_inc:"player_steam_bot_friend_inc_input",
+			_prepend:"player_steam_bot_friend_prepend_input",
+			_set:"player_steam_bot_friend_set_input",
+			where:"player_steam_bot_friend_bool_exp"
+		},
+		update_player_steam_bot_friend_by_pk:{
+			_append:"player_steam_bot_friend_append_input",
+			_delete_at_path:"player_steam_bot_friend_delete_at_path_input",
+			_delete_elem:"player_steam_bot_friend_delete_elem_input",
+			_delete_key:"player_steam_bot_friend_delete_key_input",
+			_inc:"player_steam_bot_friend_inc_input",
+			_prepend:"player_steam_bot_friend_prepend_input",
+			_set:"player_steam_bot_friend_set_input",
+			pk_columns:"player_steam_bot_friend_pk_columns_input"
+		},
+		update_player_steam_bot_friend_many:{
+			updates:"player_steam_bot_friend_updates"
+		},
 		update_player_steam_match_auth:{
 			_inc:"player_steam_match_auth_inc_input",
 			_set:"player_steam_match_auth_set_input",
@@ -10760,10 +10806,12 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"steam_account_claims_updates"
 		},
 		update_steam_accounts:{
+			_inc:"steam_accounts_inc_input",
 			_set:"steam_accounts_set_input",
 			where:"steam_accounts_bool_exp"
 		},
 		update_steam_accounts_by_pk:{
+			_inc:"steam_accounts_inc_input",
 			_set:"steam_accounts_set_input",
 			pk_columns:"steam_accounts_pk_columns_input"
 		},
@@ -11083,6 +11131,9 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends:{
 		elo:{
 
+		},
+		last_presence_state:{
+
 		}
 	},
 	my_friends_aggregate_bool_exp:{
@@ -11124,15 +11175,22 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"my_friends_variance_order_by"
 	},
 	my_friends_append_input:{
-		elo:"jsonb"
+		elo:"jsonb",
+		last_presence_state:"jsonb"
 	},
 	my_friends_arr_rel_insert_input:{
 		data:"my_friends_insert_input"
 	},
 	my_friends_avg_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_bool_exp:{
 		_and:"my_friends_bool_exp",
@@ -11141,19 +11199,38 @@ export const AllTypesProps: Record<string,any> = {
 		avatar_url:"String_comparison_exp",
 		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		custom_avatar_url:"String_comparison_exp",
+		days_since_last_ban:"Int_comparison_exp",
 		discord_id:"String_comparison_exp",
 		elo:"jsonb_comparison_exp",
+		faceit_elo:"Int_comparison_exp",
+		faceit_nickname:"String_comparison_exp",
+		faceit_player_id:"String_comparison_exp",
+		faceit_skill_level:"Int_comparison_exp",
+		faceit_updated_at:"timestamptz_comparison_exp",
+		faceit_url:"String_comparison_exp",
 		friend_steam_id:"bigint_comparison_exp",
+		game_ban_count:"Int_comparison_exp",
 		invited_by_steam_id:"bigint_comparison_exp",
 		language:"String_comparison_exp",
+		last_presence_state:"jsonb_comparison_exp",
+		last_read_news_at:"timestamptz_comparison_exp",
 		last_sign_in_at:"timestamptz_comparison_exp",
 		name:"String_comparison_exp",
 		name_registered:"Boolean_comparison_exp",
 		player:"players_bool_exp",
+		premier_rank:"Int_comparison_exp",
+		premier_rank_updated_at:"timestamptz_comparison_exp",
+		presence_updated_at:"timestamptz_comparison_exp",
 		profile_url:"String_comparison_exp",
 		role:"String_comparison_exp",
+		roster_image_url:"String_comparison_exp",
+		show_match_ready_modal:"Boolean_comparison_exp",
 		status:"String_comparison_exp",
-		steam_id:"bigint_comparison_exp"
+		steam_bans_checked_at:"timestamptz_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		vac_ban_count:"Int_comparison_exp",
+		vac_banned:"Boolean_comparison_exp"
 	},
 	my_friends_delete_at_path_input:{
 
@@ -11172,62 +11249,120 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_insert_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
+		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
+		last_presence_state:"jsonb",
+		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		player:"players_obj_rel_insert_input",
+		premier_rank_updated_at:"timestamptz",
+		presence_updated_at:"timestamptz",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	my_friends_max_order_by:{
 		avatar_url:"order_by",
 		country:"order_by",
 		created_at:"order_by",
+		custom_avatar_url:"order_by",
+		days_since_last_ban:"order_by",
 		discord_id:"order_by",
+		faceit_elo:"order_by",
+		faceit_nickname:"order_by",
+		faceit_player_id:"order_by",
+		faceit_skill_level:"order_by",
+		faceit_updated_at:"order_by",
+		faceit_url:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
 		language:"order_by",
+		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
 		name:"order_by",
+		premier_rank:"order_by",
+		premier_rank_updated_at:"order_by",
+		presence_updated_at:"order_by",
 		profile_url:"order_by",
 		role:"order_by",
+		roster_image_url:"order_by",
 		status:"order_by",
-		steam_id:"order_by"
+		steam_bans_checked_at:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_min_order_by:{
 		avatar_url:"order_by",
 		country:"order_by",
 		created_at:"order_by",
+		custom_avatar_url:"order_by",
+		days_since_last_ban:"order_by",
 		discord_id:"order_by",
+		faceit_elo:"order_by",
+		faceit_nickname:"order_by",
+		faceit_player_id:"order_by",
+		faceit_skill_level:"order_by",
+		faceit_updated_at:"order_by",
+		faceit_url:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
 		language:"order_by",
+		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
 		name:"order_by",
+		premier_rank:"order_by",
+		premier_rank_updated_at:"order_by",
+		presence_updated_at:"order_by",
 		profile_url:"order_by",
 		role:"order_by",
+		roster_image_url:"order_by",
 		status:"order_by",
-		steam_id:"order_by"
+		steam_bans_checked_at:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_order_by:{
 		avatar_url:"order_by",
 		country:"order_by",
 		created_at:"order_by",
+		custom_avatar_url:"order_by",
+		days_since_last_ban:"order_by",
 		discord_id:"order_by",
 		elo:"order_by",
+		faceit_elo:"order_by",
+		faceit_nickname:"order_by",
+		faceit_player_id:"order_by",
+		faceit_skill_level:"order_by",
+		faceit_updated_at:"order_by",
+		faceit_url:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
 		language:"order_by",
+		last_presence_state:"order_by",
+		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
 		name:"order_by",
 		name_registered:"order_by",
 		player:"players_order_by",
+		premier_rank:"order_by",
+		premier_rank_updated_at:"order_by",
+		presence_updated_at:"order_by",
 		profile_url:"order_by",
 		role:"order_by",
+		roster_image_url:"order_by",
+		show_match_ready_modal:"order_by",
 		status:"order_by",
-		steam_id:"order_by"
+		steam_bans_checked_at:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by",
+		vac_banned:"order_by"
 	},
 	my_friends_prepend_input:{
-		elo:"jsonb"
+		elo:"jsonb",
+		last_presence_state:"jsonb"
 	},
 	my_friends_select_column: "enum" as const,
 	my_friends_select_column_my_friends_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -11235,25 +11370,49 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_set_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
+		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
+		last_presence_state:"jsonb",
+		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		premier_rank_updated_at:"timestamptz",
+		presence_updated_at:"timestamptz",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	my_friends_stddev_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_stddev_pop_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_stddev_samp_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_stream_cursor_input:{
 		initial_value:"my_friends_stream_cursor_value_input",
@@ -11262,15 +11421,27 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
+		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
+		last_presence_state:"jsonb",
+		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		premier_rank_updated_at:"timestamptz",
+		presence_updated_at:"timestamptz",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	my_friends_sum_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_updates:{
 		_append:"my_friends_append_input",
@@ -11283,19 +11454,37 @@ export const AllTypesProps: Record<string,any> = {
 		where:"my_friends_bool_exp"
 	},
 	my_friends_var_pop_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_var_samp_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	my_friends_variance_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
 		friend_steam_id:"order_by",
+		game_ban_count:"order_by",
 		invited_by_steam_id:"order_by",
-		steam_id:"order_by"
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	news_articles_aggregate_fields:{
 		count:{
@@ -16153,6 +16342,113 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"player_stats_set_input",
 		where:"player_stats_bool_exp"
 	},
+	player_steam_bot_friend:{
+		last_presence_state:{
+
+		}
+	},
+	player_steam_bot_friend_aggregate_fields:{
+		count:{
+			columns:"player_steam_bot_friend_select_column"
+		}
+	},
+	player_steam_bot_friend_append_input:{
+		last_presence_state:"jsonb"
+	},
+	player_steam_bot_friend_bool_exp:{
+		_and:"player_steam_bot_friend_bool_exp",
+		_not:"player_steam_bot_friend_bool_exp",
+		_or:"player_steam_bot_friend_bool_exp",
+		bot_steam_account_id:"uuid_comparison_exp",
+		bot_steamid64:"bigint_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		friended_at:"timestamptz_comparison_exp",
+		last_presence_state:"jsonb_comparison_exp",
+		player:"players_bool_exp",
+		status:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	player_steam_bot_friend_constraint: "enum" as const,
+	player_steam_bot_friend_delete_at_path_input:{
+
+	},
+	player_steam_bot_friend_delete_elem_input:{
+
+	},
+	player_steam_bot_friend_delete_key_input:{
+
+	},
+	player_steam_bot_friend_inc_input:{
+		bot_steamid64:"bigint",
+		steam_id:"bigint"
+	},
+	player_steam_bot_friend_insert_input:{
+		bot_steam_account_id:"uuid",
+		bot_steamid64:"bigint",
+		created_at:"timestamptz",
+		friended_at:"timestamptz",
+		last_presence_state:"jsonb",
+		player:"players_obj_rel_insert_input",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	player_steam_bot_friend_on_conflict:{
+		constraint:"player_steam_bot_friend_constraint",
+		update_columns:"player_steam_bot_friend_update_column",
+		where:"player_steam_bot_friend_bool_exp"
+	},
+	player_steam_bot_friend_order_by:{
+		bot_steam_account_id:"order_by",
+		bot_steamid64:"order_by",
+		created_at:"order_by",
+		friended_at:"order_by",
+		last_presence_state:"order_by",
+		player:"players_order_by",
+		status:"order_by",
+		steam_id:"order_by",
+		updated_at:"order_by"
+	},
+	player_steam_bot_friend_pk_columns_input:{
+		steam_id:"bigint"
+	},
+	player_steam_bot_friend_prepend_input:{
+		last_presence_state:"jsonb"
+	},
+	player_steam_bot_friend_select_column: "enum" as const,
+	player_steam_bot_friend_set_input:{
+		bot_steam_account_id:"uuid",
+		bot_steamid64:"bigint",
+		created_at:"timestamptz",
+		friended_at:"timestamptz",
+		last_presence_state:"jsonb",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	player_steam_bot_friend_stream_cursor_input:{
+		initial_value:"player_steam_bot_friend_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_steam_bot_friend_stream_cursor_value_input:{
+		bot_steam_account_id:"uuid",
+		bot_steamid64:"bigint",
+		created_at:"timestamptz",
+		friended_at:"timestamptz",
+		last_presence_state:"jsonb",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	player_steam_bot_friend_update_column: "enum" as const,
+	player_steam_bot_friend_updates:{
+		_append:"player_steam_bot_friend_append_input",
+		_delete_at_path:"player_steam_bot_friend_delete_at_path_input",
+		_delete_elem:"player_steam_bot_friend_delete_elem_input",
+		_delete_key:"player_steam_bot_friend_delete_key_input",
+		_inc:"player_steam_bot_friend_inc_input",
+		_prepend:"player_steam_bot_friend_prepend_input",
+		_set:"player_steam_bot_friend_set_input",
+		where:"player_steam_bot_friend_bool_exp"
+	},
 	player_steam_match_auth_aggregate_fields:{
 		count:{
 			columns:"player_steam_match_auth_select_column"
@@ -18689,6 +18985,19 @@ export const AllTypesProps: Record<string,any> = {
 		player_stats_by_pk:{
 			player_steam_id:"bigint"
 		},
+		player_steam_bot_friend:{
+			distinct_on:"player_steam_bot_friend_select_column",
+			order_by:"player_steam_bot_friend_order_by",
+			where:"player_steam_bot_friend_bool_exp"
+		},
+		player_steam_bot_friend_aggregate:{
+			distinct_on:"player_steam_bot_friend_select_column",
+			order_by:"player_steam_bot_friend_order_by",
+			where:"player_steam_bot_friend_bool_exp"
+		},
+		player_steam_bot_friend_by_pk:{
+			steam_id:"bigint"
+		},
 		player_steam_match_auth:{
 			distinct_on:"player_steam_match_auth_select_column",
 			order_by:"player_steam_match_auth_order_by",
@@ -19888,19 +20197,27 @@ export const AllTypesProps: Record<string,any> = {
 		claims:"steam_account_claims_bool_exp",
 		claims_aggregate:"steam_account_claims_aggregate_bool_exp",
 		created_at:"timestamptz_comparison_exp",
+		friend_capacity:"Int_comparison_exp",
 		id:"uuid_comparison_exp",
 		last_node:"game_server_nodes_bool_exp",
 		last_node_id:"String_comparison_exp",
 		password:"String_comparison_exp",
+		role:"String_comparison_exp",
+		steam_level:"Int_comparison_exp",
+		steamid64:"bigint_comparison_exp",
 		updated_at:"timestamptz_comparison_exp",
 		username:"String_comparison_exp"
 	},
 	steam_accounts_constraint: "enum" as const,
+	steam_accounts_inc_input:{
+		steamid64:"bigint"
+	},
 	steam_accounts_insert_input:{
 		claims:"steam_account_claims_arr_rel_insert_input",
 		created_at:"timestamptz",
 		id:"uuid",
 		last_node:"game_server_nodes_obj_rel_insert_input",
+		steamid64:"bigint",
 		updated_at:"timestamptz"
 	},
 	steam_accounts_obj_rel_insert_input:{
@@ -19915,10 +20232,14 @@ export const AllTypesProps: Record<string,any> = {
 	steam_accounts_order_by:{
 		claims_aggregate:"steam_account_claims_aggregate_order_by",
 		created_at:"order_by",
+		friend_capacity:"order_by",
 		id:"order_by",
 		last_node:"game_server_nodes_order_by",
 		last_node_id:"order_by",
 		password:"order_by",
+		role:"order_by",
+		steam_level:"order_by",
+		steamid64:"order_by",
 		updated_at:"order_by",
 		username:"order_by"
 	},
@@ -19929,6 +20250,7 @@ export const AllTypesProps: Record<string,any> = {
 	steam_accounts_set_input:{
 		created_at:"timestamptz",
 		id:"uuid",
+		steamid64:"bigint",
 		updated_at:"timestamptz"
 	},
 	steam_accounts_stream_cursor_input:{
@@ -19938,10 +20260,12 @@ export const AllTypesProps: Record<string,any> = {
 	steam_accounts_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		id:"uuid",
+		steamid64:"bigint",
 		updated_at:"timestamptz"
 	},
 	steam_accounts_update_column: "enum" as const,
 	steam_accounts_updates:{
+		_inc:"steam_accounts_inc_input",
 		_set:"steam_accounts_set_input",
 		where:"steam_accounts_bool_exp"
 	},
@@ -21485,6 +21809,23 @@ export const AllTypesProps: Record<string,any> = {
 		player_stats_stream:{
 			cursor:"player_stats_stream_cursor_input",
 			where:"player_stats_bool_exp"
+		},
+		player_steam_bot_friend:{
+			distinct_on:"player_steam_bot_friend_select_column",
+			order_by:"player_steam_bot_friend_order_by",
+			where:"player_steam_bot_friend_bool_exp"
+		},
+		player_steam_bot_friend_aggregate:{
+			distinct_on:"player_steam_bot_friend_select_column",
+			order_by:"player_steam_bot_friend_order_by",
+			where:"player_steam_bot_friend_bool_exp"
+		},
+		player_steam_bot_friend_by_pk:{
+			steam_id:"bigint"
+		},
+		player_steam_bot_friend_stream:{
+			cursor:"player_steam_bot_friend_stream_cursor_input",
+			where:"player_steam_bot_friend_bool_exp"
 		},
 		player_steam_match_auth:{
 			distinct_on:"player_steam_match_auth_select_column",
@@ -29042,6 +29383,37 @@ export const ReturnTypes: Record<string,any> = {
 		error:"String",
 		success:"Boolean"
 	},
+	SteamPresenceAdminStatusOutput:{
+		bots:"SteamPresenceBot",
+		enabled:"Boolean",
+		pool:"SteamPresencePool"
+	},
+	SteamPresenceBot:{
+		assigned:"Int",
+		capacity:"Int",
+		guardLastWrong:"Boolean",
+		guardType:"String",
+		id:"String",
+		needs2fa:"Boolean",
+		online:"Boolean",
+		steamId:"String",
+		steamLevel:"Int",
+		username:"String",
+		watching:"Int"
+	},
+	SteamPresenceBotAssignment:{
+		addUrl:"String",
+		enabled:"Boolean",
+		status:"String",
+		steamId:"String"
+	},
+	SteamPresencePool:{
+		bots:"Int",
+		capacity:"Int",
+		online:"Int",
+		pending:"Int",
+		watching:"Int"
+	},
 	StorageStats:{
 		summary:"StorageSummary",
 		tables:"TableSizeInfo"
@@ -32897,7 +33269,9 @@ export const ReturnTypes: Record<string,any> = {
 		ResetTournamentMatch:"SuccessOutput",
 		acceptInvite:"SuccessOutput",
 		addDraftPlayer:"SuccessOutput",
+		addSteamPresenceBotAccount:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
+		assignSteamPresenceBot:"SteamPresenceBotAssignment",
 		attachDemo:"WatchDemoOutput",
 		bakeShaders:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
@@ -33092,6 +33466,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_sanctions_by_pk:"player_sanctions",
 		delete_player_stats:"player_stats_mutation_response",
 		delete_player_stats_by_pk:"player_stats",
+		delete_player_steam_bot_friend:"player_steam_bot_friend_mutation_response",
+		delete_player_steam_bot_friend_by_pk:"player_steam_bot_friend",
 		delete_player_steam_match_auth:"player_steam_match_auth_mutation_response",
 		delete_player_steam_match_auth_by_pk:"player_steam_match_auth",
 		delete_player_unused_utility:"player_unused_utility_mutation_response",
@@ -33330,6 +33706,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_sanctions_one:"player_sanctions",
 		insert_player_stats:"player_stats_mutation_response",
 		insert_player_stats_one:"player_stats",
+		insert_player_steam_bot_friend:"player_steam_bot_friend_mutation_response",
+		insert_player_steam_bot_friend_one:"player_steam_bot_friend",
 		insert_player_steam_match_auth:"player_steam_match_auth_mutation_response",
 		insert_player_steam_match_auth_one:"player_steam_match_auth",
 		insert_player_unused_utility:"player_unused_utility_mutation_response",
@@ -33420,6 +33798,7 @@ export const ReturnTypes: Record<string,any> = {
 		refreshLiveHud:"SuccessOutput",
 		registerName:"SuccessOutput",
 		removeFixtures:"SuccessOutput",
+		removeSteamPresenceBotAccount:"SuccessOutput",
 		renameServerItem:"SuccessOutput",
 		reparseAllDemos:"ReparseAllStartedOutput",
 		reparseAllDemosStatus:"ReparseAllStatusOutput",
@@ -33460,6 +33839,7 @@ export const ReturnTypes: Record<string,any> = {
 		stopGpuSession:"SuccessOutput",
 		stopLive:"SuccessOutput",
 		stopWatchDemo:"SuccessOutput",
+		submitSteamPresenceSteamGuard:"SuccessOutput",
 		swapLineups:"SuccessOutput",
 		switchLineup:"SuccessOutput",
 		switchLiveMatch:"SuccessOutput",
@@ -33725,6 +34105,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_stats:"player_stats_mutation_response",
 		update_player_stats_by_pk:"player_stats",
 		update_player_stats_many:"player_stats_mutation_response",
+		update_player_steam_bot_friend:"player_steam_bot_friend_mutation_response",
+		update_player_steam_bot_friend_by_pk:"player_steam_bot_friend",
+		update_player_steam_bot_friend_many:"player_steam_bot_friend_mutation_response",
 		update_player_steam_match_auth:"player_steam_match_auth_mutation_response",
 		update_player_steam_match_auth_by_pk:"player_steam_match_auth",
 		update_player_steam_match_auth_many:"player_steam_match_auth_mutation_response",
@@ -33831,19 +34214,38 @@ export const ReturnTypes: Record<string,any> = {
 		avatar_url:"String",
 		country:"String",
 		created_at:"timestamptz",
+		custom_avatar_url:"String",
+		days_since_last_ban:"Int",
 		discord_id:"String",
 		elo:"jsonb",
+		faceit_elo:"Int",
+		faceit_nickname:"String",
+		faceit_player_id:"String",
+		faceit_skill_level:"Int",
+		faceit_updated_at:"timestamptz",
+		faceit_url:"String",
 		friend_steam_id:"bigint",
+		game_ban_count:"Int",
 		invited_by_steam_id:"bigint",
 		language:"String",
+		last_presence_state:"jsonb",
+		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		name:"String",
 		name_registered:"Boolean",
 		player:"players",
+		premier_rank:"Int",
+		premier_rank_updated_at:"timestamptz",
+		presence_updated_at:"timestamptz",
 		profile_url:"String",
 		role:"String",
+		roster_image_url:"String",
+		show_match_ready_modal:"Boolean",
 		status:"String",
-		steam_id:"bigint"
+		steam_bans_checked_at:"timestamptz",
+		steam_id:"bigint",
+		vac_ban_count:"Int",
+		vac_banned:"Boolean"
 	},
 	my_friends_aggregate:{
 		aggregate:"my_friends_aggregate_fields",
@@ -33863,78 +34265,158 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"my_friends_variance_fields"
 	},
 	my_friends_avg_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	my_friends_max_fields:{
 		avatar_url:"String",
 		country:"String",
 		created_at:"timestamptz",
+		custom_avatar_url:"String",
+		days_since_last_ban:"Int",
 		discord_id:"String",
+		faceit_elo:"Int",
+		faceit_nickname:"String",
+		faceit_player_id:"String",
+		faceit_skill_level:"Int",
+		faceit_updated_at:"timestamptz",
+		faceit_url:"String",
 		friend_steam_id:"bigint",
+		game_ban_count:"Int",
 		invited_by_steam_id:"bigint",
 		language:"String",
+		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		name:"String",
+		premier_rank:"Int",
+		premier_rank_updated_at:"timestamptz",
+		presence_updated_at:"timestamptz",
 		profile_url:"String",
 		role:"String",
+		roster_image_url:"String",
 		status:"String",
-		steam_id:"bigint"
+		steam_bans_checked_at:"timestamptz",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
 	},
 	my_friends_min_fields:{
 		avatar_url:"String",
 		country:"String",
 		created_at:"timestamptz",
+		custom_avatar_url:"String",
+		days_since_last_ban:"Int",
 		discord_id:"String",
+		faceit_elo:"Int",
+		faceit_nickname:"String",
+		faceit_player_id:"String",
+		faceit_skill_level:"Int",
+		faceit_updated_at:"timestamptz",
+		faceit_url:"String",
 		friend_steam_id:"bigint",
+		game_ban_count:"Int",
 		invited_by_steam_id:"bigint",
 		language:"String",
+		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		name:"String",
+		premier_rank:"Int",
+		premier_rank_updated_at:"timestamptz",
+		presence_updated_at:"timestamptz",
 		profile_url:"String",
 		role:"String",
+		roster_image_url:"String",
 		status:"String",
-		steam_id:"bigint"
+		steam_bans_checked_at:"timestamptz",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
 	},
 	my_friends_mutation_response:{
 		affected_rows:"Int",
 		returning:"my_friends"
 	},
 	my_friends_stddev_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	my_friends_stddev_pop_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	my_friends_stddev_samp_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	my_friends_sum_fields:{
+		days_since_last_ban:"Int",
+		faceit_elo:"Int",
+		faceit_skill_level:"Int",
 		friend_steam_id:"bigint",
+		game_ban_count:"Int",
 		invited_by_steam_id:"bigint",
-		steam_id:"bigint"
+		premier_rank:"Int",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
 	},
 	my_friends_var_pop_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	my_friends_var_samp_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	my_friends_variance_fields:{
+		days_since_last_ban:"Float",
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		friend_steam_id:"Float",
+		game_ban_count:"Float",
 		invited_by_steam_id:"Float",
-		steam_id:"Float"
+		premier_rank:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	news_articles:{
 		author:"players",
@@ -38366,6 +38848,88 @@ export const ReturnTypes: Record<string,any> = {
 		kills:"Float",
 		player_steam_id:"Float"
 	},
+	player_steam_bot_friend:{
+		bot_steam_account_id:"uuid",
+		bot_steamid64:"bigint",
+		created_at:"timestamptz",
+		friended_at:"timestamptz",
+		last_presence_state:"jsonb",
+		player:"players",
+		status:"String",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	player_steam_bot_friend_aggregate:{
+		aggregate:"player_steam_bot_friend_aggregate_fields",
+		nodes:"player_steam_bot_friend"
+	},
+	player_steam_bot_friend_aggregate_fields:{
+		avg:"player_steam_bot_friend_avg_fields",
+		count:"Int",
+		max:"player_steam_bot_friend_max_fields",
+		min:"player_steam_bot_friend_min_fields",
+		stddev:"player_steam_bot_friend_stddev_fields",
+		stddev_pop:"player_steam_bot_friend_stddev_pop_fields",
+		stddev_samp:"player_steam_bot_friend_stddev_samp_fields",
+		sum:"player_steam_bot_friend_sum_fields",
+		var_pop:"player_steam_bot_friend_var_pop_fields",
+		var_samp:"player_steam_bot_friend_var_samp_fields",
+		variance:"player_steam_bot_friend_variance_fields"
+	},
+	player_steam_bot_friend_avg_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
+	player_steam_bot_friend_max_fields:{
+		bot_steam_account_id:"uuid",
+		bot_steamid64:"bigint",
+		created_at:"timestamptz",
+		friended_at:"timestamptz",
+		status:"String",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	player_steam_bot_friend_min_fields:{
+		bot_steam_account_id:"uuid",
+		bot_steamid64:"bigint",
+		created_at:"timestamptz",
+		friended_at:"timestamptz",
+		status:"String",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	player_steam_bot_friend_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_steam_bot_friend"
+	},
+	player_steam_bot_friend_stddev_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
+	player_steam_bot_friend_stddev_pop_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
+	player_steam_bot_friend_stddev_samp_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
+	player_steam_bot_friend_sum_fields:{
+		bot_steamid64:"bigint",
+		steam_id:"bigint"
+	},
+	player_steam_bot_friend_var_pop_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
+	player_steam_bot_friend_var_samp_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
+	player_steam_bot_friend_variance_fields:{
+		bot_steamid64:"Float",
+		steam_id:"Float"
+	},
 	player_steam_match_auth:{
 		auth_code:"String",
 		created_at:"timestamptz",
@@ -39449,6 +40013,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_stats:"player_stats",
 		player_stats_aggregate:"player_stats_aggregate",
 		player_stats_by_pk:"player_stats",
+		player_steam_bot_friend:"player_steam_bot_friend",
+		player_steam_bot_friend_aggregate:"player_steam_bot_friend_aggregate",
+		player_steam_bot_friend_by_pk:"player_steam_bot_friend",
 		player_steam_match_auth:"player_steam_match_auth",
 		player_steam_match_auth_aggregate:"player_steam_match_auth_aggregate",
 		player_steam_match_auth_by_pk:"player_steam_match_auth",
@@ -39477,6 +40044,7 @@ export const ReturnTypes: Record<string,any> = {
 		settings:"settings",
 		settings_aggregate:"settings_aggregate",
 		settings_by_pk:"settings",
+		steamPresenceAdminStatus:"SteamPresenceAdminStatusOutput",
 		steam_account_claims:"steam_account_claims",
 		steam_account_claims_aggregate:"steam_account_claims_aggregate",
 		steam_account_claims_by_pk:"steam_account_claims",
@@ -39886,10 +40454,14 @@ export const ReturnTypes: Record<string,any> = {
 		claims:"steam_account_claims",
 		claims_aggregate:"steam_account_claims_aggregate",
 		created_at:"timestamptz",
+		friend_capacity:"Int",
 		id:"uuid",
 		last_node:"game_server_nodes",
 		last_node_id:"String",
 		password:"String",
+		role:"String",
+		steam_level:"Int",
+		steamid64:"bigint",
 		updated_at:"timestamptz",
 		username:"String"
 	},
@@ -39898,29 +40470,85 @@ export const ReturnTypes: Record<string,any> = {
 		nodes:"steam_accounts"
 	},
 	steam_accounts_aggregate_fields:{
+		avg:"steam_accounts_avg_fields",
 		count:"Int",
 		max:"steam_accounts_max_fields",
-		min:"steam_accounts_min_fields"
+		min:"steam_accounts_min_fields",
+		stddev:"steam_accounts_stddev_fields",
+		stddev_pop:"steam_accounts_stddev_pop_fields",
+		stddev_samp:"steam_accounts_stddev_samp_fields",
+		sum:"steam_accounts_sum_fields",
+		var_pop:"steam_accounts_var_pop_fields",
+		var_samp:"steam_accounts_var_samp_fields",
+		variance:"steam_accounts_variance_fields"
+	},
+	steam_accounts_avg_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
 	},
 	steam_accounts_max_fields:{
 		created_at:"timestamptz",
+		friend_capacity:"Int",
 		id:"uuid",
 		last_node_id:"String",
 		password:"String",
+		role:"String",
+		steam_level:"Int",
+		steamid64:"bigint",
 		updated_at:"timestamptz",
 		username:"String"
 	},
 	steam_accounts_min_fields:{
 		created_at:"timestamptz",
+		friend_capacity:"Int",
 		id:"uuid",
 		last_node_id:"String",
 		password:"String",
+		role:"String",
+		steam_level:"Int",
+		steamid64:"bigint",
 		updated_at:"timestamptz",
 		username:"String"
 	},
 	steam_accounts_mutation_response:{
 		affected_rows:"Int",
 		returning:"steam_accounts"
+	},
+	steam_accounts_stddev_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
+	},
+	steam_accounts_stddev_pop_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
+	},
+	steam_accounts_stddev_samp_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
+	},
+	steam_accounts_sum_fields:{
+		friend_capacity:"Int",
+		steam_level:"Int",
+		steamid64:"bigint"
+	},
+	steam_accounts_var_pop_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
+	},
+	steam_accounts_var_samp_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
+	},
+	steam_accounts_variance_fields:{
+		friend_capacity:"Float",
+		steam_level:"Float",
+		steamid64:"Float"
 	},
 	subscription_root:{
 		_map_pool:"_map_pool",
@@ -40276,6 +40904,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_stats_aggregate:"player_stats_aggregate",
 		player_stats_by_pk:"player_stats",
 		player_stats_stream:"player_stats",
+		player_steam_bot_friend:"player_steam_bot_friend",
+		player_steam_bot_friend_aggregate:"player_steam_bot_friend_aggregate",
+		player_steam_bot_friend_by_pk:"player_steam_bot_friend",
+		player_steam_bot_friend_stream:"player_steam_bot_friend",
 		player_steam_match_auth:"player_steam_match_auth",
 		player_steam_match_auth_aggregate:"player_steam_match_auth_aggregate",
 		player_steam_match_auth_by_pk:"player_steam_match_auth",

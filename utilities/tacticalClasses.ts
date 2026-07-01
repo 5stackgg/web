@@ -17,7 +17,7 @@ export const tacticalTabIndicatorFinishedClasses =
   "group-data-[state=active]:bg-success";
 
 export const tacticalSectionLabelClasses =
-  "mb-1 inline-flex items-center gap-2 font-sans text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
+  "mb-3 inline-flex items-center gap-2 font-sans text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
 
 export const tacticalSectionTickClasses =
   "inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";

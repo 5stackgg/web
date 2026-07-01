@@ -12,6 +12,7 @@ import {
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
+import { isInCs2 } from "~/utilities/cs2Presence";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { webrtc } from "~/web-sockets/Webrtc";
 import { setActiveHub } from "~/composables/useHubState";
@@ -106,6 +107,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
             avatar_url: true,
             status: true,
             invited_by_steam_id: true,
+            last_presence_state: true,
+            presence_updated_at: true,
             player: {
               steam_id: true,
               is_in_lobby: true,
@@ -133,6 +136,10 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
                       options: { type: true, best_of: true },
                       lineup_1: { id: true, name: true },
                       lineup_2: { id: true, name: true },
+                      streams: [
+                        { where: { is_live: { _eq: true } }, limit: 1 },
+                        { id: true },
+                      ],
                       match_maps: [
                         { order_by: [{ order: order_by.asc }] },
                         {
@@ -242,23 +249,23 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     );
   };
 
-  const onlineFriends = computed(() => {
-    return friends.value?.filter((friend: any) => {
-      if (friend.status === "Pending") {
-        return false;
-      }
+  // Online = connected to 5stack web, in a live 5stack match, or in CS2 (via the
+  // friend bot). Any of these means they're active enough to show up top.
+  const isActiveFriend = (friend: any) =>
+    onlinePlayerSteamIds.value.includes(friend.steam_id) ||
+    friend.player?.player_lineup?.length > 0 ||
+    isInCs2(friend.last_presence_state);
 
-      return onlinePlayerSteamIds.value.includes(friend.steam_id);
-    });
+  const onlineFriends = computed(() => {
+    return friends.value?.filter(
+      (friend: any) => friend.status !== "Pending" && isActiveFriend(friend),
+    );
   });
 
   const offlineFriends = computed(() => {
-    return friends.value?.filter((friend: any) => {
-      if (friend.status === "Pending") {
-        return false;
-      }
-      return !onlinePlayerSteamIds.value.includes(friend.steam_id);
-    });
+    return friends.value?.filter(
+      (friend: any) => friend.status !== "Pending" && !isActiveFriend(friend),
+    );
   });
 
   const subscribeToLobbies = async (steam_id: bigint) => {

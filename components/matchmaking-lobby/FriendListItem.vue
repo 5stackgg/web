@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerLiveStatus from "~/components/matchmaking-lobby/PlayerLiveStatus.vue";
 import { Button } from "~/components/ui/button";
 import {
   Tooltip,
@@ -20,7 +21,6 @@ import {
 } from "lucide-vue-next";
 import { useFriendActions } from "~/composables/useFriendActions";
 import { useFriendStatus } from "~/composables/useFriendStatus";
-import FriendMatchPreview from "~/components/matchmaking-lobby/FriendMatchPreview.vue";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { toast } from "~/components/ui/toast";
 
@@ -70,7 +70,6 @@ const isOnline = computed(() =>
 
 const {
   statusKey,
-  dotClass,
   statusIcon,
   statusLabelKey,
   joinableDraft,
@@ -151,6 +150,20 @@ async function inviteToDraft() {
   toast({ title: t("draft_games.room.invite_sent", { name: props.player.name }) });
 }
 
+const STATUS_BANNER: Record<string, string> = {
+  in_cs2: "border-green-500 from-green-500/15 text-green-300",
+  in_lobby: "border-sky-500 from-sky-500/15 text-sky-300",
+  in_draft:
+    "border-[hsl(var(--tac-amber))] from-[hsl(var(--tac-amber))]/15 text-[hsl(var(--tac-amber))]",
+};
+const bannerAccent = computed(() => STATUS_BANNER[statusKey.value] ?? "");
+const showBanner = computed(
+  () =>
+    isFriend.value &&
+    (!!currentMatch.value ||
+      ["in_cs2", "in_lobby", "in_draft"].includes(statusKey.value)),
+);
+
 const actionBtn =
   "h-8 w-8 rounded-md p-0 text-muted-foreground transition-colors";
 const dangerHover = "hover:bg-destructive/15 hover:text-destructive";
@@ -176,28 +189,7 @@ const amberHover =
           :show-online="false"
           :linkable="true"
           :truncate-name="true"
-        >
-          <!-- Always-on presence dot (friends only) -->
-          <template v-if="isFriend" #status>
-            <span class="absolute -left-0.5 -top-0.5 flex h-2 w-2">
-              <span
-                v-if="['in_match', 'in_draft'].includes(statusKey)"
-                :class="[
-                  'absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping',
-                  dotClass,
-                ]"
-              />
-              <span
-                :class="[
-                  'relative inline-flex h-2 w-2 rounded-full ring-2 ring-background',
-                  dotClass,
-                ]"
-              />
-            </span>
-          </template>
-        </PlayerDisplay>
-
-        <!-- Action cluster -->
+        />
         <div class="flex shrink-0 items-center gap-0.5">
           <!-- Invite to lobby — any invitable player except incoming requests -->
           <Tooltip v-if="canInviteToLobby && rel !== 'incoming'">
@@ -338,39 +330,43 @@ const amberHover =
         </div>
         </div>
 
-        <!-- Status row (full width): status under the name, timer/join flush right -->
         <div
-          v-if="isFriend"
-          class="-mt-1 flex min-w-0 items-center gap-2 pb-2 pl-[68px] pr-1 transition-opacity duration-200"
+          v-if="showBanner"
+          class="px-2 pb-2 pt-0.5 transition-opacity duration-200"
           :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
         >
-          <FriendMatchPreview
-            v-if="currentMatch"
-            :match="currentMatch"
-            class="min-w-0 flex-1"
+          <PlayerLiveStatus
+            v-if="currentMatch || statusKey === 'in_cs2'"
+            :player="player"
+            :online="isOnline"
           />
-          <span
+          <div
             v-else
-            class="flex items-center gap-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"
+            class="flex items-center gap-2 rounded-md border-l-2 bg-gradient-to-r to-transparent px-2.5 py-1.5"
+            :class="bannerAccent"
           >
-            <component :is="statusIcon" v-if="statusIcon" class="h-3 w-3" />
-            {{ $t(statusLabelKey) }}
-          </span>
+            <component :is="statusIcon" v-if="statusIcon" class="h-3.5 w-3.5 shrink-0" />
+            <span
+              class="min-w-0 truncate font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em]"
+            >
+              {{ $t(statusLabelKey) }}
+            </span>
 
-          <!-- Mini join button — flush right — for a joinable lobby/draft -->
-          <Button
-            v-if="joinableDraft && !joinableDraft.full"
-            size="sm"
-            :class="[
-              'ml-auto h-5 shrink-0 gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
-              'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
-            ]"
-            :loading="joiningDraft"
-            @click.stop.prevent="joinDraft"
-          >
-            <LogIn class="h-3 w-3" />
-            {{ $t("matchmaking.friends.join") }}
-          </Button>
+            <!-- Mini join button — flush right — for a joinable draft -->
+            <Button
+              v-if="joinableDraft && !joinableDraft.full"
+              size="sm"
+              :class="[
+                'ml-auto h-5 shrink-0 gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
+                'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
+              ]"
+              :loading="joiningDraft"
+              @click.stop.prevent="joinDraft"
+            >
+              <LogIn class="h-3 w-3" />
+              {{ $t("matchmaking.friends.join") }}
+            </Button>
+          </div>
         </div>
       </div>
     </ContextMenuTrigger>

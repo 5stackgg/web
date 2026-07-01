@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { watch } from "vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import LoadingScreen from "~/components/LoadingScreen.vue";
 
 definePageMeta({
   layout: "public",

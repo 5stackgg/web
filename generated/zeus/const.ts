@@ -29345,6 +29345,34 @@ export const ReturnTypes: Record<string,any> = {
 		total_exec_time:"Float",
 		total_rows:"Int"
 	},
+	RecomputeEloStartedOutput:{
+		running:"Boolean",
+		success:"Boolean"
+	},
+	RecomputeEloStatusOutput:{
+		canceled:"Boolean",
+		completed:"Int",
+		current_match_id:"String",
+		failed:"Int",
+		finished_at:"String",
+		running:"Boolean",
+		started_at:"String",
+		total:"Int"
+	},
+	ReindexStartedOutput:{
+		running:"Boolean",
+		success:"Boolean"
+	},
+	ReindexStatusOutput:{
+		canceled:"Boolean",
+		completed:"Int",
+		current_steam_id:"String",
+		failed:"Int",
+		finished_at:"String",
+		running:"Boolean",
+		started_at:"String",
+		total:"Int"
+	},
 	ReparseAllStartedOutput:{
 		running:"Boolean",
 		success:"Boolean"
@@ -33285,6 +33313,8 @@ export const ReturnTypes: Record<string,any> = {
 		cancelClipRender:"SuccessOutput",
 		cancelClipRenderBatch:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
+		cancelRecomputePlayerElo:"SuccessOutput",
+		cancelRefreshAllPlayers:"SuccessOutput",
 		cancelReparseAllDemos:"SuccessOutput",
 		cancelScrimRequest:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
@@ -33798,8 +33828,11 @@ export const ReturnTypes: Record<string,any> = {
 		randomizeTeams:"SuccessOutput",
 		rebootMatchServer:"SuccessOutput",
 		recalculate_tournament_trophies:"tournament_trophies",
+		recomputePlayerElo:"RecomputeEloStartedOutput",
+		recomputePlayerEloStatus:"RecomputeEloStatusOutput",
 		reconnectLive:"SuccessOutput",
-		refreshAllPlayers:"SuccessOutput",
+		refreshAllPlayers:"ReindexStartedOutput",
+		refreshAllPlayersStatus:"ReindexStatusOutput",
 		refreshFaceitRank:"SuccessOutput",
 		refreshLiveHud:"SuccessOutput",
 		registerName:"SuccessOutput",

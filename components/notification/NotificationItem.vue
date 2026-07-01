@@ -5,6 +5,11 @@ import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
 import NotificationMessage from "~/components/notification/NotificationMessage.vue";
+import { useOrphanedScan } from "~/composables/useOrphanedScan";
+
+// The orphaned-uploads dialog is mounted globally (default layout), so a
+// StorageScan notification can open it in place instead of navigating away.
+const { dialogOpen: orphanedDialogOpen } = useOrphanedScan();
 
 type NotificationAction = {
   label: string;
@@ -164,6 +169,16 @@ onBeforeUnmount(() => {
       :entity-id="notification.entity_id"
       class="mb-2"
     />
+
+    <Button
+      v-if="notification.type === 'StorageScan'"
+      size="sm"
+      variant="outline"
+      class="w-full mb-2"
+      @click="orphanedDialogOpen = true"
+    >
+      {{ $t("layouts.notifications.review_orphaned_uploads") }}
+    </Button>
 
     <div class="flex justify-between items-center">
       <span

@@ -64,7 +64,7 @@ import {
           <MatchSelectServer :match="match"></MatchSelectServer>
         </DropdownMenuItem>
 
-        <DropdownMenuItem v-if="match.is_organizer">
+        <DropdownMenuItem v-if="canSetMatchWinner">
           <MatchSelectWinner :match="match"></MatchSelectWinner>
         </DropdownMenuItem>
 
@@ -677,6 +677,12 @@ export default {
   computed: {
     canAct() {
       return this.match.is_in_lineup || this.match.is_organizer;
+    },
+    canSetMatchWinner() {
+      return (
+        this.match.is_organizer &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+      );
     },
     isLive() {
       return this.match.status === e_match_status_enum.Live;

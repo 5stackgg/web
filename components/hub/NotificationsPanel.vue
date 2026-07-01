@@ -112,14 +112,14 @@ import NewsNotification from "~/components/notification/NewsNotification.vue";
     </div>
 
     <div
-      class="flex flex-col sm:flex-row gap-2 px-3 py-3 border-t border-border"
+      class="flex flex-row gap-2 px-3 py-3 border-t border-border"
       v-if="notifications.length > 0"
     >
       <Button
         size="sm"
         variant="outline"
         @click="dismissAllNotifications"
-        class="w-full sm:flex-1 justify-start sm:justify-center gap-2"
+        class="flex-1 justify-center gap-1.5"
       >
         <CheckCheck class="h-4 w-4 shrink-0" />
         {{ $t("layouts.notifications.dismiss_all") }}
@@ -128,7 +128,7 @@ import NewsNotification from "~/components/notification/NewsNotification.vue";
         size="sm"
         variant="ghost"
         @click="deleteAllReadNotifications"
-        class="w-full sm:flex-1 justify-start sm:justify-center gap-2 text-destructive hover:bg-destructive hover:text-white"
+        class="flex-1 justify-center gap-1.5 text-destructive hover:bg-destructive hover:text-white"
       >
         <Trash2 class="h-4 w-4 shrink-0" />
         {{ $t("layouts.notifications.delete_all_read") }}

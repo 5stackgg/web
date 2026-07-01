@@ -8,9 +8,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import OrphanedUploadsDialog from "~/components/settings/OrphanedUploadsDialog.vue";
 import { useOrphanedScan } from "~/composables/useOrphanedScan";
 
+// The dialog itself is mounted once globally in the default layout so it can be
+// opened from anywhere (e.g. the completion notification); this button just
+// flips the shared open state.
 const { scanning, dialogOpen } = useOrphanedScan();
 </script>
 
@@ -40,6 +42,5 @@ const { scanning, dialogOpen } = useOrphanedScan();
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-    <OrphanedUploadsDialog />
   </div>
 </template>

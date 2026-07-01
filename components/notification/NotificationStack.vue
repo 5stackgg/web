@@ -85,23 +85,10 @@ const expandedWrapperClass = computed(() =>
 
 const isOpen = ref(false);
 
-const deletingTop = ref(false);
 const dismissingAll = ref(false);
 const deletingAll = ref(false);
-let topTimer: ReturnType<typeof setTimeout> | undefined;
 let dismissAllTimer: ReturnType<typeof setTimeout> | undefined;
 let deleteAllTimer: ReturnType<typeof setTimeout> | undefined;
-
-function onDeleteTop() {
-  if (deletingTop.value) {
-    return;
-  }
-  deletingTop.value = true;
-  emit("delete", top.value.id);
-  topTimer = setTimeout(() => {
-    deletingTop.value = false;
-  }, 6000);
-}
 
 function onDismissAll() {
   if (dismissingAll.value) {
@@ -126,7 +113,6 @@ function onDeleteAll() {
 }
 
 onBeforeUnmount(() => {
-  clearTimeout(topTimer);
   clearTimeout(dismissAllTimer);
   clearTimeout(deleteAllTimer);
 });
@@ -169,11 +155,12 @@ function handleTopClick(event: MouseEvent) {
             aria-hidden="true"
           />
           <Button
-            v-if="!top.is_read && top.deletable !== false"
+            v-if="unreadIds.length > 0"
             size="icon"
             variant="ghost"
             class="h-6 w-6"
-            @click.stop="emit('dismiss', top.id)"
+            :loading="dismissingAll"
+            @click.stop="onDismissAll"
           >
             <Check class="h-3.5 w-3.5" />
             <span class="sr-only">{{
@@ -181,12 +168,12 @@ function handleTopClick(event: MouseEvent) {
             }}</span>
           </Button>
           <Button
-            v-if="top.deletable !== false"
+            v-if="deletableIds.length > 0"
             size="icon"
             variant="ghost"
             class="h-6 w-6"
-            :loading="deletingTop"
-            @click.stop="onDeleteTop"
+            :loading="deletingAll"
+            @click.stop="onDeleteAll"
           >
             <Trash2 class="h-3.5 w-3.5" />
             <span class="sr-only">{{ $t("common.delete") }}</span>

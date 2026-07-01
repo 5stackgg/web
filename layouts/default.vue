@@ -32,6 +32,9 @@ const ClipDetailModal = defineAsyncComponent(
 const ActionToasts = defineAsyncComponent(
   () => import("~/components/notification/ActionToasts.vue"),
 );
+const OrphanedUploadsDialog = defineAsyncComponent(
+  () => import("~/components/settings/OrphanedUploadsDialog.vue"),
+);
 import { useClipModal } from "~/composables/useClipModal";
 
 const { activeClipId } = useClipModal();
@@ -107,6 +110,8 @@ provide("containContent", containContent);
   <div id="global-chat-container"></div>
 
   <ClipDetailModal :clip-id="activeClipId" />
+
+  <OrphanedUploadsDialog />
 
   <ActionToasts />
 </template>

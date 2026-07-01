@@ -6,6 +6,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
+import StatChevron from "~/components/StatChevron.vue";
 import Pagination from "~/components/Pagination.vue";
 import {
   Trophy,
@@ -34,6 +35,21 @@ import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { eloTierColor } from "~/utils/eloTier";
+import {
+  KD_TIER,
+  HLTV_TIER,
+  KAST_TIER,
+  ADR_TIER,
+  type StatTierConfig,
+} from "~/utils/statTiers";
+
+// Page-local chevron tiers for the rate stats without a canonical config.
+const KPR_TIER: StatTierConfig = { dir: "high", cuts: [0.8, 0.7, 0.6, 0.5] };
+const DPR_TIER: StatTierConfig = { dir: "low", cuts: [0.6, 0.65, 0.7, 0.75] };
+const UDR_TIER: StatTierConfig = { dir: "high", cuts: [8, 6, 4, 2.5] };
+const HS_TIER: StatTierConfig = { dir: "high", cuts: [55, 45, 35, 25] };
+const WIN_RATE_TIER: StatTierConfig = { dir: "high", cuts: [58, 52, 48, 42] };
 
 const leaderboardFadeTransition = {
   enterActiveClass: "transition-all duration-150 ease-out",
@@ -73,6 +89,9 @@ const CATEGORY_CONFIG: Record<
     // dotted-underline hover tooltip. Only cryptic stat abbreviations get one;
     // word columns (Wins, Rounds, Trophies…) are left plain.
     glossary?: Partial<Record<SortField, string>>;
+    // Maps a column to a chevron tier config so its value shows the
+    // good/bad directional chevron (matching the match scoreboard).
+    tiers?: Partial<Record<SortField, StatTierConfig>>;
     sortable: SortField[];
   }
 > = {
@@ -94,6 +113,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "kd" },
+    tiers: { value: KD_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_win_rate: {
@@ -103,6 +123,7 @@ const CATEGORY_CONFIG: Record<
       tertiary_value: "pages.leaderboard.col.losses",
       matches_played: "pages.leaderboard.columns.matches",
     },
+    tiers: { value: WIN_RATE_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   highest_hs_pct: {
@@ -112,6 +133,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "hs" },
+    tiers: { value: HS_TIER },
     sortable: ["value", "secondary_value", "matches_played"],
   },
   trophies: {
@@ -131,6 +153,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "hltv", secondary_value: "adr" },
+    tiers: { value: HLTV_TIER, secondary_value: ADR_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_adr: {
@@ -141,6 +164,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "adr", secondary_value: "hltv" },
+    tiers: { value: ADR_TIER, secondary_value: HLTV_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_kpr: {
@@ -151,6 +175,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "kpr", secondary_value: "dpr" },
+    tiers: { value: KPR_TIER, secondary_value: DPR_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_kast: {
@@ -161,6 +186,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "kast", secondary_value: "hltv" },
+    tiers: { value: KAST_TIER, secondary_value: HLTV_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_udr: {
@@ -171,6 +197,7 @@ const CATEGORY_CONFIG: Record<
       matches_played: "pages.leaderboard.columns.matches",
     },
     glossary: { value: "udr" },
+    tiers: { value: UDR_TIER },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
 };
@@ -405,6 +432,12 @@ function isSortable(field: SortField): boolean {
   return config.value.sortable.includes(field);
 }
 
+// Chevron tier config for a column in the current category (undefined = no
+// chevron). Skips ELO/trophies, which convey quality via their own tint.
+function statTier(field: SortField): StatTierConfig | undefined {
+  return config.value.tiers?.[field];
+}
+
 function sortIcon(field: SortField) {
   if (sortBy.value !== field) return ArrowUpDown;
   return sortDir.value === "asc" ? ArrowUp : ArrowDown;
@@ -599,6 +632,13 @@ function trophyTierColor(
   if (field === "tertiary_value") return TIER_COLORS.bronze;
   if (field === "matches_played") return TIER_COLORS.mvp;
   return null;
+}
+
+// Tint the primary value with its ELO rank-tier color (Recruit → Apex),
+// matching the player ELO display. Only the ELO category's value column.
+function eloValueColor(value: number): string | undefined {
+  if (category.value !== "elo") return undefined;
+  return eloTierColor(value);
 }
 
 watch(category, () => {
@@ -1183,12 +1223,25 @@ onMounted(() => {
                   <TableCell
                     class="text-right font-mono font-semibold tabular-nums"
                     :style="
-                      trophyTierColor('value')
-                        ? { color: trophyTierColor('value') }
+                      trophyTierColor('value') || eloValueColor(entry.value)
+                        ? {
+                            color:
+                              trophyTierColor('value') ||
+                              eloValueColor(entry.value),
+                          }
                         : {}
                     "
                   >
-                    {{ formatValue(entry.value) }}
+                    <span
+                      class="inline-flex items-center justify-end gap-1"
+                    >
+                      {{ formatValue(entry.value) }}
+                      <StatChevron
+                        v-if="statTier('value')"
+                        :cfg="statTier('value')"
+                        :value="entry.value"
+                      />
+                    </span>
                   </TableCell>
                   <TableCell
                     v-if="columnLabels.secondary_value"
@@ -1203,7 +1256,16 @@ onMounted(() => {
                         : {}
                     "
                   >
-                    {{ formatSecondary(entry.secondary_value) }}
+                    <span
+                      class="inline-flex items-center justify-end gap-1"
+                    >
+                      {{ formatSecondary(entry.secondary_value) }}
+                      <StatChevron
+                        v-if="statTier('secondary_value')"
+                        :cfg="statTier('secondary_value')"
+                        :value="entry.secondary_value"
+                      />
+                    </span>
                   </TableCell>
                   <TableCell
                     v-if="columnLabels.tertiary_value"

@@ -980,10 +980,6 @@ export default {
         this.newSeasonEnd = undefined;
 
         toast({ title: this.$t("pages.seasons.created") });
-
-        // A past-dated season kicks off an auto-backfill on the API.
-        const bf = useSeasonBackfill();
-        void bf.refreshStatus().then(() => bf.poll());
       } catch (error) {
         this.createError =
           (error as Error)?.message || this.$t("pages.seasons.error_generic");

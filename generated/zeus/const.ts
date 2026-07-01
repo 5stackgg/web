@@ -20091,6 +20091,7 @@ export const AllTypesProps: Record<string,any> = {
 		description:"String_comparison_exp",
 		ends_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
+		needs_rebuild:"Boolean_comparison_exp",
 		number:"Int_comparison_exp",
 		player_season_stats:"player_season_stats_bool_exp",
 		player_season_stats_aggregate:"player_season_stats_aggregate_bool_exp",
@@ -20121,6 +20122,7 @@ export const AllTypesProps: Record<string,any> = {
 		description:"order_by",
 		ends_at:"order_by",
 		id:"order_by",
+		needs_rebuild:"order_by",
 		number:"order_by",
 		player_season_stats_aggregate:"player_season_stats_aggregate_order_by",
 		starts_at:"order_by"
@@ -40859,6 +40861,7 @@ export const ReturnTypes: Record<string,any> = {
 		description:"String",
 		ends_at:"timestamptz",
 		id:"uuid",
+		needs_rebuild:"Boolean",
 		number:"Int",
 		player_season_stats:"player_season_stats",
 		player_season_stats_aggregate:"player_season_stats_aggregate",

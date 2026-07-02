@@ -18,6 +18,9 @@ type Notification = {
   is_read: boolean;
   deletable: boolean;
   created_at: string;
+  // Set on client-derived notifications (e.g. seasons needing a rebuild) that
+  // have no backing row — action handlers must not try to mutate them by id.
+  __synthetic?: boolean;
   actions?: Array<{
     label: string;
     graphql: {
@@ -50,6 +53,54 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   const tournament_team_invites = ref<any[]>([]);
   const draft_invites = ref<any[]>([]);
   const notifications = ref<Notification[]>([]);
+  const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
+
+  // Admin-only, derived from seasons.needs_rebuild — not stored rows. They carry
+  // a Rebuild action and clear themselves when the backfill flips needs_rebuild
+  // false, so nothing is ever created or deleted in the notifications table.
+  const seasonRebuildNotifications = computed<Notification[]>(() => {
+    if (!useApplicationSettingsStore().seasonsEnabled) {
+      return [];
+    }
+    if (!useAuthStore().isAdmin) {
+      return [];
+    }
+    return seasonRebuilds.value.map((season) => ({
+      id: `season-rebuild:${season.id}`,
+      __synthetic: true,
+      title: `Season ${season.number ?? "?"} ELO rebuild required`,
+      message:
+        "This season's ELO is out of date. Rebuild to recompute its ELO and standings.",
+      steam_id: "",
+      type: "EloRecompute",
+      role: "administrator",
+      entity_id: `season-rebuild:${season.id}`,
+      is_read: false,
+      deletable: false,
+      created_at: new Date().toISOString(),
+      actions: [
+        {
+          label: "Rebuild Season ELO",
+          graphql: {
+            type: "mutation",
+            action: "backfillSeasonElo",
+            selection: { success: true, running: true },
+            variables: { season_id: season.id },
+          },
+        },
+      ],
+    }));
+  });
+
+  // DB notifications + client-derived ones, in one list for the panel + counts.
+  const allNotifications = computed<Notification[]>(() => [
+    ...seasonRebuildNotifications.value,
+    ...notifications.value,
+  ]);
+
+  const seasonRebuildCount = computed(
+    () => seasonRebuildNotifications.value.length,
+  );
   const latestNewsArticle = ref<NewsArticle | null>(null);
   const lastReadNewsAt = ref<string | null>(null);
 
@@ -115,11 +166,13 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   // let them pile up.
   const personalUnread = computed(
     () =>
-      notifications.value.filter((n) => !n.is_read && n.role === "user").length,
+      allNotifications.value.filter((n) => !n.is_read && n.role === "user")
+        .length,
   );
   const adminUnread = computed(
     () =>
-      notifications.value.filter((n) => !n.is_read && n.role !== "user").length,
+      allNotifications.value.filter((n) => !n.is_read && n.role !== "user")
+        .length,
   );
 
   const hasPersonalNotifications = computed(
@@ -151,7 +204,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     const groups = new Map<string, Notification[]>();
     const singles: Notification[] = [];
 
-    for (const n of notifications.value) {
+    for (const n of allNotifications.value) {
       const groupKey =
         n.type === "PlayerSanctioned"
           ? `type:PlayerSanctioned:${n.role}`
@@ -372,6 +425,26 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         }),
     );
 
+    if (useAuthStore().isAdmin) {
+      subscribe(
+        "notifications:season_rebuilds",
+        getGraphqlClient()
+          .subscribe({
+            query: typedGql("subscription")({
+              seasons: [
+                { where: { needs_rebuild: { _eq: true } } },
+                { id: true, number: true },
+              ],
+            }),
+          })
+          .subscribe({
+            next: ({ data }) => {
+              seasonRebuilds.value = data?.seasons ?? [];
+            },
+          }),
+      );
+    }
+
     subscribe(
       "notifications:latest_news",
       getGraphqlClient()
@@ -432,8 +505,10 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:tournament_team_invites");
         unsubscribe("notifications:draft_invites");
         unsubscribe("notifications:notifications");
+        unsubscribe("notifications:season_rebuilds");
         unsubscribe("notifications:latest_news");
         unsubscribe("notifications:news_read_state");
+        seasonRebuilds.value = [];
         lastReadNewsAt.value = null;
       }
     },
@@ -449,7 +524,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     team_invites,
     tournament_team_invites,
     draft_invites,
-    notifications,
+    notifications: allNotifications,
+    seasonRebuildCount,
     stackedNotifications,
     unreadNotificationCount,
     hasNotifications,

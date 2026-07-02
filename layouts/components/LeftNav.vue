@@ -973,7 +973,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 </template>
 
 <script lang="ts">
-import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
+import { generateQuery } from "~/graphql/graphqlGen";
 export default {
   props: {
     isMobile: {
@@ -990,26 +990,9 @@ export default {
       serversOpened: false,
       profileOpened: false,
       showLogoutModal: false,
-      seasonsRebuildCount: 0,
     };
   },
   apollo: {
-    $subscribe: {
-      // Admin-only, derived signal: any season with a stale ELO surfaces an
-      // attention indicator on the Seasons nav item. No notification rows —
-      // when a rebuild clears needs_rebuild the badge disappears on its own.
-      seasonsNeedingRebuild: {
-        query: generateSubscription({
-          seasons: [{ where: { needs_rebuild: { _eq: true } } }, { id: true }],
-        }),
-        result(this: any, { data }: any) {
-          this.seasonsRebuildCount = (data?.seasons ?? []).length;
-        },
-        skip(this: any) {
-          return !this.isAdmin || !this.seasonsEnabled;
-        },
-      },
-    },
     telemetryStats: {
       query: generateQuery({
         telemetryStats: {
@@ -1110,6 +1093,9 @@ export default {
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;
+    },
+    seasonsRebuildCount() {
+      return useNotificationStore().seasonRebuildCount;
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;

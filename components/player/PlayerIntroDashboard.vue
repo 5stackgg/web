@@ -54,9 +54,17 @@ const props = defineProps<{
   source?: string | null;
   limit?: number | null;
   since?: string | null;
+  until?: string | null;
 }>();
 
 const { t, te } = useI18n();
+
+// A null/absent limit means "no match cap" (a date-range / season filter is
+// driving the window); only fall back to the recent-30 view when there is no
+// range at all. Bounded so an all-time query can't be unbounded.
+const effectiveLimit = computed(() =>
+  props.limit != null ? props.limit : props.since ? 1000 : 30,
+);
 
 function statTitle(key: string): string {
   return te(`stat_glossary.${key}.label`)
@@ -92,8 +100,11 @@ function buildMatchesWhere() {
       },
     };
   }
-  if (props.since) {
-    where.started_at = { _gte: props.since };
+  if (props.since || props.until) {
+    where.started_at = {
+      ...(props.since ? { _gte: props.since } : {}),
+      ...(props.until ? { _lte: props.until } : {}),
+    };
   }
   return where;
 }
@@ -185,7 +196,7 @@ async function load() {
       variables: {
         steamId: props.steamId,
         matchesWhere: buildMatchesWhere(),
-        limit: props.limit ?? 30,
+        limit: effectiveLimit.value,
         statsLimit: 200,
         hltvLimit: 600,
       },
@@ -465,7 +476,7 @@ const {
   (steamId) => ({
     steamId,
     matchesWhere: buildMatchesWhere(),
-    limit: props.limit ?? 30,
+    limit: effectiveLimit.value,
     statsLimit: 200,
     hltvLimit: 600,
   }),

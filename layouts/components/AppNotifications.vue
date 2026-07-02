@@ -158,6 +158,12 @@ export default {
         }
       }
 
+      // Synthetic notifications have no backing row — they clear on their own
+      // when the underlying state changes (e.g. seasons.needs_rebuild flips).
+      if (notification.__synthetic) {
+        return;
+      }
+
       await this.deleteNotification(notification.id);
     },
     async dismissNotification(id: string) {

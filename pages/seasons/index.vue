@@ -37,6 +37,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { useSeasonBackfill } from "~/composables/useSeasonBackfill";
+import SeasonRebuildProgress from "~/components/seasons/SeasonRebuildProgress.vue";
 
 definePageMeta({
   middleware: "admin",
@@ -45,11 +46,21 @@ definePageMeta({
 // Shared singleton; also used from the Options API block via useSeasonBackfill().
 const backfill = useSeasonBackfill();
 
+// True while THIS season is the one currently being rebuilt.
+function isRebuilding(seasonId: string): boolean {
+  return (
+    backfill.running.value && backfill.status.value?.season_id === seasonId
+  );
+}
+
 const actionBtn = [filterTriggerBase, filterTriggerIdle, "h-8"];
 const dangerBtn = [
   filterTriggerBase,
   "h-8 border-[hsl(var(--destructive)/0.5)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)]",
 ];
+// Prominent amber CTA used when a season's ELO is stale and must be rebuilt.
+const rebuildCta =
+  "inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] px-3 h-8 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.28)] disabled:opacity-40";
 </script>
 
 <template>
@@ -91,43 +102,6 @@ const dangerBtn = [
           </div>
         </template>
       </TacticalPageHeader>
-
-      <!-- ===== Backfill progress ===== -->
-      <div
-        v-if="backfill.running.value"
-        class="relative overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-4 [backdrop-filter:blur(6px)]"
-      >
-        <div class="mb-3 flex items-center justify-between">
-          <span :class="tacticalSectionLabelClasses" class="!mb-0">
-            <span
-              :class="tacticalSectionTickClasses"
-              class="animate-pulse"
-            ></span>
-            {{ $t("pages.seasons.backfill_running") }}
-          </span>
-          <button
-            type="button"
-            :class="actionBtn"
-            :disabled="backfill.canceling.value"
-            @click="backfill.cancelBackfill()"
-          >
-            {{ $t("common.cancel") }}
-          </button>
-        </div>
-        <div class="relative h-1.5 w-full overflow-hidden rounded-full bg-muted/40">
-          <div
-            class="absolute inset-y-0 left-0 rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-500"
-            :style="{ width: (backfill.progress.value || 0) + '%' }"
-          ></div>
-        </div>
-        <div
-          class="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
-        >
-          {{ backfill.status.value?.completed || 0 }} /
-          {{ backfill.status.value?.total || 0 }}
-          {{ $t("pages.seasons.matches_label") }}
-        </div>
-      </div>
 
       <!-- ===== Create Season ===== -->
       <section
@@ -353,7 +327,46 @@ const dangerBtn = [
                 ></span>
                 {{ $t("pages.seasons.active") }}
               </span>
+              <span
+                v-if="activeSeason.needs_rebuild"
+                class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.2)] px-2.5 py-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))]"
+              >
+                <AlertTriangle class="h-3 w-3" />
+                {{ $t("pages.seasons.rebuild_required") }}
+              </span>
             </div>
+
+            <Transition
+              enter-active-class="transition-all duration-300 ease-out motion-reduce:!duration-0"
+              enter-from-class="opacity-0 -translate-y-1"
+              enter-to-class="opacity-100 translate-y-0"
+              leave-active-class="transition-all duration-200 ease-in motion-reduce:!duration-0"
+              leave-from-class="opacity-100 translate-y-0"
+              leave-to-class="opacity-0 -translate-y-1"
+            >
+              <div
+                v-if="
+                  activeSeason.needs_rebuild && !isRebuilding(activeSeason.id)
+                "
+                class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] px-3.5 py-3"
+              >
+                <span
+                  class="inline-flex items-start gap-2 font-mono text-[0.64rem] leading-relaxed tracking-[0.02em] text-[hsl(var(--tac-amber))]"
+                >
+                  <AlertTriangle class="mt-[1px] h-4 w-4 shrink-0" />
+                  {{ $t("pages.seasons.needs_rebuild_notice") }}
+                </span>
+                <button
+                  type="button"
+                  :class="rebuildCta"
+                  :disabled="backfill.running.value"
+                  @click="confirmRebuild(activeSeason.id)"
+                >
+                  <RotateCcw class="h-3.5 w-3.5" />
+                  {{ $t("pages.seasons.rebuild_elo") }}
+                </button>
+              </div>
+            </Transition>
 
             <p
               v-if="activeSeason.description"
@@ -462,6 +475,8 @@ const dangerBtn = [
                 {{ $t("pages.seasons.delete") }}
               </button>
             </div>
+
+            <SeasonRebuildProgress :season-id="activeSeason.id" />
           </div>
         </div>
       </section>
@@ -480,8 +495,9 @@ const dangerBtn = [
           <div
             v-for="season in ledgerSeasons"
             :key="season.id"
-            class="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+            class="py-3 first:pt-0 last:pb-0"
           >
+            <div class="flex items-center gap-3">
             <div
               class="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-muted/30 font-sans text-xs font-bold text-muted-foreground [font-stretch:85%]"
             >
@@ -515,6 +531,13 @@ const dangerBtn = [
                       : $t("pages.seasons.ended")
                   }}
                 </span>
+                <span
+                  v-if="season.needs_rebuild"
+                  class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.18)] px-2 py-0.5 font-mono text-[0.5rem] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+                >
+                  <AlertTriangle class="h-2.5 w-2.5" />
+                  {{ $t("pages.seasons.rebuild_required") }}
+                </span>
               </div>
               <p
                 class="truncate font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground"
@@ -530,6 +553,27 @@ const dangerBtn = [
               </p>
             </div>
             <button
+              v-if="season.needs_rebuild"
+              type="button"
+              :disabled="backfill.running.value"
+              :class="rebuildCta"
+              class="!h-7 shrink-0 !px-2.5"
+              @click="confirmRebuild(season.id)"
+            >
+              <RotateCcw class="h-3.5 w-3.5" />
+              {{ $t("pages.seasons.rebuild") }}
+            </button>
+            <button
+              v-else
+              type="button"
+              :title="$t('pages.seasons.rebuild')"
+              :disabled="backfill.running.value"
+              class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
+              @click="confirmRebuild(season.id)"
+            >
+              <RotateCcw class="h-3.5 w-3.5" />
+            </button>
+            <button
               type="button"
               :title="$t('pages.seasons.delete')"
               class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--destructive)/0.5)] hover:text-destructive"
@@ -537,6 +581,9 @@ const dangerBtn = [
             >
               <Trash2 class="h-3.5 w-3.5" />
             </button>
+            </div>
+
+            <SeasonRebuildProgress :season-id="season.id" />
           </div>
         </div>
       </section>
@@ -613,6 +660,7 @@ type Season = {
   starts_at: string;
   ends_at: string | null;
   created_at: string;
+  needs_rebuild: boolean;
 };
 
 export default {
@@ -631,6 +679,7 @@ export default {
               starts_at: true,
               ends_at: true,
               created_at: true,
+              needs_rebuild: true,
             },
           ],
         }),

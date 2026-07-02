@@ -2603,6 +2603,7 @@ const playerHeroTeamChipDotClasses =
               :source="effectiveSource"
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
+              :until="untilTimestamp"
             />
           </PageTransition>
         </TabsContent>

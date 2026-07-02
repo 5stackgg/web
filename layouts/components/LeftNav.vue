@@ -704,7 +704,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuItem>
 
               <SidebarMenuItem
-                v-if="seasonsEnabled"
+                v-if="isAdmin && seasonsEnabled"
                 :tooltip="$t('layouts.app_nav.administration.seasons')"
               >
                 <SidebarMenuButton
@@ -719,6 +719,10 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   >
                     <Leaf />
                     {{ $t("layouts.app_nav.administration.seasons") }}
+                    <AlertTriangle
+                      v-if="seasonsRebuildCount > 0"
+                      class="ml-auto h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+                    />
                   </NuxtLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -1089,6 +1093,9 @@ export default {
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;
+    },
+    seasonsRebuildCount() {
+      return useNotificationStore().seasonRebuildCount;
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;

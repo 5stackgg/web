@@ -178,6 +178,10 @@ export default {
           });
         }
       }
+      // Synthetic notifications have no backing row to delete.
+      if (notification.__synthetic) {
+        return;
+      }
       await this.deleteNotification(notification.id);
     },
     async dismissNotification(id: string) {

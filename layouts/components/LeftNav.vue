@@ -704,7 +704,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuItem>
 
               <SidebarMenuItem
-                v-if="seasonsEnabled"
+                v-if="isAdmin && seasonsEnabled"
                 :tooltip="$t('layouts.app_nav.administration.seasons')"
               >
                 <SidebarMenuButton
@@ -719,6 +719,10 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   >
                     <Leaf />
                     {{ $t("layouts.app_nav.administration.seasons") }}
+                    <AlertTriangle
+                      v-if="seasonsRebuildCount > 0"
+                      class="ml-auto h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+                    />
                   </NuxtLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -969,7 +973,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 export default {
   props: {
     isMobile: {
@@ -986,9 +990,26 @@ export default {
       serversOpened: false,
       profileOpened: false,
       showLogoutModal: false,
+      seasonsRebuildCount: 0,
     };
   },
   apollo: {
+    $subscribe: {
+      // Admin-only, derived signal: any season with a stale ELO surfaces an
+      // attention indicator on the Seasons nav item. No notification rows —
+      // when a rebuild clears needs_rebuild the badge disappears on its own.
+      seasonsNeedingRebuild: {
+        query: generateSubscription({
+          seasons: [{ where: { needs_rebuild: { _eq: true } } }, { id: true }],
+        }),
+        result(this: any, { data }: any) {
+          this.seasonsRebuildCount = (data?.seasons ?? []).length;
+        },
+        skip(this: any) {
+          return !this.isAdmin || !this.seasonsEnabled;
+        },
+      },
+    },
     telemetryStats: {
       query: generateQuery({
         telemetryStats: {

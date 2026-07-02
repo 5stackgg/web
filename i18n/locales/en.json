@@ -1604,7 +1604,7 @@
                     "refresh_dialog_title": "Reindex the search index?",
                     "refresh_dialog_description": "This will re-sync every player into the Typesense search index in batches. It runs in the background and you can watch its progress here.",
                     "recompute_elo_title": "Recompute Player ELO",
-                    "recompute_elo_description": "Wipe and rebuild every player's ELO by replaying all finished matches in order, in batches. Use this after an ELO formula change or if ratings look wrong. Search results update automatically as ELO is recalculated.",
+                    "recompute_elo_description": "Wipe and rebuild every player's ELO by replaying all finished matches in order, in batches. When seasons are enabled this also rebuilds each season's ELO from the matches that fall within it. Use this after an ELO formula change or if ratings look wrong. Search results update automatically as ELO is recalculated.",
                     "recompute_elo_button": "Recompute ELO",
                     "recomputing_elo": "Recomputing...",
                     "recompute_elo_queued": "ELO recompute started",

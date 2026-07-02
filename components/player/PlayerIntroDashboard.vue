@@ -229,6 +229,7 @@ watch(
     props.matchType,
     props.limit,
     props.since,
+    props.until,
   ],
   load,
   { immediate: true },
@@ -485,7 +486,7 @@ const {
     rawStats: (data?.playerIntroStats ?? []) as RawStats[],
     hltvRows: (data?.playerIntroHltv ?? []) as any[],
   }),
-  () => [props.source, props.matchType, props.limit, props.since],
+  () => [props.source, props.matchType, props.limit, props.since, props.until],
 );
 
 const comparePoints = computed<MatchPoint[]>(() => {

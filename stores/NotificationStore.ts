@@ -6,6 +6,30 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
+import { MY_SCHEDULE_TASKS_SUBSCRIPTION } from "~/graphql/leagues";
+
+export type LeagueScheduleTask = {
+  id: string;
+  bracketId: string;
+  seasonId: string;
+  seasonNumber: number | null;
+  round: number;
+  team1: string;
+  team2: string;
+  kind: "schedule" | "respond";
+  proposal: {
+    id: string;
+    proposedTime: string;
+    message: string | null;
+    proposedByName: string;
+  } | null;
+  week: {
+    week_number: number;
+    opens_at: string;
+    closes_at: string;
+    default_match_at: string;
+  } | null;
+};
 
 type Notification = {
   id: string;
@@ -54,6 +78,78 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   const draft_invites = ref<any[]>([]);
   const notifications = ref<Notification[]>([]);
   const seasonRebuilds = ref<Array<{ id: any; number: number | null }>>([]);
+  // Raw league seasons (with only the viewer's un-played brackets, filtered
+  // server-side); actionability is derived below into `scheduleTasks` — a
+  // client-only surface with no backing rows. Queried via league_seasons (not
+  // tournament_brackets) because only that root is readable by the app's role.
+  const scheduleTaskSeasons = ref<any[]>([]);
+
+  // Don't dump all 8 weeks at once — teams only need to sort out the next
+  // couple of match weeks. We surface tasks from the nearest N unscheduled
+  // weeks (by round), so the feed stays focused on what's actually up next.
+  const SCHEDULE_WEEKS_AHEAD = 2;
+
+  const scheduleTasks = computed<LeagueScheduleTask[]>(() => {
+    if (!useApplicationSettingsStore().seasonsEnabled) return [];
+    const me = useAuthStore().me?.steam_id;
+    if (!me) return [];
+    const tasks: LeagueScheduleTask[] = [];
+    for (const season of scheduleTaskSeasons.value) {
+      // Un-played brackets only exist once a season is under way, so surface
+      // them unless the season has ended/been called off.
+      if (["Finished", "Canceled"].includes(season.status)) continue;
+      const weeks = season.match_weeks ?? [];
+      for (const sd of season.season_divisions ?? []) {
+        for (const stage of sd.tournament?.stages ?? []) {
+          for (const b of stage.brackets ?? []) {
+            const pending = (b.scheduling_proposals ?? []).filter(
+              (p: any) => p.status === "Pending",
+            );
+            // A proposal from the opponent I can answer takes priority;
+            // otherwise an untouched, unscheduled match needs a first proposal
+            // from me. (A pending proposal I sent = waiting on them.)
+            const respond = pending.find(
+              (p: any) => String(p.proposed_by_steam_id) !== String(me),
+            );
+            let kind: "schedule" | "respond" | null = null;
+            if (respond) kind = "respond";
+            else if (!b.scheduled_at && !pending.length) kind = "schedule";
+            if (!kind) continue;
+            const week =
+              weeks.find((w: any) => w.week_number === b.round) ?? null;
+            tasks.push({
+              id: `schedule:${b.id}`,
+              bracketId: b.id,
+              seasonId: season.id,
+              seasonNumber: season.season_number,
+              round: b.round,
+              team1: b.team_1?.name ?? "TBD",
+              team2: b.team_2?.name ?? "TBD",
+              kind,
+              proposal: respond
+                ? {
+                    id: respond.id,
+                    proposedTime: respond.proposed_time,
+                    message: respond.message,
+                    proposedByName: respond.proposed_by?.name ?? "?",
+                  }
+                : null,
+              week,
+            });
+          }
+        }
+      }
+    }
+    // Nearest week first, then keep only the nearest couple of weeks so the
+    // feed reflects priority rather than an 8-week backlog.
+    tasks.sort((a, b) => a.round - b.round);
+    const nearestRounds = [...new Set(tasks.map((t) => t.round))]
+      .sort((a, b) => a - b)
+      .slice(0, SCHEDULE_WEEKS_AHEAD);
+    return tasks.filter((t) => nearestRounds.includes(t.round));
+  });
+
+  const scheduleTaskCount = computed(() => scheduleTasks.value.length);
 
   // Admin-only, derived from seasons.needs_rebuild — not stored rows. They carry
   // a Rebuild action and clear themselves when the backfill flips needs_rebuild
@@ -181,6 +277,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       team_invites.value.length > 0 ||
       tournament_team_invites.value.length > 0 ||
       draft_invites.value.length > 0 ||
+      scheduleTasks.value.length > 0 ||
       personalUnread.value > 0,
   );
 
@@ -192,6 +289,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       team_invites.value.length +
       tournament_team_invites.value.length +
       draft_invites.value.length +
+      scheduleTasks.value.length +
       personalUnread.value +
       adminUnread.value,
   );
@@ -425,6 +523,26 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         }),
     );
 
+    // Not gated on seasonsEnabled here — that setting loads async and this
+    // runs once at login, so gating would race it out. The scheduleTasks
+    // computed guards seasonsEnabled at read time instead.
+    subscribe(
+      "notifications:schedule_tasks",
+      getGraphqlClient()
+        .subscribe({
+          query: MY_SCHEDULE_TASKS_SUBSCRIPTION,
+          variables: { steamId: steam_id },
+        })
+        .subscribe({
+          next: ({ data }: { data: any }) => {
+            scheduleTaskSeasons.value = data?.league_seasons ?? [];
+          },
+          error: () => {
+            scheduleTaskSeasons.value = [];
+          },
+        }),
+    );
+
     if (useAuthStore().isAdmin) {
       subscribe(
         "notifications:season_rebuilds",
@@ -505,10 +623,12 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:tournament_team_invites");
         unsubscribe("notifications:draft_invites");
         unsubscribe("notifications:notifications");
+        unsubscribe("notifications:schedule_tasks");
         unsubscribe("notifications:season_rebuilds");
         unsubscribe("notifications:latest_news");
         unsubscribe("notifications:news_read_state");
         seasonRebuilds.value = [];
+        scheduleTaskSeasons.value = [];
         lastReadNewsAt.value = null;
       }
     },
@@ -526,6 +646,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     draft_invites,
     notifications: allNotifications,
     seasonRebuildCount,
+    scheduleTasks,
+    scheduleTaskCount,
     stackedNotifications,
     unreadNotificationCount,
     hasNotifications,

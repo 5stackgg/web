@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MoreHorizontal, Trash, FolderOpen, Pencil } from "lucide-vue-next";
+import { MoreVertical, Trash2, FolderOpen, Pencil } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -115,7 +115,9 @@ const titleClasses =
                   <Button
                     variant="outline"
                     size="icon"
-                    @click="$router.push(`/dedicated-servers/${server.id}/files`)"
+                    @click="
+                      $router.push(`/dedicated-servers/${server.id}/files`)
+                    "
                   >
                     <FolderOpen class="h-4 w-4" />
                   </Button>
@@ -129,21 +131,21 @@ const titleClasses =
             <DropdownMenu v-model:open="serverMenu">
               <DropdownMenuTrigger as-child>
                 <Button variant="outline" size="icon">
-                  <MoreHorizontal />
+                  <MoreVertical />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" class="w-[200px]">
                 <DropdownMenuGroup>
                   <DropdownMenuItem @click="editServerSheet = true">
-                    <Pencil class="mr-2 h-4 w-4 inline" />
+                    <Pencil />
                     {{ $t("common.actions.edit") }}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    class="text-red-600"
+                    class="text-destructive focus:text-destructive"
                     @click="deleteServerAlertDialog = true"
                   >
-                    <Trash class="mr-2 h-4 w-4 inline" />
+                    <Trash2 />
                     {{ $t("common.delete") }}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -398,7 +400,9 @@ export default {
     },
     statusLabel() {
       if (!this.server?.connected) {
-        return this.$t("pages.dedicated_servers.detail.status_label.disconnected");
+        return this.$t(
+          "pages.dedicated_servers.detail.status_label.disconnected",
+        );
       }
       if (!this.server.rcon_status) {
         return this.$t("pages.dedicated_servers.detail.status_label.no_rcon");

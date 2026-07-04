@@ -2,7 +2,13 @@
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
-import { Terminal, ChevronDown, ChevronRight } from "lucide-vue-next";
+import {
+  Terminal,
+  ChevronDown,
+  ChevronRight,
+  Info,
+  RefreshCw,
+} from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
 import { RotateCcw } from "lucide-vue-next";
 import {
@@ -145,6 +151,7 @@ import debounce from "~/utilities/debounce";
                       :disabled="!online"
                       v-if="matchId"
                     >
+                      <RefreshCw />
                       {{ $t("server.rcon.refresh_match") }}
                     </DropdownMenuItem>
 
@@ -154,12 +161,14 @@ import debounce from "~/utilities/debounce";
                       @click="commander('meta version', '')"
                       :disabled="!online"
                     >
+                      <Info />
                       {{ $t("server.rcon.metamod_info") }}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       @click="commander(['css_plugins list', 'css'], '')"
                       :disabled="!online"
                     >
+                      <Info />
                       {{ $t("server.rcon.css_info") }}
                     </DropdownMenuItem>
 

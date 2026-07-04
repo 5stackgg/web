@@ -4,7 +4,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TeamScrimSettings from "~/components/team/TeamScrimSettings.vue";
 import TeamScrimRequests from "~/components/team/TeamScrimRequests.vue";
-import ScrimCalendarButton from "~/components/team/ScrimCalendarButton.vue";
+import TeamCalendarButton from "~/components/team/TeamCalendarButton.vue";
 
 export default {
   components: {
@@ -14,7 +14,7 @@ export default {
     TabsContent,
     TeamScrimSettings,
     TeamScrimRequests,
-    ScrimCalendarButton,
+    TeamCalendarButton,
   },
   props: {
     teamId: {
@@ -145,7 +145,7 @@ export default {
       </div>
 
       <div class="flex items-center gap-2">
-        <ScrimCalendarButton :team-id="teamId" />
+        <TeamCalendarButton :team-id="teamId" />
 
         <div
           class="flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors"

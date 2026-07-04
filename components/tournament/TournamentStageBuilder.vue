@@ -16,8 +16,9 @@ import {
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import {
-  MoreHorizontal,
-  Trash,
+  MoreVertical,
+  Pencil,
+  Trash2,
   Share2,
   ExternalLink,
   Rows3,
@@ -182,7 +183,7 @@ import {
                     @click.stop
                     class="!absolute top-[0.3rem] right-[0.3rem] opacity-55 transition-opacity [transition-duration:160ms] group-hover/stg:opacity-100 group-data-[state=active]/stg:opacity-100 h-7 w-7 shrink-0"
                   >
-                    <MoreHorizontal class="h-4 w-4" />
+                    <MoreVertical class="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" class="w-[200px]">
@@ -193,16 +194,17 @@ import {
                         stageMenus[stageNumber] = false;
                       "
                     >
+                      <Pencil />
                       {{ $t("tournament.stage.edit") }}
                     </DropdownMenuItem>
 
                     <DropdownMenuSeparator />
 
                     <DropdownMenuItem
-                      class="text-red-600"
+                      class="text-destructive focus:text-destructive"
                       @click="openDeleteDialog(stageNumber)"
                     >
-                      <Trash class="mr-2 h-4 w-4 inline" />
+                      <Trash2 />
                       {{ $t("tournament.stage.delete") }}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>

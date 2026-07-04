@@ -10,13 +10,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Label } from "~/components/ui/label";
-import {
-  LogOut,
-  Trash,
-  UserMinus,
-  UserPlus,
-  Pencil,
-} from "lucide-vue-next";
+import { LogOut, Trash2, UserMinus, UserPlus, Pencil } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import {
   AlertDialog,
@@ -168,10 +162,7 @@ import { toast } from "~/components/ui/toast";
                       :disabled="!canSaveIdentity"
                       :loading="savingIdentity"
                     >
-                      <Spinner
-                        v-if="savingIdentity"
-                        class="mr-1 h-4 w-4"
-                      />
+                      <Spinner v-if="savingIdentity" class="mr-1 h-4 w-4" />
                       {{ $t("common.save") }}
                     </Button>
                   </div>
@@ -269,7 +260,7 @@ import { toast } from "~/components/ui/toast";
           :title="$t('tournament.tournament_team.remove')"
           @click="removeTeamDialog = true"
         >
-          <Trash class="h-4 w-4" />
+          <Trash2 class="h-4 w-4" />
         </Button>
       </div>
     </header>

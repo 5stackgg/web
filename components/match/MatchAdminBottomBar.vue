@@ -9,24 +9,10 @@ import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Button } from "~/components/ui/button";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "~/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import DropdownMenuSub from "~/components/ui/dropdown-menu/DropdownMenuSub.vue";
+import DropdownMenuSubTrigger from "~/components/ui/dropdown-menu/DropdownMenuSubTrigger.vue";
+import DropdownMenuSubContent from "~/components/ui/dropdown-menu/DropdownMenuSubContent.vue";
 import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "~/utilities/vee-validate-zod";
-import * as z from "zod";
 
 const props = defineProps<{
   match: Record<string, any>;
@@ -145,14 +131,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   stopDrag();
-});
-
-const form = useForm({
-  validationSchema: toTypedSchema(
-    z.object({
-      round: z.string(),
-    }),
-  ),
 });
 
 const currentMap = computed(() =>
@@ -355,54 +333,25 @@ function runCommand(
 
                 <template v-if="restorableRounds.length > 0">
                 <DropdownMenuSeparator />
-                <form
-                  class="p-2 flex flex-col gap-2"
-                  @submit.prevent="send('restore_round', form.values.round)"
-                >
-                  <FormField v-slot="{ componentField }" name="round">
-                    <FormItem>
-                      <FormLabel>
-                        {{ $t("match.tabs.restore_round") }}
-                      </FormLabel>
-                      <Select
-                        v-bind="componentField"
-                        @update:model-value="
-                          (value) => form.setFieldValue('round', value)
-                        "
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              :placeholder="
-                                $t('match.tabs.select_round_to_restore')
-                              "
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              v-for="round of restorableRounds"
-                              :key="round.round"
-                              :value="round.round.toString()"
-                            >
-                              {{
-                                $t("common.round", {
-                                  number: round.round.toString(),
-                                })
-                              }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  </FormField>
-
-                  <Button type="submit" size="sm" class="w-fit">
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger :disabled="!match.is_server_online">
                     {{ $t("match.tabs.restore_round") }}
-                  </Button>
-                </form>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
+                    <DropdownMenuItem
+                      v-for="round of restorableRounds"
+                      :key="round.round"
+                      :disabled="!match.is_server_online"
+                      @click="send('restore_round', round.round.toString())"
+                    >
+                      {{
+                        $t("common.round", {
+                          number: round.round.toString(),
+                        })
+                      }}
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
                 </template>
               </template>
 

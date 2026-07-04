@@ -157,7 +157,8 @@ const totalUnread = computed(() =>
 );
 const lobbyInviteCount = computed(() => lobbyInvites.value?.length ?? 0);
 const socialInviteCount = computed(() => pendingFriends.value?.length ?? 0);
-const formatBadgeCount = (count: number) => (count > 99 ? "99+" : String(count));
+const formatBadgeCount = (count: number) =>
+  count > 100 ? "100+" : String(count);
 const notificationBadgeLabel = computed(() =>
   formatBadgeCount(unreadNotificationCount.value),
 );
@@ -184,6 +185,14 @@ const badgePopTransition = {
 };
 const socialBadgeLabel = computed(() =>
   formatBadgeCount(socialInviteCount.value),
+);
+
+const onlineFriendsCount = computed(
+  () => (useMatchmakingStore().onlineFriends ?? []).length,
+);
+const hasOnlineFriends = computed(() => onlineFriendsCount.value > 0);
+const onlineFriendsLabel = computed(() =>
+  formatBadgeCount(onlineFriendsCount.value),
 );
 
 // Track which hubs have been mounted so panels stay in DOM after first visit
@@ -371,14 +380,14 @@ function onHubTouchEnd(e: TouchEvent) {
               <!-- Current lobby member count -->
               <span
                 v-if="hasLobby"
-                class="absolute -top-1.5 -right-2 grid h-3.5 min-w-3.5 place-items-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-0.5 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
               >
                 <AnimatedStat :value="lobbyMemberLabel" />
               </span>
               <!-- Pending lobby invites (amber — never red) -->
               <span
                 v-else-if="hasLobbyInvites"
-                class="absolute -top-1.5 -right-2 grid h-3.5 min-w-3.5 place-items-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-0.5 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
               >
                 <AnimatedStat :value="lobbyBadgeLabel" />
               </span>
@@ -413,10 +422,20 @@ function onHubTouchEnd(e: TouchEvent) {
         >
           <span class="relative inline-flex">
             <Users class="w-5 h-5" />
+            <!-- Online friends count (amber — never red) -->
+            <Transition v-bind="badgePopTransition">
+              <span
+                v-if="hasOnlineFriends"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-0.5 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
+              >
+                <AnimatedStat :value="onlineFriendsLabel" />
+              </span>
+            </Transition>
+            <!-- Pending friend requests (red dot, top-left so it never collides with the count) -->
             <Transition v-bind="badgePopTransition">
               <span
                 v-if="hasSocialInvites"
-                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background origin-center"
+                class="absolute -top-1.5 -left-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background origin-center"
               >
                 <AnimatedStat :value="socialBadgeLabel" />
               </span>

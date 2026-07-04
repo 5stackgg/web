@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -136,7 +137,7 @@ async function fetchData() {
         ],
       } as any),
       variables: {
-        where: {
+        where: excludeLeagueTournaments({
           status: { _in: props.statuses },
           ...(props.playerSteamId
             ? {
@@ -145,7 +146,7 @@ async function fetchData() {
                 },
               }
             : {}),
-        },
+        }),
         order_by: [
           {
             start:

@@ -2,20 +2,20 @@
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button variant="ghost" size="sm">
-        <EllipsisVertical class="w-4 h-4" />
+        <MoreVertical class="w-4 h-4" />
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
       <DropdownMenuItem v-if="!item.isDirectory" @click="handleEdit">
-        <Pencil class="w-4 h-4 mr-2" />
+        <Pencil />
         {{ $t("common.actions.edit") }}
       </DropdownMenuItem>
       <DropdownMenuItem @click="handleRename">
-        <Text class="w-4 h-4 mr-2" />
+        <PenLine />
         {{ $t("common.rename") }}
       </DropdownMenuItem>
       <DropdownMenuItem @click="handleDelete" class="text-destructive">
-        <Trash class="w-4 h-4 mr-2" />
+        <Trash2 />
         {{ $t("common.actions.delete") }}
       </DropdownMenuItem>
     </DropdownMenuContent>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { MoreVertical, PenLine, Pencil, Trash2 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

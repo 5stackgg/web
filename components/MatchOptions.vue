@@ -735,7 +735,11 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
 
             <Card>
               <div class="flex flex-col space-y-3 p-4">
-                <FormField v-slot="{ value }" name="number_of_substitutes">
+                <FormField
+                  v-if="!lockSubstitutes"
+                  v-slot="{ value }"
+                  name="number_of_substitutes"
+                >
                   <FormItem>
                     <SettingHeader>{{
                       $t("match.options.advanced.substitutes.label")
@@ -1168,6 +1172,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    lockSubstitutes: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   apollo: {
     e_match_types: {
@@ -1235,6 +1244,24 @@ export default {
       handler(forceVeto) {
         if (forceVeto && this.form.values.map_veto !== true) {
           this.form.setFieldValue("map_veto", true);
+        }
+      },
+    },
+    lockSubstitutes: {
+      immediate: true,
+      handler(lockSubstitutes) {
+        if (lockSubstitutes) {
+          this.form.setFieldValue(
+            "number_of_substitutes",
+            useApplicationSettingsStore().teamMaxSubs,
+          );
+        }
+      },
+    },
+    teamMaxSubs: {
+      handler(teamMaxSubs) {
+        if (this.lockSubstitutes) {
+          this.form.setFieldValue("number_of_substitutes", teamMaxSubs);
         }
       },
     },
@@ -1363,6 +1390,9 @@ export default {
         (type) => type.value === this.form?.values?.type,
       );
       return selected?.description || "";
+    },
+    teamMaxSubs(): number {
+      return useApplicationSettingsStore().teamMaxSubs;
     },
     isLocked(): boolean {
       return (

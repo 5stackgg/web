@@ -86,6 +86,7 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"_map_pool_set_input",
 		where:"_map_pool_bool_exp"
 	},
+	_uuid: `scalar._uuid` as const,
 	abandoned_matches_aggregate_bool_exp:{
 		count:"abandoned_matches_aggregate_bool_exp_count"
 	},
@@ -263,6 +264,9 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"api_keys_inc_input",
 		_set:"api_keys_set_input",
 		where:"api_keys_bool_exp"
+	},
+	approve_league_season_movements_args:{
+		_league_season_id:"uuid"
 	},
 	bigint: `scalar.bigint` as const,
 	bigint_array_comparison_exp:{
@@ -559,6 +563,9 @@ export const AllTypesProps: Record<string,any> = {
 		progress:"order_by",
 		sort_index:"order_by",
 		user_steam_id:"order_by"
+	},
+	clone_league_season_args:{
+		_league_season_id:"uuid"
 	},
 	cursor_ordering: "enum" as const,
 	db_backups_aggregate_fields:{
@@ -1822,6 +1829,226 @@ export const AllTypesProps: Record<string,any> = {
 	e_game_server_node_statuses_updates:{
 		_set:"e_game_server_node_statuses_set_input",
 		where:"e_game_server_node_statuses_bool_exp"
+	},
+	e_league_movement_types_aggregate_fields:{
+		count:{
+			columns:"e_league_movement_types_select_column"
+		}
+	},
+	e_league_movement_types_bool_exp:{
+		_and:"e_league_movement_types_bool_exp",
+		_not:"e_league_movement_types_bool_exp",
+		_or:"e_league_movement_types_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_league_movement_types_constraint: "enum" as const,
+	e_league_movement_types_enum: "enum" as const,
+	e_league_movement_types_enum_comparison_exp:{
+		_eq:"e_league_movement_types_enum",
+		_in:"e_league_movement_types_enum",
+		_neq:"e_league_movement_types_enum",
+		_nin:"e_league_movement_types_enum"
+	},
+	e_league_movement_types_insert_input:{
+
+	},
+	e_league_movement_types_obj_rel_insert_input:{
+		data:"e_league_movement_types_insert_input",
+		on_conflict:"e_league_movement_types_on_conflict"
+	},
+	e_league_movement_types_on_conflict:{
+		constraint:"e_league_movement_types_constraint",
+		update_columns:"e_league_movement_types_update_column",
+		where:"e_league_movement_types_bool_exp"
+	},
+	e_league_movement_types_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_league_movement_types_pk_columns_input:{
+
+	},
+	e_league_movement_types_select_column: "enum" as const,
+	e_league_movement_types_set_input:{
+
+	},
+	e_league_movement_types_stream_cursor_input:{
+		initial_value:"e_league_movement_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_league_movement_types_stream_cursor_value_input:{
+
+	},
+	e_league_movement_types_update_column: "enum" as const,
+	e_league_movement_types_updates:{
+		_set:"e_league_movement_types_set_input",
+		where:"e_league_movement_types_bool_exp"
+	},
+	e_league_proposal_statuses_aggregate_fields:{
+		count:{
+			columns:"e_league_proposal_statuses_select_column"
+		}
+	},
+	e_league_proposal_statuses_bool_exp:{
+		_and:"e_league_proposal_statuses_bool_exp",
+		_not:"e_league_proposal_statuses_bool_exp",
+		_or:"e_league_proposal_statuses_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_league_proposal_statuses_constraint: "enum" as const,
+	e_league_proposal_statuses_enum: "enum" as const,
+	e_league_proposal_statuses_enum_comparison_exp:{
+		_eq:"e_league_proposal_statuses_enum",
+		_in:"e_league_proposal_statuses_enum",
+		_neq:"e_league_proposal_statuses_enum",
+		_nin:"e_league_proposal_statuses_enum"
+	},
+	e_league_proposal_statuses_insert_input:{
+
+	},
+	e_league_proposal_statuses_obj_rel_insert_input:{
+		data:"e_league_proposal_statuses_insert_input",
+		on_conflict:"e_league_proposal_statuses_on_conflict"
+	},
+	e_league_proposal_statuses_on_conflict:{
+		constraint:"e_league_proposal_statuses_constraint",
+		update_columns:"e_league_proposal_statuses_update_column",
+		where:"e_league_proposal_statuses_bool_exp"
+	},
+	e_league_proposal_statuses_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_league_proposal_statuses_pk_columns_input:{
+
+	},
+	e_league_proposal_statuses_select_column: "enum" as const,
+	e_league_proposal_statuses_set_input:{
+
+	},
+	e_league_proposal_statuses_stream_cursor_input:{
+		initial_value:"e_league_proposal_statuses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_league_proposal_statuses_stream_cursor_value_input:{
+
+	},
+	e_league_proposal_statuses_update_column: "enum" as const,
+	e_league_proposal_statuses_updates:{
+		_set:"e_league_proposal_statuses_set_input",
+		where:"e_league_proposal_statuses_bool_exp"
+	},
+	e_league_registration_statuses_aggregate_fields:{
+		count:{
+			columns:"e_league_registration_statuses_select_column"
+		}
+	},
+	e_league_registration_statuses_bool_exp:{
+		_and:"e_league_registration_statuses_bool_exp",
+		_not:"e_league_registration_statuses_bool_exp",
+		_or:"e_league_registration_statuses_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_league_registration_statuses_constraint: "enum" as const,
+	e_league_registration_statuses_enum: "enum" as const,
+	e_league_registration_statuses_enum_comparison_exp:{
+		_eq:"e_league_registration_statuses_enum",
+		_in:"e_league_registration_statuses_enum",
+		_neq:"e_league_registration_statuses_enum",
+		_nin:"e_league_registration_statuses_enum"
+	},
+	e_league_registration_statuses_insert_input:{
+
+	},
+	e_league_registration_statuses_obj_rel_insert_input:{
+		data:"e_league_registration_statuses_insert_input",
+		on_conflict:"e_league_registration_statuses_on_conflict"
+	},
+	e_league_registration_statuses_on_conflict:{
+		constraint:"e_league_registration_statuses_constraint",
+		update_columns:"e_league_registration_statuses_update_column",
+		where:"e_league_registration_statuses_bool_exp"
+	},
+	e_league_registration_statuses_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_league_registration_statuses_pk_columns_input:{
+
+	},
+	e_league_registration_statuses_select_column: "enum" as const,
+	e_league_registration_statuses_set_input:{
+
+	},
+	e_league_registration_statuses_stream_cursor_input:{
+		initial_value:"e_league_registration_statuses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_league_registration_statuses_stream_cursor_value_input:{
+
+	},
+	e_league_registration_statuses_update_column: "enum" as const,
+	e_league_registration_statuses_updates:{
+		_set:"e_league_registration_statuses_set_input",
+		where:"e_league_registration_statuses_bool_exp"
+	},
+	e_league_season_statuses_aggregate_fields:{
+		count:{
+			columns:"e_league_season_statuses_select_column"
+		}
+	},
+	e_league_season_statuses_bool_exp:{
+		_and:"e_league_season_statuses_bool_exp",
+		_not:"e_league_season_statuses_bool_exp",
+		_or:"e_league_season_statuses_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_league_season_statuses_constraint: "enum" as const,
+	e_league_season_statuses_enum: "enum" as const,
+	e_league_season_statuses_enum_comparison_exp:{
+		_eq:"e_league_season_statuses_enum",
+		_in:"e_league_season_statuses_enum",
+		_neq:"e_league_season_statuses_enum",
+		_nin:"e_league_season_statuses_enum"
+	},
+	e_league_season_statuses_insert_input:{
+
+	},
+	e_league_season_statuses_obj_rel_insert_input:{
+		data:"e_league_season_statuses_insert_input",
+		on_conflict:"e_league_season_statuses_on_conflict"
+	},
+	e_league_season_statuses_on_conflict:{
+		constraint:"e_league_season_statuses_constraint",
+		update_columns:"e_league_season_statuses_update_column",
+		where:"e_league_season_statuses_bool_exp"
+	},
+	e_league_season_statuses_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_league_season_statuses_pk_columns_input:{
+
+	},
+	e_league_season_statuses_select_column: "enum" as const,
+	e_league_season_statuses_set_input:{
+
+	},
+	e_league_season_statuses_stream_cursor_input:{
+		initial_value:"e_league_season_statuses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_league_season_statuses_stream_cursor_value_input:{
+
+	},
+	e_league_season_statuses_update_column: "enum" as const,
+	e_league_season_statuses_updates:{
+		_set:"e_league_season_statuses_set_input",
+		where:"e_league_season_statuses_bool_exp"
 	},
 	e_lobby_access_aggregate_fields:{
 		count:{
@@ -4050,6 +4277,9 @@ export const AllTypesProps: Record<string,any> = {
 	get_leaderboard_args:{
 		_season_id:"uuid"
 	},
+	get_league_season_leaderboard_args:{
+		_league_season_id:"uuid"
+	},
 	get_player_leaderboard_rank_args:{
 		_season_id:"uuid"
 	},
@@ -4149,6 +4379,1634 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"leaderboard_entries_inc_input",
 		_set:"leaderboard_entries_set_input",
 		where:"leaderboard_entries_bool_exp"
+	},
+	league_award_forfeit_args:{
+		_tournament_bracket_id:"uuid",
+		_winning_tournament_team_id:"uuid"
+	},
+	league_divisions:{
+		season_divisions:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		season_divisions_aggregate:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		}
+	},
+	league_divisions_aggregate_fields:{
+		count:{
+			columns:"league_divisions_select_column"
+		}
+	},
+	league_divisions_bool_exp:{
+		_and:"league_divisions_bool_exp",
+		_not:"league_divisions_bool_exp",
+		_or:"league_divisions_bool_exp",
+		active:"Boolean_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		name:"String_comparison_exp",
+		season_divisions:"league_season_divisions_bool_exp",
+		season_divisions_aggregate:"league_season_divisions_aggregate_bool_exp",
+		tier:"smallint_comparison_exp"
+	},
+	league_divisions_constraint: "enum" as const,
+	league_divisions_inc_input:{
+		tier:"smallint"
+	},
+	league_divisions_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		season_divisions:"league_season_divisions_arr_rel_insert_input",
+		tier:"smallint"
+	},
+	league_divisions_obj_rel_insert_input:{
+		data:"league_divisions_insert_input",
+		on_conflict:"league_divisions_on_conflict"
+	},
+	league_divisions_on_conflict:{
+		constraint:"league_divisions_constraint",
+		update_columns:"league_divisions_update_column",
+		where:"league_divisions_bool_exp"
+	},
+	league_divisions_order_by:{
+		active:"order_by",
+		created_at:"order_by",
+		id:"order_by",
+		name:"order_by",
+		season_divisions_aggregate:"league_season_divisions_aggregate_order_by",
+		tier:"order_by"
+	},
+	league_divisions_pk_columns_input:{
+		id:"uuid"
+	},
+	league_divisions_select_column: "enum" as const,
+	league_divisions_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		tier:"smallint"
+	},
+	league_divisions_stream_cursor_input:{
+		initial_value:"league_divisions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_divisions_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		tier:"smallint"
+	},
+	league_divisions_update_column: "enum" as const,
+	league_divisions_updates:{
+		_inc:"league_divisions_inc_input",
+		_set:"league_divisions_set_input",
+		where:"league_divisions_bool_exp"
+	},
+	league_match_weeks_aggregate_bool_exp:{
+		count:"league_match_weeks_aggregate_bool_exp_count"
+	},
+	league_match_weeks_aggregate_bool_exp_count:{
+		arguments:"league_match_weeks_select_column",
+		filter:"league_match_weeks_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_match_weeks_aggregate_fields:{
+		count:{
+			columns:"league_match_weeks_select_column"
+		}
+	},
+	league_match_weeks_aggregate_order_by:{
+		avg:"league_match_weeks_avg_order_by",
+		count:"order_by",
+		max:"league_match_weeks_max_order_by",
+		min:"league_match_weeks_min_order_by",
+		stddev:"league_match_weeks_stddev_order_by",
+		stddev_pop:"league_match_weeks_stddev_pop_order_by",
+		stddev_samp:"league_match_weeks_stddev_samp_order_by",
+		sum:"league_match_weeks_sum_order_by",
+		var_pop:"league_match_weeks_var_pop_order_by",
+		var_samp:"league_match_weeks_var_samp_order_by",
+		variance:"league_match_weeks_variance_order_by"
+	},
+	league_match_weeks_arr_rel_insert_input:{
+		data:"league_match_weeks_insert_input",
+		on_conflict:"league_match_weeks_on_conflict"
+	},
+	league_match_weeks_avg_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_bool_exp:{
+		_and:"league_match_weeks_bool_exp",
+		_not:"league_match_weeks_bool_exp",
+		_or:"league_match_weeks_bool_exp",
+		closes_at:"timestamptz_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		default_match_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		opens_at:"timestamptz_comparison_exp",
+		season:"league_seasons_bool_exp",
+		week_number:"Int_comparison_exp"
+	},
+	league_match_weeks_constraint: "enum" as const,
+	league_match_weeks_inc_input:{
+
+	},
+	league_match_weeks_insert_input:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		opens_at:"timestamptz",
+		season:"league_seasons_obj_rel_insert_input"
+	},
+	league_match_weeks_max_order_by:{
+		closes_at:"order_by",
+		created_at:"order_by",
+		default_match_at:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		opens_at:"order_by",
+		week_number:"order_by"
+	},
+	league_match_weeks_min_order_by:{
+		closes_at:"order_by",
+		created_at:"order_by",
+		default_match_at:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		opens_at:"order_by",
+		week_number:"order_by"
+	},
+	league_match_weeks_on_conflict:{
+		constraint:"league_match_weeks_constraint",
+		update_columns:"league_match_weeks_update_column",
+		where:"league_match_weeks_bool_exp"
+	},
+	league_match_weeks_order_by:{
+		closes_at:"order_by",
+		created_at:"order_by",
+		default_match_at:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		opens_at:"order_by",
+		season:"league_seasons_order_by",
+		week_number:"order_by"
+	},
+	league_match_weeks_pk_columns_input:{
+		id:"uuid"
+	},
+	league_match_weeks_select_column: "enum" as const,
+	league_match_weeks_set_input:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		opens_at:"timestamptz"
+	},
+	league_match_weeks_stddev_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_stddev_pop_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_stddev_samp_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_stream_cursor_input:{
+		initial_value:"league_match_weeks_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_match_weeks_stream_cursor_value_input:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		opens_at:"timestamptz"
+	},
+	league_match_weeks_sum_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_update_column: "enum" as const,
+	league_match_weeks_updates:{
+		_inc:"league_match_weeks_inc_input",
+		_set:"league_match_weeks_set_input",
+		where:"league_match_weeks_bool_exp"
+	},
+	league_match_weeks_var_pop_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_var_samp_order_by:{
+		week_number:"order_by"
+	},
+	league_match_weeks_variance_order_by:{
+		week_number:"order_by"
+	},
+	league_relegation_playoffs_aggregate_bool_exp:{
+		count:"league_relegation_playoffs_aggregate_bool_exp_count"
+	},
+	league_relegation_playoffs_aggregate_bool_exp_count:{
+		arguments:"league_relegation_playoffs_select_column",
+		filter:"league_relegation_playoffs_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_relegation_playoffs_aggregate_fields:{
+		count:{
+			columns:"league_relegation_playoffs_select_column"
+		}
+	},
+	league_relegation_playoffs_aggregate_order_by:{
+		avg:"league_relegation_playoffs_avg_order_by",
+		count:"order_by",
+		max:"league_relegation_playoffs_max_order_by",
+		min:"league_relegation_playoffs_min_order_by",
+		stddev:"league_relegation_playoffs_stddev_order_by",
+		stddev_pop:"league_relegation_playoffs_stddev_pop_order_by",
+		stddev_samp:"league_relegation_playoffs_stddev_samp_order_by",
+		sum:"league_relegation_playoffs_sum_order_by",
+		var_pop:"league_relegation_playoffs_var_pop_order_by",
+		var_samp:"league_relegation_playoffs_var_samp_order_by",
+		variance:"league_relegation_playoffs_variance_order_by"
+	},
+	league_relegation_playoffs_arr_rel_insert_input:{
+		data:"league_relegation_playoffs_insert_input",
+		on_conflict:"league_relegation_playoffs_on_conflict"
+	},
+	league_relegation_playoffs_avg_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_bool_exp:{
+		_and:"league_relegation_playoffs_bool_exp",
+		_not:"league_relegation_playoffs_bool_exp",
+		_or:"league_relegation_playoffs_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		higher_division:"league_divisions_bool_exp",
+		higher_division_id:"uuid_comparison_exp",
+		higher_slots:"Int_comparison_exp",
+		id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		lower_division:"league_divisions_bool_exp",
+		lower_division_id:"uuid_comparison_exp",
+		resolved_at:"timestamptz_comparison_exp",
+		season:"league_seasons_bool_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp"
+	},
+	league_relegation_playoffs_constraint: "enum" as const,
+	league_relegation_playoffs_inc_input:{
+
+	},
+	league_relegation_playoffs_insert_input:{
+		created_at:"timestamptz",
+		higher_division:"league_divisions_obj_rel_insert_input",
+		higher_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		lower_division:"league_divisions_obj_rel_insert_input",
+		lower_division_id:"uuid",
+		resolved_at:"timestamptz",
+		season:"league_seasons_obj_rel_insert_input",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid"
+	},
+	league_relegation_playoffs_max_order_by:{
+		created_at:"order_by",
+		higher_division_id:"order_by",
+		higher_slots:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		lower_division_id:"order_by",
+		resolved_at:"order_by",
+		tournament_id:"order_by"
+	},
+	league_relegation_playoffs_min_order_by:{
+		created_at:"order_by",
+		higher_division_id:"order_by",
+		higher_slots:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		lower_division_id:"order_by",
+		resolved_at:"order_by",
+		tournament_id:"order_by"
+	},
+	league_relegation_playoffs_on_conflict:{
+		constraint:"league_relegation_playoffs_constraint",
+		update_columns:"league_relegation_playoffs_update_column",
+		where:"league_relegation_playoffs_bool_exp"
+	},
+	league_relegation_playoffs_order_by:{
+		created_at:"order_by",
+		higher_division:"league_divisions_order_by",
+		higher_division_id:"order_by",
+		higher_slots:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		lower_division:"league_divisions_order_by",
+		lower_division_id:"order_by",
+		resolved_at:"order_by",
+		season:"league_seasons_order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by"
+	},
+	league_relegation_playoffs_pk_columns_input:{
+		id:"uuid"
+	},
+	league_relegation_playoffs_select_column: "enum" as const,
+	league_relegation_playoffs_set_input:{
+		created_at:"timestamptz",
+		higher_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		lower_division_id:"uuid",
+		resolved_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	league_relegation_playoffs_stddev_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_stddev_pop_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_stddev_samp_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_stream_cursor_input:{
+		initial_value:"league_relegation_playoffs_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_relegation_playoffs_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		higher_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		lower_division_id:"uuid",
+		resolved_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	league_relegation_playoffs_sum_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_update_column: "enum" as const,
+	league_relegation_playoffs_updates:{
+		_inc:"league_relegation_playoffs_inc_input",
+		_set:"league_relegation_playoffs_set_input",
+		where:"league_relegation_playoffs_bool_exp"
+	},
+	league_relegation_playoffs_var_pop_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_var_samp_order_by:{
+		higher_slots:"order_by"
+	},
+	league_relegation_playoffs_variance_order_by:{
+		higher_slots:"order_by"
+	},
+	league_scheduling_proposals_aggregate_bool_exp:{
+		count:"league_scheduling_proposals_aggregate_bool_exp_count"
+	},
+	league_scheduling_proposals_aggregate_bool_exp_count:{
+		arguments:"league_scheduling_proposals_select_column",
+		filter:"league_scheduling_proposals_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_scheduling_proposals_aggregate_fields:{
+		count:{
+			columns:"league_scheduling_proposals_select_column"
+		}
+	},
+	league_scheduling_proposals_aggregate_order_by:{
+		avg:"league_scheduling_proposals_avg_order_by",
+		count:"order_by",
+		max:"league_scheduling_proposals_max_order_by",
+		min:"league_scheduling_proposals_min_order_by",
+		stddev:"league_scheduling_proposals_stddev_order_by",
+		stddev_pop:"league_scheduling_proposals_stddev_pop_order_by",
+		stddev_samp:"league_scheduling_proposals_stddev_samp_order_by",
+		sum:"league_scheduling_proposals_sum_order_by",
+		var_pop:"league_scheduling_proposals_var_pop_order_by",
+		var_samp:"league_scheduling_proposals_var_samp_order_by",
+		variance:"league_scheduling_proposals_variance_order_by"
+	},
+	league_scheduling_proposals_arr_rel_insert_input:{
+		data:"league_scheduling_proposals_insert_input",
+		on_conflict:"league_scheduling_proposals_on_conflict"
+	},
+	league_scheduling_proposals_avg_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_bool_exp:{
+		_and:"league_scheduling_proposals_bool_exp",
+		_not:"league_scheduling_proposals_bool_exp",
+		_or:"league_scheduling_proposals_bool_exp",
+		bracket:"tournament_brackets_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		e_proposal_status:"e_league_proposal_statuses_bool_exp",
+		id:"uuid_comparison_exp",
+		message:"String_comparison_exp",
+		proposed_by:"players_bool_exp",
+		proposed_by_league_team_season_id:"uuid_comparison_exp",
+		proposed_by_steam_id:"bigint_comparison_exp",
+		proposed_time:"timestamptz_comparison_exp",
+		responded_by:"players_bool_exp",
+		responded_by_steam_id:"bigint_comparison_exp",
+		status:"e_league_proposal_statuses_enum_comparison_exp",
+		team_season:"league_team_seasons_bool_exp",
+		tournament_bracket_id:"uuid_comparison_exp"
+	},
+	league_scheduling_proposals_constraint: "enum" as const,
+	league_scheduling_proposals_inc_input:{
+		proposed_by_steam_id:"bigint",
+		responded_by_steam_id:"bigint"
+	},
+	league_scheduling_proposals_insert_input:{
+		bracket:"tournament_brackets_obj_rel_insert_input",
+		created_at:"timestamptz",
+		e_proposal_status:"e_league_proposal_statuses_obj_rel_insert_input",
+		id:"uuid",
+		proposed_by:"players_obj_rel_insert_input",
+		proposed_by_league_team_season_id:"uuid",
+		proposed_by_steam_id:"bigint",
+		proposed_time:"timestamptz",
+		responded_by:"players_obj_rel_insert_input",
+		responded_by_steam_id:"bigint",
+		status:"e_league_proposal_statuses_enum",
+		team_season:"league_team_seasons_obj_rel_insert_input",
+		tournament_bracket_id:"uuid"
+	},
+	league_scheduling_proposals_max_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		message:"order_by",
+		proposed_by_league_team_season_id:"order_by",
+		proposed_by_steam_id:"order_by",
+		proposed_time:"order_by",
+		responded_by_steam_id:"order_by",
+		tournament_bracket_id:"order_by"
+	},
+	league_scheduling_proposals_min_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		message:"order_by",
+		proposed_by_league_team_season_id:"order_by",
+		proposed_by_steam_id:"order_by",
+		proposed_time:"order_by",
+		responded_by_steam_id:"order_by",
+		tournament_bracket_id:"order_by"
+	},
+	league_scheduling_proposals_on_conflict:{
+		constraint:"league_scheduling_proposals_constraint",
+		update_columns:"league_scheduling_proposals_update_column",
+		where:"league_scheduling_proposals_bool_exp"
+	},
+	league_scheduling_proposals_order_by:{
+		bracket:"tournament_brackets_order_by",
+		created_at:"order_by",
+		e_proposal_status:"e_league_proposal_statuses_order_by",
+		id:"order_by",
+		message:"order_by",
+		proposed_by:"players_order_by",
+		proposed_by_league_team_season_id:"order_by",
+		proposed_by_steam_id:"order_by",
+		proposed_time:"order_by",
+		responded_by:"players_order_by",
+		responded_by_steam_id:"order_by",
+		status:"order_by",
+		team_season:"league_team_seasons_order_by",
+		tournament_bracket_id:"order_by"
+	},
+	league_scheduling_proposals_pk_columns_input:{
+		id:"uuid"
+	},
+	league_scheduling_proposals_select_column: "enum" as const,
+	league_scheduling_proposals_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		proposed_by_league_team_season_id:"uuid",
+		proposed_by_steam_id:"bigint",
+		proposed_time:"timestamptz",
+		responded_by_steam_id:"bigint",
+		status:"e_league_proposal_statuses_enum",
+		tournament_bracket_id:"uuid"
+	},
+	league_scheduling_proposals_stddev_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_stddev_pop_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_stddev_samp_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_stream_cursor_input:{
+		initial_value:"league_scheduling_proposals_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_scheduling_proposals_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		proposed_by_league_team_season_id:"uuid",
+		proposed_by_steam_id:"bigint",
+		proposed_time:"timestamptz",
+		responded_by_steam_id:"bigint",
+		status:"e_league_proposal_statuses_enum",
+		tournament_bracket_id:"uuid"
+	},
+	league_scheduling_proposals_sum_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_update_column: "enum" as const,
+	league_scheduling_proposals_updates:{
+		_inc:"league_scheduling_proposals_inc_input",
+		_set:"league_scheduling_proposals_set_input",
+		where:"league_scheduling_proposals_bool_exp"
+	},
+	league_scheduling_proposals_var_pop_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_var_samp_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_scheduling_proposals_variance_order_by:{
+		proposed_by_steam_id:"order_by",
+		responded_by_steam_id:"order_by"
+	},
+	league_season_divisions:{
+		standings:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		standings_aggregate:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		}
+	},
+	league_season_divisions_aggregate_bool_exp:{
+		count:"league_season_divisions_aggregate_bool_exp_count"
+	},
+	league_season_divisions_aggregate_bool_exp_count:{
+		arguments:"league_season_divisions_select_column",
+		filter:"league_season_divisions_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_season_divisions_aggregate_fields:{
+		count:{
+			columns:"league_season_divisions_select_column"
+		}
+	},
+	league_season_divisions_aggregate_order_by:{
+		count:"order_by",
+		max:"league_season_divisions_max_order_by",
+		min:"league_season_divisions_min_order_by"
+	},
+	league_season_divisions_arr_rel_insert_input:{
+		data:"league_season_divisions_insert_input",
+		on_conflict:"league_season_divisions_on_conflict"
+	},
+	league_season_divisions_bool_exp:{
+		_and:"league_season_divisions_bool_exp",
+		_not:"league_season_divisions_bool_exp",
+		_or:"league_season_divisions_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		division:"league_divisions_bool_exp",
+		id:"uuid_comparison_exp",
+		league_division_id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		season:"league_seasons_bool_exp",
+		standings:"v_league_division_standings_bool_exp",
+		standings_aggregate:"v_league_division_standings_aggregate_bool_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp"
+	},
+	league_season_divisions_constraint: "enum" as const,
+	league_season_divisions_insert_input:{
+		created_at:"timestamptz",
+		division:"league_divisions_obj_rel_insert_input",
+		id:"uuid",
+		league_division_id:"uuid",
+		league_season_id:"uuid",
+		season:"league_seasons_obj_rel_insert_input",
+		standings:"v_league_division_standings_arr_rel_insert_input",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid"
+	},
+	league_season_divisions_max_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		league_division_id:"order_by",
+		league_season_id:"order_by",
+		tournament_id:"order_by"
+	},
+	league_season_divisions_min_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		league_division_id:"order_by",
+		league_season_id:"order_by",
+		tournament_id:"order_by"
+	},
+	league_season_divisions_obj_rel_insert_input:{
+		data:"league_season_divisions_insert_input",
+		on_conflict:"league_season_divisions_on_conflict"
+	},
+	league_season_divisions_on_conflict:{
+		constraint:"league_season_divisions_constraint",
+		update_columns:"league_season_divisions_update_column",
+		where:"league_season_divisions_bool_exp"
+	},
+	league_season_divisions_order_by:{
+		created_at:"order_by",
+		division:"league_divisions_order_by",
+		id:"order_by",
+		league_division_id:"order_by",
+		league_season_id:"order_by",
+		season:"league_seasons_order_by",
+		standings_aggregate:"v_league_division_standings_aggregate_order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by"
+	},
+	league_season_divisions_pk_columns_input:{
+		id:"uuid"
+	},
+	league_season_divisions_select_column: "enum" as const,
+	league_season_divisions_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		league_division_id:"uuid",
+		league_season_id:"uuid",
+		tournament_id:"uuid"
+	},
+	league_season_divisions_stream_cursor_input:{
+		initial_value:"league_season_divisions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_season_divisions_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		league_division_id:"uuid",
+		league_season_id:"uuid",
+		tournament_id:"uuid"
+	},
+	league_season_divisions_update_column: "enum" as const,
+	league_season_divisions_updates:{
+		_set:"league_season_divisions_set_input",
+		where:"league_season_divisions_bool_exp"
+	},
+	league_seasons:{
+		match_weeks:{
+			distinct_on:"league_match_weeks_select_column",
+			order_by:"league_match_weeks_order_by",
+			where:"league_match_weeks_bool_exp"
+		},
+		match_weeks_aggregate:{
+			distinct_on:"league_match_weeks_select_column",
+			order_by:"league_match_weeks_order_by",
+			where:"league_match_weeks_bool_exp"
+		},
+		movements:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		movements_aggregate:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		my_registration:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		player_stats:{
+			distinct_on:"v_league_season_player_stats_select_column",
+			order_by:"v_league_season_player_stats_order_by",
+			where:"v_league_season_player_stats_bool_exp"
+		},
+		player_stats_aggregate:{
+			distinct_on:"v_league_season_player_stats_select_column",
+			order_by:"v_league_season_player_stats_order_by",
+			where:"v_league_season_player_stats_bool_exp"
+		},
+		playoff_round_best_of:{
+
+		},
+		relegation_playoffs:{
+			distinct_on:"league_relegation_playoffs_select_column",
+			order_by:"league_relegation_playoffs_order_by",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		relegation_playoffs_aggregate:{
+			distinct_on:"league_relegation_playoffs_select_column",
+			order_by:"league_relegation_playoffs_order_by",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		season_divisions:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		season_divisions_aggregate:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		standings:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		standings_aggregate:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		team_seasons:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		team_seasons_aggregate:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		week_best_of:{
+
+		}
+	},
+	league_seasons_aggregate_fields:{
+		count:{
+			columns:"league_seasons_select_column"
+		}
+	},
+	league_seasons_append_input:{
+		playoff_round_best_of:"jsonb",
+		week_best_of:"jsonb"
+	},
+	league_seasons_bool_exp:{
+		_and:"league_seasons_bool_exp",
+		_not:"league_seasons_bool_exp",
+		_or:"league_seasons_bool_exp",
+		auto_regular_season_format:"Boolean_comparison_exp",
+		can_register:"Boolean_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		created_by_steam_id:"bigint_comparison_exp",
+		default_best_of:"Int_comparison_exp",
+		direct_promote_count:"Int_comparison_exp",
+		direct_relegate_count:"Int_comparison_exp",
+		e_league_season_status:"e_league_season_statuses_bool_exp",
+		games_per_week:"Int_comparison_exp",
+		id:"uuid_comparison_exp",
+		is_league_admin:"Boolean_comparison_exp",
+		is_roster_locked:"Boolean_comparison_exp",
+		match_options_id:"uuid_comparison_exp",
+		match_weeks:"league_match_weeks_bool_exp",
+		match_weeks_aggregate:"league_match_weeks_aggregate_bool_exp",
+		match_weeks_count:"Int_comparison_exp",
+		max_roster_size:"Int_comparison_exp",
+		min_roster_size:"Int_comparison_exp",
+		movements:"league_team_movements_bool_exp",
+		movements_aggregate:"league_team_movements_aggregate_bool_exp",
+		my_registration:"league_team_seasons_bool_exp",
+		name:"String_comparison_exp",
+		options:"match_options_bool_exp",
+		player_stats:"v_league_season_player_stats_bool_exp",
+		player_stats_aggregate:"v_league_season_player_stats_aggregate_bool_exp",
+		playoff_best_of:"Int_comparison_exp",
+		playoff_round_best_of:"jsonb_comparison_exp",
+		playoff_seats:"Int_comparison_exp",
+		playoff_stage_type:"e_tournament_stage_types_enum_comparison_exp",
+		playoff_third_place_match:"Boolean_comparison_exp",
+		promote_count:"Int_comparison_exp",
+		regular_season_stage_type:"e_tournament_stage_types_enum_comparison_exp",
+		relegate_count:"Int_comparison_exp",
+		relegation_down_count:"Int_comparison_exp",
+		relegation_playoffs:"league_relegation_playoffs_bool_exp",
+		relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate_bool_exp",
+		relegation_up_count:"Int_comparison_exp",
+		roster_lock_at:"timestamptz_comparison_exp",
+		season_divisions:"league_season_divisions_bool_exp",
+		season_divisions_aggregate:"league_season_divisions_aggregate_bool_exp",
+		season_number:"Int_comparison_exp",
+		signup_closes_at:"timestamptz_comparison_exp",
+		signup_opens_at:"timestamptz_comparison_exp",
+		standings:"v_league_division_standings_bool_exp",
+		standings_aggregate:"v_league_division_standings_aggregate_bool_exp",
+		starts_at:"timestamptz_comparison_exp",
+		status:"e_league_season_statuses_enum_comparison_exp",
+		team_seasons:"league_team_seasons_bool_exp",
+		team_seasons_aggregate:"league_team_seasons_aggregate_bool_exp",
+		week_best_of:"jsonb_comparison_exp"
+	},
+	league_seasons_constraint: "enum" as const,
+	league_seasons_delete_at_path_input:{
+
+	},
+	league_seasons_delete_elem_input:{
+
+	},
+	league_seasons_delete_key_input:{
+
+	},
+	league_seasons_inc_input:{
+		created_by_steam_id:"bigint"
+	},
+	league_seasons_insert_input:{
+		created_at:"timestamptz",
+		created_by_steam_id:"bigint",
+		e_league_season_status:"e_league_season_statuses_obj_rel_insert_input",
+		id:"uuid",
+		match_options_id:"uuid",
+		match_weeks:"league_match_weeks_arr_rel_insert_input",
+		movements:"league_team_movements_arr_rel_insert_input",
+		options:"match_options_obj_rel_insert_input",
+		player_stats:"v_league_season_player_stats_arr_rel_insert_input",
+		playoff_round_best_of:"jsonb",
+		playoff_stage_type:"e_tournament_stage_types_enum",
+		regular_season_stage_type:"e_tournament_stage_types_enum",
+		relegation_playoffs:"league_relegation_playoffs_arr_rel_insert_input",
+		roster_lock_at:"timestamptz",
+		season_divisions:"league_season_divisions_arr_rel_insert_input",
+		signup_closes_at:"timestamptz",
+		signup_opens_at:"timestamptz",
+		standings:"v_league_division_standings_arr_rel_insert_input",
+		starts_at:"timestamptz",
+		status:"e_league_season_statuses_enum",
+		team_seasons:"league_team_seasons_arr_rel_insert_input",
+		week_best_of:"jsonb"
+	},
+	league_seasons_obj_rel_insert_input:{
+		data:"league_seasons_insert_input",
+		on_conflict:"league_seasons_on_conflict"
+	},
+	league_seasons_on_conflict:{
+		constraint:"league_seasons_constraint",
+		update_columns:"league_seasons_update_column",
+		where:"league_seasons_bool_exp"
+	},
+	league_seasons_order_by:{
+		auto_regular_season_format:"order_by",
+		can_register:"order_by",
+		created_at:"order_by",
+		created_by_steam_id:"order_by",
+		default_best_of:"order_by",
+		direct_promote_count:"order_by",
+		direct_relegate_count:"order_by",
+		e_league_season_status:"e_league_season_statuses_order_by",
+		games_per_week:"order_by",
+		id:"order_by",
+		is_league_admin:"order_by",
+		is_roster_locked:"order_by",
+		match_options_id:"order_by",
+		match_weeks_aggregate:"league_match_weeks_aggregate_order_by",
+		match_weeks_count:"order_by",
+		max_roster_size:"order_by",
+		min_roster_size:"order_by",
+		movements_aggregate:"league_team_movements_aggregate_order_by",
+		my_registration_aggregate:"league_team_seasons_aggregate_order_by",
+		name:"order_by",
+		options:"match_options_order_by",
+		player_stats_aggregate:"v_league_season_player_stats_aggregate_order_by",
+		playoff_best_of:"order_by",
+		playoff_round_best_of:"order_by",
+		playoff_seats:"order_by",
+		playoff_stage_type:"order_by",
+		playoff_third_place_match:"order_by",
+		promote_count:"order_by",
+		regular_season_stage_type:"order_by",
+		relegate_count:"order_by",
+		relegation_down_count:"order_by",
+		relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate_order_by",
+		relegation_up_count:"order_by",
+		roster_lock_at:"order_by",
+		season_divisions_aggregate:"league_season_divisions_aggregate_order_by",
+		season_number:"order_by",
+		signup_closes_at:"order_by",
+		signup_opens_at:"order_by",
+		standings_aggregate:"v_league_division_standings_aggregate_order_by",
+		starts_at:"order_by",
+		status:"order_by",
+		team_seasons_aggregate:"league_team_seasons_aggregate_order_by",
+		week_best_of:"order_by"
+	},
+	league_seasons_pk_columns_input:{
+		id:"uuid"
+	},
+	league_seasons_prepend_input:{
+		playoff_round_best_of:"jsonb",
+		week_best_of:"jsonb"
+	},
+	league_seasons_select_column: "enum" as const,
+	league_seasons_set_input:{
+		created_at:"timestamptz",
+		created_by_steam_id:"bigint",
+		id:"uuid",
+		match_options_id:"uuid",
+		playoff_round_best_of:"jsonb",
+		playoff_stage_type:"e_tournament_stage_types_enum",
+		regular_season_stage_type:"e_tournament_stage_types_enum",
+		roster_lock_at:"timestamptz",
+		signup_closes_at:"timestamptz",
+		signup_opens_at:"timestamptz",
+		starts_at:"timestamptz",
+		status:"e_league_season_statuses_enum",
+		week_best_of:"jsonb"
+	},
+	league_seasons_stream_cursor_input:{
+		initial_value:"league_seasons_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_seasons_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		created_by_steam_id:"bigint",
+		id:"uuid",
+		match_options_id:"uuid",
+		playoff_round_best_of:"jsonb",
+		playoff_stage_type:"e_tournament_stage_types_enum",
+		regular_season_stage_type:"e_tournament_stage_types_enum",
+		roster_lock_at:"timestamptz",
+		signup_closes_at:"timestamptz",
+		signup_opens_at:"timestamptz",
+		starts_at:"timestamptz",
+		status:"e_league_season_statuses_enum",
+		week_best_of:"jsonb"
+	},
+	league_seasons_update_column: "enum" as const,
+	league_seasons_updates:{
+		_append:"league_seasons_append_input",
+		_delete_at_path:"league_seasons_delete_at_path_input",
+		_delete_elem:"league_seasons_delete_elem_input",
+		_delete_key:"league_seasons_delete_key_input",
+		_inc:"league_seasons_inc_input",
+		_prepend:"league_seasons_prepend_input",
+		_set:"league_seasons_set_input",
+		where:"league_seasons_bool_exp"
+	},
+	league_team_movements_aggregate_bool_exp:{
+		count:"league_team_movements_aggregate_bool_exp_count"
+	},
+	league_team_movements_aggregate_bool_exp_count:{
+		arguments:"league_team_movements_select_column",
+		filter:"league_team_movements_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_team_movements_aggregate_fields:{
+		count:{
+			columns:"league_team_movements_select_column"
+		}
+	},
+	league_team_movements_aggregate_order_by:{
+		avg:"league_team_movements_avg_order_by",
+		count:"order_by",
+		max:"league_team_movements_max_order_by",
+		min:"league_team_movements_min_order_by",
+		stddev:"league_team_movements_stddev_order_by",
+		stddev_pop:"league_team_movements_stddev_pop_order_by",
+		stddev_samp:"league_team_movements_stddev_samp_order_by",
+		sum:"league_team_movements_sum_order_by",
+		var_pop:"league_team_movements_var_pop_order_by",
+		var_samp:"league_team_movements_var_samp_order_by",
+		variance:"league_team_movements_variance_order_by"
+	},
+	league_team_movements_arr_rel_insert_input:{
+		data:"league_team_movements_insert_input",
+		on_conflict:"league_team_movements_on_conflict"
+	},
+	league_team_movements_avg_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_bool_exp:{
+		_and:"league_team_movements_bool_exp",
+		_not:"league_team_movements_bool_exp",
+		_or:"league_team_movements_bool_exp",
+		approved_at:"timestamptz_comparison_exp",
+		approved_by:"players_bool_exp",
+		approved_by_steam_id:"bigint_comparison_exp",
+		computed_to_division:"league_divisions_bool_exp",
+		computed_to_division_id:"uuid_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		e_movement_type:"e_league_movement_types_bool_exp",
+		final_rank:"Int_comparison_exp",
+		final_to_division:"league_divisions_bool_exp",
+		final_to_division_id:"uuid_comparison_exp",
+		from_division:"league_divisions_bool_exp",
+		from_division_id:"uuid_comparison_exp",
+		id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		league_team:"league_teams_bool_exp",
+		league_team_id:"uuid_comparison_exp",
+		season:"league_seasons_bool_exp",
+		type:"e_league_movement_types_enum_comparison_exp"
+	},
+	league_team_movements_constraint: "enum" as const,
+	league_team_movements_inc_input:{
+		approved_by_steam_id:"bigint"
+	},
+	league_team_movements_insert_input:{
+		approved_at:"timestamptz",
+		approved_by:"players_obj_rel_insert_input",
+		approved_by_steam_id:"bigint",
+		computed_to_division:"league_divisions_obj_rel_insert_input",
+		computed_to_division_id:"uuid",
+		created_at:"timestamptz",
+		e_movement_type:"e_league_movement_types_obj_rel_insert_input",
+		final_to_division:"league_divisions_obj_rel_insert_input",
+		final_to_division_id:"uuid",
+		from_division:"league_divisions_obj_rel_insert_input",
+		from_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams_obj_rel_insert_input",
+		league_team_id:"uuid",
+		season:"league_seasons_obj_rel_insert_input",
+		type:"e_league_movement_types_enum"
+	},
+	league_team_movements_max_order_by:{
+		approved_at:"order_by",
+		approved_by_steam_id:"order_by",
+		computed_to_division_id:"order_by",
+		created_at:"order_by",
+		final_rank:"order_by",
+		final_to_division_id:"order_by",
+		from_division_id:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by"
+	},
+	league_team_movements_min_order_by:{
+		approved_at:"order_by",
+		approved_by_steam_id:"order_by",
+		computed_to_division_id:"order_by",
+		created_at:"order_by",
+		final_rank:"order_by",
+		final_to_division_id:"order_by",
+		from_division_id:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by"
+	},
+	league_team_movements_on_conflict:{
+		constraint:"league_team_movements_constraint",
+		update_columns:"league_team_movements_update_column",
+		where:"league_team_movements_bool_exp"
+	},
+	league_team_movements_order_by:{
+		approved_at:"order_by",
+		approved_by:"players_order_by",
+		approved_by_steam_id:"order_by",
+		computed_to_division:"league_divisions_order_by",
+		computed_to_division_id:"order_by",
+		created_at:"order_by",
+		e_movement_type:"e_league_movement_types_order_by",
+		final_rank:"order_by",
+		final_to_division:"league_divisions_order_by",
+		final_to_division_id:"order_by",
+		from_division:"league_divisions_order_by",
+		from_division_id:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		league_team:"league_teams_order_by",
+		league_team_id:"order_by",
+		season:"league_seasons_order_by",
+		type:"order_by"
+	},
+	league_team_movements_pk_columns_input:{
+		id:"uuid"
+	},
+	league_team_movements_select_column: "enum" as const,
+	league_team_movements_set_input:{
+		approved_at:"timestamptz",
+		approved_by_steam_id:"bigint",
+		computed_to_division_id:"uuid",
+		created_at:"timestamptz",
+		final_to_division_id:"uuid",
+		from_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		type:"e_league_movement_types_enum"
+	},
+	league_team_movements_stddev_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_stddev_pop_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_stddev_samp_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_stream_cursor_input:{
+		initial_value:"league_team_movements_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_team_movements_stream_cursor_value_input:{
+		approved_at:"timestamptz",
+		approved_by_steam_id:"bigint",
+		computed_to_division_id:"uuid",
+		created_at:"timestamptz",
+		final_to_division_id:"uuid",
+		from_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		type:"e_league_movement_types_enum"
+	},
+	league_team_movements_sum_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_update_column: "enum" as const,
+	league_team_movements_updates:{
+		_inc:"league_team_movements_inc_input",
+		_set:"league_team_movements_set_input",
+		where:"league_team_movements_bool_exp"
+	},
+	league_team_movements_var_pop_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_var_samp_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_movements_variance_order_by:{
+		approved_by_steam_id:"order_by",
+		final_rank:"order_by"
+	},
+	league_team_rosters_aggregate_bool_exp:{
+		count:"league_team_rosters_aggregate_bool_exp_count"
+	},
+	league_team_rosters_aggregate_bool_exp_count:{
+		arguments:"league_team_rosters_select_column",
+		filter:"league_team_rosters_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_team_rosters_aggregate_fields:{
+		count:{
+			columns:"league_team_rosters_select_column"
+		}
+	},
+	league_team_rosters_aggregate_order_by:{
+		avg:"league_team_rosters_avg_order_by",
+		count:"order_by",
+		max:"league_team_rosters_max_order_by",
+		min:"league_team_rosters_min_order_by",
+		stddev:"league_team_rosters_stddev_order_by",
+		stddev_pop:"league_team_rosters_stddev_pop_order_by",
+		stddev_samp:"league_team_rosters_stddev_samp_order_by",
+		sum:"league_team_rosters_sum_order_by",
+		var_pop:"league_team_rosters_var_pop_order_by",
+		var_samp:"league_team_rosters_var_samp_order_by",
+		variance:"league_team_rosters_variance_order_by"
+	},
+	league_team_rosters_arr_rel_insert_input:{
+		data:"league_team_rosters_insert_input",
+		on_conflict:"league_team_rosters_on_conflict"
+	},
+	league_team_rosters_avg_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_bool_exp:{
+		_and:"league_team_rosters_bool_exp",
+		_not:"league_team_rosters_bool_exp",
+		_or:"league_team_rosters_bool_exp",
+		added_at:"timestamptz_comparison_exp",
+		league_team_season_id:"uuid_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		removed_at:"timestamptz_comparison_exp",
+		removed_reason:"String_comparison_exp",
+		status:"e_team_roster_statuses_enum_comparison_exp",
+		team_season:"league_team_seasons_bool_exp"
+	},
+	league_team_rosters_constraint: "enum" as const,
+	league_team_rosters_inc_input:{
+		player_steam_id:"bigint"
+	},
+	league_team_rosters_insert_input:{
+		added_at:"timestamptz",
+		league_team_season_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
+		removed_at:"timestamptz",
+		status:"e_team_roster_statuses_enum",
+		team_season:"league_team_seasons_obj_rel_insert_input"
+	},
+	league_team_rosters_max_order_by:{
+		added_at:"order_by",
+		league_team_season_id:"order_by",
+		player_steam_id:"order_by",
+		removed_at:"order_by",
+		removed_reason:"order_by"
+	},
+	league_team_rosters_min_order_by:{
+		added_at:"order_by",
+		league_team_season_id:"order_by",
+		player_steam_id:"order_by",
+		removed_at:"order_by",
+		removed_reason:"order_by"
+	},
+	league_team_rosters_on_conflict:{
+		constraint:"league_team_rosters_constraint",
+		update_columns:"league_team_rosters_update_column",
+		where:"league_team_rosters_bool_exp"
+	},
+	league_team_rosters_order_by:{
+		added_at:"order_by",
+		league_team_season_id:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		removed_at:"order_by",
+		removed_reason:"order_by",
+		status:"order_by",
+		team_season:"league_team_seasons_order_by"
+	},
+	league_team_rosters_pk_columns_input:{
+		league_team_season_id:"uuid",
+		player_steam_id:"bigint"
+	},
+	league_team_rosters_select_column: "enum" as const,
+	league_team_rosters_set_input:{
+		added_at:"timestamptz",
+		league_team_season_id:"uuid",
+		player_steam_id:"bigint",
+		removed_at:"timestamptz",
+		status:"e_team_roster_statuses_enum"
+	},
+	league_team_rosters_stddev_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_stddev_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_stddev_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_stream_cursor_input:{
+		initial_value:"league_team_rosters_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_team_rosters_stream_cursor_value_input:{
+		added_at:"timestamptz",
+		league_team_season_id:"uuid",
+		player_steam_id:"bigint",
+		removed_at:"timestamptz",
+		status:"e_team_roster_statuses_enum"
+	},
+	league_team_rosters_sum_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_update_column: "enum" as const,
+	league_team_rosters_updates:{
+		_inc:"league_team_rosters_inc_input",
+		_set:"league_team_rosters_set_input",
+		where:"league_team_rosters_bool_exp"
+	},
+	league_team_rosters_var_pop_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_var_samp_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_rosters_variance_order_by:{
+		player_steam_id:"order_by"
+	},
+	league_team_seasons:{
+		roster:{
+			distinct_on:"league_team_rosters_select_column",
+			order_by:"league_team_rosters_order_by",
+			where:"league_team_rosters_bool_exp"
+		},
+		roster_aggregate:{
+			distinct_on:"league_team_rosters_select_column",
+			order_by:"league_team_rosters_order_by",
+			where:"league_team_rosters_bool_exp"
+		}
+	},
+	league_team_seasons_aggregate_bool_exp:{
+		count:"league_team_seasons_aggregate_bool_exp_count"
+	},
+	league_team_seasons_aggregate_bool_exp_count:{
+		arguments:"league_team_seasons_select_column",
+		filter:"league_team_seasons_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	league_team_seasons_aggregate_fields:{
+		count:{
+			columns:"league_team_seasons_select_column"
+		}
+	},
+	league_team_seasons_aggregate_order_by:{
+		avg:"league_team_seasons_avg_order_by",
+		count:"order_by",
+		max:"league_team_seasons_max_order_by",
+		min:"league_team_seasons_min_order_by",
+		stddev:"league_team_seasons_stddev_order_by",
+		stddev_pop:"league_team_seasons_stddev_pop_order_by",
+		stddev_samp:"league_team_seasons_stddev_samp_order_by",
+		sum:"league_team_seasons_sum_order_by",
+		var_pop:"league_team_seasons_var_pop_order_by",
+		var_samp:"league_team_seasons_var_samp_order_by",
+		variance:"league_team_seasons_variance_order_by"
+	},
+	league_team_seasons_arr_rel_insert_input:{
+		data:"league_team_seasons_insert_input",
+		on_conflict:"league_team_seasons_on_conflict"
+	},
+	league_team_seasons_avg_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_bool_exp:{
+		_and:"league_team_seasons_bool_exp",
+		_not:"league_team_seasons_bool_exp",
+		_or:"league_team_seasons_bool_exp",
+		assigned_division:"league_divisions_bool_exp",
+		assigned_division_id:"uuid_comparison_exp",
+		captain:"players_bool_exp",
+		captain_steam_id:"bigint_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		decline_reason:"String_comparison_exp",
+		e_registration_status:"e_league_registration_statuses_bool_exp",
+		id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		league_team:"league_teams_bool_exp",
+		league_team_id:"uuid_comparison_exp",
+		registered_by:"players_bool_exp",
+		registered_by_steam_id:"bigint_comparison_exp",
+		requested_division:"league_divisions_bool_exp",
+		requested_division_id:"uuid_comparison_exp",
+		roster:"league_team_rosters_bool_exp",
+		roster_aggregate:"league_team_rosters_aggregate_bool_exp",
+		season:"league_seasons_bool_exp",
+		seed:"Int_comparison_exp",
+		status:"e_league_registration_statuses_enum_comparison_exp",
+		tournament_team:"tournament_teams_bool_exp",
+		tournament_team_id:"uuid_comparison_exp"
+	},
+	league_team_seasons_constraint: "enum" as const,
+	league_team_seasons_inc_input:{
+		captain_steam_id:"bigint",
+		registered_by_steam_id:"bigint"
+	},
+	league_team_seasons_insert_input:{
+		assigned_division:"league_divisions_obj_rel_insert_input",
+		assigned_division_id:"uuid",
+		captain:"players_obj_rel_insert_input",
+		captain_steam_id:"bigint",
+		created_at:"timestamptz",
+		e_registration_status:"e_league_registration_statuses_obj_rel_insert_input",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams_obj_rel_insert_input",
+		league_team_id:"uuid",
+		registered_by:"players_obj_rel_insert_input",
+		registered_by_steam_id:"bigint",
+		requested_division:"league_divisions_obj_rel_insert_input",
+		requested_division_id:"uuid",
+		roster:"league_team_rosters_arr_rel_insert_input",
+		season:"league_seasons_obj_rel_insert_input",
+		status:"e_league_registration_statuses_enum",
+		tournament_team:"tournament_teams_obj_rel_insert_input",
+		tournament_team_id:"uuid"
+	},
+	league_team_seasons_max_order_by:{
+		assigned_division_id:"order_by",
+		captain_steam_id:"order_by",
+		created_at:"order_by",
+		decline_reason:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by",
+		registered_by_steam_id:"order_by",
+		requested_division_id:"order_by",
+		seed:"order_by",
+		tournament_team_id:"order_by"
+	},
+	league_team_seasons_min_order_by:{
+		assigned_division_id:"order_by",
+		captain_steam_id:"order_by",
+		created_at:"order_by",
+		decline_reason:"order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by",
+		registered_by_steam_id:"order_by",
+		requested_division_id:"order_by",
+		seed:"order_by",
+		tournament_team_id:"order_by"
+	},
+	league_team_seasons_obj_rel_insert_input:{
+		data:"league_team_seasons_insert_input",
+		on_conflict:"league_team_seasons_on_conflict"
+	},
+	league_team_seasons_on_conflict:{
+		constraint:"league_team_seasons_constraint",
+		update_columns:"league_team_seasons_update_column",
+		where:"league_team_seasons_bool_exp"
+	},
+	league_team_seasons_order_by:{
+		assigned_division:"league_divisions_order_by",
+		assigned_division_id:"order_by",
+		captain:"players_order_by",
+		captain_steam_id:"order_by",
+		created_at:"order_by",
+		decline_reason:"order_by",
+		e_registration_status:"e_league_registration_statuses_order_by",
+		id:"order_by",
+		league_season_id:"order_by",
+		league_team:"league_teams_order_by",
+		league_team_id:"order_by",
+		registered_by:"players_order_by",
+		registered_by_steam_id:"order_by",
+		requested_division:"league_divisions_order_by",
+		requested_division_id:"order_by",
+		roster_aggregate:"league_team_rosters_aggregate_order_by",
+		season:"league_seasons_order_by",
+		seed:"order_by",
+		status:"order_by",
+		tournament_team:"tournament_teams_order_by",
+		tournament_team_id:"order_by"
+	},
+	league_team_seasons_pk_columns_input:{
+		id:"uuid"
+	},
+	league_team_seasons_select_column: "enum" as const,
+	league_team_seasons_set_input:{
+		assigned_division_id:"uuid",
+		captain_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		registered_by_steam_id:"bigint",
+		requested_division_id:"uuid",
+		status:"e_league_registration_statuses_enum",
+		tournament_team_id:"uuid"
+	},
+	league_team_seasons_stddev_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_stddev_pop_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_stddev_samp_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_stream_cursor_input:{
+		initial_value:"league_team_seasons_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_team_seasons_stream_cursor_value_input:{
+		assigned_division_id:"uuid",
+		captain_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		registered_by_steam_id:"bigint",
+		requested_division_id:"uuid",
+		status:"e_league_registration_statuses_enum",
+		tournament_team_id:"uuid"
+	},
+	league_team_seasons_sum_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_update_column: "enum" as const,
+	league_team_seasons_updates:{
+		_inc:"league_team_seasons_inc_input",
+		_set:"league_team_seasons_set_input",
+		where:"league_team_seasons_bool_exp"
+	},
+	league_team_seasons_var_pop_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_var_samp_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_team_seasons_variance_order_by:{
+		captain_steam_id:"order_by",
+		registered_by_steam_id:"order_by",
+		seed:"order_by"
+	},
+	league_teams:{
+		movements:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		movements_aggregate:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		team_seasons:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		team_seasons_aggregate:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		}
+	},
+	league_teams_aggregate_fields:{
+		count:{
+			columns:"league_teams_select_column"
+		}
+	},
+	league_teams_bool_exp:{
+		_and:"league_teams_bool_exp",
+		_not:"league_teams_bool_exp",
+		_or:"league_teams_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		movements:"league_team_movements_bool_exp",
+		movements_aggregate:"league_team_movements_aggregate_bool_exp",
+		team:"teams_bool_exp",
+		team_id:"uuid_comparison_exp",
+		team_seasons:"league_team_seasons_bool_exp",
+		team_seasons_aggregate:"league_team_seasons_aggregate_bool_exp"
+	},
+	league_teams_constraint: "enum" as const,
+	league_teams_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		movements:"league_team_movements_arr_rel_insert_input",
+		team:"teams_obj_rel_insert_input",
+		team_id:"uuid",
+		team_seasons:"league_team_seasons_arr_rel_insert_input"
+	},
+	league_teams_obj_rel_insert_input:{
+		data:"league_teams_insert_input",
+		on_conflict:"league_teams_on_conflict"
+	},
+	league_teams_on_conflict:{
+		constraint:"league_teams_constraint",
+		update_columns:"league_teams_update_column",
+		where:"league_teams_bool_exp"
+	},
+	league_teams_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		movements_aggregate:"league_team_movements_aggregate_order_by",
+		team:"teams_order_by",
+		team_id:"order_by",
+		team_seasons_aggregate:"league_team_seasons_aggregate_order_by"
+	},
+	league_teams_pk_columns_input:{
+		id:"uuid"
+	},
+	league_teams_select_column: "enum" as const,
+	league_teams_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		team_id:"uuid"
+	},
+	league_teams_stream_cursor_input:{
+		initial_value:"league_teams_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	league_teams_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		team_id:"uuid"
+	},
+	league_teams_update_column: "enum" as const,
+	league_teams_updates:{
+		_set:"league_teams_set_input",
+		where:"league_teams_bool_exp"
 	},
 	lobbies:{
 		players:{
@@ -7632,6 +9490,12 @@ export const AllTypesProps: Record<string,any> = {
 		approveNameChange:{
 			steam_id:"bigint"
 		},
+		approve_league_season_movements:{
+			args:"approve_league_season_movements_args",
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
 		backfillSeasonElo:{
 
 		},
@@ -7664,6 +9528,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		clearPendingMatchImport:{
 
+		},
+		clone_league_season:{
+			args:"clone_league_season_args",
+			distinct_on:"league_seasons_select_column",
+			order_by:"league_seasons_order_by",
+			where:"league_seasons_bool_exp"
 		},
 		counterScrimRequest:{
 			proposed_scheduled_at:"timestamptz",
@@ -7812,6 +9682,30 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_game_server_node_statuses_bool_exp"
 		},
 		delete_e_game_server_node_statuses_by_pk:{
+
+		},
+		delete_e_league_movement_types:{
+			where:"e_league_movement_types_bool_exp"
+		},
+		delete_e_league_movement_types_by_pk:{
+
+		},
+		delete_e_league_proposal_statuses:{
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		delete_e_league_proposal_statuses_by_pk:{
+
+		},
+		delete_e_league_registration_statuses:{
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		delete_e_league_registration_statuses_by_pk:{
+
+		},
+		delete_e_league_season_statuses:{
+			where:"e_league_season_statuses_bool_exp"
+		},
+		delete_e_league_season_statuses_by_pk:{
 
 		},
 		delete_e_lobby_access:{
@@ -7991,6 +9885,67 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_leaderboard_entries:{
 			where:"leaderboard_entries_bool_exp"
+		},
+		delete_league_divisions:{
+			where:"league_divisions_bool_exp"
+		},
+		delete_league_divisions_by_pk:{
+			id:"uuid"
+		},
+		delete_league_match_weeks:{
+			where:"league_match_weeks_bool_exp"
+		},
+		delete_league_match_weeks_by_pk:{
+			id:"uuid"
+		},
+		delete_league_relegation_playoffs:{
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		delete_league_relegation_playoffs_by_pk:{
+			id:"uuid"
+		},
+		delete_league_scheduling_proposals:{
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		delete_league_scheduling_proposals_by_pk:{
+			id:"uuid"
+		},
+		delete_league_season_divisions:{
+			where:"league_season_divisions_bool_exp"
+		},
+		delete_league_season_divisions_by_pk:{
+			id:"uuid"
+		},
+		delete_league_seasons:{
+			where:"league_seasons_bool_exp"
+		},
+		delete_league_seasons_by_pk:{
+			id:"uuid"
+		},
+		delete_league_team_movements:{
+			where:"league_team_movements_bool_exp"
+		},
+		delete_league_team_movements_by_pk:{
+			id:"uuid"
+		},
+		delete_league_team_rosters:{
+			where:"league_team_rosters_bool_exp"
+		},
+		delete_league_team_rosters_by_pk:{
+			league_team_season_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		delete_league_team_seasons:{
+			where:"league_team_seasons_bool_exp"
+		},
+		delete_league_team_seasons_by_pk:{
+			id:"uuid"
+		},
+		delete_league_teams:{
+			where:"league_teams_bool_exp"
+		},
+		delete_league_teams_by_pk:{
+			id:"uuid"
 		},
 		delete_lobbies:{
 			where:"lobbies_bool_exp"
@@ -8391,6 +10346,12 @@ export const AllTypesProps: Record<string,any> = {
 			steam_id:"bigint",
 			tournament_id:"uuid"
 		},
+		delete_tournament_stage_windows:{
+			where:"tournament_stage_windows_bool_exp"
+		},
+		delete_tournament_stage_windows_by_pk:{
+			id:"uuid"
+		},
 		delete_tournament_stages:{
 			where:"tournament_stages_bool_exp"
 		},
@@ -8598,6 +10559,38 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_game_server_node_statuses_one:{
 			object:"e_game_server_node_statuses_insert_input",
 			on_conflict:"e_game_server_node_statuses_on_conflict"
+		},
+		insert_e_league_movement_types:{
+			objects:"e_league_movement_types_insert_input",
+			on_conflict:"e_league_movement_types_on_conflict"
+		},
+		insert_e_league_movement_types_one:{
+			object:"e_league_movement_types_insert_input",
+			on_conflict:"e_league_movement_types_on_conflict"
+		},
+		insert_e_league_proposal_statuses:{
+			objects:"e_league_proposal_statuses_insert_input",
+			on_conflict:"e_league_proposal_statuses_on_conflict"
+		},
+		insert_e_league_proposal_statuses_one:{
+			object:"e_league_proposal_statuses_insert_input",
+			on_conflict:"e_league_proposal_statuses_on_conflict"
+		},
+		insert_e_league_registration_statuses:{
+			objects:"e_league_registration_statuses_insert_input",
+			on_conflict:"e_league_registration_statuses_on_conflict"
+		},
+		insert_e_league_registration_statuses_one:{
+			object:"e_league_registration_statuses_insert_input",
+			on_conflict:"e_league_registration_statuses_on_conflict"
+		},
+		insert_e_league_season_statuses:{
+			objects:"e_league_season_statuses_insert_input",
+			on_conflict:"e_league_season_statuses_on_conflict"
+		},
+		insert_e_league_season_statuses_one:{
+			object:"e_league_season_statuses_insert_input",
+			on_conflict:"e_league_season_statuses_on_conflict"
 		},
 		insert_e_lobby_access:{
 			objects:"e_lobby_access_insert_input",
@@ -8836,6 +10829,86 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		insert_leaderboard_entries_one:{
 			object:"leaderboard_entries_insert_input"
+		},
+		insert_league_divisions:{
+			objects:"league_divisions_insert_input",
+			on_conflict:"league_divisions_on_conflict"
+		},
+		insert_league_divisions_one:{
+			object:"league_divisions_insert_input",
+			on_conflict:"league_divisions_on_conflict"
+		},
+		insert_league_match_weeks:{
+			objects:"league_match_weeks_insert_input",
+			on_conflict:"league_match_weeks_on_conflict"
+		},
+		insert_league_match_weeks_one:{
+			object:"league_match_weeks_insert_input",
+			on_conflict:"league_match_weeks_on_conflict"
+		},
+		insert_league_relegation_playoffs:{
+			objects:"league_relegation_playoffs_insert_input",
+			on_conflict:"league_relegation_playoffs_on_conflict"
+		},
+		insert_league_relegation_playoffs_one:{
+			object:"league_relegation_playoffs_insert_input",
+			on_conflict:"league_relegation_playoffs_on_conflict"
+		},
+		insert_league_scheduling_proposals:{
+			objects:"league_scheduling_proposals_insert_input",
+			on_conflict:"league_scheduling_proposals_on_conflict"
+		},
+		insert_league_scheduling_proposals_one:{
+			object:"league_scheduling_proposals_insert_input",
+			on_conflict:"league_scheduling_proposals_on_conflict"
+		},
+		insert_league_season_divisions:{
+			objects:"league_season_divisions_insert_input",
+			on_conflict:"league_season_divisions_on_conflict"
+		},
+		insert_league_season_divisions_one:{
+			object:"league_season_divisions_insert_input",
+			on_conflict:"league_season_divisions_on_conflict"
+		},
+		insert_league_seasons:{
+			objects:"league_seasons_insert_input",
+			on_conflict:"league_seasons_on_conflict"
+		},
+		insert_league_seasons_one:{
+			object:"league_seasons_insert_input",
+			on_conflict:"league_seasons_on_conflict"
+		},
+		insert_league_team_movements:{
+			objects:"league_team_movements_insert_input",
+			on_conflict:"league_team_movements_on_conflict"
+		},
+		insert_league_team_movements_one:{
+			object:"league_team_movements_insert_input",
+			on_conflict:"league_team_movements_on_conflict"
+		},
+		insert_league_team_rosters:{
+			objects:"league_team_rosters_insert_input",
+			on_conflict:"league_team_rosters_on_conflict"
+		},
+		insert_league_team_rosters_one:{
+			object:"league_team_rosters_insert_input",
+			on_conflict:"league_team_rosters_on_conflict"
+		},
+		insert_league_team_seasons:{
+			objects:"league_team_seasons_insert_input",
+			on_conflict:"league_team_seasons_on_conflict"
+		},
+		insert_league_team_seasons_one:{
+			object:"league_team_seasons_insert_input",
+			on_conflict:"league_team_seasons_on_conflict"
+		},
+		insert_league_teams:{
+			objects:"league_teams_insert_input",
+			on_conflict:"league_teams_on_conflict"
+		},
+		insert_league_teams_one:{
+			object:"league_teams_insert_input",
+			on_conflict:"league_teams_on_conflict"
 		},
 		insert_lobbies:{
 			objects:"lobbies_insert_input",
@@ -9337,6 +11410,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"tournament_organizers_insert_input",
 			on_conflict:"tournament_organizers_on_conflict"
 		},
+		insert_tournament_stage_windows:{
+			objects:"tournament_stage_windows_insert_input",
+			on_conflict:"tournament_stage_windows_on_conflict"
+		},
+		insert_tournament_stage_windows_one:{
+			object:"tournament_stage_windows_insert_input",
+			on_conflict:"tournament_stage_windows_on_conflict"
+		},
 		insert_tournament_stages:{
 			objects:"tournament_stages_insert_input",
 			on_conflict:"tournament_stages_on_conflict"
@@ -9434,6 +11515,12 @@ export const AllTypesProps: Record<string,any> = {
 		kickServerPlayer:{
 
 		},
+		league_award_forfeit:{
+			args:"league_award_forfeit_args",
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
+		},
 		leaveLineup:{
 
 		},
@@ -9479,8 +11566,20 @@ export const AllTypesProps: Record<string,any> = {
 		removeSteamPresenceBotAccount:{
 
 		},
+		remove_league_team_from_season:{
+			args:"remove_league_team_from_season_args",
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
 		renameServerItem:{
 
+		},
+		reorder_league_divisions:{
+			args:"reorder_league_divisions_args",
+			distinct_on:"league_divisions_select_column",
+			order_by:"league_divisions_order_by",
+			where:"league_divisions_bool_exp"
 		},
 		reparseDemo:{
 			match_map_id:"uuid"
@@ -9502,6 +11601,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		restartService:{
 
+		},
+		restart_league_season:{
+			args:"restart_league_season_args",
+			distinct_on:"league_seasons_select_column",
+			order_by:"league_seasons_order_by",
+			where:"league_seasons_bool_exp"
 		},
 		resumeClipRenderBatch:{
 			match_map_id:"uuid"
@@ -9827,6 +11932,50 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_game_server_node_statuses_many:{
 			updates:"e_game_server_node_statuses_updates"
+		},
+		update_e_league_movement_types:{
+			_set:"e_league_movement_types_set_input",
+			where:"e_league_movement_types_bool_exp"
+		},
+		update_e_league_movement_types_by_pk:{
+			_set:"e_league_movement_types_set_input",
+			pk_columns:"e_league_movement_types_pk_columns_input"
+		},
+		update_e_league_movement_types_many:{
+			updates:"e_league_movement_types_updates"
+		},
+		update_e_league_proposal_statuses:{
+			_set:"e_league_proposal_statuses_set_input",
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		update_e_league_proposal_statuses_by_pk:{
+			_set:"e_league_proposal_statuses_set_input",
+			pk_columns:"e_league_proposal_statuses_pk_columns_input"
+		},
+		update_e_league_proposal_statuses_many:{
+			updates:"e_league_proposal_statuses_updates"
+		},
+		update_e_league_registration_statuses:{
+			_set:"e_league_registration_statuses_set_input",
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		update_e_league_registration_statuses_by_pk:{
+			_set:"e_league_registration_statuses_set_input",
+			pk_columns:"e_league_registration_statuses_pk_columns_input"
+		},
+		update_e_league_registration_statuses_many:{
+			updates:"e_league_registration_statuses_updates"
+		},
+		update_e_league_season_statuses:{
+			_set:"e_league_season_statuses_set_input",
+			where:"e_league_season_statuses_bool_exp"
+		},
+		update_e_league_season_statuses_by_pk:{
+			_set:"e_league_season_statuses_set_input",
+			pk_columns:"e_league_season_statuses_pk_columns_input"
+		},
+		update_e_league_season_statuses_many:{
+			updates:"e_league_season_statuses_updates"
 		},
 		update_e_lobby_access:{
 			_set:"e_lobby_access_set_input",
@@ -10192,6 +12341,142 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_leaderboard_entries_many:{
 			updates:"leaderboard_entries_updates"
+		},
+		update_league_divisions:{
+			_inc:"league_divisions_inc_input",
+			_set:"league_divisions_set_input",
+			where:"league_divisions_bool_exp"
+		},
+		update_league_divisions_by_pk:{
+			_inc:"league_divisions_inc_input",
+			_set:"league_divisions_set_input",
+			pk_columns:"league_divisions_pk_columns_input"
+		},
+		update_league_divisions_many:{
+			updates:"league_divisions_updates"
+		},
+		update_league_match_weeks:{
+			_inc:"league_match_weeks_inc_input",
+			_set:"league_match_weeks_set_input",
+			where:"league_match_weeks_bool_exp"
+		},
+		update_league_match_weeks_by_pk:{
+			_inc:"league_match_weeks_inc_input",
+			_set:"league_match_weeks_set_input",
+			pk_columns:"league_match_weeks_pk_columns_input"
+		},
+		update_league_match_weeks_many:{
+			updates:"league_match_weeks_updates"
+		},
+		update_league_relegation_playoffs:{
+			_inc:"league_relegation_playoffs_inc_input",
+			_set:"league_relegation_playoffs_set_input",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		update_league_relegation_playoffs_by_pk:{
+			_inc:"league_relegation_playoffs_inc_input",
+			_set:"league_relegation_playoffs_set_input",
+			pk_columns:"league_relegation_playoffs_pk_columns_input"
+		},
+		update_league_relegation_playoffs_many:{
+			updates:"league_relegation_playoffs_updates"
+		},
+		update_league_scheduling_proposals:{
+			_inc:"league_scheduling_proposals_inc_input",
+			_set:"league_scheduling_proposals_set_input",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		update_league_scheduling_proposals_by_pk:{
+			_inc:"league_scheduling_proposals_inc_input",
+			_set:"league_scheduling_proposals_set_input",
+			pk_columns:"league_scheduling_proposals_pk_columns_input"
+		},
+		update_league_scheduling_proposals_many:{
+			updates:"league_scheduling_proposals_updates"
+		},
+		update_league_season_divisions:{
+			_set:"league_season_divisions_set_input",
+			where:"league_season_divisions_bool_exp"
+		},
+		update_league_season_divisions_by_pk:{
+			_set:"league_season_divisions_set_input",
+			pk_columns:"league_season_divisions_pk_columns_input"
+		},
+		update_league_season_divisions_many:{
+			updates:"league_season_divisions_updates"
+		},
+		update_league_seasons:{
+			_append:"league_seasons_append_input",
+			_delete_at_path:"league_seasons_delete_at_path_input",
+			_delete_elem:"league_seasons_delete_elem_input",
+			_delete_key:"league_seasons_delete_key_input",
+			_inc:"league_seasons_inc_input",
+			_prepend:"league_seasons_prepend_input",
+			_set:"league_seasons_set_input",
+			where:"league_seasons_bool_exp"
+		},
+		update_league_seasons_by_pk:{
+			_append:"league_seasons_append_input",
+			_delete_at_path:"league_seasons_delete_at_path_input",
+			_delete_elem:"league_seasons_delete_elem_input",
+			_delete_key:"league_seasons_delete_key_input",
+			_inc:"league_seasons_inc_input",
+			_prepend:"league_seasons_prepend_input",
+			_set:"league_seasons_set_input",
+			pk_columns:"league_seasons_pk_columns_input"
+		},
+		update_league_seasons_many:{
+			updates:"league_seasons_updates"
+		},
+		update_league_team_movements:{
+			_inc:"league_team_movements_inc_input",
+			_set:"league_team_movements_set_input",
+			where:"league_team_movements_bool_exp"
+		},
+		update_league_team_movements_by_pk:{
+			_inc:"league_team_movements_inc_input",
+			_set:"league_team_movements_set_input",
+			pk_columns:"league_team_movements_pk_columns_input"
+		},
+		update_league_team_movements_many:{
+			updates:"league_team_movements_updates"
+		},
+		update_league_team_rosters:{
+			_inc:"league_team_rosters_inc_input",
+			_set:"league_team_rosters_set_input",
+			where:"league_team_rosters_bool_exp"
+		},
+		update_league_team_rosters_by_pk:{
+			_inc:"league_team_rosters_inc_input",
+			_set:"league_team_rosters_set_input",
+			pk_columns:"league_team_rosters_pk_columns_input"
+		},
+		update_league_team_rosters_many:{
+			updates:"league_team_rosters_updates"
+		},
+		update_league_team_seasons:{
+			_inc:"league_team_seasons_inc_input",
+			_set:"league_team_seasons_set_input",
+			where:"league_team_seasons_bool_exp"
+		},
+		update_league_team_seasons_by_pk:{
+			_inc:"league_team_seasons_inc_input",
+			_set:"league_team_seasons_set_input",
+			pk_columns:"league_team_seasons_pk_columns_input"
+		},
+		update_league_team_seasons_many:{
+			updates:"league_team_seasons_updates"
+		},
+		update_league_teams:{
+			_set:"league_teams_set_input",
+			where:"league_teams_bool_exp"
+		},
+		update_league_teams_by_pk:{
+			_set:"league_teams_set_input",
+			pk_columns:"league_teams_pk_columns_input"
+		},
+		update_league_teams_many:{
+			updates:"league_teams_updates"
 		},
 		update_lobbies:{
 			_set:"lobbies_set_input",
@@ -11034,6 +13319,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_tournament_organizers_many:{
 			updates:"tournament_organizers_updates"
+		},
+		update_tournament_stage_windows:{
+			_inc:"tournament_stage_windows_inc_input",
+			_set:"tournament_stage_windows_set_input",
+			where:"tournament_stage_windows_bool_exp"
+		},
+		update_tournament_stage_windows_by_pk:{
+			_inc:"tournament_stage_windows_inc_input",
+			_set:"tournament_stage_windows_set_input",
+			pk_columns:"tournament_stage_windows_pk_columns_input"
+		},
+		update_tournament_stage_windows_many:{
+			updates:"tournament_stage_windows_updates"
 		},
 		update_tournament_stages:{
 			_append:"tournament_stages_append_input",
@@ -18335,6 +20633,58 @@ export const AllTypesProps: Record<string,any> = {
 		e_game_server_node_statuses_by_pk:{
 
 		},
+		e_league_movement_types:{
+			distinct_on:"e_league_movement_types_select_column",
+			order_by:"e_league_movement_types_order_by",
+			where:"e_league_movement_types_bool_exp"
+		},
+		e_league_movement_types_aggregate:{
+			distinct_on:"e_league_movement_types_select_column",
+			order_by:"e_league_movement_types_order_by",
+			where:"e_league_movement_types_bool_exp"
+		},
+		e_league_movement_types_by_pk:{
+
+		},
+		e_league_proposal_statuses:{
+			distinct_on:"e_league_proposal_statuses_select_column",
+			order_by:"e_league_proposal_statuses_order_by",
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		e_league_proposal_statuses_aggregate:{
+			distinct_on:"e_league_proposal_statuses_select_column",
+			order_by:"e_league_proposal_statuses_order_by",
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		e_league_proposal_statuses_by_pk:{
+
+		},
+		e_league_registration_statuses:{
+			distinct_on:"e_league_registration_statuses_select_column",
+			order_by:"e_league_registration_statuses_order_by",
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		e_league_registration_statuses_aggregate:{
+			distinct_on:"e_league_registration_statuses_select_column",
+			order_by:"e_league_registration_statuses_order_by",
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		e_league_registration_statuses_by_pk:{
+
+		},
+		e_league_season_statuses:{
+			distinct_on:"e_league_season_statuses_select_column",
+			order_by:"e_league_season_statuses_order_by",
+			where:"e_league_season_statuses_bool_exp"
+		},
+		e_league_season_statuses_aggregate:{
+			distinct_on:"e_league_season_statuses_select_column",
+			order_by:"e_league_season_statuses_order_by",
+			where:"e_league_season_statuses_bool_exp"
+		},
+		e_league_season_statuses_by_pk:{
+
+		},
 		e_lobby_access:{
 			distinct_on:"e_lobby_access_select_column",
 			order_by:"e_lobby_access_order_by",
@@ -18752,6 +21102,18 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"leaderboard_entries_order_by",
 			where:"leaderboard_entries_bool_exp"
 		},
+		get_league_season_leaderboard:{
+			args:"get_league_season_leaderboard_args",
+			distinct_on:"leaderboard_entries_select_column",
+			order_by:"leaderboard_entries_order_by",
+			where:"leaderboard_entries_bool_exp"
+		},
+		get_league_season_leaderboard_aggregate:{
+			args:"get_league_season_leaderboard_args",
+			distinct_on:"leaderboard_entries_select_column",
+			order_by:"leaderboard_entries_order_by",
+			where:"leaderboard_entries_bool_exp"
+		},
 		get_player_leaderboard_rank:{
 			args:"get_player_leaderboard_rank_args",
 			distinct_on:"player_leaderboard_rank_select_column",
@@ -18773,6 +21135,137 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"leaderboard_entries_select_column",
 			order_by:"leaderboard_entries_order_by",
 			where:"leaderboard_entries_bool_exp"
+		},
+		league_divisions:{
+			distinct_on:"league_divisions_select_column",
+			order_by:"league_divisions_order_by",
+			where:"league_divisions_bool_exp"
+		},
+		league_divisions_aggregate:{
+			distinct_on:"league_divisions_select_column",
+			order_by:"league_divisions_order_by",
+			where:"league_divisions_bool_exp"
+		},
+		league_divisions_by_pk:{
+			id:"uuid"
+		},
+		league_match_weeks:{
+			distinct_on:"league_match_weeks_select_column",
+			order_by:"league_match_weeks_order_by",
+			where:"league_match_weeks_bool_exp"
+		},
+		league_match_weeks_aggregate:{
+			distinct_on:"league_match_weeks_select_column",
+			order_by:"league_match_weeks_order_by",
+			where:"league_match_weeks_bool_exp"
+		},
+		league_match_weeks_by_pk:{
+			id:"uuid"
+		},
+		league_relegation_playoffs:{
+			distinct_on:"league_relegation_playoffs_select_column",
+			order_by:"league_relegation_playoffs_order_by",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		league_relegation_playoffs_aggregate:{
+			distinct_on:"league_relegation_playoffs_select_column",
+			order_by:"league_relegation_playoffs_order_by",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		league_relegation_playoffs_by_pk:{
+			id:"uuid"
+		},
+		league_scheduling_proposals:{
+			distinct_on:"league_scheduling_proposals_select_column",
+			order_by:"league_scheduling_proposals_order_by",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		league_scheduling_proposals_aggregate:{
+			distinct_on:"league_scheduling_proposals_select_column",
+			order_by:"league_scheduling_proposals_order_by",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		league_scheduling_proposals_by_pk:{
+			id:"uuid"
+		},
+		league_season_divisions:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		league_season_divisions_aggregate:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		league_season_divisions_by_pk:{
+			id:"uuid"
+		},
+		league_seasons:{
+			distinct_on:"league_seasons_select_column",
+			order_by:"league_seasons_order_by",
+			where:"league_seasons_bool_exp"
+		},
+		league_seasons_aggregate:{
+			distinct_on:"league_seasons_select_column",
+			order_by:"league_seasons_order_by",
+			where:"league_seasons_bool_exp"
+		},
+		league_seasons_by_pk:{
+			id:"uuid"
+		},
+		league_team_movements:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		league_team_movements_aggregate:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		league_team_movements_by_pk:{
+			id:"uuid"
+		},
+		league_team_rosters:{
+			distinct_on:"league_team_rosters_select_column",
+			order_by:"league_team_rosters_order_by",
+			where:"league_team_rosters_bool_exp"
+		},
+		league_team_rosters_aggregate:{
+			distinct_on:"league_team_rosters_select_column",
+			order_by:"league_team_rosters_order_by",
+			where:"league_team_rosters_bool_exp"
+		},
+		league_team_rosters_by_pk:{
+			league_team_season_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		league_team_seasons:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		league_team_seasons_aggregate:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		league_team_seasons_by_pk:{
+			id:"uuid"
+		},
+		league_teams:{
+			distinct_on:"league_teams_select_column",
+			order_by:"league_teams_order_by",
+			where:"league_teams_bool_exp"
+		},
+		league_teams_aggregate:{
+			distinct_on:"league_teams_select_column",
+			order_by:"league_teams_order_by",
+			where:"league_teams_bool_exp"
+		},
+		league_teams_by_pk:{
+			id:"uuid"
 		},
 		listServerFiles:{
 
@@ -19676,6 +22169,19 @@ export const AllTypesProps: Record<string,any> = {
 			steam_id:"bigint",
 			tournament_id:"uuid"
 		},
+		tournament_stage_windows:{
+			distinct_on:"tournament_stage_windows_select_column",
+			order_by:"tournament_stage_windows_order_by",
+			where:"tournament_stage_windows_bool_exp"
+		},
+		tournament_stage_windows_aggregate:{
+			distinct_on:"tournament_stage_windows_select_column",
+			order_by:"tournament_stage_windows_order_by",
+			where:"tournament_stage_windows_bool_exp"
+		},
+		tournament_stage_windows_by_pk:{
+			id:"uuid"
+		},
 		tournament_stages:{
 			distinct_on:"tournament_stages_select_column",
 			order_by:"tournament_stages_order_by",
@@ -19777,6 +22283,26 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_gpu_pool_status_select_column",
 			order_by:"v_gpu_pool_status_order_by",
 			where:"v_gpu_pool_status_bool_exp"
+		},
+		v_league_division_standings:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		v_league_division_standings_aggregate:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		v_league_season_player_stats:{
+			distinct_on:"v_league_season_player_stats_select_column",
+			order_by:"v_league_season_player_stats_order_by",
+			where:"v_league_season_player_stats_bool_exp"
+		},
+		v_league_season_player_stats_aggregate:{
+			distinct_on:"v_league_season_player_stats_select_column",
+			order_by:"v_league_season_player_stats_order_by",
+			where:"v_league_season_player_stats_bool_exp"
 		},
 		v_match_captains:{
 			distinct_on:"v_match_captains_select_column",
@@ -20065,6 +22591,15 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	recalculate_tournament_trophies_args:{
 		_tournament_id:"uuid"
+	},
+	remove_league_team_from_season_args:{
+		_league_team_season_id:"uuid"
+	},
+	reorder_league_divisions_args:{
+		_division_ids:"_uuid"
+	},
+	restart_league_season_args:{
+		_league_season_id:"uuid"
 	},
 	seasons:{
 		player_season_stats:{
@@ -20533,6 +23068,17 @@ export const AllTypesProps: Record<string,any> = {
 	settings_updates:{
 		_set:"settings_set_input",
 		where:"settings_bool_exp"
+	},
+	smallint: `scalar.smallint` as const,
+	smallint_comparison_exp:{
+		_eq:"smallint",
+		_gt:"smallint",
+		_gte:"smallint",
+		_in:"smallint",
+		_lt:"smallint",
+		_lte:"smallint",
+		_neq:"smallint",
+		_nin:"smallint"
 	},
 	steam_account_claims_aggregate_bool_exp:{
 		count:"steam_account_claims_aggregate_bool_exp_count"
@@ -21018,6 +23564,74 @@ export const AllTypesProps: Record<string,any> = {
 		e_game_server_node_statuses_stream:{
 			cursor:"e_game_server_node_statuses_stream_cursor_input",
 			where:"e_game_server_node_statuses_bool_exp"
+		},
+		e_league_movement_types:{
+			distinct_on:"e_league_movement_types_select_column",
+			order_by:"e_league_movement_types_order_by",
+			where:"e_league_movement_types_bool_exp"
+		},
+		e_league_movement_types_aggregate:{
+			distinct_on:"e_league_movement_types_select_column",
+			order_by:"e_league_movement_types_order_by",
+			where:"e_league_movement_types_bool_exp"
+		},
+		e_league_movement_types_by_pk:{
+
+		},
+		e_league_movement_types_stream:{
+			cursor:"e_league_movement_types_stream_cursor_input",
+			where:"e_league_movement_types_bool_exp"
+		},
+		e_league_proposal_statuses:{
+			distinct_on:"e_league_proposal_statuses_select_column",
+			order_by:"e_league_proposal_statuses_order_by",
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		e_league_proposal_statuses_aggregate:{
+			distinct_on:"e_league_proposal_statuses_select_column",
+			order_by:"e_league_proposal_statuses_order_by",
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		e_league_proposal_statuses_by_pk:{
+
+		},
+		e_league_proposal_statuses_stream:{
+			cursor:"e_league_proposal_statuses_stream_cursor_input",
+			where:"e_league_proposal_statuses_bool_exp"
+		},
+		e_league_registration_statuses:{
+			distinct_on:"e_league_registration_statuses_select_column",
+			order_by:"e_league_registration_statuses_order_by",
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		e_league_registration_statuses_aggregate:{
+			distinct_on:"e_league_registration_statuses_select_column",
+			order_by:"e_league_registration_statuses_order_by",
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		e_league_registration_statuses_by_pk:{
+
+		},
+		e_league_registration_statuses_stream:{
+			cursor:"e_league_registration_statuses_stream_cursor_input",
+			where:"e_league_registration_statuses_bool_exp"
+		},
+		e_league_season_statuses:{
+			distinct_on:"e_league_season_statuses_select_column",
+			order_by:"e_league_season_statuses_order_by",
+			where:"e_league_season_statuses_bool_exp"
+		},
+		e_league_season_statuses_aggregate:{
+			distinct_on:"e_league_season_statuses_select_column",
+			order_by:"e_league_season_statuses_order_by",
+			where:"e_league_season_statuses_bool_exp"
+		},
+		e_league_season_statuses_by_pk:{
+
+		},
+		e_league_season_statuses_stream:{
+			cursor:"e_league_season_statuses_stream_cursor_input",
+			where:"e_league_season_statuses_bool_exp"
 		},
 		e_lobby_access:{
 			distinct_on:"e_lobby_access_select_column",
@@ -21525,6 +24139,18 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"leaderboard_entries_order_by",
 			where:"leaderboard_entries_bool_exp"
 		},
+		get_league_season_leaderboard:{
+			args:"get_league_season_leaderboard_args",
+			distinct_on:"leaderboard_entries_select_column",
+			order_by:"leaderboard_entries_order_by",
+			where:"leaderboard_entries_bool_exp"
+		},
+		get_league_season_leaderboard_aggregate:{
+			args:"get_league_season_leaderboard_args",
+			distinct_on:"leaderboard_entries_select_column",
+			order_by:"leaderboard_entries_order_by",
+			where:"leaderboard_entries_bool_exp"
+		},
 		get_player_leaderboard_rank:{
 			args:"get_player_leaderboard_rank_args",
 			distinct_on:"player_leaderboard_rank_select_column",
@@ -21550,6 +24176,177 @@ export const AllTypesProps: Record<string,any> = {
 		leaderboard_entries_stream:{
 			cursor:"leaderboard_entries_stream_cursor_input",
 			where:"leaderboard_entries_bool_exp"
+		},
+		league_divisions:{
+			distinct_on:"league_divisions_select_column",
+			order_by:"league_divisions_order_by",
+			where:"league_divisions_bool_exp"
+		},
+		league_divisions_aggregate:{
+			distinct_on:"league_divisions_select_column",
+			order_by:"league_divisions_order_by",
+			where:"league_divisions_bool_exp"
+		},
+		league_divisions_by_pk:{
+			id:"uuid"
+		},
+		league_divisions_stream:{
+			cursor:"league_divisions_stream_cursor_input",
+			where:"league_divisions_bool_exp"
+		},
+		league_match_weeks:{
+			distinct_on:"league_match_weeks_select_column",
+			order_by:"league_match_weeks_order_by",
+			where:"league_match_weeks_bool_exp"
+		},
+		league_match_weeks_aggregate:{
+			distinct_on:"league_match_weeks_select_column",
+			order_by:"league_match_weeks_order_by",
+			where:"league_match_weeks_bool_exp"
+		},
+		league_match_weeks_by_pk:{
+			id:"uuid"
+		},
+		league_match_weeks_stream:{
+			cursor:"league_match_weeks_stream_cursor_input",
+			where:"league_match_weeks_bool_exp"
+		},
+		league_relegation_playoffs:{
+			distinct_on:"league_relegation_playoffs_select_column",
+			order_by:"league_relegation_playoffs_order_by",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		league_relegation_playoffs_aggregate:{
+			distinct_on:"league_relegation_playoffs_select_column",
+			order_by:"league_relegation_playoffs_order_by",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		league_relegation_playoffs_by_pk:{
+			id:"uuid"
+		},
+		league_relegation_playoffs_stream:{
+			cursor:"league_relegation_playoffs_stream_cursor_input",
+			where:"league_relegation_playoffs_bool_exp"
+		},
+		league_scheduling_proposals:{
+			distinct_on:"league_scheduling_proposals_select_column",
+			order_by:"league_scheduling_proposals_order_by",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		league_scheduling_proposals_aggregate:{
+			distinct_on:"league_scheduling_proposals_select_column",
+			order_by:"league_scheduling_proposals_order_by",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		league_scheduling_proposals_by_pk:{
+			id:"uuid"
+		},
+		league_scheduling_proposals_stream:{
+			cursor:"league_scheduling_proposals_stream_cursor_input",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		league_season_divisions:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		league_season_divisions_aggregate:{
+			distinct_on:"league_season_divisions_select_column",
+			order_by:"league_season_divisions_order_by",
+			where:"league_season_divisions_bool_exp"
+		},
+		league_season_divisions_by_pk:{
+			id:"uuid"
+		},
+		league_season_divisions_stream:{
+			cursor:"league_season_divisions_stream_cursor_input",
+			where:"league_season_divisions_bool_exp"
+		},
+		league_seasons:{
+			distinct_on:"league_seasons_select_column",
+			order_by:"league_seasons_order_by",
+			where:"league_seasons_bool_exp"
+		},
+		league_seasons_aggregate:{
+			distinct_on:"league_seasons_select_column",
+			order_by:"league_seasons_order_by",
+			where:"league_seasons_bool_exp"
+		},
+		league_seasons_by_pk:{
+			id:"uuid"
+		},
+		league_seasons_stream:{
+			cursor:"league_seasons_stream_cursor_input",
+			where:"league_seasons_bool_exp"
+		},
+		league_team_movements:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		league_team_movements_aggregate:{
+			distinct_on:"league_team_movements_select_column",
+			order_by:"league_team_movements_order_by",
+			where:"league_team_movements_bool_exp"
+		},
+		league_team_movements_by_pk:{
+			id:"uuid"
+		},
+		league_team_movements_stream:{
+			cursor:"league_team_movements_stream_cursor_input",
+			where:"league_team_movements_bool_exp"
+		},
+		league_team_rosters:{
+			distinct_on:"league_team_rosters_select_column",
+			order_by:"league_team_rosters_order_by",
+			where:"league_team_rosters_bool_exp"
+		},
+		league_team_rosters_aggregate:{
+			distinct_on:"league_team_rosters_select_column",
+			order_by:"league_team_rosters_order_by",
+			where:"league_team_rosters_bool_exp"
+		},
+		league_team_rosters_by_pk:{
+			league_team_season_id:"uuid",
+			player_steam_id:"bigint"
+		},
+		league_team_rosters_stream:{
+			cursor:"league_team_rosters_stream_cursor_input",
+			where:"league_team_rosters_bool_exp"
+		},
+		league_team_seasons:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		league_team_seasons_aggregate:{
+			distinct_on:"league_team_seasons_select_column",
+			order_by:"league_team_seasons_order_by",
+			where:"league_team_seasons_bool_exp"
+		},
+		league_team_seasons_by_pk:{
+			id:"uuid"
+		},
+		league_team_seasons_stream:{
+			cursor:"league_team_seasons_stream_cursor_input",
+			where:"league_team_seasons_bool_exp"
+		},
+		league_teams:{
+			distinct_on:"league_teams_select_column",
+			order_by:"league_teams_order_by",
+			where:"league_teams_bool_exp"
+		},
+		league_teams_aggregate:{
+			distinct_on:"league_teams_select_column",
+			order_by:"league_teams_order_by",
+			where:"league_teams_bool_exp"
+		},
+		league_teams_by_pk:{
+			id:"uuid"
+		},
+		league_teams_stream:{
+			cursor:"league_teams_stream_cursor_input",
+			where:"league_teams_bool_exp"
 		},
 		lobbies:{
 			distinct_on:"lobbies_select_column",
@@ -22713,6 +25510,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"tournament_organizers_stream_cursor_input",
 			where:"tournament_organizers_bool_exp"
 		},
+		tournament_stage_windows:{
+			distinct_on:"tournament_stage_windows_select_column",
+			order_by:"tournament_stage_windows_order_by",
+			where:"tournament_stage_windows_bool_exp"
+		},
+		tournament_stage_windows_aggregate:{
+			distinct_on:"tournament_stage_windows_select_column",
+			order_by:"tournament_stage_windows_order_by",
+			where:"tournament_stage_windows_bool_exp"
+		},
+		tournament_stage_windows_by_pk:{
+			id:"uuid"
+		},
+		tournament_stage_windows_stream:{
+			cursor:"tournament_stage_windows_stream_cursor_input",
+			where:"tournament_stage_windows_bool_exp"
+		},
 		tournament_stages:{
 			distinct_on:"tournament_stages_select_column",
 			order_by:"tournament_stages_order_by",
@@ -22846,6 +25660,34 @@ export const AllTypesProps: Record<string,any> = {
 		v_gpu_pool_status_stream:{
 			cursor:"v_gpu_pool_status_stream_cursor_input",
 			where:"v_gpu_pool_status_bool_exp"
+		},
+		v_league_division_standings:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		v_league_division_standings_aggregate:{
+			distinct_on:"v_league_division_standings_select_column",
+			order_by:"v_league_division_standings_order_by",
+			where:"v_league_division_standings_bool_exp"
+		},
+		v_league_division_standings_stream:{
+			cursor:"v_league_division_standings_stream_cursor_input",
+			where:"v_league_division_standings_bool_exp"
+		},
+		v_league_season_player_stats:{
+			distinct_on:"v_league_season_player_stats_select_column",
+			order_by:"v_league_season_player_stats_order_by",
+			where:"v_league_season_player_stats_bool_exp"
+		},
+		v_league_season_player_stats_aggregate:{
+			distinct_on:"v_league_season_player_stats_select_column",
+			order_by:"v_league_season_player_stats_order_by",
+			where:"v_league_season_player_stats_bool_exp"
+		},
+		v_league_season_player_stats_stream:{
+			cursor:"v_league_season_player_stats_stream_cursor_input",
+			where:"v_league_season_player_stats_bool_exp"
 		},
 		v_match_captains:{
 			distinct_on:"v_match_captains_select_column",
@@ -24608,6 +27450,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_brackets_select_column",
 			order_by:"tournament_brackets_order_by",
 			where:"tournament_brackets_bool_exp"
+		},
+		scheduling_proposals:{
+			distinct_on:"league_scheduling_proposals_select_column",
+			order_by:"league_scheduling_proposals_order_by",
+			where:"league_scheduling_proposals_bool_exp"
+		},
+		scheduling_proposals_aggregate:{
+			distinct_on:"league_scheduling_proposals_select_column",
+			order_by:"league_scheduling_proposals_order_by",
+			where:"league_scheduling_proposals_bool_exp"
 		}
 	},
 	tournament_brackets_aggregate_bool_exp:{
@@ -24682,6 +27534,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"Int_comparison_exp",
 		scheduled_at:"timestamptz_comparison_exp",
 		scheduled_eta:"timestamptz_comparison_exp",
+		scheduling_proposals:"league_scheduling_proposals_bool_exp",
+		scheduling_proposals_aggregate:"league_scheduling_proposals_aggregate_bool_exp",
 		stage:"tournament_stages_bool_exp",
 		team_1:"tournament_teams_bool_exp",
 		team_1_seed:"Int_comparison_exp",
@@ -24709,6 +27563,7 @@ export const AllTypesProps: Record<string,any> = {
 		parent_bracket_id:"uuid",
 		scheduled_at:"timestamptz",
 		scheduled_eta:"timestamptz",
+		scheduling_proposals:"league_scheduling_proposals_arr_rel_insert_input",
 		stage:"tournament_stages_obj_rel_insert_input",
 		team_1:"tournament_teams_obj_rel_insert_input",
 		team_2:"tournament_teams_obj_rel_insert_input",
@@ -24783,6 +27638,7 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		scheduled_at:"order_by",
 		scheduled_eta:"order_by",
+		scheduling_proposals_aggregate:"league_scheduling_proposals_aggregate_order_by",
 		stage:"tournament_stages_order_by",
 		team_1:"tournament_teams_order_by",
 		team_1_seed:"order_by",
@@ -25000,6 +27856,149 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_organizers_variance_order_by:{
 		steam_id:"order_by"
 	},
+	tournament_stage_windows_aggregate_bool_exp:{
+		count:"tournament_stage_windows_aggregate_bool_exp_count"
+	},
+	tournament_stage_windows_aggregate_bool_exp_count:{
+		arguments:"tournament_stage_windows_select_column",
+		filter:"tournament_stage_windows_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	tournament_stage_windows_aggregate_fields:{
+		count:{
+			columns:"tournament_stage_windows_select_column"
+		}
+	},
+	tournament_stage_windows_aggregate_order_by:{
+		avg:"tournament_stage_windows_avg_order_by",
+		count:"order_by",
+		max:"tournament_stage_windows_max_order_by",
+		min:"tournament_stage_windows_min_order_by",
+		stddev:"tournament_stage_windows_stddev_order_by",
+		stddev_pop:"tournament_stage_windows_stddev_pop_order_by",
+		stddev_samp:"tournament_stage_windows_stddev_samp_order_by",
+		sum:"tournament_stage_windows_sum_order_by",
+		var_pop:"tournament_stage_windows_var_pop_order_by",
+		var_samp:"tournament_stage_windows_var_samp_order_by",
+		variance:"tournament_stage_windows_variance_order_by"
+	},
+	tournament_stage_windows_arr_rel_insert_input:{
+		data:"tournament_stage_windows_insert_input",
+		on_conflict:"tournament_stage_windows_on_conflict"
+	},
+	tournament_stage_windows_avg_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_bool_exp:{
+		_and:"tournament_stage_windows_bool_exp",
+		_not:"tournament_stage_windows_bool_exp",
+		_or:"tournament_stage_windows_bool_exp",
+		closes_at:"timestamptz_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		default_match_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		opens_at:"timestamptz_comparison_exp",
+		round:"Int_comparison_exp",
+		stage:"tournament_stages_bool_exp",
+		tournament_stage_id:"uuid_comparison_exp"
+	},
+	tournament_stage_windows_constraint: "enum" as const,
+	tournament_stage_windows_inc_input:{
+
+	},
+	tournament_stage_windows_insert_input:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		opens_at:"timestamptz",
+		stage:"tournament_stages_obj_rel_insert_input",
+		tournament_stage_id:"uuid"
+	},
+	tournament_stage_windows_max_order_by:{
+		closes_at:"order_by",
+		created_at:"order_by",
+		default_match_at:"order_by",
+		id:"order_by",
+		opens_at:"order_by",
+		round:"order_by",
+		tournament_stage_id:"order_by"
+	},
+	tournament_stage_windows_min_order_by:{
+		closes_at:"order_by",
+		created_at:"order_by",
+		default_match_at:"order_by",
+		id:"order_by",
+		opens_at:"order_by",
+		round:"order_by",
+		tournament_stage_id:"order_by"
+	},
+	tournament_stage_windows_on_conflict:{
+		constraint:"tournament_stage_windows_constraint",
+		update_columns:"tournament_stage_windows_update_column",
+		where:"tournament_stage_windows_bool_exp"
+	},
+	tournament_stage_windows_order_by:{
+		closes_at:"order_by",
+		created_at:"order_by",
+		default_match_at:"order_by",
+		id:"order_by",
+		opens_at:"order_by",
+		round:"order_by",
+		stage:"tournament_stages_order_by",
+		tournament_stage_id:"order_by"
+	},
+	tournament_stage_windows_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_stage_windows_select_column: "enum" as const,
+	tournament_stage_windows_set_input:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		opens_at:"timestamptz",
+		tournament_stage_id:"uuid"
+	},
+	tournament_stage_windows_stddev_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_stddev_pop_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_stddev_samp_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_stream_cursor_input:{
+		initial_value:"tournament_stage_windows_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_stage_windows_stream_cursor_value_input:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		opens_at:"timestamptz",
+		tournament_stage_id:"uuid"
+	},
+	tournament_stage_windows_sum_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_update_column: "enum" as const,
+	tournament_stage_windows_updates:{
+		_inc:"tournament_stage_windows_inc_input",
+		_set:"tournament_stage_windows_set_input",
+		where:"tournament_stage_windows_bool_exp"
+	},
+	tournament_stage_windows_var_pop_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_var_samp_order_by:{
+		round:"order_by"
+	},
+	tournament_stage_windows_variance_order_by:{
+		round:"order_by"
+	},
 	tournament_stages:{
 		brackets:{
 			distinct_on:"tournament_brackets_select_column",
@@ -25023,6 +28022,16 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		settings:{
 
+		},
+		windows:{
+			distinct_on:"tournament_stage_windows_select_column",
+			order_by:"tournament_stage_windows_order_by",
+			where:"tournament_stage_windows_bool_exp"
+		},
+		windows_aggregate:{
+			distinct_on:"tournament_stage_windows_select_column",
+			order_by:"tournament_stage_windows_order_by",
+			where:"tournament_stage_windows_bool_exp"
 		}
 	},
 	tournament_stages_aggregate_bool_exp:{
@@ -25074,6 +28083,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25090,6 +28100,7 @@ export const AllTypesProps: Record<string,any> = {
 		groups:"Int_comparison_exp",
 		id:"uuid_comparison_exp",
 		match_options_id:"uuid_comparison_exp",
+		max_rounds:"Int_comparison_exp",
 		max_teams:"Int_comparison_exp",
 		min_teams:"Int_comparison_exp",
 		options:"match_options_bool_exp",
@@ -25097,10 +28108,13 @@ export const AllTypesProps: Record<string,any> = {
 		results:"v_team_stage_results_bool_exp",
 		results_aggregate:"v_team_stage_results_aggregate_bool_exp",
 		settings:"jsonb_comparison_exp",
+		swiss_no_elimination:"Boolean_comparison_exp",
 		third_place_match:"Boolean_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp",
-		type:"e_tournament_stage_types_enum_comparison_exp"
+		type:"e_tournament_stage_types_enum_comparison_exp",
+		windows:"tournament_stage_windows_bool_exp",
+		windows_aggregate:"tournament_stage_windows_aggregate_bool_exp"
 	},
 	tournament_stages_constraint: "enum" as const,
 	tournament_stages_delete_at_path_input:{
@@ -25125,7 +28139,8 @@ export const AllTypesProps: Record<string,any> = {
 		settings:"jsonb",
 		tournament:"tournaments_obj_rel_insert_input",
 		tournament_id:"uuid",
-		type:"e_tournament_stage_types_enum"
+		type:"e_tournament_stage_types_enum",
+		windows:"tournament_stage_windows_arr_rel_insert_input"
 	},
 	tournament_stages_max_order_by:{
 		decider_best_of:"order_by",
@@ -25133,6 +28148,7 @@ export const AllTypesProps: Record<string,any> = {
 		groups:"order_by",
 		id:"order_by",
 		match_options_id:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
@@ -25144,6 +28160,7 @@ export const AllTypesProps: Record<string,any> = {
 		groups:"order_by",
 		id:"order_by",
 		match_options_id:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
@@ -25166,16 +28183,19 @@ export const AllTypesProps: Record<string,any> = {
 		groups:"order_by",
 		id:"order_by",
 		match_options_id:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		options:"match_options_order_by",
 		order:"order_by",
 		results_aggregate:"v_team_stage_results_aggregate_order_by",
 		settings:"order_by",
+		swiss_no_elimination:"order_by",
 		third_place_match:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by",
-		type:"order_by"
+		type:"order_by",
+		windows_aggregate:"tournament_stage_windows_aggregate_order_by"
 	},
 	tournament_stages_pk_columns_input:{
 		id:"uuid"
@@ -25197,6 +28217,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25205,6 +28226,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25213,6 +28235,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25232,6 +28255,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25251,6 +28275,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25259,6 +28284,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -25267,6 +28293,7 @@ export const AllTypesProps: Record<string,any> = {
 		decider_best_of:"order_by",
 		default_best_of:"order_by",
 		groups:"order_by",
+		max_rounds:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
@@ -26273,8 +29300,10 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_status:"e_tournament_status_bool_exp",
 		has_min_teams:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
+		is_league:"Boolean_comparison_exp",
 		is_organizer:"Boolean_comparison_exp",
 		joined_tournament:"Boolean_comparison_exp",
+		league_season_division:"league_season_divisions_bool_exp",
 		match_options_id:"uuid_comparison_exp",
 		max_players_per_lineup:"Int_comparison_exp",
 		min_players_per_lineup:"Int_comparison_exp",
@@ -26289,6 +29318,7 @@ export const AllTypesProps: Record<string,any> = {
 		results_aggregate:"v_team_tournament_results_aggregate_bool_exp",
 		rosters:"tournament_team_roster_bool_exp",
 		rosters_aggregate:"tournament_team_roster_aggregate_bool_exp",
+		scheduling_mode:"String_comparison_exp",
 		stages:"tournament_stages_bool_exp",
 		stages_aggregate:"tournament_stages_aggregate_bool_exp",
 		start:"timestamptz_comparison_exp",
@@ -26310,6 +29340,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		e_tournament_status:"e_tournament_status_obj_rel_insert_input",
 		id:"uuid",
+		league_season_division:"league_season_divisions_obj_rel_insert_input",
 		match_options_id:"uuid",
 		options:"match_options_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
@@ -26334,6 +29365,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
+		scheduling_mode:"order_by",
 		start:"order_by"
 	},
 	tournaments_min_order_by:{
@@ -26346,6 +29378,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
+		scheduling_mode:"order_by",
 		start:"order_by"
 	},
 	tournaments_obj_rel_insert_input:{
@@ -26390,8 +29423,10 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_status:"e_tournament_status_order_by",
 		has_min_teams:"order_by",
 		id:"order_by",
+		is_league:"order_by",
 		is_organizer:"order_by",
 		joined_tournament:"order_by",
+		league_season_division:"league_season_divisions_order_by",
 		match_options_id:"order_by",
 		max_players_per_lineup:"order_by",
 		min_players_per_lineup:"order_by",
@@ -26402,6 +29437,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_order_by",
 		results_aggregate:"v_team_tournament_results_aggregate_order_by",
 		rosters_aggregate:"tournament_team_roster_aggregate_order_by",
+		scheduling_mode:"order_by",
 		stages_aggregate:"tournament_stages_aggregate_order_by",
 		start:"order_by",
 		status:"order_by",
@@ -26533,6 +29569,527 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	v_gpu_pool_status_stream_cursor_value_input:{
 
+	},
+	v_league_division_standings_aggregate_bool_exp:{
+		count:"v_league_division_standings_aggregate_bool_exp_count"
+	},
+	v_league_division_standings_aggregate_bool_exp_count:{
+		arguments:"v_league_division_standings_select_column",
+		filter:"v_league_division_standings_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	v_league_division_standings_aggregate_fields:{
+		count:{
+			columns:"v_league_division_standings_select_column"
+		}
+	},
+	v_league_division_standings_aggregate_order_by:{
+		avg:"v_league_division_standings_avg_order_by",
+		count:"order_by",
+		max:"v_league_division_standings_max_order_by",
+		min:"v_league_division_standings_min_order_by",
+		stddev:"v_league_division_standings_stddev_order_by",
+		stddev_pop:"v_league_division_standings_stddev_pop_order_by",
+		stddev_samp:"v_league_division_standings_stddev_samp_order_by",
+		sum:"v_league_division_standings_sum_order_by",
+		var_pop:"v_league_division_standings_var_pop_order_by",
+		var_samp:"v_league_division_standings_var_samp_order_by",
+		variance:"v_league_division_standings_variance_order_by"
+	},
+	v_league_division_standings_arr_rel_insert_input:{
+		data:"v_league_division_standings_insert_input"
+	},
+	v_league_division_standings_avg_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_bool_exp:{
+		_and:"v_league_division_standings_bool_exp",
+		_not:"v_league_division_standings_bool_exp",
+		_or:"v_league_division_standings_bool_exp",
+		head_to_head_match_wins:"Int_comparison_exp",
+		head_to_head_rounds_won:"Int_comparison_exp",
+		league_division_id:"uuid_comparison_exp",
+		league_season_division_id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		league_team:"league_teams_bool_exp",
+		league_team_id:"uuid_comparison_exp",
+		league_team_season_id:"uuid_comparison_exp",
+		losses:"Int_comparison_exp",
+		maps_lost:"Int_comparison_exp",
+		maps_won:"Int_comparison_exp",
+		matches_played:"Int_comparison_exp",
+		matches_remaining:"Int_comparison_exp",
+		rank:"Int_comparison_exp",
+		round_diff:"Int_comparison_exp",
+		rounds_lost:"Int_comparison_exp",
+		rounds_won:"Int_comparison_exp",
+		season_division:"league_season_divisions_bool_exp",
+		team_season:"league_team_seasons_bool_exp",
+		tournament_team_id:"uuid_comparison_exp",
+		wins:"Int_comparison_exp"
+	},
+	v_league_division_standings_insert_input:{
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams_obj_rel_insert_input",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		season_division:"league_season_divisions_obj_rel_insert_input",
+		team_season:"league_team_seasons_obj_rel_insert_input",
+		tournament_team_id:"uuid"
+	},
+	v_league_division_standings_max_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		league_division_id:"order_by",
+		league_season_division_id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by",
+		league_team_season_id:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_min_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		league_division_id:"order_by",
+		league_season_division_id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by",
+		league_team_season_id:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		league_division_id:"order_by",
+		league_season_division_id:"order_by",
+		league_season_id:"order_by",
+		league_team:"league_teams_order_by",
+		league_team_id:"order_by",
+		league_team_season_id:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		season_division:"league_season_divisions_order_by",
+		team_season:"league_team_seasons_order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_select_column: "enum" as const,
+	v_league_division_standings_stddev_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_stddev_pop_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_stddev_samp_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_stream_cursor_input:{
+		initial_value:"v_league_division_standings_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_league_division_standings_stream_cursor_value_input:{
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	v_league_division_standings_sum_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_var_pop_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_var_samp_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_division_standings_variance_order_by:{
+		head_to_head_match_wins:"order_by",
+		head_to_head_rounds_won:"order_by",
+		losses:"order_by",
+		maps_lost:"order_by",
+		maps_won:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rank:"order_by",
+		round_diff:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_league_season_player_stats_aggregate_bool_exp:{
+		avg:"v_league_season_player_stats_aggregate_bool_exp_avg",
+		corr:"v_league_season_player_stats_aggregate_bool_exp_corr",
+		count:"v_league_season_player_stats_aggregate_bool_exp_count",
+		covar_samp:"v_league_season_player_stats_aggregate_bool_exp_covar_samp",
+		max:"v_league_season_player_stats_aggregate_bool_exp_max",
+		min:"v_league_season_player_stats_aggregate_bool_exp_min",
+		stddev_samp:"v_league_season_player_stats_aggregate_bool_exp_stddev_samp",
+		sum:"v_league_season_player_stats_aggregate_bool_exp_sum",
+		var_samp:"v_league_season_player_stats_aggregate_bool_exp_var_samp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_avg:{
+		arguments:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_avg_arguments_columns",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_corr:{
+		arguments:"v_league_season_player_stats_aggregate_bool_exp_corr_arguments",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_corr_arguments:{
+		X:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_corr_arguments_columns",
+		Y:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_corr_arguments_columns"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_count:{
+		arguments:"v_league_season_player_stats_select_column",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_covar_samp:{
+		arguments:"v_league_season_player_stats_aggregate_bool_exp_covar_samp_arguments",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_covar_samp_arguments:{
+		X:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_covar_samp_arguments_columns",
+		Y:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_covar_samp_arguments_columns"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_max:{
+		arguments:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_max_arguments_columns",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_min:{
+		arguments:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_min_arguments_columns",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_stddev_samp:{
+		arguments:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_stddev_samp_arguments_columns",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_sum:{
+		arguments:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_sum_arguments_columns",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_bool_exp_var_samp:{
+		arguments:"v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_var_samp_arguments_columns",
+		filter:"v_league_season_player_stats_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	v_league_season_player_stats_aggregate_fields:{
+		count:{
+			columns:"v_league_season_player_stats_select_column"
+		}
+	},
+	v_league_season_player_stats_aggregate_order_by:{
+		avg:"v_league_season_player_stats_avg_order_by",
+		count:"order_by",
+		max:"v_league_season_player_stats_max_order_by",
+		min:"v_league_season_player_stats_min_order_by",
+		stddev:"v_league_season_player_stats_stddev_order_by",
+		stddev_pop:"v_league_season_player_stats_stddev_pop_order_by",
+		stddev_samp:"v_league_season_player_stats_stddev_samp_order_by",
+		sum:"v_league_season_player_stats_sum_order_by",
+		var_pop:"v_league_season_player_stats_var_pop_order_by",
+		var_samp:"v_league_season_player_stats_var_samp_order_by",
+		variance:"v_league_season_player_stats_variance_order_by"
+	},
+	v_league_season_player_stats_arr_rel_insert_input:{
+		data:"v_league_season_player_stats_insert_input"
+	},
+	v_league_season_player_stats_avg_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_bool_exp:{
+		_and:"v_league_season_player_stats_bool_exp",
+		_not:"v_league_season_player_stats_bool_exp",
+		_or:"v_league_season_player_stats_bool_exp",
+		assists:"Int_comparison_exp",
+		deaths:"Int_comparison_exp",
+		headshot_percentage:"float8_comparison_exp",
+		headshots:"Int_comparison_exp",
+		kdr:"float8_comparison_exp",
+		kills:"Int_comparison_exp",
+		league_division_id:"uuid_comparison_exp",
+		league_season_division_id:"uuid_comparison_exp",
+		league_season_id:"uuid_comparison_exp",
+		league_team:"league_teams_bool_exp",
+		league_team_id:"uuid_comparison_exp",
+		league_team_season_id:"uuid_comparison_exp",
+		matches_played:"Int_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp"
+	},
+	v_league_season_player_stats_insert_input:{
+		headshot_percentage:"float8",
+		kdr:"float8",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams_obj_rel_insert_input",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint"
+	},
+	v_league_season_player_stats_max_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		league_division_id:"order_by",
+		league_season_division_id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by",
+		league_team_season_id:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_min_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		league_division_id:"order_by",
+		league_season_division_id:"order_by",
+		league_season_id:"order_by",
+		league_team_id:"order_by",
+		league_team_season_id:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		league_division_id:"order_by",
+		league_season_division_id:"order_by",
+		league_season_id:"order_by",
+		league_team:"league_teams_order_by",
+		league_team_id:"order_by",
+		league_team_season_id:"order_by",
+		matches_played:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_select_column: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_avg_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_corr_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_covar_samp_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_max_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_min_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_stddev_samp_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
+	v_league_season_player_stats_select_column_v_league_season_player_stats_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
+	v_league_season_player_stats_stddev_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_stddev_pop_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_stddev_samp_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_stream_cursor_input:{
+		initial_value:"v_league_season_player_stats_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_league_season_player_stats_stream_cursor_value_input:{
+		headshot_percentage:"float8",
+		kdr:"float8",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		player_steam_id:"bigint"
+	},
+	v_league_season_player_stats_sum_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_var_pop_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_var_samp_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
+	},
+	v_league_season_player_stats_variance_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kdr:"order_by",
+		kills:"order_by",
+		matches_played:"order_by",
+		player_steam_id:"order_by"
 	},
 	v_match_captains_aggregate_fields:{
 		count:{
@@ -30063,6 +33620,7 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"_map_pool"
 	},
+	_uuid: `scalar._uuid` as const,
 	abandoned_matches:{
 		abandoned_at:"timestamptz",
 		id:"uuid",
@@ -30946,6 +34504,106 @@ export const ReturnTypes: Record<string,any> = {
 	e_game_server_node_statuses_mutation_response:{
 		affected_rows:"Int",
 		returning:"e_game_server_node_statuses"
+	},
+	e_league_movement_types:{
+		description:"String",
+		value:"String"
+	},
+	e_league_movement_types_aggregate:{
+		aggregate:"e_league_movement_types_aggregate_fields",
+		nodes:"e_league_movement_types"
+	},
+	e_league_movement_types_aggregate_fields:{
+		count:"Int",
+		max:"e_league_movement_types_max_fields",
+		min:"e_league_movement_types_min_fields"
+	},
+	e_league_movement_types_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_movement_types_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_movement_types_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_league_movement_types"
+	},
+	e_league_proposal_statuses:{
+		description:"String",
+		value:"String"
+	},
+	e_league_proposal_statuses_aggregate:{
+		aggregate:"e_league_proposal_statuses_aggregate_fields",
+		nodes:"e_league_proposal_statuses"
+	},
+	e_league_proposal_statuses_aggregate_fields:{
+		count:"Int",
+		max:"e_league_proposal_statuses_max_fields",
+		min:"e_league_proposal_statuses_min_fields"
+	},
+	e_league_proposal_statuses_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_proposal_statuses_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_proposal_statuses_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_league_proposal_statuses"
+	},
+	e_league_registration_statuses:{
+		description:"String",
+		value:"String"
+	},
+	e_league_registration_statuses_aggregate:{
+		aggregate:"e_league_registration_statuses_aggregate_fields",
+		nodes:"e_league_registration_statuses"
+	},
+	e_league_registration_statuses_aggregate_fields:{
+		count:"Int",
+		max:"e_league_registration_statuses_max_fields",
+		min:"e_league_registration_statuses_min_fields"
+	},
+	e_league_registration_statuses_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_registration_statuses_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_registration_statuses_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_league_registration_statuses"
+	},
+	e_league_season_statuses:{
+		description:"String",
+		value:"String"
+	},
+	e_league_season_statuses_aggregate:{
+		aggregate:"e_league_season_statuses_aggregate_fields",
+		nodes:"e_league_season_statuses"
+	},
+	e_league_season_statuses_aggregate_fields:{
+		count:"Int",
+		max:"e_league_season_statuses_max_fields",
+		min:"e_league_season_statuses_min_fields"
+	},
+	e_league_season_statuses_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_season_statuses_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_league_season_statuses_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_league_season_statuses"
 	},
 	e_lobby_access:{
 		description:"String",
@@ -32154,6 +35812,921 @@ export const ReturnTypes: Record<string,any> = {
 		secondary_value:"Float",
 		tertiary_value:"Float",
 		value:"Float"
+	},
+	league_divisions:{
+		active:"Boolean",
+		created_at:"timestamptz",
+		id:"uuid",
+		name:"String",
+		season_divisions:"league_season_divisions",
+		season_divisions_aggregate:"league_season_divisions_aggregate",
+		tier:"smallint"
+	},
+	league_divisions_aggregate:{
+		aggregate:"league_divisions_aggregate_fields",
+		nodes:"league_divisions"
+	},
+	league_divisions_aggregate_fields:{
+		avg:"league_divisions_avg_fields",
+		count:"Int",
+		max:"league_divisions_max_fields",
+		min:"league_divisions_min_fields",
+		stddev:"league_divisions_stddev_fields",
+		stddev_pop:"league_divisions_stddev_pop_fields",
+		stddev_samp:"league_divisions_stddev_samp_fields",
+		sum:"league_divisions_sum_fields",
+		var_pop:"league_divisions_var_pop_fields",
+		var_samp:"league_divisions_var_samp_fields",
+		variance:"league_divisions_variance_fields"
+	},
+	league_divisions_avg_fields:{
+		tier:"Float"
+	},
+	league_divisions_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		name:"String",
+		tier:"smallint"
+	},
+	league_divisions_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		name:"String",
+		tier:"smallint"
+	},
+	league_divisions_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_divisions"
+	},
+	league_divisions_stddev_fields:{
+		tier:"Float"
+	},
+	league_divisions_stddev_pop_fields:{
+		tier:"Float"
+	},
+	league_divisions_stddev_samp_fields:{
+		tier:"Float"
+	},
+	league_divisions_sum_fields:{
+		tier:"smallint"
+	},
+	league_divisions_var_pop_fields:{
+		tier:"Float"
+	},
+	league_divisions_var_samp_fields:{
+		tier:"Float"
+	},
+	league_divisions_variance_fields:{
+		tier:"Float"
+	},
+	league_match_weeks:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		opens_at:"timestamptz",
+		season:"league_seasons",
+		week_number:"Int"
+	},
+	league_match_weeks_aggregate:{
+		aggregate:"league_match_weeks_aggregate_fields",
+		nodes:"league_match_weeks"
+	},
+	league_match_weeks_aggregate_fields:{
+		avg:"league_match_weeks_avg_fields",
+		count:"Int",
+		max:"league_match_weeks_max_fields",
+		min:"league_match_weeks_min_fields",
+		stddev:"league_match_weeks_stddev_fields",
+		stddev_pop:"league_match_weeks_stddev_pop_fields",
+		stddev_samp:"league_match_weeks_stddev_samp_fields",
+		sum:"league_match_weeks_sum_fields",
+		var_pop:"league_match_weeks_var_pop_fields",
+		var_samp:"league_match_weeks_var_samp_fields",
+		variance:"league_match_weeks_variance_fields"
+	},
+	league_match_weeks_avg_fields:{
+		week_number:"Float"
+	},
+	league_match_weeks_max_fields:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		opens_at:"timestamptz",
+		week_number:"Int"
+	},
+	league_match_weeks_min_fields:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		league_season_id:"uuid",
+		opens_at:"timestamptz",
+		week_number:"Int"
+	},
+	league_match_weeks_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_match_weeks"
+	},
+	league_match_weeks_stddev_fields:{
+		week_number:"Float"
+	},
+	league_match_weeks_stddev_pop_fields:{
+		week_number:"Float"
+	},
+	league_match_weeks_stddev_samp_fields:{
+		week_number:"Float"
+	},
+	league_match_weeks_sum_fields:{
+		week_number:"Int"
+	},
+	league_match_weeks_var_pop_fields:{
+		week_number:"Float"
+	},
+	league_match_weeks_var_samp_fields:{
+		week_number:"Float"
+	},
+	league_match_weeks_variance_fields:{
+		week_number:"Float"
+	},
+	league_relegation_playoffs:{
+		created_at:"timestamptz",
+		higher_division:"league_divisions",
+		higher_division_id:"uuid",
+		higher_slots:"Int",
+		id:"uuid",
+		league_season_id:"uuid",
+		lower_division:"league_divisions",
+		lower_division_id:"uuid",
+		resolved_at:"timestamptz",
+		season:"league_seasons",
+		tournament:"tournaments",
+		tournament_id:"uuid"
+	},
+	league_relegation_playoffs_aggregate:{
+		aggregate:"league_relegation_playoffs_aggregate_fields",
+		nodes:"league_relegation_playoffs"
+	},
+	league_relegation_playoffs_aggregate_fields:{
+		avg:"league_relegation_playoffs_avg_fields",
+		count:"Int",
+		max:"league_relegation_playoffs_max_fields",
+		min:"league_relegation_playoffs_min_fields",
+		stddev:"league_relegation_playoffs_stddev_fields",
+		stddev_pop:"league_relegation_playoffs_stddev_pop_fields",
+		stddev_samp:"league_relegation_playoffs_stddev_samp_fields",
+		sum:"league_relegation_playoffs_sum_fields",
+		var_pop:"league_relegation_playoffs_var_pop_fields",
+		var_samp:"league_relegation_playoffs_var_samp_fields",
+		variance:"league_relegation_playoffs_variance_fields"
+	},
+	league_relegation_playoffs_avg_fields:{
+		higher_slots:"Float"
+	},
+	league_relegation_playoffs_max_fields:{
+		created_at:"timestamptz",
+		higher_division_id:"uuid",
+		higher_slots:"Int",
+		id:"uuid",
+		league_season_id:"uuid",
+		lower_division_id:"uuid",
+		resolved_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	league_relegation_playoffs_min_fields:{
+		created_at:"timestamptz",
+		higher_division_id:"uuid",
+		higher_slots:"Int",
+		id:"uuid",
+		league_season_id:"uuid",
+		lower_division_id:"uuid",
+		resolved_at:"timestamptz",
+		tournament_id:"uuid"
+	},
+	league_relegation_playoffs_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_relegation_playoffs"
+	},
+	league_relegation_playoffs_stddev_fields:{
+		higher_slots:"Float"
+	},
+	league_relegation_playoffs_stddev_pop_fields:{
+		higher_slots:"Float"
+	},
+	league_relegation_playoffs_stddev_samp_fields:{
+		higher_slots:"Float"
+	},
+	league_relegation_playoffs_sum_fields:{
+		higher_slots:"Int"
+	},
+	league_relegation_playoffs_var_pop_fields:{
+		higher_slots:"Float"
+	},
+	league_relegation_playoffs_var_samp_fields:{
+		higher_slots:"Float"
+	},
+	league_relegation_playoffs_variance_fields:{
+		higher_slots:"Float"
+	},
+	league_scheduling_proposals:{
+		bracket:"tournament_brackets",
+		created_at:"timestamptz",
+		e_proposal_status:"e_league_proposal_statuses",
+		id:"uuid",
+		message:"String",
+		proposed_by:"players",
+		proposed_by_league_team_season_id:"uuid",
+		proposed_by_steam_id:"bigint",
+		proposed_time:"timestamptz",
+		responded_by:"players",
+		responded_by_steam_id:"bigint",
+		status:"e_league_proposal_statuses_enum",
+		team_season:"league_team_seasons",
+		tournament_bracket_id:"uuid"
+	},
+	league_scheduling_proposals_aggregate:{
+		aggregate:"league_scheduling_proposals_aggregate_fields",
+		nodes:"league_scheduling_proposals"
+	},
+	league_scheduling_proposals_aggregate_fields:{
+		avg:"league_scheduling_proposals_avg_fields",
+		count:"Int",
+		max:"league_scheduling_proposals_max_fields",
+		min:"league_scheduling_proposals_min_fields",
+		stddev:"league_scheduling_proposals_stddev_fields",
+		stddev_pop:"league_scheduling_proposals_stddev_pop_fields",
+		stddev_samp:"league_scheduling_proposals_stddev_samp_fields",
+		sum:"league_scheduling_proposals_sum_fields",
+		var_pop:"league_scheduling_proposals_var_pop_fields",
+		var_samp:"league_scheduling_proposals_var_samp_fields",
+		variance:"league_scheduling_proposals_variance_fields"
+	},
+	league_scheduling_proposals_avg_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_scheduling_proposals_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		message:"String",
+		proposed_by_league_team_season_id:"uuid",
+		proposed_by_steam_id:"bigint",
+		proposed_time:"timestamptz",
+		responded_by_steam_id:"bigint",
+		tournament_bracket_id:"uuid"
+	},
+	league_scheduling_proposals_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		message:"String",
+		proposed_by_league_team_season_id:"uuid",
+		proposed_by_steam_id:"bigint",
+		proposed_time:"timestamptz",
+		responded_by_steam_id:"bigint",
+		tournament_bracket_id:"uuid"
+	},
+	league_scheduling_proposals_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_scheduling_proposals"
+	},
+	league_scheduling_proposals_stddev_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_scheduling_proposals_stddev_pop_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_scheduling_proposals_stddev_samp_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_scheduling_proposals_sum_fields:{
+		proposed_by_steam_id:"bigint",
+		responded_by_steam_id:"bigint"
+	},
+	league_scheduling_proposals_var_pop_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_scheduling_proposals_var_samp_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_scheduling_proposals_variance_fields:{
+		proposed_by_steam_id:"Float",
+		responded_by_steam_id:"Float"
+	},
+	league_season_divisions:{
+		created_at:"timestamptz",
+		division:"league_divisions",
+		id:"uuid",
+		league_division_id:"uuid",
+		league_season_id:"uuid",
+		season:"league_seasons",
+		standings:"v_league_division_standings",
+		standings_aggregate:"v_league_division_standings_aggregate",
+		tournament:"tournaments",
+		tournament_id:"uuid"
+	},
+	league_season_divisions_aggregate:{
+		aggregate:"league_season_divisions_aggregate_fields",
+		nodes:"league_season_divisions"
+	},
+	league_season_divisions_aggregate_fields:{
+		count:"Int",
+		max:"league_season_divisions_max_fields",
+		min:"league_season_divisions_min_fields"
+	},
+	league_season_divisions_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		league_division_id:"uuid",
+		league_season_id:"uuid",
+		tournament_id:"uuid"
+	},
+	league_season_divisions_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		league_division_id:"uuid",
+		league_season_id:"uuid",
+		tournament_id:"uuid"
+	},
+	league_season_divisions_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_season_divisions"
+	},
+	league_seasons:{
+		auto_regular_season_format:"Boolean",
+		can_register:"Boolean",
+		created_at:"timestamptz",
+		created_by_steam_id:"bigint",
+		default_best_of:"Int",
+		direct_promote_count:"Int",
+		direct_relegate_count:"Int",
+		e_league_season_status:"e_league_season_statuses",
+		games_per_week:"Int",
+		id:"uuid",
+		is_league_admin:"Boolean",
+		is_roster_locked:"Boolean",
+		match_options_id:"uuid",
+		match_weeks:"league_match_weeks",
+		match_weeks_aggregate:"league_match_weeks_aggregate",
+		match_weeks_count:"Int",
+		max_roster_size:"Int",
+		min_roster_size:"Int",
+		movements:"league_team_movements",
+		movements_aggregate:"league_team_movements_aggregate",
+		my_registration:"league_team_seasons",
+		name:"String",
+		options:"match_options",
+		player_stats:"v_league_season_player_stats",
+		player_stats_aggregate:"v_league_season_player_stats_aggregate",
+		playoff_best_of:"Int",
+		playoff_round_best_of:"jsonb",
+		playoff_seats:"Int",
+		playoff_stage_type:"e_tournament_stage_types_enum",
+		playoff_third_place_match:"Boolean",
+		promote_count:"Int",
+		regular_season_stage_type:"e_tournament_stage_types_enum",
+		relegate_count:"Int",
+		relegation_down_count:"Int",
+		relegation_playoffs:"league_relegation_playoffs",
+		relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate",
+		relegation_up_count:"Int",
+		roster_lock_at:"timestamptz",
+		season_divisions:"league_season_divisions",
+		season_divisions_aggregate:"league_season_divisions_aggregate",
+		season_number:"Int",
+		signup_closes_at:"timestamptz",
+		signup_opens_at:"timestamptz",
+		standings:"v_league_division_standings",
+		standings_aggregate:"v_league_division_standings_aggregate",
+		starts_at:"timestamptz",
+		status:"e_league_season_statuses_enum",
+		team_seasons:"league_team_seasons",
+		team_seasons_aggregate:"league_team_seasons_aggregate",
+		week_best_of:"jsonb"
+	},
+	league_seasons_aggregate:{
+		aggregate:"league_seasons_aggregate_fields",
+		nodes:"league_seasons"
+	},
+	league_seasons_aggregate_fields:{
+		avg:"league_seasons_avg_fields",
+		count:"Int",
+		max:"league_seasons_max_fields",
+		min:"league_seasons_min_fields",
+		stddev:"league_seasons_stddev_fields",
+		stddev_pop:"league_seasons_stddev_pop_fields",
+		stddev_samp:"league_seasons_stddev_samp_fields",
+		sum:"league_seasons_sum_fields",
+		var_pop:"league_seasons_var_pop_fields",
+		var_samp:"league_seasons_var_samp_fields",
+		variance:"league_seasons_variance_fields"
+	},
+	league_seasons_avg_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_seasons_max_fields:{
+		created_at:"timestamptz",
+		created_by_steam_id:"bigint",
+		default_best_of:"Int",
+		direct_promote_count:"Int",
+		direct_relegate_count:"Int",
+		games_per_week:"Int",
+		id:"uuid",
+		match_options_id:"uuid",
+		match_weeks_count:"Int",
+		max_roster_size:"Int",
+		min_roster_size:"Int",
+		name:"String",
+		playoff_best_of:"Int",
+		playoff_seats:"Int",
+		promote_count:"Int",
+		relegate_count:"Int",
+		relegation_down_count:"Int",
+		relegation_up_count:"Int",
+		roster_lock_at:"timestamptz",
+		season_number:"Int",
+		signup_closes_at:"timestamptz",
+		signup_opens_at:"timestamptz",
+		starts_at:"timestamptz"
+	},
+	league_seasons_min_fields:{
+		created_at:"timestamptz",
+		created_by_steam_id:"bigint",
+		default_best_of:"Int",
+		direct_promote_count:"Int",
+		direct_relegate_count:"Int",
+		games_per_week:"Int",
+		id:"uuid",
+		match_options_id:"uuid",
+		match_weeks_count:"Int",
+		max_roster_size:"Int",
+		min_roster_size:"Int",
+		name:"String",
+		playoff_best_of:"Int",
+		playoff_seats:"Int",
+		promote_count:"Int",
+		relegate_count:"Int",
+		relegation_down_count:"Int",
+		relegation_up_count:"Int",
+		roster_lock_at:"timestamptz",
+		season_number:"Int",
+		signup_closes_at:"timestamptz",
+		signup_opens_at:"timestamptz",
+		starts_at:"timestamptz"
+	},
+	league_seasons_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_seasons"
+	},
+	league_seasons_stddev_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_seasons_stddev_pop_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_seasons_stddev_samp_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_seasons_sum_fields:{
+		created_by_steam_id:"bigint",
+		default_best_of:"Int",
+		direct_promote_count:"Int",
+		direct_relegate_count:"Int",
+		games_per_week:"Int",
+		match_weeks_count:"Int",
+		max_roster_size:"Int",
+		min_roster_size:"Int",
+		playoff_best_of:"Int",
+		playoff_seats:"Int",
+		promote_count:"Int",
+		relegate_count:"Int",
+		relegation_down_count:"Int",
+		relegation_up_count:"Int",
+		season_number:"Int"
+	},
+	league_seasons_var_pop_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_seasons_var_samp_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_seasons_variance_fields:{
+		created_by_steam_id:"Float",
+		default_best_of:"Float",
+		direct_promote_count:"Float",
+		direct_relegate_count:"Float",
+		games_per_week:"Float",
+		match_weeks_count:"Float",
+		max_roster_size:"Float",
+		min_roster_size:"Float",
+		playoff_best_of:"Float",
+		playoff_seats:"Float",
+		promote_count:"Float",
+		relegate_count:"Float",
+		relegation_down_count:"Float",
+		relegation_up_count:"Float",
+		season_number:"Float"
+	},
+	league_team_movements:{
+		approved_at:"timestamptz",
+		approved_by:"players",
+		approved_by_steam_id:"bigint",
+		computed_to_division:"league_divisions",
+		computed_to_division_id:"uuid",
+		created_at:"timestamptz",
+		e_movement_type:"e_league_movement_types",
+		final_rank:"Int",
+		final_to_division:"league_divisions",
+		final_to_division_id:"uuid",
+		from_division:"league_divisions",
+		from_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams",
+		league_team_id:"uuid",
+		season:"league_seasons",
+		type:"e_league_movement_types_enum"
+	},
+	league_team_movements_aggregate:{
+		aggregate:"league_team_movements_aggregate_fields",
+		nodes:"league_team_movements"
+	},
+	league_team_movements_aggregate_fields:{
+		avg:"league_team_movements_avg_fields",
+		count:"Int",
+		max:"league_team_movements_max_fields",
+		min:"league_team_movements_min_fields",
+		stddev:"league_team_movements_stddev_fields",
+		stddev_pop:"league_team_movements_stddev_pop_fields",
+		stddev_samp:"league_team_movements_stddev_samp_fields",
+		sum:"league_team_movements_sum_fields",
+		var_pop:"league_team_movements_var_pop_fields",
+		var_samp:"league_team_movements_var_samp_fields",
+		variance:"league_team_movements_variance_fields"
+	},
+	league_team_movements_avg_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_movements_max_fields:{
+		approved_at:"timestamptz",
+		approved_by_steam_id:"bigint",
+		computed_to_division_id:"uuid",
+		created_at:"timestamptz",
+		final_rank:"Int",
+		final_to_division_id:"uuid",
+		from_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid"
+	},
+	league_team_movements_min_fields:{
+		approved_at:"timestamptz",
+		approved_by_steam_id:"bigint",
+		computed_to_division_id:"uuid",
+		created_at:"timestamptz",
+		final_rank:"Int",
+		final_to_division_id:"uuid",
+		from_division_id:"uuid",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid"
+	},
+	league_team_movements_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_team_movements"
+	},
+	league_team_movements_stddev_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_movements_stddev_pop_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_movements_stddev_samp_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_movements_sum_fields:{
+		approved_by_steam_id:"bigint",
+		final_rank:"Int"
+	},
+	league_team_movements_var_pop_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_movements_var_samp_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_movements_variance_fields:{
+		approved_by_steam_id:"Float",
+		final_rank:"Float"
+	},
+	league_team_rosters:{
+		added_at:"timestamptz",
+		league_team_season_id:"uuid",
+		player:"players",
+		player_steam_id:"bigint",
+		removed_at:"timestamptz",
+		removed_reason:"String",
+		status:"e_team_roster_statuses_enum",
+		team_season:"league_team_seasons"
+	},
+	league_team_rosters_aggregate:{
+		aggregate:"league_team_rosters_aggregate_fields",
+		nodes:"league_team_rosters"
+	},
+	league_team_rosters_aggregate_fields:{
+		avg:"league_team_rosters_avg_fields",
+		count:"Int",
+		max:"league_team_rosters_max_fields",
+		min:"league_team_rosters_min_fields",
+		stddev:"league_team_rosters_stddev_fields",
+		stddev_pop:"league_team_rosters_stddev_pop_fields",
+		stddev_samp:"league_team_rosters_stddev_samp_fields",
+		sum:"league_team_rosters_sum_fields",
+		var_pop:"league_team_rosters_var_pop_fields",
+		var_samp:"league_team_rosters_var_samp_fields",
+		variance:"league_team_rosters_variance_fields"
+	},
+	league_team_rosters_avg_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_rosters_max_fields:{
+		added_at:"timestamptz",
+		league_team_season_id:"uuid",
+		player_steam_id:"bigint",
+		removed_at:"timestamptz",
+		removed_reason:"String"
+	},
+	league_team_rosters_min_fields:{
+		added_at:"timestamptz",
+		league_team_season_id:"uuid",
+		player_steam_id:"bigint",
+		removed_at:"timestamptz",
+		removed_reason:"String"
+	},
+	league_team_rosters_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_team_rosters"
+	},
+	league_team_rosters_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_rosters_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_rosters_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_rosters_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	league_team_rosters_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_rosters_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_rosters_variance_fields:{
+		player_steam_id:"Float"
+	},
+	league_team_seasons:{
+		assigned_division:"league_divisions",
+		assigned_division_id:"uuid",
+		captain:"players",
+		captain_steam_id:"bigint",
+		created_at:"timestamptz",
+		decline_reason:"String",
+		e_registration_status:"e_league_registration_statuses",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams",
+		league_team_id:"uuid",
+		registered_by:"players",
+		registered_by_steam_id:"bigint",
+		requested_division:"league_divisions",
+		requested_division_id:"uuid",
+		roster:"league_team_rosters",
+		roster_aggregate:"league_team_rosters_aggregate",
+		season:"league_seasons",
+		seed:"Int",
+		status:"e_league_registration_statuses_enum",
+		tournament_team:"tournament_teams",
+		tournament_team_id:"uuid"
+	},
+	league_team_seasons_aggregate:{
+		aggregate:"league_team_seasons_aggregate_fields",
+		nodes:"league_team_seasons"
+	},
+	league_team_seasons_aggregate_fields:{
+		avg:"league_team_seasons_avg_fields",
+		count:"Int",
+		max:"league_team_seasons_max_fields",
+		min:"league_team_seasons_min_fields",
+		stddev:"league_team_seasons_stddev_fields",
+		stddev_pop:"league_team_seasons_stddev_pop_fields",
+		stddev_samp:"league_team_seasons_stddev_samp_fields",
+		sum:"league_team_seasons_sum_fields",
+		var_pop:"league_team_seasons_var_pop_fields",
+		var_samp:"league_team_seasons_var_samp_fields",
+		variance:"league_team_seasons_variance_fields"
+	},
+	league_team_seasons_avg_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_team_seasons_max_fields:{
+		assigned_division_id:"uuid",
+		captain_steam_id:"bigint",
+		created_at:"timestamptz",
+		decline_reason:"String",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		registered_by_steam_id:"bigint",
+		requested_division_id:"uuid",
+		seed:"Int",
+		tournament_team_id:"uuid"
+	},
+	league_team_seasons_min_fields:{
+		assigned_division_id:"uuid",
+		captain_steam_id:"bigint",
+		created_at:"timestamptz",
+		decline_reason:"String",
+		id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		registered_by_steam_id:"bigint",
+		requested_division_id:"uuid",
+		seed:"Int",
+		tournament_team_id:"uuid"
+	},
+	league_team_seasons_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_team_seasons"
+	},
+	league_team_seasons_stddev_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_team_seasons_stddev_pop_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_team_seasons_stddev_samp_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_team_seasons_sum_fields:{
+		captain_steam_id:"bigint",
+		registered_by_steam_id:"bigint",
+		seed:"Int"
+	},
+	league_team_seasons_var_pop_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_team_seasons_var_samp_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_team_seasons_variance_fields:{
+		captain_steam_id:"Float",
+		registered_by_steam_id:"Float",
+		seed:"Float"
+	},
+	league_teams:{
+		created_at:"timestamptz",
+		id:"uuid",
+		movements:"league_team_movements",
+		movements_aggregate:"league_team_movements_aggregate",
+		team:"teams",
+		team_id:"uuid",
+		team_seasons:"league_team_seasons",
+		team_seasons_aggregate:"league_team_seasons_aggregate"
+	},
+	league_teams_aggregate:{
+		aggregate:"league_teams_aggregate_fields",
+		nodes:"league_teams"
+	},
+	league_teams_aggregate_fields:{
+		count:"Int",
+		max:"league_teams_max_fields",
+		min:"league_teams_min_fields"
+	},
+	league_teams_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		team_id:"uuid"
+	},
+	league_teams_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		team_id:"uuid"
+	},
+	league_teams_mutation_response:{
+		affected_rows:"Int",
+		returning:"league_teams"
 	},
 	lobbies:{
 		access:"e_lobby_access_enum",
@@ -33810,6 +38383,7 @@ export const ReturnTypes: Record<string,any> = {
 		addDraftPlayer:"SuccessOutput",
 		addSteamPresenceBotAccount:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
+		approve_league_season_movements:"league_team_movements",
 		assignSteamPresenceBot:"SteamPresenceBotAssignment",
 		attachDemo:"WatchDemoOutput",
 		backfillSeasonElo:"RecomputeEloStartedOutput",
@@ -33829,6 +38403,7 @@ export const ReturnTypes: Record<string,any> = {
 		clearClipRenderBatch:"SuccessOutput",
 		clearFinishedClipRenders:"SuccessOutput",
 		clearPendingMatchImport:"PendingMatchImportActionOutput",
+		clone_league_season:"league_seasons",
 		counterScrimRequest:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
 		createClipFromPreset:"CreateClipRenderOutput",
@@ -33877,6 +38452,14 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_game_cfg_types_by_pk:"e_game_cfg_types",
 		delete_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		delete_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
+		delete_e_league_movement_types:"e_league_movement_types_mutation_response",
+		delete_e_league_movement_types_by_pk:"e_league_movement_types",
+		delete_e_league_proposal_statuses:"e_league_proposal_statuses_mutation_response",
+		delete_e_league_proposal_statuses_by_pk:"e_league_proposal_statuses",
+		delete_e_league_registration_statuses:"e_league_registration_statuses_mutation_response",
+		delete_e_league_registration_statuses_by_pk:"e_league_registration_statuses",
+		delete_e_league_season_statuses:"e_league_season_statuses_mutation_response",
+		delete_e_league_season_statuses_by_pk:"e_league_season_statuses",
 		delete_e_lobby_access:"e_lobby_access_mutation_response",
 		delete_e_lobby_access_by_pk:"e_lobby_access",
 		delete_e_lobby_player_status:"e_lobby_player_status_mutation_response",
@@ -33936,6 +38519,26 @@ export const ReturnTypes: Record<string,any> = {
 		delete_gamedata_signature_validations:"gamedata_signature_validations_mutation_response",
 		delete_gamedata_signature_validations_by_pk:"gamedata_signature_validations",
 		delete_leaderboard_entries:"leaderboard_entries_mutation_response",
+		delete_league_divisions:"league_divisions_mutation_response",
+		delete_league_divisions_by_pk:"league_divisions",
+		delete_league_match_weeks:"league_match_weeks_mutation_response",
+		delete_league_match_weeks_by_pk:"league_match_weeks",
+		delete_league_relegation_playoffs:"league_relegation_playoffs_mutation_response",
+		delete_league_relegation_playoffs_by_pk:"league_relegation_playoffs",
+		delete_league_scheduling_proposals:"league_scheduling_proposals_mutation_response",
+		delete_league_scheduling_proposals_by_pk:"league_scheduling_proposals",
+		delete_league_season_divisions:"league_season_divisions_mutation_response",
+		delete_league_season_divisions_by_pk:"league_season_divisions",
+		delete_league_seasons:"league_seasons_mutation_response",
+		delete_league_seasons_by_pk:"league_seasons",
+		delete_league_team_movements:"league_team_movements_mutation_response",
+		delete_league_team_movements_by_pk:"league_team_movements",
+		delete_league_team_rosters:"league_team_rosters_mutation_response",
+		delete_league_team_rosters_by_pk:"league_team_rosters",
+		delete_league_team_seasons:"league_team_seasons_mutation_response",
+		delete_league_team_seasons_by_pk:"league_team_seasons",
+		delete_league_teams:"league_teams_mutation_response",
+		delete_league_teams_by_pk:"league_teams",
 		delete_lobbies:"lobbies_mutation_response",
 		delete_lobbies_by_pk:"lobbies",
 		delete_lobby_players:"lobby_players_mutation_response",
@@ -34060,6 +38663,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_brackets_by_pk:"tournament_brackets",
 		delete_tournament_organizers:"tournament_organizers_mutation_response",
 		delete_tournament_organizers_by_pk:"tournament_organizers",
+		delete_tournament_stage_windows:"tournament_stage_windows_mutation_response",
+		delete_tournament_stage_windows_by_pk:"tournament_stage_windows",
 		delete_tournament_stages:"tournament_stages_mutation_response",
 		delete_tournament_stages_by_pk:"tournament_stages",
 		delete_tournament_team_invites:"tournament_team_invites_mutation_response",
@@ -34118,6 +38723,14 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_game_cfg_types_one:"e_game_cfg_types",
 		insert_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		insert_e_game_server_node_statuses_one:"e_game_server_node_statuses",
+		insert_e_league_movement_types:"e_league_movement_types_mutation_response",
+		insert_e_league_movement_types_one:"e_league_movement_types",
+		insert_e_league_proposal_statuses:"e_league_proposal_statuses_mutation_response",
+		insert_e_league_proposal_statuses_one:"e_league_proposal_statuses",
+		insert_e_league_registration_statuses:"e_league_registration_statuses_mutation_response",
+		insert_e_league_registration_statuses_one:"e_league_registration_statuses",
+		insert_e_league_season_statuses:"e_league_season_statuses_mutation_response",
+		insert_e_league_season_statuses_one:"e_league_season_statuses",
 		insert_e_lobby_access:"e_lobby_access_mutation_response",
 		insert_e_lobby_access_one:"e_lobby_access",
 		insert_e_lobby_player_status:"e_lobby_player_status_mutation_response",
@@ -34178,6 +38791,26 @@ export const ReturnTypes: Record<string,any> = {
 		insert_gamedata_signature_validations_one:"gamedata_signature_validations",
 		insert_leaderboard_entries:"leaderboard_entries_mutation_response",
 		insert_leaderboard_entries_one:"leaderboard_entries",
+		insert_league_divisions:"league_divisions_mutation_response",
+		insert_league_divisions_one:"league_divisions",
+		insert_league_match_weeks:"league_match_weeks_mutation_response",
+		insert_league_match_weeks_one:"league_match_weeks",
+		insert_league_relegation_playoffs:"league_relegation_playoffs_mutation_response",
+		insert_league_relegation_playoffs_one:"league_relegation_playoffs",
+		insert_league_scheduling_proposals:"league_scheduling_proposals_mutation_response",
+		insert_league_scheduling_proposals_one:"league_scheduling_proposals",
+		insert_league_season_divisions:"league_season_divisions_mutation_response",
+		insert_league_season_divisions_one:"league_season_divisions",
+		insert_league_seasons:"league_seasons_mutation_response",
+		insert_league_seasons_one:"league_seasons",
+		insert_league_team_movements:"league_team_movements_mutation_response",
+		insert_league_team_movements_one:"league_team_movements",
+		insert_league_team_rosters:"league_team_rosters_mutation_response",
+		insert_league_team_rosters_one:"league_team_rosters",
+		insert_league_team_seasons:"league_team_seasons_mutation_response",
+		insert_league_team_seasons_one:"league_team_seasons",
+		insert_league_teams:"league_teams_mutation_response",
+		insert_league_teams_one:"league_teams",
 		insert_lobbies:"lobbies_mutation_response",
 		insert_lobbies_one:"lobbies",
 		insert_lobby_players:"lobby_players_mutation_response",
@@ -34304,6 +38937,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournament_brackets_one:"tournament_brackets",
 		insert_tournament_organizers:"tournament_organizers_mutation_response",
 		insert_tournament_organizers_one:"tournament_organizers",
+		insert_tournament_stage_windows:"tournament_stage_windows_mutation_response",
+		insert_tournament_stage_windows_one:"tournament_stage_windows",
 		insert_tournament_stages:"tournament_stages_mutation_response",
 		insert_tournament_stages_one:"tournament_stages",
 		insert_tournament_team_invites:"tournament_team_invites_mutation_response",
@@ -34331,6 +38966,7 @@ export const ReturnTypes: Record<string,any> = {
 		joinDraftGame:"SuccessOutput",
 		joinDraftGameAsParty:"SuccessOutput",
 		kickServerPlayer:"KickResult",
+		league_award_forfeit:"matches",
 		leaveLineup:"SuccessOutput",
 		linkSteamMatchHistory:"SteamMatchHistoryLinkOutput",
 		loadFixtures:"SuccessOutput",
@@ -34354,7 +38990,9 @@ export const ReturnTypes: Record<string,any> = {
 		registerName:"SuccessOutput",
 		removeFixtures:"SuccessOutput",
 		removeSteamPresenceBotAccount:"SuccessOutput",
+		remove_league_team_from_season:"league_team_seasons",
 		renameServerItem:"SuccessOutput",
+		reorder_league_divisions:"league_divisions",
 		reparseAllDemos:"ReparseAllStartedOutput",
 		reparseAllDemosStatus:"ReparseAllStatusOutput",
 		reparseDemo:"SuccessOutput",
@@ -34364,6 +39002,7 @@ export const ReturnTypes: Record<string,any> = {
 		respondDraftInvite:"SuccessOutput",
 		respondToScrimRequest:"SuccessOutput",
 		restartService:"SuccessOutput",
+		restart_league_season:"league_seasons",
 		resumeClipRenderBatch:"SuccessOutput",
 		retryClipRenderBatch:"SuccessOutput",
 		retryPendingMatchImport:"PendingMatchImportActionOutput",
@@ -34459,6 +39098,18 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		update_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		update_e_game_server_node_statuses_many:"e_game_server_node_statuses_mutation_response",
+		update_e_league_movement_types:"e_league_movement_types_mutation_response",
+		update_e_league_movement_types_by_pk:"e_league_movement_types",
+		update_e_league_movement_types_many:"e_league_movement_types_mutation_response",
+		update_e_league_proposal_statuses:"e_league_proposal_statuses_mutation_response",
+		update_e_league_proposal_statuses_by_pk:"e_league_proposal_statuses",
+		update_e_league_proposal_statuses_many:"e_league_proposal_statuses_mutation_response",
+		update_e_league_registration_statuses:"e_league_registration_statuses_mutation_response",
+		update_e_league_registration_statuses_by_pk:"e_league_registration_statuses",
+		update_e_league_registration_statuses_many:"e_league_registration_statuses_mutation_response",
+		update_e_league_season_statuses:"e_league_season_statuses_mutation_response",
+		update_e_league_season_statuses_by_pk:"e_league_season_statuses",
+		update_e_league_season_statuses_many:"e_league_season_statuses_mutation_response",
 		update_e_lobby_access:"e_lobby_access_mutation_response",
 		update_e_lobby_access_by_pk:"e_lobby_access",
 		update_e_lobby_access_many:"e_lobby_access_mutation_response",
@@ -34548,6 +39199,36 @@ export const ReturnTypes: Record<string,any> = {
 		update_gamedata_signature_validations_many:"gamedata_signature_validations_mutation_response",
 		update_leaderboard_entries:"leaderboard_entries_mutation_response",
 		update_leaderboard_entries_many:"leaderboard_entries_mutation_response",
+		update_league_divisions:"league_divisions_mutation_response",
+		update_league_divisions_by_pk:"league_divisions",
+		update_league_divisions_many:"league_divisions_mutation_response",
+		update_league_match_weeks:"league_match_weeks_mutation_response",
+		update_league_match_weeks_by_pk:"league_match_weeks",
+		update_league_match_weeks_many:"league_match_weeks_mutation_response",
+		update_league_relegation_playoffs:"league_relegation_playoffs_mutation_response",
+		update_league_relegation_playoffs_by_pk:"league_relegation_playoffs",
+		update_league_relegation_playoffs_many:"league_relegation_playoffs_mutation_response",
+		update_league_scheduling_proposals:"league_scheduling_proposals_mutation_response",
+		update_league_scheduling_proposals_by_pk:"league_scheduling_proposals",
+		update_league_scheduling_proposals_many:"league_scheduling_proposals_mutation_response",
+		update_league_season_divisions:"league_season_divisions_mutation_response",
+		update_league_season_divisions_by_pk:"league_season_divisions",
+		update_league_season_divisions_many:"league_season_divisions_mutation_response",
+		update_league_seasons:"league_seasons_mutation_response",
+		update_league_seasons_by_pk:"league_seasons",
+		update_league_seasons_many:"league_seasons_mutation_response",
+		update_league_team_movements:"league_team_movements_mutation_response",
+		update_league_team_movements_by_pk:"league_team_movements",
+		update_league_team_movements_many:"league_team_movements_mutation_response",
+		update_league_team_rosters:"league_team_rosters_mutation_response",
+		update_league_team_rosters_by_pk:"league_team_rosters",
+		update_league_team_rosters_many:"league_team_rosters_mutation_response",
+		update_league_team_seasons:"league_team_seasons_mutation_response",
+		update_league_team_seasons_by_pk:"league_team_seasons",
+		update_league_team_seasons_many:"league_team_seasons_mutation_response",
+		update_league_teams:"league_teams_mutation_response",
+		update_league_teams_by_pk:"league_teams",
+		update_league_teams_many:"league_teams_mutation_response",
 		update_lobbies:"lobbies_mutation_response",
 		update_lobbies_by_pk:"lobbies",
 		update_lobbies_many:"lobbies_mutation_response",
@@ -34735,6 +39416,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_organizers:"tournament_organizers_mutation_response",
 		update_tournament_organizers_by_pk:"tournament_organizers",
 		update_tournament_organizers_many:"tournament_organizers_mutation_response",
+		update_tournament_stage_windows:"tournament_stage_windows_mutation_response",
+		update_tournament_stage_windows_by_pk:"tournament_stage_windows",
+		update_tournament_stage_windows_many:"tournament_stage_windows_mutation_response",
 		update_tournament_stages:"tournament_stages_mutation_response",
 		update_tournament_stages_by_pk:"tournament_stages",
 		update_tournament_stages_many:"tournament_stages_mutation_response",
@@ -40458,6 +45142,18 @@ export const ReturnTypes: Record<string,any> = {
 		e_game_server_node_statuses:"e_game_server_node_statuses",
 		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
 		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
+		e_league_movement_types:"e_league_movement_types",
+		e_league_movement_types_aggregate:"e_league_movement_types_aggregate",
+		e_league_movement_types_by_pk:"e_league_movement_types",
+		e_league_proposal_statuses:"e_league_proposal_statuses",
+		e_league_proposal_statuses_aggregate:"e_league_proposal_statuses_aggregate",
+		e_league_proposal_statuses_by_pk:"e_league_proposal_statuses",
+		e_league_registration_statuses:"e_league_registration_statuses",
+		e_league_registration_statuses_aggregate:"e_league_registration_statuses_aggregate",
+		e_league_registration_statuses_by_pk:"e_league_registration_statuses",
+		e_league_season_statuses:"e_league_season_statuses",
+		e_league_season_statuses_aggregate:"e_league_season_statuses_aggregate",
+		e_league_season_statuses_by_pk:"e_league_season_statuses",
 		e_lobby_access:"e_lobby_access",
 		e_lobby_access_aggregate:"e_lobby_access_aggregate",
 		e_lobby_access_by_pk:"e_lobby_access",
@@ -40566,10 +45262,42 @@ export const ReturnTypes: Record<string,any> = {
 		getTimescaleStats:"TimescaleStats",
 		get_leaderboard:"leaderboard_entries",
 		get_leaderboard_aggregate:"leaderboard_entries_aggregate",
+		get_league_season_leaderboard:"leaderboard_entries",
+		get_league_season_leaderboard_aggregate:"leaderboard_entries_aggregate",
 		get_player_leaderboard_rank:"player_leaderboard_rank",
 		get_player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
 		leaderboard_entries:"leaderboard_entries",
 		leaderboard_entries_aggregate:"leaderboard_entries_aggregate",
+		league_divisions:"league_divisions",
+		league_divisions_aggregate:"league_divisions_aggregate",
+		league_divisions_by_pk:"league_divisions",
+		league_match_weeks:"league_match_weeks",
+		league_match_weeks_aggregate:"league_match_weeks_aggregate",
+		league_match_weeks_by_pk:"league_match_weeks",
+		league_relegation_playoffs:"league_relegation_playoffs",
+		league_relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate",
+		league_relegation_playoffs_by_pk:"league_relegation_playoffs",
+		league_scheduling_proposals:"league_scheduling_proposals",
+		league_scheduling_proposals_aggregate:"league_scheduling_proposals_aggregate",
+		league_scheduling_proposals_by_pk:"league_scheduling_proposals",
+		league_season_divisions:"league_season_divisions",
+		league_season_divisions_aggregate:"league_season_divisions_aggregate",
+		league_season_divisions_by_pk:"league_season_divisions",
+		league_seasons:"league_seasons",
+		league_seasons_aggregate:"league_seasons_aggregate",
+		league_seasons_by_pk:"league_seasons",
+		league_team_movements:"league_team_movements",
+		league_team_movements_aggregate:"league_team_movements_aggregate",
+		league_team_movements_by_pk:"league_team_movements",
+		league_team_rosters:"league_team_rosters",
+		league_team_rosters_aggregate:"league_team_rosters_aggregate",
+		league_team_rosters_by_pk:"league_team_rosters",
+		league_team_seasons:"league_team_seasons",
+		league_team_seasons_aggregate:"league_team_seasons_aggregate",
+		league_team_seasons_by_pk:"league_team_seasons",
+		league_teams:"league_teams",
+		league_teams_aggregate:"league_teams_aggregate",
+		league_teams_by_pk:"league_teams",
 		listServerFiles:"FileListResponse",
 		lobbies:"lobbies",
 		lobbies_aggregate:"lobbies_aggregate",
@@ -40775,6 +45503,9 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_organizers:"tournament_organizers",
 		tournament_organizers_aggregate:"tournament_organizers_aggregate",
 		tournament_organizers_by_pk:"tournament_organizers",
+		tournament_stage_windows:"tournament_stage_windows",
+		tournament_stage_windows_aggregate:"tournament_stage_windows_aggregate",
+		tournament_stage_windows_by_pk:"tournament_stage_windows",
 		tournament_stages:"tournament_stages",
 		tournament_stages_aggregate:"tournament_stages_aggregate",
 		tournament_stages_by_pk:"tournament_stages",
@@ -40798,6 +45529,10 @@ export const ReturnTypes: Record<string,any> = {
 		tournaments_by_pk:"tournaments",
 		v_gpu_pool_status:"v_gpu_pool_status",
 		v_gpu_pool_status_aggregate:"v_gpu_pool_status_aggregate",
+		v_league_division_standings:"v_league_division_standings",
+		v_league_division_standings_aggregate:"v_league_division_standings_aggregate",
+		v_league_season_player_stats:"v_league_season_player_stats",
+		v_league_season_player_stats_aggregate:"v_league_season_player_stats_aggregate",
 		v_match_captains:"v_match_captains",
 		v_match_captains_aggregate:"v_match_captains_aggregate",
 		v_match_clutches:"v_match_clutches",
@@ -41170,6 +45905,7 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"settings"
 	},
+	smallint: `scalar.smallint` as const,
 	steam_account_claims:{
 		created_at:"timestamptz",
 		id:"uuid",
@@ -41378,6 +46114,22 @@ export const ReturnTypes: Record<string,any> = {
 		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
 		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		e_game_server_node_statuses_stream:"e_game_server_node_statuses",
+		e_league_movement_types:"e_league_movement_types",
+		e_league_movement_types_aggregate:"e_league_movement_types_aggregate",
+		e_league_movement_types_by_pk:"e_league_movement_types",
+		e_league_movement_types_stream:"e_league_movement_types",
+		e_league_proposal_statuses:"e_league_proposal_statuses",
+		e_league_proposal_statuses_aggregate:"e_league_proposal_statuses_aggregate",
+		e_league_proposal_statuses_by_pk:"e_league_proposal_statuses",
+		e_league_proposal_statuses_stream:"e_league_proposal_statuses",
+		e_league_registration_statuses:"e_league_registration_statuses",
+		e_league_registration_statuses_aggregate:"e_league_registration_statuses_aggregate",
+		e_league_registration_statuses_by_pk:"e_league_registration_statuses",
+		e_league_registration_statuses_stream:"e_league_registration_statuses",
+		e_league_season_statuses:"e_league_season_statuses",
+		e_league_season_statuses_aggregate:"e_league_season_statuses_aggregate",
+		e_league_season_statuses_by_pk:"e_league_season_statuses",
+		e_league_season_statuses_stream:"e_league_season_statuses",
 		e_lobby_access:"e_lobby_access",
 		e_lobby_access_aggregate:"e_lobby_access_aggregate",
 		e_lobby_access_by_pk:"e_lobby_access",
@@ -41496,11 +46248,53 @@ export const ReturnTypes: Record<string,any> = {
 		gamedata_signature_validations_stream:"gamedata_signature_validations",
 		get_leaderboard:"leaderboard_entries",
 		get_leaderboard_aggregate:"leaderboard_entries_aggregate",
+		get_league_season_leaderboard:"leaderboard_entries",
+		get_league_season_leaderboard_aggregate:"leaderboard_entries_aggregate",
 		get_player_leaderboard_rank:"player_leaderboard_rank",
 		get_player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
 		leaderboard_entries:"leaderboard_entries",
 		leaderboard_entries_aggregate:"leaderboard_entries_aggregate",
 		leaderboard_entries_stream:"leaderboard_entries",
+		league_divisions:"league_divisions",
+		league_divisions_aggregate:"league_divisions_aggregate",
+		league_divisions_by_pk:"league_divisions",
+		league_divisions_stream:"league_divisions",
+		league_match_weeks:"league_match_weeks",
+		league_match_weeks_aggregate:"league_match_weeks_aggregate",
+		league_match_weeks_by_pk:"league_match_weeks",
+		league_match_weeks_stream:"league_match_weeks",
+		league_relegation_playoffs:"league_relegation_playoffs",
+		league_relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate",
+		league_relegation_playoffs_by_pk:"league_relegation_playoffs",
+		league_relegation_playoffs_stream:"league_relegation_playoffs",
+		league_scheduling_proposals:"league_scheduling_proposals",
+		league_scheduling_proposals_aggregate:"league_scheduling_proposals_aggregate",
+		league_scheduling_proposals_by_pk:"league_scheduling_proposals",
+		league_scheduling_proposals_stream:"league_scheduling_proposals",
+		league_season_divisions:"league_season_divisions",
+		league_season_divisions_aggregate:"league_season_divisions_aggregate",
+		league_season_divisions_by_pk:"league_season_divisions",
+		league_season_divisions_stream:"league_season_divisions",
+		league_seasons:"league_seasons",
+		league_seasons_aggregate:"league_seasons_aggregate",
+		league_seasons_by_pk:"league_seasons",
+		league_seasons_stream:"league_seasons",
+		league_team_movements:"league_team_movements",
+		league_team_movements_aggregate:"league_team_movements_aggregate",
+		league_team_movements_by_pk:"league_team_movements",
+		league_team_movements_stream:"league_team_movements",
+		league_team_rosters:"league_team_rosters",
+		league_team_rosters_aggregate:"league_team_rosters_aggregate",
+		league_team_rosters_by_pk:"league_team_rosters",
+		league_team_rosters_stream:"league_team_rosters",
+		league_team_seasons:"league_team_seasons",
+		league_team_seasons_aggregate:"league_team_seasons_aggregate",
+		league_team_seasons_by_pk:"league_team_seasons",
+		league_team_seasons_stream:"league_team_seasons",
+		league_teams:"league_teams",
+		league_teams_aggregate:"league_teams_aggregate",
+		league_teams_by_pk:"league_teams",
+		league_teams_stream:"league_teams",
 		lobbies:"lobbies",
 		lobbies_aggregate:"lobbies_aggregate",
 		lobbies_by_pk:"lobbies",
@@ -41766,6 +46560,10 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_organizers_aggregate:"tournament_organizers_aggregate",
 		tournament_organizers_by_pk:"tournament_organizers",
 		tournament_organizers_stream:"tournament_organizers",
+		tournament_stage_windows:"tournament_stage_windows",
+		tournament_stage_windows_aggregate:"tournament_stage_windows_aggregate",
+		tournament_stage_windows_by_pk:"tournament_stage_windows",
+		tournament_stage_windows_stream:"tournament_stage_windows",
 		tournament_stages:"tournament_stages",
 		tournament_stages_aggregate:"tournament_stages_aggregate",
 		tournament_stages_by_pk:"tournament_stages",
@@ -41797,6 +46595,12 @@ export const ReturnTypes: Record<string,any> = {
 		v_gpu_pool_status:"v_gpu_pool_status",
 		v_gpu_pool_status_aggregate:"v_gpu_pool_status_aggregate",
 		v_gpu_pool_status_stream:"v_gpu_pool_status",
+		v_league_division_standings:"v_league_division_standings",
+		v_league_division_standings_aggregate:"v_league_division_standings_aggregate",
+		v_league_division_standings_stream:"v_league_division_standings",
+		v_league_season_player_stats:"v_league_season_player_stats",
+		v_league_season_player_stats_aggregate:"v_league_season_player_stats_aggregate",
+		v_league_season_player_stats_stream:"v_league_season_player_stats",
 		v_match_captains:"v_match_captains",
 		v_match_captains_aggregate:"v_match_captains_aggregate",
 		v_match_captains_stream:"v_match_captains",
@@ -42679,6 +47483,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Int",
 		scheduled_at:"timestamptz",
 		scheduled_eta:"timestamptz",
+		scheduling_proposals:"league_scheduling_proposals",
+		scheduling_proposals_aggregate:"league_scheduling_proposals_aggregate",
 		stage:"tournament_stages",
 		team_1:"tournament_teams",
 		team_1_seed:"Int",
@@ -42862,6 +47668,79 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_organizers_variance_fields:{
 		steam_id:"Float"
 	},
+	tournament_stage_windows:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		opens_at:"timestamptz",
+		round:"Int",
+		stage:"tournament_stages",
+		tournament_stage_id:"uuid"
+	},
+	tournament_stage_windows_aggregate:{
+		aggregate:"tournament_stage_windows_aggregate_fields",
+		nodes:"tournament_stage_windows"
+	},
+	tournament_stage_windows_aggregate_fields:{
+		avg:"tournament_stage_windows_avg_fields",
+		count:"Int",
+		max:"tournament_stage_windows_max_fields",
+		min:"tournament_stage_windows_min_fields",
+		stddev:"tournament_stage_windows_stddev_fields",
+		stddev_pop:"tournament_stage_windows_stddev_pop_fields",
+		stddev_samp:"tournament_stage_windows_stddev_samp_fields",
+		sum:"tournament_stage_windows_sum_fields",
+		var_pop:"tournament_stage_windows_var_pop_fields",
+		var_samp:"tournament_stage_windows_var_samp_fields",
+		variance:"tournament_stage_windows_variance_fields"
+	},
+	tournament_stage_windows_avg_fields:{
+		round:"Float"
+	},
+	tournament_stage_windows_max_fields:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		opens_at:"timestamptz",
+		round:"Int",
+		tournament_stage_id:"uuid"
+	},
+	tournament_stage_windows_min_fields:{
+		closes_at:"timestamptz",
+		created_at:"timestamptz",
+		default_match_at:"timestamptz",
+		id:"uuid",
+		opens_at:"timestamptz",
+		round:"Int",
+		tournament_stage_id:"uuid"
+	},
+	tournament_stage_windows_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_stage_windows"
+	},
+	tournament_stage_windows_stddev_fields:{
+		round:"Float"
+	},
+	tournament_stage_windows_stddev_pop_fields:{
+		round:"Float"
+	},
+	tournament_stage_windows_stddev_samp_fields:{
+		round:"Float"
+	},
+	tournament_stage_windows_sum_fields:{
+		round:"Int"
+	},
+	tournament_stage_windows_var_pop_fields:{
+		round:"Float"
+	},
+	tournament_stage_windows_var_samp_fields:{
+		round:"Float"
+	},
+	tournament_stage_windows_variance_fields:{
+		round:"Float"
+	},
 	tournament_stages:{
 		brackets:"tournament_brackets",
 		brackets_aggregate:"tournament_brackets_aggregate",
@@ -42871,6 +47750,7 @@ export const ReturnTypes: Record<string,any> = {
 		groups:"Int",
 		id:"uuid",
 		match_options_id:"uuid",
+		max_rounds:"Int",
 		max_teams:"Int",
 		min_teams:"Int",
 		options:"match_options",
@@ -42878,10 +47758,13 @@ export const ReturnTypes: Record<string,any> = {
 		results:"v_team_stage_results",
 		results_aggregate:"v_team_stage_results_aggregate",
 		settings:"jsonb",
+		swiss_no_elimination:"Boolean",
 		third_place_match:"Boolean",
 		tournament:"tournaments",
 		tournament_id:"uuid",
-		type:"e_tournament_stage_types_enum"
+		type:"e_tournament_stage_types_enum",
+		windows:"tournament_stage_windows",
+		windows_aggregate:"tournament_stage_windows_aggregate"
 	},
 	tournament_stages_aggregate:{
 		aggregate:"tournament_stages_aggregate_fields",
@@ -42904,6 +47787,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -42914,6 +47798,7 @@ export const ReturnTypes: Record<string,any> = {
 		groups:"Int",
 		id:"uuid",
 		match_options_id:"uuid",
+		max_rounds:"Int",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
@@ -42925,6 +47810,7 @@ export const ReturnTypes: Record<string,any> = {
 		groups:"Int",
 		id:"uuid",
 		match_options_id:"uuid",
+		max_rounds:"Int",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
@@ -42938,6 +47824,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -42946,6 +47833,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -42954,6 +47842,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -42962,6 +47851,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Int",
 		default_best_of:"Int",
 		groups:"Int",
+		max_rounds:"Int",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int"
@@ -42970,6 +47860,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -42978,6 +47869,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -42986,6 +47878,7 @@ export const ReturnTypes: Record<string,any> = {
 		decider_best_of:"Float",
 		default_best_of:"Float",
 		groups:"Float",
+		max_rounds:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
@@ -43445,8 +48338,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_tournament_status:"e_tournament_status",
 		has_min_teams:"Boolean",
 		id:"uuid",
+		is_league:"Boolean",
 		is_organizer:"Boolean",
 		joined_tournament:"Boolean",
+		league_season_division:"league_season_divisions",
 		match_options_id:"uuid",
 		max_players_per_lineup:"Int",
 		min_players_per_lineup:"Int",
@@ -43461,6 +48356,7 @@ export const ReturnTypes: Record<string,any> = {
 		results_aggregate:"v_team_tournament_results_aggregate",
 		rosters:"tournament_team_roster",
 		rosters_aggregate:"tournament_team_roster_aggregate",
+		scheduling_mode:"String",
 		stages:"tournament_stages",
 		stages_aggregate:"tournament_stages_aggregate",
 		start:"timestamptz",
@@ -43507,6 +48403,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
+		scheduling_mode:"String",
 		start:"timestamptz"
 	},
 	tournaments_min_fields:{
@@ -43521,6 +48418,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
+		scheduling_mode:"String",
 		start:"timestamptz"
 	},
 	tournaments_mutation_response:{
@@ -43715,6 +48613,342 @@ export const ReturnTypes: Record<string,any> = {
 		streaming_free_gpu_nodes:"Float",
 		streaming_total_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
+	},
+	v_league_division_standings:{
+		head_to_head_match_wins:"Int",
+		head_to_head_rounds_won:"Int",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		losses:"Int",
+		maps_lost:"Int",
+		maps_won:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rank:"Int",
+		round_diff:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		season_division:"league_season_divisions",
+		team_season:"league_team_seasons",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_league_division_standings_aggregate:{
+		aggregate:"v_league_division_standings_aggregate_fields",
+		nodes:"v_league_division_standings"
+	},
+	v_league_division_standings_aggregate_fields:{
+		avg:"v_league_division_standings_avg_fields",
+		count:"Int",
+		max:"v_league_division_standings_max_fields",
+		min:"v_league_division_standings_min_fields",
+		stddev:"v_league_division_standings_stddev_fields",
+		stddev_pop:"v_league_division_standings_stddev_pop_fields",
+		stddev_samp:"v_league_division_standings_stddev_samp_fields",
+		sum:"v_league_division_standings_sum_fields",
+		var_pop:"v_league_division_standings_var_pop_fields",
+		var_samp:"v_league_division_standings_var_samp_fields",
+		variance:"v_league_division_standings_variance_fields"
+	},
+	v_league_division_standings_avg_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_division_standings_max_fields:{
+		head_to_head_match_wins:"Int",
+		head_to_head_rounds_won:"Int",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		losses:"Int",
+		maps_lost:"Int",
+		maps_won:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rank:"Int",
+		round_diff:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_league_division_standings_min_fields:{
+		head_to_head_match_wins:"Int",
+		head_to_head_rounds_won:"Int",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		losses:"Int",
+		maps_lost:"Int",
+		maps_won:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rank:"Int",
+		round_diff:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_league_division_standings_stddev_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_division_standings_stddev_pop_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_division_standings_stddev_samp_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_division_standings_sum_fields:{
+		head_to_head_match_wins:"Int",
+		head_to_head_rounds_won:"Int",
+		losses:"Int",
+		maps_lost:"Int",
+		maps_won:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rank:"Int",
+		round_diff:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		wins:"Int"
+	},
+	v_league_division_standings_var_pop_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_division_standings_var_samp_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_division_standings_variance_fields:{
+		head_to_head_match_wins:"Float",
+		head_to_head_rounds_won:"Float",
+		losses:"Float",
+		maps_lost:"Float",
+		maps_won:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rank:"Float",
+		round_diff:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_league_season_player_stats:{
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		headshots:"Int",
+		kdr:"float8",
+		kills:"Int",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team:"league_teams",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		matches_played:"Int",
+		player:"players",
+		player_steam_id:"bigint"
+	},
+	v_league_season_player_stats_aggregate:{
+		aggregate:"v_league_season_player_stats_aggregate_fields",
+		nodes:"v_league_season_player_stats"
+	},
+	v_league_season_player_stats_aggregate_fields:{
+		avg:"v_league_season_player_stats_avg_fields",
+		count:"Int",
+		max:"v_league_season_player_stats_max_fields",
+		min:"v_league_season_player_stats_min_fields",
+		stddev:"v_league_season_player_stats_stddev_fields",
+		stddev_pop:"v_league_season_player_stats_stddev_pop_fields",
+		stddev_samp:"v_league_season_player_stats_stddev_samp_fields",
+		sum:"v_league_season_player_stats_sum_fields",
+		var_pop:"v_league_season_player_stats_var_pop_fields",
+		var_samp:"v_league_season_player_stats_var_samp_fields",
+		variance:"v_league_season_player_stats_variance_fields"
+	},
+	v_league_season_player_stats_avg_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
+	},
+	v_league_season_player_stats_max_fields:{
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		headshots:"Int",
+		kdr:"float8",
+		kills:"Int",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		matches_played:"Int",
+		player_steam_id:"bigint"
+	},
+	v_league_season_player_stats_min_fields:{
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		headshots:"Int",
+		kdr:"float8",
+		kills:"Int",
+		league_division_id:"uuid",
+		league_season_division_id:"uuid",
+		league_season_id:"uuid",
+		league_team_id:"uuid",
+		league_team_season_id:"uuid",
+		matches_played:"Int",
+		player_steam_id:"bigint"
+	},
+	v_league_season_player_stats_stddev_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
+	},
+	v_league_season_player_stats_stddev_pop_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
+	},
+	v_league_season_player_stats_stddev_samp_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
+	},
+	v_league_season_player_stats_sum_fields:{
+		assists:"Int",
+		deaths:"Int",
+		headshot_percentage:"float8",
+		headshots:"Int",
+		kdr:"float8",
+		kills:"Int",
+		matches_played:"Int",
+		player_steam_id:"bigint"
+	},
+	v_league_season_player_stats_var_pop_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
+	},
+	v_league_season_player_stats_var_samp_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
+	},
+	v_league_season_player_stats_variance_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kdr:"Float",
+		kills:"Float",
+		matches_played:"Float",
+		player_steam_id:"Float"
 	},
 	v_match_captains:{
 		captain:"Boolean",

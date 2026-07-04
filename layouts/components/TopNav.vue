@@ -58,6 +58,11 @@ const route = useRoute();
 const authStore = useAuthStore();
 
 const { pendingImports: pendingMatchImports } = usePendingImports();
+const {
+  currentSeasonTo: currentLeagueSeasonTo,
+  currentSeason: currentLeagueSeason,
+} = useCurrentLeagueSeason();
+const hasLeagueSeason = computed(() => !!currentLeagueSeason.value);
 const homePath = computed(() => (authStore.me ? "/me" : "/watch"));
 const isHome = computed(() => {
   if (homePath.value === "/me") {
@@ -257,6 +262,19 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
+                      <li v-if="leaguesEnabled && hasLeagueSeason">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            :to="currentLeagueSeasonTo"
+                            :class="navItemClasses"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemLabelClasses">
+                              {{ $t("layouts.top_nav.play.leagues") }}
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
                       <li v-if="scrimFinderEnabled">
                         <NavigationMenuLink as-child>
                           <NuxtLink to="/scrims" :class="navItemClasses">
@@ -445,9 +463,12 @@ const loginArrowClasses =
                               </span>
                               <span :class="navItemSubClasses">
                                 {{
-                                  $t("layouts.top_nav.community.news.subtitle", {
-                                    brand: brandName || "5Stack",
-                                  })
+                                  $t(
+                                    "layouts.top_nav.community.news.subtitle",
+                                    {
+                                      brand: brandName || "5Stack",
+                                    },
+                                  )
                                 }}
                               </span>
                             </span>
@@ -606,7 +627,7 @@ const loginArrowClasses =
               :side-offset="4"
             >
               <DropdownMenuItem
-                class="cursor-pointer p-3 font-normal transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
+                class="p-3 font-normal transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
                 as-child
               >
                 <NuxtLink
@@ -621,7 +642,7 @@ const loginArrowClasses =
               <DropdownMenuSeparator class="bg-topnav-border" />
               <DropdownMenuGroup>
                 <DropdownMenuItem
-                  class="flex cursor-pointer gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
+                  class="flex gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
                   as-child
                 >
                   <NuxtLink
@@ -635,10 +656,10 @@ const loginArrowClasses =
               </DropdownMenuGroup>
               <DropdownMenuSeparator class="bg-topnav-border" />
               <DropdownMenuItem
-                class="flex cursor-pointer gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
+                class="flex gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
                 @click="showLogoutModal = true"
               >
-                <LogOut class="h-4 w-4" />
+                <LogOut />
                 {{ $t("layouts.app_nav.profile.logout") }}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -710,7 +731,9 @@ export default {
                 _and: [
                   {
                     _or: [
-                      { type: { _neq: $("rankedType", "e_server_types_enum!") } },
+                      {
+                        type: { _neq: $("rankedType", "e_server_types_enum!") },
+                      },
                       { connection_string: { _is_null: false } },
                     ],
                   },
@@ -758,6 +781,9 @@ export default {
     },
     scrimFinderEnabled() {
       return useApplicationSettingsStore().scrimFinderEnabled;
+    },
+    leaguesEnabled() {
+      return useApplicationSettingsStore().leaguesEnabled;
     },
     me() {
       return useAuthStore().me;

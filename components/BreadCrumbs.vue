@@ -45,6 +45,7 @@ import { useMatchContext } from "~/composables/useMatchContext";
 import { usePlayerContext } from "~/composables/usePlayerContext";
 import { useTeamContext } from "~/composables/useTeamContext";
 import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
+import { useSeasonContext } from "~/composables/useSeasonContext";
 
 export default {
   computed: {
@@ -61,6 +62,7 @@ export default {
       const pc = usePlayerContext();
       const teamc = useTeamContext();
       const drc = useDraftRoomContext();
+      const sc = useSeasonContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
@@ -147,6 +149,34 @@ export default {
             to: path,
           });
           return;
+        }
+
+        if (segments[0] === "league" && segments[1] === "seasons") {
+          // /league/seasons has no index page; keep the crumb pointing at the
+          // league landing, and show the season name instead of its id.
+          if (index === 1) {
+            breadcrumbs.push({ text: segment, to: "/league" });
+            return;
+          }
+          if (index === 2) {
+            if (sc.value?.id !== segment) {
+              return;
+            }
+            breadcrumbs.push({ text: sc.value.name, to: path });
+            return;
+          }
+          // /league/seasons/<id>/tournaments/<id>: skip the "tournaments"
+          // segment (no index page) and show the tournament name.
+          if (index === 3) {
+            return;
+          }
+          if (index === 4) {
+            if (tc.value?.id !== segment) {
+              return;
+            }
+            breadcrumbs.push({ text: tc.value.name, to: path });
+            return;
+          }
         }
 
         breadcrumbs.push({

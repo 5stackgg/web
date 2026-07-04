@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
-import { LogOut } from "lucide-vue-next";
+import { UserMinus } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -99,7 +99,7 @@ async function kick() {
     class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     @click="open = true"
   >
-    <LogOut class="h-4 w-4" />
+    <UserMinus class="h-4 w-4" />
   </button>
 
   <Dialog :open="open" @update:open="open = $event">

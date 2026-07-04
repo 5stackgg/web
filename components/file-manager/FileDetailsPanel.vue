@@ -14,18 +14,18 @@
             @click="handleSave"
             :disabled="!store.activeFile?.isDirty"
           >
-            <Save class="mr-2 h-4 w-4" />
+            <Save />
             {{ $t("common.save") }}
             <MenubarShortcut>⌘S</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />
           <MenubarItem @click="handleCloseActiveTab">
-            <X class="mr-2 h-4 w-4" />
+            <X />
             {{ $t("file_manager.details_panel.close") }}
             <MenubarShortcut>⌘W</MenubarShortcut>
           </MenubarItem>
           <MenubarItem @click="handleCloseAllTabs">
-            <X class="mr-2 h-4 w-4" />
+            <X />
             {{ $t("file_manager.details_panel.close_all") }}
           </MenubarItem>
         </MenubarContent>
@@ -36,12 +36,12 @@
         }}</MenubarTrigger>
         <MenubarContent>
           <MenubarItem @click="handleUndo">
-            <Undo class="mr-2 h-4 w-4" />
+            <Undo />
             {{ $t("common.undo") }}
             <MenubarShortcut>⌘Z</MenubarShortcut>
           </MenubarItem>
           <MenubarItem @click="handleRedo">
-            <Redo class="mr-2 h-4 w-4" />
+            <Redo />
             {{ $t("common.redo") }}
             <MenubarShortcut>⇧⌘Z</MenubarShortcut>
           </MenubarItem>
@@ -53,7 +53,7 @@
         }}</MenubarTrigger>
         <MenubarContent>
           <MenubarItem @click="toggleWordWrap">
-            <WrapText class="mr-2 h-4 w-4" />
+            <WrapText />
             {{
               wordWrap
                 ? $t("file_manager.details_panel.disable_word_wrap")
@@ -61,7 +61,7 @@
             }}
           </MenubarItem>
           <MenubarItem @click="toggleMinimap">
-            <LayoutList class="mr-2 h-4 w-4" />
+            <LayoutList />
             {{
               showMinimap
                 ? $t("file_manager.details_panel.hide_minimap")
@@ -110,21 +110,21 @@
           </ContextMenuTrigger>
           <ContextMenuContent class="w-48">
             <ContextMenuItem @click="handleCloseTab(contextMenuTabPath, false)">
-              <X class="mr-2 h-4 w-4" />
+              <X />
               {{ $t("file_manager_extras.close") }}
               <ContextMenuShortcut>⌘W</ContextMenuShortcut>
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem @click="handleCloseOthers(contextMenuTabPath)">
-              <X class="mr-2 h-4 w-4" />
+              <SquareX />
               {{ $t("file_manager_extras.close_others") }}
             </ContextMenuItem>
             <ContextMenuItem @click="handleCloseToRight(contextMenuTabPath)">
-              <X class="mr-2 h-4 w-4" />
+              <ArrowRightToLine />
               {{ $t("file_manager_extras.close_to_right") }}
             </ContextMenuItem>
             <ContextMenuItem @click="handleCloseToLeft(contextMenuTabPath)">
-              <X class="mr-2 h-4 w-4" />
+              <ArrowLeftToLine />
               {{ $t("file_manager_extras.close_to_left") }}
             </ContextMenuItem>
           </ContextMenuContent>
@@ -207,6 +207,9 @@ import {
   WrapText,
   LayoutList,
   X,
+  SquareX,
+  ArrowRightToLine,
+  ArrowLeftToLine,
   File as FileIcon,
   FileCode,
   FolderOpen,

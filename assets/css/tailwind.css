@@ -348,6 +348,29 @@ mark {
   animation: share-flash 600ms ease-out;
 }
 
+/* Tab-panel enter fade — matches the app's tab-content transition
+   (150ms fade + slight rise). reka keeps every TabsContent mounted and just
+   toggles data-state, so the animation is scoped to the active panel: it
+   (re)applies — and thus replays — each time a panel becomes active. */
+@keyframes tab-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tab-panel-in[data-state="active"] {
+  animation: tab-panel-in 150ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tab-panel-in[data-state="active"] {
+    animation: none;
+  }
+}
+
 /* Global route transition (NuxtPage). Kept short so each page's own
    PageTransition appear-reveals still read on top of the crossfade —
    smooths route changes like draft-room <-> match instead of a hard cut. */

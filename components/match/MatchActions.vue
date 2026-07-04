@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { MoreVertical, Radio, Pause, Play } from "lucide-vue-next";
+import {
+  LifeBuoy,
+  MoreVertical,
+  Pause,
+  Play,
+  Radio,
+  RefreshCw,
+  Scissors,
+  Square,
+  Trash2,
+  XCircle,
+} from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
@@ -53,6 +64,7 @@ import {
             @click="callForOrganizer"
             :disabled="match.requested_organizer"
           >
+            <LifeBuoy />
             {{ $t("match.actions.call_support") }}
           </DropdownMenuItem>
           <DropdownMenuSeparator
@@ -83,14 +95,14 @@ import {
             :disabled="switching || !match.is_server_online"
             @click="switchHere"
           >
-            <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+            <Radio class="text-muted-foreground" />
             <span>{{ $t("match.actions.switch_stream_here") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSub v-else-if="gameStreamerStatus === 'off'">
             <Tooltip v-if="liveStartDisabledReason">
               <TooltipTrigger as-child>
                 <DropdownMenuSubTrigger disabled>
-                  <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                  <Radio class="text-muted-foreground" />
                   <span>{{ $t("match.actions.start_live") }}</span>
                 </DropdownMenuSubTrigger>
               </TooltipTrigger>
@@ -99,7 +111,7 @@ import {
               </TooltipContent>
             </Tooltip>
             <DropdownMenuSubTrigger v-else>
-              <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+              <Radio class="text-muted-foreground" />
               <span>{{
                 canPreemptHighlights
                   ? $t("match.actions.pause_highlights_and_start_live")
@@ -148,6 +160,7 @@ import {
             class="text-destructive"
             @click="stopLive"
           >
+            <Square />
             <template v-if="gameStreamerStatus === 'pending'">
               <div class="flex flex-col items-start leading-tight">
                 <span>{{ $t("match.actions.cancel_live_pending") }}</span>
@@ -179,6 +192,7 @@ import {
           <Tooltip v-if="canCreateClips && !hasRegisteredGpu">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
+                <Scissors />
                 {{ $t("match.actions.create_clips") }}
               </DropdownMenuItem>
             </TooltipTrigger>
@@ -190,11 +204,13 @@ import {
             v-else-if="canCreateClips"
             @click="createClipsForMatch"
           >
+            <Scissors />
             {{ $t("match.actions.create_clips") }}
           </DropdownMenuItem>
           <Tooltip v-if="hasPausedRenders && resumeRendersBlockedReason">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
+                <Play />
                 <div class="flex flex-col items-start leading-tight">
                   <span>{{ $t("match.actions.resume_renders") }}</span>
                   <span class="text-xs text-muted-foreground mt-0.5">
@@ -208,6 +224,7 @@ import {
             </TooltipContent>
           </Tooltip>
           <DropdownMenuItem v-else-if="hasPausedRenders" @click="resumeRenders">
+            <Play />
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.resume_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -219,6 +236,7 @@ import {
             v-else-if="hasInFlightRenders"
             @click="pauseRenders"
           >
+            <Pause />
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.pause_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -238,6 +256,7 @@ import {
         />
 
         <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
+          <RefreshCw />
           {{ $t("match.actions.reparse_demos") }}
         </DropdownMenuItem>
 
@@ -247,6 +266,7 @@ import {
             class="text-destructive"
             :disabled="!hasMinimumLineupPlayers"
           >
+            <Play />
             <template
               v-if="
                 match.options.map_veto &&
@@ -260,17 +280,20 @@ import {
         </template>
 
         <template v-if="match.can_cancel">
-          <DropdownMenuItem class="text-destructive" @click="cancelMatch">{{
-            $t("match.actions.cancel")
-          }}</DropdownMenuItem>
+          <DropdownMenuItem class="text-destructive" @click="cancelMatch">
+            <XCircle />
+            {{ $t("match.actions.cancel") }}
+          </DropdownMenuItem>
         </template>
 
         <template v-if="canDeleteMatch">
           <DropdownMenuItem
             class="text-destructive"
             @click="showDeleteDialog = true"
-            >{{ $t("match.actions.delete") }}</DropdownMenuItem
           >
+            <Trash2 />
+            {{ $t("match.actions.delete") }}
+          </DropdownMenuItem>
         </template>
       </DropdownMenuContent>
     </DropdownMenu>

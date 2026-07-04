@@ -2,7 +2,7 @@
 import {
   ChevronsUpDownIcon,
   Cog,
-  LogOutIcon,
+  LogOut,
   Logs,
   LineChart,
   Server,
@@ -42,6 +42,11 @@ import { useAuthStore } from "~/stores/AuthStore";
 const { setOpenMobile, isMobile } = useSidebar();
 const route = useRoute();
 const authStore = useAuthStore();
+const {
+  currentSeasonTo: currentLeagueSeasonTo,
+  currentSeason: currentLeagueSeason,
+} = useCurrentLeagueSeason();
+const hasLeagueSeason = computed(() => !!currentLeagueSeason.value);
 const { pendingImports: pendingMatchImports } = usePendingImports();
 const matchContext = useMatchContext();
 const logoPath = computed(() => (authStore.me ? "/me" : "/watch"));
@@ -259,6 +264,23 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
+            <SidebarMenuItem v-if="leaguesEnabled && hasLeagueSeason">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.leagues')"
+              >
+                <NuxtLink
+                  :to="currentLeagueSeasonTo"
+                  :class="{
+                    'router-link-active': isRouteActive('league'),
+                  }"
+                >
+                  <Trophy />
+                  {{ $t("layouts.app_nav.navigation.leagues") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem>
               <SidebarMenuButton
                 as-child
@@ -453,27 +475,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.administration.stream_deck')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.administration.stream_deck')"
-              >
-                <NuxtLink
-                  :to="{ name: 'stream-deck' }"
-                  :class="{
-                    'router-link-active': isRouteActive('stream-deck'),
-                  }"
-                >
-                  <Camera />
-                  {{ $t("layouts.app_nav.administration.stream_deck") }}
-                  <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
-                    {{ activeStreamingMatchesCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem
               v-if="isTournamentOrganizer || isAdmin"
               :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
             >
@@ -491,6 +492,48 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   {{ $t("layouts.app_nav.administration.manage_tournaments") }}
                   <Badge size="sm" v-if="managingTournamentsCount > 0">
                     {{ managingTournamentsCount }}
+                  </Badge>
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem
+              v-if="isAdmin && leaguesEnabled"
+              :tooltip="$t('layouts.app_nav.tooltips.manage_league')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.manage_league')"
+              >
+                <NuxtLink
+                  :to="{ name: 'league' }"
+                  :class="{
+                    'router-link-active': isRouteActive('league'),
+                  }"
+                >
+                  <Trophy />
+                  {{ $t("layouts.app_nav.administration.manage_league") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.administration.stream_deck')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.administration.stream_deck')"
+              >
+                <NuxtLink
+                  :to="{ name: 'stream-deck' }"
+                  :class="{
+                    'router-link-active': isRouteActive('stream-deck'),
+                  }"
+                >
+                  <Camera />
+                  {{ $t("layouts.app_nav.administration.stream_deck") }}
+                  <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
+                    {{ activeStreamingMatchesCount }}
                   </Badge>
                 </NuxtLink>
               </SidebarMenuButton>
@@ -638,10 +681,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                     :side-offset="4"
                   >
                     <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        class="flex gap-2 cursor-pointer"
-                        as-child
-                      >
+                      <DropdownMenuItem class="flex gap-2" as-child>
                         <NuxtLink :to="{ name: 'dedicated-servers' }">
                           {{
                             $t(
@@ -651,10 +691,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                         </NuxtLink>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        class="flex gap-2 cursor-pointer"
-                        as-child
-                      >
+                      <DropdownMenuItem class="flex gap-2" as-child>
                         <NuxtLink :to="{ name: 'game-server-nodes' }">
                           {{
                             $t(
@@ -664,10 +701,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                         </NuxtLink>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        class="flex gap-2 cursor-pointer"
-                        as-child
-                      >
+                      <DropdownMenuItem class="flex gap-2" as-child>
                         <NuxtLink
                           :to="{ name: 'gpu-nodes' }"
                           class="flex w-full items-center justify-between gap-2"
@@ -938,7 +972,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </DropdownMenuGroup>
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
+                  <DropdownMenuItem class="flex gap-2" as-child>
                     <NuxtLink
                       :to="{ name: 'settings' }"
                       :class="{
@@ -957,7 +991,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   class="flex gap-2"
                   @click="showLogoutModal = true"
                 >
-                  <LogOutIcon class="size-4" />
+                  <LogOut />
                   {{ $t("layouts.app_nav.profile.logout") }}
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -1093,6 +1127,9 @@ export default {
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;
+    },
+    leaguesEnabled() {
+      return useApplicationSettingsStore().leaguesEnabled;
     },
     seasonsRebuildCount() {
       return useNotificationStore().seasonRebuildCount;

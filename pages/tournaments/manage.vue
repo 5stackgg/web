@@ -295,6 +295,7 @@ function optionRowClass(active: boolean) {
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
@@ -548,7 +549,7 @@ export default {
         };
       }
 
-      const whereClause = {
+      const whereClause: any = {
         ...filterConditions,
       };
 
@@ -558,7 +559,7 @@ export default {
         };
       }
 
-      return whereClause;
+      return excludeLeagueTournaments(whereClause);
     },
     loadFiltersFromStorage() {
       if (process.client) {

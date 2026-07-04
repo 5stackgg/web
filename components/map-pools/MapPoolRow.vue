@@ -6,7 +6,7 @@ import { toast } from "@/components/ui/toast";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapForm from "~/components/map-pools/MapForm.vue";
 import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
-import { Pencil } from "lucide-vue-next";
+import { MoreVertical, Pencil } from "lucide-vue-next";
 import { TableRow, TableCell } from "~/components/ui/table";
 import {
   Sheet,
@@ -21,7 +21,6 @@ import {
   DropdownMenuItem,
 } from "~/components/ui/dropdown-menu";
 import { Button } from "~/components/ui/button";
-import { PaginationEllipsis } from "~/components/ui/pagination";
 </script>
 
 <template>
@@ -62,12 +61,12 @@ import { PaginationEllipsis } from "~/components/ui/pagination";
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="secondary" size="icon">
-            <PaginationEllipsis class="h-4 w-4" />
+            <MoreVertical class="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-56">
           <DropdownMenuItem @click="editMapSheet = true">
-            <Pencil class="mr-2 h-4 w-4" />
+            <Pencil />
             <span>{{ $t("map_pools.edit_map") }}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

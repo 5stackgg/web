@@ -3,7 +3,7 @@ import {
   Trash2,
   GripVertical,
   ExternalLink,
-  Edit,
+  Pencil,
   MoreVertical,
 } from "lucide-vue-next";
 import {
@@ -205,7 +205,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                       </DropdownMenuTrigger>
                       <DropdownMenuContent class="w-44">
                         <DropdownMenuItem @click="openEditModal(stream)">
-                          <Edit class="mr-2 h-4 w-4" />
+                          <Pencil />
                           <span>{{ $t("streams.update") }}</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -213,7 +213,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                           class="text-destructive"
                           @click="deleteStream(stream.id)"
                         >
-                          <Trash2 class="mr-2 h-4 w-4" />
+                          <Trash2 />
                           <span>{{ $t("common.delete") }}</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>

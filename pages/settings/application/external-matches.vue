@@ -10,33 +10,24 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
       <SettingsSection
         id="external-matches"
         :title="$t('pages.settings.application.external_matches.section')"
+        :description="
+          $t('pages.settings.application.external_matches.enabled_description')
+        "
+        clickable-header
+        @header-click="save('public.external_matches_enabled', !enabled)"
       >
-        <div
-          class="flex cursor-pointer flex-row items-center justify-between"
-          @click="save('public.external_matches_enabled', !enabled)"
-        >
-          <div class="space-y-0.5">
-            <h4 class="text-base font-medium">
-              {{ $t("pages.settings.application.external_matches.enabled") }}
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.external_matches.enabled_description",
-                )
-              }}
-            </p>
-          </div>
+        <template #action>
           <Switch
             :model-value="enabled"
             @update:model-value="
               (v) => save('public.external_matches_enabled', v)
             "
           />
-        </div>
+        </template>
 
         <div
-          class="mt-5 flex cursor-pointer flex-row items-center justify-between border-t border-border/60 pt-5"
+          v-if="enabled"
+          class="flex cursor-pointer flex-row items-center justify-between"
           @click="save('public.faceit_import_enabled', !faceitEnabled)"
         >
           <div class="space-y-0.5">
@@ -88,7 +79,10 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
           />
         </div>
 
-        <div class="mt-5 flex flex-col gap-3 border-t border-border/60 pt-5">
+        <div
+          v-if="enabled"
+          class="flex flex-col gap-3 border-t border-border/60 pt-5"
+        >
           <div class="flex flex-row items-center justify-between">
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">

@@ -10,23 +10,15 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
       <SettingsSection
         id="scrim-finder"
         :title="$t('pages.settings.application.scrim_finder.section')"
+        :description="
+          $t('pages.settings.application.scrim_finder.enabled_description')
+        "
+        clickable-header
+        @header-click="save(!enabled)"
       >
-        <div
-          class="flex cursor-pointer flex-row items-center justify-between"
-          @click="save(!enabled)"
-        >
-          <div class="space-y-0.5">
-            <h4 class="text-base font-medium">
-              {{ $t("pages.settings.application.scrim_finder.enabled") }}
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.scrim_finder.enabled_description")
-              }}
-            </p>
-          </div>
+        <template #action>
           <Switch :model-value="enabled" @update:model-value="save" />
-        </div>
+        </template>
       </SettingsSection>
     </PageTransition>
   </SettingsPage>

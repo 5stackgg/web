@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import { useTournamentContext } from "~/composables/useTournamentContext";
+import { useEventContext } from "~/composables/useEventContext";
 import { useMatchContext } from "~/composables/useMatchContext";
 import { usePlayerContext } from "~/composables/usePlayerContext";
 import { useTeamContext } from "~/composables/useTeamContext";
@@ -58,6 +59,7 @@ export default {
       });
 
       const tc = useTournamentContext();
+      const ec = useEventContext();
       const mc = useMatchContext();
       const pc = usePlayerContext();
       const teamc = useTeamContext();
@@ -102,6 +104,22 @@ export default {
           }
           breadcrumbs.push({
             text: tc.value.name,
+            to: path,
+          });
+          return;
+        }
+
+        // Events: show the event name once its context matches the route
+        // segment. Until then (still loading, not found/no access, or the
+        // create/manage subpages) skip the crumb rather than leaking a raw
+        // uuid or a literal "create"/"manage" segment, matching the
+        // tournaments branch above.
+        if (segments[0] === "events" && index === 1) {
+          if (ec.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: ec.value.name,
             to: path,
           });
           return;

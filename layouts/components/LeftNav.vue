@@ -26,6 +26,7 @@ import {
   AlertTriangle,
   Megaphone,
   Leaf,
+  CalendarRange,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -284,6 +285,23 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 as-child
+                :tooltip="$t('layouts.app_nav.tooltips.events')"
+              >
+                <NuxtLink
+                  :to="{ name: 'events' }"
+                  :class="{
+                    'router-link-active': isRouteActive('events'),
+                  }"
+                >
+                  <CalendarRange />
+                  {{ $t("layouts.app_nav.navigation.events") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                as-child
                 :tooltip="$t('layouts.app_nav.tooltips.public_servers')"
               >
                 <NuxtLink
@@ -513,6 +531,26 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Trophy />
                   {{ $t("layouts.app_nav.administration.manage_league") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem
+              v-if="isTournamentOrganizer || isAdmin"
+              :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
+              >
+                <NuxtLink
+                  :to="{ name: 'events-manage' }"
+                  :class="{
+                    'router-link-active': isRouteActive('events-manage'),
+                  }"
+                >
+                  <CalendarRange />
+                  {{ $t("layouts.app_nav.administration.manage_events") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

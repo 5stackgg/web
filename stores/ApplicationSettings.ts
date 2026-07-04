@@ -194,6 +194,20 @@ export const useApplicationSettingsStore = defineStore(
       return create_tournaments_role?.value || e_player_roles_enum.user;
     });
 
+    const eventCreateRole = computed(() => {
+      if (!settings.value) {
+        return false;
+      }
+
+      const create_events_role = settings.value.find(
+        (setting) => setting.name === "public.create_events_role",
+      );
+
+      // Match the backend: public_events insert permissions allow any role
+      // when create_events_role is unset, so default to the lowest role.
+      return create_events_role?.value || e_player_roles_enum.user;
+    });
+
     // Panel on/off flag only, no role gating — used to show guests "fake"
     // matchmaking cards that prompt login on click.
     const matchmakingEnabled = computed(() => {
@@ -531,6 +545,7 @@ export const useApplicationSettingsStore = defineStore(
       matchmakingAllowed,
       matchmakingEnabled,
       tournamentCreateRole,
+      eventCreateRole,
       supportsDiscordBot,
       supportsGameServerNodes,
       supportsGameServerVersionPinning,

@@ -1115,7 +1115,11 @@
     "notes_section": "Notes",
     "notes_placeholder": "Anything opponents should know — server prefs, anti-cheat, voice, etc.",
     "settings_saved": "Scrim settings saved",
-    "settings_save_error": "Failed to save scrim settings"
+    "settings_save_error": "Failed to save scrim settings",
+    "calendar_link_copied": "Calendar link copied",
+    "calendar_subscription_help": "Subscribe to this URL in your calendar app to see scheduled scrims.",
+    "calendar_link_error": "Could not get calendar link",
+    "subscribe_to_matches": "Subscribe to Scheduled Matches"
   },
   "elo_chart_bucket": {
     "monthly": "Monthly",
@@ -1500,14 +1504,16 @@
           "label": "Display name",
           "permissions_section": "Permissions",
           "permissions_description": "Choose the minimum role allowed to create and publish news posts.",
-          "post_news_role": "Who can post news"
+          "post_news_role": "Who can post news",
+          "about": "Posts you publish appear on the public News page. Drafts stay hidden until you publish them."
         },
         "seasons": {
           "title": "Seasons",
           "section": "Seasons",
           "description": "Competitive seasons reset regular-match ELO to a 5000 baseline each season and scope stats and filtering per season; when disabled, ELO is a single global ladder. Tournament ELO stays season-independent.",
           "manage": "Manage Seasons",
-          "manage_description": "Create, end and backfill competitive seasons."
+          "manage_description": "Create, end and backfill competitive seasons.",
+          "about": "When enabled, season filtering appears across players, the leaderboard and tournaments, and ELO/stats become season-scoped. When disabled, ELO is a single global ladder and no season filtering is shown."
         },
         "discord": {
           "title": "Discord Notifications",
@@ -3040,6 +3046,20 @@
         "no_explain_plan": "EXPLAIN plan could not be generated for this query",
         "not_found": "Query details not found"
       }
+    },
+    "events": {
+      "title": "Events",
+      "description": "Browse events and their member tournaments, leaderboards, and standings.",
+      "create": "Create Event",
+      "date_tbd": "Date TBD",
+      "no_events_title": "No Events Yet",
+      "no_events_description": "There are no events to show right now. Check back soon."
+    },
+    "manage_events": {
+      "title": "Manage Events",
+      "description": "View and manage all events across the platform.",
+      "no_events_title": "No Events Yet",
+      "no_events_description": "You are not organizing any events yet."
     }
   },
   "custom_match": {
@@ -3066,7 +3086,10 @@
         "integrations": "Integrations",
         "infrastructure": "Infrastructure",
         "theme": "Appearance",
-        "developer": "Developer"
+        "developer": "Developer",
+        "general": "General",
+        "media": "Recording & Media",
+        "additional_features": "Additional Features"
       }
     },
     "system_update": {
@@ -3115,7 +3138,8 @@
         "search": "Search",
         "highlights": "Highlights",
         "news": "News",
-        "leagues": "League"
+        "leagues": "League",
+        "events": "Events"
       },
       "community": {
         "title": "Community"
@@ -3136,7 +3160,8 @@
         "manage_matches": "Manage Matches",
         "manage_tournaments": "Manage Tournaments",
         "manage_league": "Manage League",
-        "stream_deck": "Stream Deck"
+        "stream_deck": "Stream Deck",
+        "manage_events": "Manage Events"
       },
       "system": {
         "title": "System",
@@ -3179,7 +3204,9 @@
         "manage_tournaments": "Manage Tournaments",
         "manage_league": "Manage League",
         "search_players": "Search Players",
-        "leagues": "League"
+        "leagues": "League",
+        "events": "Events",
+        "manage_events": "Manage Events"
       },
       "logout_dialog": {
         "title": "Logout",
@@ -6559,6 +6586,109 @@
         "status": "Status",
         "time": "Time",
         "proposed_by": "Proposed by"
+      }
+    }
+  },
+  "event": {
+    "status": {
+      "setup": "Setup",
+      "live": "Live",
+      "finished": "Finished"
+    },
+    "card": {
+      "organizing": "Organizing",
+      "tournaments": "Tournaments",
+      "organized_by": "Organized by"
+    },
+    "tabs": {
+      "leaderboard": "Leaderboard",
+      "standings": "Standings",
+      "tournaments": "Tournaments",
+      "teams": "Teams",
+      "settings": "Settings"
+    },
+    "not_found": {
+      "title": "Event Not Found",
+      "description": "This event does not exist or you do not have access to view it."
+    },
+    "tournaments": {
+      "none": "No tournaments are part of this event yet."
+    },
+    "teams": {
+      "title": "Teams",
+      "none": "No teams are part of this event yet."
+    },
+    "players": {
+      "title": "Players",
+      "none": "No players are part of this event yet."
+    },
+    "updated": "Updated Event",
+    "form": {
+      "name": "Event Name",
+      "description": "Description",
+      "starts_at": "Starts At",
+      "ends_at": "Ends At",
+      "status": "Status",
+      "create": "Create Event",
+      "create_bar": {
+        "ready": "Ready to create",
+        "ready_hint": "Everything looks good, create your event when ready.",
+        "incomplete": "Required fields missing",
+        "incomplete_hint": "Fill in the event name to continue"
+      }
+    },
+    "leaderboard": {
+      "categories": {
+        "rating": "Rating",
+        "adr": "ADR",
+        "kdr": "K/D Ratio",
+        "kills": "Kills",
+        "wins": "Wins"
+      },
+      "col": {
+        "rating": "Rating",
+        "adr": "ADR",
+        "kdr": "K/D",
+        "kills": "Kills",
+        "wins": "Wins",
+        "kills_short": "K",
+        "deaths_short": "D",
+        "matches": "Matches"
+      },
+      "min_rounds": "Min. Rounds",
+      "no_results": "No leaderboard results yet."
+    },
+    "standings": {
+      "champion": "Champion",
+      "runner_up": "Runner-Up",
+      "third": "Third Place",
+      "mvp": "MVP",
+      "gold": "Gold",
+      "silver": "Silver",
+      "bronze": "Bronze",
+      "none": "No standings yet for this event's tournaments.",
+      "medal_table": "Medal Table"
+    },
+    "membership": {
+      "title": "Membership",
+      "detach": "Remove",
+      "tournaments": {
+        "title": "Tournaments",
+        "none": "No tournaments attached yet.",
+        "search_placeholder": "Search your tournaments..."
+      },
+      "teams": {
+        "title": "Teams",
+        "none": "No teams attached yet.",
+        "search_placeholder": "Search teams..."
+      },
+      "players": {
+        "title": "Players",
+        "none": "No players attached yet.",
+        "search_placeholder": "Search players...",
+        "import": "Import from Tournaments",
+        "import_none": "No new players found in this event's tournaments.",
+        "import_success": "Imported {count} player(s) from tournament rosters."
       }
     }
   }

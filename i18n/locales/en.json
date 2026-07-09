@@ -4163,6 +4163,10 @@
           "label": "Knife Round",
           "description": "Knife rounds are only played when neither team picked the map in the veto."
         },
+        "anti_wallhack": {
+          "label": "Anti-Wallhack (Fog of War)",
+          "description": "Hides fully occluded enemies from clients, reducing what wallhacks can see."
+        },
         "max_rounds": {
           "label": "Max Rounds",
           "description": "The number of rounds played before teams switch sides.",
@@ -4258,6 +4262,7 @@
       "coaches": "Coaches",
       "overtime": "Overtime",
       "knife_round": "Knife Round",
+      "anti_wallhack": "Anti-Wallhack",
       "region_veto": "Region Veto",
       "substitutes": "Substitutes",
       "timeout_setting": "Timeout Setting",

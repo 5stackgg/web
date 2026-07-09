@@ -9,8 +9,8 @@ const UNSIGNABLE_HEADERS = [
   "if-none-match",
   "if-range",
   "if-unmodified-since",
-  // Strip Range so B2 returns the full 200 once; CF caches it and
-  // slices 206s out of cache for every <video> seek.
+  // Strip Range so B2/edge cache always hold one full 200; the worker
+  // slices 206s out of it itself (sliceBody).
   "range",
 ];
 
@@ -32,24 +32,24 @@ const VIEW_FRACTION = 0.5;
 const BOT_UA =
   /bot|crawl|spider|facebookexternalhit|slack|discord|telegram|whatsapp|preview|unfurl|embed|scrape|metainspector|skype|vkshare|redditbot|pinterest|googlebot|bingbot/i;
 
-// A view only counts once at least VIEW_FRACTION of the file's bytes have
-// actually been streamed to the client. We can't infer this from the
-// request Range header — the worker strips Range so B2 returns a single
-// full 200, and the browser downloads the whole clip in one response with
-// no follow-up seeks. So we measure delivery directly: tee the body through
-// a counter and fire the view the moment cumulative bytes cross the
-// threshold. Bytes only flow on a real play (the <video> is preload="none")
-// or a real embed fetch (Discord), so this never counts an unwatched clip.
+// Fires the view when delivered bytes cross the file's VIEW_FRACTION
+// position (range start + bytes streamed). Responses starting past the
+// threshold never count — those are end-of-file moov probes or tail seeks,
+// not a watched first half. Repeat beacons are deduped API-side per viewer.
 function countingBody(
   body: ReadableStream<Uint8Array>,
   size: number,
+  startOffset: number,
   onEnough: () => void,
 ): ReadableStream<Uint8Array> {
   if (!Number.isFinite(size) || size <= 0) {
     return body;
   }
   const threshold = size * VIEW_FRACTION;
-  let seen = 0;
+  if (startOffset >= threshold) {
+    return body;
+  }
+  let position = startOffset;
   let fired = false;
   return body.pipeThrough(
     new TransformStream<Uint8Array, Uint8Array>({
@@ -58,10 +58,75 @@ function countingBody(
         if (fired) {
           return;
         }
-        seen += chunk.byteLength;
-        if (seen >= threshold) {
+        position += chunk.byteLength;
+        if (position >= threshold) {
           fired = true;
           onEnough();
+        }
+      },
+    }),
+  );
+}
+
+// Single-range parser; null (incl. multi-range) → serve the full 200,
+// which the spec permits.
+function parseRange(
+  header: string | null,
+  size: number,
+): { start: number; end: number } | "unsatisfiable" | null {
+  if (!header || !Number.isFinite(size) || size <= 0) {
+    return null;
+  }
+  const match = /^bytes\s*=\s*(\d*)-(\d*)$/.exec(header.trim());
+  if (!match || (match[1] === "" && match[2] === "")) {
+    return null;
+  }
+  if (match[1] === "") {
+    const suffix = Number(match[2]);
+    if (suffix === 0) {
+      return "unsatisfiable";
+    }
+    return { start: Math.max(0, size - suffix), end: size - 1 };
+  }
+  const start = Number(match[1]);
+  if (start >= size) {
+    return "unsatisfiable";
+  }
+  const end = match[2] === "" ? size - 1 : Math.min(Number(match[2]), size - 1);
+  if (end < start) {
+    return null;
+  }
+  return { start, end };
+}
+
+// Cuts [start, end] out of a full-object stream; terminate() cancels the
+// source so a 2-byte probe doesn't drain a 50 MB body.
+function sliceBody(
+  body: ReadableStream<Uint8Array>,
+  start: number,
+  end: number,
+): ReadableStream<Uint8Array> {
+  let position = 0;
+  return body.pipeThrough(
+    new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        if (position > end) {
+          controller.terminate();
+          return;
+        }
+        const chunkStart = position;
+        position += chunk.byteLength;
+        if (position <= start) {
+          return;
+        }
+        controller.enqueue(
+          chunk.subarray(
+            Math.max(0, start - chunkStart),
+            Math.min(chunk.byteLength, end + 1 - chunkStart),
+          ),
+        );
+        if (position > end) {
+          controller.terminate();
         }
       },
     }),
@@ -129,6 +194,71 @@ function registerView(
   );
 }
 
+// Client response from a full-object 200: mp4 Content-Type fix, 206
+// slicing, view counting. baseHeaders is not mutated — the caller may
+// still cache.put the full object with them.
+function clientResponse(
+  status: number,
+  statusText: string,
+  baseHeaders: Headers,
+  body: ReadableStream<Uint8Array> | null,
+  opts: {
+    rangeHeader: string | null;
+    key: string;
+    track: boolean;
+    request: Request;
+    env: { S3_SECRET: string; API_URL?: string };
+    ctx: ExecutionContext;
+  },
+): Response {
+  const headers = new Headers(baseHeaders);
+  if (/\.mp4$/i.test(opts.key)) {
+    // B2 stored old clips as binary/octet-stream; players refuse non-video/*.
+    headers.set("Content-Type", "video/mp4");
+  }
+  if (status !== 200 || !body) {
+    return new Response(body, { status, statusText, headers });
+  }
+  headers.set("Accept-Ranges", "bytes");
+
+  const size = Number(baseHeaders.get("content-length"));
+  const range = parseRange(opts.rangeHeader, size);
+  if (range === "unsatisfiable") {
+    opts.ctx.waitUntil(body.cancel());
+    headers.delete("Content-Length");
+    headers.set("Content-Range", `bytes */${size}`);
+    return new Response(null, {
+      status: 416,
+      statusText: "Range Not Satisfiable",
+      headers,
+    });
+  }
+
+  let stream = body;
+  let startOffset = 0;
+  if (range) {
+    stream = sliceBody(stream, range.start, range.end);
+    startOffset = range.start;
+    status = 206;
+    statusText = "Partial Content";
+    headers.set("Content-Range", `bytes ${range.start}-${range.end}/${size}`);
+    headers.set("Content-Length", String(range.end - range.start + 1));
+  }
+  if (opts.track) {
+    stream = countingBody(stream, size, startOffset, () =>
+      registerView(opts.request, opts.key, opts.env, opts.ctx),
+    );
+  }
+  if (range) {
+    // Gives the 206 a real Content-Length (streamed bodies otherwise go
+    // chunked) and hard-asserts the slice math.
+    stream = stream.pipeThrough(
+      new FixedLengthStream(range.end - range.start + 1),
+    );
+  }
+  return new Response(stream, { status, statusText, headers });
+}
+
 // Path-style (/clips/<user>/<uuid>.mp4) or query-style (?file=<key>).
 function resolveKey(url: URL): string | null {
   const fromQuery = url.searchParams.get("file");
@@ -178,37 +308,27 @@ export default {
     const url = new URL(request.url);
     const key = resolveKey(url);
     const track = shouldTrackView(request, url, key, env);
+    const rangeHeader =
+      request.method === "GET" ? request.headers.get("range") : null;
 
-    // Edge-cache short-circuit: serve repeat hits without re-running SigV4
-    // or making a B2 subrequest. Range requests fall through so the existing
-    // cf.cacheEverything path handles slicing from the cached full object.
-    // The cache key includes Origin so each calling origin gets a response
-    // with its own Access-Control-Allow-Origin — required for credentialed
-    // fetches, which can't accept `*`.
+    // Edge cache stores only full 200s; Range requests slice a 206 out of
+    // the cached object. Origin is in the cache key so each caller gets its
+    // own Access-Control-Allow-Origin (credentialed fetches can't take `*`).
     const cache = caches.default;
     const cacheKey = new Request(`${request.url}#origin=${reqOrigin ?? ""}`, {
       method: "GET",
     });
-    const skipEdgeCache =
-      request.method !== "GET" || request.headers.has("range");
+    const skipEdgeCache = request.method !== "GET";
     if (!skipEdgeCache) {
       const cached = await cache.match(cacheKey);
       if (cached) {
-        if (track && cached.body) {
-          return new Response(
-            countingBody(
-              cached.body,
-              Number(cached.headers.get("content-length")),
-              () => registerView(request, key as string, env, ctx),
-            ),
-            {
-              status: cached.status,
-              statusText: cached.statusText,
-              headers: cached.headers,
-            },
-          );
-        }
-        return cached;
+        return clientResponse(
+          cached.status,
+          cached.statusText,
+          cached.headers,
+          cached.body,
+          { rangeHeader, key: key ?? "", track, request, env, ctx },
+        );
       }
     }
 
@@ -285,10 +405,9 @@ export default {
 
     const willCache = !skipEdgeCache && upstream.status === 200;
 
-    // Split the body before counting: the cache copy must drain fully, but
-    // the view counter must only see bytes the *client* actually pulls — so
-    // the counter wraps the client branch only. An aborted client therefore
-    // never trips the threshold even while the cache copy finishes filling.
+    // Tee before slicing/counting: the cache copy must drain the FULL
+    // object even for a 2-byte range, and the counter must only see bytes
+    // the client actually pulls.
     let clientStream = upstream.body;
     let cacheStream: ReadableStream<Uint8Array> | null = null;
     if (willCache && clientStream) {
@@ -296,19 +415,14 @@ export default {
       clientStream = tees[0];
       cacheStream = tees[1];
     }
-    if (track && upstream.ok && clientStream) {
-      clientStream = countingBody(
-        clientStream,
-        Number(upstream.headers.get("content-length")),
-        () => registerView(request, key as string, env, ctx),
-      );
-    }
 
-    const response = new Response(clientStream, {
+    const response = clientResponse(
+      upstream.status,
+      upstream.statusText,
       headers,
-      status: upstream.status,
-      statusText: upstream.statusText,
-    });
+      clientStream,
+      { rangeHeader, key, track, request, env, ctx },
+    );
 
     if (willCache && cacheStream) {
       ctx.waitUntil(

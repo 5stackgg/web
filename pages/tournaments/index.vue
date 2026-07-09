@@ -663,8 +663,7 @@ export default {
                 status: {
                   _eq: $("status", "e_tournament_status_enum"),
                 },
-                // Hide league-internal tournaments (relationship newer than
-                // the generated zeus types; regenerate via `yarn codegen`).
+                // Hide league-internal tournaments.
                 ...({ _not: { league_season_division: {} } } as any),
               },
               order_by: [
@@ -699,8 +698,7 @@ export default {
                 status: {
                   _eq: $("status", "e_tournament_status_enum"),
                 },
-                // Hide league-internal tournaments (relationship newer than
-                // the generated zeus types; regenerate via `yarn codegen`).
+                // Hide league-internal tournaments.
                 ...({ _not: { league_season_division: {} } } as any),
               },
               order_by: [

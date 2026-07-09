@@ -2,9 +2,6 @@
 import { computed } from "vue";
 import { Lock } from "lucide-vue-next";
 
-// A tactical campaign timeline: Registration → Regular Season → Playoffs →
-// Complete, with the live phase lit in amber and each phase's date beneath it.
-// Replaces the scattered status badges + date grid with one orienting strip.
 const props = defineProps<{
   season: any;
 }>();

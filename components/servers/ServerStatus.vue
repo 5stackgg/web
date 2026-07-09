@@ -72,8 +72,20 @@ export default {
     currentPluginVersion() {
       return useApplicationSettingsStore().currentPluginVersion;
     },
+    gameServerPluginRuntime() {
+      return useApplicationSettingsStore().gameServerPluginRuntime;
+    },
     pluginVersionMismatch() {
       if (this.server.type !== e_server_types_enum.Ranked) {
+        return false;
+      }
+
+      // A server on another framework is waiting to be recycled onto the
+      // selected runtime; its version is from a lineage we can't compare against.
+      if (
+        this.server.plugin_runtime &&
+        this.server.plugin_runtime !== this.gameServerPluginRuntime
+      ) {
         return false;
       }
 

@@ -751,7 +751,7 @@ const isSectionExpanded = (section: string) => {
                 </SelectItem>
                 <SelectItem
                   :value="version.version"
-                  v-for="version of pluginVersions"
+                  v-for="version of availablePluginVersions"
                   :key="version.version"
                 >
                   <div class="flex flex-col gap-1">
@@ -1591,7 +1591,7 @@ const isSectionExpanded = (section: string) => {
                       </SelectItem>
                       <SelectItem
                         :value="version.version"
-                        v-for="version of pluginVersions"
+                        v-for="version of availablePluginVersions"
                         :key="version.version"
                       >
                         <div class="flex flex-col gap-1">
@@ -1979,6 +1979,7 @@ export default defineComponent({
             },
             {
               version: true,
+              runtime: true,
               min_game_build_id: true,
               published_at: true,
             },
@@ -2188,6 +2189,12 @@ export default defineComponent({
       });
     },
     async pinPluginVersion(pluginVersion: string | null) {
+      // The runtime rides along with the pin: it is half of the plugin_versions
+      // primary key, and it keeps the node on that framework across a switch.
+      const pinPluginRuntime = pluginVersion
+        ? this.gameServerPluginRuntime
+        : null;
+
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_game_server_nodes_by_pk: [
@@ -2197,6 +2204,7 @@ export default defineComponent({
               },
               _set: {
                 pin_plugin_version: pluginVersion,
+                pin_plugin_runtime: pinPluginRuntime,
               },
             },
             {
@@ -2403,6 +2411,27 @@ export default defineComponent({
     },
   },
   computed: {
+    gameServerPluginRuntime(): string {
+      return useApplicationSettingsStore().gameServerPluginRuntime;
+    },
+    // A pin has to name a version that exists in the runtime the node will
+    // actually boot, so only that framework's lineage is offered. An existing
+    // pin from the other framework is kept so the select still renders it.
+    availablePluginVersions(): any[] {
+      const pinnedRuntime = this.gameServerNode.pin_plugin_runtime;
+      const pinnedVersion = this.gameServerNode.pin_plugin_version;
+
+      return this.pluginVersions.filter((pluginVersion) => {
+        if (pluginVersion.runtime === this.gameServerPluginRuntime) {
+          return true;
+        }
+
+        return (
+          pluginVersion.runtime === pinnedRuntime &&
+          pluginVersion.version === pinnedVersion
+        );
+      });
+    },
     gpuDevices(): Array<{
       index?: number;
       name?: string;
@@ -2449,11 +2478,14 @@ export default defineComponent({
       if (!this.gameServerNode.build_id) {
         return false;
       }
+      if (this.gameServerNode.pin_build_id) {
+        return this.gameServerNode.pin_build_id != this.gameServerNode.build_id;
+      }
+      // only claim an update is needed once the versions subscription has
+      // loaded — comparing against undefined flashes the button on mount
       return (
-        (this.gameServerNode.pin_build_id &&
-          this.gameServerNode.pin_build_id != this.gameServerNode?.build_id) ||
-        (!this.gameServerNode.pin_build_id &&
-          this.gameServerNode.build_id != this.currentGameVersion?.build_id)
+        !!this.currentGameVersion &&
+        this.gameServerNode.build_id != this.currentGameVersion.build_id
       );
     },
     updateTargetVersion() {

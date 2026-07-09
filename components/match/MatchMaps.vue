@@ -95,6 +95,11 @@ import cleanMapName from "~/utilities/cleanMapName";
             >
               <Shield v-if="matchMap.anti_wallhack_active" class="w-3 h-3" />
               <ShieldOff v-else class="w-3 h-3" />
+              <span class="sr-only">{{
+                matchMap.anti_wallhack_active
+                  ? $t("match.anti_wallhack.protected")
+                  : $t("match.anti_wallhack.not_active")
+              }}</span>
             </Badge>
           </TooltipTrigger>
           <TooltipContent>{{

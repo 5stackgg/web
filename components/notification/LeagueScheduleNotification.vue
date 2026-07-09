@@ -64,64 +64,56 @@ async function onProposeSubmit(proposedTime: string, message: string) {
 </script>
 
 <template>
-  <!-- Two columns: the icon owns the gutter, everything else (including the
-       action row) starts on the text column — no hand-tuned left padding. -->
-  <div class="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-2.5 gap-y-2">
-    <span
-      class="grid h-7 w-7 shrink-0 place-items-center self-start rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]"
-    >
-      <CalendarClock class="h-4 w-4" />
-    </span>
+  <!-- Kicker → title → teams, all on one full-width column. The amber mono
+       kicker (with an inline glyph that shares its text line, so nothing to
+       vertically reconcile) carries the scheduling identity instead of a
+       boxed icon gutter. -->
+  <div class="space-y-2">
     <div class="min-w-0">
-        <div class="text-sm font-medium leading-tight">
-          {{
-            task.kind === "respond"
-              ? $t("league.schedule_task.respond_title")
-              : $t("league.schedule_task.schedule_title")
-          }}
-        </div>
-        <div class="mt-0.5 truncate text-xs text-muted-foreground">
-          {{ task.team1 }}
-          <span class="font-mono">vs</span>
-          {{ task.team2 }}
-        </div>
-        <div
-          class="text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground"
-        >
-          {{
-            $t("league.schedule_task.context", {
-              season: task.seasonNumber ?? "?",
-              week: task.round,
-            })
-          }}
-        </div>
-        <div
-          v-if="task.kind === 'respond' && task.proposal"
-          class="mt-1 text-xs"
-        >
-          <span class="font-medium text-foreground">{{
-            new Date(task.proposal.proposedTime).toLocaleString(undefined, {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            })
-          }}</span>
-          <span class="text-muted-foreground">
-            · {{ $t("league.schedule.proposed_by") }}
-            {{ task.proposal.proposedByName }}</span
-          >
-          <span
-            v-if="task.proposal.message"
-            class="italic text-muted-foreground"
-          >
-            · “{{ task.proposal.message }}”</span
-          >
-        </div>
+      <div
+        class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+      >
+        <CalendarClock class="h-3 w-3 shrink-0" />
+        <span class="truncate">{{
+          $t("league.schedule_task.context", {
+            season: task.seasonNumber ?? "?",
+            week: task.round,
+          })
+        }}</span>
       </div>
+      <div class="mt-1 text-sm font-semibold leading-tight">
+        {{
+          task.kind === "respond"
+            ? $t("league.schedule_task.respond_title")
+            : $t("league.schedule_task.schedule_title")
+        }}
+      </div>
+      <div class="mt-0.5 truncate text-xs text-muted-foreground">
+        {{ task.team1 }}
+        <span class="font-mono text-muted-foreground/60">vs</span>
+        {{ task.team2 }}
+      </div>
+      <div v-if="task.kind === 'respond' && task.proposal" class="mt-1 text-xs">
+        <span class="font-medium text-foreground">{{
+          new Date(task.proposal.proposedTime).toLocaleString(undefined, {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+          })
+        }}</span>
+        <span class="text-muted-foreground">
+          · {{ $t("league.schedule.proposed_by") }}
+          {{ task.proposal.proposedByName }}</span
+        >
+        <span v-if="task.proposal.message" class="italic text-muted-foreground">
+          · “{{ task.proposal.message }}”</span
+        >
+      </div>
+    </div>
 
-    <div class="col-start-2 flex flex-wrap items-center gap-1.5">
+    <div class="flex flex-wrap items-center gap-1.5">
       <template v-if="task.kind === 'respond'">
         <Button
           size="sm"
@@ -159,7 +151,6 @@ async function onProposeSubmit(proposedTime: string, message: string) {
           :disabled="!task.week"
           @click="showPropose = true"
         >
-          <CalendarClock class="h-3.5 w-3.5" />
           {{ $t("league.schedule.propose") }}
         </Button>
       </template>

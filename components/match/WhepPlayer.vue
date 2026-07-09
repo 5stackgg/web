@@ -73,6 +73,9 @@ type IosVideo = HTMLVideoElement & {
 
 const coarsePointer = ref(false);
 
+const isIphone =
+  typeof navigator !== "undefined" && /iPhone|iPod/.test(navigator.userAgent);
+
 const docFullscreenSupported = computed(() => {
   if (typeof document === "undefined") return false;
   const doc = document as FullscreenDoc & {
@@ -92,16 +95,21 @@ async function toggleFullscreen() {
   const doc = document as FullscreenDoc;
   const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
 
-  // iOS Safari (iPhone) doesn't expose element.requestFullscreen — the
-  // only fullscreen path is video.webkitEnterFullscreen(). Detect by
-  // missing document fullscreen support and fall through to the video.
-  if (!docFullscreenSupported.value || !target?.requestFullscreen) {
+  // iPhone: element fullscreen exists since iOS 16.4 but stays locked to
+  // the page orientation — video.webkitEnterFullscreen() (the native
+  // player) is the only mode that rotates with the stream. Also the only
+  // path on WebKits without element fullscreen at all.
+  if (isIphone || !docFullscreenSupported.value || !target?.requestFullscreen) {
     const video = videoRef.value as IosVideo | null;
     if (!video) return;
-    if (video.webkitDisplayingFullscreen) {
-      video.webkitExitFullscreen?.();
-    } else {
-      video.webkitEnterFullscreen?.();
+    try {
+      if (video.webkitDisplayingFullscreen) {
+        video.webkitExitFullscreen?.();
+      } else {
+        video.webkitEnterFullscreen?.();
+      }
+    } catch {
+      // InvalidStateError before first frame — nothing to show yet
     }
     return;
   }
@@ -115,12 +123,25 @@ async function toggleFullscreen() {
       target.requestFullscreen?.bind(target) ??
       target.webkitRequestFullscreen?.bind(target);
     await Promise.resolve(request?.()).catch(() => undefined);
+    // Streams are landscape; lock rotates Android into it, rejects elsewhere.
+    try {
+      await (
+        screen.orientation as ScreenOrientation & {
+          lock?: (o: string) => Promise<void>;
+        }
+      ).lock?.("landscape");
+    } catch {}
   }
 }
 
 function onFullscreenChange() {
   const doc = document as FullscreenDoc;
   isFullscreen.value = !!(doc.fullscreenElement ?? doc.webkitFullscreenElement);
+  if (!isFullscreen.value) {
+    try {
+      screen.orientation.unlock();
+    } catch {}
+  }
 }
 
 function onWebkitBeginFullscreen() {

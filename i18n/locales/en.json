@@ -4272,6 +4272,10 @@
       "advanced_settings": "Show Advanced Settings",
       "default_player_models": "Default Player Models"
     },
+    "anti_wallhack": {
+      "protected": "Anti-wallhack active",
+      "not_active": "Anti-wallhack not active"
+    },
     "schedule": {
       "schedule": "Schedule",
       "start_match": "Start Match",

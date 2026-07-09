@@ -9,6 +9,8 @@ import {
   PlayCircle,
   RefreshCw,
   MoreVertical,
+  Shield,
+  ShieldOff,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import MatchSelectMapWinner from "~/components/match/MatchSelectMapWinner.vue";
@@ -85,6 +87,22 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
+        <Tooltip v-if="matchMap.anti_wallhack_active !== null && matchMap.anti_wallhack_active !== undefined">
+          <TooltipTrigger as-child>
+            <Badge
+              :variant="matchMap.anti_wallhack_active ? 'secondary' : 'outline'"
+              class="text-xs px-2 py-0.5 backdrop-blur-sm"
+            >
+              <Shield v-if="matchMap.anti_wallhack_active" class="w-3 h-3" />
+              <ShieldOff v-else class="w-3 h-3" />
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>{{
+            matchMap.anti_wallhack_active
+              ? $t("match.anti_wallhack.protected")
+              : $t("match.anti_wallhack.not_active")
+          }}</TooltipContent>
+        </Tooltip>
         <template v-if="hasDemo && hasDemoMetadata">
           <Tooltip v-if="mapHasRadar">
             <TooltipTrigger as-child>

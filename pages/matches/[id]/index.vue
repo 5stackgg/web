@@ -717,6 +717,7 @@ export default {
                   lineup_1_score: true,
                   lineup_2_score: true,
                   winning_lineup_id: true,
+                  anti_wallhack_active: true,
                   vetos: {
                     side: true,
                     type: true,

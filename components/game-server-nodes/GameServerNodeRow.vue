@@ -45,6 +45,7 @@ import {
   ExternalLink,
   Trash2,
   RefreshCw,
+  Loader2,
   Pencil,
   Activity,
   CircleFadingArrowUp,
@@ -547,19 +548,39 @@ const isSectionExpanded = (section: string) => {
       <TableCell class="hidden xl:table-cell pr-1">
         <div class="flex items-center gap-2">
           <template v-if="gameServerNode.update_status">
-            <FiveStackToolTip>
-              <template #trigger>
-                <div class="flex items-center gap-1">
-                  <span class="capitalize text-sm">
-                    {{ gameServerNode.update_status }}
-                  </span>
-                  <Button variant="outline" size="sm" @click="toggleLogs">
-                    <Activity class="h-2 w-2" />
+            <div class="flex min-w-0 max-w-[13rem] items-center gap-2">
+              <Loader2
+                class="h-3.5 w-3.5 shrink-0 animate-spin text-blue-500"
+              />
+              <div class="flex min-w-0 flex-col text-left leading-tight">
+                <span class="truncate text-xs font-medium capitalize">
+                  {{ gameServerNode.update_status }}
+                </span>
+                <span
+                  v-if="updateTargetLabel"
+                  class="truncate text-[0.7rem] text-muted-foreground"
+                >
+                  {{
+                    $t("game_server.updating_to", {
+                      version: updateTargetLabel,
+                    })
+                  }}
+                </span>
+              </div>
+              <FiveStackToolTip>
+                <template #trigger>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="h-7 w-7 shrink-0 p-0"
+                    @click="toggleLogs"
+                  >
+                    <Activity class="h-3.5 w-3.5" />
                   </Button>
-                </div>
-              </template>
-              {{ $t("game_server.show_update_logs") }}
-            </FiveStackToolTip>
+                </template>
+                {{ $t("game_server.show_update_logs") }}
+              </FiveStackToolTip>
+            </div>
           </template>
 
           <template v-else>
@@ -587,12 +608,6 @@ const isSectionExpanded = (section: string) => {
                       v-if="gameServerNode.pin_build_id"
                       class="h-3 w-3 text-blue-500"
                     />
-                    <FiveStackToolTip v-if="showBuildUpdateWarning">
-                      <template #trigger>
-                        <CircleFadingArrowUp class="h-3 w-3 text-yellow-500" />
-                      </template>
-                      {{ $t("game_server.update_cs") }}
-                    </FiveStackToolTip>
                   </div>
                 </SelectTrigger>
                 <SelectContent>
@@ -638,6 +653,30 @@ const isSectionExpanded = (section: string) => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
+
+              <FiveStackToolTip v-if="showBuildUpdateWarning">
+                <template #trigger>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="shrink-0 border-yellow-500/50 text-yellow-500 hover:text-yellow-400"
+                    :disabled="
+                      gameServerNode.status !==
+                      e_game_server_node_statuses_enum.Online
+                    "
+                    @click="updateCs"
+                  >
+                    <CircleFadingArrowUp class="h-4 w-4" />
+                  </Button>
+                </template>
+                {{
+                  updateTargetLabel
+                    ? $t("game_server.update_to_version", {
+                        version: updateTargetLabel,
+                      })
+                    : $t("game_server.update_cs")
+                }}
+              </FiveStackToolTip>
             </template>
 
             <template v-else>
@@ -1370,11 +1409,31 @@ const isSectionExpanded = (section: string) => {
                   $t("game_server.cs_build")
                 }}</label>
                 <template v-if="gameServerNode.update_status">
-                  <div class="flex items-center gap-2">
-                    <span class="capitalize text-xs">
-                      {{ gameServerNode.update_status }}
-                    </span>
-                    <Button variant="outline" size="sm" @click="toggleLogs">
+                  <div class="flex min-w-0 items-center gap-2">
+                    <Loader2
+                      class="h-3 w-3 shrink-0 animate-spin text-blue-500"
+                    />
+                    <div class="flex min-w-0 flex-col text-left leading-tight">
+                      <span class="truncate text-xs font-medium capitalize">
+                        {{ gameServerNode.update_status }}
+                      </span>
+                      <span
+                        v-if="updateTargetLabel"
+                        class="truncate text-[0.7rem] text-muted-foreground"
+                      >
+                        {{
+                          $t("game_server.updating_to", {
+                            version: updateTargetLabel,
+                          })
+                        }}
+                      </span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      class="h-7 w-7 shrink-0 p-0"
+                      @click="toggleLogs"
+                    >
                       <Activity class="h-3 w-3" />
                     </Button>
                   </div>
@@ -1454,6 +1513,27 @@ const isSectionExpanded = (section: string) => {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+
+                    <Button
+                      v-if="showBuildUpdateWarning"
+                      variant="outline"
+                      size="sm"
+                      class="w-full mt-1 border-yellow-500/50 text-yellow-500 hover:text-yellow-400"
+                      :disabled="
+                        gameServerNode.status !==
+                        e_game_server_node_statuses_enum.Online
+                      "
+                      @click="updateCs"
+                    >
+                      <CircleFadingArrowUp class="mr-2 h-4 w-4" />
+                      {{
+                        updateTargetLabel
+                          ? $t("game_server.update_to_version", {
+                              version: updateTargetLabel,
+                            })
+                          : $t("game_server.update_cs")
+                      }}
+                    </Button>
                   </template>
                   <template v-else>
                     <Button
@@ -2375,6 +2455,26 @@ export default defineComponent({
         (!this.gameServerNode.pin_build_id &&
           this.gameServerNode.build_id != this.currentGameVersion?.build_id)
       );
+    },
+    updateTargetVersion() {
+      if (this.gameServerNode.pin_build_id) {
+        return (
+          this.gameVersions.find((version) => {
+            return version.build_id == this.gameServerNode.pin_build_id;
+          }) || { build_id: this.gameServerNode.pin_build_id, version: null }
+        );
+      }
+      return this.currentGameVersion || null;
+    },
+    updateTargetLabel(): string | null {
+      const target = this.updateTargetVersion;
+      if (!target) {
+        return null;
+      }
+      if (target.version && target.version != String(target.build_id)) {
+        return `${target.version} (${target.build_id})`;
+      }
+      return `${target.build_id}`;
     },
     settings() {
       return useApplicationSettingsStore().settings;

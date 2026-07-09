@@ -5297,6 +5297,8 @@
     "game_server_versions": "Game Server Versions",
     "cs_build": "CS Build",
     "update_cs": "Update CS2",
+    "updating_to": "Updating to {version}",
+    "update_to_version": "Update to {version}",
     "validate_gamedata": "Validate Gamedata",
     "note_label": "Note:",
     "one_cpu_core": "1 CPU core",

@@ -22,7 +22,7 @@ export const setupOptions = (
     lan,
     overtime: options.overtime,
     knife_round: options.knife_round,
-    anti_wallhack: options.anti_wallhack,
+    anti_wallhack: options.anti_wallhack ?? true,
     mr: options.mr.toString(),
     best_of: options.best_of.toString(),
     coaches: options.coaches,

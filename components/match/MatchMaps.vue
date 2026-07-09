@@ -87,26 +87,18 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
-        <Tooltip v-if="matchMap.anti_wallhack_active !== null && matchMap.anti_wallhack_active !== undefined">
+        <Tooltip v-if="matchMap.anti_wallhack_active != null">
           <TooltipTrigger as-child>
             <Badge
               :variant="matchMap.anti_wallhack_active ? 'secondary' : 'outline'"
-              class="text-xs px-2 py-0.5 backdrop-blur-sm"
+              class="hidden sm:inline-flex text-xs px-2 py-0.5 backdrop-blur-sm"
             >
               <Shield v-if="matchMap.anti_wallhack_active" class="w-3 h-3" />
               <ShieldOff v-else class="w-3 h-3" />
-              <span class="sr-only">{{
-                matchMap.anti_wallhack_active
-                  ? $t("match.anti_wallhack.protected")
-                  : $t("match.anti_wallhack.not_active")
-              }}</span>
+              <span class="sr-only">{{ antiWallhackLabel }}</span>
             </Badge>
           </TooltipTrigger>
-          <TooltipContent>{{
-            matchMap.anti_wallhack_active
-              ? $t("match.anti_wallhack.protected")
-              : $t("match.anti_wallhack.not_active")
-          }}</TooltipContent>
+          <TooltipContent>{{ antiWallhackLabel }}</TooltipContent>
         </Tooltip>
         <template v-if="hasDemo && hasDemoMetadata">
           <Tooltip v-if="mapHasRadar">
@@ -517,6 +509,11 @@ export default {
       return this.matchMap.lineup_2_side === "TERRORIST"
         ? "/img/teams/t_logo.svg"
         : "/img/teams/ct_logo.svg";
+    },
+    antiWallhackLabel() {
+      return this.matchMap.anti_wallhack_active
+        ? this.$t("match.anti_wallhack.protected")
+        : this.$t("match.anti_wallhack.not_active");
     },
   },
   methods: {

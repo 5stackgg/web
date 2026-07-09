@@ -212,9 +212,22 @@ const fadeTransition = {
         </PopoverContent>
       </Popover>
 
+      <!-- Display metrics — view toggle, pinned right next to Filters -->
+      <button
+        type="button"
+        @click="toggleNodeMetrics"
+        :class="[
+          'ml-auto',
+          filterTriggerBase,
+          displayMetrics ? filterTriggerActive : filterTriggerIdle,
+        ]"
+      >
+        <Activity class="h-3.5 w-3.5" />
+        {{ $t("pages.game_server_nodes.display_metrics") }}
+      </button>
+
       <!-- Filters (bundled, pinned right) + grouped reset -->
       <FilterMenu
-        class="ml-auto"
         :count="optionsActiveCount"
         :active="optionsActiveCount > 0"
         :show-reset="hasActiveFilters"
@@ -252,25 +265,6 @@ const fadeTransition = {
           </span>
           <Check
             v-if="hideOffline"
-            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-          />
-        </button>
-        <button
-          type="button"
-          @click="toggleNodeMetrics"
-          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-          :class="
-            displayMetrics
-              ? 'text-[hsl(var(--tac-amber))]'
-              : 'text-foreground/90'
-          "
-        >
-          <span class="flex items-center gap-2">
-            <Activity class="h-3.5 w-3.5" />
-            {{ $t("pages.game_server_nodes.display_metrics") }}
-          </span>
-          <Check
-            v-if="displayMetrics"
             class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
           />
         </button>
@@ -467,6 +461,7 @@ export default {
               csgo_build_id: true,
               pin_build_id: true,
               pin_plugin_version: true,
+              pin_plugin_runtime: true,
               plugin_supported: true,
               lan_ip: true,
               public_ip: true,

@@ -11,6 +11,37 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
     <PageTransition :delay="0">
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
+          id="plugin-runtime"
+          :title="$t('pages.settings.application.servers.plugin_runtime_section')"
+          :description="
+            $t('pages.settings.application.servers.plugin_runtime_description')
+          "
+        >
+          <Select
+            :model-value="gameServerPluginRuntime"
+            :disabled="pluginRuntimeLocked"
+            @update:model-value="updatePluginRuntime"
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="swiftlys2"> SwiftlyS2 </SelectItem>
+              <SelectItem value="counterstrikesharp">
+                CounterStrikeSharp
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          <p v-if="pluginRuntimeLocked" class="text-sm text-muted-foreground">
+            {{ $t("pages.settings.application.servers.plugin_runtime_locked") }}
+          </p>
+          <p v-else class="text-sm text-muted-foreground">
+            {{ $t("pages.settings.application.servers.plugin_runtime_warning") }}
+          </p>
+        </SettingsSection>
+
+        <SettingsSection
           id="performance"
           :title="$t('pages.settings.application.servers.cpu_section')"
           :description="
@@ -190,6 +221,39 @@ export default {
         this.submitting = false;
       }
     },
+    async updatePluginRuntime(pluginRuntime: string) {
+      if (pluginRuntime === this.gameServerPluginRuntime) {
+        return;
+      }
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings: [
+            {
+              objects: [
+                {
+                  name: "public.game_server_plugin_runtime",
+                  value: pluginRuntime,
+                },
+              ],
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t(
+          "pages.settings.application.servers.update_plugin_runtime",
+        ),
+      });
+    },
     async toggleCpuPinning() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -226,6 +290,17 @@ export default {
       return (
         this.settings.find((setting) => {
           return setting.name === "enable_cpu_pinning";
+        })?.value === "true"
+      );
+    },
+    gameServerPluginRuntime() {
+      return useApplicationSettingsStore().gameServerPluginRuntime;
+    },
+    // SERVER_IMAGE pins a specific image, so the runtime is no longer ours to pick.
+    pluginRuntimeLocked() {
+      return (
+        this.settings.find((setting) => {
+          return setting.name === "game_server_plugin_runtime_locked";
         })?.value === "true"
       );
     },

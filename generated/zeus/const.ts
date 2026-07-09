@@ -2706,6 +2706,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_player_roles_set_input",
 		where:"e_player_roles_bool_exp"
 	},
+	e_plugin_runtimes_aggregate_fields:{
+		count:{
+			columns:"e_plugin_runtimes_select_column"
+		}
+	},
+	e_plugin_runtimes_bool_exp:{
+		_and:"e_plugin_runtimes_bool_exp",
+		_not:"e_plugin_runtimes_bool_exp",
+		_or:"e_plugin_runtimes_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_plugin_runtimes_constraint: "enum" as const,
+	e_plugin_runtimes_enum: "enum" as const,
+	e_plugin_runtimes_enum_comparison_exp:{
+		_eq:"e_plugin_runtimes_enum",
+		_in:"e_plugin_runtimes_enum",
+		_neq:"e_plugin_runtimes_enum",
+		_nin:"e_plugin_runtimes_enum"
+	},
+	e_plugin_runtimes_insert_input:{
+
+	},
+	e_plugin_runtimes_on_conflict:{
+		constraint:"e_plugin_runtimes_constraint",
+		update_columns:"e_plugin_runtimes_update_column",
+		where:"e_plugin_runtimes_bool_exp"
+	},
+	e_plugin_runtimes_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_plugin_runtimes_pk_columns_input:{
+
+	},
+	e_plugin_runtimes_select_column: "enum" as const,
+	e_plugin_runtimes_set_input:{
+
+	},
+	e_plugin_runtimes_stream_cursor_input:{
+		initial_value:"e_plugin_runtimes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_plugin_runtimes_stream_cursor_value_input:{
+
+	},
+	e_plugin_runtimes_update_column: "enum" as const,
+	e_plugin_runtimes_updates:{
+		_set:"e_plugin_runtimes_set_input",
+		where:"e_plugin_runtimes_bool_exp"
+	},
 	e_ready_settings_aggregate_fields:{
 		count:{
 			columns:"e_ready_settings_select_column"
@@ -3783,6 +3834,7 @@ export const AllTypesProps: Record<string,any> = {
 		node_ip:"inet_comparison_exp",
 		offline_at:"timestamptz_comparison_exp",
 		pin_build_id:"Int_comparison_exp",
+		pin_plugin_runtime:"String_comparison_exp",
 		pin_plugin_version:"String_comparison_exp",
 		pinned_version:"game_versions_bool_exp",
 		plugin_supported:"Boolean_comparison_exp",
@@ -3849,6 +3901,7 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		offline_at:"order_by",
 		pin_build_id:"order_by",
+		pin_plugin_runtime:"order_by",
 		pin_plugin_version:"order_by",
 		region:"order_by",
 		shader_bake_progress:"order_by",
@@ -3872,6 +3925,7 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		offline_at:"order_by",
 		pin_build_id:"order_by",
+		pin_plugin_runtime:"order_by",
 		pin_plugin_version:"order_by",
 		region:"order_by",
 		shader_bake_progress:"order_by",
@@ -3920,6 +3974,7 @@ export const AllTypesProps: Record<string,any> = {
 		node_ip:"order_by",
 		offline_at:"order_by",
 		pin_build_id:"order_by",
+		pin_plugin_runtime:"order_by",
 		pin_plugin_version:"order_by",
 		pinned_version:"game_versions_order_by",
 		plugin_supported:"order_by",
@@ -4405,7 +4460,6 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"league_divisions_bool_exp",
 		_not:"league_divisions_bool_exp",
 		_or:"league_divisions_bool_exp",
-		active:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		name:"String_comparison_exp",
@@ -4433,7 +4487,6 @@ export const AllTypesProps: Record<string,any> = {
 		where:"league_divisions_bool_exp"
 	},
 	league_divisions_order_by:{
-		active:"order_by",
 		created_at:"order_by",
 		id:"order_by",
 		name:"order_by",
@@ -9774,6 +9827,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_player_roles_by_pk:{
 
 		},
+		delete_e_plugin_runtimes:{
+			where:"e_plugin_runtimes_bool_exp"
+		},
+		delete_e_plugin_runtimes_by_pk:{
+
+		},
 		delete_e_ready_settings:{
 			where:"e_ready_settings_bool_exp"
 		},
@@ -10234,7 +10293,7 @@ export const AllTypesProps: Record<string,any> = {
 			where:"plugin_versions_bool_exp"
 		},
 		delete_plugin_versions_by_pk:{
-
+			runtime:"e_plugin_runtimes_enum"
 		},
 		delete_seasons:{
 			where:"seasons_bool_exp"
@@ -10679,6 +10738,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_player_roles_one:{
 			object:"e_player_roles_insert_input",
 			on_conflict:"e_player_roles_on_conflict"
+		},
+		insert_e_plugin_runtimes:{
+			objects:"e_plugin_runtimes_insert_input",
+			on_conflict:"e_plugin_runtimes_on_conflict"
+		},
+		insert_e_plugin_runtimes_one:{
+			object:"e_plugin_runtimes_insert_input",
+			on_conflict:"e_plugin_runtimes_on_conflict"
 		},
 		insert_e_ready_settings:{
 			objects:"e_ready_settings_insert_input",
@@ -12097,6 +12164,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_player_roles_many:{
 			updates:"e_player_roles_updates"
+		},
+		update_e_plugin_runtimes:{
+			_set:"e_plugin_runtimes_set_input",
+			where:"e_plugin_runtimes_bool_exp"
+		},
+		update_e_plugin_runtimes_by_pk:{
+			_set:"e_plugin_runtimes_set_input",
+			pk_columns:"e_plugin_runtimes_pk_columns_input"
+		},
+		update_e_plugin_runtimes_many:{
+			updates:"e_plugin_runtimes_updates"
 		},
 		update_e_ready_settings:{
 			_set:"e_ready_settings_set_input",
@@ -20370,6 +20448,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"plugin_versions_bool_exp",
 		min_game_build_id:"Int_comparison_exp",
 		published_at:"timestamptz_comparison_exp",
+		runtime:"e_plugin_runtimes_enum_comparison_exp",
 		version:"String_comparison_exp"
 	},
 	plugin_versions_constraint: "enum" as const,
@@ -20377,7 +20456,8 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	plugin_versions_insert_input:{
-		published_at:"timestamptz"
+		published_at:"timestamptz",
+		runtime:"e_plugin_runtimes_enum"
 	},
 	plugin_versions_on_conflict:{
 		constraint:"plugin_versions_constraint",
@@ -20387,21 +20467,24 @@ export const AllTypesProps: Record<string,any> = {
 	plugin_versions_order_by:{
 		min_game_build_id:"order_by",
 		published_at:"order_by",
+		runtime:"order_by",
 		version:"order_by"
 	},
 	plugin_versions_pk_columns_input:{
-
+		runtime:"e_plugin_runtimes_enum"
 	},
 	plugin_versions_select_column: "enum" as const,
 	plugin_versions_set_input:{
-		published_at:"timestamptz"
+		published_at:"timestamptz",
+		runtime:"e_plugin_runtimes_enum"
 	},
 	plugin_versions_stream_cursor_input:{
 		initial_value:"plugin_versions_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	plugin_versions_stream_cursor_value_input:{
-		published_at:"timestamptz"
+		published_at:"timestamptz",
+		runtime:"e_plugin_runtimes_enum"
 	},
 	plugin_versions_update_column: "enum" as const,
 	plugin_versions_updates:{
@@ -20826,6 +20909,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_player_roles_bool_exp"
 		},
 		e_player_roles_by_pk:{
+
+		},
+		e_plugin_runtimes:{
+			distinct_on:"e_plugin_runtimes_select_column",
+			order_by:"e_plugin_runtimes_order_by",
+			where:"e_plugin_runtimes_bool_exp"
+		},
+		e_plugin_runtimes_aggregate:{
+			distinct_on:"e_plugin_runtimes_select_column",
+			order_by:"e_plugin_runtimes_order_by",
+			where:"e_plugin_runtimes_bool_exp"
+		},
+		e_plugin_runtimes_by_pk:{
 
 		},
 		e_ready_settings:{
@@ -21925,7 +22021,7 @@ export const AllTypesProps: Record<string,any> = {
 			where:"plugin_versions_bool_exp"
 		},
 		plugin_versions_by_pk:{
-
+			runtime:"e_plugin_runtimes_enum"
 		},
 		readServerFile:{
 
@@ -22846,6 +22942,7 @@ export const AllTypesProps: Record<string,any> = {
 		matches_aggregate:"matches_aggregate_bool_exp",
 		max_players:"Int_comparison_exp",
 		offline_at:"timestamptz_comparison_exp",
+		plugin_runtime:"e_plugin_runtimes_enum_comparison_exp",
 		plugin_version:"String_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"bytea_comparison_exp",
@@ -22869,6 +22966,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		matches:"matches_arr_rel_insert_input",
 		offline_at:"timestamptz",
+		plugin_runtime:"e_plugin_runtimes_enum",
 		rcon_password:"bytea",
 		reserved_by_match_id:"uuid",
 		server_region:"server_regions_obj_rel_insert_input",
@@ -22944,6 +23042,7 @@ export const AllTypesProps: Record<string,any> = {
 		matches_aggregate:"matches_aggregate_order_by",
 		max_players:"order_by",
 		offline_at:"order_by",
+		plugin_runtime:"order_by",
 		plugin_version:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
@@ -22966,6 +23065,7 @@ export const AllTypesProps: Record<string,any> = {
 		api_password:"uuid",
 		id:"uuid",
 		offline_at:"timestamptz",
+		plugin_runtime:"e_plugin_runtimes_enum",
 		rcon_password:"bytea",
 		reserved_by_match_id:"uuid",
 		type:"e_server_types_enum",
@@ -22994,6 +23094,7 @@ export const AllTypesProps: Record<string,any> = {
 		api_password:"uuid",
 		id:"uuid",
 		offline_at:"timestamptz",
+		plugin_runtime:"e_plugin_runtimes_enum",
 		rcon_password:"bytea",
 		reserved_by_match_id:"uuid",
 		type:"e_server_types_enum",
@@ -23819,6 +23920,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_player_roles_stream:{
 			cursor:"e_player_roles_stream_cursor_input",
 			where:"e_player_roles_bool_exp"
+		},
+		e_plugin_runtimes:{
+			distinct_on:"e_plugin_runtimes_select_column",
+			order_by:"e_plugin_runtimes_order_by",
+			where:"e_plugin_runtimes_bool_exp"
+		},
+		e_plugin_runtimes_aggregate:{
+			distinct_on:"e_plugin_runtimes_select_column",
+			order_by:"e_plugin_runtimes_order_by",
+			where:"e_plugin_runtimes_bool_exp"
+		},
+		e_plugin_runtimes_by_pk:{
+
+		},
+		e_plugin_runtimes_stream:{
+			cursor:"e_plugin_runtimes_stream_cursor_input",
+			where:"e_plugin_runtimes_bool_exp"
 		},
 		e_ready_settings:{
 			distinct_on:"e_ready_settings_select_column",
@@ -25196,7 +25314,7 @@ export const AllTypesProps: Record<string,any> = {
 			where:"plugin_versions_bool_exp"
 		},
 		plugin_versions_by_pk:{
-
+			runtime:"e_plugin_runtimes_enum"
 		},
 		plugin_versions_stream:{
 			cursor:"plugin_versions_stream_cursor_input",
@@ -34890,6 +35008,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_player_roles"
 	},
+	e_plugin_runtimes:{
+		description:"String",
+		value:"String"
+	},
+	e_plugin_runtimes_aggregate:{
+		aggregate:"e_plugin_runtimes_aggregate_fields",
+		nodes:"e_plugin_runtimes"
+	},
+	e_plugin_runtimes_aggregate_fields:{
+		count:"Int",
+		max:"e_plugin_runtimes_max_fields",
+		min:"e_plugin_runtimes_min_fields"
+	},
+	e_plugin_runtimes_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_plugin_runtimes_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_plugin_runtimes_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_plugin_runtimes"
+	},
 	e_ready_settings:{
 		description:"String",
 		value:"String"
@@ -35358,6 +35501,7 @@ export const ReturnTypes: Record<string,any> = {
 		node_ip:"inet",
 		offline_at:"timestamptz",
 		pin_build_id:"Int",
+		pin_plugin_runtime:"String",
 		pin_plugin_version:"String",
 		pinned_version:"game_versions",
 		plugin_supported:"Boolean",
@@ -35426,6 +35570,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		offline_at:"timestamptz",
 		pin_build_id:"Int",
+		pin_plugin_runtime:"String",
 		pin_plugin_version:"String",
 		region:"String",
 		shader_bake_progress:"numeric",
@@ -35451,6 +35596,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		offline_at:"timestamptz",
 		pin_build_id:"Int",
+		pin_plugin_runtime:"String",
 		pin_plugin_version:"String",
 		region:"String",
 		shader_bake_progress:"numeric",
@@ -35814,7 +35960,6 @@ export const ReturnTypes: Record<string,any> = {
 		value:"Float"
 	},
 	league_divisions:{
-		active:"Boolean",
 		created_at:"timestamptz",
 		id:"uuid",
 		name:"String",
@@ -38482,6 +38627,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_objective_types_by_pk:"e_objective_types",
 		delete_e_player_roles:"e_player_roles_mutation_response",
 		delete_e_player_roles_by_pk:"e_player_roles",
+		delete_e_plugin_runtimes:"e_plugin_runtimes_mutation_response",
+		delete_e_plugin_runtimes_by_pk:"e_plugin_runtimes",
 		delete_e_ready_settings:"e_ready_settings_mutation_response",
 		delete_e_ready_settings_by_pk:"e_ready_settings",
 		delete_e_sanction_types:"e_sanction_types_mutation_response",
@@ -38753,6 +38900,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_objective_types_one:"e_objective_types",
 		insert_e_player_roles:"e_player_roles_mutation_response",
 		insert_e_player_roles_one:"e_player_roles",
+		insert_e_plugin_runtimes:"e_plugin_runtimes_mutation_response",
+		insert_e_plugin_runtimes_one:"e_plugin_runtimes",
 		insert_e_ready_settings:"e_ready_settings_mutation_response",
 		insert_e_ready_settings_one:"e_ready_settings",
 		insert_e_sanction_types:"e_sanction_types_mutation_response",
@@ -39143,6 +39292,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_player_roles:"e_player_roles_mutation_response",
 		update_e_player_roles_by_pk:"e_player_roles",
 		update_e_player_roles_many:"e_player_roles_mutation_response",
+		update_e_plugin_runtimes:"e_plugin_runtimes_mutation_response",
+		update_e_plugin_runtimes_by_pk:"e_plugin_runtimes",
+		update_e_plugin_runtimes_many:"e_plugin_runtimes_mutation_response",
 		update_e_ready_settings:"e_ready_settings_mutation_response",
 		update_e_ready_settings_by_pk:"e_ready_settings",
 		update_e_ready_settings_many:"e_ready_settings_mutation_response",
@@ -45032,6 +45184,7 @@ export const ReturnTypes: Record<string,any> = {
 	plugin_versions:{
 		min_game_build_id:"Int",
 		published_at:"timestamptz",
+		runtime:"e_plugin_runtimes_enum",
 		version:"String"
 	},
 	plugin_versions_aggregate:{
@@ -45187,6 +45340,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_player_roles:"e_player_roles",
 		e_player_roles_aggregate:"e_player_roles_aggregate",
 		e_player_roles_by_pk:"e_player_roles",
+		e_plugin_runtimes:"e_plugin_runtimes",
+		e_plugin_runtimes_aggregate:"e_plugin_runtimes_aggregate",
+		e_plugin_runtimes_by_pk:"e_plugin_runtimes",
 		e_ready_settings:"e_ready_settings",
 		e_ready_settings_aggregate:"e_ready_settings_aggregate",
 		e_ready_settings_by_pk:"e_ready_settings",
@@ -45763,6 +45919,7 @@ export const ReturnTypes: Record<string,any> = {
 		matches_aggregate:"matches_aggregate",
 		max_players:"Int",
 		offline_at:"timestamptz",
+		plugin_runtime:"e_plugin_runtimes_enum",
 		plugin_version:"String",
 		port:"Int",
 		rcon_password:"bytea",
@@ -46174,6 +46331,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_player_roles_aggregate:"e_player_roles_aggregate",
 		e_player_roles_by_pk:"e_player_roles",
 		e_player_roles_stream:"e_player_roles",
+		e_plugin_runtimes:"e_plugin_runtimes",
+		e_plugin_runtimes_aggregate:"e_plugin_runtimes_aggregate",
+		e_plugin_runtimes_by_pk:"e_plugin_runtimes",
+		e_plugin_runtimes_stream:"e_plugin_runtimes",
 		e_ready_settings:"e_ready_settings",
 		e_ready_settings_aggregate:"e_ready_settings_aggregate",
 		e_ready_settings_by_pk:"e_ready_settings",

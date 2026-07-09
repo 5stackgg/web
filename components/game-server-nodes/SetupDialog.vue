@@ -118,6 +118,7 @@ export default {
               enabled: true,
               build_id: true,
               pin_plugin_version: true,
+              pin_plugin_runtime: true,
               total_server_count: true,
               available_server_count: true,
               offline_at: true,

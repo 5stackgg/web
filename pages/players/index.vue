@@ -49,10 +49,6 @@ import { getAllCountries } from "countries-and-timezones";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import {
-  tacticalFilterPillActiveClasses,
-  tacticalFilterPillActiveDangerClasses,
-  tacticalFilterPillActiveWarningClasses,
-  tacticalFilterPillClasses,
   filterTriggerBase,
   filterTriggerIdle,
   filterTriggerActive,
@@ -289,28 +285,32 @@ const seasonsEnabled = computed(
                 </div>
               </div>
 
-              <!-- Toggle pills -->
-              <div class="flex flex-wrap gap-2 pt-1">
+              <!-- Boolean toggles -->
+              <div class="space-y-0.5 border-t border-border/50 pt-2">
                 <button
                   type="button"
-                  :class="[
-                    tacticalFilterPillClasses,
-                    onlyPlayedMatches ? tacticalFilterPillActiveClasses : '',
-                  ]"
+                  class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+                  :class="
+                    onlyPlayedMatches
+                      ? 'text-[hsl(var(--tac-amber))]'
+                      : 'text-foreground/90'
+                  "
                   @click="onlyPlayedMatches = !onlyPlayedMatches"
                 >
-                  {{ $t("pages.players.played_matches") }}
+                  <span>{{ $t("pages.players.played_matches") }}</span>
+                  <Check
+                    v-if="onlyPlayedMatches"
+                    class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+                  />
                 </button>
 
                 <template v-if="canViewAdditionalDetails">
                   <button
                     type="button"
-                    :class="[
-                      tacticalFilterPillClasses,
-                      form.values.isBanned
-                        ? tacticalFilterPillActiveDangerClasses
-                        : '',
-                    ]"
+                    class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+                    :class="
+                      form.values.isBanned ? 'text-red-500' : 'text-foreground/90'
+                    "
                     @click="
                       () => {
                         form.setFieldValue('isBanned', !form.values.isBanned);
@@ -318,16 +318,20 @@ const seasonsEnabled = computed(
                       }
                     "
                   >
-                    {{ $t("pages.players.is_banned") }}
+                    <span>{{ $t("pages.players.is_banned") }}</span>
+                    <Check
+                      v-if="form.values.isBanned"
+                      class="h-3.5 w-3.5 text-red-500"
+                    />
                   </button>
                   <button
                     type="button"
-                    :class="[
-                      tacticalFilterPillClasses,
+                    class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+                    :class="
                       form.values.isGagged
-                        ? tacticalFilterPillActiveWarningClasses
-                        : '',
-                    ]"
+                        ? 'text-yellow-500'
+                        : 'text-foreground/90'
+                    "
                     @click="
                       () => {
                         form.setFieldValue('isGagged', !form.values.isGagged);
@@ -335,16 +339,18 @@ const seasonsEnabled = computed(
                       }
                     "
                   >
-                    {{ $t("pages.players.is_gagged") }}
+                    <span>{{ $t("pages.players.is_gagged") }}</span>
+                    <Check
+                      v-if="form.values.isGagged"
+                      class="h-3.5 w-3.5 text-yellow-500"
+                    />
                   </button>
                   <button
                     type="button"
-                    :class="[
-                      tacticalFilterPillClasses,
-                      form.values.isMuted
-                        ? tacticalFilterPillActiveWarningClasses
-                        : '',
-                    ]"
+                    class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+                    :class="
+                      form.values.isMuted ? 'text-yellow-500' : 'text-foreground/90'
+                    "
                     @click="
                       () => {
                         form.setFieldValue('isMuted', !form.values.isMuted);
@@ -352,7 +358,11 @@ const seasonsEnabled = computed(
                       }
                     "
                   >
-                    {{ $t("pages.players.is_muted") }}
+                    <span>{{ $t("pages.players.is_muted") }}</span>
+                    <Check
+                      v-if="form.values.isMuted"
+                      class="h-3.5 w-3.5 text-yellow-500"
+                    />
                   </button>
                 </template>
               </div>

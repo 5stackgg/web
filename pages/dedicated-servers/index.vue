@@ -204,6 +204,7 @@ export default {
               rcon_status: true,
               max_players: true,
               plugin_version: true,
+              plugin_runtime: true,
               connect_password: true,
               offline_at: true,
               current_match: {

@@ -276,8 +276,10 @@ export default {
       _followLogs: true,
       maximized: false,
       logListener: undefined as { stop: () => void } | undefined,
+      onlineListener: undefined as { stop: () => void } | undefined,
       retryTimeout: undefined as NodeJS.Timeout | undefined,
       seenLogKeys: new Set<string>() as Set<string>,
+      emptyRetries: 0,
     };
   },
 
@@ -373,6 +375,7 @@ export default {
         this.logsByPod = {};
         this.activePod = "";
         this.seenLogKeys = new Set<string>();
+        this.emptyRetries = 0;
         let partial: Record<string, any[]> = {};
 
         this.logListener?.stop();
@@ -381,17 +384,26 @@ export default {
           const log = JSON.parse(raw);
 
           if (log.end) {
-            if (
-              log.job_finshed !== true &&
-              log.partial !== true &&
-              !this.disableRetry
-            ) {
-              this.retryTimeout = setTimeout(() => {
-                socket.event("logs", {
-                  tailLines: 250,
-                  service: this.service,
-                });
-              }, 5000);
+            if (log.partial !== true && !this.disableRetry) {
+              const jobFinished = log.job_finshed === true;
+              // stale k8s events from a previous same-named job can report
+              // "finished" while a fresh run is still booting — if nothing has
+              // streamed yet, keep polling for a while before trusting it
+              const retryWhileEmpty =
+                jobFinished && this.podCount === 0 && this.emptyRetries < 12;
+
+              if (!jobFinished || retryWhileEmpty) {
+                if (retryWhileEmpty) {
+                  this.emptyRetries++;
+                }
+                clearTimeout(this.retryTimeout);
+                this.retryTimeout = setTimeout(() => {
+                  socket.event("logs", {
+                    tailLines: 250,
+                    service: this.service,
+                  });
+                }, 5000);
+              }
             }
 
             if (log.partial) {
@@ -435,7 +447,19 @@ export default {
             if (!this.activePod) this.activePod = pod;
           }
 
+          this.emptyRetries = 0;
           this.logsByPod[pod].push(log);
+        });
+
+        // the server-side stream dies with the websocket — re-subscribe when
+        // the connection comes back so an open panel doesn't freeze
+        this.onlineListener?.stop();
+        this.onlineListener = socket.listen("online", () => {
+          clearTimeout(this.retryTimeout);
+          socket.event("logs", {
+            tailLines: 250,
+            service: this.service,
+          });
         });
 
         socket.event("logs", {
@@ -449,6 +473,7 @@ export default {
   unmounted() {
     clearTimeout(this.retryTimeout);
     this.logListener?.stop();
+    this.onlineListener?.stop();
     document.body.classList.remove("overflow-hidden");
     window.removeEventListener("keydown", this.onMaximizeKeydown);
   },

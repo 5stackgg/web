@@ -347,6 +347,7 @@ export default {
               enabled: true,
               connected: true,
               plugin_version: true,
+              plugin_runtime: true,
               rcon_status: true,
               game_server_node_id: true,
               connection_link: true,
@@ -381,9 +382,21 @@ export default {
       if (!this.server || this.server.type !== "Ranked") {
         return false;
       }
+
+      const applicationSettings = useApplicationSettingsStore();
+
+      // A server on another framework is waiting to be recycled onto the
+      // selected runtime; its version is from a lineage we can't compare against.
+      if (
+        this.server.plugin_runtime &&
+        this.server.plugin_runtime !==
+          applicationSettings.gameServerPluginRuntime
+      ) {
+        return false;
+      }
+
       return (
-        this.server.plugin_version !=
-        useApplicationSettingsStore().currentPluginVersion
+        this.server.plugin_version != applicationSettings.currentPluginVersion
       );
     },
     rconOnline() {

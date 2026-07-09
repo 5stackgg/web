@@ -68,7 +68,25 @@ export const useApplicationSettingsStore = defineStore(
 
     subscribeToSettings();
 
-    const currentPluginVersion = ref<string | null>(null);
+    const gameServerPluginRuntime = computed<string>(() => {
+      return (
+        settings.value?.find((setting) => {
+          return setting.name === "public.game_server_plugin_runtime";
+        })?.value || "swiftlys2"
+      );
+    });
+
+    const pluginVersions = ref<Array<{ version: string; runtime: string }>>([]);
+
+    // Derived rather than filtered in the subscription so switching the runtime
+    // setting does not require tearing down and re-establishing the socket.
+    const currentPluginVersion = computed<string | null>(() => {
+      return (
+        pluginVersions.value.find((pluginVersion) => {
+          return pluginVersion.runtime === gameServerPluginRuntime.value;
+        })?.version ?? null
+      );
+    });
 
     const subscribeToPluginVersion = async () => {
       const { subscribe } = useSubscriptionManager();
@@ -84,7 +102,6 @@ export const useApplicationSettingsStore = defineStore(
         query: generateSubscription({
           plugin_versions: [
             {
-              limit: 1,
               order_by: [
                 {
                   published_at: order_by.desc,
@@ -93,6 +110,7 @@ export const useApplicationSettingsStore = defineStore(
             },
             {
               version: true,
+              runtime: true,
             },
           ],
         }),
@@ -102,7 +120,7 @@ export const useApplicationSettingsStore = defineStore(
         "settings:plugin_version",
         subscription.subscribe({
           next: ({ data }) => {
-            currentPluginVersion.value = data.plugin_versions.at(0).version;
+            pluginVersions.value = data.plugin_versions;
           },
         }),
       );
@@ -534,6 +552,7 @@ export const useApplicationSettingsStore = defineStore(
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,
+      gameServerPluginRuntime,
       brandName,
       logoUrl,
       faviconUrl,

@@ -148,20 +148,20 @@
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-48">
         <DropdownMenuItem @click="handleCreateFileInRoot">
-          <FilePlus class="mr-2 h-4 w-4" />
+          <FilePlus />
           <span>{{ $t("file_manager.toolbar.new_file") }}</span>
         </DropdownMenuItem>
         <DropdownMenuItem @click="handleCreateFolderInRoot">
-          <FolderPlus class="mr-2 h-4 w-4" />
+          <FolderPlus />
           <span>{{ $t("file_manager.toolbar.new_folder") }}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="openUploadDialog">
-          <Upload class="mr-2 h-4 w-4" />
+          <Upload />
           <span>{{ $t("file_manager.toolbar.upload_files") }}</span>
         </DropdownMenuItem>
         <DropdownMenuItem @click="refresh">
-          <RefreshCcw class="mr-2 h-4 w-4" />
+          <RefreshCcw />
           <span>{{ $t("file_manager.toolbar.refresh") }}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

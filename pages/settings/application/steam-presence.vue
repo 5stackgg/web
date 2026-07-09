@@ -17,46 +17,22 @@ definePageMeta({
       <SettingsSection
         id="steam-presence"
         :title="$t('pages.settings.application.steam_presence.section')"
+        :description="
+          $t('pages.settings.application.steam_presence.enabled_description')
+        "
+        clickable-header
+        @header-click="save('public.steam_presence_enabled', !enabled)"
       >
-        <div
-          class="flex cursor-pointer flex-row items-center justify-between"
-          @click="save('public.steam_presence_enabled', !enabled)"
-        >
-          <div class="space-y-0.5">
-            <div class="flex items-center gap-2">
-              <h4 class="text-base font-medium">
-                {{ $t("pages.settings.application.steam_presence.enabled") }}
-              </h4>
-              <span
-                class="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                :class="
-                  enabled
-                    ? 'bg-green-500/15 text-green-400'
-                    : 'bg-muted text-muted-foreground'
-                "
-              >
-                {{
-                  enabled
-                    ? $t("pages.settings.application.steam_presence.active")
-                    : $t("pages.settings.application.steam_presence.disabled")
-                }}
-              </span>
-            </div>
-            <p class="max-w-2xl text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.steam_presence.enabled_description")
-              }}
-            </p>
-          </div>
+        <template #action>
           <Switch
             :model-value="enabled"
             @update:model-value="(v) => save('public.steam_presence_enabled', v)"
           />
-        </div>
+        </template>
 
         <!-- Status tiles, only when enabled (no data fetched otherwise). -->
         <template v-if="enabled">
-          <div class="border-t border-border/60 pt-5">
+          <div>
             <div v-if="!status && loading" class="text-sm text-muted-foreground">
               {{ $t("common.loading", "Loading…") }}
             </div>

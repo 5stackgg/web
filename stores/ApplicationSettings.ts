@@ -260,6 +260,46 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // CAL-style leagues: divisions, weekly seasons, promotion/relegation.
+    const leaguesEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.leagues_enabled",
+        )?.value === "true"
+      );
+    });
+
+    // When off, teams register with no division preference (admins place them).
+    const leagueAllowDivisionRequest = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.league_allow_division_request",
+        )?.value === "true"
+      );
+    });
+
+    // Roster sizing is a team-wide rule (not per-season); seasons inherit it.
+    const teamMinRosterSize = computed(() => {
+      const value = settings.value?.find(
+        (setting) => setting.name === "public.team_min_roster_size",
+      )?.value;
+      return value ? parseInt(value, 10) : 5;
+    });
+
+    const teamMaxRosterSize = computed(() => {
+      const value = settings.value?.find(
+        (setting) => setting.name === "public.team_max_roster_size",
+      )?.value;
+      return value ? parseInt(value, 10) : 7;
+    });
+
+    const teamMaxSubs = computed(() => {
+      const value = settings.value?.find(
+        (setting) => setting.name === "public.team_max_subs",
+      )?.value;
+      return value ? parseInt(value, 10) : 2;
+    });
+
     // Anti-cheat: require viewers to be signed in before live game
     // streams are shown. Enabled by default — only an explicit "false"
     // disables it.
@@ -479,6 +519,11 @@ export const useApplicationSettingsStore = defineStore(
       playerNameRegistration,
       newsEnabled,
       seasonsEnabled,
+      leaguesEnabled,
+      leagueAllowDivisionRequest,
+      teamMinRosterSize,
+      teamMaxRosterSize,
+      teamMaxSubs,
       requireLoginForLiveStreams,
       newsLabel,
       postNewsRole,

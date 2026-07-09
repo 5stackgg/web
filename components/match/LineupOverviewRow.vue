@@ -16,7 +16,15 @@ import { useOverviewColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
-import { MoreVertical, Crown, Sparkles } from "lucide-vue-next";
+import {
+  ArrowLeftRight,
+  Crown,
+  LogOut,
+  MoreVertical,
+  Shield,
+  Sparkles,
+  UserMinus,
+} from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
@@ -53,20 +61,23 @@ const DASH = "—";
           <DropdownMenuContent align="start" class="w-56">
             <template v-if="canManageLineup">
               <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
+                <Shield />
                 <span>{{ $t("match.overview.promote_captain") }}</span>
               </DropdownMenuItem>
 
               <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
+                <ArrowLeftRight />
                 <span>{{ $t("match.overview.switch_teams") }}</span>
               </DropdownMenuItem>
 
-              <DropdownMenuSeparator vp />
+              <DropdownMenuSeparator />
 
               <DropdownMenuItem
                 class="text-destructive"
                 @click="removeFromLineup"
                 v-if="canManageLineup"
               >
+                <UserMinus />
                 <span>{{ $t("match.overview.remove_from_lineup") }}</span>
               </DropdownMenuItem>
             </template>
@@ -75,6 +86,7 @@ const DASH = "—";
               @click="switchTeams"
               v-if="!canManageLineup && canSwitchTeams"
             >
+              <ArrowLeftRight />
               <span>{{ $t("match.overview.switch_teams") }}</span>
             </DropdownMenuItem>
 
@@ -83,6 +95,7 @@ const DASH = "—";
               @click="removeFromLineup"
               v-if="canLeaveLineup"
             >
+              <LogOut />
               <span>{{ $t("match.overview.leave_lineup") }}</span>
             </DropdownMenuItem>
 
@@ -91,9 +104,7 @@ const DASH = "—";
                 v-if="canManageLineup || canLeaveLineup || canSwitchTeams"
               />
               <DropdownMenuItem @click="renderHighlightOpen = true">
-                <Sparkles
-                  class="h-3.5 w-3.5 mr-2 text-[hsl(var(--tac-amber))]"
-                />
+                <Sparkles class="text-[hsl(var(--tac-amber))]" />
                 <span>{{ $t("match.overview.render_highlight") }}</span>
               </DropdownMenuItem>
             </template>
@@ -342,11 +353,7 @@ const DASH = "—";
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
-import {
-  $,
-  e_match_status_enum,
-  e_player_roles_enum,
-} from "~/generated/zeus";
+import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   components: {

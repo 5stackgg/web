@@ -136,6 +136,7 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
 
 export default {
   data() {
@@ -162,6 +163,7 @@ export default {
                     },
                   },
                 },
+                _and: [NOT_LEAGUE_TOURNAMENT],
               },
               order_by: [
                 {},

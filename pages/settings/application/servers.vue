@@ -13,32 +13,21 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         <SettingsSection
           id="performance"
           :title="$t('pages.settings.application.servers.cpu_section')"
+          :description="
+            $t('pages.settings.application.servers.enable_cpu_pinning_description')
+          "
+          clickable-header
+          @header-click="toggleCpuPinning"
         >
-          <div
-            class="flex flex-row items-center justify-between cursor-pointer"
-            @click="toggleCpuPinning"
-          >
-            <div class="space-y-0.5">
-              <h4 class="text-base font-medium">
-                {{
-                  $t("pages.settings.application.servers.enable_cpu_pinning")
-                }}
-              </h4>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t(
-                    "pages.settings.application.servers.enable_cpu_pinning_description",
-                  )
-                }}
-              </p>
-            </div>
+          <template #action>
             <Switch
               :model-value="cpuPinningEnabled"
               @update:model-value="toggleCpuPinning"
             />
-          </div>
+          </template>
 
           <FormField
+            v-if="cpuPinningEnabled"
             v-slot="{ componentField }"
             name="number_of_cpus_per_server"
           >

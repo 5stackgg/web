@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { FormSection } from "~/components/ui/form";
-import { Trash, AlertTriangle, RefreshCw } from "lucide-vue-next";
+import { Trash2, AlertTriangle, RefreshCw } from "lucide-vue-next";
 import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 </script>
@@ -160,7 +160,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       <AlertDialog v-if="map">
         <AlertDialogTrigger asChild>
           <Button variant="destructive" type="button">
-            <Trash class="mr-2 h-4 w-4" />
+            <Trash2 class="mr-2 h-4 w-4" />
             {{ $t("pages.map_pools.form.delete_map") }}
           </Button>
         </AlertDialogTrigger>

@@ -15,6 +15,7 @@ import {
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import { excludeLeagueTournaments } from "~/graphql/tournamentFilters";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import {
   InputGroup,
@@ -237,7 +238,7 @@ function sinceCutoffIso(preset: SincePreset): string | null {
 }
 
 const filterWhere = computed<Record<string, any>>(() => {
-  const where: Record<string, any> = {};
+  const where: Record<string, any> = excludeLeagueTournaments();
   if (statusFilter.value !== "all") {
     where.status = { _in: statusGroups[statusFilter.value] };
   }
@@ -662,6 +663,8 @@ export default {
                 status: {
                   _eq: $("status", "e_tournament_status_enum"),
                 },
+                // Hide league-internal tournaments.
+                ...({ _not: { league_season_division: {} } } as any),
               },
               order_by: [
                 {},
@@ -695,6 +698,8 @@ export default {
                 status: {
                   _eq: $("status", "e_tournament_status_enum"),
                 },
+                // Hide league-internal tournaments.
+                ...({ _not: { league_season_division: {} } } as any),
               },
               order_by: [
                 {},

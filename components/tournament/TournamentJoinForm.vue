@@ -13,6 +13,8 @@ import { MessageCircleWarning } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import { Card } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -106,6 +108,55 @@ import { Card } from "~/components/ui/card";
           <FormMessage v-if="meta.touched" />
         </FormItem>
       </FormField>
+
+      <div
+        v-if="form.values.team_id && rosterGroups.length"
+        class="space-y-2"
+      >
+        <label
+          class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          {{
+            $t("tournament.join.roster_range", {
+              selected: selectedPlayers.size,
+              max: maxLineup,
+            })
+          }}
+        </label>
+        <div v-for="group in rosterGroups" :key="group.key" class="space-y-1.5">
+          <div
+            class="font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t(`tournament.join.group.${group.key}`) }} ·
+            {{ group.members.length }}
+          </div>
+          <ul class="grid gap-1.5 sm:grid-cols-2">
+            <li
+              v-for="member in group.members"
+              :key="member.player_steam_id"
+              class="flex items-center gap-2.5 rounded-md border border-border/60 bg-muted/20 px-3 py-2"
+              :class="rosterItemClass(member)"
+              @click="togglePlayer(member)"
+            >
+              <Checkbox
+                :model-value="selectedPlayers.has(member.player_steam_id)"
+                :disabled="
+                  isTaken(member) ||
+                  (!selectedPlayers.has(member.player_steam_id) && atLineupCap)
+                "
+                @click.stop="togglePlayer(member)"
+              />
+              <PlayerDisplay :player="member.player" />
+              <span
+                v-if="isTaken(member)"
+                class="ml-auto text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground"
+              >
+                {{ $t("tournament.join.already_rostered") }}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
     </template>
     <template v-else>
       <FormSection :title="$t('team.form.identity')">
@@ -141,6 +192,9 @@ import { Card } from "~/components/ui/card";
       :loading="submitting"
       :disabled="
         (!form.values.new_team && !form.values.team_id) ||
+        (!form.values.new_team &&
+          !!form.values.team_id &&
+          selectedPlayers.size === 0) ||
         (form.values.new_team && !form.values.team_name) ||
         (form.values.new_team && !form.values.short_name) ||
         (form.values.new_team &&
@@ -159,7 +213,7 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useAuthStore } from "~/stores/AuthStore";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 
@@ -176,6 +230,8 @@ export default {
       submitting: false,
       teamOwner: null,
       autoShortName: true,
+      teamRoster: [] as any[],
+      selectedPlayers: new Set<string>(),
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -265,6 +321,37 @@ export default {
       }
       return Array.from(steamIds);
     },
+    maxLineup() {
+      return (
+        this.tournament.max_players_per_lineup ||
+        this.tournament.min_players_per_lineup ||
+        0
+      );
+    },
+    takenSteamIds() {
+      return new Set(this.existingTournamentPlayerSteamIds.map(String));
+    },
+    rosterGroups() {
+      const sortByName = (list: any[]) =>
+        [...list].sort((a, b) =>
+          (a.player?.name ?? "").localeCompare(b.player?.name ?? ""),
+        );
+      return [
+        { key: "starters", status: "Starter" },
+        { key: "substitutes", status: "Substitute" },
+        { key: "benched", status: "Benched" },
+      ]
+        .map((group) => ({
+          key: group.key,
+          members: sortByName(
+            this.teamRoster.filter((m: any) => m.status === group.status),
+          ),
+        }))
+        .filter((group) => group.members.length);
+    },
+    atLineupCap() {
+      return this.maxLineup > 0 && this.selectedPlayers.size >= this.maxLineup;
+    },
   },
   watch: {
     "form.values.add_self_to_lineup": {
@@ -277,6 +364,16 @@ export default {
         }
       },
     },
+    "form.values.team_id": {
+      handler(teamId: string | undefined) {
+        if (!teamId || this.form.values.new_team) {
+          this.teamRoster = [];
+          this.selectedPlayers = new Set();
+          return;
+        }
+        this.fetchTeamRoster(teamId);
+      },
+    },
     "form.values.new_team": {
       handler(newVal) {
         if (!newVal) {
@@ -286,6 +383,9 @@ export default {
           this.form.setFieldValue("add_self_to_lineup", false);
           return;
         }
+
+        this.teamRoster = [];
+        this.selectedPlayers = new Set();
 
         // Only set add_self_to_lineup to true if can_join is true
         const shouldAddSelf = this.tournament.is_organizer
@@ -314,6 +414,89 @@ export default {
     async setOwnerTeamOwner(player) {
       this.teamOwner = player;
       this.form.setFieldValue("owner_steam_id", player.steam_id);
+    },
+    isTaken(member) {
+      return this.takenSteamIds.has(member.player_steam_id);
+    },
+    rosterItemClass(member) {
+      if (this.isTaken(member)) {
+        return "cursor-not-allowed opacity-40";
+      }
+      if (!this.selectedPlayers.has(member.player_steam_id) && this.atLineupCap) {
+        return "cursor-not-allowed opacity-50";
+      }
+      return "cursor-pointer";
+    },
+    togglePlayer(member) {
+      if (this.isTaken(member)) {
+        return;
+      }
+      const steamId = member.player_steam_id;
+      const next = new Set(this.selectedPlayers);
+      if (next.has(steamId)) {
+        next.delete(steamId);
+      } else if (!this.atLineupCap) {
+        next.add(steamId);
+      }
+      this.selectedPlayers = next;
+    },
+    async fetchTeamRoster(teamId) {
+      const { data } = await this.$apollo.query({
+        query: generateQuery({
+          team_roster: [
+            { where: { team_id: { _eq: teamId } } },
+            {
+              player_steam_id: true,
+              status: true,
+              coach: true,
+              player: {
+                steam_id: true,
+                name: true,
+                avatar_url: true,
+              },
+            },
+          ],
+          teams: [
+            { where: { id: { _eq: teamId } } },
+            {
+              captain_steam_id: true,
+              owner_steam_id: true,
+            },
+          ],
+        }),
+        fetchPolicy: "network-only",
+      });
+
+      if (this.form.values.team_id !== teamId) {
+        return;
+      }
+
+      this.teamRoster = (data.team_roster || []).map((entry) => ({
+        ...entry,
+        player_steam_id: String(entry.player_steam_id),
+      }));
+
+      const team = (data.teams || [])[0];
+      const captainSteamId = String(
+        team?.captain_steam_id || team?.owner_steam_id || "",
+      );
+      const order = { Starter: 0, Substitute: 1, Benched: 2 };
+      const prioritized = [...this.teamRoster]
+        .filter((member) => !this.takenSteamIds.has(member.player_steam_id))
+        .sort((a, b) => {
+          const aCaptain = a.player_steam_id === captainSteamId ? -1 : 0;
+          const bCaptain = b.player_steam_id === captainSteamId ? -1 : 0;
+          if (aCaptain !== bCaptain) {
+            return aCaptain - bCaptain;
+          }
+          return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+        });
+
+      this.selectedPlayers = new Set(
+        prioritized
+          .slice(0, this.maxLineup || prioritized.length)
+          .map((member) => member.player_steam_id),
+      );
     },
     async joinTournament() {
       if (this.submitLock) {
@@ -367,14 +550,21 @@ export default {
                     ? null
                     : this.form.values.team_id,
                   roster: {
-                    data: addPlayerSteamId
-                      ? [
-                          {
-                            player_steam_id: addPlayerSteamId,
+                    data: this.form.values.new_team
+                      ? addPlayerSteamId
+                        ? [
+                            {
+                              player_steam_id: addPlayerSteamId,
+                              tournament_id: this.$route.params.tournamentId,
+                            },
+                          ]
+                        : []
+                      : Array.from(this.selectedPlayers).map(
+                          (player_steam_id) => ({
+                            player_steam_id,
                             tournament_id: this.$route.params.tournamentId,
-                          },
-                        ]
-                      : [],
+                          }),
+                        ),
                   },
                 },
               },
@@ -391,6 +581,8 @@ export default {
 
         this.form.resetForm();
         this.autoShortName = true;
+        this.teamRoster = [];
+        this.selectedPlayers = new Set();
 
         // Emit close event to close drawer/modal
         this.$emit("close");

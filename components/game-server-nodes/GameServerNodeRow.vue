@@ -38,7 +38,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { PaginationEllipsis } from "~/components/ui/pagination";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
@@ -60,6 +59,7 @@ import {
   Settings2,
   ShieldCheck,
   Network,
+  MoreVertical,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
@@ -387,363 +387,373 @@ const isSectionExpanded = (section: string) => {
     </TableCell>
     <TableCell v-if="isGpuOnly" :colspan="4" class="hidden xl:table-cell" />
     <template v-else>
-    <TableCell class="hidden xl:table-cell">
-      <Select
-        :model-value="regionForm.region"
-        @update:model-value="(value) => updateRegion(value)"
-      >
-        <SelectTrigger class="h-7 px-2 text-xs w-full">
-          <SelectValue :placeholder="$t('game_server.select_region')" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem :value="null">
-              {{ $t("game_server.no_region") }}
-            </SelectItem>
-            <SelectItem :value="region.value" v-for="region of server_regions">
-              {{ region.description || region.value }}
-            </SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </TableCell>
-    <TableCell class="hidden xl:table-cell align-top">
-      <div class="flex flex-col gap-1.5 text-xs">
-        <!-- Max servers -->
-        <div class="flex items-center gap-2">
-          <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
-            $t("game_server.max_servers")
-          }}</span>
-          <span class="font-medium tabular-nums">{{
-            maxServers !== null && maxServers !== undefined ? maxServers : "-"
-          }}</span>
-        </div>
-
-        <!-- Ports (always visible — dotted underline to edit / set) -->
-        <div v-if="!isGpuOnly" class="flex items-center gap-2">
-          <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
-            $t("pages.game_server_nodes.table.ports")
-          }}</span>
-          <button
-            type="button"
-            class="font-medium tabular-nums underline decoration-dotted underline-offset-2 transition-colors"
-            :class="
-              hasPorts
-                ? 'text-foreground decoration-muted-foreground/50 hover:decoration-foreground'
-                : 'text-muted-foreground decoration-muted-foreground/40 hover:text-foreground hover:decoration-foreground'
-            "
-            :title="$t('game_server.edit_ports')"
-            @click="showPortsDialog = true"
-          >
-            {{ hasPorts ? portRangeLabel : "—" }}
-          </button>
-        </div>
-
-        <!-- Available / total -->
-        <div
-          v-if="gameServerNode.enabled && hasPorts"
-          class="flex items-center gap-2"
-        >
-          <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
-            $t("pages.game_server_nodes.table.available")
-          }}</span>
-          <Badge
-            variant="outline"
-            class="text-xs px-2 py-0.5 tabular-nums"
-            :class="
-              overPrevisionedServers
-                ? 'border-red-500 text-red-500'
-                : 'border-muted-foreground/40 text-foreground'
-            "
-          >
-            {{ gameServerNode.available_server_count }} /
-            {{ gameServerNode.total_server_count }}
-          </Badge>
-          <FiveStackToolTip v-if="overPrevisionedServers">
-            <template #trigger>
-              <AlertCircle class="h-3.5 w-3.5 animate-pulse text-red-500" />
-            </template>
-            <div class="space-y-1">
-              <div>
-                <span class="font-semibold text-red-600">
-                  {{ $t("game_server.overprovisioned_warning") }}
-                </span>
-              </div>
-              <div>
-                {{
-                  $t("game_server.overprovisioned_warning_description", {
-                    total_server_count: gameServerNode.total_server_count,
-                    max_servers: maxServers,
-                  })
-                }}
-              </div>
-
-              <div>
-                <div
-                  class="flex items-center gap-4 text-xs"
-                  v-if="
-                    gameServerNode.status !==
-                    e_game_server_node_statuses_enum.Setup
-                  "
-                >
-                  <div class="flex items-center gap-1">
-                    <div class="font-medium">
-                      {{ $t("game_server.cpu_sockets") }}:
-                    </div>
-                    <div class="text-muted-foreground">
-                      {{ gameServerNode.cpu_sockets || "-" }}
-                    </div>
-                  </div>
-                  <span class="text-muted-foreground">|</span>
-                  <div class="flex items-center gap-1">
-                    <div class="font-medium">
-                      {{ $t("game_server.cpu_cores_per_socket") }}:
-                    </div>
-                    <div class="text-muted-foreground">
-                      {{ gameServerNode.cpu_cores_per_socket || "-" }}
-                    </div>
-                  </div>
-                  <span class="text-muted-foreground">|</span>
-                  <div class="flex items-center gap-1">
-                    <div class="font-medium">
-                      {{ $t("game_server.cpu_threads_per_core") }}:
-                    </div>
-                    <div class="text-muted-foreground">
-                      {{ gameServerNode.cpu_threads_per_core || "-" }}
-                    </div>
-                  </div>
-                </div>
-                <div class="p-2 flex items-center gap-2 text-xs mt-2">
-                  <div class="flex items-center justify-center h-5 w-5">
-                    <AlertCircle class="h-3 w-3" />
-                  </div>
-                  <div>
-                    <span class="font-semibold">{{
-                      $t("game_server.note_label")
-                    }}</span>
-                    <i18n-t
-                      keypath="game_server.cpu_reservation_note"
-                      tag="span"
-                      scope="global"
-                    >
-                      <template #cores>
-                        <span class="font-bold">{{
-                          $t("game_server.one_cpu_core")
-                        }}</span>
-                      </template>
-                    </i18n-t>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </FiveStackToolTip>
-        </div>
-
-      </div>
-    </TableCell>
-    <!-- CS Build Column -->
-    <TableCell class="hidden xl:table-cell pr-1">
-      <div class="flex items-center gap-2">
-        <template v-if="gameServerNode.update_status">
-          <FiveStackToolTip>
-            <template #trigger>
-              <div class="flex items-center gap-1">
-                <span class="capitalize text-sm">
-                  {{ gameServerNode.update_status }}
-                </span>
-                <Button variant="outline" size="sm" @click="toggleLogs">
-                  <Activity class="h-2 w-2" />
-                </Button>
-              </div>
-            </template>
-            {{ $t("game_server.show_update_logs") }}
-          </FiveStackToolTip>
-        </template>
-
-        <template v-else>
-          <template v-if="gameServerNode.build_id">
-            <Select
-              :model-value="pinBuildIdForm.values.pin_build_id"
-              @update:model-value="(value) => pinBuildId(value)"
-              :disabled="!supportsGameServerVersionPinning"
-            >
-              <SelectTrigger class="h-7 px-2 text-xs w-full">
-                <div class="flex items-center gap-1 min-w-0">
-                  <template v-if="nodeBuildVersion">
-                    <span class="truncate"
-                      >{{ nodeBuildVersion?.version }} ({{
-                        nodeBuildVersion?.build_id
-                      }})</span
-                    >
-                  </template>
-                  <template v-else>
-                    <span class="truncate">{{ gameServerNode.build_id }}</span>
-                  </template>
-                  <Pin
-                    v-if="gameServerNode.pin_build_id"
-                    class="h-3 w-3 text-blue-500"
-                  />
-                  <FiveStackToolTip v-if="showBuildUpdateWarning">
-                    <template #trigger>
-                      <CircleFadingArrowUp class="h-3 w-3 text-yellow-500" />
-                    </template>
-                    {{ $t("game_server.update_cs") }}
-                  </FiveStackToolTip>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem :value="null">
-                    <div class="flex flex-col gap-1">
-                      <div class="text-sm font-medium">
-                        {{ $t("game_server.unpin_build_id") }}
-                      </div>
-                      <div class="text-xs text-muted-foreground">
-                        {{ $t("game_server.use_latest_version") }}
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem
-                    :value="version.build_id"
-                    v-for="version of gameVersions"
-                    :key="version.build_id"
-                  >
-                    <div class="flex flex-col gap-1">
-                      <div class="flex items-center gap-1">
-                        <span class="font-medium">{{ version.version }}</span>
-                        <span class="text-muted-foreground"
-                          >({{ version.build_id }})</span
-                        >
-                        <Pin
-                          v-if="
-                            gameServerNode.pin_build_id === version.build_id
-                          "
-                          class="h-3 w-3 text-blue-500 ml-1"
-                        />
-                      </div>
-                      <div class="text-xs text-muted-foreground">
-                        {{ new Date(version.updated_at).toLocaleString() }}
-                        <span v-if="version.current" class="text-green-500 ml-1"
-                          >({{ $t("game_server.current") }})</span
-                        >
-                      </div>
-                    </div>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </template>
-
-          <template v-else>
-            <Button
-              size="xs"
-              @click="updateCs"
-              :disabled="
-                gameServerNode.status !==
-                e_game_server_node_statuses_enum.Online
-              "
-              v-if="gameServerNode.enabled"
-            >
-              {{ $t("game_server.install_cs") }}
-            </Button>
-          </template>
-
-          <FiveStackToolTip
-            v-if="!supportsGameServerVersionPinning && gameServerNode.build_id"
-          >
-            <span>
-              {{ $t("game_server.version_pinning_not_supported") }}
-            </span>
-            <template #trigger>
-              <a
-                href="https://docs.5stack.gg/servers/game-server-nodes/version-pinning"
-                target="_blank"
-                class="text-warning"
-              >
-                <ExternalLink class="h-4 w-4" />
-              </a>
-            </template>
-          </FiveStackToolTip>
-        </template>
-      </div>
-    </TableCell>
-    <!-- Plugin Version Column -->
-    <TableCell class="hidden xl:table-cell pl-1">
-      <div class="flex items-center gap-2" v-if="gameServerNode.build_id">
+      <TableCell class="hidden xl:table-cell">
         <Select
-          :model-value="pinPluginVersionForm.values.pin_plugin_version"
-          @update:model-value="(value) => pinPluginVersion(value)"
+          :model-value="regionForm.region"
+          @update:model-value="(value) => updateRegion(value)"
         >
           <SelectTrigger class="h-7 px-2 text-xs w-full">
-            <div class="flex items-center gap-1 min-w-0">
-              <span v-if="gameServerNode.pin_plugin_version" class="truncate">{{
-                gameServerNode.pin_plugin_version
-              }}</span>
-              <span v-else class="text-muted-foreground truncate">{{
-                $t("game_server.auto")
-              }}</span>
-              <Pin
-                v-if="gameServerNode.pin_plugin_version"
-                class="h-3 w-3 text-blue-500"
-              />
-            </div>
+            <SelectValue :placeholder="$t('game_server.select_region')" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectItem :value="null">
-                <div class="flex flex-col gap-1">
-                  <div class="text-sm font-medium">
-                    {{ $t("game_server.unpin_plugin_version") }}
-                  </div>
-                  <div class="text-xs text-muted-foreground">
-                    {{ $t("game_server.use_latest_plugin") }}
-                  </div>
-                </div>
+                {{ $t("game_server.no_region") }}
               </SelectItem>
               <SelectItem
-                :value="version.version"
-                v-for="version of pluginVersions"
-                :key="version.version"
+                :value="region.value"
+                v-for="region of server_regions"
               >
-                <div class="flex flex-col gap-1">
-                  <div class="flex items-center gap-1">
-                    <span class="font-medium">{{ version.version }}</span>
-                    <Pin
-                      v-if="
-                        gameServerNode.pin_plugin_version === version.version
-                      "
-                      class="h-3 w-3 text-blue-500 ml-1"
-                    />
-                  </div>
-                  <div class="text-xs text-muted-foreground">
-                    <div
-                      v-if="version.min_game_build_id"
-                      class="text-green-500"
-                    >
-                      {{ $t("game_server.plugin_version_supports") }}:
-                      {{ version.min_game_build_id }}+
-                    </div>
-                    <div>
-                      {{ $t("game_server.plugin_version_published") }}:
-                      {{ new Date(version.published_at).toLocaleString() }}
-                    </div>
-                  </div>
-                </div>
+                {{ region.description || region.value }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
+      </TableCell>
+      <TableCell class="hidden xl:table-cell align-top">
+        <div class="flex flex-col gap-1.5 text-xs">
+          <!-- Max servers -->
+          <div class="flex items-center gap-2">
+            <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
+              $t("game_server.max_servers")
+            }}</span>
+            <span class="font-medium tabular-nums">{{
+              maxServers !== null && maxServers !== undefined ? maxServers : "-"
+            }}</span>
+          </div>
 
-        <template v-if="!gameServerNode.plugin_supported">
-          <FiveStackToolTip>
-            <template #trigger>
-              <AlertCircle class="h-4 w-4 animate-pulse text-red-500" />
+          <!-- Ports (always visible — dotted underline to edit / set) -->
+          <div v-if="!isGpuOnly" class="flex items-center gap-2">
+            <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
+              $t("pages.game_server_nodes.table.ports")
+            }}</span>
+            <button
+              type="button"
+              class="font-medium tabular-nums underline decoration-dotted underline-offset-2 transition-colors"
+              :class="
+                hasPorts
+                  ? 'text-foreground decoration-muted-foreground/50 hover:decoration-foreground'
+                  : 'text-muted-foreground decoration-muted-foreground/40 hover:text-foreground hover:decoration-foreground'
+              "
+              :title="$t('game_server.edit_ports')"
+              @click="showPortsDialog = true"
+            >
+              {{ hasPorts ? portRangeLabel : "—" }}
+            </button>
+          </div>
+
+          <!-- Available / total -->
+          <div
+            v-if="gameServerNode.enabled && hasPorts"
+            class="flex items-center gap-2"
+          >
+            <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
+              $t("pages.game_server_nodes.table.available")
+            }}</span>
+            <Badge
+              variant="outline"
+              class="text-xs px-2 py-0.5 tabular-nums"
+              :class="
+                overPrevisionedServers
+                  ? 'border-red-500 text-red-500'
+                  : 'border-muted-foreground/40 text-foreground'
+              "
+            >
+              {{ gameServerNode.available_server_count }} /
+              {{ gameServerNode.total_server_count }}
+            </Badge>
+            <FiveStackToolTip v-if="overPrevisionedServers">
+              <template #trigger>
+                <AlertCircle class="h-3.5 w-3.5 animate-pulse text-red-500" />
+              </template>
+              <div class="space-y-1">
+                <div>
+                  <span class="font-semibold text-red-600">
+                    {{ $t("game_server.overprovisioned_warning") }}
+                  </span>
+                </div>
+                <div>
+                  {{
+                    $t("game_server.overprovisioned_warning_description", {
+                      total_server_count: gameServerNode.total_server_count,
+                      max_servers: maxServers,
+                    })
+                  }}
+                </div>
+
+                <div>
+                  <div
+                    class="flex items-center gap-4 text-xs"
+                    v-if="
+                      gameServerNode.status !==
+                      e_game_server_node_statuses_enum.Setup
+                    "
+                  >
+                    <div class="flex items-center gap-1">
+                      <div class="font-medium">
+                        {{ $t("game_server.cpu_sockets") }}:
+                      </div>
+                      <div class="text-muted-foreground">
+                        {{ gameServerNode.cpu_sockets || "-" }}
+                      </div>
+                    </div>
+                    <span class="text-muted-foreground">|</span>
+                    <div class="flex items-center gap-1">
+                      <div class="font-medium">
+                        {{ $t("game_server.cpu_cores_per_socket") }}:
+                      </div>
+                      <div class="text-muted-foreground">
+                        {{ gameServerNode.cpu_cores_per_socket || "-" }}
+                      </div>
+                    </div>
+                    <span class="text-muted-foreground">|</span>
+                    <div class="flex items-center gap-1">
+                      <div class="font-medium">
+                        {{ $t("game_server.cpu_threads_per_core") }}:
+                      </div>
+                      <div class="text-muted-foreground">
+                        {{ gameServerNode.cpu_threads_per_core || "-" }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-2 flex items-center gap-2 text-xs mt-2">
+                    <div class="flex items-center justify-center h-5 w-5">
+                      <AlertCircle class="h-3 w-3" />
+                    </div>
+                    <div>
+                      <span class="font-semibold">{{
+                        $t("game_server.note_label")
+                      }}</span>
+                      <i18n-t
+                        keypath="game_server.cpu_reservation_note"
+                        tag="span"
+                        scope="global"
+                      >
+                        <template #cores>
+                          <span class="font-bold">{{
+                            $t("game_server.one_cpu_core")
+                          }}</span>
+                        </template>
+                      </i18n-t>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FiveStackToolTip>
+          </div>
+        </div>
+      </TableCell>
+      <!-- CS Build Column -->
+      <TableCell class="hidden xl:table-cell pr-1">
+        <div class="flex items-center gap-2">
+          <template v-if="gameServerNode.update_status">
+            <FiveStackToolTip>
+              <template #trigger>
+                <div class="flex items-center gap-1">
+                  <span class="capitalize text-sm">
+                    {{ gameServerNode.update_status }}
+                  </span>
+                  <Button variant="outline" size="sm" @click="toggleLogs">
+                    <Activity class="h-2 w-2" />
+                  </Button>
+                </div>
+              </template>
+              {{ $t("game_server.show_update_logs") }}
+            </FiveStackToolTip>
+          </template>
+
+          <template v-else>
+            <template v-if="gameServerNode.build_id">
+              <Select
+                :model-value="pinBuildIdForm.values.pin_build_id"
+                @update:model-value="(value) => pinBuildId(value)"
+                :disabled="!supportsGameServerVersionPinning"
+              >
+                <SelectTrigger class="h-7 px-2 text-xs w-full">
+                  <div class="flex items-center gap-1 min-w-0">
+                    <template v-if="nodeBuildVersion">
+                      <span class="truncate"
+                        >{{ nodeBuildVersion?.version }} ({{
+                          nodeBuildVersion?.build_id
+                        }})</span
+                      >
+                    </template>
+                    <template v-else>
+                      <span class="truncate">{{
+                        gameServerNode.build_id
+                      }}</span>
+                    </template>
+                    <Pin
+                      v-if="gameServerNode.pin_build_id"
+                      class="h-3 w-3 text-blue-500"
+                    />
+                    <FiveStackToolTip v-if="showBuildUpdateWarning">
+                      <template #trigger>
+                        <CircleFadingArrowUp class="h-3 w-3 text-yellow-500" />
+                      </template>
+                      {{ $t("game_server.update_cs") }}
+                    </FiveStackToolTip>
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem :value="null">
+                      <div class="flex flex-col gap-1">
+                        <div class="text-sm font-medium">
+                          {{ $t("game_server.unpin_build_id") }}
+                        </div>
+                        <div class="text-xs text-muted-foreground">
+                          {{ $t("game_server.use_latest_version") }}
+                        </div>
+                      </div>
+                    </SelectItem>
+                    <SelectItem
+                      :value="version.build_id"
+                      v-for="version of gameVersions"
+                      :key="version.build_id"
+                    >
+                      <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-1">
+                          <span class="font-medium">{{ version.version }}</span>
+                          <span class="text-muted-foreground"
+                            >({{ version.build_id }})</span
+                          >
+                          <Pin
+                            v-if="
+                              gameServerNode.pin_build_id === version.build_id
+                            "
+                            class="h-3 w-3 text-blue-500 ml-1"
+                          />
+                        </div>
+                        <div class="text-xs text-muted-foreground">
+                          {{ new Date(version.updated_at).toLocaleString() }}
+                          <span
+                            v-if="version.current"
+                            class="text-green-500 ml-1"
+                            >({{ $t("game_server.current") }})</span
+                          >
+                        </div>
+                      </div>
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </template>
-            {{ $t("game_server.plugin_not_supported") }}
-          </FiveStackToolTip>
-        </template>
-      </div>
-    </TableCell>
+
+            <template v-else>
+              <Button
+                size="xs"
+                @click="updateCs"
+                :disabled="
+                  gameServerNode.status !==
+                  e_game_server_node_statuses_enum.Online
+                "
+                v-if="gameServerNode.enabled"
+              >
+                {{ $t("game_server.install_cs") }}
+              </Button>
+            </template>
+
+            <FiveStackToolTip
+              v-if="
+                !supportsGameServerVersionPinning && gameServerNode.build_id
+              "
+            >
+              <span>
+                {{ $t("game_server.version_pinning_not_supported") }}
+              </span>
+              <template #trigger>
+                <a
+                  href="https://docs.5stack.gg/servers/game-server-nodes/version-pinning"
+                  target="_blank"
+                  class="text-warning"
+                >
+                  <ExternalLink class="h-4 w-4" />
+                </a>
+              </template>
+            </FiveStackToolTip>
+          </template>
+        </div>
+      </TableCell>
+      <!-- Plugin Version Column -->
+      <TableCell class="hidden xl:table-cell pl-1">
+        <div class="flex items-center gap-2" v-if="gameServerNode.build_id">
+          <Select
+            :model-value="pinPluginVersionForm.values.pin_plugin_version"
+            @update:model-value="(value) => pinPluginVersion(value)"
+          >
+            <SelectTrigger class="h-7 px-2 text-xs w-full">
+              <div class="flex items-center gap-1 min-w-0">
+                <span
+                  v-if="gameServerNode.pin_plugin_version"
+                  class="truncate"
+                  >{{ gameServerNode.pin_plugin_version }}</span
+                >
+                <span v-else class="text-muted-foreground truncate">{{
+                  $t("game_server.auto")
+                }}</span>
+                <Pin
+                  v-if="gameServerNode.pin_plugin_version"
+                  class="h-3 w-3 text-blue-500"
+                />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem :value="null">
+                  <div class="flex flex-col gap-1">
+                    <div class="text-sm font-medium">
+                      {{ $t("game_server.unpin_plugin_version") }}
+                    </div>
+                    <div class="text-xs text-muted-foreground">
+                      {{ $t("game_server.use_latest_plugin") }}
+                    </div>
+                  </div>
+                </SelectItem>
+                <SelectItem
+                  :value="version.version"
+                  v-for="version of pluginVersions"
+                  :key="version.version"
+                >
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-1">
+                      <span class="font-medium">{{ version.version }}</span>
+                      <Pin
+                        v-if="
+                          gameServerNode.pin_plugin_version === version.version
+                        "
+                        class="h-3 w-3 text-blue-500 ml-1"
+                      />
+                    </div>
+                    <div class="text-xs text-muted-foreground">
+                      <div
+                        v-if="version.min_game_build_id"
+                        class="text-green-500"
+                      >
+                        {{ $t("game_server.plugin_version_supports") }}:
+                        {{ version.min_game_build_id }}+
+                      </div>
+                      <div>
+                        {{ $t("game_server.plugin_version_published") }}:
+                        {{ new Date(version.published_at).toLocaleString() }}
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <template v-if="!gameServerNode.plugin_supported">
+            <FiveStackToolTip>
+              <template #trigger>
+                <AlertCircle class="h-4 w-4 animate-pulse text-red-500" />
+              </template>
+              {{ $t("game_server.plugin_not_supported") }}
+            </FiveStackToolTip>
+          </template>
+        </div>
+      </TableCell>
     </template>
     <TableCell class="text-right">
       <div class="flex items-center justify-end space-x-2">
@@ -772,7 +782,7 @@ const isSectionExpanded = (section: string) => {
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon" class="h-8 w-8">
-              <PaginationEllipsis class="h-4 w-4" />
+              <MoreVertical class="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" class="w-72">
@@ -780,7 +790,7 @@ const isSectionExpanded = (section: string) => {
               <DropdownMenuItem
                 @click="setNodeMode(isGpuOnly ? 'match' : 'gpu')"
               >
-                <Cpu class="mr-2 h-4 w-4" />
+                <Cpu />
                 <span>{{
                   isGpuOnly
                     ? $t("game_server.mode.use_as_match")
@@ -833,7 +843,7 @@ const isSectionExpanded = (section: string) => {
                 "
                 @click="validateGamedata"
               >
-                <ShieldCheck class="mr-2 h-4 w-4" />
+                <ShieldCheck />
                 <span>{{ $t("game_server.validate_gamedata") }}</span>
               </DropdownMenuItem>
 
@@ -841,7 +851,7 @@ const isSectionExpanded = (section: string) => {
             </template>
 
             <DropdownMenuItem @click="editLabelSheet = true">
-              <Pencil class="mr-2 h-4 w-4" />
+              <Pencil />
               <span>{{ $t("game_server.edit_label") }}</span>
             </DropdownMenuItem>
 
@@ -849,7 +859,7 @@ const isSectionExpanded = (section: string) => {
               v-if="gameServerNode.gpu"
               @click="editCs2OptionsSheet = true"
             >
-              <Settings2 class="mr-2 h-4 w-4" />
+              <Settings2 />
               <span>{{ $t("game_server.edit_cs2_options") }}</span>
             </DropdownMenuItem>
 
@@ -858,17 +868,19 @@ const isSectionExpanded = (section: string) => {
                 $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
               "
             >
-              <FolderOpen class="mr-2 h-4 w-4" />
+              <FolderOpen />
               <span>{{ $t("game_server.files") }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuItem v-if="!isGpuOnly" @click="showPortsDialog = true">
-              <Network class="mr-2 h-4 w-4" />
+              <Network />
               <span>{{ $t("game_server.edit_ports") }}</span>
               <span
                 class="ml-auto whitespace-nowrap pl-2 text-xs tabular-nums text-muted-foreground"
               >
-                {{ hasPorts ? portRangeLabel : $t("game_server_node.set_ports") }}
+                {{
+                  hasPorts ? portRangeLabel : $t("game_server_node.set_ports")
+                }}
               </span>
             </DropdownMenuItem>
 
@@ -876,7 +888,6 @@ const isSectionExpanded = (section: string) => {
 
             <DropdownMenuItem @click="showNetworkLimiterDialog = true">
               <Activity
-                class="mr-2 h-4 w-4"
                 :class="
                   gameServerNode.demo_network_limiter
                     ? 'text-yellow-500'
@@ -907,9 +918,9 @@ const isSectionExpanded = (section: string) => {
 
             <DropdownMenuItem
               @click="removeGameNodeServer"
-              class="text-red-500"
+              class="text-destructive focus:text-destructive"
             >
-              <Trash2 class="mr-2 h-4 w-4" />
+              <Trash2 />
               <span>{{ $t("game_server.remove_node") }}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -951,9 +962,7 @@ const isSectionExpanded = (section: string) => {
                 @update:model-value="(value) => updateRegion(value)"
               >
                 <SelectTrigger class="h-7 px-2 text-xs w-auto min-w-[110px]">
-                  <SelectValue
-                    :placeholder="$t('game_server.select_region')"
-                  />
+                  <SelectValue :placeholder="$t('game_server.select_region')" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -1025,7 +1034,7 @@ const isSectionExpanded = (section: string) => {
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button variant="ghost" size="icon" class="h-8 w-8 flex-shrink-0">
-                <PaginationEllipsis class="h-4 w-4" />
+                <MoreVertical class="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-72">
@@ -1033,7 +1042,7 @@ const isSectionExpanded = (section: string) => {
                 <DropdownMenuItem
                   @click="setNodeMode(isGpuOnly ? 'match' : 'gpu')"
                 >
-                  <Cpu class="mr-2 h-4 w-4" />
+                  <Cpu />
                   <span>{{
                     isGpuOnly
                       ? $t("game_server.mode.use_as_match")
@@ -1086,7 +1095,7 @@ const isSectionExpanded = (section: string) => {
                   "
                   @click="validateGamedata"
                 >
-                  <ShieldCheck class="mr-2 h-4 w-4" />
+                  <ShieldCheck />
                   <span>{{ $t("game_server.validate_gamedata") }}</span>
                 </DropdownMenuItem>
 
@@ -1094,7 +1103,7 @@ const isSectionExpanded = (section: string) => {
               </template>
 
               <DropdownMenuItem @click="editLabelSheet = true">
-                <Pencil class="mr-2 h-4 w-4" />
+                <Pencil />
                 <span>{{ $t("game_server.edit_label") }}</span>
               </DropdownMenuItem>
 
@@ -1103,7 +1112,7 @@ const isSectionExpanded = (section: string) => {
                   $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
                 "
               >
-                <FolderOpen class="mr-2 h-4 w-4" />
+                <FolderOpen />
                 <span>{{ $t("game_server.files") }}</span>
               </DropdownMenuItem>
 
@@ -1111,7 +1120,7 @@ const isSectionExpanded = (section: string) => {
                 v-if="!isGpuOnly"
                 @click="showPortsDialog = true"
               >
-                <Network class="mr-2 h-4 w-4" />
+                <Network />
                 <span>{{ $t("game_server.edit_ports") }}</span>
                 <span
                   class="ml-auto whitespace-nowrap pl-2 text-xs tabular-nums text-muted-foreground"
@@ -1126,7 +1135,6 @@ const isSectionExpanded = (section: string) => {
 
               <DropdownMenuItem @click="showNetworkLimiterDialog = true">
                 <Activity
-                  class="mr-2 h-4 w-4"
                   :class="
                     gameServerNode.demo_network_limiter
                       ? 'text-yellow-500'
@@ -1157,9 +1165,9 @@ const isSectionExpanded = (section: string) => {
 
               <DropdownMenuItem
                 @click="removeGameNodeServer"
-                class="text-red-500"
+                class="text-destructive focus:text-destructive"
               >
-                <Trash2 class="mr-2 h-4 w-4" />
+                <Trash2 />
                 <span>{{ $t("game_server.remove_node") }}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

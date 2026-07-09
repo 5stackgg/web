@@ -21,6 +21,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       :force-veto="true"
       :hide-best-of="true"
       :hide-match-mode="true"
+      :lock-substitutes="true"
     >
       <FormField v-slot="{ componentField }" name="name">
         <FormItem>
@@ -81,7 +82,36 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ value, handleChange }" name="auto_start">
+      <FormField v-slot="{ value, handleChange }" name="negotiated_scheduling">
+        <FormItem>
+          <div
+            class="flex flex-row items-center justify-between cursor-pointer"
+            @click="handleChange(!value)"
+          >
+            <div class="space-y-0.5">
+              <SettingHeader>{{
+                $t("tournament.form.negotiated_scheduling.label")
+              }}</SettingHeader>
+              <FormDescription>{{
+                $t("tournament.form.negotiated_scheduling.description")
+              }}</FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :model-value="value"
+                @update:model-value="handleChange"
+              />
+            </FormControl>
+          </div>
+        </FormItem>
+      </FormField>
+
+      <FormField
+        v-if="!form.values.negotiated_scheduling"
+        v-slot="{ value, handleChange }"
+        name="auto_start"
+      >
         <FormItem>
           <div
             class="flex flex-row items-center justify-between cursor-pointer"
@@ -252,6 +282,7 @@ export default {
               }),
               description: z.string().nullable().default(null),
               auto_start: z.boolean().default(true),
+              negotiated_scheduling: z.boolean().default(false),
             },
             useApplicationSettingsStore().settings,
           ),
@@ -357,6 +388,7 @@ export default {
         name: tournament.name,
         description: tournament.description,
         auto_start: tournament.auto_start,
+        negotiated_scheduling: tournament.scheduling_mode === "negotiated",
       });
 
       setupOptions(this.form, tournament.options);
@@ -421,6 +453,15 @@ export default {
         }
 
         this.submitting = true;
+        // Tournament substitutes are locked to the team-substitutes setting.
+        this.form.setFieldValue(
+          "number_of_substitutes",
+          useApplicationSettingsStore().teamMaxSubs,
+        );
+        // Negotiated scheduling keeps brackets dormant until a time is agreed.
+        if (this.form.values.negotiated_scheduling) {
+          this.form.setFieldValue("match_mode", "admin");
+        }
         const form = this.form.values;
 
         if (this.tournament) {
@@ -429,7 +470,12 @@ export default {
               name: this.form.values.name,
               start: this.form.values.start,
               description: this.form.values.description,
-              auto_start: this.form.values.auto_start,
+              auto_start: this.form.values.negotiated_scheduling
+                ? false
+                : this.form.values.auto_start,
+              scheduling_mode: this.form.values.negotiated_scheduling
+                ? "negotiated"
+                : "auto",
             },
             mutation: generateMutation({
               update_tournaments_by_pk: [
@@ -442,6 +488,7 @@ export default {
                     start: $("start", "timestamptz!"),
                     description: $("description", "String"),
                     auto_start: $("auto_start", "Boolean!"),
+                    scheduling_mode: $("scheduling_mode", "String!"),
                   },
                 },
                 {
@@ -518,7 +565,12 @@ export default {
                   name: this.form.values.name,
                   start: this.form.values.start,
                   description: this.form.values.description,
-                  auto_start: this.form.values.auto_start,
+                  auto_start: this.form.values.negotiated_scheduling
+                    ? false
+                    : this.form.values.auto_start,
+                  scheduling_mode: this.form.values.negotiated_scheduling
+                    ? "negotiated"
+                    : "auto",
                   options: {
                     data: setupOptionsSetMutation(!!form.map_pool_id),
                   },

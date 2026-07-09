@@ -4,7 +4,7 @@ import { Button } from "~/components/ui/button";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
-import { Leaf, Settings2 } from "lucide-vue-next";
+import { Settings2 } from "lucide-vue-next";
 
 definePageMeta({
   middleware: "admin",
@@ -28,15 +28,6 @@ definePageMeta({
               @update:model-value="toggleEnabled"
             />
           </template>
-
-          <div
-            class="flex items-start gap-3 rounded-lg border border-border/60 bg-muted/30 p-4 text-sm"
-          >
-            <Leaf class="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-            <p class="text-muted-foreground">
-              {{ $t("pages.settings.application.seasons.about") }}
-            </p>
-          </div>
 
           <div
             v-if="seasonsEnabled"

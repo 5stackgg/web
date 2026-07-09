@@ -44,13 +44,12 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
       </div>
     </ContextMenuTrigger>
 
-    <ContextMenuContent
-      v-if="isFriend"
-      data-right-hub-interactive
-      class="w-56"
-    >
-      <ContextMenuItem @click="removeFriend" class="text-red-500">
-        <Trash2 class="mr-2 h-4 w-4" />
+    <ContextMenuContent v-if="isFriend" data-right-hub-interactive class="w-56">
+      <ContextMenuItem
+        @click="removeFriend"
+        class="text-destructive focus:text-destructive"
+      >
+        <Trash2 />
         <span>{{ $t("matchmaking.friends.remove") }}</span>
       </ContextMenuItem>
     </ContextMenuContent>

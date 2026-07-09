@@ -43,15 +43,8 @@ import { provide, ref } from "vue";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "~/components/ui/form";
-import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -71,6 +64,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
@@ -611,50 +607,27 @@ provide("commander", commander);
             </DropdownMenuItem>
           </template>
 
-          <form
-            @submit.prevent="send('restore_round', form.values.round)"
-            v-if="backupRounds.length > 0"
-          >
-          <FormField v-slot="{ componentField }" name="round">
-            <FormItem>
-              <FormLabel>{{ $t("match.tabs.restore_round") }}</FormLabel>
-              <Select
-                v-bind="componentField"
-                @update:model-value="
-                  (value) => form.setFieldValue('round', value)
-                "
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('match.tabs.select_round_to_restore')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <template v-for="round of backupRounds">
-                      <SelectItem
-                        v-if="round.has_backup_file && round.round > 0"
-                        :key="round.round"
-                        :value="round.round.toString()"
-                      >
-                        {{
-                          $t("common.round", {
-                            number: round.round.toString(),
-                          })
-                        }}
-                      </SelectItem>
-                    </template>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <Button type="submit">{{ $t("match.tabs.restore_round") }}</Button>
-          </form>
+          <template v-if="restorableRounds.length > 0">
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger :disabled="!match.is_server_online">
+                {{ $t("match.tabs.restore_round") }}
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
+                <DropdownMenuItem
+                  v-for="round of restorableRounds"
+                  :key="round.round"
+                  :disabled="!match.is_server_online"
+                  @click="send('restore_round', round.round.toString())"
+                >
+                  {{
+                    $t("common.round", {
+                      number: round.round.toString(),
+                    })
+                  }}
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </template>
         </template>
 
         <template #footer>
@@ -883,9 +856,6 @@ import {
 import { matchMapStats } from "~/graphql/matchMapStatsGraphql";
 import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
 import { trackMatchBackupRounds } from "~/composables/useMatchBackupRounds";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "~/utilities/vee-validate-zod";
-import * as z from "zod";
 import {
   getRouteTabValue,
   normalizeRouteTab,
@@ -978,13 +948,6 @@ export default {
         | { value: string; display: string; confirm: boolean },
       executePending: undefined as undefined | (() => void),
       cleanMapName,
-      form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            round: z.string(),
-          }),
-        ),
-      }),
     };
   },
   apollo: {
@@ -1224,6 +1187,11 @@ export default {
     },
     backupRounds() {
       return this.backupRoundsTracker?.rounds.value ?? [];
+    },
+    restorableRounds() {
+      return this.backupRounds.filter(
+        (r) => r.has_backup_file && r.round > 0,
+      );
     },
     availableCommands() {
       const commands = [];

@@ -57,10 +57,7 @@ const setEloSource = (key: string) => {
           {{ $t("team.roster_count_players") }}
         </p>
       </div>
-      <div
-        v-if="rankSources.length > 1"
-        class="flex flex-col items-end gap-1"
-      >
+      <div v-if="rankSources.length > 1" class="flex flex-col items-end gap-1">
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
         >
@@ -123,33 +120,6 @@ const setEloSource = (key: string) => {
         </div>
       </section>
 
-      <section v-if="bench.length" class="space-y-1">
-        <div class="flex items-center gap-2 px-1">
-          <UserMinus class="h-3.5 w-3.5 text-amber-500/80" />
-          <h3 class="text-xs uppercase tracking-[0.14em] text-amber-500/80">
-            {{ $t("team.members.bench") }}
-          </h3>
-          <span
-            class="rounded-full bg-amber-500/10 px-1.5 py-px text-[10px] font-semibold text-amber-500/80"
-          >
-            {{ bench.length }}
-          </span>
-          <div class="h-px flex-1 bg-amber-500/20" />
-        </div>
-        <div class="space-y-1">
-          <TeamMember
-            v-for="member of bench"
-            :key="member.player.steam_id"
-            :team="team"
-            :member="member"
-            :roles="roles"
-            :is-captain="member.player.steam_id === team.captain_steam_id"
-            :is-invite="false"
-            :match-type="rankMatchType"
-          />
-        </div>
-      </section>
-
       <section v-if="substitutes.length" class="space-y-1">
         <div class="flex items-center gap-2 px-1">
           <Users2 class="h-3.5 w-3.5 text-muted-foreground" />
@@ -166,6 +136,33 @@ const setEloSource = (key: string) => {
         <div class="space-y-1">
           <TeamMember
             v-for="member of substitutes"
+            :key="member.player.steam_id"
+            :team="team"
+            :member="member"
+            :roles="roles"
+            :is-captain="member.player.steam_id === team.captain_steam_id"
+            :is-invite="false"
+            :match-type="rankMatchType"
+          />
+        </div>
+      </section>
+
+      <section v-if="bench.length" class="space-y-1">
+        <div class="flex items-center gap-2 px-1">
+          <UserMinus class="h-3.5 w-3.5 text-amber-500/80" />
+          <h3 class="text-xs uppercase tracking-[0.14em] text-amber-500/80">
+            {{ $t("team.members.bench") }}
+          </h3>
+          <span
+            class="rounded-full bg-amber-500/10 px-1.5 py-px text-[10px] font-semibold text-amber-500/80"
+          >
+            {{ bench.length }}
+          </span>
+          <div class="h-px flex-1 bg-amber-500/20" />
+        </div>
+        <div class="space-y-1">
+          <TeamMember
+            v-for="member of bench"
             :key="member.player.steam_id"
             :team="team"
             :member="member"

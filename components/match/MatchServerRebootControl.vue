@@ -112,6 +112,7 @@ async function rebootMatchServer() {
         :disabled="rebootLoading"
         @click="$emit('update:open', true)"
       >
+        <RotateCcw />
         {{
           rebootLoading
             ? $t("match.server.rebooting")

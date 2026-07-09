@@ -27,8 +27,8 @@ import {
   ChevronDownIcon,
   Shield,
   LogOut,
-  MoreHorizontal,
-  Trash,
+  MoreVertical,
+  UserMinus,
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -109,16 +109,12 @@ import Separator from "../ui/separator/Separator.vue";
               class="h-8 w-8 !rounded-l-none hover:z-10 focus:z-10"
               :title="$t('common.actions_label')"
             >
-              <MoreHorizontal class="h-4 w-4" />
+              <MoreVertical class="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" class="w-56">
-            <DropdownMenuItem
-              v-if="canPromoteCaptain"
-              class="cursor-pointer"
-              @click="promoteCaptain"
-            >
-              <Shield class="mr-2 h-4 w-4" />
+            <DropdownMenuItem v-if="canPromoteCaptain" @click="promoteCaptain">
+              <Shield />
               {{ $t("match.overview.promote_captain") }}
             </DropdownMenuItem>
             <DropdownMenuSeparator
@@ -126,18 +122,18 @@ import Separator from "../ui/separator/Separator.vue";
             />
             <DropdownMenuItem
               v-if="canLeaveSelf"
-              class="text-destructive cursor-pointer"
+              class="text-destructive"
               @click="$emit('leave')"
             >
-              <LogOut class="mr-2 h-4 w-4" />
+              <LogOut />
               {{ $t("tournament.team.leave_team") }}
             </DropdownMenuItem>
             <DropdownMenuItem
               v-if="canUpdateRole"
-              class="text-destructive cursor-pointer"
+              class="text-destructive"
               @click="removeMemberDialog = true"
             >
-              <Trash class="mr-2 h-4 w-4" />
+              <UserMinus />
               {{ $t("tournament.team.remove_member") }}
             </DropdownMenuItem>
           </DropdownMenuContent>

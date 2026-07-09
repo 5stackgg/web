@@ -7,6 +7,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
 import NewsNotification from "~/components/notification/NewsNotification.vue";
+import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.vue";
 </script>
 
 <template>
@@ -23,12 +24,17 @@ import NewsNotification from "~/components/notification/NewsNotification.vue";
       <NewsNotification />
       <template
         v-if="
+          scheduleTasks.length > 0 ||
           team_invites.length > 0 ||
           tournament_team_invites.length > 0 ||
           draft_invites.length > 0 ||
           notifications.length > 0
         "
       >
+        <div v-if="scheduleTasks.length > 0" class="mb-3">
+          <LeagueScheduleStack :tasks="scheduleTasks" />
+        </div>
+
         <div
           v-if="draft_invites.length > 0"
           class="mb-3 p-3 bg-card/60 border border-border rounded-md"
@@ -153,6 +159,9 @@ export default {
     },
     notifications() {
       return useNotificationStore().notifications;
+    },
+    scheduleTasks() {
+      return useNotificationStore().scheduleTasks;
     },
     stackedNotifications() {
       return useNotificationStore().stackedNotifications;

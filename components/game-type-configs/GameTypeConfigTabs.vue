@@ -21,7 +21,7 @@
               variant="outline"
               class="text-muted-foreground hover:border-destructive/50 hover:text-destructive"
             >
-              <Trash class="mr-2 h-4 w-4" />
+              <Trash2 class="mr-2 h-4 w-4" />
               {{ $t("game_type_configs.form.revert_to_defaults") }}
             </Button>
           </AlertDialogTrigger>
@@ -81,7 +81,7 @@ import { e_game_cfg_types_enum } from "~/generated/zeus";
 import type * as Monaco from "monaco-editor";
 import { computed, markRaw } from "vue";
 import { loadMonaco } from "~/utilities/loadMonaco";
-import { Trash } from "lucide-vue-next";
+import { Trash2 } from "lucide-vue-next";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 interface GameTypeConfig {
@@ -98,7 +98,7 @@ const baselineMap = new Map<string, string>();
 
 export default {
   components: {
-    Trash,
+    Trash2,
     SettingsSaveBar,
   },
   props: {

@@ -150,6 +150,7 @@ import {
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
 import { $, order_by } from "~/generated/zeus";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
@@ -171,6 +172,7 @@ export default {
                 status: {
                   _eq: $("status", "e_tournament_status_enum"),
                 },
+                _and: [NOT_LEAGUE_TOURNAMENT],
               },
               order_by: [
                 {},

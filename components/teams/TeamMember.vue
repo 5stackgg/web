@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  MoreHorizontal,
+  MoreVertical,
   Trash2,
   UserMinus,
   GraduationCap,
@@ -129,7 +129,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
             size="icon"
             class="h-8 w-8 text-muted-foreground hover:text-foreground"
           >
-            <MoreHorizontal class="h-4 w-4" />
+            <MoreVertical class="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" class="w-56">
@@ -223,7 +223,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem @click="toggleCoach">
-                  <GraduationCap class="mr-2 h-4 w-4" />
+                  <GraduationCap />
                   {{ $t("team.member.coach") }}
                   <span v-if="member.coach" class="ml-auto text-primary"
                     >✓</span
@@ -240,18 +240,13 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           <DropdownMenuItem
             v-if="canEditRosterImage"
             @click="rosterImageDialog = true"
-            class="cursor-pointer"
           >
-            <ImageIcon class="mr-2 h-4 w-4" />
+            <ImageIcon />
             {{ $t("team.member.roster_image") }}
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            v-if="canSetCaptain"
-            @click="setCaptain"
-            class="cursor-pointer"
-          >
-            <Shield class="mr-2 h-4 w-4" />
+          <DropdownMenuItem v-if="canSetCaptain" @click="setCaptain">
+            <Shield />
             {{ $t("match.overview.promote_captain") }}
           </DropdownMenuItem>
 
@@ -259,10 +254,10 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 
           <DropdownMenuItem
             v-if="canRemoveMember"
-            class="text-red-600 focus:text-red-600"
+            class="text-destructive focus:text-destructive"
             @click="removeMemberDialog = true"
           >
-            <UserMinus class="mr-2 h-4 w-4" />
+            <UserMinus />
             {{ $t("team.member.remove") }}
           </DropdownMenuItem>
         </DropdownMenuContent>

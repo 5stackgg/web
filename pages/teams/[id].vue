@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { ref } from "vue";
-import { MoreHorizontal, Trash, LogOut, Pencil } from "lucide-vue-next";
+import { MoreVertical, Trash2, LogOut, Pencil } from "lucide-vue-next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,8 +42,9 @@ import TeamVetoStats from "~/components/team/TeamVetoStats.vue";
 import TeamVetoSimulator from "~/components/team/TeamVetoSimulator.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import TeamHighlights from "~/components/team/TeamHighlights.vue";
+import TeamLeagueHistory from "~/components/teams/TeamLeagueHistory.vue";
 import TeamScrimManager from "~/components/team/TeamScrimManager.vue";
-import ScrimCalendarButton from "~/components/team/ScrimCalendarButton.vue";
+import TeamCalendarButton from "~/components/team/TeamCalendarButton.vue";
 import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -116,7 +117,10 @@ const teamHeroActionsClasses =
             <span v-if="team.short_name" :class="teamHeroTagClasses">
               {{ team.short_name }}
             </span>
-            <TeamRankSummary :ranks="team.ranks" :reputation="team.reputation" />
+            <TeamRankSummary
+              :ranks="team.ranks"
+              :reputation="team.reputation"
+            />
           </div>
 
           <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -160,7 +164,7 @@ const teamHeroActionsClasses =
           <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
             <DropdownMenuTrigger as-child>
               <Button variant="outline" size="icon">
-                <MoreHorizontal />
+                <MoreVertical />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-[200px]">
@@ -169,24 +173,24 @@ const teamHeroActionsClasses =
                   v-if="isAdmin || team.owner.steam_id === me?.steam_id"
                 >
                   <DropdownMenuItem @click="editTeamSheet = true">
-                    <Pencil class="mr-2 h-4 w-4" />
+                    <Pencil />
                     {{ $t("common.actions.edit") }}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    class="text-red-600 focus:text-red-600"
+                    class="text-destructive focus:text-destructive"
                     @click="deleteTeamAlertDialog = true"
                   >
-                    <Trash class="mr-2 h-4 w-4" />
+                    <Trash2 />
                     {{ $t("common.actions.delete") }}
                   </DropdownMenuItem>
                 </template>
                 <template v-if="isOnTeam">
                   <DropdownMenuItem
-                    class="text-red-600 focus:text-red-600"
+                    class="text-destructive focus:text-destructive"
                     @click="leaveTeamAlertDialog = true"
                   >
-                    <LogOut class="mr-2 h-4 w-4" />
+                    <LogOut />
                     {{ $t("team.leave") }}
                   </DropdownMenuItem>
                 </template>
@@ -210,7 +214,9 @@ const teamHeroActionsClasses =
     <TabsList variant="default" class="flex-wrap justify-start">
       <TabsTrigger value="overview">{{ $t("team.tabs.overview") }}</TabsTrigger>
       <TabsTrigger value="stats">{{ $t("team.tabs.stats") }}</TabsTrigger>
-      <TabsTrigger value="highlights">{{ $t("team.tabs.highlights") }}</TabsTrigger>
+      <TabsTrigger value="highlights">{{
+        $t("team.tabs.highlights")
+      }}</TabsTrigger>
       <TabsTrigger v-if="showScrimTab" value="scrim">
         {{ $t("team.tabs.scrim") }}
       </TabsTrigger>
@@ -230,7 +236,8 @@ const teamHeroActionsClasses =
         v-if="tab === 'overview'"
         class="grid grid-cols-1 items-start gap-6 lg:grid-cols-5"
       >
-        <div class="lg:col-span-2">
+        <div class="space-y-6 lg:col-span-2">
+          <TeamLeagueHistory :team-id="String($route.params.id)" />
           <TeamMembers :team-id="$route.params.id" />
         </div>
         <div class="space-y-3 lg:col-span-3">
@@ -239,7 +246,7 @@ const teamHeroActionsClasses =
               <span :class="tacticalSectionTickClasses" />
               {{ $t("match.recent.title") }}
             </span>
-            <ScrimCalendarButton :team-id="String($route.params.id)" />
+            <TeamCalendarButton :team-id="String($route.params.id)" />
           </div>
           <MatchesTable :matches="pagedTeamMatches" :show-all-matches="true" />
           <Pagination
@@ -291,10 +298,7 @@ const teamHeroActionsClasses =
             class="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card/30 p-4"
           >
             <div class="flex items-center gap-3">
-              <span
-                class="relative flex h-2.5 w-2.5"
-                aria-hidden="true"
-              >
+              <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
                 <span
                   class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
                 />

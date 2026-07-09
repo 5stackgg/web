@@ -16,6 +16,7 @@ import {
 
 import {
   DownloadIcon,
+  FileDown,
   Clock,
   Maximize2,
   Minimize2,
@@ -66,178 +67,179 @@ async function downloadFullLogs(service: string) {
 
 <template>
   <Teleport to="body" :disabled="!maximized">
-  <section
-    class="flex flex-col overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
-    :class="maximized ? 'fixed inset-0 z-50 bg-background' : 'relative'"
-  >
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
-    />
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
-    />
-
-    <header
-      class="flex flex-wrap items-center gap-1.5 border-b border-border/70 px-3 py-2 sm:gap-2 sm:px-4 sm:py-3"
+    <section
+      class="flex flex-col overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
+      :class="maximized ? 'fixed inset-0 z-50 bg-background' : 'relative'"
     >
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-                @click="maximized = !maximized"
-              >
-                <Minimize2 v-if="maximized" class="h-4 w-4" />
-                <Maximize2 v-else class="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{{ $t("ui.tooltips.fullscreen") }}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-
-      <div class="ml-auto flex items-center gap-1.5 sm:gap-2">
-        <TooltipProvider v-if="timestamps === undefined">
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                class="grid h-9 w-9 place-items-center border transition-colors"
-                :class="
-                  _timestamps
-                    ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
-                    : 'border-border bg-background/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]'
-                "
-                @click="_timestamps = !_timestamps"
-              >
-                <Clock class="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{{ $t("ui.logs.timestamps") }}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <button
-              class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-            >
-              <DownloadIcon class="h-4 w-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem @click="downloadLogs" class="cursor-pointer">
-              {{ $t("ui.logs.download_visible") }}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              @click="downloadFullLogs(service)"
-              class="cursor-pointer"
-            >
-              {{ $t("ui.logs.download_full") }}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </header>
-
-    <div
-      v-if="podCount > 1"
-      class="flex flex-wrap gap-1.5 border-b border-border/70 px-4 py-2.5"
-    >
-      <button
-        v-for="(pod, idx) in podList"
-        :key="pod"
-        class="group relative flex items-center gap-2 border px-2.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.18em] transition-colors"
-        :class="
-          activePod === pod
-            ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-            : 'border-border bg-background/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-        "
-        @click="activePod = pod"
-      >
-        <span
-          class="tracking-[0.14em]"
-          :class="
-            activePod === pod ? 'text-[hsl(var(--tac-amber))]' : 'text-border'
-          "
-        >
-          p-{{ String(idx + 1).padStart(2, "0") }}
-        </span>
-        <span class="truncate normal-case tracking-normal">{{ pod }}</span>
-      </button>
-    </div>
-
-    <div
-      :class="[
-        'relative flex flex-col overflow-hidden bg-[hsl(var(--background)/0.6)] p-2 sm:p-4',
-        compact && 'lg:min-h-0 lg:flex-1',
-        maximized && 'min-h-0 flex-1',
-      ]"
-    >
-      <div
+      <span
         aria-hidden="true"
-        class="pointer-events-none absolute inset-x-0 top-0 h-5 bg-gradient-to-b from-background/60 to-transparent"
+        class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
+      />
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
       />
 
-      <div
-        v-if="podCount === 0"
-        class="flex min-h-[160px] flex-1 flex-col items-center justify-center gap-2 py-10 text-center"
+      <header
+        class="flex flex-wrap items-center gap-1.5 border-b border-border/70 px-3 py-2 sm:gap-2 sm:px-4 sm:py-3"
       >
-        <p class="text-sm font-medium text-muted-foreground">
-          {{ $t("ui.logs.empty") }}
-        </p>
-        <p class="max-w-xs text-xs text-muted-foreground/70">
-          {{ $t("ui.logs.empty_hint") }}
-        </p>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                  @click="maximized = !maximized"
+                >
+                  <Minimize2 v-if="maximized" class="h-4 w-4" />
+                  <Maximize2 v-else class="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{{
+                $t("ui.tooltips.fullscreen")
+              }}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        <div class="ml-auto flex items-center gap-1.5 sm:gap-2">
+          <TooltipProvider v-if="timestamps === undefined">
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  class="grid h-9 w-9 place-items-center border transition-colors"
+                  :class="
+                    _timestamps
+                      ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border bg-background/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]'
+                  "
+                  @click="_timestamps = !_timestamps"
+                >
+                  <Clock class="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{{ $t("ui.logs.timestamps") }}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <button
+                class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+              >
+                <DownloadIcon class="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem @click="downloadLogs">
+                <FileDown />
+                {{ $t("ui.logs.download_visible") }}
+              </DropdownMenuItem>
+              <DropdownMenuItem @click="downloadFullLogs(service)">
+                <DownloadIcon />
+                {{ $t("ui.logs.download_full") }}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+
+      <div
+        v-if="podCount > 1"
+        class="flex flex-wrap gap-1.5 border-b border-border/70 px-4 py-2.5"
+      >
+        <button
+          v-for="(pod, idx) in podList"
+          :key="pod"
+          class="group relative flex items-center gap-2 border px-2.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.18em] transition-colors"
+          :class="
+            activePod === pod
+              ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+              : 'border-border bg-background/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+          "
+          @click="activePod = pod"
+        >
+          <span
+            class="tracking-[0.14em]"
+            :class="
+              activePod === pod ? 'text-[hsl(var(--tac-amber))]' : 'text-border'
+            "
+          >
+            p-{{ String(idx + 1).padStart(2, "0") }}
+          </span>
+          <span class="truncate normal-case tracking-normal">{{ pod }}</span>
+        </button>
       </div>
 
-      <Tabs
-        v-else-if="podCount > 1"
-        v-model="activePod"
+      <div
         :class="[
-          'flex flex-col',
+          'relative flex flex-col overflow-hidden bg-[hsl(var(--background)/0.6)] p-2 sm:p-4',
           compact && 'lg:min-h-0 lg:flex-1',
           maximized && 'min-h-0 flex-1',
         ]"
       >
-        <TabsContent
-          v-for="pod in podList"
-          :key="pod"
-          :value="pod"
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-x-0 top-0 h-5 bg-gradient-to-b from-background/60 to-transparent"
+        />
+
+        <div
+          v-if="podCount === 0"
+          class="flex min-h-[160px] flex-1 flex-col items-center justify-center gap-2 py-10 text-center"
+        >
+          <p class="text-sm font-medium text-muted-foreground">
+            {{ $t("ui.logs.empty") }}
+          </p>
+          <p class="max-w-xs text-xs text-muted-foreground/70">
+            {{ $t("ui.logs.empty_hint") }}
+          </p>
+        </div>
+
+        <Tabs
+          v-else-if="podCount > 1"
+          v-model="activePod"
           :class="[
             'flex flex-col',
             compact && 'lg:min-h-0 lg:flex-1',
             maximized && 'min-h-0 flex-1',
           ]"
         >
-          <PodLogs
-            :pod="pod"
-            :logs="logsByPod[pod] || []"
-            :show-timestamps="effectiveTimestamps"
-            :follow="effectiveFollowLogs"
-            :fill="compact"
-            :maximized="maximized"
-            @follow-logs-changed="handleFollowLogsChanged"
-            @load-more-logs="handleLoadMoreLogs"
-          />
-        </TabsContent>
-      </Tabs>
+          <TabsContent
+            v-for="pod in podList"
+            :key="pod"
+            :value="pod"
+            :class="[
+              'flex flex-col',
+              compact && 'lg:min-h-0 lg:flex-1',
+              maximized && 'min-h-0 flex-1',
+            ]"
+          >
+            <PodLogs
+              :pod="pod"
+              :logs="logsByPod[pod] || []"
+              :show-timestamps="effectiveTimestamps"
+              :follow="effectiveFollowLogs"
+              :fill="compact"
+              :maximized="maximized"
+              @follow-logs-changed="handleFollowLogsChanged"
+              @load-more-logs="handleLoadMoreLogs"
+            />
+          </TabsContent>
+        </Tabs>
 
-      <PodLogs
-        v-else
-        :pod="activePod"
-        :logs="logsByPod[activePod] || []"
-        :show-timestamps="effectiveTimestamps"
-        :follow="effectiveFollowLogs"
-        :fill="compact"
-        :maximized="maximized"
-        @follow-logs-changed="handleFollowLogsChanged"
-        @load-more-logs="handleLoadMoreLogs"
-      />
-    </div>
-  </section>
+        <PodLogs
+          v-else
+          :pod="activePod"
+          :logs="logsByPod[activePod] || []"
+          :show-timestamps="effectiveTimestamps"
+          :follow="effectiveFollowLogs"
+          :fill="compact"
+          :maximized="maximized"
+          @follow-logs-changed="handleFollowLogsChanged"
+          @load-more-logs="handleLoadMoreLogs"
+        />
+      </div>
+    </section>
   </Teleport>
 </template>
 

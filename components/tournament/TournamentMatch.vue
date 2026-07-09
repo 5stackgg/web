@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { computed, ref, watch } from "vue";
 import gql from "graphql-tag";
 import {
+  MoreVertical,
   RotateCcw,
   TriangleAlert,
   Undo2,
@@ -726,11 +727,7 @@ const shouldShowCrossBracketDestination = (
                 <span class="sr-only">{{
                   $t("tournament.open_match_actions")
                 }}</span>
-                <span aria-hidden="true" class="flex items-center gap-0.5">
-                  <span class="h-1 w-1 rounded-full bg-current" />
-                  <span class="h-1 w-1 rounded-full bg-current" />
-                  <span class="h-1 w-1 rounded-full bg-current" />
-                </span>
+                <MoreVertical aria-hidden="true" class="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-52">
@@ -738,6 +735,7 @@ const shouldShowCrossBracketDestination = (
                 class="text-red-300 focus:bg-red-950/50 focus:text-red-200"
                 @click.stop="openResetFlow(bracket)"
               >
+                <RotateCcw />
                 {{ $t("tournament.match.reset_winner") }}
               </DropdownMenuItem>
             </DropdownMenuContent>

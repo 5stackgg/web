@@ -6,7 +6,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
-import { Newspaper, PencilLine } from "lucide-vue-next";
+import { PencilLine } from "lucide-vue-next";
 </script>
 
 <template>
@@ -27,22 +27,7 @@ import { Newspaper, PencilLine } from "lucide-vue-next";
             />
           </template>
 
-          <div
-            class="flex items-start gap-3 rounded-lg border border-border/60 bg-muted/30 p-4 text-sm"
-          >
-            <Newspaper class="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-            <p class="text-muted-foreground">
-              {{ $t("pages.settings.application.news.about") }}
-            </p>
-          </div>
-
-          <div
-            v-if="canPostNews"
-            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <p class="text-sm text-muted-foreground">
-              {{ $t("pages.settings.application.news.manage_description") }}
-            </p>
+          <div v-if="canPostNews" class="flex justify-end">
             <NuxtLink to="/news/manage">
               <Button variant="outline" class="gap-2 shrink-0">
                 <PencilLine class="h-4 w-4" />

@@ -5,7 +5,7 @@ import {
   tacticalCtaButtonClasses,
   tacticalHeaderActionClasses,
 } from "~/utilities/tacticalClasses";
-import { Trash, PlusCircle, Info } from "lucide-vue-next";
+import { Trash2, PlusCircle, Info } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -30,9 +30,7 @@ import { Card } from "~/components/ui/card";
           @click="regionDialogOpen = true"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline">{{
-            $t("pages.regions.create")
-          }}</span>
+          <span class="hidden md:inline">{{ $t("pages.regions.create") }}</span>
         </button>
       </template>
     </TacticalPageHeader>
@@ -124,7 +122,7 @@ import { Card } from "~/components/ui/card";
                     }
                   "
                 >
-                  <Trash class="w-4 h-4" />
+                  <Trash2 class="w-4 h-4" />
                 </Button>
               </div>
             </TableCell>

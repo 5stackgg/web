@@ -68,13 +68,8 @@ const isOnline = computed(() =>
   ),
 );
 
-const {
-  statusKey,
-  statusIcon,
-  statusLabelKey,
-  joinableDraft,
-  currentMatch,
-} = useFriendStatus(() => props.player, isOnline);
+const { statusKey, statusIcon, statusLabelKey, joinableDraft, currentMatch } =
+  useFriendStatus(() => props.player, isOnline);
 
 const joiningDraft = ref(false);
 async function joinDraft() {
@@ -138,16 +133,16 @@ const canInviteToDraft = computed(() => {
   const meParticipant = (dg.players ?? []).some(
     (p: any) => String(p.steam_id) === meId && p.status !== "Invited",
   );
-  return (
-    meParticipant && ["Open", "Friends", "Invite"].includes(dg.access)
-  );
+  return meParticipant && ["Open", "Friends", "Invite"].includes(dg.access);
 });
 
 async function inviteToDraft() {
   const dg = myDraftGame.value;
   if (!dg) return;
   await useDraftGamesStore().add(dg.id, props.player.steam_id);
-  toast({ title: t("draft_games.room.invite_sent", { name: props.player.name }) });
+  toast({
+    title: t("draft_games.room.invite_sent", { name: props.player.name }),
+  });
 }
 
 const STATUS_BANNER: Record<string, string> = {
@@ -177,221 +172,222 @@ const amberHover =
   <div>
     <ContextMenu :modal="false" @update:open="onMenuOpenChange">
       <ContextMenuTrigger as-child>
-      <div
-        class="group/row flex flex-col rounded-md pr-1 transition-colors duration-200 hover:bg-muted/50"
-      >
-        <!-- Identity + actions -->
-        <div class="flex items-center gap-1">
-        <PlayerDisplay
-          class="min-w-0 flex-1 cursor-pointer rounded-md p-2 transition-opacity duration-200"
-          :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
-          :player="player"
-          :show-online="false"
-          :linkable="true"
-          :truncate-name="true"
-        />
-        <div class="flex shrink-0 items-center gap-0.5">
-          <!-- Invite to lobby — any invitable player except incoming requests -->
-          <Tooltip v-if="canInviteToLobby && rel !== 'incoming'">
-            <TooltipTrigger as-child>
-              <Button
-                variant="ghost"
-                :class="[actionBtn, amberHover]"
-                :loading="loadingFor('invite')"
-                :disabled="busy"
-                @click="inviteToLobby(player.steam_id)"
-              >
-                <Tent class="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{{
-              $t("matchmaking.friends.invite_to_lobby")
-            }}</TooltipContent>
-          </Tooltip>
-
-          <!-- Relationship-specific actions — animate on change -->
-          <Transition
-            mode="out-in"
-            enter-active-class="transition duration-200 ease-out"
-            leave-active-class="transition duration-150 ease-in"
-            enter-from-class="opacity-0 scale-90"
-            leave-to-class="opacity-0 scale-90"
-          >
-            <div :key="rel" class="flex items-center gap-0.5">
-              <!-- STRANGER -->
-              <template v-if="rel === 'none'">
-                <Tooltip>
-                  <TooltipTrigger as-child>
-                    <Button
-                      variant="ghost"
-                      :class="[actionBtn, amberHover]"
-                      :loading="loadingFor('add')"
-                      :disabled="busy"
-                      @click="addFriend(player.steam_id)"
-                    >
-                      <UserPlus class="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{{
-                    $t("player.status.add_friend")
-                  }}</TooltipContent>
-                </Tooltip>
-              </template>
-
-              <!-- OUTGOING — request you sent (stays in place, no jump) -->
-              <template v-else-if="rel === 'outgoing'">
-              <span
-                class="hidden items-center gap-1 rounded border border-border/70 bg-muted/30 px-1.5 py-1 font-mono text-[0.55rem] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:flex"
-              >
-                <Clock class="h-3 w-3" />
-                {{ $t("matchmaking.friends.requested") }}
-              </span>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    variant="ghost"
-                    :class="[actionBtn, dangerHover]"
-                    :loading="loadingFor('cancel')"
-                    :disabled="busy"
-                    @click="cancelRequest(player.steam_id)"
-                  >
-                    <X class="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{{
-                  $t("matchmaking.friends.cancel_request")
-                }}</TooltipContent>
-              </Tooltip>
-            </template>
-
-            <!-- INCOMING — request you received -->
-            <template v-else-if="rel === 'incoming'">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    variant="ghost"
-                    class="h-8 w-8 rounded-md p-0 text-[hsl(var(--tac-amber))] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.35)] transition-colors hover:bg-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber-foreground))]"
-                    :loading="loadingFor('accept')"
-                    :disabled="busy"
-                    @click="acceptFriend(player.steam_id)"
-                  >
-                    <Check class="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{{
-                  $t("matchmaking.friends.accept")
-                }}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    variant="ghost"
-                    :class="[actionBtn, dangerHover]"
-                    :loading="loadingFor('decline')"
-                    :disabled="busy"
-                    @click="declineFriend(player.steam_id)"
-                  >
-                    <X class="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{{
-                  $t("matchmaking.friends.decline")
-                }}</TooltipContent>
-              </Tooltip>
-            </template>
-
-              <!-- FRIEND -->
-              <template v-else>
-                <Tooltip>
-                  <TooltipTrigger as-child>
-                    <Button
-                      variant="ghost"
-                      :class="[
-                        actionBtn,
-                        dangerHover,
-                        loadingFor('remove')
-                          ? 'opacity-100'
-                          : 'opacity-0 focus-visible:opacity-100 group-hover/row:opacity-100',
-                      ]"
-                      :loading="loadingFor('remove')"
-                      :disabled="busy"
-                      @click="removeFriend(player.steam_id)"
-                    >
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{{
-                    $t("matchmaking.friends.remove")
-                  }}</TooltipContent>
-                </Tooltip>
-              </template>
-            </div>
-          </Transition>
-        </div>
-        </div>
-
         <div
-          v-if="showBanner"
-          class="px-2 pb-2 pt-0.5 transition-opacity duration-200"
-          :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
+          class="group/row flex flex-col rounded-md pr-1 transition-colors duration-200 hover:bg-muted/50"
         >
-          <PlayerLiveStatus
-            v-if="currentMatch || statusKey === 'in_cs2'"
-            :player="player"
-            :online="isOnline"
-          />
-          <div
-            v-else
-            class="flex items-center gap-2 rounded-md border-l-2 bg-gradient-to-r to-transparent px-2.5 py-1.5"
-            :class="bannerAccent"
-          >
-            <component :is="statusIcon" v-if="statusIcon" class="h-3.5 w-3.5 shrink-0" />
-            <span
-              class="min-w-0 truncate font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em]"
-            >
-              {{ $t(statusLabelKey) }}
-            </span>
+          <!-- Identity + actions -->
+          <div class="flex items-center gap-1">
+            <PlayerDisplay
+              class="min-w-0 flex-1 cursor-pointer rounded-md p-2 transition-opacity duration-200"
+              :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
+              :player="player"
+              :show-online="false"
+              :linkable="true"
+              :truncate-name="true"
+            />
+            <div class="flex shrink-0 items-center gap-0.5">
+              <!-- Invite to lobby — any invitable player except incoming requests -->
+              <Tooltip v-if="canInviteToLobby && rel !== 'incoming'">
+                <TooltipTrigger as-child>
+                  <Button
+                    variant="ghost"
+                    :class="[actionBtn, amberHover]"
+                    :loading="loadingFor('invite')"
+                    :disabled="busy"
+                    @click="inviteToLobby(player.steam_id)"
+                  >
+                    <Tent class="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{{
+                  $t("matchmaking.friends.invite_to_lobby")
+                }}</TooltipContent>
+              </Tooltip>
 
-            <!-- Mini join button — flush right — for a joinable draft -->
-            <Button
-              v-if="joinableDraft && !joinableDraft.full"
-              size="sm"
-              :class="[
-                'ml-auto h-5 shrink-0 gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
-                'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
-              ]"
-              :loading="joiningDraft"
-              @click.stop.prevent="joinDraft"
+              <!-- Relationship-specific actions — animate on change -->
+              <Transition
+                mode="out-in"
+                enter-active-class="transition duration-200 ease-out"
+                leave-active-class="transition duration-150 ease-in"
+                enter-from-class="opacity-0 scale-90"
+                leave-to-class="opacity-0 scale-90"
+              >
+                <div :key="rel" class="flex items-center gap-0.5">
+                  <!-- STRANGER -->
+                  <template v-if="rel === 'none'">
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          :class="[actionBtn, amberHover]"
+                          :loading="loadingFor('add')"
+                          :disabled="busy"
+                          @click="addFriend(player.steam_id)"
+                        >
+                          <UserPlus class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("player.status.add_friend")
+                      }}</TooltipContent>
+                    </Tooltip>
+                  </template>
+
+                  <!-- OUTGOING — request you sent (stays in place, no jump) -->
+                  <template v-else-if="rel === 'outgoing'">
+                    <span
+                      class="hidden items-center gap-1 rounded border border-border/70 bg-muted/30 px-1.5 py-1 font-mono text-[0.55rem] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:flex"
+                    >
+                      <Clock class="h-3 w-3" />
+                      {{ $t("matchmaking.friends.requested") }}
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          :class="[actionBtn, dangerHover]"
+                          :loading="loadingFor('cancel')"
+                          :disabled="busy"
+                          @click="cancelRequest(player.steam_id)"
+                        >
+                          <X class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("matchmaking.friends.cancel_request")
+                      }}</TooltipContent>
+                    </Tooltip>
+                  </template>
+
+                  <!-- INCOMING — request you received -->
+                  <template v-else-if="rel === 'incoming'">
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          class="h-8 w-8 rounded-md p-0 text-[hsl(var(--tac-amber))] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.35)] transition-colors hover:bg-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber-foreground))]"
+                          :loading="loadingFor('accept')"
+                          :disabled="busy"
+                          @click="acceptFriend(player.steam_id)"
+                        >
+                          <Check class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("matchmaking.friends.accept")
+                      }}</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          :class="[actionBtn, dangerHover]"
+                          :loading="loadingFor('decline')"
+                          :disabled="busy"
+                          @click="declineFriend(player.steam_id)"
+                        >
+                          <X class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("matchmaking.friends.decline")
+                      }}</TooltipContent>
+                    </Tooltip>
+                  </template>
+
+                  <!-- FRIEND -->
+                  <template v-else>
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          :class="[
+                            actionBtn,
+                            dangerHover,
+                            loadingFor('remove')
+                              ? 'opacity-100'
+                              : 'opacity-0 focus-visible:opacity-100 group-hover/row:opacity-100',
+                          ]"
+                          :loading="loadingFor('remove')"
+                          :disabled="busy"
+                          @click="removeFriend(player.steam_id)"
+                        >
+                          <Trash2 class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("matchmaking.friends.remove")
+                      }}</TooltipContent>
+                    </Tooltip>
+                  </template>
+                </div>
+              </Transition>
+            </div>
+          </div>
+
+          <div
+            v-if="showBanner"
+            class="px-2 pb-2 pt-0.5 transition-opacity duration-200"
+            :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
+          >
+            <PlayerLiveStatus
+              v-if="currentMatch || statusKey === 'in_cs2'"
+              :player="player"
+              :online="isOnline"
+            />
+            <div
+              v-else
+              class="flex items-center gap-2 rounded-md border-l-2 bg-gradient-to-r to-transparent px-2.5 py-1.5"
+              :class="bannerAccent"
             >
-              <LogIn class="h-3 w-3" />
-              {{ $t("matchmaking.friends.join") }}
-            </Button>
+              <component
+                :is="statusIcon"
+                v-if="statusIcon"
+                class="h-3.5 w-3.5 shrink-0"
+              />
+              <span
+                class="min-w-0 truncate font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em]"
+              >
+                {{ $t(statusLabelKey) }}
+              </span>
+
+              <!-- Mini join button — flush right — for a joinable draft -->
+              <Button
+                v-if="joinableDraft && !joinableDraft.full"
+                size="sm"
+                :class="[
+                  'ml-auto h-5 shrink-0 gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
+                  'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
+                ]"
+                :loading="joiningDraft"
+                @click.stop.prevent="joinDraft"
+              >
+                <LogIn class="h-3 w-3" />
+                {{ $t("matchmaking.friends.join") }}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </ContextMenuTrigger>
+      </ContextMenuTrigger>
 
-    <ContextMenuContent
-      v-if="isFriend || canInviteToDraft"
-      data-right-hub-interactive
-      class="w-56"
-    >
-      <ContextMenuItem
-        v-if="canInviteToDraft"
-        @click="inviteToDraft"
+      <ContextMenuContent
+        v-if="isFriend || canInviteToDraft"
+        data-right-hub-interactive
+        class="w-56"
       >
-        <Swords class="mr-2 h-4 w-4" />
-        <span>{{ $t("draft_games.room.invite_to_draft") }}</span>
-      </ContextMenuItem>
-      <ContextMenuItem
-        v-if="isFriend"
-        class="text-destructive"
-        @click="removeFriend(player.steam_id)"
-      >
-        <Trash2 class="mr-2 h-4 w-4" />
-        <span>{{ $t("matchmaking.friends.remove") }}</span>
-      </ContextMenuItem>
-    </ContextMenuContent>
+        <ContextMenuItem v-if="canInviteToDraft" @click="inviteToDraft">
+          <Swords />
+          <span>{{ $t("draft_games.room.invite_to_draft") }}</span>
+        </ContextMenuItem>
+        <ContextMenuItem
+          v-if="isFriend"
+          class="text-destructive"
+          @click="removeFriend(player.steam_id)"
+        >
+          <Trash2 />
+          <span>{{ $t("matchmaking.friends.remove") }}</span>
+        </ContextMenuItem>
+      </ContextMenuContent>
     </ContextMenu>
   </div>
 </template>

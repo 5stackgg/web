@@ -58,31 +58,31 @@
       <DropdownMenuContent class="w-48">
         <template v-if="item.isDirectory">
           <DropdownMenuItem @click="startCreateFile">
-            <FilePlus class="mr-2 h-4 w-4" />
+            <FilePlus />
             <span>{{ $t("file_manager.toolbar.new_file") }}</span>
           </DropdownMenuItem>
           <DropdownMenuItem @click="startCreateFolder">
-            <FolderPlus class="mr-2 h-4 w-4" />
+            <FolderPlus />
             <span>{{ $t("file_manager.toolbar.new_folder") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
         <template v-else>
           <DropdownMenuItem @click="$emit('edit-file', item)">
-            <Pencil class="mr-2 h-4 w-4" />
+            <Pencil />
             <span>{{ $t("common.actions.edit") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
         <DropdownMenuItem @click="$emit('rename-item', item)">
-          <PenLine class="mr-2 h-4 w-4" />
+          <PenLine />
           <span>{{ $t("common.rename") }}</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           @click="$emit('delete', item)"
           class="text-destructive"
         >
-          <Trash2 class="mr-2 h-4 w-4" />
+          <Trash2 />
           <span>{{ $t("common.actions.delete") }}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -311,8 +311,7 @@ const children = computed(() => {
 
 // Show a spinner only when the folder is being scanned and we have nothing cached yet
 const isLoadingChildren = computed(
-  () =>
-    store.loadingPaths.has(props.item.path) && children.value.length === 0,
+  () => store.loadingPaths.has(props.item.path) && children.value.length === 0,
 );
 
 const isSelected = computed(() => store.selectedItem?.path === props.item.path);

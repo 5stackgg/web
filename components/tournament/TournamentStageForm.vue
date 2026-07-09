@@ -207,6 +207,83 @@ import { $ } from "~/generated/zeus";
       </FormField>
     </div>
 
+    <FormField
+      v-if="form.values.stage_type === 'RoundRobin'"
+      v-slot="{ value, handleChange }"
+      name="max_rounds"
+    >
+      <FormItem>
+        <FormLabel>{{ $t("tournament.stage.max_rounds") }}</FormLabel>
+        <FormControl>
+          <Input
+            type="number"
+            min="1"
+            :model-value="value ?? ''"
+            :placeholder="$t('tournament.stage.max_rounds_placeholder')"
+            @update:model-value="
+              (val) => handleChange(val === '' || val == null ? null : Number(val))
+            "
+          />
+        </FormControl>
+        <FormDescription>
+          {{ $t("tournament.stage.max_rounds_description") }}
+        </FormDescription>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+    <template v-if="form.values.stage_type === 'Swiss'">
+      <FormField v-slot="{ value, handleChange }" name="swiss_no_elimination">
+        <FormItem>
+          <div
+            class="flex flex-row items-center justify-between cursor-pointer"
+            @click="handleChange(!value)"
+          >
+            <div class="space-y-0.5">
+              <FormLabel>{{
+                $t("tournament.stage.swiss_no_elimination")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t("tournament.stage.swiss_no_elimination_description")
+              }}</FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :model-value="value"
+                @update:model-value="handleChange"
+              />
+            </FormControl>
+          </div>
+        </FormItem>
+      </FormField>
+
+      <FormField
+        v-if="form.values.swiss_no_elimination"
+        v-slot="{ value, handleChange }"
+        name="max_rounds"
+      >
+        <FormItem>
+          <FormLabel>{{ $t("tournament.stage.swiss_rounds") }}</FormLabel>
+          <FormControl>
+            <Input
+              type="number"
+              min="1"
+              :model-value="value ?? ''"
+              :placeholder="$t('tournament.stage.swiss_rounds_placeholder')"
+              @update:model-value="
+                (val) => handleChange(val === '' || val == null ? null : Number(val))
+              "
+            />
+          </FormControl>
+          <FormDescription>
+            {{ $t("tournament.stage.swiss_rounds_description") }}
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+
     <!-- Section A: Default Best Of -->
     <Card>
       <div class="p-4 space-y-4">
@@ -843,6 +920,8 @@ export default {
               default_best_of: z.string().default("1"),
               third_place_match: z.boolean().default(false),
               decider_best_of: z.string().nullable().default(null),
+              max_rounds: z.number().nullable().default(null),
+              swiss_no_elimination: z.boolean().default(false),
               // Advanced settings (5 overridable fields)
               tv_delay: z.number().min(0).max(120).default(115),
               region_veto: z.boolean().default(true),
@@ -1128,6 +1207,8 @@ export default {
           decider_best_of: stage.decider_best_of
             ? stage.decider_best_of.toString()
             : null,
+          max_rounds: stage.max_rounds ?? null,
+          swiss_no_elimination: stage.swiss_no_elimination || false,
         });
 
         // Load per-round best_of from settings
@@ -1529,6 +1610,15 @@ export default {
             max_teams: this.form.values.max_teams,
             default_best_of: parseInt(this.form.values.default_best_of),
             third_place_match: this.form.values.third_place_match || false,
+            max_rounds:
+              this.form.values.stage_type === "RoundRobin" ||
+              (this.form.values.stage_type === "Swiss" &&
+                this.form.values.swiss_no_elimination)
+                ? this.form.values.max_rounds || null
+                : null,
+            swiss_no_elimination:
+              this.form.values.stage_type === "Swiss" &&
+              !!this.form.values.swiss_no_elimination,
             settings: $("settings", "jsonb"),
             decider_best_of: this.form.values.third_place_match
               ? parseInt(
@@ -1593,6 +1683,15 @@ export default {
                           this.form.values.default_best_of,
                       )
                     : null,
+                  max_rounds:
+                    this.form.values.stage_type === "RoundRobin" ||
+                    (this.form.values.stage_type === "Swiss" &&
+                      this.form.values.swiss_no_elimination)
+                      ? this.form.values.max_rounds || null
+                      : null,
+                  swiss_no_elimination:
+                    this.form.values.stage_type === "Swiss" &&
+                    !!this.form.values.swiss_no_elimination,
                   settings: $("settings", "jsonb"),
                   tournament_id:
                     (this as any).$route.params.tournamentId ||

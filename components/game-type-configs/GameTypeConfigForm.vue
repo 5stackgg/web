@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { FormSection } from "~/components/ui/form";
-import { Trash } from "lucide-vue-next";
+import { Trash2 } from "lucide-vue-next";
 import type * as Monaco from "monaco-editor";
 import { loadMonaco } from "~/utilities/loadMonaco";
 </script>
@@ -47,7 +47,7 @@ import { loadMonaco } from "~/utilities/loadMonaco";
       <AlertDialog v-if="gameTypeConfig">
         <AlertDialogTrigger asChild>
           <Button variant="destructive" type="button">
-            <Trash class="mr-2 h-4 w-4" />
+            <Trash2 class="mr-2 h-4 w-4" />
             {{ $t("game_type_configs.form.revert_to_defaults") }}
           </Button>
         </AlertDialogTrigger>

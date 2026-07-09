@@ -53,7 +53,7 @@ const selectedPath = computed({
     </TacticalPageHeader>
   </PageTransition>
   <Separator v-if="showSeparators" class="my-6" />
-  <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+  <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">
     <PageTransition :delay="100">
       <aside class="w-full shrink-0 lg:w-auto">
         <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
@@ -88,8 +88,13 @@ const selectedPath = computed({
         />
       </aside>
     </PageTransition>
-    <div class="space-y-6 flex-1 min-w-0">
-      <slot />
-    </div>
+    <!-- Keyed on the route so each tab switch mounts a fresh transition and
+         re-fires the enter animation; the shell itself stays mounted, so the
+         page's own PageTransition (appear) never re-runs on tab switches. -->
+    <PageTransition :key="route.path">
+      <div class="space-y-6 flex-1 min-w-0">
+        <slot />
+      </div>
+    </PageTransition>
   </div>
 </template>

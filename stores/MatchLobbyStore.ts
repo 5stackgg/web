@@ -12,6 +12,7 @@ import {
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
+import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
 
 export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
@@ -74,6 +75,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               status: {
                 _eq: e_tournament_status_enum.Live,
               },
+              _and: [NOT_LEAGUE_TOURNAMENT],
             },
           },
           {
@@ -109,6 +111,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               status: {
                 _eq: e_tournament_status_enum.RegistrationOpen,
               },
+              _and: [NOT_LEAGUE_TOURNAMENT],
             },
           },
           {
@@ -157,6 +160,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
                 { joined_tournament: { _eq: true } },
                 { is_organizer: { _eq: true } },
               ],
+              _and: [NOT_LEAGUE_TOURNAMENT],
             },
           },
           {
@@ -253,6 +257,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
                   e_tournament_status_enum.Setup,
                 ],
               },
+              _and: [NOT_LEAGUE_TOURNAMENT],
             },
           },
           {

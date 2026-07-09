@@ -20,8 +20,6 @@ export interface NewSeasonInput {
   match_weeks_count: number;
   games_per_week: number;
   playoff_seats: number;
-  promote_count: number;
-  relegate_count: number;
   direct_promote_count: number;
   relegation_up_count: number;
   relegation_down_count: number;
@@ -77,8 +75,6 @@ const rosterLockWeek = ref(4);
 const weeksCount = ref(8);
 const gamesPerWeek = ref(1);
 const playoffSeats = ref(4);
-const promoteCount = ref(2);
-const relegateCount = ref(2);
 // ESEA bands: direct up / relegation-up (playoff) / relegation-down (playoff) / direct down.
 const directPromoteCount = ref(1);
 const relegationUpCount = ref(2);
@@ -179,8 +175,6 @@ function submit() {
     relegation_up_count: relegationUpCount.value,
     relegation_down_count: relegationDownCount.value,
     direct_relegate_count: directRelegateCount.value,
-    promote_count: promoteCount.value,
-    relegate_count: relegateCount.value,
     default_best_of: defaultBestOf.value,
     playoff_best_of: playoffBestOf.value,
     week_best_of: Object.fromEntries(

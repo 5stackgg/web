@@ -49,12 +49,10 @@ const LEAGUE_SEASON_SELECTION = `
       match_weeks_count
       games_per_week
       playoff_seats
-      promote_count
       direct_promote_count
       relegation_up_count
       relegation_down_count
       direct_relegate_count
-      relegate_count
       default_best_of
       playoff_best_of
       week_best_of

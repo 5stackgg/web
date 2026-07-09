@@ -359,6 +359,45 @@ type IosVideoEl = HTMLVideoElement & {
   webkitDisplayingFullscreen?: boolean;
 };
 
+const isIphone =
+  typeof navigator !== "undefined" && /iPhone|iPod/.test(navigator.userAgent);
+
+// Native player fullscreen. On iPhone this is the ONLY mode that rotates to
+// landscape (element fullscreen exists since iOS 16.4 but stays locked to
+// the page orientation) — it's what Discord embeds use.
+function toggleNativeVideoFullscreen() {
+  const video = videoRef.value as IosVideoEl | null;
+  if (!video) return;
+  if (video.webkitDisplayingFullscreen) {
+    video.webkitExitFullscreen?.();
+    return;
+  }
+  if (!video.webkitEnterFullscreen) return;
+  if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+    try {
+      video.webkitEnterFullscreen();
+    } catch {
+      // InvalidStateError mid-load — the retry below covers it
+    }
+    return;
+  }
+  // preload="none": webkitEnterFullscreen throws before metadata exists.
+  // Start playback and enter once it lands (still inside Safari's
+  // transient-activation window).
+  video.addEventListener(
+    "loadedmetadata",
+    () => {
+      try {
+        (video as IosVideoEl).webkitEnterFullscreen?.();
+      } catch {
+        // gesture window expired — user is at least playing now
+      }
+    },
+    { once: true },
+  );
+  void video.play().catch(() => {});
+}
+
 async function toggleFullscreen() {
   const stage = stageEl.value;
   if (!stage) return;
@@ -372,19 +411,11 @@ async function toggleFullscreen() {
     webkitRequestFullscreen?: () => Promise<void> | void;
   };
 
-  // iPhone Safari has no Element.requestFullscreen — the only path is
-  // video.webkitEnterFullscreen().
   const docFsSupported = !!(
     doc.fullscreenEnabled ?? doc.webkitFullscreenEnabled
   );
-  if (!docFsSupported || !el.requestFullscreen) {
-    const video = videoRef.value as IosVideoEl | null;
-    if (!video) return;
-    if (video.webkitDisplayingFullscreen) {
-      video.webkitExitFullscreen?.();
-    } else {
-      video.webkitEnterFullscreen?.();
-    }
+  if (isIphone || !docFsSupported || !el.requestFullscreen) {
+    toggleNativeVideoFullscreen();
     return;
   }
 
@@ -398,6 +429,15 @@ async function toggleFullscreen() {
       const request =
         el.requestFullscreen?.bind(el) ?? el.webkitRequestFullscreen?.bind(el);
       await Promise.resolve(request?.());
+      // Clips are always landscape; Android supports locking, elsewhere
+      // this rejects harmlessly.
+      try {
+        await (
+          screen.orientation as ScreenOrientation & {
+            lock?: (o: string) => Promise<void>;
+          }
+        ).lock?.("landscape");
+      } catch {}
     }
   } catch {
     // ignore — user gesture missing, etc.
@@ -410,6 +450,11 @@ function onFullscreenChange() {
   };
   const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
   isFullscreen.value = fsElement === stageEl.value;
+  if (!isFullscreen.value) {
+    try {
+      screen.orientation.unlock();
+    } catch {}
+  }
 }
 function onVideoWebkitBeginFullscreen() {
   isFullscreen.value = true;

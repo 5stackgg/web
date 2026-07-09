@@ -37,6 +37,7 @@ const props = defineProps<{
   fixture: Fixture | null;
   isAdmin: boolean;
   mySteamId?: string | null;
+  busy?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -189,6 +190,7 @@ function formatUtc(value: Date | string): string {
           <Button
             size="sm"
             class="tac-amber-cta h-7 gap-1"
+            :loading="busy"
             @click="emit('respond', proposal.id, 'Accepted')"
           >
             <Check class="h-3.5 w-3.5" />
@@ -198,6 +200,7 @@ function formatUtc(value: Date | string): string {
             size="sm"
             variant="outline"
             class="h-7 gap-1"
+            :disabled="busy"
             @click="emit('counter', fixture, proposal.id)"
           >
             <CalendarClock class="h-3.5 w-3.5" />
@@ -207,6 +210,7 @@ function formatUtc(value: Date | string): string {
             size="sm"
             variant="ghost"
             class="h-7 gap-1 text-muted-foreground"
+            :loading="busy"
             @click="emit('respond', proposal.id, 'Declined')"
           >
             <X class="h-3.5 w-3.5" />
@@ -280,6 +284,7 @@ function formatUtc(value: Date | string): string {
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               v-if="fixture.bracket.tournament_team_id_1"
+              :disabled="busy"
               @click="
                 emit('forfeit', fixture.bracket.id, fixture.bracket.tournament_team_id_1)
               "
@@ -293,6 +298,7 @@ function formatUtc(value: Date | string): string {
             </DropdownMenuItem>
             <DropdownMenuItem
               v-if="fixture.bracket.tournament_team_id_2"
+              :disabled="busy"
               @click="
                 emit('forfeit', fixture.bracket.id, fixture.bracket.tournament_team_id_2)
               "

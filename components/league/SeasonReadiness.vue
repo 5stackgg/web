@@ -31,7 +31,6 @@ const approvedByDivision = computed(() => {
 
 const divisionSizes = computed(() =>
   (props.divisions ?? [])
-    .filter((d: any) => d.active)
     .map((d: any) => ({
       id: d.id,
       name: d.name,

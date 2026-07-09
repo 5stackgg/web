@@ -25,6 +25,7 @@ const props = defineProps<{
   divisions: any[];
   minRosterSize: number;
   seasonLive?: boolean;
+  busy?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -131,6 +132,7 @@ watch([search, statusFilter], () => (page.value = 1));
       :divisions="divisions"
       :min-roster-size="minRosterSize"
       :season-live="seasonLive"
+      :busy="busy"
       @assign="(id, div) => emit('assign', id, div)"
       @set-status="
         (id, status, reason) => emit('set-status', id, status, reason)

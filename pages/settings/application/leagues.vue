@@ -14,7 +14,6 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import {
   LEAGUE_OVERVIEW_QUERY,
   UPSERT_DIVISION_MUTATION,
-  UPDATE_DIVISION_MUTATION,
   DELETE_DIVISION_MUTATION,
   REORDER_DIVISIONS_MUTATION,
 } from "~/graphql/leagues";
@@ -100,24 +99,6 @@ async function createDivision(name: string, tier: number) {
   }
 }
 
-async function toggleDivision(divisionId: string, active: boolean) {
-  const division = divisions.value.find((d: any) => d.id === divisionId);
-  try {
-    await apolloClient.mutate({
-      mutation: UPDATE_DIVISION_MUTATION,
-      variables: {
-        divisionId,
-        name: division?.name,
-        tier: division?.tier,
-        active,
-      },
-    });
-    await fetchDivisions();
-  } catch (error) {
-    onError(error);
-  }
-}
-
 async function deleteDivision(divisionId: string) {
   try {
     await apolloClient.mutate({
@@ -188,7 +169,6 @@ async function reorderDivisions(divisionIds: string[]) {
           <DivisionTierEditor
             :divisions="divisions"
             @create="createDivision"
-            @toggle="toggleDivision"
             @delete="deleteDivision"
             @reorder="reorderDivisions"
           />

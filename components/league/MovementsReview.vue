@@ -25,7 +25,7 @@ export interface MovementRow {
   type: string;
   final_rank: number | null;
   approved_at: string | null;
-  league_team: { id: string; name: string };
+  league_team: { id: string; team: { id: string; name: string } };
   from_division: { id: string; name: string } | null;
   computed_to_division: { id: string; name: string } | null;
   final_to_division: { id: string; name: string } | null;
@@ -35,6 +35,7 @@ defineProps<{
   movements: MovementRow[];
   divisions: LeagueDivision[];
   isAdmin: boolean;
+  busy?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -47,9 +48,15 @@ const DOWN_TYPES = ["Relegate", "DirectRelegate"];
 const PLAYOFF_TYPES = ["RelegationUp", "RelegationDown"];
 
 function movementKind(type: string): "up" | "down" | "playoff" | "hold" {
-  if (UP_TYPES.includes(type)) return "up";
-  if (DOWN_TYPES.includes(type)) return "down";
-  if (PLAYOFF_TYPES.includes(type)) return "playoff";
+  if (UP_TYPES.includes(type)) {
+    return "up";
+  }
+  if (DOWN_TYPES.includes(type)) {
+    return "down";
+  }
+  if (PLAYOFF_TYPES.includes(type)) {
+    return "playoff";
+  }
   return "hold";
 }
 </script>
@@ -179,6 +186,7 @@ function movementKind(type: string): "up" | "down" | "playoff" | "hold" {
 
     <Button
       v-if="isAdmin && movements.some((m) => !m.approved_at)"
+      :loading="busy"
       @click="emit('approveAll')"
     >
       {{ $t("league.movements.approve_all") }}

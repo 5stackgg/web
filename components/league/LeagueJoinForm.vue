@@ -243,7 +243,7 @@ function submit() {
                   {{ $t("league.join.no_preference") }}
                 </SelectItem>
                 <SelectItem
-                  v-for="division in divisions.filter((d) => d.active)"
+                  v-for="division in divisions"
                   :key="division.id"
                   :value="division.id"
                 >

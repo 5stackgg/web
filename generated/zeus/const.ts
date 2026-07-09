@@ -21930,9 +21930,6 @@ export const AllTypesProps: Record<string,any> = {
 		readServerFile:{
 
 		},
-		scrimCalendarUrl:{
-			team_id:"uuid"
-		},
 		seasons:{
 			distinct_on:"seasons_select_column",
 			order_by:"seasons_order_by",
@@ -22023,6 +22020,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		system_alerts_by_pk:{
 			id:"uuid"
+		},
+		teamCalendarUrl:{
+			team_id:"uuid"
 		},
 		team_invites:{
 			distinct_on:"team_invites_select_column",
@@ -33447,9 +33447,6 @@ export const ReturnTypes: Record<string,any> = {
 		scanning:"Boolean",
 		success:"Boolean"
 	},
-	ScrimCalendarOutput:{
-		url:"String"
-	},
 	SeasonBackfillStatusOutput:{
 		canceled:"Boolean",
 		completed:"Int",
@@ -33558,6 +33555,9 @@ export const ReturnTypes: Record<string,any> = {
 		schemaname:"String",
 		seq_scan:"Int",
 		seq_tup_read:"Int"
+	},
+	TeamCalendarOutput:{
+		url:"String"
 	},
 	TelemetryStats:{
 		online:"Int"
@@ -45446,7 +45446,6 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions_aggregate:"plugin_versions_aggregate",
 		plugin_versions_by_pk:"plugin_versions",
 		readServerFile:"FileContentResponse",
-		scrimCalendarUrl:"ScrimCalendarOutput",
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
@@ -45469,6 +45468,7 @@ export const ReturnTypes: Record<string,any> = {
 		system_alerts:"system_alerts",
 		system_alerts_aggregate:"system_alerts_aggregate",
 		system_alerts_by_pk:"system_alerts",
+		teamCalendarUrl:"TeamCalendarOutput",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
 		team_invites_by_pk:"team_invites",

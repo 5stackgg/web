@@ -190,6 +190,11 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
         <header :class="tournamentHeroClasses">
           <div class="mb-5 flex flex-wrap items-start justify-between gap-4">
             <div :class="tournamentHeroToplineClasses">
+              <div v-if="!leagueSeasonId" :class="tournamentHeroEyebrowClasses">
+                <span :class="tournamentHeroChevronClasses">◢</span>
+                {{ $t("tournament.page.tournament_eyebrow") }}
+              </div>
+
               <div :class="tournamentHeroActionsClasses">
                 <Button
                   v-if="

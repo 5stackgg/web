@@ -37,6 +37,7 @@ const props = defineProps<{
   managedTeamIds: string[];
   isAdmin: boolean;
   mySteamId?: string | null;
+  busy?: boolean;
   weekBestOf?: Record<string, number>;
   defaultBestOf?: number;
   /** Team the viewer manages in this season — gates the calendar-feed button. */
@@ -55,14 +56,30 @@ const emit = defineEmits<{
   (e: "forfeit", bracketId: string, winningTeamId: string): void;
 }>();
 
-// The page is client-fetched, so `now` never renders on the server.
-const now = new Date();
-const today = startOfDay(now);
+// The page is client-fetched, so `now` never renders on the server. Ticking it
+// keeps the today highlight and window shading correct across midnight.
+const now = ref(new Date());
+const today = computed(() => startOfDay(now.value));
+
+let nowTicker: ReturnType<typeof setInterval> | null = null;
+
+onMounted(() => {
+  nowTicker = setInterval(() => {
+    now.value = new Date();
+  }, 60_000);
+});
+
+onBeforeUnmount(() => {
+  if (nowTicker) {
+    clearInterval(nowTicker);
+    nowTicker = null;
+  }
+});
 
 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const timeZoneAbbr =
   new Intl.DateTimeFormat(undefined, { timeZoneName: "short" })
-    .formatToParts(now)
+    .formatToParts(now.value)
     .find((part) => part.type === "timeZoneName")?.value ?? "";
 
 const allFixtures = computed(() =>
@@ -104,7 +121,7 @@ const seasonStart = computed(() =>
           new Date(week.opens_at) < new Date(min.opens_at) ? week : min,
         ).opens_at,
       )
-    : today,
+    : today.value,
 );
 const seasonEnd = computed(() =>
   props.weeks.length
@@ -113,7 +130,7 @@ const seasonEnd = computed(() =>
           new Date(week.closes_at) > new Date(max.closes_at) ? week : max,
         ).closes_at,
       )
-    : today,
+    : today.value,
 );
 
 function monthIndex(date: Date): number {
@@ -125,7 +142,7 @@ const lastMonth = computed(() => monthIndex(seasonEnd.value));
 
 // Open on the month the viewer is living in, clamped into the season.
 const cursor = ref(
-  Math.min(Math.max(monthIndex(now), monthIndex(seasonStart.value)), monthIndex(seasonEnd.value)),
+  Math.min(Math.max(monthIndex(now.value), monthIndex(seasonStart.value)), monthIndex(seasonEnd.value)),
 );
 const cursorDate = computed(
   () => new Date(Math.floor(cursor.value / 12), cursor.value % 12, 1),
@@ -211,14 +228,14 @@ const rows = computed<CalendarRow[]>(() => {
     const openFixtures = weekFixtures.filter(
       (fixture) => fixture.needsMe && reschedulable(fixture),
     );
-    const windowOpen = !!week && new Date(week.closes_at) >= now;
+    const windowOpen = !!week && new Date(week.closes_at) >= now.value;
 
     // Ambiguity guard: with two open fixtures in one week (an admin browsing the
     // division) a cell click has no single meaning, so we don't offer one.
     const proposable =
       windowOpen &&
       openFixtures.length === 1 &&
-      date >= today &&
+      date >= today.value &&
       date >= startOfDay(week!.opens_at) &&
       date <= endOfDay(week!.closes_at);
 
@@ -227,7 +244,7 @@ const rows = computed<CalendarRow[]>(() => {
       key,
       dayOfMonth: date.getDate(),
       inMonth: date.getMonth() === first.getMonth(),
-      isToday: key === dayKey(now),
+      isToday: key === dayKey(now.value),
       week,
       actionable: windowOpen && openFixtures.length > 0,
       isDefaultNight: !!week && dayKey(week.default_match_at) === key,
@@ -279,7 +296,7 @@ const upcoming = computed(() =>
       (fixture) =>
         !fixture.bye &&
         fixture.status !== "finished" &&
-        fixture.date >= today,
+        fixture.date >= today.value,
     )
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .slice(0, 4),
@@ -882,6 +899,7 @@ function onPopoverSubmit(proposedTime: string, message: string) {
       :fixture="detailFor"
       :is-admin="isAdmin"
       :my-steam-id="mySteamId"
+      :busy="busy"
       @update:open="(open) => !open && (detailFor = null)"
       @propose="openPropose"
       @counter="openCounter"

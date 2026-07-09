@@ -541,7 +541,13 @@ function rosterChanges(registration: any) {
 
 // ---- Admin actions ----
 
+const mutating = ref(false);
+
 async function setTeamSeason(teamSeasonId: string, changes: any) {
+  if (mutating.value) {
+    return;
+  }
+  mutating.value = true;
   try {
     await apolloClient.mutate({
       mutation: UPDATE_TEAM_SEASON_MUTATION,
@@ -550,6 +556,8 @@ async function setTeamSeason(teamSeasonId: string, changes: any) {
     await fetchSeason();
   } catch (error) {
     onError(error);
+  } finally {
+    mutating.value = false;
   }
 }
 
@@ -790,6 +798,10 @@ async function respond(
   proposalId: string,
   status: "Accepted" | "Declined" | "Countered",
 ) {
+  if (mutating.value) {
+    return;
+  }
+  mutating.value = true;
   try {
     await apolloClient.mutate({
       mutation: RESPOND_PROPOSAL_MUTATION,
@@ -798,10 +810,16 @@ async function respond(
     await fetchSeason();
   } catch (error) {
     onError(error);
+  } finally {
+    mutating.value = false;
   }
 }
 
 async function forfeit(bracketId: string, winningTeamId: string) {
+  if (mutating.value) {
+    return;
+  }
+  mutating.value = true;
   try {
     await apolloClient.mutate({
       mutation: AWARD_FORFEIT_MUTATION,
@@ -811,6 +829,8 @@ async function forfeit(bracketId: string, winningTeamId: string) {
     await fetchSeason();
   } catch (error) {
     onError(error);
+  } finally {
+    mutating.value = false;
   }
 }
 
@@ -946,6 +966,10 @@ async function overrideMovement(movementId: string, divisionId: string | null) {
 }
 
 async function approveMovements() {
+  if (mutating.value) {
+    return;
+  }
+  mutating.value = true;
   try {
     await apolloClient.mutate({
       mutation: APPROVE_MOVEMENTS_MUTATION,
@@ -955,6 +979,8 @@ async function approveMovements() {
     await fetchSeason();
   } catch (error) {
     onError(error);
+  } finally {
+    mutating.value = false;
   }
 }
 
@@ -1574,6 +1600,7 @@ function formatDate(value: string | null): string {
               :managed-team-ids="managedTeamIds"
               :is-admin="isAdmin"
               :my-steam-id="auth.me?.steam_id"
+              :busy="mutating"
               :week-best-of="season.week_best_of"
               :default-best-of="season.default_best_of"
               :my-team-id="myRegisteredTeamId"
@@ -1780,6 +1807,7 @@ function formatDate(value: string | null): string {
               :movements="season.movements ?? []"
               :divisions="divisions"
               :is-admin="isAdmin"
+              :busy="mutating"
               @override="overrideMovement"
               @approve-all="approveMovements"
             />
@@ -1796,6 +1824,7 @@ function formatDate(value: string | null): string {
               :divisions="divisions"
               :min-roster-size="rosterMin"
               :season-live="['Live', 'Playoffs'].includes(season.status)"
+              :busy="mutating"
               @assign="
                 (teamSeasonId, divisionId) =>
                   setTeamSeason(teamSeasonId, {

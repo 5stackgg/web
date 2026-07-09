@@ -14,12 +14,15 @@ const props = defineProps<{
   playoffStageType?: string | null;
 }>();
 
-const FORMAT_LABEL: Record<string, string> = {
-  RoundRobin: "Round Robin",
-  Swiss: "Swiss",
-  SingleElimination: "Single Elim",
-  DoubleElimination: "Double Elim",
-};
+const { t, te } = useI18n();
+
+function formatLabelFor(type: string): string {
+  const key = `league.bracket.format.${type}`;
+  if (te(key)) {
+    return t(key);
+  }
+  return type;
+}
 
 const playable = computed(() =>
   (props.seasonDivisions ?? []).filter((sd: any) => sd.tournament_id),
@@ -56,7 +59,7 @@ const stages = computed(() => {
     order: s.order,
     type: s.type,
     label: s.order === 1 ? "regular_season" : "playoffs",
-    formatLabel: FORMAT_LABEL[s.type] ?? s.type,
+    formatLabel: formatLabelFor(s.type),
   }));
 });
 

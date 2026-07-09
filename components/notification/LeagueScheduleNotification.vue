@@ -189,7 +189,9 @@ async function onProposeSubmit(proposedTime: string, message: string) {
       :matchup="`${task.team1} vs ${task.team2}`"
       :scope="
         [
-          task.seasonNumber ? `Season ${task.seasonNumber}` : null,
+          task.seasonNumber
+            ? $t('league.schedule.season_number', { number: task.seasonNumber })
+            : null,
           $t('league.schedule.week', { week: task.week.week_number }),
         ]
           .filter(Boolean)

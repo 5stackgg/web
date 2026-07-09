@@ -1973,7 +1973,7 @@
           "manage_description": "Create and manage seasons, registrations and schedules from the league page.",
           "manage": "Manage seasons",
           "divisions_section": "Divisions",
-          "divisions_description": "The tiers teams are placed into and promoted/relegated between each season. Keep at least two active so promotion and relegation have somewhere to go.",
+          "divisions_description": "The tiers teams are placed into and promoted/relegated between each season. A tier with no teams simply does not run that season.",
           "allow_request_title": "Let teams request a division",
           "allow_request_hint": "When off, teams register with no division preference and admins place them.",
           "registration_section": "Registration",
@@ -6158,14 +6158,10 @@
     "divisions": {
       "title": "Divisions",
       "empty": "No divisions configured yet.",
-      "inactive": "Inactive",
-      "activate": "Activate",
-      "deactivate": "Deactivate",
       "add": "Add tier {tier}",
       "name_placeholder": "Division name (e.g. Open, Main, Invite)",
       "tier_hint": "Tier 1 is the top division. Teams are promoted toward tier 1 and relegated away from it.",
       "reorder_hint": "Drag divisions to reorder the ladder. Tier 1 is the top division; teams are promoted toward it and relegated away from it.",
-      "min_active_hint": "Keep at least two divisions active so teams can be promoted and relegated.",
       "delete_title": "Delete division?",
       "delete_description": "Remove {name} from the ladder. Remaining divisions are renumbered. This cannot be undone."
     },
@@ -6246,7 +6242,13 @@
       "regular_season": "Regular Season",
       "playoffs": "Playoffs",
       "open_full": "Open full view",
-      "empty": "The bracket appears once the season starts and its tournaments are generated."
+      "empty": "The bracket appears once the season starts and its tournaments are generated.",
+      "format": {
+        "RoundRobin": "Round Robin",
+        "Swiss": "Swiss",
+        "SingleElimination": "Single Elim",
+        "DoubleElimination": "Double Elim"
+      }
     },
     "manage": {
       "title": "Settings",
@@ -6327,7 +6329,6 @@
       "unassigned": "Unassigned",
       "assign_to_approve": "Assign a division to approve",
       "requested": "requested",
-      "inactive_division": "Activate this division before approving teams into it.",
       "approve_needs_division": "Assign a division before approving this team.",
       "approve_needs_roster": "Team needs at least {min} players before it can be approved.",
       "approve": "Approve",
@@ -6344,6 +6345,7 @@
     },
     "schedule": {
       "week": "Week {week}",
+      "season_number": "Season {number}",
       "default_time": "Default",
       "my_matches": "My matches",
       "no_matches_filter": "No matches match these filters.",

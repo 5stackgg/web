@@ -11,7 +11,6 @@ const LEAGUE_OVERVIEW_SELECTION = `
       id
       name
       tier
-      active
     }
     league_seasons(order_by: { season_number: desc }) {
       id
@@ -259,7 +258,6 @@ const LEAGUE_DIVISIONS_SELECTION = `
       id
       name
       tier
-      active
     }
 `;
 
@@ -324,21 +322,6 @@ export const UPSERT_DIVISION_MUTATION = gql`
   }
 `;
 
-export const UPDATE_DIVISION_MUTATION = gql`
-  mutation UpdateLeagueDivision(
-    $divisionId: uuid!
-    $name: String
-    $tier: smallint
-    $active: Boolean
-  ) {
-    update_league_divisions_by_pk(
-      pk_columns: { id: $divisionId }
-      _set: { name: $name, tier: $tier, active: $active }
-    ) {
-      id
-    }
-  }
-`;
 
 export const DELETE_DIVISION_MUTATION = gql`
   mutation DeleteLeagueDivision($divisionId: uuid!) {

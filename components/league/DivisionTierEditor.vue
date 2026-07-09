@@ -2,7 +2,6 @@
 import { ref, computed, watch } from "vue";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Badge } from "~/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +18,6 @@ export interface LeagueDivision {
   id: string;
   name: string;
   tier: number;
-  active: boolean;
 }
 
 const props = defineProps<{
@@ -28,7 +26,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "create", name: string, tier: number): void;
-  (e: "toggle", divisionId: string, active: boolean): void;
   (e: "delete", divisionId: string): void;
   (e: "reorder", orderedIds: string[]): void;
 }>();
@@ -42,14 +39,6 @@ watch(
     items.value = [...value];
   },
 );
-
-const activeCount = computed(() => items.value.filter((d) => d.active).length);
-
-// The ladder needs at least two active divisions; block deactivating the
-// last-but-one (drop to zero to turn the ladder off instead).
-function canDeactivate(division: LeagueDivision): boolean {
-  return !(division.active && activeCount.value === 2);
-}
 
 // ---- drag-and-drop ordering ----
 const dragIndex = ref<number | null>(null);
@@ -114,7 +103,6 @@ function confirmDelete() {
         @drop="onDrop(index)"
         class="flex items-center justify-between gap-3 rounded-md border border-border bg-muted/20 px-3 py-2"
         :class="{
-          'opacity-50': !division.active,
           'border-[hsl(var(--tac-amber)/0.6)]': dragIndex === index,
         }"
       >
@@ -128,29 +116,8 @@ function confirmDelete() {
             {{ index + 1 }}
           </span>
           <span class="truncate font-medium">{{ division.name }}</span>
-          <Badge v-if="!division.active" variant="outline" size="sm">
-            {{ $t("league.divisions.inactive") }}
-          </Badge>
         </div>
         <div class="flex shrink-0 items-center gap-1.5">
-          <Button
-            size="sm"
-            variant="ghost"
-            class="h-7 text-xs"
-            :disabled="!canDeactivate(division)"
-            :title="
-              !canDeactivate(division)
-                ? $t('league.divisions.min_active_hint')
-                : undefined
-            "
-            @click="emit('toggle', division.id, !division.active)"
-          >
-            {{
-              division.active
-                ? $t("league.divisions.deactivate")
-                : $t("league.divisions.activate")
-            }}
-          </Button>
           <Button
             size="icon"
             variant="ghost"

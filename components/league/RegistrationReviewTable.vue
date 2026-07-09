@@ -54,33 +54,10 @@ const props = defineProps<{
   divisions: LeagueDivision[];
   minRosterSize: number;
   seasonLive?: boolean;
+  busy?: boolean;
 }>();
 
 const { t } = useI18n();
-
-const activeDivisions = computed(() => props.divisions.filter((d) => d.active));
-
-// Offer active divisions to assign into, but keep a since-deactivated current
-// assignment visible so the selected value doesn't silently disappear.
-function divisionOptions(row: TeamSeasonRow): LeagueDivision[] {
-  const options = [...activeDivisions.value];
-  const assigned = props.divisions.find(
-    (d) => d.id === row.assigned_division_id,
-  );
-  if (
-    assigned &&
-    !assigned.active &&
-    !options.some((d) => d.id === assigned.id)
-  ) {
-    options.push(assigned);
-  }
-  return options;
-}
-
-function assignedActive(row: TeamSeasonRow): boolean {
-  return !!props.divisions.find((d) => d.id === row.assigned_division_id)
-    ?.active;
-}
 
 // Why the Approve button is disabled, so admins aren't left guessing.
 function approveDisabledReason(row: TeamSeasonRow): string | undefined {
@@ -91,9 +68,6 @@ function approveDisabledReason(row: TeamSeasonRow): string | undefined {
   }
   if (!row.assigned_division_id) {
     return t("league.registrations.approve_needs_division");
-  }
-  if (!assignedActive(row)) {
-    return t("league.registrations.inactive_division");
   }
   return undefined;
 }
@@ -245,17 +219,12 @@ const STATUS_VARIANTS: Record<string, string> = {
                       {{ $t("league.registrations.unassigned") }}
                     </SelectItem>
                     <SelectItem
-                      v-for="division in divisionOptions(row)"
+                      v-for="division in divisions"
                       :key="division.id"
                       :value="division.id"
                     >
                       {{ division.name }}
-                      <template v-if="!division.active">
-                        ({{ $t("league.divisions.inactive") }})
-                      </template>
-                      <template
-                        v-else-if="division.id === row.requested_division_id"
-                      >
+                      <template v-if="division.id === row.requested_division_id">
                         ({{ $t("league.registrations.requested") }})
                       </template>
                     </SelectItem>
@@ -287,7 +256,7 @@ const STATUS_VARIANTS: Record<string, string> = {
                 size="sm"
                 variant="outline"
                 class="h-7"
-                :disabled="!!approveDisabledReason(row)"
+                :disabled="!!approveDisabledReason(row) || busy"
                 :title="approveDisabledReason(row)"
                 @click="emit('setStatus', row.id, 'Approved')"
               >
@@ -298,6 +267,7 @@ const STATUS_VARIANTS: Record<string, string> = {
                 size="sm"
                 variant="ghost"
                 class="h-7 text-muted-foreground"
+                :loading="busy"
                 @click="emit('setStatus', row.id, 'Waitlisted')"
               >
                 {{ $t("league.registrations.waitlist") }}

@@ -3,10 +3,8 @@ import { ref, computed, watch } from "vue";
 import { Button } from "~/components/ui/button";
 import { ExternalLink, Network } from "lucide-vue-next";
 
-// Embeds the real tournament stage viewer (round-robin / swiss / elimination)
-// per division, via the platform's chromeless bracket embed. The embed runs its
-// own live subscription, so it always has the full bracket data the league
-// query doesn't select.
+// The embed runs its own live subscription, so it has the full bracket data the
+// league query does not select.
 const props = defineProps<{
   seasonId: string;
   seasonDivisions: any[];
@@ -80,7 +78,9 @@ const activeStage = computed(() =>
 
 const embedSrc = computed(() => {
   const tid = activeDivision.value?.tournament_id;
-  if (!tid) return "";
+  if (!tid) {
+    return "";
+  }
   return `/embed/tournaments/${tid}/bracket?stage=${selectedStageOrder.value}`;
 });
 

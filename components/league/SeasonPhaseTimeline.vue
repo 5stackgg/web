@@ -12,7 +12,9 @@ const props = defineProps<{
 const { t } = useI18n();
 
 function fmt(value: string | null | undefined): string {
-  if (!value) return "";
+  if (!value) {
+    return "";
+  }
   return new Date(value).toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
@@ -61,7 +63,9 @@ const regularSeasonEnd = computed<string | null>(() => {
 // Playoffs run a round a week; a rough completion estimate for the timeline.
 const playoffRounds = computed(() => {
   const seats = props.season?.playoff_seats ?? 0;
-  if (seats < 2) return 1;
+  if (seats < 2) {
+    return 1;
+  }
   const wb = Math.ceil(Math.log2(seats));
   return props.season?.playoff_stage_type === "DoubleElimination" ? wb + 1 : wb;
 });
@@ -116,8 +120,12 @@ const phases = computed(() => [
 ]);
 
 function nodeState(i: number): "done" | "current" | "upcoming" {
-  if (i < currentIndex.value) return "done";
-  if (i === currentIndex.value) return "current";
+  if (i < currentIndex.value) {
+    return "done";
+  }
+  if (i === currentIndex.value) {
+    return "current";
+  }
   return "upcoming";
 }
 </script>

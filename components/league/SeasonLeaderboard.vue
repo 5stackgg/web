@@ -175,12 +175,16 @@ function statTier(field: SortField) {
   return config.value.tiers?.[field];
 }
 function sortIcon(field: SortField) {
-  if (sortBy.value !== field) return ArrowUpDown;
+  if (sortBy.value !== field) {
+    return ArrowUpDown;
+  }
   return sortDir.value === "asc" ? ArrowUp : ArrowDown;
 }
 function toggleSort(field: SortField) {
   if (sortBy.value === field) {
-    if (sortDir.value === "desc") sortDir.value = "asc";
+    if (sortDir.value === "desc") {
+      sortDir.value = "asc";
+    }
     else {
       sortBy.value = null;
       sortDir.value = "desc";
@@ -194,7 +198,9 @@ function toggleSort(field: SortField) {
 }
 
 function formatValue(v: number | null): string {
-  if (v == null) return "—";
+  if (v == null) {
+    return "—";
+  }
   switch (category.value) {
     case "best_rating":
     case "best_kpr":
@@ -209,7 +215,9 @@ function formatValue(v: number | null): string {
   }
 }
 function formatSecondary(v: number | null): string {
-  if (v == null) return "—";
+  if (v == null) {
+    return "—";
+  }
   switch (category.value) {
     case "best_rating":
       return v.toFixed(1); // ADR

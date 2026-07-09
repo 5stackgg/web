@@ -112,7 +112,6 @@ const view = ref<View>(
   props.isAdmin && !hasOwnFixtures.value ? "table" : "month",
 );
 
-// ---- Month grid ----
 
 const seasonStart = computed(() =>
   props.weeks.length
@@ -140,7 +139,6 @@ function monthIndex(date: Date): number {
 const firstMonth = computed(() => monthIndex(seasonStart.value));
 const lastMonth = computed(() => monthIndex(seasonEnd.value));
 
-// Open on the month the viewer is living in, clamped into the season.
 const cursor = ref(
   Math.min(Math.max(monthIndex(now.value), monthIndex(seasonStart.value)), monthIndex(seasonEnd.value)),
 );
@@ -271,7 +269,6 @@ const rows = computed<CalendarRow[]>(() => {
   return result;
 });
 
-// ---- Agenda ----
 
 const agenda = computed(() =>
   [...fixtures.value].sort((a, b) => {
@@ -282,7 +279,6 @@ const agenda = computed(() =>
   }),
 );
 
-// ---- Rail ----
 
 const needsAction = computed(() =>
   fixtures.value
@@ -302,7 +298,6 @@ const upcoming = computed(() =>
     .slice(0, 4),
 );
 
-// ---- Presentation ----
 
 const EVENT_CLASSES: Record<string, string> = {
   finished: "border-l-border bg-muted/40 text-muted-foreground",
@@ -351,7 +346,6 @@ function opponentLabel(fixture: Fixture): string {
   return `${fixture.bracket.team_1?.name ?? "TBD"} v ${fixture.bracket.team_2?.name ?? "TBD"}`;
 }
 
-// ---- Dialogs ----
 
 const { t } = useI18n();
 

@@ -68,7 +68,9 @@ function updateWeek(week: number, value: string) {
 // Playoff rounds are derived from the bracket type + seat count (same keys as
 // get_bracket_best_of), rendered inline so they share the editor's row style.
 const playoffRounds = computed<RoundInfo[]>(() => {
-  if (!props.playoffStageType || props.playoffSeats < 2) return [];
+  if (!props.playoffStageType || props.playoffSeats < 2) {
+    return [];
+  }
   return calculateRounds(props.playoffStageType, props.playoffSeats, 1);
 });
 

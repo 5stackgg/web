@@ -37,7 +37,9 @@ const standings = computed<any[]>(() => activeDivision.value?.standings ?? []);
 const search = ref("");
 const filteredStandings = computed<any[]>(() => {
   const q = search.value.trim().toLowerCase();
-  if (!q) return standings.value;
+  if (!q) {
+    return standings.value;
+  }
   return standings.value.filter((r: any) =>
     (props.teamNames[r.league_team_season_id] ?? "").toLowerCase().includes(q),
   );

@@ -10,9 +10,8 @@ import {
 } from "~/graphql/leagues";
 import type { LeagueScheduleTask } from "~/stores/NotificationStore";
 
-// A single client-derived scheduling task rendered in the notifications panel.
-// The store's live subscription reconciles the list, so once an action lands
-// the task simply drops out — nothing to dismiss/delete.
+// The store.s live subscription reconciles the list, so once an action lands the
+// task drops out on its own — nothing to dismiss or delete.
 const props = defineProps<{ task: LeagueScheduleTask }>();
 
 const { client } = useApolloClient();
@@ -21,7 +20,9 @@ const showPropose = ref(false);
 const counterProposalId = ref<string | null>(null);
 
 async function respond(status: "Accepted" | "Declined") {
-  if (!props.task.proposal || submitting.value) return;
+  if (!props.task.proposal || submitting.value) {
+    return;
+  }
   submitting.value = true;
   try {
     await client.mutate({
@@ -38,8 +39,6 @@ function startCounter() {
   showPropose.value = true;
 }
 
-// Every action in the row renders at the same height, padding and type scale —
-// the amber CTA differs only in colour, never in size.
 const actionClasses = "h-7 shrink-0 gap-1.5 px-2.5 text-[0.7rem] font-medium";
 
 async function onProposeSubmit(proposedTime: string, message: string) {

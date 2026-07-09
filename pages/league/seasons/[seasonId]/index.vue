@@ -579,7 +579,9 @@ const editSignupCloses = ref("");
 const editRosterLockAt = ref("");
 
 function toLocalInput(iso: string | null | undefined): string {
-  if (!iso) return "";
+  if (!iso) {
+    return "";
+  }
   const d = new Date(iso);
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
     .toISOString()

@@ -14,8 +14,6 @@ const ACTIVE_STATUSES = [
 const byNumberDesc = (a: LeagueSeasonRef, b: LeagueSeasonRef) =>
   (b.season_number ?? 0) - (a.season_number ?? 0);
 
-// The "current" season the leagues landing jumps to: prefer a live/registering
-// season, otherwise the newest that isn't canceled, otherwise the newest.
 export function pickCurrentSeason<T extends LeagueSeasonRef>(
   seasons: T[],
 ): T | null {

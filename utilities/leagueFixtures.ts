@@ -1,6 +1,5 @@
-// Shared derivation for the league season schedule. The calendar grid, the
-// agenda list and the fixture dialog all read the same `Fixture` so a match can
-// never look "unscheduled" in one view and "agreed" in another.
+// The calendar grid, agenda list and fixture dialog all read the same `Fixture`,
+// so a match can never look "unscheduled" in one view and "agreed" in another.
 
 export interface Proposal {
   id: string;

@@ -14,6 +14,8 @@ import socket from "~/web-sockets/Socket";
 // loop instead of multiplying the request rate per mount.
 let statePollTimer: ReturnType<typeof setInterval> | null = null;
 let stateSocketHandler: ((data: any) => void) | null = null;
+// Wall clock of the last pod-pushed state frame; gates the fallback poll.
+let lastStatePushMs = 0;
 
 type DemoSpecSlot = {
   slot: number;
@@ -105,11 +107,14 @@ export function useDemoPlayback() {
     return `demo-session:${sessionId}`;
   }
 
-  // 1Hz pull of the pod's cached GSI snapshot. The pod doesn't push
-  // GSI per-tick (bus pressure), so we poll its in-memory cache.
+  // Push-first: the pod POSTs state to the api at 1Hz and it fans out
+  // to this socket. The timer below is a fallback poll that only sends
+  // when pushes go quiet (e.g. an older pod image).
+  const PUSH_FRESH_MS = 3_500;
   let visibilityHandler: (() => void) | null = null;
   function tickOnce() {
     if (!store.matchMapId) return;
+    if (Date.now() - lastStatePushMs < PUSH_FRESH_MS) return;
     try {
       control("state");
     } catch {
@@ -130,15 +135,25 @@ export function useDemoPlayback() {
   }
   function startStatePoll() {
     stopStatePoll();
+    lastStatePushMs = 0;
     stateSocketHandler = (data: any) => {
+      // Pushes are addressed per-steam-id, so every tab of this user
+      // gets them — drop frames for a different map's session.
+      if (
+        data?.match_map_id &&
+        store.matchMapId &&
+        data.match_map_id !== store.matchMapId
+      ) {
+        return;
+      }
       const state = data?.state;
       if (!state) return;
+      if (data?.pushed) {
+        lastStatePushMs = Date.now();
+      }
       if (state.gsi) {
         applyDemoGsi(store, state.gsi);
       }
-      // The pod's tick/paused/rate are the anchored truth — without
-      // this the local estimator dead-reckons unchecked and every seek
-      // stall / cs2-side pause desyncs the scrubber and the play button.
       store.reconcileFromPod({
         tick: typeof state.tick === "number" ? state.tick : undefined,
         paused: typeof state.paused === "boolean" ? state.paused : undefined,
@@ -208,13 +223,11 @@ export function useDemoPlayback() {
             store.reset();
             return;
           }
-          // Spec-server pauses the demo at tick 0 when it transitions
-          // to playing; sync local state so the scrubber doesn't
-          // estimate against an unmounted demo.
+          // The demo autoplays from tick 0 (no boot pause).
           const becamePlaying =
             row.status === "playing" && store.sessionRow?.status !== "playing";
           if (becamePlaying) {
-            store.syncFromControl({ tick: 0, paused: true });
+            store.syncFromControl({ tick: 0, paused: false });
             // Wait until status='playing' to poll — earlier requests
             // just ECONNREFUSED while the pod is booting.
             startStatePoll();
@@ -453,8 +466,6 @@ export function useDemoPlayback() {
       throw new Error("no demo session active");
     }
     if (action !== "state") {
-      // Suppresses reconcile-from-poll while this control round-trips,
-      // so a stale state response can't roll back the optimistic UI.
       store.lastControlSentMs = Date.now();
     }
     socket.event("demo-session:control", {
@@ -497,15 +508,13 @@ export function useDemoPlayback() {
     );
     store.syncFromControl({ tick: clamped });
     store.beginSeek();
-    // Explicit pause intent — cs2's post-gototick play state isn't
-    // deterministic, and a seek must never silently flip play/pause.
+    // cs2's post-gototick play state isn't deterministic — send intent.
     control("seek", { tick: clamped, pause_after: store.paused });
   }
 
   function skip(secs: number) {
-    // Relative moves are computed pod-side from the anchored estimate;
-    // basing them on our local (drifting) estimate made "back 15s"
-    // land somewhere else entirely. Local sync is display-only.
+    // Pod computes the target from its anchored estimate; the local
+    // sync is display-only.
     const target = Math.max(
       0,
       store.currentTick + Math.round(secs * store.tickRate),
@@ -626,10 +635,8 @@ export function useDemoPlayback() {
   function jumpToPrevKill() {
     stepEvent("kill", filteredKills(), KILL_LEAD_SECS, -1);
   }
-  // Direct jump from a seek-bar skull marker. Records the nav anchor so
-  // a following N/P press steps relative to the clicked kill instead of
-  // the free playhead — without this the first press after a marker
-  // click re-selected a seemingly random kill.
+  // Records the nav anchor so N/P step relative to the clicked kill,
+  // not the free playhead.
   function jumpToKillTick(tick: number) {
     navAnchors.kill = tick;
     seek(Math.max(0, tick - leadTicks(KILL_LEAD_SECS)));

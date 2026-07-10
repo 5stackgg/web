@@ -92,9 +92,12 @@ watch(renderActive, (active) => {
 });
 
 const max = computed(() => Math.max(1, store.totalTicks || 0));
-const playheadPct = computed(
-  () => `${(Math.min(store.currentTick, max.value) / max.value) * 100}%`,
-);
+// Quantized to 0.02% — an unrounded string differs on every 20Hz tick
+// and patches the style for invisible motion.
+const playheadPct = computed(() => {
+  const pct = (Math.min(store.currentTick, max.value) / max.value) * 100;
+  return `${Math.round(pct * 50) / 50}%`;
+});
 
 function pctOf(tick: number) {
   return `${(Math.max(0, Math.min(tick, max.value)) / max.value) * 100}%`;

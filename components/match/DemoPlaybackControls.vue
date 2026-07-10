@@ -78,6 +78,7 @@ const {
   jumpToRound,
   jumpToNextKill,
   jumpToPrevKill,
+  jumpToKillTick,
   jumpToNextRound,
   jumpToPrevRound,
   switchToSlot,
@@ -199,7 +200,11 @@ function frame() {
     visualTick.value = target;
   }
   const nextSlider = Math.round(visualTick.value);
-  if (seekModel.value[0] !== nextSlider) {
+  // Quantize model writes to ~1px of thumb travel — the slider spans
+  // totalTicks across ~1500px at most, and pushing sub-pixel updates
+  // re-renders reka-ui's slider every rAF frame for invisible motion.
+  const minStep = Math.max(1, Math.floor(store.totalTicks / 1500));
+  if (Math.abs(nextSlider - (seekModel.value[0] ?? 0)) >= minStep) {
     seekModel.value = [nextSlider];
   }
 }
@@ -539,11 +544,13 @@ type Marker = {
   victimTeam?: "ct" | "t";
   headshot?: boolean;
 };
+// Routed through the composable so the kill nav's anchor updates too —
+// otherwise the next N/P press stepped from the free playhead and
+// landed on the wrong kill.
 function jumpToKill(tick: number) {
   const lead = Math.round(10 * store.tickRate);
-  const target = Math.max(0, tick - lead);
-  pulseAt(target);
-  seek(target);
+  pulseAt(Math.max(0, tick - lead));
+  jumpToKillTick(tick);
 }
 function nameFor(steamId: string | undefined): string | null {
   if (!steamId) return null;
@@ -644,8 +651,17 @@ const killMarkers = computed<Marker[]>(() => {
       />
 
       <div v-if="hasMetadata" class="flex items-center gap-4">
+        <!-- Time label doubles as the seek-settle indicator: cs2 freezes
+             the video while a demo_gototick catches up (seconds for
+             backward jumps), and without feedback that reads as a hang. -->
         <span
-          class="font-mono text-sm tabular-nums text-muted-foreground min-w-[3.5rem] text-right"
+          class="font-mono text-sm tabular-nums min-w-[3.5rem] text-right"
+          :class="
+            store.seeking
+              ? 'text-[hsl(var(--tac-amber))] animate-pulse'
+              : 'text-muted-foreground'
+          "
+          :title="store.seeking ? 'Seeking — cs2 is catching up' : undefined"
         >
           {{ formattedCurrent }}
         </span>

@@ -94,14 +94,39 @@ const isDrafting = computed(() => props.room.status === "Drafting");
 const myMembership = computed(() =>
   props.room.players.find((p: any) => p.steam_id === me.value?.steam_id),
 );
-const isMember = computed(() => myMembership.value?.status === "Accepted");
+// A waitlisted backup moved into a lineup plays in the match but keeps their
+// Waitlist status, so lineup membership counts too.
+const isMember = computed(
+  () =>
+    myMembership.value?.status === "Accepted" ||
+    myMembership.value?.lineup != null,
+);
 const isLobbyPhase = computed(
   () =>
     !props.room.match_id && ["Open", "Filled"].includes(props.room.status),
 );
-const canChat = computed(
-  () => isLobbyPhase.value || isMember.value || isOrganizer.value,
+// Once the match exists there is a single conversation: the match chat.
+// Only switch after lineup players exist — the server's match-chat join gate
+// checks lineup membership, so joining before finalize() inserts them would
+// silently reject and never retry.
+const matchChatReady = computed(
+  () =>
+    !!props.room.match_id &&
+    props.match?.id === props.room.match_id &&
+    ((props.match?.lineup_1?.lineup_players?.length ?? 0) > 0 ||
+      (props.match?.lineup_2?.lineup_players?.length ?? 0) > 0),
 );
+const chatType = computed(() => (matchChatReady.value ? "match" : "draft"));
+const chatLobbyId = computed(() =>
+  matchChatReady.value ? props.room.match_id : props.room.id,
+);
+const inLineup = computed(() => myMembership.value?.lineup != null);
+const canChat = computed(() => {
+  if (matchChatReady.value) {
+    return inLineup.value || isOrganizer.value;
+  }
+  return isLobbyPhase.value || isMember.value || isOrganizer.value;
+});
 const isWaitlisted = computed(() => myMembership.value?.status === "Waitlist");
 const hasRequested = computed(() => myMembership.value?.status === "Requested");
 const isInvited = computed(() => myMembership.value?.status === "Invited");
@@ -1332,8 +1357,8 @@ const start = () => {
             v-if="me"
             class="min-h-0 flex-1"
             instance="draft-room"
-            type="draft"
-            :lobby-id="room.id"
+            :type="chatType"
+            :lobby-id="chatLobbyId"
             :frameless="true"
             :can-send="canChat"
             :readonly-hint="$t('draft_games.room.chat_players_only')"

@@ -1,8 +1,60 @@
 <script setup lang="ts">
+import { computed, ref } from "vue";
 import { MonitorDown, PlusSquare, Share } from "lucide-vue-next";
 import { useSidebar } from "@/components/ui/sidebar";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+
+withDefaults(
+  defineProps<{
+    isMenuItem?: boolean;
+  }>(),
+  {
+    isMenuItem: true,
+  },
+);
+
 const { state, isMobile } = useSidebar();
+const { $pwa } = useNuxtApp();
+
+const installPWADrawer = ref(false);
+
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+const canInstall = computed(() => {
+  if ($pwa?.isPWAInstalled) {
+    return false;
+  }
+
+  // Already running as an installed app — don't offer install.
+  // `$pwa.isPWAInstalled` only checks the display-mode media query, which
+  // is unreliable on iOS, so also check navigator.standalone directly.
+  if (
+    (window.navigator as Navigator & { standalone?: boolean }).standalone ||
+    window.matchMedia("(display-mode: standalone)").matches
+  ) {
+    return false;
+  }
+
+  if (isIOS) {
+    return true;
+  }
+
+  // beforeinstallprompt fires once, shortly after load. On mobile this
+  // component lives in the sidebar Sheet, which isn't mounted until the
+  // drawer opens — a listener added here would miss the event. The vite-pwa
+  // plugin (client.installPrompt) captures it at app init and exposes it
+  // reactively, so read that instead of listening ourselves.
+  return $pwa?.showInstallPrompt === true;
+});
+
+async function installPWA() {
+  if (isIOS) {
+    installPWADrawer.value = true;
+    return;
+  }
+
+  await $pwa?.install();
+}
 </script>
 
 <template>
@@ -11,7 +63,6 @@ const { state, isMobile } = useSidebar();
       <SidebarMenuItem
         class="mb-1"
         :class="{ 'mx-4': isMobile || state === 'expanded' }"
-        v-if="canInstall"
       >
         <SidebarMenuButton as-child :tooltip="$t('pwa.install.tooltip')">
           <Button @click="installPWA" size="sm">
@@ -84,84 +135,3 @@ const { state, isMobile } = useSidebar();
     </Drawer>
   </div>
 </template>
-
-<script lang="ts">
-import type { BeforeInstallPromptEvent } from "@vite-pwa/nuxt/dist/runtime/plugins/types.js";
-
-export default {
-  props: {
-    isMenuItem: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  created() {
-    window.addEventListener(
-      "beforeinstallprompt",
-      (prompt: BeforeInstallPromptEvent) => {
-        if (!prompt) {
-          return;
-        }
-
-        prompt.preventDefault();
-        this.pwaPrompt = prompt;
-      },
-    );
-  },
-  data() {
-    return {
-      installPWADrawer: false,
-      pwaPrompt: undefined as BeforeInstallPromptEvent | undefined,
-    };
-  },
-  methods: {
-    installPWA() {
-      if (this.isIOS) {
-        this.installPWADrawer = true;
-        return;
-      }
-      if (!this.pwaPrompt) {
-        return;
-      }
-
-      this.pwaPrompt.prompt();
-
-      this.pwaPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          this.pwaPrompt = undefined;
-        }
-      });
-    },
-  },
-  computed: {
-    isIOS() {
-      return /iPad|iPhone|iPod/.test(navigator.userAgent);
-    },
-    canInstall() {
-      if (this.$pwa?.isPWAInstalled) {
-        return false;
-      }
-
-      // Already running as an installed app — don't offer install.
-      // `$pwa.isPWAInstalled` only checks the display-mode media query, which
-      // is unreliable on iOS, so also check navigator.standalone directly.
-      if (
-        (window.navigator as Navigator & { standalone?: boolean }).standalone ||
-        window.matchMedia("(display-mode: standalone)").matches
-      ) {
-        return false;
-      }
-
-      if (this.isIOS) {
-        return true;
-      }
-
-      if (this.pwaPrompt) {
-        return true;
-      }
-
-      return false;
-    },
-  },
-};
-</script>

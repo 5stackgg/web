@@ -222,8 +222,21 @@ export default {
     duelElo(): number | undefined {
       return this.elo?.duel;
     },
+    modeKey(): ModeKey {
+      const normalized = (this.type ?? "").toLowerCase();
+      if (normalized === "wingman" || normalized === "duel") {
+        return normalized;
+      }
+      // Premier / Faceit / unknown types rank on the competitive ladder.
+      return "competitive";
+    },
     primaryElo(): number | undefined {
-      return this.competitiveElo ?? this.wingmanElo ?? this.duelElo;
+      return (
+        this.elo?.[this.modeKey] ??
+        this.competitiveElo ??
+        this.wingmanElo ??
+        this.duelElo
+      );
     },
     primaryTier(): RankTier {
       return this.primaryElo ? tierFor(this.primaryElo) : RANK_TIERS.at(-1)!;

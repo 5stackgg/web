@@ -1097,7 +1097,6 @@ export const AllTypesProps: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate_bool_exp",
 		regions:"String_array_comparison_exp",
 		require_approval:"Boolean_comparison_exp",
-		scheduled_at:"timestamptz_comparison_exp",
 		status:"e_draft_game_status_enum_comparison_exp",
 		team_1:"teams_bool_exp",
 		team_1_id:"uuid_comparison_exp",
@@ -1135,7 +1134,6 @@ export const AllTypesProps: Record<string,any> = {
 		pick_deadline:"timestamptz",
 		picks:"draft_game_picks_arr_rel_insert_input",
 		players:"draft_game_players_arr_rel_insert_input",
-		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1:"teams_obj_rel_insert_input",
 		team_1_id:"uuid",
@@ -1159,7 +1157,6 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		pick_deadline:"order_by",
 		regions:"order_by",
-		scheduled_at:"order_by",
 		team_1_id:"order_by",
 		team_2_id:"order_by",
 		updated_at:"order_by"
@@ -1179,7 +1176,6 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		pick_deadline:"order_by",
 		regions:"order_by",
-		scheduled_at:"order_by",
 		team_1_id:"order_by",
 		team_2_id:"order_by",
 		updated_at:"order_by"
@@ -1227,7 +1223,6 @@ export const AllTypesProps: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate_order_by",
 		regions:"order_by",
 		require_approval:"order_by",
-		scheduled_at:"order_by",
 		status:"order_by",
 		team_1:"teams_order_by",
 		team_1_id:"order_by",
@@ -1256,7 +1251,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid",
 		mode:"e_draft_game_mode_enum",
 		pick_deadline:"timestamptz",
-		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
@@ -1302,7 +1296,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid",
 		mode:"e_draft_game_mode_enum",
 		pick_deadline:"timestamptz",
-		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
@@ -3714,9 +3707,6 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:{
 
 		},
-		cs2_launch_options:{
-
-		},
 		cs2_video_settings:{
 
 		},
@@ -3778,7 +3768,6 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_append_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
-		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		shader_bake_status_history:"jsonb"
@@ -3812,7 +3801,6 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb_comparison_exp",
 		cpu_sockets:"Int_comparison_exp",
 		cpu_threads_per_core:"Int_comparison_exp",
-		cs2_launch_options:"jsonb_comparison_exp",
 		cs2_video_settings:"jsonb_comparison_exp",
 		csgo_build_id:"Int_comparison_exp",
 		demo_network_limiter:"Int_comparison_exp",
@@ -3871,7 +3859,6 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_insert_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
-		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		e_region:"server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
@@ -3952,7 +3939,6 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"order_by",
 		cpu_sockets:"order_by",
 		cpu_threads_per_core:"order_by",
-		cs2_launch_options:"order_by",
 		cs2_video_settings:"order_by",
 		csgo_build_id:"order_by",
 		demo_network_limiter:"order_by",
@@ -4000,7 +3986,6 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_prepend_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
-		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		shader_bake_status_history:"jsonb"
@@ -4011,7 +3996,6 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_set_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
-		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		lan_ip:"inet",
@@ -4071,7 +4055,6 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_stream_cursor_value_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
-		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		lan_ip:"inet",
@@ -5243,9 +5226,7 @@ export const AllTypesProps: Record<string,any> = {
 		playoff_seats:"Int_comparison_exp",
 		playoff_stage_type:"e_tournament_stage_types_enum_comparison_exp",
 		playoff_third_place_match:"Boolean_comparison_exp",
-		promote_count:"Int_comparison_exp",
 		regular_season_stage_type:"e_tournament_stage_types_enum_comparison_exp",
-		relegate_count:"Int_comparison_exp",
 		relegation_down_count:"Int_comparison_exp",
 		relegation_playoffs:"league_relegation_playoffs_bool_exp",
 		relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate_bool_exp",
@@ -5338,9 +5319,7 @@ export const AllTypesProps: Record<string,any> = {
 		playoff_seats:"order_by",
 		playoff_stage_type:"order_by",
 		playoff_third_place_match:"order_by",
-		promote_count:"order_by",
 		regular_season_stage_type:"order_by",
-		relegate_count:"order_by",
 		relegation_down_count:"order_by",
 		relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate_order_by",
 		relegation_up_count:"order_by",
@@ -8139,7 +8118,19 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	match_maps_aggregate_bool_exp:{
+		bool_and:"match_maps_aggregate_bool_exp_bool_and",
+		bool_or:"match_maps_aggregate_bool_exp_bool_or",
 		count:"match_maps_aggregate_bool_exp_count"
+	},
+	match_maps_aggregate_bool_exp_bool_and:{
+		arguments:"match_maps_select_column_match_maps_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"match_maps_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	match_maps_aggregate_bool_exp_bool_or:{
+		arguments:"match_maps_select_column_match_maps_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"match_maps_bool_exp",
+		predicate:"Boolean_comparison_exp"
 	},
 	match_maps_aggregate_bool_exp_count:{
 		arguments:"match_maps_select_column",
@@ -8179,6 +8170,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_maps_bool_exp",
 		_not:"match_maps_bool_exp",
 		_or:"match_maps_bool_exp",
+		anti_wallhack_active:"Boolean_comparison_exp",
 		clips_count:"Int_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		demos:"match_map_demos_bool_exp",
@@ -8301,6 +8293,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_maps_bool_exp"
 	},
 	match_maps_order_by:{
+		anti_wallhack_active:"order_by",
 		clips_count:"order_by",
 		created_at:"order_by",
 		demos_aggregate:"match_map_demos_aggregate_order_by",
@@ -8342,6 +8335,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	match_maps_select_column: "enum" as const,
+	match_maps_select_column_match_maps_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	match_maps_select_column_match_maps_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	match_maps_set_input:{
 		created_at:"timestamptz",
 		ended_at:"timestamptz",
@@ -8450,6 +8445,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_options_bool_exp",
 		_not:"match_options_bool_exp",
 		_or:"match_options_bool_exp",
+		anti_wallhack:"Boolean_comparison_exp",
 		auto_cancel_duration:"Int_comparison_exp",
 		auto_cancellation:"Boolean_comparison_exp",
 		best_of:"Int_comparison_exp",
@@ -8511,6 +8507,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_options_bool_exp"
 	},
 	match_options_order_by:{
+		anti_wallhack:"order_by",
 		auto_cancel_duration:"order_by",
 		auto_cancellation:"order_by",
 		best_of:"order_by",
@@ -13646,6 +13643,7 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"String_comparison_exp",
 		faceit_player_id:"String_comparison_exp",
 		faceit_skill_level:"Int_comparison_exp",
+		faceit_synced_at:"timestamptz_comparison_exp",
 		faceit_updated_at:"timestamptz_comparison_exp",
 		faceit_url:"String_comparison_exp",
 		friend_steam_id:"bigint_comparison_exp",
@@ -13688,6 +13686,7 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_insert_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
@@ -13711,6 +13710,7 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
 		faceit_skill_level:"order_by",
+		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		friend_steam_id:"order_by",
@@ -13742,6 +13742,7 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
 		faceit_skill_level:"order_by",
+		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		friend_steam_id:"order_by",
@@ -13774,6 +13775,7 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
 		faceit_skill_level:"order_by",
+		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		friend_steam_id:"order_by",
@@ -13809,6 +13811,7 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_set_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
@@ -13860,6 +13863,7 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
@@ -20154,6 +20158,7 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_rank_history:"player_faceit_rank_history_bool_exp",
 		faceit_rank_history_aggregate:"player_faceit_rank_history_aggregate_bool_exp",
 		faceit_skill_level:"Int_comparison_exp",
+		faceit_synced_at:"timestamptz_comparison_exp",
 		faceit_updated_at:"timestamptz_comparison_exp",
 		faceit_url:"String_comparison_exp",
 		flashed_by_players:"player_flashes_bool_exp",
@@ -20266,6 +20271,7 @@ export const AllTypesProps: Record<string,any> = {
 		draft_game_players:"draft_game_players_arr_rel_insert_input",
 		elo_history:"v_player_elo_arr_rel_insert_input",
 		faceit_rank_history:"player_faceit_rank_history_arr_rel_insert_input",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		flashed_by_players:"player_flashes_arr_rel_insert_input",
 		flashed_players:"player_flashes_arr_rel_insert_input",
@@ -20336,6 +20342,7 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_player_id:"order_by",
 		faceit_rank_history_aggregate:"player_faceit_rank_history_aggregate_order_by",
 		faceit_skill_level:"order_by",
+		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		flashed_by_players_aggregate:"player_flashes_aggregate_order_by",
@@ -20409,6 +20416,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
@@ -20423,6 +20431,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
@@ -29418,7 +29427,6 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_status:"e_tournament_status_bool_exp",
 		has_min_teams:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
-		is_league:"Boolean_comparison_exp",
 		is_organizer:"Boolean_comparison_exp",
 		joined_tournament:"Boolean_comparison_exp",
 		league_season_division:"league_season_divisions_bool_exp",
@@ -29541,7 +29549,6 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_status:"e_tournament_status_order_by",
 		has_min_teams:"order_by",
 		id:"order_by",
-		is_league:"order_by",
 		is_organizer:"order_by",
 		joined_tournament:"order_by",
 		league_season_division:"league_season_divisions_order_by",
@@ -34272,7 +34279,6 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate",
 		regions:"String",
 		require_approval:"Boolean",
-		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1:"teams",
 		team_1_id:"uuid",
@@ -34320,7 +34326,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		pick_deadline:"timestamptz",
 		regions:"String",
-		scheduled_at:"timestamptz",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
 		updated_at:"timestamptz"
@@ -34340,7 +34345,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		pick_deadline:"timestamptz",
 		regions:"String",
-		scheduled_at:"timestamptz",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
 		updated_at:"timestamptz"
@@ -35479,7 +35483,6 @@ export const ReturnTypes: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cpu_sockets:"Int",
 		cpu_threads_per_core:"Int",
-		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		csgo_build_id:"Int",
 		demo_network_limiter:"Int",
@@ -36335,9 +36338,7 @@ export const ReturnTypes: Record<string,any> = {
 		playoff_seats:"Int",
 		playoff_stage_type:"e_tournament_stage_types_enum",
 		playoff_third_place_match:"Boolean",
-		promote_count:"Int",
 		regular_season_stage_type:"e_tournament_stage_types_enum",
-		relegate_count:"Int",
 		relegation_down_count:"Int",
 		relegation_playoffs:"league_relegation_playoffs",
 		relegation_playoffs_aggregate:"league_relegation_playoffs_aggregate",
@@ -36384,8 +36385,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -36405,8 +36404,6 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		playoff_best_of:"Int",
 		playoff_seats:"Int",
-		promote_count:"Int",
-		relegate_count:"Int",
 		relegation_down_count:"Int",
 		relegation_up_count:"Int",
 		roster_lock_at:"timestamptz",
@@ -36430,8 +36427,6 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		playoff_best_of:"Int",
 		playoff_seats:"Int",
-		promote_count:"Int",
-		relegate_count:"Int",
 		relegation_down_count:"Int",
 		relegation_up_count:"Int",
 		roster_lock_at:"timestamptz",
@@ -36455,8 +36450,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -36472,8 +36465,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -36489,8 +36480,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -36506,8 +36495,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Int",
 		playoff_best_of:"Int",
 		playoff_seats:"Int",
-		promote_count:"Int",
-		relegate_count:"Int",
 		relegation_down_count:"Int",
 		relegation_up_count:"Int",
 		season_number:"Int"
@@ -36523,8 +36510,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -36540,8 +36525,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -36557,8 +36540,6 @@ export const ReturnTypes: Record<string,any> = {
 		min_roster_size:"Float",
 		playoff_best_of:"Float",
 		playoff_seats:"Float",
-		promote_count:"Float",
-		relegate_count:"Float",
 		relegation_down_count:"Float",
 		relegation_up_count:"Float",
 		season_number:"Float"
@@ -37790,6 +37771,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_map_veto_picks"
 	},
 	match_maps:{
+		anti_wallhack_active:"Boolean",
 		clips_count:"Int",
 		created_at:"timestamptz",
 		demos:"match_map_demos",
@@ -37980,6 +37962,7 @@ export const ReturnTypes: Record<string,any> = {
 		public_clips_count:"Float"
 	},
 	match_options:{
+		anti_wallhack:"Boolean",
 		auto_cancel_duration:"Int",
 		auto_cancellation:"Boolean",
 		best_of:"Int",
@@ -39619,6 +39602,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		friend_steam_id:"bigint",
@@ -39683,6 +39667,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		friend_steam_id:"bigint",
@@ -39714,6 +39699,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		friend_steam_id:"bigint",
@@ -44847,6 +44833,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_rank_history:"player_faceit_rank_history",
 		faceit_rank_history_aggregate:"player_faceit_rank_history_aggregate",
 		faceit_skill_level:"Int",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		flashed_by_players:"player_flashes",
@@ -44989,6 +44976,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		game_ban_count:"Int",
@@ -45026,6 +45014,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
+		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		game_ban_count:"Int",
@@ -48499,7 +48488,6 @@ export const ReturnTypes: Record<string,any> = {
 		e_tournament_status:"e_tournament_status",
 		has_min_teams:"Boolean",
 		id:"uuid",
-		is_league:"Boolean",
 		is_organizer:"Boolean",
 		joined_tournament:"Boolean",
 		league_season_division:"league_season_divisions",

@@ -8,6 +8,7 @@ export const matchOptionsFields = Selector("match_options")({
   map_veto: true,
   coaches: true,
   knife_round: true,
+  anti_wallhack: true,
   default_models: true,
   check_in_setting: true,
   auto_cancellation: true,

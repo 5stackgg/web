@@ -107,6 +107,12 @@ const BooleanPill = defineComponent({
               </div>
               <div class="settings-row">
                 <dt class="settings-row__label">{{
+                  $t("match.options.anti_wallhack")
+                }}</dt>
+                <dd><BooleanPill :value="options.anti_wallhack" /></dd>
+              </div>
+              <div class="settings-row">
+                <dt class="settings-row__label">{{
                   $t("match.options.default_player_models")
                 }}</dt>
                 <dd><BooleanPill :value="options.default_models ?? false" /></dd>

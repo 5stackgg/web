@@ -22,6 +22,7 @@ export const setupOptions = (
     lan,
     overtime: options.overtime,
     knife_round: options.knife_round,
+    anti_wallhack: options.anti_wallhack ?? true,
     mr: options.mr.toString(),
     best_of: options.best_of.toString(),
     coaches: options.coaches,
@@ -52,6 +53,7 @@ export function setupOptionsVariables(
     type: string;
     best_of: number;
     knife_round: boolean;
+    anti_wallhack: boolean;
     default_models: boolean;
     overtime: boolean;
     map_veto: boolean;
@@ -100,6 +102,10 @@ export function setupOptionsVariables(
 
   if (values.knife_round === undefined || values.knife_round === null) {
     throw new Error("knife_round is required");
+  }
+
+  if (values.anti_wallhack === undefined || values.anti_wallhack === null) {
+    throw new Error("anti_wallhack is required");
   }
 
   if (values.default_models === undefined || values.default_models === null) {
@@ -169,6 +175,7 @@ export function setupOptionsVariables(
     type: values.type,
     best_of: values.best_of,
     knife_round: values.knife_round,
+    anti_wallhack: values.anti_wallhack,
     default_models: values.default_models,
     overtime: values.overtime,
     map_veto: values.map_veto,
@@ -221,6 +228,7 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     type: $("type", "e_match_types_enum!"),
     best_of: $("best_of", "Int!"),
     knife_round: $("knife_round", "Boolean!"),
+    anti_wallhack: $("anti_wallhack", "Boolean!"),
     default_models: $("default_models", "Boolean!"),
     overtime: $("overtime", "Boolean!"),
     map_veto: $("map_veto", "Boolean!"),

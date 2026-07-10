@@ -456,6 +456,35 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                   </FormItem>
                 </FormField>
 
+                <FormField v-slot="{ value, handleChange }" name="anti_wallhack">
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-0.5">
+                        <SettingHeader>{{
+                          $t("match.options.advanced.anti_wallhack.label")
+                        }}</SettingHeader>
+                        <FormDescription>
+                          {{
+                            $t(
+                              "match.options.advanced.anti_wallhack.description",
+                            )
+                          }}
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
+
                 <FormField v-slot="{ componentField }" name="mr">
                   <FormItem>
                     <SettingHeader>{{

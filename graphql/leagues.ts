@@ -392,6 +392,7 @@ export const CREATE_MATCH_OPTIONS_MUTATION = gql`
       object: {
         overtime: true
         knife_round: false
+        anti_wallhack: true
         mr: 12
         best_of: 1
         coaches: true

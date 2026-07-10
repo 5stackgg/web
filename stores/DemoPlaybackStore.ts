@@ -157,6 +157,17 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const rate = ref<number>(1);
   const paused = ref<boolean>(false);
 
+  // True while a demo_gototick is settling in cs2 (forward seeks stall
+  // ~2s, backward seeks replay from tick 0). The estimator freezes at
+  // the target instead of dead-reckoning past it; the pod's `seeking`
+  // flag (via the 1Hz state poll) clears it once cs2 actually lands.
+  const seeking = ref<boolean>(false);
+  const seekingSinceMs = ref<number>(0);
+  // Set on every user-initiated control. Pod state responses generated
+  // before our control reached cs2 must not roll back the optimistic
+  // local state, so reconcile suppresses itself for a beat after.
+  const lastControlSentMs = ref<number>(0);
+
   // Reactive wall-clock ref the live-tick computed depends on.
   // `Date.now()` itself isn't a reactive dep, so without this the
   // currentTick computed cached the moment of the last control event
@@ -228,11 +239,75 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     lastSyncRealMs.value = Date.now();
   }
 
+  function beginSeek() {
+    seeking.value = true;
+    seekingSinceMs.value = Date.now();
+  }
+
+  function endSeek() {
+    seeking.value = false;
+  }
+
+  // Adopt the pod's estimate from the 1Hz state poll. The pod's tick is
+  // GSI-anchored (re-grounded every freezetime) and pinned during seek
+  // settles, so it is strictly better truth than our dead reckoning.
+  function reconcileFromPod(state: {
+    tick?: number;
+    paused?: boolean;
+    rate?: number;
+    seeking?: boolean;
+  }) {
+    if (typeof state.seeking === "boolean") {
+      if (state.seeking && !seeking.value) {
+        beginSeek();
+      } else if (
+        !state.seeking &&
+        seeking.value &&
+        Date.now() - seekingSinceMs.value > 1_500
+      ) {
+        // The 1.5s floor keeps a poll response generated before the pod
+        // heard our seek from clearing the optimistic flag instantly.
+        seeking.value = false;
+        // Re-base from the pod's tick now — resuming from the frozen
+        // sync point would credit the whole stall as elapsed playtime.
+        if (typeof state.tick === "number") {
+          lastTickAtSync.value = state.tick;
+        }
+        lastSyncRealMs.value = Date.now();
+      }
+    }
+    if (Date.now() - lastControlSentMs.value < 2_000) {
+      return;
+    }
+    if (typeof state.rate === "number" && state.rate > 0) {
+      rate.value = state.rate;
+    }
+    if (typeof state.paused === "boolean" && state.paused !== paused.value) {
+      lastTickAtSync.value =
+        typeof state.tick === "number" ? state.tick : currentTick.value;
+      lastSyncRealMs.value = Date.now();
+      paused.value = state.paused;
+      return;
+    }
+    if (typeof state.tick === "number") {
+      const drift = Math.abs(state.tick - currentTick.value);
+      if (drift > tickRate.value * 1.5) {
+        lastTickAtSync.value = state.tick;
+        lastSyncRealMs.value = Date.now();
+      }
+    }
+  }
+
   // Computed live tick estimate — animates the scrubber without
   // forcing an api round-trip every animation frame. Resyncs every
   // user-initiated control via syncFromControl.
   const currentTick = computed<number>(() => {
     if (paused.value) return lastTickAtSync.value;
+    // Park at the seek target while cs2 catches up; the 20s ceiling
+    // un-freezes us if the pod never confirms (its own ceiling matches).
+    if (seeking.value && nowMs.value - seekingSinceMs.value < 20_000) {
+      return lastTickAtSync.value;
+    }
     const elapsedSec = (nowMs.value - lastSyncRealMs.value) / 1000;
     return Math.max(
       0,
@@ -258,6 +333,9 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     lastSyncRealMs.value = Date.now();
     rate.value = 1;
     paused.value = false;
+    seeking.value = false;
+    seekingSinceMs.value = 0;
+    lastControlSentMs.value = 0;
     matchType.value = null;
     lineup1Name.value = null;
     lineup2Name.value = null;
@@ -306,6 +384,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     gsiTeamTScore,
     rate,
     paused,
+    seeking,
+    lastControlSentMs,
     lastTickAtSync,
     lastSyncRealMs,
     currentTick,
@@ -317,6 +397,9 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     isPlaying,
     isErrored,
     syncFromControl,
+    beginSeek,
+    endSeek,
+    reconcileFromPod,
     reset,
   };
 });

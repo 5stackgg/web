@@ -131,9 +131,20 @@ export function useDemoPlayback() {
   function startStatePoll() {
     stopStatePoll();
     stateSocketHandler = (data: any) => {
-      const gsi = data?.state?.gsi;
-      if (!gsi) return;
-      applyDemoGsi(store, gsi);
+      const state = data?.state;
+      if (!state) return;
+      if (state.gsi) {
+        applyDemoGsi(store, state.gsi);
+      }
+      // The pod's tick/paused/rate are the anchored truth — without
+      // this the local estimator dead-reckons unchecked and every seek
+      // stall / cs2-side pause desyncs the scrubber and the play button.
+      store.reconcileFromPod({
+        tick: typeof state.tick === "number" ? state.tick : undefined,
+        paused: typeof state.paused === "boolean" ? state.paused : undefined,
+        rate: typeof state.rate === "number" ? state.rate : undefined,
+        seeking: typeof state.seeking === "boolean" ? state.seeking : undefined,
+      });
     };
     socket.on("demo-session:state", stateSocketHandler);
     // Pause the 1Hz GSI poll while the demo tab is backgrounded. The
@@ -441,6 +452,11 @@ export function useDemoPlayback() {
     if (!store.matchMapId) {
       throw new Error("no demo session active");
     }
+    if (action !== "state") {
+      // Suppresses reconcile-from-poll while this control round-trips,
+      // so a stale state response can't roll back the optimistic UI.
+      store.lastControlSentMs = Date.now();
+    }
     socket.event("demo-session:control", {
       match_map_id: store.matchMapId,
       action,
@@ -480,12 +496,23 @@ export function useDemoPlayback() {
       Math.min(store.totalTicks || Number.MAX_SAFE_INTEGER, Math.round(tick)),
     );
     store.syncFromControl({ tick: clamped });
-    control("seek", { tick: clamped });
+    store.beginSeek();
+    // Explicit pause intent — cs2's post-gototick play state isn't
+    // deterministic, and a seek must never silently flip play/pause.
+    control("seek", { tick: clamped, pause_after: store.paused });
   }
 
   function skip(secs: number) {
-    const target = store.currentTick + Math.round(secs * store.tickRate);
-    return seek(target);
+    // Relative moves are computed pod-side from the anchored estimate;
+    // basing them on our local (drifting) estimate made "back 15s"
+    // land somewhere else entirely. Local sync is display-only.
+    const target = Math.max(
+      0,
+      store.currentTick + Math.round(secs * store.tickRate),
+    );
+    store.syncFromControl({ tick: target });
+    store.beginSeek();
+    control("skip", { secs });
   }
 
   function setSpeed(rate: number) {
@@ -504,6 +531,7 @@ export function useDemoPlayback() {
     }
     // Fallback: trust the api (lookup happens server-side from the
     // streamer pod's $LOG_DIR/demo-round-ticks.json sidecar).
+    store.beginSeek();
     control("round", { round });
   }
 
@@ -598,6 +626,14 @@ export function useDemoPlayback() {
   function jumpToPrevKill() {
     stepEvent("kill", filteredKills(), KILL_LEAD_SECS, -1);
   }
+  // Direct jump from a seek-bar skull marker. Records the nav anchor so
+  // a following N/P press steps relative to the clicked kill instead of
+  // the free playhead — without this the first press after a marker
+  // click re-selected a seemingly random kill.
+  function jumpToKillTick(tick: number) {
+    navAnchors.kill = tick;
+    seek(Math.max(0, tick - leadTicks(KILL_LEAD_SECS)));
+  }
   function setKillFilter(steamId: string | null) {
     store.killFilterSteamId = steamId;
   }
@@ -657,6 +693,7 @@ export function useDemoPlayback() {
       store.hudVisible = true;
     }
     store.syncFromControl({ tick: 0, paused: false });
+    store.endSeek();
     control("reload");
   }
   // X-ray (player wallhack outlines). Default on for demo playback.
@@ -730,6 +767,7 @@ export function useDemoPlayback() {
     jumpToRound,
     jumpToNextKill,
     jumpToPrevKill,
+    jumpToKillTick,
     jumpToNextBomb,
     jumpToPrevBomb,
     jumpToNextRound,

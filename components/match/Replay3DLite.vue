@@ -293,14 +293,17 @@ onMounted(() => {
       downY = e.clientY;
     }
   });
-  addEventListener("pointerup", (e) => {
-    if ((e as PointerEvent).pointerType === "touch") return; // touch = OrbitControls
+  // Named so cleanup can remove them: these are on window (not el), so if they
+  // stayed anonymous they would outlive the component and their closures would
+  // pin the whole Three.js scene (camera/controls/renderer) on every remount.
+  const onPointerUp = (e: PointerEvent) => {
+    if (e.pointerType === "touch") return; // touch = OrbitControls
     el.style.cursor = "grab";
     if (e.button !== 0) return;
     rl = false;
     if (Math.hypot(e.clientX - downX, e.clientY - downY) < 5) pickUtilLine(e); // click, not drag
-  });
-  addEventListener("pointermove", (e) => {
+  };
+  const onPointerMove = (e: PointerEvent) => {
     if (!rl) return;
     const dx = e.clientX - rlx,
       dy = e.clientY - rly;
@@ -335,7 +338,9 @@ onMounted(() => {
     const pitch = Math.atan2(newOff.y, Math.hypot(newOff.x, newOff.z));
     if (Math.abs(pitch) < 1.45) off.copy(newOff);
     controls.target.copy(camera.position).add(off);
-  });
+  };
+  addEventListener("pointerup", onPointerUp);
+  addEventListener("pointermove", onPointerMove);
   let dollyAccum = 0;
   el.addEventListener(
     "wheel",
@@ -1746,6 +1751,8 @@ onMounted(() => {
     removeEventListener("keydown", onKeyDown);
     removeEventListener("keyup", onKeyUp);
     removeEventListener("blur", clearKeys);
+    removeEventListener("pointerup", onPointerUp);
+    removeEventListener("pointermove", onPointerMove);
     document.removeEventListener("visibilitychange", onVis);
   };
 });

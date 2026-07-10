@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, h, resolveComponent } from "vue";
+import DOMPurify from "dompurify";
 
 function toInternalPath(href: string | undefined): string | null {
   if (!href) return null;
@@ -58,7 +59,12 @@ export default defineComponent({
     const parsed = computed(() => {
       if (typeof window === "undefined") return null;
       const container = document.createElement("div");
-      container.innerHTML = props.html;
+      // Sanitize before parsing: notification HTML is server-built and may
+      // embed user-controlled fields (team/player names, scheduling text).
+      // DOMPurify strips scripts, event-handler attributes, and javascript:
+      // URIs so the nodeToVNode rebuild below cannot reconstruct an XSS sink.
+      // Mirrors the news components, which sanitize the same way.
+      container.innerHTML = DOMPurify.sanitize(props.html);
       return Array.from(container.childNodes)
         .map((n) => nodeToVNode(n, NuxtLink))
         .filter((c) => c !== null && c !== "");
@@ -66,7 +72,9 @@ export default defineComponent({
 
     return () => {
       if (!parsed.value) {
-        return h("span", { innerHTML: props.html });
+        // SSR (no DOM to sanitize against): render as escaped text rather than
+        // raw innerHTML. The client re-renders the sanitized markup on hydrate.
+        return h("span", props.html);
       }
       return h("span", parsed.value);
     };

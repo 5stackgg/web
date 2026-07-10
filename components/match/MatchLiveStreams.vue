@@ -421,7 +421,23 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            link: z.string().url(),
+            link: z
+              .string()
+              .url()
+              // z.url() accepts javascript:/data: URIs (they are valid URLs);
+              // restrict to http(s) so a stored link can never become a script
+              // sink in the embed iframe or window.open.
+              .refine(
+                (value) => {
+                  try {
+                    const protocol = new URL(value).protocol;
+                    return protocol === "http:" || protocol === "https:";
+                  } catch {
+                    return false;
+                  }
+                },
+                { message: "Link must be an http(s) URL" },
+              ),
             title: z.string(),
           }),
         ),
@@ -618,7 +634,17 @@ export default {
       }
     },
     openStream(link) {
-      window.open(link, "_blank");
+      // Guard the scheme even though input validation restricts it: stored
+      // rows predate the validation and could still hold a javascript: link.
+      try {
+        const protocol = new URL(link).protocol;
+        if (protocol !== "http:" && protocol !== "https:") {
+          return;
+        }
+      } catch {
+        return;
+      }
+      window.open(link, "_blank", "noopener,noreferrer");
     },
     openEditModal(stream) {
       // ensure add modal is closed to avoid shared form conflicts

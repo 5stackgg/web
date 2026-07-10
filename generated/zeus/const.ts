@@ -1097,6 +1097,7 @@ export const AllTypesProps: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate_bool_exp",
 		regions:"String_array_comparison_exp",
 		require_approval:"Boolean_comparison_exp",
+		scheduled_at:"timestamptz_comparison_exp",
 		status:"e_draft_game_status_enum_comparison_exp",
 		team_1:"teams_bool_exp",
 		team_1_id:"uuid_comparison_exp",
@@ -1134,6 +1135,7 @@ export const AllTypesProps: Record<string,any> = {
 		pick_deadline:"timestamptz",
 		picks:"draft_game_picks_arr_rel_insert_input",
 		players:"draft_game_players_arr_rel_insert_input",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1:"teams_obj_rel_insert_input",
 		team_1_id:"uuid",
@@ -1157,6 +1159,7 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		pick_deadline:"order_by",
 		regions:"order_by",
+		scheduled_at:"order_by",
 		team_1_id:"order_by",
 		team_2_id:"order_by",
 		updated_at:"order_by"
@@ -1176,6 +1179,7 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		pick_deadline:"order_by",
 		regions:"order_by",
+		scheduled_at:"order_by",
 		team_1_id:"order_by",
 		team_2_id:"order_by",
 		updated_at:"order_by"
@@ -1223,6 +1227,7 @@ export const AllTypesProps: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate_order_by",
 		regions:"order_by",
 		require_approval:"order_by",
+		scheduled_at:"order_by",
 		status:"order_by",
 		team_1:"teams_order_by",
 		team_1_id:"order_by",
@@ -1251,6 +1256,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid",
 		mode:"e_draft_game_mode_enum",
 		pick_deadline:"timestamptz",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
@@ -1296,6 +1302,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid",
 		mode:"e_draft_game_mode_enum",
 		pick_deadline:"timestamptz",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
@@ -4330,6 +4337,9 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:{
 
 		},
+		cs2_launch_options:{
+
+		},
 		cs2_video_settings:{
 
 		},
@@ -4391,6 +4401,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_append_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		shader_bake_status_history:"jsonb"
@@ -4424,6 +4435,7 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb_comparison_exp",
 		cpu_sockets:"Int_comparison_exp",
 		cpu_threads_per_core:"Int_comparison_exp",
+		cs2_launch_options:"jsonb_comparison_exp",
 		cs2_video_settings:"jsonb_comparison_exp",
 		csgo_build_id:"Int_comparison_exp",
 		demo_network_limiter:"Int_comparison_exp",
@@ -4482,6 +4494,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_insert_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		e_region:"server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
@@ -4562,6 +4575,7 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"order_by",
 		cpu_sockets:"order_by",
 		cpu_threads_per_core:"order_by",
+		cs2_launch_options:"order_by",
 		cs2_video_settings:"order_by",
 		csgo_build_id:"order_by",
 		demo_network_limiter:"order_by",
@@ -4609,6 +4623,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_prepend_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		shader_bake_status_history:"jsonb"
@@ -4619,6 +4634,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_set_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		lan_ip:"inet",
@@ -4678,6 +4694,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_stream_cursor_value_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		lan_ip:"inet",
@@ -14415,7 +14432,6 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"String_comparison_exp",
 		faceit_player_id:"String_comparison_exp",
 		faceit_skill_level:"Int_comparison_exp",
-		faceit_synced_at:"timestamptz_comparison_exp",
 		faceit_updated_at:"timestamptz_comparison_exp",
 		faceit_url:"String_comparison_exp",
 		friend_steam_id:"bigint_comparison_exp",
@@ -14458,7 +14474,6 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_insert_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
@@ -14482,7 +14497,6 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
 		faceit_skill_level:"order_by",
-		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		friend_steam_id:"order_by",
@@ -14514,7 +14528,6 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
 		faceit_skill_level:"order_by",
-		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		friend_steam_id:"order_by",
@@ -14547,7 +14560,6 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_nickname:"order_by",
 		faceit_player_id:"order_by",
 		faceit_skill_level:"order_by",
-		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		friend_steam_id:"order_by",
@@ -14583,7 +14595,6 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_set_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
@@ -14635,7 +14646,6 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		elo:"jsonb",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
@@ -20930,7 +20940,6 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_rank_history:"player_faceit_rank_history_bool_exp",
 		faceit_rank_history_aggregate:"player_faceit_rank_history_aggregate_bool_exp",
 		faceit_skill_level:"Int_comparison_exp",
-		faceit_synced_at:"timestamptz_comparison_exp",
 		faceit_updated_at:"timestamptz_comparison_exp",
 		faceit_url:"String_comparison_exp",
 		flashed_by_players:"player_flashes_bool_exp",
@@ -21043,7 +21052,6 @@ export const AllTypesProps: Record<string,any> = {
 		draft_game_players:"draft_game_players_arr_rel_insert_input",
 		elo_history:"v_player_elo_arr_rel_insert_input",
 		faceit_rank_history:"player_faceit_rank_history_arr_rel_insert_input",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		flashed_by_players:"player_flashes_arr_rel_insert_input",
 		flashed_players:"player_flashes_arr_rel_insert_input",
@@ -21114,7 +21122,6 @@ export const AllTypesProps: Record<string,any> = {
 		faceit_player_id:"order_by",
 		faceit_rank_history_aggregate:"player_faceit_rank_history_aggregate_order_by",
 		faceit_skill_level:"order_by",
-		faceit_synced_at:"order_by",
 		faceit_updated_at:"order_by",
 		faceit_url:"order_by",
 		flashed_by_players_aggregate:"player_flashes_aggregate_order_by",
@@ -21188,7 +21195,6 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
@@ -21203,7 +21209,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
@@ -35532,6 +35537,7 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate",
 		regions:"String",
 		require_approval:"Boolean",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1:"teams",
 		team_1_id:"uuid",
@@ -35579,6 +35585,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		pick_deadline:"timestamptz",
 		regions:"String",
+		scheduled_at:"timestamptz",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
 		updated_at:"timestamptz"
@@ -35598,6 +35605,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		pick_deadline:"timestamptz",
 		regions:"String",
+		scheduled_at:"timestamptz",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
 		updated_at:"timestamptz"
@@ -37030,6 +37038,7 @@ export const ReturnTypes: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cpu_sockets:"Int",
 		cpu_threads_per_core:"Int",
+		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
 		csgo_build_id:"Int",
 		demo_network_limiter:"Int",
@@ -41211,7 +41220,6 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		friend_steam_id:"bigint",
@@ -41276,7 +41284,6 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		friend_steam_id:"bigint",
@@ -41308,7 +41315,6 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		friend_steam_id:"bigint",
@@ -46442,7 +46448,6 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_rank_history:"player_faceit_rank_history",
 		faceit_rank_history_aggregate:"player_faceit_rank_history_aggregate",
 		faceit_skill_level:"Int",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		flashed_by_players:"player_flashes",
@@ -46585,7 +46590,6 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		game_ban_count:"Int",
@@ -46623,7 +46627,6 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_nickname:"String",
 		faceit_player_id:"String",
 		faceit_skill_level:"Int",
-		faceit_synced_at:"timestamptz",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
 		game_ban_count:"Int",

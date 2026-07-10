@@ -200,9 +200,8 @@ function frame() {
     visualTick.value = target;
   }
   const nextSlider = Math.round(visualTick.value);
-  // Quantize model writes to ~1px of thumb travel — the slider spans
-  // totalTicks across ~1500px at most, and pushing sub-pixel updates
-  // re-renders reka-ui's slider every rAF frame for invisible motion.
+  // Quantize to ~1px of thumb travel — sub-pixel writes re-render the
+  // slider every rAF frame for invisible motion.
   const minStep = Math.max(1, Math.floor(store.totalTicks / 1500));
   if (Math.abs(nextSlider - (seekModel.value[0] ?? 0)) >= minStep) {
     seekModel.value = [nextSlider];
@@ -487,14 +486,31 @@ function killCountFor(steamId: string) {
   }
   return n;
 }
+// Prefer GSI's name (always matches the demo file) over the api
+// lineup name (which can be wrong for cross-loaded demos).
+function displayNameFor(sid: string): string {
+  const gsi = store.specSlots.find((s) => s.steam_id === sid);
+  return gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`;
+}
+// Mirrors filteredKills in useDemoPlayback: explicit pick wins, else
+// the spectated player.
+const followedKillSteamId = computed(
+  () => store.killFilterSteamId ?? store.spectatedSteamId ?? null,
+);
+const followedKillName = computed(() => {
+  const sid = followedKillSteamId.value;
+  return sid ? displayNameFor(sid) : null;
+});
 const activeFilterLabel = computed(() => {
   const sid = store.killFilterSteamId;
-  if (!sid) return t("match_extras.all_players");
-  // Prefer GSI's name (always matches the demo file) over the api
-  // lineup name (which can be wrong for cross-loaded demos).
-  const gsi = store.specSlots.find((s) => s.steam_id === sid);
-  const name = gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`;
-  return `${name} (${killCountFor(sid)})`;
+  if (sid) {
+    return `${displayNameFor(sid)} (${killCountFor(sid)})`;
+  }
+  const spectated = store.spectatedSteamId;
+  if (spectated) {
+    return `${displayNameFor(spectated)} (${killCountFor(spectated)})`;
+  }
+  return t("match_extras.all_players");
 });
 
 // Round strip: numbered cells with a win-colored underline (CT blue / T
@@ -544,9 +560,7 @@ type Marker = {
   victimTeam?: "ct" | "t";
   headshot?: boolean;
 };
-// Routed through the composable so the kill nav's anchor updates too —
-// otherwise the next N/P press stepped from the free playhead and
-// landed on the wrong kill.
+// Via jumpToKillTick so the N/P anchor tracks the clicked kill.
 function jumpToKill(tick: number) {
   const lead = Math.round(10 * store.tickRate);
   pulseAt(Math.max(0, tick - lead));
@@ -651,9 +665,8 @@ const killMarkers = computed<Marker[]>(() => {
       />
 
       <div v-if="hasMetadata" class="flex items-center gap-4">
-        <!-- Time label doubles as the seek-settle indicator: cs2 freezes
-             the video while a demo_gototick catches up (seconds for
-             backward jumps), and without feedback that reads as a hang. -->
+        <!-- Doubles as the seek-settle indicator — a settling gototick
+             freezes the video, which reads as a hang without feedback. -->
         <span
           class="font-mono text-sm tabular-nums min-w-[3.5rem] text-right"
           :class="
@@ -831,13 +844,29 @@ const killMarkers = computed<Marker[]>(() => {
             <SelectTrigger
               class="h-9 w-44 text-xs cursor-pointer"
               :class="
-                store.killFilterSteamId ? 'border-red-500/60 text-red-200' : ''
+                store.killFilterSteamId
+                  ? 'border-red-500/60 text-red-200'
+                  : followedKillSteamId
+                    ? 'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]'
+                    : ''
+              "
+              :title="
+                store.killFilterSteamId
+                  ? undefined
+                  : followedKillSteamId
+                    ? 'Kill nav follows the spectated player — pick a player to lock'
+                    : undefined
               "
             >
               <span class="flex items-center gap-2 truncate">
                 <Skull
                   v-if="store.killFilterSteamId"
                   class="h-3 w-3 shrink-0 text-red-400"
+                  :stroke-width="2.5"
+                />
+                <Eye
+                  v-else-if="followedKillSteamId"
+                  class="h-3 w-3 shrink-0 text-[hsl(var(--tac-amber))]"
                   :stroke-width="2.5"
                 />
                 <span class="truncate">{{ activeFilterLabel }}</span>
@@ -910,7 +939,10 @@ const killMarkers = computed<Marker[]>(() => {
               </button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Previous kill <Kbd>P</Kbd>
+              Previous kill{{
+                followedKillName ? ` — ${followedKillName}` : ""
+              }}
+              <Kbd>P</Kbd>
             </TooltipContent>
           </Tooltip>
 
@@ -981,7 +1013,8 @@ const killMarkers = computed<Marker[]>(() => {
               </button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Next kill <Kbd>N</Kbd>
+              Next kill{{ followedKillName ? ` — ${followedKillName}` : "" }}
+              <Kbd>N</Kbd>
             </TooltipContent>
           </Tooltip>
         </div>

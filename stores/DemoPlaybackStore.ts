@@ -43,9 +43,12 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
 
   // Demo metadata (extracted by demo-parser, cached on
   // match_map_demos). Populated from a Hasura query at start.
+  //
+  // The parser blobs below are shallowRef: swapped wholesale, never
+  // mutated — deep refs would proxy every kill/round object for nothing.
   const totalTicks = ref<number>(0);
   const tickRate = ref<number>(64);
-  const roundTicks = ref<
+  const roundTicks = shallowRef<
     Array<{
       round: number;
       start_tick: number;
@@ -56,7 +59,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   >([]);
   // Demo-event timeline. Sorted by tick (parser emits in order).
   // Used for jump-to-next-* buttons + seek-bar markers.
-  const kills = ref<
+  const kills = shallowRef<
     Array<{
       tick: number;
       killer?: string;
@@ -70,7 +73,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
       headshot?: boolean;
     }>
   >([]);
-  const bombs = ref<
+  const bombs = shallowRef<
     Array<{
       tick: number;
       type: "planted" | "defused" | "exploded";
@@ -87,10 +90,10 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const lineup2Name = ref<string | null>(null);
   // steam_id → display name. Built from match.lineup_*.lineup_players
   // at session start. Used to resolve killer/victim in kill tooltips.
-  const playerNames = ref<Record<string, string>>({});
+  const playerNames = shallowRef<Record<string, string>>({});
   // Roster info for the player filter — preserves lineup grouping +
   // team color hint so the dropdown can render team-grouped sections.
-  const rosters = ref<{
+  const rosters = shallowRef<{
     lineup1: Array<{ steam_id: string; name: string }>;
     lineup2: Array<{ steam_id: string; name: string }>;
   }>({ lineup1: [], lineup2: [] });
@@ -157,15 +160,14 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const rate = ref<number>(1);
   const paused = ref<boolean>(false);
 
-  // True while a demo_gototick is settling in cs2 (forward seeks stall
-  // ~2s, backward seeks replay from tick 0). The estimator freezes at
-  // the target instead of dead-reckoning past it; the pod's `seeking`
-  // flag (via the 1Hz state poll) clears it once cs2 actually lands.
+  // A demo_gototick settling in cs2 (~2s forward, replay-from-0
+  // backward); the estimator freezes at the target until the pod's
+  // `seeking` flag clears.
   const seeking = ref<boolean>(false);
   const seekingSinceMs = ref<number>(0);
-  // Set on every user-initiated control. Pod state responses generated
-  // before our control reached cs2 must not roll back the optimistic
-  // local state, so reconcile suppresses itself for a beat after.
+  // Reconcile suppresses itself briefly after a control so a state
+  // frame generated before the control reached cs2 can't roll back the
+  // optimistic UI.
   const lastControlSentMs = ref<number>(0);
 
   // Reactive wall-clock ref the live-tick computed depends on.
@@ -248,9 +250,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     seeking.value = false;
   }
 
-  // Adopt the pod's estimate from the 1Hz state poll. The pod's tick is
-  // GSI-anchored (re-grounded every freezetime) and pinned during seek
-  // settles, so it is strictly better truth than our dead reckoning.
+  // The pod's tick is GSI-anchored and seek-pinned — better truth than
+  // local dead reckoning.
   function reconcileFromPod(state: {
     tick?: number;
     paused?: boolean;

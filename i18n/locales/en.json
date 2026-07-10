@@ -1758,7 +1758,6 @@
           "plugin_runtime_description": "Which CS2 plugin framework your game servers run. Both frameworks implement the same match logic, but they load different third-party plugins and gamedata files.",
           "plugin_runtime_warning": "Switching does not move your custom plugins between addons/swiftlys2 and addons/counterstrikesharp. Servers already running keep their current image until they are recycled.",
           "plugin_runtime_locked": "The SERVER_IMAGE environment variable is set on the panel API and overrides this choice. Remove it to select a runtime here.",
-          "update_plugin_runtime": "Plugin Runtime updated",
           "cpu_section": "CPU Pinning",
           "disk_section": "Disk Reservation",
           "enable_cpu_pinning": "Enable CPU Pinning",

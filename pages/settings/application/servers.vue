@@ -17,21 +17,23 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             $t('pages.settings.application.servers.plugin_runtime_description')
           "
         >
-          <Select
-            :model-value="gameServerPluginRuntime"
-            :disabled="pluginRuntimeLocked"
-            @update:model-value="updatePluginRuntime"
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="swiftlys2"> SwiftlyS2 </SelectItem>
-              <SelectItem value="counterstrikesharp">
-                CounterStrikeSharp
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <FormField v-slot="{ componentField }" name="game_server_plugin_runtime">
+            <FormItem>
+              <Select v-bind="componentField" :disabled="pluginRuntimeLocked">
+                <FormControl>
+                  <SelectTrigger class="w-full sm:max-w-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="swiftlys2"> SwiftlyS2 </SelectItem>
+                  <SelectItem value="counterstrikesharp">
+                    CounterStrikeSharp
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormItem>
+          </FormField>
 
           <p v-if="pluginRuntimeLocked" class="text-sm text-muted-foreground">
             {{ $t("pages.settings.application.servers.plugin_runtime_locked") }}
@@ -149,6 +151,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
+            game_server_plugin_runtime: z.string().default("swiftlys2"),
             number_of_cpus_per_server: z.number().min(1).default(1),
             reserved_disk_space_fresh_gb: z.number().min(0).default(120),
             reserved_disk_space_existing_gb: z.number().min(0).default(60),
@@ -170,6 +173,10 @@ export default {
             this.form.setFieldValue(setting.name, parseInt(setting.value));
           }
         }
+        this.form.setFieldValue(
+          "game_server_plugin_runtime",
+          this.gameServerPluginRuntime,
+        );
         this.form.resetForm({ values: this.form.values });
       },
     },
@@ -181,27 +188,33 @@ export default {
       }
       this.submitting = true;
       try {
+        const objects = [
+          {
+            name: "number_of_cpus_per_server",
+            value: this.form.values.number_of_cpus_per_server?.toString(),
+          },
+          {
+            name: "reserved_disk_space_fresh_gb",
+            value: this.form.values.reserved_disk_space_fresh_gb?.toString(),
+          },
+          {
+            name: "reserved_disk_space_existing_gb",
+            value: this.form.values.reserved_disk_space_existing_gb?.toString(),
+          },
+        ];
+
+        if (!this.pluginRuntimeLocked) {
+          objects.push({
+            name: "public.game_server_plugin_runtime",
+            value: this.form.values.game_server_plugin_runtime,
+          });
+        }
+
         await this.$apollo.mutate({
           mutation: generateMutation({
             insert_settings: [
               {
-                objects: [
-                  {
-                    name: "number_of_cpus_per_server",
-                    value:
-                      this.form.values.number_of_cpus_per_server?.toString(),
-                  },
-                  {
-                    name: "reserved_disk_space_fresh_gb",
-                    value:
-                      this.form.values.reserved_disk_space_fresh_gb?.toString(),
-                  },
-                  {
-                    name: "reserved_disk_space_existing_gb",
-                    value:
-                      this.form.values.reserved_disk_space_existing_gb?.toString(),
-                  },
-                ],
+                objects,
                 on_conflict: {
                   constraint: settings_constraint.settings_pkey,
                   update_columns: [settings_update_column.value],
@@ -220,39 +233,6 @@ export default {
       } finally {
         this.submitting = false;
       }
-    },
-    async updatePluginRuntime(pluginRuntime: string) {
-      if (pluginRuntime === this.gameServerPluginRuntime) {
-        return;
-      }
-
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings: [
-            {
-              objects: [
-                {
-                  name: "public.game_server_plugin_runtime",
-                  value: pluginRuntime,
-                },
-              ],
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t(
-          "pages.settings.application.servers.update_plugin_runtime",
-        ),
-      });
     },
     async toggleCpuPinning() {
       await this.$apollo.mutate({

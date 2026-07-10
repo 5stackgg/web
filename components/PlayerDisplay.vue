@@ -218,7 +218,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 v-else-if="matchRank.rankType === 11"
                 :premier-rank="matchRank.rank"
               />
-              <PlayerElo v-else-if="!external" :elo="player.elo" />
+              <PlayerElo
+                v-else-if="!external"
+                :elo="player.elo"
+                :type="matchType"
+              />
             </template>
             <PlayerPremierRank
               v-else-if="
@@ -238,7 +242,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               :faceit-url="player.faceit_url"
               :faceit-nickname="player.faceit_nickname"
             />
-            <PlayerElo v-else-if="showElo && !external" :elo="player.elo" />
+            <PlayerElo
+              v-else-if="showElo && !external"
+              :elo="player.elo"
+              :type="matchType"
+            />
             <slot name="elo-postfix"></slot>
             <p
               class="text-muted-foreground text-xs flex items-center gap-1"

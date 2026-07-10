@@ -172,6 +172,7 @@ const DASH = "—";
                     <PlayerElo
                       v-if="!isExternalMatch"
                       :elo="member.player.elo"
+                      :type="match?.options?.type"
                     />
                     <PlayerFaceitRank
                       v-else-if="

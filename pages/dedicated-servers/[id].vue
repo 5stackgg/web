@@ -33,6 +33,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ref, computed } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
@@ -207,11 +208,21 @@ const titleClasses =
         </Button>
       </div>
 
+      <Tabs v-model="configRuntime" class="mt-3">
+        <TabsList>
+          <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
+          <TabsTrigger value="counterstrikesharp">
+            CounterStrikeSharp
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <p class="mt-2 text-sm text-muted-foreground">
         {{ $t("pages.dedicated_servers.detail.config_location") }}
         <code class="rounded bg-secondary px-1.5 py-0.5 text-xs">
-          addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
+          {{ configPath }}
         </code>
+        <Clipboard :data="configPath" />
       </p>
 
       <div v-if="showConfig" class="relative mt-3">
@@ -373,6 +384,7 @@ export default {
       server: undefined,
       apiPassword: undefined,
       showConfig: false,
+      selectedConfigRuntime: null as string | null,
       editServerSheet: false,
       deleteServerAlertDialog: false,
     };
@@ -427,17 +439,43 @@ export default {
       }
       return this.$t("pages.dedicated_servers.detail.status_label.connected");
     },
+    configRuntime: {
+      get(): string {
+        return (
+          this.selectedConfigRuntime ||
+          this.server?.plugin_runtime ||
+          useApplicationSettingsStore().gameServerPluginRuntime
+        );
+      },
+      set(runtime: string) {
+        this.selectedConfigRuntime = runtime;
+      },
+    },
+    configPath() {
+      if (this.configRuntime === "counterstrikesharp") {
+        return "addons/counterstrikesharp/configs/plugins/FiveStack/FiveStack.json";
+      }
+      return "addons/swiftlys2/configs/plugins/FiveStack/config.jsonc";
+    },
     config() {
-      return `
-{
-  "WS_DOMAIN": "wss://${useRuntimeConfig().public.wsDomain}",
-  "API_DOMAIN": "https://${useRuntimeConfig().public.apiDomain}",
-  "RELAY_DOMAIN": "https://${useRuntimeConfig().public.relayDomain}",
-  "DEMOS_DOMAIN": "https://${useRuntimeConfig().public.demosDomain}",
-  "SERVER_ID": "${this.server.id}",
-  "SERVER_API_PASSWORD": "${this.apiPassword}"
-}
-`;
+      const settings = {
+        WS_DOMAIN: `wss://${useRuntimeConfig().public.wsDomain}`,
+        API_DOMAIN: `https://${useRuntimeConfig().public.apiDomain}`,
+        RELAY_DOMAIN: `https://${useRuntimeConfig().public.relayDomain}`,
+        DEMOS_DOMAIN: `https://${useRuntimeConfig().public.demosDomain}`,
+        SERVER_ID: this.server.id,
+        SERVER_API_PASSWORD: this.apiPassword,
+      };
+
+      // SwiftlyS2 binds the "FiveStack" section of config.jsonc, while
+      // CounterStrikeSharp loads FiveStack.json as a flat object.
+      return JSON.stringify(
+        this.configRuntime === "counterstrikesharp"
+          ? settings
+          : { FiveStack: settings },
+        null,
+        2,
+      );
     },
   },
   methods: {

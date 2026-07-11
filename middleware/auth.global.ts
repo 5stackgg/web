@@ -49,6 +49,13 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  // Event data is row-gated by the visibility column (Private/Friends/
+  // Public) in Hasura and by the same SQL functions on the media routes;
+  // the pages just need to be reachable without a login bounce.
+  if (path === "/events" || path.startsWith("/events/")) {
+    return true;
+  }
+
   if (path.startsWith("/match-popout")) {
     return true;
   }

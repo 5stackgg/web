@@ -1115,7 +1115,11 @@
     "notes_section": "Notes",
     "notes_placeholder": "Anything opponents should know — server prefs, anti-cheat, voice, etc.",
     "settings_saved": "Scrim settings saved",
-    "settings_save_error": "Failed to save scrim settings"
+    "settings_save_error": "Failed to save scrim settings",
+    "calendar_link_copied": "Calendar link copied",
+    "calendar_subscription_help": "Subscribe to this URL in your calendar app to see scheduled scrims.",
+    "calendar_link_error": "Could not get calendar link",
+    "subscribe_to_matches": "Subscribe to Scheduled Matches"
   },
   "elo_chart_bucket": {
     "monthly": "Monthly",
@@ -1500,14 +1504,16 @@
           "label": "Display name",
           "permissions_section": "Permissions",
           "permissions_description": "Choose the minimum role allowed to create and publish news posts.",
-          "post_news_role": "Who can post news"
+          "post_news_role": "Who can post news",
+          "about": "Posts you publish appear on the public News page. Drafts stay hidden until you publish them."
         },
         "seasons": {
           "title": "Seasons",
           "section": "Seasons",
           "description": "Competitive seasons reset regular-match ELO to a 5000 baseline each season and scope stats and filtering per season; when disabled, ELO is a single global ladder. Tournament ELO stays season-independent.",
           "manage": "Manage Seasons",
-          "manage_description": "Create, end and backfill competitive seasons."
+          "manage_description": "Create, end and backfill competitive seasons.",
+          "about": "When enabled, season filtering appears across players, the leaderboard and tournaments, and ELO/stats become season-scoped. When disabled, ELO is a single global ladder and no season filtering is shown."
         },
         "discord": {
           "title": "Discord Notifications",
@@ -1991,6 +1997,15 @@
           "max_roster": "Maximum roster size",
           "roster_hint": "Teams need at least the minimum to be approved and can't exceed the maximum.",
           "max_subs": "Substitutes"
+        },
+        "events": {
+          "title": "Events",
+          "section": "Events",
+          "description": "Curated events grouping tournaments, teams and players, with leaderboards, standings and a media gallery. Off by default; enable to show the Events pages.",
+          "manage": "Manage Events",
+          "permissions_section": "Permissions",
+          "permissions_description": "Control which players can create events.",
+          "create_events_role": "Minimum role to create events"
         }
       },
       "language": {
@@ -3040,6 +3055,23 @@
         "no_explain_plan": "EXPLAIN plan could not be generated for this query",
         "not_found": "Query details not found"
       }
+    },
+    "events": {
+      "title": "Events",
+      "description": "Browse events and their member tournaments, leaderboards, and standings.",
+      "create": "Create Event",
+      "date_tbd": "Date TBD",
+      "no_events_title": "No Events Yet",
+      "no_events_description": "There are no events to show right now. Check back soon.",
+      "live_now": "Live now",
+      "upcoming": "Upcoming",
+      "past_events": "Past events"
+    },
+    "manage_events": {
+      "title": "Manage Events",
+      "description": "View and manage all events across the platform.",
+      "no_events_title": "No Events Yet",
+      "no_events_description": "You are not organizing any events yet."
     }
   },
   "custom_match": {
@@ -3066,7 +3098,10 @@
         "integrations": "Integrations",
         "infrastructure": "Infrastructure",
         "theme": "Appearance",
-        "developer": "Developer"
+        "developer": "Developer",
+        "general": "General",
+        "media": "Recording & Media",
+        "additional_features": "Additional Features"
       }
     },
     "system_update": {
@@ -3115,7 +3150,8 @@
         "search": "Search",
         "highlights": "Highlights",
         "news": "News",
-        "leagues": "League"
+        "leagues": "League",
+        "events": "Events"
       },
       "community": {
         "title": "Community"
@@ -3136,7 +3172,8 @@
         "manage_matches": "Manage Matches",
         "manage_tournaments": "Manage Tournaments",
         "manage_league": "Manage League",
-        "stream_deck": "Stream Deck"
+        "stream_deck": "Stream Deck",
+        "manage_events": "Manage Events"
       },
       "system": {
         "title": "System",
@@ -3179,7 +3216,9 @@
         "manage_tournaments": "Manage Tournaments",
         "manage_league": "Manage League",
         "search_players": "Search Players",
-        "leagues": "League"
+        "leagues": "League",
+        "events": "Events",
+        "manage_events": "Manage Events"
       },
       "logout_dialog": {
         "title": "Logout",
@@ -6056,6 +6095,7 @@
       "invite_sent": "Invited {name} to your draft",
       "picks_first": "{name} picks first",
       "match_starting": "Match Starting — Booting Server",
+      "no_regions_available_description": "No game server regions have servers available. The draft cannot start until a server comes online — contact an administrator.",
       "assign_all": "Assign All Players",
       "need_full": "Waiting For Players",
       "search_requests": "Search requests",
@@ -6560,6 +6600,237 @@
         "time": "Time",
         "proposed_by": "Proposed by"
       }
+    }
+  },
+  "event": {
+    "card": {
+      "organizing": "Organizing",
+      "tournaments": "Tournaments",
+      "organized_by": "Organized by"
+    },
+    "tabs": {
+      "leaderboard": "Leaderboard",
+      "standings": "Standings",
+      "tournaments": "Tournaments",
+      "teams": "Teams & Players",
+      "settings": "Settings",
+      "media": "Media",
+      "overview": "Overview",
+      "story": "Story",
+      "matches": "Matches"
+    },
+    "not_found": {
+      "title": "Event Not Found",
+      "description": "This event does not exist or you do not have access to view it."
+    },
+    "tournaments": {
+      "none": "No tournaments are part of this event yet."
+    },
+    "teams": {
+      "title": "Teams",
+      "none": "No teams are part of this event yet."
+    },
+    "players": {
+      "title": "Players",
+      "none": "No players are part of this event yet."
+    },
+    "updated": "Updated Event",
+    "form": {
+      "name": "Event Name",
+      "description": "Description",
+      "starts_at": "Starts At",
+      "ends_at": "Ends At",
+      "dates": "Event Dates",
+      "pick_dates": "Pick a date range",
+      "start_time": "Start time",
+      "end_time": "End time",
+      "create": "Create Event",
+      "create_bar": {
+        "ready": "Ready to create",
+        "ready_hint": "Everything looks good, create your event when ready.",
+        "incomplete": "Required fields missing",
+        "incomplete_hint": "Fill in the event name to continue"
+      },
+      "visibility": "Visibility",
+      "media_access": "Media Uploads",
+      "sections": {
+        "details": "Details",
+        "schedule": "Schedule",
+        "access": "Access"
+      }
+    },
+    "leaderboard": {
+      "categories": {
+        "rating": "Rating",
+        "adr": "ADR",
+        "kdr": "K/D Ratio",
+        "kills": "Kills",
+        "wins": "Wins"
+      },
+      "col": {
+        "rating": "Rating",
+        "adr": "ADR",
+        "kdr": "K/D",
+        "kills": "Kills",
+        "wins": "Wins",
+        "kills_short": "K",
+        "deaths_short": "D",
+        "matches": "Matches"
+      },
+      "no_results": "No leaderboard results yet."
+    },
+    "standings": {
+      "champion": "Champion",
+      "runner_up": "Runner-Up",
+      "third": "Third Place",
+      "mvp": "MVP",
+      "gold": "Gold",
+      "silver": "Silver",
+      "bronze": "Bronze",
+      "none": "No standings yet for this event's tournaments.",
+      "medal_table": "Medal Table"
+    },
+    "membership": {
+      "title": "Membership",
+      "detach": "Remove",
+      "tournaments": {
+        "title": "Tournaments",
+        "none": "No tournaments attached yet.",
+        "search_placeholder": "Search your tournaments...",
+        "none_found": "No tournaments found"
+      },
+      "teams": {
+        "title": "Teams",
+        "none": "No teams attached yet.",
+        "search_placeholder": "Search teams..."
+      },
+      "players": {
+        "title": "Players",
+        "none": "No players attached yet.",
+        "search_placeholder": "Search players...",
+        "import": "Import from Tournaments",
+        "import_none": "No new players found in this event's tournaments.",
+        "import_success": "Imported {count} player(s) from tournament rosters.",
+        "import_hint": "Adds every rostered player from the attached tournaments to this event."
+      },
+      "organizers": {
+        "title": "Organizers",
+        "search_placeholder": "Add an organizer...",
+        "creator": "Creator",
+        "hide_on_event": "Hide from “organized by”",
+        "show_on_event": "Show in “organized by”"
+      },
+      "filter_players": "Filter players...",
+      "filter_teams": "Filter teams..."
+    },
+    "visibility": {
+      "private": "Private",
+      "friends": "Friends",
+      "public": "Public"
+    },
+    "media_access": {
+      "organizers": "Organizers only",
+      "involved": "Anyone in the event"
+    },
+    "media": {
+      "none": "No media has been uploaded to this event yet.",
+      "drop_to_upload": "Drop to upload",
+      "click_to_choose": "Click to choose a file or drag it here",
+      "supported_types": "Images (PNG, JPEG, WebP, GIF up to 10MB), MP4 video (up to 512MB) and MP3 audio (up to 50MB)",
+      "uploaded": "Media uploaded",
+      "deleted": "Media deleted",
+      "delete": "Delete",
+      "upload_queue": "Upload queue",
+      "queue_clear": "Clear",
+      "queue_waiting": "Waiting",
+      "queue_uploading": "Uploading",
+      "queue_done": "Done",
+      "queue_error": "Failed",
+      "untitled": "Untitled",
+      "details": "Details",
+      "title_label": "Title",
+      "title_placeholder": "Give this media a title",
+      "saved": "Saved",
+      "players_label": "Tagged players",
+      "no_players": "No players tagged yet.",
+      "tag_players": "Tag a player...",
+      "audio": "Audio",
+      "queue_processing": "Processing",
+      "no_participants": "No event participants to tag yet",
+      "show_more": "Load more media",
+      "filter_by_player": "Filter by player...",
+      "none_for_player": "No media tagged with this player.",
+      "add_media": "Add media",
+      "add_title": "Add media",
+      "upload_section": "Upload a file",
+      "link_section": "Add a link",
+      "add_link_description": "Paste a YouTube or Twitch URL (or any link) to add it to this event's media.",
+      "link_url_label": "URL",
+      "link_url_placeholder": "https://youtube.com/watch?v=...",
+      "link_title_placeholder": "Optional title",
+      "link_add": "Add",
+      "link_invalid": "Enter a valid http(s) URL",
+      "link_added": "Link added",
+      "external_open": "Open link"
+    },
+    "phase": {
+      "upcoming": "Upcoming",
+      "live": "Live",
+      "finished": "Finished"
+    },
+    "overview": {
+      "for_you": "For you",
+      "rank": "Event rank",
+      "rating": "Rating",
+      "kd": "K/D",
+      "matches": "Matches",
+      "no_my_matches": "None of your matches are part of this event yet."
+    },
+    "matches": {
+      "none": "No matches have been played in this event's tournaments yet.",
+      "load_more": "Load more matches"
+    },
+    "story": {
+      "only_mine": "Only my moments",
+      "none": "Nothing has happened at this event yet.",
+      "none_mine": "You have no moments at this event yet.",
+      "highlights": "Highlights"
+    },
+    "banner": {
+      "section": "Banner",
+      "upload": "Upload banner",
+      "replace": "Replace banner",
+      "remove": "Remove banner",
+      "updated": "Banner updated",
+      "removed": "Banner removed",
+      "empty_hint": "No banner yet — click to upload",
+      "hint": "Shown full-width at the top of the event page. Optimal size: 1920×640 (3:1). Images up to 10MB or MP4 video up to 512MB.",
+      "editor": {
+        "title": "Adjust banner",
+        "description": "Drag to position and scroll to zoom inside the 3:1 banner frame. Use “Fit whole image” if the art must not be cropped — the page fills the sides with a blurred copy.",
+        "fit_whole": "Fit whole image",
+        "reset": "Reset",
+        "apply": "Use as banner"
+      }
+    },
+    "player": {
+      "full_profile": "Full profile",
+      "kills": "Kills",
+      "deaths": "Deaths",
+      "assists": "Assists",
+      "kdr": "K/D",
+      "adr": "ADR",
+      "hs": "HS%",
+      "matches": "Matches",
+      "tab_stats": "Stats",
+      "tab_matches": "Matches",
+      "compare_with": "Compare with...",
+      "clear_compare": "Clear comparison",
+      "axis_frags": "Frags",
+      "axis_kd": "K/D",
+      "axis_adr": "ADR",
+      "axis_hs": "HS%",
+      "axis_assist": "Assist"
     }
   }
 }

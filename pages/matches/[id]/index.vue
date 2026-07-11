@@ -664,6 +664,7 @@ export default {
               server_id: true,
               server_type: true,
               server_region: true,
+              server_plugin_runtime: true,
               is_server_online: true,
               lineup_1_id: true,
               lineup_2_id: true,

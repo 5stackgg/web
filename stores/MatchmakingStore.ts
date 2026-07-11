@@ -249,11 +249,11 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     );
   };
 
-  // Online = connected to 5stack web, in a live 5stack match, or in CS2 (via the
-  // friend bot). Any of these means they're active enough to show up top.
+  // Online = truly present: connected to 5stack web, or in CS2 (via the friend
+  // bot). Being merely assigned to a live match lineup does NOT count — a roster
+  // slot isn't presence, the player may not actually be around.
   const isActiveFriend = (friend: any) =>
     onlinePlayerSteamIds.value.includes(friend.steam_id) ||
-    friend.player?.player_lineup?.length > 0 ||
     isInCs2(friend.last_presence_state);
 
   const onlineFriends = computed(() => {

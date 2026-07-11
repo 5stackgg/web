@@ -83,10 +83,16 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
       return false;
     }
 
-    const meRoleIndex = roleOrder.indexOf(me.value.role);
     const roleIndex = roleOrder.indexOf(role);
 
-    return meRoleIndex >= roleIndex;
+    // An unknown role gate must deny, not grant: the settings-store role
+    // getters return false while settings are still loading, and indexOf
+    // would map that to -1, which every real role index clears.
+    if (roleIndex === -1) {
+      return false;
+    }
+
+    return roleOrder.indexOf(me.value.role) >= roleIndex;
   }
 
   function setMe(nextMe?: AuthMe | null) {

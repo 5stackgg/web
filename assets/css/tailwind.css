@@ -329,6 +329,18 @@ mark {
   pointer-events: none;
   opacity: 0.6;
 }
+
+/* Faint HUD scanlines laid over event banner media, so photography/video
+   reads as composed into the tactical chrome instead of pasted above it. */
+.tac-scanlines {
+  background-image: repeating-linear-gradient(
+    180deg,
+    hsl(0 0% 100% / 0.03) 0px,
+    hsl(0 0% 100% / 0.03) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
 /* One-shot pulse for clip share buttons — toast is far from the click
    target, so the button itself flashes amber + scales briefly. Used
    by MatchHighlightsReel queue/featured share, HighlightCard, and

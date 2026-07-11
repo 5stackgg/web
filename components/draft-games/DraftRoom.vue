@@ -14,6 +14,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/toast";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -551,6 +552,10 @@ const sideFull = (lineup: number) =>
 
 const showStart = computed(() => isOrganizer.value && notStarted.value);
 
+const regionsAvailable = computed(
+  () => appSettings.availableRegions.length > 0,
+);
+
 const startReady = computed(() => {
   if (props.room.mode === "Teams") {
     return !!props.room.team_1_id;
@@ -607,6 +612,19 @@ const start = () => {
       :room-id="room.id"
       @close="settingsOpen = false"
     />
+
+    <Alert
+      v-if="!regionsAvailable && notStarted"
+      variant="destructive"
+      class="bg-red-600 text-white"
+    >
+      <AlertTitle>
+        {{ $t("match.region_veto.no_regions_available") }}
+      </AlertTitle>
+      <AlertDescription>
+        {{ $t("draft_games.room.no_regions_available_description") }}
+      </AlertDescription>
+    </Alert>
 
     <div
       v-if="canJoin || hasRequested || isWaitlisted"
@@ -776,7 +794,7 @@ const start = () => {
               v-if="showStart && startReady"
               variant="tactical"
               type="button"
-              :disabled="isPending('start')"
+              :disabled="isPending('start') || !regionsAvailable"
               :class="[
                 tacticalCtaButtonClasses,
                 'justify-center px-10 py-3.5 text-base',
@@ -988,7 +1006,7 @@ const start = () => {
               v-if="showStart && startReady"
               variant="tactical"
               type="button"
-              :disabled="isPending('start')"
+              :disabled="isPending('start') || !regionsAvailable"
               :class="[
                 tacticalCtaButtonClasses,
                 'justify-center px-10 py-3.5 text-base',

@@ -248,6 +248,7 @@ const titleClasses =
     <RconCommander
       :server-id="$route.params.id as string"
       :online="rconOnline"
+      :plugin-runtime="server?.plugin_runtime"
     />
   </PageTransition>
 

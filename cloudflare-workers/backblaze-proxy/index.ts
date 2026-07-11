@@ -441,7 +441,9 @@ export default {
   },
 };
 
-const UPLOAD_PREFIX = "demo-uploads/";
+// Every write is still individually authorized by the API-minted HMAC token
+// below; the prefix list only bounds which trees are writable at all.
+const UPLOAD_PREFIXES = ["demo-uploads/", "events/"];
 // B2 multipart part ceiling we accept; the API chunks at 64MiB so anything
 // larger is a malformed/abusive request.
 const MAX_PART_BYTES = 64 * 1024 * 1024;
@@ -462,7 +464,12 @@ async function handleUpload(
   const uploadId = url.searchParams.get("uploadId");
   const token = url.searchParams.get("token");
 
-  if (!key.startsWith(UPLOAD_PREFIX) || !partNumber || !uploadId || !token) {
+  if (
+    !UPLOAD_PREFIXES.some((prefix) => key.startsWith(prefix)) ||
+    !partNumber ||
+    !uploadId ||
+    !token
+  ) {
     return new Response("forbidden", {
       status: 403,
       headers: corsHeaders(reqOrigin),

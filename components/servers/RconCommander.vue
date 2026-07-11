@@ -19,6 +19,8 @@ import {
 import ClipBoard from "~/components/ClipBoard.vue";
 import { ButtonGroup } from "~/components/ui/button-group";
 import debounce from "~/utilities/debounce";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { effectivePluginRuntime } from "~/constants/rconCommands";
 </script>
 
 <template>
@@ -122,8 +124,6 @@ import debounce from "~/utilities/debounce";
             <ButtonGroup>
               <Button
                 :disabled="!online"
-                :loading="sending"
-                :min-loading-ms="0"
                 type="submit"
                 size="sm"
                 variant="secondary"
@@ -165,6 +165,7 @@ import debounce from "~/utilities/debounce";
                       {{ $t("server.rcon.metamod_info") }}
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                      v-if="isCounterStrikeSharp"
                       @click="commander(['css_plugins list', 'css'], '')"
                       :disabled="!online"
                     >
@@ -296,6 +297,21 @@ export default {
       type: Boolean,
       default: false,
     },
+    pluginRuntime: {
+      required: false,
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    isCounterStrikeSharp() {
+      return (
+        effectivePluginRuntime(
+          this.pluginRuntime,
+          useApplicationSettingsStore().gameServerPluginRuntime,
+        ) === "counterstrikesharp"
+      );
+    },
   },
   data() {
     const form = useForm({
@@ -317,7 +333,6 @@ export default {
       logStates: [] as boolean[],
       uuid: undefined as string | undefined,
       rconListener: undefined as any,
-      sending: false,
       history: [] as string[],
       historyIndex: -1 as number, // -1 means not navigating history
       historyTemp: "" as string, // buffer of current input before history navigation
@@ -472,16 +487,6 @@ export default {
       this.showSuggestions = false;
       this.sendCommand();
     },
-    flashSending() {
-      this.sending = true;
-      if (this.sendTimer) {
-        clearTimeout(this.sendTimer);
-      }
-      this.sendTimer = setTimeout(() => {
-        this.sending = false;
-        this.sendTimer = undefined;
-      }, 1000);
-    },
     sendCommand() {
       this.suggestions = [];
       this.showSuggestions = false;
@@ -497,8 +502,6 @@ export default {
         serverId: this.serverId,
         command: command,
       });
-
-      this.flashSending();
 
       // track history
       this.history.push(command);
@@ -646,9 +649,6 @@ export default {
   },
   beforeUnmount() {
     this.rconListener?.stop();
-    if (this.sendTimer) {
-      clearTimeout(this.sendTimer);
-    }
   },
 };
 </script>

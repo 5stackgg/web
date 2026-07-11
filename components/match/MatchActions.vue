@@ -350,6 +350,12 @@ import socket from "~/web-sockets/Socket";
 import { v4 as uuidv4 } from "uuid";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useStreamerStore } from "~/stores/StreamerStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import {
+  RconAction,
+  resolveRconCommand,
+  effectivePluginRuntime,
+} from "~/constants/rconCommands";
 export default {
   props: {
     match: {
@@ -677,7 +683,14 @@ export default {
       }
     },
     togglePause() {
-      const command = this.isPaused ? "css_resume" : "css_pause";
+      const pluginRuntime = effectivePluginRuntime(
+        this.match.server_plugin_runtime,
+        useApplicationSettingsStore().gameServerPluginRuntime,
+      );
+      const command = resolveRconCommand(
+        this.isPaused ? RconAction.Resume : RconAction.Pause,
+        pluginRuntime,
+      );
       this.rconUuid = uuidv4();
       socket.event("rcon", {
         uuid: this.rconUuid,

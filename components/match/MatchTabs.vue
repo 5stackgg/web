@@ -591,6 +591,7 @@ provide("commander", commander);
         :server-id="match.server_id"
         :online="!!match.is_server_online"
         :match-id="match.id"
+        :plugin-runtime="pluginRuntime"
         v-if="canSendRCONCommands"
       >
         <template #default="{ commander: send }">
@@ -600,7 +601,7 @@ provide("commander", commander);
               @click="
                 command.confirm
                   ? confirmCommand(command, send)
-                  : send(command.value, '')
+                  : send(rconCommand(command.action), '')
               "
             >
               {{ $t(command.display) }}
@@ -861,6 +862,13 @@ import {
   normalizeRouteTab,
   replaceRouteTab,
 } from "~/composables/useRouteTab";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import {
+  RconAction,
+  resolveRconCommand,
+  matchCommandsForStatus,
+  effectivePluginRuntime,
+} from "~/constants/rconCommands";
 
 // Hasura subscriptions require one top-level field, so we query the
 // match_lineups list and split by id client-side.
@@ -877,44 +885,6 @@ const allMapsStatsQuery = generateQuery({
     matchAllMapsStats,
   ],
 });
-
-enum AvailableCommands {
-  Pause = "css_pause",
-  Resume = "css_resume",
-  SkipKnife = "skip_knife",
-  ForceReady = "force_ready",
-  Knife = "match_state Knife",
-  Warmup = "match_state Warmup",
-}
-
-const CommandDetails = {
-  [AvailableCommands.Pause]: {
-    display: "match.commands.pause_match",
-    value: AvailableCommands.Pause,
-  },
-  [AvailableCommands.Resume]: {
-    display: "match.commands.resume_match",
-    value: AvailableCommands.Resume,
-  },
-  [AvailableCommands.SkipKnife]: {
-    display: "match.commands.skip_knife",
-    value: AvailableCommands.SkipKnife,
-  },
-  [AvailableCommands.ForceReady]: {
-    display: "match.commands.force_ready",
-    value: AvailableCommands.ForceReady,
-  },
-  [AvailableCommands.Knife]: {
-    display: "match.commands.reset_to_knife",
-    value: AvailableCommands.Knife,
-    confirm: true,
-  },
-  [AvailableCommands.Warmup]: {
-    display: "match.commands.reset_to_warmup",
-    value: AvailableCommands.Warmup,
-    confirm: true,
-  },
-};
 
 export default {
   emits: ["clear-active-map", "select-map"],
@@ -945,7 +915,7 @@ export default {
       showRebootDialog: false,
       pendingCommand: null as
         | undefined
-        | { value: string; display: string; confirm: boolean },
+        | { action: RconAction; display: string; confirm?: boolean },
       executePending: undefined as undefined | (() => void),
       cleanMapName,
     };
@@ -1194,29 +1164,13 @@ export default {
       );
     },
     availableCommands() {
-      const commands = [];
-
-      switch (this.currentMap?.status) {
-        case e_match_map_status_enum.Warmup:
-        case e_match_map_status_enum.Scheduled:
-          commands.push(CommandDetails[AvailableCommands.ForceReady]);
-          break;
-        case e_match_map_status_enum.Knife:
-          commands.push(CommandDetails[AvailableCommands.SkipKnife]);
-          commands.push(CommandDetails[AvailableCommands.Warmup]);
-          break;
-        case e_match_map_status_enum.Paused:
-          commands.push(CommandDetails[AvailableCommands.Resume]);
-          commands.push(CommandDetails[AvailableCommands.Warmup]);
-          commands.push(CommandDetails[AvailableCommands.Knife]);
-          break;
-        case e_match_map_status_enum.Live:
-        case e_match_map_status_enum.Overtime:
-          commands.push(CommandDetails[AvailableCommands.Pause]);
-          break;
-      }
-
-      return commands;
+      return matchCommandsForStatus(this.currentMap?.status);
+    },
+    pluginRuntime() {
+      return effectivePluginRuntime(
+        this.match.server_plugin_runtime,
+        useApplicationSettingsStore().gameServerPluginRuntime,
+      );
     },
     canViewAdmin() {
       return this.match.is_organizer;
@@ -1404,16 +1358,19 @@ export default {
         "scoreboard",
       );
     },
+    rconCommand(action: RconAction) {
+      return resolveRconCommand(action, this.pluginRuntime);
+    },
     confirmCommand(
       command: {
-        value: string;
+        action: RconAction;
         display: string;
-        confirm: boolean;
+        confirm?: boolean;
       },
       send,
     ) {
       this.pendingCommand = command;
-      this.executePending = () => send(command.value, "");
+      this.executePending = () => send(this.rconCommand(command.action), "");
       this.showConfirmDialog = true;
     },
     async swapLineups() {

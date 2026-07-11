@@ -65,17 +65,21 @@ const { height: viewportHeight } = useVisualViewport();
 
           <div v-else class="divide-y">
             <div
-              v-for="team in teams"
+              v-for="(team, index) in teams"
               :key="team.id"
+              :ref="index === selectedIndex ? setActiveRow : undefined"
               class="px-3 py-2"
               :class="
                 isSelected(team)
                   ? 'opacity-60 cursor-not-allowed bg-accent/40'
                   : canSelectTeam(team)
-                    ? 'hover:bg-accent cursor-pointer'
+                    ? index === selectedIndex
+                      ? 'bg-accent cursor-pointer'
+                      : 'hover:bg-accent cursor-pointer'
                     : 'opacity-60 cursor-not-allowed'
               "
               @click="select(team)"
+              @mouseenter="selectedIndex = index"
             >
               <div class="flex items-center gap-2 min-w-0">
                 <Avatar class="h-6 w-6 rounded shrink-0">
@@ -156,8 +160,12 @@ const { height: viewportHeight } = useVisualViewport();
               (e: Event) =>
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
+            @keydown="onKeydown"
           />
-          <div class="flex items-center gap-2 ml-4" v-if="!myTeams && !teamOptions">
+          <div
+            class="flex items-center gap-2 ml-4"
+            v-if="!myTeams && !teamOptions"
+          >
             <Switch
               class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="myTeamsOnly"
@@ -217,8 +225,12 @@ const { height: viewportHeight } = useVisualViewport();
               (e: Event) =>
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
+            @keydown="onKeydown"
           />
-          <div class="flex items-center gap-2 ml-4" v-if="!myTeams && !teamOptions">
+          <div
+            class="flex items-center gap-2 ml-4"
+            v-if="!myTeams && !teamOptions"
+          >
             <Switch
               class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="myTeamsOnly"
@@ -243,17 +255,21 @@ const { height: viewportHeight } = useVisualViewport();
 
             <div class="divide-y">
               <div
-                v-for="team in teams"
+                v-for="(team, index) in teams"
                 :key="team.id"
+                :ref="index === selectedIndex ? setActiveRow : undefined"
                 class="px-3 py-2"
                 :class="
                   isSelected(team)
                     ? 'opacity-60 cursor-not-allowed bg-accent/40'
                     : canSelectTeam(team)
-                      ? 'hover:bg-accent cursor-pointer'
+                      ? index === selectedIndex
+                        ? 'bg-accent cursor-pointer'
+                        : 'hover:bg-accent cursor-pointer'
                       : 'opacity-60 cursor-not-allowed'
                 "
                 @click="select(team)"
+                @mouseenter="selectedIndex = index"
               >
                 <div class="flex items-center gap-2 min-w-0">
                   <Avatar class="h-6 w-6 rounded shrink-0">
@@ -389,6 +405,8 @@ export default {
       query: "",
       teams: undefined as Team[] | undefined,
       myTeamsOnly: false,
+      selectedIndex: 0,
+      activeRow: null as HTMLElement | null,
       debouncedSearch: debounce((query: string) => {
         this.searchTeams(query);
       }, 300),
@@ -464,6 +482,30 @@ export default {
     },
   },
   methods: {
+    setActiveRow(el: HTMLElement | null) {
+      this.activeRow = el;
+    },
+    scrollActiveIntoView() {
+      this.$nextTick(() => {
+        this.activeRow?.scrollIntoView({ block: "nearest" });
+      });
+    },
+    onKeydown(event: KeyboardEvent) {
+      const list = this.teams ?? [];
+      if (!list.length) return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        this.selectedIndex = Math.min(this.selectedIndex + 1, list.length - 1);
+        this.scrollActiveIntoView();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+        this.scrollActiveIntoView();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (list[this.selectedIndex]) this.select(list[this.selectedIndex]);
+      }
+    },
     canSelectTeam(team: Team): boolean {
       if (this.minPlayers && (team.player_count ?? 0) < this.minPlayers) {
         return false;
@@ -559,6 +601,8 @@ export default {
       if (query !== undefined) {
         this.query = query;
       }
+
+      this.selectedIndex = 0;
 
       if (this.teamOptions) {
         const search = this.query.toLowerCase();

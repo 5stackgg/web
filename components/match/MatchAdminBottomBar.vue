@@ -12,7 +12,14 @@ import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSep
 import DropdownMenuSub from "~/components/ui/dropdown-menu/DropdownMenuSub.vue";
 import DropdownMenuSubTrigger from "~/components/ui/dropdown-menu/DropdownMenuSubTrigger.vue";
 import DropdownMenuSubContent from "~/components/ui/dropdown-menu/DropdownMenuSubContent.vue";
-import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
+import { e_match_status_enum } from "~/generated/zeus";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import {
+  type MatchCommand,
+  resolveRconCommand,
+  matchCommandsForStatus,
+  effectivePluginRuntime,
+} from "~/constants/rconCommands";
 
 const props = defineProps<{
   match: Record<string, any>;
@@ -21,56 +28,14 @@ const props = defineProps<{
 const commander = new EventEmitter();
 provide("commander", commander);
 
-enum AvailableCommands {
-  Pause = "css_pause",
-  Resume = "css_resume",
-  SkipKnife = "skip_knife",
-  ForceReady = "force_ready",
-  Knife = "match_state Knife",
-  Warmup = "match_state Warmup",
-}
-
-type CommandDetail = {
-  display: string;
-  value: AvailableCommands;
-  confirm?: boolean;
-};
-
-const CommandDetails: Record<string, CommandDetail> = {
-  [AvailableCommands.Pause]: {
-    display: "Pause Match",
-    value: AvailableCommands.Pause,
-  },
-  [AvailableCommands.Resume]: {
-    display: "Resume Match",
-    value: AvailableCommands.Resume,
-  },
-  [AvailableCommands.SkipKnife]: {
-    display: "Skip Knife",
-    value: AvailableCommands.SkipKnife,
-  },
-  [AvailableCommands.ForceReady]: {
-    display: "Force Ready",
-    value: AvailableCommands.ForceReady,
-  },
-  [AvailableCommands.Knife]: {
-    display: "Reset to Knife",
-    value: AvailableCommands.Knife,
-    confirm: true,
-  },
-  [AvailableCommands.Warmup]: {
-    display: "Reset to Warmup",
-    value: AvailableCommands.Warmup,
-    confirm: true,
-  },
-};
+const applicationSettings = useApplicationSettingsStore();
 
 const open = ref(false);
 const mounted = ref(false);
 const hasLogs = ref(false);
 const showConfirmDialog = ref(false);
 const showRebootDialog = ref(false);
-const pendingCommand = ref<CommandDetail | null>(null);
+const pendingCommand = ref<MatchCommand | null>(null);
 const executePending = ref<(() => void) | null>(null);
 
 const panelHeight = ref(240);
@@ -137,29 +102,16 @@ const currentMap = computed(() =>
   props.match.match_maps?.find((m: any) => m.is_current_map),
 );
 
-const availableCommands = computed<CommandDetail[]>(() => {
-  const commands: CommandDetail[] = [];
-  switch (currentMap.value?.status) {
-    case e_match_map_status_enum.Warmup:
-    case e_match_map_status_enum.Scheduled:
-      commands.push(CommandDetails[AvailableCommands.ForceReady]);
-      break;
-    case e_match_map_status_enum.Knife:
-      commands.push(CommandDetails[AvailableCommands.SkipKnife]);
-      commands.push(CommandDetails[AvailableCommands.Warmup]);
-      break;
-    case e_match_map_status_enum.Paused:
-      commands.push(CommandDetails[AvailableCommands.Resume]);
-      commands.push(CommandDetails[AvailableCommands.Warmup]);
-      commands.push(CommandDetails[AvailableCommands.Knife]);
-      break;
-    case e_match_map_status_enum.Live:
-    case e_match_map_status_enum.Overtime:
-      commands.push(CommandDetails[AvailableCommands.Pause]);
-      break;
-  }
-  return commands;
-});
+const availableCommands = computed<MatchCommand[]>(() =>
+  matchCommandsForStatus(currentMap.value?.status),
+);
+
+const pluginRuntime = computed(() =>
+  effectivePluginRuntime(
+    props.match.server_plugin_runtime,
+    applicationSettings.gameServerPluginRuntime,
+  ),
+);
 
 const canSendRCONCommands = computed(
   () =>
@@ -195,16 +147,17 @@ const restorableRounds = computed(() =>
 );
 
 function runCommand(
-  command: CommandDetail,
+  command: MatchCommand,
   send: (cmd: string, arg: string) => void,
 ) {
+  const rconCommand = resolveRconCommand(command.action, pluginRuntime.value);
   if (command.confirm) {
     pendingCommand.value = command;
-    executePending.value = () => send(command.value, "");
+    executePending.value = () => send(rconCommand, "");
     showConfirmDialog.value = true;
     return;
   }
-  send(command.value, "");
+  send(rconCommand, "");
 }
 </script>
 
@@ -220,7 +173,7 @@ function runCommand(
             <AlertDialogDescription class="flex flex-col gap-2">
               <span>{{ $t("common.are_you_sure") }}</span>
               <Badge variant="secondary" class="w-fit">
-                {{ pendingCommand?.display }}
+                {{ pendingCommand?.display ? $t(pendingCommand.display) : "" }}
               </Badge>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -318,17 +271,18 @@ function runCommand(
               :server-id="match.server_id"
               :online="!!match.is_server_online"
               :match-id="match.id"
+              :plugin-runtime="pluginRuntime"
               :compact="true"
               class="lg:flex-1 lg:min-h-0"
             >
               <template #default="{ commander: send }">
                 <DropdownMenuItem
                   v-for="command of availableCommands"
-                  :key="command.value"
+                  :key="command.action"
                   :disabled="!match.is_server_online"
                   @click="runCommand(command, send)"
                 >
-                  {{ command.display }}
+                  {{ $t(command.display) }}
                 </DropdownMenuItem>
 
                 <template v-if="restorableRounds.length > 0">

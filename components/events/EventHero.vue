@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { Images } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import {
@@ -34,7 +35,10 @@ const fallbackGradient = computed(() => {
   return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.85), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.7), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.6), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.32) 0 20px, transparent 20px 40px), #14171c`;
 });
 
-const stats = computed(() =>
+const mediaCount = computed(
+  () => props.event.media_aggregate?.aggregate?.count ?? 0,
+);
+const bottomStats = computed(() =>
   [
     {
       key: "tournaments",
@@ -43,10 +47,6 @@ const stats = computed(() =>
     {
       key: "teams",
       value: props.event.teams_aggregate?.aggregate?.count ?? 0,
-    },
-    {
-      key: "media",
-      value: props.event.media_aggregate?.aggregate?.count ?? 0,
     },
   ].filter((s) => s.value > 0),
 );
@@ -84,44 +84,60 @@ const stats = computed(() =>
       aria-hidden="true"
       class="tac-scanlines pointer-events-none absolute inset-0"
     ></div>
+    <!-- lighter scrims: just enough for legibility at the corners so the
+         banner stays the highlight. -->
     <div
-      class="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,hsl(0_0%_0%/0.9)_0%,hsl(0_0%_0%/0.55)_42%,transparent_78%)]"
+      class="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.55)_0%,transparent_100%)]"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.85)_100%)]"
     ></div>
 
-    <div class="relative flex h-full flex-col justify-end p-5 sm:p-7">
-      <div class="mb-2 flex flex-wrap items-center gap-2">
+    <!-- TOP-RIGHT: status · visibility · media -->
+    <div
+      class="absolute right-3 top-3 z-[2] flex flex-wrap items-center justify-end gap-1.5"
+    >
+      <span
+        v-if="mediaCount > 0"
+        class="inline-flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-white/90 backdrop-blur-sm"
+      >
+        <Images class="h-3 w-3" />
+        {{ mediaCount }}
+      </span>
+      <span
+        v-if="event.visibility && event.visibility !== 'Public'"
+        class="inline-flex items-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-black/60 px-2.5 py-1 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+      >
+        {{ $t(`event.visibility.${event.visibility.toLowerCase()}`) }}
+      </span>
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] backdrop-blur-sm"
+        :class="
+          phase === 'live'
+            ? 'bg-destructive/25 text-[hsl(var(--destructive))]'
+            : phase === 'upcoming'
+              ? 'bg-[hsl(var(--tac-amber)/0.22)] text-[hsl(var(--tac-amber))]'
+              : 'bg-success/20 text-success'
+        "
+      >
         <span
-          class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.16em]"
-          :class="
-            phase === 'live'
-              ? 'bg-destructive/20 text-[hsl(var(--destructive))]'
-              : phase === 'upcoming'
-                ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                : 'bg-success/15 text-success'
-          "
-        >
-          <span
-            v-if="phase === 'live'"
-            class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[hsl(var(--destructive))]"
-          ></span>
-          {{ $t(phaseLabelKey(phase)) }}
-        </span>
-        <span
-          v-if="event.visibility && event.visibility !== 'Public'"
-          class="inline-flex items-center rounded border border-[hsl(var(--tac-amber)/0.4)] bg-black/40 px-1.5 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-        >
-          {{ $t(`event.visibility.${event.visibility.toLowerCase()}`) }}
-        </span>
-      </div>
+          v-if="phase === 'live'"
+          class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[hsl(var(--destructive))]"
+        ></span>
+        {{ $t(phaseLabelKey(phase)) }}
+      </span>
+    </div>
 
+    <!-- BOTTOM-LEFT: title, then date · organizer · counts -->
+    <div class="absolute inset-x-0 bottom-0 z-[2] p-5 sm:p-7">
       <h3
-        class="font-sans text-2xl font-bold uppercase leading-[0.95] tracking-[0.02em] text-white [font-stretch:80%] [text-shadow:0_2px_16px_rgba(0,0,0,0.7)] sm:text-4xl"
+        class="font-sans text-2xl font-bold uppercase leading-[0.9] tracking-[0.02em] text-white [font-stretch:80%] [text-shadow:0_2px_16px_rgba(0,0,0,0.8)] sm:text-4xl"
       >
         {{ event.name }}
       </h3>
 
       <div
-        class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/80"
+        class="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/85"
       >
         <span
           v-if="
@@ -148,7 +164,7 @@ const stats = computed(() =>
           />
         </span>
         <span
-          v-for="s in stats"
+          v-for="s in bottomStats"
           :key="s.key"
           class="font-mono tracking-[0.06em]"
         >

@@ -9,7 +9,9 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { tacticalSectionLabelClasses, tacticalSectionTickClasses } from "~/utilities/tacticalClasses";
 
-const props = defineProps<{ eventId: string }>();
+// refreshKey bumps when the event's tournaments change so standings follow
+// retroactively as tournaments are attached/detached.
+const props = defineProps<{ eventId: string; refreshKey?: string | number }>();
 
 // Selects only the trophy fields this component renders (badge config,
 // tournament context, and the team/player identity per row); the `player`
@@ -91,6 +93,10 @@ async function fetchStandings() {
 
 watch(
   () => props.eventId,
+  () => fetchStandings(),
+);
+watch(
+  () => props.refreshKey,
   () => fetchStandings(),
 );
 onMounted(fetchStandings);

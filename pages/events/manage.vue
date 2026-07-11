@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { PlusCircle } from "lucide-vue-next";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -20,6 +20,22 @@ import {
 definePageMeta({
   persistQueryKeys: ["page"],
 });
+
+// Events are feature-gated (public.events_enabled, default off). Wait for
+// settings to load before deciding, so a direct link is not falsely bounced.
+const applicationSettingsStore = useApplicationSettingsStore();
+watch(
+  () => applicationSettingsStore.settings.length,
+  () => {
+    if (
+      applicationSettingsStore.settings.length > 0 &&
+      !applicationSettingsStore.eventsEnabled
+    ) {
+      navigateTo("/");
+    }
+  },
+  { immediate: true },
+);
 
 const route = useRoute();
 const router = useRouter();
@@ -102,6 +118,8 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_player_roles_enum } from "~/generated/zeus";
 import { simpleEventFields } from "~/graphql/simpleEventFields";
 
+// A GraphQL subscription may only select a single top-level field, so the
+// list and its total count are two separate subscriptions.
 const myEventsSubscription = typedGql("subscription")({
   events: [
     {
@@ -112,6 +130,9 @@ const myEventsSubscription = typedGql("subscription")({
     },
     simpleEventFields,
   ],
+});
+
+const myEventsAggregateSubscription = typedGql("subscription")({
   events_aggregate: [
     {
       where: $("where", "events_bool_exp!"),
@@ -138,51 +159,32 @@ export default {
       events: {
         query: () => myEventsSubscription,
         variables(this: any) {
-          const me = useAuthStore().me;
-
-          if (!me) {
+          const variables = this.eventsQueryVariables();
+          if (!variables) {
+            // No authenticated user: nothing to subscribe to.
             this.loading = false;
             this.events = [];
             this.eventsTotal = 0;
-            return undefined;
           }
-
-          const q = this.$route?.query || {};
-          const rawPage = typeof q.page === "string" ? parseInt(q.page, 10) : 1;
-          const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
-
-          // is_event_organizer treats admin/administrator/tournament_organizer
-          // as an organizer of every event, so those roles can manage them all;
-          // scope the list to match. `is_organizer` is a computed column and
-          // cannot appear in a where-filter, so a regular organizer is scoped
-          // by the concrete columns instead: directly organizing, or listed in
-          // the event_organizers relationship.
-          const managesAllEvents = useAuthStore().isRoleAbove(
-            e_player_roles_enum.tournament_organizer,
-          );
-
-          return {
-            limit: this.perPage,
-            offset: (page - 1) * this.perPage,
-            where: managesAllEvents
-              ? {}
-              : {
-                  _or: [
-                    { organizer_steam_id: { _eq: me.steam_id } },
-                    { organizers: { steam_id: { _eq: me.steam_id } } },
-                  ],
-                },
-          };
+          return variables;
         },
         result(this: any, { data }: { data: any }) {
           this.events = data?.events ?? [];
-          this.eventsTotal = data?.events_aggregate?.aggregate?.count ?? 0;
           this.loading = false;
         },
         error(this: any) {
           // Without this, a subscription error never clears loading and the
           // skeleton shows forever.
           this.loading = false;
+        },
+      },
+      eventsTotal: {
+        query: () => myEventsAggregateSubscription,
+        variables(this: any) {
+          return this.eventsQueryVariables();
+        },
+        result(this: any, { data }: { data: any }) {
+          this.eventsTotal = data?.events_aggregate?.aggregate?.count ?? 0;
         },
       },
     },
@@ -202,6 +204,41 @@ export default {
     },
   },
   methods: {
+    // Shared by both the list and aggregate subscriptions so they stay scoped
+    // to the same events. Returns undefined when there is no authenticated user.
+    eventsQueryVariables(this: any) {
+      const me = useAuthStore().me;
+      if (!me) {
+        return undefined;
+      }
+
+      const q = this.$route?.query || {};
+      const rawPage = typeof q.page === "string" ? parseInt(q.page, 10) : 1;
+      const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+
+      // is_event_organizer treats admin/administrator/tournament_organizer
+      // as an organizer of every event, so those roles can manage them all;
+      // scope the list to match. `is_organizer` is a computed column and
+      // cannot appear in a where-filter, so a regular organizer is scoped
+      // by the concrete columns instead: directly organizing, or listed in
+      // the event_organizers relationship.
+      const managesAllEvents = useAuthStore().isRoleAbove(
+        e_player_roles_enum.tournament_organizer,
+      );
+
+      return {
+        limit: this.perPage,
+        offset: (page - 1) * this.perPage,
+        where: managesAllEvents
+          ? {}
+          : {
+              _or: [
+                { organizer_steam_id: { _eq: me.steam_id } },
+                { organizers: { steam_id: { _eq: me.steam_id } } },
+              ],
+            },
+      };
+    },
     onPerPageChange(value: number) {
       this.perPage = value;
     },

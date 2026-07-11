@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Calendar as CalendarIcon } from "lucide-vue-next";
-import { Calendar } from "@/components/ui/calendar";
+import { RangeCalendar } from "@/components/ui/range-calendar";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -18,127 +19,176 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+
+const formSectionClasses =
+  "rounded-lg border border-border bg-card/40 p-5 [backdrop-filter:blur(6px)]";
 </script>
 
 <template>
-  <form @submit.prevent="submitEvent" class="grid gap-4">
-    <FormField v-slot="{ componentField }" name="name">
-      <FormItem>
-        <FormLabel>{{ $t("event.form.name") }}</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+  <form @submit.prevent="submitEvent" class="grid gap-6">
+    <section :class="formSectionClasses">
+      <div :class="[tacticalSectionLabelClasses]">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("event.form.sections.details") }}
+      </div>
 
-    <FormField v-slot="{ componentField }" name="description">
-      <FormItem>
-        <FormLabel>{{ $t("event.form.description") }}</FormLabel>
-        <FormControl>
-          <Textarea v-bind="componentField" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+      <div class="grid gap-4">
+        <FormField v-slot="{ componentField }" name="name">
+          <FormItem>
+            <FormLabel>{{ $t("event.form.name") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <FormField v-slot="{ componentField }" name="starts_at">
-      <FormItem>
-        <FormLabel>{{ $t("event.form.starts_at") }}</FormLabel>
-        <FormControl>
-          <div class="flex">
+        <FormField v-slot="{ componentField }" name="description">
+          <FormItem>
+            <FormLabel>{{ $t("event.form.description") }}</FormLabel>
+            <FormControl>
+              <Textarea v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </section>
+
+    <section :class="formSectionClasses">
+      <div :class="[tacticalSectionLabelClasses]">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("event.form.sections.schedule") }}
+      </div>
+
+      <div class="grid gap-4">
+        <FormField name="starts_at">
+          <FormItem class="flex flex-col">
+            <FormLabel>{{ $t("event.form.dates") }}</FormLabel>
             <Popover>
               <PopoverTrigger as-child>
-                <Button
-                  variant="outline"
-                  class="w-[280px] justify-start text-left font-normal"
-                  :class="{
-                    ['text-muted-foreground']: !componentField.modelValue,
-                  }"
-                >
-                  <CalendarIcon class="mr-2 h-4 w-4" />
-                  {{ startDate || $t("common.pick_date") }}
-                </Button>
+                <FormControl>
+                  <Button
+                    variant="outline"
+                    class="w-[280px] justify-start text-left font-normal"
+                    :class="{ ['text-muted-foreground']: !startDate }"
+                  >
+                    <CalendarIcon class="mr-2 h-4 w-4" />
+                    {{ dateRangeLabel || $t("event.form.pick_dates") }}
+                  </Button>
+                </FormControl>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
-                <Calendar v-model="startDate" initial-focus />
+                <RangeCalendar
+                  v-model="dateRange"
+                  :number-of-months="2"
+                  initial-focus
+                />
               </PopoverContent>
             </Popover>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
+        <!-- The time inputs are plain v-model state, not vee-validate fields,
+             so they must not use FormLabel/FormControl (useFormField throws
+             outside a <FormField>). -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="grid gap-2">
+            <Label
+              class="font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              for="event-start-time"
+            >
+              {{ $t("event.form.start_time") }}
+            </Label>
             <Input
+              id="event-start-time"
               type="time"
               v-model="startTime"
               style="color-scheme: dark"
-            ></Input>
+            />
           </div>
 
-          <FormMessage />
-        </FormControl>
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="ends_at">
-      <FormItem>
-        <FormLabel>{{ $t("event.form.ends_at") }}</FormLabel>
-        <FormControl>
-          <div class="flex">
-            <Popover>
-              <PopoverTrigger as-child>
-                <Button
-                  variant="outline"
-                  class="w-[280px] justify-start text-left font-normal"
-                  :class="{
-                    ['text-muted-foreground']: !componentField.modelValue,
-                  }"
-                >
-                  <CalendarIcon class="mr-2 h-4 w-4" />
-                  {{ endDate || $t("common.pick_date") }}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent class="w-auto p-0">
-                <Calendar v-model="endDate" initial-focus />
-              </PopoverContent>
-            </Popover>
-
+          <div class="grid gap-2">
+            <Label
+              class="font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              for="event-end-time"
+            >
+              {{ $t("event.form.end_time") }}
+            </Label>
             <Input
+              id="event-end-time"
               type="time"
               v-model="endTime"
               style="color-scheme: dark"
-            ></Input>
+            />
           </div>
+        </div>
+      </div>
+    </section>
 
-          <FormMessage />
-        </FormControl>
-      </FormItem>
-    </FormField>
+    <section :class="formSectionClasses">
+      <div :class="[tacticalSectionLabelClasses]">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("event.form.sections.access") }}
+      </div>
 
-    <!-- Status is only ever editable once the event exists; on create it is
-         always seeded to the default (Setup) by the database. -->
-    <FormField v-if="event" v-slot="{ componentField }" name="status">
-      <FormItem>
-        <FormLabel>{{ $t("event.form.status") }}</FormLabel>
-        <FormControl>
-          <Select v-bind="componentField">
-            <SelectTrigger>
-              <SelectValue :placeholder="$t('event.form.status')" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem
-                v-for="status in statusOptions"
-                :key="status.value"
-                :value="status.value"
-              >
-                {{ status.label }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <FormField v-slot="{ componentField }" name="visibility">
+          <FormItem>
+            <FormLabel>{{ $t("event.form.visibility") }}</FormLabel>
+            <FormControl>
+              <Select v-bind="componentField">
+                <SelectTrigger>
+                  <SelectValue :placeholder="$t('event.form.visibility')" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="visibility in visibilityOptions"
+                    :key="visibility.value"
+                    :value="visibility.value"
+                  >
+                    {{ visibility.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <!-- spacer so content clears the floating bar -->
-    <div class="pb-24"></div>
+        <FormField v-slot="{ componentField }" name="media_access">
+          <FormItem>
+            <FormLabel>{{ $t("event.form.media_access") }}</FormLabel>
+            <FormControl>
+              <Select v-bind="componentField">
+                <SelectTrigger>
+                  <SelectValue :placeholder="$t('event.form.media_access')" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="access in mediaAccessOptions"
+                    :key="access.value"
+                    :value="access.value"
+                  >
+                    {{ access.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </section>
+
+    <!-- create page: clearance for the floating bar (the settings tab adds
+         its own after the membership panel) -->
+    <div v-if="!event" class="pb-24"></div>
 
     <SettingsSaveBar
       v-if="event"
@@ -174,14 +224,18 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { $, e_event_status_enum } from "~/generated/zeus";
+import {
+  $,
+  e_event_visibility_enum,
+  e_event_media_access_enum,
+} from "~/generated/zeus";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
 
-// `object` carries name/description/starts_at/ends_at only. `organizer_steam_id`
-// is a Hasura session preset on insert and must never be submitted from here,
-// and `status` is not an allowed insert column (it always starts at Setup).
+// `object` carries name/description/starts_at/ends_at/visibility/media_access.
+// `organizer_steam_id` is a Hasura session preset on insert and must never be
+// submitted from here.
 const insertEvent = generateMutation({
   insert_events_one: [
     {
@@ -202,7 +256,8 @@ const updateEvent = generateMutation({
         description: $("description", "String"),
         starts_at: $("starts_at", "timestamptz"),
         ends_at: $("ends_at", "timestamptz"),
-        status: $("status", "e_event_status_enum"),
+        visibility: $("visibility", "e_event_visibility_enum"),
+        media_access: $("media_access", "e_event_media_access_enum"),
       },
     },
     {
@@ -238,7 +293,10 @@ export default {
             description: z.string().nullable().default(null),
             starts_at: z.date().nullable().default(null),
             ends_at: z.date().nullable().default(null),
-            status: z.string().nullable().default(null),
+            visibility: z.string().default(e_event_visibility_enum.Public),
+            media_access: z
+              .string()
+              .default(e_event_media_access_enum.Organizers),
           }),
         ),
       }),
@@ -294,16 +352,46 @@ export default {
     },
   },
   computed: {
+    // Bridge between the RangeCalendar's DateRange model and the existing
+    // startDate/endDate CalendarDate state, so the date/time watchers keep
+    // driving starts_at/ends_at unchanged.
+    dateRange: {
+      get(this: any) {
+        return { start: this.startDate, end: this.endDate };
+      },
+      set(this: any, range: any) {
+        this.startDate = range?.start ?? undefined;
+        this.endDate = range?.end ?? undefined;
+      },
+    },
+    dateRangeLabel(this: any): string {
+      if (!this.startDate) {
+        return "";
+      }
+      if (
+        !this.endDate ||
+        this.endDate.toString() === this.startDate.toString()
+      ) {
+        return this.startDate.toString();
+      }
+      return `${this.startDate} → ${this.endDate}`;
+    },
     createValid(): boolean {
       // Create flow gate: the only field without a schema default is name, so
       // require it filled and no outstanding validation errors.
       const values = this.form.values;
       return Object.keys(this.form.errors).length === 0 && !!values.name;
     },
-    statusOptions() {
-      return Object.values(e_event_status_enum).map((status) => ({
-        value: status,
-        label: this.$t(`event.status.${status.toLowerCase()}`),
+    visibilityOptions() {
+      return Object.values(e_event_visibility_enum).map((visibility) => ({
+        value: visibility,
+        label: this.$t(`event.visibility.${visibility.toLowerCase()}`),
+      }));
+    },
+    mediaAccessOptions() {
+      return Object.values(e_event_media_access_enum).map((access) => ({
+        value: access,
+        label: this.$t(`event.media_access.${access.toLowerCase()}`),
       }));
     },
   },
@@ -312,10 +400,7 @@ export default {
       if (event.starts_at) {
         const startDate = new Date(event.starts_at);
         this.startDate = toCalendarDate(
-          fromDate(
-            startDate,
-            Intl.DateTimeFormat().resolvedOptions().timeZone,
-          ),
+          fromDate(startDate, Intl.DateTimeFormat().resolvedOptions().timeZone),
         );
         this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
       } else {
@@ -341,7 +426,8 @@ export default {
       this.form.setValues({
         name: event.name,
         description: event.description,
-        status: event.status,
+        visibility: event.visibility,
+        media_access: event.media_access,
         starts_at: event.starts_at ? new Date(event.starts_at) : null,
         ends_at: event.ends_at ? new Date(event.ends_at) : null,
       });
@@ -406,7 +492,8 @@ export default {
               description: values.description ?? null,
               starts_at: values.starts_at ?? null,
               ends_at: values.ends_at ?? null,
-              status: values.status,
+              visibility: values.visibility,
+              media_access: values.media_access,
             },
             mutation: updateEvent,
           });
@@ -427,6 +514,8 @@ export default {
               description: values.description ?? null,
               starts_at: values.starts_at ?? null,
               ends_at: values.ends_at ?? null,
+              visibility: values.visibility,
+              media_access: values.media_access,
             },
           },
           mutation: insertEvent,

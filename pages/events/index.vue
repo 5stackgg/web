@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { PlusCircle } from "lucide-vue-next";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -9,7 +9,12 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import EventCard from "~/components/events/EventCard.vue";
+import EventHero from "~/components/events/EventHero.vue";
+import EventSquare from "~/components/events/EventSquare.vue";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 import {
   tacticalCtaButtonClasses,
   tacticalHeaderActionClasses,
@@ -21,6 +26,22 @@ import {
 definePageMeta({
   persistQueryKeys: ["page"],
 });
+
+// Events are feature-gated (public.events_enabled, default off). Wait for
+// settings to load before deciding, so a direct link is not falsely bounced.
+const applicationSettingsStore = useApplicationSettingsStore();
+watch(
+  () => applicationSettingsStore.settings.length,
+  () => {
+    if (
+      applicationSettingsStore.settings.length > 0 &&
+      !applicationSettingsStore.eventsEnabled
+    ) {
+      navigateTo("/");
+    }
+  },
+  { immediate: true },
+);
 
 const route = useRoute();
 const router = useRouter();
@@ -37,7 +58,6 @@ function setPage(p: number) {
   else next.page = String(p);
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
-
 </script>
 
 <template>
@@ -75,8 +95,53 @@ function setPage(p: number) {
       }}</EmptyDescription>
     </Empty>
 
-    <div v-else class="space-y-4">
-      <EventCard v-for="event in events" :key="event.id" :event="event" />
+    <div v-else class="space-y-10">
+      <!-- LIVE (heroes, on top) -->
+      <section v-if="liveEvents.length">
+        <div :class="[tacticalSectionLabelClasses]">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("pages.events.live_now") }}
+        </div>
+        <div class="grid gap-4">
+          <EventHero
+            v-for="event in liveEvents"
+            :key="event.id"
+            :event="event"
+          />
+        </div>
+      </section>
+
+      <!-- UPCOMING (small banner squares) -->
+      <section v-if="upcomingEvents.length">
+        <div :class="[tacticalSectionLabelClasses]">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("pages.events.upcoming") }}
+        </div>
+        <div
+          class="flex snap-x gap-4 overflow-x-auto pb-2 [scrollbar-width:thin]"
+        >
+          <EventSquare
+            v-for="event in upcomingEvents"
+            :key="event.id"
+            :event="event"
+          />
+        </div>
+      </section>
+
+      <!-- FINISHED (heroes) -->
+      <section v-if="finishedEvents.length">
+        <div :class="[tacticalSectionLabelClasses]">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("pages.events.past_events") }}
+        </div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <EventHero
+            v-for="event in finishedEvents"
+            :key="event.id"
+            :event="event"
+          />
+        </div>
+      </section>
     </div>
 
     <Pagination
@@ -101,7 +166,10 @@ function setPage(p: number) {
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { simpleEventFields } from "~/graphql/simpleEventFields";
+import { eventPhase } from "~/utilities/eventDisplay";
 
+// A GraphQL subscription may only select a single top-level field, so the
+// list and its total count are two separate subscriptions.
 const eventsSubscription = typedGql("subscription")({
   events: [
     {
@@ -111,6 +179,9 @@ const eventsSubscription = typedGql("subscription")({
     },
     simpleEventFields,
   ],
+});
+
+const eventsAggregateSubscription = typedGql("subscription")({
   events_aggregate: [
     {},
     {
@@ -136,8 +207,7 @@ export default {
         query: () => eventsSubscription,
         variables(this: any) {
           const q = this.$route?.query || {};
-          const rawPage =
-            typeof q.page === "string" ? parseInt(q.page, 10) : 1;
+          const rawPage = typeof q.page === "string" ? parseInt(q.page, 10) : 1;
           const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
           return {
             limit: this.perPage,
@@ -146,7 +216,6 @@ export default {
         },
         result(this: any, { data }: { data: any }) {
           this.events = data?.events ?? [];
-          this.eventsTotal = data?.events_aggregate?.aggregate?.count ?? 0;
           this.loading = false;
         },
         error(this: any) {
@@ -155,9 +224,32 @@ export default {
           this.loading = false;
         },
       },
+      eventsTotal: {
+        query: () => eventsAggregateSubscription,
+        result(this: any, { data }: { data: any }) {
+          this.eventsTotal = data?.events_aggregate?.aggregate?.count ?? 0;
+        },
+      },
     },
   },
   computed: {
+    liveEvents(): any[] {
+      return (this.events || []).filter((e: any) => eventPhase(e) === "live");
+    },
+    upcomingEvents(): any[] {
+      return (this.events || [])
+        .filter((e: any) => eventPhase(e) === "upcoming")
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.starts_at || 0).getTime() -
+            new Date(b.starts_at || 0).getTime(),
+        );
+    },
+    finishedEvents(): any[] {
+      return (this.events || []).filter(
+        (e: any) => eventPhase(e) === "finished",
+      );
+    },
     canCreateEvent() {
       const me = useAuthStore().me;
       if (!me) {

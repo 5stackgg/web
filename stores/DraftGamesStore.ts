@@ -264,6 +264,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
             requested_organizer: true,
             server_id: true,
             server_type: true,
+            server_plugin_runtime: true,
             is_server_online: true,
             is_match_server_available: true,
             min_players_per_lineup: true,

@@ -282,7 +282,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem>
+            <SidebarMenuItem v-if="eventsEnabled">
               <SidebarMenuButton
                 as-child
                 :tooltip="$t('layouts.app_nav.tooltips.events')"
@@ -536,7 +536,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </SidebarMenuItem>
 
             <SidebarMenuItem
-              v-if="isTournamentOrganizer || isAdmin"
+              v-if="(isTournamentOrganizer || isAdmin) && eventsEnabled"
               :tooltip="$t('layouts.app_nav.tooltips.manage_events')"
             >
               <SidebarMenuButton
@@ -1162,6 +1162,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    eventsEnabled() {
+      return useApplicationSettingsStore().eventsEnabled;
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;

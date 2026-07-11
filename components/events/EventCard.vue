@@ -3,9 +3,10 @@ import { Trophy } from "lucide-vue-next";
 import { Badge } from "@/components/ui/badge";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import {
+  eventPhase,
   formatEventDate,
-  statusBadgeVariant,
-  statusLabelKey,
+  phaseBadgeVariant,
+  phaseLabelKey,
 } from "~/utilities/eventDisplay";
 
 defineProps<{ event: any }>();
@@ -21,8 +22,8 @@ defineProps<{ event: any }>();
     >
       <div class="min-w-0 flex-1 space-y-1.5">
         <div class="flex flex-wrap items-center gap-2">
-          <Badge :variant="statusBadgeVariant(event.status)">
-            {{ $t(statusLabelKey(event.status)) }}
+          <Badge :variant="phaseBadgeVariant(eventPhase(event))">
+            {{ $t(phaseLabelKey(eventPhase(event))) }}
           </Badge>
           <span
             v-if="event.is_organizer"

@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import { ref, computed, watch, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import EventPlayerProfile from "~/components/events/EventPlayerProfile.vue";
 import Pagination from "~/components/Pagination.vue";
 import {
   Select,
@@ -11,12 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Input } from "~/components/ui/input";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
-import debounce from "~/utilities/debounce";
 
-const props = defineProps<{ eventId: string }>();
+// refreshKey bumps when the event's tournaments/teams/players change so the
+// board recomputes retroactively as members are attached.
+const props = defineProps<{ eventId: string; refreshKey?: string | number }>();
 
 type Category = "rating" | "adr" | "kdr" | "kills" | "wins";
 
@@ -97,12 +98,41 @@ const { client: apolloClient } = useApolloClient();
 // leaderboard/standings/tournaments/teams tabs; a second `useRouteTab` call
 // here with the same default param would collide with it.
 const category = ref<Category>("rating");
-const minRounds = ref(10);
 const page = ref(1);
 const perPage = usePerPage("event-leaderboard");
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);
 const loading = ref(true);
+
+// Row click expands the event-scoped mini profile inline beneath the row
+// (Concept B — no modal). A second click on the same row collapses it.
+const expandedSteamId = ref<string | null>(null);
+
+const collapsingSteamId = ref<string | null>(null);
+function togglePlayer(entry: LeaderboardEntry) {
+  const id = entry.player_steam_id;
+  if (expandedSteamId.value === id) {
+    // Collapse: play the leave animation, then unmount.
+    collapsingSteamId.value = id;
+    window.setTimeout(() => {
+      if (collapsingSteamId.value === id) {
+        expandedSteamId.value = null;
+        collapsingSteamId.value = null;
+      }
+    }, 150);
+  } else if (expandedSteamId.value) {
+    // Switch: collapse the current dossier first, then open the new one so
+    // there's no instant pop between rows.
+    collapsingSteamId.value = expandedSteamId.value;
+    window.setTimeout(() => {
+      expandedSteamId.value = id;
+      collapsingSteamId.value = null;
+    }, 150);
+  } else {
+    collapsingSteamId.value = null;
+    expandedSteamId.value = id;
+  }
+}
 
 const offset = computed(() => (page.value - 1) * perPage.value);
 const valueLabelKey = computed(() => VALUE_LABEL_KEYS[category.value]);
@@ -128,12 +158,6 @@ let fetchGeneration = 0;
 async function fetchLeaderboard() {
   loading.value = true;
   const gen = ++fetchGeneration;
-  // Clearing the Min. Rounds input leaves an empty string, which is not a
-  // valid Int and would error the query; treat blank/NaN as 0 (no minimum),
-  // matching the _min_rounds: 0 the detail page uses to list all participants.
-  const minRoundsValue = Number.isFinite(Number(minRounds.value))
-    ? Number(minRounds.value)
-    : 0;
   try {
     const { data } = await apolloClient.query({
       query: EVENT_LEADERBOARD_QUERY,
@@ -141,7 +165,7 @@ async function fetchLeaderboard() {
         eventId: props.eventId,
         category: category.value,
         matchType: null,
-        minRounds: minRoundsValue,
+        minRounds: 0,
         limit: perPage.value,
         offset: offset.value,
       },
@@ -163,8 +187,9 @@ async function fetchLeaderboard() {
       }),
     );
     total.value =
-      Number((data as any)?.get_event_leaderboard_aggregate?.aggregate?.count) ||
-      0;
+      Number(
+        (data as any)?.get_event_leaderboard_aggregate?.aggregate?.count,
+      ) || 0;
   } catch (error) {
     if (gen !== fetchGeneration) return;
     console.error("Error fetching event leaderboard:", error);
@@ -193,12 +218,13 @@ function onPerPageChange(value: number) {
   fetchLeaderboard();
 }
 
-const debouncedMinRoundsFetch = debounce(resetAndFetch, 400);
-
 watch(category, resetAndFetch);
-watch(minRounds, debouncedMinRoundsFetch);
 watch(
   () => props.eventId,
+  () => resetAndFetch(),
+);
+watch(
+  () => props.refreshKey,
   () => resetAndFetch(),
 );
 
@@ -218,22 +244,6 @@ onMounted(fetchLeaderboard);
           </SelectItem>
         </SelectContent>
       </Select>
-
-      <div class="flex items-center gap-2">
-        <label
-          for="event-leaderboard-min-rounds"
-          class="text-xs uppercase tracking-wide text-muted-foreground"
-        >
-          {{ $t("event.leaderboard.min_rounds") }}
-        </label>
-        <Input
-          id="event-leaderboard-min-rounds"
-          v-model.number="minRounds"
-          type="number"
-          min="0"
-          class="h-8 w-20"
-        />
-      </div>
     </div>
 
     <div v-if="loading" class="space-y-3">
@@ -241,25 +251,39 @@ onMounted(fetchLeaderboard);
     </div>
 
     <Empty v-else-if="entries.length === 0" class="min-h-[160px]">
-      <p class="text-muted-foreground">{{ $t("event.leaderboard.no_results") }}</p>
+      <p class="text-muted-foreground">
+        {{ $t("event.leaderboard.no_results") }}
+      </p>
     </Empty>
 
     <Table v-else>
       <TableHeader>
         <TableRow>
-          <TableHead class="w-16">{{ $t("pages.leaderboard.columns.rank") }}</TableHead>
+          <TableHead class="w-16">{{
+            $t("pages.leaderboard.columns.rank")
+          }}</TableHead>
           <TableHead>{{ $t("common.player") }}</TableHead>
           <TableHead class="text-right">{{ $t(valueLabelKey) }}</TableHead>
-          <TableHead class="text-right">{{ $t("event.leaderboard.col.kills_short") }}</TableHead>
-          <TableHead class="text-right">{{ $t("event.leaderboard.col.deaths_short") }}</TableHead>
-          <TableHead class="text-right">{{ $t("event.leaderboard.col.matches") }}</TableHead>
+          <TableHead class="text-right">{{
+            $t("event.leaderboard.col.kills_short")
+          }}</TableHead>
+          <TableHead class="text-right">{{
+            $t("event.leaderboard.col.deaths_short")
+          }}</TableHead>
+          <TableHead class="text-right">{{
+            $t("event.leaderboard.col.matches")
+          }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="entry in entries" :key="entry.player_steam_id">
-          <NuxtLink
-            :to="{ name: 'players-id', params: { id: entry.player_steam_id } }"
-            class="contents"
+        <template v-for="entry in entries" :key="entry.player_steam_id">
+          <TableRow
+            class="cursor-pointer"
+            :class="{
+              'bg-[hsl(var(--tac-amber)/0.08)]':
+                expandedSteamId === entry.player_steam_id,
+            }"
+            @click="togglePlayer(entry)"
           >
             <TableCell>
               <span
@@ -291,17 +315,48 @@ onMounted(fetchLeaderboard);
             <TableCell class="text-right font-mono font-semibold tabular-nums">
               {{ formatValue(entry.value) }}
             </TableCell>
-            <TableCell class="text-right font-mono tabular-nums text-muted-foreground">
+            <TableCell
+              class="text-right font-mono tabular-nums text-muted-foreground"
+            >
               {{ formatCount(entry.secondary_value) }}
             </TableCell>
-            <TableCell class="text-right font-mono tabular-nums text-muted-foreground">
+            <TableCell
+              class="text-right font-mono tabular-nums text-muted-foreground"
+            >
               {{ formatCount(entry.tertiary_value) }}
             </TableCell>
-            <TableCell class="text-right font-mono tabular-nums text-muted-foreground">
+            <TableCell
+              class="text-right font-mono tabular-nums text-muted-foreground"
+            >
               {{ formatCount(entry.matches_played) }}
             </TableCell>
-          </NuxtLink>
-        </TableRow>
+          </TableRow>
+          <TableRow
+            v-if="expandedSteamId === entry.player_steam_id"
+            class="hover:bg-transparent"
+          >
+            <TableCell colspan="6" class="bg-card/40 p-0">
+              <div
+                class="overflow-hidden p-4"
+                :class="
+                  collapsingSteamId === entry.player_steam_id
+                    ? 'event-dossier-collapsing'
+                    : 'event-dossier-reveal'
+                "
+              >
+                <EventPlayerProfile
+                  :event-id="eventId"
+                  :steam-id="entry.player_steam_id"
+                  :name="entry.player_name"
+                  :avatar-url="entry.player_avatar_url"
+                  :country="entry.player_country"
+                  :rank="entry.rank"
+                  compact
+                />
+              </div>
+            </TableCell>
+          </TableRow>
+        </template>
       </TableBody>
     </Table>
 
@@ -317,3 +372,41 @@ onMounted(fetchLeaderboard);
     />
   </div>
 </template>
+
+<style scoped>
+/* Reveal when a leaderboard row expands into the dossier. Table rows can't
+   host a Vue <Transition> cleanly, so the enter is a keyframe; the leave is
+   handled by the parent toggling with a short fade (see toggle handler). */
+.event-dossier-reveal {
+  animation: dossier-reveal 0.22s ease-out;
+}
+@keyframes dossier-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.event-dossier-collapsing {
+  animation: dossier-collapse 0.16s ease-in forwards;
+}
+@keyframes dossier-collapse {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-dossier-reveal,
+  .event-dossier-collapsing {
+    animation: none;
+  }
+}
+</style>

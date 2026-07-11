@@ -19,6 +19,8 @@ import {
 import ClipBoard from "~/components/ClipBoard.vue";
 import { ButtonGroup } from "~/components/ui/button-group";
 import debounce from "~/utilities/debounce";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { effectivePluginRuntime } from "~/constants/rconCommands";
 </script>
 
 <template>
@@ -165,6 +167,7 @@ import debounce from "~/utilities/debounce";
                       {{ $t("server.rcon.metamod_info") }}
                     </DropdownMenuItem>
                     <DropdownMenuItem
+                      v-if="isCounterStrikeSharp"
                       @click="commander(['css_plugins list', 'css'], '')"
                       :disabled="!online"
                     >
@@ -295,6 +298,21 @@ export default {
     compact: {
       type: Boolean,
       default: false,
+    },
+    pluginRuntime: {
+      required: false,
+      type: String,
+      default: null,
+    },
+  },
+  computed: {
+    isCounterStrikeSharp() {
+      return (
+        effectivePluginRuntime(
+          this.pluginRuntime,
+          useApplicationSettingsStore().gameServerPluginRuntime,
+        ) === "counterstrikesharp"
+      );
     },
   },
   data() {

@@ -203,9 +203,10 @@ export const useApplicationSettingsStore = defineStore(
         (setting) => setting.name === "public.create_events_role",
       );
 
-      // Match the backend: public_events insert permissions allow any role
-      // when create_events_role is unset, so default to the lowest role.
-      return create_events_role?.value || e_player_roles_enum.user;
+      // Match the backend: public_events only has insert permissions for
+      // match_organizer and above, so that is the floor when the setting is
+      // unset; the setting can only raise it further.
+      return create_events_role?.value || e_player_roles_enum.match_organizer;
     });
 
     // Panel on/off flag only, no role gating — used to show guests "fake"
@@ -278,6 +279,16 @@ export const useApplicationSettingsStore = defineStore(
       return (
         settings.value?.find(
           (setting) => setting.name === "public.news_enabled",
+        )?.value === "true"
+      );
+    });
+
+    // Community events: off by default (absent row = disabled), matching the
+    // public_events insert permission gate on public.events_enabled.
+    const eventsEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.events_enabled",
         )?.value === "true"
       );
     });
@@ -546,6 +557,7 @@ export const useApplicationSettingsStore = defineStore(
       matchmakingEnabled,
       tournamentCreateRole,
       eventCreateRole,
+      eventsEnabled,
       supportsDiscordBot,
       supportsGameServerNodes,
       supportsGameServerVersionPinning,

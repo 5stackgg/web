@@ -1669,56 +1669,107 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_draft_game_status_set_input",
 		where:"e_draft_game_status_bool_exp"
 	},
-	e_event_status_aggregate_fields:{
+	e_event_media_access_aggregate_fields:{
 		count:{
-			columns:"e_event_status_select_column"
+			columns:"e_event_media_access_select_column"
 		}
 	},
-	e_event_status_bool_exp:{
-		_and:"e_event_status_bool_exp",
-		_not:"e_event_status_bool_exp",
-		_or:"e_event_status_bool_exp",
+	e_event_media_access_bool_exp:{
+		_and:"e_event_media_access_bool_exp",
+		_not:"e_event_media_access_bool_exp",
+		_or:"e_event_media_access_bool_exp",
 		description:"String_comparison_exp",
 		value:"String_comparison_exp"
 	},
-	e_event_status_constraint: "enum" as const,
-	e_event_status_enum: "enum" as const,
-	e_event_status_enum_comparison_exp:{
-		_eq:"e_event_status_enum",
-		_in:"e_event_status_enum",
-		_neq:"e_event_status_enum",
-		_nin:"e_event_status_enum"
+	e_event_media_access_constraint: "enum" as const,
+	e_event_media_access_enum: "enum" as const,
+	e_event_media_access_enum_comparison_exp:{
+		_eq:"e_event_media_access_enum",
+		_in:"e_event_media_access_enum",
+		_neq:"e_event_media_access_enum",
+		_nin:"e_event_media_access_enum"
 	},
-	e_event_status_insert_input:{
+	e_event_media_access_insert_input:{
 
 	},
-	e_event_status_on_conflict:{
-		constraint:"e_event_status_constraint",
-		update_columns:"e_event_status_update_column",
-		where:"e_event_status_bool_exp"
+	e_event_media_access_on_conflict:{
+		constraint:"e_event_media_access_constraint",
+		update_columns:"e_event_media_access_update_column",
+		where:"e_event_media_access_bool_exp"
 	},
-	e_event_status_order_by:{
+	e_event_media_access_order_by:{
 		description:"order_by",
 		value:"order_by"
 	},
-	e_event_status_pk_columns_input:{
+	e_event_media_access_pk_columns_input:{
 
 	},
-	e_event_status_select_column: "enum" as const,
-	e_event_status_set_input:{
+	e_event_media_access_select_column: "enum" as const,
+	e_event_media_access_set_input:{
 
 	},
-	e_event_status_stream_cursor_input:{
-		initial_value:"e_event_status_stream_cursor_value_input",
+	e_event_media_access_stream_cursor_input:{
+		initial_value:"e_event_media_access_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
-	e_event_status_stream_cursor_value_input:{
+	e_event_media_access_stream_cursor_value_input:{
 
 	},
-	e_event_status_update_column: "enum" as const,
-	e_event_status_updates:{
-		_set:"e_event_status_set_input",
-		where:"e_event_status_bool_exp"
+	e_event_media_access_update_column: "enum" as const,
+	e_event_media_access_updates:{
+		_set:"e_event_media_access_set_input",
+		where:"e_event_media_access_bool_exp"
+	},
+	e_event_visibility_aggregate_fields:{
+		count:{
+			columns:"e_event_visibility_select_column"
+		}
+	},
+	e_event_visibility_bool_exp:{
+		_and:"e_event_visibility_bool_exp",
+		_not:"e_event_visibility_bool_exp",
+		_or:"e_event_visibility_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_event_visibility_constraint: "enum" as const,
+	e_event_visibility_enum: "enum" as const,
+	e_event_visibility_enum_comparison_exp:{
+		_eq:"e_event_visibility_enum",
+		_in:"e_event_visibility_enum",
+		_neq:"e_event_visibility_enum",
+		_nin:"e_event_visibility_enum"
+	},
+	e_event_visibility_insert_input:{
+
+	},
+	e_event_visibility_on_conflict:{
+		constraint:"e_event_visibility_constraint",
+		update_columns:"e_event_visibility_update_column",
+		where:"e_event_visibility_bool_exp"
+	},
+	e_event_visibility_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_event_visibility_pk_columns_input:{
+
+	},
+	e_event_visibility_select_column: "enum" as const,
+	e_event_visibility_set_input:{
+
+	},
+	e_event_visibility_stream_cursor_input:{
+		initial_value:"e_event_visibility_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_event_visibility_stream_cursor_value_input:{
+
+	},
+	e_event_visibility_update_column: "enum" as const,
+	e_event_visibility_updates:{
+		_set:"e_event_visibility_set_input",
+		where:"e_event_visibility_bool_exp"
 	},
 	e_friend_status_aggregate_fields:{
 		count:{
@@ -3686,6 +3737,367 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_winning_reasons_set_input",
 		where:"e_winning_reasons_bool_exp"
 	},
+	event_match_links_aggregate_fields:{
+		count:{
+			columns:"event_match_links_select_column"
+		}
+	},
+	event_match_links_bool_exp:{
+		_and:"event_match_links_bool_exp",
+		_not:"event_match_links_bool_exp",
+		_or:"event_match_links_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		event:"events_bool_exp",
+		event_id:"uuid_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp"
+	},
+	event_match_links_constraint: "enum" as const,
+	event_match_links_insert_input:{
+		created_at:"timestamptz",
+		event:"events_obj_rel_insert_input",
+		event_id:"uuid",
+		match:"matches_obj_rel_insert_input",
+		match_id:"uuid"
+	},
+	event_match_links_on_conflict:{
+		constraint:"event_match_links_constraint",
+		update_columns:"event_match_links_update_column",
+		where:"event_match_links_bool_exp"
+	},
+	event_match_links_order_by:{
+		created_at:"order_by",
+		event:"events_order_by",
+		event_id:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by"
+	},
+	event_match_links_pk_columns_input:{
+		event_id:"uuid",
+		match_id:"uuid"
+	},
+	event_match_links_select_column: "enum" as const,
+	event_match_links_set_input:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		match_id:"uuid"
+	},
+	event_match_links_stream_cursor_input:{
+		initial_value:"event_match_links_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	event_match_links_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		match_id:"uuid"
+	},
+	event_match_links_update_column: "enum" as const,
+	event_match_links_updates:{
+		_set:"event_match_links_set_input",
+		where:"event_match_links_bool_exp"
+	},
+	event_media:{
+		players:{
+			distinct_on:"event_media_players_select_column",
+			order_by:"event_media_players_order_by",
+			where:"event_media_players_bool_exp"
+		},
+		players_aggregate:{
+			distinct_on:"event_media_players_select_column",
+			order_by:"event_media_players_order_by",
+			where:"event_media_players_bool_exp"
+		}
+	},
+	event_media_aggregate_bool_exp:{
+		count:"event_media_aggregate_bool_exp_count"
+	},
+	event_media_aggregate_bool_exp_count:{
+		arguments:"event_media_select_column",
+		filter:"event_media_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	event_media_aggregate_fields:{
+		count:{
+			columns:"event_media_select_column"
+		}
+	},
+	event_media_aggregate_order_by:{
+		avg:"event_media_avg_order_by",
+		count:"order_by",
+		max:"event_media_max_order_by",
+		min:"event_media_min_order_by",
+		stddev:"event_media_stddev_order_by",
+		stddev_pop:"event_media_stddev_pop_order_by",
+		stddev_samp:"event_media_stddev_samp_order_by",
+		sum:"event_media_sum_order_by",
+		var_pop:"event_media_var_pop_order_by",
+		var_samp:"event_media_var_samp_order_by",
+		variance:"event_media_variance_order_by"
+	},
+	event_media_arr_rel_insert_input:{
+		data:"event_media_insert_input",
+		on_conflict:"event_media_on_conflict"
+	},
+	event_media_avg_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_bool_exp:{
+		_and:"event_media_bool_exp",
+		_not:"event_media_bool_exp",
+		_or:"event_media_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		event:"events_bool_exp",
+		event_id:"uuid_comparison_exp",
+		filename:"String_comparison_exp",
+		id:"uuid_comparison_exp",
+		mime_type:"String_comparison_exp",
+		players:"event_media_players_bool_exp",
+		players_aggregate:"event_media_players_aggregate_bool_exp",
+		size:"bigint_comparison_exp",
+		thumbnail_filename:"String_comparison_exp",
+		title:"String_comparison_exp",
+		uploader:"players_bool_exp",
+		uploader_steam_id:"bigint_comparison_exp"
+	},
+	event_media_constraint: "enum" as const,
+	event_media_inc_input:{
+		size:"bigint",
+		uploader_steam_id:"bigint"
+	},
+	event_media_insert_input:{
+		created_at:"timestamptz",
+		event:"events_obj_rel_insert_input",
+		event_id:"uuid",
+		id:"uuid",
+		players:"event_media_players_arr_rel_insert_input",
+		size:"bigint",
+		uploader:"players_obj_rel_insert_input",
+		uploader_steam_id:"bigint"
+	},
+	event_media_max_order_by:{
+		created_at:"order_by",
+		event_id:"order_by",
+		filename:"order_by",
+		id:"order_by",
+		mime_type:"order_by",
+		size:"order_by",
+		thumbnail_filename:"order_by",
+		title:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_min_order_by:{
+		created_at:"order_by",
+		event_id:"order_by",
+		filename:"order_by",
+		id:"order_by",
+		mime_type:"order_by",
+		size:"order_by",
+		thumbnail_filename:"order_by",
+		title:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_obj_rel_insert_input:{
+		data:"event_media_insert_input",
+		on_conflict:"event_media_on_conflict"
+	},
+	event_media_on_conflict:{
+		constraint:"event_media_constraint",
+		update_columns:"event_media_update_column",
+		where:"event_media_bool_exp"
+	},
+	event_media_order_by:{
+		created_at:"order_by",
+		event:"events_order_by",
+		event_id:"order_by",
+		filename:"order_by",
+		id:"order_by",
+		mime_type:"order_by",
+		players_aggregate:"event_media_players_aggregate_order_by",
+		size:"order_by",
+		thumbnail_filename:"order_by",
+		title:"order_by",
+		uploader:"players_order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_pk_columns_input:{
+		id:"uuid"
+	},
+	event_media_players_aggregate_bool_exp:{
+		count:"event_media_players_aggregate_bool_exp_count"
+	},
+	event_media_players_aggregate_bool_exp_count:{
+		arguments:"event_media_players_select_column",
+		filter:"event_media_players_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	event_media_players_aggregate_fields:{
+		count:{
+			columns:"event_media_players_select_column"
+		}
+	},
+	event_media_players_aggregate_order_by:{
+		avg:"event_media_players_avg_order_by",
+		count:"order_by",
+		max:"event_media_players_max_order_by",
+		min:"event_media_players_min_order_by",
+		stddev:"event_media_players_stddev_order_by",
+		stddev_pop:"event_media_players_stddev_pop_order_by",
+		stddev_samp:"event_media_players_stddev_samp_order_by",
+		sum:"event_media_players_sum_order_by",
+		var_pop:"event_media_players_var_pop_order_by",
+		var_samp:"event_media_players_var_samp_order_by",
+		variance:"event_media_players_variance_order_by"
+	},
+	event_media_players_arr_rel_insert_input:{
+		data:"event_media_players_insert_input",
+		on_conflict:"event_media_players_on_conflict"
+	},
+	event_media_players_avg_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_bool_exp:{
+		_and:"event_media_players_bool_exp",
+		_not:"event_media_players_bool_exp",
+		_or:"event_media_players_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		media:"event_media_bool_exp",
+		media_id:"uuid_comparison_exp",
+		player:"players_bool_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	event_media_players_constraint: "enum" as const,
+	event_media_players_inc_input:{
+		steam_id:"bigint"
+	},
+	event_media_players_insert_input:{
+		created_at:"timestamptz",
+		media:"event_media_obj_rel_insert_input",
+		media_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		steam_id:"bigint"
+	},
+	event_media_players_max_order_by:{
+		created_at:"order_by",
+		media_id:"order_by",
+		steam_id:"order_by"
+	},
+	event_media_players_min_order_by:{
+		created_at:"order_by",
+		media_id:"order_by",
+		steam_id:"order_by"
+	},
+	event_media_players_on_conflict:{
+		constraint:"event_media_players_constraint",
+		update_columns:"event_media_players_update_column",
+		where:"event_media_players_bool_exp"
+	},
+	event_media_players_order_by:{
+		created_at:"order_by",
+		media:"event_media_order_by",
+		media_id:"order_by",
+		player:"players_order_by",
+		steam_id:"order_by"
+	},
+	event_media_players_pk_columns_input:{
+		media_id:"uuid",
+		steam_id:"bigint"
+	},
+	event_media_players_select_column: "enum" as const,
+	event_media_players_set_input:{
+		created_at:"timestamptz",
+		media_id:"uuid",
+		steam_id:"bigint"
+	},
+	event_media_players_stddev_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_stddev_pop_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_stddev_samp_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_stream_cursor_input:{
+		initial_value:"event_media_players_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	event_media_players_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		media_id:"uuid",
+		steam_id:"bigint"
+	},
+	event_media_players_sum_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_update_column: "enum" as const,
+	event_media_players_updates:{
+		_inc:"event_media_players_inc_input",
+		_set:"event_media_players_set_input",
+		where:"event_media_players_bool_exp"
+	},
+	event_media_players_var_pop_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_var_samp_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_players_variance_order_by:{
+		steam_id:"order_by"
+	},
+	event_media_select_column: "enum" as const,
+	event_media_set_input:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		id:"uuid",
+		size:"bigint",
+		uploader_steam_id:"bigint"
+	},
+	event_media_stddev_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_stddev_pop_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_stddev_samp_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_stream_cursor_input:{
+		initial_value:"event_media_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	event_media_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		id:"uuid",
+		size:"bigint",
+		uploader_steam_id:"bigint"
+	},
+	event_media_sum_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_update_column: "enum" as const,
+	event_media_updates:{
+		_inc:"event_media_inc_input",
+		_set:"event_media_set_input",
+		where:"event_media_bool_exp"
+	},
+	event_media_var_pop_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_var_samp_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
+	event_media_variance_order_by:{
+		size:"order_by",
+		uploader_steam_id:"order_by"
+	},
 	event_organizers_aggregate_bool_exp:{
 		count:"event_organizers_aggregate_bool_exp_count"
 	},
@@ -4103,6 +4515,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"event_tournaments_bool_exp"
 	},
 	events:{
+		media:{
+			distinct_on:"event_media_select_column",
+			order_by:"event_media_order_by",
+			where:"event_media_bool_exp"
+		},
+		media_aggregate:{
+			distinct_on:"event_media_select_column",
+			order_by:"event_media_order_by",
+			where:"event_media_bool_exp"
+		},
 		organizers:{
 			distinct_on:"event_organizers_select_column",
 			order_by:"event_organizers_order_by",
@@ -4163,11 +4585,19 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"events_bool_exp",
 		_not:"events_bool_exp",
 		_or:"events_bool_exp",
+		banner:"event_media_bool_exp",
+		banner_media_id:"uuid_comparison_exp",
+		can_upload_media:"Boolean_comparison_exp",
+		can_view:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		description:"String_comparison_exp",
 		ends_at:"timestamptz_comparison_exp",
+		hide_creator_organizer:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_organizer:"Boolean_comparison_exp",
+		media:"event_media_bool_exp",
+		media_access:"e_event_media_access_enum_comparison_exp",
+		media_aggregate:"event_media_aggregate_bool_exp",
 		name:"String_comparison_exp",
 		organizer:"players_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
@@ -4178,29 +4608,33 @@ export const AllTypesProps: Record<string,any> = {
 		players:"event_players_bool_exp",
 		players_aggregate:"event_players_aggregate_bool_exp",
 		starts_at:"timestamptz_comparison_exp",
-		status:"e_event_status_enum_comparison_exp",
 		teams:"event_teams_bool_exp",
 		teams_aggregate:"event_teams_aggregate_bool_exp",
 		tournaments:"event_tournaments_bool_exp",
-		tournaments_aggregate:"event_tournaments_aggregate_bool_exp"
+		tournaments_aggregate:"event_tournaments_aggregate_bool_exp",
+		visibility:"e_event_visibility_enum_comparison_exp"
 	},
 	events_constraint: "enum" as const,
 	events_inc_input:{
 		organizer_steam_id:"bigint"
 	},
 	events_insert_input:{
+		banner:"event_media_obj_rel_insert_input",
+		banner_media_id:"uuid",
 		created_at:"timestamptz",
 		ends_at:"timestamptz",
 		id:"uuid",
+		media:"event_media_arr_rel_insert_input",
+		media_access:"e_event_media_access_enum",
 		organizer:"players_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
 		organizers:"event_organizers_arr_rel_insert_input",
 		player_stats:"v_event_player_stats_arr_rel_insert_input",
 		players:"event_players_arr_rel_insert_input",
 		starts_at:"timestamptz",
-		status:"e_event_status_enum",
 		teams:"event_teams_arr_rel_insert_input",
-		tournaments:"event_tournaments_arr_rel_insert_input"
+		tournaments:"event_tournaments_arr_rel_insert_input",
+		visibility:"e_event_visibility_enum"
 	},
 	events_obj_rel_insert_input:{
 		data:"events_insert_input",
@@ -4212,11 +4646,18 @@ export const AllTypesProps: Record<string,any> = {
 		where:"events_bool_exp"
 	},
 	events_order_by:{
+		banner:"event_media_order_by",
+		banner_media_id:"order_by",
+		can_upload_media:"order_by",
+		can_view:"order_by",
 		created_at:"order_by",
 		description:"order_by",
 		ends_at:"order_by",
+		hide_creator_organizer:"order_by",
 		id:"order_by",
 		is_organizer:"order_by",
+		media_access:"order_by",
+		media_aggregate:"event_media_aggregate_order_by",
 		name:"order_by",
 		organizer:"players_order_by",
 		organizer_steam_id:"order_by",
@@ -4224,33 +4665,37 @@ export const AllTypesProps: Record<string,any> = {
 		player_stats_aggregate:"v_event_player_stats_aggregate_order_by",
 		players_aggregate:"event_players_aggregate_order_by",
 		starts_at:"order_by",
-		status:"order_by",
 		teams_aggregate:"event_teams_aggregate_order_by",
-		tournaments_aggregate:"event_tournaments_aggregate_order_by"
+		tournaments_aggregate:"event_tournaments_aggregate_order_by",
+		visibility:"order_by"
 	},
 	events_pk_columns_input:{
 		id:"uuid"
 	},
 	events_select_column: "enum" as const,
 	events_set_input:{
+		banner_media_id:"uuid",
 		created_at:"timestamptz",
 		ends_at:"timestamptz",
 		id:"uuid",
+		media_access:"e_event_media_access_enum",
 		organizer_steam_id:"bigint",
 		starts_at:"timestamptz",
-		status:"e_event_status_enum"
+		visibility:"e_event_visibility_enum"
 	},
 	events_stream_cursor_input:{
 		initial_value:"events_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	events_stream_cursor_value_input:{
+		banner_media_id:"uuid",
 		created_at:"timestamptz",
 		ends_at:"timestamptz",
 		id:"uuid",
+		media_access:"e_event_media_access_enum",
 		organizer_steam_id:"bigint",
 		starts_at:"timestamptz",
-		status:"e_event_status_enum"
+		visibility:"e_event_visibility_enum"
 	},
 	events_update_column: "enum" as const,
 	events_updates:{
@@ -9851,6 +10296,7 @@ export const AllTypesProps: Record<string,any> = {
 		server:"servers_bool_exp",
 		server_error:"String_comparison_exp",
 		server_id:"uuid_comparison_exp",
+		server_plugin_runtime:"String_comparison_exp",
 		server_region:"String_comparison_exp",
 		server_type:"String_comparison_exp",
 		source:"String_comparison_exp",
@@ -10026,6 +10472,7 @@ export const AllTypesProps: Record<string,any> = {
 		server:"servers_order_by",
 		server_error:"order_by",
 		server_id:"order_by",
+		server_plugin_runtime:"order_by",
 		server_region:"order_by",
 		server_type:"order_by",
 		source:"order_by",
@@ -10345,10 +10792,16 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_draft_game_status_by_pk:{
 
 		},
-		delete_e_event_status:{
-			where:"e_event_status_bool_exp"
+		delete_e_event_media_access:{
+			where:"e_event_media_access_bool_exp"
 		},
-		delete_e_event_status_by_pk:{
+		delete_e_event_media_access_by_pk:{
+
+		},
+		delete_e_event_visibility:{
+			where:"e_event_visibility_bool_exp"
+		},
+		delete_e_event_visibility_by_pk:{
 
 		},
 		delete_e_friend_status:{
@@ -10548,6 +11001,26 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_e_winning_reasons_by_pk:{
 
+		},
+		delete_event_match_links:{
+			where:"event_match_links_bool_exp"
+		},
+		delete_event_match_links_by_pk:{
+			event_id:"uuid",
+			match_id:"uuid"
+		},
+		delete_event_media:{
+			where:"event_media_bool_exp"
+		},
+		delete_event_media_by_pk:{
+			id:"uuid"
+		},
+		delete_event_media_players:{
+			where:"event_media_players_bool_exp"
+		},
+		delete_event_media_players_by_pk:{
+			media_id:"uuid",
+			steam_id:"bigint"
 		},
 		delete_event_organizers:{
 			where:"event_organizers_bool_exp"
@@ -11261,13 +11734,21 @@ export const AllTypesProps: Record<string,any> = {
 			object:"e_draft_game_status_insert_input",
 			on_conflict:"e_draft_game_status_on_conflict"
 		},
-		insert_e_event_status:{
-			objects:"e_event_status_insert_input",
-			on_conflict:"e_event_status_on_conflict"
+		insert_e_event_media_access:{
+			objects:"e_event_media_access_insert_input",
+			on_conflict:"e_event_media_access_on_conflict"
 		},
-		insert_e_event_status_one:{
-			object:"e_event_status_insert_input",
-			on_conflict:"e_event_status_on_conflict"
+		insert_e_event_media_access_one:{
+			object:"e_event_media_access_insert_input",
+			on_conflict:"e_event_media_access_on_conflict"
+		},
+		insert_e_event_visibility:{
+			objects:"e_event_visibility_insert_input",
+			on_conflict:"e_event_visibility_on_conflict"
+		},
+		insert_e_event_visibility_one:{
+			object:"e_event_visibility_insert_input",
+			on_conflict:"e_event_visibility_on_conflict"
 		},
 		insert_e_friend_status:{
 			objects:"e_friend_status_insert_input",
@@ -11532,6 +12013,30 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_winning_reasons_one:{
 			object:"e_winning_reasons_insert_input",
 			on_conflict:"e_winning_reasons_on_conflict"
+		},
+		insert_event_match_links:{
+			objects:"event_match_links_insert_input",
+			on_conflict:"event_match_links_on_conflict"
+		},
+		insert_event_match_links_one:{
+			object:"event_match_links_insert_input",
+			on_conflict:"event_match_links_on_conflict"
+		},
+		insert_event_media:{
+			objects:"event_media_insert_input",
+			on_conflict:"event_media_on_conflict"
+		},
+		insert_event_media_one:{
+			object:"event_media_insert_input",
+			on_conflict:"event_media_on_conflict"
+		},
+		insert_event_media_players:{
+			objects:"event_media_players_insert_input",
+			on_conflict:"event_media_players_on_conflict"
+		},
+		insert_event_media_players_one:{
+			object:"event_media_players_insert_input",
+			on_conflict:"event_media_players_on_conflict"
 		},
 		insert_event_organizers:{
 			objects:"event_organizers_insert_input",
@@ -12681,16 +13186,27 @@ export const AllTypesProps: Record<string,any> = {
 		update_e_draft_game_status_many:{
 			updates:"e_draft_game_status_updates"
 		},
-		update_e_event_status:{
-			_set:"e_event_status_set_input",
-			where:"e_event_status_bool_exp"
+		update_e_event_media_access:{
+			_set:"e_event_media_access_set_input",
+			where:"e_event_media_access_bool_exp"
 		},
-		update_e_event_status_by_pk:{
-			_set:"e_event_status_set_input",
-			pk_columns:"e_event_status_pk_columns_input"
+		update_e_event_media_access_by_pk:{
+			_set:"e_event_media_access_set_input",
+			pk_columns:"e_event_media_access_pk_columns_input"
 		},
-		update_e_event_status_many:{
-			updates:"e_event_status_updates"
+		update_e_event_media_access_many:{
+			updates:"e_event_media_access_updates"
+		},
+		update_e_event_visibility:{
+			_set:"e_event_visibility_set_input",
+			where:"e_event_visibility_bool_exp"
+		},
+		update_e_event_visibility_by_pk:{
+			_set:"e_event_visibility_set_input",
+			pk_columns:"e_event_visibility_pk_columns_input"
+		},
+		update_e_event_visibility_many:{
+			updates:"e_event_visibility_updates"
 		},
 		update_e_friend_status:{
 			_set:"e_friend_status_set_input",
@@ -13054,6 +13570,43 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_winning_reasons_many:{
 			updates:"e_winning_reasons_updates"
+		},
+		update_event_match_links:{
+			_set:"event_match_links_set_input",
+			where:"event_match_links_bool_exp"
+		},
+		update_event_match_links_by_pk:{
+			_set:"event_match_links_set_input",
+			pk_columns:"event_match_links_pk_columns_input"
+		},
+		update_event_match_links_many:{
+			updates:"event_match_links_updates"
+		},
+		update_event_media:{
+			_inc:"event_media_inc_input",
+			_set:"event_media_set_input",
+			where:"event_media_bool_exp"
+		},
+		update_event_media_by_pk:{
+			_inc:"event_media_inc_input",
+			_set:"event_media_set_input",
+			pk_columns:"event_media_pk_columns_input"
+		},
+		update_event_media_many:{
+			updates:"event_media_updates"
+		},
+		update_event_media_players:{
+			_inc:"event_media_players_inc_input",
+			_set:"event_media_players_set_input",
+			where:"event_media_players_bool_exp"
+		},
+		update_event_media_players_by_pk:{
+			_inc:"event_media_players_inc_input",
+			_set:"event_media_players_set_input",
+			pk_columns:"event_media_players_pk_columns_input"
+		},
+		update_event_media_players_many:{
+			updates:"event_media_players_updates"
 		},
 		update_event_organizers:{
 			_inc:"event_organizers_inc_input",
@@ -21463,17 +22016,30 @@ export const AllTypesProps: Record<string,any> = {
 		e_draft_game_status_by_pk:{
 
 		},
-		e_event_status:{
-			distinct_on:"e_event_status_select_column",
-			order_by:"e_event_status_order_by",
-			where:"e_event_status_bool_exp"
+		e_event_media_access:{
+			distinct_on:"e_event_media_access_select_column",
+			order_by:"e_event_media_access_order_by",
+			where:"e_event_media_access_bool_exp"
 		},
-		e_event_status_aggregate:{
-			distinct_on:"e_event_status_select_column",
-			order_by:"e_event_status_order_by",
-			where:"e_event_status_bool_exp"
+		e_event_media_access_aggregate:{
+			distinct_on:"e_event_media_access_select_column",
+			order_by:"e_event_media_access_order_by",
+			where:"e_event_media_access_bool_exp"
 		},
-		e_event_status_by_pk:{
+		e_event_media_access_by_pk:{
+
+		},
+		e_event_visibility:{
+			distinct_on:"e_event_visibility_select_column",
+			order_by:"e_event_visibility_order_by",
+			where:"e_event_visibility_bool_exp"
+		},
+		e_event_visibility_aggregate:{
+			distinct_on:"e_event_visibility_select_column",
+			order_by:"e_event_visibility_order_by",
+			where:"e_event_visibility_bool_exp"
+		},
+		e_event_visibility_by_pk:{
 
 		},
 		e_friend_status:{
@@ -21904,6 +22470,47 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		e_winning_reasons_by_pk:{
 
+		},
+		event_match_links:{
+			distinct_on:"event_match_links_select_column",
+			order_by:"event_match_links_order_by",
+			where:"event_match_links_bool_exp"
+		},
+		event_match_links_aggregate:{
+			distinct_on:"event_match_links_select_column",
+			order_by:"event_match_links_order_by",
+			where:"event_match_links_bool_exp"
+		},
+		event_match_links_by_pk:{
+			event_id:"uuid",
+			match_id:"uuid"
+		},
+		event_media:{
+			distinct_on:"event_media_select_column",
+			order_by:"event_media_order_by",
+			where:"event_media_bool_exp"
+		},
+		event_media_aggregate:{
+			distinct_on:"event_media_select_column",
+			order_by:"event_media_order_by",
+			where:"event_media_bool_exp"
+		},
+		event_media_by_pk:{
+			id:"uuid"
+		},
+		event_media_players:{
+			distinct_on:"event_media_players_select_column",
+			order_by:"event_media_players_order_by",
+			where:"event_media_players_bool_exp"
+		},
+		event_media_players_aggregate:{
+			distinct_on:"event_media_players_select_column",
+			order_by:"event_media_players_order_by",
+			where:"event_media_players_bool_exp"
+		},
+		event_media_players_by_pk:{
+			media_id:"uuid",
+			steam_id:"bigint"
 		},
 		event_organizers:{
 			distinct_on:"event_organizers_select_column",
@@ -24505,22 +25112,39 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"e_draft_game_status_stream_cursor_input",
 			where:"e_draft_game_status_bool_exp"
 		},
-		e_event_status:{
-			distinct_on:"e_event_status_select_column",
-			order_by:"e_event_status_order_by",
-			where:"e_event_status_bool_exp"
+		e_event_media_access:{
+			distinct_on:"e_event_media_access_select_column",
+			order_by:"e_event_media_access_order_by",
+			where:"e_event_media_access_bool_exp"
 		},
-		e_event_status_aggregate:{
-			distinct_on:"e_event_status_select_column",
-			order_by:"e_event_status_order_by",
-			where:"e_event_status_bool_exp"
+		e_event_media_access_aggregate:{
+			distinct_on:"e_event_media_access_select_column",
+			order_by:"e_event_media_access_order_by",
+			where:"e_event_media_access_bool_exp"
 		},
-		e_event_status_by_pk:{
+		e_event_media_access_by_pk:{
 
 		},
-		e_event_status_stream:{
-			cursor:"e_event_status_stream_cursor_input",
-			where:"e_event_status_bool_exp"
+		e_event_media_access_stream:{
+			cursor:"e_event_media_access_stream_cursor_input",
+			where:"e_event_media_access_bool_exp"
+		},
+		e_event_visibility:{
+			distinct_on:"e_event_visibility_select_column",
+			order_by:"e_event_visibility_order_by",
+			where:"e_event_visibility_bool_exp"
+		},
+		e_event_visibility_aggregate:{
+			distinct_on:"e_event_visibility_select_column",
+			order_by:"e_event_visibility_order_by",
+			where:"e_event_visibility_bool_exp"
+		},
+		e_event_visibility_by_pk:{
+
+		},
+		e_event_visibility_stream:{
+			cursor:"e_event_visibility_stream_cursor_input",
+			where:"e_event_visibility_bool_exp"
 		},
 		e_friend_status:{
 			distinct_on:"e_friend_status_select_column",
@@ -25082,6 +25706,59 @@ export const AllTypesProps: Record<string,any> = {
 		e_winning_reasons_stream:{
 			cursor:"e_winning_reasons_stream_cursor_input",
 			where:"e_winning_reasons_bool_exp"
+		},
+		event_match_links:{
+			distinct_on:"event_match_links_select_column",
+			order_by:"event_match_links_order_by",
+			where:"event_match_links_bool_exp"
+		},
+		event_match_links_aggregate:{
+			distinct_on:"event_match_links_select_column",
+			order_by:"event_match_links_order_by",
+			where:"event_match_links_bool_exp"
+		},
+		event_match_links_by_pk:{
+			event_id:"uuid",
+			match_id:"uuid"
+		},
+		event_match_links_stream:{
+			cursor:"event_match_links_stream_cursor_input",
+			where:"event_match_links_bool_exp"
+		},
+		event_media:{
+			distinct_on:"event_media_select_column",
+			order_by:"event_media_order_by",
+			where:"event_media_bool_exp"
+		},
+		event_media_aggregate:{
+			distinct_on:"event_media_select_column",
+			order_by:"event_media_order_by",
+			where:"event_media_bool_exp"
+		},
+		event_media_by_pk:{
+			id:"uuid"
+		},
+		event_media_players:{
+			distinct_on:"event_media_players_select_column",
+			order_by:"event_media_players_order_by",
+			where:"event_media_players_bool_exp"
+		},
+		event_media_players_aggregate:{
+			distinct_on:"event_media_players_select_column",
+			order_by:"event_media_players_order_by",
+			where:"event_media_players_bool_exp"
+		},
+		event_media_players_by_pk:{
+			media_id:"uuid",
+			steam_id:"bigint"
+		},
+		event_media_players_stream:{
+			cursor:"event_media_players_stream_cursor_input",
+			where:"event_media_players_bool_exp"
+		},
+		event_media_stream:{
+			cursor:"event_media_stream_cursor_input",
+			where:"event_media_bool_exp"
 		},
 		event_organizers:{
 			distinct_on:"event_organizers_select_column",
@@ -35813,30 +36490,55 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_draft_game_status"
 	},
-	e_event_status:{
+	e_event_media_access:{
 		description:"String",
 		value:"String"
 	},
-	e_event_status_aggregate:{
-		aggregate:"e_event_status_aggregate_fields",
-		nodes:"e_event_status"
+	e_event_media_access_aggregate:{
+		aggregate:"e_event_media_access_aggregate_fields",
+		nodes:"e_event_media_access"
 	},
-	e_event_status_aggregate_fields:{
+	e_event_media_access_aggregate_fields:{
 		count:"Int",
-		max:"e_event_status_max_fields",
-		min:"e_event_status_min_fields"
+		max:"e_event_media_access_max_fields",
+		min:"e_event_media_access_min_fields"
 	},
-	e_event_status_max_fields:{
+	e_event_media_access_max_fields:{
 		description:"String",
 		value:"String"
 	},
-	e_event_status_min_fields:{
+	e_event_media_access_min_fields:{
 		description:"String",
 		value:"String"
 	},
-	e_event_status_mutation_response:{
+	e_event_media_access_mutation_response:{
 		affected_rows:"Int",
-		returning:"e_event_status"
+		returning:"e_event_media_access"
+	},
+	e_event_visibility:{
+		description:"String",
+		value:"String"
+	},
+	e_event_visibility_aggregate:{
+		aggregate:"e_event_visibility_aggregate_fields",
+		nodes:"e_event_visibility"
+	},
+	e_event_visibility_aggregate_fields:{
+		count:"Int",
+		max:"e_event_visibility_max_fields",
+		min:"e_event_visibility_min_fields"
+	},
+	e_event_visibility_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_event_visibility_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_event_visibility_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_event_visibility"
 	},
 	e_friend_status:{
 		description:"String",
@@ -36693,6 +37395,188 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_winning_reasons"
 	},
+	event_match_links:{
+		created_at:"timestamptz",
+		event:"events",
+		event_id:"uuid",
+		match:"matches",
+		match_id:"uuid"
+	},
+	event_match_links_aggregate:{
+		aggregate:"event_match_links_aggregate_fields",
+		nodes:"event_match_links"
+	},
+	event_match_links_aggregate_fields:{
+		count:"Int",
+		max:"event_match_links_max_fields",
+		min:"event_match_links_min_fields"
+	},
+	event_match_links_max_fields:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		match_id:"uuid"
+	},
+	event_match_links_min_fields:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		match_id:"uuid"
+	},
+	event_match_links_mutation_response:{
+		affected_rows:"Int",
+		returning:"event_match_links"
+	},
+	event_media:{
+		created_at:"timestamptz",
+		event:"events",
+		event_id:"uuid",
+		filename:"String",
+		id:"uuid",
+		mime_type:"String",
+		players:"event_media_players",
+		players_aggregate:"event_media_players_aggregate",
+		size:"bigint",
+		thumbnail_filename:"String",
+		title:"String",
+		uploader:"players",
+		uploader_steam_id:"bigint"
+	},
+	event_media_aggregate:{
+		aggregate:"event_media_aggregate_fields",
+		nodes:"event_media"
+	},
+	event_media_aggregate_fields:{
+		avg:"event_media_avg_fields",
+		count:"Int",
+		max:"event_media_max_fields",
+		min:"event_media_min_fields",
+		stddev:"event_media_stddev_fields",
+		stddev_pop:"event_media_stddev_pop_fields",
+		stddev_samp:"event_media_stddev_samp_fields",
+		sum:"event_media_sum_fields",
+		var_pop:"event_media_var_pop_fields",
+		var_samp:"event_media_var_samp_fields",
+		variance:"event_media_variance_fields"
+	},
+	event_media_avg_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
+	event_media_max_fields:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		filename:"String",
+		id:"uuid",
+		mime_type:"String",
+		size:"bigint",
+		thumbnail_filename:"String",
+		title:"String",
+		uploader_steam_id:"bigint"
+	},
+	event_media_min_fields:{
+		created_at:"timestamptz",
+		event_id:"uuid",
+		filename:"String",
+		id:"uuid",
+		mime_type:"String",
+		size:"bigint",
+		thumbnail_filename:"String",
+		title:"String",
+		uploader_steam_id:"bigint"
+	},
+	event_media_mutation_response:{
+		affected_rows:"Int",
+		returning:"event_media"
+	},
+	event_media_players:{
+		created_at:"timestamptz",
+		media:"event_media",
+		media_id:"uuid",
+		player:"players",
+		steam_id:"bigint"
+	},
+	event_media_players_aggregate:{
+		aggregate:"event_media_players_aggregate_fields",
+		nodes:"event_media_players"
+	},
+	event_media_players_aggregate_fields:{
+		avg:"event_media_players_avg_fields",
+		count:"Int",
+		max:"event_media_players_max_fields",
+		min:"event_media_players_min_fields",
+		stddev:"event_media_players_stddev_fields",
+		stddev_pop:"event_media_players_stddev_pop_fields",
+		stddev_samp:"event_media_players_stddev_samp_fields",
+		sum:"event_media_players_sum_fields",
+		var_pop:"event_media_players_var_pop_fields",
+		var_samp:"event_media_players_var_samp_fields",
+		variance:"event_media_players_variance_fields"
+	},
+	event_media_players_avg_fields:{
+		steam_id:"Float"
+	},
+	event_media_players_max_fields:{
+		created_at:"timestamptz",
+		media_id:"uuid",
+		steam_id:"bigint"
+	},
+	event_media_players_min_fields:{
+		created_at:"timestamptz",
+		media_id:"uuid",
+		steam_id:"bigint"
+	},
+	event_media_players_mutation_response:{
+		affected_rows:"Int",
+		returning:"event_media_players"
+	},
+	event_media_players_stddev_fields:{
+		steam_id:"Float"
+	},
+	event_media_players_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	event_media_players_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	event_media_players_sum_fields:{
+		steam_id:"bigint"
+	},
+	event_media_players_var_pop_fields:{
+		steam_id:"Float"
+	},
+	event_media_players_var_samp_fields:{
+		steam_id:"Float"
+	},
+	event_media_players_variance_fields:{
+		steam_id:"Float"
+	},
+	event_media_stddev_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
+	event_media_stddev_pop_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
+	event_media_stddev_samp_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
+	event_media_sum_fields:{
+		size:"bigint",
+		uploader_steam_id:"bigint"
+	},
+	event_media_var_pop_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
+	event_media_var_samp_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
+	event_media_variance_fields:{
+		size:"Float",
+		uploader_steam_id:"Float"
+	},
 	event_organizers:{
 		created_at:"timestamptz",
 		event:"events",
@@ -36878,11 +37762,19 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"event_tournaments"
 	},
 	events:{
+		banner:"event_media",
+		banner_media_id:"uuid",
+		can_upload_media:"Boolean",
+		can_view:"Boolean",
 		created_at:"timestamptz",
 		description:"String",
 		ends_at:"timestamptz",
+		hide_creator_organizer:"Boolean",
 		id:"uuid",
 		is_organizer:"Boolean",
+		media:"event_media",
+		media_access:"e_event_media_access_enum",
+		media_aggregate:"event_media_aggregate",
 		name:"String",
 		organizer:"players",
 		organizer_steam_id:"bigint",
@@ -36893,11 +37785,11 @@ export const ReturnTypes: Record<string,any> = {
 		players:"event_players",
 		players_aggregate:"event_players_aggregate",
 		starts_at:"timestamptz",
-		status:"e_event_status_enum",
 		teams:"event_teams",
 		teams_aggregate:"event_teams_aggregate",
 		tournaments:"event_tournaments",
-		tournaments_aggregate:"event_tournaments_aggregate"
+		tournaments_aggregate:"event_tournaments_aggregate",
+		visibility:"e_event_visibility_enum"
 	},
 	events_aggregate:{
 		aggregate:"events_aggregate_fields",
@@ -36920,6 +37812,7 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"Float"
 	},
 	events_max_fields:{
+		banner_media_id:"uuid",
 		created_at:"timestamptz",
 		description:"String",
 		ends_at:"timestamptz",
@@ -36929,6 +37822,7 @@ export const ReturnTypes: Record<string,any> = {
 		starts_at:"timestamptz"
 	},
 	events_min_fields:{
+		banner_media_id:"uuid",
 		created_at:"timestamptz",
 		description:"String",
 		ends_at:"timestamptz",
@@ -39914,6 +40808,7 @@ export const ReturnTypes: Record<string,any> = {
 		server:"servers",
 		server_error:"String",
 		server_id:"uuid",
+		server_plugin_runtime:"String",
 		server_region:"String",
 		server_type:"String",
 		source:"String",
@@ -39976,6 +40871,7 @@ export const ReturnTypes: Record<string,any> = {
 		scheduled_at:"timestamptz",
 		server_error:"String",
 		server_id:"uuid",
+		server_plugin_runtime:"String",
 		server_region:"String",
 		server_type:"String",
 		source:"String",
@@ -40009,6 +40905,7 @@ export const ReturnTypes: Record<string,any> = {
 		scheduled_at:"timestamptz",
 		server_error:"String",
 		server_id:"uuid",
+		server_plugin_runtime:"String",
 		server_region:"String",
 		server_type:"String",
 		source:"String",
@@ -40150,8 +41047,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_draft_game_player_status_by_pk:"e_draft_game_player_status",
 		delete_e_draft_game_status:"e_draft_game_status_mutation_response",
 		delete_e_draft_game_status_by_pk:"e_draft_game_status",
-		delete_e_event_status:"e_event_status_mutation_response",
-		delete_e_event_status_by_pk:"e_event_status",
+		delete_e_event_media_access:"e_event_media_access_mutation_response",
+		delete_e_event_media_access_by_pk:"e_event_media_access",
+		delete_e_event_visibility:"e_event_visibility_mutation_response",
+		delete_e_event_visibility_by_pk:"e_event_visibility",
 		delete_e_friend_status:"e_friend_status_mutation_response",
 		delete_e_friend_status_by_pk:"e_friend_status",
 		delete_e_game_cfg_types:"e_game_cfg_types_mutation_response",
@@ -40218,6 +41117,12 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_veto_pick_types_by_pk:"e_veto_pick_types",
 		delete_e_winning_reasons:"e_winning_reasons_mutation_response",
 		delete_e_winning_reasons_by_pk:"e_winning_reasons",
+		delete_event_match_links:"event_match_links_mutation_response",
+		delete_event_match_links_by_pk:"event_match_links",
+		delete_event_media:"event_media_mutation_response",
+		delete_event_media_by_pk:"event_media",
+		delete_event_media_players:"event_media_players_mutation_response",
+		delete_event_media_players_by_pk:"event_media_players",
 		delete_event_organizers:"event_organizers_mutation_response",
 		delete_event_organizers_by_pk:"event_organizers",
 		delete_event_players:"event_players_mutation_response",
@@ -40435,8 +41340,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_draft_game_player_status_one:"e_draft_game_player_status",
 		insert_e_draft_game_status:"e_draft_game_status_mutation_response",
 		insert_e_draft_game_status_one:"e_draft_game_status",
-		insert_e_event_status:"e_event_status_mutation_response",
-		insert_e_event_status_one:"e_event_status",
+		insert_e_event_media_access:"e_event_media_access_mutation_response",
+		insert_e_event_media_access_one:"e_event_media_access",
+		insert_e_event_visibility:"e_event_visibility_mutation_response",
+		insert_e_event_visibility_one:"e_event_visibility",
 		insert_e_friend_status:"e_friend_status_mutation_response",
 		insert_e_friend_status_one:"e_friend_status",
 		insert_e_game_cfg_types:"e_game_cfg_types_mutation_response",
@@ -40503,6 +41410,12 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_veto_pick_types_one:"e_veto_pick_types",
 		insert_e_winning_reasons:"e_winning_reasons_mutation_response",
 		insert_e_winning_reasons_one:"e_winning_reasons",
+		insert_event_match_links:"event_match_links_mutation_response",
+		insert_event_match_links_one:"event_match_links",
+		insert_event_media:"event_media_mutation_response",
+		insert_event_media_one:"event_media",
+		insert_event_media_players:"event_media_players_mutation_response",
+		insert_event_media_players_one:"event_media_players",
 		insert_event_organizers:"event_organizers_mutation_response",
 		insert_event_organizers_one:"event_organizers",
 		insert_event_players:"event_players_mutation_response",
@@ -40821,9 +41734,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_draft_game_status:"e_draft_game_status_mutation_response",
 		update_e_draft_game_status_by_pk:"e_draft_game_status",
 		update_e_draft_game_status_many:"e_draft_game_status_mutation_response",
-		update_e_event_status:"e_event_status_mutation_response",
-		update_e_event_status_by_pk:"e_event_status",
-		update_e_event_status_many:"e_event_status_mutation_response",
+		update_e_event_media_access:"e_event_media_access_mutation_response",
+		update_e_event_media_access_by_pk:"e_event_media_access",
+		update_e_event_media_access_many:"e_event_media_access_mutation_response",
+		update_e_event_visibility:"e_event_visibility_mutation_response",
+		update_e_event_visibility_by_pk:"e_event_visibility",
+		update_e_event_visibility_many:"e_event_visibility_mutation_response",
 		update_e_friend_status:"e_friend_status_mutation_response",
 		update_e_friend_status_by_pk:"e_friend_status",
 		update_e_friend_status_many:"e_friend_status_mutation_response",
@@ -40923,6 +41839,15 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_winning_reasons:"e_winning_reasons_mutation_response",
 		update_e_winning_reasons_by_pk:"e_winning_reasons",
 		update_e_winning_reasons_many:"e_winning_reasons_mutation_response",
+		update_event_match_links:"event_match_links_mutation_response",
+		update_event_match_links_by_pk:"event_match_links",
+		update_event_match_links_many:"event_match_links_mutation_response",
+		update_event_media:"event_media_mutation_response",
+		update_event_media_by_pk:"event_media",
+		update_event_media_many:"event_media_mutation_response",
+		update_event_media_players:"event_media_players_mutation_response",
+		update_event_media_players_by_pk:"event_media_players",
+		update_event_media_players_many:"event_media_players_mutation_response",
 		update_event_organizers:"event_organizers_mutation_response",
 		update_event_organizers_by_pk:"event_organizers",
 		update_event_organizers_many:"event_organizers_mutation_response",
@@ -46887,9 +47812,12 @@ export const ReturnTypes: Record<string,any> = {
 		e_draft_game_status:"e_draft_game_status",
 		e_draft_game_status_aggregate:"e_draft_game_status_aggregate",
 		e_draft_game_status_by_pk:"e_draft_game_status",
-		e_event_status:"e_event_status",
-		e_event_status_aggregate:"e_event_status_aggregate",
-		e_event_status_by_pk:"e_event_status",
+		e_event_media_access:"e_event_media_access",
+		e_event_media_access_aggregate:"e_event_media_access_aggregate",
+		e_event_media_access_by_pk:"e_event_media_access",
+		e_event_visibility:"e_event_visibility",
+		e_event_visibility_aggregate:"e_event_visibility_aggregate",
+		e_event_visibility_by_pk:"e_event_visibility",
 		e_friend_status:"e_friend_status",
 		e_friend_status_aggregate:"e_friend_status_aggregate",
 		e_friend_status_by_pk:"e_friend_status",
@@ -46989,6 +47917,15 @@ export const ReturnTypes: Record<string,any> = {
 		e_winning_reasons:"e_winning_reasons",
 		e_winning_reasons_aggregate:"e_winning_reasons_aggregate",
 		e_winning_reasons_by_pk:"e_winning_reasons",
+		event_match_links:"event_match_links",
+		event_match_links_aggregate:"event_match_links_aggregate",
+		event_match_links_by_pk:"event_match_links",
+		event_media:"event_media",
+		event_media_aggregate:"event_media_aggregate",
+		event_media_by_pk:"event_media",
+		event_media_players:"event_media_players",
+		event_media_players_aggregate:"event_media_players_aggregate",
+		event_media_players_by_pk:"event_media_players",
 		event_organizers:"event_organizers",
 		event_organizers_aggregate:"event_organizers_aggregate",
 		event_organizers_by_pk:"event_organizers",
@@ -47882,10 +48819,14 @@ export const ReturnTypes: Record<string,any> = {
 		e_draft_game_status_aggregate:"e_draft_game_status_aggregate",
 		e_draft_game_status_by_pk:"e_draft_game_status",
 		e_draft_game_status_stream:"e_draft_game_status",
-		e_event_status:"e_event_status",
-		e_event_status_aggregate:"e_event_status_aggregate",
-		e_event_status_by_pk:"e_event_status",
-		e_event_status_stream:"e_event_status",
+		e_event_media_access:"e_event_media_access",
+		e_event_media_access_aggregate:"e_event_media_access_aggregate",
+		e_event_media_access_by_pk:"e_event_media_access",
+		e_event_media_access_stream:"e_event_media_access",
+		e_event_visibility:"e_event_visibility",
+		e_event_visibility_aggregate:"e_event_visibility_aggregate",
+		e_event_visibility_by_pk:"e_event_visibility",
+		e_event_visibility_stream:"e_event_visibility",
 		e_friend_status:"e_friend_status",
 		e_friend_status_aggregate:"e_friend_status_aggregate",
 		e_friend_status_by_pk:"e_friend_status",
@@ -48018,6 +48959,18 @@ export const ReturnTypes: Record<string,any> = {
 		e_winning_reasons_aggregate:"e_winning_reasons_aggregate",
 		e_winning_reasons_by_pk:"e_winning_reasons",
 		e_winning_reasons_stream:"e_winning_reasons",
+		event_match_links:"event_match_links",
+		event_match_links_aggregate:"event_match_links_aggregate",
+		event_match_links_by_pk:"event_match_links",
+		event_match_links_stream:"event_match_links",
+		event_media:"event_media",
+		event_media_aggregate:"event_media_aggregate",
+		event_media_by_pk:"event_media",
+		event_media_players:"event_media_players",
+		event_media_players_aggregate:"event_media_players_aggregate",
+		event_media_players_by_pk:"event_media_players",
+		event_media_players_stream:"event_media_players",
+		event_media_stream:"event_media",
 		event_organizers:"event_organizers",
 		event_organizers_aggregate:"event_organizers_aggregate",
 		event_organizers_by_pk:"event_organizers",

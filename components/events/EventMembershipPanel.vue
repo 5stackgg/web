@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { X, Download, Trophy, Users } from "lucide-vue-next";
-import { Badge } from "~/components/ui/badge";
+import { X, Download, Trophy, Users, Eye, EyeOff } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
+import TournamentSearch from "~/components/events/TournamentSearch.vue";
+import { Input } from "~/components/ui/input";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
 
-// `event` is declared as a prop on the Options-API default export below
-// (needed for the $apollo mutate/query calls in `methods`); Vue merges that
-// export's options with this script-setup block automatically, so it does
-// not need to be redeclared here via `defineProps`.
+// `event` is a prop on the Options-API default export below; the tab state
+// (section / filters) and all mutations live there too, so everything shares
+// one reactive context. Only helpers with no `this` dependency stay here.
 
 function formatEventDate(value?: string | null): string | null {
   if (!value) return null;
@@ -35,182 +36,295 @@ function formatEventDate(value?: string | null): string | null {
       {{ $t("event.membership.title") }}
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-3">
-      <!-- Tournaments -->
-      <div class="min-w-0 space-y-3">
-        <h4 class="text-sm font-semibold text-foreground">
-          {{ $t("event.membership.tournaments.title") }}
-        </h4>
+    <!-- sub-tabs: one category at a time keeps hundreds of rows out of the DOM -->
+    <div :class="[tacticalTabsListClasses, 'mb-4 flex w-fit flex-wrap']">
+      <button
+        v-for="t in [
+          {
+            key: 'players',
+            label: $t('event.membership.players.title'),
+            count: event?.players?.length ?? 0,
+          },
+          {
+            key: 'teams',
+            label: $t('event.membership.teams.title'),
+            count: event?.teams?.length ?? 0,
+          },
+          {
+            key: 'organizers',
+            label: $t('event.membership.organizers.title'),
+            count: (event?.organizers?.length ?? 0) + 1,
+          },
+          {
+            key: 'tournaments',
+            label: $t('event.membership.tournaments.title'),
+            count: event?.tournaments?.length ?? 0,
+          },
+        ]"
+        :key="t.key"
+        type="button"
+        :class="[tacticalTabsTriggerClasses, 'rounded-md']"
+        :data-state="section === t.key ? 'active' : 'inactive'"
+        @click="section = t.key"
+      >
+        {{ t.label }}
+        <span class="ml-1.5 font-mono tabular-nums opacity-70">{{
+          t.count
+        }}</span>
+      </button>
+    </div>
 
-        <ul v-if="event?.tournaments?.length" class="space-y-1.5">
-          <li
-            v-for="entry in event.tournaments"
-            :key="entry.tournament_id"
-            class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5 text-sm"
-          >
-            <span class="min-w-0 flex-1 truncate">{{ entry.tournament?.name }}</span>
-            <span
-              v-if="formatEventDate(entry.tournament?.start)"
-              class="shrink-0 text-xs text-muted-foreground"
-            >
-              {{ formatEventDate(entry.tournament?.start) }}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-6 w-6 shrink-0"
-              :disabled="detachingTournamentId === entry.tournament_id"
-              :title="$t('event.membership.detach')"
-              @click="detachTournament(entry.tournament_id)"
-            >
-              <X class="h-3.5 w-3.5" />
-            </Button>
-          </li>
-        </ul>
-        <p v-else class="text-xs text-muted-foreground">
-          {{ $t("event.membership.tournaments.none") }}
-        </p>
-
-        <div class="space-y-2">
-          <Input
-            v-model="tournamentQuery"
-            :placeholder="$t('event.membership.tournaments.search_placeholder')"
-            @input="debouncedSearchTournaments(tournamentQuery)"
+    <!-- PLAYERS -->
+    <div v-if="section === 'players'" class="space-y-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="min-w-[220px] flex-1">
+          <PlayerSearch
+            :label="$t('event.membership.players.search_placeholder')"
+            :exclude="attachedPlayerSteamIds"
+            @selected="attachPlayer"
           />
-          <ul
-            v-if="tournamentResults.length"
-            class="max-h-48 space-y-1 overflow-y-auto rounded-md border border-border/60"
-          >
-            <li
-              v-for="tournament in tournamentResults"
-              :key="tournament.id"
-              class="flex cursor-pointer items-center gap-2 px-2.5 py-1.5 text-sm hover:bg-accent"
-              @click="attachTournament(tournament)"
-            >
-              <Trophy class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              <span class="min-w-0 flex-1 truncate">{{ tournament.name }}</span>
-              <Badge variant="outline" class="shrink-0">{{ tournament.status }}</Badge>
-            </li>
-          </ul>
         </div>
-      </div>
-
-      <!-- Teams -->
-      <div class="min-w-0 space-y-3">
-        <h4 class="text-sm font-semibold text-foreground">
-          {{ $t("event.membership.teams.title") }}
-        </h4>
-
-        <ul v-if="event?.teams?.length" class="space-y-1.5">
-          <li
-            v-for="entry in event.teams"
-            :key="entry.team_id"
-            class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5 text-sm"
-          >
-            <Users class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-            <span class="min-w-0 flex-1 truncate">{{ entry.team?.name }}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-6 w-6 shrink-0"
-              :disabled="detachingTeamId === entry.team_id"
-              :title="$t('event.membership.detach')"
-              @click="detachTeam(entry.team_id)"
-            >
-              <X class="h-3.5 w-3.5" />
-            </Button>
-          </li>
-        </ul>
-        <p v-else class="text-xs text-muted-foreground">
-          {{ $t("event.membership.teams.none") }}
-        </p>
-
-        <TeamSearch
-          :label="$t('event.membership.teams.search_placeholder')"
-          :exclude="attachedTeamIds"
-          @selected="attachTeam"
+        <Input
+          v-if="(event?.players?.length ?? 0) > 8"
+          v-model="playerFilter"
+          class="h-9 w-full sm:w-56"
+          :placeholder="$t('event.membership.filter_players')"
         />
       </div>
 
-      <!-- Players -->
-      <div class="min-w-0 space-y-3">
-        <div class="flex items-center justify-between gap-2">
-          <h4 class="text-sm font-semibold text-foreground">
-            {{ $t("event.membership.players.title") }}
-          </h4>
+      <p v-if="!event?.players?.length" class="text-xs text-muted-foreground">
+        {{ $t("event.membership.players.none") }}
+      </p>
+      <div
+        v-else
+        class="grid max-h-[440px] gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <div
+          v-for="entry in (event.players || []).filter((e) =>
+            includesQuery(e.player?.name, playerFilter),
+          )"
+          :key="entry.steam_id"
+          class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5"
+        >
+          <div class="min-w-0 flex-1">
+            <PlayerDisplay
+              :player="entry.player"
+              size="xs"
+              compact
+              :show-flag="true"
+              :show-role="false"
+              :show-elo="false"
+              :show-online="false"
+              :tooltip="false"
+              linkable
+            />
+          </div>
           <Button
-            variant="outline"
-            size="sm"
-            class="h-7 gap-1.5 text-xs"
-            :disabled="importingPlayers"
-            @click="importPlayersFromTournaments"
+            variant="ghost"
+            size="icon"
+            class="h-6 w-6 shrink-0"
+            :disabled="detachingSteamId === entry.steam_id"
+            :title="$t('event.membership.detach')"
+            @click="detachPlayer(entry.steam_id)"
           >
-            <Download class="h-3.5 w-3.5" />
-            {{ $t("event.membership.players.import") }}
+            <X class="h-3.5 w-3.5" />
           </Button>
         </div>
+      </div>
+    </div>
 
-        <ul v-if="event?.players?.length" class="space-y-1.5">
-          <li
-            v-for="entry in event.players"
-            :key="entry.steam_id"
-            class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5"
-          >
-            <div class="min-w-0 flex-1">
-              <PlayerDisplay
-                :player="entry.player"
-                size="xs"
-                compact
-                :show-flag="false"
-                :show-role="false"
-                :show-elo="false"
-                :tooltip="false"
-                linkable
-              />
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-6 w-6 shrink-0"
-              :disabled="detachingSteamId === entry.steam_id"
-              :title="$t('event.membership.detach')"
-              @click="detachPlayer(entry.steam_id)"
-            >
-              <X class="h-3.5 w-3.5" />
-            </Button>
-          </li>
-        </ul>
-        <p v-else class="text-xs text-muted-foreground">
-          {{ $t("event.membership.players.none") }}
-        </p>
-
-        <PlayerSearch
-          :label="$t('event.membership.players.search_placeholder')"
-          :exclude="attachedPlayerSteamIds"
-          @selected="attachPlayer"
+    <!-- TEAMS -->
+    <div v-else-if="section === 'teams'" class="space-y-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="min-w-[220px] flex-1">
+          <TeamSearch
+            :label="$t('event.membership.teams.search_placeholder')"
+            :exclude="attachedTeamIds"
+            @selected="attachTeam"
+          />
+        </div>
+        <Input
+          v-if="(event?.teams?.length ?? 0) > 8"
+          v-model="teamFilter"
+          class="h-9 w-full sm:w-56"
+          :placeholder="$t('event.membership.filter_teams')"
         />
+      </div>
+
+      <p v-if="!event?.teams?.length" class="text-xs text-muted-foreground">
+        {{ $t("event.membership.teams.none") }}
+      </p>
+      <div
+        v-else
+        class="grid max-h-[440px] gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <div
+          v-for="entry in (event.teams || []).filter((e) =>
+            includesQuery(e.team?.name, teamFilter),
+          )"
+          :key="entry.team_id"
+          class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5 text-sm"
+        >
+          <Users class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span class="min-w-0 flex-1 truncate">{{ entry.team?.name }}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="h-6 w-6 shrink-0"
+            :disabled="detachingTeamId === entry.team_id"
+            :title="$t('event.membership.detach')"
+            @click="detachTeam(entry.team_id)"
+          >
+            <X class="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORGANIZERS -->
+    <div v-else-if="section === 'organizers'" class="space-y-3">
+      <div class="max-w-md">
+        <PlayerSearch
+          :label="$t('event.membership.organizers.search_placeholder')"
+          :exclude="attachedOrganizerSteamIds"
+          @selected="attachOrganizer"
+        />
+      </div>
+
+      <div class="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          class="flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.05)] px-2.5 py-1.5"
+        >
+          <div class="min-w-0 flex-1">
+            <PlayerDisplay
+              v-if="event?.organizer"
+              :player="event.organizer"
+              size="xs"
+              compact
+              :show-flag="false"
+              :show-role="false"
+              :show-elo="false"
+              :show-online="false"
+              :tooltip="false"
+              linkable
+            />
+          </div>
+          <span
+            class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+          >
+            {{ $t("event.membership.organizers.creator") }}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="h-6 w-6 shrink-0"
+            :disabled="togglingCreator"
+            :title="
+              event?.hide_creator_organizer
+                ? $t('event.membership.organizers.show_on_event')
+                : $t('event.membership.organizers.hide_on_event')
+            "
+            @click="toggleCreatorVisible"
+          >
+            <EyeOff
+              v-if="event?.hide_creator_organizer"
+              class="h-3.5 w-3.5 text-muted-foreground"
+            />
+            <Eye v-else class="h-3.5 w-3.5" />
+          </Button>
+        </div>
+        <div
+          v-for="entry in event?.organizers || []"
+          :key="entry.steam_id"
+          class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5"
+        >
+          <div class="min-w-0 flex-1">
+            <PlayerDisplay
+              :player="{ steam_id: entry.steam_id, ...entry.organizer }"
+              size="xs"
+              compact
+              :show-flag="false"
+              :show-role="false"
+              :show-elo="false"
+              :show-online="false"
+              :tooltip="false"
+              linkable
+            />
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="h-6 w-6 shrink-0"
+            :disabled="detachingOrganizerSteamId === entry.steam_id"
+            :title="$t('event.membership.detach')"
+            @click="detachOrganizer(entry.steam_id)"
+          >
+            <X class="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOURNAMENTS -->
+    <div v-else class="space-y-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="min-w-[220px] flex-1">
+          <TournamentSearch
+            :label="$t('event.membership.tournaments.search_placeholder')"
+            :exclude="attachedTournamentIds"
+            @selected="attachTournament"
+          />
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-9 gap-1.5 text-xs"
+          :disabled="importingPlayers || !event?.tournaments?.length"
+          :title="$t('event.membership.players.import_hint')"
+          @click="importPlayersFromTournaments"
+        >
+          <Download class="h-3.5 w-3.5" />
+          {{ $t("event.membership.players.import") }}
+        </Button>
+      </div>
+
+      <p
+        v-if="!event?.tournaments?.length"
+        class="text-xs text-muted-foreground"
+      >
+        {{ $t("event.membership.tournaments.none") }}
+      </p>
+      <div v-else class="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          v-for="entry in event.tournaments"
+          :key="entry.tournament_id"
+          class="flex items-center gap-2 rounded-md border border-border/60 bg-background/40 px-2.5 py-1.5 text-sm"
+        >
+          <Trophy class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span class="min-w-0 flex-1 truncate">{{
+            entry.tournament?.name
+          }}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="h-6 w-6 shrink-0"
+            :disabled="detachingTournamentId === entry.tournament_id"
+            :title="$t('event.membership.detach')"
+            @click="detachTournament(entry.tournament_id)"
+          >
+            <X class="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { $, order_by } from "~/generated/zeus";
+import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
-import debounce from "~/utilities/debounce";
 import { toast } from "@/components/ui/toast";
-
-const searchTournamentsQuery = typedGql("query")({
-  tournaments: [
-    {
-      limit: 20,
-      order_by: [{ start: order_by.desc_nulls_last }],
-      where: $("where", "tournaments_bool_exp!"),
-    },
-    { id: true, name: true, status: true, start: true },
-  ],
-});
 
 const importRosterQuery = typedGql("query")({
   events_by_pk: [
@@ -228,6 +342,35 @@ const importRosterQuery = typedGql("query")({
   ],
 });
 
+const setHideCreatorMutation = generateMutation({
+  update_events_by_pk: [
+    {
+      pk_columns: { id: $("eventId", "uuid!") },
+      _set: { hide_creator_organizer: $("hide", "Boolean!") },
+    },
+    { id: true },
+  ],
+});
+
+const attachOrganizerMutation = generateMutation({
+  insert_event_organizers_one: [
+    {
+      object: {
+        event_id: $("eventId", "uuid!"),
+        steam_id: $("steamId", "bigint!"),
+      },
+    },
+    { event_id: true, steam_id: true },
+  ],
+});
+
+const detachOrganizerMutation = generateMutation({
+  delete_event_organizers_by_pk: [
+    { event_id: $("eventId", "uuid!"), steam_id: $("steamId", "bigint!") },
+    { event_id: true },
+  ],
+});
+
 const attachTournamentMutation = generateMutation({
   insert_event_tournaments_one: [
     {
@@ -242,7 +385,10 @@ const attachTournamentMutation = generateMutation({
 
 const detachTournamentMutation = generateMutation({
   delete_event_tournaments_by_pk: [
-    { event_id: $("eventId", "uuid!"), tournament_id: $("tournamentId", "uuid!") },
+    {
+      event_id: $("eventId", "uuid!"),
+      tournament_id: $("tournamentId", "uuid!"),
+    },
     { event_id: true },
   ],
 });
@@ -307,15 +453,15 @@ export default {
   },
   data() {
     return {
-      tournamentQuery: "",
-      tournamentResults: [] as any[],
+      section: "players" as "players" | "teams" | "organizers" | "tournaments",
+      teamFilter: "",
+      playerFilter: "",
       detachingTournamentId: null as string | null,
+      detachingOrganizerSteamId: null as string | null,
+      togglingCreator: false,
       detachingTeamId: null as string | null,
       detachingSteamId: null as string | null,
       importingPlayers: false,
-      debouncedSearchTournaments: debounce((query: string) => {
-        this.searchTournaments(query);
-      }, 300),
     };
   },
   computed: {
@@ -330,34 +476,67 @@ export default {
     attachedPlayerSteamIds(): string[] {
       return (this.event?.players || []).map((entry: any) => entry.steam_id);
     },
+    attachedOrganizerSteamIds(): string[] {
+      return [
+        this.event?.organizer_steam_id,
+        ...(this.event?.organizers || []).map((entry: any) => entry.steam_id),
+      ].filter(Boolean);
+    },
   },
   methods: {
-    async searchTournaments(query: string) {
-      const me = useAuthStore().me;
-      if (!me) {
-        this.tournamentResults = [];
-        return;
+    includesQuery(name: string | null | undefined, q: string): boolean {
+      return !q || (name || "").toLowerCase().includes(q.toLowerCase());
+    },
+    async toggleCreatorVisible() {
+      this.togglingCreator = true;
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: setHideCreatorMutation,
+          variables: {
+            eventId: this.event.id,
+            hide: !this.event.hide_creator_organizer,
+          },
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      } finally {
+        this.togglingCreator = false;
       }
-
-      // No ownership filter: the event_tournaments insert permission allows
-      // an event organizer to attach any tournament, and scoping the search
-      // to tournaments the viewer personally organizes locked out
-      // co-organizers and privileged roles managing someone else's event.
-      const filters: any[] = [];
-      if (this.attachedTournamentIds.length > 0) {
-        filters.push({ id: { _nin: this.attachedTournamentIds } });
+    },
+    async attachOrganizer(player: any) {
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: attachOrganizerMutation,
+          variables: { eventId: this.event.id, steamId: player.steam_id },
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
       }
-      if (query) {
-        filters.push({ name: { _ilike: `%${query}%` } });
+    },
+    async detachOrganizer(steamId: string) {
+      this.detachingOrganizerSteamId = steamId;
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: detachOrganizerMutation,
+          variables: { eventId: this.event.id, steamId },
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      } finally {
+        this.detachingOrganizerSteamId = null;
       }
-
-      const { data } = await (this as any).$apollo.query({
-        query: searchTournamentsQuery,
-        fetchPolicy: "network-only",
-        variables: { where: { _and: filters } },
-      });
-
-      this.tournamentResults = data?.tournaments || [];
     },
     async attachTournament(tournament: any) {
       try {
@@ -365,8 +544,6 @@ export default {
           mutation: attachTournamentMutation,
           variables: { eventId: this.event.id, tournamentId: tournament.id },
         });
-        this.tournamentQuery = "";
-        this.tournamentResults = [];
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -488,7 +665,9 @@ export default {
         }
 
         if (objects.length === 0) {
-          toast({ title: this.$t("event.membership.players.import_none") as string });
+          toast({
+            title: this.$t("event.membership.players.import_none") as string,
+          });
           return;
         }
 

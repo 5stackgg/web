@@ -491,6 +491,7 @@ const eventSubscription = typedGql("subscription")({
           mime_type: true,
           title: true,
           thumbnail_filename: true,
+          external_url: true,
           size: true,
           created_at: true,
           uploader_steam_id: true,

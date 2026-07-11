@@ -15,10 +15,11 @@ const props = defineProps<{
   event: { id: string; is_organizer?: boolean };
   item: {
     id: string;
-    filename: string;
-    mime_type: string;
+    filename?: string | null;
+    mime_type?: string | null;
     title?: string | null;
     thumbnail_filename?: string | null;
+    external_url?: string | null;
     uploader_steam_id: string;
     uploader?: { name?: string } | null;
     players?: any[];

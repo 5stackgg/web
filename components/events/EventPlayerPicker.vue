@@ -51,6 +51,7 @@ const open = ref(false);
 const query = ref("");
 const participants = ref<any[] | null>(null);
 const loading = ref(false);
+const activeIndex = ref(0);
 
 async function load() {
   if (participants.value) return;
@@ -73,7 +74,10 @@ async function load() {
 }
 
 watch(open, (isOpen) => {
-  if (isOpen) void load();
+  if (isOpen) {
+    activeIndex.value = 0;
+    void load();
+  }
 });
 
 const results = computed(() => {
@@ -84,6 +88,25 @@ const results = computed(() => {
     return !q || (p.name || "").toLowerCase().includes(q);
   });
 });
+
+watch(results, () => {
+  activeIndex.value = 0;
+});
+
+function onKeydown(event: KeyboardEvent) {
+  const list = results.value;
+  if (!list.length) return;
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    activeIndex.value = Math.min(activeIndex.value + 1, list.length - 1);
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    activeIndex.value = Math.max(activeIndex.value - 1, 0);
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    if (list[activeIndex.value]) select(list[activeIndex.value]);
+  }
+}
 
 function select(player: any) {
   open.value = false;
@@ -116,6 +139,7 @@ function select(player: any) {
             type="search"
             autocomplete="off"
             class="w-full bg-transparent outline-none"
+            @keydown="onKeydown"
           />
         </div>
         <div class="max-h-[280px] overflow-y-auto">
@@ -132,12 +156,14 @@ function select(player: any) {
             {{ $t("event.media.no_participants") }}
           </div>
           <button
-            v-for="player in results"
+            v-for="(player, index) in results"
             v-else
             :key="player.steam_id"
             type="button"
-            class="flex w-full items-center px-3 py-2 text-left hover:bg-accent"
+            class="flex w-full items-center px-3 py-2 text-left"
+            :class="index === activeIndex ? 'bg-accent' : 'hover:bg-accent'"
             @click="select(player)"
+            @mouseenter="activeIndex = index"
           >
             <PlayerDisplay
               :player="player"

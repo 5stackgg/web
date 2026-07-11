@@ -75,8 +75,23 @@ const { height: viewportHeight } = useVisualViewport();
                   <div
                     v-for="player in group.players"
                     :key="`g-${group.key}-${player.steam_id}`"
-                    class="px-3 py-2 hover:bg-accent cursor-pointer"
+                    :ref="
+                      player.steam_id === activeSteamId
+                        ? setActiveRow
+                        : undefined
+                    "
+                    class="px-3 py-2 cursor-pointer"
+                    :class="
+                      player.steam_id === activeSteamId
+                        ? 'bg-accent'
+                        : 'hover:bg-accent'
+                    "
                     @click="select(player)"
+                    @mouseenter="
+                      selectedIndex = flatResults.findIndex(
+                        (p) => p.steam_id === player.steam_id,
+                      )
+                    "
                   >
                     <PlayerDisplay :player="player" />
                   </div>
@@ -95,10 +110,15 @@ const { height: viewportHeight } = useVisualViewport();
 
             <div v-else class="divide-y">
               <div
-                v-for="player in displayPlayers"
+                v-for="(player, index) in displayPlayers"
                 :key="`player-${player.steam_id}}`"
-                class="px-3 py-2 hover:bg-accent cursor-pointer"
+                :ref="index === selectedIndex ? setActiveRow : undefined"
+                class="px-3 py-2 cursor-pointer"
+                :class="
+                  index === selectedIndex ? 'bg-accent' : 'hover:bg-accent'
+                "
                 @click="select(player)"
+                @mouseenter="selectedIndex = index"
               >
                 <PlayerDisplay :player="player" />
               </div>
@@ -111,7 +131,9 @@ const { height: viewportHeight } = useVisualViewport();
           class="px-4 py-2 text-xs text-muted-foreground border-t"
         >
           <template v-if="groupByFriends">
-            {{ playerGroups[0].players.length + playerGroups[1].players.length }}
+            {{
+              playerGroups[0].players.length + playerGroups[1].players.length
+            }}
             {{ $t("player.search.found_players") }}
           </template>
           <template v-else>
@@ -136,6 +158,7 @@ const { height: viewportHeight } = useVisualViewport();
               (e: Event) =>
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
+            @keydown="onKeydown"
           />
           <div class="flex items-center gap-2 ml-4">
             <Switch
@@ -190,6 +213,7 @@ const { height: viewportHeight } = useVisualViewport();
               (e: Event) =>
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
+            @keydown="onKeydown"
           />
           <div class="flex items-center gap-2 ml-4">
             <Switch
@@ -227,8 +251,23 @@ const { height: viewportHeight } = useVisualViewport();
                   <div
                     v-for="player in group.players"
                     :key="`g-${group.key}-${player.steam_id}`"
-                    class="px-3 py-2 hover:bg-accent cursor-pointer"
+                    :ref="
+                      player.steam_id === activeSteamId
+                        ? setActiveRow
+                        : undefined
+                    "
+                    class="px-3 py-2 cursor-pointer"
+                    :class="
+                      player.steam_id === activeSteamId
+                        ? 'bg-accent'
+                        : 'hover:bg-accent'
+                    "
                     @click="select(player)"
+                    @mouseenter="
+                      selectedIndex = flatResults.findIndex(
+                        (p) => p.steam_id === player.steam_id,
+                      )
+                    "
                   >
                     <PlayerDisplay :player="player" />
                   </div>
@@ -253,10 +292,15 @@ const { height: viewportHeight } = useVisualViewport();
 
               <div class="divide-y">
                 <div
-                  v-for="player in displayPlayers"
+                  v-for="(player, index) in displayPlayers"
                   :key="`player-${player.steam_id}}`"
-                  class="px-3 py-2 hover:bg-accent cursor-pointer"
+                  :ref="index === selectedIndex ? setActiveRow : undefined"
+                  class="px-3 py-2 cursor-pointer"
+                  :class="
+                    index === selectedIndex ? 'bg-accent' : 'hover:bg-accent'
+                  "
                   @click="select(player)"
+                  @mouseenter="selectedIndex = index"
                 >
                   <PlayerDisplay :player="player" />
                 </div>
@@ -338,6 +382,8 @@ export default {
       open: false,
       query: "",
       players: undefined as Player[] | undefined,
+      selectedIndex: 0,
+      activeRow: null as HTMLElement | null,
       debouncedSearch: debounce((query: string) => {
         this.searchPlayers(query);
       }, 300),
@@ -431,9 +477,7 @@ export default {
           if (!q) return true;
           return f.name?.toLowerCase().includes(q) || id.includes(this.query);
         })
-        .sort((a: any, b: any) =>
-          (a.name || "").localeCompare(b.name || ""),
-        );
+        .sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
     },
     // Normal search results, minus anyone already shown in the Friends section.
     otherPlayers(): Player[] {
@@ -463,8 +507,46 @@ export default {
     hasGroupResults(): boolean {
       return this.playerGroups.some((g) => g.players.length > 0);
     },
+    // Single ordered list to drive arrow-key navigation across whichever
+    // rendering mode is active (grouped Friends/Others or a flat list).
+    flatResults(): Player[] {
+      if (this.groupByFriends) {
+        return [
+          ...this.playerGroups[0].players,
+          ...this.playerGroups[1].players,
+        ];
+      }
+      return this.displayPlayers;
+    },
+    activeSteamId(): string | undefined {
+      return this.flatResults[this.selectedIndex]?.steam_id;
+    },
   },
   methods: {
+    setActiveRow(el: HTMLElement | null) {
+      this.activeRow = el;
+    },
+    scrollActiveIntoView() {
+      this.$nextTick(() => {
+        this.activeRow?.scrollIntoView({ block: "nearest" });
+      });
+    },
+    onKeydown(event: KeyboardEvent) {
+      const list = this.flatResults;
+      if (!list.length) return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        this.selectedIndex = Math.min(this.selectedIndex + 1, list.length - 1);
+        this.scrollActiveIntoView();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+        this.scrollActiveIntoView();
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (list[this.selectedIndex]) this.select(list[this.selectedIndex]);
+      }
+    },
     toggleOnlineOnly() {
       this.onlineOnly = !this.onlineOnly;
       this.searchPlayers();
@@ -488,6 +570,8 @@ export default {
         !this.canSelectSelf && this.me?.steam_id
           ? (this.exclude as string[]).concat(this.me.steam_id)
           : (this.exclude as string[]);
+
+      this.selectedIndex = 0;
 
       if (this.onlineOnly) {
         this.players = useSearchStore().search(this.query, exclude);

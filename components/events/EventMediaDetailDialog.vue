@@ -17,10 +17,12 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import EventPlayerPicker from "~/components/events/EventPlayerPicker.vue";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import EventAudioPlayer from "~/components/events/EventAudioPlayer.vue";
+import { ExternalLink } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { useMediaPlayback } from "~/composables/useMediaPlayback";
+import { parseExternalMedia } from "~/utilities/externalMedia";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -54,7 +56,15 @@ watch(
 );
 
 const src = computed(() =>
-  props.media ? eventMediaUrl(props.event.id, props.media.filename) : "",
+  props.media?.filename
+    ? eventMediaUrl(props.event.id, props.media.filename)
+    : "",
+);
+
+const external = computed(() =>
+  props.media?.external_url
+    ? parseExternalMedia(props.media.external_url, useRequestURL().hostname)
+    : null,
 );
 
 const taggedSteamIds = computed<string[]>(() =>
@@ -148,8 +158,29 @@ async function untagPlayer(steamId: string | number) {
         <div
           class="overflow-hidden rounded-md border border-border bg-black/60"
         >
+          <template v-if="external">
+            <div v-if="external.embedUrl" class="aspect-video w-full">
+              <iframe
+                :src="external.embedUrl"
+                class="h-full w-full"
+                frameborder="0"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                allowfullscreen
+              />
+            </div>
+            <a
+              v-else
+              :href="external.watchUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2 p-6 text-sm text-white/80 transition-colors hover:text-[hsl(var(--tac-amber))]"
+            >
+              <ExternalLink class="h-5 w-5" />
+              {{ external.watchUrl }}
+            </a>
+          </template>
           <ClipPlayer
-            v-if="media.mime_type.startsWith('video/')"
+            v-else-if="media.mime_type?.startsWith('video/')"
             :src="src"
             :clip-key="media.id"
             :poster="
@@ -160,7 +191,7 @@ async function untagPlayer(steamId: string | number) {
             @play="playback.claim(`dialog-${media.id}`)"
           />
           <div
-            v-else-if="media.mime_type.startsWith('audio/')"
+            v-else-if="media.mime_type?.startsWith('audio/')"
             class="min-h-[120px]"
           >
             <EventAudioPlayer

@@ -3849,6 +3849,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz_comparison_exp",
 		event:"events_bool_exp",
 		event_id:"uuid_comparison_exp",
+		external_url:"String_comparison_exp",
 		filename:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		mime_type:"String_comparison_exp",
@@ -3878,6 +3879,7 @@ export const AllTypesProps: Record<string,any> = {
 	event_media_max_order_by:{
 		created_at:"order_by",
 		event_id:"order_by",
+		external_url:"order_by",
 		filename:"order_by",
 		id:"order_by",
 		mime_type:"order_by",
@@ -3889,6 +3891,7 @@ export const AllTypesProps: Record<string,any> = {
 	event_media_min_order_by:{
 		created_at:"order_by",
 		event_id:"order_by",
+		external_url:"order_by",
 		filename:"order_by",
 		id:"order_by",
 		mime_type:"order_by",
@@ -3910,6 +3913,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"order_by",
 		event:"events_order_by",
 		event_id:"order_by",
+		external_url:"order_by",
 		filename:"order_by",
 		id:"order_by",
 		mime_type:"order_by",
@@ -37429,6 +37433,7 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		event:"events",
 		event_id:"uuid",
+		external_url:"String",
 		filename:"String",
 		id:"uuid",
 		mime_type:"String",
@@ -37464,6 +37469,7 @@ export const ReturnTypes: Record<string,any> = {
 	event_media_max_fields:{
 		created_at:"timestamptz",
 		event_id:"uuid",
+		external_url:"String",
 		filename:"String",
 		id:"uuid",
 		mime_type:"String",
@@ -37475,6 +37481,7 @@ export const ReturnTypes: Record<string,any> = {
 	event_media_min_fields:{
 		created_at:"timestamptz",
 		event_id:"uuid",
+		external_url:"String",
 		filename:"String",
 		id:"uuid",
 		mime_type:"String",

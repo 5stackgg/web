@@ -6757,7 +6757,21 @@
       "audio": "Audio",
       "queue_processing": "Processing",
       "no_participants": "No event participants to tag yet",
-      "show_more": "Load more media"
+      "show_more": "Load more media",
+      "filter_by_player": "Filter by player...",
+      "none_for_player": "No media tagged with this player.",
+      "add_media": "Add media",
+      "add_title": "Add media",
+      "upload_section": "Upload a file",
+      "link_section": "Add a link",
+      "add_link_description": "Paste a YouTube or Twitch URL (or any link) to add it to this event's media.",
+      "link_url_label": "URL",
+      "link_url_placeholder": "https://youtube.com/watch?v=...",
+      "link_title_placeholder": "Optional title",
+      "link_add": "Add",
+      "link_invalid": "Enter a valid http(s) URL",
+      "link_added": "Link added",
+      "external_open": "Open link"
     },
     "phase": {
       "upcoming": "Upcoming",

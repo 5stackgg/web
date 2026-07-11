@@ -17,11 +17,19 @@ export const simpleEventFields = Selector("events")({
   },
   is_organizer: true,
   can_upload_media: true,
+  organizer_steam_id: true,
   organizer: {
     steam_id: true,
     name: true,
     avatar_url: true,
   },
+  organizers: [
+    {},
+    {
+      steam_id: true,
+      organizer: { steam_id: true, name: true, avatar_url: true },
+    },
+  ],
   tournaments_aggregate: [
     {},
     {

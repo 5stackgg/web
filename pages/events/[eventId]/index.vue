@@ -445,13 +445,6 @@ const eventSubscription = typedGql("subscription")({
     { id: $("eventId", "uuid!") },
     {
       ...simpleEventFields,
-      organizers: [
-        {},
-        {
-          steam_id: true,
-          organizer: { steam_id: true, name: true, avatar_url: true },
-        },
-      ],
       tournaments: [
         {},
         {

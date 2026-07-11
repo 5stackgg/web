@@ -35,6 +35,21 @@ const fallbackGradient = computed(() => {
   return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.85), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.7), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.6), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.32) 0 20px, transparent 20px 40px), #14171c`;
 });
 
+// Mirror the event page's "Organized by" precedence: the creator (unless
+// hidden) followed by the co-organizers, deduped against the creator.
+const organizers = computed(() => {
+  const e = props.event;
+  const list: any[] = [];
+  if (!e.hide_creator_organizer && e.organizer) {
+    list.push({ steam_id: e.organizer_steam_id, ...e.organizer });
+  }
+  for (const entry of e.organizers || []) {
+    if (String(entry.steam_id) === String(e.organizer_steam_id)) continue;
+    list.push({ steam_id: entry.steam_id, ...entry.organizer });
+  }
+  return list;
+});
+
 const mediaCount = computed(
   () => props.event.media_aggregate?.aggregate?.count ?? 0,
 );
@@ -90,7 +105,7 @@ const bottomStats = computed(() =>
       class="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.55)_0%,transparent_100%)]"
     ></div>
     <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.85)_100%)]"
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.85)_100%)]"
     ></div>
 
     <!-- TOP-RIGHT: status · visibility · media -->
@@ -129,15 +144,16 @@ const bottomStats = computed(() =>
     </div>
 
     <!-- BOTTOM-LEFT: title, then date · organizer · counts -->
-    <div class="absolute inset-x-0 bottom-0 z-[2] p-5 sm:p-7">
+    <div class="absolute inset-x-0 bottom-0 z-[2] px-5 pb-2 pt-5 sm:px-7 sm:pb-2.5">
       <h3
+        v-if="!bannerSrc"
         class="font-sans text-2xl font-bold uppercase leading-[0.9] tracking-[0.02em] text-white [font-stretch:80%] [text-shadow:0_2px_16px_rgba(0,0,0,0.8)] sm:text-4xl"
       >
         {{ event.name }}
       </h3>
 
       <div
-        class="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/85"
+        class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-white/85"
       >
         <span
           v-if="
@@ -150,10 +166,10 @@ const bottomStats = computed(() =>
             – {{ formatEventDate(event.ends_at) }}
           </template>
         </span>
-        <span v-if="event.organizer" class="flex items-center gap-1.5">
+        <span v-if="organizers.length" class="flex items-center gap-1.5">
           <span class="text-white/50">{{ $t("event.card.organized_by") }}</span>
           <PlayerDisplay
-            :player="event.organizer"
+            :player="organizers[0]"
             size="xs"
             compact
             :show-flag="false"
@@ -162,6 +178,9 @@ const bottomStats = computed(() =>
             :show-online="false"
             :tooltip="false"
           />
+          <span v-if="organizers.length > 1" class="text-white/60"
+            >+{{ organizers.length - 1 }}</span
+          >
         </span>
         <span
           v-for="s in bottomStats"

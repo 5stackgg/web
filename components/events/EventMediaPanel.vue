@@ -206,6 +206,7 @@ function formatBytes(bytes: number): string {
         </div>
         <Button
           v-if="event.can_upload_media"
+          variant="tactical"
           size="sm"
           class="shrink-0"
           @click="addDialogOpen = true"

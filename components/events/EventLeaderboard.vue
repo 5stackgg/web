@@ -12,8 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
+import {
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
+} from "~/utilities/tacticalClasses";
 
 // refreshKey bumps when the event's tournaments/teams/players change so the
 // board recomputes retroactively as members are attached.
@@ -90,6 +95,15 @@ const EVENT_LEADERBOARD_QUERY = gql`
     }
   }
 `;
+
+// Same cross-fade the main leaderboard uses so switching category/page
+// doesn't blink (old content fades out, new fades in via mode="out-in").
+const leaderboardFadeTransition = {
+  enterActiveClass: "transition-all duration-150 ease-out",
+  leaveActiveClass: "transition-all duration-150 ease-out",
+  enterFromClass: "translate-y-[2px] opacity-0",
+  leaveToClass: "translate-y-[2px] opacity-0",
+};
 
 const { client: apolloClient } = useApolloClient();
 
@@ -233,9 +247,10 @@ onMounted(fetchLeaderboard);
 
 <template>
   <div>
-    <div class="mb-4 flex flex-wrap items-center gap-3">
+    <div class="mb-4">
+      <!-- Mobile: dropdown -->
       <Select v-model="category">
-        <SelectTrigger class="h-8 w-[160px]">
+        <SelectTrigger class="h-9 w-full md:hidden">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -244,121 +259,138 @@ onMounted(fetchLeaderboard);
           </SelectItem>
         </SelectContent>
       </Select>
-    </div>
-
-    <div v-if="loading" class="space-y-3">
-      <Skeleton v-for="i in perPage" :key="i" class="h-10 w-full" />
-    </div>
-
-    <Empty v-else-if="entries.length === 0" class="min-h-[160px]">
-      <p class="text-muted-foreground">
-        {{ $t("event.leaderboard.no_results") }}
-      </p>
-    </Empty>
-
-    <Table v-else>
-      <TableHeader>
-        <TableRow>
-          <TableHead class="w-16">{{
-            $t("pages.leaderboard.columns.rank")
-          }}</TableHead>
-          <TableHead>{{ $t("common.player") }}</TableHead>
-          <TableHead class="text-right">{{ $t(valueLabelKey) }}</TableHead>
-          <TableHead class="text-right">{{
-            $t("event.leaderboard.col.kills_short")
-          }}</TableHead>
-          <TableHead class="text-right">{{
-            $t("event.leaderboard.col.deaths_short")
-          }}</TableHead>
-          <TableHead class="text-right">{{
-            $t("event.leaderboard.col.matches")
-          }}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <template v-for="entry in entries" :key="entry.player_steam_id">
-          <TableRow
-            class="cursor-pointer"
-            :class="{
-              'bg-[hsl(var(--tac-amber)/0.08)]':
-                expandedSteamId === entry.player_steam_id,
-            }"
-            @click="togglePlayer(entry)"
+      <!-- Desktop: animated underline tabs (matches the main leaderboard). -->
+      <Tabs v-model="category" class="hidden md:block">
+        <TabsList variant="underline" :class="tacticalTabsListClasses">
+          <TabsTrigger
+            v-for="cat in CATEGORIES"
+            :key="cat"
+            :value="cat"
+            :class="tacticalTabsTriggerClasses"
           >
-            <TableCell>
-              <span
-                :class="{
-                  'text-yellow-400 font-bold': entry.rank === 1,
-                  'text-gray-300 font-bold': entry.rank === 2,
-                  'text-amber-600 font-bold': entry.rank === 3,
-                  'text-muted-foreground': entry.rank > 3,
-                }"
-              >
-                {{ entry.rank }}
-              </span>
-            </TableCell>
-            <TableCell>
-              <PlayerDisplay
-                :player="{
-                  steam_id: entry.player_steam_id,
-                  name: entry.player_name,
-                  avatar_url: entry.player_avatar_url,
-                  country: entry.player_country,
-                }"
-                size="xs"
-                :show-elo="false"
-                :show-online="false"
-                :show-role="false"
-                :linkable="false"
-              />
-            </TableCell>
-            <TableCell class="text-right font-mono font-semibold tabular-nums">
-              {{ formatValue(entry.value) }}
-            </TableCell>
-            <TableCell
-              class="text-right font-mono tabular-nums text-muted-foreground"
-            >
-              {{ formatCount(entry.secondary_value) }}
-            </TableCell>
-            <TableCell
-              class="text-right font-mono tabular-nums text-muted-foreground"
-            >
-              {{ formatCount(entry.tertiary_value) }}
-            </TableCell>
-            <TableCell
-              class="text-right font-mono tabular-nums text-muted-foreground"
-            >
-              {{ formatCount(entry.matches_played) }}
-            </TableCell>
+            {{ $t(`event.leaderboard.categories.${cat}`) }}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+    </div>
+
+    <Transition v-bind="leaderboardFadeTransition" mode="out-in">
+      <div v-if="loading" key="loading" class="space-y-3">
+        <Skeleton v-for="i in perPage" :key="i" class="h-10 w-full" />
+      </div>
+
+      <Empty v-else-if="entries.length === 0" key="empty" class="min-h-[160px]">
+        <p class="text-muted-foreground">
+          {{ $t("event.leaderboard.no_results") }}
+        </p>
+      </Empty>
+
+      <Table v-else key="table">
+        <TableHeader>
+          <TableRow>
+            <TableHead class="w-16">{{
+              $t("pages.leaderboard.columns.rank")
+            }}</TableHead>
+            <TableHead>{{ $t("common.player") }}</TableHead>
+            <TableHead class="text-right">{{ $t(valueLabelKey) }}</TableHead>
+            <TableHead class="text-right">{{
+              $t("event.leaderboard.col.kills_short")
+            }}</TableHead>
+            <TableHead class="text-right">{{
+              $t("event.leaderboard.col.deaths_short")
+            }}</TableHead>
+            <TableHead class="text-right">{{
+              $t("event.leaderboard.col.matches")
+            }}</TableHead>
           </TableRow>
-          <TableRow
-            v-if="expandedSteamId === entry.player_steam_id"
-            class="hover:bg-transparent"
-          >
-            <TableCell colspan="6" class="bg-card/40 p-0">
-              <div
-                class="overflow-hidden p-4"
-                :class="
-                  collapsingSteamId === entry.player_steam_id
-                    ? 'event-dossier-collapsing'
-                    : 'event-dossier-reveal'
-                "
-              >
-                <EventPlayerProfile
-                  :event-id="eventId"
-                  :steam-id="entry.player_steam_id"
-                  :name="entry.player_name"
-                  :avatar-url="entry.player_avatar_url"
-                  :country="entry.player_country"
-                  :rank="entry.rank"
-                  compact
+        </TableHeader>
+        <TableBody>
+          <template v-for="entry in entries" :key="entry.player_steam_id">
+            <TableRow
+              class="cursor-pointer"
+              :class="{
+                'bg-[hsl(var(--tac-amber)/0.08)]':
+                  expandedSteamId === entry.player_steam_id,
+              }"
+              @click="togglePlayer(entry)"
+            >
+              <TableCell>
+                <span
+                  :class="{
+                    'text-yellow-400 font-bold': entry.rank === 1,
+                    'text-gray-300 font-bold': entry.rank === 2,
+                    'text-amber-600 font-bold': entry.rank === 3,
+                    'text-muted-foreground': entry.rank > 3,
+                  }"
+                >
+                  {{ entry.rank }}
+                </span>
+              </TableCell>
+              <TableCell>
+                <PlayerDisplay
+                  :player="{
+                    steam_id: entry.player_steam_id,
+                    name: entry.player_name,
+                    avatar_url: entry.player_avatar_url,
+                    country: entry.player_country,
+                  }"
+                  size="xs"
+                  :show-elo="false"
+                  :show-online="false"
+                  :show-role="false"
+                  :linkable="false"
                 />
-              </div>
-            </TableCell>
-          </TableRow>
-        </template>
-      </TableBody>
-    </Table>
+              </TableCell>
+              <TableCell
+                class="text-right font-mono font-semibold tabular-nums"
+              >
+                {{ formatValue(entry.value) }}
+              </TableCell>
+              <TableCell
+                class="text-right font-mono tabular-nums text-muted-foreground"
+              >
+                {{ formatCount(entry.secondary_value) }}
+              </TableCell>
+              <TableCell
+                class="text-right font-mono tabular-nums text-muted-foreground"
+              >
+                {{ formatCount(entry.tertiary_value) }}
+              </TableCell>
+              <TableCell
+                class="text-right font-mono tabular-nums text-muted-foreground"
+              >
+                {{ formatCount(entry.matches_played) }}
+              </TableCell>
+            </TableRow>
+            <TableRow
+              v-if="expandedSteamId === entry.player_steam_id"
+              class="hover:bg-transparent"
+            >
+              <TableCell colspan="6" class="bg-card/40 p-0">
+                <div
+                  class="overflow-hidden p-4"
+                  :class="
+                    collapsingSteamId === entry.player_steam_id
+                      ? 'event-dossier-collapsing'
+                      : 'event-dossier-reveal'
+                  "
+                >
+                  <EventPlayerProfile
+                    :event-id="eventId"
+                    :steam-id="entry.player_steam_id"
+                    :name="entry.player_name"
+                    :avatar-url="entry.player_avatar_url"
+                    :country="entry.player_country"
+                    :rank="entry.rank"
+                    compact
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          </template>
+        </TableBody>
+      </Table>
+    </Transition>
 
     <Pagination
       v-if="!loading && total > perPage"

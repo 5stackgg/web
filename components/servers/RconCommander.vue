@@ -649,9 +649,6 @@ export default {
   },
   beforeUnmount() {
     this.rconListener?.stop();
-    if (this.sendTimer) {
-      clearTimeout(this.sendTimer);
-    }
   },
 };
 </script>

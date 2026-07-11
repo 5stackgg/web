@@ -2,7 +2,6 @@
 import { computed, watch } from "vue";
 import { validate as validateUUID } from "uuid";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -11,6 +10,7 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
+import Pagination from "~/components/Pagination.vue";
 import EventLeaderboard from "~/components/events/EventLeaderboard.vue";
 import EventStandings from "~/components/events/EventStandings.vue";
 import EventMembershipPanel from "~/components/events/EventMembershipPanel.vue";
@@ -78,12 +78,15 @@ const eventIdRef = computed<string | null>(() => {
 
 const {
   matches: eventMatches,
+  overviewMatches,
   myMatches,
   total: matchesTotal,
-  hasMore: matchesHasMore,
+  page: matchesPage,
+  perPage: matchesPerPage,
   loading: matchesLoading,
-  loadingMore: matchesLoadingMore,
-  loadMore: loadMoreMatches,
+  paging: matchesPaging,
+  setPage: setMatchesPage,
+  setPerPage: setMatchesPerPage,
   refetch: refetchEventMatches,
 } = useEventMatches(eventIdRef);
 
@@ -291,7 +294,7 @@ function formatTournamentStatus(status?: string | null): string {
           <PageTransition>
             <EventOverview
               :event="event"
-              :matches="eventMatches"
+              :matches="overviewMatches"
               :my-matches="myMatches"
               :matches-loading="matchesLoading"
               :leaderboard-rows="leaderboardRows"
@@ -318,18 +321,18 @@ function formatTournamentStatus(status?: string | null): string {
               </p>
             </Empty>
             <div v-else>
-              <MatchesTable :matches="eventMatches" />
-              <div v-if="matchesHasMore" class="mt-4 flex justify-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  :loading="matchesLoadingMore"
-                  @click="loadMoreMatches"
-                >
-                  {{ $t("event.matches.load_more") }}
-                  ({{ eventMatches.length }}/{{ matchesTotal }})
-                </Button>
+              <div :class="{ 'opacity-60': matchesPaging }">
+                <MatchesTable :matches="eventMatches" />
               </div>
+              <Pagination
+                v-if="matchesTotal > 0"
+                :total="matchesTotal"
+                :page="matchesPage"
+                :per-page="matchesPerPage"
+                show-per-page-selector
+                @page="setMatchesPage"
+                @update:per-page="setMatchesPerPage"
+              />
             </div>
           </PageTransition>
         </TabsContent>

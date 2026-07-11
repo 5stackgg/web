@@ -1,10 +1,10 @@
-import { computed, ref, watch, type Ref } from "vue";
+import { ref, watch, type Ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 
-const PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 10;
 
 // event_match_links is the trigger-maintained materialization of the shared
 // event->match derivation (see api hasura/triggers/event_match_links.sql) —
@@ -87,34 +87,37 @@ function rowsToMatches(rows: any[]): EventMatch[] {
 export function useEventMatches(eventId: Ref<string | null>) {
   const { client: apolloClient } = useApolloClient();
 
+  // `matches` holds the currently-viewed page (page-number pagination in the
+  // matches tab). `overviewMatches` is a stable first-page snapshot the
+  // overview uses for its highlight match-ids, so paging the tab never shifts
+  // what the overview shows.
   const matches = ref<EventMatch[]>([]);
+  const overviewMatches = ref<EventMatch[]>([]);
   const myMatches = ref<EventMatch[]>([]);
   const total = ref(0);
+  const page = ref(1);
+  const perPage = ref(DEFAULT_PAGE_SIZE);
   const loading = ref(true);
-  const loadingMore = ref(false);
+  const paging = ref(false);
 
   let generation = 0;
 
-  async function fetchPage(offset: number): Promise<boolean> {
-    if (!eventId.value) return false;
+  async function fetchPage(targetPage: number): Promise<EventMatch[]> {
+    if (!eventId.value) return [];
     const { data } = await apolloClient.query({
       query: EVENT_MATCHES_QUERY,
-      variables: { eventId: eventId.value, limit: PAGE_SIZE, offset },
+      variables: {
+        eventId: eventId.value,
+        limit: perPage.value,
+        offset: (targetPage - 1) * perPage.value,
+      },
       fetchPolicy: "network-only",
     });
-    const page = rowsToMatches((data as any)?.event_match_links);
+    const rows = rowsToMatches((data as any)?.event_match_links);
     total.value =
       Number((data as any)?.event_match_links_aggregate?.aggregate?.count) || 0;
-    if (offset === 0) {
-      matches.value = page;
-    } else {
-      const seen = new Set(matches.value.map((match) => match.id));
-      matches.value = [
-        ...matches.value,
-        ...page.filter((match) => !seen.has(match.id)),
-      ];
-    }
-    return page.length === PAGE_SIZE;
+    matches.value = rows;
+    return rows;
   }
 
   async function fetchMine() {
@@ -134,19 +137,26 @@ export function useEventMatches(eventId: Ref<string | null>) {
   async function refetch() {
     if (!eventId.value) {
       matches.value = [];
+      overviewMatches.value = [];
       myMatches.value = [];
       total.value = 0;
+      page.value = 1;
       loading.value = false;
       return;
     }
     const gen = ++generation;
     loading.value = true;
+    page.value = 1;
     try {
-      await Promise.all([fetchPage(0), fetchMine()]);
+      const [firstPage] = await Promise.all([fetchPage(1), fetchMine()]);
+      if (gen === generation) {
+        overviewMatches.value = firstPage;
+      }
     } catch (error) {
       if (gen !== generation) return;
       console.error("Error fetching event matches:", error);
       matches.value = [];
+      overviewMatches.value = [];
       myMatches.value = [];
       total.value = 0;
     } finally {
@@ -156,33 +166,56 @@ export function useEventMatches(eventId: Ref<string | null>) {
     }
   }
 
-  async function loadMore() {
-    if (loadingMore.value || matches.value.length >= total.value) return;
+  async function setPage(targetPage: number) {
+    if (paging.value || targetPage === page.value) return;
     const gen = generation;
-    loadingMore.value = true;
+    paging.value = true;
+    page.value = targetPage;
     try {
-      await fetchPage(matches.value.length);
+      await fetchPage(targetPage);
     } catch (error) {
       if (gen === generation) {
-        console.error("Error fetching more event matches:", error);
+        console.error("Error fetching event matches page:", error);
       }
     } finally {
-      loadingMore.value = false;
+      if (gen === generation) {
+        paging.value = false;
+      }
+    }
+  }
+
+  async function setPerPage(size: number) {
+    if (!Number.isFinite(size) || size <= 0 || size === perPage.value) return;
+    const gen = generation;
+    perPage.value = size;
+    page.value = 1;
+    paging.value = true;
+    try {
+      await fetchPage(1);
+    } catch (error) {
+      if (gen === generation) {
+        console.error("Error changing event matches page size:", error);
+      }
+    } finally {
+      if (gen === generation) {
+        paging.value = false;
+      }
     }
   }
 
   watch(eventId, refetch, { immediate: true });
 
-  const hasMore = computed(() => matches.value.length < total.value);
-
   return {
     matches,
+    overviewMatches,
     myMatches,
     total,
-    hasMore,
+    page,
+    perPage,
     loading,
-    loadingMore,
-    loadMore,
+    paging,
+    setPage,
+    setPerPage,
     refetch,
   };
 }

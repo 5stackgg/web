@@ -69,18 +69,6 @@ function formatBytes(bytes: number): string {
 
 <template>
   <div class="space-y-4">
-    <!-- Once media exists, uploading + adding links live behind a modal so the
-         dropzone isn't always taking up space. -->
-    <div
-      v-if="event.can_upload_media && baseMedia.length > 0"
-      class="flex justify-end"
-    >
-      <Button size="sm" @click="addDialogOpen = true">
-        <Plus class="mr-1.5 h-4 w-4" />
-        {{ $t("event.media.add_media") }}
-      </Button>
-    </div>
-
     <!-- Empty event: keep the dropzone visible to prompt the first upload. -->
     <EventMediaDropzone
       v-if="event.can_upload_media && baseMedia.length === 0"
@@ -182,8 +170,8 @@ function formatBytes(bytes: number): string {
     </Empty>
 
     <template v-else-if="baseMedia.length > 0">
-      <!-- Filter by a tagged player (event participants only). -->
-      <div class="flex items-center gap-2">
+      <!-- Filter (left) + Add media (right) on one row. -->
+      <div class="flex items-center justify-between gap-2">
         <div class="w-full max-w-xs">
           <span
             v-if="filterPlayer"
@@ -216,6 +204,15 @@ function formatBytes(bytes: number): string {
             @selected="filterPlayer = $event"
           />
         </div>
+        <Button
+          v-if="event.can_upload_media"
+          size="sm"
+          class="shrink-0"
+          @click="addDialogOpen = true"
+        >
+          <Plus class="mr-1.5 h-4 w-4" />
+          {{ $t("event.media.add_media") }}
+        </Button>
       </div>
 
       <Empty v-if="media.length === 0" class="min-h-[160px]">

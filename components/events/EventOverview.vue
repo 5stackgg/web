@@ -29,6 +29,7 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: "go", tab: string): void }>();
 
 const me = computed(() => useAuthStore().me);
+const { client: apolloClient } = useApolloClient();
 
 const myRow = computed(() => {
   const steamId = me.value?.steam_id;
@@ -141,7 +142,6 @@ const TOP_CLIPS_QUERY = typedGql("query")({
   ],
 });
 
-const { client: apolloClient } = useApolloClient();
 const clips = ref<Clip[]>([]);
 
 let clipsGeneration = 0;

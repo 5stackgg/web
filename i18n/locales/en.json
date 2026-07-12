@@ -1776,17 +1776,6 @@
           "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
           "update_cpu_pinning": "CPU Pinning updated"
         },
-        "release_channel": {
-          "title": "Release Channel",
-          "section": "Release Channel",
-          "description": "Choose which release channel this install tracks. Latest is the stable channel; Beta receives pre-release builds early.",
-          "latest": "Latest",
-          "beta": "Beta",
-          "beta_warning": "Beta is a pre-release channel and may be unstable. Services will be updated to pre-release builds as they become available.",
-          "service_status": "Service Status",
-          "fell_back": "beta not available yet — using latest",
-          "updated": "Release channel updated"
-        },
         "highlights": {
           "title": "Highlights",
           "updated": "Updated highlight settings"

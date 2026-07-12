@@ -130,9 +130,8 @@ const tab = useRouteTab({
   defaultTab: "overview",
   tabs: () => [
     "overview",
-    ...(seasonStarted.value
-      ? ["schedule", "bracket", "stats"]
-      : ["registrations"]),
+    ...(seasonStarted.value ? ["schedule", "bracket", "stats"] : []),
+    "teams",
     "movements",
     "manage",
   ],
@@ -1177,10 +1176,22 @@ function formatDate(value: string | null): string {
                   <RotateCcw />
                   {{ $t("league.restart.action") }}
                 </DropdownMenuItem>
+                <template v-if="season.status === 'Canceled'">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    class="text-destructive"
+                    @click="confirmDeleteSeason = true"
+                  >
+                    <Trash2 />
+                    {{ $t("league.actions.delete_season") }}
+                  </DropdownMenuItem>
+                </template>
                 <template
                   v-if="!['Finished', 'Canceled'].includes(season.status)"
                 >
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator
+                    v-if="STATUS_ACTIONS[season.status]?.length"
+                  />
                   <DropdownMenuItem
                     class="text-destructive"
                     @click="confirmCancelSeason = true"
@@ -1232,11 +1243,11 @@ function formatDate(value: string | null): string {
               {{ $t("league.tabs.movements") }}
             </TabsTrigger>
             <TabsTrigger
-              v-if="isAdmin && !seasonStarted"
-              value="registrations"
+              v-if="isAdmin"
+              value="teams"
               :class="[tacticalTabsTriggerClasses, 'ml-auto']"
             >
-              {{ $t("league.manage.registrations") }}
+              {{ $t("league.tabs.teams") }}
             </TabsTrigger>
             <TabsTrigger
               v-if="isAdmin"
@@ -1244,7 +1255,6 @@ function formatDate(value: string | null): string {
               :class="[
                 tacticalTabsTriggerClasses,
                 'data-[state=active]:!bg-[hsl(var(--tac-amber)/0.16)]',
-                seasonStarted ? 'ml-auto' : '',
               ]"
             >
               <Settings2
@@ -1815,17 +1825,17 @@ function formatDate(value: string | null): string {
             />
           </TabsContent>
 
-          <!-- ===== Registrations (admin, pre-start only) ===== -->
+          <!-- ===== Teams (admin) ===== -->
           <TabsContent
-            v-if="isAdmin && !seasonStarted"
-            value="registrations"
+            v-if="isAdmin"
+            value="teams"
             class="tab-panel-in space-y-5 pt-4"
           >
             <SeasonRegistrations
               :team-seasons="season.team_seasons"
               :divisions="divisions"
               :min-roster-size="rosterMin"
-              :season-live="['Live', 'Playoffs'].includes(season.status)"
+              :status="season.status"
               :busy="mutating"
               @assign="
                 (teamSeasonId, divisionId) =>
@@ -1846,7 +1856,11 @@ function formatDate(value: string | null): string {
             >
               <template #actions>
                 <button
-                  v-if="!['Finished', 'Canceled'].includes(season.status)"
+                  v-if="
+                    ['Setup', 'RegistrationOpen', 'RegistrationClosed'].includes(
+                      season.status,
+                    )
+                  "
                   type="button"
                   class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-sans text-xs font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
                   @click="openRegister(true)"

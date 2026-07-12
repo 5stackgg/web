@@ -208,12 +208,7 @@ function playerAvatarSrc(player: {
               <div
                 v-for="p in entry.players"
                 :key="p.steam_id"
-                class="grid items-center gap-2 px-3 py-2 text-xs"
-                :class="
-                  seasonsEnabled
-                    ? 'grid-cols-[1fr_auto_auto_auto_auto_auto]'
-                    : 'grid-cols-[1fr_auto_auto_auto_auto]'
-                "
+                class="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-2 px-3 py-2 text-xs"
               >
                 <PlayerDisplay
                   :player="p"
@@ -271,22 +266,10 @@ function playerAvatarSrc(player: {
                       >K/D</span
                     >
                   </div>
-                  <div v-if="seasonsEnabled" class="flex flex-col items-end">
-                    <span
-                      class="font-mono font-bold tabular-nums text-[hsl(var(--tac-amber))]"
-                    >
-                      {{ tournamentEloFor(p.steam_id) ?? "—" }}
-                    </span>
-                    <span
-                      class="font-mono text-[0.55rem] uppercase tracking-[0.15em] text-muted-foreground"
-                      >{{ $t("pages.players.table.elo_track_tournament") }}</span
-                    >
-                  </div>
                 </template>
                 <template v-else>
                   <div
-                    class="text-right font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
-                    :class="seasonsEnabled ? 'col-span-5' : 'col-span-4'"
+                    class="col-span-4 text-right font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
                   >
                     {{ $t("tournament.results_section.no_data") }}
                   </div>
@@ -504,39 +487,9 @@ export default {
     return {
       tournamentMatches: [] as any[],
       tournamentPlayerStats: [] as any[],
-      tournamentPlayerElo: [] as any[],
     };
   },
   apollo: {
-    tournamentPlayerElo: {
-      query: typedGql("query")({
-        players: [
-          {
-            where: {
-              steam_id: { _in: $("steamIds", "[bigint!]!") },
-            },
-          },
-          {
-            steam_id: true,
-            elo: true,
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          steamIds: ((this as any).tournamentPlayerStats || []).map(
-            (s: any) => s.player_steam_id,
-          ),
-        };
-      },
-      skip: function () {
-        const self = this as any;
-        return !self.seasonsEnabled || !self.tournamentPlayerStats?.length;
-      },
-      update: function (data: { players: any[] }) {
-        return data?.players || [];
-      },
-    },
     $subscribe: {
       tournamentMatches: {
         query: typedGql("subscription")({
@@ -717,14 +670,6 @@ export default {
       if (ownName) return ownName;
       return fallbackId ? `Team ${fallbackId}` : "";
     },
-    tournamentEloFor(steamId: string | number): number | null {
-      if (!steamId) return null;
-      const row = (this as any).tournamentPlayerElo?.find(
-        (p: any) => String(p.steam_id) === String(steamId),
-      );
-      const value = row?.elo?.tournament_competitive;
-      return value != null ? Math.round(Number(value)) : null;
-    },
     playerStatFor(steamId: string | number) {
       if (!steamId) return null;
       const stats = (this as any).tournamentPlayerStats || [];
@@ -745,9 +690,6 @@ export default {
     },
   },
   computed: {
-    seasonsEnabled() {
-      return useApplicationSettingsStore().seasonsEnabled;
-    },
     isLive() {
       return (this.tournament as any)?.status === e_tournament_status_enum.Live;
     },

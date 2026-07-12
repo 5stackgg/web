@@ -3943,6 +3943,7 @@
       "remove_member": "Remove Member",
       "confirm_remove_member": "Are you sure you want to remove this member?",
       "remove_member_description": "This will remove the member from the tournament team",
+      "min_roster_locked": "The tournament has started — add a substitute before removing a player, the roster can't drop below the minimum lineup",
       "cancel_invite": "Cancel Invite",
       "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
       "cancel_invite_description": "This will cancel the invite for this member",

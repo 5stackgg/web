@@ -311,6 +311,7 @@ import { toast } from "~/components/ui/toast";
           :tournament="tournament"
           :roles="e_team_roles"
           :can-leave="canLeaveTeam"
+          :roster-locked-at-min="rosterLockedAtMin"
           @leave="leaveTeam"
         />
 
@@ -476,6 +477,21 @@ export default {
     requiredPlayers() {
       return this.tournament.max_players_per_lineup;
     },
+    minPlayers() {
+      return this.tournament.min_players_per_lineup;
+    },
+    rosterLocked() {
+      // Once the bracket has been seeded the roster is locked to its minimum;
+      // dropping below it strips the team's eligibility and seed mid-tournament.
+      return [
+        e_tournament_status_enum.RegistrationClosed,
+        e_tournament_status_enum.Live,
+        e_tournament_status_enum.Paused,
+      ].includes(this.tournament.status);
+    },
+    rosterLockedAtMin() {
+      return this.rosterLocked && this.team.roster.length <= this.minPlayers;
+    },
     trimmedEditName() {
       return (this.editName || "").trim();
     },
@@ -503,6 +519,9 @@ export default {
         }) !== undefined;
 
       if (!isMember) return false;
+
+      // Leaving would drop a seeded roster below the minimum lineup.
+      if (this.rosterLockedAtMin) return false;
 
       const status = this.tournament.status;
       const restrictedStatuses = [

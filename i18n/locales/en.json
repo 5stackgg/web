@@ -1776,17 +1776,6 @@
           "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
           "update_cpu_pinning": "CPU Pinning updated"
         },
-        "release_channel": {
-          "title": "Release Channel",
-          "section": "Release Channel",
-          "description": "Choose which release channel this install tracks. Latest is the stable channel; Beta receives pre-release builds early.",
-          "latest": "Latest",
-          "beta": "Beta",
-          "beta_warning": "Beta is a pre-release channel and may be unstable. Services will be updated to pre-release builds as they become available.",
-          "service_status": "Service Status",
-          "fell_back": "beta not available yet — using latest",
-          "updated": "Release channel updated"
-        },
         "highlights": {
           "title": "Highlights",
           "updated": "Updated highlight settings"
@@ -6320,7 +6309,8 @@
       "close_registration": "Close Registration",
       "reopen_registration": "Reopen Registration",
       "start_season": "Start Season",
-      "cancel_season": "Cancel Season"
+      "cancel_season": "Cancel Season",
+      "delete_season": "Delete Season"
     },
     "join": {
       "title": "Register your team",
@@ -6362,7 +6352,8 @@
       "Pending": "Pending",
       "Approved": "Approved",
       "Waitlisted": "Waitlisted",
-      "Declined": "Declined"
+      "Declined": "Declined",
+      "Withdrawn": "Withdrawn"
     },
     "registrations": {
       "search": "Search team",
@@ -6379,15 +6370,19 @@
       "approve_needs_division": "Assign a division before approving this team.",
       "approve_needs_roster": "Team needs at least {min} players before it can be approved.",
       "approve": "Approve",
+      "readmit": "Re-admit",
+      "revoke": "Revoke",
       "waitlist": "Waitlist",
       "decline": "Decline",
       "decline_title": "Decline registration?",
       "decline_reason_hint": "Optionally tell the team why. They can resubmit while registration is open.",
       "decline_reason_placeholder": "Reason (optional)",
       "players": "players",
+      "review_summary": "{pending} pending · {waitlisted} waitlisted awaiting review",
       "remove": "Remove",
       "remove_title": "Remove team from season?",
-      "remove_description": "The team is withdrawn and all of its remaining matchups are forfeited to the opponents. This cannot be undone.",
+      "remove_description": "The team is withdrawn from the season and its slot is freed. You can re-admit it while registration is open.",
+      "remove_description_live": "The team is withdrawn and all of its remaining matchups are forfeited to the opponents. This cannot be undone.",
       "removed": "Team removed from the season"
     },
     "schedule": {
@@ -6532,8 +6527,8 @@
       "created": "{name} created"
     },
     "restart": {
-      "action": "Restart season",
-      "done": "Season restarted"
+      "action": "Reset to setup",
+      "done": "Season reset to setup"
     },
     "readiness": {
       "title": "Season readiness",
@@ -6643,6 +6638,7 @@
       "ends_at": "Ends At",
       "dates": "Event Dates",
       "pick_dates": "Pick a date range",
+      "start_required": "A start date is required so the event only gathers matches played from that date onward",
       "start_time": "Start time",
       "end_time": "End time",
       "create": "Create Event",
@@ -6650,7 +6646,7 @@
         "ready": "Ready to create",
         "ready_hint": "Everything looks good, create your event when ready.",
         "incomplete": "Required fields missing",
-        "incomplete_hint": "Fill in the event name to continue"
+        "incomplete_hint": "Fill in the event name and a start date to continue"
       },
       "visibility": "Visibility",
       "media_access": "Media Uploads",

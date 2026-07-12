@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -30,7 +28,7 @@ import {
 } from "~/components/ui/table";
 import { Textarea } from "~/components/ui/textarea";
 import { computed } from "vue";
-import { AlertTriangle } from "lucide-vue-next";
+import { AlertTriangle, Trash2, Users } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import type { LeagueDivision } from "~/components/league/DivisionTierEditor.vue";
@@ -53,11 +51,22 @@ const props = defineProps<{
   teamSeasons: TeamSeasonRow[];
   divisions: LeagueDivision[];
   minRosterSize: number;
-  seasonLive?: boolean;
+  status: string;
   busy?: boolean;
 }>();
 
 const { t } = useI18n();
+
+const reviewMode = computed(() =>
+  ["Setup", "RegistrationOpen", "RegistrationClosed"].includes(props.status),
+);
+// Removing a team mid-play forfeits their remaining matches (backend enforced).
+const forfeitOnRemove = computed(() =>
+  ["Live", "Playoffs"].includes(props.status),
+);
+const canRemove = computed(
+  () => !["Finished", "Canceled"].includes(props.status),
+);
 
 // Why the Approve button is disabled, so admins aren't left guessing.
 function approveDisabledReason(row: TeamSeasonRow): string | undefined {
@@ -96,13 +105,28 @@ const emit = defineEmits<{
   (
     e: "setStatus",
     teamSeasonId: string,
-    status: "Approved" | "Declined" | "Waitlisted",
+    status: "Approved" | "Declined" | "Waitlisted" | "Pending",
     reason?: string | null,
   ): void;
   (e: "remove", teamSeasonId: string): void;
 }>();
 
 const confirmRemove = ref<string | null>(null);
+const removeTarget = computed(
+  () =>
+    props.teamSeasons.find((row) => row.id === confirmRemove.value) ?? null,
+);
+
+// reka-ui's AlertDialogAction auto-closes on click, which nulls confirmRemove
+// before an inline handler reads it — capture the id up front from a plain
+// Button so the emit always carries a real id.
+function removeTeam() {
+  const id = confirmRemove.value;
+  confirmRemove.value = null;
+  if (id) {
+    emit("remove", id);
+  }
+}
 
 // Decline flow: capture an optional reason the team will see.
 const declineTarget = ref<string | null>(null);
@@ -126,20 +150,40 @@ function confirmDecline() {
   declineReason.value = "";
 }
 
-const STATUS_VARIANTS: Record<string, string> = {
-  Approved: "border-success/50 text-success",
-  Pending: "border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]",
-  Waitlisted: "text-muted-foreground",
-  Declined: "border-destructive/50 text-destructive",
-  Withdrawn: "text-muted-foreground line-through",
+const STATUS_STYLES: Record<string, { badge: string; dot: string }> = {
+  Approved: {
+    badge: "border-success/40 bg-success/10 text-success",
+    dot: "bg-success",
+  },
+  Pending: {
+    badge:
+      "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]",
+    dot: "bg-[hsl(var(--tac-amber))]",
+  },
+  Waitlisted: {
+    badge: "border-border bg-muted/40 text-muted-foreground",
+    dot: "bg-muted-foreground",
+  },
+  Declined: {
+    badge: "border-destructive/40 bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
+  Withdrawn: {
+    badge: "border-border bg-muted/30 text-muted-foreground line-through",
+    dot: "bg-muted-foreground",
+  },
 };
 </script>
 
 <template>
-  <div class="overflow-x-auto rounded-lg border border-border">
+  <div
+    class="overflow-x-auto rounded-lg border border-border bg-[hsl(var(--card)/0.3)]"
+  >
     <Table>
       <TableHeader>
-        <TableRow class="hover:bg-transparent">
+        <TableRow
+          class="border-border/70 hover:bg-transparent [&_th]:text-[11px] [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-[0.14em] [&_th]:text-muted-foreground"
+        >
           <TableHead>{{ $t("league.registrations.status") }}</TableHead>
           <TableHead>{{ $t("league.registrations.team") }}</TableHead>
           <TableHead class="text-center">{{
@@ -155,16 +199,31 @@ const STATUS_VARIANTS: Record<string, string> = {
         <TableRow v-if="!teamSeasons.length">
           <TableCell
             colspan="5"
-            class="py-8 text-center text-sm text-muted-foreground"
+            class="py-10 text-center text-sm text-muted-foreground"
           >
             {{ $t("league.registrations.empty") }}
           </TableCell>
         </TableRow>
-        <TableRow v-for="row in teamSeasons" :key="row.id">
+        <TableRow
+          v-for="row in teamSeasons"
+          :key="row.id"
+          class="group border-border/60 transition-colors hover:bg-[hsl(var(--tac-amber)/0.04)]"
+        >
           <TableCell>
-            <Badge variant="outline" :class="STATUS_VARIANTS[row.status]">
-              {{ row.status }}
-            </Badge>
+            <span
+              :class="[
+                'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em]',
+                STATUS_STYLES[row.status]?.badge,
+              ]"
+            >
+              <span
+                :class="[
+                  'h-1.5 w-1.5 rounded-full',
+                  STATUS_STYLES[row.status]?.dot,
+                ]"
+              ></span>
+              {{ $t(`league.registration_status.${row.status}`) }}
+            </span>
             <p
               v-if="row.status === 'Declined' && row.decline_reason"
               class="mt-1 max-w-[220px] text-xs text-muted-foreground"
@@ -178,15 +237,18 @@ const STATUS_VARIANTS: Record<string, string> = {
               <TeamRankSummary :ranks="teamRanks(row)" />
             </div>
           </TableCell>
-          <TableCell class="text-center font-mono text-sm">
+          <TableCell class="text-center">
             <span
-              :class="
+              :class="[
+                'inline-flex items-center gap-1.5 font-mono text-sm tabular-nums',
                 row.roster.length < minRosterSize
                   ? 'text-destructive'
-                  : 'text-muted-foreground'
-              "
-              >{{ row.roster.length }}</span
+                  : 'text-foreground/80',
+              ]"
             >
+              <Users class="h-3.5 w-3.5 opacity-60" />
+              {{ row.roster.length }}
+            </span>
           </TableCell>
           <TableCell>
             <div class="relative inline-flex items-center">
@@ -251,8 +313,10 @@ const STATUS_VARIANTS: Record<string, string> = {
           </TableCell>
           <TableCell class="text-right">
             <div class="flex justify-end gap-1.5">
+              <!-- Review controls are pre-start only: re-approving mid-season
+                   is unsafe once brackets are materialized. -->
               <Button
-                v-if="row.status !== 'Approved'"
+                v-if="reviewMode && row.status !== 'Approved'"
                 size="sm"
                 variant="outline"
                 class="h-7"
@@ -260,10 +324,14 @@ const STATUS_VARIANTS: Record<string, string> = {
                 :title="approveDisabledReason(row)"
                 @click="emit('setStatus', row.id, 'Approved')"
               >
-                {{ $t("league.registrations.approve") }}
+                {{
+                  row.status === "Withdrawn"
+                    ? $t("league.registrations.readmit")
+                    : $t("league.registrations.approve")
+                }}
               </Button>
               <Button
-                v-if="row.status === 'Pending'"
+                v-if="reviewMode && row.status === 'Pending'"
                 size="sm"
                 variant="ghost"
                 class="h-7 text-muted-foreground"
@@ -273,7 +341,12 @@ const STATUS_VARIANTS: Record<string, string> = {
                 {{ $t("league.registrations.waitlist") }}
               </Button>
               <Button
-                v-if="row.status !== 'Declined' && row.status !== 'Approved'"
+                v-if="
+                  reviewMode &&
+                  row.status !== 'Declined' &&
+                  row.status !== 'Approved' &&
+                  row.status !== 'Withdrawn'
+                "
                 size="sm"
                 variant="ghost"
                 class="h-7 text-destructive"
@@ -282,14 +355,33 @@ const STATUS_VARIANTS: Record<string, string> = {
                 {{ $t("league.registrations.decline") }}
               </Button>
               <Button
-                v-if="seasonLive && row.status === 'Approved'"
+                v-if="reviewMode && row.status === 'Approved'"
                 size="sm"
-                variant="destructive"
-                class="h-7"
-                @click="confirmRemove = row.id"
+                variant="ghost"
+                class="h-7 text-muted-foreground"
+                :loading="busy"
+                @click="emit('setStatus', row.id, 'Pending')"
               >
-                {{ $t("league.registrations.remove") }}
+                {{ $t("league.registrations.revoke") }}
               </Button>
+              <FiveStackToolTip
+                v-if="row.status === 'Approved' && canRemove"
+                as-child
+                side="top"
+              >
+                <template #trigger>
+                  <Button
+                    size="icon-sm"
+                    variant="ghost"
+                    class="text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    :aria-label="$t('league.registrations.remove')"
+                    @click="confirmRemove = row.id"
+                  >
+                    <Trash2 class="h-4 w-4" />
+                  </Button>
+                </template>
+                {{ $t("league.registrations.remove") }}
+              </FiveStackToolTip>
             </div>
           </TableCell>
         </TableRow>
@@ -302,26 +394,36 @@ const STATUS_VARIANTS: Record<string, string> = {
     >
       <AlertDialogContent>
         <AlertDialogHeader>
+          <div
+            class="mb-1 flex h-10 w-10 items-center justify-center rounded-full border border-destructive/30 bg-destructive/10 text-destructive"
+          >
+            <Trash2 class="h-5 w-5" />
+          </div>
           <AlertDialogTitle>{{
             $t("league.registrations.remove_title")
           }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t("league.registrations.remove_description") }}
+            {{
+              forfeitOnRemove
+                ? $t("league.registrations.remove_description_live")
+                : $t("league.registrations.remove_description")
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <div
+          v-if="removeTarget"
+          class="rounded-md border border-destructive/25 bg-destructive/5 px-3 py-2 text-sm font-semibold"
+        >
+          {{ removeTarget.league_team.team.name }}
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel @click="confirmRemove = null">
             {{ $t("common.cancel") }}
           </AlertDialogCancel>
-          <AlertDialogAction
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            @click="
-              confirmRemove && emit('remove', confirmRemove);
-              confirmRemove = null;
-            "
-          >
+          <Button variant="destructive" class="gap-1.5" @click="removeTeam">
+            <Trash2 class="h-4 w-4" />
             {{ $t("league.registrations.remove") }}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -348,12 +450,9 @@ const STATUS_VARIANTS: Record<string, string> = {
           <AlertDialogCancel @click="declineTarget = null">
             {{ $t("common.cancel") }}
           </AlertDialogCancel>
-          <AlertDialogAction
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            @click="confirmDecline"
-          >
+          <Button variant="destructive" @click="confirmDecline">
             {{ $t("league.registrations.decline") }}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

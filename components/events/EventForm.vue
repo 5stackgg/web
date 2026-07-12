@@ -291,7 +291,21 @@ export default {
           z.object({
             name: z.string().min(1),
             description: z.string().nullable().default(null),
-            starts_at: z.date().nullable().default(null),
+            // Required: a start date bounds which of an attached team's or
+            // player's matches count as the event's. Without it the event
+            // would gather their entire match history (lifetime stats), not
+            // just matches played during the event. The end date stays
+            // optional — an ongoing event captures matches up to today.
+            starts_at: z
+              .date({
+                required_error: this.$t("event.form.start_required") as string,
+                invalid_type_error: this.$t(
+                  "event.form.start_required",
+                ) as string,
+              })
+              .refine((date) => date instanceof Date, {
+                message: this.$t("event.form.start_required") as string,
+              }),
             ends_at: z.date().nullable().default(null),
             visibility: z.string().default(e_event_visibility_enum.Public),
             media_access: z
@@ -377,10 +391,16 @@ export default {
       return `${this.startDate} → ${this.endDate}`;
     },
     createValid(): boolean {
-      // Create flow gate: the only field without a schema default is name, so
-      // require it filled and no outstanding validation errors.
+      // Create flow gate: name and starts_at are the fields without a usable
+      // schema default (starts_at is required so the event scopes to matches
+      // played from that date on), so require both filled and no outstanding
+      // validation errors.
       const values = this.form.values;
-      return Object.keys(this.form.errors).length === 0 && !!values.name;
+      return (
+        Object.keys(this.form.errors).length === 0 &&
+        !!values.name &&
+        !!values.starts_at
+      );
     },
     visibilityOptions() {
       return Object.values(e_event_visibility_enum).map((visibility) => ({

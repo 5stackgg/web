@@ -137,10 +137,6 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "pages.settings.application.servers.title",
       },
       {
-        path: "/settings/application/release-channel",
-        labelKey: "pages.settings.application.release_channel.title",
-      },
-      {
         path: "/settings/application/telemetry",
         labelKey: "pages.settings.application.telemetry.title",
       },

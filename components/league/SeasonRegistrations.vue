@@ -24,9 +24,13 @@ const props = defineProps<{
   teamSeasons: any[];
   divisions: any[];
   minRosterSize: number;
-  seasonLive?: boolean;
+  status: string;
   busy?: boolean;
 }>();
+
+const reviewMode = computed(() =>
+  ["Setup", "RegistrationOpen", "RegistrationClosed"].includes(props.status),
+);
 
 const emit = defineEmits<{
   (e: "assign", teamSeasonId: string, divisionId: string | null): void;
@@ -45,21 +49,26 @@ const STATUSES = [
   "Approved",
   "Waitlisted",
   "Declined",
+  "Withdrawn",
 ] as const;
 
 const search = ref("");
-// Pending is what admins act on, so default the review queue to it.
-const statusFilter = ref<string>("Pending");
+const statusFilter = ref<string>(reviewMode.value ? "Pending" : "Approved");
 const page = ref(1);
 const perPage = usePerPage("league-registrations");
 
-const active = computed(() =>
-  (props.teamSeasons ?? []).filter((ts: any) => ts.status !== "Withdrawn"),
+const pendingCount = computed(
+  () => (props.teamSeasons ?? []).filter((ts: any) => ts.status === "Pending").length,
+);
+const waitlistedCount = computed(
+  () =>
+    (props.teamSeasons ?? []).filter((ts: any) => ts.status === "Waitlisted")
+      .length,
 );
 
 const filtered = computed(() => {
   const q = search.value.trim().toLowerCase();
-  return active.value.filter((ts: any) => {
+  return (props.teamSeasons ?? []).filter((ts: any) => {
     if (statusFilter.value !== "all" && ts.status !== statusFilter.value) {
       return false;
     }
@@ -127,11 +136,23 @@ watch([search, statusFilter], () => (page.value = 1));
       </div>
     </FilterBar>
 
+    <p
+      v-if="reviewMode && (pendingCount || waitlistedCount)"
+      class="text-xs text-muted-foreground"
+    >
+      {{
+        $t("league.registrations.review_summary", {
+          pending: pendingCount,
+          waitlisted: waitlistedCount,
+        })
+      }}
+    </p>
+
     <RegistrationReviewTable
       :team-seasons="paged"
       :divisions="divisions"
       :min-roster-size="minRosterSize"
-      :season-live="seasonLive"
+      :status="status"
       :busy="busy"
       @assign="(id, div) => emit('assign', id, div)"
       @set-status="

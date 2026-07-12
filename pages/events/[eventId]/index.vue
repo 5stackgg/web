@@ -32,6 +32,15 @@ import {
   phaseBadgeVariant,
   phaseLabelKey,
 } from "~/utilities/eventDisplay";
+import { useEventContext } from "~/composables/useEventContext";
+
+// Reflect the event name in the browser tab / in-app title (nuxt.config's
+// titleTemplate appends " | 5Stack"). The context is populated by the
+// subscription in the Options block below.
+const eventContext = useEventContext();
+useHead({
+  title: () => eventContext.value?.name || undefined,
+});
 
 // Mirrors the tournament page hero (corner brackets + gradient card); the
 // events hero additionally overlaps the banner media above it.

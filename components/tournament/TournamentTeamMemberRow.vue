@@ -131,6 +131,12 @@ import Separator from "../ui/separator/Separator.vue";
             <DropdownMenuItem
               v-if="canUpdateRole"
               class="text-destructive"
+              :disabled="rosterLockedAtMin"
+              :title="
+                rosterLockedAtMin
+                  ? $t('tournament.team.min_roster_locked')
+                  : undefined
+              "
               @click="removeMemberDialog = true"
             >
               <UserMinus />
@@ -198,6 +204,10 @@ export default {
       required: true,
     },
     canLeave: {
+      type: Boolean,
+      default: false,
+    },
+    rosterLockedAtMin: {
       type: Boolean,
       default: false,
     },
@@ -281,7 +291,7 @@ export default {
     },
     async removeMember() {
       this.removeMemberDialog = false;
-      if (!this.canUpdateRole) return;
+      if (!this.canUpdateRole || this.rosterLockedAtMin) return;
 
       await this.$apollo.mutate({
         mutation: generateMutation({

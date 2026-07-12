@@ -23,9 +23,17 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
+import { useMatchContext } from "~/composables/useMatchContext";
 
 definePageMeta({
   pageTransition: { name: "page", mode: "out-in" },
+});
+
+// Reflect the match ("Team A vs Team B") in the browser tab / in-app title.
+// The context is populated by the subscription in the Options block below.
+const matchContext = useMatchContext();
+useHead({
+  title: () => matchContext.value?.displayText || undefined,
 });
 
 const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);

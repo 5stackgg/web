@@ -374,47 +374,51 @@ function formatTournamentStatus(status?: string | null): string {
 
         <TabsContent v-if="hasTournaments" value="tournaments">
           <PageTransition>
-            <div :class="[tacticalSectionLabelClasses]">
-              <span :class="tacticalSectionTickClasses"></span>
-              {{ $t("event.tabs.tournaments") }}
-            </div>
+            <!-- Single root: <Transition> renders only its first child, so the
+                 label and the list must share one wrapper or the cards vanish. -->
+            <div>
+              <div :class="[tacticalSectionLabelClasses]">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("event.tabs.tournaments") }}
+              </div>
 
-            <Empty
-              v-if="eventTournamentEntries.length === 0"
-              class="min-h-[160px]"
-            >
-              <p class="text-muted-foreground">
-                {{ $t("event.tournaments.none") }}
-              </p>
-            </Empty>
-
-            <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <NuxtLink
-                v-for="entry in eventTournamentEntries"
-                :key="entry.tournament_id"
-                :to="{
-                  name: 'tournaments-tournamentId',
-                  params: { tournamentId: entry.tournament.id },
-                }"
-                class="block rounded-md border border-border/70 bg-card/40 p-4 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-card/60"
+              <Empty
+                v-if="eventTournamentEntries.length === 0"
+                class="min-h-[160px]"
               >
-                <div class="flex items-center justify-between gap-2">
-                  <Badge variant="outline">
-                    {{ formatTournamentStatus(entry.tournament.status) }}
-                  </Badge>
-                  <span
-                    v-if="formatEventDate(entry.tournament.start)"
-                    class="text-xs text-muted-foreground"
-                  >
-                    {{ formatEventDate(entry.tournament.start) }}
-                  </span>
-                </div>
-                <h3
-                  class="mt-2 truncate font-sans text-base font-bold text-foreground"
+                <p class="text-muted-foreground">
+                  {{ $t("event.tournaments.none") }}
+                </p>
+              </Empty>
+
+              <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <NuxtLink
+                  v-for="entry in eventTournamentEntries"
+                  :key="entry.tournament_id"
+                  :to="{
+                    name: 'tournaments-tournamentId',
+                    params: { tournamentId: entry.tournament.id },
+                  }"
+                  class="block rounded-md border border-border/70 bg-card/40 p-4 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-card/60"
                 >
-                  {{ entry.tournament.name }}
-                </h3>
-              </NuxtLink>
+                  <div class="flex items-center justify-between gap-2">
+                    <Badge variant="outline">
+                      {{ formatTournamentStatus(entry.tournament.status) }}
+                    </Badge>
+                    <span
+                      v-if="formatEventDate(entry.tournament.start)"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{ formatEventDate(entry.tournament.start) }}
+                    </span>
+                  </div>
+                  <h3
+                    class="mt-2 truncate font-sans text-base font-bold text-foreground"
+                  >
+                    {{ entry.tournament.name }}
+                  </h3>
+                </NuxtLink>
+              </div>
             </div>
           </PageTransition>
         </TabsContent>

@@ -6631,6 +6631,17 @@
       "none": "No players are part of this event yet."
     },
     "updated": "Updated Event",
+    "deleted": "Event deleted",
+    "danger_zone": {
+      "title": "Danger Zone",
+      "description": "Deleting an event permanently removes it, including its media and leaderboard. Matches and tournaments linked to the event are not deleted."
+    },
+    "confirm": {
+      "delete": {
+        "title": "Delete this event?",
+        "description": "\"{name}\" will be permanently deleted. This cannot be undone."
+      }
+    },
     "form": {
       "name": "Event Name",
       "description": "Description",

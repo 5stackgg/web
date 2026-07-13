@@ -1,7 +1,18 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import { validate as validateUUID } from "uuid";
+import { Trash2 } from "lucide-vue-next";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -436,11 +447,69 @@ function formatTournamentStatus(status?: string | null): string {
               <EventForm :event="event" />
 
               <EventMembershipPanel :event="event" />
+
+              <!-- Delete is narrower than is_organizer: Hasura only allows
+                   the creator or tournament_organizer+ to delete, never
+                   co-organizers. -->
+              <section
+                v-if="canDeleteEvent"
+                class="rounded-lg border border-destructive/40 bg-destructive/5 p-5"
+              >
+                <span
+                  :class="tacticalSectionLabelClasses"
+                  class="!text-destructive"
+                >
+                  <span
+                    class="inline-block h-[2px] w-[10px] bg-destructive"
+                  ></span>
+                  {{ $t("event.danger_zone.title") }}
+                </span>
+                <p class="mb-3 text-sm text-muted-foreground">
+                  {{ $t("event.danger_zone.description") }}
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  class="gap-1.5"
+                  @click="deleteEventDialog = true"
+                >
+                  <Trash2 class="h-3.5 w-3.5" />
+                  {{ $t("common.delete") }}
+                </Button>
+              </section>
             </div>
           </PageTransition>
         </TabsContent>
       </div>
     </Tabs>
+
+    <AlertDialog
+      :open="deleteEventDialog"
+      @update:open="(open: boolean) => (deleteEventDialog = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("event.confirm.delete.title")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("event.confirm.delete.description", { name: event.name }) }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <!-- Plain Button, not AlertDialogAction: the action auto-closes the
+               dialog before an async handler runs. -->
+          <Button
+            variant="destructive"
+            :loading="deletingEvent"
+            @click="deleteEvent"
+          >
+            {{ $t("common.delete") }}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
@@ -448,9 +517,22 @@ function formatTournamentStatus(status?: string | null): string {
 import gql from "graphql-tag";
 import { validate as validateUUIDOptions } from "uuid";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by } from "~/generated/zeus";
+import { $, order_by, e_player_roles_enum } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleEventFields } from "~/graphql/simpleEventFields";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
+import { toast } from "@/components/ui/toast";
+
+const deleteEventMutation = generateMutation({
+  delete_events_by_pk: [
+    {
+      id: $("id", "uuid!"),
+    },
+    {
+      __typename: true,
+    },
+  ],
+});
 
 const eventSubscription = typedGql("subscription")({
   events_by_pk: [
@@ -560,6 +642,8 @@ export default {
       event: undefined as any,
       loading: true,
       leaderboardRows: [] as any[],
+      deleteEventDialog: false,
+      deletingEvent: false,
     };
   },
   unmounted() {
@@ -625,6 +709,19 @@ export default {
     },
   },
   computed: {
+    // Mirrors the Hasura delete permission on events: the creating organizer,
+    // or tournament_organizer and above. Co-organizers can manage the event
+    // (is_organizer) but cannot delete it.
+    canDeleteEvent(): boolean {
+      const me = useAuthStore().me;
+      if (!me || !this.event) {
+        return false;
+      }
+      return (
+        String(this.event.organizer_steam_id) === String(me.steam_id) ||
+        useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
+      );
+    },
     bannerSrc(): string {
       return this.event?.banner
         ? eventMediaUrl(this.event.id, this.event.banner.filename)
@@ -721,6 +818,35 @@ export default {
         avatar_url: row.player_avatar_url,
         country: row.player_country,
       }));
+    },
+  },
+  methods: {
+    async deleteEvent(this: any) {
+      if (this.deletingEvent) {
+        return;
+      }
+      this.deletingEvent = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: deleteEventMutation,
+          variables: {
+            id: this.$route.params.eventId,
+          },
+        });
+        this.deleteEventDialog = false;
+        toast({
+          title: this.$t("event.deleted") as string,
+        });
+        await navigateTo("/events");
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error") as string,
+          description: error?.message,
+        });
+      } finally {
+        this.deletingEvent = false;
+      }
     },
   },
 };

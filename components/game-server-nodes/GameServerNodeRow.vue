@@ -237,6 +237,20 @@ const isSectionExpanded = (section: string) => {
               >
                 {{ $t("game_server.cpu_frequency_warning") }}
               </div>
+
+              <div
+                v-if="cpuWarnings.length"
+                class="pt-1 border-t border-border text-red-500 text-xs space-y-1"
+              >
+                <div
+                  v-for="(warning, index) in cpuWarnings"
+                  :key="index"
+                  class="flex items-start gap-1"
+                >
+                  <AlertCircle class="h-3 w-3 mt-0.5 shrink-0" />
+                  <span>{{ warning }}</span>
+                </div>
+              </div>
             </div>
           </FiveStackToolTip>
         </div>
@@ -1371,6 +1385,16 @@ const isSectionExpanded = (section: string) => {
                     >
                   </div>
                 </div>
+                <div v-if="cpuWarnings.length" class="text-red-500 space-y-1">
+                  <div
+                    v-for="(warning, index) in cpuWarnings"
+                    :key="index"
+                    class="flex items-start gap-1"
+                  >
+                    <AlertCircle class="h-3 w-3 mt-0.5 shrink-0" />
+                    <span>{{ warning }}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1886,6 +1910,7 @@ interface GameServerNode {
   supports_low_latency?: boolean;
   supports_cpu_pinning?: boolean;
   cpu_governor_info?: string;
+  cpu_warnings?: Array<string> | null;
   plugin_supported?: boolean;
   update_status?: string;
   e_region?: {
@@ -2530,6 +2555,9 @@ export default defineComponent({
     isCpuGovernorNotOptimal() {
       const governor = this.gameServerNode.cpu_governor_info?.governor;
       return governor && governor !== "performance";
+    },
+    cpuWarnings() {
+      return this.gameServerNode.cpu_warnings ?? [];
     },
     hasPorts() {
       return (

@@ -481,6 +481,7 @@ export default {
               cpu_frequency_info: true,
               cpu_cores_per_socket: true,
               cpu_threads_per_core: true,
+              cpu_warnings: true,
               offline_at: true,
               e_region: {
                 description: true,

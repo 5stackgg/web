@@ -8,6 +8,7 @@ import {
 } from "~/components/ui/table";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerRow.vue";
+import TournamentOrganizerTeams from "~/components/tournament/TournamentOrganizerTeams.vue";
 </script>
 
 <template>
@@ -52,6 +53,8 @@ import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerR
         </Alert>
       </CardContent>
     </Card>
+
+    <TournamentOrganizerTeams :tournament="tournament" />
   </div>
 </template>
 

@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  CalendarClock,
-  GitBranch,
-  RadioTower,
-  TicketCheck,
-  Trophy,
-  UsersRound,
-} from "lucide-vue-next";
+import { GitBranch, Trophy, UsersRound } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
-import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
-import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -28,43 +19,74 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
+const runtimeConfig = useRuntimeConfig();
 
 const tournamentPath = computed(() => `/tournaments/${props.tournament.id}`);
 
-const tournamentMaps = computed(
-  () => props.tournament?.options?.map_pool?.maps || [],
-);
-const visibleTournamentMaps = computed(() => tournamentMaps.value.slice(0, 6));
-const hiddenMapCount = computed(() =>
-  Math.max(tournamentMaps.value.length - visibleTournamentMaps.value.length, 0),
-);
-const sortedStages = computed(() => {
-  return [...(props.tournament?.stages || [])].sort((a: any, b: any) => {
-    return (a.order || 0) - (b.order || 0);
-  });
+const bannerUrl = computed(() => {
+  const banner = props.tournament?.banner;
+  if (!banner) {
+    return null;
+  }
+  return `https://${runtimeConfig.public.apiDomain}/${banner}`;
 });
-const primaryStage = computed(() => sortedStages.value[0]);
-const firstPlaceTrophyConfig = computed(() => {
-  return (props.tournament?.trophy_configs || []).find((config: any) => {
-    return config.placement === 1;
-  });
+
+const logoUrl = computed(() => {
+  const logo = props.tournament?.logo;
+  if (!logo) {
+    return null;
+  }
+  return `https://${runtimeConfig.public.apiDomain}/${logo}`;
 });
-const stageCount = computed(() => props.tournament?.stages?.length || 0);
+
+// Deterministic gradient keyed on the id so bannerless tournaments still look
+// intentional (mirrors the events hero fallback).
+const fallbackGradient = computed(() => {
+  const id = String(props.tournament?.id ?? "");
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) % 360;
+  }
+  const a = h;
+  const b = (h + 70) % 360;
+  const c = (h + 200) % 360;
+  return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.85), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.7), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.6), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.32) 0 20px, transparent 20px 40px), #14171c`;
+});
+
+const isLive = computed(() => props.statusVariant === "live");
+
+const categories = computed(() =>
+  (props.tournament?.categories || []).map(
+    (category: any) =>
+      category.e_tournament_category?.description ?? category.category,
+  ),
+);
+
+const topPrize = computed(() => props.tournament?.prizes?.[0] || null);
+
+const organizerTeam = computed(
+  () => props.tournament?.organizer_teams?.[0]?.team || null,
+);
+
 const teamsCount = computed(
   () => props.tournament?.teams_aggregate?.aggregate?.count || 0,
 );
-const isLive = computed(() => props.statusVariant === "live");
 
-const statusIcon = computed(() => {
-  if (props.statusVariant === "registration") {
-    return TicketCheck;
-  }
+const primaryStage = computed(() => {
+  return [...(props.tournament?.stages || [])].sort(
+    (a: any, b: any) => (a.order || 0) - (b.order || 0),
+  )[0];
+});
 
-  if (props.statusVariant === "live") {
-    return RadioTower;
-  }
-
-  return Trophy;
+const stageLabel = computed(() => {
+  const stage = primaryStage.value;
+  const stageType =
+    stage?.e_tournament_stage_type?.description || stage?.type || "Bracket";
+  const bestOf =
+    stage?.options?.best_of ||
+    stage?.default_best_of ||
+    props.tournament?.options?.best_of;
+  return bestOf ? `${stageType} · BO${bestOf}` : stageType;
 });
 
 const statusText = computed(() => {
@@ -77,277 +99,128 @@ const statusText = computed(() => {
 
 const statusChipClasses = computed(() => {
   if (props.statusVariant === "live") {
-    return "border-destructive/35 bg-destructive/10 text-destructive";
+    return "bg-destructive/25 text-[hsl(var(--destructive))]";
   }
-
-  return "border-border/70 bg-muted/35 text-muted-foreground";
-});
-
-const timeLabel = computed(() => {
-  return props.statusVariant === "live" || props.statusVariant === "finished"
-    ? "Started"
-    : "Starts";
-});
-
-const stageLabel = computed(() => {
-  const stage = primaryStage.value;
-  const stageType =
-    stage?.e_tournament_stage_type?.description || stage?.type || "Bracket";
-  const bestOf =
-    stage?.options?.best_of ||
-    stage?.default_best_of ||
-    props.tournament?.options?.best_of;
-
-  return bestOf ? `${stageType} - BO${bestOf}` : stageType;
-});
-
-const cardChromeClasses = computed(() => {
-  if (isLive.value) {
-    return "border-[hsl(var(--tac-amber)/0.36)] bg-[linear-gradient(135deg,hsl(var(--card)/0.72)_0%,hsl(var(--card)/0.42)_52%,hsl(var(--tac-amber)/0.08)_100%)] hover:border-[hsl(var(--tac-amber)/0.62)] hover:bg-[linear-gradient(135deg,hsl(var(--card)/0.82)_0%,hsl(var(--card)/0.5)_48%,hsl(var(--tac-amber)/0.14)_100%)] hover:shadow-[0_0_28px_hsl(var(--tac-amber)/0.12)]";
+  if (props.statusVariant === "registration") {
+    return "bg-[hsl(var(--tac-amber)/0.22)] text-[hsl(var(--tac-amber))]";
   }
-
-  return "border-border/70 bg-[linear-gradient(135deg,hsl(var(--card)/0.68)_0%,hsl(var(--card)/0.44)_54%,hsl(var(--muted)/0.16)_100%)] hover:border-border hover:bg-[linear-gradient(135deg,hsl(var(--card)/0.78)_0%,hsl(var(--card)/0.5)_50%,hsl(var(--muted)/0.24)_100%)] hover:shadow-[0_0_24px_hsl(var(--muted-foreground)/0.08)]";
-});
-
-const accentRailClasses = computed(() => {
-  if (isLive.value) {
-    return "bg-[hsl(var(--tac-amber))] shadow-[0_0_18px_hsl(var(--tac-amber)/0.55)]";
+  if (props.statusVariant === "finished") {
+    return "bg-success/20 text-success";
   }
-
-  return "bg-muted-foreground/35 shadow-[0_0_14px_hsl(var(--muted-foreground)/0.14)]";
-});
-
-const bracketTextureClasses = computed(() => {
-  if (isLive.value) {
-    return "[background-image:linear-gradient(135deg,transparent_0,transparent_47%,hsl(var(--tac-amber)/0.12)_48%,transparent_50%,transparent_100%)]";
-  }
-
-  return "[background-image:linear-gradient(135deg,transparent_0,transparent_47%,hsl(var(--muted-foreground)/0.08)_48%,transparent_50%,transparent_100%)]";
-});
-
-const cornerClasses = computed(() => {
-  if (isLive.value) {
-    return "border-[hsl(var(--tac-amber))] opacity-80";
-  }
-
-  return "border-muted-foreground/35 opacity-55";
-});
-
-const trophyFrameClasses = computed(() => {
-  if (isLive.value) {
-    return "border-[hsl(var(--tac-amber)/0.36)] bg-[radial-gradient(ellipse_at_center,hsl(var(--tac-amber)/0.18)_0%,hsl(var(--background)/0.12)_70%)]";
-  }
-
-  return "border-border/70 bg-[radial-gradient(ellipse_at_center,hsl(var(--muted-foreground)/0.1)_0%,hsl(var(--background)/0.12)_70%)]";
-});
-
-const trophyBadgeClasses = computed(() => {
-  return isLive.value ? "" : "grayscale opacity-70";
-});
-
-const eyebrowClasses = computed(() => {
-  return isLive.value
-    ? "text-[hsl(var(--tac-amber))]"
-    : "text-muted-foreground";
-});
-
-const stageChipClasses = computed(() => {
-  if (isLive.value) {
-    return "border-[hsl(var(--tac-amber)/0.38)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]";
-  }
-
-  return "border-border/70 bg-muted/35 text-muted-foreground";
-});
-
-const stagePanelClasses = computed(() => {
-  if (isLive.value) {
-    return "border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)]";
-  }
-
-  return "border-border/70 bg-muted/25";
-});
-
-const stagePanelLabelClasses = computed(() => {
-  return isLive.value
-    ? "text-[hsl(var(--tac-amber))]"
-    : "text-muted-foreground";
+  return "bg-black/60 text-white/90";
 });
 </script>
 
 <template>
   <NuxtLink
     :to="tournamentPath"
-    class="group/tournament relative isolate block overflow-hidden rounded-md border shadow-[inset_0_1px_0_hsl(0_0%_100%/0.05)] transition-[border-color,background,box-shadow,transform] duration-200 hover:-translate-y-px"
-    :class="cardChromeClasses"
+    class="group/tournament relative block h-[220px] overflow-hidden rounded-xl border border-border/70 transition-[border-color,transform] duration-200 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)/0.45)] sm:h-[240px]"
   >
-    <span
+    <img
+      v-if="bannerUrl"
+      :src="bannerUrl"
+      :alt="tournament.name"
       aria-hidden="true"
-      class="absolute inset-y-0 left-0 w-1"
-      :class="accentRailClasses"
-    ></span>
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-y-0 right-0 w-[38%] opacity-40 [background-size:26px_26px]"
-      :class="bracketTextureClasses"
-    ></span>
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l-2 border-t-2"
-      :class="cornerClasses"
-    ></span>
-    <span
-      aria-hidden="true"
-      class="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b-2 border-r-2"
-      :class="cornerClasses"
-    ></span>
-
+      class="absolute inset-0 h-full w-full scale-105 object-cover transition-transform duration-500 group-hover/tournament:scale-110"
+    />
     <div
-      class="relative grid gap-5 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:p-5"
+      v-else
+      class="absolute inset-0"
+      :style="{ background: fallbackGradient }"
+    ></div>
+
+    <!-- Modest global tint tames busy / low-contrast uploads without killing a
+         well-designed banner; the text zones get their own stronger scrims. -->
+    <div
+      v-if="bannerUrl"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 bg-black/25"
+    ></div>
+    <div
+      aria-hidden="true"
+      class="tac-scanlines pointer-events-none absolute inset-0"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 h-2/5 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.6)_0%,transparent_100%)]"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.55)_45%,hsl(0_0%_0%/0.94)_100%)]"
+    ></div>
+
+    <!-- TOP: logo + categories (left) · status (right) -->
+    <div
+      class="absolute inset-x-0 top-0 z-[2] flex items-start justify-between gap-2 p-4 sm:p-5"
     >
-      <div class="min-w-0 space-y-4">
-        <div class="flex items-start gap-4">
-          <div
-            class="relative grid h-16 w-16 shrink-0 place-items-center rounded-md border"
-            :class="trophyFrameClasses"
-          >
-            <TrophyBadge
-              :tournament-id="tournament.id"
-              :placement="1"
-              :tournament-name="tournament.name"
-              :tournament-start="tournament.start"
-              :tournament-type="primaryStage?.type"
-              :custom-name="firstPlaceTrophyConfig?.custom_name"
-              :silhouette-override="firstPlaceTrophyConfig?.silhouette"
-              :image-url="firstPlaceTrophyConfig?.image_url"
-              size="sm"
-              :interactive="false"
-              :class="trophyBadgeClasses"
-            />
-            <span
-              v-if="isLive"
-              aria-hidden="true"
-              class="absolute -right-1 -top-1 h-3 w-3 rounded-full border border-background bg-destructive shadow-[0_0_12px_hsl(var(--destructive)/0.8)]"
-            ></span>
-          </div>
-
-          <div class="min-w-0 flex-1">
-            <div
-              class="mb-2 flex flex-wrap items-center gap-2 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em]"
-              :class="eyebrowClasses"
-            >
-              <span class="inline-flex items-center gap-1.5">
-                <component :is="statusIcon" class="h-3.5 w-3.5" />
-                {{ $t("tournament.feature_card.tournament") }}
-              </span>
-              <span
-                class="inline-flex max-w-[14rem] items-center rounded border px-1.5 py-0.5"
-                :class="statusChipClasses"
-              >
-                <span class="truncate">{{ statusText }}</span>
-              </span>
-            </div>
-
-            <h3
-              class="truncate font-sans text-xl font-bold leading-tight text-foreground"
-            >
-              {{ tournament.name }}
-            </h3>
-            <p
-              v-if="tournament.description"
-              class="mt-2 line-clamp-2 text-sm text-muted-foreground"
-            >
-              {{ tournament.description }}
-            </p>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2">
+      <div class="flex min-w-0 items-center gap-2">
+        <img
+          v-if="logoUrl"
+          :src="logoUrl"
+          :alt="tournament.name"
+          class="h-11 w-11 shrink-0 rounded-md border border-white/20 bg-black/40 object-contain backdrop-blur-sm"
+        />
+        <div class="flex flex-wrap gap-1.5">
           <span
-            class="inline-flex items-center rounded-md border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"
+            v-for="category in categories.slice(0, 3)"
+            :key="category"
+            class="inline-flex items-center rounded-full bg-black/55 px-2 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.14em] text-white/85 backdrop-blur-sm"
           >
-            {{ tournament.options.type }}
-          </span>
-          <span
-            class="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em]"
-            :class="stageChipClasses"
-          >
-            <GitBranch class="h-3.5 w-3.5" />
-            {{ stageLabel }}
-          </span>
-        </div>
-
-        <div
-          v-if="visibleTournamentMaps.length > 0"
-          class="flex flex-wrap items-center gap-2"
-        >
-          <span
-            class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            {{ $t("maps.label") }}
-          </span>
-          <MiniMapDisplay
-            v-for="map in visibleTournamentMaps"
-            :key="map.id"
-            :map="map"
-          />
-          <span
-            v-if="hiddenMapCount > 0"
-            class="inline-flex h-8 items-center rounded-md border border-border/70 bg-muted/35 px-2.5 font-mono text-[0.65rem] font-bold text-muted-foreground"
-          >
-            +{{ hiddenMapCount }}
+            {{ category }}
           </span>
         </div>
       </div>
 
-      <div
-        :class="[
-          'grid min-w-[13rem] gap-2 sm:flex sm:flex-col sm:items-stretch sm:justify-between',
-          isLive ? 'grid-cols-1' : 'grid-cols-2',
-        ]"
+      <span
+        class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] backdrop-blur-sm"
+        :class="statusChipClasses"
       >
-        <div
-          v-if="!isLive"
-          class="rounded-md border border-border/70 bg-background/35 px-3 py-2"
-        >
-          <div
-            class="mb-1 flex items-center gap-1.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            <CalendarClock class="h-3 w-3" />
-            {{ timeLabel }}
-          </div>
-          <div class="text-sm font-semibold text-foreground">
-            <TimeAgo :date="tournament.start" />
-          </div>
-        </div>
+        <span
+          v-if="isLive"
+          aria-hidden="true"
+          class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[hsl(var(--destructive))]"
+        ></span>
+        <span class="max-w-[10rem] truncate">{{ statusText }}</span>
+      </span>
+    </div>
 
-        <div
-          class="rounded-md border border-border/70 bg-background/35 px-3 py-2"
-        >
-          <div
-            class="mb-1 flex items-center gap-1.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            <UsersRound class="h-3 w-3" />
-            {{ $t("tournament.feature_card.teams") }}
-          </div>
-          <div class="text-sm font-semibold text-foreground">
-            {{ teamsCount }}
-          </div>
-        </div>
+    <!-- BOTTOM: name + meta row -->
+    <div
+      class="absolute inset-x-0 bottom-0 z-[2] px-4 pb-4 pt-6 sm:px-5 sm:pb-5"
+    >
+      <h3
+        class="truncate font-sans text-2xl font-bold uppercase leading-[0.95] tracking-[0.02em] text-white [font-stretch:80%] [text-shadow:0_2px_16px_rgba(0,0,0,0.85)] sm:text-3xl"
+      >
+        {{ tournament.name }}
+      </h3>
 
-        <div
-          class="col-span-2 rounded-md border px-3 py-2"
-          :class="stagePanelClasses"
+      <div
+        class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono text-[0.68rem] tracking-[0.04em] text-white/85"
+      >
+        <span class="text-white/70">
+          <TimeAgo :date="tournament.start" />
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <UsersRound class="h-3.5 w-3.5 text-white/55" />
+          <span class="font-bold text-white">{{ teamsCount }}</span>
+          {{ $t("tournament.feature_card.teams") }}
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <GitBranch class="h-3.5 w-3.5 text-white/55" />
+          {{ stageLabel }}
+        </span>
+        <span
+          v-if="topPrize"
+          class="inline-flex items-center gap-1.5 text-[hsl(var(--tac-amber))]"
         >
-          <div
-            class="mb-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em]"
-            :class="stagePanelLabelClasses"
-          >
-            {{ $t("tournament.feature_card.stages") }}
-          </div>
-          <div class="text-sm font-semibold text-foreground">
-            {{ stageCount || 1 }}
-          </div>
-        </div>
+          <Trophy class="h-3.5 w-3.5" />
+          {{ topPrize.place }}: {{ topPrize.prize }}
+        </span>
+        <span v-if="organizerTeam" class="text-white/65">
+          {{
+            $t("tournament.feature_card.organized_by", {
+              team: organizerTeam.name || organizerTeam.short_name,
+            })
+          }}
+        </span>
       </div>
     </div>
   </NuxtLink>

@@ -35,7 +35,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AvatarUpload from "~/components/AvatarUpload.vue";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import TrophyCase from "~/components/trophy/TrophyCase.vue";
 import TeamCareerStats from "~/components/team/TeamCareerStats.vue";
 import TeamVetoStats from "~/components/team/TeamVetoStats.vue";
@@ -356,8 +356,10 @@ const teamHeroActionsClasses =
             <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
             {{ $t("avatar.team_avatar") }}
           </div>
-          <AvatarUpload
-            variant="dropzone"
+          <ImageUploadTile
+            class="max-w-[9rem]"
+            aspect="square"
+            fit="cover"
             :upload-url="`https://${apiDomain}/avatars/teams/${team.id}`"
             :delete-url="`https://${apiDomain}/avatars/teams/${team.id}`"
             :has-custom="!!team.avatar_url"
@@ -470,6 +472,7 @@ export default {
               name: true,
               short_name: true,
               avatar_url: true,
+              is_organization: true,
               owner_steam_id: true,
               captain_steam_id: true,
               can_manage_scrims: true,

@@ -412,6 +412,16 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Custom Pages (micro-frontend framework): off by default (absent row =
+    // disabled). Master switch gating the nav section + /apps/[slug] routes.
+    const customPagesEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.custom_pages_enabled",
+        )?.value === "true"
+      );
+    });
+
     // HUD layout the game-streamer pod boots (and the demo player should show
     // as active). Legacy "default" folds into "horizontal"; anything but
     // "vertical" is horizontal. Mirrors the api's resolveHudMode default.
@@ -576,6 +586,7 @@ export const useApplicationSettingsStore = defineStore(
       externalMatchesEnabled,
       faceitEnabled,
       scrimFinderEnabled,
+      customPagesEnabled,
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,

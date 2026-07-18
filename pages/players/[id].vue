@@ -68,7 +68,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
-import AvatarUpload from "~/components/AvatarUpload.vue";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
@@ -2848,8 +2848,10 @@ const playerHeroTeamChipDotClasses =
             <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
             {{ $t("avatar.player_avatar") }}
           </div>
-          <AvatarUpload
-            variant="dropzone"
+          <ImageUploadTile
+            class="max-w-[9rem]"
+            aspect="square"
+            fit="cover"
             :upload-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
             :delete-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
             :has-custom="!!player.custom_avatar_url"
@@ -2864,8 +2866,11 @@ const playerHeroTeamChipDotClasses =
             <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
             {{ $t("avatar.player_roster_image") }}
           </div>
-          <AvatarUpload
-            variant="dropzone"
+          <ImageUploadTile
+            class="max-w-[11rem]"
+            aspect="square"
+            fit="contain"
+            mode="roster"
             kind="roster"
             :upload-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
             :delete-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"

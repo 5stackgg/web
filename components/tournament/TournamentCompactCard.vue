@@ -27,10 +27,36 @@ const props = withDefaults(
   },
 );
 
+const runtimeConfig = useRuntimeConfig();
+
 const tournamentPath = computed(() => {
   const base = `/tournaments/${props.tournament.id}`;
   return props.statusVariant === "finished" ? `${base}?tab=standings` : base;
 });
+
+const logoUrl = computed(() => {
+  const logo = props.tournament?.logo;
+  if (!logo) {
+    return null;
+  }
+
+  return `https://${runtimeConfig.public.apiDomain}/${logo}`;
+});
+
+const bannerUrl = computed(() => {
+  const banner = props.tournament?.banner;
+  if (!banner) {
+    return null;
+  }
+
+  return `https://${runtimeConfig.public.apiDomain}/${banner}`;
+});
+
+const categories = computed(() => props.tournament?.categories || []);
+const visibleCategories = computed(() => categories.value.slice(0, 2));
+const hiddenCategoryCount = computed(() =>
+  Math.max(categories.value.length - visibleCategories.value.length, 0),
+);
 
 const teamsCount = computed(
   () => props.tournament?.teams_aggregate?.aggregate?.count || 0,
@@ -215,6 +241,19 @@ const runnerUps = computed(() => {
     class="group/tournament relative isolate flex h-full flex-col overflow-hidden rounded-md border bg-card/40 transition-[border-color,background,box-shadow,transform] duration-200 hover:-translate-y-px hover:bg-card/60"
     :class="cardChromeClasses"
   >
+    <template v-if="bannerUrl">
+      <img
+        :src="bannerUrl"
+        :alt="tournament.name"
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.14]"
+      />
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.82)_100%)]"
+      ></span>
+    </template>
+
     <span
       aria-hidden="true"
       class="absolute inset-y-0 left-0 w-0.5"
@@ -224,6 +263,12 @@ const runnerUps = computed(() => {
     <div
       class="flex items-center justify-between gap-2 border-b border-border/40 px-3 py-2"
     >
+      <img
+        v-if="logoUrl"
+        :src="logoUrl"
+        :alt="tournament.name"
+        class="h-8 w-8 shrink-0 rounded border border-border/70 bg-muted/30 object-contain"
+      />
       <h3
         class="min-w-0 truncate text-sm font-semibold leading-tight text-foreground"
         :title="tournament.name"
@@ -260,6 +305,25 @@ const runnerUps = computed(() => {
         <span
           class="relative inline-flex h-1.5 w-1.5 rounded-full bg-destructive"
         ></span>
+      </span>
+    </div>
+
+    <div
+      v-if="visibleCategories.length"
+      class="flex flex-wrap items-center gap-1.5 border-b border-border/40 px-3 py-1.5"
+    >
+      <span
+        v-for="category in visibleCategories"
+        :key="category.category"
+        class="inline-flex items-center rounded border border-border/70 bg-muted/35 px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+      >
+        {{ category.e_tournament_category?.description ?? category.category }}
+      </span>
+      <span
+        v-if="hiddenCategoryCount > 0"
+        class="inline-flex items-center rounded border border-border/70 bg-muted/35 px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+      >
+        +{{ hiddenCategoryCount }}
       </span>
     </div>
 

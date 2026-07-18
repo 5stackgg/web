@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  LucideSun,
-  LucideMoon,
-  LucideUpload,
-  LucideX,
-} from "lucide-vue-next";
+import { LucideSun, LucideMoon } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -171,48 +166,17 @@ definePageMeta({
               <p class="text-sm text-muted-foreground">
                 {{ $t("pages.settings.application.branding.logo_description") }}
               </p>
-              <div
-                role="button"
-                tabindex="0"
-                :aria-label="$t('pages.settings.application.branding.upload_logo')"
-                class="group relative mt-auto flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
-                @click="$refs.appIconInput.click()"
-                @keydown.enter.prevent="$refs.appIconInput.click()"
-                @keydown.space.prevent="$refs.appIconInput.click()"
-              >
-                <img
-                  v-if="appIconPreview"
-                  :src="appIconPreview"
-                  class="max-h-24 max-w-[80%] rounded-lg object-contain"
-                />
-                <NuxtImg
-                  v-else
-                  src="/favicon/192.png"
-                  class="max-h-24 max-w-[80%] object-contain opacity-90"
-                />
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
-                >
-                  <LucideUpload class="h-4 w-4" />
-                  {{ $t("pages.settings.application.branding.upload_logo") }}
-                </div>
-                <button
-                  v-if="appIconPreview"
-                  type="button"
-                  :aria-label="$t('pages.settings.application.branding.remove')"
-                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
-                  @click.stop="removeAppIcon"
-                >
-                  <LucideX class="h-3.5 w-3.5" />
-                </button>
-                <input
-                  ref="appIconInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                  class="hidden"
-                  @change="handleAppIconUpload"
-                />
-              </div>
+              <ImageUploadTile
+                class="mt-auto"
+                aspect="cover"
+                fit="contain"
+                :crop="false"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                :upload-fn="(blob) => uploadBrandingFile('icon', blob)"
+                :delete-fn="() => deleteBrandingFile('icon')"
+                :has-custom="!!appIconPreview"
+                :current-src="appIconPreview || '/favicon/192.png'"
+              />
             </div>
 
             <div class="flex flex-col gap-2">
@@ -224,50 +188,17 @@ definePageMeta({
                   $t("pages.settings.application.branding.favicon_description")
                 }}
               </p>
-              <div
-                role="button"
-                tabindex="0"
-                :aria-label="
-                  $t('pages.settings.application.branding.upload_favicon')
-                "
-                class="group relative mt-auto flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
-                @click="$refs.faviconInput.click()"
-                @keydown.enter.prevent="$refs.faviconInput.click()"
-                @keydown.space.prevent="$refs.faviconInput.click()"
-              >
-                <img
-                  v-if="faviconPreview"
-                  :src="faviconPreview"
-                  class="max-h-24 max-w-[80%] object-contain"
-                />
-                <NuxtImg
-                  v-else
-                  src="/favicon/64.png"
-                  class="max-h-24 max-w-[80%] object-contain opacity-90"
-                />
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
-                >
-                  <LucideUpload class="h-4 w-4" />
-                  {{ $t("pages.settings.application.branding.upload_favicon") }}
-                </div>
-                <button
-                  v-if="faviconPreview"
-                  type="button"
-                  :aria-label="$t('pages.settings.application.branding.remove')"
-                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
-                  @click.stop="removeFavicon"
-                >
-                  <LucideX class="h-3.5 w-3.5" />
-                </button>
-                <input
-                  ref="faviconInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/x-icon,image/webp"
-                  class="hidden"
-                  @change="handleFaviconUpload"
-                />
-              </div>
+              <ImageUploadTile
+                class="mt-auto"
+                aspect="square"
+                fit="contain"
+                :crop="false"
+                accept="image/png,image/jpeg,image/x-icon,image/webp"
+                :upload-fn="(blob) => uploadBrandingFile('favicon', blob)"
+                :delete-fn="() => deleteBrandingFile('favicon')"
+                :has-custom="!!faviconPreview"
+                :current-src="faviconPreview || '/favicon/64.png'"
+              />
             </div>
           </div>
         </SettingsSection>

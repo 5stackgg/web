@@ -3,12 +3,14 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
   FormSection,
 } from "~/components/ui/form";
+import { Switch } from "~/components/ui/switch";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
@@ -72,6 +74,33 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
               </SelectContent>
             </Select>
             <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <FormField
+          v-if="team && isOrganizationEditable"
+          v-slot="{ value, handleChange }"
+          name="is_organization"
+        >
+          <FormItem>
+            <div
+              class="flex flex-row items-center justify-between cursor-pointer"
+              @click="handleChange(!value)"
+            >
+              <div class="space-y-0.5">
+                <FormLabel>{{ $t("team.form.is_organization.label") }}</FormLabel>
+                <FormDescription>{{
+                  $t("team.form.is_organization.description")
+                }}</FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  class="pointer-events-none"
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
+              </FormControl>
+            </div>
           </FormItem>
         </FormField>
       </div>
@@ -147,6 +176,7 @@ export default {
           z.object({
             team_name: z.string().min(1),
             short_name: z.string().min(1).max(5),
+            is_organization: z.boolean().optional(),
           }),
         ),
       }),
@@ -214,12 +244,16 @@ export default {
         this.me?.role === e_player_roles_enum.tournament_organizer
       );
     },
+    isOrganizationEditable() {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
+    },
   },
   methods: {
     populateTeam(team: any) {
       this.form.setValues({
         team_name: team.name,
         short_name: team.short_name,
+        is_organization: team.is_organization ?? false,
       });
       this.takeSnapshot();
     },
@@ -264,6 +298,9 @@ export default {
                     name: this.form.values.team_name,
                     short_name: this.form.values.short_name,
                     owner_steam_id: this.form.values.owner_steam_id,
+                    ...(this.isOrganizationEditable
+                      ? { is_organization: this.form.values.is_organization }
+                      : {}),
                   },
                 },
                 {

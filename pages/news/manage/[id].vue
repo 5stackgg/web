@@ -5,14 +5,11 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Skeleton } from "~/components/ui/skeleton";
 import MarkdownEditor from "~/components/news/MarkdownEditor.vue";
-import NewsCoverEditor from "~/components/news/NewsCoverEditor.vue";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import NewsArticleView from "~/components/news/NewsArticleView.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   ArrowLeft,
-  Upload,
-  Trash2,
-  Image as ImageIcon,
   Send,
   Undo2,
   Eye,
@@ -46,10 +43,10 @@ const coverImageUrl = ref<string | null>(null);
 const content = ref("");
 const viewCount = ref(0);
 
-const coverInput = ref<HTMLInputElement | null>(null);
-const { accept: ACCEPT } = useNewsImageUpload();
-const coverEditorOpen = ref(false);
-const coverEditorFile = ref<File | null>(null);
+const { upload: uploadNewsImage, accept: ACCEPT } = useNewsImageUpload();
+const clearCover = async () => {
+  coverImageUrl.value = null;
+};
 
 const canPostNews = computed(() => useApplicationSettingsStore().canPostNews);
 const saving = ref(false);
@@ -176,35 +173,6 @@ const unpublish = async () => {
   }
 };
 
-const triggerCoverPicker = () => {
-  coverInput.value?.click();
-};
-
-const openCoverEditor = (file: File) => {
-  coverEditorFile.value = file;
-  coverEditorOpen.value = true;
-};
-
-const onCoverSelected = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  input.value = "";
-  if (file) {
-    openCoverEditor(file);
-  }
-};
-
-const onCoverDrop = (event: DragEvent) => {
-  const file = event.dataTransfer?.files?.[0];
-  if (file) {
-    openCoverEditor(file);
-  }
-};
-
-const onCoverUploaded = (url: string) => {
-  coverImageUrl.value = url;
-};
-
 onMounted(() => {
   if (!canPostNews.value) {
     navigateTo("/news");
@@ -317,71 +285,19 @@ onMounted(() => {
 
           <div class="space-y-2">
             <Label>{{ $t("pages.news.form.cover_label") }}</Label>
-            <input
-              ref="coverInput"
-              type="file"
-              class="hidden"
+            <ImageUploadTile
+              aspect="cover"
+              fit="cover"
+              allow-fit-whole
+              allow-bg-removal
               :accept="ACCEPT"
-              @change="onCoverSelected"
+              :hint="$t('pages.news.form.cover_hint')"
+              :upload-fn="uploadNewsImage"
+              :delete-fn="clearCover"
+              :has-custom="!!coverImageUrl"
+              :current-src="coverImageUrl"
+              @uploaded="(url) => (coverImageUrl = url)"
             />
-            <div
-              role="button"
-              tabindex="0"
-              class="group relative flex aspect-video w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-dashed border-border/60 bg-background/40 transition-colors hover:border-[hsl(var(--tac-amber)/0.5)]"
-              @click="triggerCoverPicker"
-              @keydown.enter.prevent="triggerCoverPicker"
-              @dragover.prevent
-              @drop.prevent="onCoverDrop"
-            >
-              <img
-                v-if="coverImageUrl"
-                :src="coverImageUrl"
-                alt=""
-                referrerpolicy="no-referrer"
-                class="h-full w-full object-cover"
-              />
-              <div
-                v-else
-                class="flex flex-col items-center gap-2 px-4 text-center text-muted-foreground"
-              >
-                <ImageIcon class="h-7 w-7" />
-                <span class="text-sm">
-                  {{ $t("pages.news.form.cover_hint") }}
-                </span>
-                <span
-                  class="text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground/60"
-                >
-                  {{ $t("pages.news.form.cover_formats") }}
-                </span>
-              </div>
-
-              <div
-                v-if="coverImageUrl"
-                class="absolute right-2 top-2 flex gap-1.5"
-                @click.stop.prevent
-              >
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  class="h-7 w-7"
-                  :title="$t('pages.news.form.cover_replace')"
-                  @click="triggerCoverPicker"
-                >
-                  <Upload class="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  class="h-7 w-7 text-destructive"
-                  :title="$t('pages.news.form.cover_remove')"
-                  @click="coverImageUrl = null"
-                >
-                  <Trash2 class="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
           </div>
         </aside>
 
@@ -427,9 +343,4 @@ onMounted(() => {
     </div>
   </PageTransition>
 
-  <NewsCoverEditor
-    v-model:open="coverEditorOpen"
-    :file="coverEditorFile"
-    @uploaded="onCoverUploaded"
-  />
 </template>

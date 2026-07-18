@@ -20,6 +20,7 @@
     "@nuxtjs/apollo": "5.0.0-alpha.16",
     "@nuxtjs/i18n": "^9.5.4",
     "@nuxtjs/tailwindcss": "^6.14.0",
+    "@originjs/vite-plugin-federation": "^1.4.1",
     "@types/simple-peer": "^9.11.8",
     "@types/three": "^0.184.1",
     "@vite-pwa/nuxt": "^1.0.0",

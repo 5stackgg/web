@@ -127,6 +127,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "pages.settings.application.steam_presence.title",
         order: 2,
       },
+      {
+        path: "/settings/application/custom-pages",
+        labelKey: "pages.settings.application.custom_pages.title",
+        order: 3,
+      },
     ],
   },
   {

@@ -36,6 +36,8 @@ export const setupOptions = (
     map_pool_id: options.map_pool.id,
     regions: selectedRegions,
     tv_delay: options.tv_delay,
+    round_restart_delay: options.round_restart_delay ?? null,
+    halftime_pausematch: options.halftime_pausematch ?? false,
     check_in_setting: options.check_in_setting,
     auto_cancellation: options.auto_cancellation,
     auto_cancel_duration: options.auto_cancel_duration ?? null,
@@ -69,6 +71,8 @@ export function setupOptionsVariables(
     match_mode: string;
     map_pool_id?: string;
     tv_delay: number;
+    round_restart_delay?: number | null;
+    halftime_pausematch?: boolean;
     map_pool?: {
       id: string;
     };
@@ -180,6 +184,8 @@ export function setupOptionsVariables(
     ready_setting: values.ready_setting,
     tech_timeout_setting: values.tech_timeout_setting,
     tv_delay: values.tv_delay,
+    round_restart_delay: values.round_restart_delay ?? null,
+    halftime_pausematch: values.halftime_pausematch ?? false,
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
@@ -232,6 +238,8 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
     tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
     tv_delay: $("tv_delay", "Int!"),
+    round_restart_delay: $("round_restart_delay", "Int"),
+    halftime_pausematch: $("halftime_pausematch", "Boolean!"),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),

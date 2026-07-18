@@ -29,6 +29,7 @@ import {
   CalendarRange,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
+import CustomPageIcon from "~/components/custom-pages/CustomPageIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
@@ -317,6 +318,35 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
+
+        <template v-if="customPages.length > 0">
+          <Separator v-if="showSeparators" class="mx-4 w-auto" />
+
+          <SidebarGroup>
+            <SidebarGroupLabel>{{
+              $t("layouts.app_nav.custom_pages.title")
+            }}</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem
+                v-for="page in customPages"
+                :key="page.id"
+              >
+                <SidebarMenuButton as-child :tooltip="page.title">
+                  <NuxtLink
+                    :to="`/apps/${page.slug}`"
+                    :class="{
+                      'router-link-active':
+                        $route.path === `/apps/${page.slug}`,
+                    }"
+                  >
+                    <CustomPageIcon :name="page.icon" />
+                    {{ page.title }}
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </template>
 
         <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
@@ -1165,6 +1195,9 @@ export default {
     },
     eventsEnabled() {
       return useApplicationSettingsStore().eventsEnabled;
+    },
+    customPages() {
+      return useCustomPagesStore().visiblePages;
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;

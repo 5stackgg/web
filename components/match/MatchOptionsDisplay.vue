@@ -93,6 +93,20 @@ const BooleanPill = defineComponent({
                   }}</span>
                 </dd>
               </div>
+              <div
+                v-if="options.round_restart_delay != null"
+                class="settings-row"
+              >
+                <dt class="settings-row__label">{{
+                  $t("match.options.advanced.round_restart_delay.label")
+                }}</dt>
+                <dd class="settings-row__value tabular-nums">
+                  {{ options.round_restart_delay }}
+                  <span class="settings-row__unit">{{
+                    $t("match.options.seconds")
+                  }}</span>
+                </dd>
+              </div>
               <div class="settings-row">
                 <dt class="settings-row__label">{{
                   $t("match.options.overtime")
@@ -104,6 +118,14 @@ const BooleanPill = defineComponent({
                   $t("match.options.knife_round")
                 }}</dt>
                 <dd><BooleanPill :value="options.knife_round" /></dd>
+              </div>
+              <div class="settings-row">
+                <dt class="settings-row__label">{{
+                  $t("match.options.advanced.halftime_pausematch.label")
+                }}</dt>
+                <dd>
+                  <BooleanPill :value="options.halftime_pausematch ?? false" />
+                </dd>
               </div>
               <div class="settings-row">
                 <dt class="settings-row__label">{{

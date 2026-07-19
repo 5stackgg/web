@@ -335,8 +335,11 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   <NuxtLink
                     :to="`/apps/${page.slug}`"
                     :class="{
+                      // Prefix match: a plugin owns every route under its slug,
+                      // so its own sub-routes keep the nav entry lit.
                       'router-link-active':
-                        $route.path === `/apps/${page.slug}`,
+                        $route.path === `/apps/${page.slug}` ||
+                        $route.path.startsWith(`/apps/${page.slug}/`),
                     }"
                   >
                     <CustomPageIcon :name="page.icon" />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, shallowRef, watch } from "vue";
-import { useRoute } from "vue-router";
+import { computed, ref, shallowRef, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 // @ts-expect-error virtual module provided by @originjs/vite-plugin-federation
 import {
   __federation_method_setRemote,
@@ -12,6 +12,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import LoadingScreen from "~/components/LoadingScreen.vue";
 
 const route = useRoute();
+const router = useRouter();
 const customPages = useCustomPagesStore();
 const authStore = useAuthStore();
 
@@ -22,6 +23,38 @@ const status = ref<Status>("loading");
 const errorMessage = ref("");
 
 const registeredScopes = new Set<string>();
+
+// ---- the plugin routing contract --------------------------------------------
+// Everything under /apps/<slug>/ belongs to the plugin. The host owns the slug
+// segment (that's how it resolves WHICH remote to load) and hands the remote the
+// rest of the path plus a `navigate` callback — so a plugin can have real,
+// linkable, back-button-able routes without shipping its own router, and without
+// knowing it happens to be mounted under /apps/<slug>.
+// One catch-all page, not [slug]/[[...path]]: Nuxt mis-parses an optional
+// catch-all nested inside a dynamic directory — it emits "/apps/:slug()/:path(.*)*]"
+// with a stray bracket, which matches nothing. So take every segment and split
+// it here: first is the plugin slug, the rest is the plugin's own path.
+const segments = computed(() => {
+  const parts = route.params.slug;
+  return (Array.isArray(parts) ? parts : parts ? [parts] : []).filter(Boolean);
+});
+const slug = computed(() => segments.value[0] ?? "");
+const base = computed(() => `/apps/${slug.value}`);
+const subPath = computed(
+  () => `/${segments.value.slice(1).join("/")}`.replace(/\/+$/, "") || "/",
+);
+
+function navigate(
+  to: string,
+  options: { replace?: boolean; query?: Record<string, unknown> } = {},
+) {
+  // Plugins navigate in their OWN space ("/admin"), never the host's.
+  const path =
+    `${base.value}${to.startsWith("/") ? to : `/${to}`}`.replace(/\/$/, "") ||
+    base.value;
+  const target = { path, query: options.query ?? route.query };
+  return options.replace ? router.replace(target) : router.push(target);
+}
 
 async function loadPage(slug: string) {
   status.value = "loading";
@@ -69,15 +102,15 @@ async function loadPage(slug: string) {
 
 // The registry arrives via subscription; wait for the first payload before
 // resolving a slug so a cold load doesn't flash "not found".
+//
+// Watches the slug STRING (not route.params) on purpose: the plugin's own
+// navigation changes the path, and re-running loadPage there would tear down and
+// remount the remote on every route change it makes.
 watch(
-  () =>
-    [route.params.slug, customPages.initialized] as [
-      string | string[],
-      boolean,
-    ],
-  ([slug, initialized]) => {
-    if (initialized && typeof slug === "string") {
-      loadPage(slug);
+  () => `${customPages.initialized ? "1" : "0"}:${slug.value}`,
+  () => {
+    if (customPages.initialized && slug.value) {
+      loadPage(slug.value);
     }
   },
   { immediate: true },
@@ -92,6 +125,10 @@ watch(
       :is="RemoteComponent"
       v-else-if="status === 'ready'"
       :user="authStore.me"
+      :base="base"
+      :path="subPath"
+      :query="route.query"
+      :navigate="navigate"
     />
 
     <div

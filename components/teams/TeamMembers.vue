@@ -22,7 +22,7 @@ const appSettings = useApplicationSettingsStore();
 const eloSource = ref<"elo" | "cs2" | "faceit">("elo");
 const rankSources = computed(() => {
   const sources = [{ key: "elo", label: "5Stack" }];
-  if (appSettings.externalMatchesEnabled) {
+  if (appSettings.linkedAccountsEnabled) {
     sources.push({ key: "cs2", label: "CS2" });
   }
   if (appSettings.faceitEnabled) {

@@ -387,7 +387,7 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    const externalMatchesEnabled = computed(() => {
+    const linkedAccountsEnabled = computed(() => {
       // Default OFF — an admin must explicitly enable external/CS2 imports.
       return (
         settings.value?.find(
@@ -583,7 +583,7 @@ export const useApplicationSettingsStore = defineStore(
       newsLabel,
       postNewsRole,
       canPostNews,
-      externalMatchesEnabled,
+      linkedAccountsEnabled,
       faceitEnabled,
       scrimFinderEnabled,
       customPagesEnabled,

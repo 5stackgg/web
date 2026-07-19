@@ -1375,7 +1375,7 @@
         "description": "Detalhes da sua conta",
         "my_account": "Minha Conta",
         "api_keys": "Chaves API",
-        "external_matches": "Partidas Externas",
+        "linked_accounts": "Partidas Externas",
         "api_keys_management": {
           "your_api_keys": "Suas chaves de API",
           "api_keys_description": "Chaves de API permitem que você autentique com a API 5Stack programaticamente.",
@@ -1738,7 +1738,7 @@
           "title": "Highlights",
           "updated": "Configurações de highlights atualizadas"
         },
-        "external_matches": {
+        "linked_accounts": {
           "title": "Partidas Externas",
           "section": "Partidas Externas",
           "enabled": "Permitir importação de partidas de CS2",
@@ -1896,7 +1896,7 @@
           "description": "Mostrar um popup quando uma partida estiver pronta para você fazer o check-in. Quando desativado, você ainda pode fazer o check-in pelo botão na barra superior."
         }
       },
-      "external_matches": {
+      "linked_accounts": {
         "heading": "Partidas Externas",
         "heading_description": "Vincule seu histórico de partidas da Steam para que possamos importar automaticamente suas partidas oficiais de CS2 e seu rank Premier.",
         "checking_link": "Verificando link do histórico de partidas…",

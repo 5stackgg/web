@@ -112,17 +112,23 @@ Depend on `@5stack/ui` (published on npm). Use its Tailwind preset + tokens:
 ```js
 // tailwind.config.js
 module.exports = {
-  darkMode: ["class"],
-  presets: [require("@5stack/ui/tailwind-preset")],
+  presets: [require("@5stack/ui/tailwind-plugin-preset")],
   content: ["./index.html", "./src/**/*.{vue,ts}"],
 };
 ```
 
+```css
+/* src/style.css — scopes every rule to your plugin root so nothing
+   leaks onto the panel's chrome */
+@import "@5stack/ui/plugin.css";
+```
+
 ```ts
-import "@5stack/ui/tokens.css"; // standalone dev; the host's live branding
-                               // overrides these vars when embedded
 import { cn } from "@5stack/ui";
 ```
+
+Put `data-5stack-plugin` on your root element — the preset scopes all utilities
+to it. See [Styling](/plugins/styling) for why.
 
 ## 5. Deploy & register
 

@@ -1383,7 +1383,7 @@
       "account": {
         "my_account": "My Account",
         "api_keys": "API Keys",
-        "external_matches": "Linked Accounts",
+        "linked_accounts": "Linked Accounts",
         "api_keys_management": {
           "add_api_key": "Add API Key",
           "description": "Keys authenticate requests to the 5Stack API — treat them like passwords.",
@@ -1798,7 +1798,7 @@
           "title": "Highlights",
           "updated": "Updated highlight settings"
         },
-        "external_matches": {
+        "linked_accounts": {
           "title": "Match Imports",
           "section": "Match Imports",
           "enabled": "Allow CS2 match imports",
@@ -2076,7 +2076,7 @@
           "description": "Show a popup when your match or draft room is ready, with a quick link to jump to it. When disabled, you won't be redirected — reach it from the button in the top nav instead."
         }
       },
-      "external_matches": {
+      "linked_accounts": {
         "presence_title": "5stack Steam bot",
         "presence_description": "Add the bot as a Steam friend to auto-import your Competitive & Premier matches the moment they end.",
         "presence_connect": "Add bot as friend",

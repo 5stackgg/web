@@ -118,8 +118,8 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         order: 0,
       },
       {
-        path: "/settings/application/external-matches",
-        labelKey: "pages.settings.application.external_matches.title",
+        path: "/settings/application/linked-accounts",
+        labelKey: "pages.settings.application.linked_accounts.title",
         order: 1,
       },
       {

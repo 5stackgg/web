@@ -7,7 +7,7 @@ import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { useAuthStore } from "./AuthStore";
 import { useApplicationSettingsStore } from "./ApplicationSettings";
 
-export interface CustomPage {
+export interface Plugin {
   id: string;
   slug: string;
   title: string;
@@ -22,13 +22,13 @@ export interface CustomPage {
   nav_order: number;
 }
 
-export const useCustomPagesStore = defineStore("customPages", () => {
-  const pages = ref<CustomPage[]>([]);
+export const usePluginsStore = defineStore("plugins", () => {
+  const plugins = ref<Plugin[]>([]);
   // True once the subscription has delivered its first payload — lets the
   // loader page tell "registry still loading" apart from "slug not found".
   const initialized = ref(false);
 
-  const subscribeToCustomPages = async () => {
+  const subscribeToPlugins = async () => {
     const { subscribe } = useSubscriptionManager();
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
@@ -55,61 +55,61 @@ export const useCustomPagesStore = defineStore("customPages", () => {
     });
 
     subscribe(
-      "customPages:custom_pages",
+      "plugins:custom_pages",
       subscription.subscribe({
         next: ({ data }) => {
-          pages.value = data.custom_pages;
+          plugins.value = data.custom_pages;
           initialized.value = true;
         },
       }),
     );
   };
 
-  subscribeToCustomPages();
+  subscribeToPlugins();
 
-  const canSee = (page: CustomPage): boolean => {
-    if (!useApplicationSettingsStore().customPagesEnabled) {
+  const canSee = (plugin: Plugin): boolean => {
+    if (!useApplicationSettingsStore().pluginsEnabled) {
       return false;
     }
-    if (!page.enabled) {
+    if (!plugin.enabled) {
       return false;
     }
     // A null required_role is public — visible to guests too. Otherwise the
     // viewer must meet the role floor.
-    if (!page.required_role) {
+    if (!plugin.required_role) {
       return true;
     }
-    return useAuthStore().isRoleAbove(page.required_role);
+    return useAuthStore().isRoleAbove(plugin.required_role);
   };
 
-  const visiblePages = computed<CustomPage[]>(() => {
-    return pages.value.filter(canSee);
+  const visiblePlugins = computed<Plugin[]>(() => {
+    return plugins.value.filter(canSee);
   });
 
-  const defaultPage = computed<CustomPage | null>(() => {
-    return visiblePages.value.find((page) => page.is_default) ?? null;
+  const defaultPlugin = computed<Plugin | null>(() => {
+    return visiblePlugins.value.find((plugin) => plugin.is_default) ?? null;
   });
 
   // The master switch must also cover direct /apps/<slug> loads (not just the
   // nav), so a disabled feature resolves as not-found rather than executing
   // plugin code for bookmarked users.
-  const pageBySlug = (slug: string): CustomPage | null => {
-    if (!useApplicationSettingsStore().customPagesEnabled) {
+  const pluginBySlug = (slug: string): Plugin | null => {
+    if (!useApplicationSettingsStore().pluginsEnabled) {
       return null;
     }
-    return pages.value.find((page) => page.slug === slug) ?? null;
+    return plugins.value.find((plugin) => plugin.slug === slug) ?? null;
   };
 
   return {
-    pages,
+    plugins,
     initialized,
-    visiblePages,
-    defaultPage,
-    pageBySlug,
+    visiblePlugins,
+    defaultPlugin,
+    pluginBySlug,
     canSee,
   };
 });
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useCustomPagesStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(usePluginsStore, import.meta.hot));
 }

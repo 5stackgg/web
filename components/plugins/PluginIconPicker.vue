@@ -7,8 +7,8 @@ import {
 } from "~/components/ui/popover";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import CustomPageIcon from "./CustomPageIcon.vue";
-import { CUSTOM_PAGE_ICON_NAMES } from "./customPageIcons";
+import PluginIcon from "./PluginIcon.vue";
+import { PLUGIN_ICON_NAMES } from "./pluginIcons";
 
 const model = defineModel<string>({ default: "" });
 const open = ref(false);
@@ -17,8 +17,8 @@ const query = ref("");
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase();
   return q
-    ? CUSTOM_PAGE_ICON_NAMES.filter((name) => name.includes(q))
-    : CUSTOM_PAGE_ICON_NAMES;
+    ? PLUGIN_ICON_NAMES.filter((name) => name.includes(q))
+    : PLUGIN_ICON_NAMES;
 });
 
 // A URL or inline SVG (e.g. supplied by a plugin manifest) rather than a name.
@@ -38,7 +38,7 @@ function pick(name: string) {
     <div
       class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border text-base"
     >
-      <CustomPageIcon :name="model" />
+      <PluginIcon :name="model" />
     </div>
     <Popover v-model:open="open">
       <PopoverTrigger as-child>
@@ -49,9 +49,9 @@ function pick(name: string) {
         >
           {{
             isCustom
-              ? $t("pages.settings.application.custom_pages.icon_picker.custom")
+              ? $t("pages.settings.application.plugins.icon_picker.custom")
               : model ||
-                $t("pages.settings.application.custom_pages.icon_picker.choose")
+                $t("pages.settings.application.plugins.icon_picker.choose")
           }}
         </Button>
       </PopoverTrigger>
@@ -59,7 +59,7 @@ function pick(name: string) {
         <Input
           v-model="query"
           :placeholder="
-            $t('pages.settings.application.custom_pages.icon_picker.search')
+            $t('pages.settings.application.plugins.icon_picker.search')
           "
           class="mb-2"
         />
@@ -73,19 +73,19 @@ function pick(name: string) {
             :class="{ 'border-primary bg-accent': model === name }"
             @click="pick(name)"
           >
-            <CustomPageIcon :name="name" class="h-4 w-4" />
+            <PluginIcon :name="name" class="h-4 w-4" />
           </button>
         </div>
         <div class="mt-2 space-y-1 border-t pt-2">
           <p class="text-xs text-muted-foreground">
             {{
-              $t("pages.settings.application.custom_pages.icon_picker.custom_hint")
+              $t("pages.settings.application.plugins.icon_picker.custom_hint")
             }}
           </p>
           <Input
             v-model="model"
             :placeholder="
-              $t('pages.settings.application.custom_pages.icon_picker.custom_placeholder')
+              $t('pages.settings.application.plugins.icon_picker.custom_placeholder')
             "
           />
         </div>

@@ -2,9 +2,9 @@
 import { computed } from "vue";
 import DOMPurify from "dompurify";
 import {
-  CUSTOM_PAGE_ICONS,
-  DEFAULT_CUSTOM_PAGE_ICON,
-} from "./customPageIcons";
+  PLUGIN_ICONS,
+  DEFAULT_PLUGIN_ICON,
+} from "./pluginIcons";
 
 const props = defineProps<{ name?: string | null }>();
 
@@ -32,7 +32,7 @@ const sanitizedSvg = computed(() =>
 
 const icon = computed(
   () =>
-    CUSTOM_PAGE_ICONS[value.value.toLowerCase()] ?? DEFAULT_CUSTOM_PAGE_ICON,
+    PLUGIN_ICONS[value.value.toLowerCase()] ?? DEFAULT_PLUGIN_ICON,
 );
 </script>
 

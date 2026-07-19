@@ -412,9 +412,9 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    // Custom Pages (micro-frontend framework): off by default (absent row =
+    // Plugins (micro-frontend framework): off by default (absent row =
     // disabled). Master switch gating the nav section + /apps/[slug] routes.
-    const customPagesEnabled = computed(() => {
+    const pluginsEnabled = computed(() => {
       return (
         settings.value?.find(
           (setting) => setting.name === "public.custom_pages_enabled",
@@ -586,7 +586,7 @@ export const useApplicationSettingsStore = defineStore(
       linkedAccountsEnabled,
       faceitEnabled,
       scrimFinderEnabled,
-      customPagesEnabled,
+      pluginsEnabled,
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,

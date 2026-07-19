@@ -76,10 +76,10 @@ import {
 } from "lucide-vue-next";
 import type { Component } from "vue";
 
-// Curated, offline icon set for custom pages. The picker searches these names;
+// Curated, offline icon set for plugins. The picker searches these names;
 // anything unrecognised falls back to Puzzle. Kept explicit (rather than
 // lucide's full ~1.5k-icon set) so the bundle stays small.
-export const CUSTOM_PAGE_ICONS: Record<string, Component> = {
+export const PLUGIN_ICONS: Record<string, Component> = {
   puzzle: Puzzle,
   package: Package,
   boxes: Boxes,
@@ -156,6 +156,6 @@ export const CUSTOM_PAGE_ICONS: Record<string, Component> = {
   link: Link,
 };
 
-export const CUSTOM_PAGE_ICON_NAMES = Object.keys(CUSTOM_PAGE_ICONS);
+export const PLUGIN_ICON_NAMES = Object.keys(PLUGIN_ICONS);
 
-export const DEFAULT_CUSTOM_PAGE_ICON = Puzzle;
+export const DEFAULT_PLUGIN_ICON = Puzzle;

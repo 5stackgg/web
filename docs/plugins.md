@@ -31,7 +31,8 @@ it.
   "remoteEntry": "/assets/remoteEntry.js",
   "scope": "hello",
   "module": "./App",
-  "requiredRole": null
+  "requiredRole": null,
+  "deployments": ["example-plugin"]
 }
 ```
 
@@ -44,6 +45,7 @@ it.
 | `scope` | ✓ | Your Federation container name (`name` in the federation plugin). |
 | `module` | ✓ | Exposed module path, e.g. `./App`. |
 | `requiredRole` |  | `null` = public, or a role (`user`, `moderator`, `administrator`, …). |
+| `deployments` |  | Kubernetes Deployment names in the `5stack` namespace to watch for image updates. See [Updates](#6-updates). |
 
 > Detect fetches the manifest **server-side** (through the 5stack API), so your
 > manifest does not need any CORS headers. Your `remoteEntry.js`, however, is
@@ -59,31 +61,72 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import federation from "@originjs/vite-plugin-federation";
 import cssInjectedByJs from "vite-plugin-css-injected-by-js";
+import * as vueNs from "vue";
+
+// Borrow the panel's Vue instead of bundling a second copy. Resolves bare
+// `vue` to a tiny synchronous module that reads window.__5stack_shared__.
+const VIRTUAL = "\0__5stack_shared__:";
+const VUE_EXPORTS = Object.keys(vueNs).filter((n) => n !== "default");
+
+function sharedGlobals() {
+  return {
+    name: "5stack-shared-globals",
+    enforce: "pre" as const,
+    resolveId: (id: string) => (id === "vue" ? `${VIRTUAL}vue` : null),
+    load(id: string) {
+      if (!id.startsWith(VIRTUAL)) return null;
+      return [
+        `const shared = globalThis.__5stack_shared__;`,
+        `const m = shared && shared.vue;`,
+        `if (!m) throw new Error("[5stack] panel did not publish a shared Vue");`,
+        `export default m.default ?? m;`,
+        ...VUE_EXPORTS.map((n) => `export const ${n} = m[${JSON.stringify(n)}];`),
+      ].join("\n");
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
+    sharedGlobals(),
     vue(),
     cssInjectedByJs(), // Federation shares JS, not CSS — inject yours on load
     federation({
       name: "hello",
       filename: "remoteEntry.js",
       exposes: { "./App": "./src/App.vue" },
-      shared: {
-        vue: { singleton: true, requiredVersion: false },
-        "reka-ui": { singleton: true, requiredVersion: false },
-        "@5stack/ui": { singleton: true, requiredVersion: false },
-        // ...only what you import; each must be installed
-      },
+      // No `shared` — see the warning below.
     }),
   ],
+  optimizeDeps: { exclude: ["vue"] },
   build: { target: "esnext", cssCodeSplit: false },
 });
 ```
 
-**Version lockstep:** pin `vue`, `reka-ui`, `pinia`, `@5stack/ui` to the same
-versions the panel uses, or Federation loads a second copy and reactivity /
-component context break. Only list a package in `shared` if you actually import
-it (Federation builds an entry for each).
+> **Do not add `shared` to `federation()`.** It looks like the obvious way to
+> share Vue, and it is how this guide used to read — but Federation implements
+> sharing by rewriting every import of a shared package into
+> `await importShared(...)`, which turns the importing chunk into an async
+> module. Safari throws `Cannot access '<x>' before initialization` whenever
+> several modules import the same top-level-await module concurrently
+> ([WebKit 242740](https://bugs.webkit.org/show_bug.cgi?id=242740), fixed only
+> in STP 243+, so shipping iOS Safari still has it). The panel hit exactly this:
+> 308 of its 474 chunks had become async, and the app was unusable on iOS. See
+> also [originjs/vite-plugin-federation#403](https://github.com/originjs/vite-plugin-federation/issues/403).
+
+**Only `vue` is shared**, because it is the one package where a second copy
+breaks anything — reactivity and component context. Everything else
+(`reka-ui`, `lucide-vue-next`, `@5stack/ui`, …) you simply bundle: install it,
+import it, done. Whatever you bundle that itself imports Vue resolves through
+the same bridge, so there is still exactly one Vue instance in the page. Your
+remote gets a bit larger; in exchange there is no version negotiation to get
+wrong and no top-level await.
+
+**Version lockstep still matters for `@5stack/ui`** — its components are built
+against the panel's `reka-ui`/Tailwind tokens, so track the panel's version.
+`vue` no longer needs pinning: you get the panel's instance whatever you have
+installed locally (your local copy is used only for typings and to enumerate
+export names at build time).
 
 ## 3. Receive the user
 
@@ -139,3 +182,46 @@ to it. See [Styling](/plugins/styling) for why.
 
 That's it — your app appears in the sidebar at `/apps/<slug>`, rendered
 natively.
+
+## 6. Updates
+
+List your Deployment names in `deployments` and the panel keeps them up to date
+the same way it does its own services — the update appears in the header bell
+alongside `api` and `web`, and the same **Update** button rolls it out.
+
+```json
+"deployments": ["inventory-frontend", "inventory-backend"]
+```
+
+Every minute the panel reads each Deployment, takes the image off its pod spec,
+asks that image's registry what digest the tag points at now, and compares it to
+the digest the running pod actually pulled. Note that it reads the image from
+the **live Deployment**, not from this manifest — so switching registries or
+renaming an image needs no manifest change. Only the names are declared here.
+
+For that to work your Deployment must **pin a moving tag** and re-pull it:
+
+```yaml
+image: ghcr.io/you/your-plugin:latest
+imagePullPolicy: Always
+```
+
+The tag never changes, so "updating" is just restarting the pod — which is
+exactly what the panel does. A digest-pinned image (`@sha256:…`) is skipped:
+it already names exact bytes, so it can never be out of date.
+
+**Release channels come free.** The deployed tag *is* the channel — deploy
+`:beta` and you are compared against beta digests. There is nothing to configure.
+
+Caveats:
+
+- **Names are validated.** First-party deployments (`api`, `web`, `hasura`,
+  `redis`, …) are rejected — a plugin can't get the panel to restart the panel.
+- **In-cluster only.** A Deployment that doesn't exist in the `5stack` namespace
+  is skipped. Plugins hosted elsewhere don't get update detection, since the
+  panel has nothing it could restart.
+- **Public registries only.** Private registries need a pull token the panel
+  doesn't have; those deployments are skipped with a warning in the API log.
+- **Deployments only.** DaemonSets and StatefulSets aren't supported.
+- Changing `deployments` later means hitting **Detect** again in the panel — the
+  manifest is read at registration, not continuously.

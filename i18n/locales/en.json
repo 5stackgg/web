@@ -2046,7 +2046,10 @@
             "exposed_module_hint": "The exposed module path, e.g. ./App.",
             "nav_group_placeholder": "Apps",
             "nav_group_hint": "Optional heading to group this under in the sidebar. Leave blank for the default Apps group.",
-            "nav_order_hint": "Lower numbers appear first. Leave 0 if you don't care."
+            "nav_order_hint": "Lower numbers appear first. Leave 0 if you don't care.",
+            "deployments": "Deployments",
+            "deployments_placeholder": "inventory-frontend, inventory-backend",
+            "deployments_hint": "Kubernetes deployment names to watch for image updates. Comma separated. Updates show in the header alongside 5stack's own services."
           },
           "detect_label": "Auto-detect from URL",
           "detect": "Detect",

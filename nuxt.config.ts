@@ -337,12 +337,27 @@ export default defineNuxtConfig({
     },
     // Plugins host: enables the `__federation__` virtual module so
     // `pages/apps/[slug].vue` can register + load plugin remotes at runtime.
-    // Remotes are empty here — every remote is added dynamically from the
-    // custom_pages registry, so new plugins need no web rebuild.
+    // Every real remote is added dynamically from the custom_pages registry, so
+    // new plugins need no web rebuild.
     plugins: [
       federation({
         name: "host",
-        remotes: {},
+        remotes: {
+          // NOT optional, and never actually loaded. vite-plugin-federation
+          // decides `isHost` from `remotes` being non-empty, and only a host
+          // gets `__rf_placeholder__shareScope` in the `__federation__` virtual
+          // module substituted with the real shared-scope map. With `remotes:
+          // {}` the production bundle ships that placeholder as a bare
+          // identifier, so the moment `wrapShareScope()` runs — i.e. the first
+          // time any plugin remote loads — it throws "__rf_placeholder__shareScope
+          // is not defined". Dev is unaffected (its transform isn't gated on
+          // isHost), so this only ever shows up in a built deploy.
+          __federation_host_placeholder__: {
+            external: "http://localhost/__federation_placeholder__.js",
+            format: "esm",
+            from: "vite",
+          },
+        },
         shared: FEDERATION_SHARED,
       }),
     ],

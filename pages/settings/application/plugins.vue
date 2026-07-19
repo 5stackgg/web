@@ -403,6 +403,28 @@ definePageMeta({
                   </p>
                 </div>
               </div>
+
+              <div class="space-y-2">
+                <Label class="flex items-center gap-1">
+                  {{
+                    $t("pages.settings.application.plugins.fields.deployments")
+                  }}
+                  <span class="text-xs font-normal text-muted-foreground">{{
+                    $t("pages.settings.application.plugins.optional")
+                  }}</span>
+                </Label>
+                <Input
+                  v-model="form.deployments"
+                  :placeholder="
+                    $t('pages.settings.application.plugins.fields.deployments_placeholder')
+                  "
+                />
+                <p class="text-xs text-muted-foreground">
+                  {{
+                    $t("pages.settings.application.plugins.fields.deployments_hint")
+                  }}
+                </p>
+              </div>
             </CollapsibleContent>
           </Collapsible>
 
@@ -446,7 +468,7 @@ import {
   settings_constraint,
   settings_update_column,
 } from "~/generated/zeus";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import type { Plugin } from "~/stores/Plugins";
 
@@ -467,6 +489,7 @@ interface PluginForm {
   is_default: boolean;
   nav_group: string;
   nav_order: number;
+  deployments: string;
 }
 
 const emptyForm = (): PluginForm => ({
@@ -482,6 +505,7 @@ const emptyForm = (): PluginForm => ({
   is_default: false,
   nav_group: "",
   nav_order: 0,
+  deployments: "",
 });
 
 export default {
@@ -494,7 +518,15 @@ export default {
       detecting: false,
       detectError: "",
       form: emptyForm(),
+      // Kept out of the shared Plugins store on purpose: that subscription runs
+      // for every visitor, and `deployments` is an administrator-only column —
+      // selecting it there would error the subscription and kill plugin nav for
+      // everyone below admin.
+      deploymentsByPlugin: {} as Record<string, string[]>,
     };
+  },
+  mounted() {
+    void this.fetchDeployments();
   },
   computed: {
     pluginsEnabled() {
@@ -513,6 +545,23 @@ export default {
         .split("_")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
+    },
+    async fetchDeployments() {
+      const { data } = await (this as any).$apollo.query({
+        query: generateQuery({
+          custom_pages: [{}, { id: true, deployments: true }],
+        }),
+        fetchPolicy: "network-only",
+      });
+
+      this.deploymentsByPlugin = Object.fromEntries(
+        (data.custom_pages ?? []).map(
+          ({ id, deployments }: { id: string; deployments: unknown }) => [
+            id,
+            Array.isArray(deployments) ? deployments : [],
+          ],
+        ),
+      );
     },
     openCreate() {
       this.form = emptyForm();
@@ -535,6 +584,7 @@ export default {
         is_default: plugin.is_default,
         nav_group: plugin.nav_group ?? "",
         nav_order: plugin.nav_order,
+        deployments: (this.deploymentsByPlugin[plugin.id] ?? []).join(", "),
       };
       this.detectUrl = "";
       this.detectError = "";
@@ -576,6 +626,11 @@ export default {
         if (manifest.requiredRole) {
           this.form.required_role = manifest.requiredRole;
         }
+        // Only overwrite when the manifest actually declares deployments — an
+        // older plugin that doesn't shouldn't wipe what an admin typed by hand.
+        if (manifest.deployments?.length) {
+          this.form.deployments = manifest.deployments.join(", ");
+        }
       } catch (error) {
         this.detectError =
           error instanceof Error ? error.message : String(error);
@@ -612,6 +667,7 @@ export default {
       this.submitting = true;
       try {
         await this.persist();
+        await this.fetchDeployments();
         this.dialogOpen = false;
         toast({
           title: this.$t(
@@ -638,6 +694,10 @@ export default {
         is_default: this.form.is_default,
         nav_group: this.form.nav_group || null,
         nav_order: this.form.nav_order ?? 0,
+        deployments: this.form.deployments
+          .split(",")
+          .map((name) => name.trim())
+          .filter(Boolean),
       };
 
       // The DB allows only one is_default row (partial unique index); clear any

@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from "node:url";
 import federation from "@originjs/vite-plugin-federation";
-import { FEDERATION_SHARED } from "./lib/federation.shared";
 
 const sw = process.env.SW === "true";
 
@@ -358,12 +357,25 @@ export default defineNuxtConfig({
             from: "vite",
           },
         },
+        // Deliberately empty — do NOT add packages here.
+        //
+        // Every entry makes vite-plugin-federation rewrite that package's
+        // imports into `await importShared(...)`, turning most of the app into
+        // async modules (it was 308 of 474 chunks). Safari then throws
+        // "Cannot access '<x>' before initialization" whenever several modules
+        // import the same top-level-await module at once — WebKit bug 242740,
+        // fixed only in STP 243+, so shipping iOS Safari still has it. Upstream
+        // has no fix either: originjs/vite-plugin-federation#403 is the same
+        // catch-22, open with no root-cause response.
+        //
+        // Remotes get the panel's Vue from `window.__5stack_shared__` instead —
+        // see plugins/shared-globals.client.ts and docs/plugins.md. `remotes`
+        // above stays non-empty purely so this build still counts as a host.
         shared: {},
       }),
     ],
     build: {
       target: "esnext",
-      minify: false,
     },
   },
 });

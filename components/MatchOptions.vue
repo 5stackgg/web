@@ -806,6 +806,67 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     <FormMessage />
                   </FormItem>
                 </FormField>
+
+                <FormField v-slot="{ value }" name="round_restart_delay">
+                  <FormItem>
+                    <SettingHeader>{{
+                      $t("match.options.advanced.round_restart_delay.label")
+                    }}</SettingHeader>
+                    <NumberField
+                      class="gap-2"
+                      :min="0"
+                      :max="60"
+                      :model-value="value"
+                      @update:model-value="
+                        (delay) => {
+                          form.setFieldValue('round_restart_delay', delay);
+                        }
+                      "
+                    >
+                      <NumberFieldContent>
+                        <NumberFieldDecrement />
+                        <FormControl>
+                          <NumberFieldInput />
+                        </FormControl>
+                        <NumberFieldIncrement />
+                      </NumberFieldContent>
+                    </NumberField>
+                    <FormDescription>
+                      {{ $t("match.options.advanced.round_restart_delay.range") }}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="halftime_pausematch"
+                >
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-0.5">
+                        <SettingHeader>{{
+                          $t("match.options.advanced.halftime_pausematch.label")
+                        }}</SettingHeader>
+                        <FormDescription>{{
+                          $t(
+                            "match.options.advanced.halftime_pausematch.description",
+                          )
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
               </div>
             </Card>
 

@@ -7,99 +7,130 @@ import { Badge } from "~/components/ui/badge";
 
 <template>
   <div
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
+    class="group cursor-pointer rounded-lg border border-border bg-muted/30 transition-[border-color,transform,background-color] duration-200 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-muted/20"
     @click="navigateToTournament(tournament.id, $event)"
   >
-    <div class="p-2 sm:p-6 flex flex-col gap-3 sm:gap-4">
-      <!-- Tournament Header -->
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex-1 min-w-0">
-          <h3 class="font-semibold text-lg text-foreground truncate mb-2">
-            {{ tournament.name }}
-          </h3>
-
-          <!-- Type, Description, and Stage Badges - Second Line -->
-          <div class="flex flex-wrap items-center gap-2 mb-2">
-            <Badge variant="secondary" class="text-xs shrink-0">
-              {{ tournament.options.type }}
-            </Badge>
-            <!-- Multiple stages: show each stage with best_of -->
-            <template v-if="stageCount > 1">
-              <Badge
-                v-for="stage in sortedStages"
-                :key="stage.id"
-                variant="outline"
-                class="text-xs shrink-0"
-              >
-                {{ getStageLabel(stage) }}
-              </Badge>
-            </template>
-            <!-- Single stage: show stage type with best_of -->
-            <Badge
-              v-if="singleStageType"
-              variant="outline"
-              class="text-xs shrink-0"
-            >
-              {{ singleStageTypeWithBestOf }}
-            </Badge>
-          </div>
-
-          <!-- Description -->
-          <p
-            v-if="tournament.description"
-            class="text-sm text-muted-foreground line-clamp-2"
-          >
-            {{ tournament.description }}
-          </p>
-        </div>
-
-        <div class="flex items-center gap-3 flex-shrink-0">
-          <Badge variant="outline" class="text-xs">
-            {{ tournament.e_tournament_status.description }}
-          </Badge>
-          <div class="text-sm text-muted-foreground">
-            <TimeAgo :date="tournament.start"></TimeAgo>
-          </div>
-        </div>
+    <div class="flex gap-3 p-3 sm:gap-4 sm:p-4">
+      <!-- Leading media: banner (or deterministic gradient) with logo overlay -->
+      <div
+        class="relative hidden h-[76px] w-[132px] shrink-0 overflow-hidden rounded-md border border-border sm:block"
+      >
+        <img
+          v-if="bannerUrl"
+          :src="bannerUrl"
+          :alt="tournament.name"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          v-else
+          class="absolute inset-0"
+          :style="{ background: fallbackGradient }"
+        ></div>
+        <div class="absolute inset-0 bg-black/30"></div>
+        <img
+          v-if="logoUrl"
+          :src="logoUrl"
+          :alt="tournament.name"
+          class="absolute bottom-1 left-1 h-8 w-8 rounded border border-white/20 bg-black/50 object-contain backdrop-blur-sm"
+        />
       </div>
 
-      <!-- Map Pool and Teams Info -->
-      <div
-        class="flex items-center justify-between gap-4 pt-2 border-t border-border/50"
-      >
-        <!-- Map Pool -->
-        <div class="flex-1 min-w-0">
-          <div
-            v-if="
-              tournament.options?.map_pool &&
-              tournament.options.map_pool.maps?.length > 0
-            "
-            class="flex flex-wrap gap-2 items-center"
-          >
-            <span
-              class="text-xs text-muted-foreground uppercase tracking-wide shrink-0"
+      <!-- Content -->
+      <div class="flex min-w-0 flex-1 flex-col gap-2">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <img
+              v-if="logoUrl"
+              :src="logoUrl"
+              :alt="tournament.name"
+              class="mb-1.5 h-9 w-9 rounded-md border border-border bg-muted/30 object-contain sm:hidden"
+            />
+            <h3
+              class="truncate text-base font-semibold text-foreground sm:text-lg"
             >
-              {{ $t("tournament.table.maps_label") }}
-            </span>
-            <div class="flex flex-wrap gap-2">
-              <MiniMapDisplay
-                :map="map"
-                v-for="map in tournament.options.map_pool.maps"
-                :key="map.id"
-              />
+              {{ tournament.name }}
+            </h3>
+            <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+              <Badge variant="secondary" class="shrink-0 text-xs">
+                {{ tournament.options.type }}
+              </Badge>
+              <template v-if="stageCount > 1">
+                <Badge
+                  v-for="stage in sortedStages"
+                  :key="stage.id"
+                  variant="outline"
+                  class="shrink-0 text-xs"
+                >
+                  {{ getStageLabel(stage) }}
+                </Badge>
+              </template>
+              <Badge
+                v-if="singleStageType"
+                variant="outline"
+                class="shrink-0 text-xs"
+              >
+                {{ singleStageTypeWithBestOf }}
+              </Badge>
+              <Badge
+                v-for="category in categories"
+                :key="category.category"
+                variant="outline"
+                class="shrink-0 text-xs"
+              >
+                {{
+                  category.e_tournament_category?.description ??
+                  category.category
+                }}
+              </Badge>
+            </div>
+          </div>
+
+          <div class="flex shrink-0 flex-col items-end gap-1">
+            <Badge variant="outline" class="text-xs">
+              {{ tournament.e_tournament_status.description }}
+            </Badge>
+            <div class="text-xs text-muted-foreground">
+              <TimeAgo :date="tournament.start"></TimeAgo>
             </div>
           </div>
         </div>
 
-        <!-- Teams Count -->
+        <!-- Map Pool and Teams Info -->
         <div
-          class="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0"
+          class="mt-auto flex items-center justify-between gap-4 border-t border-border/50 pt-2"
         >
-          <UsersIcon class="h-4 w-4" />
-          <span>
-            {{ tournament.teams_aggregate?.aggregate?.count || 0 }}
-            {{ $t("tournament.table.teams_joined") }}
-          </span>
+          <div class="min-w-0 flex-1">
+            <div
+              v-if="
+                tournament.options?.map_pool &&
+                tournament.options.map_pool.maps?.length > 0
+              "
+              class="flex flex-wrap items-center gap-2"
+            >
+              <span
+                class="shrink-0 text-xs uppercase tracking-wide text-muted-foreground"
+              >
+                {{ $t("tournament.table.maps_label") }}
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <MiniMapDisplay
+                  :map="map"
+                  v-for="map in tournament.options.map_pool.maps"
+                  :key="map.id"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="flex shrink-0 items-center gap-2 text-sm text-muted-foreground"
+          >
+            <UsersIcon class="h-4 w-4" />
+            <span>
+              {{ tournament.teams_aggregate?.aggregate?.count || 0 }}
+              {{ $t("tournament.table.teams_joined") }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -115,6 +146,25 @@ export default {
     },
   },
   computed: {
+    logoUrl() {
+      const logo = this.tournament?.logo;
+      if (!logo) {
+        return null;
+      }
+
+      return `https://${useRuntimeConfig().public.apiDomain}/${logo}`;
+    },
+    bannerUrl() {
+      const banner = this.tournament?.banner;
+      if (!banner) {
+        return null;
+      }
+
+      return `https://${useRuntimeConfig().public.apiDomain}/${banner}`;
+    },
+    categories() {
+      return this.tournament?.categories || [];
+    },
     stageCount() {
       return this.tournament?.stages?.length || 0;
     },

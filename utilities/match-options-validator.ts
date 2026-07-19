@@ -24,6 +24,8 @@ export default function matchOptionsValidator(
     lan: z.boolean().default(false),
     coaches: z.boolean().default(false),
     tv_delay: z.number().min(0).max(120).default(115),
+    round_restart_delay: z.number().min(0).max(60).nullable().optional(),
+    halftime_pausematch: z.boolean().default(false),
     knife_round: z.boolean().default(true),
     default_models: z.boolean().default(defaultPlayerModels),
     overtime: z.boolean().default(true),

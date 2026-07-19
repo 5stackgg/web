@@ -77,16 +77,16 @@ const isHome = computed(() => {
 });
 
 const navMenuClasses =
-  "ml-1 [&>div:last-child>*]:!mt-0 [&>div:last-child>*]:!rounded-none [&>div:last-child>*]:!border-0 [&>div:last-child>*]:!bg-transparent [&>div:last-child>*]:!shadow-none";
+  "ml-0 min-w-0 sm:ml-1 [&>div:last-child>*]:!mt-0 [&>div:last-child>*]:!rounded-none [&>div:last-child>*]:!border-0 [&>div:last-child>*]:!bg-transparent [&>div:last-child>*]:!shadow-none";
 
 const navTickClasses =
-  "nav-link-tick h-[5px] w-[5px] shrink-0 rotate-45 bg-[hsl(var(--topnav-foreground)/0.3)] transition-colors duration-150";
+  "nav-link-tick hidden h-[5px] w-[5px] shrink-0 rotate-45 bg-[hsl(var(--topnav-foreground)/0.3)] transition-colors duration-150 sm:block";
 
 const navLinkClasses =
-  "group relative inline-flex items-center gap-[0.55rem] rounded-none border-0 bg-transparent px-[0.85rem] py-2 font-sans text-[0.78rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--topnav-foreground)/0.78)] transition-[color,background-color,box-shadow] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none [&.router-link-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-active]:text-topnav-foreground [&.router-link-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] [&.router-link-exact-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-exact-active]:text-topnav-foreground [&.router-link-exact-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus-visible:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-exact-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))]";
+  "group relative inline-flex items-center gap-[0.35rem] rounded-none border-0 bg-transparent px-[0.4rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.08em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color,box-shadow] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus-visible:bg-[hsl(var(--tac-amber)/0.08)] focus-visible:text-topnav-foreground focus-visible:outline-none [&.router-link-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-active]:text-topnav-foreground [&.router-link-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] [&.router-link-exact-active]:bg-[hsl(var(--tac-amber)/0.1)] [&.router-link-exact-active]:text-topnav-foreground [&.router-link-exact-active]:shadow-[inset_0_-2px_0_hsl(var(--tac-amber))] hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus-visible:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&.router-link-exact-active>.nav-link-tick]:bg-[hsl(var(--tac-amber))]";
 
 const navTriggerClasses =
-  "nav-trigger-anchor group gap-[0.55rem] h-auto rounded-none border-0 bg-transparent px-[0.85rem] py-2 font-sans text-[0.78rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--topnav-foreground)/0.78)] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
+  "nav-trigger-anchor group gap-[0.35rem] h-auto rounded-none border-0 bg-transparent px-[0.4rem] py-2 font-sans text-[0.68rem] font-bold uppercase leading-none tracking-[0.08em] text-[hsl(var(--topnav-foreground)/0.78)] sm:gap-[0.55rem] sm:px-[0.85rem] sm:text-[0.78rem] sm:tracking-[0.18em] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
 
 const navBadgeClasses =
   "inline-flex min-w-[1.3rem] items-center justify-center gap-[0.3rem] border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] px-[0.4rem] py-[0.15rem] font-sans text-[0.62rem] font-bold leading-none tracking-[0.12em] text-[hsl(var(--tac-amber))] [font-variant-numeric:tabular-nums]";
@@ -129,9 +129,9 @@ const heroTitleClasses =
 const heroSubtitleClasses =
   "relative text-[0.72rem] leading-[1.35] text-[hsl(var(--topnav-primary-foreground)/0.65)]";
 
-const topNavRightClasses = "flex items-center gap-2";
+const topNavRightClasses = "flex shrink-0 items-center gap-1 sm:gap-2";
 const profileButtonClasses =
-  "inline-flex items-center gap-1.5 border border-transparent bg-transparent px-[0.6rem] py-[0.35rem] text-topnav-foreground transition-[background-color,border-color,color] duration-150 hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
+  "inline-flex shrink-0 items-center gap-1 border border-transparent bg-transparent px-[0.2rem] py-[0.35rem] sm:gap-1.5 sm:px-[0.6rem] text-topnav-foreground transition-[background-color,border-color,color] duration-150 hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
 const loginButtonClasses =
   "group relative inline-flex items-center gap-[0.45rem] rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--tac-amber)/0.06)_100%)] px-[0.8rem] py-[0.45rem] font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em] text-topnav-foreground transition-[background-color,color,transform] duration-150 hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.28)_0%,hsl(var(--tac-amber)/0.14)_100%)] active:translate-y-px sm:px-3 sm:py-[0.35rem] sm:text-[0.65rem] sm:tracking-[0.18em]";
 const loginArrowClasses =
@@ -149,9 +149,9 @@ const loginArrowClasses =
     ></div>
 
     <div
-      class="relative flex h-14 min-h-14 items-center justify-between gap-4 px-2.5 sm:h-16 sm:min-h-16 sm:px-4"
+      class="relative flex h-14 min-h-14 items-center justify-between gap-1 px-2 sm:h-16 sm:min-h-16 sm:gap-4 sm:px-4"
     >
-      <div class="flex min-w-0 items-center gap-3">
+      <div class="flex min-w-0 items-center gap-1 sm:gap-3">
         <NuxtLink
           v-if="!isMobile"
           :to="homePath"
@@ -193,7 +193,7 @@ const loginArrowClasses =
         <SystemStatus v-if="!isMobile" />
 
         <NavigationMenu :class="navMenuClasses">
-          <NavigationMenuList class="flex items-center gap-1">
+          <NavigationMenuList class="flex items-center gap-0 sm:gap-1">
             <NavigationMenuItem v-if="me" class="hidden md:block">
               <NavigationMenuLink as-child>
                 <NuxtLink to="/me" :class="navLinkClasses">

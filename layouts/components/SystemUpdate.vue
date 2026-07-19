@@ -41,7 +41,12 @@ import { AlertCircle } from "lucide-vue-next";
                         class="flex items-center"
                         v-if="update.service !== 'panel'"
                       >
-                        <span class="mr-2">•</span>{{ update.service }}
+                        <span class="mr-2">•</span>
+                        {{
+                          update.plugin
+                            ? `${update.plugin} (${update.service})`
+                            : update.service
+                        }}
                       </li>
                     </template>
                   </ul>

@@ -358,7 +358,7 @@ export default defineNuxtConfig({
             from: "vite",
           },
         },
-        shared: FEDERATION_SHARED,
+        shared: {},
       }),
     ],
     build: {

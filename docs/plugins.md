@@ -31,7 +31,8 @@ it.
   "remoteEntry": "/assets/remoteEntry.js",
   "scope": "hello",
   "module": "./App",
-  "requiredRole": null
+  "requiredRole": null,
+  "deployments": ["example-plugin"]
 }
 ```
 
@@ -44,6 +45,7 @@ it.
 | `scope` | ✓ | Your Federation container name (`name` in the federation plugin). |
 | `module` | ✓ | Exposed module path, e.g. `./App`. |
 | `requiredRole` |  | `null` = public, or a role (`user`, `moderator`, `administrator`, …). |
+| `deployments` |  | Kubernetes Deployment names in the `5stack` namespace to watch for image updates. See [Updates](#6-updates). |
 
 > Detect fetches the manifest **server-side** (through the 5stack API), so your
 > manifest does not need any CORS headers. Your `remoteEntry.js`, however, is
@@ -139,3 +141,46 @@ to it. See [Styling](/plugins/styling) for why.
 
 That's it — your app appears in the sidebar at `/apps/<slug>`, rendered
 natively.
+
+## 6. Updates
+
+List your Deployment names in `deployments` and the panel keeps them up to date
+the same way it does its own services — the update appears in the header bell
+alongside `api` and `web`, and the same **Update** button rolls it out.
+
+```json
+"deployments": ["inventory-frontend", "inventory-backend"]
+```
+
+Every minute the panel reads each Deployment, takes the image off its pod spec,
+asks that image's registry what digest the tag points at now, and compares it to
+the digest the running pod actually pulled. Note that it reads the image from
+the **live Deployment**, not from this manifest — so switching registries or
+renaming an image needs no manifest change. Only the names are declared here.
+
+For that to work your Deployment must **pin a moving tag** and re-pull it:
+
+```yaml
+image: ghcr.io/you/your-plugin:latest
+imagePullPolicy: Always
+```
+
+The tag never changes, so "updating" is just restarting the pod — which is
+exactly what the panel does. A digest-pinned image (`@sha256:…`) is skipped:
+it already names exact bytes, so it can never be out of date.
+
+**Release channels come free.** The deployed tag *is* the channel — deploy
+`:beta` and you are compared against beta digests. There is nothing to configure.
+
+Caveats:
+
+- **Names are validated.** First-party deployments (`api`, `web`, `hasura`,
+  `redis`, …) are rejected — a plugin can't get the panel to restart the panel.
+- **In-cluster only.** A Deployment that doesn't exist in the `5stack` namespace
+  is skipped. Plugins hosted elsewhere don't get update detection, since the
+  panel has nothing it could restart.
+- **Public registries only.** Private registries need a pull token the panel
+  doesn't have; those deployments are skipped with a warning in the API log.
+- **Deployments only.** DaemonSets and StatefulSets aren't supported.
+- Changing `deployments` later means hitting **Detect** again in the panel — the
+  manifest is read at registration, not continuously.

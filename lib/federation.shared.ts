@@ -4,6 +4,11 @@
  * loaded at runtime — a second copy of vue/pinia/reka-ui breaks reactivity and
  * component context. Remotes should pin these to the versions in web's
  * package.json (see the Plugins docs).
+ *
+ * Only packages the host itself depends on can be listed — federation turns
+ * each entry into a rollup entry module, so a package web doesn't install
+ * (e.g. `@5stack/ui`) fails the build. Remotes still share those among
+ * themselves; the first remote to load one provides the singleton.
  */
 export const FEDERATION_SHARED = {
   vue: { singleton: true, requiredVersion: false },
@@ -15,5 +20,4 @@ export const FEDERATION_SHARED = {
   "class-variance-authority": { singleton: true, requiredVersion: false },
   "tailwind-merge": { singleton: true, requiredVersion: false },
   clsx: { singleton: true, requiredVersion: false },
-  "@5stack/ui": { singleton: true, requiredVersion: false },
 } as const;

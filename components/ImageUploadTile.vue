@@ -154,8 +154,21 @@ async function onDrop(event: DragEvent) {
   if (file) await handleFile(file);
 }
 
+function matchesAccept(file: File) {
+  return ACCEPT.value
+    .split(",")
+    .map((token) => token.trim())
+    .filter(Boolean)
+    .some((token) => {
+      if (token.endsWith("/*")) {
+        return file.type.startsWith(token.slice(0, -1));
+      }
+      return token === file.type;
+    });
+}
+
 async function handleFile(file: File) {
-  if (!ACCEPT.value.split(",").includes(file.type)) {
+  if (!matchesAccept(file)) {
     toast({
       title: t("avatar.invalid_type") as string,
       variant: "destructive",
@@ -204,7 +217,15 @@ async function store(blob: Blob) {
   try {
     if (props.uploadFn) {
       const src = await props.uploadFn(blob);
-      if (src) emit("uploaded", src);
+      if (src) {
+        toast({ title: t("image_upload.uploaded") as string });
+        emit("uploaded", src);
+      } else {
+        toast({
+          title: t("image_upload.upload_failed") as string,
+          variant: "destructive",
+        });
+      }
       return;
     }
     const formData = new FormData();

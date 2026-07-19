@@ -44,11 +44,50 @@ function buildLabel(properties: PhotonFeature["properties"]): string {
     .join(", ");
 }
 
+// Anonymous proxy abuse could get the deployment IP banned by
+// photon.komoot.io, so cap the query size and rate-limit per client IP.
+const MAX_QUERY_LENGTH = 256;
+const RATE_LIMIT = 30;
+const RATE_WINDOW_MS = 60_000;
+const rateBuckets = new Map<string, { count: number; windowStart: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  for (const [key, bucket] of rateBuckets) {
+    if (now - bucket.windowStart >= RATE_WINDOW_MS) {
+      rateBuckets.delete(key);
+    }
+  }
+
+  const bucket = rateBuckets.get(ip);
+  if (!bucket) {
+    rateBuckets.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+  bucket.count += 1;
+  return bucket.count > RATE_LIMIT;
+}
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event).q?.toString().trim();
 
   if (!query || query.length < 3) {
     return [];
+  }
+
+  if (query.length > MAX_QUERY_LENGTH) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Query too long",
+    });
+  }
+
+  const ip = getRequestIP(event, { xForwardedFor: true }) ?? "unknown";
+  if (isRateLimited(ip)) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: "Too many requests",
+    });
   }
 
   try {

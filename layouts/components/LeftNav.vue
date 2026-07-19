@@ -319,16 +319,19 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           </SidebarMenu>
         </SidebarGroup>
 
-        <template v-if="customPages.length > 0">
+        <template v-if="customPageGroups.length > 0">
           <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
-          <SidebarGroup>
+          <SidebarGroup
+            v-for="group in customPageGroups"
+            :key="group.name ?? 'apps'"
+          >
             <SidebarGroupLabel>{{
-              $t("layouts.app_nav.custom_pages.title")
+              group.name || $t("layouts.app_nav.custom_pages.title")
             }}</SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem
-                v-for="page in customPages"
+                v-for="page in group.pages"
                 :key="page.id"
               >
                 <SidebarMenuButton as-child :tooltip="page.title">
@@ -1079,6 +1082,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import type { CustomPage } from "~/stores/CustomPages";
 export default {
   props: {
     isMobile: {
@@ -1199,8 +1203,20 @@ export default {
     eventsEnabled() {
       return useApplicationSettingsStore().eventsEnabled;
     },
-    customPages() {
-      return useCustomPagesStore().visiblePages;
+    customPageGroups() {
+      // visiblePages arrive sorted by nav_order, so insertion order keeps both
+      // the per-group page order and the group order (first appearance).
+      const groups: Array<{ name: string | null; pages: CustomPage[] }> = [];
+      for (const page of useCustomPagesStore().visiblePages) {
+        const name = page.nav_group || null;
+        let group = groups.find((entry) => entry.name === name);
+        if (!group) {
+          group = { name, pages: [] };
+          groups.push(group);
+        }
+        group.pages.push(page);
+      }
+      return groups;
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;

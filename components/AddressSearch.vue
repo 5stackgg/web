@@ -24,7 +24,11 @@ const results = ref<AddressResult[]>([]);
 const loading = ref(false);
 const open = ref(false);
 
+// Responses can resolve out of order; only the latest token may write results.
+let searchToken = 0;
+
 const search = debounce(async () => {
+  const token = ++searchToken;
   const term = query.value.trim();
   if (term.length < 3) {
     results.value = [];
@@ -37,14 +41,29 @@ const search = debounce(async () => {
     const data = await $fetch<AddressResult[]>("/api/geocode-address", {
       params: { q: term },
     });
+    if (token !== searchToken) {
+      return;
+    }
     results.value = data ?? [];
     open.value = true;
   } catch (error) {
+    if (token !== searchToken) {
+      return;
+    }
     results.value = [];
   } finally {
-    loading.value = false;
+    if (token === searchToken) {
+      loading.value = false;
+    }
   }
 }, 400);
+
+function resultKey(result: AddressResult, index: number) {
+  if (Number.isFinite(result.latitude) && Number.isFinite(result.longitude)) {
+    return `${result.latitude}:${result.longitude}`;
+  }
+  return index;
+}
 
 function onInput() {
   loading.value = true;
@@ -100,7 +119,10 @@ function clear() {
         v-if="open && results.length > 0"
         class="absolute z-50 mt-1 max-h-64 w-full overflow-y-auto rounded-md border border-border bg-popover shadow-md"
       >
-        <li v-for="result in results" :key="result.label">
+        <li
+          v-for="(result, index) in results"
+          :key="resultKey(result, index)"
+        >
           <button
             type="button"
             class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-muted/60"

@@ -32,6 +32,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -123,13 +134,45 @@ definePageMeta({
                       >
                         <Pencil class="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        @click="remove(page)"
-                      >
-                        <Trash2 class="h-4 w-4 text-destructive" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger as-child>
+                          <Button variant="ghost" size="icon">
+                            <Trash2 class="h-4 w-4 text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{{
+                              $t(
+                                "pages.settings.application.custom_pages.delete_title",
+                              )
+                            }}</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {{
+                                $t(
+                                  "pages.settings.application.custom_pages.delete_description",
+                                  { title: page.title },
+                                )
+                              }}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{{
+                              $t("common.cancel")
+                            }}</AlertDialogCancel>
+                            <AlertDialogAction
+                              variant="destructive"
+                              @click="remove(page)"
+                            >
+                              {{
+                                $t(
+                                  "pages.settings.application.custom_pages.delete_confirm",
+                                )
+                              }}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

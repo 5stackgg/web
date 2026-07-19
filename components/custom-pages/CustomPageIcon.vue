@@ -19,9 +19,14 @@ const isImage = computed(() =>
 
 // Inline SVG is untrusted (comes from a plugin manifest) — sanitize before
 // v-html. currentColor in the markup makes it inherit the nav's theme color.
+// SVG <style> applies document-wide, so a manifest icon could inject global
+// CSS; forbid it (and foreignObject) explicitly.
 const sanitizedSvg = computed(() =>
   isSvg.value
-    ? DOMPurify.sanitize(value.value, { USE_PROFILES: { svg: true } })
+    ? DOMPurify.sanitize(value.value, {
+        USE_PROFILES: { svg: true },
+        FORBID_TAGS: ["style", "foreignObject"],
+      })
     : "",
 );
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Trash2, Plus, GripVertical } from "lucide-vue-next";
+import { Trash2, Plus } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
@@ -10,7 +10,7 @@ const FRAME_CLASSES =
   "relative overflow-hidden rounded-lg border border-border px-6 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.7)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
 
 export default {
-  components: { Input, Button, Trash2, Plus, GripVertical },
+  components: { Input, Button, Trash2, Plus },
   props: {
     tournament: {
       type: Object,
@@ -21,6 +21,7 @@ export default {
     return {
       frameClasses: FRAME_CLASSES,
       drafts: [] as Array<{ id: string; place: string; prize: string }>,
+      baseline: null as string | null,
       newPlace: "",
       newPrize: "",
       savingId: null as string | null,
@@ -31,11 +32,20 @@ export default {
     isOrganizer() {
       return !!this.tournament.is_organizer;
     },
+    isDirty() {
+      return (
+        this.baseline !== null && JSON.stringify(this.drafts) !== this.baseline
+      );
+    },
   },
   watch: {
     "tournament.prizes": {
+      // Subscription frames must not clobber unsaved row edits; only resync
+      // while the drafts match their baseline.
       handler() {
-        this.syncDrafts();
+        if (this.baseline === null || !this.isDirty) {
+          this.syncDrafts();
+        }
       },
       immediate: true,
       deep: true,
@@ -50,6 +60,7 @@ export default {
           prize: prize.prize,
         };
       });
+      this.baseline = JSON.stringify(this.drafts);
     },
     draftDirty(draft: { id: string; place: string; prize: string }) {
       const existing = (this.tournament.prizes || []).find(
@@ -83,6 +94,24 @@ export default {
           }),
           variables: { id: draft.id, place, prize },
         });
+        draft.place = place;
+        draft.prize = prize;
+        // Fold the saved values into the baseline so this row no longer reads
+        // as dirty (which would block resyncs) while other rows keep their
+        // unsaved edits protected.
+        if (this.baseline !== null) {
+          const rows = JSON.parse(this.baseline) as Array<{
+            id: string;
+            place: string;
+            prize: string;
+          }>;
+          const row = rows.find((entry) => entry.id === draft.id);
+          if (row) {
+            row.place = place;
+            row.prize = prize;
+            this.baseline = JSON.stringify(rows);
+          }
+        }
       } catch (error: any) {
         toast({
           variant: "destructive",
@@ -195,7 +224,6 @@ export default {
           :key="draft.id"
           class="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 p-2"
         >
-          <GripVertical class="h-4 w-4 shrink-0 text-muted-foreground/50" />
           <Input
             v-model="draft.place"
             :placeholder="$t('tournament.prizes.place_placeholder')"
@@ -232,7 +260,6 @@ export default {
         <div
           class="mt-2 flex items-center gap-2 rounded-sm border border-dashed border-border/60 bg-background/20 p-2"
         >
-          <span class="w-4 shrink-0"></span>
           <Input
             v-model="newPlace"
             :placeholder="$t('tournament.prizes.place_placeholder')"

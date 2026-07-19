@@ -2023,8 +2023,11 @@
           "public": "Public",
           "add_title": "Add Custom Page",
           "edit_title": "Edit Custom Page",
+          "delete_title": "Delete Custom Page",
+          "delete_description": "This will remove \"{title}\" and its /apps route from the panel. This cannot be undone.",
+          "delete_confirm": "Delete",
           "form_description": "Configure how this app is loaded and who can see it.",
-          "is_default_hint": "Make this the landing page after login.",
+          "is_default_hint": "Make this the panel's landing page.",
           "fields": {
             "title": "Title",
             "slug": "Slug",

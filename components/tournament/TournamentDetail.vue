@@ -1538,6 +1538,10 @@ export default {
 
       tabs.push("teams");
 
+      if (!this.tournament?.is_organizer && this.tournament?.options) {
+        tabs.push("match-settings");
+      }
+
       if (this.standingsTabVisible) {
         tabs.push("standings");
       }

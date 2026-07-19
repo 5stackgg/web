@@ -216,7 +216,7 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
       <div class="flex flex-col gap-2">
         <div
           v-for="(prize, index) in prizes"
-          :key="index"
+          :key="prize.id"
           class="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 p-2"
         >
           <Input
@@ -245,7 +245,7 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
           variant="outline"
           size="sm"
           class="justify-self-start"
-          @click="prizes.push({ place: '', prize: '' })"
+          @click="addPrizeRow"
         >
           <Plus class="mr-1 h-4 w-4" />
           {{ $t("tournament.prizes.add") }}
@@ -295,7 +295,8 @@ export default {
       currentStep: 0,
       furthestStep: 0,
       submitting: false,
-      prizes: [] as Array<{ place: string; prize: string }>,
+      prizeRowSeq: 0,
+      prizes: [] as Array<{ id: number; place: string; prize: string }>,
       bannerBlob: null as Blob | null,
       form: useForm({
         keepValuesOnUnmount: true,
@@ -336,6 +337,9 @@ export default {
     },
   },
   methods: {
+    addPrizeRow() {
+      this.prizes.push({ id: ++this.prizeRowSeq, place: "", prize: "" });
+    },
     // The ImageUploadTile (deferred mode) crops and previews the banner; we just
     // hold the resulting blob until the tournament exists.
     onBannerApply(blob: Blob) {
@@ -480,7 +484,17 @@ export default {
         });
 
         const tournamentId = data.insert_tournaments_one.id;
-        await this.persistCategoriesAndPrizes(tournamentId);
+        // The tournament row exists past this point: follow-up failures must
+        // still navigate to it, or a retried Create inserts a duplicate.
+        try {
+          await this.persistCategoriesAndPrizes(tournamentId);
+        } catch (error: any) {
+          toast({
+            variant: "destructive",
+            title: this.$t("common.error"),
+            description: error?.message,
+          });
+        }
         await this.uploadBanner(tournamentId);
 
         await this.$router.push(`/tournaments/${tournamentId}`);

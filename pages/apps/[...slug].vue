@@ -1,3 +1,10 @@
+<script lang="ts">
+// Module scope, not component scope: the federation cache is global, so a
+// remount of this catch-all page must not re-register a scope with a fresh
+// cache-bust URL and re-download remoteEntry.js every navigation.
+const registeredScopes = new Set<string>();
+</script>
+
 <script setup lang="ts">
 import { computed, ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -22,7 +29,7 @@ const RemoteComponent = shallowRef<unknown>(null);
 const status = ref<Status>("loading");
 const errorMessage = ref("");
 
-const registeredScopes = new Set<string>();
+let loadGeneration = 0;
 
 // ---- the plugin routing contract --------------------------------------------
 // Everything under /apps/<slug>/ belongs to the plugin. The host owns the slug
@@ -57,6 +64,9 @@ function navigate(
 }
 
 async function loadPage(slug: string) {
+  // Two in-flight loads (fast slug switch) can resolve out of order; only the
+  // latest generation may write the result.
+  const generation = ++loadGeneration;
   status.value = "loading";
   RemoteComponent.value = null;
 
@@ -91,9 +101,16 @@ async function loadPage(slug: string) {
       page.remote_scope,
       page.exposed_module,
     );
-    RemoteComponent.value = await __federation_method_unwrapDefault(module);
+    const component = await __federation_method_unwrapDefault(module);
+    if (generation !== loadGeneration) {
+      return;
+    }
+    RemoteComponent.value = component;
     status.value = "ready";
   } catch (error) {
+    if (generation !== loadGeneration) {
+      return;
+    }
     errorMessage.value =
       error instanceof Error ? error.message : String(error);
     status.value = "error";

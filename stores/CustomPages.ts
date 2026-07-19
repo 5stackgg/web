@@ -68,6 +68,9 @@ export const useCustomPagesStore = defineStore("customPages", () => {
   subscribeToCustomPages();
 
   const canSee = (page: CustomPage): boolean => {
+    if (!useApplicationSettingsStore().customPagesEnabled) {
+      return false;
+    }
     if (!page.enabled) {
       return false;
     }
@@ -80,9 +83,6 @@ export const useCustomPagesStore = defineStore("customPages", () => {
   };
 
   const visiblePages = computed<CustomPage[]>(() => {
-    if (!useApplicationSettingsStore().customPagesEnabled) {
-      return [];
-    }
     return pages.value.filter(canSee);
   });
 
@@ -90,7 +90,13 @@ export const useCustomPagesStore = defineStore("customPages", () => {
     return visiblePages.value.find((page) => page.is_default) ?? null;
   });
 
+  // The master switch must also cover direct /apps/<slug> loads (not just the
+  // nav), so a disabled feature resolves as not-found rather than executing
+  // plugin code for bookmarked users.
   const pageBySlug = (slug: string): CustomPage | null => {
+    if (!useApplicationSettingsStore().customPagesEnabled) {
+      return null;
+    }
     return pages.value.find((page) => page.slug === slug) ?? null;
   };
 

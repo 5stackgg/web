@@ -29,7 +29,8 @@ function amountOf(raw: string): { value: number; symbol: string } | null {
 }
 
 // Returns a formatted pool total (e.g. "€10,000") or null when no prize row
-// parses as an amount.
+// parses as an amount. Mixed currencies don't sum: only entries matching the
+// first symbol seen (or symbol-less bare amounts) count toward the total.
 export function formatPrizePool(prizes?: PrizeLike[] | null): string | null {
   if (!prizes || prizes.length === 0) {
     return null;
@@ -42,11 +43,14 @@ export function formatPrizePool(prizes?: PrizeLike[] | null): string | null {
     if (!parsed) {
       continue;
     }
-    total += parsed.value;
-    counted += 1;
     if (!symbol && parsed.symbol) {
       symbol = parsed.symbol;
     }
+    if (parsed.symbol && parsed.symbol !== symbol) {
+      continue;
+    }
+    total += parsed.value;
+    counted += 1;
   }
   if (counted === 0) {
     return null;

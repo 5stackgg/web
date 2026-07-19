@@ -115,9 +115,11 @@ export default {
       if (this.internalUpdate || !this.startDate || !this.startTime) {
         return;
       }
+      // Space-separated date/time parsing is engine-dependent; the ISO
+      // "T"-joined form is the only portable local-time format.
       this.$emit(
         "update:modelValue",
-        new Date(`${this.startDate} ${this.startTime}`),
+        new Date(`${this.startDate}T${this.startTime}`),
       );
     },
   },

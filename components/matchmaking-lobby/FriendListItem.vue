@@ -160,7 +160,7 @@ const showBanner = computed(
 );
 
 const actionBtn =
-  "h-8 w-8 rounded-md p-0 text-muted-foreground transition-colors";
+  "h-8 w-8 cursor-pointer rounded-md p-0 text-muted-foreground transition-colors";
 const dangerHover = "hover:bg-destructive/15 hover:text-destructive";
 const amberHover =
   "hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]";
@@ -173,12 +173,12 @@ const amberHover =
     <ContextMenu :modal="false" @update:open="onMenuOpenChange">
       <ContextMenuTrigger as-child>
         <div
-          class="group/row flex flex-col rounded-md pr-1 transition-colors duration-200 hover:bg-muted/50"
+          class="group/row flex cursor-pointer flex-col rounded-md pr-1 transition-colors duration-200 hover:bg-muted/50"
         >
           <!-- Identity + actions -->
           <div class="flex items-center gap-1">
             <PlayerDisplay
-              class="min-w-0 flex-1 cursor-pointer rounded-md p-2 transition-opacity duration-200"
+              class="min-w-0 flex-1 rounded-md p-2 transition-opacity duration-200"
               :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
               :player="player"
               :show-online="false"
@@ -265,7 +265,7 @@ const amberHover =
                       <TooltipTrigger as-child>
                         <Button
                           variant="ghost"
-                          class="h-8 w-8 rounded-md p-0 text-[hsl(var(--tac-amber))] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.35)] transition-colors hover:bg-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber-foreground))]"
+                          class="h-8 w-8 cursor-pointer rounded-md p-0 text-[hsl(var(--tac-amber))] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.35)] transition-colors hover:bg-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber-foreground))]"
                           :loading="loadingFor('accept')"
                           :disabled="busy"
                           @click="acceptFriend(player.steam_id)"
@@ -356,7 +356,7 @@ const amberHover =
                 v-if="joinableDraft && !joinableDraft.full"
                 size="sm"
                 :class="[
-                  'ml-auto h-5 shrink-0 gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
+                  'ml-auto h-5 shrink-0 cursor-pointer gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
                   'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
                 ]"
                 :loading="joiningDraft"

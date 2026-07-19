@@ -331,22 +331,22 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             }}</SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem
-                v-for="page in group.pages"
-                :key="page.id"
+                v-for="plugin in group.plugins"
+                :key="plugin.id"
               >
-                <SidebarMenuButton as-child :tooltip="page.title">
+                <SidebarMenuButton as-child :tooltip="plugin.title">
                   <NuxtLink
-                    :to="`/apps/${page.slug}`"
+                    :to="`/apps/${plugin.slug}`"
                     :class="{
                       // Prefix match: a plugin owns every route under its slug,
                       // so its own sub-routes keep the nav entry lit.
                       'router-link-active':
-                        $route.path === `/apps/${page.slug}` ||
-                        $route.path.startsWith(`/apps/${page.slug}/`),
+                        $route.path === `/apps/${plugin.slug}` ||
+                        $route.path.startsWith(`/apps/${plugin.slug}/`),
                     }"
                   >
-                    <PluginIcon :name="page.icon" />
-                    {{ page.title }}
+                    <PluginIcon :name="plugin.icon" />
+                    {{ plugin.title }}
                   </NuxtLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -1206,15 +1206,15 @@ export default {
     pluginGroups() {
       // visiblePlugins arrive sorted by nav_order, so insertion order keeps both
       // the per-group page order and the group order (first appearance).
-      const groups: Array<{ name: string | null; pages: Plugin[] }> = [];
-      for (const page of usePluginsStore().visiblePlugins) {
-        const name = page.nav_group || null;
+      const groups: Array<{ name: string | null; plugins: Plugin[] }> = [];
+      for (const plugin of usePluginsStore().visiblePlugins) {
+        const name = plugin.nav_group || null;
         let group = groups.find((entry) => entry.name === name);
         if (!group) {
-          group = { name, pages: [] };
+          group = { name, plugins: [] };
           groups.push(group);
         }
-        group.pages.push(page);
+        group.plugins.push(plugin);
       }
       return groups;
     },

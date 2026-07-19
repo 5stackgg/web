@@ -221,13 +221,13 @@ const loginArrowClasses =
 
             <NavigationMenuItem
               v-for="plugin in plugins"
-              :key="page.id"
+              :key="plugin.id"
               class="hidden md:block"
             >
               <NavigationMenuLink as-child>
-                <NuxtLink :to="`/apps/${page.slug}`" :class="navLinkClasses">
+                <NuxtLink :to="`/apps/${plugin.slug}`" :class="navLinkClasses">
                   <span :class="navTickClasses"></span>
-                  {{ page.title }}
+                  {{ plugin.title }}
                 </NuxtLink>
               </NavigationMenuLink>
             </NavigationMenuItem>

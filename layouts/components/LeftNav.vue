@@ -1205,7 +1205,7 @@ export default {
     },
     pluginGroups() {
       // visiblePlugins arrive sorted by nav_order, so insertion order keeps both
-      // the per-group page order and the group order (first appearance).
+      // the per-group plugin order and the group order (first appearance).
       const groups: Array<{ name: string | null; plugins: Plugin[] }> = [];
       for (const plugin of usePluginsStore().visiblePlugins) {
         const name = plugin.nav_group || null;

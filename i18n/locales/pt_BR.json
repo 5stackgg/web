@@ -2082,7 +2082,7 @@
           "permissions_description": "Controle quais jogadores podem criar eventos.",
           "create_events_role": "Função mínima para criar eventos"
         },
-        "custom_pages": {
+        "plugins": {
           "title": "Páginas Personalizadas",
           "section": "Páginas Personalizadas",
           "description": "Registre apps micro-frontend externos que são renderizados como páginas nativas dentro do seu painel.",
@@ -3340,7 +3340,7 @@
       "no_events_title": "Nenhum Evento Ainda",
       "no_events_description": "Você ainda não está organizando nenhum evento."
     },
-    "custom_pages": {
+    "plugins": {
       "not_found_title": "Página não encontrada",
       "not_found_description": "Esta página personalizada não existe ou não está mais disponível.",
       "forbidden_title": "Acesso restrito",
@@ -3501,7 +3501,7 @@
         "description": "Tem certeza que deseja sair?",
         "confirm": "Sair"
       },
-      "custom_pages": {
+      "plugins": {
         "title": "Apps"
       }
     },

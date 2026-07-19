@@ -128,8 +128,8 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         order: 2,
       },
       {
-        path: "/settings/application/custom-pages",
-        labelKey: "pages.settings.application.custom_pages.title",
+        path: "/settings/application/plugins",
+        labelKey: "pages.settings.application.plugins.title",
         order: 3,
       },
     ],

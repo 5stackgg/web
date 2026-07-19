@@ -1,6 +1,6 @@
 /**
  * Runtime API surfaced by @originjs/vite-plugin-federation when the host has the
- * federation() plugin configured. Used to register + load custom-page remotes
+ * federation() plugin configured. Used to register + load plugin remotes
  * dynamically from the custom_pages registry.
  */
 declare module "__federation__" {

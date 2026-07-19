@@ -1,9 +1,9 @@
 /**
- * Module Federation shared singletons. The host (this web app) and every custom
- * page remote MUST declare the same set so exactly one instance of each is
+ * Module Federation shared singletons. The host (this web app) and every
+ * plugin remote MUST declare the same set so exactly one instance of each is
  * loaded at runtime — a second copy of vue/pinia/reka-ui breaks reactivity and
  * component context. Remotes should pin these to the versions in web's
- * package.json (see the Custom Pages docs).
+ * package.json (see the Plugins docs).
  */
 export const FEDERATION_SHARED = {
   vue: { singleton: true, requiredVersion: false },

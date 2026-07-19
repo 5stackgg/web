@@ -2014,7 +2014,7 @@
           "permissions_description": "Control which players can create events.",
           "create_events_role": "Minimum role to create events"
         },
-        "custom_pages": {
+        "plugins": {
           "title": "Custom Pages",
           "section": "Custom Pages",
           "description": "Register external micro-frontend apps that render as native pages inside your panel.",
@@ -3129,7 +3129,7 @@
       "no_events_title": "No Events Yet",
       "no_events_description": "You are not organizing any events yet."
     },
-    "custom_pages": {
+    "plugins": {
       "not_found_title": "Page not found",
       "not_found_description": "This custom page does not exist or is no longer available.",
       "forbidden_title": "Access restricted",
@@ -3288,7 +3288,7 @@
         "description": "Are you sure you want to logout?",
         "confirm": "Logout"
       },
-      "custom_pages": {
+      "plugins": {
         "title": "Apps"
       }
     },

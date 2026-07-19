@@ -64,9 +64,9 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
-  // Custom pages are reachable without a login bounce; the loader page
-  // (pages/apps/[slug].vue) enforces per-page role and only mounts the remote
-  // for viewers who may see it. Public (null required_role) pages must be
+  // Plugins are reachable without a login bounce; the loader page
+  // (pages/apps/[slug].vue) enforces per-plugin role and only mounts the remote
+  // for viewers who may see it. Public (null required_role) plugins must be
   // reachable by guests.
   if (path.startsWith("/apps/")) {
     return true;

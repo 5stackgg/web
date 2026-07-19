@@ -335,7 +335,7 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ["monaco-editor"],
     },
-    // Custom Pages host: enables the `__federation__` virtual module so
+    // Plugins host: enables the `__federation__` virtual module so
     // `pages/apps/[slug].vue` can register + load plugin remotes at runtime.
     // Remotes are empty here — every remote is added dynamically from the
     // custom_pages registry, so new plugins need no web rebuild.

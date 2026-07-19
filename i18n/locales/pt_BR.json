@@ -2083,18 +2083,18 @@
           "create_events_role": "Função mínima para criar eventos"
         },
         "plugins": {
-          "title": "Páginas Personalizadas",
-          "section": "Páginas Personalizadas",
+          "title": "Plugins",
+          "section": "Plugins",
           "description": "Registre apps micro-frontend externos que são renderizados como páginas nativas dentro do seu painel.",
-          "add": "Adicionar Página",
-          "empty": "Nenhuma página personalizada ainda.",
+          "add": "Adicionar Plugin",
+          "empty": "Nenhum plugin ainda.",
           "public": "Pública",
-          "add_title": "Adicionar Página Personalizada",
-          "edit_title": "Editar Página Personalizada",
-          "delete_title": "Excluir Página Personalizada",
+          "add_title": "Adicionar Plugin",
+          "edit_title": "Editar Plugin",
+          "delete_title": "Excluir Plugin",
           "delete_description": "Isso removerá \"{title}\" e sua rota /apps do painel. Esta ação não pode ser desfeita.",
           "delete_confirm": "Excluir",
-          "form_description": "Configure como este app é carregado e quem pode vê-lo.",
+          "form_description": "Configure como este plugin é carregado e quem pode vê-lo.",
           "is_default_hint": "Tornar esta a página inicial do painel.",
           "fields": {
             "title": "Título",
@@ -3342,7 +3342,7 @@
     },
     "plugins": {
       "not_found_title": "Página não encontrada",
-      "not_found_description": "Esta página personalizada não existe ou não está mais disponível.",
+      "not_found_description": "Este plugin não existe ou não está mais disponível.",
       "forbidden_title": "Acesso restrito",
       "forbidden_description": "Você não tem permissão para ver esta página.",
       "error_title": "Falha ao carregar a página"

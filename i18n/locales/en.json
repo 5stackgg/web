@@ -2015,18 +2015,18 @@
           "create_events_role": "Minimum role to create events"
         },
         "plugins": {
-          "title": "Custom Pages",
-          "section": "Custom Pages",
+          "title": "Plugins",
+          "section": "Plugins",
           "description": "Register external micro-frontend apps that render as native pages inside your panel.",
-          "add": "Add Page",
-          "empty": "No custom pages yet.",
+          "add": "Add Plugin",
+          "empty": "No plugins yet.",
           "public": "Public",
-          "add_title": "Add Custom Page",
-          "edit_title": "Edit Custom Page",
-          "delete_title": "Delete Custom Page",
+          "add_title": "Add Plugin",
+          "edit_title": "Edit Plugin",
+          "delete_title": "Delete Plugin",
           "delete_description": "This will remove \"{title}\" and its /apps route from the panel. This cannot be undone.",
           "delete_confirm": "Delete",
-          "form_description": "Configure how this app is loaded and who can see it.",
+          "form_description": "Configure how this plugin is loaded and who can see it.",
           "is_default_hint": "Make this the panel's landing page.",
           "fields": {
             "title": "Title",
@@ -3131,7 +3131,7 @@
     },
     "plugins": {
       "not_found_title": "Page not found",
-      "not_found_description": "This custom page does not exist or is no longer available.",
+      "not_found_description": "This plugin does not exist or is no longer available.",
       "forbidden_title": "Access restricted",
       "forbidden_description": "You don't have permission to view this page.",
       "error_title": "Failed to load page"

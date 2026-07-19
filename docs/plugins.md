@@ -1,6 +1,6 @@
-# Building a 5stack Custom Page (plugin)
+# Building a 5stack Plugin
 
-Custom Pages let you run your own web app **inside the 5stack panel** — same
+Plugins let you run your own web app **inside the 5stack panel** — same
 sidebar, header, theme, and login — without being part of 5stack itself. Your
 app is a Vue [Module Federation](https://module-federation.io/) remote that the
 panel loads at runtime and mounts in a native route (`/apps/<slug>`).
@@ -19,7 +19,7 @@ fuller one with a backend + database.
 
 Serve this file at your app's root (put it in `public/` so Vite copies it to
 `dist/5stack-plugin.json`). An admin pastes your URL into **Settings →
-Application → Custom Pages → Detect**, and the panel auto-fills everything from
+Application → Plugins → Detect**, and the panel auto-fills everything from
 it.
 
 ```json
@@ -134,9 +134,8 @@ to it. See [Styling](/plugins/styling) for why.
 
 1. Build (`vite build`) and host the `dist/` output somewhere the panel can
    reach (its own subdomain is simplest — the session cookie is same-site).
-2. In the panel: **Settings → Application → Custom Pages → Add**, paste your
-   base URL, hit **Detect**, toggle **Enabled**, save. Enable the **Custom
-   Pages** master switch.
+2. In the panel: **Settings → Application → Plugins → Add**, paste your
+   base URL, hit **Detect**, toggle **Enabled**, save. Enable the **Plugins** master switch.
 
 That's it — your app appears in the sidebar at `/apps/<slug>`, rendered
 natively.

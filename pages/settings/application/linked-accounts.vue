@@ -8,10 +8,10 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
   <SettingsPage>
     <PageTransition :delay="0">
       <SettingsSection
-        id="external-matches"
-        :title="$t('pages.settings.application.external_matches.section')"
+        id="linked-accounts"
+        :title="$t('pages.settings.application.linked_accounts.section')"
         :description="
-          $t('pages.settings.application.external_matches.enabled_description')
+          $t('pages.settings.application.linked_accounts.enabled_description')
         "
         clickable-header
         @header-click="save('public.external_matches_enabled', !enabled)"
@@ -34,7 +34,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
             <h4 class="text-base font-medium">
               {{
                 $t(
-                  "pages.settings.application.external_matches.faceit_enabled",
+                  "pages.settings.application.linked_accounts.faceit_enabled",
                   "Import Faceit Matches",
                 )
               }}
@@ -42,7 +42,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
             <p class="text-sm text-muted-foreground">
               {{
                 $t(
-                  "pages.settings.application.external_matches.faceit_enabled_description",
+                  "pages.settings.application.linked_accounts.faceit_enabled_description",
                   "Off by default. Poll linked players' Faceit match history (last 30 days) and import their matches. Requires External Matches enabled and a Faceit API key — demo download also needs Downloads API access.",
                 )
               }}
@@ -55,7 +55,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
                 class="underline hover:text-foreground"
                 >{{
                   $t(
-                    "pages.settings.application.external_matches.faceit_setup_guide",
+                    "pages.settings.application.linked_accounts.faceit_setup_guide",
                   )
                 }}</a
               >
@@ -67,7 +67,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
                 class="underline hover:text-foreground"
                 >{{
                   $t(
-                    "pages.settings.application.external_matches.faceit_downloads_api_link",
+                    "pages.settings.application.linked_accounts.faceit_downloads_api_link",
                   )
                 }}</a
               >
@@ -88,7 +88,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
               <h4 class="text-base font-medium">
                 {{
                   $t(
-                    "pages.settings.application.external_matches.faceit_test",
+                    "pages.settings.application.linked_accounts.faceit_test",
                     "Test Faceit Integration",
                   )
                 }}
@@ -96,7 +96,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
               <p class="text-sm text-muted-foreground">
                 {{
                   $t(
-                    "pages.settings.application.external_matches.faceit_test_description",
+                    "pages.settings.application.linked_accounts.faceit_test_description",
                     "Verify the Faceit API key works and whether it can download demos.",
                   )
                 }}
@@ -110,10 +110,10 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
               {{
                 testing
                   ? $t(
-                      "pages.settings.application.external_matches.faceit_testing",
+                      "pages.settings.application.linked_accounts.faceit_testing",
                     )
                   : $t(
-                      "pages.settings.application.external_matches.faceit_test_button",
+                      "pages.settings.application.linked_accounts.faceit_test_button",
                     )
               }}
             </Button>
@@ -130,7 +130,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
               {{ testResult.dataApi.ok ? "✓" : "✗" }}
               {{
                 $t(
-                  "pages.settings.application.external_matches.faceit_data_api",
+                  "pages.settings.application.linked_accounts.faceit_data_api",
                 )
               }}
               — {{ testResult.dataApi.detail }}
@@ -153,7 +153,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
               }}
               {{
                 $t(
-                  "pages.settings.application.external_matches.faceit_downloads_api",
+                  "pages.settings.application.linked_accounts.faceit_downloads_api",
                 )
               }}
               — {{ testResult.downloadApi.detail }}
@@ -219,7 +219,7 @@ export default {
       });
 
       toast({
-        title: this.$t("pages.settings.application.external_matches.updated"),
+        title: this.$t("pages.settings.application.linked_accounts.updated"),
       });
     },
     async testFaceit() {
@@ -238,7 +238,7 @@ export default {
       } catch (error) {
         toast({
           title: this.$t(
-            "pages.settings.application.external_matches.faceit_test_failed",
+            "pages.settings.application.linked_accounts.faceit_test_failed",
           ),
           description: (error as Error)?.message ?? String(error),
           variant: "destructive",

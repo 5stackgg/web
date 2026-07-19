@@ -68,7 +68,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
-import AvatarUpload from "~/components/AvatarUpload.vue";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
@@ -375,7 +375,7 @@ type StatSource = "5stack" | "external" | "all";
 const appSettings = useApplicationSettingsStore();
 
 const sourceRef = computed<StatSource>(() => {
-  if (!appSettings.externalMatchesEnabled) {
+  if (!appSettings.linkedAccountsEnabled) {
     return "5stack";
   }
   const raw = route.query.source;
@@ -386,7 +386,7 @@ const sourceRef = computed<StatSource>(() => {
 });
 
 const sourceOptions = computed<{ value: StatSource; label: string }[]>(() =>
-  appSettings.externalMatchesEnabled
+  appSettings.linkedAccountsEnabled
     ? [
         { value: "all", label: t("pages.players.detail.all_short") },
         { value: "5stack", label: t("player_match.source.internal") },
@@ -1274,14 +1274,14 @@ async function loadAnyMatches() {
   try {
     const [total, fiveStack] = await Promise.all([
       countFor({}),
-      appSettings.externalMatchesEnabled
+      appSettings.linkedAccountsEnabled
         ? countFor({ source: { _eq: "5stack" } })
         : Promise.resolve(null),
     ]);
     if (gen !== anyMatchesGen) return;
     playerHasAnyMatches.value = total > 0;
     if (
-      appSettings.externalMatchesEnabled &&
+      appSettings.linkedAccountsEnabled &&
       total > 0 &&
       fiveStack === 0 &&
       route.query.source == null
@@ -2219,7 +2219,7 @@ const playerHeroTeamChipDotClasses =
           class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
         >
           <div
-            v-if="appSettings.externalMatchesEnabled"
+            v-if="appSettings.linkedAccountsEnabled"
             class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
           >
             <span
@@ -2235,14 +2235,14 @@ const playerHeroTeamChipDotClasses =
           </div>
 
           <span
-            v-if="appSettings.externalMatchesEnabled"
+            v-if="appSettings.linkedAccountsEnabled"
             class="hidden h-5 w-px bg-border/60 md:block"
             aria-hidden="true"
           ></span>
 
           <div
             v-if="
-              appSettings.externalMatchesEnabled && sourceRef === 'external'
+              appSettings.linkedAccountsEnabled && sourceRef === 'external'
             "
             class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
           >
@@ -2260,7 +2260,7 @@ const playerHeroTeamChipDotClasses =
 
           <span
             v-if="
-              appSettings.externalMatchesEnabled &&
+              appSettings.linkedAccountsEnabled &&
               sourceRef === 'external' &&
               modeOptions.length
             "
@@ -2579,7 +2579,7 @@ const playerHeroTeamChipDotClasses =
           </div>
           <div class="flex items-center gap-2">
             <NuxtLink
-              to="/settings/external-matches"
+              to="/settings/linked-accounts"
               class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--warning)/0.6)] bg-[hsl(var(--warning)/0.16)] px-3 py-1.5 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-warning transition-colors hover:bg-[hsl(var(--warning)/0.26)]"
             >
               {{ $t("pages.players.detail.external_warning.cta") }}
@@ -2743,7 +2743,7 @@ const playerHeroTeamChipDotClasses =
                 class="underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))]"
                 @click="showDemoUpload = true"
               >
-                {{ $t("pages.settings.external_matches.upload_demo") }}
+                {{ $t("pages.settings.linked_accounts.upload_demo") }}
               </button>
               <span class="flex items-center gap-1.5">
                 <span class="text-[hsl(var(--tac-amber))]">{{
@@ -2768,10 +2768,10 @@ const playerHeroTeamChipDotClasses =
             <DialogContent class="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle>
-                  {{ $t("pages.settings.external_matches.upload_demo") }}
+                  {{ $t("pages.settings.linked_accounts.upload_demo") }}
                 </DialogTitle>
                 <DialogDescription>
-                  {{ $t("pages.settings.external_matches.upload_demo_description") }}
+                  {{ $t("pages.settings.linked_accounts.upload_demo_description") }}
                 </DialogDescription>
               </DialogHeader>
               <DemoUpload />
@@ -2848,8 +2848,10 @@ const playerHeroTeamChipDotClasses =
             <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
             {{ $t("avatar.player_avatar") }}
           </div>
-          <AvatarUpload
-            variant="dropzone"
+          <ImageUploadTile
+            class="max-w-[9rem]"
+            aspect="square"
+            fit="cover"
             :upload-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
             :delete-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
             :has-custom="!!player.custom_avatar_url"
@@ -2864,8 +2866,11 @@ const playerHeroTeamChipDotClasses =
             <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
             {{ $t("avatar.player_roster_image") }}
           </div>
-          <AvatarUpload
-            variant="dropzone"
+          <ImageUploadTile
+            class="max-w-[11rem]"
+            aspect="square"
+            fit="contain"
+            mode="roster"
             kind="roster"
             :upload-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
             :delete-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"

@@ -387,7 +387,7 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    const externalMatchesEnabled = computed(() => {
+    const linkedAccountsEnabled = computed(() => {
       // Default OFF — an admin must explicitly enable external/CS2 imports.
       return (
         settings.value?.find(
@@ -409,6 +409,16 @@ export const useApplicationSettingsStore = defineStore(
         settings.value?.find(
           (setting) => setting.name === "public.scrim_finder_enabled",
         )?.value !== "false"
+      );
+    });
+
+    // Plugins (micro-frontend framework): off by default (absent row =
+    // disabled). Master switch gating the nav section + /apps/[slug] routes.
+    const pluginsEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.custom_pages_enabled",
+        )?.value === "true"
       );
     });
 
@@ -573,9 +583,10 @@ export const useApplicationSettingsStore = defineStore(
       newsLabel,
       postNewsRole,
       canPostNews,
-      externalMatchesEnabled,
+      linkedAccountsEnabled,
       faceitEnabled,
       scrimFinderEnabled,
+      pluginsEnabled,
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,

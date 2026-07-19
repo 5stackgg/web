@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { fileURLToPath } from "node:url";
+import federation from "@originjs/vite-plugin-federation";
+import { FEDERATION_SHARED } from "./lib/federation.shared";
 
 const sw = process.env.SW === "true";
 
@@ -332,6 +334,20 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ["monaco-editor"],
+    },
+    // Plugins host: enables the `__federation__` virtual module so
+    // `pages/apps/[slug].vue` can register + load plugin remotes at runtime.
+    // Remotes are empty here — every remote is added dynamically from the
+    // custom_pages registry, so new plugins need no web rebuild.
+    plugins: [
+      federation({
+        name: "host",
+        remotes: {},
+        shared: FEDERATION_SHARED,
+      }),
+    ],
+    build: {
+      target: "esnext",
     },
   },
 });

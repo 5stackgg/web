@@ -1179,6 +1179,24 @@
     "tournament": "Tournament",
     "placement": "Placement"
   },
+  "image_upload": {
+    "hint_square": "Drag & drop or click · PNG, JPEG, WebP",
+    "hint_banner": "Drag & drop or click · wide 3:1 banner",
+    "hint_cover": "Drag & drop or click · 16:9 cover",
+    "replace": "Replace",
+    "remove": "Remove",
+    "drop_to_upload": "Drop to upload",
+    "uploaded": "Image uploaded",
+    "removed": "Image removed",
+    "upload_failed": "Upload failed",
+    "remove_failed": "Failed to remove image",
+    "crop": {
+      "title": "Adjust image",
+      "description": "Drag to reposition, scroll to zoom. The frame shows what will be saved.",
+      "fit_whole": "Fit whole",
+      "apply": "Apply"
+    }
+  },
   "avatar": {
     "upload": "Upload avatar",
     "change": "Change avatar",
@@ -1365,7 +1383,7 @@
       "account": {
         "my_account": "My Account",
         "api_keys": "API Keys",
-        "external_matches": "Linked Accounts",
+        "linked_accounts": "Linked Accounts",
         "api_keys_management": {
           "add_api_key": "Add API Key",
           "description": "Keys authenticate requests to the 5Stack API — treat them like passwords.",
@@ -1780,7 +1798,7 @@
           "title": "Highlights",
           "updated": "Updated highlight settings"
         },
-        "external_matches": {
+        "linked_accounts": {
           "title": "Match Imports",
           "section": "Match Imports",
           "enabled": "Allow CS2 match imports",
@@ -1995,6 +2013,55 @@
           "permissions_section": "Permissions",
           "permissions_description": "Control which players can create events.",
           "create_events_role": "Minimum role to create events"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "section": "Plugins",
+          "description": "Register external micro-frontend apps that render as native pages inside your panel.",
+          "add": "Add Plugin",
+          "empty": "No plugins yet.",
+          "public": "Public",
+          "add_title": "Add Plugin",
+          "edit_title": "Edit Plugin",
+          "delete_title": "Delete Plugin",
+          "delete_description": "This will remove \"{title}\" and its /apps route from the panel. This cannot be undone.",
+          "delete_confirm": "Delete",
+          "form_description": "Configure how this plugin is loaded and who can see it.",
+          "is_default_hint": "Make this the panel's landing page.",
+          "fields": {
+            "title": "Title",
+            "slug": "Slug",
+            "icon": "Icon",
+            "remote_entry_url": "Remote Entry URL",
+            "remote_scope": "Remote Scope",
+            "exposed_module": "Exposed Module",
+            "required_role": "Required Role",
+            "nav_group": "Nav Group",
+            "nav_order": "Nav Order",
+            "enabled": "Enabled",
+            "is_default": "Default Page",
+            "icon_hint": "A lucide icon name or an image URL. Examples:",
+            "remote_entry_url_hint": "The Module Federation remoteEntry.js the panel loads (usually .../assets/remoteEntry.js).",
+            "remote_scope_hint": "The plugin's Federation container name (its `name` in vite federation config).",
+            "exposed_module_hint": "The exposed module path, e.g. ./App.",
+            "nav_group_placeholder": "Apps",
+            "nav_group_hint": "Optional heading to group this under in the sidebar. Leave blank for the default Apps group.",
+            "nav_order_hint": "Lower numbers appear first. Leave 0 if you don't care."
+          },
+          "detect_label": "Auto-detect from URL",
+          "detect": "Detect",
+          "detect_hint": "Paste the plugin's base URL (or its 5stack-plugin.json) and we'll fill in the fields below from its manifest.",
+          "detect_failed": "Could not read a 5stack-plugin.json manifest at that URL.",
+          "detect_success": "Detected plugin details.",
+          "optional": "(optional)",
+          "advanced": "Advanced settings",
+          "icon_picker": {
+            "choose": "Choose an icon",
+            "custom": "Custom icon",
+            "search": "Search icons…",
+            "custom_hint": "Or paste an image URL or inline SVG (e.g. from a plugin).",
+            "custom_placeholder": "https://… , <svg…>, or an icon name"
+          }
         }
       },
       "language": {
@@ -2012,7 +2079,7 @@
           "description": "Show a popup when your match or draft room is ready, with a quick link to jump to it. When disabled, you won't be redirected — reach it from the button in the top nav instead."
         }
       },
-      "external_matches": {
+      "linked_accounts": {
         "presence_title": "5stack Steam bot",
         "presence_description": "Add the bot as a Steam friend to auto-import your Competitive & Premier matches the moment they end.",
         "presence_connect": "Add bot as friend",
@@ -3061,6 +3128,13 @@
       "description": "View and manage all events across the platform.",
       "no_events_title": "No Events Yet",
       "no_events_description": "You are not organizing any events yet."
+    },
+    "plugins": {
+      "not_found_title": "Page not found",
+      "not_found_description": "This plugin does not exist or is no longer available.",
+      "forbidden_title": "Access restricted",
+      "forbidden_description": "You don't have permission to view this page.",
+      "error_title": "Failed to load page"
     }
   },
   "custom_match": {
@@ -3213,6 +3287,9 @@
         "title": "Logout",
         "description": "Are you sure you want to logout?",
         "confirm": "Logout"
+      },
+      "plugins": {
+        "title": "Apps"
       }
     },
     "top_nav": {
@@ -3450,6 +3527,10 @@
       "deaths": "Deaths",
       "assists": "Assists",
       "win_rate": "Win Rate"
+    },
+    "address_search": {
+      "placeholder": "Search for an address or venue",
+      "no_results": "No matching places found"
     }
   },
   "spotlight_search": {
@@ -3613,13 +3694,19 @@
       "my_team": "My Team",
       "my_team_hint": "Manage your roster, invites, and readiness for this tournament.",
       "roster_section": "Roster",
-      "no_teams_yet": "No teams yet."
+      "no_teams_yet": "No teams yet.",
+      "information_tab": "Information",
+      "about_section": "About",
+      "match_settings": "Match Settings",
+      "read_more": "Read more",
+      "read_less": "Read less"
     },
     "feature_card": {
       "tournament": "Tournament",
       "teams": "Teams",
       "stages": "Stages",
-      "default_label": "Tournament"
+      "default_label": "Tournament",
+      "organized_by": "By {team}"
     },
     "results_section": {
       "no_data": "NO DATA",
@@ -3697,6 +3784,11 @@
       "name": "Tournament Name",
       "description": "Description",
       "start": "Start Date",
+      "section": {
+        "branding": "Branding",
+        "details": "Details",
+        "classification": "Classification & Venue"
+      },
       "discord_notifications": "Discord Notifications",
       "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent.",
       "auto_start": {
@@ -3712,6 +3804,23 @@
         "ready_hint": "Everything looks good — create your tournament",
         "incomplete": "Required fields missing",
         "incomplete_hint": "Fill in the tournament name and start date to continue"
+      },
+      "logo": {
+        "label": "Logo"
+      },
+      "homepage": {
+        "label": "Homepage",
+        "description": "External link for tickets, info or registration.",
+        "link": "Homepage"
+      },
+      "location": {
+        "label": "Location",
+        "description": "Search for the venue or city; the map pin is set automatically."
+      },
+      "latitude": {},
+      "longitude": {},
+      "categories": {
+        "label": "Categories"
       }
     },
     "notifications": {
@@ -3790,7 +3899,11 @@
       "third_place_match_description": "Create a 3rd place match between the two semifinal losers.",
       "decider_best_of": "3rd Place Decider",
       "advanced_settings": "Advanced Stage Settings",
-      "teams_count": "{count} teams"
+      "teams_count": "{count} teams",
+      "final_map_advantage": {
+        "label": "Final Map Advantage",
+        "description": "Map-point head start the winner-bracket team carries into the grand final. Must stay below the maps needed to win."
+      }
     },
     "bracket": {
       "schedule_title": "Schedule Match",
@@ -3915,7 +4028,16 @@
       "remove": "Remove Organizer",
       "confirm_remove": "Are you sure you want to remove this organizer?",
       "remove_description": "This will remove the organizer from the tournament",
-      "organized_by": "Organized by"
+      "organized_by": "Organized by",
+      "teams": {
+        "title": "Organisation Teams",
+        "description": "Link a team to make all of its members organizers of this tournament.",
+        "add": "Link a Team",
+        "members_note": "Every member of a linked team becomes a tournament organizer. Removing the team removes the organizers it added.",
+        "none": "No organisation teams linked.",
+        "remove_confirm": "Remove {name} and the organizer access of its members?",
+        "remove": "Remove"
+      }
     },
     "team": {
       "eligible": "Eligible",
@@ -3966,7 +4088,45 @@
       "confirm_remove": "Are you sure you want to remove this server?",
       "remove_description": "This will remove the server from the tournament"
     },
-    "open_match_actions": "Open match actions"
+    "open_match_actions": "Open match actions",
+    "location": {
+      "tab": "Location",
+      "view_on_map": "View on map"
+    },
+    "prizes": {
+      "title": "Prizes",
+      "manage_title": "Prizes",
+      "manage_hint": "▓ ADD PRIZE PLACES AND AMOUNTS SHOWN ON THE TOURNAMENT",
+      "organizer_access_required": "Organizer access required",
+      "add": "Add",
+      "distribution": "Prize Distribution",
+      "place_placeholder": "#1",
+      "prize_placeholder": "€1000"
+    },
+    "stats": {
+      "prize_pool": "Prize Pool",
+      "teams": "Teams",
+      "format": "Format",
+      "starts": "Starts",
+      "location": "Location"
+    },
+    "wizard": {
+      "information": "Information",
+      "location": "Location",
+      "match_options": "Match Options",
+      "prizes": "Prizes"
+    },
+    "banner": {
+      "label": "Banner",
+      "upload": "Upload Banner",
+      "replace": "Replace Banner",
+      "remove": "Remove",
+      "removed": "Banner removed",
+      "updated": "Banner updated",
+      "empty_hint": "Add a banner",
+      "hint": "Shown across the top of the tournament page. Cropped to a wide 3:1 frame.",
+      "upload_failed": "Banner upload failed"
+    }
   },
   "team": {
     "highlights": {
@@ -4053,7 +4213,11 @@
       "select_owner": "Select team owner...",
       "inviting": "Inviting",
       "inviting_hint": "These players will be invited when you create the team.",
-      "create": "Create Team"
+      "create": "Create Team",
+      "is_organization": {
+        "label": "Organisation Team",
+        "description": "Organisation teams can be linked to tournaments to grant their members organizer access."
+      }
     },
     "roster_count_players": "players",
     "search": {
@@ -4278,6 +4442,14 @@
         },
         "default_player_models": {
           "description": "Enable default player models for all players in the match."
+        },
+        "round_restart_delay": {
+          "label": "Round Restart Delay",
+          "range": "Seconds before a round restarts. Leave blank for the server default."
+        },
+        "halftime_pausematch": {
+          "label": "Pause at Halftime",
+          "description": "Pauses the match at halftime until an admin resumes it — useful for streamed broadcasts."
         }
       },
       "max_rounds": "Max Rounds",

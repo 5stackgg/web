@@ -390,6 +390,46 @@ import { $ } from "~/generated/zeus";
       </div>
     </Card>
 
+    <!-- Section B2: Final Map Advantage (DE only) -->
+    <Card v-if="form.values.stage_type === 'DoubleElimination'">
+      <div class="flex flex-col space-y-3 p-4">
+        <FormField v-slot="{ value }" name="final_map_advantage">
+          <FormItem>
+            <SettingHeader>{{
+              $t("tournament.stage.final_map_advantage.label")
+            }}</SettingHeader>
+            <NumberField
+              class="gap-2"
+              :min="0"
+              :max="finalMapAdvantageMax"
+              :model-value="value ?? 0"
+              @update:model-value="
+                (advantage) => {
+                  const clamped = Math.min(
+                    Math.max(0, Number(advantage) || 0),
+                    finalMapAdvantageMax,
+                  );
+                  form.setFieldValue('final_map_advantage', clamped);
+                }
+              "
+            >
+              <NumberFieldContent>
+                <NumberFieldDecrement />
+                <FormControl>
+                  <NumberFieldInput />
+                </FormControl>
+                <NumberFieldIncrement />
+              </NumberFieldContent>
+            </NumberField>
+            <FormDescription>
+              {{ $t("tournament.stage.final_map_advantage.description") }}
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </Card>
+
     <!-- Section C: Advanced Settings (collapsible) -->
     <Collapsible v-model:open="showAdvancedSettings">
       <CollapsibleTrigger as-child>
@@ -922,6 +962,7 @@ export default {
               decider_best_of: z.string().nullable().default(null),
               max_rounds: z.number().nullable().default(null),
               swiss_no_elimination: z.boolean().default(false),
+              final_map_advantage: z.number().min(0).default(0),
               // Advanced settings (5 overridable fields)
               tv_delay: z.number().min(0).max(120).default(115),
               region_veto: z.boolean().default(true),
@@ -1193,6 +1234,12 @@ export default {
         },
       ];
     },
+    finalMapAdvantageMax() {
+      // Must stay strictly below the maps needed to win the grand final;
+      // at/above ceil(best_of / 2) the winner-bracket team wins on map one.
+      const bestOf = Number(this.form.values.default_best_of || "1");
+      return Math.max(0, Math.ceil(bestOf / 2) - 1);
+    },
   },
   methods: {
     populateStage(stage: any) {
@@ -1209,6 +1256,7 @@ export default {
             : null,
           max_rounds: stage.max_rounds ?? null,
           swiss_no_elimination: stage.swiss_no_elimination || false,
+          final_map_advantage: stage.final_map_advantage ?? 0,
         });
 
         // Load per-round best_of from settings
@@ -1258,6 +1306,7 @@ export default {
           groups: 1,
           default_best_of: "1",
           stage_type: e_tournament_stage_types_enum.SingleElimination,
+          final_map_advantage: 0,
         });
         this.setDefaultAdvancedSettings();
       }
@@ -1619,6 +1668,10 @@ export default {
             swiss_no_elimination:
               this.form.values.stage_type === "Swiss" &&
               !!this.form.values.swiss_no_elimination,
+            final_map_advantage:
+              this.form.values.stage_type === "DoubleElimination"
+                ? this.form.values.final_map_advantage || 0
+                : 0,
             settings: $("settings", "jsonb"),
             decider_best_of: this.form.values.third_place_match
               ? parseInt(
@@ -1692,6 +1745,10 @@ export default {
                   swiss_no_elimination:
                     this.form.values.stage_type === "Swiss" &&
                     !!this.form.values.swiss_no_elimination,
+                  final_map_advantage:
+                    this.form.values.stage_type === "DoubleElimination"
+                      ? this.form.values.final_map_advantage || 0
+                      : 0,
                   settings: $("settings", "jsonb"),
                   tournament_id:
                     (this as any).$route.params.tournamentId ||

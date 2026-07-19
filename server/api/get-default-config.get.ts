@@ -8,8 +8,12 @@ export default defineCachedEventHandler(
       }
 
       const response = await fetch(
-        `https://raw.githubusercontent.com/5stackgg/game-server/refs/heads/main/cfg/5stack.${type}.cfg`,
+        `https://raw.githubusercontent.com/5stackgg/game-server/refs/heads/main/shared/cfg/5stack.${type}.cfg`,
       );
+
+      if (!response.ok) {
+        throw new Error(`unable to fetch config for ${type}: ${response.status}`);
+      }
 
       return await response.text();
     } catch (error) {

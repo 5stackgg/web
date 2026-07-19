@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TournamentForm from "~/components/tournament/TournamentForm.vue";
+import TournamentCreateWizard from "~/components/tournament/TournamentCreateWizard.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
@@ -12,6 +12,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
-    <tournament-form></tournament-form>
+    <TournamentCreateWizard />
   </PageTransition>
 </template>

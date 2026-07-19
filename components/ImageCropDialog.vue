@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Sparkles, Upload, Minimize2 } from "lucide-vue-next";
+import { RotateCcw, Sparkles, Check, Minimize2 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import Cropper from "cropperjs";
@@ -19,29 +19,49 @@ import {
   retryDynamicImport,
 } from "@/utilities/imagePipeline";
 
-const OUTPUT_W = 1280;
-const OUTPUT_H = 720;
-const ASPECT = OUTPUT_W / OUTPUT_H;
-const MAX_SOURCE_EDGE = 2000;
-
-const props = defineProps<{
-  open: boolean;
-  file: File | null;
-}>();
+// Generic crop dialog: fixed crop box at the requested aspect, the user moves /
+// zooms the image behind it. Pure — it only emits the cropped blob; callers
+// decide how to store it. Supersedes the banner/cover-specific editors.
+const props = withDefaults(
+  defineProps<{
+    open: boolean;
+    file: File | null;
+    outputW: number;
+    outputH: number;
+    aspect?: number;
+    fillColor?: string;
+    quality?: number;
+    maxSourceEdge?: number;
+    allowFitWhole?: boolean;
+    allowBgRemoval?: boolean;
+    title?: string;
+    description?: string;
+    hint?: string;
+  }>(),
+  {
+    fillColor: "#000",
+    quality: 0.92,
+    maxSourceEdge: 3000,
+    allowFitWhole: false,
+    allowBgRemoval: false,
+  },
+);
 
 const emit = defineEmits<{
   (e: "update:open", v: boolean): void;
-  (e: "uploaded", url: string): void;
+  (e: "apply", blob: Blob): void;
 }>();
 
-const { upload } = useNewsImageUpload();
+const aspect = computed(() => props.aspect ?? props.outputW / props.outputH);
 
 const imgEl = ref<HTMLImageElement | null>(null);
 const sourceUrl = ref<string | null>(null);
+const workingSrc = ref<string | null>(null);
 const cropper = shallowRef<Cropper | null>(null);
 const removingBg = ref(false);
-const uploading = ref(false);
-const workingSrc = ref<string | null>(null);
+const rendering = ref(false);
+
+const displaySrc = computed(() => workingSrc.value ?? sourceUrl.value);
 
 function teardownCropper() {
   cropper.value?.destroy();
@@ -54,7 +74,7 @@ function setupCropper() {
   }
   teardownCropper();
   cropper.value = new Cropper(imgEl.value, {
-    aspectRatio: ASPECT,
+    aspectRatio: aspect.value,
     viewMode: 0,
     autoCropArea: 1,
     background: true,
@@ -93,17 +113,16 @@ watch(
     revokeSource();
     workingSrc.value = null;
     try {
-      sourceUrl.value = await downscaleFileToObjectUrl(file, MAX_SOURCE_EDGE);
+      sourceUrl.value = await downscaleFileToObjectUrl(
+        file,
+        props.maxSourceEdge,
+      );
     } catch {
       sourceUrl.value = URL.createObjectURL(file);
     }
   },
   { immediate: true },
 );
-
-function onImgLoad() {
-  setupCropper();
-}
 
 onBeforeUnmount(() => {
   teardownCropper();
@@ -114,6 +133,8 @@ function reset() {
   cropper.value?.reset();
 }
 
+// Shrinks the whole image inside the crop frame (art that must not be cropped);
+// the letterbox fills the remaining space with fillColor / transparency.
 function fitWhole() {
   const c = cropper.value;
   if (!c) {
@@ -135,8 +156,17 @@ function fitWhole() {
   });
 }
 
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
 async function removeBackground() {
-  if (!props.file && !workingSrc.value && !sourceUrl.value) {
+  if (!displaySrc.value && !props.file) {
     return;
   }
   removingBg.value = true;
@@ -158,62 +188,44 @@ async function removeBackground() {
   }
 }
 
-function blobToDataUrl(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(blob);
-  });
-}
-
-async function renderBlob(): Promise<Blob> {
-  if (!cropper.value) {
-    throw new Error("Cropper not ready");
-  }
-  const canvas = cropper.value.getCroppedCanvas({
-    width: OUTPUT_W,
-    height: OUTPUT_H,
-    imageSmoothingEnabled: true,
-    imageSmoothingQuality: "high",
-    fillColor: "transparent",
-  });
-  return new Promise<Blob>((resolve, reject) =>
-    canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
-      "image/webp",
-      0.92,
-    ),
-  );
-}
-
-async function save() {
-  if (!cropper.value) {
+async function apply() {
+  const c = cropper.value;
+  if (!c) {
     return;
   }
-  uploading.value = true;
+  rendering.value = true;
   try {
-    const blob = await renderBlob();
-    const url = await upload(blob);
-    if (url) {
-      emit("uploaded", url);
-      emit("update:open", false);
-    }
+    const canvas = c.getCroppedCanvas({
+      width: props.outputW,
+      height: props.outputH,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: "high",
+      fillColor: props.fillColor,
+    });
+    const blob = await new Promise<Blob>((resolve, reject) =>
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
+        "image/webp",
+        props.quality,
+      ),
+    );
+    emit("apply", blob);
+    emit("update:open", false);
   } finally {
-    uploading.value = false;
+    rendering.value = false;
   }
 }
-
-const displaySrc = computed(() => workingSrc.value ?? sourceUrl.value);
 </script>
 
 <template>
   <Dialog :open="open" @update:open="(v) => emit('update:open', v)">
-    <DialogContent class="max-w-3xl">
+    <DialogContent class="max-w-4xl">
       <DialogHeader>
-        <DialogTitle>{{ $t("pages.news.cover_editor.title") }}</DialogTitle>
+        <DialogTitle>{{
+          title ?? $t("image_upload.crop.title")
+        }}</DialogTitle>
         <DialogDescription>
-          {{ $t("pages.news.cover_editor.description") }}
+          {{ description ?? $t("image_upload.crop.description") }}
         </DialogDescription>
       </DialogHeader>
 
@@ -225,7 +237,7 @@ const displaySrc = computed(() => workingSrc.value ?? sourceUrl.value);
             :src="displaySrc"
             class="block max-w-full"
             alt=""
-            @load="onImgLoad"
+            @load="setupCropper"
           />
         </div>
 
@@ -243,48 +255,56 @@ const displaySrc = computed(() => workingSrc.value ?? sourceUrl.value);
       </div>
 
       <p
+        v-if="hint"
         class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
       >
-        {{ $t("pages.news.cover_editor.hint") }}
+        {{ hint }}
       </p>
 
-      <DialogFooter class="gap-2 sm:gap-2">
+      <DialogFooter class="gap-2 sm:justify-between">
+        <div class="flex flex-wrap gap-2">
+          <Button
+            v-if="allowFitWhole"
+            type="button"
+            variant="outline"
+            size="sm"
+            :disabled="removingBg || rendering || !displaySrc"
+            @click="fitWhole"
+          >
+            <Minimize2 class="mr-1.5 h-3.5 w-3.5" />
+            {{ $t("image_upload.crop.fit_whole") }}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            :disabled="removingBg || rendering"
+            @click="reset"
+          >
+            <RotateCcw class="mr-1.5 h-3.5 w-3.5" />
+            {{ $t("common.reset") }}
+          </Button>
+          <Button
+            v-if="allowBgRemoval"
+            type="button"
+            variant="outline"
+            size="sm"
+            :disabled="removingBg || rendering || !displaySrc"
+            @click="removeBackground"
+          >
+            <Spinner v-if="removingBg" class="mr-1.5 h-3.5 w-3.5" />
+            <Sparkles v-else class="mr-1.5 h-3.5 w-3.5" />
+            {{ $t("avatar.roster_editor.remove_bg") }}
+          </Button>
+        </div>
         <Button
           type="button"
-          variant="outline"
-          :disabled="removingBg || uploading || !displaySrc"
-          @click="fitWhole"
+          :loading="rendering"
+          :disabled="removingBg || !displaySrc"
+          @click="apply"
         >
-          <Minimize2 class="mr-1 h-4 w-4" />
-          {{ $t("pages.news.cover_editor.fit") }}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          :disabled="removingBg || uploading"
-          @click="reset"
-        >
-          <RotateCcw class="mr-1 h-4 w-4" />
-          {{ $t("common.reset") }}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          :disabled="removingBg || uploading || !displaySrc"
-          @click="removeBackground"
-        >
-          <Spinner v-if="removingBg" class="mr-1 h-4 w-4" />
-          <Sparkles v-else class="mr-1 h-4 w-4" />
-          {{ $t("avatar.roster_editor.remove_bg") }}
-        </Button>
-        <Button
-          type="button"
-          :disabled="removingBg || uploading || !displaySrc"
-          @click="save"
-        >
-          <Spinner v-if="uploading" class="mr-1 h-4 w-4" />
-          <Upload v-else class="mr-1 h-4 w-4" />
-          {{ $t("common.save") }}
+          <Check class="mr-1.5 h-4 w-4" />
+          {{ $t("image_upload.crop.apply") }}
         </Button>
       </DialogFooter>
     </DialogContent>

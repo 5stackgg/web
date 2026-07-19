@@ -39,7 +39,7 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import AvatarUpload from "~/components/AvatarUpload.vue";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import { e_team_roster_statuses_enum } from "~/generated/zeus";
 import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 </script>
@@ -280,8 +280,11 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           }}
         </DialogDescription>
       </DialogHeader>
-      <AvatarUpload
-        variant="dropzone"
+      <ImageUploadTile
+        class="mx-auto max-w-[12rem]"
+        aspect="square"
+        fit="contain"
+        mode="roster"
         kind="team-roster"
         :upload-url="`https://${apiDomain}/avatars/roster-teams/${member.team_id}/${member.player.steam_id}`"
         :delete-url="`https://${apiDomain}/avatars/roster-teams/${member.team_id}/${member.player.steam_id}`"

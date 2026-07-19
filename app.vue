@@ -69,6 +69,15 @@ function pageKeyWithoutTabQuery(route: {
   hash?: string;
   meta?: { persistQueryKeys?: string[] };
 }) {
+  // A plugin owns every route under its slug, so its key stops at the slug:
+  // the plugin's own routes then swap views inside a mounted remote instead of
+  // remounting it (and re-fetching its data) on every navigation — the same
+  // reason tab/mode query keys are excluded below.
+  const plugin = route.path.match(/^\/apps\/([^/]+)/);
+  if (plugin) {
+    return `/apps/${plugin[1]}`;
+  }
+
   const query = new URLSearchParams();
   const persisted = new Set([
     ...TAB_QUERY_KEYS,

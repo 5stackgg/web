@@ -48,8 +48,8 @@ const navItems = computed(() => {
       label: $t("pages.settings.account.matchmaking"),
     },
     {
-      path: "/settings/external-matches",
-      label: $t("pages.settings.account.external_matches"),
+      path: "/settings/linked-accounts",
+      label: $t("pages.settings.account.linked_accounts"),
     },
     {
       path: "/settings/notifications",

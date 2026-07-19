@@ -5,7 +5,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { ImagePlus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import EventBannerEditor from "~/components/events/EventBannerEditor.vue";
+import ImageCropDialog from "~/components/ImageCropDialog.vue";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
@@ -218,9 +218,13 @@ async function removeBanner() {
       @change="handleFileSelect"
     />
 
-    <EventBannerEditor
+    <ImageCropDialog
       v-model:open="editorOpen"
       :file="editorFile"
+      :output-w="1920"
+      :output-h="640"
+      :fill-color="'#000'"
+      allow-fit-whole
       @apply="(blob) => uploadBanner(blob)"
     />
   </div>

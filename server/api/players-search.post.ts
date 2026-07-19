@@ -1,12 +1,28 @@
 import { Client } from "typesense";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { players_update_column, players_constraint } from "~/generated/zeus";
+import gql from "graphql-tag";
 import {
   ApolloClient,
   InMemoryCache,
   createHttpLink,
 } from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
+
+// Hand-written instead of `generateMutation` from ~/graphql/graphqlGen: that
+// pulls the 14.5 MB generated Zeus module into the Nitro server bundle, which
+// OOMs rollup during `nuxt build`.
+const INSERT_PLAYERS = gql`
+  mutation InsertPlayers($objects: [players_insert_input!]!) {
+    insert_players(
+      objects: $objects
+      on_conflict: {
+        update_columns: [name]
+        constraint: players_steam_id_key
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
 
 const client = new Client({
   nodes: [
@@ -181,26 +197,16 @@ export default defineEventHandler(async (event) => {
         }[];
 
         await apolloClient.mutate({
-          mutation: generateMutation({
-            insert_players: [
-              {
-                objects: players.map((player) => ({
-                  name: player.personaname,
-                  steam_id: player.steamid,
-                  avatar_url: player.avatar,
-                  profile_url: player.profileurl,
-                  country: player.loccountrycode,
-                })),
-                on_conflict: {
-                  update_columns: [players_update_column.name],
-                  constraint: players_constraint.players_steam_id_key,
-                },
-              },
-              {
-                affected_rows: true,
-              },
-            ],
-          }),
+          mutation: INSERT_PLAYERS,
+          variables: {
+            objects: players.map((player) => ({
+              name: player.personaname,
+              steam_id: player.steamid,
+              avatar_url: player.avatar,
+              profile_url: player.profileurl,
+              country: player.loccountrycode,
+            })),
+          },
         });
 
         return {

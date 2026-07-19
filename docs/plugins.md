@@ -6,8 +6,8 @@ app is a Vue [Module Federation](https://module-federation.io/) remote that the
 panel loads at runtime and mounts in a native route (`/apps/<slug>`).
 
 - **No iframe** — your component runs in the panel's Vue app.
-- **Reuses 5stack auth** — you get the logged-in user; your backend trusts
-  forward-auth headers instead of running its own Steam login.
+- **Reuses 5stack auth** — you get the logged-in user; your backend exchanges the
+  existing session cookie for identity instead of running its own Steam login.
 - **Native look** — via the shared `@5stack/ui` design system.
 
 The [hello-world sample](https://github.com/5stackgg/5stack-plugin-hello-world)
@@ -138,15 +138,24 @@ defineProps<{ user?: { steam_id: string; name: string; role: string } | null }>(
 </script>
 ```
 
-If you have a backend, don't parse the cookie or run Steam auth. Put your
-service behind 5stack forward-auth and read the identity headers:
+If you have a backend, don't decode the cookie or run Steam auth. Every request
+already carries the 5stack session cookie — forward it to the panel and get the
+identity back as JSON:
 
-```
-nginx.ingress.kubernetes.io/auth-url: "http://api.5stack.svc.cluster.local:5585/custom-pages/authorize"
-nginx.ingress.kubernetes.io/auth-response-headers: "X-5stack-Steam-Id,X-5stack-Role,X-5stack-Name"
+```ts
+const res = await fetch(
+  "http://api.5stack.svc.cluster.local:5585/plugins/authorize",
+  { headers: { cookie: request.headers.cookie ?? "" } },
+);
+// 200 -> { steam_id, role, name }   401 -> anonymous
 ```
 
-Your backend then trusts `X-5stack-Steam-Id` / `X-5stack-Role` / `X-5stack-Name`.
+Cache that for a few seconds keyed on the cookie. Your backend **must** be on a
+subdomain of the panel's domain, or the cookie never arrives at all.
+
+There is also an ingress-level forward-auth mode that injects the identity as
+headers instead. It is faster but fails open if the Service is ever reachable
+off-ingress — see [Backend & Auth](/plugins/backend) before choosing it.
 
 ## 4. Match the look
 

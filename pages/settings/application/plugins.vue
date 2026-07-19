@@ -603,7 +603,7 @@ export default {
         // and third-party plugins don't need to allow-list the panel origin.
         const apiDomain = useRuntimeConfig().public.apiDomain;
         const response = await fetch(
-          `https://${apiDomain}/custom-pages/detect?url=${encodeURIComponent(input)}`,
+          `https://${apiDomain}/plugins/detect?url=${encodeURIComponent(input)}`,
           { credentials: "include" },
         );
         if (!response.ok) {

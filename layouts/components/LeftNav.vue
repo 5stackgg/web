@@ -29,7 +29,7 @@ import {
   CalendarRange,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
-import CustomPageIcon from "~/components/custom-pages/CustomPageIcon.vue";
+import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
@@ -319,15 +319,15 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           </SidebarMenu>
         </SidebarGroup>
 
-        <template v-if="customPageGroups.length > 0">
+        <template v-if="pluginGroups.length > 0">
           <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
           <SidebarGroup
-            v-for="group in customPageGroups"
+            v-for="group in pluginGroups"
             :key="group.name ?? 'apps'"
           >
             <SidebarGroupLabel>{{
-              group.name || $t("layouts.app_nav.custom_pages.title")
+              group.name || $t("layouts.app_nav.plugins.title")
             }}</SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem
@@ -345,7 +345,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                         $route.path.startsWith(`/apps/${page.slug}/`),
                     }"
                   >
-                    <CustomPageIcon :name="page.icon" />
+                    <PluginIcon :name="page.icon" />
                     {{ page.title }}
                   </NuxtLink>
                 </SidebarMenuButton>
@@ -1082,7 +1082,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
-import type { CustomPage } from "~/stores/CustomPages";
+import type { Plugin } from "~/stores/Plugins";
 export default {
   props: {
     isMobile: {
@@ -1203,11 +1203,11 @@ export default {
     eventsEnabled() {
       return useApplicationSettingsStore().eventsEnabled;
     },
-    customPageGroups() {
-      // visiblePages arrive sorted by nav_order, so insertion order keeps both
+    pluginGroups() {
+      // visiblePlugins arrive sorted by nav_order, so insertion order keeps both
       // the per-group page order and the group order (first appearance).
-      const groups: Array<{ name: string | null; pages: CustomPage[] }> = [];
-      for (const page of useCustomPagesStore().visiblePages) {
+      const groups: Array<{ name: string | null; pages: Plugin[] }> = [];
+      for (const page of usePluginsStore().visiblePlugins) {
         const name = page.nav_group || null;
         let group = groups.find((entry) => entry.name === name);
         if (!group) {

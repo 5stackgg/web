@@ -220,7 +220,7 @@ const loginArrowClasses =
             </NavigationMenuItem>
 
             <NavigationMenuItem
-              v-for="page in customPages"
+              v-for="plugin in plugins"
               :key="page.id"
               class="hidden md:block"
             >
@@ -789,8 +789,8 @@ export default {
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
     },
-    customPages() {
-      return useCustomPagesStore().visiblePages;
+    plugins() {
+      return usePluginsStore().visiblePlugins;
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;

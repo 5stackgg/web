@@ -14,13 +14,13 @@ import {
   __federation_method_getRemote,
   __federation_method_unwrapDefault,
 } from "__federation__";
-import { useCustomPagesStore } from "~/stores/CustomPages";
+import { usePluginsStore } from "~/stores/Plugins";
 import { useAuthStore } from "~/stores/AuthStore";
 import LoadingScreen from "~/components/LoadingScreen.vue";
 
 const route = useRoute();
 const router = useRouter();
-const customPages = useCustomPagesStore();
+const plugins = usePluginsStore();
 const authStore = useAuthStore();
 
 type Status = "loading" | "ready" | "error" | "forbidden" | "not-found";
@@ -63,43 +63,43 @@ function navigate(
   return options.replace ? router.replace(target) : router.push(target);
 }
 
-async function loadPage(slug: string) {
+async function loadPlugin(slug: string) {
   // Two in-flight loads (fast slug switch) can resolve out of order; only the
   // latest generation may write the result.
   const generation = ++loadGeneration;
   status.value = "loading";
   RemoteComponent.value = null;
 
-  const page = customPages.pageBySlug(slug);
-  if (!page) {
+  const plugin = plugins.pluginBySlug(slug);
+  if (!plugin) {
     status.value = "not-found";
     return;
   }
-  if (!customPages.canSee(page)) {
+  if (!plugins.canSee(plugin)) {
     status.value = "forbidden";
     return;
   }
 
   try {
-    if (!registeredScopes.has(page.remote_scope)) {
+    if (!registeredScopes.has(plugin.remote_scope)) {
       // remoteEntry.js keeps a stable filename but changes every build, so
       // cache-bust it (CDNs/browsers would otherwise serve a stale copy — or a
       // stale 404). The hashed chunks it references stay cacheable.
       const bust = `v=${Date.now()}`;
-      const url = page.remote_entry_url.includes("?")
-        ? `${page.remote_entry_url}&${bust}`
-        : `${page.remote_entry_url}?${bust}`;
-      __federation_method_setRemote(page.remote_scope, {
+      const url = plugin.remote_entry_url.includes("?")
+        ? `${plugin.remote_entry_url}&${bust}`
+        : `${plugin.remote_entry_url}?${bust}`;
+      __federation_method_setRemote(plugin.remote_scope, {
         url: () => Promise.resolve(url),
         format: "esm",
         from: "vite",
       });
-      registeredScopes.add(page.remote_scope);
+      registeredScopes.add(plugin.remote_scope);
     }
 
     const module = await __federation_method_getRemote(
-      page.remote_scope,
-      page.exposed_module,
+      plugin.remote_scope,
+      plugin.exposed_module,
     );
     const component = await __federation_method_unwrapDefault(module);
     if (generation !== loadGeneration) {
@@ -121,13 +121,13 @@ async function loadPage(slug: string) {
 // resolving a slug so a cold load doesn't flash "not found".
 //
 // Watches the slug STRING (not route.params) on purpose: the plugin's own
-// navigation changes the path, and re-running loadPage there would tear down and
+// navigation changes the path, and re-running loadPlugin there would tear down and
 // remount the remote on every route change it makes.
 watch(
-  () => `${customPages.initialized ? "1" : "0"}:${slug.value}`,
+  () => `${plugins.initialized ? "1" : "0"}:${slug.value}`,
   () => {
-    if (customPages.initialized && slug.value) {
-      loadPage(slug.value);
+    if (plugins.initialized && slug.value) {
+      loadPlugin(slug.value);
     }
   },
   { immediate: true },
@@ -154,25 +154,25 @@ watch(
     >
       <template v-if="status === 'not-found'">
         <h2 class="text-xl font-semibold">
-          {{ $t("pages.custom_pages.not_found_title") }}
+          {{ $t("pages.plugins.not_found_title") }}
         </h2>
         <p class="text-muted-foreground">
-          {{ $t("pages.custom_pages.not_found_description") }}
+          {{ $t("pages.plugins.not_found_description") }}
         </p>
       </template>
 
       <template v-else-if="status === 'forbidden'">
         <h2 class="text-xl font-semibold">
-          {{ $t("pages.custom_pages.forbidden_title") }}
+          {{ $t("pages.plugins.forbidden_title") }}
         </h2>
         <p class="text-muted-foreground">
-          {{ $t("pages.custom_pages.forbidden_description") }}
+          {{ $t("pages.plugins.forbidden_description") }}
         </p>
       </template>
 
       <template v-else>
         <h2 class="text-xl font-semibold">
-          {{ $t("pages.custom_pages.error_title") }}
+          {{ $t("pages.plugins.error_title") }}
         </h2>
         <p class="max-w-lg break-words text-muted-foreground">
           {{ errorMessage }}

@@ -46,8 +46,8 @@ import {
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
-import CustomPageIcon from "~/components/custom-pages/CustomPageIcon.vue";
-import CustomPageIconPicker from "~/components/custom-pages/CustomPageIconPicker.vue";
+import PluginIcon from "~/components/plugins/PluginIcon.vue";
+import PluginIconPicker from "~/components/plugins/PluginIconPicker.vue";
 import { Pencil, Trash2, Plus, Wand2, ChevronDown } from "lucide-vue-next";
 
 definePageMeta({
@@ -60,77 +60,77 @@ definePageMeta({
     <PageTransition :delay="0">
       <div class="space-y-6">
         <SettingsSection
-          id="custom-pages"
-          :title="$t('pages.settings.application.custom_pages.section')"
+          id="plugins"
+          :title="$t('pages.settings.application.plugins.section')"
           :description="
-            $t('pages.settings.application.custom_pages.description')
+            $t('pages.settings.application.plugins.description')
           "
           clickable-header
           @header-click="toggleEnabled"
         >
           <template #action>
             <Switch
-              :model-value="customPagesEnabled"
+              :model-value="pluginsEnabled"
               @update:model-value="toggleEnabled"
             />
           </template>
 
-          <div v-if="customPagesEnabled" class="space-y-4">
+          <div v-if="pluginsEnabled" class="space-y-4">
             <div class="flex justify-end">
               <Button variant="outline" class="gap-2" @click="openCreate">
                 <Plus class="h-4 w-4" />
-                {{ $t("pages.settings.application.custom_pages.add") }}
+                {{ $t("pages.settings.application.plugins.add") }}
               </Button>
             </div>
 
-            <Table v-if="pages.length > 0">
+            <Table v-if="plugins.length > 0">
               <TableHeader>
                 <TableRow>
                   <TableHead>{{
-                    $t("pages.settings.application.custom_pages.fields.title")
+                    $t("pages.settings.application.plugins.fields.title")
                   }}</TableHead>
                   <TableHead>{{
-                    $t("pages.settings.application.custom_pages.fields.slug")
+                    $t("pages.settings.application.plugins.fields.slug")
                   }}</TableHead>
                   <TableHead>{{
                     $t(
-                      "pages.settings.application.custom_pages.fields.required_role",
+                      "pages.settings.application.plugins.fields.required_role",
                     )
                   }}</TableHead>
                   <TableHead>{{
-                    $t("pages.settings.application.custom_pages.fields.enabled")
+                    $t("pages.settings.application.plugins.fields.enabled")
                   }}</TableHead>
                   <TableHead>{{
                     $t(
-                      "pages.settings.application.custom_pages.fields.is_default",
+                      "pages.settings.application.plugins.fields.is_default",
                     )
                   }}</TableHead>
                   <TableHead class="text-right"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow v-for="page in pages" :key="page.id">
+                <TableRow v-for="plugin in plugins" :key="plugin.id">
                   <TableCell class="flex items-center gap-2 font-medium">
-                    <CustomPageIcon :name="page.icon" class="h-4 w-4" />
-                    {{ page.title }}
+                    <PluginIcon :name="plugin.icon" class="h-4 w-4" />
+                    {{ plugin.title }}
                   </TableCell>
                   <TableCell class="text-muted-foreground">
-                    /apps/{{ page.slug }}
+                    /apps/{{ plugin.slug }}
                   </TableCell>
                   <TableCell class="capitalize">
                     {{
-                      page.required_role ||
-                      $t("pages.settings.application.custom_pages.public")
+                      plugin.required_role ||
+                      $t("pages.settings.application.plugins.public")
                     }}
                   </TableCell>
-                  <TableCell>{{ page.enabled ? "✓" : "—" }}</TableCell>
-                  <TableCell>{{ page.is_default ? "✓" : "—" }}</TableCell>
+                  <TableCell>{{ plugin.enabled ? "✓" : "—" }}</TableCell>
+                  <TableCell>{{ plugin.is_default ? "✓" : "—" }}</TableCell>
                   <TableCell class="text-right">
                     <div class="flex justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
-                        @click="openEdit(page)"
+                        @click="openEdit(plugin)"
                       >
                         <Pencil class="h-4 w-4" />
                       </Button>
@@ -144,14 +144,14 @@ definePageMeta({
                           <AlertDialogHeader>
                             <AlertDialogTitle>{{
                               $t(
-                                "pages.settings.application.custom_pages.delete_title",
+                                "pages.settings.application.plugins.delete_title",
                               )
                             }}</AlertDialogTitle>
                             <AlertDialogDescription>
                               {{
                                 $t(
-                                  "pages.settings.application.custom_pages.delete_description",
-                                  { title: page.title },
+                                  "pages.settings.application.plugins.delete_description",
+                                  { title: plugin.title },
                                 )
                               }}
                             </AlertDialogDescription>
@@ -162,11 +162,11 @@ definePageMeta({
                             }}</AlertDialogCancel>
                             <AlertDialogAction
                               variant="destructive"
-                              @click="remove(page)"
+                              @click="remove(plugin)"
                             >
                               {{
                                 $t(
-                                  "pages.settings.application.custom_pages.delete_confirm",
+                                  "pages.settings.application.plugins.delete_confirm",
                                 )
                               }}
                             </AlertDialogAction>
@@ -180,7 +180,7 @@ definePageMeta({
             </Table>
 
             <p v-else class="text-sm text-muted-foreground">
-              {{ $t("pages.settings.application.custom_pages.empty") }}
+              {{ $t("pages.settings.application.plugins.empty") }}
             </p>
           </div>
         </SettingsSection>
@@ -193,12 +193,12 @@ definePageMeta({
           <DialogTitle>
             {{
               form.id
-                ? $t("pages.settings.application.custom_pages.edit_title")
-                : $t("pages.settings.application.custom_pages.add_title")
+                ? $t("pages.settings.application.plugins.edit_title")
+                : $t("pages.settings.application.plugins.add_title")
             }}
           </DialogTitle>
           <DialogDescription>
-            {{ $t("pages.settings.application.custom_pages.form_description") }}
+            {{ $t("pages.settings.application.plugins.form_description") }}
           </DialogDescription>
         </DialogHeader>
 
@@ -206,7 +206,7 @@ definePageMeta({
           <div class="space-y-2 rounded-md border border-dashed border-primary/40 bg-primary/5 p-3">
             <Label class="flex items-center gap-2">
               <Wand2 class="h-4 w-4 text-primary" />
-              {{ $t("pages.settings.application.custom_pages.detect_label") }}
+              {{ $t("pages.settings.application.plugins.detect_label") }}
             </Label>
             <div class="flex gap-2">
               <Input
@@ -221,11 +221,11 @@ definePageMeta({
                 :disabled="!detectUrl.trim()"
                 @click="detect"
               >
-                {{ $t("pages.settings.application.custom_pages.detect") }}
+                {{ $t("pages.settings.application.plugins.detect") }}
               </Button>
             </div>
             <p class="text-xs text-muted-foreground">
-              {{ $t("pages.settings.application.custom_pages.detect_hint") }}
+              {{ $t("pages.settings.application.plugins.detect_hint") }}
             </p>
             <p v-if="detectError" class="text-xs text-destructive">
               {{ detectError }}
@@ -234,21 +234,21 @@ definePageMeta({
 
           <div class="space-y-2">
             <Label>{{
-              $t("pages.settings.application.custom_pages.fields.title")
+              $t("pages.settings.application.plugins.fields.title")
             }}</Label>
             <Input v-model="form.title" required />
           </div>
 
           <div class="space-y-2">
             <Label>{{
-              $t("pages.settings.application.custom_pages.fields.icon")
+              $t("pages.settings.application.plugins.fields.icon")
             }}</Label>
-            <CustomPageIconPicker v-model="form.icon" />
+            <PluginIconPicker v-model="form.icon" />
           </div>
 
           <div class="space-y-2">
             <Label>{{
-              $t("pages.settings.application.custom_pages.fields.required_role")
+              $t("pages.settings.application.plugins.fields.required_role")
             }}</Label>
             <Select v-model="form.required_role">
               <SelectTrigger>
@@ -258,7 +258,7 @@ definePageMeta({
                 <SelectGroup>
                   <SelectItem value="public">
                     {{
-                      $t("pages.settings.application.custom_pages.public")
+                      $t("pages.settings.application.plugins.public")
                     }}
                   </SelectItem>
                   <SelectItem
@@ -279,7 +279,7 @@ definePageMeta({
                 type="button"
                 class="flex w-full items-center justify-between p-3 text-sm font-medium"
               >
-                {{ $t("pages.settings.application.custom_pages.advanced") }}
+                {{ $t("pages.settings.application.plugins.advanced") }}
                 <ChevronDown
                   class="h-4 w-4 transition-transform"
                   :class="{ 'rotate-180': showAdvanced }"
@@ -289,7 +289,7 @@ definePageMeta({
             <CollapsibleContent class="space-y-4 border-t p-3">
               <div class="space-y-2">
                 <Label>{{
-                  $t("pages.settings.application.custom_pages.fields.slug")
+                  $t("pages.settings.application.plugins.fields.slug")
                 }}</Label>
                 <Input
                   v-model="form.slug"
@@ -302,7 +302,7 @@ definePageMeta({
               <div class="space-y-2">
                 <Label>{{
                   $t(
-                    "pages.settings.application.custom_pages.fields.remote_entry_url",
+                    "pages.settings.application.plugins.fields.remote_entry_url",
                   )
                 }}</Label>
                 <Input
@@ -313,7 +313,7 @@ definePageMeta({
                 <p class="text-xs text-muted-foreground">
                   {{
                     $t(
-                      "pages.settings.application.custom_pages.fields.remote_entry_url_hint",
+                      "pages.settings.application.plugins.fields.remote_entry_url_hint",
                     )
                   }}
                 </p>
@@ -323,7 +323,7 @@ definePageMeta({
                 <div class="space-y-2">
                   <Label>{{
                     $t(
-                      "pages.settings.application.custom_pages.fields.remote_scope",
+                      "pages.settings.application.plugins.fields.remote_scope",
                     )
                   }}</Label>
                   <Input
@@ -334,7 +334,7 @@ definePageMeta({
                   <p class="text-xs text-muted-foreground">
                     {{
                       $t(
-                        "pages.settings.application.custom_pages.fields.remote_scope_hint",
+                        "pages.settings.application.plugins.fields.remote_scope_hint",
                       )
                     }}
                   </p>
@@ -342,7 +342,7 @@ definePageMeta({
                 <div class="space-y-2">
                   <Label>{{
                     $t(
-                      "pages.settings.application.custom_pages.fields.exposed_module",
+                      "pages.settings.application.plugins.fields.exposed_module",
                     )
                   }}</Label>
                   <Input
@@ -353,7 +353,7 @@ definePageMeta({
                   <p class="text-xs text-muted-foreground">
                     {{
                       $t(
-                        "pages.settings.application.custom_pages.fields.exposed_module_hint",
+                        "pages.settings.application.plugins.fields.exposed_module_hint",
                       )
                     }}
                   </p>
@@ -364,31 +364,31 @@ definePageMeta({
                 <div class="space-y-2">
                   <Label class="flex items-center gap-1">
                     {{
-                      $t("pages.settings.application.custom_pages.fields.nav_group")
+                      $t("pages.settings.application.plugins.fields.nav_group")
                     }}
                     <span class="text-xs font-normal text-muted-foreground">{{
-                      $t("pages.settings.application.custom_pages.optional")
+                      $t("pages.settings.application.plugins.optional")
                     }}</span>
                   </Label>
                   <Input
                     v-model="form.nav_group"
                     :placeholder="
-                      $t('pages.settings.application.custom_pages.fields.nav_group_placeholder')
+                      $t('pages.settings.application.plugins.fields.nav_group_placeholder')
                     "
                   />
                   <p class="text-xs text-muted-foreground">
                     {{
-                      $t("pages.settings.application.custom_pages.fields.nav_group_hint")
+                      $t("pages.settings.application.plugins.fields.nav_group_hint")
                     }}
                   </p>
                 </div>
                 <div class="space-y-2">
                   <Label class="flex items-center gap-1">
                     {{
-                      $t("pages.settings.application.custom_pages.fields.nav_order")
+                      $t("pages.settings.application.plugins.fields.nav_order")
                     }}
                     <span class="text-xs font-normal text-muted-foreground">{{
-                      $t("pages.settings.application.custom_pages.optional")
+                      $t("pages.settings.application.plugins.optional")
                     }}</span>
                   </Label>
                   <Input
@@ -398,7 +398,7 @@ definePageMeta({
                   />
                   <p class="text-xs text-muted-foreground">
                     {{
-                      $t("pages.settings.application.custom_pages.fields.nav_order_hint")
+                      $t("pages.settings.application.plugins.fields.nav_order_hint")
                     }}
                   </p>
                 </div>
@@ -408,7 +408,7 @@ definePageMeta({
 
           <div class="flex items-center justify-between">
             <Label>{{
-              $t("pages.settings.application.custom_pages.fields.enabled")
+              $t("pages.settings.application.plugins.fields.enabled")
             }}</Label>
             <Switch v-model="form.enabled" />
           </div>
@@ -416,12 +416,12 @@ definePageMeta({
           <div class="flex items-center justify-between">
             <div>
               <Label>{{
-                $t("pages.settings.application.custom_pages.fields.is_default")
+                $t("pages.settings.application.plugins.fields.is_default")
               }}</Label>
               <p class="text-xs text-muted-foreground">
                 {{
                   $t(
-                    "pages.settings.application.custom_pages.is_default_hint",
+                    "pages.settings.application.plugins.is_default_hint",
                   )
                 }}
               </p>
@@ -448,13 +448,13 @@ import {
 } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
-import type { CustomPage } from "~/stores/CustomPages";
+import type { Plugin } from "~/stores/Plugins";
 
 // reka-ui Select forbids an empty-string value, so "public" is the in-form
 // sentinel for "no required role"; it maps to a null column on save.
 const PUBLIC_ROLE = "public";
 
-interface CustomPageForm {
+interface PluginForm {
   id: string | null;
   title: string;
   slug: string;
@@ -469,7 +469,7 @@ interface CustomPageForm {
   nav_order: number;
 }
 
-const emptyForm = (): CustomPageForm => ({
+const emptyForm = (): PluginForm => ({
   id: null,
   title: "",
   slug: "",
@@ -497,11 +497,11 @@ export default {
     };
   },
   computed: {
-    customPagesEnabled() {
-      return useApplicationSettingsStore().customPagesEnabled;
+    pluginsEnabled() {
+      return useApplicationSettingsStore().pluginsEnabled;
     },
-    pages() {
-      return useCustomPagesStore().pages;
+    plugins() {
+      return usePluginsStore().plugins;
     },
     roles() {
       return Object.values(e_player_roles_enum);
@@ -521,20 +521,20 @@ export default {
       this.showAdvanced = false;
       this.dialogOpen = true;
     },
-    openEdit(page: CustomPage) {
+    openEdit(plugin: Plugin) {
       this.form = {
-        id: page.id,
-        title: page.title,
-        slug: page.slug,
-        icon: page.icon ?? "puzzle",
-        remote_entry_url: page.remote_entry_url,
-        remote_scope: page.remote_scope,
-        exposed_module: page.exposed_module,
-        required_role: page.required_role ?? PUBLIC_ROLE,
-        enabled: page.enabled,
-        is_default: page.is_default,
-        nav_group: page.nav_group ?? "",
-        nav_order: page.nav_order,
+        id: plugin.id,
+        title: plugin.title,
+        slug: plugin.slug,
+        icon: plugin.icon ?? "puzzle",
+        remote_entry_url: plugin.remote_entry_url,
+        remote_scope: plugin.remote_scope,
+        exposed_module: plugin.exposed_module,
+        required_role: plugin.required_role ?? PUBLIC_ROLE,
+        enabled: plugin.enabled,
+        is_default: plugin.is_default,
+        nav_group: plugin.nav_group ?? "",
+        nav_order: plugin.nav_order,
       };
       this.detectUrl = "";
       this.detectError = "";
@@ -559,7 +559,7 @@ export default {
         if (!response.ok) {
           throw new Error(
             this.$t(
-              "pages.settings.application.custom_pages.detect_failed",
+              "pages.settings.application.plugins.detect_failed",
             ) as string,
           );
         }
@@ -590,7 +590,7 @@ export default {
             {
               object: {
                 name: "public.custom_pages_enabled",
-                value: this.customPagesEnabled ? "false" : "true",
+                value: this.pluginsEnabled ? "false" : "true",
               },
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,
@@ -678,10 +678,10 @@ export default {
         });
       }
     },
-    async remove(page: CustomPage) {
+    async remove(plugin: Plugin) {
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
-          delete_custom_pages_by_pk: [{ id: page.id }, { id: true }],
+          delete_custom_pages_by_pk: [{ id: plugin.id }, { id: true }],
         }),
       });
       toast({

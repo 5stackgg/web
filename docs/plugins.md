@@ -61,31 +61,72 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import federation from "@originjs/vite-plugin-federation";
 import cssInjectedByJs from "vite-plugin-css-injected-by-js";
+import * as vueNs from "vue";
+
+// Borrow the panel's Vue instead of bundling a second copy. Resolves bare
+// `vue` to a tiny synchronous module that reads window.__5stack_shared__.
+const VIRTUAL = "\0__5stack_shared__:";
+const VUE_EXPORTS = Object.keys(vueNs).filter((n) => n !== "default");
+
+function sharedGlobals() {
+  return {
+    name: "5stack-shared-globals",
+    enforce: "pre" as const,
+    resolveId: (id: string) => (id === "vue" ? `${VIRTUAL}vue` : null),
+    load(id: string) {
+      if (!id.startsWith(VIRTUAL)) return null;
+      return [
+        `const shared = globalThis.__5stack_shared__;`,
+        `const m = shared && shared.vue;`,
+        `if (!m) throw new Error("[5stack] panel did not publish a shared Vue");`,
+        `export default m.default ?? m;`,
+        ...VUE_EXPORTS.map((n) => `export const ${n} = m[${JSON.stringify(n)}];`),
+      ].join("\n");
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
+    sharedGlobals(),
     vue(),
     cssInjectedByJs(), // Federation shares JS, not CSS — inject yours on load
     federation({
       name: "hello",
       filename: "remoteEntry.js",
       exposes: { "./App": "./src/App.vue" },
-      shared: {
-        vue: { singleton: true, requiredVersion: false },
-        "reka-ui": { singleton: true, requiredVersion: false },
-        "@5stack/ui": { singleton: true, requiredVersion: false },
-        // ...only what you import; each must be installed
-      },
+      // No `shared` — see the warning below.
     }),
   ],
+  optimizeDeps: { exclude: ["vue"] },
   build: { target: "esnext", cssCodeSplit: false },
 });
 ```
 
-**Version lockstep:** pin `vue`, `reka-ui`, `pinia`, `@5stack/ui` to the same
-versions the panel uses, or Federation loads a second copy and reactivity /
-component context break. Only list a package in `shared` if you actually import
-it (Federation builds an entry for each).
+> **Do not add `shared` to `federation()`.** It looks like the obvious way to
+> share Vue, and it is how this guide used to read — but Federation implements
+> sharing by rewriting every import of a shared package into
+> `await importShared(...)`, which turns the importing chunk into an async
+> module. Safari throws `Cannot access '<x>' before initialization` whenever
+> several modules import the same top-level-await module concurrently
+> ([WebKit 242740](https://bugs.webkit.org/show_bug.cgi?id=242740), fixed only
+> in STP 243+, so shipping iOS Safari still has it). The panel hit exactly this:
+> 308 of its 474 chunks had become async, and the app was unusable on iOS. See
+> also [originjs/vite-plugin-federation#403](https://github.com/originjs/vite-plugin-federation/issues/403).
+
+**Only `vue` is shared**, because it is the one package where a second copy
+breaks anything — reactivity and component context. Everything else
+(`reka-ui`, `lucide-vue-next`, `@5stack/ui`, …) you simply bundle: install it,
+import it, done. Whatever you bundle that itself imports Vue resolves through
+the same bridge, so there is still exactly one Vue instance in the page. Your
+remote gets a bit larger; in exchange there is no version negotiation to get
+wrong and no top-level await.
+
+**Version lockstep still matters for `@5stack/ui`** — its components are built
+against the panel's `reka-ui`/Tailwind tokens, so track the panel's version.
+`vue` no longer needs pinning: you get the panel's instance whatever you have
+installed locally (your local copy is used only for typings and to enumerate
+export names at build time).
 
 ## 3. Receive the user
 

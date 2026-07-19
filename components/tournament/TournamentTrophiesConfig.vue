@@ -1,6 +1,6 @@
 <script lang="ts">
 import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
-import AvatarUpload from "~/components/AvatarUpload.vue";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
@@ -20,7 +20,7 @@ const FRAME_CLASSES =
   "relative overflow-hidden rounded-lg border border-border px-6 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.7)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
 
 export default {
-  components: { TrophyBadge, AvatarUpload, Input, Button, Switch },
+  components: { TrophyBadge, ImageUploadTile, Input, Button, Switch },
   props: {
     tournament: {
       type: Object,
@@ -320,8 +320,10 @@ export default {
               <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
               {{ $t("tournament.trophies_config.custom_image") }}
             </label>
-            <AvatarUpload
-              variant="dropzone"
+            <ImageUploadTile
+              class="max-w-[9rem]"
+              aspect="square"
+              fit="contain"
               :upload-url="uploadUrl(p)"
               :delete-url="uploadUrl(p)"
               :has-custom="hasImage(p)"

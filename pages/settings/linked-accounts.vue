@@ -33,8 +33,8 @@ import {
 const { t } = useI18n();
 const apolloClient = useApolloClient().client;
 const me = computed(() => useAuthStore().me);
-const externalMatchesEnabled = computed(
-  () => useApplicationSettingsStore().externalMatchesEnabled,
+const linkedAccountsEnabled = computed(
+  () => useApplicationSettingsStore().linkedAccountsEnabled,
 );
 
 const authCode = ref("");
@@ -243,7 +243,7 @@ async function connectPresence() {
     presenceBot.value = result ?? null;
     if (!result?.enabled || !result?.addUrl) {
       toast({
-        title: t("pages.settings.external_matches.presence_unavailable"),
+        title: t("pages.settings.linked_accounts.presence_unavailable"),
         variant: "destructive",
       });
       return;
@@ -376,7 +376,7 @@ async function submitLink() {
     });
     const result = data?.linkSteamMatchHistory;
     if (result?.success) {
-      toast({ title: t("pages.settings.external_matches.toast_linked") });
+      toast({ title: t("pages.settings.linked_accounts.toast_linked") });
       authCode.value = "";
       shareCode.value = "";
       // We auto-poll right after linking — reflect it straight away.
@@ -385,9 +385,9 @@ async function submitLink() {
       awaitingPollTimeout = setTimeout(stopAwaitingPoll, 90_000);
     } else {
       toast({
-        title: t("pages.settings.external_matches.toast_could_not_link"),
+        title: t("pages.settings.linked_accounts.toast_could_not_link"),
         description:
-          result?.error ?? t("pages.settings.external_matches.unknown_error"),
+          result?.error ?? t("pages.settings.linked_accounts.unknown_error"),
         variant: "destructive",
       });
     }
@@ -400,7 +400,7 @@ async function submitUnlink() {
   unlinking.value = true;
   try {
     await apolloClient.mutate({ mutation: UNLINK_MUTATION });
-    toast({ title: t("pages.settings.external_matches.toast_unlinked") });
+    toast({ title: t("pages.settings.linked_accounts.toast_unlinked") });
     showUnlinkConfirm.value = false;
   } finally {
     unlinking.value = false;
@@ -414,16 +414,16 @@ async function submitPoll() {
     const result = data?.pollSteamMatchHistory;
     if (result?.success) {
       toast({
-        title: t("pages.settings.external_matches.toast_polled"),
-        description: t("pages.settings.external_matches.toast_collected", {
+        title: t("pages.settings.linked_accounts.toast_polled"),
+        description: t("pages.settings.linked_accounts.toast_collected", {
           count: result.collected,
         }),
       });
     } else {
       toast({
-        title: t("pages.settings.external_matches.toast_poll_failed"),
+        title: t("pages.settings.linked_accounts.toast_poll_failed"),
         description:
-          result?.error ?? t("pages.settings.external_matches.unknown_error"),
+          result?.error ?? t("pages.settings.linked_accounts.unknown_error"),
         variant: "destructive",
       });
     }
@@ -457,7 +457,7 @@ async function clearImport(valveMatchId: string) {
       mutation: CLEAR_PENDING_MUTATION,
       variables: { valve_match_id: valveMatchId },
     });
-    toast({ title: t("pages.settings.external_matches.toast_cleared_import") });
+    toast({ title: t("pages.settings.linked_accounts.toast_cleared_import") });
   } finally {
     busyImportId.value = null;
   }
@@ -517,15 +517,15 @@ function formatPendingDate(date: string): string {
 </script>
 
 <template>
-  <PageTransition v-if="!externalMatchesEnabled" :delay="0">
+  <PageTransition v-if="!linkedAccountsEnabled" :delay="0">
     <div
       class="max-w-xl rounded-lg border border-border bg-card/50 px-4 py-3 text-sm text-muted-foreground"
     >
-      {{ $t("pages.settings.application.external_matches.disabled_notice") }}
+      {{ $t("pages.settings.application.linked_accounts.disabled_notice") }}
     </div>
   </PageTransition>
 
-  <PageTransition v-if="externalMatchesEnabled" :delay="100">
+  <PageTransition v-if="linkedAccountsEnabled" :delay="100">
     <FadeSwap>
     <div v-if="!linkLoaded" key="loading" class="grid gap-4 max-w-xl">
       <div class="rounded-lg border border-border bg-card/50 overflow-hidden">
@@ -553,42 +553,42 @@ function formatPendingDate(date: string): string {
 
     <div v-else-if="!isLinked" key="form" class="grid gap-4 max-w-xl">
       <p class="text-sm text-muted-foreground">
-        {{ $t("pages.settings.external_matches.need_two_codes") }}
+        {{ $t("pages.settings.linked_accounts.need_two_codes") }}
       </p>
       <ol class="text-sm text-muted-foreground list-decimal pl-5 space-y-1">
         <li>
-          {{ $t("pages.settings.external_matches.step_auth_prefix") }}
+          {{ $t("pages.settings.linked_accounts.step_auth_prefix") }}
           <a
             class="underline"
             target="_blank"
             rel="noopener noreferrer"
             href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?appid=730&issueid=128"
-            >{{ $t("pages.settings.external_matches.steam_auth_code") }}</a
+            >{{ $t("pages.settings.linked_accounts.steam_auth_code") }}</a
           >
-          {{ $t("pages.settings.external_matches.step_auth_mid") }}
+          {{ $t("pages.settings.linked_accounts.step_auth_mid") }}
           <em>{{
-            $t("pages.settings.external_matches.access_match_history")
+            $t("pages.settings.linked_accounts.access_match_history")
           }}</em>
-          {{ $t("pages.settings.external_matches.step_auth_and_click") }}
-          <em>{{ $t("pages.settings.external_matches.create_auth_code") }}</em
-          >. {{ $t("pages.settings.external_matches.generated_once") }}
+          {{ $t("pages.settings.linked_accounts.step_auth_and_click") }}
+          <em>{{ $t("pages.settings.linked_accounts.create_auth_code") }}</em
+          >. {{ $t("pages.settings.linked_accounts.generated_once") }}
         </li>
         <li>
-          {{ $t("pages.settings.external_matches.step_share_prefix") }}
+          {{ $t("pages.settings.linked_accounts.step_share_prefix") }}
           <strong>{{
-            $t("pages.settings.external_matches.match_share_code")
+            $t("pages.settings.linked_accounts.match_share_code")
           }}</strong>
-          {{ $t("pages.settings.external_matches.step_share_copy") }}
+          {{ $t("pages.settings.linked_accounts.step_share_copy") }}
           <em>{{
-            $t("pages.settings.external_matches.watch_your_matches")
+            $t("pages.settings.linked_accounts.watch_your_matches")
           }}</em>
-          {{ $t("pages.settings.external_matches.step_share_within_30") }}
+          {{ $t("pages.settings.linked_accounts.step_share_within_30") }}
         </li>
       </ol>
 
       <div class="space-y-2">
         <label class="text-sm font-medium">{{
-          $t("pages.settings.external_matches.auth_code")
+          $t("pages.settings.linked_accounts.auth_code")
         }}</label>
         <Input
           v-model="authCode"
@@ -600,7 +600,7 @@ function formatPendingDate(date: string): string {
 
       <div class="space-y-2">
         <label class="text-sm font-medium">{{
-          $t("pages.settings.external_matches.share_code")
+          $t("pages.settings.linked_accounts.share_code")
         }}</label>
         <Input
           v-model="shareCode"
@@ -617,8 +617,8 @@ function formatPendingDate(date: string): string {
         >
           {{
             linking
-              ? $t("pages.settings.external_matches.linking")
-              : $t("pages.settings.external_matches.link_match_history")
+              ? $t("pages.settings.linked_accounts.linking")
+              : $t("pages.settings.linked_accounts.link_match_history")
           }}
         </Button>
       </div>
@@ -645,17 +645,17 @@ function formatPendingDate(date: string): string {
               <div class="text-sm font-medium leading-tight">
                 {{
                   linkQuery?.last_error
-                    ? $t("pages.settings.external_matches.linked_errors")
-                    : $t("pages.settings.external_matches.linked")
+                    ? $t("pages.settings.linked_accounts.linked_errors")
+                    : $t("pages.settings.linked_accounts.linked")
                 }}
               </div>
               <div class="text-xs text-muted-foreground">
-                {{ $t("pages.settings.external_matches.last_poll") }}
+                {{ $t("pages.settings.linked_accounts.last_poll") }}
                 <template v-if="linkQuery?.last_polled_at">
                   <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
                 </template>
                 <template v-else
-                  >· {{ $t("pages.settings.external_matches.never") }}</template
+                  >· {{ $t("pages.settings.linked_accounts.never") }}</template
                 >
               </div>
             </div>
@@ -680,8 +680,8 @@ function formatPendingDate(date: string): string {
               </template>
               {{
                 polling || awaitingPoll
-                  ? $t("pages.settings.external_matches.polling")
-                  : $t("pages.settings.external_matches.poll_now")
+                  ? $t("pages.settings.linked_accounts.polling")
+                  : $t("pages.settings.linked_accounts.poll_now")
               }}
             </FiveStackToolTip>
             <FiveStackToolTip side="bottom">
@@ -698,8 +698,8 @@ function formatPendingDate(date: string): string {
               </template>
               {{
                 unlinking
-                  ? $t("pages.settings.external_matches.unlinking")
-                  : $t("pages.settings.external_matches.unlink")
+                  ? $t("pages.settings.linked_accounts.unlinking")
+                  : $t("pages.settings.linked_accounts.unlink")
               }}
             </FiveStackToolTip>
           </div>
@@ -708,7 +708,7 @@ function formatPendingDate(date: string): string {
         <dl class="divide-y divide-border/60 text-sm">
           <div class="flex items-start justify-between gap-4 px-4 py-2.5">
             <dt class="text-muted-foreground">
-              {{ $t("pages.settings.external_matches.most_recent_share_code") }}
+              {{ $t("pages.settings.linked_accounts.most_recent_share_code") }}
             </dt>
             <dd class="text-right">
               <div class="font-mono text-xs break-all">
@@ -718,7 +718,7 @@ function formatPendingDate(date: string): string {
                 v-if="linkQuery?.last_polled_at"
                 class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground mt-0.5"
               >
-                {{ $t("pages.settings.external_matches.scanned") }}
+                {{ $t("pages.settings.linked_accounts.scanned") }}
                 <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
               </div>
             </dd>
@@ -728,7 +728,7 @@ function formatPendingDate(date: string): string {
             class="flex items-start justify-between gap-4 px-4 py-2.5"
           >
             <dt class="text-muted-foreground">
-              {{ $t("pages.settings.external_matches.last_error") }}
+              {{ $t("pages.settings.linked_accounts.last_error") }}
             </dt>
             <dd class="font-mono text-xs text-destructive break-all text-right">
               {{ linkQuery.last_error }}
@@ -759,7 +759,7 @@ function formatPendingDate(date: string): string {
           </span>
           <div class="min-w-0">
             <div class="text-sm font-medium leading-tight">
-              {{ $t("pages.settings.external_matches.presence_title") }}
+              {{ $t("pages.settings.linked_accounts.presence_title") }}
             </div>
             <div
               class="text-xs"
@@ -769,8 +769,8 @@ function formatPendingDate(date: string): string {
             >
               {{
                 presenceConnected
-                  ? $t("pages.settings.external_matches.presence_connected")
-                  : $t("pages.settings.external_matches.presence_not_connected")
+                  ? $t("pages.settings.linked_accounts.presence_connected")
+                  : $t("pages.settings.linked_accounts.presence_not_connected")
               }}
             </div>
           </div>
@@ -786,7 +786,7 @@ function formatPendingDate(date: string): string {
               <div
                 class="mb-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground"
               >
-                {{ $t("pages.settings.external_matches.presence_self_label") }}
+                {{ $t("pages.settings.linked_accounts.presence_self_label") }}
               </div>
               <PlayerDisplay
                 :player="me"
@@ -807,7 +807,7 @@ function formatPendingDate(date: string): string {
         <template v-else>
           <div class="px-4 py-3 space-y-3">
             <p class="text-sm text-muted-foreground">
-              {{ $t("pages.settings.external_matches.presence_description") }}
+              {{ $t("pages.settings.linked_accounts.presence_description") }}
             </p>
             <a
               v-if="presenceAddUrl"
@@ -818,7 +818,7 @@ function formatPendingDate(date: string): string {
             >
               <Button size="sm" variant="tactical">
                 <UserPlus class="h-4 w-4" />
-                {{ $t("pages.settings.external_matches.presence_add_bot") }}
+                {{ $t("pages.settings.linked_accounts.presence_add_bot") }}
               </Button>
             </a>
             <Button
@@ -829,13 +829,13 @@ function formatPendingDate(date: string): string {
               @click="connectPresence"
             >
               <UserPlus class="h-4 w-4" />
-              {{ $t("pages.settings.external_matches.presence_connect") }}
+              {{ $t("pages.settings.linked_accounts.presence_connect") }}
             </Button>
             <p
               v-if="presenceFriend && !presenceConnected"
               class="text-xs text-muted-foreground"
             >
-              {{ $t("pages.settings.external_matches.presence_pending") }}
+              {{ $t("pages.settings.linked_accounts.presence_pending") }}
             </p>
           </div>
         </template>
@@ -848,10 +848,10 @@ function formatPendingDate(date: string): string {
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{
-          $t("pages.settings.external_matches.unlink_confirm_title")
+          $t("pages.settings.linked_accounts.unlink_confirm_title")
         }}</AlertDialogTitle>
         <AlertDialogDescription>
-          {{ $t("pages.settings.external_matches.unlink_confirm_description") }}
+          {{ $t("pages.settings.linked_accounts.unlink_confirm_description") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
@@ -868,45 +868,45 @@ function formatPendingDate(date: string): string {
         >
           {{
             unlinking
-              ? $t("pages.settings.external_matches.unlinking")
-              : $t("pages.settings.external_matches.unlink")
+              ? $t("pages.settings.linked_accounts.unlinking")
+              : $t("pages.settings.linked_accounts.unlink")
           }}
         </button>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
 
-  <PageTransition v-if="externalMatchesEnabled && awaitingPoll" :delay="120">
+  <PageTransition v-if="linkedAccountsEnabled && awaitingPoll" :delay="120">
     <div
       class="flex items-start gap-2.5 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm max-w-xl mt-4"
     >
       <Spinner class="w-4 h-4 mt-0.5 shrink-0 text-[hsl(var(--tac-amber))]" />
       <div>
         <div class="font-medium">
-          {{ $t("pages.settings.external_matches.polling_banner_title") }}
+          {{ $t("pages.settings.linked_accounts.polling_banner_title") }}
         </div>
         <div class="text-xs text-muted-foreground mt-0.5">
-          {{ $t("pages.settings.external_matches.polling_banner_description") }}
+          {{ $t("pages.settings.linked_accounts.polling_banner_description") }}
         </div>
       </div>
     </div>
   </PageTransition>
 
   <PageTransition
-    v-if="externalMatchesEnabled && pendingImports.length > 0"
+    v-if="linkedAccountsEnabled && pendingImports.length > 0"
     :delay="150"
   >
     <div class="grid gap-3 max-w-xl mt-8">
       <div>
         <h3 class="text-base font-semibold uppercase tracking-wide">
-          {{ $t("pages.settings.external_matches.pending_imports") }}
+          {{ $t("pages.settings.linked_accounts.pending_imports") }}
           <span class="text-muted-foreground font-normal">
             ({{ pendingImports.length }})
           </span>
         </h3>
         <p class="text-sm text-muted-foreground mt-0.5">
           {{
-            $t("pages.settings.external_matches.pending_imports_description")
+            $t("pages.settings.linked_accounts.pending_imports_description")
           }}
         </p>
       </div>
@@ -951,7 +951,7 @@ function formatPendingDate(date: string): string {
               class="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <Spinner class="w-3.5 h-3.5" />
-              {{ $t("pages.settings.external_matches.importing") }}
+              {{ $t("pages.settings.linked_accounts.importing") }}
             </div>
           </div>
           <div class="flex items-center gap-3 shrink-0">
@@ -985,10 +985,10 @@ function formatPendingDate(date: string): string {
           @click="pendingExpanded = !pendingExpanded"
         >
           <template v-if="pendingExpanded">{{
-            $t("pages.settings.external_matches.show_less")
+            $t("pages.settings.linked_accounts.show_less")
           }}</template>
           <template v-else>{{
-            $t("pages.settings.external_matches.show_more", {
+            $t("pages.settings.linked_accounts.show_more", {
               count: hiddenPendingCount,
             })
           }}</template>

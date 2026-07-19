@@ -23,6 +23,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
         :patch="false"
       ></MapDisplay>
     </div>
+    <img
+      v-if="bannerUrl"
+      :src="bannerUrl"
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+    />
     <div
       class="absolute inset-0 bg-black bg-opacity-50 flex flex-col p-4 justify-between hover:bg-opacity-10 duration-300"
     >
@@ -111,6 +117,12 @@ export default {
     },
   },
   computed: {
+    bannerUrl() {
+      if (!this.tournament?.banner) {
+        return null;
+      }
+      return `https://${useRuntimeConfig().public.apiDomain}/${this.tournament.banner}`;
+    },
     tournamentTypeDescription() {
       if (!this.tournament?.options?.type || !this.e_match_types?.length) {
         return this.tournament?.options?.type || "";

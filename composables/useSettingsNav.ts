@@ -118,14 +118,19 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         order: 0,
       },
       {
-        path: "/settings/application/external-matches",
-        labelKey: "pages.settings.application.external_matches.title",
+        path: "/settings/application/linked-accounts",
+        labelKey: "pages.settings.application.linked_accounts.title",
         order: 1,
       },
       {
         path: "/settings/application/steam-presence",
         labelKey: "pages.settings.application.steam_presence.title",
         order: 2,
+      },
+      {
+        path: "/settings/application/plugins",
+        labelKey: "pages.settings.application.plugins.title",
+        order: 3,
       },
     ],
   },

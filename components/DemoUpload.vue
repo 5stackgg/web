@@ -45,8 +45,8 @@ function handleDrop(event: DragEvent) {
   if (!file) return;
   if (!file.name.toLowerCase().endsWith(".dem")) {
     toast({
-      title: t("pages.settings.external_matches.toast_wrong_file_type"),
-      description: t("pages.settings.external_matches.toast_drop_dem_file"),
+      title: t("pages.settings.linked_accounts.toast_wrong_file_type"),
+      description: t("pages.settings.linked_accounts.toast_drop_dem_file"),
       variant: "destructive",
     });
     return;
@@ -100,7 +100,7 @@ async function uploadDemo(file: File) {
       await file.slice(0, magic.length).arrayBuffer(),
     );
     if (header.length < magic.length || !magic.every((b, i) => header[i] === b)) {
-      throw new Error(t("pages.settings.external_matches.error_invalid_demo"));
+      throw new Error(t("pages.settings.linked_accounts.error_invalid_demo"));
     }
 
     const initiate = await fetch(
@@ -158,19 +158,19 @@ async function uploadDemo(file: File) {
 
     uploadResult.value = {
       status: "success",
-      message: t("pages.settings.external_matches.upload_success_message"),
+      message: t("pages.settings.linked_accounts.upload_success_message"),
     };
     toast({
-      title: t("pages.settings.external_matches.toast_demo_uploaded"),
+      title: t("pages.settings.linked_accounts.toast_demo_uploaded"),
       description: t(
-        "pages.settings.external_matches.toast_demo_uploaded_description",
+        "pages.settings.linked_accounts.toast_demo_uploaded_description",
       ),
     });
   } catch (err) {
     const message = (err as Error).message;
     uploadResult.value = { status: "error", message };
     toast({
-      title: t("pages.settings.external_matches.toast_upload_failed"),
+      title: t("pages.settings.linked_accounts.toast_upload_failed"),
       description: message,
       variant: "destructive",
     });
@@ -214,14 +214,14 @@ async function uploadDemo(file: File) {
       />
       <p class="text-sm font-medium mb-1">
         <template v-if="isDragging">{{
-          $t("pages.settings.external_matches.drop_to_upload")
+          $t("pages.settings.linked_accounts.drop_to_upload")
         }}</template>
         <template v-else>{{
-          $t("pages.settings.external_matches.click_to_choose")
+          $t("pages.settings.linked_accounts.click_to_choose")
         }}</template>
       </p>
       <p class="text-xs text-muted-foreground">
-        {{ $t("pages.settings.external_matches.demo_files_only") }}
+        {{ $t("pages.settings.linked_accounts.demo_files_only") }}
       </p>
     </div>
 
@@ -265,8 +265,8 @@ async function uploadDemo(file: File) {
               ·
               {{
                 uploadProgress < 100
-                  ? $t("pages.settings.external_matches.uploading")
-                  : $t("pages.settings.external_matches.finishing")
+                  ? $t("pages.settings.linked_accounts.uploading")
+                  : $t("pages.settings.linked_accounts.finishing")
               }}
             </template>
           </div>

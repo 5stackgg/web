@@ -14,6 +14,7 @@
     "cancel": "Cancelar",
     "delete": "Excluir",
     "empty": "Nenhum alerta ainda.",
+    "empty_description": "Crie um alerta para publicar um banner em todo o site para todos.",
     "inactive": "Inativo",
     "expired": "Expirado",
     "expires": "Expira",
@@ -840,6 +841,10 @@
       "label": "Multi-Kill Rounds",
       "description": "Rounds em que você conseguiu dois ou mais abates."
     },
+    "mp": {
+      "label": "Mapas Jogados",
+      "description": "Número de mapas que este jogador jogou na fase."
+    },
     "cl": {
       "label": "Clutch %",
       "description": "Proporção das situações de clutch (último jogador vivo, 1vX) que você venceu."
@@ -856,6 +861,11 @@
   "pagination": {
     "items_per_page": "por página",
     "showing_range": "Mostrando {start}–{end} de {total}",
+    "first_page": "Primeira página",
+    "previous_page": "Página anterior",
+    "more_pages": "Mais páginas",
+    "next_page": "Próxima página",
+    "last_page": "Última página",
     "total": "{total} no total"
   },
   "trophies_modal": {
@@ -995,7 +1005,10 @@
     "render_failed": "Falha na renderização",
     "queued_waiting": "Na fila — aguardando um slot de renderização",
     "rendering_on_pod": "Renderizando no pod de game-streamer",
-    "submitting": "Enviando…"
+    "submitting": "Enviando…",
+    "highlight_queued_title": "Highlight na fila",
+    "highlight_queued_desc_named": "O highlight de {name} será renderizado assim que houver um slot livre — encontre-o em Highlights quando estiver pronto.",
+    "highlight_queued_desc": "Seu highlight será renderizado assim que houver um slot livre — encontre-o em Highlights quando estiver pronto."
   },
   "match_extras": {
     "unknown_date": "Data desconhecida",
@@ -1143,7 +1156,16 @@
     "highlights_busy": "GPU ocupada: destaques estão sendo renderizados",
     "streaming_disabled": "Transmissão ao vivo está desativada em todos os nós de GPU",
     "demo_disabled": "Reprodução de demos está desativada em todos os nós de GPU",
-    "rendering_disabled": "Renderização está desativada em todos os nós de GPU"
+    "rendering_disabled": "Renderização está desativada em todos os nós de GPU",
+    "live_gotv": "Ao Vivo (GOTV)",
+    "live_direct": "Ao Vivo (Direto)",
+    "live_match": "Partida ao vivo",
+    "unknown_user": "Usuário desconhecido",
+    "system_user": "Sistema",
+    "demo_playback_label": "Reprodução de Demo",
+    "demo_playback_subline": "Reprodução de demo",
+    "highlights_render_label": "Renderização de Highlights",
+    "highlight_render_subline": "Renderização de highlight"
   },
   "clip_editor_dest": {
     "library": "Biblioteca",
@@ -1176,6 +1198,24 @@
     "tournament": "Torneio",
     "placement": "Posicionamento",
     "teammates": "Companheiros de Equipe"
+  },
+  "image_upload": {
+    "hint_square": "Arraste e solte ou clique · PNG, JPEG, WebP",
+    "hint_banner": "Arraste e solte ou clique · banner largo 3:1",
+    "hint_cover": "Arraste e solte ou clique · capa 16:9",
+    "replace": "Substituir",
+    "remove": "Remover",
+    "drop_to_upload": "Solte para enviar",
+    "uploaded": "Imagem enviada",
+    "removed": "Imagem removida",
+    "upload_failed": "Falha no envio",
+    "remove_failed": "Falha ao remover a imagem",
+    "crop": {
+      "title": "Ajustar imagem",
+      "description": "Arraste para reposicionar, role para dar zoom. A moldura mostra o que será salvo.",
+      "fit_whole": "Ajustar inteira",
+      "apply": "Aplicar"
+    }
   },
   "avatar": {
     "upload": "Enviar avatar",
@@ -1217,6 +1257,7 @@
       "cpu_usage": "Uso de CPU",
       "memory_usage": "Uso de memória",
       "services": "Serviços",
+      "service": "Serviço",
       "network": "Rede",
       "search_services_placeholder": "Procurar serviços ou nós...",
       "filter_by_node": "Filtrar por Nó",
@@ -1224,6 +1265,7 @@
       "search_nodes_placeholder": "Procurar game server nodes...",
       "cpu_short": "CPU",
       "memory_short": "Memória",
+      "memory_share_tooltip": "{label} em uso — {percent}% da RAM total deste nó. Uma barra vermelha quase cheia significa que um serviço está tomando a memória do nó.",
       "disk_short": "Discos",
       "network_short": "Rede",
       "no_nodes_found": "Nenhum game server nodes correspondem a seus filtros.",
@@ -1236,6 +1278,7 @@
     "coming_soon": "Em Breve!",
     "tournaments": {
       "title": "Torneios",
+      "description": "Navegue por torneios ao vivo, abertos e futuros, ou filtre por status e data para encontrar uma chave específica.",
       "create": "Criar Torneio",
       "open_for_registration": "Inscrições abertas",
       "section_live": "TORNEIOS.AO_VIVO",
@@ -1375,11 +1418,16 @@
         "description": "Detalhes da sua conta",
         "my_account": "Minha Conta",
         "api_keys": "Chaves API",
-        "external_matches": "Partidas Externas",
+        "linked_accounts": "Partidas Externas",
         "api_keys_management": {
           "your_api_keys": "Suas chaves de API",
           "api_keys_description": "Chaves de API permitem que você autentique com a API 5Stack programaticamente.",
           "add_api_key": "Adicionar chave API",
+          "description": "As chaves autenticam requisições à API do 5Stack — trate-as como senhas.",
+          "view_docs": "Ver documentação da API",
+          "no_api_keys": "Nenhuma chave de API ainda",
+          "no_api_keys_hint": "Crie sua primeira chave para começar a fazer requisições autenticadas à API do 5Stack.",
+          "add_first_api_key": "Criar sua primeira chave",
           "create_new_api_key": "Criar nova chave de API",
           "create_new_description": "Crie uma nova chave de API com um rótulo descritivo para identificar a sua finalidade.",
           "label": "Rótulo",
@@ -1405,7 +1453,9 @@
             "api_key_label": "Chave de API",
             "copied_button": "Eu copiei a chave",
             "warning_title": "Importante:",
-            "warning_message": "Esta é a única vez que você poderá ver esta chave de API. Certifique-se de copiar e armazená-la de forma segura."
+            "warning_message": "Esta é a única vez que você poderá ver esta chave de API. Certifique-se de copiar e armazená-la de forma segura.",
+            "docs_hint": "Novo na API?",
+            "docs_link": "Leia a documentação da API"
           }
         },
         "name": "Nome",
@@ -1431,12 +1481,37 @@
       "notifications": {
         "title": "Notificações",
         "description": "Gerenciar preferências de notificação para chat e outros eventos.",
+        "enabled": {
+          "title": "Sons de notificação",
+          "description": "Toca um som para mensagens de chat, eventos de partida e outros alertas."
+        },
+        "test": "Testar",
         "chat_sound": {
           "title": "Som das Notificações de Chat",
           "description": "Som de quando uma nova mensagem de chat é recebida."
         },
         "volume": {
           "title": "Volume"
+        },
+        "preview": "Prévia dos sons",
+        "play": "Tocar",
+        "sounds": {
+          "chat": {
+            "title": "Mensagem de chat",
+            "description": "Novas mensagens de chat"
+          },
+          "match_found": {
+            "title": "Partida encontrada",
+            "description": "Uma partida está pronta para jogar"
+          },
+          "tick": {
+            "title": "Tick",
+            "description": "Tick de preparação (ready-up)"
+          },
+          "countdown": {
+            "title": "Contagem regressiva",
+            "description": "Contagem regressiva para o início da partida"
+          }
         },
         "test_chat_sound": "Testar Som do Chat",
         "test_match_found_sound": "Testar Som de Partida Encontrada",
@@ -1495,6 +1570,14 @@
           "permissions_section": "Permissões",
           "permissions_description": "Escolha o papel mínimo permitido para criar e publicar postagens de notícias.",
           "post_news_role": "Quem pode postar notícias"
+        },
+        "seasons": {
+          "title": "Temporadas",
+          "section": "Temporadas",
+          "description": "Temporadas competitivas redefinem o ELO de partidas regulares para uma base de 5000 a cada temporada e delimitam estatísticas e filtros por temporada; quando desativadas, o ELO é um ranking global único. O ELO de torneios permanece independente de temporada.",
+          "manage": "Gerenciar Temporadas",
+          "manage_description": "Crie, encerre e reconstrua (backfill) temporadas competitivas.",
+          "about": "Quando ativado, o filtro de temporada aparece em jogadores, no ranking e em torneios, e o ELO/estatísticas passam a ser por temporada. Quando desativado, o ELO é um ranking global único e nenhum filtro de temporada é mostrado."
         },
         "discord": {
           "title": "Discord",
@@ -1562,6 +1645,11 @@
         "dedicated_servers_min_role_to_connect": "Função mínima necessária para conectar-se a servidores dedicados protegidos por senha.",
         "dedicated_servers_min_role_to_connect_description": "Somente jogadores com essa função ou superior podem se conectar a servidores dedicados que exigem senha.",
         "matchmaking_min_role": "Cargo Mínimo Permitido para entrar na Matchmaking",
+        "draft_add_without_invite": {
+          "title": "Convites da Sala Draft",
+          "description": "Controla quem pode adicionar jogadores diretamente a uma sala draft em vez de enviar um convite que o jogador precisa aceitar.",
+          "label": "Função Mínima para Adicionar Jogadores à Escalação Sem Convite"
+        },
         "matchmaking_min_role_description": "Esta qualificação mínima permitirá que os jogadores entrem na fila de matchmaking.",
         "max_acceptable_latency": "Máximo Aceitável Latência",
         "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
@@ -1588,6 +1676,29 @@
           "error_occurred": "Ocorreu um erro",
           "refresh_dialog_title": "Atualizar Todos os Jogadores?",
           "refresh_dialog_description": "Isso irá enfileirar uma tarefa para re-sincronizar todos os dados dos jogadores no índice de busca Typesense. O processo pode levar alguns minutos dependendo da quantidade de jogadores.",
+          "recompute_elo_title": "Recalcular ELO dos Jogadores",
+          "recompute_elo_description": "Apaga e reconstrói o ELO de todos os jogadores reprocessando todas as partidas finalizadas em ordem, em lotes. Quando temporadas estão ativadas, isso também reconstrói o ELO de cada temporada a partir das partidas dentro dela. Use após uma mudança na fórmula de ELO ou se os ratings parecerem errados. Os resultados de busca são atualizados automaticamente conforme o ELO é recalculado.",
+          "recompute_elo_button": "Recalcular ELO",
+          "recomputing_elo": "Recalculando...",
+          "recompute_elo_queued": "Recálculo de ELO iniciado",
+          "recompute_elo_failed": "Falha ao iniciar o recálculo de ELO",
+          "recompute_elo_dialog_title": "Recalcular o ELO de todos os jogadores?",
+          "recompute_elo_dialog_description": "Isso apaga todo o ELO existente e o reconstrói do zero reprocessando todas as partidas finalizadas em ordem cronológica (em lotes). O ranking ficará temporariamente incompleto enquanto o processo roda. Você pode acompanhar o progresso aqui.",
+          "progress_running": "{processed} / {total} ({percent}%)",
+          "progress_eta": "~{eta} restante",
+          "progress_failed_count": "{failed} falharam",
+          "progress_completed": "Concluído {total}",
+          "progress_canceled": "Cancelado em {completed} / {total}",
+          "progress_errored": "Falhou — veja os logs do servidor",
+          "already_running": "Já em execução",
+          "cancel_button": "Cancelar",
+          "cancel_requested": "Cancelamento solicitado",
+          "recompute_elo_canceled_title": "Recálculo de ELO cancelado",
+          "recompute_elo_complete_title": "Recálculo de ELO concluído",
+          "recompute_elo_complete_desc": "{completed} de {total} partidas processadas, {failed} falharam",
+          "reindex_canceled_title": "Reindexação de busca cancelada",
+          "reindex_complete_title": "Reindexação de busca concluída",
+          "reindex_complete_desc": "{completed} de {total} jogadores reindexados, {failed} falharam",
           "scan_bans_title": "Verificar bans da Steam",
           "scan_bans_description": "Checar todos os jogadores que estiveram em uma lineup para bans Steam VAC/game. Contas com ban ativo são automaticamente banidas.",
           "scan_button": "Verificar bans da Steam",
@@ -1722,6 +1833,10 @@
         },
         "servers": {
           "title": "Configurações do Servidor",
+          "plugin_runtime_section": "Runtime de Plugins",
+          "plugin_runtime_description": "Qual framework de plugins de CS2 seus servidores de jogo executam. Ambos os frameworks implementam a mesma lógica de partida, mas carregam plugins de terceiros e arquivos de gamedata diferentes.",
+          "plugin_runtime_warning": "Alternar não move seus plugins personalizados entre addons/swiftlys2 e addons/counterstrikesharp. Servidores já em execução mantêm a imagem atual até serem reciclados.",
+          "plugin_runtime_locked": "A variável de ambiente SERVER_IMAGE está definida na API do painel e sobrescreve esta escolha. Remova-a para selecionar um runtime aqui.",
           "cpu_section": "Desempenho",
           "disk_section": "Reserva de Disco",
           "enable_cpu_pinning": "Ativar CPU Pinning",
@@ -1738,7 +1853,7 @@
           "title": "Highlights",
           "updated": "Configurações de highlights atualizadas"
         },
-        "external_matches": {
+        "linked_accounts": {
           "title": "Partidas Externas",
           "section": "Partidas Externas",
           "enabled": "Permitir importação de partidas de CS2",
@@ -1756,6 +1871,55 @@
           "faceit_data_api": "Data API",
           "faceit_downloads_api": "Downloads API",
           "faceit_test_failed": "Teste Faceit falhou"
+        },
+        "steam_presence": {
+          "title": "Presença Steam",
+          "section": "Presença Steam",
+          "enabled": "Ativar Presença",
+          "enabled_description": "Ativado por padrão. Bots de amizade observam a presença Steam ao vivo dos jogadores vinculados e importam suas partidas assim que terminam, em vez de esperar a varredura de hora em hora. Desative para funcionar como interruptor de emergência.",
+          "updated": "Configurações de presença Steam atualizadas",
+          "active": "Ativo",
+          "disabled": "Desativado",
+          "live": "Ao Vivo",
+          "setup": "Como funciona",
+          "setup_step1": "Dedique uma conta Steam para o bot com o Steam Guard ativado. Não reutilize sua conta STEAM_USER — ela é usada em outro lugar e causaria conflito.",
+          "setup_step2": "Adicione-a abaixo. Ela faz login automaticamente; se o Steam Guard solicitar, uma caixa de 2FA aparece no bot — insira o código do e-mail ou do app da Steam. Após o primeiro login ela permanece conectada e não pedirá novamente.",
+          "setup_step3": "Os jogadores adicionam o bot como amigo na Steam (pelas configurações ou pelo link do perfil). Uma vez amigos, suas partidas são importadas assim que terminam.",
+          "add_bot": "Adicionar Bot",
+          "add_bot_description": "Adicione uma conta Steam ao pool de presença. As credenciais dela são armazenadas para mantê-la conectada.",
+          "username": "Usuário Steam",
+          "password": "Senha",
+          "add": "Adicionar",
+          "account_added": "Conta de bot adicionada — ela fará login em breve",
+          "account_add_failed": "Falha ao adicionar a conta de bot",
+          "account_removed": "Conta de bot removida",
+          "account_remove_failed": "Falha ao remover a conta de bot",
+          "remove_confirm": "Remover a conta de bot {name}? Os jogadores atribuídos a ela serão reatribuídos.",
+          "needs_2fa": "Precisa de 2FA",
+          "needs_2fa_email": "Insira o código do Steam Guard enviado por e-mail para esta conta para concluir o login.",
+          "needs_2fa_app": "Insira o código do Steam Guard do app móvel da Steam para esta conta para concluir o login.",
+          "code_wrong": "O código anterior estava incorreto — tente novamente.",
+          "code_placeholder": "Código",
+          "submit_code": "Enviar",
+          "code_submitted": "Código enviado — fazendo login…",
+          "code_failed": "Falha ao enviar o código do Steam Guard",
+          "status": "Status",
+          "bots": "Bots",
+          "bots_description": "Contas Steam no pool de presença e seu status ao vivo.",
+          "no_bots": "Nenhum bot ainda",
+          "no_bots_hint": "Adicione uma conta Steam para começar a observar as partidas dos jogadores.",
+          "add_first_bot": "Adicione seu primeiro bot",
+          "bot": "Bot",
+          "online": "Online",
+          "online_yes": "Online",
+          "online_no": "Offline",
+          "watching": "Observando",
+          "pending": "Pendente",
+          "pending_tooltip": "Jogadores que receberam um bot mas ainda não o adicionaram como amigo na Steam.",
+          "capacity": "Capacidade",
+          "capacity_tooltip": "Total de vagas de amizade em todos os bots. Detectado automaticamente pelo nível Steam de cada bot (250 + 5 × nível, máx. 2000).",
+          "fetch_failed": "Falha ao carregar o status de presença",
+          "fetch_hint": "Verifique se a API está executando a build mais recente, se as migrações e os metadados do Hasura foram aplicados e se os tipos GraphQL do web foram regenerados (yarn codegen)."
         },
         "scrim_finder": {
           "title": "Localizador de Scrim",
@@ -1815,6 +1979,16 @@
           "pause_renders_during_active_match": "Pausar renders de highlights durante partida ativa",
           "pause_renders_during_active_match_description": "Quando uma partida entra ao vivo em um servidor suportado por um nó de GPU, os renders de highlights em andamento são pausados automaticamente para que o servidor do jogo não concorra com o pod de renderização pelo uso da GPU. Os renders são retomados automaticamente assim que a partida termina.",
           "auto_clip_default_visibility": "Visibilidade padrão para highlights automáticos",
+          "auto_clip_filters_section": "Filtros de auto-highlight",
+          "auto_clip_always_include_knife": "Sempre incluir eliminações de faca",
+          "auto_clip_always_include_knife_description": "Anexa até 3 eliminações de faca ao final do reel de highlights de um jogador quando ele conseguiu uma eliminação de faca — mesmo quando o round dele não atinge o filtro de eliminações mínimas.",
+          "auto_clip_min_kills": "Mínimo de eliminações para gerar um highlight",
+          "auto_clip_min_kills_description": "Só gera automaticamente o highlight de um jogador quando o melhor round dele atingiu esta quantidade de eliminações. Aumente para que uma partida não gere um clipe para todo mundo.",
+          "auto_clip_min_kills_any": "Qualquer eliminação (todos)",
+          "auto_clip_min_kills_2k": "Double kill ou melhor (2K+)",
+          "auto_clip_min_kills_3k": "Triple kill ou melhor (3K+)",
+          "auto_clip_min_kills_4k": "Quad kill ou melhor (4K+)",
+          "auto_clip_min_kills_ace": "Apenas aces (5K)",
           "auto_clip_default_visibility_description": "Visibilidade inicial para novos highlights gerados automaticamente.",
           "visibility_private": "Privado",
           "visibility_public": "Público",
@@ -1876,6 +2050,86 @@
         "update_map_pools": {
           "title": "Atualizar Automaticamente o Map Pool",
           "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."
+        },
+        "leagues": {
+          "title": "Liga",
+          "section": "Ligas",
+          "description": "Disputa sazonal de todos contra todos entre divisões de habilidade, com janelas semanais de partidas, bloqueio de elenco, playoffs e promoção/rebaixamento entre temporadas. Gerenciada por administradores.",
+          "manage_description": "Crie e gerencie temporadas, inscrições e agendas na página da liga.",
+          "manage": "Gerenciar temporadas",
+          "divisions_section": "Divisões",
+          "divisions_description": "Os níveis em que as equipes são colocadas e entre os quais são promovidas/rebaixadas a cada temporada. Um nível sem equipes simplesmente não acontece naquela temporada.",
+          "allow_request_title": "Permitir que equipes solicitem uma divisão",
+          "allow_request_hint": "Quando desativado, as equipes se inscrevem sem preferência de divisão e os administradores as posicionam.",
+          "registration_section": "Inscrições",
+          "registration_description": "Como as equipes se inscrevem nas temporadas da liga"
+        },
+        "teams": {
+          "title": "Equipes",
+          "roster_section": "Elenco e reservas",
+          "roster_description": "Regras de elenco usadas em toda a plataforma, em ligas e torneios: quantos jogadores um elenco comporta e quantos reservas apoiam os cinco titulares.",
+          "min_roster": "Tamanho mínimo do elenco",
+          "max_roster": "Tamanho máximo do elenco",
+          "roster_hint": "As equipes precisam de pelo menos o mínimo para serem aprovadas e não podem exceder o máximo.",
+          "max_subs": "Reservas"
+        },
+        "events": {
+          "title": "Eventos",
+          "section": "Eventos",
+          "description": "Eventos curados agrupando torneios, equipes e jogadores, com rankings, classificações e uma galeria de mídia. Desativado por padrão; ative para mostrar as páginas de Eventos.",
+          "manage": "Gerenciar Eventos",
+          "permissions_section": "Permissões",
+          "permissions_description": "Controle quais jogadores podem criar eventos.",
+          "create_events_role": "Função mínima para criar eventos"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "section": "Plugins",
+          "description": "Registre apps micro-frontend externos que são renderizados como páginas nativas dentro do seu painel.",
+          "add": "Adicionar Plugin",
+          "empty": "Nenhum plugin ainda.",
+          "public": "Pública",
+          "add_title": "Adicionar Plugin",
+          "edit_title": "Editar Plugin",
+          "delete_title": "Excluir Plugin",
+          "delete_description": "Isso removerá \"{title}\" e sua rota /apps do painel. Esta ação não pode ser desfeita.",
+          "delete_confirm": "Excluir",
+          "form_description": "Configure como este plugin é carregado e quem pode vê-lo.",
+          "is_default_hint": "Tornar esta a página inicial do painel.",
+          "fields": {
+            "title": "Título",
+            "slug": "Slug",
+            "icon": "Ícone",
+            "remote_entry_url": "URL do Remote Entry",
+            "remote_scope": "Remote Scope",
+            "exposed_module": "Módulo Exposto",
+            "required_role": "Função Necessária",
+            "nav_group": "Grupo de Navegação",
+            "nav_order": "Ordem de Navegação",
+            "enabled": "Ativada",
+            "is_default": "Página Padrão",
+            "icon_hint": "Um nome de ícone lucide ou uma URL de imagem. Exemplos:",
+            "remote_entry_url_hint": "O remoteEntry.js de Module Federation que o painel carrega (geralmente .../assets/remoteEntry.js).",
+            "remote_scope_hint": "O nome do container de Federation do plugin (o `name` na configuração de federation do vite).",
+            "exposed_module_hint": "O caminho do módulo exposto, ex.: ./App.",
+            "nav_group_placeholder": "Apps",
+            "nav_group_hint": "Cabeçalho opcional para agrupar esta página na barra lateral. Deixe em branco para o grupo padrão Apps.",
+            "nav_order_hint": "Números menores aparecem primeiro. Deixe 0 se não se importar."
+          },
+          "detect_label": "Detectar automaticamente pela URL",
+          "detect": "Detectar",
+          "detect_hint": "Cole a URL base do plugin (ou seu 5stack-plugin.json) e preencheremos os campos abaixo a partir do manifesto dele.",
+          "detect_failed": "Não foi possível ler um manifesto 5stack-plugin.json nessa URL.",
+          "detect_success": "Detalhes do plugin detectados.",
+          "optional": "(opcional)",
+          "advanced": "Configurações avançadas",
+          "icon_picker": {
+            "choose": "Escolha um ícone",
+            "custom": "Ícone personalizado",
+            "search": "Buscar ícones…",
+            "custom_hint": "Ou cole uma URL de imagem ou um SVG inline (ex.: de um plugin).",
+            "custom_placeholder": "https://… , <svg…>, ou um nome de ícone"
+          }
         }
       },
       "language": {
@@ -1896,7 +2150,16 @@
           "description": "Mostrar um popup quando uma partida estiver pronta para você fazer o check-in. Quando desativado, você ainda pode fazer o check-in pelo botão na barra superior."
         }
       },
-      "external_matches": {
+      "linked_accounts": {
+        "presence_title": "Bot Steam do 5stack",
+        "presence_description": "Adicione o bot como amigo na Steam para importar automaticamente suas partidas Competitivas e Premier assim que terminarem.",
+        "presence_connect": "Adicionar bot como amigo",
+        "presence_add_bot": "Abrir o bot na Steam",
+        "presence_pending": "Depois que você enviar a solicitação, o bot aceita em até um minuto — isso muda para Conectado automaticamente.",
+        "presence_connected": "Conectado — as importações são instantâneas.",
+        "presence_not_connected": "Ainda não conectado.",
+        "presence_self_label": "Como seus amigos veem você",
+        "presence_unavailable": "O bot do 5stack não está disponível no momento — tente novamente mais tarde ou contate um administrador.",
         "heading": "Partidas Externas",
         "heading_description": "Vincule seu histórico de partidas da Steam para que possamos importar automaticamente suas partidas oficiais de CS2 e seu rank Premier.",
         "checking_link": "Verificando link do histórico de partidas…",
@@ -2098,6 +2361,58 @@
         "uploading_image": "Enviando imagem…"
       }
     },
+    "seasons": {
+      "title": "Temporadas",
+      "description": "Crie e gerencie temporadas competitivas. O ELO de partidas regulares é redefinido para 5000 a cada temporada.",
+      "create_title": "Criar Temporada",
+      "season_number": "Temporada {number}",
+      "description_label": "Descrição",
+      "description_placeholder": "Descrição opcional",
+      "start_label": "Data de Início",
+      "end_label": "Data de Término",
+      "pick_date": "Escolha uma data",
+      "ongoing": "Em andamento",
+      "current": "Atual",
+      "off_season": "Fora de Temporada",
+      "matches_label": "Partidas",
+      "ledger_title": "Registro de Temporadas",
+      "utc_hint": "As datas estão em UTC e começam às 00:00. Deixe a data de término vazia para uma temporada em andamento.",
+      "create_button": "Criar Temporada {number}",
+      "active": "Ativa",
+      "upcoming": "Futura",
+      "ended": "Encerrada",
+      "ends_in": "Termina em {time}",
+      "ends_in_label": "Termina Em",
+      "set_end": "Definir Data de Término",
+      "change_start": "Alterar Início",
+      "change_end": "Alterar Data de Término",
+      "make_ongoing": "Tornar Em Andamento",
+      "end_now": "Encerrar Agora",
+      "updated": "Temporada atualizada",
+      "upcoming_title": "Próximas Temporadas",
+      "past_title": "Temporadas Anteriores",
+      "rebuild": "Reconstruir",
+      "rebuild_elo": "Reconstruir ELO",
+      "rebuild_required": "Reconstrução Necessária",
+      "needs_rebuild_notice": "O ELO desta temporada está desatualizado e sua classificação está incorreta. Reconstrua para recalcular o ELO e as estatísticas a partir das partidas dela.",
+      "delete": "Excluir",
+      "deleted": "Temporada excluída",
+      "delete_confirm_title": "Excluir esta temporada?",
+      "delete_confirm_description": "A temporada é removida e suas partidas voltam a não ter temporada (o histórico de ELO delas é mantido, não excluído). As estatísticas por temporada dela são apagadas. Esta ação não pode ser desfeita.",
+      "rebuild_confirm_title": "Reconstruir o ELO da temporada?",
+      "rebuild_confirm_description": "Recalcula o ELO e as estatísticas desta temporada a partir de todas as partidas dela. Isso normalmente roda automaticamente — reconstrua apenas se os dados parecerem errados. Roda em segundo plano e pode demorar.",
+      "empty": "Nenhuma temporada criada ainda. Crie sua primeira temporada acima.",
+      "created": "Temporada criada",
+      "error_end_before_start": "A data de término deve ser posterior à data de início.",
+      "error_overlap": "Este intervalo sobrepõe uma temporada existente.",
+      "error_generic": "Algo deu errado. Tente novamente.",
+      "backfill_running": "Reconstruindo ELO da temporada…",
+      "backfill_queued": "Backfill da temporada na fila",
+      "backfill_cancel_requested": "Cancelamento solicitado",
+      "backfill_canceled_title": "Backfill da temporada cancelado",
+      "backfill_complete_title": "Backfill da temporada concluído",
+      "backfill_complete_desc": "Reconstruídas {completed} de {total} partidas ({failed} falharam)."
+    },
     "regions": {
       "title": "Regiões/Locais",
       "description": "Regiões/Locais permitem agrupar servidores de jogo por localização geográfica. Os jogadores podem selecionar regiões/locais preferidas durante matchmaking e vetar indesejadas durante a configuração da partida.",
@@ -2105,10 +2420,12 @@
       "table": {
         "available_servers": "Servidores Disponíveis / Total de Servidores",
         "use_lan_ip": "Usar LAN",
+        "use_lan_ip_description": "Exige que os servidores de jogo desta região sejam acessados a partir de um endereço IP de LAN.",
         "use_steam_relay": "Usar Steam Relay",
         "use_steam_relay_description": "Ativar o Steam Relay para que os servidores escondam o endereço IP do público."
       },
       "edit": "Editar",
+      "set_label": "Editar Rótulo",
       "delete": {
         "title": "Excluir região",
         "description": "Tem certeza que deseja excluir esta região/local?"
@@ -2145,6 +2462,8 @@
       "is_muted": "Mutado",
       "table": {
         "elo": "Elo",
+        "elo_track_season": "Temporada",
+        "elo_track_tournament": "Torneio",
         "last_sign_in_at": "Último Login em",
         "privilege": "Privilégio",
         "kdr": "KDR",
@@ -2237,6 +2556,8 @@
         "range_90d": "90D",
         "range_1y": "1A",
         "range_all": "TUDO",
+        "range_season": "Temporada",
+        "season_current": "Temporada Atual",
         "weapons_lifetime": "Total",
         "refresh_stats": "Atualizar estatísticas",
         "last_n_matches": "Últimas 10",
@@ -2403,12 +2724,27 @@
         "leader_required": "Somente o líder do grupo pode iniciar o matchmaking."
       },
       "draft_games": {
+        "section_label": "OPEN.MATCHES",
         "description": "No OPEN.MATCHES você pode participar de lobbies existentes ou criar uma sala personalizada. O sistema oferece diferentes formatos: balanceamento automático, escolha de capitães, uso de times cadastrados ou configuração manual dos jogadores."
       }
     },
     "matches": {
       "title": "Partidas",
       "create": "Criar partida",
+      "schedule": {
+        "title": "Agendar Partida",
+        "step_settings": "Configurações",
+        "step_teams": "Equipes",
+        "kickoff": "Horário de Início",
+        "kickoff_future": "Escolha um horário no futuro.",
+        "kickoff_asap": "Deixe vazio para começar o quanto antes",
+        "team": "Equipe",
+        "individual": "Individual",
+        "select_team": "Selecione uma equipe",
+        "team_n": "Equipe {n}",
+        "lineups_desc": "Escolha uma equipe para cada lado ou atribua {count} jogadores individualmente.",
+        "submit": "Agendar Partida"
+      },
       "match_updated": "Partida atualizada",
       "browser": "Navegador de partidas",
       "filters": "FILTROS",
@@ -2598,6 +2934,7 @@
         "cs_build_id": "Compilação CS2",
         "capacity": "Capacidade",
         "ports": "Portas",
+        "available": "Disponível",
         "ports_tooltip": "Intervalo de portas disponível",
         "no_nodes": "Nenhum nó",
         "supports_low_latency": "Suporta Kernel-Low-Latency",
@@ -2629,6 +2966,13 @@
       },
       "detail": {
         "enabled": "Habilitado",
+        "eyebrow": "Servidor Dedicado",
+        "status_label": {
+          "connected": "Conectado",
+          "disconnected": "Desconectado",
+          "no_rcon": "Sem RCON",
+          "version_mismatch": "Versão Divergente"
+        },
         "server_plugin_config": "Configuração do plugin do servidor",
         "hide_config": "Ocultar Configuração",
         "show_config": "Mostrar Configuração",
@@ -2978,6 +3322,30 @@
         "no_explain_plan": "Plano EXPLAIN não pôde ser gerado para esta query",
         "not_found": "Detalhes da Query não encontrados"
       }
+    },
+    "events": {
+      "title": "Eventos",
+      "description": "Navegue pelos eventos e seus torneios, rankings e classificações.",
+      "create": "Criar Evento",
+      "date_tbd": "Data a definir",
+      "no_events_title": "Nenhum Evento Ainda",
+      "no_events_description": "Não há eventos para mostrar no momento. Volte em breve.",
+      "live_now": "Ao vivo agora",
+      "upcoming": "Em breve",
+      "past_events": "Eventos passados"
+    },
+    "manage_events": {
+      "title": "Gerenciar Eventos",
+      "description": "Veja e gerencie todos os eventos da plataforma.",
+      "no_events_title": "Nenhum Evento Ainda",
+      "no_events_description": "Você ainda não está organizando nenhum evento."
+    },
+    "plugins": {
+      "not_found_title": "Página não encontrada",
+      "not_found_description": "Este plugin não existe ou não está mais disponível.",
+      "forbidden_title": "Acesso restrito",
+      "forbidden_description": "Você não tem permissão para ver esta página.",
+      "error_title": "Falha ao carregar a página"
     }
   },
   "custom_match": {
@@ -2996,10 +3364,15 @@
       "select_section": "Selecione uma seção",
       "branding_nav": "Branding",
       "fixtures_nav": "Fixtures",
+      "seasons_nav": "Temporadas",
       "groups": {
+        "platform": "Plataforma",
+        "competition": "Competição",
         "general": "Geral",
         "match_setup": "Configuração de Partida",
+        "content_media": "Conteúdo e Mídia",
         "media": "Gravação e Mídia",
+        "additional_features": "Recursos Adicionais",
         "infrastructure": "Infraestrutura",
         "integrations": "Integrações",
         "theme": "Tema",
@@ -3022,8 +3395,19 @@
       "dismiss": "Dispensar",
       "dismiss_all": "Marcar como Lidas",
       "delete_all_read": "Excluir Lidas",
+      "review_orphaned_uploads": "Revisar uploads órfãos",
       "no_notifications_title": "Sem Notificações",
-      "no_notifications": "Nenhuma notificação até o momento."
+      "no_notifications": "Nenhuma notificação até o momento.",
+      "toast": {
+        "draft_invite": "Convite para Draft",
+        "team_invite": "Convite para Equipe",
+        "tournament_invite": "Convite para Torneio",
+        "lobby_invite": "Convite para Lobby",
+        "friend_request": "Pedido de Amizade",
+        "invited_you": "convidou você para",
+        "invited_party": "convidou você para o grupo",
+        "wants_to_be_friends": "quer ser seu amigo"
+      }
     },
     "app_nav": {
       "brand": "5stack",
@@ -3040,7 +3424,9 @@
         "leaderboard": "Ranking",
         "search": "Procurar",
         "highlights": "Highlights",
-        "news": "Notícias"
+        "news": "Notícias",
+        "leagues": "Liga",
+        "events": "Eventos"
       },
       "community": {
         "title": "Comunidade"
@@ -3057,9 +3443,12 @@
         "gpu_nodes": "Nós de GPU",
         "app_settings": "Configurações do App",
         "alerts": "Alertas",
+        "seasons": "Temporadas",
         "manage_matches": "Gerenciar Partidas",
         "manage_tournaments": "Gerenciar Torneios",
-        "stream_deck": "Stream Deck"
+        "manage_league": "Gerenciar Liga",
+        "stream_deck": "Stream Deck",
+        "manage_events": "Gerenciar Eventos"
       },
       "system": {
         "title": "Sistema",
@@ -3101,12 +3490,19 @@
         "join_discord": "Nosso Discord",
         "manage_matches": "Gerenciar Partidas",
         "manage_tournaments": "Gerenciar Torneios",
-        "search_players": "Procurar Jogadores"
+        "manage_league": "Gerenciar Liga",
+        "search_players": "Procurar Jogadores",
+        "leagues": "Liga",
+        "events": "Eventos",
+        "manage_events": "Gerenciar Eventos"
       },
       "logout_dialog": {
         "title": "Sair",
         "description": "Tem certeza que deseja sair?",
         "confirm": "Sair"
+      },
+      "plugins": {
+        "title": "Apps"
       }
     },
     "top_nav": {
@@ -3122,6 +3518,7 @@
       "play": {
         "find_match": "Encontrar uma partida",
         "tournaments": "Torneios",
+        "leagues": "Liga",
         "scrim_finder": "Localizador de Scrims",
         "public_servers": "Warmup",
         "hero": {
@@ -3222,16 +3619,24 @@
       "button": "Instalar"
     }
   },
+  "roster_picker": {
+    "add_starter": "Adicionar titular",
+    "add_substitute": "Adicionar reserva",
+    "search": "Buscar jogadores…",
+    "none": "Nenhum jogador disponível"
+  },
   "common": {
     "manage_custom_plugins_and_shared_files": "Esses arquivos são montados no diretório `csgo` quando o servidor é iniciado.",
     "any": "Qualquer",
     "remove": "Remover",
     "edit": "Editar",
+    "view": "Ver",
     "done": "Concluído",
     "accept": "Aceitar",
     "decline": "Recusar",
     "previous": "Anterior",
     "next": "Próximo",
+    "back": "Voltar",
     "delete": "Excluir",
     "clear": "Limpar",
     "cancel": "Cancelar",
@@ -3344,6 +3749,10 @@
       "deaths": "Mortes",
       "assists": "Assist.",
       "win_rate": "Taxa de Vitórias"
+    },
+    "address_search": {
+      "placeholder": "Busque um endereço ou local",
+      "no_results": "Nenhum lugar correspondente encontrado"
     }
   },
   "spotlight_search": {
@@ -3506,19 +3915,26 @@
     "final_standings_podium": "▚ CLASSIFICAÇÃO FINAL · PÓDIO",
     "page": {
       "tournament_eyebrow": "Torneio",
+      "back_to_league": "Voltar para a Liga",
       "view_match_options": "Ver opções da partida",
       "match_options_tab": "Opções da partida",
       "organizers_tab": "Organizadores",
       "my_team": "Minha equipe",
       "my_team_hint": "Gerencie sua escalação, convites e prontidão para este torneio.",
       "roster_section": "Escalação",
-      "no_teams_yet": "Nenhuma equipe ainda."
+      "no_teams_yet": "Nenhuma equipe ainda.",
+      "information_tab": "Informações",
+      "about_section": "Sobre",
+      "match_settings": "Configurações da Partida",
+      "read_more": "Ler mais",
+      "read_less": "Ler menos"
     },
     "feature_card": {
       "tournament": "Torneio",
       "teams": "Equipes",
       "stages": "Fases",
-      "default_label": "Torneio"
+      "default_label": "Torneio",
+      "organized_by": "Por {team}"
     },
     "results_section": {
       "no_data": "SEM DADOS",
@@ -3573,7 +3989,15 @@
       "title": "Inscrever-se no Torneio",
       "add_self_to_lineup": "Adicionar a si mesmo na Lineup",
       "team_owner": "Dono da Equipe",
-      "requirements": "Você precisa de pelo menos {count} jogador(es) para participar deste torneio"
+      "requirements": "Você precisa de pelo menos {count} jogador(es) para participar deste torneio",
+      "roster_range": "Escalação ({selected} selecionados · até {max} jogadores)",
+      "group": {
+        "starters": "Titulares",
+        "substitutes": "Reservas",
+        "benched": "No banco"
+      },
+      "already_rostered": "Em outra equipe",
+      "min_lineup_warning": "Selecione pelo menos {min} jogadores para se inscrever."
     },
     "tournament_team": {
       "remove": "Remover Equipe",
@@ -3589,12 +4013,44 @@
       "name": "Nome do Torneio",
       "description": "Descrição",
       "start": "Data de Início",
+      "section": {
+        "branding": "Identidade Visual",
+        "details": "Detalhes",
+        "classification": "Classificação e Local"
+      },
       "update": "Atualizar Torneio",
       "discord_notifications": "Notificações do Discord",
       "discord_notifications_description": "Habilitar notificações do Discord para status de partidas neste torneio.",
       "auto_start": {
         "label": "Auto Iniciar",
         "description": "Quando habilitado, as partidas do torneio são automaticamente agendadas. Quando desabilitado, um organizador precisa agendar as partidas manualmente."
+      },
+      "negotiated_scheduling": {
+        "label": "Agendamento Negociado",
+        "description": "Os capitães das equipes propõem e acordam os horários das partidas (com janelas opcionais por fase), em vez de as partidas começarem automaticamente."
+      },
+      "create_bar": {
+        "ready": "Pronto para criar",
+        "ready_hint": "Tudo certo — crie seu torneio",
+        "incomplete": "Campos obrigatórios faltando",
+        "incomplete_hint": "Preencha o nome do torneio e a data de início para continuar"
+      },
+      "logo": {
+        "label": "Logo"
+      },
+      "homepage": {
+        "label": "Site Oficial",
+        "description": "Link externo para ingressos, informações ou inscrição.",
+        "link": "Site Oficial"
+      },
+      "location": {
+        "label": "Local",
+        "description": "Busque o local ou a cidade; o pino do mapa é definido automaticamente."
+      },
+      "latitude": {},
+      "longitude": {},
+      "categories": {
+        "label": "Categorias"
       }
     },
     "notifications": {
@@ -3655,6 +4111,14 @@
       "min_teams_placeholder": "Selecione o mínimo de equipes...",
       "max_teams": "Máximo de Equipes",
       "max_teams_placeholder": "Selecione o máximo de equipes...",
+      "max_rounds": "Máximo de Rodadas (opcional)",
+      "max_rounds_placeholder": "Deixe em branco para um round robin completo",
+      "max_rounds_description": "Limita o round robin a esta quantidade de rodadas; cada equipe joga contra essa quantidade de oponentes distintos. Deixe em branco para jogar contra todos.",
+      "swiss_no_elimination": "Grupo suíço (sem eliminação)",
+      "swiss_no_elimination_description": "Emparelha pelo retrospecto a cada rodada, mas nunca elimina — toda equipe joga um número fixo de rodadas e é classificada em uma única tabela (estilo ESEA). Desativado = suíço da Valve (avança com 3 vitórias / eliminado com 3 derrotas).",
+      "swiss_rounds": "Rodadas",
+      "swiss_rounds_placeholder": "Número de rodadas suíças",
+      "swiss_rounds_description": "Quantas rodadas o grupo suíço joga.",
       "update": "Atualizar Fase",
       "create": "Criar Fase",
       "add_another": "Adicionar Outra Fase",
@@ -3669,7 +4133,11 @@
       "third_place_match_description": "Criar uma partida para o 3º lugar entre os perdedores das semifinais.",
       "decider_best_of": "Decisão de 3º Lugar - Melhor De",
       "advanced_settings": "Configurações Avançadas de Fase",
-      "teams_count": "{count} equipes"
+      "teams_count": "{count} equipes",
+      "final_map_advantage": {
+        "label": "Vantagem de Mapa na Final",
+        "description": "Vantagem em pontos de mapa que a equipe da chave dos vencedores leva para a grande final. Deve ficar abaixo do número de mapas necessários para vencer."
+      }
     },
     "bracket": {
       "schedule_title": "Agendar Partida",
@@ -3798,7 +4266,16 @@
       "remove": "Remover Organizador",
       "confirm_remove": "Você tem certeza que deseja remover este organizador?",
       "remove_description": "Isto irá remover o organizador do torneio",
-      "organized_by": "Organizado por"
+      "organized_by": "Organizado por",
+      "teams": {
+        "title": "Equipes da Organização",
+        "description": "Vincule uma equipe para tornar todos os seus membros organizadores deste torneio.",
+        "add": "Vincular uma Equipe",
+        "members_note": "Todo membro de uma equipe vinculada se torna organizador do torneio. Remover a equipe remove os organizadores que ela adicionou.",
+        "none": "Nenhuma equipe da organização vinculada.",
+        "remove_confirm": "Remover {name} e o acesso de organizador de seus membros?",
+        "remove": "Remover"
+      }
     },
     "team": {
       "eligible": "Elegível",
@@ -3815,6 +4292,7 @@
       "remove_member": "Remover Membro",
       "confirm_remove_member": "Você tem certeza que quer remover este membro?",
       "remove_member_description": "Isto irá remover um membro da equipe do torneio",
+      "min_roster_locked": "O torneio já começou — adicione um reserva antes de remover um jogador, o elenco não pode ficar abaixo da escalação mínima",
       "cancel_invite": "Cancelar convite",
       "confirm_cancel_invite": "Cancelar convite",
       "cancel_invite_description": "Tem certeza que deseja cancelar este convite?",
@@ -3847,6 +4325,45 @@
       "remove": "Remover Servidor",
       "confirm_remove": "Você tem certeza que deseja remover este servidor?",
       "remove_description": "Isto irá remover o servidor do torneio"
+    },
+    "open_match_actions": "Abrir ações da partida",
+    "location": {
+      "tab": "Local",
+      "view_on_map": "Ver no mapa"
+    },
+    "prizes": {
+      "title": "Premiação",
+      "manage_title": "Premiação",
+      "manage_hint": "▓ ADICIONE COLOCAÇÕES E VALORES DE PRÊMIOS MOSTRADOS NO TORNEIO",
+      "organizer_access_required": "Acesso de organizador necessário",
+      "add": "Adicionar",
+      "distribution": "Distribuição de Prêmios",
+      "place_placeholder": "#1",
+      "prize_placeholder": "€1000"
+    },
+    "stats": {
+      "prize_pool": "Premiação Total",
+      "teams": "Equipes",
+      "format": "Formato",
+      "starts": "Início",
+      "location": "Local"
+    },
+    "wizard": {
+      "information": "Informações",
+      "location": "Local",
+      "match_options": "Opções de Partida",
+      "prizes": "Premiação"
+    },
+    "banner": {
+      "label": "Banner",
+      "upload": "Enviar Banner",
+      "replace": "Substituir Banner",
+      "remove": "Remover",
+      "removed": "Banner removido",
+      "updated": "Banner atualizado",
+      "empty_hint": "Adicionar um banner",
+      "hint": "Exibido no topo da página do torneio. Recortado em um quadro largo de 3:1.",
+      "upload_failed": "Falha no envio do banner"
     }
   },
   "team": {
@@ -3938,7 +4455,11 @@
       "inviting": "Convidando",
       "inviting_hint": "Esses jogadores serão convidados quando você criar a equipe.",
       "update": "Atualizar Equipe",
-      "create": "Criar Equipe"
+      "create": "Criar Equipe",
+      "is_organization": {
+        "label": "Equipe de Organização",
+        "description": "Equipes de organização podem ser vinculadas a torneios para conceder acesso de organizador aos seus membros."
+      }
     },
     "roster_count_players": "jogadores",
     "search": {
@@ -3968,6 +4489,12 @@
       "remove_description": "Isto irá remover o jogador da equipe",
       "roster_image": "Imagem do Roster",
       "roster_image_description": "Envia uma imagem do roster para {name} nesta equipe. Sobrescreva o padrão para o jogador. "
+    },
+    "calendar": {
+      "subscribe": "Assinar Partidas",
+      "link_copied": "Link do calendário copiado",
+      "subscription_help": "Assine esta URL no seu app de calendário para ver todas as partidas desta equipe — scrims, jogos de liga e torneios.",
+      "link_error": "Não foi possível obter o link do calendário"
     }
   },
   "match": {
@@ -4011,7 +4538,9 @@
       "rendering_clip": "Renderizando clipe",
       "acquiring_signal": "Adquirindo sinal",
       "signal_lost": "Sinal perdido",
-      "idle": "Inativo"
+      "idle": "Inativo",
+      "access_denied": "Stream indisponível",
+      "access_denied_hint": "Você não tem acesso a esta transmissão ao vivo — jogadores não podem assistir a uma partida em que estão."
     },
     "elo_details": {
       "title": "Detalhes das Evoluções do ELO",
@@ -4173,6 +4702,14 @@
         },
         "default_player_models": {
           "description": "Habilita modelos padrão para todos os jogadores na partida não permitindo skins adicionais."
+        },
+        "round_restart_delay": {
+          "label": "Atraso de Reinício de Round",
+          "range": "Segundos antes de um round reiniciar. Deixe em branco para o padrão do servidor."
+        },
+        "halftime_pausematch": {
+          "label": "Pausar no Intervalo",
+          "description": "Pausa a partida no intervalo até que um administrador a retome — útil para transmissões ao vivo."
         }
       },
       "max_rounds": "Máximo de rounds",
@@ -4452,6 +4989,14 @@
       "no_regions_available": "Nenhuma região/local disponível no momento.",
       "no_regions_available_description": "Nenhuma região/local está disponível para este servidor. Entre em contato com um administrador para adicionar uma região.",
       "set_server_region": "Definir região/local do servidor"
+    },
+    "commands": {
+      "pause_match": "Pausar Partida",
+      "resume_match": "Retomar Partida",
+      "skip_knife": "Pular Faca",
+      "force_ready": "Forçar Ready",
+      "reset_to_knife": "Reiniciar para a Faca",
+      "reset_to_warmup": "Reiniciar para o Aquecimento"
     },
     "picks": {
       "decider": "Decisivo",
@@ -4913,8 +5458,28 @@
         "kb_orbit": "orbitar",
         "kb_zoom": "zoom",
         "kb_fly": "voar",
-        "kb_up_down": "subir / descer"
-      }
+        "kb_up_down": "subir / descer",
+        "following_on_map": "Seguindo no mapa",
+        "bomb_carrier": "Portador da bomba"
+      },
+      "auto_clip_preset": "Clipe automático do preset",
+      "hold_scoreboard": "Segure para mostrar o placar",
+      "swap_sides": "Trocar lados (ajuste manual)",
+      "hide_clip_editor": "Ocultar editor de clipes",
+      "open_clip_editor": "Abrir editor de clipes",
+      "kills_by": "Eliminações de",
+      "deaths_of": "Mortes de",
+      "has_c4": "Com a C4",
+      "damage_this_round": "Dano neste round",
+      "kevlar_helmet": "Kevlar + capacete",
+      "kevlar_only": "Apenas kevlar",
+      "bomb_dropped": "Bomba largada",
+      "bomb_planted_label": "Bomba plantada",
+      "bomb_dropped_by": "Por {name}",
+      "kit_dropped_by": "Largado por {name}",
+      "unknown_player": "desconhecido",
+      "kill_filter_by_title": "Mostrando eliminações FEITAS PELO jogador — clique para alternar para as mortes DO jogador",
+      "kill_filter_of_title": "Mostrando mortes DO jogador — clique para alternar para as eliminações FEITAS PELO jogador"
     },
     "player_details_panel": {
       "stats_unavailable": "Estatísticas indisponíveis para esta partida.",
@@ -4968,11 +5533,14 @@
       "database_section": "Seção de Database"
     },
     "logs": {
+      "title": "Logs do Servidor",
       "follow": "Seguir Logs",
       "timestamps": "Carimbos de data/hora",
       "jump_to_live": "Jump to Live",
       "download_visible": "Download de logs visíveis",
-      "download_full": "Download de logs completos"
+      "download_full": "Download de logs completos",
+      "empty": "Nenhum log ainda",
+      "empty_hint": "Os logs aparecerão aqui assim que o serviço começar a transmitir a saída."
     },
     "scroll": {
       "left": "Scroll esquerda",
@@ -5197,7 +5765,8 @@
     "pending_imports": {
       "title": "Importações CS2 Pendentes",
       "importing": "Importando..."
-    }
+    },
+    "all_time_peak": "PICO HISTÓRICO"
   },
   "maps": {
     "label": "Mapas",
@@ -5270,6 +5839,7 @@
       "leave": "Sair da Lobby",
       "invite_player": "Convidar Jogador para a Lobby",
       "access_updated": "Acesso à lobby atualizado para {access}",
+      "invited": "Convidado",
       "member_count": "{count} em lobby",
       "pending_count": "{count} pendente",
       "waiting_for_players": "Aguardando jogadores entrarem no seu lobby. Use o botão Convidar acima para adicionar amigos."
@@ -5283,7 +5853,19 @@
       "invite_to_match": "Convidar o jogador para o jogo",
       "remove": "Remover Amigo",
       "in_match": "Em uma partida",
-      "in_lobby": "Em uma lobby"
+      "in_lobby": "Em uma lobby",
+      "in_draft": "Em sala draft",
+      "playing_cs2": "Jogando Counter-Strike 2",
+      "available": "Disponível",
+      "join": "Entrar",
+      "live": "Ao Vivo",
+      "watch": "Assistir",
+      "accept": "Aceitar",
+      "decline": "Recusar",
+      "requested": "Solicitado",
+      "cancel_request": "Cancelar Pedido",
+      "incoming_requests": "Pedidos",
+      "sent_requests": "Enviados"
     },
     "others": {
       "title": "Outros"
@@ -5306,6 +5888,8 @@
     "game_server_versions": "Versão do Servidor de Jogo",
     "cs_build": "CS Build",
     "update_cs": "Atualizar CS2",
+    "updating_to": "Atualizando para {version}",
+    "update_to_version": "Atualizar para {version}",
     "validate_gamedata": "Validar gamedata",
     "note_label": "Nota:",
     "one_cpu_core": "1 núcleo da CPU",
@@ -5333,7 +5917,13 @@
     "cpu_frequency_warning": "A frequencia max do CPU é inferior a 3GHz isso pode afetar a performance do servidor de CS2",
     "disks_label": "Discos",
     "select_region": "Selecionar Região/Local",
+    "no_region": "Sem região",
     "remove_node": "Remover Nó",
+    "remove_ports": "Remover Portas",
+    "mode": {
+      "use_as_match": "Usar como Servidor de Partidas",
+      "use_as_gpu_only": "Usar como Apenas GPU"
+    },
     "show_update_logs": "Mostrar Logs de Atualizações",
     "edit_label": "Editar rótulo",
     "edit_cs2_options": "Configurações de Vídeo do CS2",
@@ -5389,6 +5979,7 @@
     },
     "edit_ports": "Editar Portas",
     "edit_ports_description": "Configure o intervalo de portas para este nó",
+    "region_required_for_ports": "Atribua uma região a este nó antes de definir suas portas.",
     "port_start": "Porta Inicial",
     "port_end": "Porta Final",
     "files": "Arquivos",
@@ -5403,6 +5994,9 @@
       "csgo_installing": "CS:GO está sendo instalado neste nó",
       "validating_gamedata": "Validando assinaturas do gamedata no nó",
       "ports_updated": "Portas Atualizadas",
+      "ports_removed": "Portas do Nó Removidas",
+      "made_gpu_only": "Nó Definido como Apenas GPU",
+      "made_match_node": "Nó Definido como Servidor de Partidas",
       "label_updated": "Rótulo Atualizado",
       "cs2_options_updated": "Configurações de vídeo atualizadas",
       "scheduling_updated": "Agendamento do Nó Atualizado"
@@ -5433,7 +6027,8 @@
     "aggregate": "agregado",
     "rx_tx": "rx + tx",
     "current": "atual",
-    "percent_used": "{percent}% usado"
+    "percent_used": "{percent}% usado",
+    "col_name": "NOME"
   },
   "chat": {
     "readonly": "Chat é apenas leitura.",
@@ -5656,6 +6251,7 @@
       "take_manual_control": "Clique para assumir controle manual"
     },
     "page_title": "Stream Deck",
+    "page_description": "Assuma uma GPU para transmitir uma partida ao vivo, trocar destinos e executar o diretor automático.",
     "capacity": "Capacidade",
     "full": "Cheio",
     "off_air_description": "Nenhuma transmissão ativa de game-streamer. Escolha uma partida ao vivo abaixo para assumir uma GPU e começar a streamar.",
@@ -5672,7 +6268,9 @@
     "offline": "offline",
     "exit": "Sair",
     "swap_sides": "Trocar lados (override manual)",
-    "refresh_hud": "Atualizar HUD (recarregar imagens dos jogadores)"
+    "refresh_hud": "Atualizar HUD (recarregar imagens dos jogadores)",
+    "autodirector_on": "O diretor automático está ativado.",
+    "autodirector_hint": "O CS2 está escolhendo a câmera — clicar em um alvo ou pressionar uma tecla desativa isso e assume o controle manual."
   },
   "system_metrics_extras": {
     "gpu_usage": "Uso de GPU",
@@ -5904,7 +6502,14 @@
     "maps": "MAPAS",
     "damage": "DANO",
     "score": "PLACAR",
-    "impact": "IMPACTO"
+    "impact": "IMPACTO",
+    "current": "ATUAL",
+    "updated": "ATUALIZADO",
+    "series_multiplier": "MULTIPLICADOR DE SÉRIE",
+    "team_elo": "ELO DA EQUIPE",
+    "kda": "KDA",
+    "kda_breakdown": "K / D / A",
+    "perf": "PERF"
   },
   "stat": {
     "level": {
@@ -5961,9 +6566,12 @@
       "description": "Configure um pick-up game. Os capitães irão escolher os jogadores dos times quando estiver cheio.",
       "mode": "Modo de Jogo",
       "rank_gate": "Limite de rank (opcional)",
+      "start": "Iniciar",
       "deploy": "Criar",
       "require_approval": "Exigir aprovação",
       "require_approval_desc": "Jogadores solicitam para entrar — você escolhe quem joga da fila.",
+      "host_only": "Apenas Host",
+      "host_only_desc": "Crie e gerencie esta lobby sem ser adicionado como jogador.",
       "keep_lobby": "Manter lobby junto",
       "keep_lobby_desc": "Seus {count} jogadores da lobby entram no mesmo time.",
       "save": "Salvar alterações",
@@ -5991,14 +6599,21 @@
       "next": "Próximo",
       "update": "Atualizar"
     },
+    "host": "O host",
+    "invite": {
+      "invited_you": "convidou você para sua",
+      "lobby": "lobby"
+    },
     "captain_selection": {
       "top_elo_two": "Tops no Ranking",
       "host_and_next": "Dono da Sala vs Elo + Alto",
-      "random_two": "Aleatório"
+      "random_two": "Aleatório",
+      "manual": "Manual"
     },
     "draft_order": {
       "snake": "Snake Pick (1-2-2-2-1)",
-      "alternating": "Alternado (1 por pick)"
+      "alternating": "Alternado (1 por pick)",
+      "front_loaded": "Front-Loaded (1-2-2-1-2-1)"
     },
     "card": {
       "custom_pool": "Pool Personalizado",
@@ -6054,12 +6669,17 @@
       "ready": "Squad Pronto",
       "host_assigning": "Equipes designadas pelo criador da sala personalizada",
       "host_hint": "Toque A ou B para atribuir cada jogador a um time.",
+      "make_captain": "Tornar capitão",
+      "choose_captains": "Escolher Capitães",
+      "choose_captains_hint": "Escolha um capitão para cada equipe para iniciar o draft.",
+      "pick_captains": "Escolher Capitães",
       "host_wait": "{name} está montando os times…",
       "captain_picking": "{name} está escolhendo…",
       "your_pick": "Sua Escolha",
       "alpha_picking": "Equipe A escolhendo",
       "bravo_picking": "Equipe B escolhendo",
       "standby": "Em espera",
+      "pick_order": "Ordem de Escolha",
       "on_the_clock": "tic tac...",
       "draft": "Selecionar",
       "comms": "Chat da Lobby",
@@ -6095,6 +6715,14 @@
       "waitlist_pending": "Você está na fila de reservas — entrará automaticamente quando abrir um slot",
       "join_waitlist": "Entrar na fila de reservas",
       "leave_waitlist": "Sair da fila de reservas",
+      "invite_pending": "Você foi convidado para esta lobby",
+      "accept_invite": "Aceitar",
+      "decline_invite": "Recusar",
+      "invited": "Convidado",
+      "invite_pending_short": "Pendente",
+      "cancel_invite": "Cancelar Convite",
+      "invite_to_draft": "Convidar para o Draft",
+      "invite_sent": "{name} foi convidado para seu draft",
       "balance_preview": "Times projetados",
       "live_odds": "Odds ao vivo",
       "win_odds": "Odds de vitória",
@@ -6102,6 +6730,7 @@
       "picks_first": "{name} escolhe primeiro",
       "veto": "Veto de mapa e região/local",
       "match_starting": "Partida Iniciando — Servidor Inicializando",
+      "no_regions_available_description": "Nenhuma região de servidores de jogo tem servidores disponíveis. O draft não pode começar até que um servidor fique online — contate um administrador.",
       "ready_to_start": "Lobby Pronta",
       "assign_all": "Atribuir Todos os Jogadores",
       "need_full": "Aguardando Jogadores",
@@ -6192,6 +6821,686 @@
       "your_pick_desc": "O tempo voa — escolha seu próximo jogador.",
       "removed_title": "Removido do draft",
       "removed_desc": "Você não está mais na sala draft."
+    }
+  },
+  "league": {
+    "created": "Liga criada",
+    "not_found": "Liga não encontrada",
+    "status": {
+      "Setup": "Configuração",
+      "Active": "Ativa",
+      "Archived": "Arquivada"
+    },
+    "season_status": {
+      "Setup": "Configuração",
+      "RegistrationOpen": "Inscrições Abertas",
+      "RegistrationClosed": "Inscrições Encerradas",
+      "Live": "Ao Vivo",
+      "Playoffs": "Playoffs",
+      "Finished": "Finalizada",
+      "Canceled": "Cancelada"
+    },
+    "list": {
+      "eyebrow": "Competição",
+      "title": "Liga",
+      "subtitle": "Divisões sazonais, partidas semanais, promoção e rebaixamento",
+      "settings": "Configurações da Liga"
+    },
+    "history": {
+      "seasons": "Histórico de temporadas",
+      "playing_in": "Jogando na {season}",
+      "current_division": "Divisão atual",
+      "highest_division": "Divisão mais alta",
+      "none": "—"
+    },
+    "divisions": {
+      "title": "Divisões",
+      "empty": "Nenhuma divisão configurada ainda.",
+      "add": "Adicionar nível {tier}",
+      "name_placeholder": "Nome da divisão (ex.: Open, Main, Invite)",
+      "tier_hint": "O nível 1 é a divisão mais alta. As equipes são promovidas em direção ao nível 1 e rebaixadas para longe dele.",
+      "reorder_hint": "Arraste as divisões para reordenar a escada. O nível 1 é a divisão mais alta; as equipes são promovidas em direção a ele e rebaixadas para longe dele.",
+      "delete_title": "Excluir divisão?",
+      "delete_description": "Remove {name} da escada. As divisões restantes são renumeradas. Esta ação não pode ser desfeita."
+    },
+    "seasons": {
+      "title": "Temporadas",
+      "empty": "Nenhuma temporada ainda.",
+      "teams_count": "{count} equipes",
+      "deleted": "Temporada excluída",
+      "delete_title": "Excluir temporada?",
+      "delete_description": "Exclui permanentemente {name}, incluindo suas inscrições, agenda e resultados. Esta ação não pode ser desfeita."
+    },
+    "season_form": {
+      "title": "Criar Temporada",
+      "name": "Nome",
+      "name_placeholder": "ex.: Temporada 1",
+      "signup_opens": "Inscrições abrem",
+      "signup_closes": "Inscrições fecham",
+      "starts_at": "Início da temporada",
+      "weeks": "Semanas de partidas",
+      "games_per_week": "Jogos por semana",
+      "auto_format_hint": "O formato de cada divisão é escolhido automaticamente pelo seu tamanho: um round robin completo quando cabe nas rodadas da temporada, caso contrário um grupo suíço.",
+      "roster_lock_week": "Semana de bloqueio de elenco",
+      "playoff_seats": "Vagas de playoffs",
+      "min_roster": "Elenco mínimo",
+      "promote": "Promover",
+      "relegate": "Rebaixar",
+      "direct_promote": "Promoção direta",
+      "relegation_up": "Repescagem de subida",
+      "relegation_down": "Repescagem de descida",
+      "direct_relegate": "Rebaixamento direto",
+      "best_of": "Melhor de",
+      "playoff_best_of": "Melhor de (playoffs)",
+      "default_day": "Dia padrão de partidas",
+      "default_time": "Horário padrão de partidas",
+      "weekdays": {
+        "0": "Domingo",
+        "1": "Segunda-feira",
+        "2": "Terça-feira",
+        "3": "Quarta-feira",
+        "4": "Quinta-feira",
+        "5": "Sexta-feira",
+        "6": "Sábado"
+      },
+      "weeks_hint": "Uma semana de partidas por semana de calendário a partir do início da temporada. As equipes combinam um horário dentro de cada semana; confrontos sem acordo caem no dia e horário padrão.",
+      "create": "Criar Temporada",
+      "created": "Temporada criada",
+      "no_map_pool": "Nenhum pool de mapas competitivo ativo encontrado",
+      "errors": {
+        "signup_order": "As inscrições devem abrir antes de fechar.",
+        "signup_after_start": "As inscrições devem fechar antes do início da temporada."
+      },
+      "min_teams_hint": "Uma divisão precisa de pelo menos 4 equipes aprovadas para acontecer — divisões menores são puladas no início da temporada."
+    },
+    "overview": {
+      "signup_window": "Janela de inscrição",
+      "starts": "Início",
+      "weeks": "Semanas de partidas",
+      "playoff_seats": "Vagas de playoffs",
+      "roster_locked": "Elenco bloqueado",
+      "roster_locks": "Elenco bloqueia em {date}",
+      "format": "Formato",
+      "teams": "Equipes",
+      "playoffs": "Playoffs",
+      "weeks_count": "{count} semanas",
+      "across_divisions": "em {count} divisões",
+      "playoff_seats_count": "{count} vagas"
+    },
+    "phases": {
+      "registration": "Inscrições",
+      "regular_season": "Temporada Regular",
+      "playoffs": "Playoffs",
+      "complete": "Concluída",
+      "opens_soon": "Abre em breve",
+      "teams_stat": "{count} equipes",
+      "advance_stat": "{count} avançam"
+    },
+    "bracket": {
+      "regular_season": "Temporada Regular",
+      "playoffs": "Playoffs",
+      "open_full": "Abrir visualização completa",
+      "empty": "A chave aparece assim que a temporada começa e seus torneios são gerados.",
+      "format": {
+        "RoundRobin": "Round Robin",
+        "Swiss": "Suíço",
+        "SingleElimination": "Elim. Simples",
+        "DoubleElimination": "Elim. Dupla"
+      }
+    },
+    "manage": {
+      "title": "Configurações",
+      "open": "Abrir aba de gerenciamento",
+      "phase_controls": "Fase da temporada",
+      "current": "Atual",
+      "registrations": "Inscrições",
+      "danger_zone": "Zona de perigo"
+    },
+    "tabs": {
+      "overview": "Visão Geral",
+      "teams": "Equipes",
+      "schedule": "Agenda",
+      "standings": "Classificação",
+      "playoffs": "Playoffs",
+      "bracket": "Chave",
+      "movements": "Movimentações",
+      "stats": "Estatísticas"
+    },
+    "actions": {
+      "open_registration": "Abrir Inscrições",
+      "close_registration": "Encerrar Inscrições",
+      "reopen_registration": "Reabrir Inscrições",
+      "start_season": "Iniciar Temporada",
+      "cancel_season": "Cancelar Temporada",
+      "delete_season": "Excluir Temporada"
+    },
+    "join": {
+      "title": "Inscreva sua equipe",
+      "title_admin": "Inscrever uma equipe",
+      "team": "Equipe",
+      "pick_team": "Escolha uma equipe",
+      "requested_division": "Divisão solicitada",
+      "assign_division": "Atribuir divisão (aprova automaticamente)",
+      "no_preference": "Sem preferência",
+      "roster": "Elenco da temporada ({selected} selecionados, mínimo {min})",
+      "roster_range": "Elenco da temporada ({selected} selecionados · {min}–{max} jogadores)",
+      "group": {
+        "starters": "Titulares",
+        "substitutes": "Reservas",
+        "benched": "No banco"
+      },
+      "available": "Disponíveis",
+      "min_roster_warning": "Selecione pelo menos {min} jogadores para se inscrever.",
+      "register": "Inscrever",
+      "registered": "Equipe inscrita",
+      "no_teams": "Você não gerencia nenhuma equipe que possa se inscrever. Crie uma equipe primeiro.",
+      "cta_hint": "Inscreva uma equipe que você gerencia e defina o elenco dela para a temporada."
+    },
+    "my_team": {
+      "title": "Minha equipe — {team}",
+      "add_players": "Adicionar jogador",
+      "make_starter": "Tornar titular",
+      "make_sub": "Mover para reservas",
+      "subs_full": "O banco está cheio (máx. {max})",
+      "lineup_full": "A escalação está cheia ({max} titulares)",
+      "no_starters": "Nenhum titular ainda — adicione jogadores para completar sua escalação.",
+      "roster_changes": "Mudanças de elenco",
+      "withdraw": "Desistir da temporada",
+      "declined": "Sua inscrição foi recusada.",
+      "declined_with_reason": "Sua inscrição foi recusada: {reason}",
+      "resubmit": "Reenviar para revisão"
+    },
+    "registration_status": {
+      "Pending": "Pendente",
+      "Approved": "Aprovada",
+      "Waitlisted": "Na lista de espera",
+      "Declined": "Recusada",
+      "Withdrawn": "Desistente"
+    },
+    "registrations": {
+      "search": "Buscar equipe",
+      "all_statuses": "Todos os status",
+      "team": "Equipe",
+      "roster": "Elenco",
+      "division": "Divisão",
+      "status": "Status",
+      "actions": "Ações",
+      "empty": "Nenhuma equipe inscrita ainda.",
+      "unassigned": "Sem divisão",
+      "assign_to_approve": "Atribua uma divisão para aprovar",
+      "requested": "solicitada",
+      "approve_needs_division": "Atribua uma divisão antes de aprovar esta equipe.",
+      "approve_needs_roster": "A equipe precisa de pelo menos {min} jogadores antes de poder ser aprovada.",
+      "approve": "Aprovar",
+      "readmit": "Readmitir",
+      "revoke": "Revogar",
+      "waitlist": "Lista de espera",
+      "decline": "Recusar",
+      "decline_title": "Recusar inscrição?",
+      "decline_reason_hint": "Opcionalmente, diga à equipe o motivo. Ela pode reenviar enquanto as inscrições estiverem abertas.",
+      "decline_reason_placeholder": "Motivo (opcional)",
+      "players": "jogadores",
+      "review_summary": "{pending} pendentes · {waitlisted} na lista de espera aguardando revisão",
+      "remove": "Remover",
+      "remove_title": "Remover equipe da temporada?",
+      "remove_description": "A equipe é retirada da temporada e sua vaga é liberada. Você pode readmiti-la enquanto as inscrições estiverem abertas.",
+      "remove_description_live": "A equipe é retirada e todos os seus confrontos restantes são dados como W.O. para os oponentes. Esta ação não pode ser desfeita.",
+      "removed": "Equipe removida da temporada"
+    },
+    "schedule": {
+      "week": "Semana {week}",
+      "season_number": "Temporada {number}",
+      "default_time": "Padrão",
+      "my_matches": "Minhas partidas",
+      "no_matches_filter": "Nenhuma partida corresponde a estes filtros.",
+      "unscheduled_count": "{count} sem horário",
+      "needs_you": "{count} precisam de você",
+      "filter": {
+        "all": "Todas",
+        "unscheduled": "Sem horário",
+        "scheduled": "Agendadas",
+        "finished": "Finalizadas"
+      },
+      "no_matchups": "Nenhum confronto nesta semana.",
+      "bye": "Bye (vitória automática)",
+      "unscheduled": "Sem horário",
+      "view_match": "Ver partida",
+      "propose": "Propor horário",
+      "propose_new": "Propor novo horário",
+      "proposed": "Horário proposto",
+      "propose_title": "Propor um horário de partida",
+      "propose_description": "Escolha um horário entre {from} e {to}. O capitão adversário deve aceitar.",
+      "message_placeholder": "Mensagem (opcional)",
+      "outside_window": "O horário proposto está fora da janela da semana de partidas.",
+      "proposed_by": "por",
+      "accept": "Aceitar",
+      "counter": "Contrapropor",
+      "decline": "Recusar",
+      "awaiting_opponent": "Aguardando o oponente",
+      "winner": "Vencedor",
+      "defaults_to": "Agendada automaticamente para {time} se nenhum horário for acordado",
+      "history": "Propostas anteriores ({count})",
+      "status_chip": {
+        "needs_scheduling": "Precisa de agendamento",
+        "scheduled": "Agendada",
+        "finished": "Finalizada"
+      },
+      "status": {
+        "Accepted": "Aceita",
+        "Declined": "Recusada",
+        "Countered": "Contraproposta",
+        "Superseded": "Substituída",
+        "Expired": "Expirada"
+      },
+      "forfeit": "W.O.",
+      "forfeit_win": "Conceder vitória a {team}",
+      "forfeit_awarded": "W.O. concedido",
+      "not_started": "A temporada ainda não começou — a agenda aparece assim que as divisões forem geradas."
+    },
+    "schedule_task": {
+      "schedule_title": "Agende sua partida",
+      "respond_title": "Um horário de partida foi proposto",
+      "confirm_title": "Confirme o horário da sua partida",
+      "context": "Temporada {season} · Semana {week}",
+      "more": "{count} mais"
+    },
+    "standings": {
+      "team": "Equipe",
+      "record": "V–D",
+      "rounds": "Rounds",
+      "round_diff": "SR",
+      "remaining": "Restam",
+      "playoffs": "Playoffs",
+      "search": "Buscar equipe",
+      "empty": "Nenhum resultado ainda.",
+      "removed": "Removida",
+      "open_tournament": "Abrir torneio",
+      "legend": {
+        "advances": "Avança para os playoffs (top {n})",
+        "cutoff": "Corte dos playoffs",
+        "your_team": "Sua equipe",
+        "all_advance": "Todas as equipes avançam para os playoffs"
+      }
+    },
+    "playoffs": {
+      "view_bracket": "Ver chave",
+      "pending": "A chave dos playoffs é montada quando a temporada regular termina.",
+      "not_started": "Os playoffs ainda não começaram.",
+      "scheduling": "{division} · agendamento dos playoffs"
+    },
+    "movements": {
+      "rank": "Posição",
+      "team": "Equipe",
+      "movement": "Movimentação",
+      "override": "Ajuste manual",
+      "status": "Status",
+      "empty": "Nenhuma movimentação calculada ainda.",
+      "keep_computed": "Manter o calculado",
+      "approved": "Aprovada",
+      "pending": "Aguardando revisão",
+      "approve_all": "Aprovar todas as movimentações",
+      "approved_all": "Movimentações aprovadas",
+      "relegation_playoffs": "Repescagem",
+      "playoff_resolved": "Resolvido",
+      "bands": {
+        "RelegationUp": "Repescagem (subida)",
+        "RelegationDown": "Repescagem (descida)"
+      }
+    },
+    "settings": {
+      "title": "Configuração da temporada",
+      "hint": "Quase tudo permanece editável — apenas o número de semanas de partidas e os jogos por semana travam quando a temporada começa (eles definem as chaves).",
+      "schedule": "Agenda",
+      "dates": "Datas",
+      "locked_started": "Travado — temporada iniciada",
+      "weeks_count": "Semanas de partidas",
+      "games_per_week": "Jogos por semana",
+      "signup_opens": "Inscrições abrem",
+      "signup_closes": "Inscrições fecham",
+      "starts_at": "Início da temporada",
+      "roster_lock": "Bloqueio de elenco"
+    },
+    "series": {
+      "title": "Formato da série",
+      "week_title": "Temporada regular (por semana)",
+      "playoff_title": "Playoffs (por rodada)",
+      "hint": "As alterações se aplicam a partidas que ainda não foram criadas — partidas já agendadas mantêm seu formato.",
+      "save": "Salvar formato da série",
+      "saved": "Formato da série salvo",
+      "third_place_match": "Partida de decisão de terceiro lugar",
+      "bracket_type": "Tipo de chave",
+      "advance_count": "Equipes que avançam",
+      "advance_hint": "Quantas por divisão entram na chave dos playoffs.",
+      "structure_locked": "O tipo de chave e a partida de decisão travam quando a temporada começa; o tamanho da série permanece editável.",
+      "stage_types": {
+        "SingleElimination": "Eliminação Simples",
+        "DoubleElimination": "Eliminação Dupla"
+      }
+    },
+    "stats": {
+      "player": "Jogador",
+      "team": "Equipe",
+      "maps": "Mapas",
+      "kdr": "K/D",
+      "empty": "Nenhuma estatística ainda — elas aparecem quando as partidas da liga forem jogadas."
+    },
+    "rollover": {
+      "create_next": "Criar próxima temporada",
+      "created": "{name} criada"
+    },
+    "restart": {
+      "action": "Redefinir para configuração",
+      "done": "Temporada redefinida para configuração"
+    },
+    "readiness": {
+      "title": "Prontidão da temporada",
+      "division_sizes": "Tamanhos das divisões",
+      "rosters_ok": "Todas as equipes inscritas atendem ao tamanho mínimo de elenco",
+      "rosters_thin": "Equipes abaixo do tamanho mínimo de elenco"
+    },
+    "about": {
+      "title": "Como a liga funciona",
+      "register": "Inscreva sua equipe enquanto as inscrições estiverem abertas e escolha os jogadores do elenco da temporada.",
+      "placement": "Os administradores revisam as inscrições e colocam as equipes em divisões de habilidade. Equipes que retornam mantêm a divisão conquistada.",
+      "weekly": "A cada semana você tem um confronto. Qualquer um dos capitães propõe um horário dentro da semana de partidas e o capitão adversário aceita — vocês podem renegociar até a partida começar.",
+      "default_night": "Se nenhum horário for acordado, a partida usa a noite de jogos padrão da liga naquela semana.",
+      "roster_lock": "Os elencos travam no meio da temporada — apenas jogadores do elenco podem jogar partidas da liga, e um jogador só pode estar em uma equipe por temporada.",
+      "playoffs": "As melhores equipes da classificação se qualificam para a chave dos playoffs; os capitães agendam as partidas dos playoffs da mesma forma.",
+      "movement": "A classificação final decide a promoção e o rebaixamento entre divisões para a próxima temporada."
+    },
+    "confirm": {
+      "cancel_season_title": "Cancelar esta temporada?",
+      "cancel_season_description": "Cancelar encerra a temporada para todas as equipes: as inscrições fecham, todas as partidas restantes são canceladas e a temporada não pode ser reiniciada.",
+      "withdraw_title": "Desistir da temporada?",
+      "withdraw_description": "Sua equipe abre mão da vaga nesta temporada. Se as inscrições ainda estiverem abertas você pode se inscrever de novo, mas sua vaga e a atribuição de divisão não ficam reservadas."
+    },
+    "calendar": {
+      "month": "Mês",
+      "agenda": "Agenda",
+      "times_in": "Horários em",
+      "default_night": "Noite padrão",
+      "default_short": "Padrão",
+      "needs_you": "Precisa de você",
+      "all_clear": "Nada está esperando por você. Toda partida desta temporada tem um horário.",
+      "upcoming": "Próximas",
+      "no_upcoming": "Nenhuma partida restante para jogar.",
+      "more": "mais",
+      "status": {
+        "won": "Vitória",
+        "lost": "Derrota",
+        "played": "Jogada",
+        "live": "Ao vivo agora",
+        "pending-me": "Eles propuseram",
+        "pending-them": "Aguardando o oponente",
+        "agreed": "Acordado",
+        "default": "Sem horário",
+        "bye": "Bye",
+        "unscheduled": "Sem horário"
+      },
+      "legend": {
+        "awaiting": "Aguardando você",
+        "agreed": "Acordado / padrão",
+        "won": "Vitória",
+        "lost": "Derrota",
+        "window": "Dentro da sua janela de partidas"
+      },
+      "table": "Todas as partidas",
+      "search_teams": "Buscar equipes…",
+      "all_weeks": "Todas as semanas",
+      "all_statuses": "Todos os status",
+      "no_results": "Nenhuma partida corresponde a estes filtros.",
+      "n_unscheduled": "{count} sem horário",
+      "n_awaiting": "{count} aguardando resposta",
+      "col": {
+        "week": "Sem.",
+        "matchup": "Confronto",
+        "status": "Status",
+        "time": "Horário",
+        "proposed_by": "Proposto por"
+      }
+    }
+  },
+  "event": {
+    "card": {
+      "organizing": "Organizando",
+      "tournaments": "Torneios",
+      "organized_by": "Organizado por"
+    },
+    "tabs": {
+      "leaderboard": "Ranking",
+      "standings": "Classificação",
+      "tournaments": "Torneios",
+      "teams": "Equipes e Jogadores",
+      "settings": "Configurações",
+      "media": "Mídia",
+      "overview": "Visão Geral",
+      "story": "História",
+      "matches": "Partidas"
+    },
+    "not_found": {
+      "title": "Evento Não Encontrado",
+      "description": "Este evento não existe ou você não tem acesso para vê-lo."
+    },
+    "tournaments": {
+      "none": "Nenhum torneio faz parte deste evento ainda."
+    },
+    "teams": {
+      "title": "Equipes",
+      "none": "Nenhuma equipe faz parte deste evento ainda."
+    },
+    "players": {
+      "title": "Jogadores",
+      "none": "Nenhum jogador faz parte deste evento ainda."
+    },
+    "updated": "Evento Atualizado",
+    "deleted": "Evento excluído",
+    "danger_zone": {
+      "title": "Zona de Perigo",
+      "description": "Excluir um evento o remove permanentemente, incluindo sua mídia e ranking. Partidas e torneios vinculados ao evento não são excluídos."
+    },
+    "confirm": {
+      "delete": {
+        "title": "Excluir este evento?",
+        "description": "\"{name}\" será excluído permanentemente. Esta ação não pode ser desfeita."
+      }
+    },
+    "form": {
+      "name": "Nome do Evento",
+      "description": "Descrição",
+      "starts_at": "Começa Em",
+      "ends_at": "Termina Em",
+      "dates": "Datas do Evento",
+      "pick_dates": "Escolha um intervalo de datas",
+      "start_required": "Uma data de início é obrigatória para que o evento reúna apenas partidas jogadas a partir dessa data",
+      "start_time": "Horário de início",
+      "end_time": "Horário de término",
+      "create": "Criar Evento",
+      "create_bar": {
+        "ready": "Pronto para criar",
+        "ready_hint": "Tudo certo, crie seu evento quando quiser.",
+        "incomplete": "Campos obrigatórios faltando",
+        "incomplete_hint": "Preencha o nome do evento e uma data de início para continuar"
+      },
+      "visibility": "Visibilidade",
+      "media_access": "Uploads de Mídia",
+      "sections": {
+        "details": "Detalhes",
+        "schedule": "Cronograma",
+        "access": "Acesso"
+      }
+    },
+    "leaderboard": {
+      "categories": {
+        "rating": "Rating",
+        "adr": "ADR",
+        "kdr": "Razão K/D",
+        "kills": "Eliminações",
+        "wins": "Vitórias"
+      },
+      "col": {
+        "rating": "Rating",
+        "adr": "ADR",
+        "kdr": "K/D",
+        "kills": "Eliminações",
+        "wins": "Vitórias",
+        "kills_short": "K",
+        "deaths_short": "D",
+        "matches": "Partidas"
+      },
+      "no_results": "Nenhum resultado no ranking ainda."
+    },
+    "standings": {
+      "champion": "Campeão",
+      "runner_up": "Vice-Campeão",
+      "third": "Terceiro Lugar",
+      "mvp": "MVP",
+      "gold": "Ouro",
+      "silver": "Prata",
+      "bronze": "Bronze",
+      "none": "Nenhuma classificação ainda para os torneios deste evento.",
+      "medal_table": "Quadro de Medalhas"
+    },
+    "membership": {
+      "title": "Participantes",
+      "detach": "Remover",
+      "tournaments": {
+        "title": "Torneios",
+        "none": "Nenhum torneio vinculado ainda.",
+        "search_placeholder": "Buscar seus torneios...",
+        "none_found": "Nenhum torneio encontrado"
+      },
+      "teams": {
+        "title": "Equipes",
+        "none": "Nenhuma equipe vinculada ainda.",
+        "search_placeholder": "Buscar equipes..."
+      },
+      "players": {
+        "title": "Jogadores",
+        "none": "Nenhum jogador vinculado ainda.",
+        "search_placeholder": "Buscar jogadores...",
+        "import": "Importar dos Torneios",
+        "import_none": "Nenhum jogador novo encontrado nos torneios deste evento.",
+        "import_success": "{count} jogador(es) importado(s) dos elencos dos torneios.",
+        "import_hint": "Adiciona ao evento todos os jogadores escalados nos torneios vinculados."
+      },
+      "organizers": {
+        "title": "Organizadores",
+        "search_placeholder": "Adicionar um organizador...",
+        "creator": "Criador",
+        "hide_on_event": "Ocultar de “organizado por”",
+        "show_on_event": "Mostrar em “organizado por”"
+      },
+      "filter_players": "Filtrar jogadores...",
+      "filter_teams": "Filtrar equipes..."
+    },
+    "visibility": {
+      "private": "Privado",
+      "friends": "Amigos",
+      "public": "Público"
+    },
+    "media_access": {
+      "organizers": "Apenas organizadores",
+      "involved": "Qualquer pessoa no evento"
+    },
+    "media": {
+      "none": "Nenhuma mídia foi enviada para este evento ainda.",
+      "drop_to_upload": "Solte para enviar",
+      "click_to_choose": "Clique para escolher um arquivo ou arraste-o aqui",
+      "supported_types": "Imagens (PNG, JPEG, WebP, GIF de até 10MB), vídeo MP4 (até 512MB) e áudio MP3 (até 50MB)",
+      "uploaded": "Mídia enviada",
+      "deleted": "Mídia excluída",
+      "delete": "Excluir",
+      "upload_queue": "Fila de envio",
+      "queue_clear": "Limpar",
+      "queue_waiting": "Aguardando",
+      "queue_uploading": "Enviando",
+      "queue_done": "Concluído",
+      "queue_error": "Falhou",
+      "untitled": "Sem título",
+      "details": "Detalhes",
+      "title_label": "Título",
+      "title_placeholder": "Dê um título a esta mídia",
+      "saved": "Salvo",
+      "players_label": "Jogadores marcados",
+      "no_players": "Nenhum jogador marcado ainda.",
+      "tag_players": "Marcar um jogador...",
+      "audio": "Áudio",
+      "queue_processing": "Processando",
+      "no_participants": "Nenhum participante do evento para marcar ainda",
+      "show_more": "Carregar mais mídia",
+      "filter_by_player": "Filtrar por jogador...",
+      "none_for_player": "Nenhuma mídia marcada com este jogador.",
+      "add_media": "Adicionar mídia",
+      "add_title": "Adicionar mídia",
+      "upload_section": "Enviar um arquivo",
+      "link_section": "Adicionar um link",
+      "add_link_description": "Cole uma URL do YouTube ou da Twitch (ou qualquer link) para adicioná-la à mídia deste evento.",
+      "link_url_label": "URL",
+      "link_url_placeholder": "https://youtube.com/watch?v=...",
+      "link_title_placeholder": "Título opcional",
+      "link_add": "Adicionar",
+      "link_invalid": "Insira uma URL http(s) válida",
+      "link_added": "Link adicionado",
+      "external_open": "Abrir link"
+    },
+    "phase": {
+      "upcoming": "Em breve",
+      "live": "Ao Vivo",
+      "finished": "Finalizado"
+    },
+    "overview": {
+      "for_you": "Para você",
+      "rank": "Posição no evento",
+      "rating": "Rating",
+      "kd": "K/D",
+      "matches": "Partidas",
+      "no_my_matches": "Nenhuma das suas partidas faz parte deste evento ainda."
+    },
+    "matches": {
+      "none": "Nenhuma partida foi jogada nos torneios deste evento ainda.",
+      "load_more": "Carregar mais partidas"
+    },
+    "story": {
+      "only_mine": "Apenas meus momentos",
+      "none": "Nada aconteceu neste evento ainda.",
+      "none_mine": "Você ainda não tem momentos neste evento.",
+      "highlights": "Highlights"
+    },
+    "banner": {
+      "section": "Banner",
+      "upload": "Enviar banner",
+      "replace": "Substituir banner",
+      "remove": "Remover banner",
+      "updated": "Banner atualizado",
+      "removed": "Banner removido",
+      "empty_hint": "Nenhum banner ainda — clique para enviar",
+      "hint": "Exibido em largura total no topo da página do evento. Tamanho ideal: 1920×640 (3:1). Imagens de até 10MB ou vídeo MP4 de até 512MB.",
+      "editor": {
+        "title": "Ajustar banner",
+        "description": "Arraste para posicionar e role para dar zoom dentro do quadro 3:1 do banner. Use “Ajustar imagem inteira” se a arte não puder ser cortada — a página preenche as laterais com uma cópia desfocada.",
+        "fit_whole": "Ajustar imagem inteira",
+        "reset": "Redefinir",
+        "apply": "Usar como banner"
+      }
+    },
+    "player": {
+      "full_profile": "Perfil completo",
+      "kills": "Eliminações",
+      "deaths": "Mortes",
+      "assists": "Assistências",
+      "kdr": "K/D",
+      "adr": "ADR",
+      "hs": "HS%",
+      "matches": "Partidas",
+      "tab_stats": "Estatísticas",
+      "tab_matches": "Partidas",
+      "compare_with": "Comparar com...",
+      "clear_compare": "Limpar comparação",
+      "axis_frags": "Frags",
+      "axis_kd": "K/D",
+      "axis_adr": "ADR",
+      "axis_hs": "HS%",
+      "axis_assist": "Assistência"
     }
   }
 }

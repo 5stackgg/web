@@ -6,10 +6,53 @@ export const simpleTournamentFields = Selector("tournaments")({
   name: true,
   start: true,
   description: true,
+  logo: true,
+  banner: true,
+  homepage: true,
+  location: true,
+  latitude: true,
+  longitude: true,
   trophies_enabled: true,
   e_tournament_status: {
     description: true,
   },
+  categories: [
+    {},
+    {
+      category: true,
+      e_tournament_category: {
+        value: true,
+        description: true,
+      },
+    },
+  ],
+  prizes: [
+    {
+      order_by: [
+        {
+          order: order_by.asc,
+        },
+      ],
+    },
+    {
+      id: true,
+      place: true,
+      prize: true,
+      order: true,
+    },
+  ],
+  organizer_teams: [
+    {},
+    {
+      team_id: true,
+      team: {
+        id: true,
+        name: true,
+        short_name: true,
+        avatar_url: true,
+      },
+    },
+  ],
   trophy_configs: [
     {},
     {
@@ -39,6 +82,7 @@ export const simpleTournamentFields = Selector("tournaments")({
       order: true,
       options: matchOptionsFields,
       default_best_of: true,
+      final_map_advantage: true,
       third_place_match: true,
       groups: true,
     },

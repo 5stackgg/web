@@ -219,6 +219,19 @@ const loginArrowClasses =
               </NavigationMenuLink>
             </NavigationMenuItem>
 
+            <NavigationMenuItem
+              v-for="plugin in plugins"
+              :key="plugin.id"
+              class="hidden md:block"
+            >
+              <NavigationMenuLink as-child>
+                <NuxtLink :to="`/apps/${plugin.slug}`" :class="navLinkClasses">
+                  <span :class="navTickClasses"></span>
+                  {{ plugin.title }}
+                </NuxtLink>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
             <NavigationMenuItem>
               <NavigationMenuTrigger :class="navTriggerClasses">
                 <span :class="navTickClasses"></span>
@@ -775,6 +788,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    plugins() {
+      return usePluginsStore().visiblePlugins;
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;

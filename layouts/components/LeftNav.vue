@@ -29,6 +29,7 @@ import {
   CalendarRange,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
+import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
@@ -317,6 +318,41 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
+
+        <template v-if="pluginGroups.length > 0">
+          <Separator v-if="showSeparators" class="mx-4 w-auto" />
+
+          <SidebarGroup
+            v-for="group in pluginGroups"
+            :key="group.name ?? 'apps'"
+          >
+            <SidebarGroupLabel>{{
+              group.name || $t("layouts.app_nav.plugins.title")
+            }}</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem
+                v-for="plugin in group.plugins"
+                :key="plugin.id"
+              >
+                <SidebarMenuButton as-child :tooltip="plugin.title">
+                  <NuxtLink
+                    :to="`/apps/${plugin.slug}`"
+                    :class="{
+                      // Prefix match: a plugin owns every route under its slug,
+                      // so its own sub-routes keep the nav entry lit.
+                      'router-link-active':
+                        $route.path === `/apps/${plugin.slug}` ||
+                        $route.path.startsWith(`/apps/${plugin.slug}/`),
+                    }"
+                  >
+                    <PluginIcon :name="plugin.icon" />
+                    {{ plugin.title }}
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </template>
 
         <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
@@ -1046,6 +1082,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import type { Plugin } from "~/stores/Plugins";
 export default {
   props: {
     isMobile: {
@@ -1165,6 +1202,21 @@ export default {
     },
     eventsEnabled() {
       return useApplicationSettingsStore().eventsEnabled;
+    },
+    pluginGroups() {
+      // visiblePlugins arrive sorted by nav_order, so insertion order keeps both
+      // the per-group plugin order and the group order (first appearance).
+      const groups: Array<{ name: string | null; plugins: Plugin[] }> = [];
+      for (const plugin of usePluginsStore().visiblePlugins) {
+        const name = plugin.nav_group || null;
+        let group = groups.find((entry) => entry.name === name);
+        if (!group) {
+          group = { name, plugins: [] };
+          groups.push(group);
+        }
+        group.plugins.push(plugin);
+      }
+      return groups;
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;

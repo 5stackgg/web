@@ -21,6 +21,7 @@ __metadata:
     "@nuxtjs/color-mode": "npm:^3.5.2"
     "@nuxtjs/i18n": "npm:^9.5.4"
     "@nuxtjs/tailwindcss": "npm:^6.14.0"
+    "@originjs/vite-plugin-federation": "npm:^1.4.1"
     "@pinia/nuxt": "npm:^0.11.0"
     "@radix-icons/vue": "npm:^1.0.0"
     "@tailwindcss/forms": "npm:^0.5.10"
@@ -2242,7 +2243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/sourcemap-codec@npm:^1.5.5":
+"@jridgewell/sourcemap-codec@npm:^1.4.13, @jridgewell/sourcemap-codec@npm:^1.5.5":
   version: 1.5.5
   resolution: "@jridgewell/sourcemap-codec@npm:1.5.5"
   checksum: 10c0/f9e538f302b63c0ebc06eecb1dd9918dd4289ed36147a0ddce35d6ea4d7ebbda243cda7b2213b6a5e1d8087a298d5cf630fb2bd39329cdecb82017023f6081a0
@@ -2904,6 +2905,16 @@ __metadata:
     ufo: "npm:^1.5.4"
     unctx: "npm:^2.4.1"
   checksum: 10c0/7acf1234daba0770b843ac7cc83a5cf266a083592aed065f14526a258375c21e81587f3790f132957abdb0c0ea92174efd386d2ea7a6dac821df5b91eeb4c2d4
+  languageName: node
+  linkType: hard
+
+"@originjs/vite-plugin-federation@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@originjs/vite-plugin-federation@npm:1.4.1"
+  dependencies:
+    estree-walker: "npm:^3.0.2"
+    magic-string: "npm:^0.27.0"
+  checksum: 10c0/cf437ad5e769c9dc1770e4931b7a116bc912f6d95f37c46b88e13958a7c3eeba3ccae9d8ce83fc31f04e448b784229d9d12f1a5d419abfd0dca6d7ab268955c7
   languageName: node
   linkType: hard
 
@@ -8080,7 +8091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"estree-walker@npm:^3.0.3":
+"estree-walker@npm:^3.0.2, estree-walker@npm:^3.0.3":
   version: 3.0.3
   resolution: "estree-walker@npm:3.0.3"
   dependencies:
@@ -10910,6 +10921,15 @@ __metadata:
   dependencies:
     sourcemap-codec: "npm:^1.4.8"
   checksum: 10c0/37f5e01a7e8b19a072091f0b45ff127cda676232d373ce2c551a162dd4053c575ec048b9cbb4587a1f03adb6c5d0fd0dd49e8ab070cd2c83a4992b2182d9cb56
+  languageName: node
+  linkType: hard
+
+"magic-string@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "magic-string@npm:0.27.0"
+  dependencies:
+    "@jridgewell/sourcemap-codec": "npm:^1.4.13"
+  checksum: 10c0/cddacfea14441ca57ae8a307bc3cf90bac69efaa4138dd9a80804cffc2759bf06f32da3a293fb13eaa96334b7d45b7768a34f1d226afae25d2f05b05a3bb37d8
   languageName: node
   linkType: hard
 

@@ -3,8 +3,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
-import TournamentForm from "~/components/tournament/TournamentForm.vue";
+import TournamentInformationForm from "~/components/tournament/TournamentInformationForm.vue";
+import TournamentMatchOptionsForm from "~/components/tournament/TournamentMatchOptionsForm.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
+import TournamentPrizes from "~/components/tournament/TournamentPrizes.vue";
+import TournamentPrizesManage from "~/components/tournament/TournamentPrizesManage.vue";
+import TournamentStatRibbon from "~/components/tournament/TournamentStatRibbon.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
 import TournamentTrophiesConfig from "~/components/tournament/TournamentTrophiesConfig.vue";
@@ -16,7 +20,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import {
   Settings,
   Users,
-  ChevronDown,
   Lock,
   Unlock,
   Ban,
@@ -26,6 +29,8 @@ import {
   Pause,
   RotateCcw,
   ArrowLeft,
+  Globe,
+  MapPin,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,11 +47,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -74,7 +74,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   tacticalCtaButtonClasses,
@@ -86,15 +86,15 @@ import {
 } from "~/utilities/tacticalClasses";
 
 const tournamentHeroClasses =
-  "relative rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
+  "relative isolate overflow-hidden rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
 const tournamentHeroToplineClasses =
   "order-2 flex shrink-0 flex-wrap items-start gap-2 max-sm:w-full";
-const tournamentHeroEyebrowClasses =
-  "inline-flex min-h-9 items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground";
-const tournamentHeroChevronClasses =
-  "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
-const tournamentHeroBodyClasses = "order-1 min-w-0 flex-1";
-const tournamentHeroIdentityClasses = "flex min-w-0 flex-col gap-[0.65rem]";
+const tournamentHeroBodyClasses =
+  "order-1 flex min-w-0 flex-1 items-start gap-4";
+const tournamentHeroLogoClasses =
+  "h-16 w-16 shrink-0 rounded border border-border bg-muted/30 object-contain sm:h-20 sm:w-20";
+const tournamentHeroIdentityClasses =
+  "flex min-w-0 flex-1 flex-col gap-[0.65rem]";
 const tournamentHeroNameRowClasses = "flex min-w-0 items-center";
 const tournamentHeroNameClasses =
   "relative m-0 min-w-0 font-sans text-[clamp(1.75rem,4vw,3rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
@@ -135,14 +135,6 @@ const tournamentHeroJoinButtonClasses = [
 ];
 const tournamentHeroSettingsButtonClasses =
   "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
-const tournamentHeroDetailsClasses = "mt-5 border-t border-border pt-4";
-const tournamentHeroDetailsTriggerClasses =
-  "flex w-full cursor-pointer items-center gap-3 border-0 bg-transparent p-0 text-left text-[0.85rem] text-muted-foreground transition-colors duration-150 hover:text-foreground";
-const tournamentHeroDescriptionClasses =
-  "min-w-0 flex-1 break-words leading-[1.45]";
-const tournamentHeroDetailsPlaceholderClasses =
-  "flex-1 font-mono text-[0.72rem] uppercase tracking-[0.2em]";
-const tournamentHeroDetailsBodyClasses = "mt-4 border-t border-border pt-4";
 const tournamentHeroTabsClasses = "mt-5 border-t border-border pt-4";
 const tacticalSectionCountClasses =
   "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
@@ -188,13 +180,34 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
     <Tabs v-model="activeTab" default-value="overview">
       <PageTransition>
         <header :class="tournamentHeroClasses">
+          <div
+            v-if="tournamentBannerSrc"
+            aria-hidden="true"
+            class="absolute inset-0 -z-10"
+          >
+            <img
+              :src="tournamentBannerSrc"
+              class="h-full w-full object-cover opacity-[0.38]"
+            />
+            <div
+              class="absolute inset-0 [background:radial-gradient(600px_300px_at_88%_12%,hsl(var(--tac-amber)/0.1),transparent_62%)]"
+            ></div>
+            <!-- Top fade keeps the status/settings row legible over busy artwork. -->
+            <div
+              class="absolute inset-0 [background:linear-gradient(180deg,hsl(var(--card)/0.6)_0%,transparent_34%)]"
+            ></div>
+            <!-- Left-anchored fade keeps the title/badges/meta column legible over any banner while the artwork breathes on the right. -->
+            <div
+              class="absolute inset-0 [background:linear-gradient(90deg,hsl(var(--card)/0.92)_0%,hsl(var(--card)/0.5)_44%,hsl(var(--card)/0.1)_80%)]"
+            ></div>
+            <!-- Bottom fade protects the tab row. -->
+            <div
+              class="absolute inset-0 [background:linear-gradient(180deg,transparent_0%,hsl(var(--card)/0.4)_64%,hsl(var(--card)/0.88)_100%)]"
+            ></div>
+          </div>
+
           <div class="mb-5 flex flex-wrap items-start justify-between gap-4">
             <div :class="tournamentHeroToplineClasses">
-              <div v-if="!leagueSeasonId" :class="tournamentHeroEyebrowClasses">
-                <span :class="tournamentHeroChevronClasses">◢</span>
-                {{ $t("tournament.page.tournament_eyebrow") }}
-              </div>
-
               <div :class="tournamentHeroActionsClasses">
                 <Button
                   v-if="
@@ -322,6 +335,12 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             </div>
 
             <div :class="tournamentHeroBodyClasses">
+              <img
+                v-if="tournamentLogoSrc"
+                :src="tournamentLogoSrc"
+                :alt="tournament.name"
+                :class="tournamentHeroLogoClasses"
+              />
               <div :class="tournamentHeroIdentityClasses">
                 <div :class="tournamentHeroNameRowClasses">
                   <h1 :class="tournamentHeroNameClasses">
@@ -359,6 +378,29 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                   >
                     {{ singleStageTypeWithBestOf }}
                   </span>
+                  <span
+                    v-for="category in tournamentCategories"
+                    :key="category"
+                    :class="[
+                      tournamentHeroTagClasses,
+                      tournamentHeroMutedTagClasses,
+                    ]"
+                  >
+                    {{ category }}
+                  </span>
+                  <a
+                    v-if="tournamentHomepage"
+                    :href="tournamentHomepage"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :class="[
+                      tournamentHeroTagClasses,
+                      'gap-1 no-underline transition-opacity hover:opacity-80',
+                    ]"
+                  >
+                    <Globe class="h-3 w-3" />
+                    {{ $t("tournament.form.homepage.link") }}
+                  </a>
                 </div>
 
                 <div :class="tournamentHeroMetaClasses">
@@ -413,44 +455,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             </div>
           </div>
 
-          <Collapsible
-            v-if="tournament.description || tournament.options"
-            v-model:open="overviewExpanded"
-            :class="tournamentHeroDetailsClasses"
-          >
-            <CollapsibleTrigger as-child>
-              <button
-                type="button"
-                :class="tournamentHeroDetailsTriggerClasses"
-              >
-                <span
-                  v-if="tournament.description"
-                  :class="[
-                    tournamentHeroDescriptionClasses,
-                    { 'line-clamp-2': !overviewExpanded },
-                  ]"
-                >
-                  {{ tournament.description }}
-                </span>
-                <span v-else :class="tournamentHeroDetailsPlaceholderClasses">
-                  {{ $t("tournament.page.view_match_options") }}
-                </span>
-                <ChevronDown
-                  class="h-4 w-4 shrink-0 transition-transform duration-200"
-                  :class="{ 'rotate-180': overviewExpanded }"
-                />
-              </button>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div :class="tournamentHeroDetailsBodyClasses">
-                <MatchOptionsDisplay
-                  :show-details-by-default="false"
-                  :options="tournament.options"
-                ></MatchOptionsDisplay>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-
           <div :class="tournamentHeroTabsClasses">
             <TabsList
               variant="underline"
@@ -474,6 +478,13 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 }}
               </TabsTrigger>
               <TabsTrigger
+                v-if="!tournament?.is_organizer && tournament.options"
+                value="match-settings"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.page.match_settings") }}
+              </TabsTrigger>
+              <TabsTrigger
                 v-if="standingsTabVisible"
                 value="standings"
                 :class="tacticalTabsTriggerClasses"
@@ -489,6 +500,20 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 :class="tacticalTabsTriggerClasses"
               >
                 {{ $t("tournament.results.title") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="tournament?.is_organizer"
+                value="information"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.page.information_tab") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="tournament?.is_organizer"
+                value="prizes"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.prizes.title") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="tournament?.is_organizer"
@@ -533,10 +558,83 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
       <div class="mt-6">
         <TabsContent value="overview">
           <PageTransition>
-            <TournamentStageBuilder
-              class="w-full"
-              :tournament="tournament"
-            ></TournamentStageBuilder>
+            <div class="flex flex-col gap-6">
+              <TournamentStatRibbon
+                :prize-pool="prizePool"
+                :teams-count="teamsCount"
+                :format="formatLabel"
+                :start="tournament.start"
+                :location="shortLocation"
+              ></TournamentStatRibbon>
+
+              <TournamentPrizes
+                v-if="hasPrizes"
+                :prizes="tournament.prizes"
+              ></TournamentPrizes>
+
+              <Card v-if="tournament.description" class="overflow-hidden">
+                <div class="flex flex-col gap-3 p-5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[0.7rem] text-[hsl(var(--tac-amber))]"
+                      >◢</span
+                    >
+                    <span
+                      class="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                    >
+                      {{ $t("tournament.page.about_section") }}
+                    </span>
+                  </div>
+                  <p
+                    class="max-w-[70ch] whitespace-pre-line text-sm leading-relaxed text-muted-foreground"
+                    :class="{ 'line-clamp-[8]': !descExpanded }"
+                  >
+                    {{ tournament.description }}
+                  </p>
+                  <button
+                    v-if="descLong"
+                    type="button"
+                    class="self-start font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-opacity hover:opacity-80"
+                    @click="descExpanded = !descExpanded"
+                  >
+                    {{
+                      descExpanded
+                        ? $t("tournament.page.read_less")
+                        : $t("tournament.page.read_more")
+                    }}
+                  </button>
+                </div>
+              </Card>
+
+              <TournamentStageBuilder
+                class="w-full"
+                :tournament="tournament"
+              ></TournamentStageBuilder>
+            </div>
+          </PageTransition>
+        </TabsContent>
+        <TabsContent
+          value="match-settings"
+          v-if="!tournament?.is_organizer && tournament.options"
+        >
+          <PageTransition>
+            <Card class="overflow-hidden">
+              <div class="p-5">
+                <div class="mb-4 flex items-center gap-2">
+                  <span class="text-[0.7rem] text-[hsl(var(--tac-amber))]"
+                    >◢</span
+                  >
+                  <span
+                    class="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    {{ $t("tournament.page.match_settings") }}
+                  </span>
+                </div>
+                <MatchOptionsDisplay
+                  :show-details-by-default="false"
+                  :options="tournament.options"
+                ></MatchOptionsDisplay>
+              </div>
+            </Card>
           </PageTransition>
         </TabsContent>
         <TabsContent value="my-team" v-if="myTeam">
@@ -664,9 +762,19 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             />
           </PageTransition>
         </TabsContent>
+        <TabsContent value="information" v-if="tournament?.is_organizer">
+          <PageTransition>
+            <TournamentInformationForm :tournament="tournament" />
+          </PageTransition>
+        </TabsContent>
         <TabsContent value="match-options" v-if="tournament?.is_organizer">
           <PageTransition>
-            <TournamentForm :tournament="tournament"></TournamentForm>
+            <TournamentMatchOptionsForm :tournament="tournament" />
+          </PageTransition>
+        </TabsContent>
+        <TabsContent value="prizes" v-if="tournament?.is_organizer">
+          <PageTransition>
+            <TournamentPrizesManage :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent value="organizers" v-if="tournament?.is_organizer">
@@ -805,6 +913,7 @@ import { playerFields } from "~/graphql/playerFields";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import { formatPrizePool } from "~/utilities/prizePool";
 import {
   getRequestedRouteTab,
   getRouteTabValue,
@@ -822,7 +931,7 @@ export default {
       settingsDialogOpen: false,
       organizersDialogOpen: false,
       joinSheetOpen: false,
-      overviewExpanded: true,
+      descExpanded: false,
       deleteDialogOpen: false,
       pauseDialogOpen: false,
       resumeDialogOpen: false,
@@ -874,6 +983,12 @@ export default {
                 description: true,
               },
               description: true,
+              logo: true,
+              banner: true,
+              homepage: true,
+              location: true,
+              latitude: true,
+              longitude: true,
               is_organizer: true,
               can_join: true,
               can_start: true,
@@ -891,6 +1006,43 @@ export default {
                 {},
                 {
                   organizer: playerFields,
+                },
+              ],
+              organizer_teams: [
+                {},
+                {
+                  team_id: true,
+                  team: {
+                    id: true,
+                    name: true,
+                    short_name: true,
+                    avatar_url: true,
+                  },
+                },
+              ],
+              categories: [
+                {},
+                {
+                  category: true,
+                  e_tournament_category: {
+                    value: true,
+                    description: true,
+                  },
+                },
+              ],
+              prizes: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  place: true,
+                  prize: true,
+                  order: true,
                 },
               ],
               teams: [
@@ -977,6 +1129,7 @@ export default {
                   swiss_no_elimination: true,
                   decider_best_of: true,
                   default_best_of: true,
+                  final_map_advantage: true,
                   settings: true,
                   third_place_match: true,
                   options: matchOptionsFields,
@@ -1218,6 +1371,30 @@ export default {
     leagueSeasonId() {
       return this.$route.params.seasonId ?? null;
     },
+    tournamentLogoSrc() {
+      if (!this.tournament?.logo) {
+        return null;
+      }
+      return `https://${useRuntimeConfig().public.apiDomain}/${this.tournament.logo}`;
+    },
+    tournamentBannerSrc() {
+      if (!this.tournament?.banner) {
+        return null;
+      }
+      return `https://${useRuntimeConfig().public.apiDomain}/${this.tournament.banner}`;
+    },
+    tournamentCategories() {
+      return (this.tournament?.categories ?? []).map((category) => {
+        return category.e_tournament_category?.description ?? category.category;
+      });
+    },
+    tournamentHomepage() {
+      const homepage = this.tournament?.homepage;
+      if (!homepage) {
+        return null;
+      }
+      return /^https?:\/\//.test(homepage) ? homepage : `https://${homepage}`;
+    },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
     },
@@ -1281,6 +1458,40 @@ export default {
 
       return this.singleStageType;
     },
+    prizePool() {
+      return formatPrizePool(this.tournament?.prizes);
+    },
+    hasPrizes() {
+      return (this.tournament?.prizes?.length ?? 0) > 0;
+    },
+    shortLocation() {
+      const loc = this.tournament?.location;
+      if (!loc) {
+        return null;
+      }
+      // Keep the readable address parts ("Sandberg, Colmberg, Bavaria,
+      // Germany"), dropping only postal-code segments.
+      const parts = loc
+        .split(",")
+        .map((part: string) => part.trim())
+        .filter((part: string) => part && !/^\d[\d\s-]*$/.test(part));
+      return parts.length > 0 ? parts.join(", ") : loc;
+    },
+    descLong() {
+      return (this.tournament?.description?.length ?? 0) > 280;
+    },
+    teamsCount() {
+      return this.tournament?.teams_aggregate?.aggregate?.count ?? 0;
+    },
+    formatLabel() {
+      if (this.singleStageTypeWithBestOf) {
+        return this.singleStageTypeWithBestOf;
+      }
+      if (this.stageCount > 1) {
+        return `${this.stageCount} ${this.$t("tournament.stage.stages")}`;
+      }
+      return this.tournament?.options?.type ?? null;
+    },
     e_tournament_status_enum() {
       return e_tournament_status_enum;
     },
@@ -1327,6 +1538,10 @@ export default {
 
       tabs.push("teams");
 
+      if (!this.tournament?.is_organizer && this.tournament?.options) {
+        tabs.push("match-settings");
+      }
+
       if (this.standingsTabVisible) {
         tabs.push("standings");
       }
@@ -1339,7 +1554,14 @@ export default {
       }
 
       if (this.tournament?.is_organizer) {
-        tabs.push("match-options", "organizers", "trophies", "notifications");
+        tabs.push(
+          "information",
+          "prizes",
+          "match-options",
+          "organizers",
+          "trophies",
+          "notifications",
+        );
       }
 
       return tabs;
@@ -1496,8 +1718,6 @@ export default {
     tournament: {
       handler(newTournament) {
         if (newTournament) {
-          this.overviewExpanded =
-            newTournament.status !== e_tournament_status_enum.Live;
           this.syncActiveTabFromRoute();
         }
       },

@@ -363,6 +363,7 @@ export default defineNuxtConfig({
     ],
     build: {
       target: "esnext",
+      minify: false,
     },
   },
 });

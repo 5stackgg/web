@@ -20,6 +20,9 @@ export interface Plugin {
   is_default: boolean;
   nav_group: string | null;
   nav_order: number;
+  // Null means the plugin contributes no player-profile tab. A non-null value is
+  // the tab's label — the opt-in and the wording are the same field.
+  profile_tab_label: string | null;
 }
 
 export const usePluginsStore = defineStore("plugins", () => {
@@ -49,6 +52,7 @@ export const usePluginsStore = defineStore("plugins", () => {
             is_default: true,
             nav_group: true,
             nav_order: true,
+            profile_tab_label: true,
           },
         ],
       }),
@@ -86,6 +90,13 @@ export const usePluginsStore = defineStore("plugins", () => {
     return plugins.value.filter(canSee);
   });
 
+  // Plugins that contribute a tab to /players/:steamid. Filtered from
+  // visiblePlugins so the master switch, `enabled`, and `required_role` all
+  // apply — a tab must never be a way around the gating the nav respects.
+  const profileTabPlugins = computed<Plugin[]>(() => {
+    return visiblePlugins.value.filter((plugin) => plugin.profile_tab_label);
+  });
+
   const defaultPlugin = computed<Plugin | null>(() => {
     return visiblePlugins.value.find((plugin) => plugin.is_default) ?? null;
   });
@@ -104,6 +115,7 @@ export const usePluginsStore = defineStore("plugins", () => {
     plugins,
     initialized,
     visiblePlugins,
+    profileTabPlugins,
     defaultPlugin,
     pluginBySlug,
     canSee,

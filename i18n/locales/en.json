@@ -2047,6 +2047,9 @@
             "nav_group_placeholder": "Apps",
             "nav_group_hint": "Optional heading to group this under in the sidebar. Leave blank for the default Apps group.",
             "nav_order_hint": "Lower numbers appear first. Leave 0 if you don't care.",
+            "profile_tab_label": "Player Profile Tab",
+            "profile_tab_label_placeholder": "Inventory",
+            "profile_tab_label_hint": "Show this plugin as a tab on player profiles, using this label. Leave blank for no tab. The plugin receives the profile's Steam ID.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
             "deployments_hint": "Kubernetes deployment names to watch for image updates. Comma separated. Updates show in the header alongside 5stack's own services."

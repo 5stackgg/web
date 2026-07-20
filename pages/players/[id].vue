@@ -75,6 +75,8 @@ import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
+import PluginRemote from "~/components/plugins/PluginRemote.vue";
+import { usePluginsStore, type Plugin } from "~/stores/Plugins";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
@@ -137,9 +139,9 @@ const presetRanges: {
   { key: "90d", label: t("pages.players.detail.range_90d"), days: 90 },
 ];
 
-const statsTab = ref<
-  "performance" | "breakdown" | "elo" | "maps" | "arsenal" | "combat"
->("performance");
+// Plain string, not a union of the six built-ins: plugins contribute tabs at
+// runtime (keyed by their slug), so the valid set isn't knowable at compile time.
+const statsTab = ref<string>("performance");
 const statsTabsEl = ref<HTMLElement | null>(null);
 
 const { isLinked: externalAuthLinked } = usePendingImports();
@@ -326,6 +328,7 @@ const eloHistoryLoading = ref(false);
 const { client: apolloClient } = useApolloClient();
 const route = useRoute();
 const router = useRouter();
+const plugins = usePluginsStore();
 
 const VALID_STATS_TABS = [
   "performance",
@@ -335,12 +338,33 @@ const VALID_STATS_TABS = [
   "arsenal",
   "combat",
 ] as const;
-if (
-  typeof route.query.tab === "string" &&
-  (VALID_STATS_TABS as readonly string[]).includes(route.query.tab)
-) {
-  statsTab.value = route.query.tab as (typeof VALID_STATS_TABS)[number];
-}
+// A plugin tab is keyed by its slug, which the DB constrains to
+// ^[a-z0-9]+(-[a-z0-9]+)*$ — URL-safe, and it can't collide with the built-ins.
+const isValidStatsTab = (tab: string) =>
+  (VALID_STATS_TABS as readonly string[]).includes(tab) ||
+  plugins.profileTabPlugins.some((plugin: Plugin) => plugin.slug === tab);
+
+// Re-run on `initialized`, not just at setup: the plugin registry arrives over a
+// subscription, so on a cold load of ?tab=<slug> the registry is still empty here
+// and the tab would silently fall back to Performance.
+watch(
+  () => [plugins.initialized, route.query.tab] as const,
+  ([, tab]) => {
+    if (typeof tab === "string" && tab !== statsTab.value && isValidStatsTab(tab)) {
+      statsTab.value = tab;
+    }
+  },
+  { immediate: true },
+);
+// If the plugin backing the active tab is disabled or unregistered while it's
+// open, its trigger AND its content both vanish — leaving a blank pane under a
+// selection that no longer exists. Fall back rather than strand the page.
+watch(
+  () => plugins.initialized && !isValidStatsTab(statsTab.value),
+  (orphaned) => {
+    if (orphaned) statsTab.value = "performance";
+  },
+);
 watch(statsTab, (t) => {
   if (route.query.tab !== t) {
     router.replace({ query: { ...route.query, tab: t } });
@@ -663,6 +687,30 @@ const playerIdRef = computed<string | null>(() => {
 });
 
 watch(playerIdRef, () => clearCompareTarget());
+
+// ---- plugin-contributed profile tabs ----------------------------------------
+// A plugin mounted in a tab navigates LOCALLY. Under /apps/<slug> the host's
+// `navigate` does a router.push, which is right there and wrong here: clicking
+// anything inside the plugin would blow the viewer off the player page. So each
+// plugin gets its own path ref that its `navigate` writes, and the host URL only
+// ever carries ?tab=<slug>.
+const pluginPaths = ref<Record<string, string>>({});
+const pluginPath = (slug: string) => pluginPaths.value[slug] ?? "/";
+const pluginNavigate = (slug: string) => (to: string) => {
+  pluginPaths.value[slug] = `/${to}`.replace(/\/{2,}/g, "/").replace(/\/+$/, "") || "/";
+};
+// The plugin renders another player's data, so it needs the steam id — and
+// `embed` tells it to drop its own full-viewport chrome (header, view pill)
+// since the host page already provides that framing.
+const pluginQuery = computed(() => ({
+  player: playerIdRef.value ?? "",
+  embed: "1",
+}));
+// Reset a plugin's internal path when the profile changes, so opening the tab on
+// player B doesn't resume on the sub-screen you left open on player A.
+watch(playerIdRef, () => {
+  pluginPaths.value = {};
+});
 
 const sinceTimestamp = computed<string | null>(() => {
   if (eloRange.value === "season") {
@@ -2175,6 +2223,13 @@ const playerHeroTeamChipDotClasses =
                 <SelectItem value="combat">
                   {{ $t("pages.players.detail.tabs.combat") }}
                 </SelectItem>
+                <SelectItem
+                  v-for="plugin in plugins.profileTabPlugins"
+                  :key="plugin.id"
+                  :value="plugin.slug"
+                >
+                  {{ plugin.profile_tab_label }}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -2201,6 +2256,15 @@ const playerHeroTeamChipDotClasses =
                 </TabsTrigger>
                 <TabsTrigger value="combat">
                   {{ $t("pages.players.detail.tabs.combat") }}
+                </TabsTrigger>
+                <!-- Label comes from the registry, not i18n — an admin sets it
+                     per plugin, so there's no key to translate against. -->
+                <TabsTrigger
+                  v-for="plugin in plugins.profileTabPlugins"
+                  :key="plugin.id"
+                  :value="plugin.slug"
+                >
+                  {{ plugin.profile_tab_label }}
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -2704,6 +2768,24 @@ const playerHeroTeamChipDotClasses =
               :since="sinceTimestamp"
             />
           </PageTransition>
+        </TabsContent>
+
+        <TabsContent
+          v-for="plugin in plugins.profileTabPlugins"
+          :key="plugin.id"
+          :value="plugin.slug"
+          class="mt-0"
+        >
+          <!-- v-if on the active tab, not just TabsContent: a remote is a whole
+               second app over the network, so don't fetch it until it's asked for. -->
+          <PluginRemote
+            v-if="statsTab === plugin.slug && playerId"
+            :slug="plugin.slug"
+            :base="`/apps/${plugin.slug}`"
+            :path="pluginPath(plugin.slug)"
+            :query="pluginQuery"
+            :navigate="pluginNavigate(plugin.slug)"
+          />
         </TabsContent>
       </Tabs>
 

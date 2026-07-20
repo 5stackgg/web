@@ -3,6 +3,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { meFields } from "~/graphql/meGraphql";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { isAuthError } from "~/graphql/isAuthError";
 import {
   e_player_roles_enum,
   type GraphQLTypes,
@@ -268,6 +269,14 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
         return true;
       } catch (error) {
         console.warn("auth failure", error);
+
+        // Only a rejected session invalidates the cached identity. A network
+        // failure must keep it, otherwise every blip logs the user out — which
+        // is the whole reason the cache paints `me` before the request lands.
+        if (isAuthError(error)) {
+          clearMe();
+        }
+
         return false;
       } finally {
         hasCheckedSession.value = true;
@@ -279,6 +288,14 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
   }
 
   async function getMe(): Promise<boolean> {
+    // A cached `me` is a paint hint, not proof of a session. While the
+    // verifying fetch is still in flight, resolve against it so route guards
+    // never wave someone onto a protected page on the strength of a dead
+    // session.
+    if (getMePromise) {
+      return getMePromise;
+    }
+
     if (me.value?.steam_id) {
       hasCheckedSession.value = true;
       return true;

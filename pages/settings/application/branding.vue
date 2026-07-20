@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { LucideSun, LucideMoon } from "lucide-vue-next";
+import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -53,7 +54,9 @@ definePageMeta({
                 <AlertDialogTrigger as-child>
                   <Button size="sm" variant="destructive">
                     {{
-                      $t("pages.settings.application.branding.reset_to_defaults")
+                      $t(
+                        "pages.settings.application.branding.reset_to_defaults",
+                      )
                     }}
                   </Button>
                 </AlertDialogTrigger>
@@ -74,9 +77,15 @@ definePageMeta({
                     <AlertDialogCancel>{{
                       $t("common.cancel")
                     }}</AlertDialogCancel>
-                    <AlertDialogAction variant="destructive" @click="resetAll">{{
-                      $t("pages.settings.application.branding.reset_to_defaults")
-                    }}</AlertDialogAction>
+                    <AlertDialogAction
+                      variant="destructive"
+                      @click="resetAll"
+                      >{{
+                        $t(
+                          "pages.settings.application.branding.reset_to_defaults",
+                        )
+                      }}</AlertDialogAction
+                    >
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
@@ -167,7 +176,7 @@ definePageMeta({
                 {{ $t("pages.settings.application.branding.logo_description") }}
               </p>
               <ImageUploadTile
-                class="mt-auto"
+                class="mt-auto w-full max-w-[16rem]"
                 aspect="cover"
                 fit="contain"
                 :crop="false"
@@ -189,7 +198,7 @@ definePageMeta({
                 }}
               </p>
               <ImageUploadTile
-                class="mt-auto"
+                class="mt-auto w-full max-w-[9rem]"
                 aspect="square"
                 fit="contain"
                 :crop="false"
@@ -881,14 +890,18 @@ export default {
       return useRuntimeConfig().public.apiDomain;
     },
     appIconPreview() {
-      // The logo upload drives the logo + PWA icons. Use the pwa_icon value
-      // (bumped on every upload) as both presence flag and cache-buster.
-      const setting = this.settings.find(
-        (s: { name: string }) => s.name === "public.pwa_icon",
+      // logo_url is the presence flag (pwa_icon is absent for logos uploaded
+      // before the app-icon flow); pwa_icon doubles as the cache-buster.
+      const logo = this.settings.find(
+        (s: { name: string }) => s.name === "public.logo_url",
       );
-      return setting?.value
-        ? `https://${this.apiDomain}/branding/logo?v=${encodeURIComponent(setting.value)}`
-        : null;
+      if (!logo?.value) {
+        return null;
+      }
+      const version = this.settings.find(
+        (s: { name: string }) => s.name === "public.pwa_icon",
+      )?.value;
+      return `https://${this.apiDomain}/branding/logo?v=${encodeURIComponent(version || logo.value)}`;
     },
     faviconPreview() {
       const setting = this.settings.find(
@@ -1022,42 +1035,34 @@ export default {
       await this.uploadBrandingFile("favicon", input.files[0]);
       input.value = "";
     },
+    // Returns a truthy value on success — ImageUploadTile treats a falsy
+    // result as a failed upload, and throws are surfaced by its own toast.
     async uploadBrandingFile(
       type: "logo" | "favicon" | "pwa" | "icon",
-      file: File,
+      file: Blob,
     ) {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", file, (file as File).name ?? `${type}.png`);
       formData.append("type", type);
 
-      try {
-        const response = await fetch(
-          `https://${this.apiDomain}/branding/upload`,
-          {
-            method: "POST",
-            body: formData,
-            credentials: "include",
-          },
-        );
+      const response = await fetch(
+        `https://${this.apiDomain}/branding/upload`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        },
+      );
 
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
-
-        toast({
-          title: this.$t(
-            `pages.settings.application.branding.${type}_uploaded`,
-          ) as string,
-        });
-      } catch (error: any) {
-        toast({
-          title: this.$t(
-            "pages.settings.application.branding.upload_failed",
-          ) as string,
-          description: error.message,
-          variant: "destructive",
-        });
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`);
       }
+
+      const data = (await response.json().catch(() => null)) as {
+        path?: string;
+      } | null;
+
+      return data?.path || type;
     },
     async removeAppIcon() {
       await this.deleteBrandingFile("icon");
@@ -1065,40 +1070,17 @@ export default {
     async removeFavicon() {
       await this.deleteBrandingFile("favicon");
     },
-    async deleteBrandingFile(
-      type: "logo" | "favicon" | "pwa" | "icon",
-      silent = false,
-    ) {
-      try {
-        const response = await fetch(
-          `https://${this.apiDomain}/branding/${type}`,
-          {
-            method: "DELETE",
-            credentials: "include",
-          },
-        );
+    async deleteBrandingFile(type: "logo" | "favicon" | "pwa" | "icon") {
+      const response = await fetch(
+        `https://${this.apiDomain}/branding/${type}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
 
-        if (!response.ok) {
-          throw new Error(`Delete failed: ${response.statusText}`);
-        }
-
-        if (!silent) {
-          toast({
-            title: this.$t(
-              `pages.settings.application.branding.${type}_removed`,
-            ) as string,
-          });
-        }
-      } catch (error: any) {
-        if (!silent) {
-          toast({
-            title: this.$t(
-              "pages.settings.application.branding.delete_failed",
-            ) as string,
-            description: error.message,
-            variant: "destructive",
-          });
-        }
+      if (!response.ok) {
+        throw new Error(`Delete failed: ${response.statusText}`);
       }
     },
     onColorChange(key: string, event: Event) {
@@ -1216,8 +1198,8 @@ export default {
 
         // Delete uploaded files
         await Promise.allSettled([
-          this.deleteBrandingFile("icon", true),
-          this.deleteBrandingFile("favicon", true),
+          this.deleteBrandingFile("icon"),
+          this.deleteBrandingFile("favicon"),
         ]);
 
         this.brandName = "";
@@ -1390,7 +1372,8 @@ export default {
             "logo.png",
             data.logo.mimeType || "image/png",
           );
-          await this.uploadBrandingFile("logo", logoFile);
+          // "icon" so the PWA icons + preview cache-buster regenerate too.
+          await this.uploadBrandingFile("icon", logoFile);
         }
 
         // Import favicon

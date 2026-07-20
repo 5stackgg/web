@@ -31,6 +31,11 @@ const props = defineProps<{
     to: string,
     options?: { replace?: boolean; query?: Record<string, unknown> },
   ) => unknown;
+  // The escape hatch from the above: `navigate` deliberately keeps the user
+  // where they are, so a plugin that wants to send them to its own full page
+  // needs a channel that moves the HOST router. Optional — hosts where the
+  // plugin already owns the screen have nowhere to send them.
+  navigateApp?: (to: string) => unknown;
 }>();
 
 const plugins = usePluginsStore();
@@ -127,6 +132,7 @@ watch(
       :path="path"
       :query="query"
       :navigate="navigate"
+      :navigate-app="navigateApp"
     />
 
     <div

@@ -11,6 +11,7 @@ import type {
   NormalizedCacheObject,
 } from "@apollo/client/cache";
 import { toast } from "@/components/ui/toast";
+import { isAuthErrorMessage } from "~/graphql/isAuthError";
 
 const mergeObjectFields = (
   existing: Record<string, unknown> | undefined,
@@ -147,13 +148,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook("apollo:error", (error) => {
     if (error.graphQLErrors) {
       for (const graphqlError of error.graphQLErrors) {
-        if (
-          [
-            "Unauthorized",
-            "webhook authentication request",
-            "Invalid response from authorization hook",
-          ].includes(graphqlError.message)
-        ) {
+        if (isAuthErrorMessage(graphqlError.message)) {
           continue;
         }
 

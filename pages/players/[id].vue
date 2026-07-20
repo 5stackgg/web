@@ -699,6 +699,9 @@ const pluginPath = (slug: string) => pluginPaths.value[slug] ?? "/";
 const pluginNavigate = (slug: string) => (to: string) => {
   pluginPaths.value[slug] = `/${to}`.replace(/\/{2,}/g, "/").replace(/\/+$/, "") || "/";
 };
+// ...and when a plugin explicitly wants OFF this page (its own full app page),
+// that's a host route change. `to` is already an absolute panel path.
+const pluginNavigateApp = (to: string) => navigateTo(to);
 // The plugin renders another player's data, so it needs the steam id — and
 // `embed` tells it to drop its own full-viewport chrome (header, view pill)
 // since the host page already provides that framing.
@@ -2785,6 +2788,7 @@ const playerHeroTeamChipDotClasses =
             :path="pluginPath(plugin.slug)"
             :query="pluginQuery"
             :navigate="pluginNavigate(plugin.slug)"
+            :navigate-app="pluginNavigateApp"
           />
         </TabsContent>
       </Tabs>

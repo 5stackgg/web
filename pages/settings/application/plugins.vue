@@ -41,7 +41,18 @@ import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import PluginIconPicker from "~/components/plugins/PluginIconPicker.vue";
-import { Pencil, Trash2, Plus, Wand2, ChevronDown } from "lucide-vue-next";
+import {
+  Pencil,
+  Trash2,
+  Plus,
+  Wand2,
+  ChevronDown,
+  BookOpen,
+  ExternalLink,
+  Puzzle,
+} from "lucide-vue-next";
+
+const DOCS_URL = "https://docs.5stack.gg/plugins/";
 
 definePageMeta({
   middleware: "admin",
@@ -69,8 +80,21 @@ definePageMeta({
           </template>
 
           <div v-if="pluginsEnabled" class="space-y-4">
-            <div class="flex justify-end">
-              <Button variant="outline" class="gap-2" @click="openCreate">
+            <div
+              v-if="plugins.length > 0"
+              class="flex flex-wrap items-center justify-between gap-3"
+            >
+              <a
+                :href="DOCS_URL"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 text-sm font-medium text-[hsl(var(--tac-amber))] underline-offset-2 hover:underline"
+              >
+                <BookOpen class="h-4 w-4" />
+                {{ $t("pages.settings.application.plugins.docs_link") }}
+                <ExternalLink class="h-3.5 w-3.5" />
+              </a>
+              <Button variant="tactical" size="sm" @click="openCreate">
                 <Plus class="h-4 w-4" />
                 {{ $t("pages.settings.application.plugins.add") }}
               </Button>
@@ -178,9 +202,36 @@ definePageMeta({
 
             <div
               v-else
-              class="rounded-lg border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground"
+              class="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border/60 p-8 text-center"
             >
-              {{ $t("pages.settings.application.plugins.empty") }}
+              <div
+                class="flex size-11 items-center justify-center rounded-md border border-border/60 bg-muted/40 text-muted-foreground"
+              >
+                <Puzzle class="size-5" />
+              </div>
+              <div class="space-y-1">
+                <p class="font-medium">
+                  {{ $t("pages.settings.application.plugins.empty_title") }}
+                </p>
+                <p class="max-w-prose text-sm text-muted-foreground">
+                  {{
+                    $t("pages.settings.application.plugins.empty_description")
+                  }}
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <Button variant="tactical" size="sm" @click="openCreate">
+                  <Plus class="h-4 w-4" />
+                  {{ $t("pages.settings.application.plugins.add") }}
+                </Button>
+                <Button variant="outline" size="sm" as-child>
+                  <a :href="DOCS_URL" target="_blank" rel="noopener noreferrer">
+                    <BookOpen class="h-4 w-4" />
+                    {{ $t("pages.settings.application.plugins.docs_link") }}
+                    <ExternalLink class="h-3.5 w-3.5" />
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
         </SettingsSection>
@@ -199,6 +250,15 @@ definePageMeta({
           </DialogTitle>
           <DialogDescription>
             {{ $t("pages.settings.application.plugins.form_description") }}
+            <a
+              :href="DOCS_URL"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1 font-medium text-[hsl(var(--tac-amber))] underline-offset-2 hover:underline"
+            >
+              {{ $t("pages.settings.application.plugins.docs_link") }}
+              <ExternalLink class="h-3.5 w-3.5" />
+            </a>
           </DialogDescription>
         </DialogHeader>
 

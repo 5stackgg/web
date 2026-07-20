@@ -88,9 +88,11 @@ const isElevatedUser = computed(() =>
       class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
     >
       <span
-        class="absolute inset-0 rounded p-[1.5px] bg-[linear-gradient(135deg,hsl(40_58%_60%)_0%,hsl(33_62%_55%)_50%,hsl(24_56%_52%)_100%)]"
+        class="absolute inset-0 rounded p-[1.5px] bg-[linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)]"
       >
-        <span class="block h-full w-full rounded-[2.5px] bg-zinc-900/90"></span>
+        <span
+          class="block h-full w-full rounded-[2.5px] bg-[hsl(var(--topnav-background))]"
+        ></span>
       </span>
 
       <span

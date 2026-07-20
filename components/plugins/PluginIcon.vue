@@ -37,16 +37,18 @@ const icon = computed(
 </script>
 
 <template>
+  <!-- No size here: every branch takes its size from the consumer's class, so a
+       url/svg icon scales with the lucide one wherever it's rendered. -->
   <span
     v-if="isSvg"
-    class="inline-flex size-4 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full"
+    class="inline-flex shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full"
     v-html="sanitizedSvg"
   />
   <img
     v-else-if="isImage"
     :src="name ?? undefined"
     alt=""
-    class="size-4 shrink-0 rounded-sm object-contain"
+    class="shrink-0 rounded-sm object-contain"
   />
   <component :is="icon" v-else />
 </template>

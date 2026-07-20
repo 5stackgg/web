@@ -345,7 +345,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                         $route.path.startsWith(`/apps/${plugin.slug}/`),
                     }"
                   >
-                    <PluginIcon :name="plugin.icon" />
+                    <PluginIcon :name="plugin.icon" class="size-4" />
                     {{ plugin.title }}
                   </NuxtLink>
                 </SidebarMenuButton>

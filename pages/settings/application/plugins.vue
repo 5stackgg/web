@@ -19,14 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
+import { Badge } from "~/components/ui/badge";
 import {
   Collapsible,
   CollapsibleContent,
@@ -83,105 +76,112 @@ definePageMeta({
               </Button>
             </div>
 
-            <Table v-if="plugins.length > 0">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{{
-                    $t("pages.settings.application.plugins.fields.title")
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t("pages.settings.application.plugins.fields.slug")
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t(
-                      "pages.settings.application.plugins.fields.required_role",
-                    )
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t("pages.settings.application.plugins.fields.enabled")
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t(
-                      "pages.settings.application.plugins.fields.is_default",
-                    )
-                  }}</TableHead>
-                  <TableHead class="text-right"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow v-for="plugin in plugins" :key="plugin.id">
-                  <TableCell class="flex items-center gap-2 font-medium">
-                    <PluginIcon :name="plugin.icon" class="h-4 w-4" />
-                    {{ plugin.title }}
-                  </TableCell>
-                  <TableCell class="text-muted-foreground">
-                    /apps/{{ plugin.slug }}
-                  </TableCell>
-                  <TableCell class="capitalize">
-                    {{
-                      plugin.required_role ||
-                      $t("pages.settings.application.plugins.public")
-                    }}
-                  </TableCell>
-                  <TableCell>{{ plugin.enabled ? "✓" : "—" }}</TableCell>
-                  <TableCell>{{ plugin.is_default ? "✓" : "—" }}</TableCell>
-                  <TableCell class="text-right">
-                    <div class="flex justify-end gap-1">
+            <div
+              v-if="plugins.length > 0"
+              class="divide-y divide-border/60 rounded-lg border border-border/60"
+            >
+              <div
+                v-for="plugin in plugins"
+                :key="plugin.id"
+                class="group flex cursor-pointer items-center gap-4 p-4 transition-colors hover:bg-muted/40"
+                @click="openEdit(plugin)"
+              >
+                <div
+                  class="flex size-10 shrink-0 items-center justify-center rounded-md border border-border/60 bg-muted/40"
+                  :class="plugin.enabled ? 'text-primary' : 'text-muted-foreground'"
+                >
+                  <PluginIcon :name="plugin.icon" class="size-5" />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="truncate font-medium">{{ plugin.title }}</span>
+                    <Badge v-if="plugin.is_default" variant="secondary">
+                      {{
+                        $t(
+                          "pages.settings.application.plugins.fields.is_default",
+                        )
+                      }}
+                    </Badge>
+                    <Badge v-if="!plugin.enabled" variant="outline">
+                      {{ $t("common.disabled") }}
+                    </Badge>
+                  </div>
+                  <div
+                    class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground"
+                  >
+                    <span class="truncate font-mono">/apps/{{ plugin.slug }}</span>
+                    <span class="text-border">•</span>
+                    <span>
+                      {{
+                        plugin.required_role
+                          ? roleLabel(plugin.required_role)
+                          : $t("pages.settings.application.plugins.public")
+                      }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex shrink-0 items-center gap-1" @click.stop>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    :title="$t('common.edit')"
+                    @click="openEdit(plugin)"
+                  >
+                    <Pencil class="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger as-child>
                       <Button
                         variant="ghost"
                         size="icon"
-                        @click="openEdit(plugin)"
+                        :title="$t('common.delete')"
                       >
-                        <Pencil class="h-4 w-4" />
+                        <Trash2 class="h-4 w-4 text-destructive" />
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger as-child>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 class="h-4 w-4 text-destructive" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{{
-                              $t(
-                                "pages.settings.application.plugins.delete_title",
-                              )
-                            }}</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              {{
-                                $t(
-                                  "pages.settings.application.plugins.delete_description",
-                                  { title: plugin.title },
-                                )
-                              }}
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{{
-                              $t("common.cancel")
-                            }}</AlertDialogCancel>
-                            <AlertDialogAction
-                              variant="destructive"
-                              @click="remove(plugin)"
-                            >
-                              {{
-                                $t(
-                                  "pages.settings.application.plugins.delete_confirm",
-                                )
-                              }}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{{
+                          $t("pages.settings.application.plugins.delete_title")
+                        }}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {{
+                            $t(
+                              "pages.settings.application.plugins.delete_description",
+                              { title: plugin.title },
+                            )
+                          }}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{{
+                          $t("common.cancel")
+                        }}</AlertDialogCancel>
+                        <AlertDialogAction
+                          variant="destructive"
+                          @click="remove(plugin)"
+                        >
+                          {{
+                            $t(
+                              "pages.settings.application.plugins.delete_confirm",
+                            )
+                          }}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </div>
+            </div>
 
-            <p v-else class="text-sm text-muted-foreground">
+            <div
+              v-else
+              class="rounded-lg border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground"
+            >
               {{ $t("pages.settings.application.plugins.empty") }}
-            </p>
+            </div>
           </div>
         </SettingsSection>
       </div>
@@ -407,6 +407,34 @@ definePageMeta({
               <div class="space-y-2">
                 <Label class="flex items-center gap-1">
                   {{
+                    $t(
+                      "pages.settings.application.plugins.fields.profile_tab_label",
+                    )
+                  }}
+                  <span class="text-xs font-normal text-muted-foreground">{{
+                    $t("pages.settings.application.plugins.optional")
+                  }}</span>
+                </Label>
+                <Input
+                  v-model="form.profile_tab_label"
+                  :placeholder="
+                    $t(
+                      'pages.settings.application.plugins.fields.profile_tab_label_placeholder',
+                    )
+                  "
+                />
+                <p class="text-xs text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.plugins.fields.profile_tab_label_hint",
+                    )
+                  }}
+                </p>
+              </div>
+
+              <div class="space-y-2">
+                <Label class="flex items-center gap-1">
+                  {{
                     $t("pages.settings.application.plugins.fields.deployments")
                   }}
                   <span class="text-xs font-normal text-muted-foreground">{{
@@ -489,6 +517,7 @@ interface PluginForm {
   is_default: boolean;
   nav_group: string;
   nav_order: number;
+  profile_tab_label: string;
   deployments: string;
 }
 
@@ -505,6 +534,7 @@ const emptyForm = (): PluginForm => ({
   is_default: false,
   nav_group: "",
   nav_order: 0,
+  profile_tab_label: "",
   deployments: "",
 });
 
@@ -584,6 +614,7 @@ export default {
         is_default: plugin.is_default,
         nav_group: plugin.nav_group ?? "",
         nav_order: plugin.nav_order,
+        profile_tab_label: plugin.profile_tab_label ?? "",
         deployments: (this.deploymentsByPlugin[plugin.id] ?? []).join(", "),
       };
       this.detectUrl = "";
@@ -625,6 +656,9 @@ export default {
           manifest.module ?? this.form.exposed_module;
         if (manifest.requiredRole) {
           this.form.required_role = manifest.requiredRole;
+        }
+        if (manifest.profileTabLabel) {
+          this.form.profile_tab_label = manifest.profileTabLabel;
         }
         // Only overwrite when the manifest actually declares deployments — an
         // older plugin that doesn't shouldn't wipe what an admin typed by hand.
@@ -694,6 +728,7 @@ export default {
         is_default: this.form.is_default,
         nav_group: this.form.nav_group || null,
         nav_order: this.form.nav_order ?? 0,
+        profile_tab_label: this.form.profile_tab_label || null,
         deployments: this.form.deployments
           .split(",")
           .map((name) => name.trim())

@@ -38,7 +38,7 @@ function pick(name: string) {
     <div
       class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border text-base"
     >
-      <PluginIcon :name="model" />
+      <PluginIcon :name="model" class="size-5" />
     </div>
     <Popover v-model:open="open">
       <PopoverTrigger as-child>

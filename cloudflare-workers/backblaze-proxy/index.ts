@@ -1,136 +1,92 @@
 import { AwsClient } from "aws4fetch";
 
-const UNSIGNABLE_HEADERS = [
-  "x-forwarded-proto",
-  "x-real-ip",
-  "accept-encoding",
-  "if-match",
-  "if-modified-since",
-  "if-none-match",
-  "if-range",
-  "if-unmodified-since",
-  // Strip Range so B2/edge cache always hold one full 200; the worker
-  // slices 206s out of it itself (sliceBody).
-  "range",
-];
+// How many times to re-sign and retry an upstream request that came back
+// 403/5xx. B2 intermittently rejects otherwise-valid signed reads; without a
+// retry a single bad roll surfaces in the UI as a permanently broken clip,
+// because the failure is never cached and every cold request rolls again.
+const UPSTREAM_ATTEMPTS = 3;
 
-function filterHeaders(headers: Headers, env: { ALLOWED_HEADERS?: string }) {
-  return new Headers(
-    Array.from(headers.entries()).filter(
-      (pair) =>
-        !(
-          UNSIGNABLE_HEADERS.includes(pair[0]) ||
-          pair[0].startsWith("cf-") ||
-          (env.ALLOWED_HEADERS != null &&
-            !env.ALLOWED_HEADERS.includes(pair[0]))
-        ),
-    ),
-  );
+// Nothing from the client request is forwarded to B2. Every header we sign is
+// a header Cloudflare may rewrite between sign() and fetch() — which B2 then
+// reads as SignatureDoesNotMatch and answers 403. B2 needs none of them:
+// Range is served out of the cached full 200, and conditionals would only
+// defeat the edge cache. It also keeps the viewer's session cookie, UA and
+// referer from being shipped to Backblaze on every clip view.
+async function signedFetch(
+  method: string,
+  url: string,
+  env: { S3_ACCESS_KEY: string; S3_SECRET: string },
+): Promise<Response> {
+  const client = new AwsClient({
+    accessKeyId: env.S3_ACCESS_KEY,
+    secretAccessKey: env.S3_SECRET,
+    service: "s3",
+  });
+
+  let response: Response | null = null;
+  for (let attempt = 0; attempt < UPSTREAM_ATTEMPTS; attempt++) {
+    // Retries must carry a unique query param or they are not retries at all:
+    // every attempt shares one Cloudflare cache key, so a cached 403 would be
+    // replayed from the edge three times without B2 ever being asked again.
+    // S3 ignores unrecognized query params, and signing the busted URL keeps
+    // the signature valid.
+    const target =
+      attempt === 0
+        ? url
+        : `${url}?x-5stack-retry=${attempt}-${crypto.randomUUID()}`;
+    const signed = await client.sign(target, {
+      method,
+      headers: new Headers(),
+    });
+    response = await fetch(signed.url, {
+      method: signed.method,
+      headers: signed.headers,
+      cf: {
+        cacheEverything: true,
+        // 4xx must not be pinned: B2 has no ListBucket grant on our key, so a
+        // transient denial and a genuinely missing object both arrive as 403,
+        // and caching either one would outlive the condition that caused it.
+        cacheTtlByStatus: { "200-299": 2592000, "400-499": 0, "500-599": 0 },
+      },
+    });
+    if (response.status !== 403 && response.status < 500) {
+      return response;
+    }
+    await response.body?.cancel();
+  }
+  return response!;
 }
 
 const VIEW_FRACTION = 0.5;
 const BOT_UA =
   /bot|crawl|spider|facebookexternalhit|slack|discord|telegram|whatsapp|preview|unfurl|embed|scrape|metainspector|skype|vkshare|redditbot|pinterest|googlebot|bingbot/i;
 
-// Fires the view when delivered bytes cross the file's VIEW_FRACTION
-// position (range start + bytes streamed). Responses starting past the
-// threshold never count — those are end-of-file moov probes or tail seeks,
-// not a watched first half. Repeat beacons are deduped API-side per viewer.
-function countingBody(
-  body: ReadableStream<Uint8Array>,
-  size: number,
-  startOffset: number,
-  onEnough: () => void,
-): ReadableStream<Uint8Array> {
-  if (!Number.isFinite(size) || size <= 0) {
-    return body;
+// Whether a served response spans the file's VIEW_FRACTION mark, decided from
+// Content-Range rather than by counting bytes through the stream. Counting
+// meant piping every byte of an 18 MB clip through JS, which is what pushed
+// the Worker over its CPU limit; this reads three numbers off a header.
+// Tail seeks and end-of-file moov probes still do not qualify. Repeat beacons
+// are deduped API-side per viewer.
+function spansViewThreshold(status: number, headers: Headers): boolean {
+  if (status === 200) {
+    return true;
   }
-  const threshold = size * VIEW_FRACTION;
-  if (startOffset >= threshold) {
-    return body;
+  const contentRange = headers.get("content-range");
+  if (!contentRange) {
+    return false;
   }
-  let position = startOffset;
-  let fired = false;
-  return body.pipeThrough(
-    new TransformStream<Uint8Array, Uint8Array>({
-      transform(chunk, controller) {
-        controller.enqueue(chunk);
-        if (fired) {
-          return;
-        }
-        position += chunk.byteLength;
-        if (position >= threshold) {
-          fired = true;
-          onEnough();
-        }
-      },
-    }),
-  );
-}
-
-// Single-range parser; null (incl. multi-range) → serve the full 200,
-// which the spec permits.
-function parseRange(
-  header: string | null,
-  size: number,
-): { start: number; end: number } | "unsatisfiable" | null {
-  if (!header || !Number.isFinite(size) || size <= 0) {
-    return null;
-  }
-  const match = /^bytes\s*=\s*(\d*)-(\d*)$/.exec(header.trim());
-  if (!match || (match[1] === "" && match[2] === "")) {
-    return null;
-  }
-  if (match[1] === "") {
-    const suffix = Number(match[2]);
-    if (suffix === 0) {
-      return "unsatisfiable";
-    }
-    return { start: Math.max(0, size - suffix), end: size - 1 };
+  const match = /^bytes\s+(\d+)-(\d+)\/(\d+)$/.exec(contentRange.trim());
+  if (!match) {
+    return false;
   }
   const start = Number(match[1]);
-  if (start >= size) {
-    return "unsatisfiable";
+  const end = Number(match[2]);
+  const total = Number(match[3]);
+  if (!Number.isFinite(total) || total <= 0) {
+    return false;
   }
-  const end = match[2] === "" ? size - 1 : Math.min(Number(match[2]), size - 1);
-  if (end < start) {
-    return null;
-  }
-  return { start, end };
-}
-
-// Cuts [start, end] out of a full-object stream; terminate() cancels the
-// source so a 2-byte probe doesn't drain a 50 MB body.
-function sliceBody(
-  body: ReadableStream<Uint8Array>,
-  start: number,
-  end: number,
-): ReadableStream<Uint8Array> {
-  let position = 0;
-  return body.pipeThrough(
-    new TransformStream<Uint8Array, Uint8Array>({
-      transform(chunk, controller) {
-        if (position > end) {
-          controller.terminate();
-          return;
-        }
-        const chunkStart = position;
-        position += chunk.byteLength;
-        if (position <= start) {
-          return;
-        }
-        controller.enqueue(
-          chunk.subarray(
-            Math.max(0, start - chunkStart),
-            Math.min(chunk.byteLength, end + 1 - chunkStart),
-          ),
-        );
-        if (position > end) {
-          controller.terminate();
-        }
-      },
-    }),
-  );
+  const threshold = total * VIEW_FRACTION;
+  return start <= threshold && end >= threshold;
 }
 
 async function viewerKey(request: Request): Promise<string> {
@@ -146,7 +102,8 @@ async function viewerKey(request: Request): Promise<string> {
 }
 
 // Whether this request is a viewable clip stream we should track. The
-// actual increment is gated on bytes delivered (see countingBody).
+// actual increment is gated on what the response spans (see
+// spansViewThreshold).
 function shouldTrackView(
   request: Request,
   url: URL,
@@ -194,16 +151,12 @@ function registerView(
   );
 }
 
-// Client response from a full-object 200: mp4 Content-Type fix, 206
-// slicing, view counting. baseHeaders is not mutated — the caller may
-// still cache.put the full object with them.
+// Decorates a response on its way to the client: mp4 Content-Type fix and the
+// view beacon. The body is never read or rewritten here.
 function clientResponse(
-  status: number,
-  statusText: string,
-  baseHeaders: Headers,
-  body: ReadableStream<Uint8Array> | null,
+  source: Response,
   opts: {
-    rangeHeader: string | null;
+    isHead: boolean;
     key: string;
     track: boolean;
     request: Request;
@@ -211,52 +164,35 @@ function clientResponse(
     ctx: ExecutionContext;
   },
 ): Response {
-  const headers = new Headers(baseHeaders);
+  const headers = new Headers(source.headers);
   if (/\.mp4$/i.test(opts.key)) {
     // B2 stored old clips as binary/octet-stream; players refuse non-video/*.
     headers.set("Content-Type", "video/mp4");
   }
-  if (status !== 200 || !body) {
-    return new Response(body, { status, statusText, headers });
+  if (!headers.has("Accept-Ranges")) {
+    headers.set("Accept-Ranges", "bytes");
   }
-  headers.set("Accept-Ranges", "bytes");
-
-  const size = Number(baseHeaders.get("content-length"));
-  const range = parseRange(opts.rangeHeader, size);
-  if (range === "unsatisfiable") {
-    opts.ctx.waitUntil(body.cancel());
-    headers.delete("Content-Length");
-    headers.set("Content-Range", `bytes */${size}`);
+  if (opts.track && spansViewThreshold(source.status, headers)) {
+    registerView(opts.request, opts.key, opts.env, opts.ctx);
+  }
+  // A HEAD keeps the headers (Content-Length included, per spec) and drops the
+  // body without reading it.
+  if (opts.isHead) {
+    opts.ctx.waitUntil(source.body?.cancel() ?? Promise.resolve());
     return new Response(null, {
-      status: 416,
-      statusText: "Range Not Satisfiable",
+      status: source.status,
+      statusText: source.statusText,
       headers,
     });
   }
-
-  let stream = body;
-  let startOffset = 0;
-  if (range) {
-    stream = sliceBody(stream, range.start, range.end);
-    startOffset = range.start;
-    status = 206;
-    statusText = "Partial Content";
-    headers.set("Content-Range", `bytes ${range.start}-${range.end}/${size}`);
-    headers.set("Content-Length", String(range.end - range.start + 1));
-  }
-  if (opts.track) {
-    stream = countingBody(stream, size, startOffset, () =>
-      registerView(opts.request, opts.key, opts.env, opts.ctx),
-    );
-  }
-  if (range) {
-    // Gives the 206 a real Content-Length (streamed bodies otherwise go
-    // chunked) and hard-asserts the slice math.
-    stream = stream.pipeThrough(
-      new FixedLengthStream(range.end - range.start + 1),
-    );
-  }
-  return new Response(stream, { status, statusText, headers });
+  // The body is handed straight through. Nothing inspects, slices or copies
+  // it: range slicing is the cache layer's job now (see the cache.match on the
+  // hot path), which is native and costs the Worker no CPU.
+  return new Response(source.body, {
+    status: source.status,
+    statusText: source.statusText,
+    headers,
+  });
 }
 
 // Path-style (/clips/<user>/<uuid>.mp4) or query-style (?file=<key>).
@@ -280,7 +216,6 @@ export default {
       S3_SECRET: string;
       BUCKET_NAME: string;
       S3_ENDPOINT: string;
-      ALLOWED_HEADERS?: string;
       API_URL?: string;
     },
     ctx: ExecutionContext,
@@ -311,25 +246,35 @@ export default {
     const rangeHeader =
       request.method === "GET" ? request.headers.get("range") : null;
 
-    // Edge cache stores only full 200s; Range requests slice a 206 out of
-    // the cached object. Origin is in the cache key so each caller gets its
-    // own Access-Control-Allow-Origin (credentialed fetches can't take `*`).
+    // The edge cache stores one full 200 per object. Range requests are sliced
+    // out of it by cache.match itself — Cloudflare honours Range on a Cache API
+    // lookup and builds the 206 natively, so the Worker never touches a byte of
+    // video. Doing that slicing in JS is what burned 170-680ms of CPU per clip
+    // request and got the Worker killed mid-stream ("exceeded CPU time limit"),
+    // which browsers report as ERR_HTTP2_PROTOCOL_ERROR / ERR_QUIC_PROTOCOL_ERROR.
+    //
+    // Origin is in the cache key so each caller gets its own
+    // Access-Control-Allow-Origin (credentialed fetches can't take `*`).
     const cache = caches.default;
-    const cacheKey = new Request(`${request.url}#origin=${reqOrigin ?? ""}`, {
-      method: "GET",
-    });
-    const skipEdgeCache = request.method !== "GET";
-    if (!skipEdgeCache) {
-      const cached = await cache.match(cacheKey);
-      if (cached) {
-        return clientResponse(
-          cached.status,
-          cached.statusText,
-          cached.headers,
-          cached.body,
-          { rangeHeader, key: key ?? "", track, request, env, ctx },
-        );
-      }
+    const cacheUrl = `${request.url}#origin=${reqOrigin ?? ""}`;
+    const cacheKey = new Request(cacheUrl, { method: "GET" });
+    const isHead = request.method === "HEAD";
+    const lookupKey = rangeHeader
+      ? new Request(cacheUrl, {
+          method: "GET",
+          headers: { Range: rangeHeader },
+        })
+      : cacheKey;
+    const cached = await cache.match(lookupKey);
+    if (cached) {
+      return clientResponse(cached, {
+        isHead,
+        key: key ?? "",
+        track,
+        request,
+        env,
+        ctx,
+      });
     }
 
     if (!key) {
@@ -349,25 +294,15 @@ export default {
       );
     }
 
-    const signedRequest = await new AwsClient({
-      accessKeyId: env.S3_ACCESS_KEY,
-      secretAccessKey: env.S3_SECRET,
-      service: "s3",
-    }).sign(`https://${env.BUCKET_NAME}.${env.S3_ENDPOINT}/${key}`, {
-      method: request.method,
-      headers: filterHeaders(request.headers, env),
-    });
-
-    // cacheEverything is required for MP4/dem responses; per-status
-    // TTL keeps 4xx/5xx from getting pinned for 30d.
-    const upstream = await fetch(signedRequest.url, {
-      method: signedRequest.method,
-      headers: signedRequest.headers,
-      cf: {
-        cacheEverything: true,
-        cacheTtlByStatus: { "200-299": 2592000, "404": 60, "500-599": 0 },
-      },
-    });
+    // Always the full object, never a Range: one 200 per object is fetched from
+    // B2 and cached, and every later range is served out of that one copy. This
+    // is what keeps B2 egress and transactions flat no matter how many range
+    // requests a player makes.
+    const upstream = await signedFetch(
+      "GET",
+      `https://${env.BUCKET_NAME}.${env.S3_ENDPOINT}/${key}`,
+      env,
+    );
 
     const headers = new Headers(upstream.headers);
 
@@ -403,41 +338,32 @@ export default {
       headers.set(k, v);
     }
 
-    const willCache = !skipEdgeCache && upstream.status === 200;
-
-    // Tee before slicing/counting: the cache copy must drain the FULL
-    // object even for a 2-byte range, and the counter must only see bytes
-    // the client actually pulls.
-    let clientStream = upstream.body;
-    let cacheStream: ReadableStream<Uint8Array> | null = null;
-    if (willCache && clientStream) {
-      const tees = clientStream.tee();
-      clientStream = tees[0];
-      cacheStream = tees[1];
+    if (/\.mp4$/i.test(key)) {
+      // Stored on the cached copy, not patched on the way out, so range hits
+      // served straight from cache carry it too.
+      headers.set("Content-Type", "video/mp4");
     }
 
-    const response = clientResponse(
-      upstream.status,
-      upstream.statusText,
+    const stored = new Response(upstream.body, {
       headers,
-      clientStream,
-      { rangeHeader, key, track, request, env, ctx },
-    );
+      status: upstream.status,
+      statusText: upstream.statusText,
+    });
 
-    if (willCache && cacheStream) {
-      ctx.waitUntil(
-        cache.put(
-          cacheKey,
-          new Response(cacheStream, {
-            headers: new Headers(headers),
-            status: upstream.status,
-            statusText: upstream.statusText,
-          }),
-        ),
-      );
+    if (upstream.status !== 200) {
+      return clientResponse(stored, { isHead, key, track, request, env, ctx });
     }
 
-    return response;
+    // clone() rather than a manual tee: one branch fills the cache, the other
+    // answers this request. A miss costs one full pass; every subsequent range
+    // is served natively out of the stored object.
+    ctx.waitUntil(cache.put(cacheKey, stored.clone()).catch(() => {}));
+
+    // This request is answered with the whole object even if it asked for a
+    // range. Serving a 200 to a Range request is explicitly allowed, and it
+    // avoids slicing in JS on the one path where the cache can't do it yet.
+    // Players re-request ranges afterwards and those hit the warm cache.
+    return clientResponse(stored, { isHead, key, track, request, env, ctx });
   },
 };
 
@@ -625,7 +551,8 @@ function corsHeaders(reqOrigin: string | null): Record<string, string> {
   const headers: Record<string, string> = {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET, HEAD, PUT, OPTIONS",
-    "Access-Control-Allow-Headers": "Range, If-Range, Content-Type, Content-Length",
+    "Access-Control-Allow-Headers":
+      "Range, If-Range, Content-Type, Content-Length",
     "Access-Control-Expose-Headers":
       "Accept-Ranges, Content-Length, Content-Range, Content-Type, ETag, Last-Modified",
     Vary: "Origin",

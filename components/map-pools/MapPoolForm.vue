@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { FormSection } from "~/components/ui/form";
 </script>
 

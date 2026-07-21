@@ -78,16 +78,26 @@ function create() {
   newName.value = "";
 }
 
-const confirmDeleteId = ref<string | null>(null);
-const confirmDeleteName = computed(
-  () => items.value.find((d) => d.id === confirmDeleteId.value)?.name ?? "",
+// AlertDialogAction closes the dialog *before* our own @click runs, so the
+// pending target cannot double as the dialog's open state — clearing it on
+// close would wipe the id before confirmDelete() ever reads it.
+const confirmOpen = ref(false);
+const pendingDeleteId = ref<string | null>(null);
+const pendingDeleteName = computed(
+  () => items.value.find((d) => d.id === pendingDeleteId.value)?.name ?? "",
 );
 
+function requestDelete(divisionId: string) {
+  pendingDeleteId.value = divisionId;
+  confirmOpen.value = true;
+}
+
 function confirmDelete() {
-  if (confirmDeleteId.value) {
-    emit("delete", confirmDeleteId.value);
+  if (pendingDeleteId.value) {
+    emit("delete", pendingDeleteId.value);
   }
-  confirmDeleteId.value = null;
+  confirmOpen.value = false;
+  pendingDeleteId.value = null;
 }
 </script>
 
@@ -122,7 +132,7 @@ function confirmDelete() {
             size="icon"
             variant="ghost"
             class="h-7 w-7 text-muted-foreground hover:text-destructive"
-            @click="confirmDeleteId = division.id"
+            @click="requestDelete(division.id)"
           >
             <Trash2 class="h-3.5 w-3.5" />
           </Button>
@@ -149,10 +159,7 @@ function confirmDelete() {
       {{ $t("league.divisions.reorder_hint") }}
     </p>
 
-    <AlertDialog
-      :open="!!confirmDeleteId"
-      @update:open="(open) => !open && (confirmDeleteId = null)"
-    >
+    <AlertDialog v-model:open="confirmOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{{
@@ -161,13 +168,13 @@ function confirmDelete() {
           <AlertDialogDescription>
             {{
               $t("league.divisions.delete_description", {
-                name: confirmDeleteName,
+                name: pendingDeleteName,
               })
             }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel @click="confirmDeleteId = null">
+          <AlertDialogCancel>
             {{ $t("common.cancel") }}
           </AlertDialogCancel>
           <AlertDialogAction

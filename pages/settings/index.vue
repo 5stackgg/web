@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Check, ChevronsUpDown, Languages } from "lucide-vue-next";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import {
   Command,
   CommandEmpty,

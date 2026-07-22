@@ -5704,6 +5704,12 @@
       "connect_failed": "Failed to connect to game server RCON",
       "refresh_match": "Refresh Match",
       "metamod_info": "Metamod Info",
+      "css_version": "CounterStrikeSharp Version",
+      "fivestack_status": "5Stack Status",
+      "swiftly_version": "Swiftly Version",
+      "swiftly_status": "Swiftly Status (server log)",
+      "swiftly_plugins": "Swiftly Plugins (server log)",
+      "logs_only_response": "Command sent. Swiftly writes this output to the server log, not the RCON response.",
       "css_info": "CSS Info",
       "command_placeholder": "Enter command...",
       "send": "Send"

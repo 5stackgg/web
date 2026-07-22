@@ -37,6 +37,76 @@ export function effectivePluginRuntime(
   return serverPluginRuntime || globalPluginRuntime || DEFAULT_PLUGIN_RUNTIME;
 }
 
+export type QuickCommand = {
+  command: string | Array<string>;
+  display: string;
+  logsOnly?: boolean;
+};
+
+const RUNTIME_QUICK_COMMANDS: Record<string, QuickCommand[]> = {
+  counterstrikesharp: [
+    {
+      command: "fivestack_status",
+      display: "server.rcon.fivestack_status",
+    },
+    {
+      command: "meta version",
+      display: "server.rcon.metamod_info",
+    },
+    {
+      command: "css",
+      display: "server.rcon.css_version",
+    },
+    {
+      command: "css_plugins list",
+      display: "server.rcon.css_info",
+    },
+  ],
+  swiftlys2: [
+    {
+      command: "fivestack_status",
+      display: "server.rcon.fivestack_status",
+    },
+    {
+      command: "buildinfo",
+      display: "server.rcon.swiftly_version",
+    },
+    // SwiftlyS2 routes `sw` output to its own log sink rather than the engine
+    // console, so RCON gets an empty body back even though the command ran.
+    {
+      command: "sw status",
+      display: "server.rcon.swiftly_status",
+      logsOnly: true,
+    },
+    {
+      command: "sw plugins list",
+      display: "server.rcon.swiftly_plugins",
+      logsOnly: true,
+    },
+  ],
+};
+
+export function quickCommandsForRuntime(
+  pluginRuntime?: string | null,
+): QuickCommand[] {
+  return RUNTIME_QUICK_COMMANDS[pluginRuntime || DEFAULT_PLUGIN_RUNTIME] ?? [];
+}
+
+const LOGS_ONLY_COMMANDS = new Set(
+  Object.values(RUNTIME_QUICK_COMMANDS)
+    .flat()
+    .filter((quickCommand) => quickCommand.logsOnly)
+    .flatMap((quickCommand) =>
+      Array.isArray(quickCommand.command)
+        ? quickCommand.command
+        : [quickCommand.command],
+    ),
+);
+
+export function isLogsOnlyCommand(command: string): boolean {
+  return LOGS_ONLY_COMMANDS.has(command.trim());
+}
+
 export type MatchCommand = {
   action: RconAction;
   display: string;
@@ -72,9 +142,7 @@ const MATCH_COMMANDS: Record<RconAction, MatchCommand> = {
   },
 };
 
-export function matchCommandsForStatus(
-  status?: string | null,
-): MatchCommand[] {
+export function matchCommandsForStatus(status?: string | null): MatchCommand[] {
   switch (status) {
     case e_match_map_status_enum.Warmup:
     case e_match_map_status_enum.Scheduled:

@@ -20,7 +20,10 @@ import ClipBoard from "~/components/ClipBoard.vue";
 import { ButtonGroup } from "~/components/ui/button-group";
 import debounce from "~/utilities/debounce";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { effectivePluginRuntime } from "~/constants/rconCommands";
+import {
+  effectivePluginRuntime,
+  quickCommandsForRuntime,
+} from "~/constants/rconCommands";
 </script>
 
 <template>
@@ -158,19 +161,13 @@ import { effectivePluginRuntime } from "~/constants/rconCommands";
                     <DropdownMenuSeparator v-if="matchId" />
 
                     <DropdownMenuItem
-                      @click="commander('meta version', '')"
+                      v-for="quickCommand of quickCommands"
+                      :key="quickCommand.display"
+                      @click="commander(quickCommand.command, '')"
                       :disabled="!online"
                     >
                       <Info />
-                      {{ $t("server.rcon.metamod_info") }}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      v-if="isCounterStrikeSharp"
-                      @click="commander(['css_plugins list', 'css'], '')"
-                      :disabled="!online"
-                    >
-                      <Info />
-                      {{ $t("server.rcon.css_info") }}
+                      {{ $t(quickCommand.display) }}
                     </DropdownMenuItem>
 
                     <slot name="footer" :commander="commander"></slot>
@@ -274,6 +271,7 @@ import { effectivePluginRuntime } from "~/constants/rconCommands";
 
 <script lang="ts">
 import socket from "~/web-sockets/Socket";
+import { isLogsOnlyCommand } from "~/constants/rconCommands";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
@@ -304,12 +302,12 @@ export default {
     },
   },
   computed: {
-    isCounterStrikeSharp() {
-      return (
+    quickCommands() {
+      return quickCommandsForRuntime(
         effectivePluginRuntime(
           this.pluginRuntime,
           useApplicationSettingsStore().gameServerPluginRuntime,
-        ) === "counterstrikesharp"
+        ),
       );
     },
   },
@@ -396,7 +394,13 @@ export default {
                 "error",
               );
             } else {
-              this.addCommandResponse(data.command, data.result, "response");
+              this.addCommandResponse(
+                data.command,
+                !data.result?.trim() && isLogsOnlyCommand(data.command)
+                  ? this.$t("server.rcon.logs_only_response")
+                  : data.result,
+                "response",
+              );
             }
           }
         });

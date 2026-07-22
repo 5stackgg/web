@@ -29,29 +29,27 @@ import {
             : 'border-border bg-card/40'
         "
       >
+        <!-- Never wraps: the two lineups alternate turns, so a long team name
+             wrapping this row made the banner grow and shrink on every ban. -->
         <div
-          class="flex flex-wrap items-center justify-center gap-2 text-center"
+          class="flex w-full min-w-0 flex-nowrap items-center justify-center gap-2 text-center"
         >
           <span
-            class="font-sans text-lg font-bold uppercase tracking-wide"
+            class="min-w-0 truncate font-sans text-lg font-bold uppercase tracking-wide"
             :class="
               isPicking ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
             "
+            :title="banningLineupName"
           >
-            <template v-if="match.lineup_1.is_picking_region_veto">
-              {{ match.lineup_1.name }}
-            </template>
-            <template v-else-if="match.lineup_2.is_picking_region_veto">
-              {{ match.lineup_2.name }}
-            </template>
+            {{ banningLineupName }}
           </span>
           <span
-            class="font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
+            class="shrink-0 font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
             >{{ $t("match.region_veto.banning") }}</span
           >
           <Badge
             variant="destructive"
-            class="font-sans uppercase tracking-[0.14em]"
+            class="shrink-0 font-sans uppercase tracking-[0.14em]"
             >{{ $t("match.region_veto.ban_label") }}</Badge
           >
         </div>
@@ -308,6 +306,15 @@ export default {
         this.match.is_organizer &&
         useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
       );
+    },
+    banningLineupName() {
+      if (this.match.lineup_1.is_picking_region_veto) {
+        return this.match.lineup_1.name;
+      }
+      if (this.match.lineup_2.is_picking_region_veto) {
+        return this.match.lineup_2.name;
+      }
+      return "";
     },
     isPicking() {
       if (this.canOverride && this.override) {

@@ -15,7 +15,14 @@ type RosterMember = {
   status?: string;
 };
 
-type Assignment = { steam_id: string; lineup: number | null };
+// `lineup` is the starting slot (null when benched); `side` is the team they
+// belong to either way, so a benched member becomes that side's backup rather
+// than a spare with no team.
+type Assignment = {
+  steam_id: string;
+  lineup: number | null;
+  side: number | null;
+};
 
 const props = defineProps<{
   team1?: { id: string; name?: string } | null;
@@ -86,7 +93,7 @@ const nameFor = (team?: { id: string; name?: string } | null) =>
 const emitRoster = () => {
   const entries: Array<Assignment> = [];
   const seen = new Set<string>();
-  const pushTeam = (teamId?: string) => {
+  const pushTeam = (teamId: string | undefined, side: number) => {
     if (!teamId) {
       return;
     }
@@ -95,15 +102,17 @@ const emitRoster = () => {
         continue;
       }
       seen.add(member.steam_id);
+      const lineup = assignment.value[member.steam_id] ?? null;
       entries.push({
         steam_id: member.steam_id,
-        lineup: assignment.value[member.steam_id] ?? null,
+        lineup,
+        side: lineup ?? side,
       });
     }
   };
-  pushTeam(props.team1?.id);
+  pushTeam(props.team1?.id, 1);
   if (!props.innerSquad) {
-    pushTeam(props.team2?.id);
+    pushTeam(props.team2?.id, 2);
   }
   emit("update:modelValue", entries);
 };

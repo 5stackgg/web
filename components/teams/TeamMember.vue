@@ -193,21 +193,6 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   @click="
-                    updateMemberStatus(e_team_roster_statuses_enum.Benched)
-                  "
-                >
-                  {{ $t("team.member.benched") }}
-                  <span
-                    v-if="
-                      !member.coach &&
-                      member.status === e_team_roster_statuses_enum.Benched
-                    "
-                    class="ml-auto text-primary"
-                    >✓</span
-                  >
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  @click="
                     updateMemberStatus(e_team_roster_statuses_enum.Substitute)
                   "
                 >
@@ -216,6 +201,21 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                     v-if="
                       !member.coach &&
                       member.status === e_team_roster_statuses_enum.Substitute
+                    "
+                    class="ml-auto text-primary"
+                    >✓</span
+                  >
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  @click="
+                    updateMemberStatus(e_team_roster_statuses_enum.Benched)
+                  "
+                >
+                  {{ $t("team.member.benched") }}
+                  <span
+                    v-if="
+                      !member.coach &&
+                      member.status === e_team_roster_statuses_enum.Benched
                     "
                     class="ml-auto text-primary"
                     >✓</span

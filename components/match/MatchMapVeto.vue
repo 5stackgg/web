@@ -25,27 +25,28 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           : 'border-border bg-card/40'
       "
     >
-      <div class="flex flex-wrap items-center justify-center gap-2 text-center">
+      <!-- Never wraps: the two lineups alternate turns, so a long team name
+           wrapping this row made the banner grow and shrink on every pick. The
+           name truncates instead and keeps the full text in its tooltip. -->
+      <div
+        class="flex w-full min-w-0 flex-nowrap items-center justify-center gap-2 text-center"
+      >
         <span
-          class="font-sans text-lg font-bold uppercase tracking-wide"
+          class="min-w-0 truncate font-sans text-lg font-bold uppercase tracking-wide"
           :class="
             isPicking ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
           "
+          :title="pickingLineupName"
         >
-          <template v-if="match.lineup_1.is_picking_map_veto">
-            {{ match.lineup_1.name }}
-          </template>
-          <template v-else-if="match.lineup_2.is_picking_map_veto">
-            {{ match.lineup_2.name }}
-          </template>
+          {{ pickingLineupName }}
         </span>
         <span
-          class="font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
+          class="shrink-0 font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
           >{{ $t("match.map_veto.is_picking") }}</span
         >
         <Badge
           variant="secondary"
-          class="font-sans uppercase tracking-[0.14em]"
+          class="shrink-0 font-sans uppercase tracking-[0.14em]"
           >{{ pickType }}</Badge
         >
       </div>
@@ -411,6 +412,15 @@ export default {
       }
 
       return this.match.map_veto_type;
+    },
+    pickingLineupName() {
+      if (this.match.lineup_1.is_picking_map_veto) {
+        return this.match.lineup_1.name;
+      }
+      if (this.match.lineup_2.is_picking_map_veto) {
+        return this.match.lineup_2.name;
+      }
+      return "";
     },
     previousMap() {
       return this.picks?.at(-1).map;

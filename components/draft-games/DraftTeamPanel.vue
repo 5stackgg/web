@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { X } from "lucide-vue-next";
 import DraftPlayerCard from "~/components/draft-games/DraftPlayerCard.vue";
 import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
@@ -16,12 +16,40 @@ const props = defineProps<{
   excludeSteamIds?: Array<string>;
   hostSteamId?: string;
   checkInBySteamId?: Record<string, boolean> | null;
+  draggable?: boolean;
+  droppable?: boolean;
+  dragSteamId?: string | null;
 }>();
 
 const emit = defineEmits<{
   (event: "remove", steamId: string): void;
   (event: "add", steamId: string, player?: { steam_id: string }): void;
+  (event: "dragstart", steamId: string): void;
+  (event: "dragend"): void;
+  (event: "drop", steamId: string): void;
 }>();
+
+const dragOver = ref(false);
+
+const onDragOver = (event: DragEvent) => {
+  if (!props.droppable || !props.dragSteamId) {
+    return;
+  }
+  event.preventDefault();
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = "move";
+  }
+  dragOver.value = true;
+};
+
+const onDrop = () => {
+  const steamId = props.dragSteamId;
+  dragOver.value = false;
+  if (!props.droppable || !steamId) {
+    return;
+  }
+  emit("drop", steamId);
+};
 
 const accentVar = computed(() =>
   props.accent === "amber" ? "var(--tac-amber)" : "200 90% 62%",
@@ -53,20 +81,28 @@ const slots = computed(() => {
 
 <template>
   <div
-    class="draft-team-panel relative flex flex-col rounded-xl border p-4 transition-all duration-300"
-    :class="active ? 'is-active' : ''"
+    class="draft-team-panel relative flex h-full flex-col rounded-xl border p-4 transition-all duration-300"
+    :class="[active ? 'is-active' : '', dragOver ? 'is-drop-target' : '']"
     :style="{ '--accent': accentVar }"
+    @dragover="onDragOver"
+    @dragleave="dragOver = false"
+    @drop.prevent="onDrop"
   >
-    <div class="mb-3 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="team-tick"></span>
-        <h3 class="font-sans text-sm font-bold uppercase tracking-[0.18em]">
+    <!-- Fixed height so a team whose name wraps to two lines does not push its
+         roster down and desync the two panels side by side. -->
+    <div class="mb-3 flex h-9 items-center justify-between gap-3">
+      <div class="flex min-w-0 items-center gap-2">
+        <span class="team-tick shrink-0"></span>
+        <h3
+          class="truncate font-sans text-sm font-bold uppercase tracking-[0.18em]"
+          :title="title"
+        >
           {{ title }}
         </h3>
       </div>
       <div
         v-if="avgElo > 0"
-        class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
+        class="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
       >
         {{ $t("draft_games.room.avg") }}
         <span class="ml-1 font-bold text-foreground">{{ avgElo }}</span>
@@ -96,17 +132,22 @@ const slots = computed(() => {
             ? null
             : !!checkInBySteamId[player.steam_id]
         "
+        :draggable="draggable"
+        :dragging="dragSteamId === player.steam_id"
+        @dragstart="(steamId) => emit('dragstart', steamId)"
+        @dragend="emit('dragend')"
       >
-        <template
-          v-if="removable || player.steam_id === selfSteamId"
-          #action
-        >
-          <button
-            class="remove-btn grid h-6 w-6 place-items-center rounded transition-colors"
-            @click="emit('remove', player.steam_id)"
-          >
-            <X class="h-3.5 w-3.5" />
-          </button>
+        <!-- Fades out rather than vanishing when the lobby locks for check-in. -->
+        <template #action>
+          <Transition name="action">
+            <button
+              v-if="removable || player.steam_id === selfSteamId"
+              class="remove-btn grid h-6 w-6 place-items-center rounded transition-colors"
+              @click="emit('remove', player.steam_id)"
+            >
+              <X class="h-3.5 w-3.5" />
+            </button>
+          </Transition>
         </template>
       </DraftPlayerCard>
       <template v-if="addable">
@@ -138,6 +179,10 @@ const slots = computed(() => {
     hsl(var(--accent) / 0.06) 0%,
     hsl(var(--card) / 0.4) 40%
   );
+}
+.draft-team-panel.is-drop-target {
+  border-color: hsl(var(--accent) / 0.8);
+  box-shadow: inset 0 0 0 1px hsl(var(--accent) / 0.5);
 }
 .draft-team-panel.is-active {
   border-color: hsl(var(--accent) / 0.7);
@@ -172,6 +217,17 @@ const slots = computed(() => {
 .remove-btn:hover {
   color: hsl(var(--destructive));
   background: hsl(var(--destructive) / 0.12);
+}
+.action-enter-active,
+.action-leave-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.action-enter-from,
+.action-leave-to {
+  opacity: 0;
+  transform: scale(0.7);
 }
 .roster-move,
 .roster-enter-active,

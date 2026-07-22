@@ -660,6 +660,34 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       variables: { draftGameId, steamId, lineup },
     });
 
+  // Teams lobbies use both columns together: `lineup` is which side a player
+  // belongs to and `status` is whether they start or sit as that side's backup,
+  // so the two lists can never show the same person.
+  const setSlot = (
+    draftGameId: string,
+    steamId: string,
+    lineup: number | null,
+    status: "Accepted" | "Waitlist",
+  ) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation SetDraftPlayerSlot(
+          $draftGameId: uuid!
+          $steamId: bigint!
+          $lineup: Int
+          $status: e_draft_game_player_status_enum!
+        ) {
+          update_draft_game_players_by_pk(
+            pk_columns: { draft_game_id: $draftGameId, steam_id: $steamId }
+            _set: { lineup: $lineup, status: $status }
+          ) {
+            draft_game_id
+          }
+        }
+      `,
+      variables: { draftGameId, steamId, lineup, status },
+    });
+
   return {
     openDraftGames,
     currentRoom,
@@ -687,6 +715,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     respondInvite,
     kick,
     teamAssign,
+    setSlot,
     setCaptain,
     clearCaptain,
     approve,

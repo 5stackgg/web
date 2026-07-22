@@ -94,9 +94,9 @@ const team1Id = ref<string | undefined>(source?.team_1_id);
 const team2Id = ref<string | undefined>(source?.team_2_id);
 const innerSquad = ref<boolean>(source?.inner_squad ?? false);
 
-const rosterAssignment = ref<Array<{ steam_id: string; lineup: number | null }>>(
-  [],
-);
+const rosterAssignment = ref<
+  Array<{ steam_id: string; lineup: number | null; side: number | null }>
+>([]);
 
 const initialAssignment = computed<Record<string, number | null> | undefined>(
   () => {
@@ -369,6 +369,26 @@ const PER_TEAM: Record<string, number> = {
   Faceit: 5,
 };
 const perTeam = computed(() => PER_TEAM[matchType.value] || 5);
+
+// A team lobby only seats `perTeam` players a side, so anyone the host benched
+// in the roster picker can only reach the match through a substitute slot.
+const TEAM_MODE_MIN_SUBSTITUTES = 2;
+watch(
+  () => [mode.value, team1Id.value, team2Id.value],
+  () => {
+    if (props.editing || props.settingsOnly) {
+      return;
+    }
+    if (mode.value !== "Teams" || !team1Id.value) {
+      return;
+    }
+    if ((form.values.number_of_substitutes ?? 0) >= TEAM_MODE_MIN_SUBSTITUTES) {
+      return;
+    }
+    form.setFieldValue("number_of_substitutes", TEAM_MODE_MIN_SUBSTITUTES);
+  },
+  { immediate: true },
+);
 
 const lobbyMemberCount = computed(
   () =>

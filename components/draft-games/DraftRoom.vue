@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import {
   ArrowRight,
+  ArrowUp,
   Swords,
   Play,
   X,
@@ -33,6 +34,7 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 import DraftSettingsBar from "~/components/draft-games/DraftSettingsBar.vue";
 import DraftTeamPanel from "~/components/draft-games/DraftTeamPanel.vue";
 import DraftPlayerCard from "~/components/draft-games/DraftPlayerCard.vue";
+import DraftBackupsPanel from "~/components/draft-games/DraftBackupsPanel.vue";
 import DraftClock from "~/components/draft-games/DraftClock.vue";
 import DraftLog from "~/components/draft-games/DraftLog.vue";
 import DraftRequestQueue from "~/components/draft-games/DraftRequestQueue.vue";
@@ -41,8 +43,6 @@ import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue"
 import DraftCoinFlip from "~/components/draft-games/DraftCoinFlip.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
-import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateQuery } from "~/graphql/graphqlGen";
 
 const props = defineProps<{
   room: any;
@@ -82,6 +82,19 @@ const checkInBySteamId = computed(() => {
   return map;
 });
 
+const isCheckIn = computed(
+  () => !!props.room.match_id && props.match?.status === "WaitingForCheckIn",
+);
+
+const checkInProgress = computed(() => {
+  const map = checkInBySteamId.value;
+  if (!map) {
+    return null;
+  }
+  const states = Object.values(map);
+  return { ready: states.filter(Boolean).length, total: states.length };
+});
+
 const me = computed(() => useAuthStore().me);
 const perTeam = computed(() => props.room.capacity / 2);
 
@@ -95,13 +108,9 @@ const isDrafting = computed(() => props.room.status === "Drafting");
 const myMembership = computed(() =>
   props.room.players.find((p: any) => p.steam_id === me.value?.steam_id),
 );
-// A waitlisted backup moved into a lineup plays in the match but keeps their
-// Waitlist status, so lineup membership counts too.
-const isMember = computed(
-  () =>
-    myMembership.value?.status === "Accepted" ||
-    myMembership.value?.lineup != null,
-);
+// `lineup` is which side a player sits on and `status` is whether they start
+// there: a Waitlist row with a lineup is that side's backup, never a starter.
+const isMember = computed(() => myMembership.value?.status === "Accepted");
 const isLobbyPhase = computed(
   () =>
     !props.room.match_id && ["Open", "Filled"].includes(props.room.status),
@@ -121,7 +130,11 @@ const chatType = computed(() => (matchChatReady.value ? "match" : "draft"));
 const chatLobbyId = computed(() =>
   matchChatReady.value ? props.room.match_id : props.room.id,
 );
-const inLineup = computed(() => myMembership.value?.lineup != null);
+const inLineup = computed(
+  () =>
+    myMembership.value?.lineup != null &&
+    myMembership.value?.status === "Accepted",
+);
 const canChat = computed(() => {
   if (matchChatReady.value) {
     return inLineup.value || isOrganizer.value;
@@ -221,15 +234,45 @@ const showTeamPanels = computed(() =>
   props.room.mode === "Pug" ? hasAssignedTeams.value : true,
 );
 
-const team1 = computed(() =>
+const startersFor = (lineup: number) =>
   [...props.room.players]
-    .filter((p) => p.lineup === 1)
-    .sort((a, b) => (a.pick_order ?? 0) - (b.pick_order ?? 0)),
+    .filter((p: any) => p.lineup === lineup && p.status !== "Waitlist")
+    .sort((a: any, b: any) => (a.pick_order ?? 0) - (b.pick_order ?? 0));
+
+const team1 = computed(() => startersFor(1));
+const team2 = computed(() => startersFor(2));
+
+const byJoinedAt = (a: any, b: any) =>
+  String(a.joined_at || "").localeCompare(String(b.joined_at || ""));
+
+// Backups are pinned to the side they would sub for. Anyone still unsided
+// (joined an open lobby off the street) gets their own bucket.
+const backupsFor = (lineup: number) =>
+  props.room.players
+    .filter((p: any) => p.status === "Waitlist" && p.lineup === lineup)
+    .sort(byJoinedAt);
+
+// Anyone in the lobby without a side — someone who joined a half-open Teams
+// lobby, or a player dragged out of both rosters. They have nowhere else to
+// show up, so they get their own bucket to be slotted from.
+const unsidedPlayers = computed(() =>
+  props.room.players
+    .filter((p: any) => {
+      if (p.lineup != null || !["Accepted", "Waitlist"].includes(p.status)) {
+        return false;
+      }
+      // An inner squad's shared pool already lists every waitlisted player.
+      return !(props.room.inner_squad && p.status === "Waitlist");
+    })
+    .sort(byJoinedAt),
 );
-const team2 = computed(() =>
-  [...props.room.players]
-    .filter((p) => p.lineup === 2)
-    .sort((a, b) => (a.pick_order ?? 0) - (b.pick_order ?? 0)),
+
+// An inner squad is one roster split in two, so its backups stay in a single
+// pool that can start on either side.
+const innerSquadBackups = computed(() =>
+  props.room.players
+    .filter((p: any) => p.status === "Waitlist")
+    .sort(byJoinedAt),
 );
 
 const currentLineup = computed(() => props.room.current_pick_lineup);
@@ -413,12 +456,8 @@ const unassign = (steamId: string) => {
 
 const isTeamsMode = computed(() => props.room.mode === "Teams");
 
-const team1Count = computed(
-  () => accepted.value.filter((p: any) => p.lineup === 1).length,
-);
-const team2Count = computed(
-  () => accepted.value.filter((p: any) => p.lineup === 2).length,
-);
+const team1Count = computed(() => team1.value.length);
+const team2Count = computed(() => team2.value.length);
 const team1Full = computed(() => team1Count.value >= perTeam.value);
 const team2Full = computed(() => team2Count.value >= perTeam.value);
 
@@ -497,58 +536,88 @@ const canManageSide = (lineup: number) => {
   return !!teamId && myTeamIds.value.has(teamId);
 };
 
-const rosterSide = ref<Record<string, number>>({});
-const loadRosterSides = async () => {
-  if (!isTeamsMode.value) {
-    return;
-  }
-  const next: Record<string, number> = {};
-  const load = async (teamId: string | undefined, side: number) => {
-    if (!teamId) {
-      return;
-    }
-    const { data } = await getGraphqlClient().query({
-      query: generateQuery({
-        teams_by_pk: [
-          { id: teamId },
-          {
-            roster: [
-              { where: { status: { _in: ["Starter", "Substitute"] } } },
-              { player: { steam_id: true } },
-            ],
-          },
-        ],
-      }),
-    });
-    for (const row of data?.teams_by_pk?.roster || []) {
-      next[String(row.player.steam_id)] = side;
-    }
-  };
-  await load(props.room.team_1_id, 1);
-  if (!props.room.inner_squad) {
-    await load(props.room.team_2_id, 2);
-  }
-  rosterSide.value = next;
-};
-
-watch(
-  () => [props.room.team_1_id, props.room.team_2_id, props.room.inner_squad],
-  loadRosterSides,
-  { immediate: true },
-);
+const sideFull = (lineup: number) => startersFor(lineup).length >= perTeam.value;
 
 const startPlayer = (steamId: string, lineup: number) =>
   runGuarded(`swap:${steamId}`, () =>
-    useDraftGamesStore().teamAssign(props.room.id, steamId, lineup),
-  );
-const benchPlayer = (steamId: string) =>
-  runGuarded(`swap:${steamId}`, () =>
-    useDraftGamesStore().teamAssign(props.room.id, steamId, null),
+    useDraftGamesStore().setSlot(props.room.id, steamId, lineup, "Accepted"),
   );
 
-const sideFull = (lineup: number) =>
-  accepted.value.filter((p: any) => p.lineup === lineup).length >=
-  perTeam.value;
+// Pulling someone out of a lineup demotes them to that side's backups rather
+// than dropping them from the lobby — kicking is a separate, explicit action.
+const benchPlayer = (steamId: string, lineup: number | null) =>
+  runGuarded(`swap:${steamId}`, () =>
+    useDraftGamesStore().setSlot(props.room.id, steamId, lineup, "Waitlist"),
+  );
+
+const dragSteamId = ref<string | null>(null);
+const dragBackupsSide = ref<number | null>(null);
+
+const draggedPlayer = computed(() =>
+  props.room.players.find((p: any) => p.steam_id === dragSteamId.value),
+);
+
+const onDragStart = (steamId: string) => {
+  dragSteamId.value = steamId;
+};
+
+const onDragEnd = () => {
+  dragSteamId.value = null;
+  dragBackupsSide.value = null;
+};
+
+// A drop is only offered where it would change something the dragger is
+// allowed to change, so nothing silently no-ops on release.
+const canDropAsStarter = (lineup: number) => {
+  const player = draggedPlayer.value;
+  if (!player || !canManageSide(lineup)) {
+    return false;
+  }
+  if (player.lineup === lineup && player.status !== "Waitlist") {
+    return false;
+  }
+  return !sideFull(lineup);
+};
+
+const canDropAsBackup = (lineup: number | null) => {
+  const player = draggedPlayer.value;
+  if (!player) {
+    return false;
+  }
+  if (lineup !== null && !canManageSide(lineup)) {
+    return false;
+  }
+  return player.lineup !== lineup || player.status !== "Waitlist";
+};
+
+const dropAsStarter = (lineup: number, steamId: string) => {
+  if (!canDropAsStarter(lineup)) {
+    return;
+  }
+  onDragEnd();
+  return startPlayer(steamId, lineup);
+};
+
+const dropAsBackup = (lineup: number | null, steamId: string) => {
+  if (!canDropAsBackup(lineup)) {
+    return;
+  }
+  onDragEnd();
+  return benchPlayer(steamId, lineup);
+};
+
+const onBackupsDragOver = (lineup: number | null, event: DragEvent) => {
+  if (!canDropAsBackup(lineup)) {
+    return;
+  }
+  event.preventDefault();
+  dragBackupsSide.value = lineup ?? 0;
+};
+
+const canDragPlayer = (player: any) =>
+  player.lineup == null
+    ? canManageSide(1) || canManageSide(2)
+    : canManageSide(player.lineup);
 
 const showStart = computed(() => isOrganizer.value && notStarted.value);
 
@@ -558,7 +627,13 @@ const regionsAvailable = computed(
 
 const startReady = computed(() => {
   if (props.room.mode === "Teams") {
-    return !!props.room.team_1_id;
+    // The match lineups are exactly what the lobby assigned now, so starting
+    // short would boot a match with an under-filled side.
+    return (
+      !!props.room.team_1_id &&
+      team1Count.value === perTeam.value &&
+      team2Count.value === perTeam.value
+    );
   }
   if (props.room.mode === "Host") {
     return (
@@ -576,7 +651,9 @@ const startReady = computed(() => {
 
 const startHint = computed(() => {
   if (props.room.mode === "Teams") {
-    return "draft_games.room.pick_teams";
+    return props.room.team_1_id
+      ? "draft_games.room.assign_all"
+      : "draft_games.room.pick_teams";
   }
   if (props.room.mode === "Host") {
     return "draft_games.room.assign_all";
@@ -625,84 +702,6 @@ const start = () => {
         {{ $t("draft_games.room.no_regions_available_description") }}
       </AlertDescription>
     </Alert>
-
-    <div
-      v-if="canJoin || hasRequested || isWaitlisted"
-      class="flex flex-col items-center gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-4 sm:flex-row sm:justify-between"
-    >
-      <span
-        class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-      >
-        {{
-          hasRequested
-            ? $t("draft_games.room.request_pending")
-            : isWaitlisted
-              ? $t("draft_games.room.waitlist_pending")
-              : lobbyFull
-                ? $t("draft_games.room.waitlist_prompt")
-                : room.require_approval
-                  ? $t("draft_games.room.request_prompt")
-                  : $t("draft_games.room.join_prompt")
-        }}
-      </span>
-      <button
-        v-if="canJoin"
-        type="button"
-        :class="tacticalCtaButtonClasses"
-        @click="joinRoom"
-      >
-        {{
-          room.require_approval
-            ? $t("draft_games.card.request")
-            : lobbyFull
-              ? $t("draft_games.room.join_waitlist")
-              : $t("draft_games.card.join")
-        }}
-      </button>
-      <button
-        v-else-if="isWaitlisted"
-        type="button"
-        class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
-        @click="
-          runGuarded('leave', () => useDraftGamesStore().leave(room.id))
-        "
-      >
-        {{ $t("draft_games.room.leave_waitlist") }}
-      </button>
-      <span
-        v-else
-        class="flex items-center gap-1.5 font-mono text-xs text-muted-foreground"
-      >
-        {{ $t("draft_games.card.requested") }}
-      </span>
-    </div>
-
-    <div
-      v-if="isInvited"
-      class="flex flex-col items-center gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-4 sm:flex-row sm:justify-between"
-    >
-      <span
-        class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-      >
-        {{ $t("draft_games.room.invite_pending") }}
-      </span>
-      <div class="flex gap-2">
-        <button
-          type="button"
-          :class="tacticalCtaButtonClasses"
-          @click="respondInvite(true)"
-        >
-          {{ $t("draft_games.room.accept_invite") }}
-        </button>
-        <button
-          type="button"
-          class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
-          @click="respondInvite(false)"
-        >
-          {{ $t("draft_games.room.decline_invite") }}
-        </button>
-      </div>
-    </div>
 
     <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
       <div class="min-w-0 space-y-4">
@@ -790,28 +789,71 @@ const start = () => {
               </div>
             </div>
 
-            <Button
-              v-if="showStart && startReady"
-              variant="tactical"
-              type="button"
-              :disabled="isPending('start') || !regionsAvailable"
-              :class="[
-                tacticalCtaButtonClasses,
-                'justify-center px-10 py-3.5 text-base',
-              ]"
-              @click="start"
+            <!-- The hint, the CTA and the check-in readout share one fixed-height
+                 row. Swapping content instead of mounting and unmounting keeps
+                 this panel the same height from an empty lobby right through to
+                 check-in, so the rosters below never jump. -->
+            <div
+              v-if="showStart || isCheckIn"
+              class="flex h-14 w-full items-center justify-center"
             >
-              <Spinner v-if="isPending('start')" class="h-5 w-5" />
-              <Play v-else class="h-5 w-5" />
-              {{
-                isPending("start")
-                  ? $t("draft_games.room.starting")
-                  : $t("draft_games.room.start_match")
-              }}
-            </Button>
+              <Transition name="cta" mode="out-in">
+                <div
+                  v-if="isCheckIn"
+                  key="checkin"
+                  class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+                >
+                  <span
+                    class="relative grid h-2 w-2 place-items-center"
+                    aria-hidden="true"
+                  >
+                    <span
+                      class="absolute inset-0 animate-ping rounded-full bg-[hsl(var(--tac-amber)/0.5)]"
+                    ></span>
+                    <span
+                      class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                    ></span>
+                  </span>
+                  {{
+                    checkInProgress
+                      ? $t("draft_games.room.checking_in", checkInProgress)
+                      : $t("draft_games.room.match_starting")
+                  }}
+                </div>
+
+                <Button
+                  v-else-if="startReady"
+                  key="start"
+                  variant="tactical"
+                  type="button"
+                  :disabled="isPending('start') || !regionsAvailable"
+                  :class="[
+                    tacticalCtaButtonClasses,
+                    'justify-center px-10 py-3.5 text-base',
+                  ]"
+                  @click="start"
+                >
+                  <Spinner v-if="isPending('start')" class="h-5 w-5" />
+                  <Play v-else class="h-5 w-5" />
+                  {{
+                    isPending("start")
+                      ? $t("draft_games.room.starting")
+                      : $t("draft_games.room.start_match")
+                  }}
+                </Button>
+
+                <div
+                  v-else
+                  key="hint"
+                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  {{ $t(startHint) }}
+                </div>
+              </Transition>
+            </div>
           </div>
 
-          <div class="grid items-start gap-4 sm:grid-cols-2">
+          <div class="grid items-stretch gap-4 sm:grid-cols-2">
             <DraftTeamPanel
               :title="sideName(1) || $t('draft_games.room.team', { team: 1 })"
               :players="team1"
@@ -820,7 +862,13 @@ const start = () => {
               :host-steam-id="room.host_steam_id"
               :check-in-by-steam-id="checkInBySteamId"
               :removable="canManageSide(1)"
-              @remove="benchPlayer"
+              :draggable="canManageSide(1)"
+              :droppable="canDropAsStarter(1)"
+              :drag-steam-id="dragSteamId"
+              @remove="(steamId) => benchPlayer(steamId, 1)"
+              @dragstart="onDragStart"
+              @dragend="onDragEnd"
+              @drop="(steamId) => dropAsStarter(1, steamId)"
             />
             <DraftTeamPanel
               :title="
@@ -832,88 +880,168 @@ const start = () => {
               :host-steam-id="room.host_steam_id"
               :check-in-by-steam-id="checkInBySteamId"
               :removable="canManageSide(2)"
-              @remove="benchPlayer"
+              :draggable="canManageSide(2)"
+              :droppable="canDropAsStarter(2)"
+              :drag-steam-id="dragSteamId"
+              @remove="(steamId) => benchPlayer(steamId, 2)"
+              @dragstart="onDragStart"
+              @dragend="onDragEnd"
+              @drop="(steamId) => dropAsStarter(2, steamId)"
             />
           </div>
 
-          <div
-            v-if="waitlist.length > 0"
-            class="rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
-          >
-            <div class="mb-3 flex items-center gap-2">
-              <span class="pool-tick"></span>
-              <h3
-                class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                {{ $t("draft_games.room.backups") }}
-                <span class="ml-1 text-foreground/70"
-                  >({{ waitlist.length }})</span
-                >
-              </h3>
-            </div>
-            <TransitionGroup
-              name="pool"
-              tag="div"
-              class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+          <!-- One shared pool for an inner squad (a single roster split in two),
+               otherwise a section per side plus a bucket for anyone unsided. -->
+          <template v-if="room.inner_squad">
+            <DraftBackupsPanel
+              :title="$t('draft_games.room.backups')"
+              :players="innerSquadBackups"
+              accent="neutral"
+              :match-type="rankMatchType"
+              :host-steam-id="room.host_steam_id"
+              :drag-steam-id="dragSteamId"
+              :droppable="canDropAsBackup(null)"
+              @dragstart="onDragStart"
+              @dragend="onDragEnd"
+              @drop="(steamId) => dropAsBackup(null, steamId)"
             >
-              <DraftPlayerCard
-                v-for="(player, index) in waitlist"
-                :key="player.steam_id"
-                :member="player"
-                accent="neutral"
-                :match-type="rankMatchType"
-                :is-host="player.steam_id === room.host_steam_id"
-              >
-                <template #action>
-                  <div class="flex items-center gap-1.5">
-                    <template v-if="room.inner_squad">
-                      <Button
-                        v-if="canManageSide(1) && !sideFull(1)"
-                        size="sm"
-                        class="h-7 px-2 text-xs"
-                        :disabled="isPending(`swap:${player.steam_id}`)"
-                        @click="startPlayer(player.steam_id, 1)"
-                      >
-                        A
-                      </Button>
-                      <Button
-                        v-if="canManageSide(2) && !sideFull(2)"
-                        size="sm"
-                        class="h-7 px-2 text-xs"
-                        :disabled="isPending(`swap:${player.steam_id}`)"
-                        @click="startPlayer(player.steam_id, 2)"
-                      >
-                        B
-                      </Button>
-                    </template>
-                    <Button
-                      v-else-if="
-                        rosterSide[player.steam_id] &&
-                        canManageSide(rosterSide[player.steam_id]) &&
-                        !sideFull(rosterSide[player.steam_id])
-                      "
-                      size="sm"
-                      class="h-7 gap-1 px-2.5 text-xs"
-                      :disabled="isPending(`swap:${player.steam_id}`)"
-                      @click="startPlayer(player.steam_id, rosterSide[player.steam_id])"
-                    >
-                      {{ $t("draft_games.room.start_player") }}
-                      <ArrowRight class="h-3 w-3" />
-                    </Button>
-                    <Button
-                      v-if="canManage && player.steam_id !== room.host_steam_id"
-                      variant="ghost"
-                      class="kick-btn"
-                      :title="$t('draft_games.room.kick')"
-                      @click="kick(player.steam_id)"
-                    >
-                      <X class="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </template>
-              </DraftPlayerCard>
-            </TransitionGroup>
+              <template #action="{ player }">
+                <div class="flex items-center gap-1.5">
+                  <Button
+                    v-for="side in [1, 2]"
+                    :key="`start-${side}`"
+                    v-show="canManageSide(side)"
+                    variant="ghost"
+                    class="start-btn"
+                    :disabled="
+                      isPending(`swap:${player.steam_id}`) || sideFull(side)
+                    "
+                    :title="
+                      sideFull(side)
+                        ? $t('draft_games.room.side_full')
+                        : $t('draft_games.room.start_player')
+                    "
+                    @click="startPlayer(player.steam_id, side)"
+                  >
+                    {{ side === 1 ? "A" : "B" }}
+                  </Button>
+                  <Button
+                    v-if="
+                      canManageSide(player.lineup ?? 1) &&
+                      player.steam_id !== room.host_steam_id
+                    "
+                    variant="ghost"
+                    class="kick-btn"
+                    :title="$t('draft_games.room.kick')"
+                    @click="kick(player.steam_id)"
+                  >
+                    <X class="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </template>
+            </DraftBackupsPanel>
+          </template>
+
+          <div v-else class="grid items-stretch gap-4 sm:grid-cols-2">
+            <DraftBackupsPanel
+              v-for="side in [1, 2]"
+              :key="`backups-${side}`"
+              :title="
+                $t('draft_games.room.side_backups', {
+                  team: sideName(side) || $t('draft_games.room.team', { team: side }),
+                })
+              "
+              :players="backupsFor(side)"
+              :accent="side === 1 ? 'amber' : 'blue'"
+              :match-type="rankMatchType"
+              :host-steam-id="room.host_steam_id"
+              :drag-steam-id="dragSteamId"
+              :droppable="canDropAsBackup(side)"
+              :empty-label="$t('draft_games.room.no_backups')"
+              @dragstart="onDragStart"
+              @dragend="onDragEnd"
+              @drop="(steamId) => dropAsBackup(side, steamId)"
+            >
+              <template #action="{ player }">
+                <div class="flex items-center gap-1.5">
+                  <Button
+                    v-if="canManageSide(side)"
+                    variant="ghost"
+                    class="start-btn"
+                    :disabled="
+                      isPending(`swap:${player.steam_id}`) || sideFull(side)
+                    "
+                    :title="
+                      sideFull(side)
+                        ? $t('draft_games.room.side_full')
+                        : $t('draft_games.room.start_player')
+                    "
+                    @click="startPlayer(player.steam_id, side)"
+                  >
+                    <ArrowUp class="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    v-if="
+                      canManageSide(side) &&
+                      player.steam_id !== room.host_steam_id
+                    "
+                    variant="ghost"
+                    class="kick-btn"
+                    :title="$t('draft_games.room.kick')"
+                    @click="kick(player.steam_id)"
+                  >
+                    <X class="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </template>
+            </DraftBackupsPanel>
           </div>
+
+          <DraftBackupsPanel
+            v-if="unsidedPlayers.length > 0"
+            :title="$t('draft_games.room.unassigned_backups')"
+            :players="unsidedPlayers"
+            accent="neutral"
+            :match-type="rankMatchType"
+            :host-steam-id="room.host_steam_id"
+            :drag-steam-id="dragSteamId"
+            :droppable="canDropAsBackup(null)"
+            @dragstart="onDragStart"
+            @dragend="onDragEnd"
+            @drop="(steamId) => dropAsBackup(null, steamId)"
+          >
+            <template #action="{ player }">
+              <div class="flex items-center gap-1.5">
+                <Button
+                  v-for="side in [1, 2]"
+                  :key="`slot-${side}`"
+                  v-show="canManageSide(side)"
+                  variant="ghost"
+                  class="start-btn"
+                  :disabled="
+                    isPending(`swap:${player.steam_id}`) || sideFull(side)
+                  "
+                  :title="
+                    sideFull(side)
+                      ? $t('draft_games.room.side_full')
+                      : sideName(side) || $t('draft_games.room.start_player')
+                  "
+                  @click="startPlayer(player.steam_id, side)"
+                >
+                  {{ side === 1 ? "A" : "B" }}
+                </Button>
+                <Button
+                  v-if="canManage && player.steam_id !== room.host_steam_id"
+                  variant="ghost"
+                  class="kick-btn"
+                  :title="$t('draft_games.room.kick')"
+                  @click="kick(player.steam_id)"
+                >
+                  <X class="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </template>
+          </DraftBackupsPanel>
         </div>
 
         <div v-else class="w-full space-y-4">
@@ -1326,9 +1454,97 @@ const start = () => {
         </div>
       </div>
 
+      <!-- Self-status banners live in this column rather than above the room:
+           they appear and disappear as the lobby fills, and full width they
+           shoved the whole roster down every time. -->
       <div
-        class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:max-h-[calc(100vh-6rem)] xl:sticky xl:top-4"
+        class="flex flex-col xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)]"
       >
+        <Transition name="banner">
+          <div
+            v-if="canJoin || hasRequested || isWaitlisted"
+            class="self-banner mb-3 flex flex-col items-start gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-3"
+          >
+            <span
+              class="font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+            >
+              {{
+                hasRequested
+                  ? $t("draft_games.room.request_pending")
+                  : isWaitlisted
+                    ? $t("draft_games.room.waitlist_pending")
+                    : lobbyFull
+                      ? $t("draft_games.room.waitlist_prompt")
+                      : room.require_approval
+                        ? $t("draft_games.room.request_prompt")
+                        : $t("draft_games.room.join_prompt")
+              }}
+            </span>
+            <button
+              v-if="canJoin"
+              type="button"
+              :class="tacticalCtaButtonClasses"
+              @click="joinRoom"
+            >
+              {{
+                room.require_approval
+                  ? $t("draft_games.card.request")
+                  : lobbyFull
+                    ? $t("draft_games.room.join_waitlist")
+                    : $t("draft_games.card.join")
+              }}
+            </button>
+            <button
+              v-else-if="isWaitlisted"
+              type="button"
+              class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
+              @click="
+                runGuarded('leave', () => useDraftGamesStore().leave(room.id))
+              "
+            >
+              {{ $t("draft_games.room.leave_waitlist") }}
+            </button>
+            <span
+              v-else
+              class="flex items-center gap-1.5 font-mono text-xs text-muted-foreground"
+            >
+              {{ $t("draft_games.card.requested") }}
+            </span>
+          </div>
+        </Transition>
+
+        <Transition name="banner">
+          <div
+            v-if="isInvited"
+            class="self-banner mb-3 flex flex-col items-start gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-3"
+          >
+            <span
+              class="font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+            >
+              {{ $t("draft_games.room.invite_pending") }}
+            </span>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                :class="tacticalCtaButtonClasses"
+                @click="respondInvite(true)"
+              >
+                {{ $t("draft_games.room.accept_invite") }}
+              </button>
+              <button
+                type="button"
+                class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
+                @click="respondInvite(false)"
+              >
+                {{ $t("draft_games.room.decline_invite") }}
+              </button>
+            </div>
+          </div>
+        </Transition>
+
+        <div
+          class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:min-h-0 xl:flex-1"
+        >
         <div v-if="showQueue" class="flex min-h-0 flex-1 flex-col">
           <div
             class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5"
@@ -1396,6 +1612,7 @@ const start = () => {
             </NuxtLink>
           </div>
         </div>
+        </div>
       </div>
     </div>
 
@@ -1433,6 +1650,41 @@ const start = () => {
   height: 2px;
   width: 10px;
   background: hsl(var(--tac-amber));
+}
+.cta-enter-active,
+.cta-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta-enter-from,
+.cta-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+/* The banner collapses its own height and bottom margin so the chat panel
+   below it slides rather than jumping when a slot opens. */
+.self-banner {
+  max-height: 16rem;
+}
+.banner-enter-active,
+.banner-leave-active {
+  overflow: hidden;
+  transition:
+    max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.banner-enter-from,
+.banner-leave-to {
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  opacity: 0;
+  transform: translateY(-4px);
 }
 .team-slot {
   display: flex;
@@ -1626,6 +1878,30 @@ const start = () => {
   color: hsl(var(--destructive));
   border-color: hsl(var(--destructive) / 0.4);
   background: hsl(var(--destructive) / 0.12);
+}
+/* Same box as .kick-btn so the two backup actions read as a matched pair. */
+.start-btn {
+  display: grid;
+  place-items: center;
+  height: 1.75rem;
+  width: 1.75rem;
+  padding: 0;
+  border-radius: 0.3rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+  transition: all 0.15s ease;
+}
+.start-btn:hover:not(:disabled) {
+  color: hsl(var(--tac-amber));
+  border-color: hsl(var(--tac-amber) / 0.5);
+  background: hsl(var(--tac-amber) / 0.12);
+}
+.start-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .dock-toggle {
   display: flex;

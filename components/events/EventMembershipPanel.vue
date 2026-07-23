@@ -31,8 +31,8 @@ function formatEventDate(value?: string | null): string | null {
 </script>
 
 <template>
-  <div class="rounded-md border border-border/70 bg-card/30 p-4 sm:p-5">
-    <div :class="[tacticalSectionLabelClasses, 'mb-4']">
+  <div :class="['grid gap-4', tacticalSectionSeparatorClasses]">
+    <div :class="[tacticalSectionLabelClasses, 'mb-0']">
       <span :class="tacticalSectionTickClasses"></span>
       {{ $t("event.membership.title") }}
     </div>

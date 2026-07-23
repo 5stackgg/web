@@ -21,7 +21,9 @@ const props = withDefaults(
 const delegatedProps = reactiveOmit(props, "class", "variant")
 const listRef = ref<ComponentPublicInstance | HTMLElement | null>(null)
 const indicatorX = ref(0)
+const indicatorY = ref(0)
 const indicatorWidth = ref(0)
+const indicatorHeight = ref(0)
 const hasAnimated = ref(false)
 let retryTimer: ReturnType<typeof setTimeout> | null = null
 let retryCount = 0
@@ -55,8 +57,13 @@ function updateIndicator() {
   const listRect = listElement.getBoundingClientRect()
   const activeRect = activeTrigger.getBoundingClientRect()
 
+  // Track the active trigger's full box, not just its horizontal span: a
+  // wrapping list (e.g. the stage builder) puts triggers on several rows, and a
+  // top-to-bottom indicator would highlight the whole column instead of one tab.
   indicatorX.value = activeRect.left - listRect.left
+  indicatorY.value = activeRect.top - listRect.top
   indicatorWidth.value = activeRect.width
+  indicatorHeight.value = activeRect.height
 
   nextTick(() => {
     hasAnimated.value = true
@@ -103,6 +110,7 @@ onMounted(() => {
     observer = new MutationObserver(updateIndicator)
     observer.observe(listElement, {
       attributes: true,
+      childList: true,
       subtree: true,
       attributeFilter: ["data-state"],
     })
@@ -140,28 +148,29 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
     <div
       v-if="props.variant === 'default'"
       v-show="showIndicator"
-      class="pointer-events-none absolute bottom-1 left-0 top-1 z-0 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] shadow-[0_0_12px_hsl(var(--tac-amber)/0.25)]"
+      class="pointer-events-none absolute left-0 top-0 z-0 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] shadow-[0_0_12px_hsl(var(--tac-amber)/0.25)]"
       :class="
         hasAnimated
-          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease]'
+          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease,height_0.2s_ease]'
           : ''
       "
       :style="{
-        transform: `translateX(${indicatorX}px)`,
+        transform: `translate(${indicatorX}px, ${indicatorY}px)`,
         width: `${indicatorWidth}px`,
+        height: `${indicatorHeight}px`,
       }"
     />
     <div
       v-if="props.variant === 'underline'"
       v-show="showIndicator"
-      class="pointer-events-none absolute bottom-0 left-0 z-0 h-0.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.45)]"
+      class="pointer-events-none absolute left-0 top-0 z-0 h-0.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.45)]"
       :class="
         hasAnimated
           ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease]'
           : ''
       "
       :style="{
-        transform: `translateX(${indicatorX}px)`,
+        transform: `translate(${indicatorX}px, ${indicatorY + indicatorHeight - 2}px)`,
         width: `${indicatorWidth}px`,
       }"
     />

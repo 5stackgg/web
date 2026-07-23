@@ -4,6 +4,7 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
+import ManageSection from "~/components/common/ManageSection.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 
@@ -16,11 +17,15 @@ const SILHOUETTE_OPTIONS = [
   { value: 4, label: "Laurel" },
 ];
 
-const FRAME_CLASSES =
-  "relative overflow-hidden rounded-lg border border-border px-6 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.7)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
-
 export default {
-  components: { TrophyBadge, ImageUploadTile, Input, Button, Switch },
+  components: {
+    TrophyBadge,
+    ImageUploadTile,
+    Input,
+    Button,
+    Switch,
+    ManageSection,
+  },
   props: {
     tournament: {
       type: Object,
@@ -31,7 +36,6 @@ export default {
     return {
       placements: [0, 1, 2, 3],
       silhouetteOptions: SILHOUETTE_OPTIONS,
-      frameClasses: FRAME_CLASSES,
       drafts: {
         0: { custom_name: "", silhouette: null as number | null },
         1: { custom_name: "", silhouette: null as number | null },
@@ -205,23 +209,17 @@ export default {
 </script>
 
 <template>
-  <section :class="frameClasses">
-    <header class="relative mb-6 flex flex-col gap-1">
-      <div
-        class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
-      >
-        <span
-          class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
-          >◢</span
-        >
-        {{ $t("tournament.trophies_config.title") }}
-      </div>
-      <div
-        class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
-      >
-        ▚ UPLOAD AN IMAGE OR CUSTOMIZE THE DEFAULT AWARD
-      </div>
-    </header>
+  <ManageSection
+    :label="$t('tournament.trophies_config.title')"
+    :hint="$t('tournament.trophies_config.hint')"
+  >
+    <template v-if="isOrganizer" #action>
+      <Switch
+        :model-value="tournament.trophies_enabled !== false"
+        :disabled="savingEnabled"
+        @update:model-value="toggleEnabled"
+      />
+    </template>
 
     <div
       v-if="!isOrganizer"
@@ -231,29 +229,6 @@ export default {
     </div>
 
     <template v-else>
-      <div
-        class="mb-4 flex items-center justify-between rounded-sm border border-border/60 bg-background/40 px-4 py-3"
-      >
-        <div class="flex flex-col gap-1">
-          <span
-            class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.2em]"
-          >
-            {{ $t("tournament.trophies_config.award_trophies") }}
-          </span>
-          <span
-            class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
-          >
-            Disable to skip / clear auto-awarded trophies for this tournament.
-            Manual awards stay.
-          </span>
-        </div>
-        <Switch
-          :model-value="tournament.trophies_enabled !== false"
-          :disabled="savingEnabled"
-          @update:model-value="toggleEnabled"
-        />
-      </div>
-
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div
           v-for="p in placements"
@@ -402,5 +377,5 @@ export default {
         </div>
       </div>
     </template>
-  </section>
+  </ManageSection>
 </template>

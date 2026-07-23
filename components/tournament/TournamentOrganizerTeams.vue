@@ -20,84 +20,81 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
+import ManageSection from "~/components/common/ManageSection.vue";
 </script>
 
 <template>
-  <Card>
-    <CardHeader>
-      <CardTitle>{{ $t("tournament.organizer.teams.title") }}</CardTitle>
-      <CardDescription>{{
-        $t("tournament.organizer.teams.description")
-      }}</CardDescription>
-    </CardHeader>
-    <CardContent class="grid gap-4">
-      <TeamSearch
-        :label="$t('tournament.organizer.teams.add')"
-        :exclude="linkedTeamIds"
-        @selected="addTeam"
-      ></TeamSearch>
+  <ManageSection
+    :label="$t('tournament.organizer.teams.title')"
+    :hint="$t('tournament.organizer.teams.description')"
+  >
+    <TeamSearch
+      :label="$t('tournament.organizer.teams.add')"
+      :exclude="linkedTeamIds"
+      @selected="addTeam"
+    ></TeamSearch>
 
-      <Alert>
-        <AlertDescription>
-          {{ $t("tournament.organizer.teams.members_note") }}
-        </AlertDescription>
-      </Alert>
+    <Alert>
+      <AlertDescription>
+        {{ $t("tournament.organizer.teams.members_note") }}
+      </AlertDescription>
+    </Alert>
 
-      <Table v-if="linkedTeams.length > 0">
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t("common.name") }}</TableHead>
-            <TableHead>{{ $t("common.actions_label") }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="{ team } of linkedTeams" :key="team.id">
-            <TableCell class="font-medium">{{ team.name }}</TableCell>
-            <TableCell>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size="sm">{{
+    <Table v-if="linkedTeams.length > 0">
+      <TableHeader>
+        <TableRow>
+          <TableHead>{{ $t("common.name") }}</TableHead>
+          <TableHead>{{ $t("common.actions_label") }}</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow v-for="{ team } of linkedTeams" :key="team.id">
+          <TableCell class="font-medium">{{ team.name }}</TableCell>
+          <TableCell>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm">{{
+                  $t("tournament.organizer.teams.remove")
+                }}</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{{
                     $t("tournament.organizer.teams.remove")
-                  }}</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>{{
-                      $t("tournament.organizer.teams.remove")
-                    }}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {{
-                        $t("tournament.organizer.teams.remove_confirm", {
-                          name: team.name,
-                        })
-                      }}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>{{
-                      $t("common.cancel")
-                    }}</AlertDialogCancel>
-                    <AlertDialogAction
-                      variant="destructive"
-                      @click="removeTeam(team.id)"
-                    >
-                      {{ $t("tournament.organizer.teams.remove") }}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+                  }}</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {{
+                      $t("tournament.organizer.teams.remove_confirm", {
+                        name: team.name,
+                      })
+                    }}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{{
+                    $t("common.cancel")
+                  }}</AlertDialogCancel>
+                  <AlertDialogAction
+                    variant="destructive"
+                    @click="removeTeam(team.id)"
+                  >
+                    {{ $t("tournament.organizer.teams.remove") }}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
 
-      <Alert v-else>
-        <AlertDescription>
-          {{ $t("tournament.organizer.teams.none") }}
-        </AlertDescription>
-      </Alert>
-    </CardContent>
-  </Card>
+    <div
+      v-else
+      class="rounded-sm border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
+    >
+      {{ $t("tournament.organizer.teams.none") }}
+    </div>
+  </ManageSection>
 </template>
 
 <script lang="ts">

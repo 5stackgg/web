@@ -3738,13 +3738,15 @@
       "custom_name": "Custom Name",
       "silhouette": "Silhouette",
       "reset": "Reset",
-      "remove_image_hint": "Remove image to customize name or silhouette"
+      "remove_image_hint": "Remove image to customize name or silhouette",
+      "hint": "Upload an image or customize the default award."
     },
     "trophies_manage": {
       "manual_awards": "Manual Awards",
       "add_award": "Add Award",
       "no_manual_awards": "NO MANUAL AWARDS",
-      "remove": "Remove"
+      "remove": "Remove",
+      "hint": "Grant a trophy outside of the bracket calculation."
     },
     "compact_card": {
       "tournament": "Tournament",
@@ -3795,7 +3797,8 @@
       "section": {
         "branding": "Branding",
         "details": "Details",
-        "classification": "Classification & Venue"
+        "classification": "Classification & Venue",
+        "schedule": "Schedule"
       },
       "discord_notifications": "Discord Notifications",
       "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent.",
@@ -3819,7 +3822,8 @@
       "homepage": {
         "label": "Homepage",
         "description": "External link for tickets, info or registration.",
-        "link": "Homepage"
+        "link": "Homepage",
+        "create_event": "Create an event page"
       },
       "location": {
         "label": "Location",
@@ -3854,13 +3858,15 @@
         "Canceled": "Canceled",
         "Forfeit": "Forfeit",
         "Surrendered": "Surrendered"
-      }
+      },
+      "disabled_hint": "Discord notifications are off for this tournament."
     },
     "voice": {
       "title": "Voice Channels",
       "description": "Automatically create Discord voice channels for tournament matches. Players are moved to team channels when matches begin.",
       "guild_id_placeholder": "Discord Server ID",
-      "enable_voice": "Enable Voice Channels"
+      "enable_voice": "Enable Voice Channels",
+      "guild_id": "Discord Server ID"
     },
     "table": {
       "tournament": "Tournament",
@@ -4104,12 +4110,15 @@
     "prizes": {
       "title": "Prizes",
       "manage_title": "Prizes",
-      "manage_hint": "▓ ADD PRIZE PLACES AND AMOUNTS SHOWN ON THE TOURNAMENT",
+      "manage_hint": "Prize places and amounts shown on the tournament page.",
       "organizer_access_required": "Organizer access required",
       "add": "Add",
       "distribution": "Prize Distribution",
       "place_placeholder": "#1",
-      "prize_placeholder": "€1000"
+      "prize_placeholder": "$1000",
+      "reorder_hint": "Drag to reorder — places renumber automatically. Type a label to override.",
+      "move_up": "Move up",
+      "move_down": "Move down"
     },
     "stats": {
       "prize_pool": "Prize Pool",

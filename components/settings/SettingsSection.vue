@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { Card } from "~/components/ui/card";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionSeparatorClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
+// Settings groups use the app-wide tick-and-label section rule (no card frame),
+// so a settings page reads the same as the tournament manage tabs. `mb-0` drops
+// the label util's own margin — the section grid owns the spacing.
 defineProps<{
   id: string;
   title: string;
@@ -15,36 +22,31 @@ defineEmits<{
 </script>
 
 <template>
-  <section :id="id" class="scroll-mt-4">
-    <Card variant="gradient">
-      <div class="p-6 space-y-6">
-        <div
-          class="flex items-start gap-3"
-          :class="clickableHeader ? 'cursor-pointer select-none' : ''"
-          @click="clickableHeader && $emit('header-click')"
-        >
-          <span
-            class="w-0.5 self-stretch rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.45)]"
-          />
-          <div class="min-w-0 flex-1 space-y-0.5">
-            <h3
-              class="text-sm font-semibold uppercase tracking-wider text-foreground"
-            >
-              {{ title }}
-            </h3>
-            <p v-if="description" class="text-sm text-muted-foreground">
-              {{ description }}
-            </p>
-          </div>
-          <div v-if="$slots.action" class="shrink-0 pl-4 pt-0.5" @click.stop>
-            <slot name="action" />
-          </div>
+  <section
+    :id="id"
+    :class="['grid gap-4 scroll-mt-4', tacticalSectionSeparatorClasses]"
+  >
+    <div
+      class="flex items-end justify-between gap-4"
+      :class="clickableHeader ? 'cursor-pointer select-none' : ''"
+      @click="clickableHeader && $emit('header-click')"
+    >
+      <div class="grid min-w-0 gap-1">
+        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ title }}
         </div>
-
-        <div v-if="$slots.default" class="space-y-6">
-          <slot />
-        </div>
+        <p v-if="description" class="text-xs text-muted-foreground/70">
+          {{ description }}
+        </p>
       </div>
-    </Card>
+      <div v-if="$slots.action" class="shrink-0" @click.stop>
+        <slot name="action" />
+      </div>
+    </div>
+
+    <div v-if="$slots.default" class="grid gap-6">
+      <slot />
+    </div>
   </section>
 </template>

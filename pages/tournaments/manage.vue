@@ -11,7 +11,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-vue-next";
-import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
 import Pagination from "~/components/Pagination.vue";
@@ -265,11 +265,11 @@ function optionRowClass(active: boolean) {
         </div>
       </div>
       <div v-if="tournaments && tournaments.length > 0" class="space-y-4">
-        <TournamentTableRow
+        <TournamentFeatureCard
           v-for="tournament in tournaments"
           :key="tournament.id"
           :tournament="tournament"
-        ></TournamentTableRow>
+        />
       </div>
       <div v-else class="text-center py-8">
         <p class="text-muted-foreground">
@@ -320,7 +320,7 @@ interface ComponentData {
 
 export default {
   components: {
-    TournamentTableRow,
+    TournamentFeatureCard,
   },
   data(): ComponentData {
     // Load saved filters from localStorage

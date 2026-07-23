@@ -1,26 +1,21 @@
 <script setup lang="ts">
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
-import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
+import ManageSection from "~/components/common/ManageSection.vue";
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <Card v-if="map_pools_by_pk" variant="gradient">
-      <CardHeader>
-        <CardTitle class="flex justify-between items-center">{{
-          $t("pages.map_pools.pool.modify_maps")
-        }}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <MapPoolForm
-          :pool="map_pools_by_pk"
-          :availableMaps="availableMaps"
-          v-if="map_pools_by_pk && availableMaps"
-        />
-      </CardContent>
-    </Card>
+    <ManageSection
+      v-if="map_pools_by_pk"
+      :label="$t('pages.map_pools.pool.modify_maps')"
+    >
+      <MapPoolForm
+        :pool="map_pools_by_pk"
+        :availableMaps="availableMaps"
+        v-if="map_pools_by_pk && availableMaps"
+      />
+    </ManageSection>
   </PageTransition>
 </template>
 

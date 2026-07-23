@@ -299,6 +299,16 @@ mark {
   @apply bg-white/80;
 }
 
+/* Sections stack without card frames, so each one after the first gets a
+   hairline rule to keep the groups distinct. Plain CSS rather than an
+   arbitrary `[&:not(:first-child)]:` variant: Tailwind does not pick that
+   candidate up out of utilities/tacticalClasses.ts, so the rule never
+   generated. Same reason .tac-amber-cta lives here. */
+.tac-section-sep:not(:first-child) {
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  padding-top: 2rem;
+}
+
 .tac-amber-cta {
   color: hsl(var(--tac-amber-foreground));
   border-color: hsl(var(--tac-amber));

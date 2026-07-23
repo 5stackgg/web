@@ -3958,13 +3958,15 @@
       "custom_name": "Nome personalizado",
       "silhouette": "Silhueta",
       "reset": "Redefinir",
-      "remove_image_hint": "Remova a imagem para personalizar o nome ou a silhueta"
+      "remove_image_hint": "Remova a imagem para personalizar o nome ou a silhueta",
+      "hint": "Envie uma imagem ou personalize o prêmio padrão."
     },
     "trophies_manage": {
       "manual_awards": "Premiações manuais",
       "add_award": "Adc. Premiação",
       "no_manual_awards": "NENHUMA PREMIAÇÃO MANUAL",
-      "remove": "Remover"
+      "remove": "Remover",
+      "hint": "Conceda um troféu fora do cálculo da chave."
     },
     "compact_card": {
       "tournament": "Torneio",
@@ -4016,7 +4018,8 @@
       "section": {
         "branding": "Identidade Visual",
         "details": "Detalhes",
-        "classification": "Classificação e Local"
+        "classification": "Classificação e Local",
+        "schedule": "Agenda"
       },
       "update": "Atualizar Torneio",
       "discord_notifications": "Notificações do Discord",
@@ -4041,7 +4044,8 @@
       "homepage": {
         "label": "Site Oficial",
         "description": "Link externo para ingressos, informações ou inscrição.",
-        "link": "Site Oficial"
+        "link": "Site Oficial",
+        "create_event": "Criar uma página de evento"
       },
       "location": {
         "label": "Local",
@@ -4078,13 +4082,15 @@
         "Canceled": "Cancelado",
         "Forfeit": "Desistência",
         "Surrendered": "Rendição"
-      }
+      },
+      "disabled_hint": "As notificações do Discord estão desativadas para este torneio."
     },
     "voice": {
       "title": "Canais de Voz",
       "description": "Crie automaticamente canais de voz no Discord para partidas de torneio. Os jogadores são movidos para os canais de suas equipes quando as partidas começam.",
       "guild_id_placeholder": "ID do Servidor de Discord",
-      "enable_voice": "Habilitar Canais de Voz"
+      "enable_voice": "Habilitar Canais de Voz",
+      "guild_id": "ID do Servidor Discord"
     },
     "table": {
       "tournament": "Torneio",
@@ -4334,12 +4340,15 @@
     "prizes": {
       "title": "Premiação",
       "manage_title": "Premiação",
-      "manage_hint": "▓ ADICIONE COLOCAÇÕES E VALORES DE PRÊMIOS MOSTRADOS NO TORNEIO",
+      "manage_hint": "Colocações e valores de prêmios mostrados na página do torneio.",
       "organizer_access_required": "Acesso de organizador necessário",
       "add": "Adicionar",
       "distribution": "Distribuição de Prêmios",
       "place_placeholder": "#1",
-      "prize_placeholder": "€1000"
+      "prize_placeholder": "$1000",
+      "reorder_hint": "Arraste para reordenar — as colocações são renumeradas automaticamente. Digite um rótulo para substituir.",
+      "move_up": "Mover para cima",
+      "move_down": "Mover para baixo"
     },
     "stats": {
       "prize_pool": "Premiação Total",

@@ -11,6 +11,10 @@ import {
 } from "~/components/ui/hover-card";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { kdColor } from "~/utils/statTiers";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
 
@@ -37,13 +41,8 @@ function playerAvatarSrc(player: {
       ></div>
 
       <header class="relative mb-6 flex flex-col gap-1">
-        <div
-          class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
-        >
-          <span
-            class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
-            >◢</span
-          >
+        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span :class="tacticalSectionTickClasses"></span>
           {{ $t("trophies.title") }}
         </div>
         <div

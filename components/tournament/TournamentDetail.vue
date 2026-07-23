@@ -8,6 +8,7 @@ import TournamentMatchOptionsForm from "~/components/tournament/TournamentMatchO
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentPrizes from "~/components/tournament/TournamentPrizes.vue";
 import TournamentPrizesManage from "~/components/tournament/TournamentPrizesManage.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
 import TournamentStatRibbon from "~/components/tournament/TournamentStatRibbon.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
@@ -74,7 +75,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   tacticalCtaButtonClasses,
@@ -572,18 +572,11 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 :prizes="tournament.prizes"
               ></TournamentPrizes>
 
-              <Card v-if="tournament.description" class="overflow-hidden">
-                <div class="flex flex-col gap-3 p-5">
-                  <div class="flex items-center gap-2">
-                    <span class="text-[0.7rem] text-[hsl(var(--tac-amber))]"
-                      >◢</span
-                    >
-                    <span
-                      class="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-                    >
-                      {{ $t("tournament.page.about_section") }}
-                    </span>
-                  </div>
+              <ManageSection
+                v-if="tournament.description"
+                :label="$t('tournament.page.about_section')"
+              >
+                <div class="flex flex-col gap-3">
                   <p
                     class="max-w-[70ch] whitespace-pre-line text-sm leading-relaxed text-muted-foreground"
                     :class="{ 'line-clamp-[8]': !descExpanded }"
@@ -603,7 +596,7 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                     }}
                   </button>
                 </div>
-              </Card>
+              </ManageSection>
 
               <TournamentStageBuilder
                 class="w-full"
@@ -617,24 +610,12 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
           v-if="!tournament?.is_organizer && tournament.options"
         >
           <PageTransition>
-            <Card class="overflow-hidden">
-              <div class="p-5">
-                <div class="mb-4 flex items-center gap-2">
-                  <span class="text-[0.7rem] text-[hsl(var(--tac-amber))]"
-                    >◢</span
-                  >
-                  <span
-                    class="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-                  >
-                    {{ $t("tournament.page.match_settings") }}
-                  </span>
-                </div>
-                <MatchOptionsDisplay
-                  :show-details-by-default="false"
-                  :options="tournament.options"
-                ></MatchOptionsDisplay>
-              </div>
-            </Card>
+            <ManageSection :label="$t('tournament.page.match_settings')">
+              <MatchOptionsDisplay
+                :show-details-by-default="false"
+                :options="tournament.options"
+              ></MatchOptionsDisplay>
+            </ManageSection>
           </PageTransition>
         </TabsContent>
         <TabsContent value="my-team" v-if="myTeam">

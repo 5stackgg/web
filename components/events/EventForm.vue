@@ -21,17 +21,17 @@ import {
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import {
   tacticalSectionLabelClasses,
+  tacticalSectionSeparatorClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-const formSectionClasses =
-  "rounded-lg border border-border bg-card/40 p-5 [backdrop-filter:blur(6px)]";
+const formSectionClasses = `grid gap-4 ${tacticalSectionSeparatorClasses}`;
 </script>
 
 <template>
   <form @submit.prevent="submitEvent" class="grid gap-6">
     <section :class="formSectionClasses">
-      <div :class="[tacticalSectionLabelClasses]">
+      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("event.form.sections.details") }}
       </div>
@@ -60,7 +60,7 @@ const formSectionClasses =
     </section>
 
     <section :class="formSectionClasses">
-      <div :class="[tacticalSectionLabelClasses]">
+      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("event.form.sections.schedule") }}
       </div>
@@ -132,7 +132,7 @@ const formSectionClasses =
     </section>
 
     <section :class="formSectionClasses">
-      <div :class="[tacticalSectionLabelClasses]">
+      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("event.form.sections.access") }}
       </div>

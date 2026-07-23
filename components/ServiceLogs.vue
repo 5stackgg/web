@@ -198,6 +198,7 @@ async function downloadFullLogs(service: string) {
         <Tabs
           v-else-if="podCount > 1"
           v-model="activePod"
+          :scroll-floor="false"
           :class="[
             'flex flex-col',
             compact && 'lg:min-h-0 lg:flex-1',

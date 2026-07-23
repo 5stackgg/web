@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Button } from "~/components/ui/button";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 
@@ -12,7 +13,7 @@ const PLACEMENT_COLORS: Record<number, string> = {
 };
 
 export default {
-  components: { Button, TeamSearch },
+  components: { Button, TeamSearch, ManageSection },
   props: {
     tournament: { type: Object, required: true },
   },
@@ -52,7 +53,8 @@ export default {
     teamOptions(): any[] {
       return this.teams.map((team) => ({
         id: team.id,
-        name: team.name || team.team?.name || `Team ${String(team.id).slice(0, 6)}`,
+        name:
+          team.name || team.team?.name || `Team ${String(team.id).slice(0, 6)}`,
         short_name: team.short_name || team.team?.short_name || "",
         avatar_url: team.avatar_url ?? team.team?.avatar_url ?? null,
       }));
@@ -162,35 +164,20 @@ export default {
 </script>
 
 <template>
-  <section
-    class="relative overflow-hidden rounded-lg border border-border px-6 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.7)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]"
+  <ManageSection
+    :label="$t('tournament.trophies_manage.manual_awards')"
+    :hint="$t('tournament.trophies_manage.hint')"
   >
-    <header class="relative mb-4 flex items-center justify-between gap-4">
-      <div class="flex flex-col gap-1">
-        <div
-          class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
-        >
-          <span
-            class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
-            >◢</span
-          >
-          {{ $t("tournament.trophies_manage.manual_awards") }}
-        </div>
-        <div
-          class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
-        >
-          ▚ GRANT A TROPHY OUTSIDE OF THE BRACKET CALCULATION
-        </div>
-      </div>
+    <template v-if="isOrganizer && !adding" #action>
       <Button
-        v-if="isOrganizer && !adding"
         size="sm"
+        variant="outline"
         @click="startAdd"
         :disabled="!teams.length"
       >
         {{ $t("tournament.trophies_manage.add_award") }}
       </Button>
-    </header>
+    </template>
 
     <div
       v-if="!isOrganizer"
@@ -313,5 +300,5 @@ export default {
         </li>
       </ul>
     </template>
-  </section>
+  </ManageSection>
 </template>

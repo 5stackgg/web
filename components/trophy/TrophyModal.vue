@@ -2,6 +2,10 @@
 import { computed } from "vue";
 import TrophyBadge from "./TrophyBadge.vue";
 import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -101,10 +105,11 @@ const trophyTeam = computed(() => {
   <Dialog :open="open" @update:open="(v) => emit('update:open', v)">
     <DialogContent class="sm:max-w-lg">
       <DialogHeader class="gap-1">
-        <div
-          class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
-        >
-          <span class="text-[0.7rem]" :style="{ color: tierColor }">◢</span>
+        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span
+            class="inline-block h-[2px] w-[10px]"
+            :style="{ background: tierColor }"
+          ></span>
           {{ $t("trophies.title") }}
           <span class="text-muted-foreground/50">·</span>
           <span :style="{ color: tierColor }">{{ $t(placementLabelKey) }}</span>

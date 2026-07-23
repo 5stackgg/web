@@ -1523,7 +1523,7 @@
           "webhook": "默认 Discord Webhook",
           "webhook_description": "我们使用此 Discord Webhook 发送需要玩家操作的通知。例如：比赛问题、错误等。",
           "support_role": "默认角色 ID",
-          "support_role_description": "用于支持操作时，这些角色将被 @提及。您可以添加多个角色 ID，用逗号分隔。通过启用 Discord 开发者模式，然后右键点击角色并选择“复制 ID”来获取角色 ID。",
+          "support_role_description": "用于支持操作时，这些角色将被 {'@'}提及。您可以添加多个角色 ID，用逗号分隔。通过启用 Discord 开发者模式，然后右键点击角色并选择“复制 ID”来获取角色 ID。",
           "updated": "Discord 设置已更新",
           "match_notifications": {
             "title": "比赛状态通知",
@@ -1531,7 +1531,7 @@
             "webhook": "比赛通知 Webhook URL",
             "webhook_description": "用于比赛状态通知的专用 Webhook。如果未设置，则回退使用默认 Webhook。",
             "role_id": "比赛通知角色 ID",
-            "role_id_description": "在比赛状态通知中，这些角色将被 @提及。您可以添加多个角色 ID，用逗号分隔。"
+            "role_id_description": "在比赛状态通知中，这些角色将被 {'@'}提及。您可以添加多个角色 ID，用逗号分隔。"
           },
           "gamedata_notifications": {
             "title": "游戏数据验证通知",
@@ -1539,7 +1539,7 @@
             "webhook": "游戏数据通知 Webhook URL",
             "webhook_description": "用于游戏数据验证结果的专用 Webhook。如果未设置，则回退使用默认 Webhook。",
             "role_id": "游戏数据通知角色 ID",
-            "role_id_description": "在游戏数据验证通知中，这些角色将被 @提及。您可以添加多个角色 ID，用逗号分隔。如果未设置，则回退使用默认角色。"
+            "role_id_description": "在游戏数据验证通知中，这些角色将被 {'@'}提及。您可以添加多个角色 ID，用逗号分隔。如果未设置，则回退使用默认角色。"
           },
           "server_notifications": {
             "title": "服务器通知",

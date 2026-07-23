@@ -42,15 +42,11 @@ const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 const route = useRoute();
 const routeMatchId = computed(() => String(route.params.id));
 
-// Reserve scroll height when switching tabs / maps so a shorter tab can't yank
-// the page up (same treatment as the player page).
-const {
-  minHeight: scrollFloorMinHeight,
-  rootEl: pageRootEl,
-  capture: captureScrollFloor,
-} = useScrollFloor();
+// Reserve scroll height when switching maps so a shorter map can't yank the
+// page up. Tab switches are covered by ui/tabs itself.
+const { capture: captureScrollFloor } = useScrollFloor();
 watch(
-  () => [route.query.tab, activeStatsMap.value?.id],
+  () => activeStatsMap.value?.id,
   () => captureScrollFloor(),
 );
 const matchClipsState = useMatchClips(routeMatchId);
@@ -164,13 +160,7 @@ const vsBaseClasses =
 </script>
 
 <template>
-  <div
-    ref="pageRootEl"
-    class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto"
-    :style="
-      scrollFloorMinHeight ? { minHeight: scrollFloorMinHeight + 'px' } : {}
-    "
-  >
+  <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
     <template v-if="match">
     <PageTransition>
       <header :class="heroClasses">

@@ -30,6 +30,7 @@ import EventMediaPanel from "~/components/events/EventMediaPanel.vue";
 import EventTeamsPanel from "~/components/events/EventTeamsPanel.vue";
 import EventOverview from "~/components/events/EventOverview.vue";
 import EventBannerUpload from "~/components/events/EventBannerUpload.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
 import { useEventMatches } from "~/composables/useEventMatches";
 import {
   tacticalSectionLabelClasses,
@@ -438,15 +439,9 @@ function formatTournamentStatus(status?: string | null): string {
         <TabsContent v-if="event?.is_organizer" value="settings">
           <PageTransition>
             <div class="space-y-6 pb-24">
-              <section
-                class="rounded-lg border border-border bg-card/40 p-5 [backdrop-filter:blur(6px)]"
-              >
-                <div :class="[tacticalSectionLabelClasses]">
-                  <span :class="tacticalSectionTickClasses"></span>
-                  {{ $t("event.banner.section") }}
-                </div>
+              <ManageSection :label="$t('event.banner.section')">
                 <EventBannerUpload :event="event" />
-              </section>
+              </ManageSection>
 
               <EventForm :event="event" />
 
@@ -455,12 +450,14 @@ function formatTournamentStatus(status?: string | null): string {
               <!-- Delete is narrower than is_organizer: Hasura only allows
                    the creator or tournament_organizer+ to delete, never
                    co-organizers. -->
+              <!-- Danger zone keeps its tinted frame: the destructive action
+                   needs to stay visually fenced off from the settings above. -->
               <section
                 v-if="canDeleteEvent"
                 class="rounded-lg border border-destructive/40 bg-destructive/5 p-5"
               >
                 <span
-                  :class="tacticalSectionLabelClasses"
+                  :class="[tacticalSectionLabelClasses, 'mb-1']"
                   class="!text-destructive"
                 >
                   <span

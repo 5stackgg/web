@@ -29,7 +29,10 @@ import {
   Scan,
   Maximize,
   Minimize,
+  Plus,
 } from "lucide-vue-next";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
 import ShareBracketDialog from "~/components/tournament/ShareBracketDialog.vue";
 import BracketFullscreenBar from "~/components/tournament/BracketFullscreenBar.vue";
 import { ref } from "vue";
@@ -117,15 +120,18 @@ import {
         default-value="stage-1"
         class="w-full"
       >
-        <div class="flex flex-wrap items-start gap-2 justify-between mb-2">
+        <!-- The stage strip scrolls horizontally rather than wrapping, so the
+             trailing "+" always stays inline with the last stage no matter how
+             many stages exist. -->
+        <div class="mb-2 flex flex-wrap items-start gap-2">
           <TabsList
-            class="flex flex-wrap gap-2 p-0 bg-transparent border-none h-auto flex-1 justify-start"
+            class="flex min-w-0 flex-1 flex-nowrap gap-2 overflow-x-auto p-0 pb-1 bg-transparent border-none h-auto justify-start [scrollbar-width:thin]"
           >
             <TabsTrigger
               v-for="stageNumber in maxStageNumber"
               :key="stageNumber"
               :value="`stage-${stageNumber}`"
-              class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-9 !py-3 min-w-[220px] min-h-[72px] !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
+              class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-3 !py-3 min-w-[200px] min-h-[72px] shrink-0 !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
             >
               <div class="flex items-center gap-3 flex-1 min-w-0">
                 <div
@@ -135,7 +141,7 @@ import {
                 </div>
                 <div class="flex flex-col gap-[0.1rem] min-w-0 text-left">
                   <span
-                    class="font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
+                    class="block truncate pr-7 font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
                     >{{
                       $t("tournament.stage.stage_tab", { stage: stageNumber })
                     }}</span
@@ -211,20 +217,29 @@ import {
                 </DropdownMenuContent>
               </DropdownMenu>
             </TabsTrigger>
-            <TabsTrigger
-              value="add-stage"
-              class="inline-flex items-center justify-center gap-2 min-w-[200px] min-h-[72px] !px-4 !py-3 !bg-card/45 !border !border-dashed !border-border !rounded-md !text-muted-foreground font-mono text-[0.72rem] font-bold tracking-[0.18em] uppercase [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.5)] hover:!text-[hsl(var(--tac-amber))]"
-              v-if="canEditStages"
-            >
-              <span class="text-base font-normal leading-none mr-[0.35rem]"
-                >+</span
-              >
-              <span>
+            <!-- Add sits as a compact postfix rather than a full-size tile: at
+                 tile size it carried the same weight as a real stage and wrapped
+                 onto its own row. -->
+            <template v-if="canEditStages">
+              <span
+                aria-hidden="true"
+                class="mx-0.5 h-[56px] w-px shrink-0 self-center border-l border-dashed border-border/70"
+              ></span>
+              <FiveStackToolTip as-child :delay-duration="120" side="top">
+                <template #trigger>
+                  <TabsTrigger
+                    value="add-stage"
+                    :aria-label="$t('tournament.stage.add_another')"
+                    class="inline-flex h-[72px] min-h-[72px] w-[56px] shrink-0 items-center justify-center !p-0 !bg-card/45 !border !border-dashed !border-border !rounded-md !text-muted-foreground [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.5)] hover:!bg-[hsl(var(--tac-amber)/0.08)] hover:!text-[hsl(var(--tac-amber))] data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-[hsl(var(--tac-amber))]"
+                  >
+                    <Plus class="h-5 w-5" />
+                  </TabsTrigger>
+                </template>
                 {{ $t("tournament.stage.add_another") }}
-              </span>
-            </TabsTrigger>
+              </FiveStackToolTip>
+            </template>
           </TabsList>
-          <div class="flex gap-1.5 mt-1 items-center">
+          <div class="ml-auto flex gap-1.5 mt-1 items-center">
             <template v-if="viewMode === 'split'">
               <button
                 type="button"
@@ -390,23 +405,17 @@ import {
               </div>
             </TabsContent>
             <TabsContent value="add-stage" class="mt-6">
-              <Card
-                class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
+              <ManageSection
+                class="mx-auto max-w-2xl"
+                :label="$t('tournament.stage.add_another')"
               >
-                <CardHeader>
-                  <CardTitle>
-                    {{ $t("tournament.stage.add_another") }}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <TournamentStageForm
-                    :order="tournament.stages.length + 1"
-                    :tournament-id="tournament.id"
-                    :tournament="tournament"
-                    @updated="handleStageCreated"
-                  ></TournamentStageForm>
-                </CardContent>
-              </Card>
+                <TournamentStageForm
+                  :order="tournament.stages.length + 1"
+                  :tournament-id="tournament.id"
+                  :tournament="tournament"
+                  @updated="handleStageCreated"
+                ></TournamentStageForm>
+              </ManageSection>
             </TabsContent>
           </div>
 

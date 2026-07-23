@@ -5,7 +5,7 @@ import DraftGames from "~/components/draft-games/DraftGames.vue";
 import MyUpcoming from "~/components/MyUpcoming.vue";
 import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
-import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import { Button } from "~/components/ui/button";
@@ -27,7 +27,10 @@ const settingsOpen = ref(false);
   <PageTransition>
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.play.title") }}</template>
-      <template v-if="matchmakingAllowed && !inLobbyNotLeader && !isGuest" #actions>
+      <template
+        v-if="matchmakingAllowed && !inLobbyNotLeader && !isGuest"
+        #actions
+      >
         <Popover v-model:open="settingsOpen">
           <PopoverTrigger as-child>
             <Button
@@ -119,12 +122,13 @@ const settingsOpen = ref(false);
       <div :class="tacticalSectionDescriptionClasses">
         {{ $t("pages.play.open_registration_tournaments.description") }}
       </div>
-      <div class="space-y-3">
-        <TournamentTableRow
+      <div class="space-y-4">
+        <TournamentFeatureCard
           v-for="tournament of openRegistrationTournaments"
           :key="tournament.id"
           :tournament="tournament"
-        ></TournamentTableRow>
+          status-variant="registration"
+        />
       </div>
     </div>
   </PageTransition>

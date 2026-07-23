@@ -517,7 +517,7 @@ onUnmounted(() => {
             >
               {{ $t("system_alerts.fields.type") }}
             </label>
-            <Tabs v-model="form.type" class="w-full">
+            <Tabs v-model="form.type" :scroll-floor="false" class="w-full">
               <TabsList class="grid w-full grid-cols-3">
                 <TabsTrigger
                   v-for="option in alertTypes"

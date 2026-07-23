@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { GitBranch, Trophy, UsersRound } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { formatPrizePool } from "~/utilities/prizePool";
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -62,7 +63,8 @@ const categories = computed(() =>
   ),
 );
 
-const topPrize = computed(() => props.tournament?.prizes?.[0] || null);
+// The full pool reads as a bigger draw than "#1: $5000".
+const prizePool = computed(() => formatPrizePool(props.tournament?.prizes));
 
 const organizerTeam = computed(
   () => props.tournament?.organizer_teams?.[0]?.team || null,
@@ -114,14 +116,16 @@ const statusChipClasses = computed(() => {
 <template>
   <NuxtLink
     :to="tournamentPath"
-    class="group/tournament relative block h-[220px] overflow-hidden rounded-xl border border-border/70 transition-[border-color,transform] duration-200 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)/0.45)] sm:h-[240px]"
+    class="group/tournament relative block h-[220px] overflow-hidden rounded-xl border border-border/70 transition-[border-color,transform] duration-200 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)/0.45)] sm:h-[250px] lg:h-[290px]"
   >
+    <!-- Banners are authored at 3:1; the card runs a touch wider than that, so
+         hold the image at its natural scale and let cover trim the sides only. -->
     <img
       v-if="bannerUrl"
       :src="bannerUrl"
       :alt="tournament.name"
       aria-hidden="true"
-      class="absolute inset-0 h-full w-full scale-105 object-cover transition-transform duration-500 group-hover/tournament:scale-110"
+      class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/tournament:scale-105"
     />
     <div
       v-else
@@ -208,11 +212,12 @@ const statusChipClasses = computed(() => {
           {{ stageLabel }}
         </span>
         <span
-          v-if="topPrize"
+          v-if="prizePool"
           class="inline-flex items-center gap-1.5 text-[hsl(var(--tac-amber))]"
         >
           <Trophy class="h-3.5 w-3.5" />
-          {{ topPrize.place }}: {{ topPrize.prize }}
+          <span class="font-bold">{{ prizePool }}</span>
+          {{ $t("tournament.stats.prize_pool") }}
         </span>
         <span v-if="organizerTeam" class="text-white/65">
           {{

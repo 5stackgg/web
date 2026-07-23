@@ -1,289 +1,292 @@
-<script lang="ts">
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { Trash2, Plus } from "lucide-vue-next";
+<script setup lang="ts">
+import { computed, ref, watch, onBeforeUnmount } from "vue";
+import { useApolloClient } from "@vue/apollo-composable";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import ManageSection from "~/components/common/ManageSection.vue";
+import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
+import type { PrizeRowDraft } from "~/components/tournament/PrizeRowsEditor.vue";
+import { effectivePlace, placeLabel } from "~/utilities/prizes";
+import { formatPrizePool } from "~/utilities/prizePool";
 
-const FRAME_CLASSES =
-  "relative overflow-hidden rounded-lg border border-border px-6 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.7)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
+const props = defineProps<{ tournament: Record<string, any> }>();
 
-export default {
-  components: { Input, Button, Trash2, Plus },
-  props: {
-    tournament: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
+const { t } = useI18n();
+const { client: apolloClient } = useApolloClient();
+
+const isOrganizer = computed(() => !!props.tournament.is_organizer);
+
+const drafts = ref<PrizeRowDraft[]>([]);
+const busyIds = ref<Array<string | number>>([]);
+const savedIds = ref<Array<string | number>>([]);
+const adding = ref(false);
+
+const pool = computed(() =>
+  formatPrizePool(
+    drafts.value.map((row) => {
+      return { prize: row.prize };
+    }),
+  ),
+);
+
+function serverRows(): PrizeRowDraft[] {
+  return (props.tournament.prizes || []).map((prize: any) => {
     return {
-      frameClasses: FRAME_CLASSES,
-      drafts: [] as Array<{ id: string; place: string; prize: string }>,
-      baseline: null as string | null,
-      newPlace: "",
-      newPrize: "",
-      savingId: null as string | null,
-      adding: false,
+      id: prize.id,
+      place: placeLabel(prize.place),
+      prize: prize.prize,
     };
-  },
-  computed: {
-    isOrganizer() {
-      return !!this.tournament.is_organizer;
-    },
-    isDirty() {
-      return (
-        this.baseline !== null && JSON.stringify(this.drafts) !== this.baseline
+  });
+}
+
+// Last values seen from the server, per row — a draft that has drifted from its
+// snapshot is being typed into right now and must survive the next frame.
+const snapshots = new Map<string | number, { place: string; prize: string }>();
+// A drag persists in the background; until the server catches up its frames
+// still carry the old order, which would yank the row back under the cursor.
+const reordering = ref(false);
+
+watch(
+  () => props.tournament.prizes,
+  () => {
+    const server = serverRows();
+    const byId = new Map(drafts.value.map((draft) => [draft.id, draft]));
+
+    const next = server.map((row) => {
+      const draft = byId.get(row.id);
+      if (!draft) {
+        return row;
+      }
+      const snapshot = snapshots.get(row.id);
+      const edited =
+        snapshot &&
+        (draft.place !== snapshot.place || draft.prize !== snapshot.prize);
+      // Keep object identity so focused inputs don't lose their cursor.
+      return edited ? draft : Object.assign(draft, row);
+    });
+
+    const settled =
+      next.length === drafts.value.length &&
+      next.every((row, index) => drafts.value[index]?.id === row.id);
+    if (reordering.value && settled) {
+      reordering.value = false;
+    }
+    if (reordering.value) {
+      const local = new Map(
+        drafts.value.map((draft, index) => [draft.id, index]),
       );
-    },
-  },
-  watch: {
-    "tournament.prizes": {
-      // Subscription frames must not clobber unsaved row edits; only resync
-      // while the drafts match their baseline.
-      handler() {
-        if (this.baseline === null || !this.isDirty) {
-          this.syncDrafts();
-        }
-      },
-      immediate: true,
-      deep: true,
-    },
-  },
-  methods: {
-    syncDrafts() {
-      this.drafts = (this.tournament.prizes || []).map((prize: any) => {
-        return {
-          id: prize.id,
-          place: prize.place,
-          prize: prize.prize,
-        };
-      });
-      this.baseline = JSON.stringify(this.drafts);
-    },
-    draftDirty(draft: { id: string; place: string; prize: string }) {
-      const existing = (this.tournament.prizes || []).find(
-        (prize: any) => prize.id === draft.id,
+      next.sort(
+        (a, b) =>
+          (local.get(a.id) ?? Number.MAX_SAFE_INTEGER) -
+          (local.get(b.id) ?? Number.MAX_SAFE_INTEGER),
       );
-      if (!existing) {
-        return false;
-      }
-      return existing.place !== draft.place || existing.prize !== draft.prize;
-    },
-    async saveDraft(draft: { id: string; place: string; prize: string }) {
-      const place = draft.place.trim();
-      const prize = draft.prize.trim();
-      if (!place || !prize) {
-        return;
-      }
-      this.savingId = draft.id;
-      try {
-        await this.$apollo.mutate({
-          mutation: typedGql("mutation")({
-            update_tournament_prizes_by_pk: [
-              {
-                pk_columns: { id: $("id", "uuid!") },
-                _set: {
-                  place: $("place", "String!"),
-                  prize: $("prize", "String!"),
-                },
-              },
-              { id: true },
-            ],
-          }),
-          variables: { id: draft.id, place, prize },
-        });
-        draft.place = place;
-        draft.prize = prize;
-        // Fold the saved values into the baseline so this row no longer reads
-        // as dirty (which would block resyncs) while other rows keep their
-        // unsaved edits protected.
-        if (this.baseline !== null) {
-          const rows = JSON.parse(this.baseline) as Array<{
-            id: string;
-            place: string;
-            prize: string;
-          }>;
-          const row = rows.find((entry) => entry.id === draft.id);
-          if (row) {
-            row.place = place;
-            row.prize = prize;
-            this.baseline = JSON.stringify(rows);
-          }
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: this.$t("common.error"),
-          description: error?.message,
-        });
-      } finally {
-        this.savingId = null;
-      }
-    },
-    async removePrize(id: string) {
-      this.savingId = id;
-      try {
-        await this.$apollo.mutate({
-          mutation: typedGql("mutation")({
-            delete_tournament_prizes_by_pk: [
-              { id: $("id", "uuid!") },
-              { id: true },
-            ],
-          }),
-          variables: { id },
-        });
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: this.$t("common.error"),
-          description: error?.message,
-        });
-      } finally {
-        this.savingId = null;
-      }
-    },
-    async addPrize() {
-      const place = this.newPlace.trim();
-      const prize = this.newPrize.trim();
-      if (!place || !prize) {
-        return;
-      }
-      this.adding = true;
-      try {
-        // New prizes go to the bottom of the list; order is a plain sort index.
-        const nextOrder = (this.tournament.prizes || []).length;
-        await this.$apollo.mutate({
-          mutation: typedGql("mutation")({
-            insert_tournament_prizes_one: [
-              {
-                object: {
-                  tournament_id: $("tournament_id", "uuid!"),
-                  place: $("place", "String!"),
-                  prize: $("prize", "String!"),
-                  order: $("order", "Int!"),
-                },
-              },
-              { id: true },
-            ],
-          }),
-          variables: {
-            tournament_id: this.tournament.id,
-            place,
-            prize,
-            order: nextOrder,
+    }
+
+    drafts.value = next;
+    snapshots.clear();
+    server.forEach((row) =>
+      snapshots.set(row.id, { place: row.place, prize: row.prize }),
+    );
+  },
+  { immediate: true, deep: true },
+);
+
+const savedTimers = new Map<string | number, ReturnType<typeof setTimeout>>();
+
+function markSaved(id: string | number) {
+  savedIds.value = [...new Set([...savedIds.value, id])];
+  clearTimeout(savedTimers.get(id));
+  savedTimers.set(
+    id,
+    setTimeout(() => {
+      savedIds.value = savedIds.value.filter((entry) => entry !== id);
+      savedTimers.delete(id);
+    }, 1400),
+  );
+}
+
+onBeforeUnmount(() => {
+  savedTimers.forEach((timer) => clearTimeout(timer));
+});
+
+function setBusy(id: string | number, busy: boolean) {
+  busyIds.value = busy
+    ? [...new Set([...busyIds.value, id])]
+    : busyIds.value.filter((entry) => entry !== id);
+}
+
+function onError(error: any) {
+  toast({
+    variant: "destructive",
+    title: t("common.error"),
+    description: error?.message,
+  });
+}
+
+async function commitRow(row: PrizeRowDraft) {
+  const index = drafts.value.indexOf(row);
+  const place = effectivePlace(row.place, index);
+  const prize = row.prize.trim();
+  const existing = (props.tournament.prizes || []).find(
+    (entry: any) => entry.id === row.id,
+  );
+  if (!prize || (existing?.place === place && existing?.prize === prize)) {
+    return;
+  }
+
+  setBusy(row.id, true);
+  try {
+    await apolloClient.mutate({
+      mutation: typedGql("mutation")({
+        update_tournament_prizes_by_pk: [
+          {
+            pk_columns: { id: $("id", "uuid!") },
+            _set: {
+              place: $("place", "String!"),
+              prize: $("prize", "String!"),
+            },
           },
-        });
-        this.newPlace = "";
-        this.newPrize = "";
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: this.$t("common.error"),
-          description: error?.message,
-        });
-      } finally {
-        this.adding = false;
-      }
-    },
-  },
-};
+          { id: true },
+        ],
+      }),
+      variables: { id: row.id, place, prize },
+    });
+    row.prize = prize;
+    markSaved(row.id);
+  } catch (error) {
+    onError(error);
+  } finally {
+    setBusy(row.id, false);
+  }
+}
+
+// Order is a plain sort index, and auto-numbered places follow it — so any move
+// rewrites both for every row below the change.
+async function persistOrder() {
+  const updates = drafts.value.map((row, index) => {
+    return {
+      where: { id: { _eq: row.id } },
+      _set: { order: index, place: effectivePlace(row.place, index) },
+    };
+  });
+  if (updates.length === 0) {
+    return;
+  }
+  try {
+    await apolloClient.mutate({
+      mutation: typedGql("mutation")({
+        update_tournament_prizes_many: [
+          { updates: $("updates", "[tournament_prizes_updates!]!") },
+          { affected_rows: true },
+        ],
+      }),
+      variables: { updates },
+    });
+  } catch (error) {
+    onError(error);
+  }
+}
+
+function onMove(from: number, to: number) {
+  const next = [...drafts.value];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  drafts.value = next;
+  reordering.value = true;
+  void persistOrder();
+}
+
+async function onRemove(row: PrizeRowDraft) {
+  setBusy(row.id, true);
+  try {
+    await apolloClient.mutate({
+      mutation: typedGql("mutation")({
+        delete_tournament_prizes_by_pk: [
+          { id: $("id", "uuid!") },
+          { id: true },
+        ],
+      }),
+      variables: { id: row.id },
+    });
+    drafts.value = drafts.value.filter((entry) => entry.id !== row.id);
+    await persistOrder();
+  } catch (error) {
+    onError(error);
+  } finally {
+    setBusy(row.id, false);
+  }
+}
+
+async function onAdd(prize: string, place: string) {
+  adding.value = true;
+  try {
+    const index = drafts.value.length;
+    await apolloClient.mutate({
+      mutation: typedGql("mutation")({
+        insert_tournament_prizes_one: [
+          {
+            object: {
+              tournament_id: $("tournament_id", "uuid!"),
+              place: $("place", "String!"),
+              prize: $("prize", "String!"),
+              order: $("order", "Int!"),
+            },
+          },
+          { id: true },
+        ],
+      }),
+      variables: {
+        tournament_id: props.tournament.id,
+        place: effectivePlace(place, index),
+        prize,
+        order: index,
+      },
+    });
+  } catch (error) {
+    onError(error);
+  } finally {
+    adding.value = false;
+  }
+}
 </script>
 
 <template>
-  <section :class="frameClasses">
-    <header class="relative mb-6 flex flex-col gap-1">
-      <div
-        class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
-      >
-        <span
-          class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
-          >◢</span
-        >
-        {{ $t("tournament.prizes.manage_title") }}
-      </div>
-      <div
-        class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
-      >
-        {{ $t("tournament.prizes.manage_hint") }}
-      </div>
-    </header>
-
-    <div
-      v-if="!isOrganizer"
-      class="rounded-sm border border-dashed border-border px-4 py-6 text-center font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground"
-    >
-      {{ $t("tournament.prizes.organizer_access_required") }}
-    </div>
-
-    <template v-else>
-      <div class="flex flex-col gap-2">
-        <div
-          v-for="draft in drafts"
-          :key="draft.id"
-          class="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 p-2"
-        >
-          <Input
-            v-model="draft.place"
-            :placeholder="$t('tournament.prizes.place_placeholder')"
-            maxlength="40"
-            class="h-8 w-28 font-mono text-xs"
-          />
-          <Input
-            v-model="draft.prize"
-            :placeholder="$t('tournament.prizes.prize_placeholder')"
-            maxlength="120"
-            class="h-8 flex-1 text-xs"
-          />
-          <Button
-            size="sm"
-            variant="outline"
-            :disabled="savingId === draft.id || !draftDirty(draft)"
-            @click="saveDraft(draft)"
+  <div class="mx-auto grid max-w-3xl gap-8">
+    <ManageSection :hint="$t('tournament.prizes.manage_hint')">
+      <template #action>
+        <div v-if="pool" class="text-right">
+          <div
+            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground/70"
           >
-            {{
-              savingId === draft.id ? $t("common.saving") : $t("common.save")
-            }}
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            class="h-8 w-8 text-destructive"
-            :disabled="savingId === draft.id"
-            @click="removePrize(draft.id)"
+            {{ $t("tournament.stats.prize_pool") }}
+          </div>
+          <div
+            class="font-sans text-lg font-bold leading-tight tabular-nums text-[hsl(var(--tac-amber))]"
           >
-            <Trash2 class="h-4 w-4" />
-          </Button>
+            {{ pool }}
+          </div>
         </div>
+      </template>
 
-        <div
-          class="mt-2 flex items-center gap-2 rounded-sm border border-dashed border-border/60 bg-background/20 p-2"
-        >
-          <Input
-            v-model="newPlace"
-            :placeholder="$t('tournament.prizes.place_placeholder')"
-            maxlength="40"
-            class="h-8 w-28 font-mono text-xs"
-            @keyup.enter="addPrize"
-          />
-          <Input
-            v-model="newPrize"
-            :placeholder="$t('tournament.prizes.prize_placeholder')"
-            maxlength="120"
-            class="h-8 flex-1 text-xs"
-            @keyup.enter="addPrize"
-          />
-          <Button
-            size="sm"
-            :disabled="adding || !newPlace.trim() || !newPrize.trim()"
-            @click="addPrize"
-          >
-            <Plus class="mr-1 h-4 w-4" />
-            {{ $t("tournament.prizes.add") }}
-          </Button>
-        </div>
+      <div
+        v-if="!isOrganizer"
+        class="rounded-sm border border-dashed border-border px-4 py-6 text-center font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground"
+      >
+        {{ $t("tournament.prizes.organizer_access_required") }}
       </div>
-    </template>
-  </section>
+
+      <PrizeRowsEditor
+        v-else
+        :rows="drafts"
+        :busy-ids="busyIds"
+        :saved-ids="savedIds"
+        :adding="adding"
+        @move="onMove"
+        @commit="commitRow"
+        @remove="onRemove"
+        @add="onAdd"
+      />
+    </ManageSection>
+  </div>
 </template>

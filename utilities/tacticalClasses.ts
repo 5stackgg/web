@@ -25,6 +25,10 @@ export const tacticalSectionTickClasses =
 export const tacticalSectionDescriptionClasses =
   "mb-3 text-[0.85rem] text-muted-foreground";
 
+// Sections are separated by a hairline rule rather than individual card frames,
+// so a stack of them reads as one page. Applies to every section but the first.
+export const tacticalSectionSeparatorClasses = "tac-section-sep";
+
 // Options-bar pattern (manage matches / manage tournaments): a bordered card
 // holding compact popover-trigger buttons + removable chips. Shared so every
 // list/filter page renders the exact same control bar.

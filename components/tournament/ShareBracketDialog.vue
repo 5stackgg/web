@@ -114,7 +114,7 @@ const openUrl = (url: string) => {
         </DialogDescription>
       </DialogHeader>
 
-      <Tabs v-model="activeTab" class="w-full">
+      <Tabs v-model="activeTab" :scroll-floor="false" class="w-full">
         <TabsList class="grid w-full grid-cols-3">
           <TabsTrigger value="current">
             {{ $t("tournament.bracket.share_current_stage") }}

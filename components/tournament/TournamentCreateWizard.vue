@@ -4,13 +4,24 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { Check, ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-vue-next";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+} from "lucide-vue-next";
+
+import {
+  tacticalSectionLabelClasses as wizardSectionLabelClasses,
+  tacticalSectionTickClasses as wizardSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 import MatchOptions from "~/components/MatchOptions.vue";
 import SettingHeader from "~/components/match/SettingHeader.vue";
 import AddressSearch from "~/components/AddressSearch.vue";
 import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import DateTimePicker from "~/components/tournament/DateTimePicker.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
+import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
 </script>
 
 <template>
@@ -72,6 +83,27 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
         </FormItem>
       </FormField>
 
+      <FormField v-slot="{ componentField }" name="homepage">
+        <FormItem>
+          <FormLabel>{{ $t("tournament.form.homepage.label") }}</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" type="url" placeholder="https://" />
+          </FormControl>
+          <FormDescription class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>{{ $t("tournament.form.homepage.description") }}</span>
+            <a
+              href="/events/create"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1 text-[hsl(var(--tac-amber))] hover:underline"
+            >
+              {{ $t("tournament.form.homepage.create_event") }}
+              <ExternalLink class="h-3 w-3" />
+            </a>
+          </FormDescription>
+        </FormItem>
+      </FormField>
+
       <FormField v-slot="{ componentField }" name="description">
         <FormItem>
           <FormLabel>{{ $t("tournament.form.description") }}</FormLabel>
@@ -79,32 +111,6 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
             <Input v-bind="componentField" />
           </FormControl>
           <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ value }" name="start">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
-          <FormControl>
-            <DateTimePicker
-              disable-past-dates
-              :model-value="value"
-              @update:model-value="(date) => form.setFieldValue('start', date)"
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ componentField }" name="homepage">
-        <FormItem>
-          <FormLabel>{{ $t("tournament.form.homepage.label") }}</FormLabel>
-          <FormControl>
-            <Input v-bind="componentField" type="url" placeholder="https://" />
-          </FormControl>
-          <FormDescription>{{
-            $t("tournament.form.homepage.description")
-          }}</FormDescription>
         </FormItem>
       </FormField>
 
@@ -119,6 +125,29 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
           />
         </FormItem>
       </FormField>
+
+      <div class="mt-2 grid gap-4 border-t border-border pt-4">
+        <div :class="[wizardSectionLabelClasses, 'mb-0']">
+          <span :class="wizardSectionTickClasses"></span>
+          {{ $t("tournament.form.section.schedule") }}
+        </div>
+
+        <FormField v-slot="{ value }" name="start">
+          <FormItem>
+            <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
+            <FormControl>
+              <DateTimePicker
+                disable-past-dates
+                :model-value="value"
+                @update:model-value="
+                  (date) => form.setFieldValue('start', date)
+                "
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
     </div>
 
     <!-- Step 2: Location -->
@@ -213,44 +242,12 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
       <p class="text-sm text-muted-foreground">
         {{ $t("tournament.prizes.manage_hint") }}
       </p>
-      <div class="flex flex-col gap-2">
-        <div
-          v-for="(prize, index) in prizes"
-          :key="prize.id"
-          class="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 p-2"
-        >
-          <Input
-            v-model="prize.place"
-            :placeholder="$t('tournament.prizes.place_placeholder')"
-            maxlength="40"
-            class="h-8 w-28 font-mono text-xs"
-          />
-          <Input
-            v-model="prize.prize"
-            :placeholder="$t('tournament.prizes.prize_placeholder')"
-            maxlength="120"
-            class="h-8 flex-1 text-xs"
-          />
-          <Button
-            size="icon"
-            variant="ghost"
-            class="h-8 w-8 text-destructive"
-            @click="prizes.splice(index, 1)"
-          >
-            <Trash2 class="h-4 w-4" />
-          </Button>
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          class="justify-self-start"
-          @click="addPrizeRow"
-        >
-          <Plus class="mr-1 h-4 w-4" />
-          {{ $t("tournament.prizes.add") }}
-        </Button>
-      </div>
+      <PrizeRowsEditor
+        :rows="prizes"
+        @move="movePrizeRow"
+        @remove="removePrizeRow"
+        @add="addPrizeRow"
+      />
     </div>
 
     <!-- Navigation -->
@@ -282,6 +279,7 @@ import { useForm } from "vee-validate";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
+import { effectivePlace, normalizePrize } from "~/utilities/prizes";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
 import {
@@ -300,6 +298,9 @@ export default {
       bannerBlob: null as Blob | null,
       form: useForm({
         keepValuesOnUnmount: true,
+        // Most organizers run the tournament on this instance, so seed the
+        // homepage with its own origin rather than leaving the field blank.
+        initialValues: { homepage: useRequestURL().origin },
         validationSchema: toTypedSchema(
           matchOptionsValidator(
             this,
@@ -337,8 +338,15 @@ export default {
     },
   },
   methods: {
-    addPrizeRow() {
-      this.prizes.push({ id: ++this.prizeRowSeq, place: "", prize: "" });
+    addPrizeRow(prize: string, place: string) {
+      this.prizes.push({ id: ++this.prizeRowSeq, place, prize });
+    },
+    removePrizeRow(row: { id: string | number }) {
+      this.prizes = this.prizes.filter((prize) => prize.id !== row.id);
+    },
+    movePrizeRow(from: number, to: number) {
+      const [moved] = this.prizes.splice(from, 1);
+      this.prizes.splice(to, 0, moved);
     },
     // The ImageUploadTile (deferred mode) crops and previews the banner; we just
     // hold the resulting blob until the tournament exists.
@@ -529,13 +537,13 @@ export default {
       }
 
       const prizes = this.prizes
+        .filter((prize) => prize.prize.trim())
         .map((prize, index) => ({
           tournament_id: tournamentId,
-          place: prize.place.trim(),
-          prize: prize.prize.trim(),
+          place: effectivePlace(prize.place, index),
+          prize: normalizePrize(prize.prize),
           order: index,
-        }))
-        .filter((prize) => prize.place && prize.prize);
+        }));
 
       if (prizes.length > 0) {
         await this.$apollo.mutate({

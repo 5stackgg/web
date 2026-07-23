@@ -574,17 +574,14 @@ const settingsChanged = computed(
     !!compareTarget.value,
 );
 
-const {
-  minHeight: scrollFloorMinHeight,
-  rootEl: pageRootEl,
-  capture: captureScrollFloor,
-} = useScrollFloor();
+// Tab switches are covered by ui/tabs itself; these are the filter changes that
+// can also shrink the page out from under the user.
+const { capture: captureScrollFloor } = useScrollFloor();
 watch(
   () => [
     sourceRef.value,
     selectedModeRef.value,
     eloRange.value,
-    statsTab.value,
     compareTarget.value,
     excludeTournaments.value,
   ],
@@ -1702,14 +1699,7 @@ const playerHeroTeamChipDotClasses =
 </script>
 
 <template>
-  <div
-    ref="pageRootEl"
-    class="flex-grow flex flex-col gap-6 overflow-x-hidden"
-    :style="
-      scrollFloorMinHeight ? { minHeight: scrollFloorMinHeight + 'px' } : {}
-    "
-    v-if="player"
-  >
+  <div class="flex-grow flex flex-col gap-6 overflow-x-hidden" v-if="player">
     <div class="grid min-w-0 items-stretch gap-4 lg:grid-cols-2 lg:gap-6">
       <PageTransition>
         <header :class="playerHeroClasses">

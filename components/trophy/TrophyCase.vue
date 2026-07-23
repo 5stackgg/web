@@ -95,10 +95,12 @@ const frameClasses =
 const scanlineClasses =
   "pointer-events-none absolute inset-0 [background-image:repeating-linear-gradient(3deg,transparent_0,transparent_3px,hsl(var(--tac-amber)_/_0.025)_3px,hsl(var(--tac-amber)_/_0.025)_4px)]";
 
-const eyebrowClasses =
-  "inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground";
-const chevronClasses =
-  "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+
+const eyebrowClasses = `${tacticalSectionLabelClasses} mb-0`;
 
 const tierColors: Record<"mvp" | "gold" | "silver" | "bronze", string> = {
   mvp: "hsl(195 85% 60%)",
@@ -136,7 +138,7 @@ function placementUplight(placement: number) {
     >
       <div class="flex flex-col gap-1.5">
         <div :class="eyebrowClasses">
-          <span :class="chevronClasses">◢</span>
+          <span :class="tacticalSectionTickClasses"></span>
           {{ $t("trophies.title") }}
           <span
             v-if="sorted.length"

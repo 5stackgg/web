@@ -9,50 +9,44 @@ import {
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerRow.vue";
 import TournamentOrganizerTeams from "~/components/tournament/TournamentOrganizerTeams.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
 </script>
 
 <template>
-  <div v-if="tournament" class="space-y-6">
-    <Card>
-      <CardHeader>
-        <CardTitle>{{ $t("tournament.organizer.title") }}</CardTitle>
-        <CardDescription>{{
-          $t("tournament.organizer.description")
-        }}</CardDescription>
-      </CardHeader>
-      <CardContent class="grid gap-4">
-        <PlayerSearch
-          :label="$t('tournament.organizer.add')"
-          :exclude="excludeOrganizers"
-          @selected="addOrganizer"
-        ></PlayerSearch>
+  <div v-if="tournament" class="mx-auto grid max-w-3xl gap-8">
+    <ManageSection
+      :label="$t('tournament.organizer.title')"
+      :hint="$t('tournament.organizer.description')"
+    >
+      <PlayerSearch
+        :label="$t('tournament.organizer.add')"
+        :exclude="excludeOrganizers"
+        @selected="addOrganizer"
+      ></PlayerSearch>
 
-        <Table v-if="tournament.organizers && tournament.organizers.length > 0">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{ $t("common.name") }}</TableHead>
-              <TableHead>{{ $t("common.actions_label") }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TournamentOrganizerRow
-              :organizer="organizer"
-              v-for="{ organizer } of tournament.organizers"
-              :key="organizer.steam_id"
-            ></TournamentOrganizerRow>
-          </TableBody>
-        </Table>
+      <Table v-if="tournament.organizers && tournament.organizers.length > 0">
+        <TableHeader>
+          <TableRow>
+            <TableHead>{{ $t("common.name") }}</TableHead>
+            <TableHead>{{ $t("common.actions_label") }}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TournamentOrganizerRow
+            :organizer="organizer"
+            v-for="{ organizer } of tournament.organizers"
+            :key="organizer.steam_id"
+          ></TournamentOrganizerRow>
+        </TableBody>
+      </Table>
 
-        <Alert v-else>
-          <AlertTitle>{{
-            $t("tournament.organizer.no_organizers")
-          }}</AlertTitle>
-          <AlertDescription>
-            {{ $t("tournament.organizer.no_organizers_description") }}
-          </AlertDescription>
-        </Alert>
-      </CardContent>
-    </Card>
+      <div
+        v-else
+        class="rounded-sm border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
+      >
+        {{ $t("tournament.organizer.no_organizers_description") }}
+      </div>
+    </ManageSection>
 
     <TournamentOrganizerTeams :tournament="tournament" />
   </div>

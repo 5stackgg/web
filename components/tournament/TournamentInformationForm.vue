@@ -7,19 +7,20 @@ import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import AddressSearch from "~/components/AddressSearch.vue";
 import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import DateTimePicker from "~/components/tournament/DateTimePicker.vue";
+import { ExternalLink } from "lucide-vue-next";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
-const sectionLabelClasses =
-  "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
-const sectionTickClasses =
-  "inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
+import {
+  tacticalSectionLabelClasses as sectionLabelClasses,
+  tacticalSectionTickClasses as sectionTickClasses,
+} from "~/utilities/tacticalClasses";
 </script>
 
 <template>
   <form @submit.prevent="save" class="mx-auto grid max-w-3xl gap-8">
     <!-- Branding -->
     <section class="grid gap-4">
-      <div :class="sectionLabelClasses">
+      <div :class="[sectionLabelClasses, 'mb-0']">
         <span :class="sectionTickClasses"></span>
         {{ $t("tournament.form.section.branding") }}
       </div>
@@ -54,7 +55,7 @@ const sectionTickClasses =
 
     <!-- Details -->
     <section class="grid gap-4">
-      <div :class="sectionLabelClasses">
+      <div :class="[sectionLabelClasses, 'mb-0']">
         <span :class="sectionTickClasses"></span>
         {{ $t("tournament.form.section.details") }}
       </div>
@@ -69,6 +70,28 @@ const sectionTickClasses =
         </FormItem>
       </FormField>
 
+      <FormField v-slot="{ componentField }" name="homepage">
+        <FormItem>
+          <FormLabel>{{ $t("tournament.form.homepage.label") }}</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" type="url" placeholder="https://" />
+          </FormControl>
+          <FormDescription class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>{{ $t("tournament.form.homepage.description") }}</span>
+            <a
+              href="/events/create"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1 text-[hsl(var(--tac-amber))] hover:underline"
+            >
+              {{ $t("tournament.form.homepage.create_event") }}
+              <ExternalLink class="h-3 w-3" />
+            </a>
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
       <FormField v-slot="{ componentField }" name="description">
         <FormItem>
           <FormLabel>{{ $t("tournament.form.description") }}</FormLabel>
@@ -78,43 +101,32 @@ const sectionTickClasses =
           <FormMessage />
         </FormItem>
       </FormField>
+    </section>
 
-      <div class="grid gap-4 sm:grid-cols-2">
-        <FormField v-slot="{ value }" name="start">
-          <FormItem>
-            <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
-            <FormControl>
-              <DateTimePicker
-                :model-value="value"
-                @update:model-value="(date) => form.setFieldValue('start', date)"
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="homepage">
-          <FormItem>
-            <FormLabel>{{ $t("tournament.form.homepage.label") }}</FormLabel>
-            <FormControl>
-              <Input
-                v-bind="componentField"
-                type="url"
-                placeholder="https://"
-              />
-            </FormControl>
-            <FormDescription>{{
-              $t("tournament.form.homepage.description")
-            }}</FormDescription>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+    <!-- Schedule -->
+    <section class="grid gap-4">
+      <div :class="[sectionLabelClasses, 'mb-0']">
+        <span :class="sectionTickClasses"></span>
+        {{ $t("tournament.form.section.schedule") }}
       </div>
+
+      <FormField v-slot="{ value }" name="start">
+        <FormItem>
+          <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
+          <FormControl>
+            <DateTimePicker
+              :model-value="value"
+              @update:model-value="(date) => form.setFieldValue('start', date)"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </section>
 
     <!-- Classification & Venue -->
     <section class="grid gap-4">
-      <div :class="sectionLabelClasses">
+      <div :class="[sectionLabelClasses, 'mb-0']">
         <span :class="sectionTickClasses"></span>
         {{ $t("tournament.form.section.classification") }}
       </div>

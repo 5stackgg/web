@@ -117,7 +117,7 @@ const settingsOpen = ref(false);
     <div>
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
-        TOURNAMENT.REGISTRATION
+        {{ $t("pages.play.open_registration_tournaments.section_label") }}
       </div>
       <div :class="tacticalSectionDescriptionClasses">
         {{ $t("pages.play.open_registration_tournaments.description") }}

@@ -10,6 +10,7 @@ import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import LiveStreamFeatureCard from "~/components/match/LiveStreamFeatureCard.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
+import WatchColdStart from "~/components/watch/WatchColdStart.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -65,13 +66,17 @@ import {
     </div>
   </PageTransition>
 
+  <PageTransition v-if="feedIsEmpty" :delay="100" class="mt-6">
+    <WatchColdStart />
+  </PageTransition>
+
   <PageTransition :delay="125" class="mt-6">
     <OtherMatches
       :section-label="$t('pages.watch.section_live_matches')"
-      :empty-label="$t('pages.watch.no_live_matches')"
       :is-in-lineup="true"
       :show-pagination="false"
       :use-subscription="true"
+      hide-when-empty
       compact
       :limit="12"
       :exclude-ids="streamingMatchIds"
@@ -93,11 +98,9 @@ import {
         e_tournament_status_enum.Setup,
       ]"
       status-variant="registration"
-      :status-label="$t('pages.watch.upcoming')"
       order-direction="asc"
-      horizontal
       hide-when-empty
-      :limit="8"
+      :limit="3"
     />
   </PageTransition>
 
@@ -160,10 +163,44 @@ export default {
     return {
       liveTournaments: [] as any[],
       streamingMatches: [] as any[],
+      // null until the first result lands — the cold start must not flash
+      // in front of a feed that is about to render.
+      matchesCount: null as number | null,
+      tournamentsCount: null as number | null,
     };
   },
   apollo: {
     $subscribe: {
+      // Every section on this page hides itself when empty, so on a fresh
+      // install the page collapses to just the header. These two counts
+      // detect that state; they're subscriptions rather than queries so the
+      // cold start clears itself the moment the first match is created.
+      matchesCount: {
+        query: typedGql("subscription")({
+          matches_aggregate: [{}, { aggregate: { count: true } }],
+        }),
+        result({ data }: any) {
+          this.matchesCount = data?.matches_aggregate?.aggregate?.count ?? 0;
+        },
+        error(error: any) {
+          console.error("[watch] matches count subscription error:", error);
+        },
+      },
+      tournamentsCount: {
+        query: typedGql("subscription")({
+          tournaments_aggregate: [
+            { where: { _and: [NOT_LEAGUE_TOURNAMENT] } },
+            { aggregate: { count: true } },
+          ],
+        }),
+        result({ data }: any) {
+          this.tournamentsCount =
+            data?.tournaments_aggregate?.aggregate?.count ?? 0;
+        },
+        error(error: any) {
+          console.error("[watch] tournaments count subscription error:", error);
+        },
+      },
       liveTournaments: {
         query: typedGql("subscription")({
           tournaments: [
@@ -259,6 +296,9 @@ export default {
     },
     streamingMatchIds(): string[] {
       return (this.streamingMatches || []).map((m: any) => m.id);
+    },
+    feedIsEmpty(): boolean {
+      return this.matchesCount === 0 && this.tournamentsCount === 0;
     },
   },
 };

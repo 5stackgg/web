@@ -122,7 +122,10 @@ watch(
 
 <template>
   <div class="h-full w-full">
-    <LoadingScreen v-if="status === 'loading'" />
+    <!-- Sized to roughly what the remote occupies once mounted (the inventory
+         plugin embeds at 70dvh), so the spinner sits where the plugin will be
+         and the tab doesn't jump when it swaps in. -->
+    <LoadingScreen v-if="status === 'loading'" class="min-h-[70dvh]" />
 
     <component
       :is="RemoteComponent"

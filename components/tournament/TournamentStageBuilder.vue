@@ -128,7 +128,7 @@ import {
             class="flex min-w-0 flex-1 flex-nowrap gap-2 overflow-x-auto p-0 pb-1 bg-transparent border-none h-auto justify-start [scrollbar-width:thin]"
           >
             <TabsTrigger
-              v-for="stageNumber in maxStageNumber"
+              v-for="stageNumber in stageNumbers"
               :key="stageNumber"
               :value="`stage-${stageNumber}`"
               class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-3 !py-3 min-w-[200px] min-h-[72px] shrink-0 !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
@@ -373,7 +373,7 @@ import {
 
           <div :class="isFullscreen ? 'relative z-10 px-6 pb-6' : ''">
             <TabsContent
-              v-for="stageNumber in maxStageNumber"
+              v-for="stageNumber in stageNumbers"
               :key="stageNumber"
               :value="`stage-${stageNumber}`"
               class="mt-6"
@@ -410,7 +410,7 @@ import {
                 :label="$t('tournament.stage.add_another')"
               >
                 <TournamentStageForm
-                  :order="tournament.stages.length + 1"
+                  :order="maxStageNumber + 1"
                   :tournament-id="tournament.id"
                   :tournament="tournament"
                   @updated="handleStageCreated"
@@ -601,7 +601,7 @@ import {
 
       <!-- Edit Stage Sheets -->
       <Sheet
-        v-for="stageNumber in maxStageNumber"
+        v-for="stageNumber in stageNumbers"
         :key="`edit-${stageNumber}`"
         :open="editStageDialogs[stageNumber]"
         @update:open="(open) => (editStageDialogs[stageNumber] = open)"
@@ -630,7 +630,7 @@ import {
 
       <!-- Delete Stage Dialogs -->
       <AlertDialog
-        v-for="stageNumber in maxStageNumber"
+        v-for="stageNumber in stageNumbers"
         :key="`delete-${stageNumber}`"
         :open="!!deleteAlertDialogs[stageNumber]"
         @update:open="(open) => (deleteAlertDialogs[stageNumber] = open)"
@@ -666,7 +666,7 @@ import {
       >
         <TournamentStageForm
           :tournament="tournament"
-          :order="tournament.stages.length + 1"
+          :order="maxStageNumber + 1"
           @updated="handleStageCreated"
         ></TournamentStageForm>
       </Card>
@@ -701,12 +701,18 @@ export default {
     };
   },
   computed: {
+    stageNumbers(): Array<number> {
+      const orders = new Set<number>(
+        (this.tournament.stages || []).map((s: any) => s.order || 1),
+      );
+      return [...orders].sort((a, b) => a - b);
+    },
     maxStageNumber() {
       if (!this.tournament.stages?.length) return 0;
       return Math.max(...this.tournament.stages.map((s: any) => s.order || 1));
     },
     shouldShowTabs() {
-      return this.maxStageNumber > 1 || this.canEditStages;
+      return this.stageNumbers.length > 1 || this.canEditStages;
     },
     canEditStages() {
       return (
@@ -729,7 +735,20 @@ export default {
       return this.getFirstStageForTab(this.activeStageNumber);
     },
     firstStage() {
-      return this.getFirstStageForTab(1);
+      return this.getFirstStageForTab(this.stageNumbers[0]);
+    },
+  },
+  watch: {
+    stageNumbers: {
+      immediate: true,
+      handler(stageNumbers: Array<number>) {
+        if (!stageNumbers.length || this.activeTab === "add-stage") {
+          return;
+        }
+        if (!stageNumbers.includes(this.activeStageNumber)) {
+          this.activeTab = `stage-${stageNumbers[0]}`;
+        }
+      },
     },
   },
   methods: {

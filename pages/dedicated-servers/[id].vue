@@ -257,16 +257,18 @@ const titleClasses =
     :delay="300"
     class="mt-8"
   >
-    <div
-      class="mb-3 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-    >
-      <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-      {{ $t("ui.logs.title") }}
+    <div>
+      <div
+        class="mb-3 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+      >
+        <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+        {{ $t("ui.logs.title") }}
+      </div>
+      <ServiceLogs
+        :service="`dedicated-server-${$route.params.id}`"
+        :compact="true"
+      />
     </div>
-    <ServiceLogs
-      :service="`dedicated-server-${$route.params.id}`"
-      :compact="true"
-    />
   </PageTransition>
 
   <Sheet

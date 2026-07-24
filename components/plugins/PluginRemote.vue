@@ -15,7 +15,6 @@ import {
 } from "__federation__";
 import { usePluginsStore } from "~/stores/Plugins";
 import { useAuthStore } from "~/stores/AuthStore";
-import LoadingScreen from "~/components/LoadingScreen.vue";
 
 // Resolves a plugin by slug and mounts its remote. Routing is deliberately NOT
 // owned here — the caller passes `path`/`query`/`navigate`, because where a
@@ -122,10 +121,12 @@ watch(
 
 <template>
   <div class="h-full w-full">
-    <!-- Sized to roughly what the remote occupies once mounted (the inventory
-         plugin embeds at 70dvh), so the spinner sits where the plugin will be
-         and the tab doesn't jump when it swaps in. -->
-    <LoadingScreen v-if="status === 'loading'" class="min-h-[70dvh]" />
+    <!-- Deliberately empty. A plugin renders its own loading state (the
+         inventory plugin fades in a skeleton loadout), so a host spinner in
+         front of it read as two separate loads for one wait. This only holds
+         the height the remote will occupy while its bundle downloads, so the
+         page doesn't jump when it mounts. -->
+    <div v-if="status === 'loading'" class="min-h-[70dvh] w-full"></div>
 
     <component
       :is="RemoteComponent"

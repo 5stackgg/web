@@ -293,12 +293,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               map_pool: {
                 id: true,
                 type: true,
-                maps: {
-                  id: true,
-                  name: true,
-                  patch: true,
-                  poster: true,
-                },
+                maps: [{}, mapFields],
               },
             },
             match_maps: [
@@ -310,7 +305,13 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
                 lineup_2_side: true,
                 lineup_1_score: true,
                 lineup_2_score: true,
-                map: { id: true, name: true, patch: true, poster: true },
+                map: {
+                  id: true,
+                  name: true,
+                  label: true,
+                  patch: true,
+                  poster: true,
+                },
                 status: true,
                 is_current_map: true,
                 winning_lineup_id: true,

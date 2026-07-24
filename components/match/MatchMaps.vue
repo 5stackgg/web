@@ -27,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "~/components/ui/dropdown-menu";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 </script>
 
 <template>
@@ -60,7 +60,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         <span
           class="text-[11px] font-bold text-white/90 uppercase tracking-widest drop-shadow-lg"
         >
-          {{ cleanMapName(matchMap.map.name) }}
+          {{ mapLabel(matchMap.map) }}
         </span>
       </div>
       <!-- Patch centered -->

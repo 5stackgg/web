@@ -27,6 +27,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Spinner } from "~/components/ui/spinner";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import mapLabel from "~/utilities/mapLabel";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
@@ -746,12 +747,12 @@ const start = () => {
                   v-if="m.map?.poster"
                   :src="m.map.poster"
                   class="h-full w-full object-cover"
-                  :alt="m.map?.name"
+                  :alt="mapLabel(m.map)"
                 />
                 <span
                   class="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1 text-center font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-white"
                 >
-                  {{ m.map?.name }}
+                  {{ mapLabel(m.map) }}
                 </span>
               </div>
             </div>

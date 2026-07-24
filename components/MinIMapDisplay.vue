@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 </script>
 
 <template>
@@ -10,12 +10,12 @@ import cleanMapName from "~/utilities/cleanMapName";
     <img
       v-if="map.patch"
       :src="map.patch"
-      :alt="map.name"
+      :alt="mapLabel(map)"
       class="w-5 h-5"
       @error="($event.target as HTMLImageElement).style.display = 'none'"
     />
     <span class="text-xs font-medium first-letter:uppercase">{{
-      cleanMapName(map.name)
+      mapLabel(map)
     }}</span>
   </div>
 </template>

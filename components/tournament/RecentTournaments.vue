@@ -244,7 +244,11 @@ const shouldRender = computed(() => {
       v-if="loading && horizontal"
       class="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
-      <Skeleton v-for="i in 4" :key="i" class="h-20 w-80 shrink-0 rounded-md" />
+      <Skeleton
+        v-for="i in 4"
+        :key="i"
+        class="aspect-video w-96 shrink-0 rounded-md"
+      />
     </div>
 
     <div v-else-if="loading" class="space-y-2">
@@ -266,7 +270,7 @@ const shouldRender = computed(() => {
         :tournament="tournament"
         :status-variant="statusVariant"
         :status-label="statusLabel"
-        class="w-80 shrink-0 snap-start"
+        class="aspect-video w-96 shrink-0 snap-start"
       />
     </HorizontalScrollRow>
 

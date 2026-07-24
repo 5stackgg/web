@@ -2169,7 +2169,16 @@
       "section_recent_tournaments": "RECENT.TOURNAMENTS",
       "section_recent_highlights": "RECENT.HIGHLIGHTS",
       "no_live_matches": "STANDBY · NO LIVE MATCHES",
-      "upcoming": "Upcoming"
+      "cold_start": {
+        "title": "Nothing on the scope",
+        "description": "No live matches, no tournaments, nothing in the books yet. Start a match and this page fills in on its own — scores as they happen, then highlights and demos once it wraps.",
+        "cta": "Start Playing",
+        "cta_guest": "Sign in to play",
+        "channel_matches": "Live matches",
+        "channel_tournaments": "Tournaments",
+        "channel_highlights": "Highlights",
+        "channel_status": "Awaiting signal"
+      }
     },
     "highlights": {
       "title": "Highlights",
@@ -2579,6 +2588,7 @@
     "play": {
       "title": "Play",
       "open_registration_tournaments": {
+        "section_label": "TOURNAMENTS",
         "description": "Tournaments that are open for registration for anyone to join."
       },
       "matchmaking": {

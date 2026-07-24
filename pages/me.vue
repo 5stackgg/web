@@ -26,5 +26,5 @@ definePageMeta({
 </script>
 
 <template>
-  <LoadingScreen />
+  <LoadingScreen class="min-h-screen" />
 </template>

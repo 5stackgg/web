@@ -52,6 +52,20 @@ const bannerUrl = computed(() => {
   return `https://${runtimeConfig.public.apiDomain}/${banner}`;
 });
 
+// Deterministic gradient keyed on the id so bannerless tournaments still fill
+// the card instead of reading as an empty box (mirrors TournamentFeatureCard).
+const fallbackGradient = computed(() => {
+  const id = String(props.tournament?.id ?? "");
+  let h = 0;
+  for (let i = 0; i < id.length; i++) {
+    h = (h * 31 + id.charCodeAt(i)) % 360;
+  }
+  const a = h;
+  const b = (h + 70) % 360;
+  const c = (h + 200) % 360;
+  return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.5), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.4), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.35), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.28) 0 20px, transparent 20px 40px)`;
+});
+
 const categories = computed(() => props.tournament?.categories || []);
 const visibleCategories = computed(() => categories.value.slice(0, 2));
 const hiddenCategoryCount = computed(() =>
@@ -64,6 +78,7 @@ const teamsCount = computed(
 
 const isLive = computed(() => props.statusVariant === "live");
 const isFinished = computed(() => props.statusVariant === "finished");
+const isRegistration = computed(() => props.statusVariant === "registration");
 
 function teamNameForTrophy(trophy: any): string | null {
   return (
@@ -156,7 +171,10 @@ const statusChipClasses = computed(() => {
   if (isFinished.value) {
     return "border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]";
   }
-  return "border-border/70 bg-muted/35 text-muted-foreground";
+  if (isRegistration.value) {
+    return "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]";
+  }
+  return "border-border bg-muted/50 text-foreground/80";
 });
 
 const cardChromeClasses = computed(() => {
@@ -164,6 +182,9 @@ const cardChromeClasses = computed(() => {
     return "border-[hsl(var(--tac-amber)/0.36)] hover:border-[hsl(var(--tac-amber)/0.62)] hover:shadow-[0_0_20px_hsl(var(--tac-amber)/0.1)]";
   }
   if (isFinished.value) {
+    return "border-[hsl(var(--tac-amber)/0.28)] hover:border-[hsl(var(--tac-amber)/0.5)] hover:shadow-[0_0_16px_hsl(var(--tac-amber)/0.08)]";
+  }
+  if (isRegistration.value) {
     return "border-[hsl(var(--tac-amber)/0.28)] hover:border-[hsl(var(--tac-amber)/0.5)] hover:shadow-[0_0_16px_hsl(var(--tac-amber)/0.08)]";
   }
   return "border-border/70 hover:border-border hover:shadow-[0_0_16px_hsl(var(--muted-foreground)/0.06)]";
@@ -174,6 +195,7 @@ const accentRailClasses = computed(() => {
     return "bg-[hsl(var(--tac-amber))] shadow-[0_0_14px_hsl(var(--tac-amber)/0.5)]";
   }
   if (isFinished.value) return "bg-[hsl(var(--tac-amber)/0.5)]";
+  if (isRegistration.value) return "bg-[hsl(var(--tac-amber)/0.5)]";
   return "bg-muted-foreground/35";
 });
 
@@ -246,13 +268,20 @@ const runnerUps = computed(() => {
         :src="bannerUrl"
         :alt="tournament.name"
         aria-hidden="true"
-        class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.14]"
+        class="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-40"
       />
       <span
         aria-hidden="true"
-        class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.82)_100%)]"
+        class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,hsl(var(--card)/0.88)_0%,hsl(var(--card)/0.5)_45%,hsl(var(--card)/0.92)_100%)]"
       ></span>
     </template>
+
+    <span
+      v-else
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 -z-10"
+      :style="{ background: fallbackGradient }"
+    ></span>
 
     <span
       aria-hidden="true"
@@ -407,7 +436,7 @@ const runnerUps = computed(() => {
 
     <div
       v-else
-      class="flex flex-1 items-center justify-between gap-3 px-3 py-2.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+      class="flex flex-1 items-end justify-between gap-3 px-3 py-2.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
     >
       <span class="inline-flex items-center gap-1.5">
         <UsersRound class="h-3 w-3" />

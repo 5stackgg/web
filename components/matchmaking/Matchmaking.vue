@@ -185,6 +185,7 @@ const mmCardPending =
             v-for="type in allowedMatchTypes"
             :key="type.value"
             type="button"
+            :disabled="!canQueueType(type.value)"
             :class="[
               mmCardBase,
               'transition-all duration-300 ease-out',
@@ -194,7 +195,10 @@ const mmCardPending =
                 pendingMatchType !== type.value &&
                 'opacity-40 scale-95',
               (!pendingMatchType || pendingMatchType === type.value) &&
+                canQueueType(type.value) &&
                 'hover:scale-[1.015]',
+              !canQueueType(type.value) &&
+                '!cursor-not-allowed opacity-45 grayscale hover:!border-border hover:!shadow-none',
             ]"
             @click="handleMatchTypeClick(type.value)"
           >
@@ -254,11 +258,28 @@ const mmCardPending =
                   :key="`idle-${type.value}`"
                   class="m-0 text-[0.78rem] leading-[1.5] text-muted-foreground"
                 >
-                  {{
-                    $t(
-                      `matchmaking.match_types.${type.value.toLowerCase()}.description`,
-                    )
-                  }}
+                  <template v-if="canQueueType(type.value)">
+                    {{
+                      $t(
+                        `matchmaking.match_types.${type.value.toLowerCase()}.description`,
+                      )
+                    }}
+                  </template>
+                  <template v-else>
+                    <span class="block font-medium text-destructive">
+                      {{
+                        $t("matchmaking.party_size.unavailable", {
+                          size: partySize,
+                        })
+                      }}
+                    </span>
+                    {{
+                      $t("matchmaking.party_size.requirement", {
+                        half: expectedPlayers(type.value) / 2,
+                        full: expectedPlayers(type.value),
+                      })
+                    }}
+                  </template>
                 </p>
                 <div
                   v-else
@@ -303,6 +324,10 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum, e_match_status_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import {
+  EXPECTED_PLAYERS,
+  canPartyQueue,
+} from "~/utilities/matchmakingPartySize";
 
 interface Region {
   value: string;
@@ -415,6 +440,12 @@ export default {
     isMatchmakingTypeEnabled(matchType: string): boolean {
       return useApplicationSettingsStore().isMatchmakingTypeEnabled(matchType);
     },
+    expectedPlayers(type: e_match_types_enum): number {
+      return EXPECTED_PLAYERS[type] ?? 0;
+    },
+    canQueueType(type: e_match_types_enum): boolean {
+      return canPartyQueue(type, this.partySize);
+    },
     distinctInQueue(type: e_match_types_enum, regionValues: string[]): number {
       const lobbyIndexes = new Set<number>();
       for (const regionValue of regionValues) {
@@ -439,6 +470,16 @@ export default {
     handleMatchTypeClick(matchType: e_match_types_enum): void {
       if (!this.me?.steam_id) {
         navigateTo("/login?redirect=/play");
+        return;
+      }
+      if (!this.canQueueType(matchType)) {
+        toast({
+          title: this.$t("matchmaking.party_size.requirement", {
+            half: this.expectedPlayers(matchType) / 2,
+            full: this.expectedPlayers(matchType),
+          }) as string,
+          variant: "destructive",
+        });
         return;
       }
       if (this.preferredRegions.length === 0) {
@@ -499,6 +540,15 @@ export default {
     },
     isInQueue(): boolean {
       return !!this.matchMakingQueueDetails;
+    },
+    // Only accepted lobby members queue — pending invites don't count, which is
+    // how the api sizes the lobby too.
+    partySize(): number {
+      const lobby = useMatchmakingStore().currentLobby as any;
+      const accepted = lobby?.players?.filter(
+        (player: { status: string }) => player.status === "Accepted",
+      );
+      return accepted?.length || 1;
     },
     preferredRegions(): Region[] {
       return useMatchmakingStore().preferredRegions;

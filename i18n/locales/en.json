@@ -5519,7 +5519,11 @@
       "toggle": "Adjust Settings"
     },
     "high_latency_warning": "Your latency is too high for competitive matches",
-    "no_preferred_regions": "Please select at least one preferred region in matchmaking settings"
+    "no_preferred_regions": "Please select at least one preferred region in matchmaking settings",
+    "party_size": {
+      "unavailable": "Party of {size} can't queue this mode",
+      "requirement": "Queue with {half} or fewer, or exactly {full} players"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",

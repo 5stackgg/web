@@ -1,15 +1,13 @@
 import { e_match_types_enum } from "~/generated/zeus";
 
 /**
- * Total players a match type needs (both lineups combined).
- * Mirrors `ExpectedPlayers` on the api.
+ * Total players a queueable match type needs (both lineups combined).
+ * Premier and Faceit are demo-import only — they are never matchmade.
  */
 export const EXPECTED_PLAYERS: Partial<Record<e_match_types_enum, number>> = {
   [e_match_types_enum.Duel]: 2,
   [e_match_types_enum.Wingman]: 4,
   [e_match_types_enum.Competitive]: 10,
-  [e_match_types_enum.Premier]: 10,
-  [e_match_types_enum.Faceit]: 10,
 };
 
 /**

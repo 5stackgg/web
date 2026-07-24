@@ -57,6 +57,8 @@ const props = withDefaults(
   },
 );
 
+const emit = defineEmits<{ loaded: [count: number] }>();
+
 const tournaments = ref<any[]>([]);
 const loading = ref(true);
 
@@ -165,6 +167,7 @@ async function fetchData() {
   } finally {
     loading.value = false;
     inFlight.value = false;
+    emit("loaded", tournaments.value.length);
   }
 }
 

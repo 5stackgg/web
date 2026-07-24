@@ -340,6 +340,19 @@ const drilldownLabel = computed(() => {
   }
 });
 
+// Section counts reported by RecentTournaments — null while it is still
+// fetching, so the curated empty state never claims "no tournaments"
+// before every section has answered.
+const upcomingCount = ref<number | null>(null);
+const recentCount = ref<number | null>(null);
+
+const curatedSectionsSettled = computed(
+  () => upcomingCount.value !== null && recentCount.value !== null,
+);
+const curatedSectionsEmpty = computed(
+  () => upcomingCount.value === 0 && recentCount.value === 0,
+);
+
 const seeAllRegistration = {
   path: "/tournaments",
   query: { status: "registration" },
@@ -533,10 +546,20 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
   <!-- Curated section view (no active filters) -->
   <template v-else>
     <PageTransition
-      v-if="
-        !loadingLive &&
+      v-if="curatedLoading || !curatedSectionsSettled"
+      :delay="100"
+      class="mt-6"
+    >
+      <div class="space-y-4">
+        <Skeleton v-for="i in 3" :key="i" class="h-40 w-full rounded-md" />
+      </div>
+    </PageTransition>
+
+    <PageTransition
+      v-else-if="
         liveTournaments.length === 0 &&
-        registrationOpenTournaments.length === 0
+        registrationOpenTournaments.length === 0 &&
+        curatedSectionsEmpty
       "
       :delay="100"
       class="mt-6"
@@ -617,6 +640,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
         hide-when-empty
         :limit="4"
         :see-all-to="seeAllUpcoming"
+        @loaded="(count) => (upcomingCount = count)"
       />
     </PageTransition>
 
@@ -635,6 +659,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
         hide-when-empty
         :limit="12"
         :see-all-to="seeAllFinished"
+        @loaded="(count) => (recentCount = count)"
       />
     </PageTransition>
   </template>
@@ -651,6 +676,7 @@ export default {
       liveTournaments: [] as any[],
       registrationOpenTournaments: [] as any[],
       loadingLive: true,
+      loadingRegistrationOpen: true,
     };
   },
   apollo: {
@@ -722,11 +748,15 @@ export default {
         },
         result: function ({ data }: { data: any }) {
           this.registrationOpenTournaments = data?.tournaments || [];
+          this.loadingRegistrationOpen = false;
         },
       },
     },
   },
   computed: {
+    curatedLoading() {
+      return this.loadingLive || this.loadingRegistrationOpen;
+    },
     canCreateTournament() {
       const me = useAuthStore().me;
       if (!me) {

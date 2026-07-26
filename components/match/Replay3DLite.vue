@@ -116,6 +116,9 @@ const props = defineProps<{
   // Per-smoke density fields measured against the map's collision mesh
   // (blob v9+). Absent on older blobs, which fall back to a sphere of puffs.
   smokeVolumes?: SmokeVolume[];
+  // steam_id → avatar URL. The same map the scoreboard uses; the pins draw the
+  // real player photo rather than a placeholder.
+  avatars?: Record<string, string>;
   // Per-molotov flame positions and lifetimes, straight off the demo.
   infernos?: Inferno[];
   // The playback tick, needed to pick which flames are alight. Supplied by the
@@ -689,6 +692,23 @@ onMounted(() => {
   // changes silhouette as the camera orbits, which makes players harder to
   // track; a billboard looks identical from every angle and stays legible when
   // the camera is low or far away.
+  // Avatar images, loaded once and shared by every pin that needs them.
+  const avatarImgs = new Map<string, HTMLImageElement>();
+  function avatarImage(url: string): HTMLImageElement | null {
+    let img = avatarImgs.get(url);
+    if (!img) {
+      img = new Image();
+      img.crossOrigin = "anonymous";
+      (img as any).__ready = false;
+      img.onload = () => {
+        (img as any).__ready = true;
+      };
+      img.src = url;
+      avatarImgs.set(url, img);
+    }
+    return (img as any).__ready ? img : null;
+  }
+
   function makeAvatarPin() {
     const cv = document.createElement("canvas");
     cv.width = cv.height = 128;
@@ -702,51 +722,75 @@ onMounted(() => {
       }),
     );
     sp.renderOrder = 1000;
-    // Redrawn only when the colour or state changes, not per frame.
     sp.userData.key = "";
-    sp.userData.paint = (hex: number, alive: boolean, dim: number) => {
-      const key = `${hex}|${alive}|${dim.toFixed(2)}`;
+    sp.userData.paint = (
+      hex: number,
+      alive: boolean,
+      dim: number,
+      url: string | null,
+    ) => {
+      const img = url ? avatarImage(url) : null;
+      // The image is part of the key so the pin repaints once it finishes
+      // loading rather than staying on the placeholder.
+      const key = `${hex}|${alive}|${dim.toFixed(2)}|${img ? url : ""}`;
       if (sp.userData.key === key) return;
       sp.userData.key = key;
+
       const x = cv.getContext("2d")!;
       x.clearRect(0, 0, 128, 128);
       const col = "#" + hex.toString(16).padStart(6, "0");
       const cx = 64;
-      const cy = 54;
-      const r = 36;
+      const cy = 52;
+      const r = 34;
 
       // Pointer tail, so the disc reads as anchored to a spot on the ground
       // rather than floating above it.
+      x.globalAlpha = dim;
       x.beginPath();
-      x.moveTo(cx - 13, cy + r - 6);
-      x.lineTo(cx + 13, cy + r - 6);
-      x.lineTo(cx, cy + r + 22);
+      x.moveTo(cx - 11, cy + r - 5);
+      x.lineTo(cx + 11, cy + r - 5);
+      x.lineTo(cx, cy + r + 20);
       x.closePath();
       x.fillStyle = col;
-      x.globalAlpha = dim;
       x.fill();
 
-      // Body, then a thick team ring around it.
+      // Photo, clipped to the disc.
+      x.save();
+      x.beginPath();
+      x.arc(cx, cy, r - 3, 0, Math.PI * 2);
+      x.clip();
+      x.fillStyle = "#14161a";
+      x.fillRect(cx - r, cy - r, r * 2, r * 2);
+      if (img) {
+        x.globalAlpha = dim * (alive ? 1 : 0.45);
+        x.drawImage(img, cx - r + 3, cy - r + 3, (r - 3) * 2, (r - 3) * 2);
+      } else {
+        // Placeholder bust until the photo arrives.
+        x.globalAlpha = dim * (alive ? 0.75 : 0.35);
+        x.fillStyle = col;
+        x.beginPath();
+        x.arc(cx, cy - 7, 11, 0, Math.PI * 2);
+        x.fill();
+        x.beginPath();
+        x.ellipse(cx, cy + 19, 18, 14, 0, Math.PI, 0, true);
+        x.fill();
+      }
+      x.restore();
+
+      // Team ring last, over the photo's edge.
+      x.globalAlpha = dim;
       x.beginPath();
       x.arc(cx, cy, r, 0, Math.PI * 2);
-      x.fillStyle = alive ? "rgba(18,20,24,0.92)" : "rgba(12,13,16,0.72)";
-      x.fill();
-      x.lineWidth = 9;
+      x.lineWidth = 7;
       x.strokeStyle = col;
       x.stroke();
-
-      // Placeholder bust, until avatars are plumbed through.
-      x.globalAlpha = dim * (alive ? 0.9 : 0.4);
-      x.fillStyle = col;
-      x.beginPath();
-      x.arc(cx, cy - 8, 12, 0, Math.PI * 2);
-      x.fill();
-      x.beginPath();
-      x.ellipse(cx, cy + 20, 20, 15, 0, Math.PI, 0, true);
-      x.fill();
       x.globalAlpha = 1;
       tex.needsUpdate = true;
     };
+    // Bloom triggers above 1.0 in linear space, and a sprite drawn at full
+    // brightness lands right on that line. Holding the pin slightly under keeps
+    // the photo crisp instead of smearing into a glowing blob.
+    sp.material.color.setScalar(0.82);
     return sp;
   }
 
@@ -764,7 +808,7 @@ onMounted(() => {
       }),
     );
     sp.scale.set(PH * 1.85, PH * 0.46, 1);
-    sp.position.y = PH * 1.66;
+    sp.position.y = PH * 1.15;
     sp.renderOrder = 1002;
     let last = "";
     return {
@@ -803,7 +847,7 @@ onMounted(() => {
       }),
     );
     sp.scale.set(PH * 1.75, PH * 0.355, 1);
-    sp.position.y = PH * 1.36;
+    sp.position.y = PH * 0.88;
     sp.renderOrder = 1001;
     let lh = -2,
       la = -2;
@@ -894,6 +938,9 @@ onMounted(() => {
   ];
   const geoPin = new THREE.LatheGeometry(pinProfile, 22);
   const geoRing = new THREE.RingGeometry(RING, RING * 1.22, 28);
+  // Broken into arcs so it reads as a targeting reticle rather than a plain
+  // circle, and so the rotation is visible.
+  const geoSelRing = new THREE.RingGeometry(RING * 1.55, RING * 1.95, 32, 1, 0, Math.PI * 1.55);
   // sharp forward-pointing aim wedge on the floor (the direction cue; shares ringMat)
   const geoAim = new THREE.BufferGeometry();
   geoAim.setAttribute(
@@ -978,8 +1025,11 @@ onMounted(() => {
     // from every angle — but the floor ring and aim wedge below still carry
     // position and facing, which a camera-facing disc cannot.
     const avatar = makeAvatarPin();
-    avatar.scale.set(PH * 1.5, PH * 1.5, 1);
-    avatar.position.y = PH * 1.5;
+    // Pin on top, then weapon, name, health going down — they used to occupy
+    // overlapping bands of the same column, so the avatar sat underneath the
+    // icons and nothing was readable.
+    avatar.scale.set(PH * 1.15, PH * 1.15, 1);
+    avatar.position.y = PH * 2.35;
     grp.add(avatar);
     // floor aim wedge (team colour) + position ring
     const aim = new THREE.Mesh(geoAim, ringMat);
@@ -991,6 +1041,26 @@ onMounted(() => {
     ring.position.y = 2;
     ring.renderOrder = 989;
     grp.add(ring);
+
+    // Selection ring. Sits under the focused player only, larger than the
+    // position ring, slowly rotating and breathing so the eye is drawn to it —
+    // picking a player previously changed the camera and nothing else, which
+    // left no way to tell who was selected once the camera settled.
+    const selRing = new THREE.Mesh(
+      geoSelRing,
+      new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+        depthTest: false,
+      }),
+    );
+    selRing.rotation.x = -Math.PI / 2;
+    selRing.position.y = 2.5;
+    selRing.renderOrder = 988;
+    selRing.visible = false;
+    grp.add(selRing);
     const np = makeNameplate();
     grp.add(np.sprite);
     const hp = makeHp();
@@ -999,7 +1069,7 @@ onMounted(() => {
       new THREE.SpriteMaterial({ depthTest: false, transparent: true }),
     );
     wpn.scale.set(PH * 0.95, PH * 0.47, 1);
-    wpn.position.y = PH * 1.96;
+    wpn.position.y = PH * 1.5;
     wpn.renderOrder = 1002;
     wpn.visible = false;
     grp.add(wpn);
@@ -1018,7 +1088,7 @@ onMounted(() => {
     grp.add(flash);
     grp.visible = false;
     scene.add(grp);
-    return { grp, mat, ringMat, np, hp, wpn, flash, avatar };
+    return { grp, mat, ringMat, np, hp, wpn, flash, avatar, selRing };
   }
   const tokens = Array.from({ length: 12 }, buildToken);
   // Per-player health, so a drop between samples can be read as a hit.
@@ -1055,7 +1125,7 @@ onMounted(() => {
     ring.renderOrder = 991;
     grp.add(ring);
     const np = makeNameplate();
-    np.sprite.position.y = PH * 1.05;
+    np.sprite.position.y = PH * 1.15;
     np.sprite.scale.multiplyScalar(0.8);
     grp.add(np.sprite);
     grp.visible = false;
@@ -1837,8 +1907,13 @@ onMounted(() => {
     });
   // Tube tessellation, shared with the draw-range slicing that reveals the
   // trail as the grenade flies.
-  const ARC_SEGMENTS = 32;
+  // More segments than before: the trail is revealed a whole segment at a time,
+  // so segment count *is* the smoothness of the reveal. 32 was coarse enough to
+  // see the line jump forward in steps.
+  const ARC_SEGMENTS = 96;
   const ARC_RADIAL = 6;
+  // Thin. A grenade leaves a trail, not a pipe.
+  const ARC_RADIUS_MUL = 0.42;
 
   const arcs = Array.from({ length: 12 }, () => {
     const m = new THREE.Mesh(new THREE.BufferGeometry(), arcMat());
@@ -1979,8 +2054,23 @@ onMounted(() => {
         hurt > 0.05 ? 0xff2a20 : col,
         p.alive,
         p.alive ? 1 : 0.45,
+        props.avatars?.[p.steamId] ?? null,
       );
       tk.ringMat.color.setHex(col);
+
+      // Selection state: rotate and breathe, so the focused player is obvious
+      // at a glance without washing out everything around them.
+      const isFocused = !!props.focused && p.steamId === props.focused;
+      tk.selRing.visible = isFocused && p.alive;
+      if (tk.selRing.visible) {
+        const sm = tk.selRing.material as THREE.MeshBasicMaterial;
+        sm.color.setHex(col);
+        const beat = 0.5 + 0.5 * Math.sin(performance.now() * 0.004);
+        sm.opacity = 0.45 + 0.35 * beat;
+        tk.selRing.rotation.z = performance.now() * 0.0012;
+        const sc = 1 + 0.06 * beat;
+        tk.selRing.scale.set(sc, sc, 1);
+      }
       // blinded: wash the body toward white + raise the flash icon over the head
       const bl = (p as any).blinded ?? 0;
       if (bl > 0.05) tk.mat.color.lerp(WHITE, Math.min(0.85, bl * 0.9));
@@ -2404,8 +2494,8 @@ onMounted(() => {
         arc.geometry = new THREE.TubeGeometry(
           arc.userData.curve,
           ARC_SEGMENTS,
-          6 * U + 1.5,
-          6,
+          (6 * U + 1.5) * ARC_RADIUS_MUL,
+          ARC_RADIAL,
           false,
         );
       }
@@ -2418,7 +2508,13 @@ onMounted(() => {
       // of the index buffer is exactly the flown portion — which turns a static
       // line into the nade drawing its own arc as it travels.
       const prog = Math.max(0, Math.min(1, g.progress));
-      const flownSegs = Math.max(1, Math.ceil(prog * ARC_SEGMENTS));
+      // Quantise to whole tube segments and drive BOTH the trail and the
+      // grenade from that same value. Revealing the trail by a rounded segment
+      // count while positioning the head at the exact fraction let the grenade
+      // run ahead of its own trail, which read as the nade arriving before the
+      // line caught up.
+      const flownSegs = Math.max(1, Math.round(prog * ARC_SEGMENTS));
+      const flownT = flownSegs / ARC_SEGMENTS;
       arc.geometry.setDrawRange(0, flownSegs * ARC_RADIAL * 6);
 
       const m = arc.material as THREE.MeshStandardMaterial;
@@ -2427,7 +2523,7 @@ onMounted(() => {
       // the grenade model rides the SAME curve as the line (so it never drifts
       // off onto its own path).
       const nm = projs[i];
-      curve.getPoint(prog, _v);
+      curve.getPoint(flownT, _v);
       nm.grp.visible = true;
       nm.grp.position.copy(_v);
       for (const k in nm.models) nm.models[k].visible = k === g.type;
@@ -2437,7 +2533,7 @@ onMounted(() => {
       const gl: any = arcHeads[i];
       gl.visible = true;
       gl.position.copy(_v);
-      const gs = (26 + 10 * Math.sin(prog * 22)) * U;
+      const gs = (26 + 10 * Math.sin(flownT * 22)) * U;
       gl.scale.set(gs, gs, 1);
       gl.material.color.setHex(hex);
       gl.material.opacity = 0.55;
@@ -2570,9 +2666,15 @@ onMounted(() => {
     composer = new EffectComposer(renderer);
     composer.setPixelRatio(FX_PIXEL_RATIO);
     composer.addPass(new RenderPass(scene, camera));
-    // strength, radius, threshold. The threshold is the important one: team
-    // colours and nameplates sit below it, fire and flashes above.
-    bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.75, 0.7, 0.94);
+    // strength, radius, threshold.
+    //
+    // The threshold has to sit ABOVE 1.0. Bloom runs on the linear HDR target
+    // before tone mapping, where a plain white UI sprite — a nameplate, a
+    // weapon icon, a health bar — is already 1.0. A threshold below that blooms
+    // the entire HUD, which is exactly what happened at 0.94. Only genuinely
+    // over-bright things get past this: additive fire and muzzle flashes stack
+    // well beyond 1.0, ordinary white does not.
+    bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.65, 1.15);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
   } catch (err) {

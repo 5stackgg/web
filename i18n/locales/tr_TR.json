@@ -3170,7 +3170,14 @@
       "identity": "Identity",
       "appearance": "Appearance",
       "rules": "Rules",
-      "artwork_after_save": "Save the award first, then upload its artwork."
+      "artwork_after_save": "Save the award first, then upload its artwork.",
+      "scope_global": "General",
+      "scope_tournament": "Tournament",
+      "scope_event": "Event",
+      "scope_season": "Season",
+      "scope_league": "League",
+      "season_label": "Season {number}",
+      "scope_gone": "Unknown"
     }
   },
   "custom_match": {

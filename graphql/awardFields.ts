@@ -11,6 +11,33 @@ export const awardDefinitionFields = Selector("awards")({
   allow_multiple: true,
 });
 
+// The catalog groups by what an award belongs to, so it pulls the scope
+// columns and enough of each owner to label the group.
+export const awardCatalogFields = Selector("awards")({
+  ...awardDefinitionFields,
+  tournament_id: true,
+  event_id: true,
+  season_id: true,
+  league_season_id: true,
+  tournament: {
+    id: true,
+    name: true,
+  },
+  event: {
+    id: true,
+    name: true,
+  },
+  season: {
+    id: true,
+    number: true,
+  },
+  league_season: {
+    id: true,
+    name: true,
+    season_number: true,
+  },
+});
+
 export const awardFields = Selector("award_recipients")({
   id: true,
   award_id: true,

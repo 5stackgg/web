@@ -289,6 +289,9 @@ async function submit() {
             {
               award_id: $("award_id", "uuid!"),
               tournament_id: $("tournament_id", "uuid"),
+              season_id: $("season_id", "uuid"),
+              event_id: $("event_id", "uuid"),
+              league_season_id: $("league_season_id", "uuid"),
               player_steam_id: $("player_steam_id", "String"),
               team_id: $("team_id", "uuid"),
               note: $("note", "String"),
@@ -299,6 +302,9 @@ async function submit() {
         variables: {
           award_id: id,
           tournament_id: props.tournamentId,
+          season_id: props.seasonId,
+          event_id: props.eventId,
+          league_season_id: props.leagueSeasonId,
           player_steam_id:
             recipient.value.kind === "player"
               ? String(recipient.value.player.steam_id)

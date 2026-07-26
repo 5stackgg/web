@@ -312,12 +312,18 @@ export const AllTypesProps: Record<string,any> = {
 		awarded_by:"players_bool_exp",
 		awarded_by_steam_id:"bigint_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		event:"events_bool_exp",
+		event_id:"uuid_comparison_exp",
 		id:"uuid_comparison_exp",
+		league_season:"league_seasons_bool_exp",
+		league_season_id:"uuid_comparison_exp",
 		note:"String_comparison_exp",
 		placement:"Int_comparison_exp",
 		placement_tier:"String_comparison_exp",
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
+		season:"seasons_bool_exp",
+		season_id:"uuid_comparison_exp",
 		source:"e_award_sources_enum_comparison_exp",
 		team:"teams_bool_exp",
 		team_id:"uuid_comparison_exp",
@@ -338,9 +344,15 @@ export const AllTypesProps: Record<string,any> = {
 		awarded_by:"players_obj_rel_insert_input",
 		awarded_by_steam_id:"bigint",
 		created_at:"timestamptz",
+		event:"events_obj_rel_insert_input",
+		event_id:"uuid",
 		id:"uuid",
+		league_season:"league_seasons_obj_rel_insert_input",
+		league_season_id:"uuid",
 		player:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
+		season:"seasons_obj_rel_insert_input",
+		season_id:"uuid",
 		source:"e_award_sources_enum",
 		team:"teams_obj_rel_insert_input",
 		team_id:"uuid",
@@ -354,11 +366,14 @@ export const AllTypesProps: Record<string,any> = {
 		award_id:"order_by",
 		awarded_by_steam_id:"order_by",
 		created_at:"order_by",
+		event_id:"order_by",
 		id:"order_by",
+		league_season_id:"order_by",
 		note:"order_by",
 		placement:"order_by",
 		placement_tier:"order_by",
 		player_steam_id:"order_by",
+		season_id:"order_by",
 		team_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
@@ -367,11 +382,14 @@ export const AllTypesProps: Record<string,any> = {
 		award_id:"order_by",
 		awarded_by_steam_id:"order_by",
 		created_at:"order_by",
+		event_id:"order_by",
 		id:"order_by",
+		league_season_id:"order_by",
 		note:"order_by",
 		placement:"order_by",
 		placement_tier:"order_by",
 		player_steam_id:"order_by",
+		season_id:"order_by",
 		team_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
@@ -387,12 +405,18 @@ export const AllTypesProps: Record<string,any> = {
 		awarded_by:"players_order_by",
 		awarded_by_steam_id:"order_by",
 		created_at:"order_by",
+		event:"events_order_by",
+		event_id:"order_by",
 		id:"order_by",
+		league_season:"league_seasons_order_by",
+		league_season_id:"order_by",
 		note:"order_by",
 		placement:"order_by",
 		placement_tier:"order_by",
 		player:"players_order_by",
 		player_steam_id:"order_by",
+		season:"seasons_order_by",
+		season_id:"order_by",
 		source:"order_by",
 		team:"teams_order_by",
 		team_id:"order_by",
@@ -410,8 +434,11 @@ export const AllTypesProps: Record<string,any> = {
 		award_id:"uuid",
 		awarded_by_steam_id:"bigint",
 		created_at:"timestamptz",
+		event_id:"uuid",
 		id:"uuid",
+		league_season_id:"uuid",
 		player_steam_id:"bigint",
+		season_id:"uuid",
 		source:"e_award_sources_enum",
 		team_id:"uuid",
 		tournament_id:"uuid",
@@ -440,8 +467,11 @@ export const AllTypesProps: Record<string,any> = {
 		award_id:"uuid",
 		awarded_by_steam_id:"bigint",
 		created_at:"timestamptz",
+		event_id:"uuid",
 		id:"uuid",
+		league_season_id:"uuid",
 		player_steam_id:"bigint",
+		season_id:"uuid",
 		source:"e_award_sources_enum",
 		team_id:"uuid",
 		tournament_id:"uuid",
@@ -5158,6 +5188,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"event_tournaments_bool_exp"
 	},
 	events:{
+		awards:{
+			distinct_on:"award_recipients_select_column",
+			order_by:"award_recipients_order_by",
+			where:"award_recipients_bool_exp"
+		},
+		awards_aggregate:{
+			distinct_on:"award_recipients_select_column",
+			order_by:"award_recipients_order_by",
+			where:"award_recipients_bool_exp"
+		},
 		media:{
 			distinct_on:"event_media_select_column",
 			order_by:"event_media_order_by",
@@ -5228,6 +5268,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"events_bool_exp",
 		_not:"events_bool_exp",
 		_or:"events_bool_exp",
+		awards:"award_recipients_bool_exp",
+		awards_aggregate:"award_recipients_aggregate_bool_exp",
 		banner:"event_media_bool_exp",
 		banner_media_id:"uuid_comparison_exp",
 		can_upload_media:"Boolean_comparison_exp",
@@ -5262,6 +5304,7 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"bigint"
 	},
 	events_insert_input:{
+		awards:"award_recipients_arr_rel_insert_input",
 		banner:"event_media_obj_rel_insert_input",
 		banner_media_id:"uuid",
 		created_at:"timestamptz",
@@ -5289,6 +5332,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"events_bool_exp"
 	},
 	events_order_by:{
+		awards_aggregate:"award_recipients_aggregate_order_by",
 		banner:"event_media_order_by",
 		banner_media_id:"order_by",
 		can_upload_media:"order_by",
@@ -6842,6 +6886,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"league_season_divisions_bool_exp"
 	},
 	league_seasons:{
+		awards:{
+			distinct_on:"award_recipients_select_column",
+			order_by:"award_recipients_order_by",
+			where:"award_recipients_bool_exp"
+		},
+		awards_aggregate:{
+			distinct_on:"award_recipients_select_column",
+			order_by:"award_recipients_order_by",
+			where:"award_recipients_bool_exp"
+		},
 		match_weeks:{
 			distinct_on:"league_match_weeks_select_column",
 			order_by:"league_match_weeks_order_by",
@@ -6938,6 +6992,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"league_seasons_bool_exp",
 		_or:"league_seasons_bool_exp",
 		auto_regular_season_format:"Boolean_comparison_exp",
+		awards:"award_recipients_bool_exp",
+		awards_aggregate:"award_recipients_aggregate_bool_exp",
 		can_register:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		created_by_steam_id:"bigint_comparison_exp",
@@ -7002,6 +7058,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_by_steam_id:"bigint"
 	},
 	league_seasons_insert_input:{
+		awards:"award_recipients_arr_rel_insert_input",
 		created_at:"timestamptz",
 		created_by_steam_id:"bigint",
 		e_league_season_status:"e_league_season_statuses_obj_rel_insert_input",
@@ -7036,6 +7093,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	league_seasons_order_by:{
 		auto_regular_season_format:"order_by",
+		awards_aggregate:"award_recipients_aggregate_order_by",
 		can_register:"order_by",
 		created_at:"order_by",
 		created_by_steam_id:"order_by",
@@ -12334,6 +12392,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		grantAward:{
 			award_id:"uuid",
+			event_id:"uuid",
+			league_season_id:"uuid",
+			season_id:"uuid",
 			team_id:"uuid",
 			tournament_id:"uuid"
 		},
@@ -25198,6 +25259,16 @@ export const AllTypesProps: Record<string,any> = {
 		_league_season_id:"uuid"
 	},
 	seasons:{
+		awards:{
+			distinct_on:"award_recipients_select_column",
+			order_by:"award_recipients_order_by",
+			where:"award_recipients_bool_exp"
+		},
+		awards_aggregate:{
+			distinct_on:"award_recipients_select_column",
+			order_by:"award_recipients_order_by",
+			where:"award_recipients_bool_exp"
+		},
 		player_season_stats:{
 			distinct_on:"player_season_stats_select_column",
 			order_by:"player_season_stats_order_by",
@@ -25218,6 +25289,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"seasons_bool_exp",
 		_not:"seasons_bool_exp",
 		_or:"seasons_bool_exp",
+		awards:"award_recipients_bool_exp",
+		awards_aggregate:"award_recipients_aggregate_bool_exp",
 		created_at:"timestamptz_comparison_exp",
 		description:"String_comparison_exp",
 		ends_at:"timestamptz_comparison_exp",
@@ -25233,6 +25306,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	seasons_insert_input:{
+		awards:"award_recipients_arr_rel_insert_input",
 		created_at:"timestamptz",
 		ends_at:"timestamptz",
 		id:"uuid",
@@ -25249,6 +25323,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"seasons_bool_exp"
 	},
 	seasons_order_by:{
+		awards_aggregate:"award_recipients_aggregate_order_by",
 		created_at:"order_by",
 		description:"order_by",
 		ends_at:"order_by",
@@ -37368,12 +37443,18 @@ export const ReturnTypes: Record<string,any> = {
 		awarded_by:"players",
 		awarded_by_steam_id:"bigint",
 		created_at:"timestamptz",
+		event:"events",
+		event_id:"uuid",
 		id:"uuid",
+		league_season:"league_seasons",
+		league_season_id:"uuid",
 		note:"String",
 		placement:"Int",
 		placement_tier:"String",
 		player:"players",
 		player_steam_id:"bigint",
+		season:"seasons",
+		season_id:"uuid",
 		source:"e_award_sources_enum",
 		team:"teams",
 		team_id:"uuid",
@@ -37409,11 +37490,14 @@ export const ReturnTypes: Record<string,any> = {
 		award_id:"uuid",
 		awarded_by_steam_id:"bigint",
 		created_at:"timestamptz",
+		event_id:"uuid",
 		id:"uuid",
+		league_season_id:"uuid",
 		note:"String",
 		placement:"Int",
 		placement_tier:"String",
 		player_steam_id:"bigint",
+		season_id:"uuid",
 		team_id:"uuid",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
@@ -37422,11 +37506,14 @@ export const ReturnTypes: Record<string,any> = {
 		award_id:"uuid",
 		awarded_by_steam_id:"bigint",
 		created_at:"timestamptz",
+		event_id:"uuid",
 		id:"uuid",
+		league_season_id:"uuid",
 		note:"String",
 		placement:"Int",
 		placement_tier:"String",
 		player_steam_id:"bigint",
+		season_id:"uuid",
 		team_id:"uuid",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
@@ -39708,6 +39795,8 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"event_tournaments"
 	},
 	events:{
+		awards:"award_recipients",
+		awards_aggregate:"award_recipients_aggregate",
 		banner:"event_media",
 		banner_media_id:"uuid",
 		can_upload_media:"Boolean",
@@ -40706,6 +40795,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	league_seasons:{
 		auto_regular_season_format:"Boolean",
+		awards:"award_recipients",
+		awards_aggregate:"award_recipients_aggregate",
 		can_register:"Boolean",
 		created_at:"timestamptz",
 		created_by_steam_id:"bigint",
@@ -50352,6 +50443,8 @@ export const ReturnTypes: Record<string,any> = {
 		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate"
 	},
 	seasons:{
+		awards:"award_recipients",
+		awards_aggregate:"award_recipients_aggregate",
 		created_at:"timestamptz",
 		description:"String",
 		ends_at:"timestamptz",

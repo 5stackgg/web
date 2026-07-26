@@ -210,6 +210,11 @@ type Shot = {
   impact_x?: number | null;
   impact_y?: number | null;
   impact_z?: number | null;
+  // Where a missed round met world geometry (blob v9+). Absent on older blobs
+  // and on maps with no collision mesh.
+  miss_x?: number | null;
+  miss_y?: number | null;
+  miss_z?: number | null;
 };
 
 type Damage = {
@@ -1077,7 +1082,12 @@ const activeRoundShots = computed<Shot[]>(() => {
 });
 
 const TRACER_TICKS = 16; // how long a tracer lingers (~0.25s @ 64-tick)
-const TRACER_TRAVEL_TICKS = 5; // bullet reaches the target in ~0.08s (zippy)
+// Bullets travel at a fixed SPEED, not in a fixed time. Reaching the target in
+// the same number of ticks regardless of distance meant a long-range shot moved
+// several times faster than a close one, which is what made them read as lasers
+// rather than projectiles.
+const TRACER_SPEED_UPS = 9000; // source units per second
+const TRACER_MIN_TRAVEL_TICKS = 1.5;
 const TRACER_MISS_LEN = 1400; // source units a miss bullet flies before vanishing
 // A tracer is now an animated bullet: a short streak travelling from the
 // shooter's muzzle to where the shot landed, colored by the shooter's team.
@@ -1105,7 +1115,6 @@ const tracersNow = computed(() => {
     if (s.eye_x == null || s.eye_y == null || s.eye_z == null) continue;
     const age = t0 - s.tick;
     if (age < 0 || age > TRACER_TICKS) continue;
-    const travel = Math.min(1, age / TRACER_TRAVEL_TICKS);
     const fade = 1 - age / TRACER_TICKS;
     let tx: number;
     let ty: number;
@@ -1120,8 +1129,16 @@ const tracersNow = computed(() => {
       tx = s.impact_x;
       ty = s.impact_y;
       tz = s.impact_z;
+    } else if (s.miss_x != null && s.miss_y != null && s.miss_z != null) {
+      // Miss: stop where the round met world geometry. The parser raycasts this
+      // against the map's collision mesh at the moment of firing, so a bullet
+      // ends at the wall it hit rather than sailing through it.
+      tx = s.miss_x;
+      ty = s.miss_y;
+      tz = s.miss_z;
     } else if (s.yaw != null) {
-      // Miss: fly a bounded distance along the shot line, then vanish.
+      // No mesh for this map (or the shot found nothing but sky): fall back to
+      // a bounded flight along the shot line.
       const yr = (s.yaw * Math.PI) / 180;
       const pr = ((s.pitch ?? 0) * Math.PI) / 180;
       const c = Math.cos(pr);
@@ -1131,6 +1148,14 @@ const tracersNow = computed(() => {
     } else {
       continue;
     }
+    // Travel time from distance, so every bullet moves at the same speed.
+    const rate = props.tickRate || 64;
+    const pathLen = Math.hypot(tx - s.eye_x, ty - s.eye_y, tz - s.eye_z) || 1;
+    const travelTicks = Math.max(
+      TRACER_MIN_TRAVEL_TICKS,
+      (pathLen / TRACER_SPEED_UPS) * rate,
+    );
+    const travel = Math.min(1, age / travelTicks);
     out.push({
       ex: s.eye_x,
       ey: s.eye_y,
@@ -5509,6 +5534,7 @@ watch(overlayMode, (on) => {
           :in-flight="inFlightGrenades"
           :grenade-trajectories="grenadeTrajectories || []"
           :smoke-volumes="smokeVolumes || []"
+          :avatars="playerAvatarMap"
           :infernos="infernos || []"
           :tick="smoothCurrentTick"
           :tick-rate="tickRate || 64"

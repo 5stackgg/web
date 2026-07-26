@@ -143,21 +143,51 @@ watch(
           </Button>
         </Empty>
 
-        <div
-          v-else
-          class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-        >
-          <AwardVitrine
-            v-for="(award, i) in visibleAwards"
-            :key="award.id"
-            :award="award"
-            :index="i"
-            :can-manage="canManage"
-            :can-grant="canGrantAwards"
-            @edit="openEdit(award)"
-            @grant="openGrantFor(award)"
-            @remove="removeAward(award)"
-          />
+        <div v-else class="space-y-5">
+          <div
+            v-for="group in groupedAwards"
+            :key="group.key"
+            class="space-y-2.5"
+          >
+            <!-- A lone unscoped group is the whole catalog, so labelling it
+                 adds a header that says nothing. -->
+            <div
+              v-if="groupedAwards.length > 1"
+              class="flex items-center gap-2.5"
+            >
+              <span
+                v-if="group.kind !== 'global'"
+                class="rounded-sm border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-[0.4rem] py-[0.02rem] font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+              >
+                {{ group.kindLabel }}
+              </span>
+              <span
+                class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ group.label }}
+              </span>
+              <span class="h-px flex-1 bg-border/60"></span>
+              <span class="font-mono text-[0.6rem] text-muted-foreground">
+                {{ String(group.awards.length).padStart(2, "0") }}
+              </span>
+            </div>
+
+            <div
+              class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+            >
+              <AwardVitrine
+                v-for="(award, i) in group.awards"
+                :key="award.id"
+                :award="award"
+                :index="i"
+                :can-manage="canManage"
+                :can-grant="canGrantAwards"
+                @edit="openEdit(award)"
+                @grant="openGrantFor(award)"
+                @remove="removeAward(award)"
+              />
+            </div>
+          </div>
         </div>
       </section>
     </div>
@@ -181,7 +211,7 @@ watch(
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { awardDefinitionFields } from "~/graphql/awardFields";
+import { awardCatalogFields } from "~/graphql/awardFields";
 import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
 import { toast } from "@/components/ui/toast";
 
@@ -208,7 +238,7 @@ export default {
           awards: [
             { order_by: [{ name: order_by.asc }] },
             {
-              ...awardDefinitionFields,
+              ...awardCatalogFields,
               recipients_aggregate: [{}, { aggregate: { count: true } }],
             },
           ],
@@ -257,6 +287,33 @@ export default {
           .includes(term);
       });
     },
+    // Awards belong to at most one owner, so the catalog reads as that owner's
+    // shelf: unscoped first, then a section per tournament/event/season/league.
+    groupedAwards(): Array<{
+      key: string;
+      kind: string;
+      kindLabel: string;
+      label: string;
+      awards: any[];
+    }> {
+      const order = ["global", "tournament", "event", "season", "league"];
+      const groups = new Map<string, any>();
+
+      for (const award of this.visibleAwards) {
+        const scope = this.scopeOf(award);
+        const group = groups.get(scope.key);
+        if (group) {
+          group.awards.push(award);
+          continue;
+        }
+        groups.set(scope.key, { ...scope, awards: [award] });
+      }
+
+      return [...groups.values()].sort((a, b) => {
+        const byKind = order.indexOf(a.kind) - order.indexOf(b.kind);
+        return byKind !== 0 ? byKind : a.label.localeCompare(b.label);
+      });
+    },
     // Ordered mvp -> special, skipping tiers nothing occupies.
     tierIndex(): Array<{ tier: string; count: number; accent: string }> {
       const order = ["mvp", "gold", "silver", "bronze", "special"] as const;
@@ -285,6 +342,56 @@ export default {
     // Feeds the live preview so the sheet shows the award being built.
   },
   methods: {
+    scopeOf(award: any): {
+      key: string;
+      kind: string;
+      kindLabel: string;
+      label: string;
+    } {
+      if (award.tournament_id) {
+        return {
+          key: `tournament:${award.tournament_id}`,
+          kind: "tournament",
+          kindLabel: this.$t("pages.awards.scope_tournament"),
+          label: award.tournament?.name ?? this.$t("pages.awards.scope_gone"),
+        };
+      }
+      if (award.event_id) {
+        return {
+          key: `event:${award.event_id}`,
+          kind: "event",
+          kindLabel: this.$t("pages.awards.scope_event"),
+          label: award.event?.name ?? this.$t("pages.awards.scope_gone"),
+        };
+      }
+      if (award.season_id) {
+        return {
+          key: `season:${award.season_id}`,
+          kind: "season",
+          kindLabel: this.$t("pages.awards.scope_season"),
+          label: award.season
+            ? this.$t("pages.awards.season_label", {
+                number: award.season.number,
+              })
+            : this.$t("pages.awards.scope_gone"),
+        };
+      }
+      if (award.league_season_id) {
+        return {
+          key: `league:${award.league_season_id}`,
+          kind: "league",
+          kindLabel: this.$t("pages.awards.scope_league"),
+          label:
+            award.league_season?.name ?? this.$t("pages.awards.scope_gone"),
+        };
+      }
+      return {
+        key: "global",
+        kind: "global",
+        kindLabel: "",
+        label: this.$t("pages.awards.scope_global"),
+      };
+    },
     clearFilters() {
       this.search = "";
       this.tierFilter = "all";

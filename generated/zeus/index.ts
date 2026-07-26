@@ -2262,13 +2262,22 @@ count?: [{	columns?: Array<ValueTypes["api_keys_select_column"]> | undefined | n
 	awarded_by?:ValueTypes["players"],
 	awarded_by_steam_id?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** An object relationship */
+	event?:ValueTypes["events"],
+	event_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** An object relationship */
+	league_season?:ValueTypes["league_seasons"],
+	league_season_id?:boolean | `@${string}`,
 	note?:boolean | `@${string}`,
 	placement?:boolean | `@${string}`,
 	placement_tier?:boolean | `@${string}`,
 	/** An object relationship */
 	player?:ValueTypes["players"],
 	player_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	season?:ValueTypes["seasons"],
+	season_id?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	/** An object relationship */
 	team?:ValueTypes["teams"],
@@ -2356,12 +2365,18 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	awarded_by?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_bool_exp"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	league_season?: ValueTypes["league_seasons_bool_exp"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	note?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	placement?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	placement_tier?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["e_award_sources_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2386,11 +2401,17 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	awarded_by?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	league_season?: ValueTypes["league_seasons_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	note?: string | undefined | null | Variable<any, string>,
 	placement?: number | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -2405,11 +2426,14 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	award_id?:boolean | `@${string}`,
 	awarded_by_steam_id?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
 	note?:boolean | `@${string}`,
 	placement?:boolean | `@${string}`,
 	placement_tier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -2420,11 +2444,14 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -2434,11 +2461,14 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	award_id?:boolean | `@${string}`,
 	awarded_by_steam_id?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
 	note?:boolean | `@${string}`,
 	placement?:boolean | `@${string}`,
 	placement_tier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -2449,11 +2479,14 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -2479,12 +2512,18 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	awarded_by?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	league_season?: ValueTypes["league_seasons_order_by"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_order_by"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -2505,10 +2544,13 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	note?: string | undefined | null | Variable<any, string>,
 	placement?: number | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -2565,11 +2607,14 @@ count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undef
 	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	note?: string | undefined | null | Variable<any, string>,
 	placement?: number | undefined | null | Variable<any, string>,
 	placement_tier?: string | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -11742,6 +11787,18 @@ count?: [{	columns?: Array<ValueTypes["event_tournaments_select_column"]> | unde
 };
 	/** columns and relationships of "events" */
 ["events"]: AliasType<{
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
 	/** An object relationship */
 	banner?:ValueTypes["event_media"],
 	banner_media_id?:boolean | `@${string}`,
@@ -11868,6 +11925,8 @@ count?: [{	columns?: Array<ValueTypes["events_select_column"]> | undefined | nul
 	_and?: Array<ValueTypes["events_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["events_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["events_bool_exp"]> | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	banner?: ValueTypes["event_media_bool_exp"] | undefined | null | Variable<any, string>,
 	banner_media_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_upload_media?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -11905,6 +11964,7 @@ count?: [{	columns?: Array<ValueTypes["events_select_column"]> | undefined | nul
 };
 	/** input type for inserting data into table "events" */
 ["events_insert_input"]: {
+	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	banner?: ValueTypes["event_media_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	banner_media_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -11971,6 +12031,7 @@ count?: [{	columns?: Array<ValueTypes["events_select_column"]> | undefined | nul
 };
 	/** Ordering options when selecting data from "events". */
 ["events_order_by"]: {
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	banner?: ValueTypes["event_media_order_by"] | undefined | null | Variable<any, string>,
 	banner_media_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_upload_media?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -15187,6 +15248,18 @@ count?: [{	columns?: Array<ValueTypes["league_season_divisions_select_column"]> 
 	/** columns and relationships of "league_seasons" */
 ["league_seasons"]: AliasType<{
 	auto_regular_season_format?:boolean | `@${string}`,
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
 	/** A computed field, executes function "can_register_for_league_season" */
 	can_register?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -15371,6 +15444,8 @@ count?: [{	columns?: Array<ValueTypes["league_seasons_select_column"]> | undefin
 	_not?: ValueTypes["league_seasons_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["league_seasons_bool_exp"]> | undefined | null | Variable<any, string>,
 	auto_regular_season_format?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	can_register?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -15459,6 +15534,7 @@ count?: [{	columns?: Array<ValueTypes["league_seasons_select_column"]> | undefin
 	/** input type for inserting data into table "league_seasons" */
 ["league_seasons_insert_input"]: {
 	auto_regular_season_format?: boolean | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	created_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	default_best_of?: number | undefined | null | Variable<any, string>,
@@ -15575,6 +15651,7 @@ count?: [{	columns?: Array<ValueTypes["league_seasons_select_column"]> | undefin
 	/** Ordering options when selecting data from "league_seasons". */
 ["league_seasons_order_by"]: {
 	auto_regular_season_format?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	can_register?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -24003,7 +24080,7 @@ denyInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: str
 forfeitMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 getLiveStreamSpecState?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ValueTypes["GetTestUploadResponse"],
-grantAward?: [{	award_id: ValueTypes["uuid"] | Variable<any, string>,	note?: string | undefined | null | Variable<any, string>,	player_steam_id?: string | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["AwardRecipient"]],
+grantAward?: [{	award_id: ValueTypes["uuid"] | Variable<any, string>,	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	note?: string | undefined | null | Variable<any, string>,	player_steam_id?: string | undefined | null | Variable<any, string>,	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["AwardRecipient"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["_map_pool_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
@@ -44182,6 +44259,18 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: AliasType<{
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	ends_at?:boolean | `@${string}`,
@@ -44234,6 +44323,8 @@ count?: [{	columns?: Array<ValueTypes["seasons_select_column"]> | undefined | nu
 	_and?: Array<ValueTypes["seasons_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["seasons_bool_exp"]> | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	ends_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -44252,6 +44343,7 @@ count?: [{	columns?: Array<ValueTypes["seasons_select_column"]> | undefined | nu
 };
 	/** input type for inserting data into table "seasons" */
 ["seasons_insert_input"]: {
+	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
 	ends_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -44303,6 +44395,7 @@ count?: [{	columns?: Array<ValueTypes["seasons_select_column"]> | undefined | nu
 };
 	/** Ordering options when selecting data from "seasons". */
 ["seasons_order_by"]: {
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	ends_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66671,13 +66764,22 @@ count?: [{	columns?: Array<ResolverInputTypes["api_keys_select_column"]> | undef
 	awarded_by?:ResolverInputTypes["players"],
 	awarded_by_steam_id?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** An object relationship */
+	event?:ResolverInputTypes["events"],
+	event_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** An object relationship */
+	league_season?:ResolverInputTypes["league_seasons"],
+	league_season_id?:boolean | `@${string}`,
 	note?:boolean | `@${string}`,
 	placement?:boolean | `@${string}`,
 	placement_tier?:boolean | `@${string}`,
 	/** An object relationship */
 	player?:ResolverInputTypes["players"],
 	player_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	season?:ResolverInputTypes["seasons"],
+	season_id?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	/** An object relationship */
 	team?:ResolverInputTypes["teams"],
@@ -66765,12 +66867,18 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	awarded_by?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	event?: ResolverInputTypes["events_bool_exp"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	league_season?: ResolverInputTypes["league_seasons_bool_exp"] | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	note?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	placement?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	placement_tier?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	season?: ResolverInputTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	source?: ResolverInputTypes["e_award_sources_enum_comparison_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -66795,11 +66903,17 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	awarded_by?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	event?: ResolverInputTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	league_season?: ResolverInputTypes["league_seasons_obj_rel_insert_input"] | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	season?: ResolverInputTypes["seasons_obj_rel_insert_input"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	source?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -66814,11 +66928,14 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	award_id?:boolean | `@${string}`,
 	awarded_by_steam_id?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
 	note?:boolean | `@${string}`,
 	placement?:boolean | `@${string}`,
 	placement_tier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -66829,11 +66946,14 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	award_id?: ResolverInputTypes["order_by"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	league_season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	note?: ResolverInputTypes["order_by"] | undefined | null,
 	placement?: ResolverInputTypes["order_by"] | undefined | null,
 	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -66843,11 +66963,14 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	award_id?:boolean | `@${string}`,
 	awarded_by_steam_id?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
 	note?:boolean | `@${string}`,
 	placement?:boolean | `@${string}`,
 	placement_tier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -66858,11 +66981,14 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	award_id?: ResolverInputTypes["order_by"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	league_season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	note?: ResolverInputTypes["order_by"] | undefined | null,
 	placement?: ResolverInputTypes["order_by"] | undefined | null,
 	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -66888,12 +67014,18 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	awarded_by?: ResolverInputTypes["players_order_by"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	event?: ResolverInputTypes["events_order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	league_season?: ResolverInputTypes["league_seasons_order_by"] | undefined | null,
+	league_season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	note?: ResolverInputTypes["order_by"] | undefined | null,
 	placement?: ResolverInputTypes["order_by"] | undefined | null,
 	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	season?: ResolverInputTypes["seasons_order_by"] | undefined | null,
+	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -66914,10 +67046,13 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	award_id?: ResolverInputTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	source?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -66974,11 +67109,14 @@ count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]>
 	award_id?: ResolverInputTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	source?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -76151,6 +76289,18 @@ count?: [{	columns?: Array<ResolverInputTypes["event_tournaments_select_column"]
 };
 	/** columns and relationships of "events" */
 ["events"]: AliasType<{
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
 	/** An object relationship */
 	banner?:ResolverInputTypes["event_media"],
 	banner_media_id?:boolean | `@${string}`,
@@ -76277,6 +76427,8 @@ count?: [{	columns?: Array<ResolverInputTypes["events_select_column"]> | undefin
 	_and?: Array<ResolverInputTypes["events_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["events_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["events_bool_exp"]> | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	banner?: ResolverInputTypes["event_media_bool_exp"] | undefined | null,
 	banner_media_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	can_upload_media?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -76314,6 +76466,7 @@ count?: [{	columns?: Array<ResolverInputTypes["events_select_column"]> | undefin
 };
 	/** input type for inserting data into table "events" */
 ["events_insert_input"]: {
+	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	banner?: ResolverInputTypes["event_media_obj_rel_insert_input"] | undefined | null,
 	banner_media_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -76380,6 +76533,7 @@ count?: [{	columns?: Array<ResolverInputTypes["events_select_column"]> | undefin
 };
 	/** Ordering options when selecting data from "events". */
 ["events_order_by"]: {
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	banner?: ResolverInputTypes["event_media_order_by"] | undefined | null,
 	banner_media_id?: ResolverInputTypes["order_by"] | undefined | null,
 	can_upload_media?: ResolverInputTypes["order_by"] | undefined | null,
@@ -79596,6 +79750,18 @@ count?: [{	columns?: Array<ResolverInputTypes["league_season_divisions_select_co
 	/** columns and relationships of "league_seasons" */
 ["league_seasons"]: AliasType<{
 	auto_regular_season_format?:boolean | `@${string}`,
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
 	/** A computed field, executes function "can_register_for_league_season" */
 	can_register?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -79780,6 +79946,8 @@ count?: [{	columns?: Array<ResolverInputTypes["league_seasons_select_column"]> |
 	_not?: ResolverInputTypes["league_seasons_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["league_seasons_bool_exp"]> | undefined | null,
 	auto_regular_season_format?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	can_register?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	created_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -79868,6 +80036,7 @@ count?: [{	columns?: Array<ResolverInputTypes["league_seasons_select_column"]> |
 	/** input type for inserting data into table "league_seasons" */
 ["league_seasons_insert_input"]: {
 	auto_regular_season_format?: boolean | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	created_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	default_best_of?: number | undefined | null,
@@ -79984,6 +80153,7 @@ count?: [{	columns?: Array<ResolverInputTypes["league_seasons_select_column"]> |
 	/** Ordering options when selecting data from "league_seasons". */
 ["league_seasons_order_by"]: {
 	auto_regular_season_format?: ResolverInputTypes["order_by"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	can_register?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	created_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -88412,7 +88582,7 @@ denyInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverInp
 forfeitMatch?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 getLiveStreamSpecState?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ResolverInputTypes["GetTestUploadResponse"],
-grantAward?: [{	award_id: ResolverInputTypes["uuid"],	note?: string | undefined | null,	player_steam_id?: string | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["AwardRecipient"]],
+grantAward?: [{	award_id: ResolverInputTypes["uuid"],	event_id?: ResolverInputTypes["uuid"] | undefined | null,	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,	note?: string | undefined | null,	player_steam_id?: string | undefined | null,	season_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["AwardRecipient"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["_map_pool_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["_map_pool_mutation_response"]],
@@ -108591,6 +108761,18 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: AliasType<{
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
 	created_at?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	ends_at?:boolean | `@${string}`,
@@ -108643,6 +108825,8 @@ count?: [{	columns?: Array<ResolverInputTypes["seasons_select_column"]> | undefi
 	_and?: Array<ResolverInputTypes["seasons_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["seasons_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["seasons_bool_exp"]> | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	ends_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -108661,6 +108845,7 @@ count?: [{	columns?: Array<ResolverInputTypes["seasons_select_column"]> | undefi
 };
 	/** input type for inserting data into table "seasons" */
 ["seasons_insert_input"]: {
+	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	ends_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -108712,6 +108897,7 @@ count?: [{	columns?: Array<ResolverInputTypes["seasons_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "seasons". */
 ["seasons_order_by"]: {
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	description?: ResolverInputTypes["order_by"] | undefined | null,
 	ends_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -130950,13 +131136,22 @@ export type ModelTypes = {
 	awarded_by?: ModelTypes["players"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	created_at: ModelTypes["timestamptz"],
+	/** An object relationship */
+	event?: ModelTypes["events"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
 	id: ModelTypes["uuid"],
+	/** An object relationship */
+	league_season?: ModelTypes["league_seasons"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	/** An object relationship */
 	player?: ModelTypes["players"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	season?: ModelTypes["seasons"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
 	source: ModelTypes["e_award_sources_enum"],
 	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined | null,
@@ -131040,12 +131235,18 @@ export type ModelTypes = {
 	awarded_by?: ModelTypes["players_bool_exp"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	event?: ModelTypes["events_bool_exp"] | undefined | null,
+	event_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	league_season?: ModelTypes["league_seasons_bool_exp"] | undefined | null,
+	league_season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	note?: ModelTypes["String_comparison_exp"] | undefined | null,
 	placement?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	placement_tier?: ModelTypes["String_comparison_exp"] | undefined | null,
 	player?: ModelTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	season?: ModelTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	source?: ModelTypes["e_award_sources_enum_comparison_exp"] | undefined | null,
 	team?: ModelTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -131069,11 +131270,17 @@ export type ModelTypes = {
 	awarded_by?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	event?: ModelTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	league_season?: ModelTypes["league_seasons_obj_rel_insert_input"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	season?: ModelTypes["seasons_obj_rel_insert_input"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
 	source?: ModelTypes["e_award_sources_enum"] | undefined | null,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ModelTypes["uuid"] | undefined | null,
@@ -131088,11 +131295,14 @@ export type ModelTypes = {
 		award_id?: ModelTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
 	team_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_team_id?: ModelTypes["uuid"] | undefined | null
@@ -131102,11 +131312,14 @@ export type ModelTypes = {
 	award_id?: ModelTypes["order_by"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
+	league_season_id?: ModelTypes["order_by"] | undefined | null,
 	note?: ModelTypes["order_by"] | undefined | null,
 	placement?: ModelTypes["order_by"] | undefined | null,
 	placement_tier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	season_id?: ModelTypes["order_by"] | undefined | null,
 	team_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_team_id?: ModelTypes["order_by"] | undefined | null
@@ -131116,11 +131329,14 @@ export type ModelTypes = {
 		award_id?: ModelTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
 	team_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_team_id?: ModelTypes["uuid"] | undefined | null
@@ -131130,11 +131346,14 @@ export type ModelTypes = {
 	award_id?: ModelTypes["order_by"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
+	league_season_id?: ModelTypes["order_by"] | undefined | null,
 	note?: ModelTypes["order_by"] | undefined | null,
 	placement?: ModelTypes["order_by"] | undefined | null,
 	placement_tier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	season_id?: ModelTypes["order_by"] | undefined | null,
 	team_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_team_id?: ModelTypes["order_by"] | undefined | null
@@ -131159,12 +131378,18 @@ export type ModelTypes = {
 	awarded_by?: ModelTypes["players_order_by"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
+	event?: ModelTypes["events_order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
+	league_season?: ModelTypes["league_seasons_order_by"] | undefined | null,
+	league_season_id?: ModelTypes["order_by"] | undefined | null,
 	note?: ModelTypes["order_by"] | undefined | null,
 	placement?: ModelTypes["order_by"] | undefined | null,
 	placement_tier?: ModelTypes["order_by"] | undefined | null,
 	player?: ModelTypes["players_order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	season?: ModelTypes["seasons_order_by"] | undefined | null,
+	season_id?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	team?: ModelTypes["teams_order_by"] | undefined | null,
 	team_id?: ModelTypes["order_by"] | undefined | null,
@@ -131184,10 +131409,13 @@ export type ModelTypes = {
 	award_id?: ModelTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
 	source?: ModelTypes["e_award_sources_enum"] | undefined | null,
 	team_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
@@ -131241,11 +131469,14 @@ export type ModelTypes = {
 	award_id?: ModelTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
 	source?: ModelTypes["e_award_sources_enum"] | undefined | null,
 	team_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
@@ -139623,7 +139854,11 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "events" */
 ["events"]: {
-		/** An object relationship */
+		/** An array relationship */
+	awards: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: ModelTypes["award_recipients_aggregate"],
+	/** An object relationship */
 	banner?: ModelTypes["event_media"] | undefined | null,
 	banner_media_id?: ModelTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "can_upload_event_media" */
@@ -139697,6 +139932,8 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["events_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["events_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["events_bool_exp"]> | undefined | null,
+	awards?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	banner?: ModelTypes["event_media_bool_exp"] | undefined | null,
 	banner_media_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	can_upload_media?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -139733,6 +139970,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "events" */
 ["events_insert_input"]: {
+	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	banner?: ModelTypes["event_media_obj_rel_insert_input"] | undefined | null,
 	banner_media_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -139796,6 +140034,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "events". */
 ["events_order_by"]: {
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	banner?: ModelTypes["event_media_order_by"] | undefined | null,
 	banner_media_id?: ModelTypes["order_by"] | undefined | null,
 	can_upload_media?: ModelTypes["order_by"] | undefined | null,
@@ -142808,6 +143047,10 @@ export type ModelTypes = {
 	/** columns and relationships of "league_seasons" */
 ["league_seasons"]: {
 		auto_regular_season_format: boolean,
+	/** An array relationship */
+	awards: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: ModelTypes["award_recipients_aggregate"],
 	/** A computed field, executes function "can_register_for_league_season" */
 	can_register?: boolean | undefined | null,
 	created_at: ModelTypes["timestamptz"],
@@ -142926,6 +143169,8 @@ export type ModelTypes = {
 	_not?: ModelTypes["league_seasons_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["league_seasons_bool_exp"]> | undefined | null,
 	auto_regular_season_format?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	awards?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	can_register?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	created_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
@@ -143013,6 +143258,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "league_seasons" */
 ["league_seasons_insert_input"]: {
 	auto_regular_season_format?: boolean | undefined | null,
+	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	default_best_of?: number | undefined | null,
@@ -143126,6 +143372,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "league_seasons". */
 ["league_seasons_order_by"]: {
 	auto_regular_season_format?: ModelTypes["order_by"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	can_register?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	created_by_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -168195,7 +168442,11 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: {
-		created_at: ModelTypes["timestamptz"],
+		/** An array relationship */
+	awards: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: ModelTypes["award_recipients_aggregate"],
+	created_at: ModelTypes["timestamptz"],
 	description?: string | undefined | null,
 	ends_at?: ModelTypes["timestamptz"] | undefined | null,
 	id: ModelTypes["uuid"],
@@ -168235,6 +168486,8 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["seasons_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["seasons_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["seasons_bool_exp"]> | undefined | null,
+	awards?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	description?: ModelTypes["String_comparison_exp"] | undefined | null,
 	ends_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -168252,6 +168505,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "seasons" */
 ["seasons_insert_input"]: {
+	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	ends_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -168300,6 +168554,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "seasons". */
 ["seasons_order_by"]: {
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	description?: ModelTypes["order_by"] | undefined | null,
 	ends_at?: ModelTypes["order_by"] | undefined | null,
@@ -187717,13 +187972,22 @@ export type GraphQLTypes = {
 	awarded_by?: GraphQLTypes["players"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	created_at: GraphQLTypes["timestamptz"],
+	/** An object relationship */
+	event?: GraphQLTypes["events"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	league_season?: GraphQLTypes["league_seasons"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	/** An object relationship */
 	player?: GraphQLTypes["players"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	season?: GraphQLTypes["seasons"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	source: GraphQLTypes["e_award_sources_enum"],
 	/** An object relationship */
 	team?: GraphQLTypes["teams"] | undefined | null,
@@ -187810,12 +188074,18 @@ export type GraphQLTypes = {
 	awarded_by?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	event?: GraphQLTypes["events_bool_exp"] | undefined | null,
+	event_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	league_season?: GraphQLTypes["league_seasons_bool_exp"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	note?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	placement?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	placement_tier?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	season?: GraphQLTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	source?: GraphQLTypes["e_award_sources_enum_comparison_exp"] | undefined | null,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined | null,
 	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -187840,11 +188110,17 @@ export type GraphQLTypes = {
 	awarded_by?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	event?: GraphQLTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	league_season?: GraphQLTypes["league_seasons_obj_rel_insert_input"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	season?: GraphQLTypes["seasons_obj_rel_insert_input"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	source?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -187860,11 +188136,14 @@ export type GraphQLTypes = {
 	award_id?: GraphQLTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	team_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
@@ -187874,11 +188153,14 @@ export type GraphQLTypes = {
 		award_id?: GraphQLTypes["order_by"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
+	league_season_id?: GraphQLTypes["order_by"] | undefined | null,
 	note?: GraphQLTypes["order_by"] | undefined | null,
 	placement?: GraphQLTypes["order_by"] | undefined | null,
 	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	team_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
@@ -187889,11 +188171,14 @@ export type GraphQLTypes = {
 	award_id?: GraphQLTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	team_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
@@ -187903,11 +188188,14 @@ export type GraphQLTypes = {
 		award_id?: GraphQLTypes["order_by"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
+	league_season_id?: GraphQLTypes["order_by"] | undefined | null,
 	note?: GraphQLTypes["order_by"] | undefined | null,
 	placement?: GraphQLTypes["order_by"] | undefined | null,
 	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	team_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
@@ -187933,12 +188221,18 @@ export type GraphQLTypes = {
 	awarded_by?: GraphQLTypes["players_order_by"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	event?: GraphQLTypes["events_order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
+	league_season?: GraphQLTypes["league_seasons_order_by"] | undefined | null,
+	league_season_id?: GraphQLTypes["order_by"] | undefined | null,
 	note?: GraphQLTypes["order_by"] | undefined | null,
 	placement?: GraphQLTypes["order_by"] | undefined | null,
 	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
 	player?: GraphQLTypes["players_order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	season?: GraphQLTypes["seasons_order_by"] | undefined | null,
+	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	team?: GraphQLTypes["teams_order_by"] | undefined | null,
 	team_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -187959,10 +188253,13 @@ export type GraphQLTypes = {
 		award_id?: GraphQLTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	source?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
 	team_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -188019,11 +188316,14 @@ export type GraphQLTypes = {
 		award_id?: GraphQLTypes["uuid"] | undefined | null,
 	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
 	note?: string | undefined | null,
 	placement?: number | undefined | null,
 	placement_tier?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	source?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
 	team_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -197026,6 +197326,10 @@ export type GraphQLTypes = {
 	/** columns and relationships of "events" */
 ["events"]: {
 	__typename: "events",
+	/** An array relationship */
+	awards: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: GraphQLTypes["award_recipients_aggregate"],
 	/** An object relationship */
 	banner?: GraphQLTypes["event_media"] | undefined | null,
 	banner_media_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -197103,6 +197407,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["events_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["events_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["events_bool_exp"]> | undefined | null,
+	awards?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	banner?: GraphQLTypes["event_media_bool_exp"] | undefined | null,
 	banner_media_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	can_upload_media?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -197140,7 +197446,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "events" */
 ["events_insert_input"]: {
-		banner?: GraphQLTypes["event_media_obj_rel_insert_input"] | undefined | null,
+		awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	banner?: GraphQLTypes["event_media_obj_rel_insert_input"] | undefined | null,
 	banner_media_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -197206,7 +197513,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "events". */
 ["events_order_by"]: {
-		banner?: GraphQLTypes["event_media_order_by"] | undefined | null,
+		awards_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	banner?: GraphQLTypes["event_media_order_by"] | undefined | null,
 	banner_media_id?: GraphQLTypes["order_by"] | undefined | null,
 	can_upload_media?: GraphQLTypes["order_by"] | undefined | null,
 	can_view?: GraphQLTypes["order_by"] | undefined | null,
@@ -200390,6 +200698,10 @@ export type GraphQLTypes = {
 ["league_seasons"]: {
 	__typename: "league_seasons",
 	auto_regular_season_format: boolean,
+	/** An array relationship */
+	awards: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: GraphQLTypes["award_recipients_aggregate"],
 	/** A computed field, executes function "can_register_for_league_season" */
 	can_register?: boolean | undefined | null,
 	created_at: GraphQLTypes["timestamptz"],
@@ -200511,6 +200823,8 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["league_seasons_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["league_seasons_bool_exp"]> | undefined | null,
 	auto_regular_season_format?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	awards?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	can_register?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	created_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
@@ -200599,6 +200913,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "league_seasons" */
 ["league_seasons_insert_input"]: {
 		auto_regular_season_format?: boolean | undefined | null,
+	awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	default_best_of?: number | undefined | null,
@@ -200715,6 +201030,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "league_seasons". */
 ["league_seasons_order_by"]: {
 		auto_regular_season_format?: GraphQLTypes["order_by"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	can_register?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	created_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -226660,6 +226976,10 @@ export type GraphQLTypes = {
 	/** columns and relationships of "seasons" */
 ["seasons"]: {
 	__typename: "seasons",
+	/** An array relationship */
+	awards: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: GraphQLTypes["award_recipients_aggregate"],
 	created_at: GraphQLTypes["timestamptz"],
 	description?: string | undefined | null,
 	ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -226703,6 +227023,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["seasons_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["seasons_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["seasons_bool_exp"]> | undefined | null,
+	awards?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	ends_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -226721,7 +227043,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "seasons" */
 ["seasons_insert_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
 	ends_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -226772,7 +227095,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "seasons". */
 ["seasons_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
+		awards_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	description?: GraphQLTypes["order_by"] | undefined | null,
 	ends_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
@@ -245842,6 +246166,7 @@ export enum award_recipients_constraint {
 	award_recipients_one_mvp_per_tournament = "award_recipients_one_mvp_per_tournament",
 	award_recipients_pkey = "award_recipients_pkey",
 	award_recipients_player_recipient_key = "award_recipients_player_recipient_key",
+	award_recipients_season_player_key = "award_recipients_season_player_key",
 	award_recipients_team_recipient_key = "award_recipients_team_recipient_key"
 }
 /** select columns of table "award_recipients" */
@@ -245849,11 +246174,14 @@ export enum award_recipients_select_column {
 	award_id = "award_id",
 	awarded_by_steam_id = "awarded_by_steam_id",
 	created_at = "created_at",
+	event_id = "event_id",
 	id = "id",
+	league_season_id = "league_season_id",
 	note = "note",
 	placement = "placement",
 	placement_tier = "placement_tier",
 	player_steam_id = "player_steam_id",
+	season_id = "season_id",
 	source = "source",
 	team_id = "team_id",
 	tournament_id = "tournament_id",
@@ -245864,10 +246192,13 @@ export enum award_recipients_update_column {
 	award_id = "award_id",
 	awarded_by_steam_id = "awarded_by_steam_id",
 	created_at = "created_at",
+	event_id = "event_id",
 	id = "id",
+	league_season_id = "league_season_id",
 	note = "note",
 	placement = "placement",
 	player_steam_id = "player_steam_id",
+	season_id = "season_id",
 	source = "source",
 	team_id = "team_id",
 	tournament_id = "tournament_id",

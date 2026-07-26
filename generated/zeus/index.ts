@@ -1648,6 +1648,7 @@ export type ValueTypes = {
 }>;
 	["TelemetryFeatureAdoption"]: AliasType<{
 	enabled?:boolean | `@${string}`,
+	flagged?:boolean | `@${string}`,
 	installsUsing?:boolean | `@${string}`,
 	key?:boolean | `@${string}`,
 	reporting?:boolean | `@${string}`,
@@ -1657,6 +1658,7 @@ export type ValueTypes = {
 	["TelemetryFleetTotals"]: AliasType<{
 	dedicatedServers?:boolean | `@${string}`,
 	gameServerNodes?:boolean | `@${string}`,
+	gpuNodes?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
 	matchesImported?:boolean | `@${string}`,
@@ -66146,6 +66148,7 @@ export type ResolverInputTypes = {
 }>;
 	["TelemetryFeatureAdoption"]: AliasType<{
 	enabled?:boolean | `@${string}`,
+	flagged?:boolean | `@${string}`,
 	installsUsing?:boolean | `@${string}`,
 	key?:boolean | `@${string}`,
 	reporting?:boolean | `@${string}`,
@@ -66155,6 +66158,7 @@ export type ResolverInputTypes = {
 	["TelemetryFleetTotals"]: AliasType<{
 	dedicatedServers?:boolean | `@${string}`,
 	gameServerNodes?:boolean | `@${string}`,
+	gpuNodes?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
 	matchesImported?:boolean | `@${string}`,
@@ -130569,6 +130573,7 @@ export type ModelTypes = {
 };
 	["TelemetryFeatureAdoption"]: {
 		enabled: number,
+	flagged: number,
 	installsUsing: number,
 	key: string,
 	reporting: number,
@@ -130577,6 +130582,7 @@ export type ModelTypes = {
 	["TelemetryFleetTotals"]: {
 		dedicatedServers: number,
 	gameServerNodes: number,
+	gpuNodes: number,
 	mapsPlayed: number,
 	matches: number,
 	matchesImported: number,
@@ -187347,6 +187353,7 @@ export type GraphQLTypes = {
 	["TelemetryFeatureAdoption"]: {
 	__typename: "TelemetryFeatureAdoption",
 	enabled: number,
+	flagged: number,
 	installsUsing: number,
 	key: string,
 	reporting: number,
@@ -187356,6 +187363,7 @@ export type GraphQLTypes = {
 	__typename: "TelemetryFleetTotals",
 	dedicatedServers: number,
 	gameServerNodes: number,
+	gpuNodes: number,
 	mapsPlayed: number,
 	matches: number,
 	matchesImported: number,

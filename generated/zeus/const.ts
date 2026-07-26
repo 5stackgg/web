@@ -37198,6 +37198,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	TelemetryFeatureAdoption:{
 		enabled:"Int",
+		flagged:"Int",
 		installsUsing:"Int",
 		key:"String",
 		reporting:"Int",
@@ -37206,6 +37207,7 @@ export const ReturnTypes: Record<string,any> = {
 	TelemetryFleetTotals:{
 		dedicatedServers:"Int",
 		gameServerNodes:"Int",
+		gpuNodes:"Int",
 		mapsPlayed:"Int",
 		matches:"Int",
 		matchesImported:"Int",

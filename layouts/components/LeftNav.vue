@@ -989,7 +989,9 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           </SidebarMenu>
         </SidebarGroup>
 
-        <SidebarGroup v-if="telemetryStats?.online > 0 && sideBarOpen">
+        <SidebarGroup
+          v-if="telemetryStats?.online > 0 && (isMobile || sideBarOpen)"
+        >
           <NuxtLink
             :to="{ name: 'system-telemetry' }"
             :title="$t('pages.system_telemetry.title')"

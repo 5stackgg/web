@@ -37208,6 +37208,8 @@ export const ReturnTypes: Record<string,any> = {
 		gameServerNodes:"Int",
 		mapsPlayed:"Int",
 		matches:"Int",
+		matchesImported:"Int",
+		matchesImportedMonth:"Int",
 		matchesMonth:"Int",
 		matchesWeek:"Int",
 		matchesYear:"Int",
@@ -37236,12 +37238,7 @@ export const ReturnTypes: Record<string,any> = {
 		growth:"TelemetryGrowthPoint",
 		installs:"TelemetryInstallCounts",
 		online:"Int",
-		totals:"TelemetryFleetTotals",
-		versions:"TelemetryVersionSpread"
-	},
-	TelemetryVersionSpread:{
-		installs:"Int",
-		version:"String"
+		totals:"TelemetryFleetTotals"
 	},
 	TestUploadResponse:{
 		error:"String"

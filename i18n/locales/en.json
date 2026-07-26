@@ -1243,12 +1243,14 @@
         "title": "Panels",
         "online": "Online Now",
         "total": "All Time",
-        "total_hint": "Distinct panels that have ever reported, counted by anonymous install id.",
         "active_24h": "Active 24h",
         "active_7d": "Active 7d",
         "new_30d": "New 30d",
         "retained_180d": "Retained",
-        "retained_180d_hint": "Panels first seen over 180 days ago that are still reporting this week."
+        "retained_180d_hint": "Panels first seen over 180 days ago that are still reporting this week.",
+        "live": "Reporting within the last hour",
+        "online_caption": "heartbeat within the hour",
+        "total_caption": "distinct panels ever seen"
       },
       "totals": {
         "title": "Fleet Totals",
@@ -1259,17 +1261,25 @@
         "dedicated_servers": "Dedicated",
         "public_servers": "Public",
         "capacity": "Player Slots",
-        "matches": "Matches All Time",
-        "matches_week": "Matches 7d",
-        "matches_month": "Matches 30d",
-        "matches_year": "Matches 1y",
+        "matches": "Matches Hosted",
+        "matches_week": "Hosted 7d",
+        "matches_month": "Hosted 30d",
+        "matches_year": "Hosted 1y",
         "maps_played": "Maps Played",
+        "matches_imported": "Imported Matches",
+        "matches_imported_month": "Imported 30d",
         "players": "Players",
         "players_active": "Active Players 30d",
-        "teams": "Teams"
+        "teams": "Teams",
+        "infrastructure": "Infrastructure",
+        "match_volume": "Match Volume",
+        "community": "Community",
+        "matches_caption": "hosted across the fleet",
+        "players_caption": "in a lineup, last 30 days",
+        "hosted_hint": "Hosted counts only matches a panel ran itself. Imported matches come from FACEIT or CS2 match history and are listed separately."
       },
       "activity": {
-        "matches": "Matches Per Day (90d)",
+        "matches": "Matches Hosted Per Day (90d)",
         "matches_unit": "matches"
       },
       "growth": {
@@ -1280,8 +1290,6 @@
         "title": "Feature Adoption",
         "feature": "Feature",
         "enabled": "Enabled",
-        "using": "With Data",
-        "records": "Records",
         "keys": {
           "tournaments": "Tournaments",
           "leagues": "Leagues",
@@ -1310,11 +1318,16 @@
           "player_name_registration": "Player Name Registration",
           "league_division_requests": "League Division Requests",
           "branding": "Custom Branding"
-        }
-      },
-      "versions": {
-        "title": "Panel Versions",
-        "unknown": "unknown"
+        },
+        "panels_using": "Panels Using",
+        "total": "Total",
+        "optional": "Optional Features",
+        "optional_hint": "Features an admin can switch on or off in application settings.",
+        "capabilities": "Detected Capabilities",
+        "capabilities_hint": "Not switches — the panel detects these from whether the Discord, Tailscale, or Steam credentials are configured.",
+        "configured": "Configured",
+        "always": "Always Available",
+        "always_hint": "Ship with every panel and cannot be turned off, so only usage is meaningful."
       }
     },
     "coming_soon": "Coming Soon!",

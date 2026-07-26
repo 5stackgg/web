@@ -56,6 +56,7 @@ type Tracer = {
   team: string | null;
   travel: number; // 0..1 how far the bullet has flown from muzzle to target
   fade: number; // 0..1 brightness (fades out over the tracer's life)
+  hit?: boolean; // landed on a player rather than on world geometry
 };
 type Detonation = {
   rx: number;
@@ -738,7 +739,10 @@ onMounted(() => {
 
       const x = cv.getContext("2d")!;
       x.clearRect(0, 0, 128, 128);
-      const col = "#" + hex.toString(16).padStart(6, "0");
+      // The team colours are tuned to sit under text on the 2D radar, which
+      // makes them too pale to carry a pin on their own. Push them toward full
+      // saturation here so the disc reads as a team at a glance.
+      const col = "#" + saturated(hex).getHexString();
       const cx = 64;
       const cy = 52;
       const r = 34;
@@ -777,8 +781,15 @@ onMounted(() => {
       }
       x.restore();
 
-      // Team ring last, over the photo's edge.
+      // Team ring last, over the photo's edge. A dark rim underneath it keeps
+      // the colour saturated against pale map geometry — without it the ring
+      // blends into whatever it happens to be standing on.
       x.globalAlpha = dim;
+      x.beginPath();
+      x.arc(cx, cy, r, 0, Math.PI * 2);
+      x.lineWidth = 11;
+      x.strokeStyle = "rgba(8,10,14,0.85)";
+      x.stroke();
       x.beginPath();
       x.arc(cx, cy, r, 0, Math.PI * 2);
       x.lineWidth = 7;
@@ -790,8 +801,18 @@ onMounted(() => {
     // Bloom triggers above 1.0 in linear space, and a sprite drawn at full
     // brightness lands right on that line. Holding the pin slightly under keeps
     // the photo crisp instead of smearing into a glowing blob.
-    sp.material.color.setScalar(0.82);
+    sp.material.color.setScalar(0.95);
     return sp;
+  }
+
+  // Team colours pushed to near-full saturation, for the 3D pins only.
+  const _sat = new THREE.Color();
+  function saturated(hex: number) {
+    _sat.setHex(hex);
+    const hsl = { h: 0, s: 0, l: 0 };
+    _sat.getHSL(hsl);
+    _sat.setHSL(hsl.h, Math.min(1, hsl.s * 1.75 + 0.2), Math.min(hsl.l, 0.56));
+    return _sat;
   }
 
   function makeNameplate() {
@@ -1209,12 +1230,18 @@ onMounted(() => {
       "position",
       new THREE.BufferAttribute(new Float32Array(6), 3),
     );
+    // Per-vertex alpha, so the streak can fade out along its tail instead of
+    // being a uniformly lit segment — a hard-edged line of even brightness is
+    // what reads as a laser rather than a round in flight. itemSize 4 is what
+    // switches three's colour path to include alpha.
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(8), 4));
     const ln = new THREE.Line(
       g,
       new THREE.LineBasicMaterial({
         transparent: true,
         opacity: 1,
         depthTest: false,
+        vertexColors: true,
         // Additive so overlapping fire reads as hotter rather than muddier.
         blending: THREE.AdditiveBlending,
       }),
@@ -1979,6 +2006,19 @@ onMounted(() => {
     }
   }
   refreshTraj();
+  // Fraction of the curve's total length reached at curve parameter `t`. Three
+  // caches its own length table, so this is a lookup after the first call.
+  function arcU(curve: THREE.Curve<THREE.Vector3>, t: number) {
+    const lengths = curve.getLengths(ARC_SEGMENTS * 2);
+    const total = lengths[lengths.length - 1];
+    if (!(total > 0)) {
+      return t;
+    }
+    const f = Math.max(0, Math.min(1, t)) * (lengths.length - 1);
+    const i = Math.min(Math.floor(f), lengths.length - 2);
+    return (lengths[i] + (lengths[i + 1] - lengths[i]) * (f - i)) / total;
+  }
+
   function arcCurve(a: InFlight) {
     const pts = a.gid != null ? trajByGid.get(a.gid) : undefined;
     if (pts && pts.length >= 2) {
@@ -2123,7 +2163,7 @@ onMounted(() => {
 
     // firing tracers — a short bright streak travelling muzzle → target,
     // colored by the shooter's team (live gunfire, not static lines).
-    const STREAK_LEN = 280; // source units of visible streak behind the bullet
+    const STREAK_LEN = 120; // source units of visible streak behind the bullet
     let tri = 0;
     if (!inOverlay) {
       for (const tr of props.tracers || []) {
@@ -2165,8 +2205,28 @@ onMounted(() => {
         const mat = ln.material as THREE.LineBasicMaterial;
         // Hot core rather than flat team colour: a bullet is incandescent, and
         // the team read comes from the muzzle flash and the player it left.
-        mat.color.setHex(TEAM(tr.team)).lerp(new THREE.Color(0xfff0cc), 0.55);
-        mat.opacity = Math.min(1, tr.fade * 1.35);
+        mat.color.setHex(TEAM(tr.team)).lerp(new THREE.Color(0xfff0cc), 0.42);
+        // Once the round has landed the streak has to leave quickly — a line
+        // that lingers at the same brightness after impact is the other half of
+        // the laser read. In flight it stays bright; after, it drops away fast
+        // and hands off to the impact spark.
+        const arrived = headT >= 0.999;
+        mat.opacity = arrived
+          ? Math.pow(tr.fade, 2.4)
+          : Math.min(1, tr.fade * 1.2);
+        const col = ln.geometry.attributes.color.array as Float32Array;
+        const hot = mat.color;
+        // tail: transparent, and cooler than the head
+        col[0] = hot.r * 0.55;
+        col[1] = hot.g * 0.55;
+        col[2] = hot.b * 0.55;
+        col[3] = 0;
+        // head: full brightness
+        col[4] = hot.r;
+        col[5] = hot.g;
+        col[6] = hot.b;
+        col[7] = 1;
+        ln.geometry.attributes.color.needsUpdate = true;
         ln.visible = true;
 
         // Muzzle flash: brightest at the instant of firing, gone almost at once.
@@ -2189,10 +2249,17 @@ onMounted(() => {
         if (headT >= 0.999 && tr.fade > 0.05) {
           wpos({ x: tr.tx, y: tr.ty, z: tr.tz }, _v);
           isp.position.copy(_v);
-          const sz = (26 + 22 * tr.fade) * U;
+          // A round landing on a player has to read differently from one
+          // landing on a wall — same geometry, but bigger, hotter and lit, so
+          // the eye registers that the shot connected.
+          const punch = tr.hit ? 1 : 0;
+          const sz = (26 + 22 * tr.fade + 30 * punch * tr.fade) * U;
           isp.scale.set(sz, sz, 1);
-          isp.material.opacity = tr.fade * 0.85;
+          isp.material.opacity = tr.fade * (0.85 + 0.15 * punch);
           isp.visible = true;
+          if (punch && tr.fade > 0.45) {
+            emitLight(_v, 0xffe2c0, 2.2 * tr.fade, 340 * U);
+          }
         } else {
           isp.visible = false;
         }
@@ -2513,7 +2580,13 @@ onMounted(() => {
       // count while positioning the head at the exact fraction let the grenade
       // run ahead of its own trail, which read as the nade arriving before the
       // line caught up.
-      const flownSegs = Math.max(1, Math.round(prog * ARC_SEGMENTS));
+      // TubeGeometry lays its rings out by getPointAt — arc length — while
+      // `progress` is a fraction of flight time, which getPoint consumes. On a
+      // bounce path those two parameterisations pull far apart (the throw
+      // covers a lot of ground early and little late), which is why the
+      // grenade ran out ahead of its own trail. Convert time → arc length once
+      // and drive both from it.
+      const flownSegs = Math.max(1, Math.round(arcU(curve, prog) * ARC_SEGMENTS));
       const flownT = flownSegs / ARC_SEGMENTS;
       arc.geometry.setDrawRange(0, flownSegs * ARC_RADIAL * 6);
 
@@ -2523,7 +2596,7 @@ onMounted(() => {
       // the grenade model rides the SAME curve as the line (so it never drifts
       // off onto its own path).
       const nm = projs[i];
-      curve.getPoint(flownT, _v);
+      curve.getPointAt(flownT, _v);
       nm.grp.visible = true;
       nm.grp.position.copy(_v);
       for (const k in nm.models) nm.models[k].visible = k === g.type;

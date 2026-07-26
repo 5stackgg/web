@@ -1110,6 +1110,7 @@ const tracersNow = computed(() => {
     team: string | null;
     travel: number;
     fade: number;
+    hit: boolean;
   }> = [];
   for (const s of activeRoundShots.value) {
     if (s.eye_x == null || s.eye_y == null || s.eye_z == null) continue;
@@ -1166,6 +1167,7 @@ const tracersNow = computed(() => {
       team: s.attacker_team ?? null,
       travel,
       fade,
+      hit: s.result === "hit" || s.result === "headshot",
     });
   }
   return out;

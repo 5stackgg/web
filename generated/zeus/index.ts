@@ -1659,6 +1659,8 @@ export type ValueTypes = {
 	gameServerNodes?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
+	matchesImported?:boolean | `@${string}`,
+	matchesImportedMonth?:boolean | `@${string}`,
 	matchesMonth?:boolean | `@${string}`,
 	matchesWeek?:boolean | `@${string}`,
 	matchesYear?:boolean | `@${string}`,
@@ -1691,12 +1693,6 @@ export type ValueTypes = {
 	installs?:ValueTypes["TelemetryInstallCounts"],
 	online?:boolean | `@${string}`,
 	totals?:ValueTypes["TelemetryFleetTotals"],
-	versions?:ValueTypes["TelemetryVersionSpread"],
-		__typename?: boolean | `@${string}`
-}>;
-	["TelemetryVersionSpread"]: AliasType<{
-	installs?:boolean | `@${string}`,
-	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TestUploadResponse"]: AliasType<{
@@ -66161,6 +66157,8 @@ export type ResolverInputTypes = {
 	gameServerNodes?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
+	matchesImported?:boolean | `@${string}`,
+	matchesImportedMonth?:boolean | `@${string}`,
 	matchesMonth?:boolean | `@${string}`,
 	matchesWeek?:boolean | `@${string}`,
 	matchesYear?:boolean | `@${string}`,
@@ -66193,12 +66191,6 @@ export type ResolverInputTypes = {
 	installs?:ResolverInputTypes["TelemetryInstallCounts"],
 	online?:boolean | `@${string}`,
 	totals?:ResolverInputTypes["TelemetryFleetTotals"],
-	versions?:ResolverInputTypes["TelemetryVersionSpread"],
-		__typename?: boolean | `@${string}`
-}>;
-	["TelemetryVersionSpread"]: AliasType<{
-	installs?:boolean | `@${string}`,
-	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TestUploadResponse"]: AliasType<{
@@ -130587,6 +130579,8 @@ export type ModelTypes = {
 	gameServerNodes: number,
 	mapsPlayed: number,
 	matches: number,
+	matchesImported: number,
+	matchesImportedMonth: number,
 	matchesMonth: number,
 	matchesWeek: number,
 	matchesYear: number,
@@ -130615,12 +130609,7 @@ export type ModelTypes = {
 	growth: Array<ModelTypes["TelemetryGrowthPoint"]>,
 	installs: ModelTypes["TelemetryInstallCounts"],
 	online: number,
-	totals: ModelTypes["TelemetryFleetTotals"],
-	versions: Array<ModelTypes["TelemetryVersionSpread"]>
-};
-	["TelemetryVersionSpread"]: {
-		installs: number,
-	version: string
+	totals: ModelTypes["TelemetryFleetTotals"]
 };
 	["TestUploadResponse"]: {
 		error?: string | undefined | null
@@ -187369,6 +187358,8 @@ export type GraphQLTypes = {
 	gameServerNodes: number,
 	mapsPlayed: number,
 	matches: number,
+	matchesImported: number,
+	matchesImportedMonth: number,
 	matchesMonth: number,
 	matchesWeek: number,
 	matchesYear: number,
@@ -187400,13 +187391,7 @@ export type GraphQLTypes = {
 	growth: Array<GraphQLTypes["TelemetryGrowthPoint"]>,
 	installs: GraphQLTypes["TelemetryInstallCounts"],
 	online: number,
-	totals: GraphQLTypes["TelemetryFleetTotals"],
-	versions: Array<GraphQLTypes["TelemetryVersionSpread"]>
-};
-	["TelemetryVersionSpread"]: {
-	__typename: "TelemetryVersionSpread",
-	installs: number,
-	version: string
+	totals: GraphQLTypes["TelemetryFleetTotals"]
 };
 	["TestUploadResponse"]: {
 	__typename: "TestUploadResponse",
@@ -246510,6 +246495,7 @@ export enum e_award_sources_constraint {
 }
 export enum e_award_sources_enum {
 	manual = "manual",
+	season = "season",
 	tournament = "tournament"
 }
 /** select columns of table "e_award_sources" */

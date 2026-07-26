@@ -189,6 +189,15 @@ const typeOn = (ty: string) => props.typeFilter?.[ty] ?? true;
 const C = 1024;
 const TEAM = (t: string | null) =>
   t === "t" ? 0xf5a623 : t === "ct" ? 0x4799eb : 0x9aa0a8;
+// Canvas art is authored in sRGB. Left unmarked, three treats those bytes as
+// linear values and converts them to sRGB again on output — which lifts and
+// desaturates every canvas-backed element. That double conversion is what made
+// the team colours read as pale pastels against the 2D radar's saturated ones.
+function canvasTex(canvas: HTMLCanvasElement) {
+  const t = new THREE.CanvasTexture(canvas);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 const NADE_COL: Record<string, number> = {
   Smoke: 0x32d6e0,
   Molotov: 0xff6a1a,
@@ -657,37 +666,25 @@ onMounted(() => {
   }
 
   // ===== player tokens (figure + nameplate + hp/armor + weapon) =====
-  const weaponTexCache: Record<string, THREE.CanvasTexture> = {};
-  function weaponTex(weapon: string) {
+  // Weapon icons as raw images, for compositing into the nameplate canvas.
+  const weaponImgs = new Map<string, HTMLImageElement>();
+  function weaponImg(weapon: string): HTMLImageElement | null {
     const path = weaponIconPath(weapon);
     if (!path) return null;
-    if (weaponTexCache[path]) return weaponTexCache[path];
-    const cv = document.createElement("canvas");
-    cv.width = 96;
-    cv.height = 48;
-    const tex = new THREE.CanvasTexture(cv);
-    tex.anisotropy = 4;
-    weaponTexCache[path] = tex;
-    const img = new Image();
-    img.onload = () => {
-      const x = cv.getContext("2d")!;
-      x.clearRect(0, 0, 96, 48);
-      const ar = img.width / img.height || 2;
-      let w = 90,
-        h = w / ar;
-      if (h > 46) {
-        h = 46;
-        w = h * ar;
-      }
-      x.drawImage(img, (96 - w) / 2, (48 - h) / 2, w, h);
-      x.globalCompositeOperation = "source-in";
-      x.fillStyle = "#fff";
-      x.fillRect(0, 0, 96, 48);
-      tex.needsUpdate = true;
-    };
-    img.src = path;
-    return tex;
+    let img = weaponImgs.get(path);
+    if (!img) {
+      img = new Image();
+      (img as any).__ready = false;
+      img.onload = () => {
+        (img as any).__ready = true;
+        apply?.();
+      };
+      img.src = path;
+      weaponImgs.set(path, img);
+    }
+    return (img as any).__ready ? img : null;
   }
+
   // A player reads as a map pin, not a 3D object: a flat team-coloured disc
   // with a pointer beneath it, always facing the camera. A lathed 3D pin
   // changes silhouette as the camera orbits, which makes players harder to
@@ -703,6 +700,10 @@ onMounted(() => {
       (img as any).__ready = false;
       img.onload = () => {
         (img as any).__ready = true;
+        // Repaint now the photo exists. Pins only redraw when their key
+        // changes, and that key is only consulted from apply() — so without
+        // this the placeholder stayed up until the next tick moved something.
+        apply?.();
       };
       img.src = url;
       avatarImgs.set(url, img);
@@ -713,13 +714,17 @@ onMounted(() => {
   function makeAvatarPin() {
     const cv = document.createElement("canvas");
     cv.width = cv.height = 128;
-    const tex = new THREE.CanvasTexture(cv);
+    const tex = canvasTex(cv);
     tex.anisotropy = 4;
     const sp: any = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: tex,
         depthTest: false,
         transparent: true,
+        // ACES tone mapping exists to make the world's lighting filmic; run
+        // through it, flat UI art comes out lifted and desaturated. These are
+        // interface elements, so they bypass it and render as authored.
+        toneMapped: false,
       }),
     );
     sp.renderOrder = 1000;
@@ -729,11 +734,14 @@ onMounted(() => {
       alive: boolean,
       dim: number,
       url: string | null,
+      health: number,
+      armor: number,
+      helmet: boolean,
     ) => {
       const img = url ? avatarImage(url) : null;
       // The image is part of the key so the pin repaints once it finishes
       // loading rather than staying on the placeholder.
-      const key = `${hex}|${alive}|${dim.toFixed(2)}|${img ? url : ""}`;
+      const key = `${hex}|${alive}|${dim.toFixed(2)}|${img ? url : ""}|${Math.round(health)}|${Math.round(armor)}|${helmet}`;
       if (sp.userData.key === key) return;
       sp.userData.key = key;
 
@@ -744,8 +752,8 @@ onMounted(() => {
       // saturation here so the disc reads as a team at a glance.
       const col = "#" + saturated(hex).getHexString();
       const cx = 64;
-      const cy = 52;
-      const r = 34;
+      const cy = 54;
+      const r = 30;
 
       // Pointer tail, so the disc reads as anchored to a spot on the ground
       // rather than floating above it.
@@ -787,21 +795,52 @@ onMounted(() => {
       x.globalAlpha = dim;
       x.beginPath();
       x.arc(cx, cy, r, 0, Math.PI * 2);
-      x.lineWidth = 11;
+      x.lineWidth = 10;
       x.strokeStyle = "rgba(8,10,14,0.85)";
       x.stroke();
       x.beginPath();
       x.arc(cx, cy, r, 0, Math.PI * 2);
-      x.lineWidth = 7;
+      x.lineWidth = 6;
       x.strokeStyle = col;
       x.stroke();
+
+      // Health and armour ride the bottom of this same disc, the way they do on
+      // the 2D radar — one marker rather than a disc with a separate bar stack
+      // beside it, so the two views read as the same object.
+      if (alive) {
+        const from = Math.PI * 0.17;
+        const to = Math.PI * 0.83;
+        const hpR = r + 8;
+        x.lineCap = "round";
+        x.beginPath();
+        x.arc(cx, cy, hpR, from, to);
+        x.lineWidth = 6;
+        x.strokeStyle = "rgba(8,10,14,0.8)";
+        x.stroke();
+        const hpFrac = Math.max(0, Math.min(1, health / 100));
+        if (hpFrac > 0) {
+          x.beginPath();
+          x.arc(cx, cy, hpR, to - (to - from) * hpFrac, to);
+          x.lineWidth = 4;
+          x.strokeStyle = `hsl(${hpFrac * 130}, 85%, 50%)`;
+          x.stroke();
+        }
+        const arFrac = Math.max(0, Math.min(1, armor / 100));
+        if (arFrac > 0) {
+          x.beginPath();
+          x.arc(cx, cy, hpR + 7, to - (to - from) * arFrac, to);
+          x.lineWidth = 3;
+          x.strokeStyle = helmet ? "hsl(195,100%,70%)" : "hsl(200,70%,55%)";
+          x.stroke();
+        }
+      }
       x.globalAlpha = 1;
       tex.needsUpdate = true;
     };
     // Bloom triggers above 1.0 in linear space, and a sprite drawn at full
     // brightness lands right on that line. Holding the pin slightly under keeps
     // the photo crisp instead of smearing into a glowing blob.
-    sp.material.color.setScalar(0.95);
+    sp.material.color.setScalar(1);
     return sp;
   }
 
@@ -819,98 +858,50 @@ onMounted(() => {
     const cv = document.createElement("canvas");
     cv.width = 256;
     cv.height = 64;
-    const tex = new THREE.CanvasTexture(cv);
+    const tex = canvasTex(cv);
     tex.anisotropy = 4;
     const sp = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: tex,
         depthTest: false,
         transparent: true,
+        toneMapped: false,
       }),
     );
     sp.scale.set(PH * 1.85, PH * 0.46, 1);
-    sp.position.y = PH * 1.15;
+    // Clear of the disc above it, which now carries the health arcs and so
+    // reaches further down than it used to.
+    sp.position.y = PH * 0.98;
     sp.renderOrder = 1002;
     let last = "";
     return {
       sprite: sp,
-      redraw(text: string) {
-        if (text === last) return;
-        last = text;
+      // The weapon rides inside the plate rather than as its own sprite. As a
+      // separate billboard it collided with whatever was stacked next to it —
+      // the pin's pointer tail above, the ground ring below — because the
+      // camera can look at the token from any angle.
+      redraw(text: string, weapon?: string | null) {
+        const icon = weapon ? weaponImg(weapon) : null;
+        const key = `${text}|${weapon ?? ""}|${icon ? 1 : 0}`;
+        if (key === last) return;
+        last = key;
         const x = cv.getContext("2d")!;
         x.clearRect(0, 0, 256, 64);
         x.fillStyle = "rgba(10,13,18,0.82)";
         (x as any).roundRect(10, 16, 236, 34, 9);
         x.fill();
+        let textCx = 128;
+        if (icon) {
+          const h = 24;
+          const w = Math.min(78, h * (icon.width / icon.height || 2));
+          x.drawImage(icon, 18, 33 - h / 2, w, h);
+          textCx = (18 + w + 10 + 246) / 2;
+        }
         x.font = "600 25px Oxanium, system-ui, sans-serif";
         x.textAlign = "center";
         x.textBaseline = "middle";
         x.fillStyle = "#f4f8fc";
-        x.fillText(text, 128, 34);
-        tex.needsUpdate = true;
-      },
-    };
-  }
-  function makeHp() {
-    const W = 256,
-      H = 52;
-    const cv = document.createElement("canvas");
-    cv.width = W;
-    cv.height = H;
-    const ctx = cv.getContext("2d")!;
-    const tex = new THREE.CanvasTexture(cv);
-    tex.anisotropy = 4;
-    const sp = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: tex,
-        depthTest: false,
-        transparent: true,
-      }),
-    );
-    sp.scale.set(PH * 1.75, PH * 0.355, 1);
-    sp.position.y = PH * 0.88;
-    sp.renderOrder = 1001;
-    let lh = -2,
-      la = -2;
-    // Two clearly-separate bars (scoreboard look): a prominent GREEN health bar
-    // and a thinner BLUE armor bar beneath it, with a gap so they never merge.
-    return {
-      sprite: sp,
-      redraw(hp: number, armor = 0, helmet = false) {
-        if (lh >= 0 && Math.abs(hp - lh) < 1.2 && Math.abs(armor - la) < 1.2)
-          return;
-        lh = hp;
-        la = armor;
-        ctx.clearRect(0, 0, W, H);
-        const bar = (
-          x: number,
-          y: number,
-          w: number,
-          h: number,
-          r: number,
-          col: string,
-        ) => {
-          ctx.beginPath();
-          (ctx as any).roundRect(x, y, w, h, r);
-          ctx.fillStyle = col;
-          ctx.fill();
-        };
-        // health (prominent, top)
-        bar(4, 6, 248, 18, 9, "rgba(4,6,9,0.8)");
-        const hw = Math.max(0, Math.min(1, hp / 100)) * 240;
-        bar(
-          8,
-          10,
-          Math.max(3, hw),
-          10,
-          5,
-          hp > 50 ? "#46d36a" : hp > 20 ? "#e6c344" : "#e0503e",
-        );
-        // armor (thinner, bottom, clear gap)
-        bar(4, 30, 248, 12, 6, "rgba(4,6,9,0.8)");
-        const aw = Math.max(0, Math.min(1, armor / 100)) * 240;
-        if (armor > 0)
-          bar(8, 33, Math.max(3, aw), 6, 3, helmet ? "#7cd4ff" : "#4a90d6");
+        x.fillText(text, textCx, 34);
         tex.needsUpdate = true;
       },
     };
@@ -938,7 +929,7 @@ onMounted(() => {
     x.beginPath();
     x.arc(32, 32, 8, 0, Math.PI * 2);
     x.fill();
-    const tex = new THREE.CanvasTexture(cv);
+    const tex = canvasTex(cv);
     tex.anisotropy = 4;
     return tex;
   })();
@@ -958,11 +949,15 @@ onMounted(() => {
     new THREE.Vector2(0.02, PH * 0.02),
   ];
   const geoPin = new THREE.LatheGeometry(pinProfile, 22);
-  const geoRing = new THREE.RingGeometry(RING, RING * 1.22, 28);
   // Broken into arcs so it reads as a targeting reticle rather than a plain
   // circle, and so the rotation is visible.
   const geoSelRing = new THREE.RingGeometry(RING * 1.55, RING * 1.95, 32, 1, 0, Math.PI * 1.55);
   // sharp forward-pointing aim wedge on the floor (the direction cue; shares ringMat)
+  // Ground ring: where the player actually stands. The camera-facing disc
+  // above cannot express that — it floats at a fixed screen size regardless of
+  // the terrain under it — so the two carry different information and both earn
+  // their place. Slimmer than the disc's ring so they don't read as duplicates.
+  const geoRing = new THREE.RingGeometry(RING * 0.92, RING * 1.06, 32);
   const geoAim = new THREE.BufferGeometry();
   geoAim.setAttribute(
     "position",
@@ -1046,13 +1041,14 @@ onMounted(() => {
     // from every angle — but the floor ring and aim wedge below still carry
     // position and facing, which a camera-facing disc cannot.
     const avatar = makeAvatarPin();
-    // Pin on top, then weapon, name, health going down — they used to occupy
-    // overlapping bands of the same column, so the avatar sat underneath the
-    // icons and nothing was readable.
-    avatar.scale.set(PH * 1.15, PH * 1.15, 1);
-    avatar.position.y = PH * 2.35;
+    // The disc carries the avatar, the team ring and the health/armour arcs, so
+    // it is the whole marker — the floor ring that used to sit beneath it was a
+    // second circle competing with this one for the same reading.
+    avatar.scale.set(PH * 1.35, PH * 1.35, 1);
+    avatar.position.y = PH * 1.95;
     grp.add(avatar);
-    // floor aim wedge (team colour) + position ring
+    // Floor aim wedge: which way they are looking. Kept because a camera-facing
+    // disc cannot express facing, and a wedge is not another circle.
     const aim = new THREE.Mesh(geoAim, ringMat);
     aim.position.y = 1.5;
     aim.renderOrder = 989;
@@ -1084,16 +1080,6 @@ onMounted(() => {
     grp.add(selRing);
     const np = makeNameplate();
     grp.add(np.sprite);
-    const hp = makeHp();
-    grp.add(hp.sprite);
-    const wpn = new THREE.Sprite(
-      new THREE.SpriteMaterial({ depthTest: false, transparent: true }),
-    );
-    wpn.scale.set(PH * 0.95, PH * 0.47, 1);
-    wpn.position.y = PH * 1.5;
-    wpn.renderOrder = 1002;
-    wpn.visible = false;
-    grp.add(wpn);
     // flashbang icon shown above the head while blinded
     const flash = new THREE.Sprite(
       new THREE.SpriteMaterial({
@@ -1109,7 +1095,7 @@ onMounted(() => {
     grp.add(flash);
     grp.visible = false;
     scene.add(grp);
-    return { grp, mat, ringMat, np, hp, wpn, flash, avatar, selRing };
+    return { grp, mat, ringMat, np, flash, avatar, selRing };
   }
   const tokens = Array.from({ length: 12 }, buildToken);
   // Per-player health, so a drop between samples can be read as a hit.
@@ -1202,7 +1188,7 @@ onMounted(() => {
     c.moveTo(48, 16);
     c.lineTo(16, 48);
     c.stroke();
-    const t = new THREE.CanvasTexture(cv);
+    const t = canvasTex(cv);
     t.anisotropy = 4;
     return t;
   }
@@ -1267,7 +1253,7 @@ onMounted(() => {
     g.addColorStop(1, "rgba(255,120,0,0)");
     x.fillStyle = g;
     x.fillRect(0, 0, 64, 64);
-    return new THREE.CanvasTexture(c);
+    return canvasTex(c);
   })();
   const makeSpark = (order: number) => {
     const sp: any = new THREE.Sprite(
@@ -1325,7 +1311,7 @@ onMounted(() => {
     g.addColorStop(1, "rgba(255,255,255,0)");
     x.fillStyle = g;
     x.fillRect(0, 0, 128, 128);
-    return new THREE.CanvasTexture(c);
+    return canvasTex(c);
   })();
   const FIRETEX = (() => {
     const c = document.createElement("canvas");
@@ -1338,7 +1324,7 @@ onMounted(() => {
     g.addColorStop(1, "rgba(120,20,0,0)");
     x.fillStyle = g;
     x.fillRect(0, 0, 128, 128);
-    return new THREE.CanvasTexture(c);
+    return canvasTex(c);
   })();
   // Decoded smoke grids by grenade id. A cloud's shape is fixed once it pops,
   // so this is built per blob rather than per frame.
@@ -2095,6 +2081,9 @@ onMounted(() => {
         p.alive,
         p.alive ? 1 : 0.45,
         props.avatars?.[p.steamId] ?? null,
+        p.health ?? 100,
+        p.armor ?? 0,
+        p.helmet === true,
       );
       tk.ringMat.color.setHex(col);
 
@@ -2121,13 +2110,7 @@ onMounted(() => {
           0.35 + bl,
         );
       const nm = names[p.steamId] || "";
-      tk.np.redraw(nm);
-      tk.hp.redraw(p.health ?? 100, p.armor ?? 0, p.helmet === true);
-      const wt = p.activeWeapon ? weaponTex(p.activeWeapon) : null;
-      if (wt) {
-        (tk.wpn.material as THREE.SpriteMaterial).map = wt;
-        tk.wpn.visible = true;
-      } else tk.wpn.visible = false;
+      tk.np.redraw(nm, p.activeWeapon ?? null);
       if (followSid.value && p.steamId === followSid.value) followTok = tk;
     }
     camToken = followTok;

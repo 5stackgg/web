@@ -9,13 +9,21 @@ import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import socket from "~/web-sockets/Socket";
+import { getCurrentScope, onScopeDispose } from "vue";
 
 // Module-level so multiple useDemoPlayback() callers share one poll
 // loop instead of multiplying the request rate per mount.
 let statePollTimer: ReturnType<typeof setInterval> | null = null;
 let stateSocketHandler: ((data: any) => void) | null = null;
+// The visibilitychange listener is also shared (module-level) so any caller's
+// stopStatePoll fully tears it down; startStatePoll re-registers it once.
+let visibilityHandler: (() => void) | null = null;
 // Wall clock of the last pod-pushed state frame; gates the fallback poll.
 let lastStatePushMs = 0;
+// How many mounted callers currently hold this composable. The shared poll /
+// socket / listener are only torn down when the last one unmounts, so a child
+// component unmounting does not kill polling for a still-mounted parent.
+let activeConsumers = 0;
 
 type DemoSpecSlot = {
   slot: number;
@@ -103,6 +111,20 @@ export function useDemoPlayback() {
   const { $apollo } = useNuxtApp();
   const { subscribe, unsubscribe } = useSubscriptionManager();
 
+  // Tie the shared poll/socket/listener lifetime to the mounted callers. Without
+  // this, unmounting a component that started playback (notably dev attach mode,
+  // which never routes through stop()) left the 1Hz timer, the socket handler,
+  // and the document visibilitychange listener running forever.
+  if (getCurrentScope()) {
+    activeConsumers++;
+    onScopeDispose(() => {
+      activeConsumers = Math.max(0, activeConsumers - 1);
+      if (activeConsumers === 0) {
+        stopStatePoll();
+      }
+    });
+  }
+
   function subscriptionKey(sessionId: string) {
     return `demo-session:${sessionId}`;
   }
@@ -111,7 +133,6 @@ export function useDemoPlayback() {
   // to this socket. The timer below is a fallback poll that only sends
   // when pushes go quiet (e.g. an older pod image).
   const PUSH_FRESH_MS = 3_500;
-  let visibilityHandler: (() => void) | null = null;
   function tickOnce() {
     if (!store.matchMapId) return;
     if (Date.now() - lastStatePushMs < PUSH_FRESH_MS) return;

@@ -224,7 +224,18 @@ export default {
       platform: Platform;
       embedId: string | null;
     } {
-      const url = new URL(link);
+      let url: URL;
+      try {
+        url = new URL(link);
+      } catch {
+        // Malformed link: nothing to embed.
+        return { platform: "iframe", embedId: null };
+      }
+      // Only http(s) may ever reach an iframe src. A javascript:/data: link
+      // would otherwise be embedded verbatim on a public match page.
+      if (url.protocol !== "http:" && url.protocol !== "https:") {
+        return { platform: "iframe", embedId: null };
+      }
       const hostname = url.hostname.toLowerCase();
 
       if (hostname.endsWith("twitch.tv")) {
@@ -392,6 +403,15 @@ export default {
       const playerRef = this.$refs.playerRef as HTMLDivElement | null;
       if (!playerRef || !url) return;
 
+      // Defense-in-depth alongside parseStreamLink: never embed a non-http(s)
+      // URL, even if a caller reaches this method with an unvetted value.
+      try {
+        const scheme = new URL(url).protocol;
+        if (scheme !== "http:" && scheme !== "https:") return;
+      } catch {
+        return;
+      }
+
       this.cleanupPlayer();
 
       const iframe = document.createElement("iframe");
@@ -400,6 +420,13 @@ export default {
       iframe.height = "100%";
       iframe.allow =
         "autoplay; fullscreen; encrypted-media; picture-in-picture";
+      // Constrain an arbitrary third-party embed: keep the player functional
+      // (scripts, its own origin, fullscreen/popups) but block it from
+      // navigating or driving the top-level 5stack window.
+      iframe.setAttribute(
+        "sandbox",
+        "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-presentation allow-forms",
+      );
       iframe.style.aspectRatio = "16 / 9";
       iframe.style.width = "100%";
       iframe.style.height = "100%";

@@ -282,6 +282,7 @@ export default {
           },
           totals: {
             gameServerNodes: true,
+            gpuNodes: true,
             servers: true,
             dedicatedServers: true,
             publicServers: true,
@@ -471,6 +472,10 @@ export default {
             {
               label: this.$t("pages.system_telemetry.totals.game_server_nodes"),
               value: totals?.gameServerNodes ?? 0,
+            },
+            {
+              label: this.$t("pages.system_telemetry.totals.gpu_nodes"),
+              value: totals?.gpuNodes ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.servers"),

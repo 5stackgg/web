@@ -1741,9 +1741,15 @@ const playerHeroTeamChipDotClasses =
             </div>
 
             <div :class="playerHeroIdentityClasses">
-              <!-- The eyebrow gave way to action room; the page title already
-                   says this is a player profile. -->
-              <div class="flex items-center justify-end gap-3">
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="inline-flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
+                >
+                  <span
+                    class="h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
+                  ></span>
+                  {{ $t("pages.players.detail.player_profile") }}
+                </div>
                 <div :class="playerHeroActionsClasses">
                   <button
                     v-if="canGrantAwards"

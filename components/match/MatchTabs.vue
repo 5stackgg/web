@@ -462,7 +462,6 @@ provide("commander", commander);
           </CardContent>
         </Card>
       </div>
-
     </TabsContent>
     <TabsContent value="economy">
       <div class="grid gap-4 max-w-[1500px]">
@@ -510,10 +509,9 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="head-to-head">
-      <div
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
+      <!-- No opacity dim here: both panels below carry their own matched-height
+           skeletons, so dimming would just fight the crossfade. -->
+      <div class="grid gap-4 max-w-[1500px]">
         <HeadToHead
           :match="match"
           v-model:selected-a="h2hSelectedA"
@@ -525,6 +523,7 @@ provide("commander", commander);
           :combine-with="activeLineup2"
           :selected-map-id="activeMap?.id"
           :hide-selectors="true"
+          :loading="statsPending"
           v-model:selected-a="h2hSelectedA"
           v-model:selected-b="h2hSelectedB"
         />
@@ -677,9 +676,9 @@ provide("commander", commander);
             </dd>
           </div>
           <div class="server-info-row">
-            <dt class="server-info-row__label">{{
-              $t("match.tabs.region")
-            }}</dt>
+            <dt class="server-info-row__label">
+              {{ $t("match.tabs.region") }}
+            </dt>
             <dd class="server-info-row__value">
               <span v-if="match.server_region">{{ match.server_region }}</span>
               <span v-else-if="match.e_region">{{
@@ -787,8 +786,9 @@ provide("commander", commander);
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -823,8 +823,9 @@ provide("commander", commander);
 .server-info-row__label {
   flex: 1 1 auto;
   min-width: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -1087,6 +1088,14 @@ export default {
     showStatsControls() {
       return !this.disableStats;
     },
+    // The per-map / all-maps stat lineups haven't arrived yet — stat panels use
+    // this to hold a matched-height skeleton instead of reflowing on arrival.
+    statsPending() {
+      if (this.activeMap) {
+        return !this.mapStats;
+      }
+      return this.isMatchTerminal && !this.allMapsStats;
+    },
     mapSelectValue() {
       return this.activeMap?.id ?? "__all__";
     },
@@ -1159,9 +1168,7 @@ export default {
       return this.backupRoundsTracker?.rounds.value ?? [];
     },
     restorableRounds() {
-      return this.backupRounds.filter(
-        (r) => r.has_backup_file && r.round > 0,
-      );
+      return this.backupRounds.filter((r) => r.has_backup_file && r.round > 0);
     },
     availableCommands() {
       return matchCommandsForStatus(this.currentMap?.status);

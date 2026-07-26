@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import TrophyBadge from "./TrophyBadge.vue";
-import TrophyModal from "./TrophyModal.vue";
+import AwardBadge from "./AwardBadge.vue";
+import AwardModal from "./AwardModal.vue";
+import { resolveAwardTier, type AwardTier } from "~/utilities/awardSeed";
 
-interface Trophy {
+interface AwardGrant {
   id: string;
-  placement: number;
+  placement?: number | null;
   placement_tier?: string | null;
-  tournament_id: string;
+  tournament_id?: string | null;
   team_id?: string | null;
+  note?: string | null;
+  created_at?: string | null;
+  award?: {
+    id: string;
+    name?: string | null;
+    description?: string | null;
+    tier?: string | null;
+    silhouette?: number | null;
+    image_url?: string | null;
+  } | null;
   tournament?: {
     name: string;
     start?: string | null;
@@ -28,7 +39,7 @@ interface Trophy {
     name?: string | null;
     short_name?: string | null;
   } | null;
-  trophy_config?: {
+  tournament_award?: {
     custom_name?: string | null;
     silhouette?: number | null;
     image_url?: string | null;
@@ -36,47 +47,75 @@ interface Trophy {
 }
 
 interface Props {
-  trophies?: Trophy[] | null;
+  awards?: AwardGrant[] | null;
   emptyState?: boolean;
   hideMvp?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  trophies: null,
+  awards: null,
   emptyState: true,
   hideMvp: false,
 });
 
-const selected = ref<Trophy | null>(null);
+const selected = ref<AwardGrant | null>(null);
 const modalOpen = ref(false);
 
+function grantTier(grant: AwardGrant): AwardTier {
+  return resolveAwardTier(grant.placement, grant.award?.tier);
+}
+
+function grantName(grant: AwardGrant): string {
+  return (
+    grant.tournament_award?.custom_name ||
+    grant.tournament?.name ||
+    grant.award?.name ||
+    ""
+  );
+}
+
+// Placement medals lead, ordered mvp -> bronze; standalone awards trail them
+// newest-first so a long tournament history never buries a fresh grant.
+const TIER_ORDER: Record<AwardTier, number> = {
+  mvp: 0,
+  gold: 1,
+  silver: 2,
+  bronze: 3,
+  special: 4,
+};
+
 const sorted = computed(() => {
-  if (!props.trophies) return [];
-  return [...props.trophies].sort((a, b) => {
-    if (a.placement !== b.placement) return a.placement - b.placement;
-    const da = a.tournament?.start ? new Date(a.tournament.start).getTime() : 0;
-    const db = b.tournament?.start ? new Date(b.tournament.start).getTime() : 0;
+  if (!props.awards) return [];
+  return [...props.awards].sort((a, b) => {
+    const ta = TIER_ORDER[grantTier(a)];
+    const tb = TIER_ORDER[grantTier(b)];
+    if (ta !== tb) return ta - tb;
+    const da = new Date(a.tournament?.start || a.created_at || 0).getTime();
+    const db = new Date(b.tournament?.start || b.created_at || 0).getTime();
     return db - da;
   });
 });
 
 const counts = computed(() => {
-  const c = { mvp: 0, gold: 0, silver: 0, bronze: 0 };
-  for (const t of sorted.value) {
-    if (t.placement === 0) c.mvp++;
-    else if (t.placement === 1) c.gold++;
-    else if (t.placement === 2) c.silver++;
-    else if (t.placement === 3) c.bronze++;
+  const c: Record<AwardTier, number> = {
+    mvp: 0,
+    gold: 0,
+    silver: 0,
+    bronze: 0,
+    special: 0,
+  };
+  for (const grant of sorted.value) {
+    c[grantTier(grant)]++;
   }
   return c;
 });
 
-function openTrophy(trophy: Trophy) {
-  selected.value = trophy;
+function openAward(grant: AwardGrant) {
+  selected.value = grant;
   modalOpen.value = true;
 }
 
-function formatTrophyDate(iso?: string | null) {
+function formatAwardDate(iso?: string | null) {
   if (!iso) return "";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
@@ -102,11 +141,12 @@ import {
 
 const eyebrowClasses = `${tacticalSectionLabelClasses} mb-0`;
 
-const tierColors: Record<"mvp" | "gold" | "silver" | "bronze", string> = {
+const tierColors: Record<AwardTier, string> = {
   mvp: "hsl(195 85% 60%)",
   gold: "hsl(45 95% 60%)",
   silver: "hsl(0 0% 78%)",
   bronze: "hsl(28 70% 52%)",
+  special: "hsl(258 90% 74%)",
 };
 
 const tierRack = computed(() => {
@@ -115,20 +155,33 @@ const tierRack = computed(() => {
     { key: "gold" as const, label: "1ST", full: "1st Place" },
     { key: "silver" as const, label: "2ND", full: "2nd Place" },
     { key: "bronze" as const, label: "3RD", full: "3rd Place" },
+    { key: "special" as const, label: "AWD", full: "Awards" },
   ];
-  return props.hideMvp ? tiers.filter((t) => t.key !== "mvp") : tiers;
+  return tiers.filter((tier) => {
+    if (tier.key === "mvp" && props.hideMvp) return false;
+    // The standalone counter only earns its slot once something fills it.
+    if (tier.key === "special" && counts.value.special === 0) return false;
+    return true;
+  });
 });
-
-function placementUplight(placement: number) {
-  if (placement === 0) return tierColors.mvp;
-  if (placement === 1) return tierColors.gold;
-  if (placement === 2) return tierColors.silver;
-  return tierColors.bronze;
-}
 </script>
 
 <template>
-  <section :class="frameClasses">
+  <!-- Nothing to display: a bare line with the action, not a framed case
+       wrapping a dashed empty box. Hidden outright when the viewer cannot act. -->
+  <div
+    v-if="!sorted.length"
+    v-show="emptyState"
+    class="flex items-center justify-between gap-3"
+  >
+    <div :class="eyebrowClasses">
+      <span :class="tacticalSectionTickClasses"></span>
+      {{ $t("awards.title") }}
+    </div>
+    <slot name="action" />
+  </div>
+
+  <section v-else :class="frameClasses">
     <!-- scanline overlay -->
     <div :class="scanlineClasses" aria-hidden="true"></div>
 
@@ -139,7 +192,7 @@ function placementUplight(placement: number) {
       <div class="flex flex-col gap-1.5">
         <div :class="eyebrowClasses">
           <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("trophies.title") }}
+          {{ $t("awards.title") }}
           <span
             v-if="sorted.length"
             class="rounded-sm border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.4rem] py-[0.02rem] text-[0.62rem] tracking-[0.12em] text-[hsl(var(--tac-amber))]"
@@ -147,72 +200,74 @@ function placementUplight(placement: number) {
             {{ sorted.length.toString().padStart(2, "0") }}
           </span>
         </div>
-        <div
-          class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
-        >
-          ▚ AWARDS ON FILE
-        </div>
       </div>
 
-      <!-- Tier rack -->
-      <div
-        class="flex items-stretch gap-0 divide-x divide-border/80 overflow-hidden rounded border border-border/80 bg-background/60 [backdrop-filter:blur(4px)]"
-      >
+      <!-- Tier rack, with the grant action inline beside the counts -->
+      <div class="flex items-center gap-2">
         <div
-          v-for="tier in tierRack"
-          :key="tier.key"
-          class="flex items-center gap-2 px-3 py-2"
-          :style="{ color: tierColors[tier.key] }"
-          :title="`${counts[tier.key]} × ${tier.full}`"
+          class="flex items-stretch gap-0 divide-x divide-border/80 overflow-hidden rounded border border-border/80 bg-background/60 [backdrop-filter:blur(4px)]"
         >
-          <span
-            class="inline-block h-2 w-2 rounded-full"
-            :style="{
-              background: tierColors[tier.key],
-              boxShadow: `0 0 6px ${tierColors[tier.key]}`,
-            }"
-          ></span>
-          <span
-            class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+          <div
+            v-for="tier in tierRack"
+            :key="tier.key"
+            class="flex items-center gap-2 px-3 py-2"
+            :style="{ color: tierColors[tier.key] }"
+            :title="`${counts[tier.key]} × ${tier.full}`"
           >
-            {{ tier.label }}
-          </span>
-          <span class="font-mono text-base font-bold leading-none tabular-nums">
-            {{ String(counts[tier.key]).padStart(2, "0") }}
-          </span>
+            <span
+              class="inline-block h-2 w-2 rounded-full"
+              :style="{
+                background: tierColors[tier.key],
+                boxShadow: `0 0 6px ${tierColors[tier.key]}`,
+              }"
+            ></span>
+            <span
+              class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              {{ tier.label }}
+            </span>
+            <span
+              class="font-mono text-base font-bold leading-none tabular-nums"
+            >
+              {{ String(counts[tier.key]).padStart(2, "0") }}
+            </span>
+          </div>
         </div>
+
+        <slot name="action" />
       </div>
     </header>
 
-    <!-- Trophy grid -->
+    <!-- Award grid -->
     <div
       v-if="sorted.length"
       class="relative grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
     >
       <button
-        v-for="trophy in sorted"
-        :key="trophy.id"
+        v-for="grant in sorted"
+        :key="grant.id"
         type="button"
         class="group/pedestal relative flex flex-col items-center gap-2 rounded-sm px-2 pb-3 pt-4 transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
-        @click="openTrophy(trophy)"
+        @click="openAward(grant)"
       >
         <!-- Uplight -->
         <div
           class="pointer-events-none absolute inset-x-3 bottom-8 top-2 rounded-full opacity-40 blur-2xl transition-opacity duration-300 group-hover/pedestal:opacity-80"
           :style="{
-            background: `radial-gradient(ellipse at center bottom, ${placementUplight(trophy.placement)} 0%, transparent 65%)`,
+            background: `radial-gradient(ellipse at center bottom, ${tierColors[grantTier(grant)]} 0%, transparent 65%)`,
           }"
         ></div>
 
-        <TrophyBadge
-          :tournament-id="trophy.tournament_id"
-          :placement="trophy.placement"
-          :tournament-name="trophy.tournament?.name"
-          :tournament-start="trophy.tournament?.start"
-          :tournament-type="trophy.tournament?.stages?.[0]?.type"
-          :custom-name="trophy.trophy_config?.custom_name"
-          :silhouette-override="trophy.trophy_config?.silhouette"
-          :image-url="trophy.trophy_config?.image_url"
+        <AwardBadge
+          :award="grant.award"
+          :seed-key="grant.tournament_id || grant.award?.id"
+          :placement="grant.placement"
+          :tournament-name="grant.tournament?.name"
+          :tournament-start="grant.tournament?.start"
+          :tournament-type="grant.tournament?.stages?.[0]?.type"
+          :custom-name="grant.tournament_award?.custom_name"
+          :silhouette-override="grant.tournament_award?.silhouette"
+          :image-url="grant.tournament_award?.image_url"
           size="md"
           class="relative z-[1]"
         />
@@ -221,45 +276,26 @@ function placementUplight(placement: number) {
         <div class="relative z-[1] mt-1 w-full">
           <div
             class="truncate text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-foreground group-hover/pedestal:text-[hsl(var(--tac-amber))]"
-            :title="
-              trophy.trophy_config?.custom_name || trophy.tournament?.name
-            "
+            :title="grantName(grant)"
           >
-            {{ trophy.trophy_config?.custom_name || trophy.tournament?.name }}
+            {{ grantName(grant) }}
           </div>
           <div
-            v-if="trophy.tournament?.start"
+            v-if="grant.tournament?.start || grant.created_at"
             class="mt-0.5 flex items-center justify-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground/80"
           >
             <span class="h-[1px] w-2 bg-border"></span>
-            {{ formatTrophyDate(trophy.tournament.start) }}
+            {{ formatAwardDate(grant.tournament?.start || grant.created_at) }}
             <span class="h-[1px] w-2 bg-border"></span>
           </div>
         </div>
       </button>
     </div>
 
-    <!-- Classified-stamp empty state -->
-    <div
-      v-else-if="emptyState"
-      class="relative flex min-h-[160px] flex-col items-center justify-center gap-3 rounded-sm border border-dashed border-border bg-background/30 py-8"
-    >
-      <div
-        class="rotate-[-4deg] rounded-sm border-2 border-[hsl(var(--tac-amber)_/_0.5)] px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.3em] text-[hsl(var(--tac-amber)_/_0.7)]"
-      >
-        ▚ NO AWARDS ON FILE
-      </div>
-      <div
-        class="max-w-sm text-center text-[0.72rem] uppercase tracking-[0.15em] text-muted-foreground"
-      >
-        {{ $t("trophies.no_trophies_description") }}
-      </div>
-    </div>
-
-    <TrophyModal
+    <AwardModal
       v-if="selected"
       :open="modalOpen"
-      :trophy="selected"
+      :award="selected"
       @update:open="(v) => (modalOpen = v)"
     />
   </section>

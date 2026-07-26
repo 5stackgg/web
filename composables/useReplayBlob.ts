@@ -1,3 +1,5 @@
+import type { Inferno, SmokeVolume } from "~/utils/smokeVolume";
+
 export type ReplayRoundInventory = {
   round: number;
   steam_id: string | null;
@@ -33,6 +35,11 @@ export type ReplayBlob = {
     gid: number;
     pts: Array<{ t: number; x: number; y: number; z: number }>;
   }>;
+  // Per-smoke occupancy grids measured against the map's collision mesh
+  // (schema v9+). gid links to grenade_throws.
+  smoke_volumes?: SmokeVolume[];
+  // Per-molotov flame positions and lifetimes, straight off the demo (v9+).
+  infernos?: Inferno[];
   damages: any[];
   round_inventory?: ReplayRoundInventory[];
 };

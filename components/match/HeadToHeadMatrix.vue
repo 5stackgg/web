@@ -4,6 +4,8 @@ import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
@@ -20,6 +22,9 @@ type Pair = {
 const props = defineProps<{
   match: any;
   pairs: Pair[];
+  // Pair query still in flight — the stats card shows a matched-height
+  // skeleton instead of popping in once the numbers land.
+  loading?: boolean;
 }>();
 
 // One player picked per side. Exposed via v-model so the radar comparison
@@ -34,6 +39,9 @@ const apiDomain = useRuntimeConfig().public.apiDomain;
 // scanning every round's kills for the per-matchup weapon breakdown.
 const { client: apolloClient } = useApolloClient();
 const killPairRows = ref<any[]>([]);
+// First subscription response (even an empty one) — the weapon chips are
+// taller than the "—" placeholder, so wait for it before revealing the card.
+const killPairsReady = ref(false);
 const KILL_PAIRS_SUB = gql`
   subscription H2HKillPairs($matchId: uuid!) {
     v_match_kill_pairs(where: { match_id: { _eq: $matchId } }) {
@@ -51,7 +59,9 @@ watch(
     killPairsSub?.unsubscribe();
     killPairsSub = null;
     killPairRows.value = [];
+    killPairsReady.value = false;
     if (!id) {
+      killPairsReady.value = true;
       return;
     }
     killPairsSub = apolloClient
@@ -59,9 +69,11 @@ watch(
       .subscribe({
         next: ({ data }: any) => {
           killPairRows.value = data?.v_match_kill_pairs ?? [];
+          killPairsReady.value = true;
         },
         error: () => {
           killPairRows.value = [];
+          killPairsReady.value = true;
         },
       });
   },
@@ -271,6 +283,13 @@ const bWeapons = computed(() =>
     : [],
 );
 
+// Everything the stats card renders has to be in hand before it shows, or the
+// card grows as each source lands (kills → weapon chips).
+const pending = computed(
+  () =>
+    props.loading || !killPairsReady.value || !memberA.value || !memberB.value,
+);
+
 // Damage scale across the two directions of this matchup.
 const maxDamage = computed(() =>
   Math.max(1, aOnB.value?.damage_dealt ?? 0, bOnA.value?.damage_dealt ?? 0),
@@ -384,163 +403,228 @@ function damageWidth(v: number) {
       </div>
     </div>
 
-    <div
-      v-if="memberA && memberB"
-      class="border border-border bg-[hsl(var(--card)/0.5)] p-4 flex flex-col gap-3"
-    >
-      <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-        <div class="flex items-center gap-2 min-w-0">
-          <PlayerDisplay
-            :player="memberA.player"
-            :avatar-override="avatarFor(selectedA)"
-            :show-online="false"
-            :show-flag="false"
-            :show-role="false"
-            :show-add-friend="false"
-            :show-elo="false"
-            class="text-sm"
-          />
+    <FadeSwap>
+      <!-- Matched-height placeholder: same wrappers as the real card so the
+           numbers dissolve in without the card changing size. -->
+      <div
+        v-if="pending"
+        key="skeleton"
+        class="border border-border bg-[hsl(var(--card)/0.5)] p-4 flex flex-col gap-3"
+      >
+        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 h-12">
+          <div class="flex items-center gap-2 min-w-0">
+            <Skeleton class="h-8 w-8 rounded-full shrink-0" />
+            <Skeleton class="h-3 w-24" />
+          </div>
+          <div class="flex items-center gap-4">
+            <Skeleton class="h-7 w-6" />
+            <Skeleton class="h-10 w-[140px]" />
+            <Skeleton class="h-7 w-6" />
+          </div>
+          <div class="flex items-center gap-2 min-w-0 justify-end">
+            <Skeleton class="h-3 w-24" />
+            <Skeleton class="h-8 w-8 rounded-full shrink-0" />
+          </div>
         </div>
 
-        <div class="flex items-center gap-4 font-mono tabular-nums">
-          <span
-            class="text-2xl font-extrabold text-amber-400 min-w-[2ch] text-right"
-          >
-            <AnimatedStat :value="aOnB?.kills ?? 0" />
-          </span>
-          <div class="flex flex-col items-center min-w-[140px]">
-            <span
-              class="font-mono text-[0.55rem] tracking-[0.25em] uppercase text-muted-foreground"
-            >
-              {{ $t("match.head_to_head_matrix.damage") }}
-            </span>
-            <div class="flex w-full h-1.5 bg-muted/40 mt-1">
-              <div
-                class="bg-amber-400/85 h-full"
-                :style="{ width: damageWidth(aOnB?.damage_dealt ?? 0) }"
-              />
-              <div class="flex-1" />
-              <div
-                class="bg-sky-400/85 h-full"
-                :style="{ width: damageWidth(bOnA?.damage_dealt ?? 0) }"
-              />
-            </div>
-            <div
-              class="flex w-full justify-between font-mono text-[0.65rem] tabular-nums text-muted-foreground mt-1"
-            >
-              <span><AnimatedStat :value="aOnB?.damage_dealt ?? 0" /></span>
-              <span><AnimatedStat :value="bOnA?.damage_dealt ?? 0" /></span>
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-border/50"
+        >
+          <div class="flex flex-col gap-1.5 min-w-0">
+            <Skeleton class="h-3 w-28" />
+            <div class="flex min-h-[1.875rem] items-center gap-2">
+              <Skeleton class="h-[1.875rem] w-24" />
+              <Skeleton class="h-[1.875rem] w-20" />
             </div>
           </div>
-          <span
-            class="text-2xl font-extrabold text-sky-400 min-w-[2ch] text-left"
-          >
-            <AnimatedStat :value="bOnA?.kills ?? 0" />
-          </span>
+          <div class="flex flex-col gap-1.5 min-w-0 md:items-end">
+            <Skeleton class="h-3 w-28" />
+            <div
+              class="flex min-h-[1.875rem] items-center gap-2 md:justify-end"
+            >
+              <Skeleton class="h-[1.875rem] w-20" />
+              <Skeleton class="h-[1.875rem] w-24" />
+            </div>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2 min-w-0 justify-end">
-          <PlayerDisplay
-            :player="memberB.player"
-            :avatar-override="avatarFor(selectedB)"
-            :show-online="false"
-            :show-flag="false"
-            :show-role="false"
-            :show-add-friend="false"
-            :show-elo="false"
-            class="text-sm"
-          />
+        <div class="grid grid-cols-2 gap-3 pt-3 border-t border-border/50">
+          <div class="flex h-[1.0625rem] items-center justify-between">
+            <Skeleton class="h-3 w-28" />
+            <Skeleton class="h-3 w-4" />
+          </div>
+          <div class="flex h-[1.0625rem] items-center justify-between">
+            <Skeleton class="h-3 w-28" />
+            <Skeleton class="h-3 w-4" />
+          </div>
         </div>
       </div>
 
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-border/50"
+        v-else
+        key="content"
+        class="border border-border bg-[hsl(var(--card)/0.5)] p-4 flex flex-col gap-3"
       >
-        <div class="flex flex-col gap-1.5 min-w-0">
-          <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-          >
-            {{ $t("match.head_to_head_matrix.your_weapons") }}
+        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div class="flex items-center gap-2 min-w-0">
+            <PlayerDisplay
+              v-if="memberA"
+              :player="memberA.player"
+              :avatar-override="avatarFor(selectedA)"
+              :show-online="false"
+              :show-flag="false"
+              :show-role="false"
+              :show-add-friend="false"
+              :show-elo="false"
+              class="text-sm"
+            />
           </div>
-          <div class="flex flex-wrap gap-2">
-            <div
-              v-for="b of aWeapons"
-              :key="b.key"
-              class="border border-amber-400/50 bg-amber-400/10 px-2.5 py-1 flex items-center gap-2"
+
+          <div class="flex items-center gap-4 font-mono tabular-nums">
+            <span
+              class="text-2xl font-extrabold text-amber-400 min-w-[2ch] text-right"
             >
+              <AnimatedStat :value="aOnB?.kills ?? 0" />
+            </span>
+            <div class="flex flex-col items-center min-w-[140px]">
               <span
-                class="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-muted-foreground"
+                class="font-mono text-[0.55rem] tracking-[0.25em] uppercase text-muted-foreground"
               >
-                {{ b.key }}
+                {{ $t("match.head_to_head_matrix.damage") }}
               </span>
-              <span
-                class="font-mono text-sm font-bold tabular-nums text-amber-400"
-                ><AnimatedStat :value="b.count"
-              /></span>
+              <div class="flex w-full h-1.5 bg-muted/40 mt-1">
+                <div
+                  class="bg-amber-400/85 h-full"
+                  :style="{ width: damageWidth(aOnB?.damage_dealt ?? 0) }"
+                />
+                <div class="flex-1" />
+                <div
+                  class="bg-sky-400/85 h-full"
+                  :style="{ width: damageWidth(bOnA?.damage_dealt ?? 0) }"
+                />
+              </div>
+              <div
+                class="flex w-full justify-between font-mono text-[0.65rem] tabular-nums text-muted-foreground mt-1"
+              >
+                <span><AnimatedStat :value="aOnB?.damage_dealt ?? 0" /></span>
+                <span><AnimatedStat :value="bOnA?.damage_dealt ?? 0" /></span>
+              </div>
             </div>
             <span
-              v-if="aWeapons.length === 0"
-              class="font-mono text-xs text-muted-foreground/70"
+              class="text-2xl font-extrabold text-sky-400 min-w-[2ch] text-left"
             >
-              —
+              <AnimatedStat :value="bOnA?.kills ?? 0" />
             </span>
+          </div>
+
+          <div class="flex items-center gap-2 min-w-0 justify-end">
+            <PlayerDisplay
+              v-if="memberB"
+              :player="memberB.player"
+              :avatar-override="avatarFor(selectedB)"
+              :show-online="false"
+              :show-flag="false"
+              :show-role="false"
+              :show-add-friend="false"
+              :show-elo="false"
+              class="text-sm"
+            />
           </div>
         </div>
 
-        <div class="flex flex-col gap-1.5 min-w-0 md:items-end">
-          <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-          >
-            {{ $t("match.head_to_head_matrix.their_weapons") }}
-          </div>
-          <div class="flex flex-wrap gap-2 md:justify-end">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-border/50"
+        >
+          <div class="flex flex-col gap-1.5 min-w-0">
             <div
-              v-for="b of bWeapons"
-              :key="b.key"
-              class="border border-sky-400/50 bg-sky-400/10 px-2.5 py-1 flex items-center gap-2"
+              class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
             >
-              <span
-                class="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-muted-foreground"
-              >
-                {{ b.key }}
-              </span>
-              <span
-                class="font-mono text-sm font-bold tabular-nums text-sky-400"
-                ><AnimatedStat :value="b.count"
-              /></span>
+              {{ $t("match.head_to_head_matrix.your_weapons") }}
             </div>
-            <span
-              v-if="bWeapons.length === 0"
-              class="font-mono text-xs text-muted-foreground/70"
+            <!-- min-h keeps the row a chip tall whether it holds chips or the
+               "—" placeholder, so switching matchups never resizes the card. -->
+            <div class="flex flex-wrap min-h-[1.875rem] items-center gap-2">
+              <div
+                v-for="b of aWeapons"
+                :key="b.key"
+                class="border border-amber-400/50 bg-amber-400/10 px-2.5 py-1 flex items-center gap-2"
+              >
+                <span
+                  class="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-muted-foreground"
+                >
+                  {{ b.key }}
+                </span>
+                <span
+                  class="font-mono text-sm font-bold tabular-nums text-amber-400"
+                  ><AnimatedStat :value="b.count"
+                /></span>
+              </div>
+              <span
+                v-if="aWeapons.length === 0"
+                class="font-mono text-xs text-muted-foreground/70"
+              >
+                —
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5 min-w-0 md:items-end">
+            <div
+              class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
             >
-              —
-            </span>
+              {{ $t("match.head_to_head_matrix.their_weapons") }}
+            </div>
+            <div
+              class="flex flex-wrap min-h-[1.875rem] items-center gap-2 md:justify-end"
+            >
+              <div
+                v-for="b of bWeapons"
+                :key="b.key"
+                class="border border-sky-400/50 bg-sky-400/10 px-2.5 py-1 flex items-center gap-2"
+              >
+                <span
+                  class="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-muted-foreground"
+                >
+                  {{ b.key }}
+                </span>
+                <span
+                  class="font-mono text-sm font-bold tabular-nums text-sky-400"
+                  ><AnimatedStat :value="b.count"
+                /></span>
+              </div>
+              <span
+                v-if="bWeapons.length === 0"
+                class="font-mono text-xs text-muted-foreground/70"
+              >
+                —
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Always rendered so the card height doesn't jump between matchups;
+        <!-- Always rendered so the card height doesn't jump between matchups;
            a side with no flashes shows blank rather than a weird "0". -->
-      <div
-        class="grid grid-cols-2 gap-3 pt-3 border-t border-border/50 font-mono text-[0.65rem]"
-      >
-        <div class="flex items-center justify-between">
-          <span class="tracking-[0.22em] uppercase text-muted-foreground">{{
-            $t("match.head_to_head_matrix.flashes_on_them")
-          }}</span>
-          <span class="tabular-nums text-amber-400 font-bold">{{
-            aOnB?.flash_count || ""
-          }}</span>
-        </div>
-        <div class="flex items-center justify-between">
-          <span class="tracking-[0.22em] uppercase text-muted-foreground">{{
-            $t("match.head_to_head_matrix.flashes_on_you")
-          }}</span>
-          <span class="tabular-nums text-sky-400 font-bold">{{
-            bOnA?.flash_count || ""
-          }}</span>
+        <div
+          class="grid grid-cols-2 gap-3 pt-3 border-t border-border/50 font-mono text-[0.65rem]"
+        >
+          <div class="flex items-center justify-between">
+            <span class="tracking-[0.22em] uppercase text-muted-foreground">{{
+              $t("match.head_to_head_matrix.flashes_on_them")
+            }}</span>
+            <span class="tabular-nums text-amber-400 font-bold">{{
+              aOnB?.flash_count || ""
+            }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="tracking-[0.22em] uppercase text-muted-foreground">{{
+              $t("match.head_to_head_matrix.flashes_on_you")
+            }}</span>
+            <span class="tabular-nums text-sky-400 font-bold">{{
+              bOnA?.flash_count || ""
+            }}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </FadeSwap>
   </div>
 </template>

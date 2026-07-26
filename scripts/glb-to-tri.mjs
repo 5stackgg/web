@@ -124,7 +124,16 @@ function dropStandaloneWalls(tris, opts = {}) {
 // Parse a .glb and return { tris: Float32 buffer of source-unit triangles, count, bbox }.
 export function glbToTri(inPath, opts = {}) {
   const skipClips = opts.skipClips ?? true;
-  const dropWalls = opts.dropWalls ?? process.env.MESH_KEEP_WALLS !== "1";
+  // Standalone-wall removal is OFF by default.
+  //
+  // The heuristic deletes any disconnected component that is thin, tall and
+  // mostly vertical — which is a description of a wall. It was meant to strip
+  // sky-boxes and stray boundary sheets, but the roof slider in the 3D viewer
+  // solved that properly, and meanwhile the deletions were doing real damage:
+  // the demo parser raycasts this same mesh for line of sight, so every wall
+  // dropped here became a wall smoke poured through and a sightline that should
+  // not have existed. Set MESH_DROP_WALLS=1 to bring it back.
+  const dropWalls = opts.dropWalls ?? process.env.MESH_DROP_WALLS === "1";
   const buf = readFileSync(inPath);
   const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   const total = dv.getUint32(8, true);

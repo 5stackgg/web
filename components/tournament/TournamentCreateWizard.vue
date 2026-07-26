@@ -414,7 +414,12 @@ export default {
       ]);
       return results.every((result) => result.valid);
     },
-    async next() {
+    // Sync on purpose — returning a promise here makes ui/Button flash its
+    // auto-spinner (and lock for minLoadingMs) on every step advance.
+    next() {
+      void this.advance();
+    },
+    async advance() {
       if (!(await this.validateStep(this.currentStep))) {
         return;
       }

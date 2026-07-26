@@ -868,9 +868,6 @@
     "last_page": "Última página",
     "total": "{total} no total"
   },
-  "trophies_modal": {
-    "view_tournament": "VER TORNEIO"
-  },
   "toasts": {
     "link_copied": "Link copiado",
     "copy_failed": "Falha ao copiar",
@@ -1171,33 +1168,11 @@
     "library": "Biblioteca",
     "download": "Download"
   },
-  "trophies_manage_form": {
-    "placement": "Colocação",
-    "team": "Equipe",
-    "player": "Jogador",
-    "select_team": "Selecionar equipe…",
-    "select_player": "Selecionar jogador…"
-  },
   "match_scoreboard": {
     "player_header": "Jogador"
   },
   "shortcut_overlay": {
     "to_close": "para fechar"
-  },
-  "trophies": {
-    "title": "Prêmios e Títulos",
-    "no_trophies": "Ainda sem troféus",
-    "no_trophies_description": "Termine como TOP3 em um torneio para ganhar um título a ser exibido em seu perfil.",
-    "gold": "Ouro",
-    "silver": "Prata",
-    "bronze": "Bronze",
-    "mvp": "MVP",
-    "first_place": "1º Lugar",
-    "second_place": "2º Lugar",
-    "third_place": "3º Lugar",
-    "tournament": "Torneio",
-    "placement": "Posicionamento",
-    "teammates": "Companheiros de Equipe"
   },
   "image_upload": {
     "hint_square": "Arraste e solte ou clique · PNG, JPEG, WebP",
@@ -2130,6 +2105,13 @@
             "custom_hint": "Ou cole uma URL de imagem ou um SVG inline (ex.: de um plugin).",
             "custom_placeholder": "https://… , <svg…>, ou um nome de ícone"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -3092,7 +3074,7 @@
         "best_kdr": "KDR",
         "best_win_rate": "Taxa de Vitória",
         "highest_hs_pct": "% HS",
-        "trophies": "Troféus"
+        "awards": "Troféus"
       },
       "time_periods": {
         "last_7_days": "Ultimos 7 dias",
@@ -3346,6 +3328,43 @@
       "forbidden_title": "Acesso restrito",
       "forbidden_description": "Você não tem permissão para ver esta página.",
       "error_title": "Falha ao carregar a página"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork.",
+      "scope_global": "General",
+      "scope_tournament": "Tournament",
+      "scope_event": "Event",
+      "scope_season": "Season",
+      "scope_league": "League",
+      "season_label": "Season {number}",
+      "scope_gone": "Unknown"
     }
   },
   "custom_match": {
@@ -3376,7 +3395,8 @@
         "infrastructure": "Infraestrutura",
         "integrations": "Integrações",
         "theme": "Tema",
-        "developer": "Desenvolvedor"
+        "developer": "Desenvolvedor",
+        "players_teams": "Plataforma"
       }
     },
     "system_update": {
@@ -3448,7 +3468,8 @@
         "manage_tournaments": "Gerenciar Torneios",
         "manage_league": "Gerenciar Liga",
         "stream_deck": "Stream Deck",
-        "manage_events": "Gerenciar Eventos"
+        "manage_events": "Gerenciar Eventos",
+        "awards": "Awards"
       },
       "system": {
         "title": "Sistema",
@@ -3503,6 +3524,12 @@
       },
       "plugins": {
         "title": "Apps"
+      },
+      "competition": {
+        "title": "Administração"
+      },
+      "platform": {
+        "title": "Administração"
       }
     },
     "top_nav": {
@@ -3949,25 +3976,6 @@
     "standings_section": {
       "no_roster": "SEM ELENCO"
     },
-    "trophies_config": {
-      "title": "Configuração de Troféu",
-      "organizer_access_required": "ACESSO DO ORGANIZADOR NECESSÁRIO",
-      "award_trophies": "CONCEDER TROFÉUS",
-      "custom": "PERSONALIZADO",
-      "custom_image": "Imagem personalizada",
-      "custom_name": "Nome personalizado",
-      "silhouette": "Silhueta",
-      "reset": "Redefinir",
-      "remove_image_hint": "Remova a imagem para personalizar o nome ou a silhueta",
-      "hint": "Envie uma imagem ou personalize o prêmio padrão."
-    },
-    "trophies_manage": {
-      "manual_awards": "Premiações manuais",
-      "add_award": "Adc. Premiação",
-      "no_manual_awards": "NENHUMA PREMIAÇÃO MANUAL",
-      "remove": "Remover",
-      "hint": "Conceda um troféu fora do cálculo da chave."
-    },
     "compact_card": {
       "tournament": "Torneio",
       "live": "Ao Vivo",
@@ -4373,6 +4381,47 @@
       "empty_hint": "Adicionar um banner",
       "hint": "Exibido no topo da página do torneio. Recortado em um quadro largo de 3:1.",
       "upload_failed": "Falha no envio do banner"
+    },
+    "awards_config": {
+      "title": "Configuração de Troféu",
+      "organizer_access_required": "ACESSO DO ORGANIZADOR NECESSÁRIO",
+      "custom": "PERSONALIZADO",
+      "custom_image": "Imagem personalizada",
+      "custom_name": "Nome personalizado",
+      "silhouette": "Silhueta",
+      "reset": "Redefinir",
+      "hint": "Envie uma imagem ou personalize o prêmio padrão.",
+      "award": "Nome personalizado",
+      "award_default": "Redefinir",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "Premiações manuais",
+      "add_award": "Adc. Premiação",
+      "no_manual_awards": "NENHUMA PREMIAÇÃO MANUAL",
+      "remove": "Remover",
+      "hint": "Conceda um troféu fora do cálculo da chave.",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
@@ -7511,5 +7560,51 @@
       "axis_hs": "HS%",
       "axis_assist": "Assistência"
     }
+  },
+  "awards": {
+    "title": "Prêmios e Títulos",
+    "gold": "Ouro",
+    "silver": "Prata",
+    "bronze": "Bronze",
+    "mvp": "MVP",
+    "first_place": "1º Lugar",
+    "second_place": "2º Lugar",
+    "third_place": "3º Lugar",
+    "tournament": "Torneio",
+    "placement": "Posicionamento",
+    "teammates": "Companheiros de Equipe",
+    "no_awards": "Ainda sem troféus",
+    "no_awards_description": "Termine como TOP3 em um torneio para ganhar um título a ser exibido em seu perfil.",
+    "granted": "MVP",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "VER TORNEIO"
+  },
+  "awards_manage_form": {
+    "team": "Equipe",
+    "player": "Jogador",
+    "select_team": "Selecionar equipe…",
+    "select_player": "Selecionar jogador…",
+    "award": "Equipe",
+    "recipient": "Recipient"
   }
 }

@@ -32,6 +32,8 @@ import {
 } from "~/components/ui/table";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
+import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -55,6 +57,9 @@ const props = defineProps<{
   // built-in A/B dropdowns are hidden — used by the Head to Head tab so the
   // radar mirrors the matchup picked in the matrix above.
   hideSelectors?: boolean;
+  // The lineups this reads from are still being fetched — show the matched
+  // skeleton rather than the "no data" box, which is a third of the height.
+  loading?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -87,18 +92,60 @@ interface AxisDef {
 }
 
 const axisDefs: AxisDef[] = [
-  { key: "rating", label: t("match.radar.axes.rating"), max: RATING_MAX, decimals: 2 },
+  {
+    key: "rating",
+    label: t("match.radar.axes.rating"),
+    max: RATING_MAX,
+    decimals: 2,
+  },
   { key: "adr", label: t("match.radar.axes.adr"), max: ADR_MAX, decimals: 1 },
-  { key: "opening_attempts", label: t("match.radar.axes.opening_attempts"), max: OPENING_ATTEMPTS_MAX, decimals: 0 },
-  { key: "opening", label: t("match.radar.axes.opening"), max: OPENING_MAX, decimals: 2 },
+  {
+    key: "opening_attempts",
+    label: t("match.radar.axes.opening_attempts"),
+    max: OPENING_ATTEMPTS_MAX,
+    decimals: 0,
+  },
+  {
+    key: "opening",
+    label: t("match.radar.axes.opening"),
+    max: OPENING_MAX,
+    decimals: 2,
+  },
   { key: "kpr", label: t("match.radar.axes.kpr"), max: KPR_MAX, decimals: 2 },
-  { key: "trade_kills", label: t("match.radar.axes.trade_kills"), max: TRADE_KILLS_MAX, decimals: 2 },
+  {
+    key: "trade_kills",
+    label: t("match.radar.axes.trade_kills"),
+    max: TRADE_KILLS_MAX,
+    decimals: 2,
+  },
   { key: "kd", label: t("match.radar.axes.kd"), max: KD_MAX, decimals: 2 },
-  { key: "traded", label: t("match.radar.axes.traded"), max: TRADED_MAX, decimals: 2 },
-  { key: "dpr", label: t("match.radar.axes.dpr"), max: DPR_MAX, inverted: true, decimals: 2 },
+  {
+    key: "traded",
+    label: t("match.radar.axes.traded"),
+    max: TRADED_MAX,
+    decimals: 2,
+  },
+  {
+    key: "dpr",
+    label: t("match.radar.axes.dpr"),
+    max: DPR_MAX,
+    inverted: true,
+    decimals: 2,
+  },
   { key: "udr", label: t("match.radar.axes.udr"), max: UDR_MAX, decimals: 1 },
-  { key: "flash_assists", label: t("match.radar.axes.flash_assists"), max: FLASH_ASSISTS_MAX, decimals: 2 },
-  { key: "kast", label: t("match.radar.axes.kast"), max: KAST_MAX, decimals: 0, format: (v) => `${Math.round(v)}%` },
+  {
+    key: "flash_assists",
+    label: t("match.radar.axes.flash_assists"),
+    max: FLASH_ASSISTS_MAX,
+    decimals: 2,
+  },
+  {
+    key: "kast",
+    label: t("match.radar.axes.kast"),
+    max: KAST_MAX,
+    decimals: 0,
+    format: (v) => `${Math.round(v)}%`,
+  },
 ];
 
 const allPlayers = computed(() => {
@@ -213,6 +260,10 @@ function aggregateStats(entry: any) {
 // keyed by match for both radar players. Replaces client round-walking.
 const { client: apolloClient } = useApolloClient();
 const openingRows = ref<any[]>([]);
+// First subscription response (even an empty one). The opening-duel axes only
+// exist once these rows land, so revealing the chart earlier means the radar
+// re-labels and the table gains two rows mid-load.
+const openingReady = ref(false);
 const OPENING_SUB = gql`
   subscription RadarOpeningDuels($matchId: uuid!) {
     v_match_player_opening_duels(where: { match_id: { _eq: $matchId } }) {
@@ -230,7 +281,9 @@ watch(
     openingSub?.unsubscribe();
     openingSub = null;
     openingRows.value = [];
+    openingReady.value = false;
     if (!id) {
+      openingReady.value = true;
       return;
     }
     openingSub = apolloClient
@@ -238,9 +291,11 @@ watch(
       .subscribe({
         next: ({ data }: any) => {
           openingRows.value = data?.v_match_player_opening_duels ?? [];
+          openingReady.value = true;
         },
         error: () => {
           openingRows.value = [];
+          openingReady.value = true;
         },
       });
   },
@@ -344,8 +399,12 @@ function metricsFor(steamId: string | null) {
 const metricsA = computed(() => metricsFor(selectedA.value));
 const metricsB = computed(() => metricsFor(selectedB.value));
 
-const playerA = computed(() => entryFor(selectedA.value)?.member?.player ?? null);
-const playerB = computed(() => entryFor(selectedB.value)?.member?.player ?? null);
+const playerA = computed(
+  () => entryFor(selectedA.value)?.member?.player ?? null,
+);
+const playerB = computed(
+  () => entryFor(selectedB.value)?.member?.player ?? null,
+);
 
 const activeAxes = computed(() =>
   axisDefs.filter((axis) => {
@@ -383,7 +442,9 @@ const chartData = computed(() => {
     datasets: [
       {
         label: playerA.value?.name ?? t("match.radar.player_a"),
-        data: activeAxes.value.map((a) => normalize(a, metricsA.value?.[a.key])),
+        data: activeAxes.value.map((a) =>
+          normalize(a, metricsA.value?.[a.key]),
+        ),
         borderColor: COLOR_A_LINE,
         backgroundColor: COLOR_A_FILL,
         pointBackgroundColor: COLOR_A_LINE,
@@ -394,7 +455,9 @@ const chartData = computed(() => {
       },
       {
         label: playerB.value?.name ?? t("match.radar.player_b"),
-        data: activeAxes.value.map((a) => normalize(a, metricsB.value?.[a.key])),
+        data: activeAxes.value.map((a) =>
+          normalize(a, metricsB.value?.[a.key]),
+        ),
         borderColor: COLOR_B_LINE,
         backgroundColor: COLOR_B_FILL,
         pointBackgroundColor: COLOR_B_LINE,
@@ -469,6 +532,16 @@ const chartOptions = computed(() => {
     },
   };
 });
+
+// Hold the skeleton until every source the axes depend on has reported, so the
+// chart and table render at their final size in one step.
+const pending = computed(() => props.loading || !openingReady.value);
+
+// Skeleton row count — the two opening-duel axes aren't in `activeAxes` yet
+// while their subscription is in flight, so add them back.
+const axisCount = computed(() =>
+  Math.max(1, activeAxes.value.length + (openingReady.value ? 0 : 2)),
+);
 
 function betterSide(axis: AxisDef): "a" | "b" | null {
   const a = metricsA.value?.[axis.key];
@@ -545,89 +618,142 @@ function betterSide(axis: AxisDef): "a" | "b" | null {
       </div>
     </div>
 
-    <div
-      v-if="!chartData"
-      class="flex items-center justify-center rounded-md border border-dashed border-border p-10 text-center text-sm text-muted-foreground"
-    >
-      {{ $t("match.radar.no_data") }}
-    </div>
+    <FadeSwap>
+      <!-- Same Card/CardHeader/CardContent wrappers as the loaded state so the
+           chart and table fade in at their final height. -->
+      <div v-if="pending" key="skeleton" class="grid gap-4 lg:grid-cols-2">
+        <Card class="bg-card/20">
+          <CardHeader class="pb-2">
+            <div class="flex h-16 items-center justify-between gap-4">
+              <Skeleton class="h-8 w-32" />
+              <Skeleton class="h-3 w-6" />
+              <Skeleton class="h-8 w-32" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div
+              class="flex h-[360px] items-center justify-center sm:h-[420px]"
+            >
+              <Skeleton
+                class="aspect-square h-[260px] rounded-full sm:h-[310px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-    <div v-else class="grid gap-4 lg:grid-cols-2">
-      <Card class="bg-card/20">
-        <CardHeader class="pb-2">
-          <CardTitle class="flex items-center justify-between gap-4 text-sm">
-            <PlayerDisplay
-              v-if="playerA"
-              :player="playerA"
-              size="xs"
-              :show-flag="false"
-              :show-role="false"
-              :linkable="true"
-            />
-            <span class="text-muted-foreground">{{ $t("match.radar.vs") }}</span>
-            <PlayerDisplay
-              v-if="playerB"
-              :player="playerB"
-              size="xs"
-              :show-flag="false"
-              :show-role="false"
-              :linkable="true"
-            />
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="relative h-[360px] sm:h-[420px]">
-            <Radar :data="chartData" :options="chartOptions" />
-          </div>
-        </CardContent>
-      </Card>
+        <Card class="bg-card/20">
+          <CardContent class="flex flex-col gap-0 p-1 sm:p-2">
+            <Skeleton class="h-10 w-full rounded-none" />
+            <div
+              v-for="i in axisCount"
+              :key="i"
+              class="flex h-[37px] items-center justify-between gap-4 px-2"
+            >
+              <Skeleton class="h-3 w-24" />
+              <div class="flex gap-6">
+                <Skeleton class="h-3 w-10" />
+                <Skeleton class="h-3 w-10" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card class="bg-card/20">
-        <CardContent class="p-1 sm:p-2">
-          <Table class="min-w-full [&_td]:px-2 [&_th]:px-2">
-            <TableHeader class="[&_th]:h-10 bg-muted/20">
-              <TableRow>
-                <TableHead class="text-left whitespace-nowrap">
-                  {{ $t("match.radar.metric") }}
-                </TableHead>
-                <TableHead class="text-right whitespace-nowrap text-amber-400">
-                  {{ (playerA && playerA.name) || $t("match.radar.player_a") }}
-                </TableHead>
-                <TableHead class="text-right whitespace-nowrap text-sky-400">
-                  {{ (playerB && playerB.name) || $t("match.radar.player_b") }}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="axis of activeAxes" :key="axis.key">
-                <TableCell class="text-left text-muted-foreground whitespace-nowrap">
-                  <StatLabel :stat="axis.key" :label="axis.label" />
-                </TableCell>
-                <TableCell
-                  class="text-right font-mono tabular-nums"
-                  :class="
-                    betterSide(axis) === 'a'
-                      ? 'font-bold text-amber-400'
-                      : 'text-foreground'
-                  "
-                >
-                  {{ displayValue(axis, metricsA?.[axis.key]) }}
-                </TableCell>
-                <TableCell
-                  class="text-right font-mono tabular-nums"
-                  :class="
-                    betterSide(axis) === 'b'
-                      ? 'font-bold text-sky-400'
-                      : 'text-foreground'
-                  "
-                >
-                  {{ displayValue(axis, metricsB?.[axis.key]) }}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+      <div
+        v-else-if="!chartData"
+        key="empty"
+        class="flex items-center justify-center rounded-md border border-dashed border-border p-10 text-center text-sm text-muted-foreground"
+      >
+        {{ $t("match.radar.no_data") }}
+      </div>
+
+      <div v-else key="content" class="grid gap-4 lg:grid-cols-2">
+        <Card class="bg-card/20">
+          <CardHeader class="pb-2">
+            <CardTitle class="flex items-center justify-between gap-4 text-sm">
+              <PlayerDisplay
+                v-if="playerA"
+                :player="playerA"
+                size="xs"
+                :show-flag="false"
+                :show-role="false"
+                :linkable="true"
+              />
+              <span class="text-muted-foreground">{{
+                $t("match.radar.vs")
+              }}</span>
+              <PlayerDisplay
+                v-if="playerB"
+                :player="playerB"
+                size="xs"
+                :show-flag="false"
+                :show-role="false"
+                :linkable="true"
+              />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="relative h-[360px] sm:h-[420px]">
+              <Radar :data="chartData" :options="chartOptions" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card class="bg-card/20">
+          <CardContent class="p-1 sm:p-2">
+            <Table class="min-w-full [&_td]:px-2 [&_th]:px-2">
+              <TableHeader class="[&_th]:h-10 bg-muted/20">
+                <TableRow>
+                  <TableHead class="text-left whitespace-nowrap">
+                    {{ $t("match.radar.metric") }}
+                  </TableHead>
+                  <TableHead
+                    class="text-right whitespace-nowrap text-amber-400"
+                  >
+                    {{
+                      (playerA && playerA.name) || $t("match.radar.player_a")
+                    }}
+                  </TableHead>
+                  <TableHead class="text-right whitespace-nowrap text-sky-400">
+                    {{
+                      (playerB && playerB.name) || $t("match.radar.player_b")
+                    }}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="axis of activeAxes" :key="axis.key">
+                  <TableCell
+                    class="text-left text-muted-foreground whitespace-nowrap"
+                  >
+                    <StatLabel :stat="axis.key" :label="axis.label" />
+                  </TableCell>
+                  <TableCell
+                    class="text-right font-mono tabular-nums"
+                    :class="
+                      betterSide(axis) === 'a'
+                        ? 'font-bold text-amber-400'
+                        : 'text-foreground'
+                    "
+                  >
+                    {{ displayValue(axis, metricsA?.[axis.key]) }}
+                  </TableCell>
+                  <TableCell
+                    class="text-right font-mono tabular-nums"
+                    :class="
+                      betterSide(axis) === 'b'
+                        ? 'font-bold text-sky-400'
+                        : 'text-foreground'
+                    "
+                  >
+                    {{ displayValue(axis, metricsB?.[axis.key]) }}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    </FadeSwap>
   </div>
 </template>

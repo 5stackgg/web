@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TrophyBadge from "./TrophyBadge.vue";
+import AwardBadge from "./AwardBadge.vue";
+import { resolveAwardTier } from "~/utilities/awardSeed";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -13,12 +14,22 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 
-interface Trophy {
+interface AwardGrant {
   id: string;
-  placement: number;
+  placement?: number | null;
   placement_tier?: string | null;
-  tournament_id: string;
+  tournament_id?: string | null;
   team_id?: string | null;
+  note?: string | null;
+  created_at?: string | null;
+  award?: {
+    id: string;
+    name?: string | null;
+    description?: string | null;
+    tier?: string | null;
+    silhouette?: number | null;
+    image_url?: string | null;
+  } | null;
   tournament?: {
     name: string;
     start?: string | null;
@@ -38,7 +49,7 @@ interface Trophy {
     name?: string | null;
     short_name?: string | null;
   } | null;
-  trophy_config?: {
+  tournament_award?: {
     custom_name?: string | null;
     silhouette?: number | null;
     image_url?: string | null;
@@ -47,29 +58,42 @@ interface Trophy {
 
 interface Props {
   open: boolean;
-  trophy: Trophy;
+  award: AwardGrant;
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits<{ (e: "update:open", v: boolean): void }>();
 
+const TIER_COLORS: Record<string, string> = {
+  mvp: "hsl(195 85% 60%)",
+  gold: "hsl(45 95% 60%)",
+  silver: "hsl(0 0% 78%)",
+  bronze: "hsl(28 70% 52%)",
+  special: "hsl(258 90% 74%)",
+};
+
+const tier = computed(() =>
+  resolveAwardTier(props.award.placement, props.award.award?.tier),
+);
+
+const hasPlacement = computed(
+  () => props.award.placement !== null && props.award.placement !== undefined,
+);
+
 const placementLabelKey = computed(() => {
-  if (props.trophy.placement === 0) return "trophies.mvp";
-  if (props.trophy.placement === 1) return "trophies.first_place";
-  if (props.trophy.placement === 2) return "trophies.second_place";
-  return "trophies.third_place";
+  if (props.award.placement === 0) return "awards.mvp";
+  if (props.award.placement === 1) return "awards.first_place";
+  if (props.award.placement === 2) return "awards.second_place";
+  if (props.award.placement === 3) return "awards.third_place";
+  return "awards.granted";
 });
 
-const tierColor = computed(() => {
-  if (props.trophy.placement === 0) return "hsl(195 85% 60%)";
-  if (props.trophy.placement === 1) return "hsl(45 95% 60%)";
-  if (props.trophy.placement === 2) return "hsl(0 0% 78%)";
-  return "hsl(28 70% 52%)";
-});
+const tierColor = computed(() => TIER_COLORS[tier.value]);
 
 const formattedDate = computed(() => {
-  if (!props.trophy.tournament?.start) return null;
-  const d = new Date(props.trophy.tournament.start);
+  const iso = props.award.tournament?.start || props.award.created_at;
+  if (!iso) return null;
+  const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
   return d
     .toLocaleDateString(undefined, {
@@ -80,14 +104,23 @@ const formattedDate = computed(() => {
     .toUpperCase();
 });
 
-const tournamentName = computed(() => props.trophy.tournament?.name || "");
+const tournamentName = computed(() => props.award.tournament?.name || "");
 const tournamentType = computed(
-  () => props.trophy.tournament?.stages?.[0]?.type || null,
+  () => props.award.tournament?.stages?.[0]?.type || null,
 );
-const trophyTeam = computed(() => {
-  const team = props.trophy.team || props.trophy.tournament_team?.team || null;
+
+const title = computed(
+  () =>
+    props.award.tournament_award?.custom_name ||
+    tournamentName.value ||
+    props.award.award?.name ||
+    "",
+);
+
+const awardTeam = computed(() => {
+  const team = props.award.team || props.award.tournament_team?.team || null;
   const id =
-    props.trophy.team_id || team?.id || props.trophy.tournament_team?.team_id;
+    props.award.team_id || team?.id || props.award.tournament_team?.team_id;
   if (!id) return null;
 
   return {
@@ -95,7 +128,7 @@ const trophyTeam = computed(() => {
     name:
       team?.name ||
       team?.short_name ||
-      props.trophy.tournament_team?.name ||
+      props.award.tournament_team?.name ||
       "Team",
   };
 });
@@ -110,23 +143,23 @@ const trophyTeam = computed(() => {
             class="inline-block h-[2px] w-[10px]"
             :style="{ background: tierColor }"
           ></span>
-          {{ $t("trophies.title") }}
+          {{ $t("awards.title") }}
           <span class="text-muted-foreground/50">·</span>
           <span :style="{ color: tierColor }">{{ $t(placementLabelKey) }}</span>
         </div>
         <DialogTitle
           class="text-xl font-bold uppercase tracking-[0.04em] sm:text-2xl"
         >
-          {{ tournamentName }}
+          {{ title }}
         </DialogTitle>
         <DialogDescription class="sr-only">
-          {{ tournamentName }} — {{ $t(placementLabelKey) }}
+          {{ title }} — {{ $t(placementLabelKey) }}
         </DialogDescription>
       </DialogHeader>
 
       <NuxtLink
-        v-if="trophyTeam"
-        :to="`/teams/${trophyTeam.id}`"
+        v-if="awardTeam"
+        :to="`/teams/${awardTeam.id}`"
         class="group/team relative flex items-center justify-between gap-3 overflow-hidden rounded-sm border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.07)] px-3 py-2.5 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.11)]"
       >
         <span
@@ -142,7 +175,7 @@ const trophyTeam = computed(() => {
           <span
             class="min-w-0 truncate text-sm font-bold uppercase tracking-[0.08em] text-foreground transition-colors duration-150 group-hover/team:text-[hsl(var(--tac-amber))]"
           >
-            {{ trophyTeam.name }}
+            {{ awardTeam.name }}
           </span>
         </span>
         <span
@@ -152,7 +185,7 @@ const trophyTeam = computed(() => {
         >
       </NuxtLink>
 
-      <!-- Trophy hero with uplight + scanlines -->
+      <!-- Award hero with uplight + scanlines -->
       <div
         class="relative overflow-hidden rounded-sm border border-border bg-background/40 py-6"
       >
@@ -169,20 +202,28 @@ const trophyTeam = computed(() => {
           aria-hidden="true"
         ></div>
         <div class="relative z-[1] flex justify-center">
-          <TrophyBadge
-            :tournament-id="trophy.tournament_id"
-            :placement="trophy.placement"
+          <AwardBadge
+            :award="award.award"
+            :seed-key="award.tournament_id || award.award?.id"
+            :placement="award.placement"
             :tournament-name="tournamentName"
-            :tournament-start="trophy.tournament?.start"
+            :tournament-start="award.tournament?.start"
             :tournament-type="tournamentType"
-            :custom-name="trophy.trophy_config?.custom_name"
-            :silhouette-override="trophy.trophy_config?.silhouette"
-            :image-url="trophy.trophy_config?.image_url"
+            :custom-name="award.tournament_award?.custom_name"
+            :silhouette-override="award.tournament_award?.silhouette"
+            :image-url="award.tournament_award?.image_url"
             size="lg"
             :interactive="false"
           />
         </div>
       </div>
+
+      <p
+        v-if="award.note || award.award?.description"
+        class="text-sm text-muted-foreground"
+      >
+        {{ award.note || award.award?.description }}
+      </p>
 
       <!-- Metadata strip -->
       <dl
@@ -192,17 +233,17 @@ const trophyTeam = computed(() => {
           <dt
             class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
-            {{ $t("trophies.placement") }}
+            {{ $t("awards.placement") }}
           </dt>
           <dd
             class="font-semibold uppercase tracking-wide"
             :style="{ color: tierColor }"
           >
-            <template v-if="trophy.placement === 0"
+            <template v-if="!hasPlacement || award.placement === 0"
               >★ {{ $t(placementLabelKey) }}</template
             >
             <template v-else>
-              #{{ String(trophy.placement).padStart(2, "0") }} ·
+              #{{ String(award.placement).padStart(2, "0") }} ·
               {{ $t(placementLabelKey) }}
             </template>
           </dd>
@@ -211,9 +252,11 @@ const trophyTeam = computed(() => {
           <dt
             class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
-            {{ $t("trophies.tournament") }}
+            {{ $t("awards.tournament") }}
           </dt>
-          <dd class="font-semibold">{{ tournamentType || "—" }}</dd>
+          <dd class="font-semibold">
+            {{ tournamentType || award.award?.name || "—" }}
+          </dd>
         </div>
         <div class="flex min-w-0 flex-col gap-1 bg-background/60 p-3">
           <dt
@@ -228,14 +271,15 @@ const trophyTeam = computed(() => {
       </dl>
 
       <NuxtLink
-        :to="`/tournaments/${trophy.tournament_id}`"
+        v-if="award.tournament_id"
+        :to="`/tournaments/${award.tournament_id}`"
         class="group/link inline-flex items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
       >
         <span
           class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
           >▚</span
         >
-        {{ $t("trophies_modal.view_tournament") }}
+        {{ $t("awards_modal.view_tournament") }}
         <span
           class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
           >◢</span

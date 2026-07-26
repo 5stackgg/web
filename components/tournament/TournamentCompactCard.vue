@@ -9,7 +9,9 @@ import {
   UsersRound,
 } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
-import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
+import AwardBadge from "~/components/award/AwardBadge.vue";
+import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
+import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
 
 const { t } = useI18n();
 
@@ -52,19 +54,12 @@ const bannerUrl = computed(() => {
   return `https://${runtimeConfig.public.apiDomain}/${banner}`;
 });
 
-// Deterministic gradient keyed on the id so bannerless tournaments still fill
-// the card instead of reading as an empty box (mirrors TournamentFeatureCard).
-const fallbackGradient = computed(() => {
-  const id = String(props.tournament?.id ?? "");
-  let h = 0;
-  for (let i = 0; i < id.length; i++) {
-    h = (h * 31 + id.charCodeAt(i)) % 360;
-  }
-  const a = h;
-  const b = (h + 70) % 360;
-  const c = (h + 200) % 360;
-  return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.5), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.4), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.35), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.28) 0 20px, transparent 20px 40px)`;
-});
+// Bannerless tournaments fall back to their map pool as a skewed mosaic, then
+// to a neutral tactical fill (mirrors TournamentFeatureCard).
+const mapPosters = computed(() => tournamentMapPosters(props.tournament, 5));
+
+const fallbackGradient =
+  "radial-gradient(ellipse 70% 100% at 50% 0%, hsl(220 10% 20% / 0.5), transparent 70%), repeating-linear-gradient(-35deg, hsl(0 0% 100% / 0.02) 0 20px, transparent 20px 40px)";
 
 const categories = computed(() => props.tournament?.categories || []);
 const visibleCategories = computed(() => categories.value.slice(0, 2));
@@ -80,11 +75,11 @@ const isLive = computed(() => props.statusVariant === "live");
 const isFinished = computed(() => props.statusVariant === "finished");
 const isRegistration = computed(() => props.statusVariant === "registration");
 
-function teamNameForTrophy(trophy: any): string | null {
+function teamNameForAward(award: any): string | null {
   return (
-    trophy?.tournament_team?.team?.name ||
-    trophy?.tournament_team?.team?.short_name ||
-    trophy?.tournament_team?.name ||
+    award?.tournament_team?.team?.name ||
+    award?.tournament_team?.team?.short_name ||
+    award?.tournament_team?.name ||
     null
   );
 }
@@ -99,16 +94,16 @@ function teamNameForResult(row: any): string | null {
 }
 
 const podium = computed(() => {
-  const trophies = (props.tournament?.trophies || []) as any[];
+  const awards = (props.tournament?.awards || []) as any[];
   const byPlacement: Record<number, string | null> = {};
-  for (const t of trophies) {
+  for (const t of awards) {
     if (t.placement >= 1 && t.placement <= 3) {
-      byPlacement[t.placement] = teamNameForTrophy(t);
+      byPlacement[t.placement] = teamNameForAward(t);
     }
   }
   if (!byPlacement[1] && !byPlacement[2] && !byPlacement[3]) {
-    // Fall back to the final stage's standings when trophies were never
-    // generated (organizer didn't issue them, or trophies are disabled).
+    // Fall back to the final stage's standings when awards were never
+    // generated (organizer didn't issue them, or awards are disabled).
     const stages = [...(props.tournament?.stages || [])].sort(
       (a: any, b: any) => (Number(b.order) || 0) - (Number(a.order) || 0),
     );
@@ -132,9 +127,19 @@ const podium = computed(() => {
 
 const hasPodium = computed(() => !!podium.value.gold);
 
-const trophyConfigFor = (placement: number) => {
-  return (props.tournament?.trophy_configs || []).find(
+const awardConfigFor = (placement: number) => {
+  return (props.tournament?.award_configs || []).find(
     (c: any) => c.placement === placement,
+  );
+};
+
+// The granted row records the award the server resolved for the placement, so
+// it beats re-deriving one from the tournament config.
+const grantedAwardFor = (placement: number) => {
+  return (
+    ((props.tournament?.awards || []) as any[]).find(
+      (recipient: any) => recipient.placement === placement && recipient.award,
+    )?.award ?? null
   );
 };
 
@@ -144,10 +149,10 @@ const primaryStage = computed(() => {
   )[0];
 });
 
-// When the tournament organizer disabled trophies, fall back to plain
-// rank boxes (1ST / 2ND / 3RD) instead of the procedural trophy art.
-const trophiesEnabled = computed(
-  () => props.tournament?.trophies_enabled !== false,
+// When the tournament organizer disabled awards, fall back to plain
+// rank boxes (1ST / 2ND / 3RD) instead of the procedural award art.
+const awardsEnabled = computed(
+  () => props.tournament?.awards_enabled !== false,
 );
 
 const statusIcon = computed(() => {
@@ -242,7 +247,7 @@ const runnerUps = computed(() => {
       placement: 2,
       label: t("tournament.compact_card.second"),
       name: podium.value.silver,
-      config: trophyConfigFor(2),
+      config: awardConfigFor(2),
     });
   }
   if (podium.value.bronze) {
@@ -250,7 +255,7 @@ const runnerUps = computed(() => {
       placement: 3,
       label: t("tournament.compact_card.third"),
       name: podium.value.bronze,
-      config: trophyConfigFor(3),
+      config: awardConfigFor(3),
     });
   }
   return entries;
@@ -270,6 +275,14 @@ const runnerUps = computed(() => {
         aria-hidden="true"
         class="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-40"
       />
+      <span
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,hsl(var(--card)/0.88)_0%,hsl(var(--card)/0.5)_45%,hsl(var(--card)/0.92)_100%)]"
+      ></span>
+    </template>
+
+    <template v-else-if="mapPosters.length">
+      <TournamentMapMosaic class="-z-10" :posters="mapPosters" :skew="12" />
       <span
         aria-hidden="true"
         class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,hsl(var(--card)/0.88)_0%,hsl(var(--card)/0.5)_45%,hsl(var(--card)/0.92)_100%)]"
@@ -361,16 +374,17 @@ const runnerUps = computed(() => {
         <div
           class="relative grid h-14 w-14 shrink-0 place-items-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[radial-gradient(ellipse_at_center,hsl(var(--tac-amber)/0.18)_0%,transparent_70%)]"
         >
-          <TrophyBadge
-            v-if="trophiesEnabled"
-            :tournament-id="tournament.id"
+          <AwardBadge
+            v-if="awardsEnabled"
+            :award="grantedAwardFor(1) || awardConfigFor(1)?.award"
+            :seed-key="tournament.id"
             :placement="1"
             :tournament-name="tournament.name"
             :tournament-start="tournament.start"
             :tournament-type="primaryStage?.type"
-            :custom-name="trophyConfigFor(1)?.custom_name"
-            :silhouette-override="trophyConfigFor(1)?.silhouette"
-            :image-url="trophyConfigFor(1)?.image_url"
+            :custom-name="awardConfigFor(1)?.custom_name"
+            :silhouette-override="awardConfigFor(1)?.silhouette"
+            :image-url="awardConfigFor(1)?.image_url"
             size="sm"
             :interactive="false"
           />
@@ -405,9 +419,10 @@ const runnerUps = computed(() => {
           :key="entry.placement"
           class="flex items-center gap-2"
         >
-          <TrophyBadge
-            v-if="trophiesEnabled"
-            :tournament-id="tournament.id"
+          <AwardBadge
+            v-if="awardsEnabled"
+            :award="grantedAwardFor(entry.placement) || entry.config?.award"
+            :seed-key="tournament.id"
             :placement="entry.placement"
             :tournament-name="tournament.name"
             :tournament-start="tournament.start"

@@ -12,7 +12,7 @@ export const simpleTournamentFields = Selector("tournaments")({
   location: true,
   latitude: true,
   longitude: true,
-  trophies_enabled: true,
+  awards_enabled: true,
   e_tournament_status: {
     description: true,
   },
@@ -53,15 +53,23 @@ export const simpleTournamentFields = Selector("tournaments")({
       },
     },
   ],
-  trophy_configs: [
+  award_configs: [
     {},
     {
       id: true,
       tournament_id: true,
       placement: true,
+      award_id: true,
       custom_name: true,
       silhouette: true,
       image_url: true,
+      award: {
+        id: true,
+        name: true,
+        tier: true,
+        silhouette: true,
+        image_url: true,
+      },
     },
   ],
   options: matchOptionsFields,

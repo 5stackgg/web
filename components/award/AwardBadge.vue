@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   fnv1a,
   createSeededRng,
   TIER_PALETTES,
-  placementToTier,
-  type TrophyTier,
-} from "~/utilities/trophySeed";
+  resolveAwardTier,
+  type AwardTier,
+} from "~/utilities/awardSeed";
+
+interface AwardDefinition {
+  id: string;
+  name?: string | null;
+  tier?: string | null;
+  silhouette?: number | null;
+  image_url?: string | null;
+}
 
 interface Props {
-  tournamentId: string;
-  placement: number;
+  award?: AwardDefinition | null;
+  // Tournament placements seed on their tournament so every cup's medals look
+  // distinct; standalone awards seed on the award itself.
+  seedKey?: string | null;
+  placement?: number | null;
   tournamentName?: string | null;
   tournamentStart?: string | null;
   tournamentType?: string | null;
@@ -19,9 +31,15 @@ interface Props {
   silhouetteOverride?: number | null;
   customName?: string | null;
   imageUrl?: string | null;
+  // Off when the surrounding layout already labels the award, so the plinth
+  // engraving does not repeat (and re-truncate) the same name.
+  showName?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  award: null,
+  seedKey: null,
+  placement: null,
   size: "md",
   interactive: true,
   tournamentName: null,
@@ -30,14 +48,16 @@ const props = withDefaults(defineProps<Props>(), {
   silhouetteOverride: null,
   customName: null,
   imageUrl: null,
+  showName: true,
 });
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 const resolvedImageSrc = computed(() => {
-  if (!props.imageUrl) return null;
-  if (props.imageUrl.startsWith("http")) return props.imageUrl;
-  const filename = props.imageUrl.replace(/^trophies\//, "");
-  return `https://${apiDomain.value}/trophies/${filename}`;
+  const source = props.imageUrl || props.award?.image_url;
+  if (!source) return null;
+  if (source.startsWith("http")) return source;
+  const filename = source.replace(/^(awards|trophies)\//, "");
+  return `https://${apiDomain.value}/avatars/awards/${filename}`;
 });
 
 const SIZES = {
@@ -47,9 +67,11 @@ const SIZES = {
   lg: 192,
 } as const;
 
-const tier = computed<TrophyTier>(() => placementToTier(props.placement));
+const tier = computed<AwardTier>(() =>
+  resolveAwardTier(props.placement, props.award?.tier),
+);
 const palette = computed(() => TIER_PALETTES[tier.value]);
-const seed = computed(() => fnv1a(props.tournamentId));
+const seed = computed(() => fnv1a(props.seedKey || props.award?.id || ""));
 
 const variants = computed(() => {
   const rng = createSeededRng(seed.value);
@@ -57,11 +79,10 @@ const variants = computed(() => {
   const ornament = Math.floor(rng() * 3);
   const gemIndex = Math.floor(rng() * palette.value.gem.length);
   const handleStyle = Math.floor(rng() * 3);
+  const configured = props.silhouetteOverride ?? props.award?.silhouette;
   const silhouette =
-    props.silhouetteOverride != null &&
-    props.silhouetteOverride >= 0 &&
-    props.silhouetteOverride <= 4
-      ? props.silhouetteOverride
+    configured != null && configured >= 0 && configured <= 4
+      ? configured
       : hashSilhouette;
   return { silhouette, ornament, gemIndex, handleStyle };
 });
@@ -75,26 +96,38 @@ const year = computed(() => {
   return String(d.getFullYear());
 });
 
+const { t } = useI18n();
+
+// A placement award engraves its placement, not the tournament: the surrounding
+// UI already names the tournament, so repeating it wastes the plinth.
+const placementName = computed(() => {
+  if (props.placement === 0) return t("awards.mvp");
+  if (props.placement === 1) return t("awards.first_place");
+  if (props.placement === 2) return t("awards.second_place");
+  if (props.placement === 3) return t("awards.third_place");
+  return null;
+});
+
 const displayName = computed(() => {
-  const raw = props.customName || props.tournamentName;
+  const raw =
+    props.customName ||
+    placementName.value ||
+    props.award?.name ||
+    props.tournamentName;
   if (!raw) return "";
   const name = raw.toUpperCase();
   return name.length > 16 ? `${name.slice(0, 14)}…` : name;
 });
 
-const gradId = computed(() => `trophy-grad-${seed.value}-${tier.value}`);
-const shineId = computed(() => `trophy-shine-${seed.value}-${tier.value}`);
-const ornamentId = computed(
-  () => `trophy-ornament-${seed.value}-${tier.value}`,
-);
-const specularId = computed(
-  () => `trophy-specular-${seed.value}-${tier.value}`,
-);
-const plinthId = computed(() => `trophy-plinth-${seed.value}-${tier.value}`);
+const gradId = computed(() => `award-grad-${seed.value}-${tier.value}`);
+const shineId = computed(() => `award-shine-${seed.value}-${tier.value}`);
+const ornamentId = computed(() => `award-ornament-${seed.value}-${tier.value}`);
+const specularId = computed(() => `award-specular-${seed.value}-${tier.value}`);
+const plinthId = computed(() => `award-plinth-${seed.value}-${tier.value}`);
 
 const pixelSize = computed(() => SIZES[props.size]);
 const showEngraving = computed(
-  () => props.size === "md" || props.size === "lg",
+  () => props.showName && (props.size === "md" || props.size === "lg"),
 );
 const showOverlay = computed(() => props.size !== "xs");
 </script>
@@ -104,7 +137,7 @@ const showOverlay = computed(() => props.size !== "xs");
     :class="[
       'relative inline-flex shrink-0 items-center justify-center',
       interactive &&
-        'group/trophy transition-transform duration-300 motion-reduce:transition-none',
+        'group/award transition-transform duration-300 motion-reduce:transition-none',
       interactive && 'hover:-translate-y-0.5 hover:scale-[1.03]',
     ]"
     :style="{ width: `${pixelSize}px`, height: `${pixelSize}px` }"
@@ -112,18 +145,18 @@ const showOverlay = computed(() => props.size !== "xs");
     <!-- Custom uploaded image -->
     <div
       v-if="resolvedImageSrc"
-      class="relative h-full w-full overflow-hidden drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
+      class="relative h-full w-full overflow-hidden rounded-md drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
     >
       <img
         :src="resolvedImageSrc"
-        :alt="customName || tournamentName || palette.label"
+        :alt="displayName || palette.label"
         class="h-full w-full object-contain"
         loading="lazy"
       />
       <!-- shine sweep on hover -->
       <span
         v-if="interactive"
-        class="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 transition-[transform,opacity] duration-700 motion-reduce:hidden group-hover/trophy:translate-x-[300%] group-hover/trophy:opacity-100"
+        class="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 transition-[transform,opacity] duration-700 motion-reduce:hidden group-hover/award:translate-x-[300%] group-hover/award:opacity-100"
       ></span>
     </div>
     <svg
@@ -131,7 +164,7 @@ const showOverlay = computed(() => props.size !== "xs");
       :viewBox="`0 0 200 ${showEngraving ? 260 : 220}`"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      :aria-label="`${palette.label} trophy${tournamentName ? ' for ' + tournamentName : ''}`"
+      :aria-label="`${palette.label} award${tournamentName ? ' for ' + tournamentName : ''}`"
       class="h-full w-full drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
     >
       <defs>
@@ -432,7 +465,7 @@ const showOverlay = computed(() => props.size !== "xs");
         width="40"
         height="140"
         :fill="`url(#${shineId})`"
-        class="pointer-events-none opacity-0 transition-[transform,opacity] duration-700 motion-reduce:hidden group-hover/trophy:translate-x-[260px] group-hover/trophy:opacity-100"
+        class="pointer-events-none opacity-0 transition-[transform,opacity] duration-700 motion-reduce:hidden group-hover/award:translate-x-[260px] group-hover/award:opacity-100"
         transform="skewX(-20)"
       />
     </svg>

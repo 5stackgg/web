@@ -2,6 +2,7 @@
 import { UsersIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
+import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { Badge } from "~/components/ui/badge";
 </script>
 
@@ -11,7 +12,7 @@ import { Badge } from "~/components/ui/badge";
     @click="navigateToTournament(tournament.id, $event)"
   >
     <div class="flex gap-3 p-3 sm:gap-4 sm:p-4">
-      <!-- Leading media: banner (or deterministic gradient) with logo overlay -->
+      <!-- Leading media: banner (or neutral fill) with logo overlay -->
       <div
         class="relative hidden h-[76px] w-[132px] shrink-0 overflow-hidden rounded-md border border-border sm:block"
       >
@@ -21,11 +22,12 @@ import { Badge } from "~/components/ui/badge";
           :alt="tournament.name"
           class="absolute inset-0 h-full w-full object-cover"
         />
-        <div
-          v-else
-          class="absolute inset-0"
-          :style="{ background: fallbackGradient }"
-        ></div>
+        <TournamentMapMosaic
+          v-else-if="mapPosters.length"
+          :posters="mapPosters"
+          :skew="12"
+        />
+        <div v-else class="absolute inset-0 bg-muted/40"></div>
         <div class="absolute inset-0 bg-black/30"></div>
         <img
           v-if="logoUrl"
@@ -138,6 +140,8 @@ import { Badge } from "~/components/ui/badge";
 </template>
 
 <script lang="ts">
+import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
+
 export default {
   props: {
     tournament: {
@@ -146,6 +150,10 @@ export default {
     },
   },
   computed: {
+    // Bannerless rows show the map pool instead of an empty box.
+    mapPosters() {
+      return tournamentMapPosters(this.tournament, 3);
+    },
     logoUrl() {
       const logo = this.tournament?.logo;
       if (!logo) {

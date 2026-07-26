@@ -6,13 +6,19 @@ type SettingsSideTabItem = {
   label: string;
 };
 
-type SettingsSideTabGroup = {
+type SettingsSideTabSubgroup = {
   label: string;
   items: SettingsSideTabItem[];
 };
 
+type SettingsSideTabGroup = {
+  label: string;
+  items?: SettingsSideTabItem[];
+  subgroups?: SettingsSideTabSubgroup[];
+};
+
 const props = defineProps<{
-  /** Grouped tabs with section headers. */
+  /** Grouped tabs with section headers; groups may nest one level. */
   groups?: SettingsSideTabGroup[];
   /** Flat tabs (no headers) — convenience for simple navs. */
   items?: SettingsSideTabItem[];
@@ -20,10 +26,18 @@ const props = defineProps<{
   ariaLabel?: string;
 }>();
 
-// Normalize to groups; a flat `items` list becomes one header-less group.
-const renderGroups = computed<SettingsSideTabGroup[]>(
-  () => props.groups ?? [{ label: "", items: props.items ?? [] }],
-);
+// Normalize every shape to groups-of-subgroups. A flat `items` list becomes one
+// header-less group, and a single-level group becomes one unlabelled subgroup,
+// so the template only ever renders one structure.
+const renderGroups = computed<
+  Array<{ label: string; subgroups: SettingsSideTabSubgroup[] }>
+>(() => {
+  const groups = props.groups ?? [{ label: "", items: props.items ?? [] }];
+  return groups.map((group) => ({
+    label: group.label,
+    subgroups: group.subgroups ?? [{ label: "", items: group.items ?? [] }],
+  }));
+});
 
 const navRef = ref<HTMLElement | null>(null);
 const indicatorY = ref(0);
@@ -110,37 +124,51 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
       v-for="(group, groupIndex) in renderGroups"
       :key="group.label || groupIndex"
       class="flex flex-col gap-1"
-      :class="groupIndex > 0 ? 'mt-4' : ''"
+      :class="groupIndex > 0 ? 'mt-5' : ''"
     >
       <p
         v-if="group.label"
-        class="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60"
+        class="px-3 pb-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
       >
         {{ group.label }}
       </p>
 
-      <Button
-        v-for="item in group.items"
-        :key="item.path"
-        as-child
-        variant="ghost"
-        class="relative z-[1] h-9 w-full justify-start overflow-hidden rounded-sm px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
-        :class="
-          item.path === activePath
-            ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground'
-            : 'text-muted-foreground'
-        "
+      <div
+        v-for="(subgroup, subgroupIndex) in group.subgroups"
+        :key="subgroup.label || subgroupIndex"
+        class="flex flex-col gap-1"
+        :class="subgroupIndex > 0 ? 'mt-3' : ''"
       >
-        <NuxtLink
-          :to="item.path"
-          :aria-current="item.path === activePath ? 'page' : undefined"
-          :data-settings-tab-active="
-            item.path === activePath ? 'true' : 'false'
+        <p
+          v-if="subgroup.label"
+          class="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60"
+        >
+          {{ subgroup.label }}
+        </p>
+
+        <Button
+          v-for="item in subgroup.items"
+          :key="item.path"
+          as-child
+          variant="ghost"
+          class="relative z-[1] h-9 w-full justify-start overflow-hidden rounded-sm px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+          :class="
+            item.path === activePath
+              ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground'
+              : 'text-muted-foreground'
           "
         >
-          <span class="truncate">{{ item.label }}</span>
-        </NuxtLink>
-      </Button>
+          <NuxtLink
+            :to="item.path"
+            :aria-current="item.path === activePath ? 'page' : undefined"
+            :data-settings-tab-active="
+              item.path === activePath ? 'true' : 'false'
+            "
+          >
+            <span class="truncate">{{ item.label }}</span>
+          </NuxtLink>
+        </Button>
+      </div>
     </div>
 
     <div v-if="$slots.actions" class="mt-2 border-t border-border/50 pt-2">

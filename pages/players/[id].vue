@@ -20,7 +20,10 @@ const showDemoUpload = ref(false);
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
-import TrophyCase from "~/components/trophy/TrophyCase.vue";
+import AwardCase from "~/components/award/AwardCase.vue";
+import AwardComposer from "~/components/award/AwardComposer.vue";
+import { Button } from "~/components/ui/button";
+import { Plus, Medal } from "lucide-vue-next";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -350,7 +353,11 @@ const isValidStatsTab = (tab: string) =>
 watch(
   () => [plugins.initialized, route.query.tab] as const,
   ([, tab]) => {
-    if (typeof tab === "string" && tab !== statsTab.value && isValidStatsTab(tab)) {
+    if (
+      typeof tab === "string" &&
+      tab !== statsTab.value &&
+      isValidStatsTab(tab)
+    ) {
       statsTab.value = tab;
     }
   },
@@ -631,8 +638,7 @@ onMounted(async () => {
         role: p.role,
       } as any);
     }
-  } catch {
-  }
+  } catch {}
 });
 
 const eloAutoSwitchedFromAll = ref(false);
@@ -694,7 +700,8 @@ watch(playerIdRef, () => clearCompareTarget());
 const pluginPaths = ref<Record<string, string>>({});
 const pluginPath = (slug: string) => pluginPaths.value[slug] ?? "/";
 const pluginNavigate = (slug: string) => (to: string) => {
-  pluginPaths.value[slug] = `/${to}`.replace(/\/{2,}/g, "/").replace(/\/+$/, "") || "/";
+  pluginPaths.value[slug] =
+    `/${to}`.replace(/\/{2,}/g, "/").replace(/\/+$/, "") || "/";
 };
 // ...and when a plugin explicitly wants OFF this page (its own full app page),
 // that's a host route change. `to` is already an absolute panel path.
@@ -1116,8 +1123,7 @@ async function triggerFaceitRefresh(steamId: string | null) {
       mutation: REFRESH_FACEIT_MUTATION,
       variables: { steam_id: steamId },
     });
-  } catch {
-  }
+  } catch {}
 }
 
 watch(playerIdRef, (id) => triggerFaceitRefresh(id), { immediate: true });
@@ -1251,8 +1257,7 @@ async function loadMatches() {
     playerMatchesTotal.value =
       (count.data as any)?.matches_aggregate?.aggregate?.count ?? 0;
     void loadMatchEnrichment();
-  } catch {
-  }
+  } catch {}
 }
 
 async function loadMatchEnrichment() {
@@ -1747,6 +1752,16 @@ const playerHeroTeamChipDotClasses =
                 </div>
                 <div :class="playerHeroActionsClasses">
                   <button
+                    v-if="canGrantAwards"
+                    type="button"
+                    :class="playerHeroNameEditButtonClasses"
+                    :title="$t('awards.composer.grant_here')"
+                    :aria-label="$t('awards.composer.grant_here')"
+                    @click="awardComposerOpen = true"
+                  >
+                    <Medal />
+                  </button>
+                  <button
                     v-if="canEditPlayer"
                     type="button"
                     :class="playerHeroNameEditButtonClasses"
@@ -2154,12 +2169,28 @@ const playerHeroTeamChipDotClasses =
       </PageTransition>
     </div>
 
-    <PageTransition
-      :delay="50"
-      v-if="playerTrophies && playerTrophies.length > 0"
-    >
-      <TrophyCase :trophies="playerTrophies" />
+    <PageTransition :delay="50" v-if="playerAwards && playerAwards.length > 0">
+      <AwardCase :awards="playerAwards" :empty-state="false">
+        <template v-if="canGrantAwards" #action>
+          <button
+            type="button"
+            class="grid h-9 w-9 place-items-center rounded border border-border/80 bg-background/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            :title="$t('awards.composer.grant_here')"
+            :aria-label="$t('awards.composer.grant_here')"
+            @click="awardComposerOpen = true"
+          >
+            <Plus class="h-4 w-4" />
+          </button>
+        </template>
+      </AwardCase>
     </PageTransition>
+
+    <AwardComposer
+      v-if="player && awardComposerOpen"
+      v-model:open="awardComposerOpen"
+      :player="{ steam_id: String(player.steam_id), name: player.name }"
+      lock-recipient
+    />
 
     <PageTransition :delay="75" v-if="playerId">
       <PlayerHighlights
@@ -2298,9 +2329,7 @@ const playerHeroTeamChipDotClasses =
           ></span>
 
           <div
-            v-if="
-              appSettings.linkedAccountsEnabled && sourceRef === 'external'
-            "
+            v-if="appSettings.linkedAccountsEnabled && sourceRef === 'external'"
             class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
           >
             <span
@@ -2427,10 +2456,13 @@ const playerHeroTeamChipDotClasses =
                           v-if="activeSeason && s.id === activeSeason.id"
                           class="text-[hsl(var(--tac-amber))]"
                         >
-                          · {{ $t("pages.players.detail.season_current") }}</span
+                          ·
+                          {{ $t("pages.players.detail.season_current") }}</span
                         >
                       </span>
-                      <span class="text-[0.62rem] normal-case text-muted-foreground">
+                      <span
+                        class="text-[0.62rem] normal-case text-muted-foreground"
+                      >
                         {{ seasonRange(s) }}
                       </span>
                     </button>
@@ -2847,7 +2879,9 @@ const playerHeroTeamChipDotClasses =
                   {{ $t("pages.settings.linked_accounts.upload_demo") }}
                 </DialogTitle>
                 <DialogDescription>
-                  {{ $t("pages.settings.linked_accounts.upload_demo_description") }}
+                  {{
+                    $t("pages.settings.linked_accounts.upload_demo_description")
+                  }}
                 </DialogDescription>
               </DialogHeader>
               <DemoUpload />
@@ -2979,7 +3013,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
-import { trophyFields } from "~/graphql/trophyFields";
+import { awardFields } from "~/graphql/awardFields";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 export default {
@@ -3094,9 +3128,9 @@ export default {
           this.playerTeamMemberships = data.team_roster || [];
         },
       },
-      playerTrophies: {
+      playerAwards: {
         query: typedGql("subscription")({
-          tournament_trophies: [
+          award_recipients: [
             {
               where: {
                 player_steam_id: {
@@ -3104,7 +3138,7 @@ export default {
                 },
               },
             },
-            trophyFields,
+            awardFields,
           ],
         }),
         variables: function () {
@@ -3116,7 +3150,7 @@ export default {
           return !this.playerId;
         },
         result: function ({ data }: { data: any }) {
-          this.playerTrophies = data.tournament_trophies || [];
+          this.playerAwards = data.award_recipients || [];
         },
       },
     },
@@ -3135,7 +3169,8 @@ export default {
   data() {
     return {
       player: undefined,
-      playerTrophies: undefined,
+      playerAwards: undefined,
+      awardComposerOpen: false,
       highlightsResolved: false,
       pageContentTimedOut: false,
       pageContentTimeout: null as number | null,
@@ -3154,9 +3189,12 @@ export default {
     };
   },
   computed: {
+    canGrantAwards() {
+      return useApplicationSettingsStore().canGrantAwards;
+    },
     pageContentReady(): boolean {
       if (this.pageContentTimedOut) return true;
-      return this.playerTrophies !== undefined && this.highlightsResolved;
+      return this.playerAwards !== undefined && this.highlightsResolved;
     },
     playerId() {
       return this.$route.params.id || this.me?.steam_id || null;

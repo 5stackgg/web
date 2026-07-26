@@ -3,17 +3,20 @@ import gql from "graphql-tag";
 import { computed, ref, watch, onMounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { Users } from "lucide-vue-next";
-import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
+import AwardBadge from "~/components/award/AwardBadge.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
-import { tacticalSectionLabelClasses, tacticalSectionTickClasses } from "~/utilities/tacticalClasses";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
 // refreshKey bumps when the event's tournaments change so standings follow
 // retroactively as tournaments are attached/detached.
 const props = defineProps<{ eventId: string; refreshKey?: string | number }>();
 
-// Selects only the trophy fields this component renders (badge config,
+// Selects only the award fields this component renders (badge config,
 // tournament context, and the team/player identity per row); the `player`
 // relation exists so the medal table can show a name/avatar without a second
 // round-trip. Written as a raw `gql`
@@ -27,11 +30,19 @@ const EVENT_STANDINGS_QUERY = gql`
         tournament {
           id
           name
-          trophies {
+          awards {
             id
             tournament_team_id
             player_steam_id
             placement
+            source
+            award {
+              id
+              name
+              tier
+              silhouette
+              image_url
+            }
             tournament {
               name
               start
@@ -46,7 +57,7 @@ const EVENT_STANDINGS_QUERY = gql`
                 name
               }
             }
-            trophy_config {
+            tournament_award {
               custom_name
               silhouette
               image_url
@@ -108,62 +119,62 @@ const PLACEMENT_SLOTS = [
   { placement: 0, labelKey: "event.standings.mvp" },
 ] as const;
 
-// Placement trophies (1-3) are awarded as one canonical team row
+// Placement awards (1-3) are awarded as one canonical team row
 // (player_steam_id null, only inserted when a global team is linked) plus one
 // row per roster player, so a placement slot must collapse them to a single
 // entry per team: prefer the canonical row, and for ad-hoc teams (no linked
 // global team, hence no canonical row) keep one roster row per
 // tournament_team. MVP (placement 0) rows are player-scoped.
-function trophiesForPlacement(tournament: any, placement: number): any[] {
-  const rows = (tournament?.trophies || []).filter(
-    (trophy: any) => trophy.placement === placement,
+function awardsForPlacement(tournament: any, placement: number): any[] {
+  const rows = (tournament?.awards || []).filter(
+    (award: any) => award.placement === placement,
   );
   if (placement === 0) {
     return rows;
   }
 
   const byTeam = new Map<string, any>();
-  for (const trophy of rows) {
-    const key = String(
-      trophy.tournament_team_id ?? trophy.team?.id ?? trophy.id,
-    );
+  for (const award of rows) {
+    const key = String(award.tournament_team_id ?? award.team?.id ?? award.id);
     const existing = byTeam.get(key);
-    if (!existing || (existing.player_steam_id && !trophy.player_steam_id)) {
-      byTeam.set(key, trophy);
+    if (!existing || (existing.player_steam_id && !award.player_steam_id)) {
+      byTeam.set(key, award);
     }
   }
   return [...byTeam.values()];
 }
 
-function entityName(trophy: any): string {
+function entityName(award: any): string {
   // MVP rows also carry the winning team's tournament_team_id, so the player
   // must win over the team relations here.
-  if (trophy.placement === 0) {
-    return trophy.player?.name || "";
+  if (award.placement === 0) {
+    return award.player?.name || "";
   }
   return (
-    trophy.team?.name ||
-    trophy.tournament_team?.team?.name ||
-    trophy.tournament_team?.name ||
-    trophy.player?.name ||
+    award.team?.name ||
+    award.tournament_team?.team?.name ||
+    award.tournament_team?.name ||
+    award.player?.name ||
     ""
   );
 }
 
-function entityLinkTo(trophy: any): { name: string; params: Record<string, string> } | null {
-  if (trophy.placement === 0) {
-    return trophy.player_steam_id
-      ? { name: "players-id", params: { id: trophy.player_steam_id } }
+function entityLinkTo(
+  award: any,
+): { name: string; params: Record<string, string> } | null {
+  if (award.placement === 0) {
+    return award.player_steam_id
+      ? { name: "players-id", params: { id: award.player_steam_id } }
       : null;
   }
-  const teamId = trophy.team?.id || trophy.tournament_team?.team?.id;
+  const teamId = award.team?.id || award.tournament_team?.team?.id;
   if (teamId) {
     return { name: "teams-id", params: { id: teamId } };
   }
   // A placement row with a player but no tournament_team is a manually
-  // awarded player-scoped trophy; link the player directly.
-  if (!trophy.tournament_team_id && trophy.player_steam_id) {
-    return { name: "players-id", params: { id: trophy.player_steam_id } };
+  // awarded player-scoped award; link the player directly.
+  if (!award.tournament_team_id && award.player_steam_id) {
+    return { name: "players-id", params: { id: award.player_steam_id } };
   }
   // Remaining rows without a linked global team represent an ad-hoc
   // tournament team; there is no team page to link, and linking the roster
@@ -201,16 +212,16 @@ const medalTable = computed<MedalRow[]>(() => {
   const seenTeamPlacements = new Set<string>();
 
   for (const tournament of tournamentCards.value) {
-    for (const trophy of tournament.trophies || []) {
+    for (const award of tournament.awards || []) {
       const realTeamId =
-        trophy.team?.id || trophy.tournament_team?.team?.id || null;
-      const tournamentTeamId = trophy.tournament_team_id || null;
-      const playerSteamId = trophy.player_steam_id || null;
+        award.team?.id || award.tournament_team?.team?.id || null;
+      const tournamentTeamId = award.tournament_team_id || null;
+      const playerSteamId = award.player_steam_id || null;
 
       let key: string;
       let isTeam: boolean;
       let linkTeamId: string | null;
-      if (trophy.placement === 0) {
+      if (award.placement === 0) {
         if (!playerSteamId) {
           continue;
         }
@@ -218,7 +229,7 @@ const medalTable = computed<MedalRow[]>(() => {
         linkTeamId = null;
         key = `player:${playerSteamId}`;
       } else if (realTeamId || tournamentTeamId) {
-        const dedupeKey = `${tournament.id}:${tournamentTeamId ?? realTeamId}:${trophy.placement}`;
+        const dedupeKey = `${tournament.id}:${tournamentTeamId ?? realTeamId}:${award.placement}`;
         if (seenTeamPlacements.has(dedupeKey)) {
           continue;
         }
@@ -227,7 +238,7 @@ const medalTable = computed<MedalRow[]>(() => {
         linkTeamId = realTeamId;
         key = realTeamId ? `team:${realTeamId}` : `tteam:${tournamentTeamId}`;
       } else if (playerSteamId) {
-        // Manually awarded placement trophy scoped to a player directly.
+        // Manually awarded placement award scoped to a player directly.
         isTeam = false;
         linkTeamId = null;
         key = `player:${playerSteamId}`;
@@ -238,11 +249,11 @@ const medalTable = computed<MedalRow[]>(() => {
       if (!rows.has(key)) {
         rows.set(key, {
           key,
-          name: entityName(trophy),
+          name: entityName(award),
           isTeam,
           teamId: linkTeamId,
           steamId: isTeam ? null : playerSteamId,
-          avatarUrl: isTeam ? null : (trophy.player?.avatar_url ?? null),
+          avatarUrl: isTeam ? null : (award.player?.avatar_url ?? null),
           mvp: 0,
           gold: 0,
           silver: 0,
@@ -251,10 +262,10 @@ const medalTable = computed<MedalRow[]>(() => {
       }
 
       const row = rows.get(key)!;
-      if (trophy.placement === 0) row.mvp++;
-      else if (trophy.placement === 1) row.gold++;
-      else if (trophy.placement === 2) row.silver++;
-      else if (trophy.placement === 3) row.bronze++;
+      if (award.placement === 0) row.mvp++;
+      else if (award.placement === 1) row.gold++;
+      else if (award.placement === 2) row.silver++;
+      else if (award.placement === 3) row.bronze++;
     }
   }
 
@@ -287,7 +298,10 @@ const medalTable = computed<MedalRow[]>(() => {
           class="rounded-md border border-border/70 bg-card/40 p-4"
         >
           <NuxtLink
-            :to="{ name: 'tournaments-tournamentId', params: { tournamentId: tournament.id } }"
+            :to="{
+              name: 'tournaments-tournamentId',
+              params: { tournamentId: tournament.id },
+            }"
             class="mb-3 block truncate font-sans text-base font-bold text-foreground hover:text-[hsl(var(--tac-amber))]"
           >
             {{ tournament.name }}
@@ -299,34 +313,44 @@ const medalTable = computed<MedalRow[]>(() => {
               :key="slot.placement"
               class="flex flex-col items-center gap-1.5 text-center"
             >
-              <span class="text-[0.65rem] uppercase tracking-wide text-muted-foreground">
+              <span
+                class="text-[0.65rem] uppercase tracking-wide text-muted-foreground"
+              >
                 {{ $t(slot.labelKey) }}
               </span>
 
-              <template v-if="trophiesForPlacement(tournament, slot.placement).length > 0">
+              <template
+                v-if="awardsForPlacement(tournament, slot.placement).length > 0"
+              >
                 <div
-                  v-for="trophy in trophiesForPlacement(tournament, slot.placement)"
-                  :key="trophy.id"
+                  v-for="award in awardsForPlacement(
+                    tournament,
+                    slot.placement,
+                  )"
+                  :key="award.id"
                   class="flex flex-col items-center gap-1"
                 >
-                  <TrophyBadge
-                    :tournament-id="tournament.id"
-                    :placement="trophy.placement"
+                  <AwardBadge
+                    :award="award.award"
+                    :seed-key="tournament.id"
+                    :placement="award.placement"
                     :tournament-name="tournament.name"
-                    :tournament-start="trophy.tournament?.start"
-                    :tournament-type="trophy.tournament?.stages?.[0]?.type"
-                    :custom-name="trophy.trophy_config?.custom_name"
-                    :silhouette-override="trophy.trophy_config?.silhouette"
-                    :image-url="trophy.trophy_config?.image_url"
+                    :tournament-start="award.tournament?.start"
+                    :tournament-type="award.tournament?.stages?.[0]?.type"
+                    :custom-name="award.tournament_award?.custom_name"
+                    :silhouette-override="award.tournament_award?.silhouette"
+                    :image-url="award.tournament_award?.image_url"
                     size="sm"
                   />
                   <component
-                    :is="entityLinkTo(trophy) ? 'NuxtLink' : 'span'"
-                    :to="entityLinkTo(trophy) ?? undefined"
+                    :is="entityLinkTo(award) ? 'NuxtLink' : 'span'"
+                    :to="entityLinkTo(award) ?? undefined"
                     class="max-w-[6rem] truncate text-xs font-medium text-foreground"
-                    :class="{ 'hover:text-[hsl(var(--tac-amber))]': entityLinkTo(trophy) }"
+                    :class="{
+                      'hover:text-[hsl(var(--tac-amber))]': entityLinkTo(award),
+                    }"
                   >
-                    {{ entityName(trophy) }}
+                    {{ entityName(award) }}
                   </component>
                 </div>
               </template>
@@ -347,15 +371,25 @@ const medalTable = computed<MedalRow[]>(() => {
             <TableRow>
               <TableHead class="w-12">#</TableHead>
               <TableHead>{{ $t("common.player") }}</TableHead>
-              <TableHead class="text-right">{{ $t("event.standings.mvp") }}</TableHead>
-              <TableHead class="text-right">{{ $t("event.standings.gold") }}</TableHead>
-              <TableHead class="text-right">{{ $t("event.standings.silver") }}</TableHead>
-              <TableHead class="text-right">{{ $t("event.standings.bronze") }}</TableHead>
+              <TableHead class="text-right">{{
+                $t("event.standings.mvp")
+              }}</TableHead>
+              <TableHead class="text-right">{{
+                $t("event.standings.gold")
+              }}</TableHead>
+              <TableHead class="text-right">{{
+                $t("event.standings.silver")
+              }}</TableHead>
+              <TableHead class="text-right">{{
+                $t("event.standings.bronze")
+              }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow v-for="(row, index) in medalTable" :key="row.key">
-              <TableCell class="text-muted-foreground">{{ index + 1 }}</TableCell>
+              <TableCell class="text-muted-foreground">{{
+                index + 1
+              }}</TableCell>
               <TableCell>
                 <PlayerDisplay
                   v-if="!row.isTeam"
@@ -373,23 +407,39 @@ const medalTable = computed<MedalRow[]>(() => {
                 <component
                   :is="row.teamId ? 'NuxtLink' : 'span'"
                   v-else
-                  :to="row.teamId ? { name: 'teams-id', params: { id: row.teamId } } : undefined"
+                  :to="
+                    row.teamId
+                      ? { name: 'teams-id', params: { id: row.teamId } }
+                      : undefined
+                  "
                   class="flex items-center gap-1.5 text-sm"
                 >
                   <Users class="h-3.5 w-3.5 text-muted-foreground" />
                   {{ row.name }}
                 </component>
               </TableCell>
-              <TableCell class="text-right font-mono tabular-nums" :style="{ color: TIER_COLORS.mvp }">
+              <TableCell
+                class="text-right font-mono tabular-nums"
+                :style="{ color: TIER_COLORS.mvp }"
+              >
                 {{ row.mvp || "-" }}
               </TableCell>
-              <TableCell class="text-right font-mono tabular-nums" :style="{ color: TIER_COLORS.gold }">
+              <TableCell
+                class="text-right font-mono tabular-nums"
+                :style="{ color: TIER_COLORS.gold }"
+              >
                 {{ row.gold || "-" }}
               </TableCell>
-              <TableCell class="text-right font-mono tabular-nums" :style="{ color: TIER_COLORS.silver }">
+              <TableCell
+                class="text-right font-mono tabular-nums"
+                :style="{ color: TIER_COLORS.silver }"
+              >
                 {{ row.silver || "-" }}
               </TableCell>
-              <TableCell class="text-right font-mono tabular-nums" :style="{ color: TIER_COLORS.bronze }">
+              <TableCell
+                class="text-right font-mono tabular-nums"
+                :style="{ color: TIER_COLORS.bronze }"
+              >
                 {{ row.bronze || "-" }}
               </TableCell>
             </TableRow>

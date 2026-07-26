@@ -85,7 +85,17 @@ The converter reads only POSITIONs, drops clip/sky brushes by material name, and
 removes isolated "standalone walls" (thin/tall/vertical sheets that aren't
 connected to anything — see `dropStandaloneWalls` in `glb-to-tri.mjs`). Tune per
 run with env vars: `WALL_THIN` / `WALL_TALL` / `WALL_VERT` (thresholds), or
-`MESH_KEEP_WALLS=1` to disable wall removal entirely.
+`MESH_DROP_WALLS=1` to re-enable standalone-wall removal.
+
+> **⚠ Standalone-wall removal is off by default, deliberately.** The heuristic
+> deletes any disconnected component that is thin, tall and mostly vertical —
+> which describes a wall. The roof slider in the viewer handles sky-boxes and
+> stray boundary sheets properly, and meanwhile the deletions were doing real
+> harm: **the demo parser raycasts this same `.tri` for line of sight**, so every
+> wall dropped here became a wall smoke poured through, a sightline that should
+> not have existed, and occasionally a smoke whose detonation point landed in
+> the gap and collapsed to nothing. Leave it off unless you have a specific
+> reason and are not using the mesh for LOS.
 
 > **Coordinate gotcha:** the glb export bakes a `0.0254` inch→meter scale **and** a
 > Z-up→Y-up axis remap into every node's transform, purely for glTF viewers. The

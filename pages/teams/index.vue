@@ -112,42 +112,42 @@ import {
         content-class="w-64 space-y-0.5 p-2"
         @reset="resetTeamFilters"
       >
-          <button
-            type="button"
-            @click="toggleTournamentWinners"
-            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-            :class="
-              tournamentWinnersOnly
-                ? 'text-[hsl(var(--tac-amber))]'
-                : 'text-foreground/90'
-            "
-          >
-            <span class="flex items-center gap-2">
-              <Trophy class="h-3.5 w-3.5" />
-              {{ $t("team.search.tournament_winners") }}
-            </span>
-            <Check
-              v-if="tournamentWinnersOnly"
-              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-            />
-          </button>
-          <button
-            type="button"
-            @click="toggleScrimsOnly"
-            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-            :class="
-              scrimsOnly ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
-            "
-          >
-            <span class="flex items-center gap-2">
-              <Swords class="h-3.5 w-3.5" />
-              {{ $t("team.search.scrims_only") }}
-            </span>
-            <Check
-              v-if="scrimsOnly"
-              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-            />
-          </button>
+        <button
+          type="button"
+          @click="toggleTournamentWinners"
+          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+          :class="
+            tournamentWinnersOnly
+              ? 'text-[hsl(var(--tac-amber))]'
+              : 'text-foreground/90'
+          "
+        >
+          <span class="flex items-center gap-2">
+            <Trophy class="h-3.5 w-3.5" />
+            {{ $t("team.search.tournament_winners") }}
+          </span>
+          <Check
+            v-if="tournamentWinnersOnly"
+            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+          />
+        </button>
+        <button
+          type="button"
+          @click="toggleScrimsOnly"
+          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
+          :class="
+            scrimsOnly ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
+          "
+        >
+          <span class="flex items-center gap-2">
+            <Swords class="h-3.5 w-3.5" />
+            {{ $t("team.search.scrims_only") }}
+          </span>
+          <Check
+            v-if="scrimsOnly"
+            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+          />
+        </button>
       </FilterMenu>
     </FilterBar>
   </PageTransition>
@@ -189,7 +189,7 @@ import {
         <teams-table
           v-else
           :teams="showOnlyMyTeams ? myTeams : teams"
-          :trophies-by-team-id="trophiesByTeamId"
+          :awards-by-team-id="awardsByTeamId"
         ></teams-table>
       </div>
 
@@ -230,7 +230,7 @@ export default {
       teams: undefined as any,
       teams_aggregate: undefined as any,
       myTeams: undefined as any,
-      teamTrophies: [] as Array<any>,
+      teamAwards: [] as Array<any>,
       showOnlyMyTeams: false,
       tournamentWinnersOnly: false,
       scrimsOnly: false,
@@ -248,9 +248,9 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    trophiesByTeamId(): Record<string, any[]> {
+    awardsByTeamId(): Record<string, any[]> {
       const map: Record<string, any[]> = {};
-      for (const t of this.teamTrophies) {
+      for (const t of this.teamAwards) {
         const teamId = t.tournament_team?.team_id;
         if (!teamId) continue;
         (map[teamId] ??= []).push(t);
@@ -258,7 +258,7 @@ export default {
       return map;
     },
     winnerTeamIds(): string[] {
-      return Object.keys(this.trophiesByTeamId);
+      return Object.keys(this.awardsByTeamId);
     },
     teamsFilterCount(): number {
       let n = 0;
@@ -375,10 +375,10 @@ export default {
       },
     },
     $subscribe: {
-      teamTrophies: {
+      teamAwards: {
         query: function () {
           return typedGql("subscription")({
-            tournament_trophies: [
+            award_recipients: [
               {
                 where: {
                   player_steam_id: { _is_null: true },
@@ -389,6 +389,13 @@ export default {
                 placement: true,
                 placement_tier: true,
                 tournament_id: true,
+                award: {
+                  id: true,
+                  name: true,
+                  tier: true,
+                  silhouette: true,
+                  image_url: true,
+                },
                 tournament: {
                   id: true,
                   name: true,
@@ -401,7 +408,7 @@ export default {
                     { type: true },
                   ],
                 },
-                trophy_config: {
+                tournament_award: {
                   custom_name: true,
                   silhouette: true,
                   image_url: true,
@@ -414,7 +421,7 @@ export default {
           });
         },
         result: function (this: any, { data }: { data: any }) {
-          this.teamTrophies = data.tournament_trophies || [];
+          this.teamAwards = data.award_recipients || [];
         },
       },
       myTeams: {

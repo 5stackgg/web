@@ -560,12 +560,12 @@ export default {
       if (this.tournament.status !== e_tournament_status_enum.Finished) {
         return null;
       }
-      const trophies = (this.tournament as any).trophies || [];
-      const trophy = trophies.find(
+      const awards = (this.tournament as any).awards || [];
+      const award = awards.find(
         (t: any) =>
           t.tournament_team_id === this.team.id && Number(t.placement) > 0,
       );
-      if (trophy) return Number(trophy.placement);
+      if (award) return Number(award.placement);
 
       const stages = ((this.tournament as any).stages || [])
         .slice()

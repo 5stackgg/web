@@ -13,21 +13,16 @@ const selectedB = defineModel<string | null>("selectedB", { default: null });
 </script>
 
 <template>
-  <div>
-    <div
-      v-if="loading && !pairs"
-      class="py-8 text-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground"
-    >
-      {{ $t("common.loading") }}…
-    </div>
-    <HeadToHeadMatrix
-      v-else
-      :match="match"
-      :pairs="pairs || []"
-      v-model:selected-a="selectedA"
-      v-model:selected-b="selectedB"
-    />
-  </div>
+  <!-- The roster pickers come straight off `match`, so the matrix always
+       renders and only its stats card crossfades in — swapping the whole tab
+       between a loading line and the matrix reflowed the page by ~700px. -->
+  <HeadToHeadMatrix
+    :match="match"
+    :pairs="pairs || []"
+    :loading="loading && !pairs"
+    v-model:selected-a="selectedA"
+    v-model:selected-b="selectedB"
+  />
 </template>
 
 <script lang="ts">

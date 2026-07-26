@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
-import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
+import AwardBadge from "~/components/award/AwardBadge.vue";
 import StageStandings from "~/components/tournament/StageStandings.vue";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
@@ -43,7 +43,7 @@ function playerAvatarSrc(player: {
       <header class="relative mb-6 flex flex-col gap-1">
         <div :class="[tacticalSectionLabelClasses, 'mb-0']">
           <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("trophies.title") }}
+          {{ $t("awards.title") }}
         </div>
         <div
           class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
@@ -90,17 +90,18 @@ function playerAvatarSrc(player: {
                   }"
                   aria-hidden="true"
                 ></div>
-                <TrophyBadge
-                  :tournament-id="tournament.id"
+                <AwardBadge
+                  :award="entry.award || awardConfigFor(entry.placement)?.award"
+                  :seed-key="tournament.id"
                   :placement="entry.placement"
                   :tournament-name="tournament.name"
                   :tournament-start="tournament.start"
                   :tournament-type="entry.tournamentType"
-                  :custom-name="trophyConfigFor(entry.placement)?.custom_name"
+                  :custom-name="awardConfigFor(entry.placement)?.custom_name"
                   :silhouette-override="
-                    trophyConfigFor(entry.placement)?.silhouette
+                    awardConfigFor(entry.placement)?.silhouette
                   "
-                  :image-url="trophyConfigFor(entry.placement)?.image_url"
+                  :image-url="awardConfigFor(entry.placement)?.image_url"
                   :size="entry.placement === 1 ? 'lg' : 'md'"
                   :interactive="false"
                   class="relative z-[1]"
@@ -294,15 +295,16 @@ function playerAvatarSrc(player: {
               }"
               aria-hidden="true"
             ></div>
-            <TrophyBadge
-              :tournament-id="tournament.id"
+            <AwardBadge
+              :award="mvp?.award || awardConfigFor(0)?.award"
+              :seed-key="tournament.id"
               :placement="0"
               :tournament-name="tournament.name"
               :tournament-start="tournament.start"
               :tournament-type="finalStageType"
-              :custom-name="trophyConfigFor(0)?.custom_name"
-              :silhouette-override="trophyConfigFor(0)?.silhouette"
-              :image-url="trophyConfigFor(0)?.image_url"
+              :custom-name="awardConfigFor(0)?.custom_name"
+              :silhouette-override="awardConfigFor(0)?.silhouette"
+              :image-url="awardConfigFor(0)?.image_url"
               size="md"
               :interactive="false"
               class="relative z-[1]"
@@ -653,13 +655,13 @@ export default {
       return "hsl(28 70% 52%)";
     },
     placementLabel(placement: number) {
-      if (placement === 0) return this.$t("trophies.mvp");
-      if (placement === 1) return this.$t("trophies.first_place");
-      if (placement === 2) return this.$t("trophies.second_place");
-      return this.$t("trophies.third_place");
+      if (placement === 0) return this.$t("awards.mvp");
+      if (placement === 1) return this.$t("awards.first_place");
+      if (placement === 2) return this.$t("awards.second_place");
+      return this.$t("awards.third_place");
     },
-    trophyConfigFor(placement: number) {
-      const configs = (this.tournament as any)?.trophy_configs || [];
+    awardConfigFor(placement: number) {
+      const configs = (this.tournament as any)?.award_configs || [];
       return configs.find((c: any) => c.placement === placement) || null;
     },
     displayTeamName(tournamentTeam: any, fallbackId?: string) {
@@ -697,10 +699,10 @@ export default {
       return stages.length ? stages[stages.length - 1]?.type || null : null;
     },
     podium() {
-      const trophies = (this.tournament as any)?.trophies || [];
-      if (trophies.length === 0) return [];
+      const awards = (this.tournament as any)?.awards || [];
+      if (awards.length === 0) return [];
       const byPlacement = new Map();
-      for (const t of trophies) {
+      for (const t of awards) {
         if (t.placement === 0) continue;
         const existing = byPlacement.get(t.placement);
         if (existing) {
@@ -724,6 +726,9 @@ export default {
             : [];
         byPlacement.set(t.placement, {
           placement: t.placement,
+          // The granted row is authoritative: it records the award the server
+          // resolved, so a later config edit cannot rewrite history here.
+          award: t.award || null,
           teamId: t.tournament_team_id,
           realTeamId: t.tournament_team?.team?.id || null,
           teamName: this.displayTeamName(
@@ -739,8 +744,8 @@ export default {
       );
     },
     mvp() {
-      const trophies = (this.tournament as any)?.trophies || [];
-      return trophies.find((t: any) => t.placement === 0) || null;
+      const awards = (this.tournament as any)?.awards || [];
+      return awards.find((t: any) => t.placement === 0) || null;
     },
     mvpTeamName() {
       if (!this.mvp?.tournament_team) return "";

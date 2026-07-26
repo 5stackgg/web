@@ -1,7 +1,7 @@
 {
   "system_alerts": {
     "page_title": "Alertes",
-    "description": "Publie des bandeaux temporaires sur tout le site pour prévenir les utilisateurs d'une panne, d'une maintenance ou d'un autre avis. Les bandeaux s'affichent en haut de chaque page pour tous les visiteurs.",
+    "description": "Publie des bandeaux temporaires sur tout le site pour prévenir d'une panne, d'une maintenance ou d'un autre avis. Les bandeaux s'affichent en haut de chaque page, pour tous les visiteurs.",
     "create_title": "Nouvelle alerte",
     "edit_title": "Modifier l'alerte",
     "active_title": "Alertes",
@@ -13,10 +13,10 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "empty": "Aucune alerte pour l'instant.",
-    "empty_description": "Crée une alerte pour afficher un bandeau sur tout le site, visible par tous.",
+    "empty_description": "Crée une alerte pour afficher un bandeau sur tout le site.",
     "inactive": "Inactive",
     "expired": "Expirée",
-    "expires": "Expire le",
+    "expires": "Expire",
     "preview": "Aperçu",
     "preview_placeholder": "Ton message d'alerte s'affichera ici.",
     "not_dismissible": "Les utilisateurs ne peuvent pas masquer cette alerte",
@@ -42,32 +42,32 @@
   },
   "glossary": {
     "title": "Comment nos stats fonctionnent",
-    "intro": "On ne cache pas nos calculs. Chaque stat du site est expliquée ci-dessous : ce qu'elle signifie et exactement comment on la calcule. Tu penses qu'il y a une erreur, ou tu connais une meilleure méthode de mesure ? On veut vraiment le savoir.",
+    "intro": "On ne cache pas nos calculs. Chaque stat du site est expliquée ci-dessous : ce qu'elle signifie et exactement comment on la calcule. Tu penses qu'il y a une erreur, ou tu connais une meilleure façon de la mesurer ? Ça nous intéresse vraiment.",
     "github_cta": "Proposer une amélioration sur GitHub",
     "calc_label": "Mode de calcul",
     "legend": {
       "title": "Notation",
-      "note": "Les parenthèses restreignent une stat à un sous-ensemble — par ex. H (rifle) = tirs touchés au fusil, S (spotted) = tirs pendant qu'un ennemi était visible. Les taux par round (KPR, DPR, APR, ADR, KAST) réutilisent ces lettres divisées par R."
+      "note": "Les parenthèses restreignent une stat à un sous-ensemble — ex. H (rifle) = tirs touchés au fusil, S (spotted) = tirs pendant qu'un ennemi était visible. Les taux par round (KPR, DPR, APR, ADR, KAST) réutilisent ces lettres sur R."
     },
     "scores": {
-      "title": "Lire les notes de 0 à 100",
-      "body": "Aim, Placement, Utilitaires et les notes par stat sont notés sur 100 — mais c'est un percentile, pas un pourcentage. 50, c'est un joueur moyen ; 90 veut dire que tu es meilleur qu'environ 90 % des joueurs ; 20 que la plupart font mieux. Ça peut surprendre : presque tout le monde counter-strafe, et le joueur type le fait environ 81 % du temps — donc counter-strafer 80 % du temps tombe en réalité autour de 22 (juste sous la moyenne), même si 80 % paraît élevé. La note te dit où tu te situes face aux autres ; le taux brut reste dans les tableaux de stats du match."
+      "title": "Lire les notes sur 0–100",
+      "body": "Aim, Placement, Utilitaires et les notes par stat sont notés sur 100 — mais c'est un centile, pas un pourcentage. 50, c'est un joueur moyen ; 90 veut dire que tu es meilleur qu'environ 90 % des joueurs ; 20 veut dire que la plupart font mieux. Ça peut surprendre : presque tout le monde counter-strafe, et le joueur type le fait environ 81 % du temps — donc counter-strafer 80 % du temps tombe autour de 22 (juste sous la moyenne), même si 80 % paraît élevé. La note te situe par rapport aux autres ; le taux brut reste dans les tableaux de stats du match."
     },
     "performance": {
       "title": "Notes de performance (Aim / Placement / Utilitaires)",
-      "body": "On prend les stats sous-jacentes de chaque domaine, on note chacune en percentile face à tous les autres joueurs (en ne retenant que les joueurs avec au moins 30 rounds), puis on en fait la moyenne pour une note unique de 0 à 100 par domaine. L'Aim s'enrichit avec le temps : des stats comme le placement du viseur et le temps avant dégâts s'y ajoutent à mesure que des démos sont analysées."
+      "body": "On prend les stats sous-jacentes de chaque domaine, on note chacune en centile face à tous les autres joueurs (en ne retenant que les joueurs avec au moins 30 rounds), puis on en fait la moyenne pour une seule note sur 0–100 par domaine. L'Aim s'enrichit avec le temps : des stats comme le placement de viseur et le temps avant dégâts s'y ajoutent à mesure que les démos sont analysées."
     },
     "consistency": {
       "title": "Régularité",
-      "body": "Chaque match reçoit une note globale : ton Aim, ton Placement et tes Utilitaires de ce match, combinés. Le graphique la trace sur tes derniers matchs, et l'indice de régularité reflète la faiblesse des écarts : plus la courbe est plate, plus la note est haute."
+      "body": "Chaque match reçoit une note globale : ton Aim, ton Placement et tes Utilitaires de ce match, combinés. Le graphique la trace sur tes matchs récents, et l'indice de régularité reflète la faiblesse des écarts : plus la courbe est plate, plus la note est haute."
     },
     "focus": {
       "title": "Axes de progression",
-      "body": "Tes trois stats sous-jacentes les moins bien notées — celles avec le plus de marge de progression — chacune avec un conseil court. Elles évoluent au fil de tes parties."
+      "body": "Tes trois stats sous-jacentes les moins bien notées — celles où tu as le plus de marge — chacune avec un conseil court. Elles évoluent au fil de tes parties."
     },
     "geometry": {
       "title": "Ligne de vue et modèle 3D",
-      "body": "Sur les maps pour lesquelles on dispose d'un maillage de collision, on charge la géométrie 3D de la map et on lance un rayon entre les joueurs pour confirmer une vraie ligne de vue. Ainsi, les stats « spotted », le placement du viseur, le temps avant dégâts et les stats de duel ne comptent que si tu pouvais réellement voir l'ennemi — pas à travers une smoke ou un mur. Sur les maps sans maillage, on retombe sur le flag « spotted » du jeu et ces stats sont marquées « Estimée »."
+      "body": "Sur les maps dont on a le maillage de collision, on charge la géométrie 3D de la map et on lance un rayon entre les joueurs pour confirmer une vraie ligne de vue. Du coup, « spotted », le placement de viseur, le temps avant dégâts et les stats d'engagement ne comptent que si tu pouvais réellement voir l'ennemi — pas à travers une smoke ou un mur. Sur les maps sans maillage, on retombe sur le flag « spotted » du jeu et ces stats sont marquées « Estimée »."
     },
     "sections": {
       "aim": "Stats d'aim",
@@ -83,12 +83,12 @@
     "guide_link": "Guide des stats",
     "scale_worse": "Faible",
     "scale_better": "Élite",
-    "scale_legend": "— échelle indicative de faible à élite pour chaque stat",
-    "scale_hint": "Échelle indicative faible → élite (estimée, pas encore basée sur tes données)",
-    "mesh_help": "Utilise le maillage de collision 3D de la map. On lance un rayon entre les deux joueurs pour vérifier la ligne de vue, donc seules les vraies lignes de vue comptent — les repérages à travers une smoke, un mur ou un interstice sont filtrés. Nécessite la géométrie de la map ; à défaut, on retombe sur les données brutes du moteur.",
-    "mesh_legend": "signale une stat validée avec le maillage de collision 3D de la map (ligne de vue vérifiée)",
-    "mesh_coverage_title": "Couverture des maillages de map",
-    "mesh_coverage_note": "Les stats validées par maillage (marquées ci-dessus) ne bénéficient de la vérification de ligne de vue que sur les maps pour lesquelles on a un maillage de collision. Les maps officielles sans maillage retombent sur le flag « spotted » brut du moteur. Les maps Workshop ne sont pas listées ici.",
+    "scale_legend": "— échelle approximative de faible à élite pour chaque stat",
+    "scale_hint": "Échelle approximative faible → élite (estimée, pas encore issue de tes données)",
+    "mesh_help": "Utilise le maillage de collision 3D de la map. On lance un rayon entre les deux joueurs pour vérifier la ligne de vue, donc seules les vraies lignes comptent — les tirs à travers une smoke, un mur ou un interstice sont filtrés. Nécessite que la géométrie de la map soit disponible ; sinon, on retombe sur les données brutes du moteur.",
+    "mesh_legend": "signale une stat validée par le maillage de collision 3D de la map (ligne de vue vérifiée)",
+    "mesh_coverage_title": "Couverture des maillages de maps",
+    "mesh_coverage_note": "Les stats validées par maillage (marquées ci-dessus) ne bénéficient de la vérification de ligne de vue que sur les maps dont on a un maillage de collision. Les maps officielles sans maillage retombent sur le flag « spotted » brut du moteur. Les maps workshop ne sont pas listées ici.",
     "mesh_coverage_loading": "Vérification des maps disposant d'un maillage…",
     "mesh_have": "Maillage disponible ({count})",
     "mesh_missing": "Pas encore de maillage ({count})",
@@ -98,21 +98,21 @@
       "d": "Morts",
       "a": "Assists",
       "r": "Rounds joués",
-      "h": "Tirs touchés — balles ayant touché un ennemi",
+      "h": "Touches — balles qui ont touché un ennemi",
       "s": "Balles tirées",
       "dmg": "Dégâts infligés",
       "e": "Ennemis distincts",
       "t": "Temps",
       "theta": "Angle entre ta visée et l'ennemi",
-      "sv": "Survie — tu as tenu jusqu'à la fin du round",
+      "sv": "Survie — tu es resté en vie jusqu'à la fin du round",
       "tr": "Tradé — ta mort a été vengée par un coéquipier",
       "kpr": "Kills par round",
       "dpr": "Morts par round",
       "apr": "Assists par round",
       "adr": "Dégâts par round",
-      "kast": "% de rounds avec kill / assist / survie / trade",
+      "kast": "% Kill / Assist / Survie / Trade",
       "i": "Impact — la sous-formule indiquée ci-dessous",
-      "kda": "Kills / morts / assists",
+      "kda": "Kills / Morts / Assists",
       "n": "un décompte — le nombre utilisé dans cette expression",
       "spotted": "uniquement pendant que l'ennemi t'était visible",
       "rifle": "fusils uniquement — AK, M4 et similaires",
@@ -120,12 +120,12 @@
       "sniper": "l'AWP et les fusils à lunette",
       "head": "headshots uniquement",
       "first_sight": "le premier instant où le maillage confirme que tu voyais l'ennemi",
-      "first_shot": "la première balle d'un duel",
-      "spray": "les balles après la première d'une rafale",
-      "stopped": "tir à l'arrêt — tu as counter-strafé avant",
+      "first_shot": "la première balle d'un engagement",
+      "spray": "les balles suivant la première d'une rafale",
+      "stopped": "tiré à l'arrêt — tu as counter-strafé avant",
       "eligible": "tirs où le counter-strafe était possible",
       "on_target": "temps pendant lequel ton viseur était sur l'ennemi",
-      "engaged": "toute la durée du duel",
+      "engaged": "la durée totale du duel",
       "damaged": "ennemis à qui tu as réellement infligé des dégâts",
       "traded": "ta mort a été vengée par un coéquipier juste après",
       "trade_chance": "morts où un coéquipier était placé pour trader",
@@ -172,12 +172,12 @@
         "den": "S (spray)"
       },
       "time_to_damage": {
-        "expr": "moy(t entre première vue et premiers dégâts)",
+        "expr": "moy(t entre la 1re vue et les 1ers dégâts)",
         "note": "millisecondes ; borné à 0,2–3 s"
       },
       "crosshair_placement": {
-        "expr": "moy(θ à la première vue)",
-        "note": "degrés ; plus bas est meilleur"
+        "expr": "moy(θ à la 1re vue)",
+        "note": "degrés ; plus bas c'est mieux"
       },
       "counter_strafing": {
         "num": "S (stopped)",
@@ -262,13 +262,13 @@
         "den": "occasions de trade"
       },
       "he_damage": {
-        "expr": "DMG (HE, sur ennemis)"
+        "expr": "DMG (HE, sur les ennemis)"
       },
       "molotov_damage": {
-        "expr": "DMG (molotov, sur ennemis)"
+        "expr": "DMG (molotov, sur les ennemis)"
       },
       "he_team_damage": {
-        "expr": "DMG (HE, sur coéquipiers)"
+        "expr": "DMG (HE, sur les coéquipiers)"
       },
       "enemies_flashed": {
         "expr": "nb(ennemis aveuglés > 1 s)"
@@ -292,23 +292,23 @@
       },
       "elo_change": {
         "expr": "Kf × (résultat − attendu) × performance × série",
-        "note": "Kf (facteur K) = 500 ; la série s'ajuste selon l'écart de maps dans un Bo-N"
+        "note": "Kf (facteur K) = 500 ; série pondérée par l'écart de maps dans un Bo-N"
       },
       "elo_impact": {
-        "expr": "ton KDA face à l'équipe + part de dégâts → 0,8–1,2",
-        "note": "en cas de défaite, c'est inversé : les bonnes performances perdent moins"
+        "expr": "ton KDA vs l'équipe + part de dégâts → 0,8–1,2",
+        "note": "en cas de défaite, c'est inversé : les bons perdent moins"
       },
       "buy_pistol": {
         "expr": "round 1 ou 13"
       },
       "buy_eco": {
-        "expr": "$ de l'équipe < 5 000 $"
+        "expr": "$ équipe < 5 000 $"
       },
       "buy_force": {
-        "expr": "5 000 $ ≤ $ de l'équipe ≤ 20 000 $"
+        "expr": "5 000 $ ≤ $ équipe ≤ 20 000 $"
       },
       "buy_full": {
-        "expr": "$ de l'équipe > 20 000 $"
+        "expr": "$ équipe > 20 000 $"
       },
       "buy_win_rate": {
         "num": "rounds gagnés (type d'achat)",
@@ -326,10 +326,10 @@
         "expr": "dernier en vie face à N ennemis (N ≥ 1)"
       },
       "clutch_won": {
-        "expr": "1vN → 1v0 (tous les ennemis à terre)"
+        "expr": "1vN → 1v0 (tous les ennemis au sol)"
       },
       "clutch_saved": {
-        "expr": "round gagné alors que tu as survécu"
+        "expr": "round gagné et tu as survécu"
       },
       "clutch_lost": {
         "expr": "tu es mort, round perdu"
@@ -348,10 +348,10 @@
         "expr": "AWPer principal — K(awp) ≥ 5 et ≥ 20 % des K"
       },
       "role_entry": {
-        "expr": "le plus de duels d'ouverture (AWPer mis à part)"
+        "expr": "le plus de duels d'ouverture (hors AWPer)"
       },
       "role_support": {
-        "expr": "meilleur score d'utilitaires (AWPer et entry mis à part)"
+        "expr": "meilleur score d'utilitaires (hors AWPer et entry)"
       },
       "role_rifler": {
         "expr": "par défaut — aucun des rôles ci-dessus"
@@ -365,7 +365,7 @@
         "den": "R"
       },
       "support_idx": {
-        "expr": "(flash assists + DMG (util) ÷ 100 + flashs × 0,3) ÷ R"
+        "expr": "(assists flash + DMG (util) ÷ 100 + flashs × 0,3) ÷ R"
       },
       "net_trade": {
         "expr": "trade kills − morts non tradées"
@@ -387,10 +387,10 @@
         "den": "D (trade chance)"
       },
       "total_damage": {
-        "expr": "DMG total (sur ennemis)"
+        "expr": "DMG total (sur les ennemis)"
       },
       "team_damage": {
-        "expr": "DMG total (sur coéquipiers)"
+        "expr": "DMG total (sur les coéquipiers)"
       },
       "knife_kills": {
         "expr": "nb(K au couteau)"
@@ -420,8 +420,8 @@
         "den": "duels d'ouverture (équipe)"
       },
       "team_trade_pct": {
-        "num": "trades d'équipe réussis",
-        "den": "occasions de trade de l'équipe"
+        "num": "trades gagnés (équipe)",
+        "den": "occasions de trade (équipe)"
       },
       "buy_matchup": {
         "expr": "R gagnés (ton achat vs le leur) ÷ R (confrontation) × 100"
@@ -443,12 +443,12 @@
         "den": "K"
       },
       "weapon_rating": {
-        "expr": "combinaison de KPR, ADR et impact par arme",
-        "note": "approximatif — pas de D / KAST par arme"
+        "expr": "mélange de KPR, ADR et impact par arme",
+        "note": "approx. — pas de D / KAST par arme"
       },
       "weapon_economy": {
-        "expr": "rating de l'arme × (prix de référence ÷ prix de l'arme)",
-        "note": "≈ 1,0 = au niveau attendu pour son prix"
+        "expr": "rating de l'arme × ($ de référence ÷ $ de l'arme)",
+        "note": "≈ 1,0 = au niveau de son prix"
       },
       "consistency": {
         "expr": "100 − écart de rating global d'un match à l'autre"
@@ -458,15 +458,15 @@
   "stat_glossary": {
     "aim": {
       "label": "Aim",
-      "description": "Ton tir : précision, headshots, et la vitesse et la propreté avec lesquelles tu touches les ennemis visibles. Noté de 0 à 100 comme la moyenne des percentiles de ces stats d'aim face à tous les joueurs (50 = moyenne)."
+      "description": "Ton tir — précision, headshots, et la rapidité et la propreté avec lesquelles tu touches les ennemis visibles. Noté sur 0–100 comme la moyenne des centiles de ces stats d'aim face à tous les joueurs (50 = moyenne)."
     },
     "positioning": {
       "label": "Placement",
-      "description": "Où tu combats : survivre aux rounds, mourir près de tes coéquipiers pour être tradé, et contribuer à chaque round (KAST). Noté de 0 à 100 comme la moyenne des percentiles de ces stats face à tous les joueurs (50 = moyenne)."
+      "description": "Où tu combats — survivre aux rounds, mourir près de tes coéquipiers pour être tradé, et peser à chaque round (KAST). Noté sur 0–100 comme la moyenne des centiles de ces stats face à tous les joueurs (50 = moyenne)."
     },
     "utility": {
       "label": "Utilitaires",
-      "description": "Impact des grenades : flash assists, temps d'aveuglement infligé aux ennemis et dégâts HE/molotov par grenade. Noté de 0 à 100 comme la moyenne des percentiles face à tous les joueurs. Provisoire : sur nos données, les utilitaires ne séparent pas encore nettement les niveaux."
+      "description": "Impact des grenades — assists flash, aveuglement infligé aux ennemis, et dégâts HE/molotov par grenade. Noté sur 0–100 comme la moyenne des centiles face à tous les joueurs. Provisoire : sur nos données, les utilitaires ne séparent pas encore nettement les niveaux."
     },
     "consistency": {
       "label": "Régularité",
@@ -477,40 +477,40 @@
       "description": "Balles ayant touché un ennemi, sur l'ensemble des balles tirées."
     },
     "accuracy_spotted": {
-      "label": "Précision visible",
-      "description": "Ton taux de touche pendant qu'un ennemi était réellement visible — le spam à travers une smoke ou un mur ne compte pas."
+      "label": "Précision sur visible",
+      "description": "Ton taux de touches pendant qu'un ennemi était réellement visible — le spam à travers une smoke ou un mur ne compte pas."
     },
     "crosshair_placement": {
-      "label": "Placement du viseur",
-      "description": "À quel point ton viseur est déjà proche de l'ennemi quand il apparaît. Un angle plus petit signifie moins de correction avant de tirer."
+      "label": "Placement de viseur",
+      "description": "À quel point ton viseur est déjà proche de l'ennemi quand il apparaît. Un angle plus faible = moins de correction avant de tirer."
     },
     "time_to_damage": {
       "label": "Temps avant dégâts",
-      "description": "La vitesse à laquelle tu infliges des dégâts après avoir vu un ennemi pour la première fois — un indicateur de ton temps de réaction."
+      "description": "Ta rapidité à infliger des dégâts après avoir vu un ennemi pour la première fois — un indicateur de temps de réaction."
     },
     "counter_strafing": {
       "label": "Counter-strafe",
-      "description": "La fréquence à laquelle tu es totalement à l'arrêt avant de tirer. Les tirs en mouvement sont extrêmement imprécis."
+      "description": "À quelle fréquence tu t'arrêtes complètement avant de tirer. Les tirs en mouvement sont très imprécis."
     },
     "first_bullet": {
       "label": "Première balle",
-      "description": "La fréquence à laquelle ta première balle d'un duel touche — le tir qui décide la plupart des combats."
+      "description": "À quelle fréquence ton premier tir d'un duel touche — le tir qui décide la plupart des combats."
     },
     "tracking": {
       "label": "Tracking",
       "description": "Pendant un duel contre un ennemi visible, la part du temps où ton viseur reste sur lui."
     },
     "flash_assists": {
-      "label": "Flash assists",
-      "description": "Les kills créés par ta flash : tu as aveuglé un ennemi et un coéquipier l'a tué juste après."
+      "label": "Assists flash",
+      "description": "Kills créés par ta flash — tu as aveuglé un ennemi et un coéquipier l'a tué juste après."
     },
     "flash_blind": {
       "label": "Efficacité des flashs",
-      "description": "L'aveuglement ennemi réellement causé par tes flashs — récompense les pop-flashs, pas les flashs lancées au-dessus des têtes."
+      "description": "L'aveuglement ennemi que tes flashs provoquent réellement — récompense les pop-flashs, pas les flashs jetées au-dessus des têtes."
     },
     "util_efficiency": {
       "label": "Dégâts d'utilitaires",
-      "description": "Dégâts infligés par HE/molotov lancée — récompense les grenades bien placées, pas seulement achetées."
+      "description": "Dégâts infligés par HE/molotov lancée — récompense les grenades bien placées, pas juste achetées."
     },
     "trade_kills": {
       "label": "Trade kills",
@@ -866,9 +866,6 @@
     "next_page": "Page suivante",
     "last_page": "Dernière page"
   },
-  "trophies_modal": {
-    "view_tournament": "VOIR LE TOURNOI"
-  },
   "toasts": {
     "link_copied": "Lien copié",
     "copy_failed": "Échec de la copie",
@@ -1160,24 +1157,8 @@
     "highlights_render_label": "Rendu des highlights",
     "highlight_render_subline": "Rendu de highlight"
   },
-  "trophies_manage_form": {
-    "placement": "Classement",
-    "team": "Équipe",
-    "player": "Joueur"
-  },
   "shortcut_overlay": {
     "to_close": "pour fermer"
-  },
-  "trophies": {
-    "title": "Trophées",
-    "no_trophies": "Aucun trophée",
-    "no_trophies_description": "Termine dans le top 3 d'un tournoi pour gagner un trophée.",
-    "mvp": "MVP",
-    "first_place": "1re place",
-    "second_place": "2e place",
-    "third_place": "3e place",
-    "tournament": "Tournoi",
-    "placement": "Classement"
   },
   "image_upload": {
     "hint_square": "Glisse-dépose ou clique · PNG, JPEG, WebP",
@@ -2070,6 +2051,13 @@
             "custom_hint": "Ou colle une URL d'image ou un SVG inline (par ex. depuis un plugin).",
             "custom_placeholder": "https://… , <svg…>, ou un nom d'icône"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2169,7 +2157,16 @@
       "section_recent_tournaments": "TOURNOIS.RECENTS",
       "section_recent_highlights": "HIGHLIGHTS.RECENTS",
       "no_live_matches": "STANDBY · AUCUN MATCH EN DIRECT",
-      "upcoming": "À venir"
+      "cold_start": {
+        "title": "Rien au radar",
+        "description": "Aucun match en direct, aucun tournoi, rien d'enregistré pour l'instant. Lance un match et cette page se remplira toute seule — scores en temps réel, puis highlights et démos une fois terminé.",
+        "cta": "Commencer à jouer",
+        "cta_guest": "Se connecter pour jouer",
+        "channel_matches": "Matchs en direct",
+        "channel_tournaments": "Tournois",
+        "channel_highlights": "Highlights",
+        "channel_status": "En attente de signal"
+      }
     },
     "highlights": {
       "title": "Highlights",
@@ -2579,6 +2576,7 @@
     "play": {
       "title": "Jouer",
       "open_registration_tournaments": {
+        "section_label": "TOURNOIS",
         "description": "Tournois ouverts aux inscriptions, accessibles à tous."
       },
       "matchmaking": {
@@ -2890,7 +2888,7 @@
         "best_kdr": "KDR",
         "best_win_rate": "Taux de victoire",
         "highest_hs_pct": "HS%",
-        "trophies": "Trophées"
+        "awards": "Récompenses"
       },
       "time_periods": {
         "last_7_days": "7 derniers jours",
@@ -3143,6 +3141,36 @@
       "forbidden_title": "Accès restreint",
       "forbidden_description": "Tu n'as pas la permission de voir cette page.",
       "error_title": "Échec du chargement de la page"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
@@ -3172,7 +3200,8 @@
         "developer": "Développeur",
         "general": "Général",
         "media": "Enregistrement et médias",
-        "additional_features": "Fonctionnalités supplémentaires"
+        "additional_features": "Fonctionnalités supplémentaires",
+        "players_teams": "Plateforme"
       }
     },
     "system_update": {
@@ -3244,7 +3273,8 @@
         "manage_tournaments": "Gérer les tournois",
         "manage_league": "Gérer la ligue",
         "stream_deck": "Stream Deck",
-        "manage_events": "Gérer les événements"
+        "manage_events": "Gérer les événements",
+        "awards": "Awards"
       },
       "system": {
         "title": "Système",
@@ -3298,6 +3328,12 @@
       },
       "plugins": {
         "title": "Apps"
+      },
+      "competition": {
+        "title": "Administration"
+      },
+      "platform": {
+        "title": "Administration"
       }
     },
     "top_nav": {
@@ -3729,25 +3765,6 @@
     "standings_section": {
       "no_roster": "AUCUN ROSTER"
     },
-    "trophies_config": {
-      "title": "Configuration des trophées",
-      "organizer_access_required": "ACCÈS ORGANISATEUR REQUIS",
-      "award_trophies": "ATTRIBUER LES TROPHÉES",
-      "custom": "PERSONNALISÉ",
-      "custom_image": "Image personnalisée",
-      "custom_name": "Nom personnalisé",
-      "silhouette": "Silhouette",
-      "reset": "Réinitialiser",
-      "remove_image_hint": "Supprime l'image pour personnaliser le nom ou la silhouette",
-      "hint": "Envoie une image ou personnalise la récompense par défaut."
-    },
-    "trophies_manage": {
-      "manual_awards": "Récompenses manuelles",
-      "add_award": "Ajouter une récompense",
-      "no_manual_awards": "AUCUNE RÉCOMPENSE MANUELLE",
-      "remove": "Supprimer",
-      "hint": "Attribue un trophée en dehors du calcul du bracket."
-    },
     "compact_card": {
       "tournament": "Tournoi",
       "live": "En direct",
@@ -4141,6 +4158,47 @@
       "empty_hint": "Ajouter une bannière",
       "hint": "Affichée en haut de la page du tournoi. Recadrée dans un format large 3:1.",
       "upload_failed": "Échec de l'envoi de la bannière"
+    },
+    "awards_config": {
+      "title": "Configuration des récompenses",
+      "organizer_access_required": "ACCÈS ORGANISATEUR REQUIS",
+      "custom": "PERSONNALISÉ",
+      "custom_image": "Image personnalisée",
+      "custom_name": "Nom personnalisé",
+      "silhouette": "Silhouette",
+      "reset": "Réinitialiser",
+      "hint": "Choisis la récompense pour chaque classement, ou personnalise son nom et son visuel.",
+      "award": "Récompense",
+      "award_default": "Par défaut",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "Récompenses manuelles",
+      "add_award": "Ajouter une récompense",
+      "no_manual_awards": "AUCUNE RÉCOMPENSE MANUELLE",
+      "remove": "Supprimer",
+      "hint": "Attribue une récompense en dehors du calcul du bracket.",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
@@ -5507,7 +5565,11 @@
       "toggle": "Ajuster les paramètres"
     },
     "high_latency_warning": "Ta latence est trop élevée pour des matchs compétitifs",
-    "no_preferred_regions": "Sélectionne au moins une région préférée dans les paramètres de matchmaking"
+    "no_preferred_regions": "Sélectionne au moins une région préférée dans les paramètres de matchmaking",
+    "party_size": {
+      "unavailable": "Un groupe de {size} ne peut pas rejoindre la file pour ce mode",
+      "requirement": "File avec {half} joueurs ou moins, ou exactement {full} joueurs"
+    }
   },
   "game_server": {
     "lan_ip": "IP LAN",
@@ -7039,5 +7101,45 @@
       "axis_hs": "HS%",
       "axis_assist": "Assist"
     }
+  },
+  "awards": {
+    "title": "Récompenses",
+    "mvp": "MVP",
+    "first_place": "1re place",
+    "second_place": "2e place",
+    "third_place": "3e place",
+    "tournament": "Tournoi",
+    "placement": "Classement",
+    "no_awards": "Aucune récompense pour l'instant",
+    "no_awards_description": "Termine dans le top 3 d'un tournoi, ou reçois une récompense, pour remplir cette vitrine.",
+    "granted": "Attribuée",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "VOIR LE TOURNOI"
+  },
+  "awards_manage_form": {
+    "team": "Équipe",
+    "player": "Joueur",
+    "award": "Récompense",
+    "recipient": "Recipient"
   }
 }

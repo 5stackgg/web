@@ -12,6 +12,7 @@ import {
   CalendarIcon,
   Plus,
   RotateCcw,
+  Medal,
   Ban,
   Infinity as InfinityIcon,
   AlertTriangle,
@@ -37,6 +38,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { useSeasonBackfill } from "~/composables/useSeasonBackfill";
+import AwardComposer from "~/components/award/AwardComposer.vue";
 import SeasonRebuildProgress from "~/components/seasons/SeasonRebuildProgress.vue";
 
 definePageMeta({
@@ -45,6 +47,11 @@ definePageMeta({
 
 // Shared singleton; also used from the Options API block via useSeasonBackfill().
 const backfill = useSeasonBackfill();
+
+const awardComposerSeasonId = ref<string | null>(null);
+function openAwardComposer(seasonId: string) {
+  awardComposerSeasonId.value = seasonId;
+}
 
 // True while THIS season is the one currently being rebuilt.
 function isRebuilding(seasonId: string): boolean {
@@ -279,15 +286,26 @@ const rebuildCta =
         v-if="activeSeason"
         class="relative overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.07)_0%,hsl(var(--card)/0.25)_100%)] p-5 sm:p-6 [backdrop-filter:blur(6px)]"
       >
-        <button
-          type="button"
-          :title="$t('pages.seasons.rebuild')"
-          :disabled="backfill.running.value"
-          class="absolute right-3 top-3 z-[1] flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
-          @click="confirmRebuild(activeSeason.id)"
-        >
-          <RotateCcw class="h-3.5 w-3.5" />
-        </button>
+        <div class="absolute right-3 top-3 z-[1] flex items-center gap-1.5">
+          <button
+            type="button"
+            :title="$t('awards.composer.grant_here')"
+            :aria-label="$t('awards.composer.grant_here')"
+            class="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+            @click="openAwardComposer(activeSeason.id)"
+          >
+            <Medal class="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            :title="$t('pages.seasons.rebuild')"
+            :disabled="backfill.running.value"
+            class="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
+            @click="confirmRebuild(activeSeason.id)"
+          >
+            <RotateCcw class="h-3.5 w-3.5" />
+          </button>
+        </div>
 
         <span
           aria-hidden="true"
@@ -379,11 +397,16 @@ const rebuildCta =
                 class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
               >
                 <span>{{ formatDate(activeSeason.starts_at) }}</span>
-                <span :class="{ 'text-[hsl(var(--tac-amber))]': activeSeason.ends_at }">{{
-                  activeSeason.ends_at
-                    ? formatDate(activeSeason.ends_at)
-                    : $t("pages.seasons.ongoing")
-                }}</span>
+                <span
+                  :class="{
+                    'text-[hsl(var(--tac-amber))]': activeSeason.ends_at,
+                  }"
+                  >{{
+                    activeSeason.ends_at
+                      ? formatDate(activeSeason.ends_at)
+                      : $t("pages.seasons.ongoing")
+                  }}</span
+                >
               </div>
               <div
                 class="relative h-1.5 w-full overflow-hidden rounded-full bg-muted/40"
@@ -424,7 +447,9 @@ const rebuildCta =
                   <Calendar
                     :model-value="editStartDate"
                     :is-date-disabled="editStartDisabled"
-                    @update:model-value="onEditStartDate(activeSeason.id, $event)"
+                    @update:model-value="
+                      onEditStartDate(activeSeason.id, $event)
+                    "
                     initial-focus
                   />
                 </PopoverContent>
@@ -498,89 +523,90 @@ const rebuildCta =
             class="py-3 first:pt-0 last:pb-0"
           >
             <div class="flex items-center gap-3">
-            <div
-              class="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-muted/30 font-sans text-xs font-bold text-muted-foreground [font-stretch:85%]"
-            >
-              S{{ pad2(season.number) }}
-            </div>
+              <div
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-muted/30 font-sans text-xs font-bold text-muted-foreground [font-stretch:85%]"
+              >
+                S{{ pad2(season.number) }}
+              </div>
 
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="font-sans text-sm font-semibold uppercase tracking-[0.04em]">{{
-                  seasonTitle(season)
-                }}</span>
-                <span
-                  class="inline-flex items-center gap-1 font-mono text-[0.55rem] uppercase tracking-[0.16em]"
-                  :class="
-                    season.__upcoming
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-muted-foreground'
-                  "
-                >
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
                   <span
-                    class="inline-block h-[6px] w-[6px] rotate-45"
+                    class="font-sans text-sm font-semibold uppercase tracking-[0.04em]"
+                    >{{ seasonTitle(season) }}</span
+                  >
+                  <span
+                    class="inline-flex items-center gap-1 font-mono text-[0.55rem] uppercase tracking-[0.16em]"
                     :class="
                       season.__upcoming
-                        ? 'bg-[hsl(var(--tac-amber))]'
-                        : 'bg-muted-foreground/50'
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-muted-foreground'
                     "
-                  ></span>
+                  >
+                    <span
+                      class="inline-block h-[6px] w-[6px] rotate-45"
+                      :class="
+                        season.__upcoming
+                          ? 'bg-[hsl(var(--tac-amber))]'
+                          : 'bg-muted-foreground/50'
+                      "
+                    ></span>
+                    {{
+                      season.__upcoming
+                        ? $t("pages.seasons.upcoming")
+                        : $t("pages.seasons.ended")
+                    }}
+                  </span>
+                  <span
+                    v-if="season.needs_rebuild"
+                    class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.18)] px-2 py-0.5 font-mono text-[0.5rem] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+                  >
+                    <AlertTriangle class="h-2.5 w-2.5" />
+                    {{ $t("pages.seasons.rebuild_required") }}
+                  </span>
+                </div>
+                <p
+                  class="truncate font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground"
+                >
+                  {{ formatDate(season.starts_at) }} —
                   {{
-                    season.__upcoming
-                      ? $t("pages.seasons.upcoming")
-                      : $t("pages.seasons.ended")
-                  }}
-                </span>
-                <span
-                  v-if="season.needs_rebuild"
-                  class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.18)] px-2 py-0.5 font-mono text-[0.5rem] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-                >
-                  <AlertTriangle class="h-2.5 w-2.5" />
-                  {{ $t("pages.seasons.rebuild_required") }}
-                </span>
+                    season.ends_at
+                      ? formatDate(season.ends_at)
+                      : $t("pages.seasons.ongoing")
+                  }}<template v-if="season.description">
+                    · {{ season.description }}</template
+                  >
+                </p>
               </div>
-              <p
-                class="truncate font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground"
+              <button
+                v-if="season.needs_rebuild"
+                type="button"
+                :disabled="backfill.running.value"
+                :class="rebuildCta"
+                class="!h-7 shrink-0 !px-2.5"
+                @click="confirmRebuild(season.id)"
               >
-                {{ formatDate(season.starts_at) }} —
-                {{
-                  season.ends_at
-                    ? formatDate(season.ends_at)
-                    : $t("pages.seasons.ongoing")
-                }}<template v-if="season.description">
-                  · {{ season.description }}</template
-                >
-              </p>
-            </div>
-            <button
-              v-if="season.needs_rebuild"
-              type="button"
-              :disabled="backfill.running.value"
-              :class="rebuildCta"
-              class="!h-7 shrink-0 !px-2.5"
-              @click="confirmRebuild(season.id)"
-            >
-              <RotateCcw class="h-3.5 w-3.5" />
-              {{ $t("pages.seasons.rebuild") }}
-            </button>
-            <button
-              v-else
-              type="button"
-              :title="$t('pages.seasons.rebuild')"
-              :disabled="backfill.running.value"
-              class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
-              @click="confirmRebuild(season.id)"
-            >
-              <RotateCcw class="h-3.5 w-3.5" />
-            </button>
-            <button
-              type="button"
-              :title="$t('pages.seasons.delete')"
-              class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--destructive)/0.5)] hover:text-destructive"
-              @click="confirmDelete(season.id)"
-            >
-              <Trash2 class="h-3.5 w-3.5" />
-            </button>
+                <RotateCcw class="h-3.5 w-3.5" />
+                {{ $t("pages.seasons.rebuild") }}
+              </button>
+              <button
+                v-else
+                type="button"
+                :title="$t('pages.seasons.rebuild')"
+                :disabled="backfill.running.value"
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
+                @click="confirmRebuild(season.id)"
+              >
+                <RotateCcw class="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                :title="$t('pages.seasons.delete')"
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--destructive)/0.5)] hover:text-destructive"
+                @click="confirmDelete(season.id)"
+              >
+                <Trash2 class="h-3.5 w-3.5" />
+              </button>
             </div>
 
             <SeasonRebuildProgress :season-id="season.id" />
@@ -590,7 +616,11 @@ const rebuildCta =
 
       <!-- ===== Empty ===== -->
       <div
-        v-if="!activeSeason && upcomingSeasons.length === 0 && pastSeasons.length === 0"
+        v-if="
+          !activeSeason &&
+          upcomingSeasons.length === 0 &&
+          pastSeasons.length === 0
+        "
         class="relative overflow-hidden rounded-lg border border-dashed border-border/70 bg-muted/10 px-6 py-10 text-center"
       >
         <p
@@ -643,6 +673,15 @@ const rebuildCta =
       </AlertDialog>
     </div>
   </PageTransition>
+
+  <AwardComposer
+    v-if="awardComposerSeasonId"
+    :open="!!awardComposerSeasonId"
+    :season-id="awardComposerSeasonId"
+    @update:open="
+      (v) => (awardComposerSeasonId = v ? awardComposerSeasonId : null)
+    "
+  />
 </template>
 
 <script lang="ts">

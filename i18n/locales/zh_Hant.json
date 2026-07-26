@@ -866,9 +866,6 @@
     "next_page": "下一頁",
     "last_page": "最後一頁"
   },
-  "trophies_modal": {
-    "view_tournament": "檢視賽事"
-  },
   "toasts": {
     "link_copied": "連結已複製",
     "copy_failed": "複製失敗",
@@ -1160,24 +1157,8 @@
     "highlights_render_label": "精華算圖",
     "highlight_render_subline": "精華算圖"
   },
-  "trophies_manage_form": {
-    "placement": "名次",
-    "team": "隊伍",
-    "player": "玩家"
-  },
   "shortcut_overlay": {
     "to_close": "關閉"
-  },
-  "trophies": {
-    "title": "獎盃",
-    "no_trophies": "尚無獎盃",
-    "no_trophies_description": "在賽事中獲得前三名即可贏得獎盃。",
-    "mvp": "MVP",
-    "first_place": "第一名",
-    "second_place": "第二名",
-    "third_place": "第三名",
-    "tournament": "賽事",
-    "placement": "名次"
   },
   "image_upload": {
     "hint_square": "拖放或點擊 · PNG、JPEG、WebP",
@@ -2070,6 +2051,13 @@
             "custom_hint": "或貼上圖片 URL 或內嵌 SVG（例如來自外掛）。",
             "custom_placeholder": "https://… 、<svg…> 或圖示名稱"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2169,7 +2157,16 @@
       "section_recent_tournaments": "最近·賽事",
       "section_recent_highlights": "最近·精華",
       "no_live_matches": "待命 · 無進行中比賽",
-      "upcoming": "即將開始"
+      "cold_start": {
+        "title": "目前尚無動態",
+        "description": "沒有進行中的比賽，也沒有賽事，紀錄還是一片空白。開始一場比賽，此頁面便會自動填滿——即時比分，結束後還有精華片段與完整錄影。",
+        "cta": "開始遊戲",
+        "cta_guest": "登入以開始遊戲",
+        "channel_matches": "即時比賽",
+        "channel_tournaments": "賽事",
+        "channel_highlights": "精華片段",
+        "channel_status": "等待訊號中"
+      }
     },
     "highlights": {
       "title": "精華時刻",
@@ -2579,6 +2576,7 @@
     "play": {
       "title": "遊戲",
       "open_registration_tournaments": {
+        "section_label": "賽事",
         "description": "開放報名、任何人皆可加入的賽事。"
       },
       "matchmaking": {
@@ -2890,7 +2888,7 @@
         "best_kdr": "KDR",
         "best_win_rate": "勝率",
         "highest_hs_pct": "HS%",
-        "trophies": "獎盃"
+        "awards": "獎項"
       },
       "time_periods": {
         "last_7_days": "最近 7 天",
@@ -3143,6 +3141,36 @@
       "forbidden_title": "存取受限",
       "forbidden_description": "您沒有權限檢視此頁面。",
       "error_title": "頁面載入失敗"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
@@ -3172,7 +3200,8 @@
         "developer": "開發者",
         "general": "一般",
         "media": "錄製與媒體",
-        "additional_features": "附加功能"
+        "additional_features": "附加功能",
+        "players_teams": "平台"
       }
     },
     "system_update": {
@@ -3244,7 +3273,8 @@
         "manage_tournaments": "管理賽事",
         "manage_league": "管理聯賽",
         "stream_deck": "直播控制台",
-        "manage_events": "管理活動"
+        "manage_events": "管理活動",
+        "awards": "Awards"
       },
       "system": {
         "title": "系統",
@@ -3298,6 +3328,12 @@
       },
       "plugins": {
         "title": "應用程式"
+      },
+      "competition": {
+        "title": "管理"
+      },
+      "platform": {
+        "title": "管理"
       }
     },
     "top_nav": {
@@ -3729,25 +3765,6 @@
     "standings_section": {
       "no_roster": "無陣容"
     },
-    "trophies_config": {
-      "title": "獎盃設定",
-      "organizer_access_required": "需要主辦方權限",
-      "award_trophies": "頒發獎盃",
-      "custom": "自訂",
-      "custom_image": "自訂圖片",
-      "custom_name": "自訂名稱",
-      "silhouette": "輪廓",
-      "reset": "重設",
-      "remove_image_hint": "移除圖片以自訂名稱或輪廓",
-      "hint": "上傳圖片或自訂預設獎項。"
-    },
-    "trophies_manage": {
-      "manual_awards": "手動頒發",
-      "add_award": "新增獎項",
-      "no_manual_awards": "無手動頒發的獎項",
-      "remove": "移除",
-      "hint": "在對戰表計算之外頒發獎盃。"
-    },
     "compact_card": {
       "tournament": "賽事",
       "live": "進行中",
@@ -4141,6 +4158,47 @@
       "empty_hint": "新增橫幅",
       "hint": "顯示於賽事頁面頂部，會裁切為 3:1 寬幅。",
       "upload_failed": "橫幅上傳失敗"
+    },
+    "awards_config": {
+      "title": "獎項設定",
+      "organizer_access_required": "需要主辦方權限",
+      "custom": "自訂",
+      "custom_image": "自訂圖片",
+      "custom_name": "自訂名稱",
+      "silhouette": "輪廓",
+      "reset": "重設",
+      "hint": "為每個名次選擇獎項，或自訂其名稱與圖片。",
+      "award": "獎項",
+      "award_default": "預設",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "手動頒發",
+      "add_award": "新增獎項",
+      "no_manual_awards": "無手動頒發的獎項",
+      "remove": "移除",
+      "hint": "在對戰表計算之外頒發獎項。",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
@@ -5507,7 +5565,11 @@
       "toggle": "調整設定"
     },
     "high_latency_warning": "您的延遲過高，無法進行競技比賽",
-    "no_preferred_regions": "請在配對設定中選擇至少一個偏好地區"
+    "no_preferred_regions": "請在配對設定中選擇至少一個偏好地區",
+    "party_size": {
+      "unavailable": "{size} 人隊伍無法配對此模式",
+      "requirement": "請以 {half} 人以下，或剛好 {full} 人進行配對"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -7039,5 +7101,45 @@
       "axis_hs": "HS%",
       "axis_assist": "助攻"
     }
+  },
+  "awards": {
+    "title": "獎項",
+    "mvp": "MVP",
+    "first_place": "第一名",
+    "second_place": "第二名",
+    "third_place": "第三名",
+    "tournament": "賽事",
+    "placement": "名次",
+    "no_awards": "尚無獎項",
+    "no_awards_description": "在賽事中獲得前三名，或獲頒獎項，即可填滿此展示櫃。",
+    "granted": "已頒發",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "檢視賽事"
+  },
+  "awards_manage_form": {
+    "team": "隊伍",
+    "player": "玩家",
+    "award": "獎項",
+    "recipient": "Recipient"
   }
 }

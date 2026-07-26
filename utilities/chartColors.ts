@@ -13,6 +13,10 @@ export const GPU_USAGE_CHART_COLORS = [
   "#a7f3d0",
 ];
 
+export const FLEET_MATCHES_CHART_COLORS = ["#60a5fa"];
+
+export const FLEET_INSTALLS_CHART_COLORS = ["#10b981"];
+
 export const WEAPON_KILLS_CHART_COLORS = [
   "#f87171",
   "#60a5fa",

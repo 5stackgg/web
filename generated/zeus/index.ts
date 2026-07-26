@@ -940,6 +940,38 @@ export type ValueTypes = {
 	key?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["Award"]: AliasType<{
+	allow_multiple?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tier?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["AwardRecipient"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	team_id?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 ["Boolean_comparison_exp"]: {
 	_eq?: boolean | undefined | null | Variable<any, string>,
@@ -1608,8 +1640,63 @@ export type ValueTypes = {
 	url?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TelemetryActivityPoint"]: AliasType<{
+	day?:boolean | `@${string}`,
+	installs?:boolean | `@${string}`,
+	matches?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryFeatureAdoption"]: AliasType<{
+	enabled?:boolean | `@${string}`,
+	installsUsing?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	reporting?:boolean | `@${string}`,
+	total?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryFleetTotals"]: AliasType<{
+	dedicatedServers?:boolean | `@${string}`,
+	gameServerNodes?:boolean | `@${string}`,
+	mapsPlayed?:boolean | `@${string}`,
+	matches?:boolean | `@${string}`,
+	matchesMonth?:boolean | `@${string}`,
+	matchesWeek?:boolean | `@${string}`,
+	matchesYear?:boolean | `@${string}`,
+	playersActive30d?:boolean | `@${string}`,
+	playersRegistered?:boolean | `@${string}`,
+	publicServers?:boolean | `@${string}`,
+	serverCapacity?:boolean | `@${string}`,
+	servers?:boolean | `@${string}`,
+	teams?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryGrowthPoint"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	month?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryInstallCounts"]: AliasType<{
+	active24h?:boolean | `@${string}`,
+	active30d?:boolean | `@${string}`,
+	active7d?:boolean | `@${string}`,
+	new30d?:boolean | `@${string}`,
+	retained180d?:boolean | `@${string}`,
+	total?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TelemetryStats"]: AliasType<{
+	activity?:ValueTypes["TelemetryActivityPoint"],
+	features?:ValueTypes["TelemetryFeatureAdoption"],
+	growth?:ValueTypes["TelemetryGrowthPoint"],
+	installs?:ValueTypes["TelemetryInstallCounts"],
 	online?:boolean | `@${string}`,
+	totals?:ValueTypes["TelemetryFleetTotals"],
+	versions?:ValueTypes["TelemetryVersionSpread"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryVersionSpread"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TestUploadResponse"]: AliasType<{
@@ -1628,6 +1715,16 @@ export type ValueTypes = {
 	chunks_count?:boolean | `@${string}`,
 	hypertables?:ValueTypes["HypertableInfo"],
 	jobs?:ValueTypes["TimescaleJob"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TournamentAward"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TournamentMatchResetImpact"]: AliasType<{
@@ -2156,6 +2253,712 @@ count?: [{	columns?: Array<ValueTypes["api_keys_select_column"]> | undefined | n
 	["approve_league_season_movements_args"]: {
 	_league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "award_recipients" */
+["award_recipients"]: AliasType<{
+	/** An object relationship */
+	award?:ValueTypes["awards"],
+	award_id?:boolean | `@${string}`,
+	/** An object relationship */
+	awarded_by?:ValueTypes["players"],
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	placement_tier?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ValueTypes["players"],
+	player_steam_id?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	/** An object relationship */
+	team?:ValueTypes["teams"],
+	team_id?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament?:ValueTypes["tournaments"],
+	/** An object relationship */
+	tournament_award?:ValueTypes["tournament_awards"],
+	tournament_id?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament_team?:ValueTypes["tournament_teams"],
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "award_recipients" */
+["award_recipients_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["award_recipients_aggregate_fields"],
+	nodes?:ValueTypes["award_recipients"],
+		__typename?: boolean | `@${string}`
+}>;
+	["award_recipients_aggregate_bool_exp"]: {
+	count?: ValueTypes["award_recipients_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["award_recipients_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "award_recipients" */
+["award_recipients_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["award_recipients_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["award_recipients_max_fields"],
+	min?:ValueTypes["award_recipients_min_fields"],
+	stddev?:ValueTypes["award_recipients_stddev_fields"],
+	stddev_pop?:ValueTypes["award_recipients_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["award_recipients_stddev_samp_fields"],
+	sum?:ValueTypes["award_recipients_sum_fields"],
+	var_pop?:ValueTypes["award_recipients_var_pop_fields"],
+	var_samp?:ValueTypes["award_recipients_var_samp_fields"],
+	variance?:ValueTypes["award_recipients_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "award_recipients" */
+["award_recipients_aggregate_order_by"]: {
+	avg?: ValueTypes["award_recipients_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["award_recipients_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["award_recipients_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["award_recipients_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["award_recipients_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["award_recipients_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["award_recipients_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["award_recipients_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["award_recipients_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["award_recipients_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "award_recipients" */
+["award_recipients_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["award_recipients_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["award_recipients_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["award_recipients_avg_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "award_recipients" */
+["award_recipients_avg_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "award_recipients". All fields are combined with a logical 'AND'. */
+["award_recipients_bool_exp"]: {
+	_and?: Array<ValueTypes["award_recipients_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["award_recipients_bool_exp"]> | undefined | null | Variable<any, string>,
+	award?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>,
+	award_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	awarded_by?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	note?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	placement_tier?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["e_award_sources_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_award?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	tournament_team?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "award_recipients" */
+["award_recipients_constraint"]:award_recipients_constraint;
+	/** input type for incrementing numeric columns in table "award_recipients" */
+["award_recipients_inc_input"]: {
+	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "award_recipients" */
+["award_recipients_insert_input"]: {
+	award?: ValueTypes["awards_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	awarded_by?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	note?: string | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
+	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_award?: ValueTypes["tournament_awards_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team?: ValueTypes["tournament_teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["award_recipients_max_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	placement_tier?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	team_id?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "award_recipients" */
+["award_recipients_max_order_by"]: {
+	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["award_recipients_min_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	placement_tier?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	team_id?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "award_recipients" */
+["award_recipients_min_order_by"]: {
+	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "award_recipients" */
+["award_recipients_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["award_recipients"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "award_recipients" */
+["award_recipients_on_conflict"]: {
+	constraint: ValueTypes["award_recipients_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["award_recipients_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "award_recipients". */
+["award_recipients_order_by"]: {
+	award?: ValueTypes["awards_order_by"] | undefined | null | Variable<any, string>,
+	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	awarded_by?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
+	tournament_award?: ValueTypes["tournament_awards_order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team?: ValueTypes["tournament_teams_order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: award_recipients */
+["award_recipients_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "award_recipients" */
+["award_recipients_select_column"]:award_recipients_select_column;
+	/** input type for updating data in table "award_recipients" */
+["award_recipients_set_input"]: {
+	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	note?: string | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["award_recipients_stddev_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "award_recipients" */
+["award_recipients_stddev_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["award_recipients_stddev_pop_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "award_recipients" */
+["award_recipients_stddev_pop_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["award_recipients_stddev_samp_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "award_recipients" */
+["award_recipients_stddev_samp_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "award_recipients" */
+["award_recipients_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["award_recipients_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["award_recipients_stream_cursor_value_input"]: {
+	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	awarded_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	note?: string | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	placement_tier?: string | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
+	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["award_recipients_sum_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "award_recipients" */
+["award_recipients_sum_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "award_recipients" */
+["award_recipients_update_column"]:award_recipients_update_column;
+	["award_recipients_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["award_recipients_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["award_recipients_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["award_recipients_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["award_recipients_var_pop_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "award_recipients" */
+["award_recipients_var_pop_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["award_recipients_var_samp_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "award_recipients" */
+["award_recipients_var_samp_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["award_recipients_variance_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "award_recipients" */
+["award_recipients_variance_order_by"]: {
+	awarded_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "awards" */
+["awards"]: AliasType<{
+	allow_multiple?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	/** An object relationship */
+	created_by?:ValueTypes["players"],
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	/** An object relationship */
+	event?:ValueTypes["events"],
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	/** An object relationship */
+	league_season?:ValueTypes["league_seasons"],
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+recipients?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+recipients_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
+	/** An object relationship */
+	season?:ValueTypes["seasons"],
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tier?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament?:ValueTypes["tournaments"],
+tournament_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards"]],
+tournament_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards_aggregate"]],
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "awards" */
+["awards_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["awards_aggregate_fields"],
+	nodes?:ValueTypes["awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "awards" */
+["awards_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["awards_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["awards_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["awards_max_fields"],
+	min?:ValueTypes["awards_min_fields"],
+	stddev?:ValueTypes["awards_stddev_fields"],
+	stddev_pop?:ValueTypes["awards_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["awards_stddev_samp_fields"],
+	sum?:ValueTypes["awards_sum_fields"],
+	var_pop?:ValueTypes["awards_var_pop_fields"],
+	var_samp?:ValueTypes["awards_var_samp_fields"],
+	variance?:ValueTypes["awards_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["awards_avg_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "awards". All fields are combined with a logical 'AND'. */
+["awards_bool_exp"]: {
+	_and?: Array<ValueTypes["awards_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["awards_bool_exp"]> | undefined | null | Variable<any, string>,
+	allow_multiple?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_by?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	created_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_bool_exp"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	image_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	league_season?: ValueTypes["league_seasons_bool_exp"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	recipients?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	recipients_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	system_key?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	tier?: ValueTypes["e_award_tiers_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_configs?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_configs_aggregate?: ValueTypes["tournament_awards_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "awards" */
+["awards_constraint"]:awards_constraint;
+	/** input type for incrementing numeric columns in table "awards" */
+["awards_inc_input"]: {
+	created_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "awards" */
+["awards_insert_input"]: {
+	allow_multiple?: boolean | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	created_by?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	created_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	image_url?: string | undefined | null | Variable<any, string>,
+	league_season?: ValueTypes["league_seasons_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	recipients?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>,
+	system_key?: string | undefined | null | Variable<any, string>,
+	tier?: ValueTypes["e_award_tiers_enum"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_configs?: ValueTypes["tournament_awards_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["awards_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["awards_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "awards" */
+["awards_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** input type for inserting object relation for remote table "awards" */
+["awards_obj_rel_insert_input"]: {
+	data: ValueTypes["awards_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["awards_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** on_conflict condition type for table "awards" */
+["awards_on_conflict"]: {
+	constraint: ValueTypes["awards_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["awards_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "awards". */
+["awards_order_by"]: {
+	allow_multiple?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_by?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	created_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	event?: ValueTypes["events_order_by"] | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	league_season?: ValueTypes["league_seasons_order_by"] | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	recipients_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	season?: ValueTypes["seasons_order_by"] | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	system_key?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
+	tournament_configs_aggregate?: ValueTypes["tournament_awards_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: awards */
+["awards_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "awards" */
+["awards_select_column"]:awards_select_column;
+	/** input type for updating data in table "awards" */
+["awards_set_input"]: {
+	allow_multiple?: boolean | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	created_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	image_url?: string | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>,
+	system_key?: string | undefined | null | Variable<any, string>,
+	tier?: ValueTypes["e_award_tiers_enum"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["awards_stddev_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["awards_stddev_pop_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["awards_stddev_samp_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "awards" */
+["awards_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["awards_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["awards_stream_cursor_value_input"]: {
+	allow_multiple?: boolean | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	created_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	description?: string | undefined | null | Variable<any, string>,
+	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	image_url?: string | undefined | null | Variable<any, string>,
+	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>,
+	system_key?: string | undefined | null | Variable<any, string>,
+	tier?: ValueTypes["e_award_tiers_enum"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["awards_sum_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "awards" */
+["awards_update_column"]:awards_update_column;
+	["awards_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["awards_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["awards_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["awards_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["awards_var_pop_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["awards_var_samp_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["awards_variance_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bigint"]:unknown;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_array_comparison_exp"]: {
@@ -2679,13 +3482,17 @@ count?: [{	columns?: Array<ValueTypes["clip_render_jobs_select_column"]> | undef
 	/** columns and relationships of "custom_pages" */
 ["custom_pages"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+deployments?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	enabled?:boolean | `@${string}`,
 	exposed_module?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	is_default?:boolean | `@${string}`,
+	manifest_url?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
+	profile_tab_label?:boolean | `@${string}`,
 	remote_entry_url?:boolean | `@${string}`,
 	remote_scope?:boolean | `@${string}`,
 	required_role?:boolean | `@${string}`,
@@ -2715,6 +3522,10 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	variance?:ValueTypes["custom_pages_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_append_input"]: {
+	deployments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** aggregate avg on columns */
 ["custom_pages_avg_fields"]: AliasType<{
 	nav_order?:boolean | `@${string}`,
@@ -2726,13 +3537,16 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	_not?: ValueTypes["custom_pages_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["custom_pages_bool_exp"]> | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	deployments?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	exposed_module?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	icon?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_default?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	manifest_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	nav_group?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	nav_order?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	profile_tab_label?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	remote_entry_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	remote_scope?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	required_role?: ValueTypes["e_player_roles_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2742,6 +3556,18 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 };
 	/** unique or primary key constraints on table "custom_pages" */
 ["custom_pages_constraint"]:custom_pages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["custom_pages_delete_at_path_input"]: {
+	deployments?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["custom_pages_delete_elem_input"]: {
+	deployments?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["custom_pages_delete_key_input"]: {
+	deployments?: string | undefined | null | Variable<any, string>
+};
 	/** input type for incrementing numeric columns in table "custom_pages" */
 ["custom_pages_inc_input"]: {
 	nav_order?: number | undefined | null | Variable<any, string>
@@ -2749,13 +3575,16 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	/** input type for inserting data into table "custom_pages" */
 ["custom_pages_insert_input"]: {
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	deployments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	exposed_module?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_default?: boolean | undefined | null | Variable<any, string>,
+	manifest_url?: string | undefined | null | Variable<any, string>,
 	nav_group?: string | undefined | null | Variable<any, string>,
 	nav_order?: number | undefined | null | Variable<any, string>,
+	profile_tab_label?: string | undefined | null | Variable<any, string>,
 	remote_entry_url?: string | undefined | null | Variable<any, string>,
 	remote_scope?: string | undefined | null | Variable<any, string>,
 	required_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
@@ -2769,8 +3598,10 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	exposed_module?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	manifest_url?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
+	profile_tab_label?:boolean | `@${string}`,
 	remote_entry_url?:boolean | `@${string}`,
 	remote_scope?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
@@ -2784,8 +3615,10 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	exposed_module?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	manifest_url?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
+	profile_tab_label?:boolean | `@${string}`,
 	remote_entry_url?:boolean | `@${string}`,
 	remote_scope?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
@@ -2810,13 +3643,16 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	/** Ordering options when selecting data from "custom_pages". */
 ["custom_pages_order_by"]: {
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deployments?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	exposed_module?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	icon?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_default?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	manifest_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	nav_group?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	nav_order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	profile_tab_label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	remote_entry_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	remote_scope?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	required_role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -2828,18 +3664,25 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 ["custom_pages_pk_columns_input"]: {
 	id: ValueTypes["uuid"] | Variable<any, string>
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_prepend_input"]: {
+	deployments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** select columns of table "custom_pages" */
 ["custom_pages_select_column"]:custom_pages_select_column;
 	/** input type for updating data in table "custom_pages" */
 ["custom_pages_set_input"]: {
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	deployments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	exposed_module?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_default?: boolean | undefined | null | Variable<any, string>,
+	manifest_url?: string | undefined | null | Variable<any, string>,
 	nav_group?: string | undefined | null | Variable<any, string>,
 	nav_order?: number | undefined | null | Variable<any, string>,
+	profile_tab_label?: string | undefined | null | Variable<any, string>,
 	remote_entry_url?: string | undefined | null | Variable<any, string>,
 	remote_scope?: string | undefined | null | Variable<any, string>,
 	required_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
@@ -2872,13 +3715,16 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	/** Initial value of the column from where the streaming should start */
 ["custom_pages_stream_cursor_value_input"]: {
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	deployments?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	exposed_module?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	is_default?: boolean | undefined | null | Variable<any, string>,
+	manifest_url?: string | undefined | null | Variable<any, string>,
 	nav_group?: string | undefined | null | Variable<any, string>,
 	nav_order?: number | undefined | null | Variable<any, string>,
+	profile_tab_label?: string | undefined | null | Variable<any, string>,
 	remote_entry_url?: string | undefined | null | Variable<any, string>,
 	remote_scope?: string | undefined | null | Variable<any, string>,
 	required_role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
@@ -2894,8 +3740,18 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	/** update columns of table "custom_pages" */
 ["custom_pages_update_column"]:custom_pages_update_column;
 	["custom_pages_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["custom_pages_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["custom_pages_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["custom_pages_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["custom_pages_delete_key_input"] | undefined | null | Variable<any, string>,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["custom_pages_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["custom_pages_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["custom_pages_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -4394,6 +5250,216 @@ count?: [{	columns?: Array<ValueTypes["draft_games_select_column"]> | undefined 
 	host_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	max_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	min_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "e_award_sources" */
+["e_award_sources"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_award_sources" */
+["e_award_sources_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_award_sources_aggregate_fields"],
+	nodes?:ValueTypes["e_award_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_award_sources" */
+["e_award_sources_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_award_sources_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_award_sources_max_fields"],
+	min?:ValueTypes["e_award_sources_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_award_sources". All fields are combined with a logical 'AND'. */
+["e_award_sources_bool_exp"]: {
+	_and?: Array<ValueTypes["e_award_sources_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_award_sources_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_award_sources" */
+["e_award_sources_constraint"]:e_award_sources_constraint;
+	["e_award_sources_enum"]:e_award_sources_enum;
+	/** Boolean expression to compare columns of type "e_award_sources_enum". All fields are combined with logical 'AND'. */
+["e_award_sources_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_award_sources_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_award_sources_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_award_sources_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_award_sources" */
+["e_award_sources_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_award_sources_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_award_sources_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_award_sources" */
+["e_award_sources_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_award_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_award_sources" */
+["e_award_sources_on_conflict"]: {
+	constraint: ValueTypes["e_award_sources_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_award_sources_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_award_sources". */
+["e_award_sources_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_award_sources */
+["e_award_sources_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_award_sources" */
+["e_award_sources_select_column"]:e_award_sources_select_column;
+	/** input type for updating data in table "e_award_sources" */
+["e_award_sources_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_award_sources" */
+["e_award_sources_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_award_sources_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_sources_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_award_sources" */
+["e_award_sources_update_column"]:e_award_sources_update_column;
+	["e_award_sources_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_award_sources_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_award_sources_bool_exp"] | Variable<any, string>
+};
+	/** columns and relationships of "e_award_tiers" */
+["e_award_tiers"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_award_tiers" */
+["e_award_tiers_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_award_tiers_aggregate_fields"],
+	nodes?:ValueTypes["e_award_tiers"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_award_tiers" */
+["e_award_tiers_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_award_tiers_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_award_tiers_max_fields"],
+	min?:ValueTypes["e_award_tiers_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_award_tiers". All fields are combined with a logical 'AND'. */
+["e_award_tiers_bool_exp"]: {
+	_and?: Array<ValueTypes["e_award_tiers_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_award_tiers_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_award_tiers" */
+["e_award_tiers_constraint"]:e_award_tiers_constraint;
+	["e_award_tiers_enum"]:e_award_tiers_enum;
+	/** Boolean expression to compare columns of type "e_award_tiers_enum". All fields are combined with logical 'AND'. */
+["e_award_tiers_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_award_tiers_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_award_tiers_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_award_tiers_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_award_tiers_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_award_tiers" */
+["e_award_tiers_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_award_tiers_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_award_tiers_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_award_tiers" */
+["e_award_tiers_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_award_tiers"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_award_tiers" */
+["e_award_tiers_on_conflict"]: {
+	constraint: ValueTypes["e_award_tiers_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_award_tiers_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_award_tiers". */
+["e_award_tiers_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_award_tiers */
+["e_award_tiers_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_award_tiers" */
+["e_award_tiers_select_column"]:e_award_tiers_select_column;
+	/** input type for updating data in table "e_award_tiers" */
+["e_award_tiers_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_award_tiers" */
+["e_award_tiers_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_award_tiers_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_tiers_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_award_tiers" */
+["e_award_tiers_update_column"]:e_award_tiers_update_column;
+	["e_award_tiers_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_award_tiers_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_award_tiers_bool_exp"] | Variable<any, string>
 };
 	/** columns and relationships of "e_check_in_settings" */
 ["e_check_in_settings"]: AliasType<{
@@ -22465,6 +23531,7 @@ createClips?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueType
 createDraftGame?: [{	settings: ValueTypes["jsonb"] | Variable<any, string>},ValueTypes["CreateDraftGameOutput"]],
 createScheduledMatch?: [{	lineup_1: ValueTypes["ScheduledLineupInput"] | Variable<any, string>,	lineup_2: ValueTypes["ScheduledLineupInput"] | Variable<any, string>,	options: ValueTypes["jsonb"] | Variable<any, string>,	scheduled_at: string | Variable<any, string>},ValueTypes["CreateScheduledMatchOutput"]],
 createServerDirectory?: [{	dir_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+deleteAward?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteClip?: [{	clip_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteMatch?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteNewsPost?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -22480,6 +23547,12 @@ delete_abandoned_matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, strin
 delete_api_keys?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["api_keys_bool_exp"] | Variable<any, string>},ValueTypes["api_keys_mutation_response"]],
 delete_api_keys_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["api_keys"]],
+delete_award_recipients?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["award_recipients_bool_exp"] | Variable<any, string>},ValueTypes["award_recipients_mutation_response"]],
+delete_award_recipients_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["award_recipients"]],
+delete_awards?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["awards_bool_exp"] | Variable<any, string>},ValueTypes["awards_mutation_response"]],
+delete_awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["awards"]],
 delete_clip_render_jobs?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["clip_render_jobs_bool_exp"] | Variable<any, string>},ValueTypes["clip_render_jobs_mutation_response"]],
 delete_clip_render_jobs_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["clip_render_jobs"]],
@@ -22498,6 +23571,12 @@ delete_draft_game_players_by_pk?: [{	draft_game_id: ValueTypes["uuid"] | Variabl
 delete_draft_games?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["draft_games_bool_exp"] | Variable<any, string>},ValueTypes["draft_games_mutation_response"]],
 delete_draft_games_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["draft_games"]],
+delete_e_award_sources?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_award_sources_bool_exp"] | Variable<any, string>},ValueTypes["e_award_sources_mutation_response"]],
+delete_e_award_sources_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_award_sources"]],
+delete_e_award_tiers?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_award_tiers_bool_exp"] | Variable<any, string>},ValueTypes["e_award_tiers_mutation_response"]],
+delete_e_award_tiers_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_award_tiers"]],
 delete_e_check_in_settings?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_check_in_settings_bool_exp"] | Variable<any, string>},ValueTypes["e_check_in_settings_mutation_response"]],
 delete_e_check_in_settings_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_check_in_settings"]],
@@ -22873,6 +23952,9 @@ delete_team_suggestions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string
 delete_teams?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["teams_bool_exp"] | Variable<any, string>},ValueTypes["teams_mutation_response"]],
 delete_teams_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["teams"]],
+delete_tournament_awards?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["tournament_awards_bool_exp"] | Variable<any, string>},ValueTypes["tournament_awards_mutation_response"]],
+delete_tournament_awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_awards"]],
 delete_tournament_brackets?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["tournament_brackets_bool_exp"] | Variable<any, string>},ValueTypes["tournament_brackets_mutation_response"]],
 delete_tournament_brackets_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_brackets"]],
@@ -22903,12 +23985,6 @@ delete_tournament_team_roster_by_pk?: [{	player_steam_id: ValueTypes["bigint"] |
 delete_tournament_teams?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["tournament_teams_bool_exp"] | Variable<any, string>},ValueTypes["tournament_teams_mutation_response"]],
 delete_tournament_teams_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_teams"]],
-delete_tournament_trophies?: [{	/** filter the rows which have to be deleted */
-	where: ValueTypes["tournament_trophies_bool_exp"] | Variable<any, string>},ValueTypes["tournament_trophies_mutation_response"]],
-delete_tournament_trophies_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_trophies"]],
-delete_tournament_trophy_configs?: [{	/** filter the rows which have to be deleted */
-	where: ValueTypes["tournament_trophy_configs_bool_exp"] | Variable<any, string>},ValueTypes["tournament_trophy_configs_mutation_response"]],
-delete_tournament_trophy_configs_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
 delete_tournaments?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["tournaments_bool_exp"] | Variable<any, string>},ValueTypes["tournaments_mutation_response"]],
 delete_tournaments_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournaments"]],
@@ -22927,6 +24003,7 @@ denyInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: str
 forfeitMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 getLiveStreamSpecState?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ValueTypes["GetTestUploadResponse"],
+grantAward?: [{	award_id: ValueTypes["uuid"] | Variable<any, string>,	note?: string | undefined | null | Variable<any, string>,	player_steam_id?: string | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["AwardRecipient"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["_map_pool_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
@@ -22945,6 +24022,18 @@ insert_api_keys?: [{	/** the rows to be inserted */
 insert_api_keys_one?: [{	/** the row to be inserted */
 	object: ValueTypes["api_keys_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["api_keys_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["api_keys"]],
+insert_award_recipients?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["award_recipients_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["award_recipients_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_mutation_response"]],
+insert_award_recipients_one?: [{	/** the row to be inserted */
+	object: ValueTypes["award_recipients_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["award_recipients_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+insert_awards?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["awards_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["awards_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["awards_mutation_response"]],
+insert_awards_one?: [{	/** the row to be inserted */
+	object: ValueTypes["awards_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["awards_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["awards"]],
 insert_clip_render_jobs?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["clip_render_jobs_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["clip_render_jobs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["clip_render_jobs_mutation_response"]],
@@ -22981,6 +24070,18 @@ insert_draft_games?: [{	/** the rows to be inserted */
 insert_draft_games_one?: [{	/** the row to be inserted */
 	object: ValueTypes["draft_games_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["draft_games_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["draft_games"]],
+insert_e_award_sources?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_award_sources_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_award_sources_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources_mutation_response"]],
+insert_e_award_sources_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_award_sources_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_award_sources_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources"]],
+insert_e_award_tiers?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_award_tiers_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_award_tiers_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers_mutation_response"]],
+insert_e_award_tiers_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_award_tiers_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_award_tiers_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers"]],
 insert_e_check_in_settings?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_check_in_settings_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_check_in_settings_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_check_in_settings_mutation_response"]],
@@ -23731,6 +24832,12 @@ insert_teams?: [{	/** the rows to be inserted */
 insert_teams_one?: [{	/** the row to be inserted */
 	object: ValueTypes["teams_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["teams_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["teams"]],
+insert_tournament_awards?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["tournament_awards_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["tournament_awards_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards_mutation_response"]],
+insert_tournament_awards_one?: [{	/** the row to be inserted */
+	object: ValueTypes["tournament_awards_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["tournament_awards_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards"]],
 insert_tournament_brackets?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["tournament_brackets_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["tournament_brackets_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_brackets_mutation_response"]],
@@ -23791,18 +24898,6 @@ insert_tournament_teams?: [{	/** the rows to be inserted */
 insert_tournament_teams_one?: [{	/** the row to be inserted */
 	object: ValueTypes["tournament_teams_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["tournament_teams_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_teams"]],
-insert_tournament_trophies?: [{	/** the rows to be inserted */
-	objects: Array<ValueTypes["tournament_trophies_insert_input"]> | Variable<any, string>,	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophies_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies_mutation_response"]],
-insert_tournament_trophies_one?: [{	/** the row to be inserted */
-	object: ValueTypes["tournament_trophies_insert_input"] | Variable<any, string>,	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophies_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
-insert_tournament_trophy_configs?: [{	/** the rows to be inserted */
-	objects: Array<ValueTypes["tournament_trophy_configs_insert_input"]> | Variable<any, string>,	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophy_configs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs_mutation_response"]],
-insert_tournament_trophy_configs_one?: [{	/** the row to be inserted */
-	object: ValueTypes["tournament_trophy_configs_insert_input"] | Variable<any, string>,	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophy_configs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
 insert_tournaments?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["tournaments_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["tournaments_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["tournaments_mutation_response"]],
@@ -23856,13 +24951,13 @@ previewDraftGame?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	i
 queueClipFromPreset?: [{	fps?: number | undefined | null | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	preset: string | Variable<any, string>,	resolution?: string | undefined | null | Variable<any, string>,	target_name?: string | undefined | null | Variable<any, string>,	target_steam_id: string | Variable<any, string>,	title?: string | undefined | null | Variable<any, string>},ValueTypes["CreateClipRenderOutput"]],
 randomizeTeams?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 rebootMatchServer?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
-recalculate_tournament_trophies?: [{	/** input parameters for function "recalculate_tournament_trophies" */
-	args: ValueTypes["recalculate_tournament_trophies_args"] | Variable<any, string>,	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+recalculate_tournament_awards?: [{	/** input parameters for function "recalculate_tournament_awards" */
+	args: ValueTypes["recalculate_tournament_awards_args"] | Variable<any, string>,	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
 	/** Wipe and rebuild all player ELO from finished matches in chronological order (admin only). Runs in the background; track via recomputePlayerEloStatus. */
 	recomputePlayerElo?:ValueTypes["RecomputeEloStartedOutput"],
 	/** Return the progress of the ELO recompute run (admin only). */
@@ -23914,7 +25009,9 @@ restart_league_season?: [{	/** input parameters for function "restart_league_sea
 resumeClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 retryClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	only_failed?: boolean | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 retryPendingMatchImport?: [{	valve_match_id: string | Variable<any, string>},ValueTypes["PendingMatchImportActionOutput"]],
+revokeAward?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 sanctionServerPlayer?: [{	duration?: number | undefined | null | Variable<any, string>,	reason?: string | undefined | null | Variable<any, string>,	serverId?: string | undefined | null | Variable<any, string>,	steam_id: string | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SanctionResult"]],
+saveAward?: [{	allow_multiple?: boolean | undefined | null | Variable<any, string>,	description?: string | undefined | null | Variable<any, string>,	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	name: string | Variable<any, string>,	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	silhouette?: number | undefined | null | Variable<any, string>,	tier: string | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["Award"]],
 saveNewsPost?: [{	content_markdown: string | Variable<any, string>,	cover_image_url?: string | undefined | null | Variable<any, string>,	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	teaser?: string | undefined | null | Variable<any, string>,	title: string | Variable<any, string>},ValueTypes["NewsPost"]],
 	/** Scan S3 for objects not referenced in the database (admin only). Runs in the background; results land in the logs and orphanedDemosScanResult. */
 	scanOrphanedDemos?:ValueTypes["ScanStartedOutput"],
@@ -23927,6 +25024,7 @@ setHudMode?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: stri
 setMapWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	status: string | Variable<any, string>},ValueTypes["NewsPost"]],
+setTournamentAward?: [{	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	custom_name?: string | undefined | null | Variable<any, string>,	placement: number | Variable<any, string>,	silhouette?: number | undefined | null | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["TournamentAward"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
 skipShaders?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 specAutodirector?: [{	enabled: boolean | Variable<any, string>,	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -23983,6 +25081,24 @@ update_api_keys_by_pk?: [{	/** increments the numeric columns with given value o
 	_set?: ValueTypes["api_keys_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["api_keys_pk_columns_input"] | Variable<any, string>},ValueTypes["api_keys"]],
 update_api_keys_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["api_keys_updates"]> | Variable<any, string>},ValueTypes["api_keys_mutation_response"]],
+update_award_recipients?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["award_recipients_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["award_recipients_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["award_recipients_bool_exp"] | Variable<any, string>},ValueTypes["award_recipients_mutation_response"]],
+update_award_recipients_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["award_recipients_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["award_recipients_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["award_recipients_pk_columns_input"] | Variable<any, string>},ValueTypes["award_recipients"]],
+update_award_recipients_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["award_recipients_updates"]> | Variable<any, string>},ValueTypes["award_recipients_mutation_response"]],
+update_awards?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["awards_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["awards_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["awards_bool_exp"] | Variable<any, string>},ValueTypes["awards_mutation_response"]],
+update_awards_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["awards_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["awards_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["awards_pk_columns_input"] | Variable<any, string>},ValueTypes["awards"]],
+update_awards_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["awards_updates"]> | Variable<any, string>},ValueTypes["awards_mutation_response"]],
 update_clip_render_jobs?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ValueTypes["clip_render_jobs_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ValueTypes["clip_render_jobs_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -24002,12 +25118,22 @@ update_clip_render_jobs_by_pk?: [{	/** append existing jsonb value of filtered c
 	_set?: ValueTypes["clip_render_jobs_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["clip_render_jobs_pk_columns_input"] | Variable<any, string>},ValueTypes["clip_render_jobs"]],
 update_clip_render_jobs_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["clip_render_jobs_updates"]> | Variable<any, string>},ValueTypes["clip_render_jobs_mutation_response"]],
-update_custom_pages?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["custom_pages_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_custom_pages?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["custom_pages_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["custom_pages_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["custom_pages_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["custom_pages_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["custom_pages_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["custom_pages_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["custom_pages_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["custom_pages_bool_exp"] | Variable<any, string>},ValueTypes["custom_pages_mutation_response"]],
-update_custom_pages_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["custom_pages_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_custom_pages_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["custom_pages_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["custom_pages_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["custom_pages_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["custom_pages_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["custom_pages_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["custom_pages_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["custom_pages_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["custom_pages_pk_columns_input"] | Variable<any, string>},ValueTypes["custom_pages"]],
 update_custom_pages_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["custom_pages_updates"]> | Variable<any, string>},ValueTypes["custom_pages_mutation_response"]],
@@ -24047,6 +25173,20 @@ update_draft_games_by_pk?: [{	/** increments the numeric columns with given valu
 	_set?: ValueTypes["draft_games_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["draft_games_pk_columns_input"] | Variable<any, string>},ValueTypes["draft_games"]],
 update_draft_games_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["draft_games_updates"]> | Variable<any, string>},ValueTypes["draft_games_mutation_response"]],
+update_e_award_sources?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_award_sources_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_award_sources_bool_exp"] | Variable<any, string>},ValueTypes["e_award_sources_mutation_response"]],
+update_e_award_sources_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_award_sources_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_award_sources_pk_columns_input"] | Variable<any, string>},ValueTypes["e_award_sources"]],
+update_e_award_sources_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_award_sources_updates"]> | Variable<any, string>},ValueTypes["e_award_sources_mutation_response"]],
+update_e_award_tiers?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_award_tiers_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_award_tiers_bool_exp"] | Variable<any, string>},ValueTypes["e_award_tiers_mutation_response"]],
+update_e_award_tiers_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_award_tiers_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_award_tiers_pk_columns_input"] | Variable<any, string>},ValueTypes["e_award_tiers"]],
+update_e_award_tiers_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_award_tiers_updates"]> | Variable<any, string>},ValueTypes["e_award_tiers_mutation_response"]],
 update_e_check_in_settings?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_check_in_settings_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_check_in_settings_bool_exp"] | Variable<any, string>},ValueTypes["e_check_in_settings_mutation_response"]],
@@ -25151,6 +26291,15 @@ update_teams_by_pk?: [{	/** increments the numeric columns with given value of t
 	_set?: ValueTypes["teams_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["teams_pk_columns_input"] | Variable<any, string>},ValueTypes["teams"]],
 update_teams_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["teams_updates"]> | Variable<any, string>},ValueTypes["teams_mutation_response"]],
+update_tournament_awards?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["tournament_awards_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["tournament_awards_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["tournament_awards_bool_exp"] | Variable<any, string>},ValueTypes["tournament_awards_mutation_response"]],
+update_tournament_awards_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["tournament_awards_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["tournament_awards_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["tournament_awards_pk_columns_input"] | Variable<any, string>},ValueTypes["tournament_awards"]],
+update_tournament_awards_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["tournament_awards_updates"]> | Variable<any, string>},ValueTypes["tournament_awards_mutation_response"]],
 update_tournament_brackets?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["tournament_brackets_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["tournament_brackets_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -25247,24 +26396,6 @@ update_tournament_teams_by_pk?: [{	/** increments the numeric columns with given
 	_set?: ValueTypes["tournament_teams_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["tournament_teams_pk_columns_input"] | Variable<any, string>},ValueTypes["tournament_teams"]],
 update_tournament_teams_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["tournament_teams_updates"]> | Variable<any, string>},ValueTypes["tournament_teams_mutation_response"]],
-update_tournament_trophies?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["tournament_trophies_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
-	_set?: ValueTypes["tournament_trophies_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
-	where: ValueTypes["tournament_trophies_bool_exp"] | Variable<any, string>},ValueTypes["tournament_trophies_mutation_response"]],
-update_tournament_trophies_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["tournament_trophies_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
-	_set?: ValueTypes["tournament_trophies_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["tournament_trophies_pk_columns_input"] | Variable<any, string>},ValueTypes["tournament_trophies"]],
-update_tournament_trophies_many?: [{	/** updates to execute, in order */
-	updates: Array<ValueTypes["tournament_trophies_updates"]> | Variable<any, string>},ValueTypes["tournament_trophies_mutation_response"]],
-update_tournament_trophy_configs?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["tournament_trophy_configs_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
-	_set?: ValueTypes["tournament_trophy_configs_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
-	where: ValueTypes["tournament_trophy_configs_bool_exp"] | Variable<any, string>},ValueTypes["tournament_trophy_configs_mutation_response"]],
-update_tournament_trophy_configs_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["tournament_trophy_configs_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
-	_set?: ValueTypes["tournament_trophy_configs_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["tournament_trophy_configs_pk_columns_input"] | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
-update_tournament_trophy_configs_many?: [{	/** updates to execute, in order */
-	updates: Array<ValueTypes["tournament_trophy_configs_updates"]> | Variable<any, string>},ValueTypes["tournament_trophy_configs_mutation_response"]],
 update_tournaments?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["tournaments_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["tournaments_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -39101,6 +40232,18 @@ assited_by_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_assists_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_assists_aggregate"]],
 	avatar_url?:boolean | `@${string}`,
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
 coach_lineups?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -39542,18 +40685,6 @@ tournament_rosters_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["tournament_team_roster_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_team_roster_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_team_roster_aggregate"]],
-tournament_trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
-tournament_trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies_aggregate"]],
 tournaments?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournaments_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -39666,6 +40797,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assited_by_players?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	coach_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	coach_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	country?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -39771,8 +40904,6 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	tournament_organizers_aggregate?: ValueTypes["tournament_organizers_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	tournament_rosters?: ValueTypes["tournament_team_roster_bool_exp"] | undefined | null | Variable<any, string>,
 	tournament_rosters_aggregate?: ValueTypes["tournament_team_roster_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	tournament_trophies?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>,
-	tournament_trophies_aggregate?: ValueTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	tournaments?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
 	tournaments_aggregate?: ValueTypes["tournaments_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	utility_thrown?: ValueTypes["player_utility_bool_exp"] | undefined | null | Variable<any, string>,
@@ -39805,6 +40936,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assists?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	assited_by_players?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	coach_lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -39862,7 +40994,6 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	team_members?: ValueTypes["team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	tournament_organizers?: ValueTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	tournament_rosters?: ValueTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	tournament_trophies?: ValueTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	tournaments?: ValueTypes["tournaments_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	utility_thrown?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	vac_ban_count?: number | undefined | null | Variable<any, string>,
@@ -39996,6 +41127,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assists_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	coach_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	country?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -40070,7 +41202,6 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	total_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_organizers_aggregate?: ValueTypes["tournament_organizers_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	tournament_rosters_aggregate?: ValueTypes["tournament_team_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	tournament_trophies_aggregate?: ValueTypes["tournament_trophies_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	tournaments_aggregate?: ValueTypes["tournaments_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	utility_thrown_aggregate?: ValueTypes["player_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	vac_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -40574,6 +41705,32 @@ api_keys_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["api_keys_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["api_keys_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["api_keys_aggregate"]],
 api_keys_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["api_keys"]],
+award_recipients?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+award_recipients_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
+award_recipients_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["award_recipients"]],
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards_aggregate"]],
+awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["awards"]],
 clip_render_jobs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["clip_render_jobs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -40653,6 +41810,32 @@ draft_games_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["draft_games_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["draft_games_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["draft_games_aggregate"]],
 draft_games_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["draft_games"]],
+e_award_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources"]],
+e_award_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources_aggregate"]],
+e_award_sources_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_award_sources"]],
+e_award_tiers?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_tiers_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_tiers_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers"]],
+e_award_tiers_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_tiers_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_tiers_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers_aggregate"]],
+e_award_tiers_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_award_tiers"]],
 e_check_in_settings?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_check_in_settings_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -42442,6 +43625,19 @@ teams_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["teams_aggregate"]],
 teams_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["teams"]],
 	telemetryStats?:ValueTypes["TelemetryStats"],
+tournament_awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards"]],
+tournament_awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards_aggregate"]],
+tournament_awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_awards"]],
 tournament_brackets?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournament_brackets_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -42572,32 +43768,6 @@ tournament_teams_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["tournament_teams_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_teams_aggregate"]],
 tournament_teams_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_teams"]],
-tournament_trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
-tournament_trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies_aggregate"]],
-tournament_trophies_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_trophies"]],
-tournament_trophy_configs?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophy_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
-tournament_trophy_configs_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophy_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs_aggregate"]],
-tournament_trophy_configs_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
 tournaments?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournaments_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -42998,7 +44168,7 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["v_tournament_player_stats_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_tournament_player_stats_aggregate"]],
 		__typename?: boolean | `@${string}`
 }>;
-	["recalculate_tournament_trophies_args"]: {
+	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	["remove_league_team_from_season_args"]: {
@@ -44575,6 +45745,40 @@ api_keys_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["api_keys_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["api_keys_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["api_keys"]],
+award_recipients?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+award_recipients_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
+award_recipients_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["award_recipients"]],
+award_recipients_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["award_recipients_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards_aggregate"]],
+awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["awards"]],
+awards_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["awards_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["awards"]],
 clip_render_jobs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["clip_render_jobs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -44677,6 +45881,40 @@ draft_games_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["draft_games_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["draft_games_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["draft_games"]],
+e_award_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources"]],
+e_award_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources_aggregate"]],
+e_award_sources_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_award_sources"]],
+e_award_sources_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_award_sources_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_sources"]],
+e_award_tiers?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_tiers_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_tiers_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers"]],
+e_award_tiers_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_award_tiers_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_award_tiers_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers_aggregate"]],
+e_award_tiers_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_award_tiers"]],
+e_award_tiers_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_award_tiers_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_award_tiers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_award_tiers"]],
 e_check_in_settings?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_check_in_settings_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -46952,6 +48190,23 @@ teams_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["teams_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["teams"]],
+tournament_awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards"]],
+tournament_awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards_aggregate"]],
+tournament_awards_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_awards"]],
+tournament_awards_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["tournament_awards_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards"]],
 tournament_brackets?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournament_brackets_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -47122,40 +48377,6 @@ tournament_teams_stream?: [{	/** maximum number of rows returned in a single bat
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["tournament_teams_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_teams"]],
-tournament_trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
-tournament_trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies_aggregate"]],
-tournament_trophies_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_trophies"]],
-tournament_trophies_stream?: [{	/** maximum number of rows returned in a single batch */
-	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
-	cursor: Array<ValueTypes["tournament_trophies_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
-tournament_trophy_configs?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophy_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
-tournament_trophy_configs_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophy_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs_aggregate"]],
-tournament_trophy_configs_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
-tournament_trophy_configs_stream?: [{	/** maximum number of rows returned in a single batch */
-	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
-	cursor: Array<ValueTypes["tournament_trophy_configs_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
 tournaments?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournaments_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -50009,6 +51230,18 @@ count?: [{	columns?: Array<ValueTypes["team_suggestions_select_column"]> | undef
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
 	/** A computed field, executes function "can_change_team_role" */
 	can_change_role?:boolean | `@${string}`,
 	/** A computed field, executes function "can_invite_to_team" */
@@ -50184,6 +51417,8 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	_not?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["teams_bool_exp"]> | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	can_change_role?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_invite?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_manage_scrims?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -50222,6 +51457,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 	avatar_url?: string | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	captain_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -50304,6 +51540,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	can_change_role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_invite?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_manage_scrims?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -50464,6 +51701,330 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	_lte?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	_neq?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["timestamptz"]> | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "tournament_awards" */
+["tournament_awards"]: AliasType<{
+	/** An object relationship */
+	award?:ValueTypes["awards"],
+	award_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament?:ValueTypes["tournaments"],
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "tournament_awards" */
+["tournament_awards_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["tournament_awards_aggregate_fields"],
+	nodes?:ValueTypes["tournament_awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	["tournament_awards_aggregate_bool_exp"]: {
+	count?: ValueTypes["tournament_awards_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["tournament_awards_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "tournament_awards" */
+["tournament_awards_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["tournament_awards_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["tournament_awards_max_fields"],
+	min?:ValueTypes["tournament_awards_min_fields"],
+	stddev?:ValueTypes["tournament_awards_stddev_fields"],
+	stddev_pop?:ValueTypes["tournament_awards_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["tournament_awards_stddev_samp_fields"],
+	sum?:ValueTypes["tournament_awards_sum_fields"],
+	var_pop?:ValueTypes["tournament_awards_var_pop_fields"],
+	var_samp?:ValueTypes["tournament_awards_var_samp_fields"],
+	variance?:ValueTypes["tournament_awards_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "tournament_awards" */
+["tournament_awards_aggregate_order_by"]: {
+	avg?: ValueTypes["tournament_awards_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["tournament_awards_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["tournament_awards_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["tournament_awards_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["tournament_awards_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["tournament_awards_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["tournament_awards_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["tournament_awards_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["tournament_awards_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["tournament_awards_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "tournament_awards" */
+["tournament_awards_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["tournament_awards_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["tournament_awards_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["tournament_awards_avg_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "tournament_awards" */
+["tournament_awards_avg_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "tournament_awards". All fields are combined with a logical 'AND'. */
+["tournament_awards_bool_exp"]: {
+	_and?: Array<ValueTypes["tournament_awards_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["tournament_awards_bool_exp"]> | undefined | null | Variable<any, string>,
+	award?: ValueTypes["awards_bool_exp"] | undefined | null | Variable<any, string>,
+	award_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	custom_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	image_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "tournament_awards" */
+["tournament_awards_constraint"]:tournament_awards_constraint;
+	/** input type for incrementing numeric columns in table "tournament_awards" */
+["tournament_awards_inc_input"]: {
+	placement?: number | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "tournament_awards" */
+["tournament_awards_insert_input"]: {
+	award?: ValueTypes["awards_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	custom_name?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	image_url?: string | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["tournament_awards_max_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "tournament_awards" */
+["tournament_awards_max_order_by"]: {
+	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	custom_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["tournament_awards_min_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "tournament_awards" */
+["tournament_awards_min_order_by"]: {
+	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	custom_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "tournament_awards" */
+["tournament_awards_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["tournament_awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** input type for inserting object relation for remote table "tournament_awards" */
+["tournament_awards_obj_rel_insert_input"]: {
+	data: ValueTypes["tournament_awards_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["tournament_awards_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** on_conflict condition type for table "tournament_awards" */
+["tournament_awards_on_conflict"]: {
+	constraint: ValueTypes["tournament_awards_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["tournament_awards_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "tournament_awards". */
+["tournament_awards_order_by"]: {
+	award?: ValueTypes["awards_order_by"] | undefined | null | Variable<any, string>,
+	award_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	custom_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: tournament_awards */
+["tournament_awards_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "tournament_awards" */
+["tournament_awards_select_column"]:tournament_awards_select_column;
+	/** input type for updating data in table "tournament_awards" */
+["tournament_awards_set_input"]: {
+	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	custom_name?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	image_url?: string | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["tournament_awards_stddev_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "tournament_awards" */
+["tournament_awards_stddev_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["tournament_awards_stddev_pop_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "tournament_awards" */
+["tournament_awards_stddev_pop_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["tournament_awards_stddev_samp_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "tournament_awards" */
+["tournament_awards_stddev_samp_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "tournament_awards" */
+["tournament_awards_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["tournament_awards_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["tournament_awards_stream_cursor_value_input"]: {
+	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	custom_name?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	image_url?: string | undefined | null | Variable<any, string>,
+	placement?: number | undefined | null | Variable<any, string>,
+	silhouette?: number | undefined | null | Variable<any, string>,
+	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["tournament_awards_sum_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "tournament_awards" */
+["tournament_awards_sum_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "tournament_awards" */
+["tournament_awards_update_column"]:tournament_awards_update_column;
+	["tournament_awards_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["tournament_awards_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["tournament_awards_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["tournament_awards_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["tournament_awards_var_pop_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "tournament_awards" */
+["tournament_awards_var_pop_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["tournament_awards_var_samp_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "tournament_awards" */
+["tournament_awards_var_samp_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["tournament_awards_variance_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "tournament_awards" */
+["tournament_awards_variance_order_by"]: {
+	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** columns and relationships of "tournament_brackets" */
 ["tournament_brackets"]: AliasType<{
@@ -53585,665 +55146,36 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
-	/** columns and relationships of "tournament_trophies" */
-["tournament_trophies"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	manual?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	placement_tier?:boolean | `@${string}`,
-	/** An object relationship */
-	player?:ValueTypes["players"],
-	player_steam_id?:boolean | `@${string}`,
-	/** An object relationship */
-	team?:ValueTypes["teams"],
-	team_id?:boolean | `@${string}`,
-	/** An object relationship */
-	tournament?:ValueTypes["tournaments"],
-	tournament_id?:boolean | `@${string}`,
-	/** An object relationship */
-	tournament_team?:ValueTypes["tournament_teams"],
-	tournament_team_id?:boolean | `@${string}`,
-	/** An object relationship */
-	trophy_config?:ValueTypes["tournament_trophy_configs"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregated selection of "tournament_trophies" */
-["tournament_trophies_aggregate"]: AliasType<{
-	aggregate?:ValueTypes["tournament_trophies_aggregate_fields"],
-	nodes?:ValueTypes["tournament_trophies"],
-		__typename?: boolean | `@${string}`
-}>;
-	["tournament_trophies_aggregate_bool_exp"]: {
-	bool_and?: ValueTypes["tournament_trophies_aggregate_bool_exp_bool_and"] | undefined | null | Variable<any, string>,
-	bool_or?: ValueTypes["tournament_trophies_aggregate_bool_exp_bool_or"] | undefined | null | Variable<any, string>,
-	count?: ValueTypes["tournament_trophies_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
-};
-	["tournament_trophies_aggregate_bool_exp_bool_and"]: {
-	arguments: ValueTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"] | Variable<any, string>,
-	distinct?: boolean | undefined | null | Variable<any, string>,
-	filter?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>,
-	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
-};
-	["tournament_trophies_aggregate_bool_exp_bool_or"]: {
-	arguments: ValueTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"] | Variable<any, string>,
-	distinct?: boolean | undefined | null | Variable<any, string>,
-	filter?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>,
-	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
-};
-	["tournament_trophies_aggregate_bool_exp_count"]: {
-	arguments?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,
-	distinct?: boolean | undefined | null | Variable<any, string>,
-	filter?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>,
-	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
-};
-	/** aggregate fields of "tournament_trophies" */
-["tournament_trophies_aggregate_fields"]: AliasType<{
-	avg?:ValueTypes["tournament_trophies_avg_fields"],
-count?: [{	columns?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
-	max?:ValueTypes["tournament_trophies_max_fields"],
-	min?:ValueTypes["tournament_trophies_min_fields"],
-	stddev?:ValueTypes["tournament_trophies_stddev_fields"],
-	stddev_pop?:ValueTypes["tournament_trophies_stddev_pop_fields"],
-	stddev_samp?:ValueTypes["tournament_trophies_stddev_samp_fields"],
-	sum?:ValueTypes["tournament_trophies_sum_fields"],
-	var_pop?:ValueTypes["tournament_trophies_var_pop_fields"],
-	var_samp?:ValueTypes["tournament_trophies_var_samp_fields"],
-	variance?:ValueTypes["tournament_trophies_variance_fields"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by aggregate values of table "tournament_trophies" */
-["tournament_trophies_aggregate_order_by"]: {
-	avg?: ValueTypes["tournament_trophies_avg_order_by"] | undefined | null | Variable<any, string>,
-	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	max?: ValueTypes["tournament_trophies_max_order_by"] | undefined | null | Variable<any, string>,
-	min?: ValueTypes["tournament_trophies_min_order_by"] | undefined | null | Variable<any, string>,
-	stddev?: ValueTypes["tournament_trophies_stddev_order_by"] | undefined | null | Variable<any, string>,
-	stddev_pop?: ValueTypes["tournament_trophies_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
-	stddev_samp?: ValueTypes["tournament_trophies_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
-	sum?: ValueTypes["tournament_trophies_sum_order_by"] | undefined | null | Variable<any, string>,
-	var_pop?: ValueTypes["tournament_trophies_var_pop_order_by"] | undefined | null | Variable<any, string>,
-	var_samp?: ValueTypes["tournament_trophies_var_samp_order_by"] | undefined | null | Variable<any, string>,
-	variance?: ValueTypes["tournament_trophies_variance_order_by"] | undefined | null | Variable<any, string>
-};
-	/** input type for inserting array relation for remote table "tournament_trophies" */
-["tournament_trophies_arr_rel_insert_input"]: {
-	data: Array<ValueTypes["tournament_trophies_insert_input"]> | Variable<any, string>,
-	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophies_on_conflict"] | undefined | null | Variable<any, string>
-};
-	/** aggregate avg on columns */
-["tournament_trophies_avg_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by avg() on columns of table "tournament_trophies" */
-["tournament_trophies_avg_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** Boolean expression to filter rows from the table "tournament_trophies". All fields are combined with a logical 'AND'. */
-["tournament_trophies_bool_exp"]: {
-	_and?: Array<ValueTypes["tournament_trophies_bool_exp"]> | undefined | null | Variable<any, string>,
-	_not?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>,
-	_or?: Array<ValueTypes["tournament_trophies_bool_exp"]> | undefined | null | Variable<any, string>,
-	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	manual?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	placement_tier?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
-	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	tournament_team?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	trophy_config?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>
-};
-	/** unique or primary key constraints on table "tournament_trophies" */
-["tournament_trophies_constraint"]:tournament_trophies_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophies" */
-["tournament_trophies_inc_input"]: {
-	placement?: number | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
-};
-	/** input type for inserting data into table "tournament_trophies" */
-["tournament_trophies_insert_input"]: {
-	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	manual?: boolean | undefined | null | Variable<any, string>,
-	placement?: number | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	tournament_team?: ValueTypes["tournament_teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	trophy_config?: ValueTypes["tournament_trophy_configs_obj_rel_insert_input"] | undefined | null | Variable<any, string>
-};
-	/** aggregate max on columns */
-["tournament_trophies_max_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	placement_tier?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-	team_id?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	tournament_team_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by max() on columns of table "tournament_trophies" */
-["tournament_trophies_max_order_by"]: {
-	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate min on columns */
-["tournament_trophies_min_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	placement_tier?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-	team_id?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	tournament_team_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by min() on columns of table "tournament_trophies" */
-["tournament_trophies_min_order_by"]: {
-	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** response of any mutation on the table "tournament_trophies" */
-["tournament_trophies_mutation_response"]: AliasType<{
-	/** number of rows affected by the mutation */
-	affected_rows?:boolean | `@${string}`,
-	/** data from the rows affected by the mutation */
-	returning?:ValueTypes["tournament_trophies"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** on_conflict condition type for table "tournament_trophies" */
-["tournament_trophies_on_conflict"]: {
-	constraint: ValueTypes["tournament_trophies_constraint"] | Variable<any, string>,
-	update_columns: Array<ValueTypes["tournament_trophies_update_column"]> | Variable<any, string>,
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>
-};
-	/** Ordering options when selecting data from "tournament_trophies". */
-["tournament_trophies_order_by"]: {
-	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	manual?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement_tier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_team?: ValueTypes["tournament_teams_order_by"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	trophy_config?: ValueTypes["tournament_trophy_configs_order_by"] | undefined | null | Variable<any, string>
-};
-	/** primary key columns input for table: tournament_trophies */
-["tournament_trophies_pk_columns_input"]: {
-	id: ValueTypes["uuid"] | Variable<any, string>
-};
-	/** select columns of table "tournament_trophies" */
-["tournament_trophies_select_column"]:tournament_trophies_select_column;
-	/** select "tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns" columns of table "tournament_trophies" */
-["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"]:tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns;
-	/** select "tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns" columns of table "tournament_trophies" */
-["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"]:tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns;
-	/** input type for updating data in table "tournament_trophies" */
-["tournament_trophies_set_input"]: {
-	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	manual?: boolean | undefined | null | Variable<any, string>,
-	placement?: number | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
-};
-	/** aggregate stddev on columns */
-["tournament_trophies_stddev_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophies_stddev_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_pop_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophies_stddev_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_samp_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** Streaming cursor of the table "tournament_trophies" */
-["tournament_trophies_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ValueTypes["tournament_trophies_stream_cursor_value_input"] | Variable<any, string>,
-	/** cursor ordering */
-	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophies_stream_cursor_value_input"]: {
-	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	manual?: boolean | undefined | null | Variable<any, string>,
-	placement?: number | undefined | null | Variable<any, string>,
-	placement_tier?: string | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	tournament_team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
-};
-	/** aggregate sum on columns */
-["tournament_trophies_sum_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by sum() on columns of table "tournament_trophies" */
-["tournament_trophies_sum_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** update columns of table "tournament_trophies" */
-["tournament_trophies_update_column"]:tournament_trophies_update_column;
-	["tournament_trophies_updates"]: {
-	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["tournament_trophies_inc_input"] | undefined | null | Variable<any, string>,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: ValueTypes["tournament_trophies_set_input"] | undefined | null | Variable<any, string>,
-	/** filter the rows which have to be updated */
-	where: ValueTypes["tournament_trophies_bool_exp"] | Variable<any, string>
-};
-	/** aggregate var_pop on columns */
-["tournament_trophies_var_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_var_pop_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate var_samp on columns */
-["tournament_trophies_var_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_var_samp_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate variance on columns */
-["tournament_trophies_variance_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by variance() on columns of table "tournament_trophies" */
-["tournament_trophies_variance_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** columns and relationships of "tournament_trophy_configs" */
-["tournament_trophy_configs"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	custom_name?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	image_url?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-	/** An object relationship */
-	tournament?:ValueTypes["tournaments"],
-	tournament_id?:boolean | `@${string}`,
-	updated_at?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregated selection of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate"]: AliasType<{
-	aggregate?:ValueTypes["tournament_trophy_configs_aggregate_fields"],
-	nodes?:ValueTypes["tournament_trophy_configs"],
-		__typename?: boolean | `@${string}`
-}>;
-	["tournament_trophy_configs_aggregate_bool_exp"]: {
-	count?: ValueTypes["tournament_trophy_configs_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
-};
-	["tournament_trophy_configs_aggregate_bool_exp_count"]: {
-	arguments?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,
-	distinct?: boolean | undefined | null | Variable<any, string>,
-	filter?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>,
-	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
-};
-	/** aggregate fields of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_fields"]: AliasType<{
-	avg?:ValueTypes["tournament_trophy_configs_avg_fields"],
-count?: [{	columns?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
-	max?:ValueTypes["tournament_trophy_configs_max_fields"],
-	min?:ValueTypes["tournament_trophy_configs_min_fields"],
-	stddev?:ValueTypes["tournament_trophy_configs_stddev_fields"],
-	stddev_pop?:ValueTypes["tournament_trophy_configs_stddev_pop_fields"],
-	stddev_samp?:ValueTypes["tournament_trophy_configs_stddev_samp_fields"],
-	sum?:ValueTypes["tournament_trophy_configs_sum_fields"],
-	var_pop?:ValueTypes["tournament_trophy_configs_var_pop_fields"],
-	var_samp?:ValueTypes["tournament_trophy_configs_var_samp_fields"],
-	variance?:ValueTypes["tournament_trophy_configs_variance_fields"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by aggregate values of table "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_order_by"]: {
-	avg?: ValueTypes["tournament_trophy_configs_avg_order_by"] | undefined | null | Variable<any, string>,
-	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	max?: ValueTypes["tournament_trophy_configs_max_order_by"] | undefined | null | Variable<any, string>,
-	min?: ValueTypes["tournament_trophy_configs_min_order_by"] | undefined | null | Variable<any, string>,
-	stddev?: ValueTypes["tournament_trophy_configs_stddev_order_by"] | undefined | null | Variable<any, string>,
-	stddev_pop?: ValueTypes["tournament_trophy_configs_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
-	stddev_samp?: ValueTypes["tournament_trophy_configs_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
-	sum?: ValueTypes["tournament_trophy_configs_sum_order_by"] | undefined | null | Variable<any, string>,
-	var_pop?: ValueTypes["tournament_trophy_configs_var_pop_order_by"] | undefined | null | Variable<any, string>,
-	var_samp?: ValueTypes["tournament_trophy_configs_var_samp_order_by"] | undefined | null | Variable<any, string>,
-	variance?: ValueTypes["tournament_trophy_configs_variance_order_by"] | undefined | null | Variable<any, string>
-};
-	/** input type for inserting array relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_arr_rel_insert_input"]: {
-	data: Array<ValueTypes["tournament_trophy_configs_insert_input"]> | Variable<any, string>,
-	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophy_configs_on_conflict"] | undefined | null | Variable<any, string>
-};
-	/** aggregate avg on columns */
-["tournament_trophy_configs_avg_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by avg() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_avg_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** Boolean expression to filter rows from the table "tournament_trophy_configs". All fields are combined with a logical 'AND'. */
-["tournament_trophy_configs_bool_exp"]: {
-	_and?: Array<ValueTypes["tournament_trophy_configs_bool_exp"]> | undefined | null | Variable<any, string>,
-	_not?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>,
-	_or?: Array<ValueTypes["tournament_trophy_configs_bool_exp"]> | undefined | null | Variable<any, string>,
-	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
-	custom_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	image_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
-};
-	/** unique or primary key constraints on table "tournament_trophy_configs" */
-["tournament_trophy_configs_constraint"]:tournament_trophy_configs_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophy_configs" */
-["tournament_trophy_configs_inc_input"]: {
-	placement?: number | undefined | null | Variable<any, string>,
-	silhouette?: number | undefined | null | Variable<any, string>
-};
-	/** input type for inserting data into table "tournament_trophy_configs" */
-["tournament_trophy_configs_insert_input"]: {
-	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	custom_name?: string | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	image_url?: string | undefined | null | Variable<any, string>,
-	placement?: number | undefined | null | Variable<any, string>,
-	silhouette?: number | undefined | null | Variable<any, string>,
-	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
-};
-	/** aggregate max on columns */
-["tournament_trophy_configs_max_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	custom_name?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	image_url?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	updated_at?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by max() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_max_order_by"]: {
-	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	custom_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate min on columns */
-["tournament_trophy_configs_min_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	custom_name?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	image_url?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	updated_at?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by min() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_min_order_by"]: {
-	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	custom_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** response of any mutation on the table "tournament_trophy_configs" */
-["tournament_trophy_configs_mutation_response"]: AliasType<{
-	/** number of rows affected by the mutation */
-	affected_rows?:boolean | `@${string}`,
-	/** data from the rows affected by the mutation */
-	returning?:ValueTypes["tournament_trophy_configs"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** input type for inserting object relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_obj_rel_insert_input"]: {
-	data: ValueTypes["tournament_trophy_configs_insert_input"] | Variable<any, string>,
-	/** upsert condition */
-	on_conflict?: ValueTypes["tournament_trophy_configs_on_conflict"] | undefined | null | Variable<any, string>
-};
-	/** on_conflict condition type for table "tournament_trophy_configs" */
-["tournament_trophy_configs_on_conflict"]: {
-	constraint: ValueTypes["tournament_trophy_configs_constraint"] | Variable<any, string>,
-	update_columns: Array<ValueTypes["tournament_trophy_configs_update_column"]> | Variable<any, string>,
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>
-};
-	/** Ordering options when selecting data from "tournament_trophy_configs". */
-["tournament_trophy_configs_order_by"]: {
-	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	custom_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** primary key columns input for table: tournament_trophy_configs */
-["tournament_trophy_configs_pk_columns_input"]: {
-	id: ValueTypes["uuid"] | Variable<any, string>
-};
-	/** select columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_select_column"]:tournament_trophy_configs_select_column;
-	/** input type for updating data in table "tournament_trophy_configs" */
-["tournament_trophy_configs_set_input"]: {
-	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	custom_name?: string | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	image_url?: string | undefined | null | Variable<any, string>,
-	placement?: number | undefined | null | Variable<any, string>,
-	silhouette?: number | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
-};
-	/** aggregate stddev on columns */
-["tournament_trophy_configs_stddev_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophy_configs_stddev_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_pop_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophy_configs_stddev_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_samp_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** Streaming cursor of the table "tournament_trophy_configs" */
-["tournament_trophy_configs_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ValueTypes["tournament_trophy_configs_stream_cursor_value_input"] | Variable<any, string>,
-	/** cursor ordering */
-	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophy_configs_stream_cursor_value_input"]: {
-	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	custom_name?: string | undefined | null | Variable<any, string>,
-	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	image_url?: string | undefined | null | Variable<any, string>,
-	placement?: number | undefined | null | Variable<any, string>,
-	silhouette?: number | undefined | null | Variable<any, string>,
-	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
-};
-	/** aggregate sum on columns */
-["tournament_trophy_configs_sum_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by sum() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_sum_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** update columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_update_column"]:tournament_trophy_configs_update_column;
-	["tournament_trophy_configs_updates"]: {
-	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["tournament_trophy_configs_inc_input"] | undefined | null | Variable<any, string>,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: ValueTypes["tournament_trophy_configs_set_input"] | undefined | null | Variable<any, string>,
-	/** filter the rows which have to be updated */
-	where: ValueTypes["tournament_trophy_configs_bool_exp"] | Variable<any, string>
-};
-	/** aggregate var_pop on columns */
-["tournament_trophy_configs_var_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_pop_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate var_samp on columns */
-["tournament_trophy_configs_var_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_samp_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
-	/** aggregate variance on columns */
-["tournament_trophy_configs_variance_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by variance() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_variance_order_by"]: {
-	placement?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	silhouette?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
-};
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: AliasType<{
 	/** An object relationship */
 	admin?:ValueTypes["players"],
 	auto_start?:boolean | `@${string}`,
+award_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards"]],
+award_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_awards_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_awards_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_awards_aggregate"]],
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["award_recipients_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["award_recipients_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["award_recipients_aggregate"]],
+	awards_enabled?:boolean | `@${string}`,
 	banner?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_tournament" */
 	can_cancel?:boolean | `@${string}`,
@@ -54417,31 +55349,6 @@ teams_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["tournament_teams_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_teams_aggregate"]],
-trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies"]],
-trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophies_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophies_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophies_aggregate"]],
-	trophies_enabled?:boolean | `@${string}`,
-trophy_configs?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophy_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs"]],
-trophy_configs_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["tournament_trophy_configs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["tournament_trophy_configs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_trophy_configs_aggregate"]],
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "tournaments" */
@@ -54596,6 +55503,11 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	_or?: Array<ValueTypes["tournaments_bool_exp"]> | undefined | null | Variable<any, string>,
 	admin?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	auto_start?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	award_configs?: ValueTypes["tournament_awards_bool_exp"] | undefined | null | Variable<any, string>,
+	award_configs_aggregate?: ValueTypes["tournament_awards_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	awards_enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	banner?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_close_registration?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -54662,12 +55574,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	start?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_status_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	teams?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
-	teams_aggregate?: ValueTypes["tournament_teams_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	trophies?: ValueTypes["tournament_trophies_bool_exp"] | undefined | null | Variable<any, string>,
-	trophies_aggregate?: ValueTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	trophies_enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	trophy_configs?: ValueTypes["tournament_trophy_configs_bool_exp"] | undefined | null | Variable<any, string>,
-	trophy_configs_aggregate?: ValueTypes["tournament_trophy_configs_aggregate_bool_exp"] | undefined | null | Variable<any, string>
+	teams_aggregate?: ValueTypes["tournament_teams_aggregate_bool_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "tournaments" */
 ["tournaments_constraint"]:tournaments_constraint;
@@ -54681,6 +55588,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 ["tournaments_insert_input"]: {
 	admin?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	auto_start?: boolean | undefined | null | Variable<any, string>,
+	award_configs?: ValueTypes["tournament_awards_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	awards?: ValueTypes["award_recipients_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
 	categories?: ValueTypes["tournament_categories_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -54725,10 +55635,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	stages?: ValueTypes["tournament_stages_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>,
-	teams?: ValueTypes["tournament_teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	trophies?: ValueTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	trophies_enabled?: boolean | undefined | null | Variable<any, string>,
-	trophy_configs?: ValueTypes["tournament_trophy_configs_arr_rel_insert_input"] | undefined | null | Variable<any, string>
+	teams?: ValueTypes["tournament_teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: AliasType<{
@@ -54844,6 +55751,9 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 ["tournaments_order_by"]: {
 	admin?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	auto_start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	award_configs_aggregate?: ValueTypes["tournament_awards_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	awards_aggregate?: ValueTypes["award_recipients_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	awards_enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	banner?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_close_registration?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -54901,10 +55811,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	stages_aggregate?: ValueTypes["tournament_stages_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	teams_aggregate?: ValueTypes["tournament_teams_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	trophies_aggregate?: ValueTypes["tournament_trophies_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	trophies_enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	trophy_configs_aggregate?: ValueTypes["tournament_trophy_configs_aggregate_order_by"] | undefined | null | Variable<any, string>
+	teams_aggregate?: ValueTypes["tournament_teams_aggregate_order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: tournaments */
 ["tournaments_pk_columns_input"]: {
@@ -54935,6 +55842,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** input type for updating data in table "tournaments" */
 ["tournaments_set_input"]: {
 	auto_start?: boolean | undefined | null | Variable<any, string>,
+	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
@@ -54967,8 +55875,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	scheduling_mode?: string | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>,
-	trophies_enabled?: boolean | undefined | null | Variable<any, string>
+	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: AliasType<{
@@ -55031,6 +55938,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** Initial value of the column from where the streaming should start */
 ["tournaments_stream_cursor_value_input"]: {
 	auto_start?: boolean | undefined | null | Variable<any, string>,
+	awards_enabled?: boolean | undefined | null | Variable<any, string>,
 	banner?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	description?: string | undefined | null | Variable<any, string>,
@@ -55063,8 +55971,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	scheduling_mode?: string | undefined | null | Variable<any, string>,
 	start?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>,
-	trophies_enabled?: boolean | undefined | null | Variable<any, string>
+	status?: ValueTypes["e_tournament_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: AliasType<{
@@ -64442,6 +65349,38 @@ export type ResolverInputTypes = {
 	key?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["Award"]: AliasType<{
+	allow_multiple?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tier?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["AwardRecipient"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	team_id?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 ["Boolean_comparison_exp"]: {
 	_eq?: boolean | undefined | null,
@@ -65110,8 +66049,63 @@ export type ResolverInputTypes = {
 	url?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TelemetryActivityPoint"]: AliasType<{
+	day?:boolean | `@${string}`,
+	installs?:boolean | `@${string}`,
+	matches?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryFeatureAdoption"]: AliasType<{
+	enabled?:boolean | `@${string}`,
+	installsUsing?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	reporting?:boolean | `@${string}`,
+	total?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryFleetTotals"]: AliasType<{
+	dedicatedServers?:boolean | `@${string}`,
+	gameServerNodes?:boolean | `@${string}`,
+	mapsPlayed?:boolean | `@${string}`,
+	matches?:boolean | `@${string}`,
+	matchesMonth?:boolean | `@${string}`,
+	matchesWeek?:boolean | `@${string}`,
+	matchesYear?:boolean | `@${string}`,
+	playersActive30d?:boolean | `@${string}`,
+	playersRegistered?:boolean | `@${string}`,
+	publicServers?:boolean | `@${string}`,
+	serverCapacity?:boolean | `@${string}`,
+	servers?:boolean | `@${string}`,
+	teams?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryGrowthPoint"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	month?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryInstallCounts"]: AliasType<{
+	active24h?:boolean | `@${string}`,
+	active30d?:boolean | `@${string}`,
+	active7d?:boolean | `@${string}`,
+	new30d?:boolean | `@${string}`,
+	retained180d?:boolean | `@${string}`,
+	total?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TelemetryStats"]: AliasType<{
+	activity?:ResolverInputTypes["TelemetryActivityPoint"],
+	features?:ResolverInputTypes["TelemetryFeatureAdoption"],
+	growth?:ResolverInputTypes["TelemetryGrowthPoint"],
+	installs?:ResolverInputTypes["TelemetryInstallCounts"],
 	online?:boolean | `@${string}`,
+	totals?:ResolverInputTypes["TelemetryFleetTotals"],
+	versions?:ResolverInputTypes["TelemetryVersionSpread"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryVersionSpread"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TestUploadResponse"]: AliasType<{
@@ -65130,6 +66124,16 @@ export type ResolverInputTypes = {
 	chunks_count?:boolean | `@${string}`,
 	hypertables?:ResolverInputTypes["HypertableInfo"],
 	jobs?:ResolverInputTypes["TimescaleJob"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TournamentAward"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TournamentMatchResetImpact"]: AliasType<{
@@ -65658,6 +66662,712 @@ count?: [{	columns?: Array<ResolverInputTypes["api_keys_select_column"]> | undef
 	["approve_league_season_movements_args"]: {
 	_league_season_id?: ResolverInputTypes["uuid"] | undefined | null
 };
+	/** columns and relationships of "award_recipients" */
+["award_recipients"]: AliasType<{
+	/** An object relationship */
+	award?:ResolverInputTypes["awards"],
+	award_id?:boolean | `@${string}`,
+	/** An object relationship */
+	awarded_by?:ResolverInputTypes["players"],
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	placement_tier?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
+	player_steam_id?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	/** An object relationship */
+	team?:ResolverInputTypes["teams"],
+	team_id?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament?:ResolverInputTypes["tournaments"],
+	/** An object relationship */
+	tournament_award?:ResolverInputTypes["tournament_awards"],
+	tournament_id?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament_team?:ResolverInputTypes["tournament_teams"],
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "award_recipients" */
+["award_recipients_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["award_recipients_aggregate_fields"],
+	nodes?:ResolverInputTypes["award_recipients"],
+		__typename?: boolean | `@${string}`
+}>;
+	["award_recipients_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["award_recipients_aggregate_bool_exp_count"] | undefined | null
+};
+	["award_recipients_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "award_recipients" */
+["award_recipients_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["award_recipients_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["award_recipients_max_fields"],
+	min?:ResolverInputTypes["award_recipients_min_fields"],
+	stddev?:ResolverInputTypes["award_recipients_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["award_recipients_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["award_recipients_stddev_samp_fields"],
+	sum?:ResolverInputTypes["award_recipients_sum_fields"],
+	var_pop?:ResolverInputTypes["award_recipients_var_pop_fields"],
+	var_samp?:ResolverInputTypes["award_recipients_var_samp_fields"],
+	variance?:ResolverInputTypes["award_recipients_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "award_recipients" */
+["award_recipients_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["award_recipients_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["award_recipients_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["award_recipients_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["award_recipients_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["award_recipients_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["award_recipients_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["award_recipients_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["award_recipients_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["award_recipients_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["award_recipients_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "award_recipients" */
+["award_recipients_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["award_recipients_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["award_recipients_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["award_recipients_avg_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "award_recipients" */
+["award_recipients_avg_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "award_recipients". All fields are combined with a logical 'AND'. */
+["award_recipients_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["award_recipients_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["award_recipients_bool_exp"]> | undefined | null,
+	award?: ResolverInputTypes["awards_bool_exp"] | undefined | null,
+	award_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	awarded_by?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	note?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	placement?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	placement_tier?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	source?: ResolverInputTypes["e_award_sources_enum_comparison_exp"] | undefined | null,
+	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
+	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_award?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	tournament_team?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "award_recipients" */
+["award_recipients_constraint"]:award_recipients_constraint;
+	/** input type for incrementing numeric columns in table "award_recipients" */
+["award_recipients_inc_input"]: {
+	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "award_recipients" */
+["award_recipients_insert_input"]: {
+	award?: ResolverInputTypes["awards_obj_rel_insert_input"] | undefined | null,
+	award_id?: ResolverInputTypes["uuid"] | undefined | null,
+	awarded_by?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	source?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
+	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
+	team_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_award?: ResolverInputTypes["tournament_awards_obj_rel_insert_input"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team?: ResolverInputTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["award_recipients_max_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	placement_tier?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	team_id?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "award_recipients" */
+["award_recipients_max_order_by"]: {
+	award_id?: ResolverInputTypes["order_by"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	note?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	team_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["award_recipients_min_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	awarded_by_steam_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	note?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	placement_tier?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+	team_id?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	tournament_team_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "award_recipients" */
+["award_recipients_min_order_by"]: {
+	award_id?: ResolverInputTypes["order_by"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	note?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	team_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "award_recipients" */
+["award_recipients_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["award_recipients"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "award_recipients" */
+["award_recipients_on_conflict"]: {
+	constraint: ResolverInputTypes["award_recipients_constraint"],
+	update_columns: Array<ResolverInputTypes["award_recipients_update_column"]>,
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "award_recipients". */
+["award_recipients_order_by"]: {
+	award?: ResolverInputTypes["awards_order_by"] | undefined | null,
+	award_id?: ResolverInputTypes["order_by"] | undefined | null,
+	awarded_by?: ResolverInputTypes["players_order_by"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	note?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	source?: ResolverInputTypes["order_by"] | undefined | null,
+	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
+	team_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
+	tournament_award?: ResolverInputTypes["tournament_awards_order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team?: ResolverInputTypes["tournament_teams_order_by"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: award_recipients */
+["award_recipients_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "award_recipients" */
+["award_recipients_select_column"]:award_recipients_select_column;
+	/** input type for updating data in table "award_recipients" */
+["award_recipients_set_input"]: {
+	award_id?: ResolverInputTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	source?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
+	team_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["award_recipients_stddev_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "award_recipients" */
+["award_recipients_stddev_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["award_recipients_stddev_pop_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "award_recipients" */
+["award_recipients_stddev_pop_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["award_recipients_stddev_samp_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "award_recipients" */
+["award_recipients_stddev_samp_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "award_recipients" */
+["award_recipients_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["award_recipients_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["award_recipients_stream_cursor_value_input"]: {
+	award_id?: ResolverInputTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	source?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
+	team_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["award_recipients_sum_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "award_recipients" */
+["award_recipients_sum_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "award_recipients" */
+["award_recipients_update_column"]:award_recipients_update_column;
+	["award_recipients_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["award_recipients_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["award_recipients_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["award_recipients_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["award_recipients_var_pop_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "award_recipients" */
+["award_recipients_var_pop_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["award_recipients_var_samp_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "award_recipients" */
+["award_recipients_var_samp_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["award_recipients_variance_fields"]: AliasType<{
+	awarded_by_steam_id?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	player_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "award_recipients" */
+["award_recipients_variance_order_by"]: {
+	awarded_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "awards" */
+["awards"]: AliasType<{
+	allow_multiple?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	/** An object relationship */
+	created_by?:ResolverInputTypes["players"],
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	/** An object relationship */
+	event?:ResolverInputTypes["events"],
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	/** An object relationship */
+	league_season?:ResolverInputTypes["league_seasons"],
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+recipients?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+recipients_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
+	/** An object relationship */
+	season?:ResolverInputTypes["seasons"],
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tier?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament?:ResolverInputTypes["tournaments"],
+tournament_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards"]],
+tournament_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards_aggregate"]],
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "awards" */
+["awards_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["awards_aggregate_fields"],
+	nodes?:ResolverInputTypes["awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "awards" */
+["awards_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["awards_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["awards_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["awards_max_fields"],
+	min?:ResolverInputTypes["awards_min_fields"],
+	stddev?:ResolverInputTypes["awards_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["awards_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["awards_stddev_samp_fields"],
+	sum?:ResolverInputTypes["awards_sum_fields"],
+	var_pop?:ResolverInputTypes["awards_var_pop_fields"],
+	var_samp?:ResolverInputTypes["awards_var_samp_fields"],
+	variance?:ResolverInputTypes["awards_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["awards_avg_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "awards". All fields are combined with a logical 'AND'. */
+["awards_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["awards_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["awards_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["awards_bool_exp"]> | undefined | null,
+	allow_multiple?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	created_by?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	created_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	event?: ResolverInputTypes["events_bool_exp"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	image_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	league_season?: ResolverInputTypes["league_seasons_bool_exp"] | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	recipients?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	recipients_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
+	season?: ResolverInputTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	silhouette?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	system_key?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	tier?: ResolverInputTypes["e_award_tiers_enum_comparison_exp"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_configs?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null,
+	tournament_configs_aggregate?: ResolverInputTypes["tournament_awards_aggregate_bool_exp"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "awards" */
+["awards_constraint"]:awards_constraint;
+	/** input type for incrementing numeric columns in table "awards" */
+["awards_inc_input"]: {
+	created_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** input type for inserting data into table "awards" */
+["awards_insert_input"]: {
+	allow_multiple?: boolean | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	created_by?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	created_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event?: ResolverInputTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season?: ResolverInputTypes["league_seasons_obj_rel_insert_input"] | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	recipients?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	season?: ResolverInputTypes["seasons_obj_rel_insert_input"] | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: ResolverInputTypes["e_award_tiers_enum"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_configs?: ResolverInputTypes["tournament_awards_arr_rel_insert_input"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["awards_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["awards_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	created_by_steam_id?:boolean | `@${string}`,
+	description?:boolean | `@${string}`,
+	event_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	league_season_id?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	season_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	system_key?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "awards" */
+["awards_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** input type for inserting object relation for remote table "awards" */
+["awards_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["awards_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["awards_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "awards" */
+["awards_on_conflict"]: {
+	constraint: ResolverInputTypes["awards_constraint"],
+	update_columns: Array<ResolverInputTypes["awards_update_column"]>,
+	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "awards". */
+["awards_order_by"]: {
+	allow_multiple?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	created_by?: ResolverInputTypes["players_order_by"] | undefined | null,
+	created_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	event?: ResolverInputTypes["events_order_by"] | undefined | null,
+	event_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	image_url?: ResolverInputTypes["order_by"] | undefined | null,
+	league_season?: ResolverInputTypes["league_seasons_order_by"] | undefined | null,
+	league_season_id?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	recipients_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	season?: ResolverInputTypes["seasons_order_by"] | undefined | null,
+	season_id?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
+	system_key?: ResolverInputTypes["order_by"] | undefined | null,
+	tier?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
+	tournament_configs_aggregate?: ResolverInputTypes["tournament_awards_aggregate_order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: awards */
+["awards_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "awards" */
+["awards_select_column"]:awards_select_column;
+	/** input type for updating data in table "awards" */
+["awards_set_input"]: {
+	allow_multiple?: boolean | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: ResolverInputTypes["e_award_tiers_enum"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["awards_stddev_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["awards_stddev_pop_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["awards_stddev_samp_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "awards" */
+["awards_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["awards_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["awards_stream_cursor_value_input"]: {
+	allow_multiple?: boolean | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ResolverInputTypes["uuid"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: ResolverInputTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: ResolverInputTypes["e_award_tiers_enum"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["awards_sum_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "awards" */
+["awards_update_column"]:awards_update_column;
+	["awards_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["awards_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["awards_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["awards_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["awards_var_pop_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["awards_var_samp_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["awards_variance_fields"]: AliasType<{
+	created_by_steam_id?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bigint"]:unknown;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_array_comparison_exp"]: {
@@ -66181,13 +67891,17 @@ count?: [{	columns?: Array<ResolverInputTypes["clip_render_jobs_select_column"]>
 	/** columns and relationships of "custom_pages" */
 ["custom_pages"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+deployments?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	enabled?:boolean | `@${string}`,
 	exposed_module?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	is_default?:boolean | `@${string}`,
+	manifest_url?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
+	profile_tab_label?:boolean | `@${string}`,
 	remote_entry_url?:boolean | `@${string}`,
 	remote_scope?:boolean | `@${string}`,
 	required_role?:boolean | `@${string}`,
@@ -66217,6 +67931,10 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	variance?:ResolverInputTypes["custom_pages_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_append_input"]: {
+	deployments?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["custom_pages_avg_fields"]: AliasType<{
 	nav_order?:boolean | `@${string}`,
@@ -66228,13 +67946,16 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	_not?: ResolverInputTypes["custom_pages_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["custom_pages_bool_exp"]> | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	deployments?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	exposed_module?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	icon?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_default?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	manifest_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	nav_group?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	nav_order?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	profile_tab_label?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	remote_entry_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	remote_scope?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	required_role?: ResolverInputTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
@@ -66244,6 +67965,18 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 };
 	/** unique or primary key constraints on table "custom_pages" */
 ["custom_pages_constraint"]:custom_pages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["custom_pages_delete_at_path_input"]: {
+	deployments?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["custom_pages_delete_elem_input"]: {
+	deployments?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["custom_pages_delete_key_input"]: {
+	deployments?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "custom_pages" */
 ["custom_pages_inc_input"]: {
 	nav_order?: number | undefined | null
@@ -66251,13 +67984,16 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	/** input type for inserting data into table "custom_pages" */
 ["custom_pages_insert_input"]: {
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	deployments?: ResolverInputTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
@@ -66271,8 +68007,10 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	exposed_module?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	manifest_url?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
+	profile_tab_label?:boolean | `@${string}`,
 	remote_entry_url?:boolean | `@${string}`,
 	remote_scope?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
@@ -66286,8 +68024,10 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	exposed_module?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	manifest_url?:boolean | `@${string}`,
 	nav_group?:boolean | `@${string}`,
 	nav_order?:boolean | `@${string}`,
+	profile_tab_label?:boolean | `@${string}`,
 	remote_entry_url?:boolean | `@${string}`,
 	remote_scope?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
@@ -66312,13 +68052,16 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	/** Ordering options when selecting data from "custom_pages". */
 ["custom_pages_order_by"]: {
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	deployments?: ResolverInputTypes["order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	exposed_module?: ResolverInputTypes["order_by"] | undefined | null,
 	icon?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_default?: ResolverInputTypes["order_by"] | undefined | null,
+	manifest_url?: ResolverInputTypes["order_by"] | undefined | null,
 	nav_group?: ResolverInputTypes["order_by"] | undefined | null,
 	nav_order?: ResolverInputTypes["order_by"] | undefined | null,
+	profile_tab_label?: ResolverInputTypes["order_by"] | undefined | null,
 	remote_entry_url?: ResolverInputTypes["order_by"] | undefined | null,
 	remote_scope?: ResolverInputTypes["order_by"] | undefined | null,
 	required_role?: ResolverInputTypes["order_by"] | undefined | null,
@@ -66330,18 +68073,25 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 ["custom_pages_pk_columns_input"]: {
 	id: ResolverInputTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_prepend_input"]: {
+	deployments?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "custom_pages" */
 ["custom_pages_select_column"]:custom_pages_select_column;
 	/** input type for updating data in table "custom_pages" */
 ["custom_pages_set_input"]: {
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	deployments?: ResolverInputTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
@@ -66374,13 +68124,16 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	/** Initial value of the column from where the streaming should start */
 ["custom_pages_stream_cursor_value_input"]: {
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	deployments?: ResolverInputTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
@@ -66396,8 +68149,18 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	/** update columns of table "custom_pages" */
 ["custom_pages_update_column"]:custom_pages_update_column;
 	["custom_pages_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["custom_pages_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["custom_pages_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["custom_pages_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["custom_pages_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["custom_pages_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["custom_pages_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["custom_pages_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -67896,6 +69659,216 @@ count?: [{	columns?: Array<ResolverInputTypes["draft_games_select_column"]> | un
 	host_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	max_elo?: ResolverInputTypes["order_by"] | undefined | null,
 	min_elo?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "e_award_sources" */
+["e_award_sources"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_award_sources" */
+["e_award_sources_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_award_sources_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_award_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_award_sources" */
+["e_award_sources_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_award_sources_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_award_sources_max_fields"],
+	min?:ResolverInputTypes["e_award_sources_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_award_sources". All fields are combined with a logical 'AND'. */
+["e_award_sources_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_award_sources_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_award_sources_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_award_sources" */
+["e_award_sources_constraint"]:e_award_sources_constraint;
+	["e_award_sources_enum"]:e_award_sources_enum;
+	/** Boolean expression to compare columns of type "e_award_sources_enum". All fields are combined with logical 'AND'. */
+["e_award_sources_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_award_sources_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_award_sources_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_award_sources_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_award_sources" */
+["e_award_sources_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_award_sources_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_award_sources_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_award_sources" */
+["e_award_sources_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_award_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_award_sources" */
+["e_award_sources_on_conflict"]: {
+	constraint: ResolverInputTypes["e_award_sources_constraint"],
+	update_columns: Array<ResolverInputTypes["e_award_sources_update_column"]>,
+	where?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_award_sources". */
+["e_award_sources_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_award_sources */
+["e_award_sources_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_award_sources" */
+["e_award_sources_select_column"]:e_award_sources_select_column;
+	/** input type for updating data in table "e_award_sources" */
+["e_award_sources_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_award_sources" */
+["e_award_sources_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_award_sources_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_sources_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_award_sources" */
+["e_award_sources_update_column"]:e_award_sources_update_column;
+	["e_award_sources_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_award_sources_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_award_sources_bool_exp"]
+};
+	/** columns and relationships of "e_award_tiers" */
+["e_award_tiers"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_award_tiers" */
+["e_award_tiers_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_award_tiers_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_award_tiers"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_award_tiers" */
+["e_award_tiers_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_award_tiers_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_award_tiers_max_fields"],
+	min?:ResolverInputTypes["e_award_tiers_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_award_tiers". All fields are combined with a logical 'AND'. */
+["e_award_tiers_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_award_tiers_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_award_tiers_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_award_tiers" */
+["e_award_tiers_constraint"]:e_award_tiers_constraint;
+	["e_award_tiers_enum"]:e_award_tiers_enum;
+	/** Boolean expression to compare columns of type "e_award_tiers_enum". All fields are combined with logical 'AND'. */
+["e_award_tiers_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_award_tiers_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_award_tiers_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_award_tiers_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_award_tiers_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_award_tiers" */
+["e_award_tiers_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_award_tiers_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_award_tiers_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_award_tiers" */
+["e_award_tiers_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_award_tiers"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_award_tiers" */
+["e_award_tiers_on_conflict"]: {
+	constraint: ResolverInputTypes["e_award_tiers_constraint"],
+	update_columns: Array<ResolverInputTypes["e_award_tiers_update_column"]>,
+	where?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_award_tiers". */
+["e_award_tiers_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_award_tiers */
+["e_award_tiers_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_award_tiers" */
+["e_award_tiers_select_column"]:e_award_tiers_select_column;
+	/** input type for updating data in table "e_award_tiers" */
+["e_award_tiers_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_award_tiers" */
+["e_award_tiers_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_award_tiers_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_tiers_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_award_tiers" */
+["e_award_tiers_update_column"]:e_award_tiers_update_column;
+	["e_award_tiers_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_award_tiers_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_award_tiers_bool_exp"]
 };
 	/** columns and relationships of "e_check_in_settings" */
 ["e_check_in_settings"]: AliasType<{
@@ -85967,6 +87940,7 @@ createClips?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Succe
 createDraftGame?: [{	settings: ResolverInputTypes["jsonb"]},ResolverInputTypes["CreateDraftGameOutput"]],
 createScheduledMatch?: [{	lineup_1: ResolverInputTypes["ScheduledLineupInput"],	lineup_2: ResolverInputTypes["ScheduledLineupInput"],	options: ResolverInputTypes["jsonb"],	scheduled_at: string},ResolverInputTypes["CreateScheduledMatchOutput"]],
 createServerDirectory?: [{	dir_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
+deleteAward?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 deleteClip?: [{	clip_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 deleteMatch?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 deleteNewsPost?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
@@ -85982,6 +87956,12 @@ delete_abandoned_matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInpu
 delete_api_keys?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["api_keys_bool_exp"]},ResolverInputTypes["api_keys_mutation_response"]],
 delete_api_keys_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["api_keys"]],
+delete_award_recipients?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["award_recipients_bool_exp"]},ResolverInputTypes["award_recipients_mutation_response"]],
+delete_award_recipients_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["award_recipients"]],
+delete_awards?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["awards_bool_exp"]},ResolverInputTypes["awards_mutation_response"]],
+delete_awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["awards"]],
 delete_clip_render_jobs?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["clip_render_jobs_bool_exp"]},ResolverInputTypes["clip_render_jobs_mutation_response"]],
 delete_clip_render_jobs_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["clip_render_jobs"]],
@@ -86000,6 +87980,12 @@ delete_draft_game_players_by_pk?: [{	draft_game_id: ResolverInputTypes["uuid"],	
 delete_draft_games?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["draft_games_bool_exp"]},ResolverInputTypes["draft_games_mutation_response"]],
 delete_draft_games_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["draft_games"]],
+delete_e_award_sources?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_award_sources_bool_exp"]},ResolverInputTypes["e_award_sources_mutation_response"]],
+delete_e_award_sources_by_pk?: [{	value: string},ResolverInputTypes["e_award_sources"]],
+delete_e_award_tiers?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_award_tiers_bool_exp"]},ResolverInputTypes["e_award_tiers_mutation_response"]],
+delete_e_award_tiers_by_pk?: [{	value: string},ResolverInputTypes["e_award_tiers"]],
 delete_e_check_in_settings?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_check_in_settings_bool_exp"]},ResolverInputTypes["e_check_in_settings_mutation_response"]],
 delete_e_check_in_settings_by_pk?: [{	value: string},ResolverInputTypes["e_check_in_settings"]],
@@ -86375,6 +88361,9 @@ delete_team_suggestions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInput
 delete_teams?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["teams_bool_exp"]},ResolverInputTypes["teams_mutation_response"]],
 delete_teams_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["teams"]],
+delete_tournament_awards?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["tournament_awards_bool_exp"]},ResolverInputTypes["tournament_awards_mutation_response"]],
+delete_tournament_awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_awards"]],
 delete_tournament_brackets?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["tournament_brackets_bool_exp"]},ResolverInputTypes["tournament_brackets_mutation_response"]],
 delete_tournament_brackets_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_brackets"]],
@@ -86405,12 +88394,6 @@ delete_tournament_team_roster_by_pk?: [{	player_steam_id: ResolverInputTypes["bi
 delete_tournament_teams?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["tournament_teams_bool_exp"]},ResolverInputTypes["tournament_teams_mutation_response"]],
 delete_tournament_teams_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_teams"]],
-delete_tournament_trophies?: [{	/** filter the rows which have to be deleted */
-	where: ResolverInputTypes["tournament_trophies_bool_exp"]},ResolverInputTypes["tournament_trophies_mutation_response"]],
-delete_tournament_trophies_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_trophies"]],
-delete_tournament_trophy_configs?: [{	/** filter the rows which have to be deleted */
-	where: ResolverInputTypes["tournament_trophy_configs_bool_exp"]},ResolverInputTypes["tournament_trophy_configs_mutation_response"]],
-delete_tournament_trophy_configs_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_trophy_configs"]],
 delete_tournaments?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["tournaments_bool_exp"]},ResolverInputTypes["tournaments_mutation_response"]],
 delete_tournaments_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournaments"]],
@@ -86429,6 +88412,7 @@ denyInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverInp
 forfeitMatch?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 getLiveStreamSpecState?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ResolverInputTypes["GetTestUploadResponse"],
+grantAward?: [{	award_id: ResolverInputTypes["uuid"],	note?: string | undefined | null,	player_steam_id?: string | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["AwardRecipient"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["_map_pool_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["_map_pool_mutation_response"]],
@@ -86447,6 +88431,18 @@ insert_api_keys?: [{	/** the rows to be inserted */
 insert_api_keys_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["api_keys_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["api_keys_on_conflict"] | undefined | null},ResolverInputTypes["api_keys"]],
+insert_award_recipients?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["award_recipients_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["award_recipients_on_conflict"] | undefined | null},ResolverInputTypes["award_recipients_mutation_response"]],
+insert_award_recipients_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["award_recipients_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["award_recipients_on_conflict"] | undefined | null},ResolverInputTypes["award_recipients"]],
+insert_awards?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["awards_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["awards_on_conflict"] | undefined | null},ResolverInputTypes["awards_mutation_response"]],
+insert_awards_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["awards_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["awards_on_conflict"] | undefined | null},ResolverInputTypes["awards"]],
 insert_clip_render_jobs?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["clip_render_jobs_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["clip_render_jobs_on_conflict"] | undefined | null},ResolverInputTypes["clip_render_jobs_mutation_response"]],
@@ -86483,6 +88479,18 @@ insert_draft_games?: [{	/** the rows to be inserted */
 insert_draft_games_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["draft_games_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["draft_games_on_conflict"] | undefined | null},ResolverInputTypes["draft_games"]],
+insert_e_award_sources?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_award_sources_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_award_sources_on_conflict"] | undefined | null},ResolverInputTypes["e_award_sources_mutation_response"]],
+insert_e_award_sources_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_award_sources_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_award_sources_on_conflict"] | undefined | null},ResolverInputTypes["e_award_sources"]],
+insert_e_award_tiers?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_award_tiers_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_award_tiers_on_conflict"] | undefined | null},ResolverInputTypes["e_award_tiers_mutation_response"]],
+insert_e_award_tiers_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_award_tiers_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_award_tiers_on_conflict"] | undefined | null},ResolverInputTypes["e_award_tiers"]],
 insert_e_check_in_settings?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_check_in_settings_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_check_in_settings_on_conflict"] | undefined | null},ResolverInputTypes["e_check_in_settings_mutation_response"]],
@@ -87233,6 +89241,12 @@ insert_teams?: [{	/** the rows to be inserted */
 insert_teams_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["teams_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["teams_on_conflict"] | undefined | null},ResolverInputTypes["teams"]],
+insert_tournament_awards?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["tournament_awards_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["tournament_awards_on_conflict"] | undefined | null},ResolverInputTypes["tournament_awards_mutation_response"]],
+insert_tournament_awards_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["tournament_awards_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["tournament_awards_on_conflict"] | undefined | null},ResolverInputTypes["tournament_awards"]],
 insert_tournament_brackets?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["tournament_brackets_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["tournament_brackets_on_conflict"] | undefined | null},ResolverInputTypes["tournament_brackets_mutation_response"]],
@@ -87293,18 +89307,6 @@ insert_tournament_teams?: [{	/** the rows to be inserted */
 insert_tournament_teams_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["tournament_teams_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["tournament_teams_on_conflict"] | undefined | null},ResolverInputTypes["tournament_teams"]],
-insert_tournament_trophies?: [{	/** the rows to be inserted */
-	objects: Array<ResolverInputTypes["tournament_trophies_insert_input"]>,	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophies_on_conflict"] | undefined | null},ResolverInputTypes["tournament_trophies_mutation_response"]],
-insert_tournament_trophies_one?: [{	/** the row to be inserted */
-	object: ResolverInputTypes["tournament_trophies_insert_input"],	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophies_on_conflict"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
-insert_tournament_trophy_configs?: [{	/** the rows to be inserted */
-	objects: Array<ResolverInputTypes["tournament_trophy_configs_insert_input"]>,	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophy_configs_on_conflict"] | undefined | null},ResolverInputTypes["tournament_trophy_configs_mutation_response"]],
-insert_tournament_trophy_configs_one?: [{	/** the row to be inserted */
-	object: ResolverInputTypes["tournament_trophy_configs_insert_input"],	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophy_configs_on_conflict"] | undefined | null},ResolverInputTypes["tournament_trophy_configs"]],
 insert_tournaments?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["tournaments_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["tournaments_on_conflict"] | undefined | null},ResolverInputTypes["tournaments_mutation_response"]],
@@ -87358,13 +89360,13 @@ previewDraftGame?: [{	draftGameId: ResolverInputTypes["uuid"],	inviteCode?: stri
 queueClipFromPreset?: [{	fps?: number | undefined | null,	match_map_id: ResolverInputTypes["uuid"],	preset: string,	resolution?: string | undefined | null,	target_name?: string | undefined | null,	target_steam_id: string,	title?: string | undefined | null},ResolverInputTypes["CreateClipRenderOutput"]],
 randomizeTeams?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 rebootMatchServer?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
-recalculate_tournament_trophies?: [{	/** input parameters for function "recalculate_tournament_trophies" */
-	args: ResolverInputTypes["recalculate_tournament_trophies_args"],	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
+recalculate_tournament_awards?: [{	/** input parameters for function "recalculate_tournament_awards" */
+	args: ResolverInputTypes["recalculate_tournament_awards_args"],	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
 	/** Wipe and rebuild all player ELO from finished matches in chronological order (admin only). Runs in the background; track via recomputePlayerEloStatus. */
 	recomputePlayerElo?:ResolverInputTypes["RecomputeEloStartedOutput"],
 	/** Return the progress of the ELO recompute run (admin only). */
@@ -87416,7 +89418,9 @@ restart_league_season?: [{	/** input parameters for function "restart_league_sea
 resumeClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 retryClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"],	only_failed?: boolean | undefined | null},ResolverInputTypes["SuccessOutput"]],
 retryPendingMatchImport?: [{	valve_match_id: string},ResolverInputTypes["PendingMatchImportActionOutput"]],
+revokeAward?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 sanctionServerPlayer?: [{	duration?: number | undefined | null,	reason?: string | undefined | null,	serverId?: string | undefined | null,	steam_id: string,	type: string},ResolverInputTypes["SanctionResult"]],
+saveAward?: [{	allow_multiple?: boolean | undefined | null,	description?: string | undefined | null,	event_id?: ResolverInputTypes["uuid"] | undefined | null,	id?: ResolverInputTypes["uuid"] | undefined | null,	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,	name: string,	season_id?: ResolverInputTypes["uuid"] | undefined | null,	silhouette?: number | undefined | null,	tier: string,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["Award"]],
 saveNewsPost?: [{	content_markdown: string,	cover_image_url?: string | undefined | null,	id?: ResolverInputTypes["uuid"] | undefined | null,	teaser?: string | undefined | null,	title: string},ResolverInputTypes["NewsPost"]],
 	/** Scan S3 for objects not referenced in the database (admin only). Runs in the background; results land in the logs and orphanedDemosScanResult. */
 	scanOrphanedDemos?:ResolverInputTypes["ScanStartedOutput"],
@@ -87429,6 +89433,7 @@ setHudMode?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInpu
 setMapWinner?: [{	match_id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ResolverInputTypes["uuid"],	status: string},ResolverInputTypes["NewsPost"]],
+setTournamentAward?: [{	award_id?: ResolverInputTypes["uuid"] | undefined | null,	custom_name?: string | undefined | null,	placement: number,	silhouette?: number | undefined | null,	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["TournamentAward"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
 skipShaders?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 specAutodirector?: [{	enabled: boolean,	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
@@ -87485,6 +89490,24 @@ update_api_keys_by_pk?: [{	/** increments the numeric columns with given value o
 	_set?: ResolverInputTypes["api_keys_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["api_keys_pk_columns_input"]},ResolverInputTypes["api_keys"]],
 update_api_keys_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["api_keys_updates"]>},ResolverInputTypes["api_keys_mutation_response"]],
+update_award_recipients?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["award_recipients_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["award_recipients_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["award_recipients_bool_exp"]},ResolverInputTypes["award_recipients_mutation_response"]],
+update_award_recipients_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["award_recipients_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["award_recipients_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["award_recipients_pk_columns_input"]},ResolverInputTypes["award_recipients"]],
+update_award_recipients_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["award_recipients_updates"]>},ResolverInputTypes["award_recipients_mutation_response"]],
+update_awards?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["awards_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["awards_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["awards_bool_exp"]},ResolverInputTypes["awards_mutation_response"]],
+update_awards_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["awards_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["awards_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["awards_pk_columns_input"]},ResolverInputTypes["awards"]],
+update_awards_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["awards_updates"]>},ResolverInputTypes["awards_mutation_response"]],
 update_clip_render_jobs?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ResolverInputTypes["clip_render_jobs_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ResolverInputTypes["clip_render_jobs_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -87504,12 +89527,22 @@ update_clip_render_jobs_by_pk?: [{	/** append existing jsonb value of filtered c
 	_set?: ResolverInputTypes["clip_render_jobs_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["clip_render_jobs_pk_columns_input"]},ResolverInputTypes["clip_render_jobs"]],
 update_clip_render_jobs_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["clip_render_jobs_updates"]>},ResolverInputTypes["clip_render_jobs_mutation_response"]],
-update_custom_pages?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["custom_pages_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_custom_pages?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["custom_pages_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["custom_pages_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["custom_pages_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["custom_pages_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["custom_pages_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["custom_pages_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["custom_pages_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["custom_pages_bool_exp"]},ResolverInputTypes["custom_pages_mutation_response"]],
-update_custom_pages_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["custom_pages_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_custom_pages_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["custom_pages_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["custom_pages_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["custom_pages_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["custom_pages_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["custom_pages_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["custom_pages_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["custom_pages_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["custom_pages_pk_columns_input"]},ResolverInputTypes["custom_pages"]],
 update_custom_pages_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["custom_pages_updates"]>},ResolverInputTypes["custom_pages_mutation_response"]],
@@ -87549,6 +89582,20 @@ update_draft_games_by_pk?: [{	/** increments the numeric columns with given valu
 	_set?: ResolverInputTypes["draft_games_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["draft_games_pk_columns_input"]},ResolverInputTypes["draft_games"]],
 update_draft_games_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["draft_games_updates"]>},ResolverInputTypes["draft_games_mutation_response"]],
+update_e_award_sources?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_award_sources_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_award_sources_bool_exp"]},ResolverInputTypes["e_award_sources_mutation_response"]],
+update_e_award_sources_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_award_sources_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_award_sources_pk_columns_input"]},ResolverInputTypes["e_award_sources"]],
+update_e_award_sources_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_award_sources_updates"]>},ResolverInputTypes["e_award_sources_mutation_response"]],
+update_e_award_tiers?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_award_tiers_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_award_tiers_bool_exp"]},ResolverInputTypes["e_award_tiers_mutation_response"]],
+update_e_award_tiers_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_award_tiers_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_award_tiers_pk_columns_input"]},ResolverInputTypes["e_award_tiers"]],
+update_e_award_tiers_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_award_tiers_updates"]>},ResolverInputTypes["e_award_tiers_mutation_response"]],
 update_e_check_in_settings?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_check_in_settings_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_check_in_settings_bool_exp"]},ResolverInputTypes["e_check_in_settings_mutation_response"]],
@@ -88653,6 +90700,15 @@ update_teams_by_pk?: [{	/** increments the numeric columns with given value of t
 	_set?: ResolverInputTypes["teams_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["teams_pk_columns_input"]},ResolverInputTypes["teams"]],
 update_teams_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["teams_updates"]>},ResolverInputTypes["teams_mutation_response"]],
+update_tournament_awards?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["tournament_awards_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["tournament_awards_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["tournament_awards_bool_exp"]},ResolverInputTypes["tournament_awards_mutation_response"]],
+update_tournament_awards_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["tournament_awards_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["tournament_awards_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["tournament_awards_pk_columns_input"]},ResolverInputTypes["tournament_awards"]],
+update_tournament_awards_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["tournament_awards_updates"]>},ResolverInputTypes["tournament_awards_mutation_response"]],
 update_tournament_brackets?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["tournament_brackets_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["tournament_brackets_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -88749,24 +90805,6 @@ update_tournament_teams_by_pk?: [{	/** increments the numeric columns with given
 	_set?: ResolverInputTypes["tournament_teams_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["tournament_teams_pk_columns_input"]},ResolverInputTypes["tournament_teams"]],
 update_tournament_teams_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["tournament_teams_updates"]>},ResolverInputTypes["tournament_teams_mutation_response"]],
-update_tournament_trophies?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["tournament_trophies_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
-	_set?: ResolverInputTypes["tournament_trophies_set_input"] | undefined | null,	/** filter the rows which have to be updated */
-	where: ResolverInputTypes["tournament_trophies_bool_exp"]},ResolverInputTypes["tournament_trophies_mutation_response"]],
-update_tournament_trophies_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["tournament_trophies_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
-	_set?: ResolverInputTypes["tournament_trophies_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["tournament_trophies_pk_columns_input"]},ResolverInputTypes["tournament_trophies"]],
-update_tournament_trophies_many?: [{	/** updates to execute, in order */
-	updates: Array<ResolverInputTypes["tournament_trophies_updates"]>},ResolverInputTypes["tournament_trophies_mutation_response"]],
-update_tournament_trophy_configs?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["tournament_trophy_configs_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
-	_set?: ResolverInputTypes["tournament_trophy_configs_set_input"] | undefined | null,	/** filter the rows which have to be updated */
-	where: ResolverInputTypes["tournament_trophy_configs_bool_exp"]},ResolverInputTypes["tournament_trophy_configs_mutation_response"]],
-update_tournament_trophy_configs_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["tournament_trophy_configs_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
-	_set?: ResolverInputTypes["tournament_trophy_configs_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["tournament_trophy_configs_pk_columns_input"]},ResolverInputTypes["tournament_trophy_configs"]],
-update_tournament_trophy_configs_many?: [{	/** updates to execute, in order */
-	updates: Array<ResolverInputTypes["tournament_trophy_configs_updates"]>},ResolverInputTypes["tournament_trophy_configs_mutation_response"]],
 update_tournaments?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["tournaments_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["tournaments_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -102603,6 +104641,18 @@ assited_by_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_assists_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null},ResolverInputTypes["player_assists_aggregate"]],
 	avatar_url?:boolean | `@${string}`,
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
 coach_lineups?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -103044,18 +105094,6 @@ tournament_rosters_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["tournament_team_roster_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_team_roster_bool_exp"] | undefined | null},ResolverInputTypes["tournament_team_roster_aggregate"]],
-tournament_trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
-tournament_trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies_aggregate"]],
 tournaments?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournaments_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -103168,6 +105206,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assited_by_players?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	avatar_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	coach_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	coach_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	country?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -103273,8 +105313,6 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	tournament_organizers_aggregate?: ResolverInputTypes["tournament_organizers_aggregate_bool_exp"] | undefined | null,
 	tournament_rosters?: ResolverInputTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	tournament_rosters_aggregate?: ResolverInputTypes["tournament_team_roster_aggregate_bool_exp"] | undefined | null,
-	tournament_trophies?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null,
-	tournament_trophies_aggregate?: ResolverInputTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null,
 	tournaments?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
 	tournaments_aggregate?: ResolverInputTypes["tournaments_aggregate_bool_exp"] | undefined | null,
 	utility_thrown?: ResolverInputTypes["player_utility_bool_exp"] | undefined | null,
@@ -103307,6 +105345,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assists?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	coach_lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -103364,7 +105403,6 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	team_members?: ResolverInputTypes["team_roster_arr_rel_insert_input"] | undefined | null,
 	tournament_organizers?: ResolverInputTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null,
 	tournament_rosters?: ResolverInputTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
-	tournament_trophies?: ResolverInputTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null,
 	tournaments?: ResolverInputTypes["tournaments_arr_rel_insert_input"] | undefined | null,
 	utility_thrown?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null,
 	vac_ban_count?: number | undefined | null,
@@ -103498,6 +105536,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assists_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	coach_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	country?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -103572,7 +105611,6 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	total_matches?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_organizers_aggregate?: ResolverInputTypes["tournament_organizers_aggregate_order_by"] | undefined | null,
 	tournament_rosters_aggregate?: ResolverInputTypes["tournament_team_roster_aggregate_order_by"] | undefined | null,
-	tournament_trophies_aggregate?: ResolverInputTypes["tournament_trophies_aggregate_order_by"] | undefined | null,
 	tournaments_aggregate?: ResolverInputTypes["tournaments_aggregate_order_by"] | undefined | null,
 	utility_thrown_aggregate?: ResolverInputTypes["player_utility_aggregate_order_by"] | undefined | null,
 	vac_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
@@ -104076,6 +106114,32 @@ api_keys_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["api_keys_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["api_keys_bool_exp"] | undefined | null},ResolverInputTypes["api_keys_aggregate"]],
 api_keys_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["api_keys"]],
+award_recipients?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+award_recipients_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
+award_recipients_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["award_recipients"]],
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards_aggregate"]],
+awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["awards"]],
 clip_render_jobs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["clip_render_jobs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -104155,6 +106219,32 @@ draft_games_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["draft_games_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["draft_games_bool_exp"] | undefined | null},ResolverInputTypes["draft_games_aggregate"]],
 draft_games_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["draft_games"]],
+e_award_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_award_sources"]],
+e_award_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_award_sources_aggregate"]],
+e_award_sources_by_pk?: [{	value: string},ResolverInputTypes["e_award_sources"]],
+e_award_tiers?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_tiers_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_tiers_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null},ResolverInputTypes["e_award_tiers"]],
+e_award_tiers_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_tiers_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_tiers_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null},ResolverInputTypes["e_award_tiers_aggregate"]],
+e_award_tiers_by_pk?: [{	value: string},ResolverInputTypes["e_award_tiers"]],
 e_check_in_settings?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_check_in_settings_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -105944,6 +108034,19 @@ teams_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["teams_bool_exp"] | undefined | null},ResolverInputTypes["teams_aggregate"]],
 teams_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["teams"]],
 	telemetryStats?:ResolverInputTypes["TelemetryStats"],
+tournament_awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards"]],
+tournament_awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards_aggregate"]],
+tournament_awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_awards"]],
 tournament_brackets?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournament_brackets_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -106074,32 +108177,6 @@ tournament_teams_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["tournament_teams_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null},ResolverInputTypes["tournament_teams_aggregate"]],
 tournament_teams_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_teams"]],
-tournament_trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
-tournament_trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies_aggregate"]],
-tournament_trophies_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_trophies"]],
-tournament_trophy_configs?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophy_configs_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs"]],
-tournament_trophy_configs_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophy_configs_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs_aggregate"]],
-tournament_trophy_configs_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_trophy_configs"]],
 tournaments?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournaments_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -106500,7 +108577,7 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["v_tournament_player_stats_bool_exp"] | undefined | null},ResolverInputTypes["v_tournament_player_stats_aggregate"]],
 		__typename?: boolean | `@${string}`
 }>;
-	["recalculate_tournament_trophies_args"]: {
+	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	["remove_league_team_from_season_args"]: {
@@ -108077,6 +110154,40 @@ api_keys_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["api_keys_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["api_keys_bool_exp"] | undefined | null},ResolverInputTypes["api_keys"]],
+award_recipients?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+award_recipients_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
+award_recipients_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["award_recipients"]],
+award_recipients_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["award_recipients_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards_aggregate"]],
+awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["awards"]],
+awards_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["awards_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["awards_bool_exp"] | undefined | null},ResolverInputTypes["awards"]],
 clip_render_jobs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["clip_render_jobs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -108179,6 +110290,40 @@ draft_games_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["draft_games_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["draft_games_bool_exp"] | undefined | null},ResolverInputTypes["draft_games"]],
+e_award_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_award_sources"]],
+e_award_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_award_sources_aggregate"]],
+e_award_sources_by_pk?: [{	value: string},ResolverInputTypes["e_award_sources"]],
+e_award_sources_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_award_sources_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_award_sources"]],
+e_award_tiers?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_tiers_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_tiers_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null},ResolverInputTypes["e_award_tiers"]],
+e_award_tiers_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_award_tiers_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_award_tiers_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null},ResolverInputTypes["e_award_tiers_aggregate"]],
+e_award_tiers_by_pk?: [{	value: string},ResolverInputTypes["e_award_tiers"]],
+e_award_tiers_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_award_tiers_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_award_tiers_bool_exp"] | undefined | null},ResolverInputTypes["e_award_tiers"]],
 e_check_in_settings?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_check_in_settings_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -110454,6 +112599,23 @@ teams_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["teams_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["teams_bool_exp"] | undefined | null},ResolverInputTypes["teams"]],
+tournament_awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards"]],
+tournament_awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards_aggregate"]],
+tournament_awards_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_awards"]],
+tournament_awards_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["tournament_awards_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards"]],
 tournament_brackets?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournament_brackets_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -110624,40 +112786,6 @@ tournament_teams_stream?: [{	/** maximum number of rows returned in a single bat
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["tournament_teams_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null},ResolverInputTypes["tournament_teams"]],
-tournament_trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
-tournament_trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies_aggregate"]],
-tournament_trophies_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_trophies"]],
-tournament_trophies_stream?: [{	/** maximum number of rows returned in a single batch */
-	batch_size: number,	/** cursor to stream the results returned by the query */
-	cursor: Array<ResolverInputTypes["tournament_trophies_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
-tournament_trophy_configs?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophy_configs_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs"]],
-tournament_trophy_configs_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophy_configs_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs_aggregate"]],
-tournament_trophy_configs_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["tournament_trophy_configs"]],
-tournament_trophy_configs_stream?: [{	/** maximum number of rows returned in a single batch */
-	batch_size: number,	/** cursor to stream the results returned by the query */
-	cursor: Array<ResolverInputTypes["tournament_trophy_configs_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs"]],
 tournaments?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournaments_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -113511,6 +115639,18 @@ count?: [{	columns?: Array<ResolverInputTypes["team_suggestions_select_column"]>
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
 	/** A computed field, executes function "can_change_team_role" */
 	can_change_role?:boolean | `@${string}`,
 	/** A computed field, executes function "can_invite_to_team" */
@@ -113686,6 +115826,8 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	_not?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["teams_bool_exp"]> | undefined | null,
 	avatar_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	can_change_role?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_invite?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_manage_scrims?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -113724,6 +115866,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 	avatar_url?: string | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	captain?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	captain_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -113806,6 +115949,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	can_change_role?: ResolverInputTypes["order_by"] | undefined | null,
 	can_invite?: ResolverInputTypes["order_by"] | undefined | null,
 	can_manage_scrims?: ResolverInputTypes["order_by"] | undefined | null,
@@ -113966,6 +116110,330 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	_lte?: ResolverInputTypes["timestamptz"] | undefined | null,
 	_neq?: ResolverInputTypes["timestamptz"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["timestamptz"]> | undefined | null
+};
+	/** columns and relationships of "tournament_awards" */
+["tournament_awards"]: AliasType<{
+	/** An object relationship */
+	award?:ResolverInputTypes["awards"],
+	award_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	/** An object relationship */
+	tournament?:ResolverInputTypes["tournaments"],
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "tournament_awards" */
+["tournament_awards_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["tournament_awards_aggregate_fields"],
+	nodes?:ResolverInputTypes["tournament_awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	["tournament_awards_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["tournament_awards_aggregate_bool_exp_count"] | undefined | null
+};
+	["tournament_awards_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "tournament_awards" */
+["tournament_awards_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["tournament_awards_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["tournament_awards_max_fields"],
+	min?:ResolverInputTypes["tournament_awards_min_fields"],
+	stddev?:ResolverInputTypes["tournament_awards_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["tournament_awards_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["tournament_awards_stddev_samp_fields"],
+	sum?:ResolverInputTypes["tournament_awards_sum_fields"],
+	var_pop?:ResolverInputTypes["tournament_awards_var_pop_fields"],
+	var_samp?:ResolverInputTypes["tournament_awards_var_samp_fields"],
+	variance?:ResolverInputTypes["tournament_awards_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "tournament_awards" */
+["tournament_awards_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["tournament_awards_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["tournament_awards_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["tournament_awards_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["tournament_awards_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["tournament_awards_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["tournament_awards_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["tournament_awards_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["tournament_awards_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["tournament_awards_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["tournament_awards_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "tournament_awards" */
+["tournament_awards_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["tournament_awards_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["tournament_awards_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["tournament_awards_avg_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "tournament_awards" */
+["tournament_awards_avg_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "tournament_awards". All fields are combined with a logical 'AND'. */
+["tournament_awards_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["tournament_awards_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["tournament_awards_bool_exp"]> | undefined | null,
+	award?: ResolverInputTypes["awards_bool_exp"] | undefined | null,
+	award_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	custom_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	image_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	placement?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	silhouette?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "tournament_awards" */
+["tournament_awards_constraint"]:tournament_awards_constraint;
+	/** input type for incrementing numeric columns in table "tournament_awards" */
+["tournament_awards_inc_input"]: {
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** input type for inserting data into table "tournament_awards" */
+["tournament_awards_insert_input"]: {
+	award?: ResolverInputTypes["awards_obj_rel_insert_input"] | undefined | null,
+	award_id?: ResolverInputTypes["uuid"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["tournament_awards_max_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "tournament_awards" */
+["tournament_awards_max_order_by"]: {
+	award_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	custom_name?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	image_url?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["tournament_awards_min_fields"]: AliasType<{
+	award_id?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	custom_name?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	image_url?:boolean | `@${string}`,
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+	tournament_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "tournament_awards" */
+["tournament_awards_min_order_by"]: {
+	award_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	custom_name?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	image_url?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "tournament_awards" */
+["tournament_awards_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["tournament_awards"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** input type for inserting object relation for remote table "tournament_awards" */
+["tournament_awards_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["tournament_awards_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["tournament_awards_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "tournament_awards" */
+["tournament_awards_on_conflict"]: {
+	constraint: ResolverInputTypes["tournament_awards_constraint"],
+	update_columns: Array<ResolverInputTypes["tournament_awards_update_column"]>,
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "tournament_awards". */
+["tournament_awards_order_by"]: {
+	award?: ResolverInputTypes["awards_order_by"] | undefined | null,
+	award_id?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	custom_name?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	image_url?: ResolverInputTypes["order_by"] | undefined | null,
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
+	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: tournament_awards */
+["tournament_awards_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "tournament_awards" */
+["tournament_awards_select_column"]:tournament_awards_select_column;
+	/** input type for updating data in table "tournament_awards" */
+["tournament_awards_set_input"]: {
+	award_id?: ResolverInputTypes["uuid"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["tournament_awards_stddev_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "tournament_awards" */
+["tournament_awards_stddev_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["tournament_awards_stddev_pop_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "tournament_awards" */
+["tournament_awards_stddev_pop_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["tournament_awards_stddev_samp_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "tournament_awards" */
+["tournament_awards_stddev_samp_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "tournament_awards" */
+["tournament_awards_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["tournament_awards_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["tournament_awards_stream_cursor_value_input"]: {
+	award_id?: ResolverInputTypes["uuid"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["tournament_awards_sum_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "tournament_awards" */
+["tournament_awards_sum_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "tournament_awards" */
+["tournament_awards_update_column"]:tournament_awards_update_column;
+	["tournament_awards_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["tournament_awards_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["tournament_awards_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["tournament_awards_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["tournament_awards_var_pop_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "tournament_awards" */
+["tournament_awards_var_pop_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["tournament_awards_var_samp_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "tournament_awards" */
+["tournament_awards_var_samp_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["tournament_awards_variance_fields"]: AliasType<{
+	placement?:boolean | `@${string}`,
+	silhouette?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "tournament_awards" */
+["tournament_awards_variance_order_by"]: {
+	placement?: ResolverInputTypes["order_by"] | undefined | null,
+	silhouette?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "tournament_brackets" */
 ["tournament_brackets"]: AliasType<{
@@ -117087,665 +119555,36 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
-	/** columns and relationships of "tournament_trophies" */
-["tournament_trophies"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	manual?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	placement_tier?:boolean | `@${string}`,
-	/** An object relationship */
-	player?:ResolverInputTypes["players"],
-	player_steam_id?:boolean | `@${string}`,
-	/** An object relationship */
-	team?:ResolverInputTypes["teams"],
-	team_id?:boolean | `@${string}`,
-	/** An object relationship */
-	tournament?:ResolverInputTypes["tournaments"],
-	tournament_id?:boolean | `@${string}`,
-	/** An object relationship */
-	tournament_team?:ResolverInputTypes["tournament_teams"],
-	tournament_team_id?:boolean | `@${string}`,
-	/** An object relationship */
-	trophy_config?:ResolverInputTypes["tournament_trophy_configs"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregated selection of "tournament_trophies" */
-["tournament_trophies_aggregate"]: AliasType<{
-	aggregate?:ResolverInputTypes["tournament_trophies_aggregate_fields"],
-	nodes?:ResolverInputTypes["tournament_trophies"],
-		__typename?: boolean | `@${string}`
-}>;
-	["tournament_trophies_aggregate_bool_exp"]: {
-	bool_and?: ResolverInputTypes["tournament_trophies_aggregate_bool_exp_bool_and"] | undefined | null,
-	bool_or?: ResolverInputTypes["tournament_trophies_aggregate_bool_exp_bool_or"] | undefined | null,
-	count?: ResolverInputTypes["tournament_trophies_aggregate_bool_exp_count"] | undefined | null
-};
-	["tournament_trophies_aggregate_bool_exp_bool_and"]: {
-	arguments: ResolverInputTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"],
-	distinct?: boolean | undefined | null,
-	filter?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: ResolverInputTypes["Boolean_comparison_exp"]
-};
-	["tournament_trophies_aggregate_bool_exp_bool_or"]: {
-	arguments: ResolverInputTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"],
-	distinct?: boolean | undefined | null,
-	filter?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: ResolverInputTypes["Boolean_comparison_exp"]
-};
-	["tournament_trophies_aggregate_bool_exp_count"]: {
-	arguments?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,
-	distinct?: boolean | undefined | null,
-	filter?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: ResolverInputTypes["Int_comparison_exp"]
-};
-	/** aggregate fields of "tournament_trophies" */
-["tournament_trophies_aggregate_fields"]: AliasType<{
-	avg?:ResolverInputTypes["tournament_trophies_avg_fields"],
-count?: [{	columns?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
-	max?:ResolverInputTypes["tournament_trophies_max_fields"],
-	min?:ResolverInputTypes["tournament_trophies_min_fields"],
-	stddev?:ResolverInputTypes["tournament_trophies_stddev_fields"],
-	stddev_pop?:ResolverInputTypes["tournament_trophies_stddev_pop_fields"],
-	stddev_samp?:ResolverInputTypes["tournament_trophies_stddev_samp_fields"],
-	sum?:ResolverInputTypes["tournament_trophies_sum_fields"],
-	var_pop?:ResolverInputTypes["tournament_trophies_var_pop_fields"],
-	var_samp?:ResolverInputTypes["tournament_trophies_var_samp_fields"],
-	variance?:ResolverInputTypes["tournament_trophies_variance_fields"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by aggregate values of table "tournament_trophies" */
-["tournament_trophies_aggregate_order_by"]: {
-	avg?: ResolverInputTypes["tournament_trophies_avg_order_by"] | undefined | null,
-	count?: ResolverInputTypes["order_by"] | undefined | null,
-	max?: ResolverInputTypes["tournament_trophies_max_order_by"] | undefined | null,
-	min?: ResolverInputTypes["tournament_trophies_min_order_by"] | undefined | null,
-	stddev?: ResolverInputTypes["tournament_trophies_stddev_order_by"] | undefined | null,
-	stddev_pop?: ResolverInputTypes["tournament_trophies_stddev_pop_order_by"] | undefined | null,
-	stddev_samp?: ResolverInputTypes["tournament_trophies_stddev_samp_order_by"] | undefined | null,
-	sum?: ResolverInputTypes["tournament_trophies_sum_order_by"] | undefined | null,
-	var_pop?: ResolverInputTypes["tournament_trophies_var_pop_order_by"] | undefined | null,
-	var_samp?: ResolverInputTypes["tournament_trophies_var_samp_order_by"] | undefined | null,
-	variance?: ResolverInputTypes["tournament_trophies_variance_order_by"] | undefined | null
-};
-	/** input type for inserting array relation for remote table "tournament_trophies" */
-["tournament_trophies_arr_rel_insert_input"]: {
-	data: Array<ResolverInputTypes["tournament_trophies_insert_input"]>,
-	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophies_on_conflict"] | undefined | null
-};
-	/** aggregate avg on columns */
-["tournament_trophies_avg_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by avg() on columns of table "tournament_trophies" */
-["tournament_trophies_avg_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** Boolean expression to filter rows from the table "tournament_trophies". All fields are combined with a logical 'AND'. */
-["tournament_trophies_bool_exp"]: {
-	_and?: Array<ResolverInputTypes["tournament_trophies_bool_exp"]> | undefined | null,
-	_not?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null,
-	_or?: Array<ResolverInputTypes["tournament_trophies_bool_exp"]> | undefined | null,
-	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
-	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	manual?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	placement?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	placement_tier?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
-	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
-	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	tournament_team?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	trophy_config?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null
-};
-	/** unique or primary key constraints on table "tournament_trophies" */
-["tournament_trophies_constraint"]:tournament_trophies_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophies" */
-["tournament_trophies_inc_input"]: {
-	placement?: number | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null
-};
-	/** input type for inserting data into table "tournament_trophies" */
-["tournament_trophies_insert_input"]: {
-	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	id?: ResolverInputTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
-	team_id?: ResolverInputTypes["uuid"] | undefined | null,
-	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
-	tournament_team?: ResolverInputTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["uuid"] | undefined | null,
-	trophy_config?: ResolverInputTypes["tournament_trophy_configs_obj_rel_insert_input"] | undefined | null
-};
-	/** aggregate max on columns */
-["tournament_trophies_max_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	placement_tier?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-	team_id?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	tournament_team_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by max() on columns of table "tournament_trophies" */
-["tournament_trophies_max_order_by"]: {
-	created_at?: ResolverInputTypes["order_by"] | undefined | null,
-	id?: ResolverInputTypes["order_by"] | undefined | null,
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	team_id?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate min on columns */
-["tournament_trophies_min_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	placement_tier?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-	team_id?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	tournament_team_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by min() on columns of table "tournament_trophies" */
-["tournament_trophies_min_order_by"]: {
-	created_at?: ResolverInputTypes["order_by"] | undefined | null,
-	id?: ResolverInputTypes["order_by"] | undefined | null,
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	team_id?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** response of any mutation on the table "tournament_trophies" */
-["tournament_trophies_mutation_response"]: AliasType<{
-	/** number of rows affected by the mutation */
-	affected_rows?:boolean | `@${string}`,
-	/** data from the rows affected by the mutation */
-	returning?:ResolverInputTypes["tournament_trophies"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** on_conflict condition type for table "tournament_trophies" */
-["tournament_trophies_on_conflict"]: {
-	constraint: ResolverInputTypes["tournament_trophies_constraint"],
-	update_columns: Array<ResolverInputTypes["tournament_trophies_update_column"]>,
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null
-};
-	/** Ordering options when selecting data from "tournament_trophies". */
-["tournament_trophies_order_by"]: {
-	created_at?: ResolverInputTypes["order_by"] | undefined | null,
-	id?: ResolverInputTypes["order_by"] | undefined | null,
-	manual?: ResolverInputTypes["order_by"] | undefined | null,
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	placement_tier?: ResolverInputTypes["order_by"] | undefined | null,
-	player?: ResolverInputTypes["players_order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
-	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
-	team_id?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
-	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_team?: ResolverInputTypes["tournament_teams_order_by"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null,
-	trophy_config?: ResolverInputTypes["tournament_trophy_configs_order_by"] | undefined | null
-};
-	/** primary key columns input for table: tournament_trophies */
-["tournament_trophies_pk_columns_input"]: {
-	id: ResolverInputTypes["uuid"]
-};
-	/** select columns of table "tournament_trophies" */
-["tournament_trophies_select_column"]:tournament_trophies_select_column;
-	/** select "tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns" columns of table "tournament_trophies" */
-["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"]:tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns;
-	/** select "tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns" columns of table "tournament_trophies" */
-["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"]:tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns;
-	/** input type for updating data in table "tournament_trophies" */
-["tournament_trophies_set_input"]: {
-	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	id?: ResolverInputTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	team_id?: ResolverInputTypes["uuid"] | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["uuid"] | undefined | null
-};
-	/** aggregate stddev on columns */
-["tournament_trophies_stddev_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophies_stddev_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_pop_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophies_stddev_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_samp_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** Streaming cursor of the table "tournament_trophies" */
-["tournament_trophies_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ResolverInputTypes["tournament_trophies_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophies_stream_cursor_value_input"]: {
-	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	id?: ResolverInputTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
-	team_id?: ResolverInputTypes["uuid"] | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
-	tournament_team_id?: ResolverInputTypes["uuid"] | undefined | null
-};
-	/** aggregate sum on columns */
-["tournament_trophies_sum_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by sum() on columns of table "tournament_trophies" */
-["tournament_trophies_sum_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** update columns of table "tournament_trophies" */
-["tournament_trophies_update_column"]:tournament_trophies_update_column;
-	["tournament_trophies_updates"]: {
-	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["tournament_trophies_inc_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: ResolverInputTypes["tournament_trophies_set_input"] | undefined | null,
-	/** filter the rows which have to be updated */
-	where: ResolverInputTypes["tournament_trophies_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["tournament_trophies_var_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_var_pop_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate var_samp on columns */
-["tournament_trophies_var_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_var_samp_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate variance on columns */
-["tournament_trophies_variance_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by variance() on columns of table "tournament_trophies" */
-["tournament_trophies_variance_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** columns and relationships of "tournament_trophy_configs" */
-["tournament_trophy_configs"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	custom_name?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	image_url?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-	/** An object relationship */
-	tournament?:ResolverInputTypes["tournaments"],
-	tournament_id?:boolean | `@${string}`,
-	updated_at?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregated selection of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate"]: AliasType<{
-	aggregate?:ResolverInputTypes["tournament_trophy_configs_aggregate_fields"],
-	nodes?:ResolverInputTypes["tournament_trophy_configs"],
-		__typename?: boolean | `@${string}`
-}>;
-	["tournament_trophy_configs_aggregate_bool_exp"]: {
-	count?: ResolverInputTypes["tournament_trophy_configs_aggregate_bool_exp_count"] | undefined | null
-};
-	["tournament_trophy_configs_aggregate_bool_exp_count"]: {
-	arguments?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,
-	distinct?: boolean | undefined | null,
-	filter?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	predicate: ResolverInputTypes["Int_comparison_exp"]
-};
-	/** aggregate fields of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_fields"]: AliasType<{
-	avg?:ResolverInputTypes["tournament_trophy_configs_avg_fields"],
-count?: [{	columns?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
-	max?:ResolverInputTypes["tournament_trophy_configs_max_fields"],
-	min?:ResolverInputTypes["tournament_trophy_configs_min_fields"],
-	stddev?:ResolverInputTypes["tournament_trophy_configs_stddev_fields"],
-	stddev_pop?:ResolverInputTypes["tournament_trophy_configs_stddev_pop_fields"],
-	stddev_samp?:ResolverInputTypes["tournament_trophy_configs_stddev_samp_fields"],
-	sum?:ResolverInputTypes["tournament_trophy_configs_sum_fields"],
-	var_pop?:ResolverInputTypes["tournament_trophy_configs_var_pop_fields"],
-	var_samp?:ResolverInputTypes["tournament_trophy_configs_var_samp_fields"],
-	variance?:ResolverInputTypes["tournament_trophy_configs_variance_fields"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by aggregate values of table "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_order_by"]: {
-	avg?: ResolverInputTypes["tournament_trophy_configs_avg_order_by"] | undefined | null,
-	count?: ResolverInputTypes["order_by"] | undefined | null,
-	max?: ResolverInputTypes["tournament_trophy_configs_max_order_by"] | undefined | null,
-	min?: ResolverInputTypes["tournament_trophy_configs_min_order_by"] | undefined | null,
-	stddev?: ResolverInputTypes["tournament_trophy_configs_stddev_order_by"] | undefined | null,
-	stddev_pop?: ResolverInputTypes["tournament_trophy_configs_stddev_pop_order_by"] | undefined | null,
-	stddev_samp?: ResolverInputTypes["tournament_trophy_configs_stddev_samp_order_by"] | undefined | null,
-	sum?: ResolverInputTypes["tournament_trophy_configs_sum_order_by"] | undefined | null,
-	var_pop?: ResolverInputTypes["tournament_trophy_configs_var_pop_order_by"] | undefined | null,
-	var_samp?: ResolverInputTypes["tournament_trophy_configs_var_samp_order_by"] | undefined | null,
-	variance?: ResolverInputTypes["tournament_trophy_configs_variance_order_by"] | undefined | null
-};
-	/** input type for inserting array relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_arr_rel_insert_input"]: {
-	data: Array<ResolverInputTypes["tournament_trophy_configs_insert_input"]>,
-	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophy_configs_on_conflict"] | undefined | null
-};
-	/** aggregate avg on columns */
-["tournament_trophy_configs_avg_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by avg() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_avg_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** Boolean expression to filter rows from the table "tournament_trophy_configs". All fields are combined with a logical 'AND'. */
-["tournament_trophy_configs_bool_exp"]: {
-	_and?: Array<ResolverInputTypes["tournament_trophy_configs_bool_exp"]> | undefined | null,
-	_not?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	_or?: Array<ResolverInputTypes["tournament_trophy_configs_bool_exp"]> | undefined | null,
-	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
-	custom_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	image_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	placement?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	silhouette?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
-};
-	/** unique or primary key constraints on table "tournament_trophy_configs" */
-["tournament_trophy_configs_constraint"]:tournament_trophy_configs_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophy_configs" */
-["tournament_trophy_configs_inc_input"]: {
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** input type for inserting data into table "tournament_trophy_configs" */
-["tournament_trophy_configs_insert_input"]: {
-	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ResolverInputTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
-};
-	/** aggregate max on columns */
-["tournament_trophy_configs_max_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	custom_name?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	image_url?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	updated_at?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by max() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_max_order_by"]: {
-	created_at?: ResolverInputTypes["order_by"] | undefined | null,
-	custom_name?: ResolverInputTypes["order_by"] | undefined | null,
-	id?: ResolverInputTypes["order_by"] | undefined | null,
-	image_url?: ResolverInputTypes["order_by"] | undefined | null,
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
-	updated_at?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate min on columns */
-["tournament_trophy_configs_min_fields"]: AliasType<{
-	created_at?:boolean | `@${string}`,
-	custom_name?:boolean | `@${string}`,
-	id?:boolean | `@${string}`,
-	image_url?:boolean | `@${string}`,
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-	tournament_id?:boolean | `@${string}`,
-	updated_at?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by min() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_min_order_by"]: {
-	created_at?: ResolverInputTypes["order_by"] | undefined | null,
-	custom_name?: ResolverInputTypes["order_by"] | undefined | null,
-	id?: ResolverInputTypes["order_by"] | undefined | null,
-	image_url?: ResolverInputTypes["order_by"] | undefined | null,
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
-	updated_at?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** response of any mutation on the table "tournament_trophy_configs" */
-["tournament_trophy_configs_mutation_response"]: AliasType<{
-	/** number of rows affected by the mutation */
-	affected_rows?:boolean | `@${string}`,
-	/** data from the rows affected by the mutation */
-	returning?:ResolverInputTypes["tournament_trophy_configs"],
-		__typename?: boolean | `@${string}`
-}>;
-	/** input type for inserting object relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_obj_rel_insert_input"]: {
-	data: ResolverInputTypes["tournament_trophy_configs_insert_input"],
-	/** upsert condition */
-	on_conflict?: ResolverInputTypes["tournament_trophy_configs_on_conflict"] | undefined | null
-};
-	/** on_conflict condition type for table "tournament_trophy_configs" */
-["tournament_trophy_configs_on_conflict"]: {
-	constraint: ResolverInputTypes["tournament_trophy_configs_constraint"],
-	update_columns: Array<ResolverInputTypes["tournament_trophy_configs_update_column"]>,
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null
-};
-	/** Ordering options when selecting data from "tournament_trophy_configs". */
-["tournament_trophy_configs_order_by"]: {
-	created_at?: ResolverInputTypes["order_by"] | undefined | null,
-	custom_name?: ResolverInputTypes["order_by"] | undefined | null,
-	id?: ResolverInputTypes["order_by"] | undefined | null,
-	image_url?: ResolverInputTypes["order_by"] | undefined | null,
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
-	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
-	updated_at?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** primary key columns input for table: tournament_trophy_configs */
-["tournament_trophy_configs_pk_columns_input"]: {
-	id: ResolverInputTypes["uuid"]
-};
-	/** select columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_select_column"]:tournament_trophy_configs_select_column;
-	/** input type for updating data in table "tournament_trophy_configs" */
-["tournament_trophy_configs_set_input"]: {
-	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ResolverInputTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
-};
-	/** aggregate stddev on columns */
-["tournament_trophy_configs_stddev_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophy_configs_stddev_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_pop_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophy_configs_stddev_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by stddev_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_samp_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** Streaming cursor of the table "tournament_trophy_configs" */
-["tournament_trophy_configs_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ResolverInputTypes["tournament_trophy_configs_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophy_configs_stream_cursor_value_input"]: {
-	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ResolverInputTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
-};
-	/** aggregate sum on columns */
-["tournament_trophy_configs_sum_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by sum() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_sum_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** update columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_update_column"]:tournament_trophy_configs_update_column;
-	["tournament_trophy_configs_updates"]: {
-	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["tournament_trophy_configs_inc_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: ResolverInputTypes["tournament_trophy_configs_set_input"] | undefined | null,
-	/** filter the rows which have to be updated */
-	where: ResolverInputTypes["tournament_trophy_configs_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["tournament_trophy_configs_var_pop_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_pop_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate var_samp on columns */
-["tournament_trophy_configs_var_samp_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by var_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_samp_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
-	/** aggregate variance on columns */
-["tournament_trophy_configs_variance_fields"]: AliasType<{
-	placement?:boolean | `@${string}`,
-	silhouette?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** order by variance() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_variance_order_by"]: {
-	placement?: ResolverInputTypes["order_by"] | undefined | null,
-	silhouette?: ResolverInputTypes["order_by"] | undefined | null
-};
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: AliasType<{
 	/** An object relationship */
 	admin?:ResolverInputTypes["players"],
 	auto_start?:boolean | `@${string}`,
+award_configs?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards"]],
+award_configs_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_awards_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_awards_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null},ResolverInputTypes["tournament_awards_aggregate"]],
+awards?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients"]],
+awards_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["award_recipients_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["award_recipients_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null},ResolverInputTypes["award_recipients_aggregate"]],
+	awards_enabled?:boolean | `@${string}`,
 	banner?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_tournament" */
 	can_cancel?:boolean | `@${string}`,
@@ -117919,31 +119758,6 @@ teams_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["tournament_teams_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null},ResolverInputTypes["tournament_teams_aggregate"]],
-trophies?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies"]],
-trophies_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophies_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophies_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophies_aggregate"]],
-	trophies_enabled?:boolean | `@${string}`,
-trophy_configs?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophy_configs_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs"]],
-trophy_configs_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["tournament_trophy_configs_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["tournament_trophy_configs_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null},ResolverInputTypes["tournament_trophy_configs_aggregate"]],
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "tournaments" */
@@ -118098,6 +119912,11 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	_or?: Array<ResolverInputTypes["tournaments_bool_exp"]> | undefined | null,
 	admin?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	auto_start?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	award_configs?: ResolverInputTypes["tournament_awards_bool_exp"] | undefined | null,
+	award_configs_aggregate?: ResolverInputTypes["tournament_awards_aggregate_bool_exp"] | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
+	awards_enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	banner?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	can_cancel?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_close_registration?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -118164,12 +119983,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	start?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_status_enum_comparison_exp"] | undefined | null,
 	teams?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
-	teams_aggregate?: ResolverInputTypes["tournament_teams_aggregate_bool_exp"] | undefined | null,
-	trophies?: ResolverInputTypes["tournament_trophies_bool_exp"] | undefined | null,
-	trophies_aggregate?: ResolverInputTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null,
-	trophies_enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	trophy_configs?: ResolverInputTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	trophy_configs_aggregate?: ResolverInputTypes["tournament_trophy_configs_aggregate_bool_exp"] | undefined | null
+	teams_aggregate?: ResolverInputTypes["tournament_teams_aggregate_bool_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "tournaments" */
 ["tournaments_constraint"]:tournaments_constraint;
@@ -118183,6 +119997,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 ["tournaments_insert_input"]: {
 	admin?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	auto_start?: boolean | undefined | null,
+	award_configs?: ResolverInputTypes["tournament_awards_arr_rel_insert_input"] | undefined | null,
+	awards?: ResolverInputTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: ResolverInputTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -118227,10 +120044,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	stages?: ResolverInputTypes["tournament_stages_arr_rel_insert_input"] | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null,
-	teams?: ResolverInputTypes["tournament_teams_arr_rel_insert_input"] | undefined | null,
-	trophies?: ResolverInputTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null,
-	trophy_configs?: ResolverInputTypes["tournament_trophy_configs_arr_rel_insert_input"] | undefined | null
+	teams?: ResolverInputTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: AliasType<{
@@ -118346,6 +120160,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 ["tournaments_order_by"]: {
 	admin?: ResolverInputTypes["players_order_by"] | undefined | null,
 	auto_start?: ResolverInputTypes["order_by"] | undefined | null,
+	award_configs_aggregate?: ResolverInputTypes["tournament_awards_aggregate_order_by"] | undefined | null,
+	awards_aggregate?: ResolverInputTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	awards_enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	banner?: ResolverInputTypes["order_by"] | undefined | null,
 	can_cancel?: ResolverInputTypes["order_by"] | undefined | null,
 	can_close_registration?: ResolverInputTypes["order_by"] | undefined | null,
@@ -118403,10 +120220,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	stages_aggregate?: ResolverInputTypes["tournament_stages_aggregate_order_by"] | undefined | null,
 	start?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
-	teams_aggregate?: ResolverInputTypes["tournament_teams_aggregate_order_by"] | undefined | null,
-	trophies_aggregate?: ResolverInputTypes["tournament_trophies_aggregate_order_by"] | undefined | null,
-	trophies_enabled?: ResolverInputTypes["order_by"] | undefined | null,
-	trophy_configs_aggregate?: ResolverInputTypes["tournament_trophy_configs_aggregate_order_by"] | undefined | null
+	teams_aggregate?: ResolverInputTypes["tournament_teams_aggregate_order_by"] | undefined | null
 };
 	/** primary key columns input for table: tournaments */
 ["tournaments_pk_columns_input"]: {
@@ -118437,6 +120251,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** input type for updating data in table "tournaments" */
 ["tournaments_set_input"]: {
 	auto_start?: boolean | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -118469,8 +120284,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
-	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null
+	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: AliasType<{
@@ -118533,6 +120347,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** Initial value of the column from where the streaming should start */
 ["tournaments_stream_cursor_value_input"]: {
 	auto_start?: boolean | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -118565,8 +120380,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ResolverInputTypes["timestamptz"] | undefined | null,
-	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null
+	status?: ResolverInputTypes["e_tournament_status_enum"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: AliasType<{
@@ -127940,6 +129754,36 @@ export type ModelTypes = {
 	["ApiKeyResponse"]: {
 		key: string
 };
+	["Award"]: {
+		allow_multiple: boolean,
+	created_at: string,
+	created_by_steam_id?: string | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id: ModelTypes["uuid"],
+	image_url?: string | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name: string,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier: string,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at: string
+};
+	["AwardRecipient"]: {
+		award_id: ModelTypes["uuid"],
+	awarded_by_steam_id?: string | undefined | null,
+	created_at: string,
+	id: ModelTypes["uuid"],
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: string | undefined | null,
+	source: string,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
 	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 ["Boolean_comparison_exp"]: {
 	_eq?: boolean | undefined | null,
@@ -128540,8 +130384,57 @@ export type ModelTypes = {
 	["TeamCalendarOutput"]: {
 		url: string
 };
+	["TelemetryActivityPoint"]: {
+		day: string,
+	installs: number,
+	matches: number
+};
+	["TelemetryFeatureAdoption"]: {
+		enabled: number,
+	installsUsing: number,
+	key: string,
+	reporting: number,
+	total: number
+};
+	["TelemetryFleetTotals"]: {
+		dedicatedServers: number,
+	gameServerNodes: number,
+	mapsPlayed: number,
+	matches: number,
+	matchesMonth: number,
+	matchesWeek: number,
+	matchesYear: number,
+	playersActive30d: number,
+	playersRegistered: number,
+	publicServers: number,
+	serverCapacity: number,
+	servers: number,
+	teams: number
+};
+	["TelemetryGrowthPoint"]: {
+		installs: number,
+	month: string
+};
+	["TelemetryInstallCounts"]: {
+		active24h: number,
+	active30d: number,
+	active7d: number,
+	new30d: number,
+	retained180d: number,
+	total: number
+};
 	["TelemetryStats"]: {
-		online: number
+		activity: Array<ModelTypes["TelemetryActivityPoint"]>,
+	features: Array<ModelTypes["TelemetryFeatureAdoption"]>,
+	growth: Array<ModelTypes["TelemetryGrowthPoint"]>,
+	installs: ModelTypes["TelemetryInstallCounts"],
+	online: number,
+	totals: ModelTypes["TelemetryFleetTotals"],
+	versions: Array<ModelTypes["TelemetryVersionSpread"]>
+};
+	["TelemetryVersionSpread"]: {
+		installs: number,
+	version: string
 };
 	["TestUploadResponse"]: {
 		error?: string | undefined | null
@@ -128557,6 +130450,15 @@ export type ModelTypes = {
 		chunks_count: number,
 	hypertables: Array<ModelTypes["HypertableInfo"] | undefined | null>,
 	jobs: Array<ModelTypes["TimescaleJob"] | undefined | null>
+};
+	["TournamentAward"]: {
+		award_id?: ModelTypes["uuid"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id: ModelTypes["uuid"],
+	image_url?: string | undefined | null,
+	placement: number,
+	silhouette?: number | undefined | null,
+	tournament_id: ModelTypes["uuid"]
 };
 	["TournamentMatchResetImpact"]: {
 		bracket_id: ModelTypes["uuid"],
@@ -129038,6 +130940,662 @@ export type ModelTypes = {
 };
 	["approve_league_season_movements_args"]: {
 	_league_season_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "award_recipients" */
+["award_recipients"]: {
+		/** An object relationship */
+	award: ModelTypes["awards"],
+	award_id: ModelTypes["uuid"],
+	/** An object relationship */
+	awarded_by?: ModelTypes["players"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at: ModelTypes["timestamptz"],
+	id: ModelTypes["uuid"],
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	/** An object relationship */
+	player?: ModelTypes["players"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	source: ModelTypes["e_award_sources_enum"],
+	/** An object relationship */
+	team?: ModelTypes["teams"] | undefined | null,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	/** An object relationship */
+	tournament?: ModelTypes["tournaments"] | undefined | null,
+	/** An object relationship */
+	tournament_award?: ModelTypes["tournament_awards"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	/** An object relationship */
+	tournament_team?: ModelTypes["tournament_teams"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregated selection of "award_recipients" */
+["award_recipients_aggregate"]: {
+		aggregate?: ModelTypes["award_recipients_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["award_recipients"]>
+};
+	["award_recipients_aggregate_bool_exp"]: {
+	count?: ModelTypes["award_recipients_aggregate_bool_exp_count"] | undefined | null
+};
+	["award_recipients_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["award_recipients_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "award_recipients" */
+["award_recipients_aggregate_fields"]: {
+		avg?: ModelTypes["award_recipients_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["award_recipients_max_fields"] | undefined | null,
+	min?: ModelTypes["award_recipients_min_fields"] | undefined | null,
+	stddev?: ModelTypes["award_recipients_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["award_recipients_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["award_recipients_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["award_recipients_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["award_recipients_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["award_recipients_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["award_recipients_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "award_recipients" */
+["award_recipients_aggregate_order_by"]: {
+	avg?: ModelTypes["award_recipients_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["award_recipients_max_order_by"] | undefined | null,
+	min?: ModelTypes["award_recipients_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["award_recipients_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["award_recipients_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["award_recipients_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["award_recipients_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["award_recipients_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["award_recipients_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["award_recipients_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "award_recipients" */
+["award_recipients_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["award_recipients_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["award_recipients_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["award_recipients_avg_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "award_recipients" */
+["award_recipients_avg_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "award_recipients". All fields are combined with a logical 'AND'. */
+["award_recipients_bool_exp"]: {
+	_and?: Array<ModelTypes["award_recipients_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["award_recipients_bool_exp"]> | undefined | null,
+	award?: ModelTypes["awards_bool_exp"] | undefined | null,
+	award_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	awarded_by?: ModelTypes["players_bool_exp"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	note?: ModelTypes["String_comparison_exp"] | undefined | null,
+	placement?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	placement_tier?: ModelTypes["String_comparison_exp"] | undefined | null,
+	player?: ModelTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	source?: ModelTypes["e_award_sources_enum_comparison_exp"] | undefined | null,
+	team?: ModelTypes["teams_bool_exp"] | undefined | null,
+	team_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	tournament?: ModelTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_award?: ModelTypes["tournament_awards_bool_exp"] | undefined | null,
+	tournament_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	tournament_team?: ModelTypes["tournament_teams_bool_exp"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid_comparison_exp"] | undefined | null
+};
+	["award_recipients_constraint"]:award_recipients_constraint;
+	/** input type for incrementing numeric columns in table "award_recipients" */
+["award_recipients_inc_input"]: {
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "award_recipients" */
+["award_recipients_insert_input"]: {
+	award?: ModelTypes["awards_obj_rel_insert_input"] | undefined | null,
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	awarded_by?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	source?: ModelTypes["e_award_sources_enum"] | undefined | null,
+	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined | null,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_award?: ModelTypes["tournament_awards_obj_rel_insert_input"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_team?: ModelTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["award_recipients_max_fields"]: {
+		award_id?: ModelTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "award_recipients" */
+["award_recipients_max_order_by"]: {
+	award_id?: ModelTypes["order_by"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	note?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	placement_tier?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	team_id?: ModelTypes["order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	tournament_team_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["award_recipients_min_fields"]: {
+		award_id?: ModelTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "award_recipients" */
+["award_recipients_min_order_by"]: {
+	award_id?: ModelTypes["order_by"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	note?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	placement_tier?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	team_id?: ModelTypes["order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	tournament_team_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "award_recipients" */
+["award_recipients_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["award_recipients"]>
+};
+	/** on_conflict condition type for table "award_recipients" */
+["award_recipients_on_conflict"]: {
+	constraint: ModelTypes["award_recipients_constraint"],
+	update_columns: Array<ModelTypes["award_recipients_update_column"]>,
+	where?: ModelTypes["award_recipients_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "award_recipients". */
+["award_recipients_order_by"]: {
+	award?: ModelTypes["awards_order_by"] | undefined | null,
+	award_id?: ModelTypes["order_by"] | undefined | null,
+	awarded_by?: ModelTypes["players_order_by"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	note?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	placement_tier?: ModelTypes["order_by"] | undefined | null,
+	player?: ModelTypes["players_order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null,
+	source?: ModelTypes["order_by"] | undefined | null,
+	team?: ModelTypes["teams_order_by"] | undefined | null,
+	team_id?: ModelTypes["order_by"] | undefined | null,
+	tournament?: ModelTypes["tournaments_order_by"] | undefined | null,
+	tournament_award?: ModelTypes["tournament_awards_order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	tournament_team?: ModelTypes["tournament_teams_order_by"] | undefined | null,
+	tournament_team_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: award_recipients */
+["award_recipients_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["award_recipients_select_column"]:award_recipients_select_column;
+	/** input type for updating data in table "award_recipients" */
+["award_recipients_set_input"]: {
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	source?: ModelTypes["e_award_sources_enum"] | undefined | null,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["award_recipients_stddev_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "award_recipients" */
+["award_recipients_stddev_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["award_recipients_stddev_pop_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "award_recipients" */
+["award_recipients_stddev_pop_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["award_recipients_stddev_samp_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "award_recipients" */
+["award_recipients_stddev_samp_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "award_recipients" */
+["award_recipients_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["award_recipients_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["award_recipients_stream_cursor_value_input"]: {
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null,
+	source?: ModelTypes["e_award_sources_enum"] | undefined | null,
+	team_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	tournament_team_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["award_recipients_sum_fields"]: {
+		awarded_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "award_recipients" */
+["award_recipients_sum_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	["award_recipients_update_column"]:award_recipients_update_column;
+	["award_recipients_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["award_recipients_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["award_recipients_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["award_recipients_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["award_recipients_var_pop_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "award_recipients" */
+["award_recipients_var_pop_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["award_recipients_var_samp_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "award_recipients" */
+["award_recipients_var_samp_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["award_recipients_variance_fields"]: {
+		awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "award_recipients" */
+["award_recipients_variance_order_by"]: {
+	awarded_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	player_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "awards" */
+["awards"]: {
+		allow_multiple: boolean,
+	created_at: ModelTypes["timestamptz"],
+	/** An object relationship */
+	created_by?: ModelTypes["players"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	/** An object relationship */
+	event?: ModelTypes["events"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id: ModelTypes["uuid"],
+	image_url?: string | undefined | null,
+	/** An object relationship */
+	league_season?: ModelTypes["league_seasons"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name: string,
+	/** An array relationship */
+	recipients: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	recipients_aggregate: ModelTypes["award_recipients_aggregate"],
+	/** An object relationship */
+	season?: ModelTypes["seasons"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier: ModelTypes["e_award_tiers_enum"],
+	/** An object relationship */
+	tournament?: ModelTypes["tournaments"] | undefined | null,
+	/** An array relationship */
+	tournament_configs: Array<ModelTypes["tournament_awards"]>,
+	/** An aggregate relationship */
+	tournament_configs_aggregate: ModelTypes["tournament_awards_aggregate"],
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "awards" */
+["awards_aggregate"]: {
+		aggregate?: ModelTypes["awards_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["awards"]>
+};
+	/** aggregate fields of "awards" */
+["awards_aggregate_fields"]: {
+		avg?: ModelTypes["awards_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["awards_max_fields"] | undefined | null,
+	min?: ModelTypes["awards_min_fields"] | undefined | null,
+	stddev?: ModelTypes["awards_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["awards_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["awards_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["awards_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["awards_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["awards_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["awards_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["awards_avg_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "awards". All fields are combined with a logical 'AND'. */
+["awards_bool_exp"]: {
+	_and?: Array<ModelTypes["awards_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["awards_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["awards_bool_exp"]> | undefined | null,
+	allow_multiple?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	created_by?: ModelTypes["players_bool_exp"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	event?: ModelTypes["events_bool_exp"] | undefined | null,
+	event_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	image_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	league_season?: ModelTypes["league_seasons_bool_exp"] | undefined | null,
+	league_season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	recipients?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	recipients_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
+	season?: ModelTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	silhouette?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	system_key?: ModelTypes["String_comparison_exp"] | undefined | null,
+	tier?: ModelTypes["e_award_tiers_enum_comparison_exp"] | undefined | null,
+	tournament?: ModelTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_configs?: ModelTypes["tournament_awards_bool_exp"] | undefined | null,
+	tournament_configs_aggregate?: ModelTypes["tournament_awards_aggregate_bool_exp"] | undefined | null,
+	tournament_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["awards_constraint"]:awards_constraint;
+	/** input type for incrementing numeric columns in table "awards" */
+["awards_inc_input"]: {
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** input type for inserting data into table "awards" */
+["awards_insert_input"]: {
+	allow_multiple?: boolean | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_by?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event?: ModelTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season?: ModelTypes["league_seasons_obj_rel_insert_input"] | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	recipients?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	season?: ModelTypes["seasons_obj_rel_insert_input"] | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: ModelTypes["e_award_tiers_enum"] | undefined | null,
+	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_configs?: ModelTypes["tournament_awards_arr_rel_insert_input"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["awards_max_fields"]: {
+		created_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["awards_min_fields"]: {
+		created_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "awards" */
+["awards_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["awards"]>
+};
+	/** input type for inserting object relation for remote table "awards" */
+["awards_obj_rel_insert_input"]: {
+	data: ModelTypes["awards_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["awards_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "awards" */
+["awards_on_conflict"]: {
+	constraint: ModelTypes["awards_constraint"],
+	update_columns: Array<ModelTypes["awards_update_column"]>,
+	where?: ModelTypes["awards_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "awards". */
+["awards_order_by"]: {
+	allow_multiple?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	created_by?: ModelTypes["players_order_by"] | undefined | null,
+	created_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	description?: ModelTypes["order_by"] | undefined | null,
+	event?: ModelTypes["events_order_by"] | undefined | null,
+	event_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	image_url?: ModelTypes["order_by"] | undefined | null,
+	league_season?: ModelTypes["league_seasons_order_by"] | undefined | null,
+	league_season_id?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	recipients_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	season?: ModelTypes["seasons_order_by"] | undefined | null,
+	season_id?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null,
+	system_key?: ModelTypes["order_by"] | undefined | null,
+	tier?: ModelTypes["order_by"] | undefined | null,
+	tournament?: ModelTypes["tournaments_order_by"] | undefined | null,
+	tournament_configs_aggregate?: ModelTypes["tournament_awards_aggregate_order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: awards */
+["awards_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["awards_select_column"]:awards_select_column;
+	/** input type for updating data in table "awards" */
+["awards_set_input"]: {
+	allow_multiple?: boolean | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: ModelTypes["e_award_tiers_enum"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["awards_stddev_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["awards_stddev_pop_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["awards_stddev_samp_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** Streaming cursor of the table "awards" */
+["awards_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["awards_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["awards_stream_cursor_value_input"]: {
+	allow_multiple?: boolean | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: ModelTypes["uuid"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: ModelTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: ModelTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: ModelTypes["e_award_tiers_enum"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["awards_sum_fields"]: {
+		created_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	silhouette?: number | undefined | null
+};
+	["awards_update_column"]:awards_update_column;
+	["awards_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["awards_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["awards_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["awards_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["awards_var_pop_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["awards_var_samp_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["awards_variance_fields"]: {
+		created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
 };
 	["bigint"]:any;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -129540,13 +132098,16 @@ export type ModelTypes = {
 	/** columns and relationships of "custom_pages" */
 ["custom_pages"]: {
 		created_at: ModelTypes["timestamptz"],
+	deployments: ModelTypes["jsonb"],
 	enabled: boolean,
 	exposed_module: string,
 	icon?: string | undefined | null,
 	id: ModelTypes["uuid"],
 	is_default: boolean,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order: number,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url: string,
 	remote_scope: string,
 	required_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
@@ -129573,6 +132134,10 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["custom_pages_var_samp_fields"] | undefined | null,
 	variance?: ModelTypes["custom_pages_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_append_input"]: {
+	deployments?: ModelTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["custom_pages_avg_fields"]: {
 		nav_order?: number | undefined | null
@@ -129583,13 +132148,16 @@ export type ModelTypes = {
 	_not?: ModelTypes["custom_pages_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["custom_pages_bool_exp"]> | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	deployments?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	exposed_module?: ModelTypes["String_comparison_exp"] | undefined | null,
 	icon?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	is_default?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	manifest_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	nav_group?: ModelTypes["String_comparison_exp"] | undefined | null,
 	nav_order?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	profile_tab_label?: ModelTypes["String_comparison_exp"] | undefined | null,
 	remote_entry_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	remote_scope?: ModelTypes["String_comparison_exp"] | undefined | null,
 	required_role?: ModelTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
@@ -129598,6 +132166,18 @@ export type ModelTypes = {
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
 };
 	["custom_pages_constraint"]:custom_pages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["custom_pages_delete_at_path_input"]: {
+	deployments?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["custom_pages_delete_elem_input"]: {
+	deployments?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["custom_pages_delete_key_input"]: {
+	deployments?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "custom_pages" */
 ["custom_pages_inc_input"]: {
 	nav_order?: number | undefined | null
@@ -129605,13 +132185,16 @@ export type ModelTypes = {
 	/** input type for inserting data into table "custom_pages" */
 ["custom_pages_insert_input"]: {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	deployments?: ModelTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
@@ -129625,8 +132208,10 @@ export type ModelTypes = {
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -129639,8 +132224,10 @@ export type ModelTypes = {
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -129663,13 +132250,16 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "custom_pages". */
 ["custom_pages_order_by"]: {
 	created_at?: ModelTypes["order_by"] | undefined | null,
+	deployments?: ModelTypes["order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
 	exposed_module?: ModelTypes["order_by"] | undefined | null,
 	icon?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	is_default?: ModelTypes["order_by"] | undefined | null,
+	manifest_url?: ModelTypes["order_by"] | undefined | null,
 	nav_group?: ModelTypes["order_by"] | undefined | null,
 	nav_order?: ModelTypes["order_by"] | undefined | null,
+	profile_tab_label?: ModelTypes["order_by"] | undefined | null,
 	remote_entry_url?: ModelTypes["order_by"] | undefined | null,
 	remote_scope?: ModelTypes["order_by"] | undefined | null,
 	required_role?: ModelTypes["order_by"] | undefined | null,
@@ -129681,17 +132271,24 @@ export type ModelTypes = {
 ["custom_pages_pk_columns_input"]: {
 	id: ModelTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_prepend_input"]: {
+	deployments?: ModelTypes["jsonb"] | undefined | null
+};
 	["custom_pages_select_column"]:custom_pages_select_column;
 	/** input type for updating data in table "custom_pages" */
 ["custom_pages_set_input"]: {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	deployments?: ModelTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
@@ -129721,13 +132318,16 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["custom_pages_stream_cursor_value_input"]: {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	deployments?: ModelTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: ModelTypes["e_player_roles_enum"] | undefined | null,
@@ -129741,8 +132341,18 @@ export type ModelTypes = {
 };
 	["custom_pages_update_column"]:custom_pages_update_column;
 	["custom_pages_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["custom_pages_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["custom_pages_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["custom_pages_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["custom_pages_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ModelTypes["custom_pages_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["custom_pages_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["custom_pages_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -131148,6 +133758,198 @@ export type ModelTypes = {
 	host_steam_id?: ModelTypes["order_by"] | undefined | null,
 	max_elo?: ModelTypes["order_by"] | undefined | null,
 	min_elo?: ModelTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "e_award_sources" */
+["e_award_sources"]: {
+		description: string,
+	value: string
+};
+	/** aggregated selection of "e_award_sources" */
+["e_award_sources_aggregate"]: {
+		aggregate?: ModelTypes["e_award_sources_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["e_award_sources"]>
+};
+	/** aggregate fields of "e_award_sources" */
+["e_award_sources_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_award_sources_max_fields"] | undefined | null,
+	min?: ModelTypes["e_award_sources_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_award_sources". All fields are combined with a logical 'AND'. */
+["e_award_sources_bool_exp"]: {
+	_and?: Array<ModelTypes["e_award_sources_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["e_award_sources_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["e_award_sources_bool_exp"]> | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	value?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["e_award_sources_constraint"]:e_award_sources_constraint;
+	["e_award_sources_enum"]:e_award_sources_enum;
+	/** Boolean expression to compare columns of type "e_award_sources_enum". All fields are combined with logical 'AND'. */
+["e_award_sources_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_award_sources_enum"] | undefined | null,
+	_in?: Array<ModelTypes["e_award_sources_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ModelTypes["e_award_sources_enum"] | undefined | null,
+	_nin?: Array<ModelTypes["e_award_sources_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_award_sources" */
+["e_award_sources_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_award_sources_max_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_award_sources_min_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_award_sources" */
+["e_award_sources_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_award_sources"]>
+};
+	/** on_conflict condition type for table "e_award_sources" */
+["e_award_sources_on_conflict"]: {
+	constraint: ModelTypes["e_award_sources_constraint"],
+	update_columns: Array<ModelTypes["e_award_sources_update_column"]>,
+	where?: ModelTypes["e_award_sources_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_award_sources". */
+["e_award_sources_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined | null,
+	value?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_award_sources */
+["e_award_sources_pk_columns_input"]: {
+	value: string
+};
+	["e_award_sources_select_column"]:e_award_sources_select_column;
+	/** input type for updating data in table "e_award_sources" */
+["e_award_sources_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_award_sources" */
+["e_award_sources_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_award_sources_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_sources_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	["e_award_sources_update_column"]:e_award_sources_update_column;
+	["e_award_sources_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_award_sources_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_award_sources_bool_exp"]
+};
+	/** columns and relationships of "e_award_tiers" */
+["e_award_tiers"]: {
+		description: string,
+	value: string
+};
+	/** aggregated selection of "e_award_tiers" */
+["e_award_tiers_aggregate"]: {
+		aggregate?: ModelTypes["e_award_tiers_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["e_award_tiers"]>
+};
+	/** aggregate fields of "e_award_tiers" */
+["e_award_tiers_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_award_tiers_max_fields"] | undefined | null,
+	min?: ModelTypes["e_award_tiers_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_award_tiers". All fields are combined with a logical 'AND'. */
+["e_award_tiers_bool_exp"]: {
+	_and?: Array<ModelTypes["e_award_tiers_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["e_award_tiers_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["e_award_tiers_bool_exp"]> | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	value?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["e_award_tiers_constraint"]:e_award_tiers_constraint;
+	["e_award_tiers_enum"]:e_award_tiers_enum;
+	/** Boolean expression to compare columns of type "e_award_tiers_enum". All fields are combined with logical 'AND'. */
+["e_award_tiers_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_award_tiers_enum"] | undefined | null,
+	_in?: Array<ModelTypes["e_award_tiers_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ModelTypes["e_award_tiers_enum"] | undefined | null,
+	_nin?: Array<ModelTypes["e_award_tiers_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_award_tiers" */
+["e_award_tiers_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_award_tiers_max_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_award_tiers_min_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_award_tiers" */
+["e_award_tiers_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_award_tiers"]>
+};
+	/** on_conflict condition type for table "e_award_tiers" */
+["e_award_tiers_on_conflict"]: {
+	constraint: ModelTypes["e_award_tiers_constraint"],
+	update_columns: Array<ModelTypes["e_award_tiers_update_column"]>,
+	where?: ModelTypes["e_award_tiers_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_award_tiers". */
+["e_award_tiers_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined | null,
+	value?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_award_tiers */
+["e_award_tiers_pk_columns_input"]: {
+	value: string
+};
+	["e_award_tiers_select_column"]:e_award_tiers_select_column;
+	/** input type for updating data in table "e_award_tiers" */
+["e_award_tiers_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_award_tiers" */
+["e_award_tiers_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_award_tiers_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_tiers_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	["e_award_tiers_update_column"]:e_award_tiers_update_column;
+	["e_award_tiers_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_award_tiers_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_award_tiers_bool_exp"]
 };
 	/** columns and relationships of "e_check_in_settings" */
 ["e_check_in_settings"]: {
@@ -147598,6 +150400,8 @@ export type ModelTypes = {
 	createScheduledMatch?: ModelTypes["CreateScheduledMatchOutput"] | undefined | null,
 	/** Create directory on game server */
 	createServerDirectory?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Delete a catalog award */
+	deleteAward?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete a saved clip and its underlying S3 object */
 	deleteClip?: ModelTypes["SuccessOutput"] | undefined | null,
 	deleteMatch?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -147621,6 +150425,14 @@ export type ModelTypes = {
 	delete_api_keys?: ModelTypes["api_keys_mutation_response"] | undefined | null,
 	/** delete single row from the table: "api_keys" */
 	delete_api_keys_by_pk?: ModelTypes["api_keys"] | undefined | null,
+	/** delete data from the table: "award_recipients" */
+	delete_award_recipients?: ModelTypes["award_recipients_mutation_response"] | undefined | null,
+	/** delete single row from the table: "award_recipients" */
+	delete_award_recipients_by_pk?: ModelTypes["award_recipients"] | undefined | null,
+	/** delete data from the table: "awards" */
+	delete_awards?: ModelTypes["awards_mutation_response"] | undefined | null,
+	/** delete single row from the table: "awards" */
+	delete_awards_by_pk?: ModelTypes["awards"] | undefined | null,
 	/** delete data from the table: "clip_render_jobs" */
 	delete_clip_render_jobs?: ModelTypes["clip_render_jobs_mutation_response"] | undefined | null,
 	/** delete single row from the table: "clip_render_jobs" */
@@ -147645,6 +150457,14 @@ export type ModelTypes = {
 	delete_draft_games?: ModelTypes["draft_games_mutation_response"] | undefined | null,
 	/** delete single row from the table: "draft_games" */
 	delete_draft_games_by_pk?: ModelTypes["draft_games"] | undefined | null,
+	/** delete data from the table: "e_award_sources" */
+	delete_e_award_sources?: ModelTypes["e_award_sources_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_award_sources" */
+	delete_e_award_sources_by_pk?: ModelTypes["e_award_sources"] | undefined | null,
+	/** delete data from the table: "e_award_tiers" */
+	delete_e_award_tiers?: ModelTypes["e_award_tiers_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_award_tiers" */
+	delete_e_award_tiers_by_pk?: ModelTypes["e_award_tiers"] | undefined | null,
 	/** delete data from the table: "e_check_in_settings" */
 	delete_e_check_in_settings?: ModelTypes["e_check_in_settings_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_check_in_settings" */
@@ -148143,6 +150963,10 @@ export type ModelTypes = {
 	delete_teams?: ModelTypes["teams_mutation_response"] | undefined | null,
 	/** delete single row from the table: "teams" */
 	delete_teams_by_pk?: ModelTypes["teams"] | undefined | null,
+	/** delete data from the table: "tournament_awards" */
+	delete_tournament_awards?: ModelTypes["tournament_awards_mutation_response"] | undefined | null,
+	/** delete single row from the table: "tournament_awards" */
+	delete_tournament_awards_by_pk?: ModelTypes["tournament_awards"] | undefined | null,
 	/** delete data from the table: "tournament_brackets" */
 	delete_tournament_brackets?: ModelTypes["tournament_brackets_mutation_response"] | undefined | null,
 	/** delete single row from the table: "tournament_brackets" */
@@ -148183,14 +151007,6 @@ export type ModelTypes = {
 	delete_tournament_teams?: ModelTypes["tournament_teams_mutation_response"] | undefined | null,
 	/** delete single row from the table: "tournament_teams" */
 	delete_tournament_teams_by_pk?: ModelTypes["tournament_teams"] | undefined | null,
-	/** delete data from the table: "tournament_trophies" */
-	delete_tournament_trophies?: ModelTypes["tournament_trophies_mutation_response"] | undefined | null,
-	/** delete single row from the table: "tournament_trophies" */
-	delete_tournament_trophies_by_pk?: ModelTypes["tournament_trophies"] | undefined | null,
-	/** delete data from the table: "tournament_trophy_configs" */
-	delete_tournament_trophy_configs?: ModelTypes["tournament_trophy_configs_mutation_response"] | undefined | null,
-	/** delete single row from the table: "tournament_trophy_configs" */
-	delete_tournament_trophy_configs_by_pk?: ModelTypes["tournament_trophy_configs"] | undefined | null,
 	/** delete data from the table: "tournaments" */
 	delete_tournaments?: ModelTypes["tournaments_mutation_response"] | undefined | null,
 	/** delete single row from the table: "tournaments" */
@@ -148212,6 +151028,8 @@ export type ModelTypes = {
 	/** Live pod GSI snapshot — slots, sides, alive/dead. Drives the stream-deck. */
 	getLiveStreamSpecState?: ModelTypes["LiveStreamSpecState"] | undefined | null,
 	getTestUploadLink: ModelTypes["GetTestUploadResponse"],
+	/** Grant an award to a player or team */
+	grantAward?: ModelTypes["AwardRecipient"] | undefined | null,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "_map_pool" */
@@ -148224,6 +151042,14 @@ export type ModelTypes = {
 	insert_api_keys?: ModelTypes["api_keys_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "api_keys" */
 	insert_api_keys_one?: ModelTypes["api_keys"] | undefined | null,
+	/** insert data into the table: "award_recipients" */
+	insert_award_recipients?: ModelTypes["award_recipients_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "award_recipients" */
+	insert_award_recipients_one?: ModelTypes["award_recipients"] | undefined | null,
+	/** insert data into the table: "awards" */
+	insert_awards?: ModelTypes["awards_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "awards" */
+	insert_awards_one?: ModelTypes["awards"] | undefined | null,
 	/** insert data into the table: "clip_render_jobs" */
 	insert_clip_render_jobs?: ModelTypes["clip_render_jobs_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "clip_render_jobs" */
@@ -148248,6 +151074,14 @@ export type ModelTypes = {
 	insert_draft_games?: ModelTypes["draft_games_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "draft_games" */
 	insert_draft_games_one?: ModelTypes["draft_games"] | undefined | null,
+	/** insert data into the table: "e_award_sources" */
+	insert_e_award_sources?: ModelTypes["e_award_sources_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_award_sources" */
+	insert_e_award_sources_one?: ModelTypes["e_award_sources"] | undefined | null,
+	/** insert data into the table: "e_award_tiers" */
+	insert_e_award_tiers?: ModelTypes["e_award_tiers_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_award_tiers" */
+	insert_e_award_tiers_one?: ModelTypes["e_award_tiers"] | undefined | null,
 	/** insert data into the table: "e_check_in_settings" */
 	insert_e_check_in_settings?: ModelTypes["e_check_in_settings_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_check_in_settings" */
@@ -148752,6 +151586,10 @@ export type ModelTypes = {
 	insert_teams?: ModelTypes["teams_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "teams" */
 	insert_teams_one?: ModelTypes["teams"] | undefined | null,
+	/** insert data into the table: "tournament_awards" */
+	insert_tournament_awards?: ModelTypes["tournament_awards_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "tournament_awards" */
+	insert_tournament_awards_one?: ModelTypes["tournament_awards"] | undefined | null,
 	/** insert data into the table: "tournament_brackets" */
 	insert_tournament_brackets?: ModelTypes["tournament_brackets_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "tournament_brackets" */
@@ -148792,14 +151630,6 @@ export type ModelTypes = {
 	insert_tournament_teams?: ModelTypes["tournament_teams_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "tournament_teams" */
 	insert_tournament_teams_one?: ModelTypes["tournament_teams"] | undefined | null,
-	/** insert data into the table: "tournament_trophies" */
-	insert_tournament_trophies?: ModelTypes["tournament_trophies_mutation_response"] | undefined | null,
-	/** insert a single row into the table: "tournament_trophies" */
-	insert_tournament_trophies_one?: ModelTypes["tournament_trophies"] | undefined | null,
-	/** insert data into the table: "tournament_trophy_configs" */
-	insert_tournament_trophy_configs?: ModelTypes["tournament_trophy_configs_mutation_response"] | undefined | null,
-	/** insert a single row into the table: "tournament_trophy_configs" */
-	insert_tournament_trophy_configs_one?: ModelTypes["tournament_trophy_configs"] | undefined | null,
 	/** insert data into the table: "tournaments" */
 	insert_tournaments?: ModelTypes["tournaments_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "tournaments" */
@@ -148850,8 +151680,8 @@ export type ModelTypes = {
 	queueClipFromPreset?: ModelTypes["CreateClipRenderOutput"] | undefined | null,
 	randomizeTeams?: ModelTypes["SuccessOutput"] | undefined | null,
 	rebootMatchServer?: ModelTypes["SuccessOutput"] | undefined | null,
-	/** execute VOLATILE function "recalculate_tournament_trophies" which returns "tournament_trophies" */
-	recalculate_tournament_trophies: Array<ModelTypes["tournament_trophies"]>,
+	/** execute VOLATILE function "recalculate_tournament_awards" which returns "award_recipients" */
+	recalculate_tournament_awards: Array<ModelTypes["award_recipients"]>,
 	/** Wipe and rebuild all player ELO from finished matches in chronological order (admin only). Runs in the background; track via recomputePlayerEloStatus. */
 	recomputePlayerElo?: ModelTypes["RecomputeEloStartedOutput"] | undefined | null,
 	/** Return the progress of the ELO recompute run (admin only). */
@@ -148897,7 +151727,11 @@ export type ModelTypes = {
 	/** Delete terminal clip_render_jobs rows for a match_map (all or only failed/cancelled) and re-create them from their saved specs. */
 	retryClipRenderBatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	retryPendingMatchImport?: ModelTypes["PendingMatchImportActionOutput"] | undefined | null,
+	/** Revoke a hand-granted award */
+	revokeAward?: ModelTypes["SuccessOutput"] | undefined | null,
 	sanctionServerPlayer: ModelTypes["SanctionResult"],
+	/** Create or update a catalog award */
+	saveAward?: ModelTypes["Award"] | undefined | null,
 	/** Create or update a first-party news post. Caller role is verified against public.post_news_role. */
 	saveNewsPost?: ModelTypes["NewsPost"] | undefined | null,
 	/** Scan S3 for objects not referenced in the database (admin only). Runs in the background; results land in the logs and orphanedDemosScanResult. */
@@ -148916,6 +151750,8 @@ export type ModelTypes = {
 	setMatchWinner?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Publish or unpublish a news post. Caller role is verified against public.post_news_role. */
 	setNewsPostStatus?: ModelTypes["NewsPost"] | undefined | null,
+	/** Map a tournament placement to an award */
+	setTournamentAward?: ModelTypes["TournamentAward"] | undefined | null,
 	setupGameServer?: ModelTypes["SetupGameServeOutput"] | undefined | null,
 	skipShaders?: ModelTypes["SuccessOutput"] | undefined | null,
 	specAutodirector?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -148969,6 +151805,18 @@ export type ModelTypes = {
 	update_api_keys_by_pk?: ModelTypes["api_keys"] | undefined | null,
 	/** update multiples rows of table: "api_keys" */
 	update_api_keys_many?: Array<ModelTypes["api_keys_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "award_recipients" */
+	update_award_recipients?: ModelTypes["award_recipients_mutation_response"] | undefined | null,
+	/** update single row of the table: "award_recipients" */
+	update_award_recipients_by_pk?: ModelTypes["award_recipients"] | undefined | null,
+	/** update multiples rows of table: "award_recipients" */
+	update_award_recipients_many?: Array<ModelTypes["award_recipients_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "awards" */
+	update_awards?: ModelTypes["awards_mutation_response"] | undefined | null,
+	/** update single row of the table: "awards" */
+	update_awards_by_pk?: ModelTypes["awards"] | undefined | null,
+	/** update multiples rows of table: "awards" */
+	update_awards_many?: Array<ModelTypes["awards_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "clip_render_jobs" */
 	update_clip_render_jobs?: ModelTypes["clip_render_jobs_mutation_response"] | undefined | null,
 	/** update single row of the table: "clip_render_jobs" */
@@ -149005,6 +151853,18 @@ export type ModelTypes = {
 	update_draft_games_by_pk?: ModelTypes["draft_games"] | undefined | null,
 	/** update multiples rows of table: "draft_games" */
 	update_draft_games_many?: Array<ModelTypes["draft_games_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_award_sources" */
+	update_e_award_sources?: ModelTypes["e_award_sources_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_award_sources" */
+	update_e_award_sources_by_pk?: ModelTypes["e_award_sources"] | undefined | null,
+	/** update multiples rows of table: "e_award_sources" */
+	update_e_award_sources_many?: Array<ModelTypes["e_award_sources_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_award_tiers" */
+	update_e_award_tiers?: ModelTypes["e_award_tiers_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_award_tiers" */
+	update_e_award_tiers_by_pk?: ModelTypes["e_award_tiers"] | undefined | null,
+	/** update multiples rows of table: "e_award_tiers" */
+	update_e_award_tiers_many?: Array<ModelTypes["e_award_tiers_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_check_in_settings" */
 	update_e_check_in_settings?: ModelTypes["e_check_in_settings_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_check_in_settings" */
@@ -149755,6 +152615,12 @@ export type ModelTypes = {
 	update_teams_by_pk?: ModelTypes["teams"] | undefined | null,
 	/** update multiples rows of table: "teams" */
 	update_teams_many?: Array<ModelTypes["teams_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "tournament_awards" */
+	update_tournament_awards?: ModelTypes["tournament_awards_mutation_response"] | undefined | null,
+	/** update single row of the table: "tournament_awards" */
+	update_tournament_awards_by_pk?: ModelTypes["tournament_awards"] | undefined | null,
+	/** update multiples rows of table: "tournament_awards" */
+	update_tournament_awards_many?: Array<ModelTypes["tournament_awards_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "tournament_brackets" */
 	update_tournament_brackets?: ModelTypes["tournament_brackets_mutation_response"] | undefined | null,
 	/** update single row of the table: "tournament_brackets" */
@@ -149815,18 +152681,6 @@ export type ModelTypes = {
 	update_tournament_teams_by_pk?: ModelTypes["tournament_teams"] | undefined | null,
 	/** update multiples rows of table: "tournament_teams" */
 	update_tournament_teams_many?: Array<ModelTypes["tournament_teams_mutation_response"] | undefined | null> | undefined | null,
-	/** update data of the table: "tournament_trophies" */
-	update_tournament_trophies?: ModelTypes["tournament_trophies_mutation_response"] | undefined | null,
-	/** update single row of the table: "tournament_trophies" */
-	update_tournament_trophies_by_pk?: ModelTypes["tournament_trophies"] | undefined | null,
-	/** update multiples rows of table: "tournament_trophies" */
-	update_tournament_trophies_many?: Array<ModelTypes["tournament_trophies_mutation_response"] | undefined | null> | undefined | null,
-	/** update data of the table: "tournament_trophy_configs" */
-	update_tournament_trophy_configs?: ModelTypes["tournament_trophy_configs_mutation_response"] | undefined | null,
-	/** update single row of the table: "tournament_trophy_configs" */
-	update_tournament_trophy_configs_by_pk?: ModelTypes["tournament_trophy_configs"] | undefined | null,
-	/** update multiples rows of table: "tournament_trophy_configs" */
-	update_tournament_trophy_configs_many?: Array<ModelTypes["tournament_trophy_configs_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "tournaments" */
 	update_tournaments?: ModelTypes["tournaments_mutation_response"] | undefined | null,
 	/** update single row of the table: "tournaments" */
@@ -163099,6 +165953,10 @@ export type ModelTypes = {
 	assited_by_players_aggregate: ModelTypes["player_assists_aggregate"],
 	avatar_url?: string | undefined | null,
 	/** An array relationship */
+	awards: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: ModelTypes["award_recipients_aggregate"],
+	/** An array relationship */
 	coach_lineups: Array<ModelTypes["match_lineups"]>,
 	/** An aggregate relationship */
 	coach_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
@@ -163284,10 +166142,6 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	tournament_rosters_aggregate: ModelTypes["tournament_team_roster_aggregate"],
 	/** An array relationship */
-	tournament_trophies: Array<ModelTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	tournament_trophies_aggregate: ModelTypes["tournament_trophies_aggregate"],
-	/** An array relationship */
 	tournaments: Array<ModelTypes["tournaments"]>,
 	/** An aggregate relationship */
 	tournaments_aggregate: ModelTypes["tournaments_aggregate"],
@@ -163371,6 +166225,8 @@ export type ModelTypes = {
 	assited_by_players?: ModelTypes["player_assists_bool_exp"] | undefined | null,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	avatar_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	awards?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	coach_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined | null,
 	coach_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	country?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -163476,8 +166332,6 @@ export type ModelTypes = {
 	tournament_organizers_aggregate?: ModelTypes["tournament_organizers_aggregate_bool_exp"] | undefined | null,
 	tournament_rosters?: ModelTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	tournament_rosters_aggregate?: ModelTypes["tournament_team_roster_aggregate_bool_exp"] | undefined | null,
-	tournament_trophies?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null,
-	tournament_trophies_aggregate?: ModelTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null,
 	tournaments?: ModelTypes["tournaments_bool_exp"] | undefined | null,
 	tournaments_aggregate?: ModelTypes["tournaments_aggregate_bool_exp"] | undefined | null,
 	utility_thrown?: ModelTypes["player_utility_bool_exp"] | undefined | null,
@@ -163509,6 +166363,7 @@ export type ModelTypes = {
 	assists?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
+	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	coach_lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -163566,7 +166421,6 @@ export type ModelTypes = {
 	team_members?: ModelTypes["team_roster_arr_rel_insert_input"] | undefined | null,
 	tournament_organizers?: ModelTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null,
 	tournament_rosters?: ModelTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
-	tournament_trophies?: ModelTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null,
 	tournaments?: ModelTypes["tournaments_arr_rel_insert_input"] | undefined | null,
 	utility_thrown?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined | null,
 	vac_ban_count?: number | undefined | null,
@@ -163697,6 +166551,7 @@ export type ModelTypes = {
 	assists_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: ModelTypes["order_by"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	coach_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	country?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
@@ -163771,7 +166626,6 @@ export type ModelTypes = {
 	total_matches?: ModelTypes["order_by"] | undefined | null,
 	tournament_organizers_aggregate?: ModelTypes["tournament_organizers_aggregate_order_by"] | undefined | null,
 	tournament_rosters_aggregate?: ModelTypes["tournament_team_roster_aggregate_order_by"] | undefined | null,
-	tournament_trophies_aggregate?: ModelTypes["tournament_trophies_aggregate_order_by"] | undefined | null,
 	tournaments_aggregate?: ModelTypes["tournaments_aggregate_order_by"] | undefined | null,
 	utility_thrown_aggregate?: ModelTypes["player_utility_aggregate_order_by"] | undefined | null,
 	vac_ban_count?: ModelTypes["order_by"] | undefined | null,
@@ -164228,6 +167082,18 @@ export type ModelTypes = {
 	api_keys_aggregate: ModelTypes["api_keys_aggregate"],
 	/** fetch data from the table: "api_keys" using primary key columns */
 	api_keys_by_pk?: ModelTypes["api_keys"] | undefined | null,
+	/** fetch data from the table: "award_recipients" */
+	award_recipients: Array<ModelTypes["award_recipients"]>,
+	/** fetch aggregated fields from the table: "award_recipients" */
+	award_recipients_aggregate: ModelTypes["award_recipients_aggregate"],
+	/** fetch data from the table: "award_recipients" using primary key columns */
+	award_recipients_by_pk?: ModelTypes["award_recipients"] | undefined | null,
+	/** fetch data from the table: "awards" */
+	awards: Array<ModelTypes["awards"]>,
+	/** fetch aggregated fields from the table: "awards" */
+	awards_aggregate: ModelTypes["awards_aggregate"],
+	/** fetch data from the table: "awards" using primary key columns */
+	awards_by_pk?: ModelTypes["awards"] | undefined | null,
 	/** An array relationship */
 	clip_render_jobs: Array<ModelTypes["clip_render_jobs"]>,
 	/** An aggregate relationship */
@@ -164265,6 +167131,18 @@ export type ModelTypes = {
 	draft_games_aggregate: ModelTypes["draft_games_aggregate"],
 	/** fetch data from the table: "draft_games" using primary key columns */
 	draft_games_by_pk?: ModelTypes["draft_games"] | undefined | null,
+	/** fetch data from the table: "e_award_sources" */
+	e_award_sources: Array<ModelTypes["e_award_sources"]>,
+	/** fetch aggregated fields from the table: "e_award_sources" */
+	e_award_sources_aggregate: ModelTypes["e_award_sources_aggregate"],
+	/** fetch data from the table: "e_award_sources" using primary key columns */
+	e_award_sources_by_pk?: ModelTypes["e_award_sources"] | undefined | null,
+	/** fetch data from the table: "e_award_tiers" */
+	e_award_tiers: Array<ModelTypes["e_award_tiers"]>,
+	/** fetch aggregated fields from the table: "e_award_tiers" */
+	e_award_tiers_aggregate: ModelTypes["e_award_tiers_aggregate"],
+	/** fetch data from the table: "e_award_tiers" using primary key columns */
+	e_award_tiers_by_pk?: ModelTypes["e_award_tiers"] | undefined | null,
 	/** fetch data from the table: "e_check_in_settings" */
 	e_check_in_settings: Array<ModelTypes["e_check_in_settings"]>,
 	/** fetch aggregated fields from the table: "e_check_in_settings" */
@@ -165100,6 +167978,12 @@ export type ModelTypes = {
 	/** fetch data from the table: "teams" using primary key columns */
 	teams_by_pk?: ModelTypes["teams"] | undefined | null,
 	telemetryStats: ModelTypes["TelemetryStats"],
+	/** fetch data from the table: "tournament_awards" */
+	tournament_awards: Array<ModelTypes["tournament_awards"]>,
+	/** fetch aggregated fields from the table: "tournament_awards" */
+	tournament_awards_aggregate: ModelTypes["tournament_awards_aggregate"],
+	/** fetch data from the table: "tournament_awards" using primary key columns */
+	tournament_awards_by_pk?: ModelTypes["tournament_awards"] | undefined | null,
 	/** An array relationship */
 	tournament_brackets: Array<ModelTypes["tournament_brackets"]>,
 	/** An aggregate relationship */
@@ -165160,18 +168044,6 @@ export type ModelTypes = {
 	tournament_teams_aggregate: ModelTypes["tournament_teams_aggregate"],
 	/** fetch data from the table: "tournament_teams" using primary key columns */
 	tournament_teams_by_pk?: ModelTypes["tournament_teams"] | undefined | null,
-	/** An array relationship */
-	tournament_trophies: Array<ModelTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	tournament_trophies_aggregate: ModelTypes["tournament_trophies_aggregate"],
-	/** fetch data from the table: "tournament_trophies" using primary key columns */
-	tournament_trophies_by_pk?: ModelTypes["tournament_trophies"] | undefined | null,
-	/** fetch data from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs: Array<ModelTypes["tournament_trophy_configs"]>,
-	/** fetch aggregated fields from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs_aggregate: ModelTypes["tournament_trophy_configs_aggregate"],
-	/** fetch data from the table: "tournament_trophy_configs" using primary key columns */
-	tournament_trophy_configs_by_pk?: ModelTypes["tournament_trophy_configs"] | undefined | null,
 	/** An array relationship */
 	tournaments: Array<ModelTypes["tournaments"]>,
 	/** An aggregate relationship */
@@ -165309,7 +168181,7 @@ export type ModelTypes = {
 	/** fetch aggregated fields from the table: "v_tournament_player_stats" */
 	v_tournament_player_stats_aggregate: ModelTypes["v_tournament_player_stats_aggregate"]
 };
-	["recalculate_tournament_trophies_args"]: {
+	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ModelTypes["uuid"] | undefined | null
 };
 	["remove_league_team_from_season_args"]: {
@@ -166739,6 +169611,22 @@ export type ModelTypes = {
 	api_keys_by_pk?: ModelTypes["api_keys"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "api_keys" */
 	api_keys_stream: Array<ModelTypes["api_keys"]>,
+	/** fetch data from the table: "award_recipients" */
+	award_recipients: Array<ModelTypes["award_recipients"]>,
+	/** fetch aggregated fields from the table: "award_recipients" */
+	award_recipients_aggregate: ModelTypes["award_recipients_aggregate"],
+	/** fetch data from the table: "award_recipients" using primary key columns */
+	award_recipients_by_pk?: ModelTypes["award_recipients"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "award_recipients" */
+	award_recipients_stream: Array<ModelTypes["award_recipients"]>,
+	/** fetch data from the table: "awards" */
+	awards: Array<ModelTypes["awards"]>,
+	/** fetch aggregated fields from the table: "awards" */
+	awards_aggregate: ModelTypes["awards_aggregate"],
+	/** fetch data from the table: "awards" using primary key columns */
+	awards_by_pk?: ModelTypes["awards"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "awards" */
+	awards_stream: Array<ModelTypes["awards"]>,
 	/** An array relationship */
 	clip_render_jobs: Array<ModelTypes["clip_render_jobs"]>,
 	/** An aggregate relationship */
@@ -166787,6 +169675,22 @@ export type ModelTypes = {
 	draft_games_by_pk?: ModelTypes["draft_games"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "draft_games" */
 	draft_games_stream: Array<ModelTypes["draft_games"]>,
+	/** fetch data from the table: "e_award_sources" */
+	e_award_sources: Array<ModelTypes["e_award_sources"]>,
+	/** fetch aggregated fields from the table: "e_award_sources" */
+	e_award_sources_aggregate: ModelTypes["e_award_sources_aggregate"],
+	/** fetch data from the table: "e_award_sources" using primary key columns */
+	e_award_sources_by_pk?: ModelTypes["e_award_sources"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_award_sources" */
+	e_award_sources_stream: Array<ModelTypes["e_award_sources"]>,
+	/** fetch data from the table: "e_award_tiers" */
+	e_award_tiers: Array<ModelTypes["e_award_tiers"]>,
+	/** fetch aggregated fields from the table: "e_award_tiers" */
+	e_award_tiers_aggregate: ModelTypes["e_award_tiers_aggregate"],
+	/** fetch data from the table: "e_award_tiers" using primary key columns */
+	e_award_tiers_by_pk?: ModelTypes["e_award_tiers"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_award_tiers" */
+	e_award_tiers_stream: Array<ModelTypes["e_award_tiers"]>,
 	/** fetch data from the table: "e_check_in_settings" */
 	e_check_in_settings: Array<ModelTypes["e_check_in_settings"]>,
 	/** fetch aggregated fields from the table: "e_check_in_settings" */
@@ -167835,6 +170739,14 @@ export type ModelTypes = {
 	teams_by_pk?: ModelTypes["teams"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "teams" */
 	teams_stream: Array<ModelTypes["teams"]>,
+	/** fetch data from the table: "tournament_awards" */
+	tournament_awards: Array<ModelTypes["tournament_awards"]>,
+	/** fetch aggregated fields from the table: "tournament_awards" */
+	tournament_awards_aggregate: ModelTypes["tournament_awards_aggregate"],
+	/** fetch data from the table: "tournament_awards" using primary key columns */
+	tournament_awards_by_pk?: ModelTypes["tournament_awards"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "tournament_awards" */
+	tournament_awards_stream: Array<ModelTypes["tournament_awards"]>,
 	/** An array relationship */
 	tournament_brackets: Array<ModelTypes["tournament_brackets"]>,
 	/** An aggregate relationship */
@@ -167915,22 +170827,6 @@ export type ModelTypes = {
 	tournament_teams_by_pk?: ModelTypes["tournament_teams"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "tournament_teams" */
 	tournament_teams_stream: Array<ModelTypes["tournament_teams"]>,
-	/** An array relationship */
-	tournament_trophies: Array<ModelTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	tournament_trophies_aggregate: ModelTypes["tournament_trophies_aggregate"],
-	/** fetch data from the table: "tournament_trophies" using primary key columns */
-	tournament_trophies_by_pk?: ModelTypes["tournament_trophies"] | undefined | null,
-	/** fetch data from the table in a streaming manner: "tournament_trophies" */
-	tournament_trophies_stream: Array<ModelTypes["tournament_trophies"]>,
-	/** fetch data from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs: Array<ModelTypes["tournament_trophy_configs"]>,
-	/** fetch aggregated fields from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs_aggregate: ModelTypes["tournament_trophy_configs_aggregate"],
-	/** fetch data from the table: "tournament_trophy_configs" using primary key columns */
-	tournament_trophy_configs_by_pk?: ModelTypes["tournament_trophy_configs"] | undefined | null,
-	/** fetch data from the table in a streaming manner: "tournament_trophy_configs" */
-	tournament_trophy_configs_stream: Array<ModelTypes["tournament_trophy_configs"]>,
 	/** An array relationship */
 	tournaments: Array<ModelTypes["tournaments"]>,
 	/** An aggregate relationship */
@@ -170296,6 +173192,10 @@ export type ModelTypes = {
 	/** columns and relationships of "teams" */
 ["teams"]: {
 		avatar_url?: string | undefined | null,
+	/** An array relationship */
+	awards: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: ModelTypes["award_recipients_aggregate"],
 	/** A computed field, executes function "can_change_team_role" */
 	can_change_role?: boolean | undefined | null,
 	/** A computed field, executes function "can_invite_to_team" */
@@ -170423,6 +173323,8 @@ export type ModelTypes = {
 	_not?: ModelTypes["teams_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["teams_bool_exp"]> | undefined | null,
 	avatar_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	awards?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	can_change_role?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	can_invite?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	can_manage_scrims?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -170460,6 +173362,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 	avatar_url?: string | undefined | null,
+	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	captain?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	captain_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -170539,6 +173442,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 	avatar_url?: ModelTypes["order_by"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	can_change_role?: ModelTypes["order_by"] | undefined | null,
 	can_invite?: ModelTypes["order_by"] | undefined | null,
 	can_manage_scrims?: ModelTypes["order_by"] | undefined | null,
@@ -170688,6 +173592,313 @@ export type ModelTypes = {
 	_lte?: ModelTypes["timestamptz"] | undefined | null,
 	_neq?: ModelTypes["timestamptz"] | undefined | null,
 	_nin?: Array<ModelTypes["timestamptz"]> | undefined | null
+};
+	/** columns and relationships of "tournament_awards" */
+["tournament_awards"]: {
+		/** An object relationship */
+	award?: ModelTypes["awards"] | undefined | null,
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	created_at: ModelTypes["timestamptz"],
+	custom_name?: string | undefined | null,
+	id: ModelTypes["uuid"],
+	image_url?: string | undefined | null,
+	placement: number,
+	silhouette?: number | undefined | null,
+	/** An object relationship */
+	tournament: ModelTypes["tournaments"],
+	tournament_id: ModelTypes["uuid"],
+	updated_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "tournament_awards" */
+["tournament_awards_aggregate"]: {
+		aggregate?: ModelTypes["tournament_awards_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["tournament_awards"]>
+};
+	["tournament_awards_aggregate_bool_exp"]: {
+	count?: ModelTypes["tournament_awards_aggregate_bool_exp_count"] | undefined | null
+};
+	["tournament_awards_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["tournament_awards_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["tournament_awards_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "tournament_awards" */
+["tournament_awards_aggregate_fields"]: {
+		avg?: ModelTypes["tournament_awards_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["tournament_awards_max_fields"] | undefined | null,
+	min?: ModelTypes["tournament_awards_min_fields"] | undefined | null,
+	stddev?: ModelTypes["tournament_awards_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["tournament_awards_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["tournament_awards_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["tournament_awards_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["tournament_awards_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["tournament_awards_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["tournament_awards_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "tournament_awards" */
+["tournament_awards_aggregate_order_by"]: {
+	avg?: ModelTypes["tournament_awards_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["tournament_awards_max_order_by"] | undefined | null,
+	min?: ModelTypes["tournament_awards_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["tournament_awards_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["tournament_awards_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["tournament_awards_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["tournament_awards_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["tournament_awards_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["tournament_awards_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["tournament_awards_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "tournament_awards" */
+["tournament_awards_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["tournament_awards_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["tournament_awards_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["tournament_awards_avg_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by avg() on columns of table "tournament_awards" */
+["tournament_awards_avg_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "tournament_awards". All fields are combined with a logical 'AND'. */
+["tournament_awards_bool_exp"]: {
+	_and?: Array<ModelTypes["tournament_awards_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["tournament_awards_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["tournament_awards_bool_exp"]> | undefined | null,
+	award?: ModelTypes["awards_bool_exp"] | undefined | null,
+	award_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	custom_name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	image_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	placement?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	silhouette?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	tournament?: ModelTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["tournament_awards_constraint"]:tournament_awards_constraint;
+	/** input type for incrementing numeric columns in table "tournament_awards" */
+["tournament_awards_inc_input"]: {
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** input type for inserting data into table "tournament_awards" */
+["tournament_awards_insert_input"]: {
+	award?: ModelTypes["awards_obj_rel_insert_input"] | undefined | null,
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["tournament_awards_max_fields"]: {
+		award_id?: ModelTypes["uuid"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "tournament_awards" */
+["tournament_awards_max_order_by"]: {
+	award_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	custom_name?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	image_url?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["tournament_awards_min_fields"]: {
+		award_id?: ModelTypes["uuid"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "tournament_awards" */
+["tournament_awards_min_order_by"]: {
+	award_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	custom_name?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	image_url?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "tournament_awards" */
+["tournament_awards_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["tournament_awards"]>
+};
+	/** input type for inserting object relation for remote table "tournament_awards" */
+["tournament_awards_obj_rel_insert_input"]: {
+	data: ModelTypes["tournament_awards_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["tournament_awards_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "tournament_awards" */
+["tournament_awards_on_conflict"]: {
+	constraint: ModelTypes["tournament_awards_constraint"],
+	update_columns: Array<ModelTypes["tournament_awards_update_column"]>,
+	where?: ModelTypes["tournament_awards_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "tournament_awards". */
+["tournament_awards_order_by"]: {
+	award?: ModelTypes["awards_order_by"] | undefined | null,
+	award_id?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	custom_name?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	image_url?: ModelTypes["order_by"] | undefined | null,
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null,
+	tournament?: ModelTypes["tournaments_order_by"] | undefined | null,
+	tournament_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: tournament_awards */
+["tournament_awards_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["tournament_awards_select_column"]:tournament_awards_select_column;
+	/** input type for updating data in table "tournament_awards" */
+["tournament_awards_set_input"]: {
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["tournament_awards_stddev_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by stddev() on columns of table "tournament_awards" */
+["tournament_awards_stddev_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["tournament_awards_stddev_pop_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "tournament_awards" */
+["tournament_awards_stddev_pop_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["tournament_awards_stddev_samp_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "tournament_awards" */
+["tournament_awards_stddev_samp_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "tournament_awards" */
+["tournament_awards_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["tournament_awards_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["tournament_awards_stream_cursor_value_input"]: {
+	award_id?: ModelTypes["uuid"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: ModelTypes["uuid"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["tournament_awards_sum_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by sum() on columns of table "tournament_awards" */
+["tournament_awards_sum_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	["tournament_awards_update_column"]:tournament_awards_update_column;
+	["tournament_awards_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["tournament_awards_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["tournament_awards_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["tournament_awards_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["tournament_awards_var_pop_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "tournament_awards" */
+["tournament_awards_var_pop_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["tournament_awards_var_samp_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "tournament_awards" */
+["tournament_awards_var_samp_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["tournament_awards_variance_fields"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by variance() on columns of table "tournament_awards" */
+["tournament_awards_variance_order_by"]: {
+	placement?: ModelTypes["order_by"] | undefined | null,
+	silhouette?: ModelTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "tournament_brackets" */
 ["tournament_brackets"]: {
@@ -173598,629 +176809,20 @@ export type ModelTypes = {
 	owner_steam_id?: ModelTypes["order_by"] | undefined | null,
 	seed?: ModelTypes["order_by"] | undefined | null
 };
-	/** columns and relationships of "tournament_trophies" */
-["tournament_trophies"]: {
-		created_at: ModelTypes["timestamptz"],
-	id: ModelTypes["uuid"],
-	manual: boolean,
-	placement: number,
-	placement_tier?: string | undefined | null,
-	/** An object relationship */
-	player?: ModelTypes["players"] | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null,
-	/** An object relationship */
-	team?: ModelTypes["teams"] | undefined | null,
-	team_id?: ModelTypes["uuid"] | undefined | null,
-	/** An object relationship */
-	tournament: ModelTypes["tournaments"],
-	tournament_id: ModelTypes["uuid"],
-	/** An object relationship */
-	tournament_team: ModelTypes["tournament_teams"],
-	tournament_team_id: ModelTypes["uuid"],
-	/** An object relationship */
-	trophy_config?: ModelTypes["tournament_trophy_configs"] | undefined | null
-};
-	/** aggregated selection of "tournament_trophies" */
-["tournament_trophies_aggregate"]: {
-		aggregate?: ModelTypes["tournament_trophies_aggregate_fields"] | undefined | null,
-	nodes: Array<ModelTypes["tournament_trophies"]>
-};
-	["tournament_trophies_aggregate_bool_exp"]: {
-	bool_and?: ModelTypes["tournament_trophies_aggregate_bool_exp_bool_and"] | undefined | null,
-	bool_or?: ModelTypes["tournament_trophies_aggregate_bool_exp_bool_or"] | undefined | null,
-	count?: ModelTypes["tournament_trophies_aggregate_bool_exp_count"] | undefined | null
-};
-	["tournament_trophies_aggregate_bool_exp_bool_and"]: {
-	arguments: ModelTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"],
-	distinct?: boolean | undefined | null,
-	filter?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: ModelTypes["Boolean_comparison_exp"]
-};
-	["tournament_trophies_aggregate_bool_exp_bool_or"]: {
-	arguments: ModelTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"],
-	distinct?: boolean | undefined | null,
-	filter?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: ModelTypes["Boolean_comparison_exp"]
-};
-	["tournament_trophies_aggregate_bool_exp_count"]: {
-	arguments?: Array<ModelTypes["tournament_trophies_select_column"]> | undefined | null,
-	distinct?: boolean | undefined | null,
-	filter?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: ModelTypes["Int_comparison_exp"]
-};
-	/** aggregate fields of "tournament_trophies" */
-["tournament_trophies_aggregate_fields"]: {
-		avg?: ModelTypes["tournament_trophies_avg_fields"] | undefined | null,
-	count: number,
-	max?: ModelTypes["tournament_trophies_max_fields"] | undefined | null,
-	min?: ModelTypes["tournament_trophies_min_fields"] | undefined | null,
-	stddev?: ModelTypes["tournament_trophies_stddev_fields"] | undefined | null,
-	stddev_pop?: ModelTypes["tournament_trophies_stddev_pop_fields"] | undefined | null,
-	stddev_samp?: ModelTypes["tournament_trophies_stddev_samp_fields"] | undefined | null,
-	sum?: ModelTypes["tournament_trophies_sum_fields"] | undefined | null,
-	var_pop?: ModelTypes["tournament_trophies_var_pop_fields"] | undefined | null,
-	var_samp?: ModelTypes["tournament_trophies_var_samp_fields"] | undefined | null,
-	variance?: ModelTypes["tournament_trophies_variance_fields"] | undefined | null
-};
-	/** order by aggregate values of table "tournament_trophies" */
-["tournament_trophies_aggregate_order_by"]: {
-	avg?: ModelTypes["tournament_trophies_avg_order_by"] | undefined | null,
-	count?: ModelTypes["order_by"] | undefined | null,
-	max?: ModelTypes["tournament_trophies_max_order_by"] | undefined | null,
-	min?: ModelTypes["tournament_trophies_min_order_by"] | undefined | null,
-	stddev?: ModelTypes["tournament_trophies_stddev_order_by"] | undefined | null,
-	stddev_pop?: ModelTypes["tournament_trophies_stddev_pop_order_by"] | undefined | null,
-	stddev_samp?: ModelTypes["tournament_trophies_stddev_samp_order_by"] | undefined | null,
-	sum?: ModelTypes["tournament_trophies_sum_order_by"] | undefined | null,
-	var_pop?: ModelTypes["tournament_trophies_var_pop_order_by"] | undefined | null,
-	var_samp?: ModelTypes["tournament_trophies_var_samp_order_by"] | undefined | null,
-	variance?: ModelTypes["tournament_trophies_variance_order_by"] | undefined | null
-};
-	/** input type for inserting array relation for remote table "tournament_trophies" */
-["tournament_trophies_arr_rel_insert_input"]: {
-	data: Array<ModelTypes["tournament_trophies_insert_input"]>,
-	/** upsert condition */
-	on_conflict?: ModelTypes["tournament_trophies_on_conflict"] | undefined | null
-};
-	/** aggregate avg on columns */
-["tournament_trophies_avg_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by avg() on columns of table "tournament_trophies" */
-["tournament_trophies_avg_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** Boolean expression to filter rows from the table "tournament_trophies". All fields are combined with a logical 'AND'. */
-["tournament_trophies_bool_exp"]: {
-	_and?: Array<ModelTypes["tournament_trophies_bool_exp"]> | undefined | null,
-	_not?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null,
-	_or?: Array<ModelTypes["tournament_trophies_bool_exp"]> | undefined | null,
-	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
-	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	manual?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
-	placement?: ModelTypes["Int_comparison_exp"] | undefined | null,
-	placement_tier?: ModelTypes["String_comparison_exp"] | undefined | null,
-	player?: ModelTypes["players_bool_exp"] | undefined | null,
-	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
-	team?: ModelTypes["teams_bool_exp"] | undefined | null,
-	team_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	tournament?: ModelTypes["tournaments_bool_exp"] | undefined | null,
-	tournament_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	tournament_team?: ModelTypes["tournament_teams_bool_exp"] | undefined | null,
-	tournament_team_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	trophy_config?: ModelTypes["tournament_trophy_configs_bool_exp"] | undefined | null
-};
-	["tournament_trophies_constraint"]:tournament_trophies_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophies" */
-["tournament_trophies_inc_input"]: {
-	placement?: number | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null
-};
-	/** input type for inserting data into table "tournament_trophies" */
-["tournament_trophies_insert_input"]: {
-	created_at?: ModelTypes["timestamptz"] | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null,
-	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined | null,
-	team_id?: ModelTypes["uuid"] | undefined | null,
-	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_team?: ModelTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
-	tournament_team_id?: ModelTypes["uuid"] | undefined | null,
-	trophy_config?: ModelTypes["tournament_trophy_configs_obj_rel_insert_input"] | undefined | null
-};
-	/** aggregate max on columns */
-["tournament_trophies_max_fields"]: {
-		created_at?: ModelTypes["timestamptz"] | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null,
-	team_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_team_id?: ModelTypes["uuid"] | undefined | null
-};
-	/** order by max() on columns of table "tournament_trophies" */
-["tournament_trophies_max_order_by"]: {
-	created_at?: ModelTypes["order_by"] | undefined | null,
-	id?: ModelTypes["order_by"] | undefined | null,
-	placement?: ModelTypes["order_by"] | undefined | null,
-	placement_tier?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null,
-	team_id?: ModelTypes["order_by"] | undefined | null,
-	tournament_id?: ModelTypes["order_by"] | undefined | null,
-	tournament_team_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate min on columns */
-["tournament_trophies_min_fields"]: {
-		created_at?: ModelTypes["timestamptz"] | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null,
-	team_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_team_id?: ModelTypes["uuid"] | undefined | null
-};
-	/** order by min() on columns of table "tournament_trophies" */
-["tournament_trophies_min_order_by"]: {
-	created_at?: ModelTypes["order_by"] | undefined | null,
-	id?: ModelTypes["order_by"] | undefined | null,
-	placement?: ModelTypes["order_by"] | undefined | null,
-	placement_tier?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null,
-	team_id?: ModelTypes["order_by"] | undefined | null,
-	tournament_id?: ModelTypes["order_by"] | undefined | null,
-	tournament_team_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** response of any mutation on the table "tournament_trophies" */
-["tournament_trophies_mutation_response"]: {
-		/** number of rows affected by the mutation */
-	affected_rows: number,
-	/** data from the rows affected by the mutation */
-	returning: Array<ModelTypes["tournament_trophies"]>
-};
-	/** on_conflict condition type for table "tournament_trophies" */
-["tournament_trophies_on_conflict"]: {
-	constraint: ModelTypes["tournament_trophies_constraint"],
-	update_columns: Array<ModelTypes["tournament_trophies_update_column"]>,
-	where?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null
-};
-	/** Ordering options when selecting data from "tournament_trophies". */
-["tournament_trophies_order_by"]: {
-	created_at?: ModelTypes["order_by"] | undefined | null,
-	id?: ModelTypes["order_by"] | undefined | null,
-	manual?: ModelTypes["order_by"] | undefined | null,
-	placement?: ModelTypes["order_by"] | undefined | null,
-	placement_tier?: ModelTypes["order_by"] | undefined | null,
-	player?: ModelTypes["players_order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null,
-	team?: ModelTypes["teams_order_by"] | undefined | null,
-	team_id?: ModelTypes["order_by"] | undefined | null,
-	tournament?: ModelTypes["tournaments_order_by"] | undefined | null,
-	tournament_id?: ModelTypes["order_by"] | undefined | null,
-	tournament_team?: ModelTypes["tournament_teams_order_by"] | undefined | null,
-	tournament_team_id?: ModelTypes["order_by"] | undefined | null,
-	trophy_config?: ModelTypes["tournament_trophy_configs_order_by"] | undefined | null
-};
-	/** primary key columns input for table: tournament_trophies */
-["tournament_trophies_pk_columns_input"]: {
-	id: ModelTypes["uuid"]
-};
-	["tournament_trophies_select_column"]:tournament_trophies_select_column;
-	["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"]:tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns;
-	["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"]:tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns;
-	/** input type for updating data in table "tournament_trophies" */
-["tournament_trophies_set_input"]: {
-	created_at?: ModelTypes["timestamptz"] | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null,
-	team_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_team_id?: ModelTypes["uuid"] | undefined | null
-};
-	/** aggregate stddev on columns */
-["tournament_trophies_stddev_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by stddev() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophies_stddev_pop_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by stddev_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_pop_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophies_stddev_samp_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by stddev_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_samp_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** Streaming cursor of the table "tournament_trophies" */
-["tournament_trophies_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ModelTypes["tournament_trophies_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: ModelTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophies_stream_cursor_value_input"]: {
-	created_at?: ModelTypes["timestamptz"] | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null,
-	team_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	tournament_team_id?: ModelTypes["uuid"] | undefined | null
-};
-	/** aggregate sum on columns */
-["tournament_trophies_sum_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: ModelTypes["bigint"] | undefined | null
-};
-	/** order by sum() on columns of table "tournament_trophies" */
-["tournament_trophies_sum_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	["tournament_trophies_update_column"]:tournament_trophies_update_column;
-	["tournament_trophies_updates"]: {
-	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ModelTypes["tournament_trophies_inc_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: ModelTypes["tournament_trophies_set_input"] | undefined | null,
-	/** filter the rows which have to be updated */
-	where: ModelTypes["tournament_trophies_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["tournament_trophies_var_pop_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by var_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_var_pop_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate var_samp on columns */
-["tournament_trophies_var_samp_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by var_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_var_samp_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate variance on columns */
-["tournament_trophies_variance_fields"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by variance() on columns of table "tournament_trophies" */
-["tournament_trophies_variance_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	player_steam_id?: ModelTypes["order_by"] | undefined | null
-};
-	/** columns and relationships of "tournament_trophy_configs" */
-["tournament_trophy_configs"]: {
-		created_at: ModelTypes["timestamptz"],
-	custom_name?: string | undefined | null,
-	id: ModelTypes["uuid"],
-	image_url?: string | undefined | null,
-	placement: number,
-	silhouette?: number | undefined | null,
-	/** An object relationship */
-	tournament: ModelTypes["tournaments"],
-	tournament_id: ModelTypes["uuid"],
-	updated_at: ModelTypes["timestamptz"]
-};
-	/** aggregated selection of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate"]: {
-		aggregate?: ModelTypes["tournament_trophy_configs_aggregate_fields"] | undefined | null,
-	nodes: Array<ModelTypes["tournament_trophy_configs"]>
-};
-	["tournament_trophy_configs_aggregate_bool_exp"]: {
-	count?: ModelTypes["tournament_trophy_configs_aggregate_bool_exp_count"] | undefined | null
-};
-	["tournament_trophy_configs_aggregate_bool_exp_count"]: {
-	arguments?: Array<ModelTypes["tournament_trophy_configs_select_column"]> | undefined | null,
-	distinct?: boolean | undefined | null,
-	filter?: ModelTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	predicate: ModelTypes["Int_comparison_exp"]
-};
-	/** aggregate fields of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_fields"]: {
-		avg?: ModelTypes["tournament_trophy_configs_avg_fields"] | undefined | null,
-	count: number,
-	max?: ModelTypes["tournament_trophy_configs_max_fields"] | undefined | null,
-	min?: ModelTypes["tournament_trophy_configs_min_fields"] | undefined | null,
-	stddev?: ModelTypes["tournament_trophy_configs_stddev_fields"] | undefined | null,
-	stddev_pop?: ModelTypes["tournament_trophy_configs_stddev_pop_fields"] | undefined | null,
-	stddev_samp?: ModelTypes["tournament_trophy_configs_stddev_samp_fields"] | undefined | null,
-	sum?: ModelTypes["tournament_trophy_configs_sum_fields"] | undefined | null,
-	var_pop?: ModelTypes["tournament_trophy_configs_var_pop_fields"] | undefined | null,
-	var_samp?: ModelTypes["tournament_trophy_configs_var_samp_fields"] | undefined | null,
-	variance?: ModelTypes["tournament_trophy_configs_variance_fields"] | undefined | null
-};
-	/** order by aggregate values of table "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_order_by"]: {
-	avg?: ModelTypes["tournament_trophy_configs_avg_order_by"] | undefined | null,
-	count?: ModelTypes["order_by"] | undefined | null,
-	max?: ModelTypes["tournament_trophy_configs_max_order_by"] | undefined | null,
-	min?: ModelTypes["tournament_trophy_configs_min_order_by"] | undefined | null,
-	stddev?: ModelTypes["tournament_trophy_configs_stddev_order_by"] | undefined | null,
-	stddev_pop?: ModelTypes["tournament_trophy_configs_stddev_pop_order_by"] | undefined | null,
-	stddev_samp?: ModelTypes["tournament_trophy_configs_stddev_samp_order_by"] | undefined | null,
-	sum?: ModelTypes["tournament_trophy_configs_sum_order_by"] | undefined | null,
-	var_pop?: ModelTypes["tournament_trophy_configs_var_pop_order_by"] | undefined | null,
-	var_samp?: ModelTypes["tournament_trophy_configs_var_samp_order_by"] | undefined | null,
-	variance?: ModelTypes["tournament_trophy_configs_variance_order_by"] | undefined | null
-};
-	/** input type for inserting array relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_arr_rel_insert_input"]: {
-	data: Array<ModelTypes["tournament_trophy_configs_insert_input"]>,
-	/** upsert condition */
-	on_conflict?: ModelTypes["tournament_trophy_configs_on_conflict"] | undefined | null
-};
-	/** aggregate avg on columns */
-["tournament_trophy_configs_avg_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by avg() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_avg_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	/** Boolean expression to filter rows from the table "tournament_trophy_configs". All fields are combined with a logical 'AND'. */
-["tournament_trophy_configs_bool_exp"]: {
-	_and?: Array<ModelTypes["tournament_trophy_configs_bool_exp"]> | undefined | null,
-	_not?: ModelTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	_or?: Array<ModelTypes["tournament_trophy_configs_bool_exp"]> | undefined | null,
-	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
-	custom_name?: ModelTypes["String_comparison_exp"] | undefined | null,
-	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	image_url?: ModelTypes["String_comparison_exp"] | undefined | null,
-	placement?: ModelTypes["Int_comparison_exp"] | undefined | null,
-	silhouette?: ModelTypes["Int_comparison_exp"] | undefined | null,
-	tournament?: ModelTypes["tournaments_bool_exp"] | undefined | null,
-	tournament_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
-};
-	["tournament_trophy_configs_constraint"]:tournament_trophy_configs_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophy_configs" */
-["tournament_trophy_configs_inc_input"]: {
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** input type for inserting data into table "tournament_trophy_configs" */
-["tournament_trophy_configs_insert_input"]: {
-	created_at?: ModelTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
-};
-	/** aggregate max on columns */
-["tournament_trophy_configs_max_fields"]: {
-		created_at?: ModelTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
-};
-	/** order by max() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_max_order_by"]: {
-	created_at?: ModelTypes["order_by"] | undefined | null,
-	custom_name?: ModelTypes["order_by"] | undefined | null,
-	id?: ModelTypes["order_by"] | undefined | null,
-	image_url?: ModelTypes["order_by"] | undefined | null,
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null,
-	tournament_id?: ModelTypes["order_by"] | undefined | null,
-	updated_at?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate min on columns */
-["tournament_trophy_configs_min_fields"]: {
-		created_at?: ModelTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
-};
-	/** order by min() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_min_order_by"]: {
-	created_at?: ModelTypes["order_by"] | undefined | null,
-	custom_name?: ModelTypes["order_by"] | undefined | null,
-	id?: ModelTypes["order_by"] | undefined | null,
-	image_url?: ModelTypes["order_by"] | undefined | null,
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null,
-	tournament_id?: ModelTypes["order_by"] | undefined | null,
-	updated_at?: ModelTypes["order_by"] | undefined | null
-};
-	/** response of any mutation on the table "tournament_trophy_configs" */
-["tournament_trophy_configs_mutation_response"]: {
-		/** number of rows affected by the mutation */
-	affected_rows: number,
-	/** data from the rows affected by the mutation */
-	returning: Array<ModelTypes["tournament_trophy_configs"]>
-};
-	/** input type for inserting object relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_obj_rel_insert_input"]: {
-	data: ModelTypes["tournament_trophy_configs_insert_input"],
-	/** upsert condition */
-	on_conflict?: ModelTypes["tournament_trophy_configs_on_conflict"] | undefined | null
-};
-	/** on_conflict condition type for table "tournament_trophy_configs" */
-["tournament_trophy_configs_on_conflict"]: {
-	constraint: ModelTypes["tournament_trophy_configs_constraint"],
-	update_columns: Array<ModelTypes["tournament_trophy_configs_update_column"]>,
-	where?: ModelTypes["tournament_trophy_configs_bool_exp"] | undefined | null
-};
-	/** Ordering options when selecting data from "tournament_trophy_configs". */
-["tournament_trophy_configs_order_by"]: {
-	created_at?: ModelTypes["order_by"] | undefined | null,
-	custom_name?: ModelTypes["order_by"] | undefined | null,
-	id?: ModelTypes["order_by"] | undefined | null,
-	image_url?: ModelTypes["order_by"] | undefined | null,
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null,
-	tournament?: ModelTypes["tournaments_order_by"] | undefined | null,
-	tournament_id?: ModelTypes["order_by"] | undefined | null,
-	updated_at?: ModelTypes["order_by"] | undefined | null
-};
-	/** primary key columns input for table: tournament_trophy_configs */
-["tournament_trophy_configs_pk_columns_input"]: {
-	id: ModelTypes["uuid"]
-};
-	["tournament_trophy_configs_select_column"]:tournament_trophy_configs_select_column;
-	/** input type for updating data in table "tournament_trophy_configs" */
-["tournament_trophy_configs_set_input"]: {
-	created_at?: ModelTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
-};
-	/** aggregate stddev on columns */
-["tournament_trophy_configs_stddev_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by stddev() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophy_configs_stddev_pop_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by stddev_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_pop_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophy_configs_stddev_samp_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by stddev_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_samp_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	/** Streaming cursor of the table "tournament_trophy_configs" */
-["tournament_trophy_configs_stream_cursor_input"]: {
-	/** Stream column input with initial value */
-	initial_value: ModelTypes["tournament_trophy_configs_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: ModelTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophy_configs_stream_cursor_value_input"]: {
-	created_at?: ModelTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: ModelTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: ModelTypes["uuid"] | undefined | null,
-	updated_at?: ModelTypes["timestamptz"] | undefined | null
-};
-	/** aggregate sum on columns */
-["tournament_trophy_configs_sum_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by sum() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_sum_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	["tournament_trophy_configs_update_column"]:tournament_trophy_configs_update_column;
-	["tournament_trophy_configs_updates"]: {
-	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ModelTypes["tournament_trophy_configs_inc_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: ModelTypes["tournament_trophy_configs_set_input"] | undefined | null,
-	/** filter the rows which have to be updated */
-	where: ModelTypes["tournament_trophy_configs_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["tournament_trophy_configs_var_pop_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by var_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_pop_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate var_samp on columns */
-["tournament_trophy_configs_var_samp_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by var_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_samp_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
-	/** aggregate variance on columns */
-["tournament_trophy_configs_variance_fields"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by variance() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_variance_order_by"]: {
-	placement?: ModelTypes["order_by"] | undefined | null,
-	silhouette?: ModelTypes["order_by"] | undefined | null
-};
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: {
 		/** An object relationship */
 	admin: ModelTypes["players"],
 	auto_start: boolean,
+	/** An array relationship */
+	award_configs: Array<ModelTypes["tournament_awards"]>,
+	/** An aggregate relationship */
+	award_configs_aggregate: ModelTypes["tournament_awards_aggregate"],
+	/** An array relationship */
+	awards: Array<ModelTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: ModelTypes["award_recipients_aggregate"],
+	awards_enabled: boolean,
 	banner?: string | undefined | null,
 	/** A computed field, executes function "can_cancel_tournament" */
 	can_cancel?: boolean | undefined | null,
@@ -174321,16 +176923,7 @@ export type ModelTypes = {
 	/** An array relationship */
 	teams: Array<ModelTypes["tournament_teams"]>,
 	/** An aggregate relationship */
-	teams_aggregate: ModelTypes["tournament_teams_aggregate"],
-	/** An array relationship */
-	trophies: Array<ModelTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	trophies_aggregate: ModelTypes["tournament_trophies_aggregate"],
-	trophies_enabled: boolean,
-	/** An array relationship */
-	trophy_configs: Array<ModelTypes["tournament_trophy_configs"]>,
-	/** An aggregate relationship */
-	trophy_configs_aggregate: ModelTypes["tournament_trophy_configs_aggregate"]
+	teams_aggregate: ModelTypes["tournament_teams_aggregate"]
 };
 	/** aggregated selection of "tournaments" */
 ["tournaments_aggregate"]: {
@@ -174481,6 +177074,11 @@ export type ModelTypes = {
 	_or?: Array<ModelTypes["tournaments_bool_exp"]> | undefined | null,
 	admin?: ModelTypes["players_bool_exp"] | undefined | null,
 	auto_start?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	award_configs?: ModelTypes["tournament_awards_bool_exp"] | undefined | null,
+	award_configs_aggregate?: ModelTypes["tournament_awards_aggregate_bool_exp"] | undefined | null,
+	awards?: ModelTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
+	awards_enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	banner?: ModelTypes["String_comparison_exp"] | undefined | null,
 	can_cancel?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	can_close_registration?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -174547,12 +177145,7 @@ export type ModelTypes = {
 	start?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	status?: ModelTypes["e_tournament_status_enum_comparison_exp"] | undefined | null,
 	teams?: ModelTypes["tournament_teams_bool_exp"] | undefined | null,
-	teams_aggregate?: ModelTypes["tournament_teams_aggregate_bool_exp"] | undefined | null,
-	trophies?: ModelTypes["tournament_trophies_bool_exp"] | undefined | null,
-	trophies_aggregate?: ModelTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null,
-	trophies_enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
-	trophy_configs?: ModelTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	trophy_configs_aggregate?: ModelTypes["tournament_trophy_configs_aggregate_bool_exp"] | undefined | null
+	teams_aggregate?: ModelTypes["tournament_teams_aggregate_bool_exp"] | undefined | null
 };
 	["tournaments_constraint"]:tournaments_constraint;
 	/** input type for incrementing numeric columns in table "tournaments" */
@@ -174565,6 +177158,9 @@ export type ModelTypes = {
 ["tournaments_insert_input"]: {
 	admin?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	auto_start?: boolean | undefined | null,
+	award_configs?: ModelTypes["tournament_awards_arr_rel_insert_input"] | undefined | null,
+	awards?: ModelTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: ModelTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -174609,10 +177205,7 @@ export type ModelTypes = {
 	stages?: ModelTypes["tournament_stages_arr_rel_insert_input"] | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_tournament_status_enum"] | undefined | null,
-	teams?: ModelTypes["tournament_teams_arr_rel_insert_input"] | undefined | null,
-	trophies?: ModelTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null,
-	trophy_configs?: ModelTypes["tournament_trophy_configs_arr_rel_insert_input"] | undefined | null
+	teams?: ModelTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: {
@@ -174725,6 +177318,9 @@ export type ModelTypes = {
 ["tournaments_order_by"]: {
 	admin?: ModelTypes["players_order_by"] | undefined | null,
 	auto_start?: ModelTypes["order_by"] | undefined | null,
+	award_configs_aggregate?: ModelTypes["tournament_awards_aggregate_order_by"] | undefined | null,
+	awards_aggregate?: ModelTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	awards_enabled?: ModelTypes["order_by"] | undefined | null,
 	banner?: ModelTypes["order_by"] | undefined | null,
 	can_cancel?: ModelTypes["order_by"] | undefined | null,
 	can_close_registration?: ModelTypes["order_by"] | undefined | null,
@@ -174782,10 +177378,7 @@ export type ModelTypes = {
 	stages_aggregate?: ModelTypes["tournament_stages_aggregate_order_by"] | undefined | null,
 	start?: ModelTypes["order_by"] | undefined | null,
 	status?: ModelTypes["order_by"] | undefined | null,
-	teams_aggregate?: ModelTypes["tournament_teams_aggregate_order_by"] | undefined | null,
-	trophies_aggregate?: ModelTypes["tournament_trophies_aggregate_order_by"] | undefined | null,
-	trophies_enabled?: ModelTypes["order_by"] | undefined | null,
-	trophy_configs_aggregate?: ModelTypes["tournament_trophy_configs_aggregate_order_by"] | undefined | null
+	teams_aggregate?: ModelTypes["tournament_teams_aggregate_order_by"] | undefined | null
 };
 	/** primary key columns input for table: tournaments */
 ["tournaments_pk_columns_input"]: {
@@ -174805,6 +177398,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "tournaments" */
 ["tournaments_set_input"]: {
 	auto_start?: boolean | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -174837,8 +177431,7 @@ export type ModelTypes = {
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
-	status?: ModelTypes["e_tournament_status_enum"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null
+	status?: ModelTypes["e_tournament_status_enum"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: {
@@ -174898,6 +177491,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["tournaments_stream_cursor_value_input"]: {
 	auto_start?: boolean | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -174930,8 +177524,7 @@ export type ModelTypes = {
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: ModelTypes["timestamptz"] | undefined | null,
-	status?: ModelTypes["e_tournament_status_enum"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null
+	status?: ModelTypes["e_tournament_status_enum"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: {
@@ -183801,6 +186394,38 @@ export type GraphQLTypes = {
 	__typename: "ApiKeyResponse",
 	key: string
 };
+	["Award"]: {
+	__typename: "Award",
+	allow_multiple: boolean,
+	created_at: string,
+	created_by_steam_id?: string | undefined | null,
+	description?: string | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id: GraphQLTypes["uuid"],
+	image_url?: string | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name: string,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier: string,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at: string
+};
+	["AwardRecipient"]: {
+	__typename: "AwardRecipient",
+	award_id: GraphQLTypes["uuid"],
+	awarded_by_steam_id?: string | undefined | null,
+	created_at: string,
+	id: GraphQLTypes["uuid"],
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: string | undefined | null,
+	source: string,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
 	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 ["Boolean_comparison_exp"]: {
 		_eq?: boolean | undefined | null,
@@ -184469,9 +187094,64 @@ export type GraphQLTypes = {
 	__typename: "TeamCalendarOutput",
 	url: string
 };
+	["TelemetryActivityPoint"]: {
+	__typename: "TelemetryActivityPoint",
+	day: string,
+	installs: number,
+	matches: number
+};
+	["TelemetryFeatureAdoption"]: {
+	__typename: "TelemetryFeatureAdoption",
+	enabled: number,
+	installsUsing: number,
+	key: string,
+	reporting: number,
+	total: number
+};
+	["TelemetryFleetTotals"]: {
+	__typename: "TelemetryFleetTotals",
+	dedicatedServers: number,
+	gameServerNodes: number,
+	mapsPlayed: number,
+	matches: number,
+	matchesMonth: number,
+	matchesWeek: number,
+	matchesYear: number,
+	playersActive30d: number,
+	playersRegistered: number,
+	publicServers: number,
+	serverCapacity: number,
+	servers: number,
+	teams: number
+};
+	["TelemetryGrowthPoint"]: {
+	__typename: "TelemetryGrowthPoint",
+	installs: number,
+	month: string
+};
+	["TelemetryInstallCounts"]: {
+	__typename: "TelemetryInstallCounts",
+	active24h: number,
+	active30d: number,
+	active7d: number,
+	new30d: number,
+	retained180d: number,
+	total: number
+};
 	["TelemetryStats"]: {
 	__typename: "TelemetryStats",
-	online: number
+	activity: Array<GraphQLTypes["TelemetryActivityPoint"]>,
+	features: Array<GraphQLTypes["TelemetryFeatureAdoption"]>,
+	growth: Array<GraphQLTypes["TelemetryGrowthPoint"]>,
+	installs: GraphQLTypes["TelemetryInstallCounts"],
+	online: number,
+	totals: GraphQLTypes["TelemetryFleetTotals"],
+	versions: Array<GraphQLTypes["TelemetryVersionSpread"]>
+};
+	["TelemetryVersionSpread"]: {
+	__typename: "TelemetryVersionSpread",
+	installs: number,
+	version: string
 };
 	["TestUploadResponse"]: {
 	__typename: "TestUploadResponse",
@@ -184490,6 +187170,16 @@ export type GraphQLTypes = {
 	chunks_count: number,
 	hypertables: Array<GraphQLTypes["HypertableInfo"] | undefined | null>,
 	jobs: Array<GraphQLTypes["TimescaleJob"] | undefined | null>
+};
+	["TournamentAward"]: {
+	__typename: "TournamentAward",
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id: GraphQLTypes["uuid"],
+	image_url?: string | undefined | null,
+	placement: number,
+	silhouette?: number | undefined | null,
+	tournament_id: GraphQLTypes["uuid"]
 };
 	["TournamentMatchResetImpact"]: {
 	__typename: "TournamentMatchResetImpact",
@@ -185017,6 +187707,696 @@ export type GraphQLTypes = {
 	["approve_league_season_movements_args"]: {
 		_league_season_id?: GraphQLTypes["uuid"] | undefined | null
 };
+	/** columns and relationships of "award_recipients" */
+["award_recipients"]: {
+	__typename: "award_recipients",
+	/** An object relationship */
+	award: GraphQLTypes["awards"],
+	award_id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	awarded_by?: GraphQLTypes["players"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at: GraphQLTypes["timestamptz"],
+	id: GraphQLTypes["uuid"],
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	/** An object relationship */
+	player?: GraphQLTypes["players"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	source: GraphQLTypes["e_award_sources_enum"],
+	/** An object relationship */
+	team?: GraphQLTypes["teams"] | undefined | null,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	/** An object relationship */
+	tournament?: GraphQLTypes["tournaments"] | undefined | null,
+	/** An object relationship */
+	tournament_award?: GraphQLTypes["tournament_awards"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	/** An object relationship */
+	tournament_team?: GraphQLTypes["tournament_teams"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregated selection of "award_recipients" */
+["award_recipients_aggregate"]: {
+	__typename: "award_recipients_aggregate",
+	aggregate?: GraphQLTypes["award_recipients_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["award_recipients"]>
+};
+	["award_recipients_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["award_recipients_aggregate_bool_exp_count"] | undefined | null
+};
+	["award_recipients_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["award_recipients_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "award_recipients" */
+["award_recipients_aggregate_fields"]: {
+	__typename: "award_recipients_aggregate_fields",
+	avg?: GraphQLTypes["award_recipients_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["award_recipients_max_fields"] | undefined | null,
+	min?: GraphQLTypes["award_recipients_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["award_recipients_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["award_recipients_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["award_recipients_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["award_recipients_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["award_recipients_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["award_recipients_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["award_recipients_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "award_recipients" */
+["award_recipients_aggregate_order_by"]: {
+		avg?: GraphQLTypes["award_recipients_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["award_recipients_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["award_recipients_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["award_recipients_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["award_recipients_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["award_recipients_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["award_recipients_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["award_recipients_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["award_recipients_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["award_recipients_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "award_recipients" */
+["award_recipients_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["award_recipients_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["award_recipients_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["award_recipients_avg_fields"]: {
+	__typename: "award_recipients_avg_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by avg() on columns of table "award_recipients" */
+["award_recipients_avg_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "award_recipients". All fields are combined with a logical 'AND'. */
+["award_recipients_bool_exp"]: {
+		_and?: Array<GraphQLTypes["award_recipients_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["award_recipients_bool_exp"]> | undefined | null,
+	award?: GraphQLTypes["awards_bool_exp"] | undefined | null,
+	award_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	awarded_by?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	note?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	placement?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	placement_tier?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	source?: GraphQLTypes["e_award_sources_enum_comparison_exp"] | undefined | null,
+	team?: GraphQLTypes["teams_bool_exp"] | undefined | null,
+	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_award?: GraphQLTypes["tournament_awards_bool_exp"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	tournament_team?: GraphQLTypes["tournament_teams_bool_exp"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "award_recipients" */
+["award_recipients_constraint"]: award_recipients_constraint;
+	/** input type for incrementing numeric columns in table "award_recipients" */
+["award_recipients_inc_input"]: {
+		awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "award_recipients" */
+["award_recipients_insert_input"]: {
+		award?: GraphQLTypes["awards_obj_rel_insert_input"] | undefined | null,
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	awarded_by?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	source?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
+	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined | null,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_award?: GraphQLTypes["tournament_awards_obj_rel_insert_input"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_team?: GraphQLTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["award_recipients_max_fields"]: {
+	__typename: "award_recipients_max_fields",
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "award_recipients" */
+["award_recipients_max_order_by"]: {
+		award_id?: GraphQLTypes["order_by"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	note?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	team_id?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["award_recipients_min_fields"]: {
+	__typename: "award_recipients_min_fields",
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "award_recipients" */
+["award_recipients_min_order_by"]: {
+		award_id?: GraphQLTypes["order_by"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	note?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	team_id?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "award_recipients" */
+["award_recipients_mutation_response"]: {
+	__typename: "award_recipients_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["award_recipients"]>
+};
+	/** on_conflict condition type for table "award_recipients" */
+["award_recipients_on_conflict"]: {
+		constraint: GraphQLTypes["award_recipients_constraint"],
+	update_columns: Array<GraphQLTypes["award_recipients_update_column"]>,
+	where?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "award_recipients". */
+["award_recipients_order_by"]: {
+		award?: GraphQLTypes["awards_order_by"] | undefined | null,
+	award_id?: GraphQLTypes["order_by"] | undefined | null,
+	awarded_by?: GraphQLTypes["players_order_by"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	note?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
+	player?: GraphQLTypes["players_order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	source?: GraphQLTypes["order_by"] | undefined | null,
+	team?: GraphQLTypes["teams_order_by"] | undefined | null,
+	team_id?: GraphQLTypes["order_by"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_order_by"] | undefined | null,
+	tournament_award?: GraphQLTypes["tournament_awards_order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_team?: GraphQLTypes["tournament_teams_order_by"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: award_recipients */
+["award_recipients_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "award_recipients" */
+["award_recipients_select_column"]: award_recipients_select_column;
+	/** input type for updating data in table "award_recipients" */
+["award_recipients_set_input"]: {
+		award_id?: GraphQLTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	source?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["award_recipients_stddev_fields"]: {
+	__typename: "award_recipients_stddev_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev() on columns of table "award_recipients" */
+["award_recipients_stddev_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["award_recipients_stddev_pop_fields"]: {
+	__typename: "award_recipients_stddev_pop_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "award_recipients" */
+["award_recipients_stddev_pop_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["award_recipients_stddev_samp_fields"]: {
+	__typename: "award_recipients_stddev_samp_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "award_recipients" */
+["award_recipients_stddev_samp_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "award_recipients" */
+["award_recipients_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["award_recipients_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["award_recipients_stream_cursor_value_input"]: {
+		award_id?: GraphQLTypes["uuid"] | undefined | null,
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	note?: string | undefined | null,
+	placement?: number | undefined | null,
+	placement_tier?: string | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	source?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
+	team_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["award_recipients_sum_fields"]: {
+	__typename: "award_recipients_sum_fields",
+	awarded_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** order by sum() on columns of table "award_recipients" */
+["award_recipients_sum_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "award_recipients" */
+["award_recipients_update_column"]: award_recipients_update_column;
+	["award_recipients_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["award_recipients_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["award_recipients_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["award_recipients_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["award_recipients_var_pop_fields"]: {
+	__typename: "award_recipients_var_pop_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "award_recipients" */
+["award_recipients_var_pop_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["award_recipients_var_samp_fields"]: {
+	__typename: "award_recipients_var_samp_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "award_recipients" */
+["award_recipients_var_samp_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["award_recipients_variance_fields"]: {
+	__typename: "award_recipients_variance_fields",
+	awarded_by_steam_id?: number | undefined | null,
+	placement?: number | undefined | null,
+	player_steam_id?: number | undefined | null
+};
+	/** order by variance() on columns of table "award_recipients" */
+["award_recipients_variance_order_by"]: {
+		awarded_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "awards" */
+["awards"]: {
+	__typename: "awards",
+	allow_multiple: boolean,
+	created_at: GraphQLTypes["timestamptz"],
+	/** An object relationship */
+	created_by?: GraphQLTypes["players"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	/** An object relationship */
+	event?: GraphQLTypes["events"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id: GraphQLTypes["uuid"],
+	image_url?: string | undefined | null,
+	/** An object relationship */
+	league_season?: GraphQLTypes["league_seasons"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name: string,
+	/** An array relationship */
+	recipients: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	recipients_aggregate: GraphQLTypes["award_recipients_aggregate"],
+	/** An object relationship */
+	season?: GraphQLTypes["seasons"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier: GraphQLTypes["e_award_tiers_enum"],
+	/** An object relationship */
+	tournament?: GraphQLTypes["tournaments"] | undefined | null,
+	/** An array relationship */
+	tournament_configs: Array<GraphQLTypes["tournament_awards"]>,
+	/** An aggregate relationship */
+	tournament_configs_aggregate: GraphQLTypes["tournament_awards_aggregate"],
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "awards" */
+["awards_aggregate"]: {
+	__typename: "awards_aggregate",
+	aggregate?: GraphQLTypes["awards_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["awards"]>
+};
+	/** aggregate fields of "awards" */
+["awards_aggregate_fields"]: {
+	__typename: "awards_aggregate_fields",
+	avg?: GraphQLTypes["awards_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["awards_max_fields"] | undefined | null,
+	min?: GraphQLTypes["awards_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["awards_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["awards_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["awards_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["awards_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["awards_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["awards_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["awards_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["awards_avg_fields"]: {
+	__typename: "awards_avg_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "awards". All fields are combined with a logical 'AND'. */
+["awards_bool_exp"]: {
+		_and?: Array<GraphQLTypes["awards_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["awards_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["awards_bool_exp"]> | undefined | null,
+	allow_multiple?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	created_by?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	event?: GraphQLTypes["events_bool_exp"] | undefined | null,
+	event_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	image_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	league_season?: GraphQLTypes["league_seasons_bool_exp"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	recipients?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	recipients_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
+	season?: GraphQLTypes["seasons_bool_exp"] | undefined | null,
+	season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	silhouette?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	system_key?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	tier?: GraphQLTypes["e_award_tiers_enum_comparison_exp"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_configs?: GraphQLTypes["tournament_awards_bool_exp"] | undefined | null,
+	tournament_configs_aggregate?: GraphQLTypes["tournament_awards_aggregate_bool_exp"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "awards" */
+["awards_constraint"]: awards_constraint;
+	/** input type for incrementing numeric columns in table "awards" */
+["awards_inc_input"]: {
+		created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** input type for inserting data into table "awards" */
+["awards_insert_input"]: {
+		allow_multiple?: boolean | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_by?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event?: GraphQLTypes["events_obj_rel_insert_input"] | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season?: GraphQLTypes["league_seasons_obj_rel_insert_input"] | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	recipients?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	season?: GraphQLTypes["seasons_obj_rel_insert_input"] | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: GraphQLTypes["e_award_tiers_enum"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_configs?: GraphQLTypes["tournament_awards_arr_rel_insert_input"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["awards_max_fields"]: {
+	__typename: "awards_max_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["awards_min_fields"]: {
+	__typename: "awards_min_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "awards" */
+["awards_mutation_response"]: {
+	__typename: "awards_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["awards"]>
+};
+	/** input type for inserting object relation for remote table "awards" */
+["awards_obj_rel_insert_input"]: {
+		data: GraphQLTypes["awards_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["awards_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "awards" */
+["awards_on_conflict"]: {
+		constraint: GraphQLTypes["awards_constraint"],
+	update_columns: Array<GraphQLTypes["awards_update_column"]>,
+	where?: GraphQLTypes["awards_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "awards". */
+["awards_order_by"]: {
+		allow_multiple?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	created_by?: GraphQLTypes["players_order_by"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	description?: GraphQLTypes["order_by"] | undefined | null,
+	event?: GraphQLTypes["events_order_by"] | undefined | null,
+	event_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	image_url?: GraphQLTypes["order_by"] | undefined | null,
+	league_season?: GraphQLTypes["league_seasons_order_by"] | undefined | null,
+	league_season_id?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	recipients_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	season?: GraphQLTypes["seasons_order_by"] | undefined | null,
+	season_id?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null,
+	system_key?: GraphQLTypes["order_by"] | undefined | null,
+	tier?: GraphQLTypes["order_by"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_order_by"] | undefined | null,
+	tournament_configs_aggregate?: GraphQLTypes["tournament_awards_aggregate_order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: awards */
+["awards_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "awards" */
+["awards_select_column"]: awards_select_column;
+	/** input type for updating data in table "awards" */
+["awards_set_input"]: {
+		allow_multiple?: boolean | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: GraphQLTypes["e_award_tiers_enum"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["awards_stddev_fields"]: {
+	__typename: "awards_stddev_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["awards_stddev_pop_fields"]: {
+	__typename: "awards_stddev_pop_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["awards_stddev_samp_fields"]: {
+	__typename: "awards_stddev_samp_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** Streaming cursor of the table "awards" */
+["awards_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["awards_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["awards_stream_cursor_value_input"]: {
+		allow_multiple?: boolean | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	description?: string | undefined | null,
+	event_id?: GraphQLTypes["uuid"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	league_season_id?: GraphQLTypes["uuid"] | undefined | null,
+	name?: string | undefined | null,
+	season_id?: GraphQLTypes["uuid"] | undefined | null,
+	silhouette?: number | undefined | null,
+	system_key?: string | undefined | null,
+	tier?: GraphQLTypes["e_award_tiers_enum"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["awards_sum_fields"]: {
+	__typename: "awards_sum_fields",
+	created_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** update columns of table "awards" */
+["awards_update_column"]: awards_update_column;
+	["awards_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["awards_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["awards_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["awards_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["awards_var_pop_fields"]: {
+	__typename: "awards_var_pop_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["awards_var_samp_fields"]: {
+	__typename: "awards_var_samp_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["awards_variance_fields"]: {
+	__typename: "awards_variance_fields",
+	created_by_steam_id?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
 	["bigint"]: "scalar" & { name: "bigint" };
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_array_comparison_exp"]: {
@@ -185539,13 +188919,16 @@ export type GraphQLTypes = {
 ["custom_pages"]: {
 	__typename: "custom_pages",
 	created_at: GraphQLTypes["timestamptz"],
+	deployments: GraphQLTypes["jsonb"],
 	enabled: boolean,
 	exposed_module: string,
 	icon?: string | undefined | null,
 	id: GraphQLTypes["uuid"],
 	is_default: boolean,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order: number,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url: string,
 	remote_scope: string,
 	required_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
@@ -185574,6 +188957,10 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["custom_pages_var_samp_fields"] | undefined | null,
 	variance?: GraphQLTypes["custom_pages_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_append_input"]: {
+		deployments?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["custom_pages_avg_fields"]: {
 	__typename: "custom_pages_avg_fields",
@@ -185585,13 +188972,16 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["custom_pages_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["custom_pages_bool_exp"]> | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	deployments?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	exposed_module?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	icon?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	is_default?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	manifest_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	nav_group?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	nav_order?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	profile_tab_label?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	remote_entry_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	remote_scope?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	required_role?: GraphQLTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
@@ -185601,6 +188991,18 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "custom_pages" */
 ["custom_pages_constraint"]: custom_pages_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["custom_pages_delete_at_path_input"]: {
+		deployments?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["custom_pages_delete_elem_input"]: {
+		deployments?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["custom_pages_delete_key_input"]: {
+		deployments?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "custom_pages" */
 ["custom_pages_inc_input"]: {
 		nav_order?: number | undefined | null
@@ -185608,13 +189010,16 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "custom_pages" */
 ["custom_pages_insert_input"]: {
 		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	deployments?: GraphQLTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
@@ -185629,8 +189034,10 @@ export type GraphQLTypes = {
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -185644,8 +189051,10 @@ export type GraphQLTypes = {
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	slug?: string | undefined | null,
@@ -185669,13 +189078,16 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "custom_pages". */
 ["custom_pages_order_by"]: {
 		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	deployments?: GraphQLTypes["order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
 	exposed_module?: GraphQLTypes["order_by"] | undefined | null,
 	icon?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	is_default?: GraphQLTypes["order_by"] | undefined | null,
+	manifest_url?: GraphQLTypes["order_by"] | undefined | null,
 	nav_group?: GraphQLTypes["order_by"] | undefined | null,
 	nav_order?: GraphQLTypes["order_by"] | undefined | null,
+	profile_tab_label?: GraphQLTypes["order_by"] | undefined | null,
 	remote_entry_url?: GraphQLTypes["order_by"] | undefined | null,
 	remote_scope?: GraphQLTypes["order_by"] | undefined | null,
 	required_role?: GraphQLTypes["order_by"] | undefined | null,
@@ -185687,18 +189099,25 @@ export type GraphQLTypes = {
 ["custom_pages_pk_columns_input"]: {
 		id: GraphQLTypes["uuid"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["custom_pages_prepend_input"]: {
+		deployments?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "custom_pages" */
 ["custom_pages_select_column"]: custom_pages_select_column;
 	/** input type for updating data in table "custom_pages" */
 ["custom_pages_set_input"]: {
 		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	deployments?: GraphQLTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
@@ -185731,13 +189150,16 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["custom_pages_stream_cursor_value_input"]: {
 		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	deployments?: GraphQLTypes["jsonb"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	exposed_module?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	is_default?: boolean | undefined | null,
+	manifest_url?: string | undefined | null,
 	nav_group?: string | undefined | null,
 	nav_order?: number | undefined | null,
+	profile_tab_label?: string | undefined | null,
 	remote_entry_url?: string | undefined | null,
 	remote_scope?: string | undefined | null,
 	required_role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
@@ -185753,8 +189175,18 @@ export type GraphQLTypes = {
 	/** update columns of table "custom_pages" */
 ["custom_pages_update_column"]: custom_pages_update_column;
 	["custom_pages_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["custom_pages_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["custom_pages_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["custom_pages_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["custom_pages_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
 	_inc?: GraphQLTypes["custom_pages_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["custom_pages_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["custom_pages_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -187237,6 +190669,216 @@ export type GraphQLTypes = {
 	host_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	max_elo?: GraphQLTypes["order_by"] | undefined | null,
 	min_elo?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "e_award_sources" */
+["e_award_sources"]: {
+	__typename: "e_award_sources",
+	description: string,
+	value: string
+};
+	/** aggregated selection of "e_award_sources" */
+["e_award_sources_aggregate"]: {
+	__typename: "e_award_sources_aggregate",
+	aggregate?: GraphQLTypes["e_award_sources_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["e_award_sources"]>
+};
+	/** aggregate fields of "e_award_sources" */
+["e_award_sources_aggregate_fields"]: {
+	__typename: "e_award_sources_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_award_sources_max_fields"] | undefined | null,
+	min?: GraphQLTypes["e_award_sources_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_award_sources". All fields are combined with a logical 'AND'. */
+["e_award_sources_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_award_sources_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["e_award_sources_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["e_award_sources_bool_exp"]> | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_award_sources" */
+["e_award_sources_constraint"]: e_award_sources_constraint;
+	["e_award_sources_enum"]: e_award_sources_enum;
+	/** Boolean expression to compare columns of type "e_award_sources_enum". All fields are combined with logical 'AND'. */
+["e_award_sources_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
+	_in?: Array<GraphQLTypes["e_award_sources_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: GraphQLTypes["e_award_sources_enum"] | undefined | null,
+	_nin?: Array<GraphQLTypes["e_award_sources_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_award_sources" */
+["e_award_sources_insert_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_award_sources_max_fields"]: {
+	__typename: "e_award_sources_max_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_award_sources_min_fields"]: {
+	__typename: "e_award_sources_min_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_award_sources" */
+["e_award_sources_mutation_response"]: {
+	__typename: "e_award_sources_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_award_sources"]>
+};
+	/** on_conflict condition type for table "e_award_sources" */
+["e_award_sources_on_conflict"]: {
+		constraint: GraphQLTypes["e_award_sources_constraint"],
+	update_columns: Array<GraphQLTypes["e_award_sources_update_column"]>,
+	where?: GraphQLTypes["e_award_sources_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_award_sources". */
+["e_award_sources_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined | null,
+	value?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_award_sources */
+["e_award_sources_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_award_sources" */
+["e_award_sources_select_column"]: e_award_sources_select_column;
+	/** input type for updating data in table "e_award_sources" */
+["e_award_sources_set_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_award_sources" */
+["e_award_sources_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_award_sources_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_sources_stream_cursor_value_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_award_sources" */
+["e_award_sources_update_column"]: e_award_sources_update_column;
+	["e_award_sources_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_award_sources_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_award_sources_bool_exp"]
+};
+	/** columns and relationships of "e_award_tiers" */
+["e_award_tiers"]: {
+	__typename: "e_award_tiers",
+	description: string,
+	value: string
+};
+	/** aggregated selection of "e_award_tiers" */
+["e_award_tiers_aggregate"]: {
+	__typename: "e_award_tiers_aggregate",
+	aggregate?: GraphQLTypes["e_award_tiers_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["e_award_tiers"]>
+};
+	/** aggregate fields of "e_award_tiers" */
+["e_award_tiers_aggregate_fields"]: {
+	__typename: "e_award_tiers_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_award_tiers_max_fields"] | undefined | null,
+	min?: GraphQLTypes["e_award_tiers_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_award_tiers". All fields are combined with a logical 'AND'. */
+["e_award_tiers_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_award_tiers_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["e_award_tiers_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["e_award_tiers_bool_exp"]> | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_award_tiers" */
+["e_award_tiers_constraint"]: e_award_tiers_constraint;
+	["e_award_tiers_enum"]: e_award_tiers_enum;
+	/** Boolean expression to compare columns of type "e_award_tiers_enum". All fields are combined with logical 'AND'. */
+["e_award_tiers_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_award_tiers_enum"] | undefined | null,
+	_in?: Array<GraphQLTypes["e_award_tiers_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: GraphQLTypes["e_award_tiers_enum"] | undefined | null,
+	_nin?: Array<GraphQLTypes["e_award_tiers_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_award_tiers" */
+["e_award_tiers_insert_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_award_tiers_max_fields"]: {
+	__typename: "e_award_tiers_max_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_award_tiers_min_fields"]: {
+	__typename: "e_award_tiers_min_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_award_tiers" */
+["e_award_tiers_mutation_response"]: {
+	__typename: "e_award_tiers_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_award_tiers"]>
+};
+	/** on_conflict condition type for table "e_award_tiers" */
+["e_award_tiers_on_conflict"]: {
+		constraint: GraphQLTypes["e_award_tiers_constraint"],
+	update_columns: Array<GraphQLTypes["e_award_tiers_update_column"]>,
+	where?: GraphQLTypes["e_award_tiers_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_award_tiers". */
+["e_award_tiers_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined | null,
+	value?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_award_tiers */
+["e_award_tiers_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_award_tiers" */
+["e_award_tiers_select_column"]: e_award_tiers_select_column;
+	/** input type for updating data in table "e_award_tiers" */
+["e_award_tiers_set_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_award_tiers" */
+["e_award_tiers_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_award_tiers_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_award_tiers_stream_cursor_value_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_award_tiers" */
+["e_award_tiers_update_column"]: e_award_tiers_update_column;
+	["e_award_tiers_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_award_tiers_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_award_tiers_bool_exp"]
 };
 	/** columns and relationships of "e_check_in_settings" */
 ["e_check_in_settings"]: {
@@ -204677,6 +208319,8 @@ export type GraphQLTypes = {
 	createScheduledMatch?: GraphQLTypes["CreateScheduledMatchOutput"] | undefined | null,
 	/** Create directory on game server */
 	createServerDirectory?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Delete a catalog award */
+	deleteAward?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete a saved clip and its underlying S3 object */
 	deleteClip?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	deleteMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -204700,6 +208344,14 @@ export type GraphQLTypes = {
 	delete_api_keys?: GraphQLTypes["api_keys_mutation_response"] | undefined | null,
 	/** delete single row from the table: "api_keys" */
 	delete_api_keys_by_pk?: GraphQLTypes["api_keys"] | undefined | null,
+	/** delete data from the table: "award_recipients" */
+	delete_award_recipients?: GraphQLTypes["award_recipients_mutation_response"] | undefined | null,
+	/** delete single row from the table: "award_recipients" */
+	delete_award_recipients_by_pk?: GraphQLTypes["award_recipients"] | undefined | null,
+	/** delete data from the table: "awards" */
+	delete_awards?: GraphQLTypes["awards_mutation_response"] | undefined | null,
+	/** delete single row from the table: "awards" */
+	delete_awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
 	/** delete data from the table: "clip_render_jobs" */
 	delete_clip_render_jobs?: GraphQLTypes["clip_render_jobs_mutation_response"] | undefined | null,
 	/** delete single row from the table: "clip_render_jobs" */
@@ -204724,6 +208376,14 @@ export type GraphQLTypes = {
 	delete_draft_games?: GraphQLTypes["draft_games_mutation_response"] | undefined | null,
 	/** delete single row from the table: "draft_games" */
 	delete_draft_games_by_pk?: GraphQLTypes["draft_games"] | undefined | null,
+	/** delete data from the table: "e_award_sources" */
+	delete_e_award_sources?: GraphQLTypes["e_award_sources_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_award_sources" */
+	delete_e_award_sources_by_pk?: GraphQLTypes["e_award_sources"] | undefined | null,
+	/** delete data from the table: "e_award_tiers" */
+	delete_e_award_tiers?: GraphQLTypes["e_award_tiers_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_award_tiers" */
+	delete_e_award_tiers_by_pk?: GraphQLTypes["e_award_tiers"] | undefined | null,
 	/** delete data from the table: "e_check_in_settings" */
 	delete_e_check_in_settings?: GraphQLTypes["e_check_in_settings_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_check_in_settings" */
@@ -205222,6 +208882,10 @@ export type GraphQLTypes = {
 	delete_teams?: GraphQLTypes["teams_mutation_response"] | undefined | null,
 	/** delete single row from the table: "teams" */
 	delete_teams_by_pk?: GraphQLTypes["teams"] | undefined | null,
+	/** delete data from the table: "tournament_awards" */
+	delete_tournament_awards?: GraphQLTypes["tournament_awards_mutation_response"] | undefined | null,
+	/** delete single row from the table: "tournament_awards" */
+	delete_tournament_awards_by_pk?: GraphQLTypes["tournament_awards"] | undefined | null,
 	/** delete data from the table: "tournament_brackets" */
 	delete_tournament_brackets?: GraphQLTypes["tournament_brackets_mutation_response"] | undefined | null,
 	/** delete single row from the table: "tournament_brackets" */
@@ -205262,14 +208926,6 @@ export type GraphQLTypes = {
 	delete_tournament_teams?: GraphQLTypes["tournament_teams_mutation_response"] | undefined | null,
 	/** delete single row from the table: "tournament_teams" */
 	delete_tournament_teams_by_pk?: GraphQLTypes["tournament_teams"] | undefined | null,
-	/** delete data from the table: "tournament_trophies" */
-	delete_tournament_trophies?: GraphQLTypes["tournament_trophies_mutation_response"] | undefined | null,
-	/** delete single row from the table: "tournament_trophies" */
-	delete_tournament_trophies_by_pk?: GraphQLTypes["tournament_trophies"] | undefined | null,
-	/** delete data from the table: "tournament_trophy_configs" */
-	delete_tournament_trophy_configs?: GraphQLTypes["tournament_trophy_configs_mutation_response"] | undefined | null,
-	/** delete single row from the table: "tournament_trophy_configs" */
-	delete_tournament_trophy_configs_by_pk?: GraphQLTypes["tournament_trophy_configs"] | undefined | null,
 	/** delete data from the table: "tournaments" */
 	delete_tournaments?: GraphQLTypes["tournaments_mutation_response"] | undefined | null,
 	/** delete single row from the table: "tournaments" */
@@ -205291,6 +208947,8 @@ export type GraphQLTypes = {
 	/** Live pod GSI snapshot — slots, sides, alive/dead. Drives the stream-deck. */
 	getLiveStreamSpecState?: GraphQLTypes["LiveStreamSpecState"] | undefined | null,
 	getTestUploadLink: GraphQLTypes["GetTestUploadResponse"],
+	/** Grant an award to a player or team */
+	grantAward?: GraphQLTypes["AwardRecipient"] | undefined | null,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "_map_pool" */
@@ -205303,6 +208961,14 @@ export type GraphQLTypes = {
 	insert_api_keys?: GraphQLTypes["api_keys_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "api_keys" */
 	insert_api_keys_one?: GraphQLTypes["api_keys"] | undefined | null,
+	/** insert data into the table: "award_recipients" */
+	insert_award_recipients?: GraphQLTypes["award_recipients_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "award_recipients" */
+	insert_award_recipients_one?: GraphQLTypes["award_recipients"] | undefined | null,
+	/** insert data into the table: "awards" */
+	insert_awards?: GraphQLTypes["awards_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "awards" */
+	insert_awards_one?: GraphQLTypes["awards"] | undefined | null,
 	/** insert data into the table: "clip_render_jobs" */
 	insert_clip_render_jobs?: GraphQLTypes["clip_render_jobs_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "clip_render_jobs" */
@@ -205327,6 +208993,14 @@ export type GraphQLTypes = {
 	insert_draft_games?: GraphQLTypes["draft_games_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "draft_games" */
 	insert_draft_games_one?: GraphQLTypes["draft_games"] | undefined | null,
+	/** insert data into the table: "e_award_sources" */
+	insert_e_award_sources?: GraphQLTypes["e_award_sources_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_award_sources" */
+	insert_e_award_sources_one?: GraphQLTypes["e_award_sources"] | undefined | null,
+	/** insert data into the table: "e_award_tiers" */
+	insert_e_award_tiers?: GraphQLTypes["e_award_tiers_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_award_tiers" */
+	insert_e_award_tiers_one?: GraphQLTypes["e_award_tiers"] | undefined | null,
 	/** insert data into the table: "e_check_in_settings" */
 	insert_e_check_in_settings?: GraphQLTypes["e_check_in_settings_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_check_in_settings" */
@@ -205831,6 +209505,10 @@ export type GraphQLTypes = {
 	insert_teams?: GraphQLTypes["teams_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "teams" */
 	insert_teams_one?: GraphQLTypes["teams"] | undefined | null,
+	/** insert data into the table: "tournament_awards" */
+	insert_tournament_awards?: GraphQLTypes["tournament_awards_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "tournament_awards" */
+	insert_tournament_awards_one?: GraphQLTypes["tournament_awards"] | undefined | null,
 	/** insert data into the table: "tournament_brackets" */
 	insert_tournament_brackets?: GraphQLTypes["tournament_brackets_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "tournament_brackets" */
@@ -205871,14 +209549,6 @@ export type GraphQLTypes = {
 	insert_tournament_teams?: GraphQLTypes["tournament_teams_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "tournament_teams" */
 	insert_tournament_teams_one?: GraphQLTypes["tournament_teams"] | undefined | null,
-	/** insert data into the table: "tournament_trophies" */
-	insert_tournament_trophies?: GraphQLTypes["tournament_trophies_mutation_response"] | undefined | null,
-	/** insert a single row into the table: "tournament_trophies" */
-	insert_tournament_trophies_one?: GraphQLTypes["tournament_trophies"] | undefined | null,
-	/** insert data into the table: "tournament_trophy_configs" */
-	insert_tournament_trophy_configs?: GraphQLTypes["tournament_trophy_configs_mutation_response"] | undefined | null,
-	/** insert a single row into the table: "tournament_trophy_configs" */
-	insert_tournament_trophy_configs_one?: GraphQLTypes["tournament_trophy_configs"] | undefined | null,
 	/** insert data into the table: "tournaments" */
 	insert_tournaments?: GraphQLTypes["tournaments_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "tournaments" */
@@ -205929,8 +209599,8 @@ export type GraphQLTypes = {
 	queueClipFromPreset?: GraphQLTypes["CreateClipRenderOutput"] | undefined | null,
 	randomizeTeams?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	rebootMatchServer?: GraphQLTypes["SuccessOutput"] | undefined | null,
-	/** execute VOLATILE function "recalculate_tournament_trophies" which returns "tournament_trophies" */
-	recalculate_tournament_trophies: Array<GraphQLTypes["tournament_trophies"]>,
+	/** execute VOLATILE function "recalculate_tournament_awards" which returns "award_recipients" */
+	recalculate_tournament_awards: Array<GraphQLTypes["award_recipients"]>,
 	/** Wipe and rebuild all player ELO from finished matches in chronological order (admin only). Runs in the background; track via recomputePlayerEloStatus. */
 	recomputePlayerElo?: GraphQLTypes["RecomputeEloStartedOutput"] | undefined | null,
 	/** Return the progress of the ELO recompute run (admin only). */
@@ -205976,7 +209646,11 @@ export type GraphQLTypes = {
 	/** Delete terminal clip_render_jobs rows for a match_map (all or only failed/cancelled) and re-create them from their saved specs. */
 	retryClipRenderBatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	retryPendingMatchImport?: GraphQLTypes["PendingMatchImportActionOutput"] | undefined | null,
+	/** Revoke a hand-granted award */
+	revokeAward?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	sanctionServerPlayer: GraphQLTypes["SanctionResult"],
+	/** Create or update a catalog award */
+	saveAward?: GraphQLTypes["Award"] | undefined | null,
 	/** Create or update a first-party news post. Caller role is verified against public.post_news_role. */
 	saveNewsPost?: GraphQLTypes["NewsPost"] | undefined | null,
 	/** Scan S3 for objects not referenced in the database (admin only). Runs in the background; results land in the logs and orphanedDemosScanResult. */
@@ -205995,6 +209669,8 @@ export type GraphQLTypes = {
 	setMatchWinner?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Publish or unpublish a news post. Caller role is verified against public.post_news_role. */
 	setNewsPostStatus?: GraphQLTypes["NewsPost"] | undefined | null,
+	/** Map a tournament placement to an award */
+	setTournamentAward?: GraphQLTypes["TournamentAward"] | undefined | null,
 	setupGameServer?: GraphQLTypes["SetupGameServeOutput"] | undefined | null,
 	skipShaders?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	specAutodirector?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -206048,6 +209724,18 @@ export type GraphQLTypes = {
 	update_api_keys_by_pk?: GraphQLTypes["api_keys"] | undefined | null,
 	/** update multiples rows of table: "api_keys" */
 	update_api_keys_many?: Array<GraphQLTypes["api_keys_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "award_recipients" */
+	update_award_recipients?: GraphQLTypes["award_recipients_mutation_response"] | undefined | null,
+	/** update single row of the table: "award_recipients" */
+	update_award_recipients_by_pk?: GraphQLTypes["award_recipients"] | undefined | null,
+	/** update multiples rows of table: "award_recipients" */
+	update_award_recipients_many?: Array<GraphQLTypes["award_recipients_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "awards" */
+	update_awards?: GraphQLTypes["awards_mutation_response"] | undefined | null,
+	/** update single row of the table: "awards" */
+	update_awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
+	/** update multiples rows of table: "awards" */
+	update_awards_many?: Array<GraphQLTypes["awards_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "clip_render_jobs" */
 	update_clip_render_jobs?: GraphQLTypes["clip_render_jobs_mutation_response"] | undefined | null,
 	/** update single row of the table: "clip_render_jobs" */
@@ -206084,6 +209772,18 @@ export type GraphQLTypes = {
 	update_draft_games_by_pk?: GraphQLTypes["draft_games"] | undefined | null,
 	/** update multiples rows of table: "draft_games" */
 	update_draft_games_many?: Array<GraphQLTypes["draft_games_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_award_sources" */
+	update_e_award_sources?: GraphQLTypes["e_award_sources_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_award_sources" */
+	update_e_award_sources_by_pk?: GraphQLTypes["e_award_sources"] | undefined | null,
+	/** update multiples rows of table: "e_award_sources" */
+	update_e_award_sources_many?: Array<GraphQLTypes["e_award_sources_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_award_tiers" */
+	update_e_award_tiers?: GraphQLTypes["e_award_tiers_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_award_tiers" */
+	update_e_award_tiers_by_pk?: GraphQLTypes["e_award_tiers"] | undefined | null,
+	/** update multiples rows of table: "e_award_tiers" */
+	update_e_award_tiers_many?: Array<GraphQLTypes["e_award_tiers_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_check_in_settings" */
 	update_e_check_in_settings?: GraphQLTypes["e_check_in_settings_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_check_in_settings" */
@@ -206834,6 +210534,12 @@ export type GraphQLTypes = {
 	update_teams_by_pk?: GraphQLTypes["teams"] | undefined | null,
 	/** update multiples rows of table: "teams" */
 	update_teams_many?: Array<GraphQLTypes["teams_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "tournament_awards" */
+	update_tournament_awards?: GraphQLTypes["tournament_awards_mutation_response"] | undefined | null,
+	/** update single row of the table: "tournament_awards" */
+	update_tournament_awards_by_pk?: GraphQLTypes["tournament_awards"] | undefined | null,
+	/** update multiples rows of table: "tournament_awards" */
+	update_tournament_awards_many?: Array<GraphQLTypes["tournament_awards_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "tournament_brackets" */
 	update_tournament_brackets?: GraphQLTypes["tournament_brackets_mutation_response"] | undefined | null,
 	/** update single row of the table: "tournament_brackets" */
@@ -206894,18 +210600,6 @@ export type GraphQLTypes = {
 	update_tournament_teams_by_pk?: GraphQLTypes["tournament_teams"] | undefined | null,
 	/** update multiples rows of table: "tournament_teams" */
 	update_tournament_teams_many?: Array<GraphQLTypes["tournament_teams_mutation_response"] | undefined | null> | undefined | null,
-	/** update data of the table: "tournament_trophies" */
-	update_tournament_trophies?: GraphQLTypes["tournament_trophies_mutation_response"] | undefined | null,
-	/** update single row of the table: "tournament_trophies" */
-	update_tournament_trophies_by_pk?: GraphQLTypes["tournament_trophies"] | undefined | null,
-	/** update multiples rows of table: "tournament_trophies" */
-	update_tournament_trophies_many?: Array<GraphQLTypes["tournament_trophies_mutation_response"] | undefined | null> | undefined | null,
-	/** update data of the table: "tournament_trophy_configs" */
-	update_tournament_trophy_configs?: GraphQLTypes["tournament_trophy_configs_mutation_response"] | undefined | null,
-	/** update single row of the table: "tournament_trophy_configs" */
-	update_tournament_trophy_configs_by_pk?: GraphQLTypes["tournament_trophy_configs"] | undefined | null,
-	/** update multiples rows of table: "tournament_trophy_configs" */
-	update_tournament_trophy_configs_many?: Array<GraphQLTypes["tournament_trophy_configs_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "tournaments" */
 	update_tournaments?: GraphQLTypes["tournaments_mutation_response"] | undefined | null,
 	/** update single row of the table: "tournaments" */
@@ -220689,6 +224383,10 @@ export type GraphQLTypes = {
 	assited_by_players_aggregate: GraphQLTypes["player_assists_aggregate"],
 	avatar_url?: string | undefined | null,
 	/** An array relationship */
+	awards: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: GraphQLTypes["award_recipients_aggregate"],
+	/** An array relationship */
 	coach_lineups: Array<GraphQLTypes["match_lineups"]>,
 	/** An aggregate relationship */
 	coach_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
@@ -220874,10 +224572,6 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	tournament_rosters_aggregate: GraphQLTypes["tournament_team_roster_aggregate"],
 	/** An array relationship */
-	tournament_trophies: Array<GraphQLTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	tournament_trophies_aggregate: GraphQLTypes["tournament_trophies_aggregate"],
-	/** An array relationship */
 	tournaments: Array<GraphQLTypes["tournaments"]>,
 	/** An aggregate relationship */
 	tournaments_aggregate: GraphQLTypes["tournaments_aggregate"],
@@ -220964,6 +224658,8 @@ export type GraphQLTypes = {
 	assited_by_players?: GraphQLTypes["player_assists_bool_exp"] | undefined | null,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	avatar_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	awards?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	coach_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined | null,
 	coach_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	country?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -221069,8 +224765,6 @@ export type GraphQLTypes = {
 	tournament_organizers_aggregate?: GraphQLTypes["tournament_organizers_aggregate_bool_exp"] | undefined | null,
 	tournament_rosters?: GraphQLTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	tournament_rosters_aggregate?: GraphQLTypes["tournament_team_roster_aggregate_bool_exp"] | undefined | null,
-	tournament_trophies?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null,
-	tournament_trophies_aggregate?: GraphQLTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null,
 	tournaments?: GraphQLTypes["tournaments_bool_exp"] | undefined | null,
 	tournaments_aggregate?: GraphQLTypes["tournaments_aggregate_bool_exp"] | undefined | null,
 	utility_thrown?: GraphQLTypes["player_utility_bool_exp"] | undefined | null,
@@ -221103,6 +224797,7 @@ export type GraphQLTypes = {
 	assists?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
+	awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	coach_lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -221160,7 +224855,6 @@ export type GraphQLTypes = {
 	team_members?: GraphQLTypes["team_roster_arr_rel_insert_input"] | undefined | null,
 	tournament_organizers?: GraphQLTypes["tournament_organizers_arr_rel_insert_input"] | undefined | null,
 	tournament_rosters?: GraphQLTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
-	tournament_trophies?: GraphQLTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null,
 	tournaments?: GraphQLTypes["tournaments_arr_rel_insert_input"] | undefined | null,
 	utility_thrown?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined | null,
 	vac_ban_count?: number | undefined | null,
@@ -221294,6 +224988,7 @@ export type GraphQLTypes = {
 	assists_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: GraphQLTypes["order_by"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	coach_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	country?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -221368,7 +225063,6 @@ export type GraphQLTypes = {
 	total_matches?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_organizers_aggregate?: GraphQLTypes["tournament_organizers_aggregate_order_by"] | undefined | null,
 	tournament_rosters_aggregate?: GraphQLTypes["tournament_team_roster_aggregate_order_by"] | undefined | null,
-	tournament_trophies_aggregate?: GraphQLTypes["tournament_trophies_aggregate_order_by"] | undefined | null,
 	tournaments_aggregate?: GraphQLTypes["tournaments_aggregate_order_by"] | undefined | null,
 	utility_thrown_aggregate?: GraphQLTypes["player_utility_aggregate_order_by"] | undefined | null,
 	vac_ban_count?: GraphQLTypes["order_by"] | undefined | null,
@@ -221852,6 +225546,18 @@ export type GraphQLTypes = {
 	api_keys_aggregate: GraphQLTypes["api_keys_aggregate"],
 	/** fetch data from the table: "api_keys" using primary key columns */
 	api_keys_by_pk?: GraphQLTypes["api_keys"] | undefined | null,
+	/** fetch data from the table: "award_recipients" */
+	award_recipients: Array<GraphQLTypes["award_recipients"]>,
+	/** fetch aggregated fields from the table: "award_recipients" */
+	award_recipients_aggregate: GraphQLTypes["award_recipients_aggregate"],
+	/** fetch data from the table: "award_recipients" using primary key columns */
+	award_recipients_by_pk?: GraphQLTypes["award_recipients"] | undefined | null,
+	/** fetch data from the table: "awards" */
+	awards: Array<GraphQLTypes["awards"]>,
+	/** fetch aggregated fields from the table: "awards" */
+	awards_aggregate: GraphQLTypes["awards_aggregate"],
+	/** fetch data from the table: "awards" using primary key columns */
+	awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
 	/** An array relationship */
 	clip_render_jobs: Array<GraphQLTypes["clip_render_jobs"]>,
 	/** An aggregate relationship */
@@ -221889,6 +225595,18 @@ export type GraphQLTypes = {
 	draft_games_aggregate: GraphQLTypes["draft_games_aggregate"],
 	/** fetch data from the table: "draft_games" using primary key columns */
 	draft_games_by_pk?: GraphQLTypes["draft_games"] | undefined | null,
+	/** fetch data from the table: "e_award_sources" */
+	e_award_sources: Array<GraphQLTypes["e_award_sources"]>,
+	/** fetch aggregated fields from the table: "e_award_sources" */
+	e_award_sources_aggregate: GraphQLTypes["e_award_sources_aggregate"],
+	/** fetch data from the table: "e_award_sources" using primary key columns */
+	e_award_sources_by_pk?: GraphQLTypes["e_award_sources"] | undefined | null,
+	/** fetch data from the table: "e_award_tiers" */
+	e_award_tiers: Array<GraphQLTypes["e_award_tiers"]>,
+	/** fetch aggregated fields from the table: "e_award_tiers" */
+	e_award_tiers_aggregate: GraphQLTypes["e_award_tiers_aggregate"],
+	/** fetch data from the table: "e_award_tiers" using primary key columns */
+	e_award_tiers_by_pk?: GraphQLTypes["e_award_tiers"] | undefined | null,
 	/** fetch data from the table: "e_check_in_settings" */
 	e_check_in_settings: Array<GraphQLTypes["e_check_in_settings"]>,
 	/** fetch aggregated fields from the table: "e_check_in_settings" */
@@ -222724,6 +226442,12 @@ export type GraphQLTypes = {
 	/** fetch data from the table: "teams" using primary key columns */
 	teams_by_pk?: GraphQLTypes["teams"] | undefined | null,
 	telemetryStats: GraphQLTypes["TelemetryStats"],
+	/** fetch data from the table: "tournament_awards" */
+	tournament_awards: Array<GraphQLTypes["tournament_awards"]>,
+	/** fetch aggregated fields from the table: "tournament_awards" */
+	tournament_awards_aggregate: GraphQLTypes["tournament_awards_aggregate"],
+	/** fetch data from the table: "tournament_awards" using primary key columns */
+	tournament_awards_by_pk?: GraphQLTypes["tournament_awards"] | undefined | null,
 	/** An array relationship */
 	tournament_brackets: Array<GraphQLTypes["tournament_brackets"]>,
 	/** An aggregate relationship */
@@ -222784,18 +226508,6 @@ export type GraphQLTypes = {
 	tournament_teams_aggregate: GraphQLTypes["tournament_teams_aggregate"],
 	/** fetch data from the table: "tournament_teams" using primary key columns */
 	tournament_teams_by_pk?: GraphQLTypes["tournament_teams"] | undefined | null,
-	/** An array relationship */
-	tournament_trophies: Array<GraphQLTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	tournament_trophies_aggregate: GraphQLTypes["tournament_trophies_aggregate"],
-	/** fetch data from the table: "tournament_trophies" using primary key columns */
-	tournament_trophies_by_pk?: GraphQLTypes["tournament_trophies"] | undefined | null,
-	/** fetch data from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs: Array<GraphQLTypes["tournament_trophy_configs"]>,
-	/** fetch aggregated fields from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs_aggregate: GraphQLTypes["tournament_trophy_configs_aggregate"],
-	/** fetch data from the table: "tournament_trophy_configs" using primary key columns */
-	tournament_trophy_configs_by_pk?: GraphQLTypes["tournament_trophy_configs"] | undefined | null,
 	/** An array relationship */
 	tournaments: Array<GraphQLTypes["tournaments"]>,
 	/** An aggregate relationship */
@@ -222933,7 +226645,7 @@ export type GraphQLTypes = {
 	/** fetch aggregated fields from the table: "v_tournament_player_stats" */
 	v_tournament_player_stats_aggregate: GraphQLTypes["v_tournament_player_stats_aggregate"]
 };
-	["recalculate_tournament_trophies_args"]: {
+	["recalculate_tournament_awards_args"]: {
 		_tournament_id?: GraphQLTypes["uuid"] | undefined | null
 };
 	["remove_league_team_from_season_args"]: {
@@ -224452,6 +228164,22 @@ export type GraphQLTypes = {
 	api_keys_by_pk?: GraphQLTypes["api_keys"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "api_keys" */
 	api_keys_stream: Array<GraphQLTypes["api_keys"]>,
+	/** fetch data from the table: "award_recipients" */
+	award_recipients: Array<GraphQLTypes["award_recipients"]>,
+	/** fetch aggregated fields from the table: "award_recipients" */
+	award_recipients_aggregate: GraphQLTypes["award_recipients_aggregate"],
+	/** fetch data from the table: "award_recipients" using primary key columns */
+	award_recipients_by_pk?: GraphQLTypes["award_recipients"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "award_recipients" */
+	award_recipients_stream: Array<GraphQLTypes["award_recipients"]>,
+	/** fetch data from the table: "awards" */
+	awards: Array<GraphQLTypes["awards"]>,
+	/** fetch aggregated fields from the table: "awards" */
+	awards_aggregate: GraphQLTypes["awards_aggregate"],
+	/** fetch data from the table: "awards" using primary key columns */
+	awards_by_pk?: GraphQLTypes["awards"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "awards" */
+	awards_stream: Array<GraphQLTypes["awards"]>,
 	/** An array relationship */
 	clip_render_jobs: Array<GraphQLTypes["clip_render_jobs"]>,
 	/** An aggregate relationship */
@@ -224500,6 +228228,22 @@ export type GraphQLTypes = {
 	draft_games_by_pk?: GraphQLTypes["draft_games"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "draft_games" */
 	draft_games_stream: Array<GraphQLTypes["draft_games"]>,
+	/** fetch data from the table: "e_award_sources" */
+	e_award_sources: Array<GraphQLTypes["e_award_sources"]>,
+	/** fetch aggregated fields from the table: "e_award_sources" */
+	e_award_sources_aggregate: GraphQLTypes["e_award_sources_aggregate"],
+	/** fetch data from the table: "e_award_sources" using primary key columns */
+	e_award_sources_by_pk?: GraphQLTypes["e_award_sources"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_award_sources" */
+	e_award_sources_stream: Array<GraphQLTypes["e_award_sources"]>,
+	/** fetch data from the table: "e_award_tiers" */
+	e_award_tiers: Array<GraphQLTypes["e_award_tiers"]>,
+	/** fetch aggregated fields from the table: "e_award_tiers" */
+	e_award_tiers_aggregate: GraphQLTypes["e_award_tiers_aggregate"],
+	/** fetch data from the table: "e_award_tiers" using primary key columns */
+	e_award_tiers_by_pk?: GraphQLTypes["e_award_tiers"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_award_tiers" */
+	e_award_tiers_stream: Array<GraphQLTypes["e_award_tiers"]>,
 	/** fetch data from the table: "e_check_in_settings" */
 	e_check_in_settings: Array<GraphQLTypes["e_check_in_settings"]>,
 	/** fetch aggregated fields from the table: "e_check_in_settings" */
@@ -225548,6 +229292,14 @@ export type GraphQLTypes = {
 	teams_by_pk?: GraphQLTypes["teams"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "teams" */
 	teams_stream: Array<GraphQLTypes["teams"]>,
+	/** fetch data from the table: "tournament_awards" */
+	tournament_awards: Array<GraphQLTypes["tournament_awards"]>,
+	/** fetch aggregated fields from the table: "tournament_awards" */
+	tournament_awards_aggregate: GraphQLTypes["tournament_awards_aggregate"],
+	/** fetch data from the table: "tournament_awards" using primary key columns */
+	tournament_awards_by_pk?: GraphQLTypes["tournament_awards"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "tournament_awards" */
+	tournament_awards_stream: Array<GraphQLTypes["tournament_awards"]>,
 	/** An array relationship */
 	tournament_brackets: Array<GraphQLTypes["tournament_brackets"]>,
 	/** An aggregate relationship */
@@ -225628,22 +229380,6 @@ export type GraphQLTypes = {
 	tournament_teams_by_pk?: GraphQLTypes["tournament_teams"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "tournament_teams" */
 	tournament_teams_stream: Array<GraphQLTypes["tournament_teams"]>,
-	/** An array relationship */
-	tournament_trophies: Array<GraphQLTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	tournament_trophies_aggregate: GraphQLTypes["tournament_trophies_aggregate"],
-	/** fetch data from the table: "tournament_trophies" using primary key columns */
-	tournament_trophies_by_pk?: GraphQLTypes["tournament_trophies"] | undefined | null,
-	/** fetch data from the table in a streaming manner: "tournament_trophies" */
-	tournament_trophies_stream: Array<GraphQLTypes["tournament_trophies"]>,
-	/** fetch data from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs: Array<GraphQLTypes["tournament_trophy_configs"]>,
-	/** fetch aggregated fields from the table: "tournament_trophy_configs" */
-	tournament_trophy_configs_aggregate: GraphQLTypes["tournament_trophy_configs_aggregate"],
-	/** fetch data from the table: "tournament_trophy_configs" using primary key columns */
-	tournament_trophy_configs_by_pk?: GraphQLTypes["tournament_trophy_configs"] | undefined | null,
-	/** fetch data from the table in a streaming manner: "tournament_trophy_configs" */
-	tournament_trophy_configs_stream: Array<GraphQLTypes["tournament_trophy_configs"]>,
 	/** An array relationship */
 	tournaments: Array<GraphQLTypes["tournaments"]>,
 	/** An aggregate relationship */
@@ -228161,6 +231897,10 @@ export type GraphQLTypes = {
 ["teams"]: {
 	__typename: "teams",
 	avatar_url?: string | undefined | null,
+	/** An array relationship */
+	awards: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: GraphQLTypes["award_recipients_aggregate"],
 	/** A computed field, executes function "can_change_team_role" */
 	can_change_role?: boolean | undefined | null,
 	/** A computed field, executes function "can_invite_to_team" */
@@ -228291,6 +232031,8 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["teams_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["teams_bool_exp"]> | undefined | null,
 	avatar_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	awards?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
 	can_change_role?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	can_invite?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	can_manage_scrims?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -228329,6 +232071,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 		avatar_url?: string | undefined | null,
+	awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
 	captain?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	captain_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -228411,6 +232154,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 		avatar_url?: GraphQLTypes["order_by"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
 	can_change_role?: GraphQLTypes["order_by"] | undefined | null,
 	can_invite?: GraphQLTypes["order_by"] | undefined | null,
 	can_manage_scrims?: GraphQLTypes["order_by"] | undefined | null,
@@ -228571,6 +232315,330 @@ export type GraphQLTypes = {
 	_lte?: GraphQLTypes["timestamptz"] | undefined | null,
 	_neq?: GraphQLTypes["timestamptz"] | undefined | null,
 	_nin?: Array<GraphQLTypes["timestamptz"]> | undefined | null
+};
+	/** columns and relationships of "tournament_awards" */
+["tournament_awards"]: {
+	__typename: "tournament_awards",
+	/** An object relationship */
+	award?: GraphQLTypes["awards"] | undefined | null,
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	created_at: GraphQLTypes["timestamptz"],
+	custom_name?: string | undefined | null,
+	id: GraphQLTypes["uuid"],
+	image_url?: string | undefined | null,
+	placement: number,
+	silhouette?: number | undefined | null,
+	/** An object relationship */
+	tournament: GraphQLTypes["tournaments"],
+	tournament_id: GraphQLTypes["uuid"],
+	updated_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "tournament_awards" */
+["tournament_awards_aggregate"]: {
+	__typename: "tournament_awards_aggregate",
+	aggregate?: GraphQLTypes["tournament_awards_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["tournament_awards"]>
+};
+	["tournament_awards_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["tournament_awards_aggregate_bool_exp_count"] | undefined | null
+};
+	["tournament_awards_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["tournament_awards_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["tournament_awards_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "tournament_awards" */
+["tournament_awards_aggregate_fields"]: {
+	__typename: "tournament_awards_aggregate_fields",
+	avg?: GraphQLTypes["tournament_awards_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["tournament_awards_max_fields"] | undefined | null,
+	min?: GraphQLTypes["tournament_awards_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["tournament_awards_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["tournament_awards_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["tournament_awards_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["tournament_awards_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["tournament_awards_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["tournament_awards_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["tournament_awards_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "tournament_awards" */
+["tournament_awards_aggregate_order_by"]: {
+		avg?: GraphQLTypes["tournament_awards_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["tournament_awards_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["tournament_awards_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["tournament_awards_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["tournament_awards_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["tournament_awards_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["tournament_awards_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["tournament_awards_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["tournament_awards_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["tournament_awards_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "tournament_awards" */
+["tournament_awards_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["tournament_awards_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["tournament_awards_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["tournament_awards_avg_fields"]: {
+	__typename: "tournament_awards_avg_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by avg() on columns of table "tournament_awards" */
+["tournament_awards_avg_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "tournament_awards". All fields are combined with a logical 'AND'. */
+["tournament_awards_bool_exp"]: {
+		_and?: Array<GraphQLTypes["tournament_awards_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["tournament_awards_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["tournament_awards_bool_exp"]> | undefined | null,
+	award?: GraphQLTypes["awards_bool_exp"] | undefined | null,
+	award_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	custom_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	image_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	placement?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	silhouette?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "tournament_awards" */
+["tournament_awards_constraint"]: tournament_awards_constraint;
+	/** input type for incrementing numeric columns in table "tournament_awards" */
+["tournament_awards_inc_input"]: {
+		placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** input type for inserting data into table "tournament_awards" */
+["tournament_awards_insert_input"]: {
+		award?: GraphQLTypes["awards_obj_rel_insert_input"] | undefined | null,
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["tournament_awards_max_fields"]: {
+	__typename: "tournament_awards_max_fields",
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by max() on columns of table "tournament_awards" */
+["tournament_awards_max_order_by"]: {
+		award_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	custom_name?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	image_url?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["tournament_awards_min_fields"]: {
+	__typename: "tournament_awards_min_fields",
+	award_id?: GraphQLTypes["uuid"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** order by min() on columns of table "tournament_awards" */
+["tournament_awards_min_order_by"]: {
+		award_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	custom_name?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	image_url?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "tournament_awards" */
+["tournament_awards_mutation_response"]: {
+	__typename: "tournament_awards_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["tournament_awards"]>
+};
+	/** input type for inserting object relation for remote table "tournament_awards" */
+["tournament_awards_obj_rel_insert_input"]: {
+		data: GraphQLTypes["tournament_awards_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["tournament_awards_on_conflict"] | undefined | null
+};
+	/** on_conflict condition type for table "tournament_awards" */
+["tournament_awards_on_conflict"]: {
+		constraint: GraphQLTypes["tournament_awards_constraint"],
+	update_columns: Array<GraphQLTypes["tournament_awards_update_column"]>,
+	where?: GraphQLTypes["tournament_awards_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "tournament_awards". */
+["tournament_awards_order_by"]: {
+		award?: GraphQLTypes["awards_order_by"] | undefined | null,
+	award_id?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	custom_name?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	image_url?: GraphQLTypes["order_by"] | undefined | null,
+	placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null,
+	tournament?: GraphQLTypes["tournaments_order_by"] | undefined | null,
+	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: tournament_awards */
+["tournament_awards_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "tournament_awards" */
+["tournament_awards_select_column"]: tournament_awards_select_column;
+	/** input type for updating data in table "tournament_awards" */
+["tournament_awards_set_input"]: {
+		award_id?: GraphQLTypes["uuid"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["tournament_awards_stddev_fields"]: {
+	__typename: "tournament_awards_stddev_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by stddev() on columns of table "tournament_awards" */
+["tournament_awards_stddev_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["tournament_awards_stddev_pop_fields"]: {
+	__typename: "tournament_awards_stddev_pop_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "tournament_awards" */
+["tournament_awards_stddev_pop_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["tournament_awards_stddev_samp_fields"]: {
+	__typename: "tournament_awards_stddev_samp_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "tournament_awards" */
+["tournament_awards_stddev_samp_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "tournament_awards" */
+["tournament_awards_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["tournament_awards_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["tournament_awards_stream_cursor_value_input"]: {
+		award_id?: GraphQLTypes["uuid"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	custom_name?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	image_url?: string | undefined | null,
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null,
+	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["tournament_awards_sum_fields"]: {
+	__typename: "tournament_awards_sum_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by sum() on columns of table "tournament_awards" */
+["tournament_awards_sum_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "tournament_awards" */
+["tournament_awards_update_column"]: tournament_awards_update_column;
+	["tournament_awards_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["tournament_awards_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["tournament_awards_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["tournament_awards_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["tournament_awards_var_pop_fields"]: {
+	__typename: "tournament_awards_var_pop_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "tournament_awards" */
+["tournament_awards_var_pop_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["tournament_awards_var_samp_fields"]: {
+	__typename: "tournament_awards_var_samp_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "tournament_awards" */
+["tournament_awards_var_samp_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["tournament_awards_variance_fields"]: {
+	__typename: "tournament_awards_variance_fields",
+	placement?: number | undefined | null,
+	silhouette?: number | undefined | null
+};
+	/** order by variance() on columns of table "tournament_awards" */
+["tournament_awards_variance_order_by"]: {
+		placement?: GraphQLTypes["order_by"] | undefined | null,
+	silhouette?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "tournament_brackets" */
 ["tournament_brackets"]: {
@@ -231639,666 +235707,21 @@ export type GraphQLTypes = {
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	seed?: GraphQLTypes["order_by"] | undefined | null
 };
-	/** columns and relationships of "tournament_trophies" */
-["tournament_trophies"]: {
-	__typename: "tournament_trophies",
-	created_at: GraphQLTypes["timestamptz"],
-	id: GraphQLTypes["uuid"],
-	manual: boolean,
-	placement: number,
-	placement_tier?: string | undefined | null,
-	/** An object relationship */
-	player?: GraphQLTypes["players"] | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	/** An object relationship */
-	team?: GraphQLTypes["teams"] | undefined | null,
-	team_id?: GraphQLTypes["uuid"] | undefined | null,
-	/** An object relationship */
-	tournament: GraphQLTypes["tournaments"],
-	tournament_id: GraphQLTypes["uuid"],
-	/** An object relationship */
-	tournament_team: GraphQLTypes["tournament_teams"],
-	tournament_team_id: GraphQLTypes["uuid"],
-	/** An object relationship */
-	trophy_config?: GraphQLTypes["tournament_trophy_configs"] | undefined | null
-};
-	/** aggregated selection of "tournament_trophies" */
-["tournament_trophies_aggregate"]: {
-	__typename: "tournament_trophies_aggregate",
-	aggregate?: GraphQLTypes["tournament_trophies_aggregate_fields"] | undefined | null,
-	nodes: Array<GraphQLTypes["tournament_trophies"]>
-};
-	["tournament_trophies_aggregate_bool_exp"]: {
-		bool_and?: GraphQLTypes["tournament_trophies_aggregate_bool_exp_bool_and"] | undefined | null,
-	bool_or?: GraphQLTypes["tournament_trophies_aggregate_bool_exp_bool_or"] | undefined | null,
-	count?: GraphQLTypes["tournament_trophies_aggregate_bool_exp_count"] | undefined | null
-};
-	["tournament_trophies_aggregate_bool_exp_bool_and"]: {
-		arguments: GraphQLTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"],
-	distinct?: boolean | undefined | null,
-	filter?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: GraphQLTypes["Boolean_comparison_exp"]
-};
-	["tournament_trophies_aggregate_bool_exp_bool_or"]: {
-		arguments: GraphQLTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"],
-	distinct?: boolean | undefined | null,
-	filter?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: GraphQLTypes["Boolean_comparison_exp"]
-};
-	["tournament_trophies_aggregate_bool_exp_count"]: {
-		arguments?: Array<GraphQLTypes["tournament_trophies_select_column"]> | undefined | null,
-	distinct?: boolean | undefined | null,
-	filter?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null,
-	predicate: GraphQLTypes["Int_comparison_exp"]
-};
-	/** aggregate fields of "tournament_trophies" */
-["tournament_trophies_aggregate_fields"]: {
-	__typename: "tournament_trophies_aggregate_fields",
-	avg?: GraphQLTypes["tournament_trophies_avg_fields"] | undefined | null,
-	count: number,
-	max?: GraphQLTypes["tournament_trophies_max_fields"] | undefined | null,
-	min?: GraphQLTypes["tournament_trophies_min_fields"] | undefined | null,
-	stddev?: GraphQLTypes["tournament_trophies_stddev_fields"] | undefined | null,
-	stddev_pop?: GraphQLTypes["tournament_trophies_stddev_pop_fields"] | undefined | null,
-	stddev_samp?: GraphQLTypes["tournament_trophies_stddev_samp_fields"] | undefined | null,
-	sum?: GraphQLTypes["tournament_trophies_sum_fields"] | undefined | null,
-	var_pop?: GraphQLTypes["tournament_trophies_var_pop_fields"] | undefined | null,
-	var_samp?: GraphQLTypes["tournament_trophies_var_samp_fields"] | undefined | null,
-	variance?: GraphQLTypes["tournament_trophies_variance_fields"] | undefined | null
-};
-	/** order by aggregate values of table "tournament_trophies" */
-["tournament_trophies_aggregate_order_by"]: {
-		avg?: GraphQLTypes["tournament_trophies_avg_order_by"] | undefined | null,
-	count?: GraphQLTypes["order_by"] | undefined | null,
-	max?: GraphQLTypes["tournament_trophies_max_order_by"] | undefined | null,
-	min?: GraphQLTypes["tournament_trophies_min_order_by"] | undefined | null,
-	stddev?: GraphQLTypes["tournament_trophies_stddev_order_by"] | undefined | null,
-	stddev_pop?: GraphQLTypes["tournament_trophies_stddev_pop_order_by"] | undefined | null,
-	stddev_samp?: GraphQLTypes["tournament_trophies_stddev_samp_order_by"] | undefined | null,
-	sum?: GraphQLTypes["tournament_trophies_sum_order_by"] | undefined | null,
-	var_pop?: GraphQLTypes["tournament_trophies_var_pop_order_by"] | undefined | null,
-	var_samp?: GraphQLTypes["tournament_trophies_var_samp_order_by"] | undefined | null,
-	variance?: GraphQLTypes["tournament_trophies_variance_order_by"] | undefined | null
-};
-	/** input type for inserting array relation for remote table "tournament_trophies" */
-["tournament_trophies_arr_rel_insert_input"]: {
-		data: Array<GraphQLTypes["tournament_trophies_insert_input"]>,
-	/** upsert condition */
-	on_conflict?: GraphQLTypes["tournament_trophies_on_conflict"] | undefined | null
-};
-	/** aggregate avg on columns */
-["tournament_trophies_avg_fields"]: {
-	__typename: "tournament_trophies_avg_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by avg() on columns of table "tournament_trophies" */
-["tournament_trophies_avg_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** Boolean expression to filter rows from the table "tournament_trophies". All fields are combined with a logical 'AND'. */
-["tournament_trophies_bool_exp"]: {
-		_and?: Array<GraphQLTypes["tournament_trophies_bool_exp"]> | undefined | null,
-	_not?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null,
-	_or?: Array<GraphQLTypes["tournament_trophies_bool_exp"]> | undefined | null,
-	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
-	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	manual?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
-	placement?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
-	placement_tier?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
-	team?: GraphQLTypes["teams_bool_exp"] | undefined | null,
-	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	tournament_team?: GraphQLTypes["tournament_teams_bool_exp"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	trophy_config?: GraphQLTypes["tournament_trophy_configs_bool_exp"] | undefined | null
-};
-	/** unique or primary key constraints on table "tournament_trophies" */
-["tournament_trophies_constraint"]: tournament_trophies_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophies" */
-["tournament_trophies_inc_input"]: {
-		placement?: number | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
-};
-	/** input type for inserting data into table "tournament_trophies" */
-["tournament_trophies_insert_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined | null,
-	team_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_team?: GraphQLTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null,
-	trophy_config?: GraphQLTypes["tournament_trophy_configs_obj_rel_insert_input"] | undefined | null
-};
-	/** aggregate max on columns */
-["tournament_trophies_max_fields"]: {
-	__typename: "tournament_trophies_max_fields",
-	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	team_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
-};
-	/** order by max() on columns of table "tournament_trophies" */
-["tournament_trophies_max_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
-	id?: GraphQLTypes["order_by"] | undefined | null,
-	placement?: GraphQLTypes["order_by"] | undefined | null,
-	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	team_id?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate min on columns */
-["tournament_trophies_min_fields"]: {
-	__typename: "tournament_trophies_min_fields",
-	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	team_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
-};
-	/** order by min() on columns of table "tournament_trophies" */
-["tournament_trophies_min_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
-	id?: GraphQLTypes["order_by"] | undefined | null,
-	placement?: GraphQLTypes["order_by"] | undefined | null,
-	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	team_id?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** response of any mutation on the table "tournament_trophies" */
-["tournament_trophies_mutation_response"]: {
-	__typename: "tournament_trophies_mutation_response",
-	/** number of rows affected by the mutation */
-	affected_rows: number,
-	/** data from the rows affected by the mutation */
-	returning: Array<GraphQLTypes["tournament_trophies"]>
-};
-	/** on_conflict condition type for table "tournament_trophies" */
-["tournament_trophies_on_conflict"]: {
-		constraint: GraphQLTypes["tournament_trophies_constraint"],
-	update_columns: Array<GraphQLTypes["tournament_trophies_update_column"]>,
-	where?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null
-};
-	/** Ordering options when selecting data from "tournament_trophies". */
-["tournament_trophies_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
-	id?: GraphQLTypes["order_by"] | undefined | null,
-	manual?: GraphQLTypes["order_by"] | undefined | null,
-	placement?: GraphQLTypes["order_by"] | undefined | null,
-	placement_tier?: GraphQLTypes["order_by"] | undefined | null,
-	player?: GraphQLTypes["players_order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
-	team?: GraphQLTypes["teams_order_by"] | undefined | null,
-	team_id?: GraphQLTypes["order_by"] | undefined | null,
-	tournament?: GraphQLTypes["tournaments_order_by"] | undefined | null,
-	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_team?: GraphQLTypes["tournament_teams_order_by"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null,
-	trophy_config?: GraphQLTypes["tournament_trophy_configs_order_by"] | undefined | null
-};
-	/** primary key columns input for table: tournament_trophies */
-["tournament_trophies_pk_columns_input"]: {
-		id: GraphQLTypes["uuid"]
-};
-	/** select columns of table "tournament_trophies" */
-["tournament_trophies_select_column"]: tournament_trophies_select_column;
-	/** select "tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns" columns of table "tournament_trophies" */
-["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"]: tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns;
-	/** select "tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns" columns of table "tournament_trophies" */
-["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"]: tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns;
-	/** input type for updating data in table "tournament_trophies" */
-["tournament_trophies_set_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	team_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
-};
-	/** aggregate stddev on columns */
-["tournament_trophies_stddev_fields"]: {
-	__typename: "tournament_trophies_stddev_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by stddev() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophies_stddev_pop_fields"]: {
-	__typename: "tournament_trophies_stddev_pop_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by stddev_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_pop_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophies_stddev_samp_fields"]: {
-	__typename: "tournament_trophies_stddev_samp_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by stddev_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_stddev_samp_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** Streaming cursor of the table "tournament_trophies" */
-["tournament_trophies_stream_cursor_input"]: {
-		/** Stream column input with initial value */
-	initial_value: GraphQLTypes["tournament_trophies_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophies_stream_cursor_value_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	manual?: boolean | undefined | null,
-	placement?: number | undefined | null,
-	placement_tier?: string | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
-	team_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
-};
-	/** aggregate sum on columns */
-["tournament_trophies_sum_fields"]: {
-	__typename: "tournament_trophies_sum_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined | null
-};
-	/** order by sum() on columns of table "tournament_trophies" */
-["tournament_trophies_sum_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** update columns of table "tournament_trophies" */
-["tournament_trophies_update_column"]: tournament_trophies_update_column;
-	["tournament_trophies_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
-	_inc?: GraphQLTypes["tournament_trophies_inc_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: GraphQLTypes["tournament_trophies_set_input"] | undefined | null,
-	/** filter the rows which have to be updated */
-	where: GraphQLTypes["tournament_trophies_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["tournament_trophies_var_pop_fields"]: {
-	__typename: "tournament_trophies_var_pop_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by var_pop() on columns of table "tournament_trophies" */
-["tournament_trophies_var_pop_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate var_samp on columns */
-["tournament_trophies_var_samp_fields"]: {
-	__typename: "tournament_trophies_var_samp_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by var_samp() on columns of table "tournament_trophies" */
-["tournament_trophies_var_samp_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate variance on columns */
-["tournament_trophies_variance_fields"]: {
-	__typename: "tournament_trophies_variance_fields",
-	placement?: number | undefined | null,
-	player_steam_id?: number | undefined | null
-};
-	/** order by variance() on columns of table "tournament_trophies" */
-["tournament_trophies_variance_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** columns and relationships of "tournament_trophy_configs" */
-["tournament_trophy_configs"]: {
-	__typename: "tournament_trophy_configs",
-	created_at: GraphQLTypes["timestamptz"],
-	custom_name?: string | undefined | null,
-	id: GraphQLTypes["uuid"],
-	image_url?: string | undefined | null,
-	placement: number,
-	silhouette?: number | undefined | null,
-	/** An object relationship */
-	tournament: GraphQLTypes["tournaments"],
-	tournament_id: GraphQLTypes["uuid"],
-	updated_at: GraphQLTypes["timestamptz"]
-};
-	/** aggregated selection of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate"]: {
-	__typename: "tournament_trophy_configs_aggregate",
-	aggregate?: GraphQLTypes["tournament_trophy_configs_aggregate_fields"] | undefined | null,
-	nodes: Array<GraphQLTypes["tournament_trophy_configs"]>
-};
-	["tournament_trophy_configs_aggregate_bool_exp"]: {
-		count?: GraphQLTypes["tournament_trophy_configs_aggregate_bool_exp_count"] | undefined | null
-};
-	["tournament_trophy_configs_aggregate_bool_exp_count"]: {
-		arguments?: Array<GraphQLTypes["tournament_trophy_configs_select_column"]> | undefined | null,
-	distinct?: boolean | undefined | null,
-	filter?: GraphQLTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	predicate: GraphQLTypes["Int_comparison_exp"]
-};
-	/** aggregate fields of "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_fields"]: {
-	__typename: "tournament_trophy_configs_aggregate_fields",
-	avg?: GraphQLTypes["tournament_trophy_configs_avg_fields"] | undefined | null,
-	count: number,
-	max?: GraphQLTypes["tournament_trophy_configs_max_fields"] | undefined | null,
-	min?: GraphQLTypes["tournament_trophy_configs_min_fields"] | undefined | null,
-	stddev?: GraphQLTypes["tournament_trophy_configs_stddev_fields"] | undefined | null,
-	stddev_pop?: GraphQLTypes["tournament_trophy_configs_stddev_pop_fields"] | undefined | null,
-	stddev_samp?: GraphQLTypes["tournament_trophy_configs_stddev_samp_fields"] | undefined | null,
-	sum?: GraphQLTypes["tournament_trophy_configs_sum_fields"] | undefined | null,
-	var_pop?: GraphQLTypes["tournament_trophy_configs_var_pop_fields"] | undefined | null,
-	var_samp?: GraphQLTypes["tournament_trophy_configs_var_samp_fields"] | undefined | null,
-	variance?: GraphQLTypes["tournament_trophy_configs_variance_fields"] | undefined | null
-};
-	/** order by aggregate values of table "tournament_trophy_configs" */
-["tournament_trophy_configs_aggregate_order_by"]: {
-		avg?: GraphQLTypes["tournament_trophy_configs_avg_order_by"] | undefined | null,
-	count?: GraphQLTypes["order_by"] | undefined | null,
-	max?: GraphQLTypes["tournament_trophy_configs_max_order_by"] | undefined | null,
-	min?: GraphQLTypes["tournament_trophy_configs_min_order_by"] | undefined | null,
-	stddev?: GraphQLTypes["tournament_trophy_configs_stddev_order_by"] | undefined | null,
-	stddev_pop?: GraphQLTypes["tournament_trophy_configs_stddev_pop_order_by"] | undefined | null,
-	stddev_samp?: GraphQLTypes["tournament_trophy_configs_stddev_samp_order_by"] | undefined | null,
-	sum?: GraphQLTypes["tournament_trophy_configs_sum_order_by"] | undefined | null,
-	var_pop?: GraphQLTypes["tournament_trophy_configs_var_pop_order_by"] | undefined | null,
-	var_samp?: GraphQLTypes["tournament_trophy_configs_var_samp_order_by"] | undefined | null,
-	variance?: GraphQLTypes["tournament_trophy_configs_variance_order_by"] | undefined | null
-};
-	/** input type for inserting array relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_arr_rel_insert_input"]: {
-		data: Array<GraphQLTypes["tournament_trophy_configs_insert_input"]>,
-	/** upsert condition */
-	on_conflict?: GraphQLTypes["tournament_trophy_configs_on_conflict"] | undefined | null
-};
-	/** aggregate avg on columns */
-["tournament_trophy_configs_avg_fields"]: {
-	__typename: "tournament_trophy_configs_avg_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by avg() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_avg_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** Boolean expression to filter rows from the table "tournament_trophy_configs". All fields are combined with a logical 'AND'. */
-["tournament_trophy_configs_bool_exp"]: {
-		_and?: Array<GraphQLTypes["tournament_trophy_configs_bool_exp"]> | undefined | null,
-	_not?: GraphQLTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	_or?: Array<GraphQLTypes["tournament_trophy_configs_bool_exp"]> | undefined | null,
-	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
-	custom_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	image_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	placement?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
-	silhouette?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
-	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
-};
-	/** unique or primary key constraints on table "tournament_trophy_configs" */
-["tournament_trophy_configs_constraint"]: tournament_trophy_configs_constraint;
-	/** input type for incrementing numeric columns in table "tournament_trophy_configs" */
-["tournament_trophy_configs_inc_input"]: {
-		placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** input type for inserting data into table "tournament_trophy_configs" */
-["tournament_trophy_configs_insert_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
-};
-	/** aggregate max on columns */
-["tournament_trophy_configs_max_fields"]: {
-	__typename: "tournament_trophy_configs_max_fields",
-	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
-};
-	/** order by max() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_max_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
-	custom_name?: GraphQLTypes["order_by"] | undefined | null,
-	id?: GraphQLTypes["order_by"] | undefined | null,
-	image_url?: GraphQLTypes["order_by"] | undefined | null,
-	placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
-	updated_at?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate min on columns */
-["tournament_trophy_configs_min_fields"]: {
-	__typename: "tournament_trophy_configs_min_fields",
-	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
-};
-	/** order by min() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_min_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
-	custom_name?: GraphQLTypes["order_by"] | undefined | null,
-	id?: GraphQLTypes["order_by"] | undefined | null,
-	image_url?: GraphQLTypes["order_by"] | undefined | null,
-	placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null,
-	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
-	updated_at?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** response of any mutation on the table "tournament_trophy_configs" */
-["tournament_trophy_configs_mutation_response"]: {
-	__typename: "tournament_trophy_configs_mutation_response",
-	/** number of rows affected by the mutation */
-	affected_rows: number,
-	/** data from the rows affected by the mutation */
-	returning: Array<GraphQLTypes["tournament_trophy_configs"]>
-};
-	/** input type for inserting object relation for remote table "tournament_trophy_configs" */
-["tournament_trophy_configs_obj_rel_insert_input"]: {
-		data: GraphQLTypes["tournament_trophy_configs_insert_input"],
-	/** upsert condition */
-	on_conflict?: GraphQLTypes["tournament_trophy_configs_on_conflict"] | undefined | null
-};
-	/** on_conflict condition type for table "tournament_trophy_configs" */
-["tournament_trophy_configs_on_conflict"]: {
-		constraint: GraphQLTypes["tournament_trophy_configs_constraint"],
-	update_columns: Array<GraphQLTypes["tournament_trophy_configs_update_column"]>,
-	where?: GraphQLTypes["tournament_trophy_configs_bool_exp"] | undefined | null
-};
-	/** Ordering options when selecting data from "tournament_trophy_configs". */
-["tournament_trophy_configs_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined | null,
-	custom_name?: GraphQLTypes["order_by"] | undefined | null,
-	id?: GraphQLTypes["order_by"] | undefined | null,
-	image_url?: GraphQLTypes["order_by"] | undefined | null,
-	placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null,
-	tournament?: GraphQLTypes["tournaments_order_by"] | undefined | null,
-	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
-	updated_at?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** primary key columns input for table: tournament_trophy_configs */
-["tournament_trophy_configs_pk_columns_input"]: {
-		id: GraphQLTypes["uuid"]
-};
-	/** select columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_select_column"]: tournament_trophy_configs_select_column;
-	/** input type for updating data in table "tournament_trophy_configs" */
-["tournament_trophy_configs_set_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
-};
-	/** aggregate stddev on columns */
-["tournament_trophy_configs_stddev_fields"]: {
-	__typename: "tournament_trophy_configs_stddev_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by stddev() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_pop on columns */
-["tournament_trophy_configs_stddev_pop_fields"]: {
-	__typename: "tournament_trophy_configs_stddev_pop_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by stddev_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_pop_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate stddev_samp on columns */
-["tournament_trophy_configs_stddev_samp_fields"]: {
-	__typename: "tournament_trophy_configs_stddev_samp_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by stddev_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_stddev_samp_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** Streaming cursor of the table "tournament_trophy_configs" */
-["tournament_trophy_configs_stream_cursor_input"]: {
-		/** Stream column input with initial value */
-	initial_value: GraphQLTypes["tournament_trophy_configs_stream_cursor_value_input"],
-	/** cursor ordering */
-	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
-};
-	/** Initial value of the column from where the streaming should start */
-["tournament_trophy_configs_stream_cursor_value_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
-	custom_name?: string | undefined | null,
-	id?: GraphQLTypes["uuid"] | undefined | null,
-	image_url?: string | undefined | null,
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null,
-	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
-};
-	/** aggregate sum on columns */
-["tournament_trophy_configs_sum_fields"]: {
-	__typename: "tournament_trophy_configs_sum_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by sum() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_sum_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** update columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_update_column"]: tournament_trophy_configs_update_column;
-	["tournament_trophy_configs_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
-	_inc?: GraphQLTypes["tournament_trophy_configs_inc_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
-	_set?: GraphQLTypes["tournament_trophy_configs_set_input"] | undefined | null,
-	/** filter the rows which have to be updated */
-	where: GraphQLTypes["tournament_trophy_configs_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["tournament_trophy_configs_var_pop_fields"]: {
-	__typename: "tournament_trophy_configs_var_pop_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by var_pop() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_pop_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate var_samp on columns */
-["tournament_trophy_configs_var_samp_fields"]: {
-	__typename: "tournament_trophy_configs_var_samp_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by var_samp() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_var_samp_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
-	/** aggregate variance on columns */
-["tournament_trophy_configs_variance_fields"]: {
-	__typename: "tournament_trophy_configs_variance_fields",
-	placement?: number | undefined | null,
-	silhouette?: number | undefined | null
-};
-	/** order by variance() on columns of table "tournament_trophy_configs" */
-["tournament_trophy_configs_variance_order_by"]: {
-		placement?: GraphQLTypes["order_by"] | undefined | null,
-	silhouette?: GraphQLTypes["order_by"] | undefined | null
-};
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: {
 	__typename: "tournaments",
 	/** An object relationship */
 	admin: GraphQLTypes["players"],
 	auto_start: boolean,
+	/** An array relationship */
+	award_configs: Array<GraphQLTypes["tournament_awards"]>,
+	/** An aggregate relationship */
+	award_configs_aggregate: GraphQLTypes["tournament_awards_aggregate"],
+	/** An array relationship */
+	awards: Array<GraphQLTypes["award_recipients"]>,
+	/** An aggregate relationship */
+	awards_aggregate: GraphQLTypes["award_recipients_aggregate"],
+	awards_enabled: boolean,
 	banner?: string | undefined | null,
 	/** A computed field, executes function "can_cancel_tournament" */
 	can_cancel?: boolean | undefined | null,
@@ -232399,16 +235822,7 @@ export type GraphQLTypes = {
 	/** An array relationship */
 	teams: Array<GraphQLTypes["tournament_teams"]>,
 	/** An aggregate relationship */
-	teams_aggregate: GraphQLTypes["tournament_teams_aggregate"],
-	/** An array relationship */
-	trophies: Array<GraphQLTypes["tournament_trophies"]>,
-	/** An aggregate relationship */
-	trophies_aggregate: GraphQLTypes["tournament_trophies_aggregate"],
-	trophies_enabled: boolean,
-	/** An array relationship */
-	trophy_configs: Array<GraphQLTypes["tournament_trophy_configs"]>,
-	/** An aggregate relationship */
-	trophy_configs_aggregate: GraphQLTypes["tournament_trophy_configs_aggregate"]
+	teams_aggregate: GraphQLTypes["tournament_teams_aggregate"]
 };
 	/** aggregated selection of "tournaments" */
 ["tournaments_aggregate"]: {
@@ -232562,6 +235976,11 @@ export type GraphQLTypes = {
 	_or?: Array<GraphQLTypes["tournaments_bool_exp"]> | undefined | null,
 	admin?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	auto_start?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	award_configs?: GraphQLTypes["tournament_awards_bool_exp"] | undefined | null,
+	award_configs_aggregate?: GraphQLTypes["tournament_awards_aggregate_bool_exp"] | undefined | null,
+	awards?: GraphQLTypes["award_recipients_bool_exp"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_bool_exp"] | undefined | null,
+	awards_enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	banner?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	can_cancel?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	can_close_registration?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -232628,12 +236047,7 @@ export type GraphQLTypes = {
 	start?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_status_enum_comparison_exp"] | undefined | null,
 	teams?: GraphQLTypes["tournament_teams_bool_exp"] | undefined | null,
-	teams_aggregate?: GraphQLTypes["tournament_teams_aggregate_bool_exp"] | undefined | null,
-	trophies?: GraphQLTypes["tournament_trophies_bool_exp"] | undefined | null,
-	trophies_aggregate?: GraphQLTypes["tournament_trophies_aggregate_bool_exp"] | undefined | null,
-	trophies_enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
-	trophy_configs?: GraphQLTypes["tournament_trophy_configs_bool_exp"] | undefined | null,
-	trophy_configs_aggregate?: GraphQLTypes["tournament_trophy_configs_aggregate_bool_exp"] | undefined | null
+	teams_aggregate?: GraphQLTypes["tournament_teams_aggregate_bool_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "tournaments" */
 ["tournaments_constraint"]: tournaments_constraint;
@@ -232647,6 +236061,9 @@ export type GraphQLTypes = {
 ["tournaments_insert_input"]: {
 		admin?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	auto_start?: boolean | undefined | null,
+	award_configs?: GraphQLTypes["tournament_awards_arr_rel_insert_input"] | undefined | null,
+	awards?: GraphQLTypes["award_recipients_arr_rel_insert_input"] | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	categories?: GraphQLTypes["tournament_categories_arr_rel_insert_input"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -232691,10 +236108,7 @@ export type GraphQLTypes = {
 	stages?: GraphQLTypes["tournament_stages_arr_rel_insert_input"] | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null,
-	teams?: GraphQLTypes["tournament_teams_arr_rel_insert_input"] | undefined | null,
-	trophies?: GraphQLTypes["tournament_trophies_arr_rel_insert_input"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null,
-	trophy_configs?: GraphQLTypes["tournament_trophy_configs_arr_rel_insert_input"] | undefined | null
+	teams?: GraphQLTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
 	/** aggregate max on columns */
 ["tournaments_max_fields"]: {
@@ -232810,6 +236224,9 @@ export type GraphQLTypes = {
 ["tournaments_order_by"]: {
 		admin?: GraphQLTypes["players_order_by"] | undefined | null,
 	auto_start?: GraphQLTypes["order_by"] | undefined | null,
+	award_configs_aggregate?: GraphQLTypes["tournament_awards_aggregate_order_by"] | undefined | null,
+	awards_aggregate?: GraphQLTypes["award_recipients_aggregate_order_by"] | undefined | null,
+	awards_enabled?: GraphQLTypes["order_by"] | undefined | null,
 	banner?: GraphQLTypes["order_by"] | undefined | null,
 	can_cancel?: GraphQLTypes["order_by"] | undefined | null,
 	can_close_registration?: GraphQLTypes["order_by"] | undefined | null,
@@ -232867,10 +236284,7 @@ export type GraphQLTypes = {
 	stages_aggregate?: GraphQLTypes["tournament_stages_aggregate_order_by"] | undefined | null,
 	start?: GraphQLTypes["order_by"] | undefined | null,
 	status?: GraphQLTypes["order_by"] | undefined | null,
-	teams_aggregate?: GraphQLTypes["tournament_teams_aggregate_order_by"] | undefined | null,
-	trophies_aggregate?: GraphQLTypes["tournament_trophies_aggregate_order_by"] | undefined | null,
-	trophies_enabled?: GraphQLTypes["order_by"] | undefined | null,
-	trophy_configs_aggregate?: GraphQLTypes["tournament_trophy_configs_aggregate_order_by"] | undefined | null
+	teams_aggregate?: GraphQLTypes["tournament_teams_aggregate_order_by"] | undefined | null
 };
 	/** primary key columns input for table: tournaments */
 ["tournaments_pk_columns_input"]: {
@@ -232901,6 +236315,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "tournaments" */
 ["tournaments_set_input"]: {
 		auto_start?: boolean | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -232933,8 +236348,7 @@ export type GraphQLTypes = {
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
-	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null
+	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: {
@@ -232997,6 +236411,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["tournaments_stream_cursor_value_input"]: {
 		auto_start?: boolean | undefined | null,
+	awards_enabled?: boolean | undefined | null,
 	banner?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	description?: string | undefined | null,
@@ -233029,8 +236444,7 @@ export type GraphQLTypes = {
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	scheduling_mode?: string | undefined | null,
 	start?: GraphQLTypes["timestamptz"] | undefined | null,
-	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null,
-	trophies_enabled?: boolean | undefined | null
+	status?: GraphQLTypes["e_tournament_status_enum"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: {
@@ -242423,6 +245837,83 @@ export enum api_keys_update_column {
 	last_used_at = "last_used_at",
 	steam_id = "steam_id"
 }
+/** unique or primary key constraints on table "award_recipients" */
+export enum award_recipients_constraint {
+	award_recipients_one_mvp_per_tournament = "award_recipients_one_mvp_per_tournament",
+	award_recipients_pkey = "award_recipients_pkey",
+	award_recipients_player_recipient_key = "award_recipients_player_recipient_key",
+	award_recipients_team_recipient_key = "award_recipients_team_recipient_key"
+}
+/** select columns of table "award_recipients" */
+export enum award_recipients_select_column {
+	award_id = "award_id",
+	awarded_by_steam_id = "awarded_by_steam_id",
+	created_at = "created_at",
+	id = "id",
+	note = "note",
+	placement = "placement",
+	placement_tier = "placement_tier",
+	player_steam_id = "player_steam_id",
+	source = "source",
+	team_id = "team_id",
+	tournament_id = "tournament_id",
+	tournament_team_id = "tournament_team_id"
+}
+/** update columns of table "award_recipients" */
+export enum award_recipients_update_column {
+	award_id = "award_id",
+	awarded_by_steam_id = "awarded_by_steam_id",
+	created_at = "created_at",
+	id = "id",
+	note = "note",
+	placement = "placement",
+	player_steam_id = "player_steam_id",
+	source = "source",
+	team_id = "team_id",
+	tournament_id = "tournament_id",
+	tournament_team_id = "tournament_team_id"
+}
+/** unique or primary key constraints on table "awards" */
+export enum awards_constraint {
+	awards_pkey = "awards_pkey",
+	awards_system_key_key = "awards_system_key_key"
+}
+/** select columns of table "awards" */
+export enum awards_select_column {
+	allow_multiple = "allow_multiple",
+	created_at = "created_at",
+	created_by_steam_id = "created_by_steam_id",
+	description = "description",
+	event_id = "event_id",
+	id = "id",
+	image_url = "image_url",
+	league_season_id = "league_season_id",
+	name = "name",
+	season_id = "season_id",
+	silhouette = "silhouette",
+	system_key = "system_key",
+	tier = "tier",
+	tournament_id = "tournament_id",
+	updated_at = "updated_at"
+}
+/** update columns of table "awards" */
+export enum awards_update_column {
+	allow_multiple = "allow_multiple",
+	created_at = "created_at",
+	created_by_steam_id = "created_by_steam_id",
+	description = "description",
+	event_id = "event_id",
+	id = "id",
+	image_url = "image_url",
+	league_season_id = "league_season_id",
+	name = "name",
+	season_id = "season_id",
+	silhouette = "silhouette",
+	system_key = "system_key",
+	tier = "tier",
+	tournament_id = "tournament_id",
+	updated_at = "updated_at"
+}
 /** unique or primary key constraints on table "clip_render_jobs" */
 export enum clip_render_jobs_constraint {
 	clip_render_jobs_pkey = "clip_render_jobs_pkey"
@@ -242489,13 +245980,16 @@ export enum custom_pages_constraint {
 /** select columns of table "custom_pages" */
 export enum custom_pages_select_column {
 	created_at = "created_at",
+	deployments = "deployments",
 	enabled = "enabled",
 	exposed_module = "exposed_module",
 	icon = "icon",
 	id = "id",
 	is_default = "is_default",
+	manifest_url = "manifest_url",
 	nav_group = "nav_group",
 	nav_order = "nav_order",
+	profile_tab_label = "profile_tab_label",
 	remote_entry_url = "remote_entry_url",
 	remote_scope = "remote_scope",
 	required_role = "required_role",
@@ -242506,13 +246000,16 @@ export enum custom_pages_select_column {
 /** update columns of table "custom_pages" */
 export enum custom_pages_update_column {
 	created_at = "created_at",
+	deployments = "deployments",
 	enabled = "enabled",
 	exposed_module = "exposed_module",
 	icon = "icon",
 	id = "id",
 	is_default = "is_default",
+	manifest_url = "manifest_url",
 	nav_group = "nav_group",
 	nav_order = "nav_order",
+	profile_tab_label = "profile_tab_label",
 	remote_entry_url = "remote_entry_url",
 	remote_scope = "remote_scope",
 	required_role = "required_role",
@@ -242675,6 +246172,45 @@ export enum draft_games_update_column {
 	team_2_id = "team_2_id",
 	type = "type",
 	updated_at = "updated_at"
+}
+/** unique or primary key constraints on table "e_award_sources" */
+export enum e_award_sources_constraint {
+	e_award_sources_pkey = "e_award_sources_pkey"
+}
+export enum e_award_sources_enum {
+	manual = "manual",
+	tournament = "tournament"
+}
+/** select columns of table "e_award_sources" */
+export enum e_award_sources_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_award_sources" */
+export enum e_award_sources_update_column {
+	description = "description",
+	value = "value"
+}
+/** unique or primary key constraints on table "e_award_tiers" */
+export enum e_award_tiers_constraint {
+	e_award_tiers_pkey = "e_award_tiers_pkey"
+}
+export enum e_award_tiers_enum {
+	bronze = "bronze",
+	gold = "gold",
+	mvp = "mvp",
+	silver = "silver",
+	special = "special"
+}
+/** select columns of table "e_award_tiers" */
+export enum e_award_tiers_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_award_tiers" */
+export enum e_award_tiers_update_column {
+	description = "description",
+	value = "value"
 }
 /** unique or primary key constraints on table "e_check_in_settings" */
 export enum e_check_in_settings_constraint {
@@ -246559,6 +250095,35 @@ export enum teams_update_column {
 	owner_steam_id = "owner_steam_id",
 	short_name = "short_name"
 }
+/** unique or primary key constraints on table "tournament_awards" */
+export enum tournament_awards_constraint {
+	tournament_awards_pkey = "tournament_awards_pkey",
+	tournament_awards_tournament_id_placement_key = "tournament_awards_tournament_id_placement_key"
+}
+/** select columns of table "tournament_awards" */
+export enum tournament_awards_select_column {
+	award_id = "award_id",
+	created_at = "created_at",
+	custom_name = "custom_name",
+	id = "id",
+	image_url = "image_url",
+	placement = "placement",
+	silhouette = "silhouette",
+	tournament_id = "tournament_id",
+	updated_at = "updated_at"
+}
+/** update columns of table "tournament_awards" */
+export enum tournament_awards_update_column {
+	award_id = "award_id",
+	created_at = "created_at",
+	custom_name = "custom_name",
+	id = "id",
+	image_url = "image_url",
+	placement = "placement",
+	silhouette = "silhouette",
+	tournament_id = "tournament_id",
+	updated_at = "updated_at"
+}
 /** unique or primary key constraints on table "tournament_brackets" */
 export enum tournament_brackets_constraint {
 	touarnment_brackets_pkey = "touarnment_brackets_pkey",
@@ -246835,71 +250400,6 @@ export enum tournament_teams_update_column {
 	team_id = "team_id",
 	tournament_id = "tournament_id"
 }
-/** unique or primary key constraints on table "tournament_trophies" */
-export enum tournament_trophies_constraint {
-	tournament_trophies_one_mvp_per_tournament = "tournament_trophies_one_mvp_per_tournament",
-	tournament_trophies_pkey = "tournament_trophies_pkey",
-	tournament_trophies_player_recipient_key = "tournament_trophies_player_recipient_key",
-	tournament_trophies_team_recipient_key = "tournament_trophies_team_recipient_key"
-}
-/** select columns of table "tournament_trophies" */
-export enum tournament_trophies_select_column {
-	created_at = "created_at",
-	id = "id",
-	manual = "manual",
-	placement = "placement",
-	placement_tier = "placement_tier",
-	player_steam_id = "player_steam_id",
-	team_id = "team_id",
-	tournament_id = "tournament_id",
-	tournament_team_id = "tournament_team_id"
-}
-/** select "tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns" columns of table "tournament_trophies" */
-export enum tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns {
-	manual = "manual"
-}
-/** select "tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns" columns of table "tournament_trophies" */
-export enum tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns {
-	manual = "manual"
-}
-/** update columns of table "tournament_trophies" */
-export enum tournament_trophies_update_column {
-	created_at = "created_at",
-	id = "id",
-	manual = "manual",
-	placement = "placement",
-	player_steam_id = "player_steam_id",
-	team_id = "team_id",
-	tournament_id = "tournament_id",
-	tournament_team_id = "tournament_team_id"
-}
-/** unique or primary key constraints on table "tournament_trophy_configs" */
-export enum tournament_trophy_configs_constraint {
-	tournament_trophy_configs_pkey = "tournament_trophy_configs_pkey",
-	tournament_trophy_configs_tournament_id_placement_key = "tournament_trophy_configs_tournament_id_placement_key"
-}
-/** select columns of table "tournament_trophy_configs" */
-export enum tournament_trophy_configs_select_column {
-	created_at = "created_at",
-	custom_name = "custom_name",
-	id = "id",
-	image_url = "image_url",
-	placement = "placement",
-	silhouette = "silhouette",
-	tournament_id = "tournament_id",
-	updated_at = "updated_at"
-}
-/** update columns of table "tournament_trophy_configs" */
-export enum tournament_trophy_configs_update_column {
-	created_at = "created_at",
-	custom_name = "custom_name",
-	id = "id",
-	image_url = "image_url",
-	placement = "placement",
-	silhouette = "silhouette",
-	tournament_id = "tournament_id",
-	updated_at = "updated_at"
-}
 /** unique or primary key constraints on table "tournaments" */
 export enum tournaments_constraint {
 	tournaments_match_options_id_key = "tournaments_match_options_id_key",
@@ -246908,6 +250408,7 @@ export enum tournaments_constraint {
 /** select columns of table "tournaments" */
 export enum tournaments_select_column {
 	auto_start = "auto_start",
+	awards_enabled = "awards_enabled",
 	banner = "banner",
 	created_at = "created_at",
 	description = "description",
@@ -246940,8 +250441,7 @@ export enum tournaments_select_column {
 	organizer_steam_id = "organizer_steam_id",
 	scheduling_mode = "scheduling_mode",
 	start = "start",
-	status = "status",
-	trophies_enabled = "trophies_enabled"
+	status = "status"
 }
 /** select "tournaments_aggregate_bool_exp_avg_arguments_columns" columns of table "tournaments" */
 export enum tournaments_select_column_tournaments_aggregate_bool_exp_avg_arguments_columns {
@@ -246951,6 +250451,7 @@ export enum tournaments_select_column_tournaments_aggregate_bool_exp_avg_argumen
 /** select "tournaments_aggregate_bool_exp_bool_and_arguments_columns" columns of table "tournaments" */
 export enum tournaments_select_column_tournaments_aggregate_bool_exp_bool_and_arguments_columns {
 	auto_start = "auto_start",
+	awards_enabled = "awards_enabled",
 	discord_notifications_enabled = "discord_notifications_enabled",
 	discord_notify_Canceled = "discord_notify_Canceled",
 	discord_notify_Finished = "discord_notify_Finished",
@@ -246965,12 +250466,12 @@ export enum tournaments_select_column_tournaments_aggregate_bool_exp_bool_and_ar
 	discord_notify_WaitingForCheckIn = "discord_notify_WaitingForCheckIn",
 	discord_notify_WaitingForServer = "discord_notify_WaitingForServer",
 	discord_voice_enabled = "discord_voice_enabled",
-	is_league = "is_league",
-	trophies_enabled = "trophies_enabled"
+	is_league = "is_league"
 }
 /** select "tournaments_aggregate_bool_exp_bool_or_arguments_columns" columns of table "tournaments" */
 export enum tournaments_select_column_tournaments_aggregate_bool_exp_bool_or_arguments_columns {
 	auto_start = "auto_start",
+	awards_enabled = "awards_enabled",
 	discord_notifications_enabled = "discord_notifications_enabled",
 	discord_notify_Canceled = "discord_notify_Canceled",
 	discord_notify_Finished = "discord_notify_Finished",
@@ -246985,8 +250486,7 @@ export enum tournaments_select_column_tournaments_aggregate_bool_exp_bool_or_arg
 	discord_notify_WaitingForCheckIn = "discord_notify_WaitingForCheckIn",
 	discord_notify_WaitingForServer = "discord_notify_WaitingForServer",
 	discord_voice_enabled = "discord_voice_enabled",
-	is_league = "is_league",
-	trophies_enabled = "trophies_enabled"
+	is_league = "is_league"
 }
 /** select "tournaments_aggregate_bool_exp_corr_arguments_columns" columns of table "tournaments" */
 export enum tournaments_select_column_tournaments_aggregate_bool_exp_corr_arguments_columns {
@@ -247026,6 +250526,7 @@ export enum tournaments_select_column_tournaments_aggregate_bool_exp_var_samp_ar
 /** update columns of table "tournaments" */
 export enum tournaments_update_column {
 	auto_start = "auto_start",
+	awards_enabled = "awards_enabled",
 	banner = "banner",
 	created_at = "created_at",
 	description = "description",
@@ -247058,8 +250559,7 @@ export enum tournaments_update_column {
 	organizer_steam_id = "organizer_steam_id",
 	scheduling_mode = "scheduling_mode",
 	start = "start",
-	status = "status",
-	trophies_enabled = "trophies_enabled"
+	status = "status"
 }
 /** select columns of table "v_event_player_stats" */
 export enum v_event_player_stats_select_column {
@@ -247847,6 +251347,47 @@ type ZEUS_VARIABLES = {
 	["api_keys_update_column"]: ValueTypes["api_keys_update_column"];
 	["api_keys_updates"]: ValueTypes["api_keys_updates"];
 	["approve_league_season_movements_args"]: ValueTypes["approve_league_season_movements_args"];
+	["award_recipients_aggregate_bool_exp"]: ValueTypes["award_recipients_aggregate_bool_exp"];
+	["award_recipients_aggregate_bool_exp_count"]: ValueTypes["award_recipients_aggregate_bool_exp_count"];
+	["award_recipients_aggregate_order_by"]: ValueTypes["award_recipients_aggregate_order_by"];
+	["award_recipients_arr_rel_insert_input"]: ValueTypes["award_recipients_arr_rel_insert_input"];
+	["award_recipients_avg_order_by"]: ValueTypes["award_recipients_avg_order_by"];
+	["award_recipients_bool_exp"]: ValueTypes["award_recipients_bool_exp"];
+	["award_recipients_constraint"]: ValueTypes["award_recipients_constraint"];
+	["award_recipients_inc_input"]: ValueTypes["award_recipients_inc_input"];
+	["award_recipients_insert_input"]: ValueTypes["award_recipients_insert_input"];
+	["award_recipients_max_order_by"]: ValueTypes["award_recipients_max_order_by"];
+	["award_recipients_min_order_by"]: ValueTypes["award_recipients_min_order_by"];
+	["award_recipients_on_conflict"]: ValueTypes["award_recipients_on_conflict"];
+	["award_recipients_order_by"]: ValueTypes["award_recipients_order_by"];
+	["award_recipients_pk_columns_input"]: ValueTypes["award_recipients_pk_columns_input"];
+	["award_recipients_select_column"]: ValueTypes["award_recipients_select_column"];
+	["award_recipients_set_input"]: ValueTypes["award_recipients_set_input"];
+	["award_recipients_stddev_order_by"]: ValueTypes["award_recipients_stddev_order_by"];
+	["award_recipients_stddev_pop_order_by"]: ValueTypes["award_recipients_stddev_pop_order_by"];
+	["award_recipients_stddev_samp_order_by"]: ValueTypes["award_recipients_stddev_samp_order_by"];
+	["award_recipients_stream_cursor_input"]: ValueTypes["award_recipients_stream_cursor_input"];
+	["award_recipients_stream_cursor_value_input"]: ValueTypes["award_recipients_stream_cursor_value_input"];
+	["award_recipients_sum_order_by"]: ValueTypes["award_recipients_sum_order_by"];
+	["award_recipients_update_column"]: ValueTypes["award_recipients_update_column"];
+	["award_recipients_updates"]: ValueTypes["award_recipients_updates"];
+	["award_recipients_var_pop_order_by"]: ValueTypes["award_recipients_var_pop_order_by"];
+	["award_recipients_var_samp_order_by"]: ValueTypes["award_recipients_var_samp_order_by"];
+	["award_recipients_variance_order_by"]: ValueTypes["award_recipients_variance_order_by"];
+	["awards_bool_exp"]: ValueTypes["awards_bool_exp"];
+	["awards_constraint"]: ValueTypes["awards_constraint"];
+	["awards_inc_input"]: ValueTypes["awards_inc_input"];
+	["awards_insert_input"]: ValueTypes["awards_insert_input"];
+	["awards_obj_rel_insert_input"]: ValueTypes["awards_obj_rel_insert_input"];
+	["awards_on_conflict"]: ValueTypes["awards_on_conflict"];
+	["awards_order_by"]: ValueTypes["awards_order_by"];
+	["awards_pk_columns_input"]: ValueTypes["awards_pk_columns_input"];
+	["awards_select_column"]: ValueTypes["awards_select_column"];
+	["awards_set_input"]: ValueTypes["awards_set_input"];
+	["awards_stream_cursor_input"]: ValueTypes["awards_stream_cursor_input"];
+	["awards_stream_cursor_value_input"]: ValueTypes["awards_stream_cursor_value_input"];
+	["awards_update_column"]: ValueTypes["awards_update_column"];
+	["awards_updates"]: ValueTypes["awards_updates"];
 	["bigint"]: ValueTypes["bigint"];
 	["bigint_array_comparison_exp"]: ValueTypes["bigint_array_comparison_exp"];
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
@@ -247890,13 +251431,18 @@ type ZEUS_VARIABLES = {
 	["clip_render_jobs_variance_order_by"]: ValueTypes["clip_render_jobs_variance_order_by"];
 	["clone_league_season_args"]: ValueTypes["clone_league_season_args"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
+	["custom_pages_append_input"]: ValueTypes["custom_pages_append_input"];
 	["custom_pages_bool_exp"]: ValueTypes["custom_pages_bool_exp"];
 	["custom_pages_constraint"]: ValueTypes["custom_pages_constraint"];
+	["custom_pages_delete_at_path_input"]: ValueTypes["custom_pages_delete_at_path_input"];
+	["custom_pages_delete_elem_input"]: ValueTypes["custom_pages_delete_elem_input"];
+	["custom_pages_delete_key_input"]: ValueTypes["custom_pages_delete_key_input"];
 	["custom_pages_inc_input"]: ValueTypes["custom_pages_inc_input"];
 	["custom_pages_insert_input"]: ValueTypes["custom_pages_insert_input"];
 	["custom_pages_on_conflict"]: ValueTypes["custom_pages_on_conflict"];
 	["custom_pages_order_by"]: ValueTypes["custom_pages_order_by"];
 	["custom_pages_pk_columns_input"]: ValueTypes["custom_pages_pk_columns_input"];
+	["custom_pages_prepend_input"]: ValueTypes["custom_pages_prepend_input"];
 	["custom_pages_select_column"]: ValueTypes["custom_pages_select_column"];
 	["custom_pages_set_input"]: ValueTypes["custom_pages_set_input"];
 	["custom_pages_stream_cursor_input"]: ValueTypes["custom_pages_stream_cursor_input"];
@@ -248010,6 +251556,34 @@ type ZEUS_VARIABLES = {
 	["draft_games_var_pop_order_by"]: ValueTypes["draft_games_var_pop_order_by"];
 	["draft_games_var_samp_order_by"]: ValueTypes["draft_games_var_samp_order_by"];
 	["draft_games_variance_order_by"]: ValueTypes["draft_games_variance_order_by"];
+	["e_award_sources_bool_exp"]: ValueTypes["e_award_sources_bool_exp"];
+	["e_award_sources_constraint"]: ValueTypes["e_award_sources_constraint"];
+	["e_award_sources_enum"]: ValueTypes["e_award_sources_enum"];
+	["e_award_sources_enum_comparison_exp"]: ValueTypes["e_award_sources_enum_comparison_exp"];
+	["e_award_sources_insert_input"]: ValueTypes["e_award_sources_insert_input"];
+	["e_award_sources_on_conflict"]: ValueTypes["e_award_sources_on_conflict"];
+	["e_award_sources_order_by"]: ValueTypes["e_award_sources_order_by"];
+	["e_award_sources_pk_columns_input"]: ValueTypes["e_award_sources_pk_columns_input"];
+	["e_award_sources_select_column"]: ValueTypes["e_award_sources_select_column"];
+	["e_award_sources_set_input"]: ValueTypes["e_award_sources_set_input"];
+	["e_award_sources_stream_cursor_input"]: ValueTypes["e_award_sources_stream_cursor_input"];
+	["e_award_sources_stream_cursor_value_input"]: ValueTypes["e_award_sources_stream_cursor_value_input"];
+	["e_award_sources_update_column"]: ValueTypes["e_award_sources_update_column"];
+	["e_award_sources_updates"]: ValueTypes["e_award_sources_updates"];
+	["e_award_tiers_bool_exp"]: ValueTypes["e_award_tiers_bool_exp"];
+	["e_award_tiers_constraint"]: ValueTypes["e_award_tiers_constraint"];
+	["e_award_tiers_enum"]: ValueTypes["e_award_tiers_enum"];
+	["e_award_tiers_enum_comparison_exp"]: ValueTypes["e_award_tiers_enum_comparison_exp"];
+	["e_award_tiers_insert_input"]: ValueTypes["e_award_tiers_insert_input"];
+	["e_award_tiers_on_conflict"]: ValueTypes["e_award_tiers_on_conflict"];
+	["e_award_tiers_order_by"]: ValueTypes["e_award_tiers_order_by"];
+	["e_award_tiers_pk_columns_input"]: ValueTypes["e_award_tiers_pk_columns_input"];
+	["e_award_tiers_select_column"]: ValueTypes["e_award_tiers_select_column"];
+	["e_award_tiers_set_input"]: ValueTypes["e_award_tiers_set_input"];
+	["e_award_tiers_stream_cursor_input"]: ValueTypes["e_award_tiers_stream_cursor_input"];
+	["e_award_tiers_stream_cursor_value_input"]: ValueTypes["e_award_tiers_stream_cursor_value_input"];
+	["e_award_tiers_update_column"]: ValueTypes["e_award_tiers_update_column"];
+	["e_award_tiers_updates"]: ValueTypes["e_award_tiers_updates"];
 	["e_check_in_settings_bool_exp"]: ValueTypes["e_check_in_settings_bool_exp"];
 	["e_check_in_settings_constraint"]: ValueTypes["e_check_in_settings_constraint"];
 	["e_check_in_settings_enum"]: ValueTypes["e_check_in_settings_enum"];
@@ -250252,7 +253826,7 @@ type ZEUS_VARIABLES = {
 	["plugin_versions_stream_cursor_value_input"]: ValueTypes["plugin_versions_stream_cursor_value_input"];
 	["plugin_versions_update_column"]: ValueTypes["plugin_versions_update_column"];
 	["plugin_versions_updates"]: ValueTypes["plugin_versions_updates"];
-	["recalculate_tournament_trophies_args"]: ValueTypes["recalculate_tournament_trophies_args"];
+	["recalculate_tournament_awards_args"]: ValueTypes["recalculate_tournament_awards_args"];
 	["remove_league_team_from_season_args"]: ValueTypes["remove_league_team_from_season_args"];
 	["reorder_league_divisions_args"]: ValueTypes["reorder_league_divisions_args"];
 	["restart_league_season_args"]: ValueTypes["restart_league_season_args"];
@@ -250588,6 +254162,34 @@ type ZEUS_VARIABLES = {
 	["timestamp"]: ValueTypes["timestamp"];
 	["timestamptz"]: ValueTypes["timestamptz"];
 	["timestamptz_comparison_exp"]: ValueTypes["timestamptz_comparison_exp"];
+	["tournament_awards_aggregate_bool_exp"]: ValueTypes["tournament_awards_aggregate_bool_exp"];
+	["tournament_awards_aggregate_bool_exp_count"]: ValueTypes["tournament_awards_aggregate_bool_exp_count"];
+	["tournament_awards_aggregate_order_by"]: ValueTypes["tournament_awards_aggregate_order_by"];
+	["tournament_awards_arr_rel_insert_input"]: ValueTypes["tournament_awards_arr_rel_insert_input"];
+	["tournament_awards_avg_order_by"]: ValueTypes["tournament_awards_avg_order_by"];
+	["tournament_awards_bool_exp"]: ValueTypes["tournament_awards_bool_exp"];
+	["tournament_awards_constraint"]: ValueTypes["tournament_awards_constraint"];
+	["tournament_awards_inc_input"]: ValueTypes["tournament_awards_inc_input"];
+	["tournament_awards_insert_input"]: ValueTypes["tournament_awards_insert_input"];
+	["tournament_awards_max_order_by"]: ValueTypes["tournament_awards_max_order_by"];
+	["tournament_awards_min_order_by"]: ValueTypes["tournament_awards_min_order_by"];
+	["tournament_awards_obj_rel_insert_input"]: ValueTypes["tournament_awards_obj_rel_insert_input"];
+	["tournament_awards_on_conflict"]: ValueTypes["tournament_awards_on_conflict"];
+	["tournament_awards_order_by"]: ValueTypes["tournament_awards_order_by"];
+	["tournament_awards_pk_columns_input"]: ValueTypes["tournament_awards_pk_columns_input"];
+	["tournament_awards_select_column"]: ValueTypes["tournament_awards_select_column"];
+	["tournament_awards_set_input"]: ValueTypes["tournament_awards_set_input"];
+	["tournament_awards_stddev_order_by"]: ValueTypes["tournament_awards_stddev_order_by"];
+	["tournament_awards_stddev_pop_order_by"]: ValueTypes["tournament_awards_stddev_pop_order_by"];
+	["tournament_awards_stddev_samp_order_by"]: ValueTypes["tournament_awards_stddev_samp_order_by"];
+	["tournament_awards_stream_cursor_input"]: ValueTypes["tournament_awards_stream_cursor_input"];
+	["tournament_awards_stream_cursor_value_input"]: ValueTypes["tournament_awards_stream_cursor_value_input"];
+	["tournament_awards_sum_order_by"]: ValueTypes["tournament_awards_sum_order_by"];
+	["tournament_awards_update_column"]: ValueTypes["tournament_awards_update_column"];
+	["tournament_awards_updates"]: ValueTypes["tournament_awards_updates"];
+	["tournament_awards_var_pop_order_by"]: ValueTypes["tournament_awards_var_pop_order_by"];
+	["tournament_awards_var_samp_order_by"]: ValueTypes["tournament_awards_var_samp_order_by"];
+	["tournament_awards_variance_order_by"]: ValueTypes["tournament_awards_variance_order_by"];
 	["tournament_brackets_aggregate_bool_exp"]: ValueTypes["tournament_brackets_aggregate_bool_exp"];
 	["tournament_brackets_aggregate_bool_exp_bool_and"]: ValueTypes["tournament_brackets_aggregate_bool_exp_bool_and"];
 	["tournament_brackets_aggregate_bool_exp_bool_or"]: ValueTypes["tournament_brackets_aggregate_bool_exp_bool_or"];
@@ -250856,65 +254458,6 @@ type ZEUS_VARIABLES = {
 	["tournament_teams_var_pop_order_by"]: ValueTypes["tournament_teams_var_pop_order_by"];
 	["tournament_teams_var_samp_order_by"]: ValueTypes["tournament_teams_var_samp_order_by"];
 	["tournament_teams_variance_order_by"]: ValueTypes["tournament_teams_variance_order_by"];
-	["tournament_trophies_aggregate_bool_exp"]: ValueTypes["tournament_trophies_aggregate_bool_exp"];
-	["tournament_trophies_aggregate_bool_exp_bool_and"]: ValueTypes["tournament_trophies_aggregate_bool_exp_bool_and"];
-	["tournament_trophies_aggregate_bool_exp_bool_or"]: ValueTypes["tournament_trophies_aggregate_bool_exp_bool_or"];
-	["tournament_trophies_aggregate_bool_exp_count"]: ValueTypes["tournament_trophies_aggregate_bool_exp_count"];
-	["tournament_trophies_aggregate_order_by"]: ValueTypes["tournament_trophies_aggregate_order_by"];
-	["tournament_trophies_arr_rel_insert_input"]: ValueTypes["tournament_trophies_arr_rel_insert_input"];
-	["tournament_trophies_avg_order_by"]: ValueTypes["tournament_trophies_avg_order_by"];
-	["tournament_trophies_bool_exp"]: ValueTypes["tournament_trophies_bool_exp"];
-	["tournament_trophies_constraint"]: ValueTypes["tournament_trophies_constraint"];
-	["tournament_trophies_inc_input"]: ValueTypes["tournament_trophies_inc_input"];
-	["tournament_trophies_insert_input"]: ValueTypes["tournament_trophies_insert_input"];
-	["tournament_trophies_max_order_by"]: ValueTypes["tournament_trophies_max_order_by"];
-	["tournament_trophies_min_order_by"]: ValueTypes["tournament_trophies_min_order_by"];
-	["tournament_trophies_on_conflict"]: ValueTypes["tournament_trophies_on_conflict"];
-	["tournament_trophies_order_by"]: ValueTypes["tournament_trophies_order_by"];
-	["tournament_trophies_pk_columns_input"]: ValueTypes["tournament_trophies_pk_columns_input"];
-	["tournament_trophies_select_column"]: ValueTypes["tournament_trophies_select_column"];
-	["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"]: ValueTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_and_arguments_columns"];
-	["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"]: ValueTypes["tournament_trophies_select_column_tournament_trophies_aggregate_bool_exp_bool_or_arguments_columns"];
-	["tournament_trophies_set_input"]: ValueTypes["tournament_trophies_set_input"];
-	["tournament_trophies_stddev_order_by"]: ValueTypes["tournament_trophies_stddev_order_by"];
-	["tournament_trophies_stddev_pop_order_by"]: ValueTypes["tournament_trophies_stddev_pop_order_by"];
-	["tournament_trophies_stddev_samp_order_by"]: ValueTypes["tournament_trophies_stddev_samp_order_by"];
-	["tournament_trophies_stream_cursor_input"]: ValueTypes["tournament_trophies_stream_cursor_input"];
-	["tournament_trophies_stream_cursor_value_input"]: ValueTypes["tournament_trophies_stream_cursor_value_input"];
-	["tournament_trophies_sum_order_by"]: ValueTypes["tournament_trophies_sum_order_by"];
-	["tournament_trophies_update_column"]: ValueTypes["tournament_trophies_update_column"];
-	["tournament_trophies_updates"]: ValueTypes["tournament_trophies_updates"];
-	["tournament_trophies_var_pop_order_by"]: ValueTypes["tournament_trophies_var_pop_order_by"];
-	["tournament_trophies_var_samp_order_by"]: ValueTypes["tournament_trophies_var_samp_order_by"];
-	["tournament_trophies_variance_order_by"]: ValueTypes["tournament_trophies_variance_order_by"];
-	["tournament_trophy_configs_aggregate_bool_exp"]: ValueTypes["tournament_trophy_configs_aggregate_bool_exp"];
-	["tournament_trophy_configs_aggregate_bool_exp_count"]: ValueTypes["tournament_trophy_configs_aggregate_bool_exp_count"];
-	["tournament_trophy_configs_aggregate_order_by"]: ValueTypes["tournament_trophy_configs_aggregate_order_by"];
-	["tournament_trophy_configs_arr_rel_insert_input"]: ValueTypes["tournament_trophy_configs_arr_rel_insert_input"];
-	["tournament_trophy_configs_avg_order_by"]: ValueTypes["tournament_trophy_configs_avg_order_by"];
-	["tournament_trophy_configs_bool_exp"]: ValueTypes["tournament_trophy_configs_bool_exp"];
-	["tournament_trophy_configs_constraint"]: ValueTypes["tournament_trophy_configs_constraint"];
-	["tournament_trophy_configs_inc_input"]: ValueTypes["tournament_trophy_configs_inc_input"];
-	["tournament_trophy_configs_insert_input"]: ValueTypes["tournament_trophy_configs_insert_input"];
-	["tournament_trophy_configs_max_order_by"]: ValueTypes["tournament_trophy_configs_max_order_by"];
-	["tournament_trophy_configs_min_order_by"]: ValueTypes["tournament_trophy_configs_min_order_by"];
-	["tournament_trophy_configs_obj_rel_insert_input"]: ValueTypes["tournament_trophy_configs_obj_rel_insert_input"];
-	["tournament_trophy_configs_on_conflict"]: ValueTypes["tournament_trophy_configs_on_conflict"];
-	["tournament_trophy_configs_order_by"]: ValueTypes["tournament_trophy_configs_order_by"];
-	["tournament_trophy_configs_pk_columns_input"]: ValueTypes["tournament_trophy_configs_pk_columns_input"];
-	["tournament_trophy_configs_select_column"]: ValueTypes["tournament_trophy_configs_select_column"];
-	["tournament_trophy_configs_set_input"]: ValueTypes["tournament_trophy_configs_set_input"];
-	["tournament_trophy_configs_stddev_order_by"]: ValueTypes["tournament_trophy_configs_stddev_order_by"];
-	["tournament_trophy_configs_stddev_pop_order_by"]: ValueTypes["tournament_trophy_configs_stddev_pop_order_by"];
-	["tournament_trophy_configs_stddev_samp_order_by"]: ValueTypes["tournament_trophy_configs_stddev_samp_order_by"];
-	["tournament_trophy_configs_stream_cursor_input"]: ValueTypes["tournament_trophy_configs_stream_cursor_input"];
-	["tournament_trophy_configs_stream_cursor_value_input"]: ValueTypes["tournament_trophy_configs_stream_cursor_value_input"];
-	["tournament_trophy_configs_sum_order_by"]: ValueTypes["tournament_trophy_configs_sum_order_by"];
-	["tournament_trophy_configs_update_column"]: ValueTypes["tournament_trophy_configs_update_column"];
-	["tournament_trophy_configs_updates"]: ValueTypes["tournament_trophy_configs_updates"];
-	["tournament_trophy_configs_var_pop_order_by"]: ValueTypes["tournament_trophy_configs_var_pop_order_by"];
-	["tournament_trophy_configs_var_samp_order_by"]: ValueTypes["tournament_trophy_configs_var_samp_order_by"];
-	["tournament_trophy_configs_variance_order_by"]: ValueTypes["tournament_trophy_configs_variance_order_by"];
 	["tournaments_aggregate_bool_exp"]: ValueTypes["tournaments_aggregate_bool_exp"];
 	["tournaments_aggregate_bool_exp_avg"]: ValueTypes["tournaments_aggregate_bool_exp_avg"];
 	["tournaments_aggregate_bool_exp_bool_and"]: ValueTypes["tournaments_aggregate_bool_exp_bool_and"];

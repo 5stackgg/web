@@ -3,7 +3,9 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { GitBranch, Trophy, UsersRound } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
+import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { formatPrizePool } from "~/utilities/prizePool";
+import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -40,19 +42,12 @@ const logoUrl = computed(() => {
   return `https://${runtimeConfig.public.apiDomain}/${logo}`;
 });
 
-// Deterministic gradient keyed on the id so bannerless tournaments still look
-// intentional (mirrors the events hero fallback).
-const fallbackGradient = computed(() => {
-  const id = String(props.tournament?.id ?? "");
-  let h = 0;
-  for (let i = 0; i < id.length; i++) {
-    h = (h * 31 + id.charCodeAt(i)) % 360;
-  }
-  const a = h;
-  const b = (h + 70) % 360;
-  const c = (h + 200) % 360;
-  return `radial-gradient(ellipse 55% 90% at 22% 40%, hsl(${a} 60% 40% / 0.85), transparent 60%), radial-gradient(ellipse 45% 80% at 70% 60%, hsl(${b} 55% 42% / 0.7), transparent 55%), radial-gradient(ellipse 40% 70% at 90% 25%, hsl(${c} 60% 45% / 0.6), transparent 55%), repeating-linear-gradient(-35deg, rgba(0,0,0,0.32) 0 20px, transparent 20px 40px), #14171c`;
-});
+// Bannerless tournaments fall back to their map pool as a skewed mosaic; if
+// there is no pool either, a neutral tactical fill (never a hue-hashed one).
+const mapPosters = computed(() => tournamentMapPosters(props.tournament, 7));
+
+const fallbackGradient =
+  "radial-gradient(ellipse 70% 100% at 50% 0%, hsl(220 10% 20% / 0.85), transparent 70%), repeating-linear-gradient(-35deg, hsl(0 0% 100% / 0.02) 0 20px, transparent 20px 40px), #101216";
 
 const isLive = computed(() => props.statusVariant === "live");
 
@@ -127,6 +122,10 @@ const statusChipClasses = computed(() => {
       aria-hidden="true"
       class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/tournament:scale-105"
     />
+    <TournamentMapMosaic
+      v-else-if="mapPosters.length"
+      :posters="mapPosters"
+    />
     <div
       v-else
       class="absolute inset-0"
@@ -136,7 +135,7 @@ const statusChipClasses = computed(() => {
     <!-- Modest global tint tames busy / low-contrast uploads without killing a
          well-designed banner; the text zones get their own stronger scrims. -->
     <div
-      v-if="bannerUrl"
+      v-if="bannerUrl || mapPosters.length"
       aria-hidden="true"
       class="pointer-events-none absolute inset-0 bg-black/25"
     ></div>

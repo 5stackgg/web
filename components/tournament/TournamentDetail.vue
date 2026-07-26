@@ -12,8 +12,8 @@ import ManageSection from "~/components/common/ManageSection.vue";
 import TournamentStatRibbon from "~/components/tournament/TournamentStatRibbon.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
-import TournamentTrophiesConfig from "~/components/tournament/TournamentTrophiesConfig.vue";
-import TournamentTrophiesManage from "~/components/tournament/TournamentTrophiesManage.vue";
+import TournamentAwardsConfig from "~/components/tournament/TournamentAwardsConfig.vue";
+import TournamentAwardsManage from "~/components/tournament/TournamentAwardsManage.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
@@ -531,10 +531,10 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
               </TabsTrigger>
               <TabsTrigger
                 v-if="tournament?.is_organizer"
-                value="trophies"
+                value="awards"
                 :class="tacticalTabsTriggerClasses"
               >
-                {{ $t("trophies.title") }}
+                {{ $t("awards.title") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="tournament?.is_organizer"
@@ -765,11 +765,11 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             ></TournamentOrganizers>
           </PageTransition>
         </TabsContent>
-        <TabsContent value="trophies" v-if="tournament?.is_organizer">
+        <TabsContent value="awards" v-if="tournament?.is_organizer">
           <PageTransition>
             <div class="flex flex-col gap-4">
-              <TournamentTrophiesConfig :tournament="tournament" />
-              <TournamentTrophiesManage :tournament="tournament" />
+              <TournamentAwardsConfig :tournament="tournament" />
+              <TournamentAwardsManage :tournament="tournament" />
             </div>
           </PageTransition>
         </TabsContent>
@@ -959,7 +959,7 @@ export default {
               status: true,
               auto_start: true,
               scheduling_mode: true,
-              trophies_enabled: true,
+              awards_enabled: true,
               e_tournament_status: {
                 description: true,
               },
@@ -1050,7 +1050,7 @@ export default {
                   },
                 },
               ],
-              trophies: [
+              awards: [
                 {},
                 {
                   id: true,
@@ -1058,8 +1058,23 @@ export default {
                   placement_tier: true,
                   tournament_team_id: true,
                   player_steam_id: true,
-                  manual: true,
+                  team_id: true,
+                  source: true,
+                  note: true,
+                  award_id: true,
+                  award: {
+                    id: true,
+                    name: true,
+                    tier: true,
+                    silhouette: true,
+                    image_url: true,
+                  },
                   player: playerFields,
+                  team: {
+                    id: true,
+                    name: true,
+                    short_name: true,
+                  },
                   tournament_team: {
                     id: true,
                     name: true,
@@ -1077,15 +1092,23 @@ export default {
                   },
                 },
               ],
-              trophy_configs: [
+              award_configs: [
                 {},
                 {
                   id: true,
                   tournament_id: true,
                   placement: true,
+                  award_id: true,
                   custom_name: true,
                   silhouette: true,
                   image_url: true,
+                  award: {
+                    id: true,
+                    name: true,
+                    tier: true,
+                    silhouette: true,
+                    image_url: true,
+                  },
                 },
               ],
               stages: [
@@ -1540,7 +1563,7 @@ export default {
           "prizes",
           "match-options",
           "organizers",
-          "trophies",
+          "awards",
           "notifications",
         );
       }

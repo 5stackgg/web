@@ -72,6 +72,8 @@ export default {
       positions: null as null | any[],
       grenades: null as null | any[],
       grenadeTrajectories: [] as any[],
+      smokeVolumes: [] as any[],
+      infernos: [] as any[],
       shots: null as null | any[],
       damages: null as null | any[],
       demoPlayers: [] as any[],
@@ -103,6 +105,8 @@ export default {
       self.positions = data.positions ?? [];
       self.grenades = data.grenades ?? [];
       self.grenadeTrajectories = data.grenadeTrajectories ?? [];
+      self.smokeVolumes = data.smokeVolumes ?? [];
+      self.infernos = data.infernos ?? [];
       self.shots = data.shots ?? [];
       self.damages = data.damages ?? [];
       self.demoPlayers = data.demoPlayers ?? [];
@@ -151,6 +155,8 @@ export default {
           self.positions = blob.positions ?? [];
           self.grenades = normalizeBlobGrenades(blob.grenade_throws ?? []);
           self.grenadeTrajectories = blob.grenade_trajectories ?? [];
+          self.smokeVolumes = blob.smoke_volumes ?? [];
+          self.infernos = blob.infernos ?? [];
           self.shots = blob.shots_fired ?? [];
           self.damages = blob.damages ?? [];
           self.demoPlayers = blob.players ?? [];
@@ -211,6 +217,8 @@ export default {
       :positions="positions"
       :grenades="grenades || []"
       :grenade-trajectories="grenadeTrajectories || []"
+      :smoke-volumes="smokeVolumes || []"
+      :infernos="infernos || []"
       :shots="shots || []"
       :damages="damages || []"
       :demo-players="demoPlayers"

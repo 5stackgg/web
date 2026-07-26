@@ -866,9 +866,6 @@
     "next_page": "下一页",
     "last_page": "末页"
   },
-  "trophies_modal": {
-    "view_tournament": "查看赛事"
-  },
   "toasts": {
     "link_copied": "链接已复制",
     "copy_failed": "复制失败",
@@ -1160,24 +1157,8 @@
     "highlights_render_label": "高光渲染",
     "highlight_render_subline": "高光渲染"
   },
-  "trophies_manage_form": {
-    "placement": "名次",
-    "team": "队伍",
-    "player": "玩家"
-  },
   "shortcut_overlay": {
     "to_close": "关闭"
-  },
-  "trophies": {
-    "title": "奖杯",
-    "no_trophies": "暂无奖杯",
-    "no_trophies_description": "在赛事中获得前三名即可赢得奖杯。",
-    "mvp": "MVP",
-    "first_place": "第一名",
-    "second_place": "第二名",
-    "third_place": "第三名",
-    "tournament": "赛事",
-    "placement": "名次"
   },
   "avatar": {
     "upload": "上传头像",
@@ -1995,6 +1976,13 @@
           "permissions_section": "权限",
           "permissions_description": "控制哪些玩家可以创建活动。",
           "create_events_role": "创建活动的最低角色"
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2815,7 +2803,7 @@
         "best_kdr": "KDR",
         "best_win_rate": "胜率",
         "highest_hs_pct": "爆头率",
-        "trophies": "奖杯"
+        "awards": "奖杯"
       },
       "time_periods": {
         "last_7_days": "最近 7 天",
@@ -3061,6 +3049,36 @@
       "description": "查看并管理平台上的所有活动。",
       "no_events_title": "暂无活动",
       "no_events_description": "您尚未组织任何活动。"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
@@ -3090,7 +3108,8 @@
         "developer": "开发者",
         "general": "常规",
         "media": "录制与媒体",
-        "additional_features": "附加功能"
+        "additional_features": "附加功能",
+        "players_teams": "平台"
       }
     },
     "system_update": {
@@ -3162,7 +3181,8 @@
         "manage_tournaments": "管理赛事",
         "manage_league": "管理联赛",
         "stream_deck": "直播控制台",
-        "manage_events": "管理活动"
+        "manage_events": "管理活动",
+        "awards": "Awards"
       },
       "system": {
         "title": "系统",
@@ -3213,6 +3233,12 @@
         "title": "登出",
         "description": "您确定要登出吗？",
         "confirm": "登出"
+      },
+      "competition": {
+        "title": "管理"
+      },
+      "platform": {
+        "title": "管理"
       }
     },
     "top_nav": {
@@ -3634,23 +3660,6 @@
     "standings_section": {
       "no_roster": "无阵容"
     },
-    "trophies_config": {
-      "title": "奖杯配置",
-      "organizer_access_required": "需要组织者权限",
-      "award_trophies": "颁发奖杯",
-      "custom": "自定义",
-      "custom_image": "自定义图片",
-      "custom_name": "自定义名称",
-      "silhouette": "轮廓",
-      "reset": "重置",
-      "remove_image_hint": "移除图片以自定义名称或轮廓"
-    },
-    "trophies_manage": {
-      "manual_awards": "手动颁发",
-      "add_award": "添加奖项",
-      "no_manual_awards": "无手动颁发的奖项",
-      "remove": "移除"
-    },
     "compact_card": {
       "tournament": "赛事",
       "live": "进行中",
@@ -3966,7 +3975,46 @@
       "confirm_remove": "您确定要移除此服务器吗？",
       "remove_description": "这将从赛事中移除此服务器"
     },
-    "open_match_actions": "打开比赛操作"
+    "open_match_actions": "打开比赛操作",
+    "awards_config": {
+      "title": "奖杯配置",
+      "organizer_access_required": "需要组织者权限",
+      "custom": "自定义",
+      "custom_image": "自定义图片",
+      "custom_name": "自定义名称",
+      "silhouette": "轮廓",
+      "reset": "重置",
+      "award": "自定义名称",
+      "award_default": "重置",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "手动颁发",
+      "add_award": "添加奖项",
+      "no_manual_awards": "无手动颁发的奖项",
+      "remove": "移除",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
+    }
   },
   "team": {
     "highlights": {
@@ -6840,5 +6888,45 @@
       "axis_hs": "爆头率",
       "axis_assist": "助攻"
     }
+  },
+  "awards": {
+    "title": "奖杯",
+    "mvp": "MVP",
+    "first_place": "第一名",
+    "second_place": "第二名",
+    "third_place": "第三名",
+    "tournament": "赛事",
+    "placement": "名次",
+    "no_awards": "暂无奖杯",
+    "no_awards_description": "在赛事中获得前三名即可赢得奖杯。",
+    "granted": "MVP",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "查看赛事"
+  },
+  "awards_manage_form": {
+    "team": "队伍",
+    "player": "玩家",
+    "award": "队伍",
+    "recipient": "Recipient"
   }
 }

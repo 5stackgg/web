@@ -136,7 +136,7 @@ const CATEGORY_CONFIG: Record<
     tiers: { value: HS_TIER },
     sortable: ["value", "secondary_value", "matches_played"],
   },
-  trophies: {
+  awards: {
     columns: {
       value: "pages.leaderboard.col.gold",
       secondary_value: "pages.leaderboard.col.silver",
@@ -446,7 +446,7 @@ const categories = [
   { value: "best_kdr" },
   { value: "best_win_rate" },
   { value: "highest_hs_pct" },
-  { value: "trophies" },
+  { value: "awards" },
 ];
 
 const config = computed(() => CATEGORY_CONFIG[category.value]);
@@ -473,7 +473,7 @@ const orderBy = computed(() => {
   if (sortBy.value) {
     return [{ [sortBy.value]: sortDir.value }];
   }
-  if (category.value === "trophies") {
+  if (category.value === "awards") {
     return [
       { matches_played: "desc" },
       { value: "desc" },
@@ -502,7 +502,7 @@ function isSortable(field: SortField): boolean {
 }
 
 // Chevron tier config for a column in the current category (undefined = no
-// chevron). Skips ELO/trophies, which convey quality via their own tint.
+// chevron). Skips ELO/awards, which convey quality via their own tint.
 function statTier(field: SortField): StatTierConfig | undefined {
   return config.value.tiers?.[field];
 }
@@ -662,7 +662,7 @@ function formatValue(value: number): string {
     case "highest_hs_pct":
     case "best_kast":
       return value.toFixed(1) + "%";
-    case "trophies":
+    case "awards":
       return Math.round(value).toLocaleString();
     default:
       return String(value);
@@ -693,10 +693,10 @@ function formatTertiary(value: number | null): string {
   return Math.round(value).toLocaleString();
 }
 
-function trophyTierColor(
+function awardTierColor(
   field: "value" | "secondary_value" | "tertiary_value" | "matches_played",
 ): string | null {
-  if (category.value !== "trophies") return null;
+  if (category.value !== "awards") return null;
   if (field === "value") return TIER_COLORS.gold;
   if (field === "secondary_value") return TIER_COLORS.silver;
   if (field === "tertiary_value") return TIER_COLORS.bronze;
@@ -1164,17 +1164,17 @@ onMounted(async () => {
                   <div
                     class="flex items-center justify-end gap-1"
                     :style="
-                      trophyTierColor('value')
-                        ? { color: trophyTierColor('value') }
+                      awardTierColor('value')
+                        ? { color: awardTierColor('value') }
                         : {}
                     "
                   >
                     <span
-                      v-if="trophyTierColor('value')"
+                      v-if="awardTierColor('value')"
                       class="inline-block h-1.5 w-1.5 rounded-full"
                       :style="{
-                        background: trophyTierColor('value'),
-                        boxShadow: `0 0 4px ${trophyTierColor('value')}`,
+                        background: awardTierColor('value'),
+                        boxShadow: `0 0 4px ${awardTierColor('value')}`,
                       }"
                     ></span>
                     <StatLabel
@@ -1203,17 +1203,17 @@ onMounted(async () => {
                   <div
                     class="flex items-center justify-end gap-1"
                     :style="
-                      trophyTierColor('secondary_value')
-                        ? { color: trophyTierColor('secondary_value') }
+                      awardTierColor('secondary_value')
+                        ? { color: awardTierColor('secondary_value') }
                         : {}
                     "
                   >
                     <span
-                      v-if="trophyTierColor('secondary_value')"
+                      v-if="awardTierColor('secondary_value')"
                       class="inline-block h-1.5 w-1.5 rounded-full"
                       :style="{
-                        background: trophyTierColor('secondary_value'),
-                        boxShadow: `0 0 4px ${trophyTierColor('secondary_value')}`,
+                        background: awardTierColor('secondary_value'),
+                        boxShadow: `0 0 4px ${awardTierColor('secondary_value')}`,
                       }"
                     ></span>
                     <StatLabel
@@ -1244,17 +1244,17 @@ onMounted(async () => {
                   <div
                     class="flex items-center justify-end gap-1"
                     :style="
-                      trophyTierColor('tertiary_value')
-                        ? { color: trophyTierColor('tertiary_value') }
+                      awardTierColor('tertiary_value')
+                        ? { color: awardTierColor('tertiary_value') }
                         : {}
                     "
                   >
                     <span
-                      v-if="trophyTierColor('tertiary_value')"
+                      v-if="awardTierColor('tertiary_value')"
                       class="inline-block h-1.5 w-1.5 rounded-full"
                       :style="{
-                        background: trophyTierColor('tertiary_value'),
-                        boxShadow: `0 0 4px ${trophyTierColor('tertiary_value')}`,
+                        background: awardTierColor('tertiary_value'),
+                        boxShadow: `0 0 4px ${awardTierColor('tertiary_value')}`,
                       }"
                     ></span>
                     {{ columnLabels.tertiary_value }}
@@ -1277,17 +1277,17 @@ onMounted(async () => {
                   <div
                     class="flex items-center justify-end gap-1"
                     :style="
-                      trophyTierColor('matches_played')
-                        ? { color: trophyTierColor('matches_played') }
+                      awardTierColor('matches_played')
+                        ? { color: awardTierColor('matches_played') }
                         : {}
                     "
                   >
                     <span
-                      v-if="trophyTierColor('matches_played')"
+                      v-if="awardTierColor('matches_played')"
                       class="inline-block h-1.5 w-1.5 rounded-full"
                       :style="{
-                        background: trophyTierColor('matches_played'),
-                        boxShadow: `0 0 4px ${trophyTierColor('matches_played')}`,
+                        background: awardTierColor('matches_played'),
+                        boxShadow: `0 0 4px ${awardTierColor('matches_played')}`,
                       }"
                     ></span>
                     {{ columnLabels.matches_played }}
@@ -1355,18 +1355,16 @@ onMounted(async () => {
                   <TableCell
                     class="text-right font-mono font-semibold tabular-nums"
                     :style="
-                      trophyTierColor('value') || eloValueColor(entry.value)
+                      awardTierColor('value') || eloValueColor(entry.value)
                         ? {
                             color:
-                              trophyTierColor('value') ||
+                              awardTierColor('value') ||
                               eloValueColor(entry.value),
                           }
                         : {}
                     "
                   >
-                    <span
-                      class="inline-flex items-center justify-end gap-1"
-                    >
+                    <span class="inline-flex items-center justify-end gap-1">
                       {{ formatValue(entry.value) }}
                       <StatChevron
                         v-if="statTier('value')"
@@ -1380,17 +1378,15 @@ onMounted(async () => {
                     class="text-right font-mono tabular-nums"
                     :class="{
                       'text-muted-foreground':
-                        !trophyTierColor('secondary_value'),
+                        !awardTierColor('secondary_value'),
                     }"
                     :style="
-                      trophyTierColor('secondary_value')
-                        ? { color: trophyTierColor('secondary_value') }
+                      awardTierColor('secondary_value')
+                        ? { color: awardTierColor('secondary_value') }
                         : {}
                     "
                   >
-                    <span
-                      class="inline-flex items-center justify-end gap-1"
-                    >
+                    <span class="inline-flex items-center justify-end gap-1">
                       {{ formatSecondary(entry.secondary_value) }}
                       <StatChevron
                         v-if="statTier('secondary_value')"
@@ -1404,11 +1400,11 @@ onMounted(async () => {
                     class="text-right font-mono tabular-nums"
                     :class="{
                       'text-muted-foreground':
-                        !trophyTierColor('tertiary_value'),
+                        !awardTierColor('tertiary_value'),
                     }"
                     :style="
-                      trophyTierColor('tertiary_value')
-                        ? { color: trophyTierColor('tertiary_value') }
+                      awardTierColor('tertiary_value')
+                        ? { color: awardTierColor('tertiary_value') }
                         : {}
                     "
                   >
@@ -1419,13 +1415,13 @@ onMounted(async () => {
                     class="text-right font-mono tabular-nums"
                     :class="{
                       'text-muted-foreground':
-                        !trophyTierColor('matches_played'),
+                        !awardTierColor('matches_played'),
                     }"
                     :style="
-                      trophyTierColor('matches_played')
+                      awardTierColor('matches_played')
                         ? {
-                            color: trophyTierColor('matches_played'),
-                            fontWeight: category === 'trophies' ? 600 : 400,
+                            color: awardTierColor('matches_played'),
+                            fontWeight: category === 'awards' ? 600 : 400,
                           }
                         : {}
                     "

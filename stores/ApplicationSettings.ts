@@ -356,9 +356,8 @@ export const useApplicationSettingsStore = defineStore(
 
     const newsLabel = computed(() => {
       return (
-        settings.value?.find(
-          (setting) => setting.name === "public.news_label",
-        )?.value || null
+        settings.value?.find((setting) => setting.name === "public.news_label")
+          ?.value || null
       );
     });
 
@@ -377,6 +376,36 @@ export const useApplicationSettingsStore = defineStore(
       }
 
       return useAuthStore().isRoleAbove(postNewsRole.value);
+    });
+
+    const createAwardsRole = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.create_awards_role",
+        )?.value || e_player_roles_enum.administrator
+      );
+    });
+
+    const grantAwardsRole = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.grant_awards_role",
+        )?.value || e_player_roles_enum.administrator
+      );
+    });
+
+    const canManageAwards = computed(() => {
+      if (!useAuthStore().me) {
+        return false;
+      }
+      return useAuthStore().isRoleAbove(createAwardsRole.value);
+    });
+
+    const canGrantAwards = computed(() => {
+      if (!useAuthStore().me) {
+        return false;
+      }
+      return useAuthStore().isRoleAbove(grantAwardsRole.value);
     });
 
     const playerNameRegistration = computed(() => {
@@ -583,6 +612,10 @@ export const useApplicationSettingsStore = defineStore(
       newsLabel,
       postNewsRole,
       canPostNews,
+      createAwardsRole,
+      grantAwardsRole,
+      canManageAwards,
+      canGrantAwards,
       linkedAccountsEnabled,
       faceitEnabled,
       scrimFinderEnabled,

@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/sheet";
 
 import { ref } from "vue";
-import { MoreVertical, Trash2, LogOut, Pencil } from "lucide-vue-next";
+import { MoreVertical, Trash2, LogOut, Pencil, Medal } from "lucide-vue-next";
+import AwardComposer from "~/components/award/AwardComposer.vue";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +37,7 @@ import Pagination from "~/components/Pagination.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
-import TrophyCase from "~/components/trophy/TrophyCase.vue";
+import AwardCase from "~/components/award/AwardCase.vue";
 import TeamCareerStats from "~/components/team/TeamCareerStats.vue";
 import TeamVetoStats from "~/components/team/TeamVetoStats.vue";
 import TeamVetoSimulator from "~/components/team/TeamVetoSimulator.vue";
@@ -169,6 +170,13 @@ const teamHeroActionsClasses =
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-[200px]">
               <DropdownMenuGroup>
+                <DropdownMenuItem
+                  v-if="canGrantAwards"
+                  @click="awardComposerOpen = true"
+                >
+                  <Medal />
+                  {{ $t("awards.composer.grant_here") }}
+                </DropdownMenuItem>
                 <template
                   v-if="isAdmin || team.owner.steam_id === me?.steam_id"
                 >
@@ -204,10 +212,10 @@ const teamHeroActionsClasses =
 
   <PageTransition
     :delay="50"
-    v-if="teamTrophies && teamTrophies.length > 0"
+    v-if="teamAwards && teamAwards.length > 0"
     class="mt-6"
   >
-    <TrophyCase :trophies="teamTrophies" :hide-mvp="true" />
+    <AwardCase :awards="teamAwards" :hide-mvp="true" />
   </PageTransition>
 
   <Tabs v-if="team" v-model="tab" class="mt-6 w-full">
@@ -336,6 +344,13 @@ const teamHeroActionsClasses =
     </div>
   </Transition>
 
+  <AwardComposer
+    v-if="team && awardComposerOpen"
+    v-model:open="awardComposerOpen"
+    :team="{ id: team.id, name: team.name }"
+    lock-recipient
+  />
+
   <Sheet
     v-if="team"
     :open="editTeamSheet"
@@ -421,7 +436,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
-import { trophyFields } from "~/graphql/trophyFields";
+import { awardFields } from "~/graphql/awardFields";
 import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 
 const VALID_TABS = ["overview", "stats", "highlights", "scrim"];
@@ -433,11 +448,12 @@ export default {
       tab: VALID_TABS.includes(useRoute().query.tab as string)
         ? (useRoute().query.tab as string)
         : "overview",
-      teamTrophies: [] as any[],
+      teamAwards: [] as any[],
       tournamentMatches: [] as any[],
       matchesPage: 1,
       matchesPerPage: 5,
       editTeamSheet: false,
+      awardComposerOpen: false,
       leaveTeamAlertDialog: false,
       deleteTeamAlertDialog: false,
       scrimRequestOpen: false,
@@ -581,9 +597,9 @@ export default {
           this.tournamentMatches = data.matches || [];
         },
       },
-      teamTrophies: {
+      teamAwards: {
         query: typedGql("subscription")({
-          tournament_trophies: [
+          award_recipients: [
             {
               where: {
                 player_steam_id: {
@@ -596,7 +612,7 @@ export default {
                 },
               },
             },
-            trophyFields,
+            awardFields,
           ],
         }),
         variables: function () {
@@ -605,7 +621,7 @@ export default {
           };
         },
         result: function ({ data }) {
-          this.teamTrophies = data.tournament_trophies || [];
+          this.teamAwards = data.award_recipients || [];
         },
       },
     },
@@ -614,6 +630,9 @@ export default {
     useTeamContext().value = null;
   },
   computed: {
+    canGrantAwards() {
+      return useApplicationSettingsStore().canGrantAwards;
+    },
     me() {
       return useAuthStore().me;
     },

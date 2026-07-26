@@ -81,12 +81,19 @@ async function fetchData() {
           } as any,
           {
             ...simpleTournamentFields,
-            trophies: [
+            awards: [
               { where: { placement: { _in: [1, 2, 3] } } } as any,
               {
                 id: true,
                 placement: true,
                 tournament_team_id: true,
+                award: {
+                  id: true,
+                  name: true,
+                  tier: true,
+                  silhouette: true,
+                  image_url: true,
+                },
                 tournament_team: {
                   id: true,
                   name: true,

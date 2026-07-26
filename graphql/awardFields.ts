@@ -1,15 +1,29 @@
 import { order_by, Selector } from "~/generated/zeus";
 
-export const trophyFields = Selector("tournament_trophies")({
+export const awardDefinitionFields = Selector("awards")({
   id: true,
+  name: true,
+  description: true,
+  tier: true,
+  silhouette: true,
+  image_url: true,
+  system_key: true,
+  allow_multiple: true,
+});
+
+export const awardFields = Selector("award_recipients")({
+  id: true,
+  award_id: true,
   tournament_id: true,
   tournament_team_id: true,
   team_id: true,
   player_steam_id: true,
   placement: true,
   placement_tier: true,
-  manual: true,
+  source: true,
+  note: true,
   created_at: true,
+  award: awardDefinitionFields,
   tournament: {
     name: true,
     start: true,
@@ -36,7 +50,7 @@ export const trophyFields = Selector("tournament_trophies")({
       short_name: true,
     },
   },
-  trophy_config: {
+  tournament_award: {
     custom_name: true,
     silhouette: true,
     image_url: true,

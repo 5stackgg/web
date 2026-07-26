@@ -537,12 +537,12 @@
       "description": "Eco ラウンドです。チームが意図的にセーブし、購入をほとんど行いません（合計 $5,000 未満）。"
     },
     "buy_force": {
-      "label": "フォースブイ",
-      "description": "フォースブイ／ハーフブイです。所持金の大半を使いますが、フル装備には届きません（$5,000〜$20,000）。"
+      "label": "Force Buy",
+      "description": "Force Buy／ハーフバイです。所持金の大半を使いますが、フル装備には届きません（$5,000〜$20,000）。"
     },
     "buy_full": {
-      "label": "フルブイ",
-      "description": "フルブイです。チーム全員がライフル、アーマー、ユーティリティを揃えます（$20,000 超）。"
+      "label": "Full Buy",
+      "description": "Full Buy です。チーム全員がライフル、アーマー、ユーティリティを揃えます（$20,000 超）。"
     },
     "buy_win_rate": {
       "label": "購入別勝率",
@@ -597,7 +597,7 @@
       "description": "Zeus x27（テーザー）でのキルです。"
     },
     "multi_kill_breakdown": {
-      "label": "マルチキルラウンド（2K〜5K）",
+      "label": "マルチキルラウンド内訳（2K〜5K）",
       "description": "ちょうど2、3、4、5キルを取ったラウンド数です。マルチキルラウンドの内訳になります。"
     },
     "flashes_thrown": {
@@ -626,7 +626,7 @@
     },
     "buy_matchup": {
       "label": "購入対戦別勝率",
-      "description": "自分の購入タイプだけでなく、購入タイプの組み合わせ（例：フルブイ対 Eco）ごとのラウンド勝率です。"
+      "description": "自分の購入タイプだけでなく、購入タイプの組み合わせ（例：Full Buy 対 Eco）ごとのラウンド勝率です。"
     },
     "h2h_kills": {
       "label": "H2H キル",
@@ -866,9 +866,6 @@
     "next_page": "次のページ",
     "last_page": "最後のページ"
   },
-  "trophies_modal": {
-    "view_tournament": "トーナメントを見る"
-  },
   "toasts": {
     "link_copied": "リンクをコピーしました",
     "copy_failed": "コピーできませんでした",
@@ -987,41 +984,41 @@
     "duel": "DUEL"
   },
   "render_queue_status": {
-    "queued": "待機中",
+    "queued": "キュー待ち",
     "rendering": "レンダリング中",
     "uploading": "アップロード中",
     "done": "完了",
     "error": "エラー",
     "missing": "見つかりません",
     "cancelled": "キャンセル済み",
-    "uploading_to_library": "ライブラリにアップロード中",
-    "render_failed": "レンダリングできませんでした",
-    "queued_waiting": "待機中 — レンダリング枠の空き待ち",
-    "rendering_on_pod": "game-streamer ポッドでレンダリング中",
+    "uploading_to_library": "ライブラリへアップロード中",
+    "render_failed": "レンダリングに失敗しました",
+    "queued_waiting": "キュー待ち — レンダリング枠の空きを待っています",
+    "rendering_on_pod": "ゲームストリーマーPodでレンダリング中",
     "submitting": "送信中…",
-    "highlight_queued_title": "ハイライトを受付",
-    "highlight_queued_desc_named": "{name} のハイライトは枠が空き次第レンダリングされます。完了したらハイライトから確認できます。",
-    "highlight_queued_desc": "ハイライトは枠が空き次第レンダリングされます。完了したらハイライトから確認できます。"
+    "highlight_queued_title": "ハイライトをキューに追加しました",
+    "highlight_queued_desc_named": "枠が空き次第、{name}のハイライトがレンダリングされます。完了したらハイライト一覧で確認できます。",
+    "highlight_queued_desc": "枠が空き次第、ハイライトがレンダリングされます。完了したらハイライト一覧で確認できます。"
   },
   "match_extras": {
     "unknown_date": "日付不明",
     "all_players": "全プレイヤー"
   },
   "round_history": {
-    "bomb_exploded": "爆破成功",
-    "bomb_defused": "解除成功",
-    "time_ran_out": "時間切れ",
-    "ts_eliminated_cts": "T が CT を殲滅",
-    "cts_eliminated_ts": "CT が T を殲滅",
-    "won_man": "{state} で決着",
+    "bomb_exploded": "爆弾爆発",
+    "bomb_defused": "爆弾解除",
+    "time_ran_out": "タイムアップ",
+    "ts_eliminated_cts": "TがCTを全滅",
+    "cts_eliminated_ts": "CTがTを全滅",
+    "won_man": "{state}で決着",
     "survivors": "生存者",
     "unknown": "不明"
   },
   "role_radar": {
     "all": "すべて",
-    "radar_title": "ロール対決",
-    "radar_description": "このプレイヤーが担当したロールで絞り込みます。比較したいプレイヤーを固定すると重ねて表示できます。",
-    "no_data": "直近の試合数が足りず、チャートを作成できません。"
+    "radar_title": "ロールマッチアップ",
+    "radar_description": "このプレイヤーが担当したロールで絞り込みます。比較対象のプレイヤーをピン留めすると重ねて表示できます。",
+    "no_data": "グラフ化するには直近の試合数が足りません。"
   },
   "notification_context": {
     "online": "オンライン",
@@ -1031,93 +1028,93 @@
     "match_default": "試合",
     "server_default": "サーバー",
     "node_default": "ノード",
-    "scheduled": "予定済み",
+    "scheduled": "予定あり",
     "expired": "期限切れ",
-    "expires_in_days": "残り {days} 日",
-    "expires_in_hours": "残り {hours} 時間",
-    "expires_in_minutes": "残り {minutes} 分"
+    "expires_in_days": "あと{days}日で期限切れ",
+    "expires_in_hours": "あと{hours}時間で期限切れ",
+    "expires_in_minutes": "あと{minutes}分で期限切れ"
   },
   "scrim": {
     "request_scrim": "スクリムを申請",
-    "request_scrim_vs": "{name} とのスクリムを申請",
+    "request_scrim_vs": "{name}にスクリムを申請",
     "preferred_maps": "希望マップ",
-    "your_team": "自チーム",
+    "your_team": "自分のチーム",
     "select_team": "チームを選択",
-    "proposed_time": "提案する日時",
-    "pick_from_availability": "← 相手の空き時間から選択",
-    "request_other_time": "別の時間で申請する",
-    "best_of_indicator": "· Best of {bestOf}",
-    "availability_help": "相手の空き時間内で開始時刻を選び、日付を設定してください。数週間先まで予約できます。Best of {count} はおよそ {count} 時間かかります。 | 相手の空き時間内で開始時刻を選び、日付を設定してください。数週間先まで予約できます。Best of {count} はおよそ {count} 時間かかります。",
-    "accepts_outside_hours": "このチームは公開時間外の申請も受け付けています。任意の日時を選択できます。",
-    "accepts_any_time": "このチームは空き時間を公開していませんが、いつでも申請を受け付けています。日時を選択してください。",
-    "they_must_accept": "相手の承諾が必要です。",
+    "proposed_time": "提案する開始時間",
+    "pick_from_availability": "← 相手の空き時間から選ぶ",
+    "request_other_time": "別の時間を申請する",
+    "best_of_indicator": "・{bestOf}本先取",
+    "availability_help": "相手の空き時間の中から開始時刻を選び、日付を設定してください（数週間先まで予約できます）。{count}本先取は約{count}時間かかります。 | 相手の空き時間の中から開始時刻を選び、日付を設定してください（数週間先まで予約できます）。{count}本先取は約{count}時間かかります。",
+    "accepts_outside_hours": "このチームは公開している時間外でも申請を受け付けています。好きな日時を選んでください。",
+    "accepts_any_time": "このチームは空き時間を公開していませんが、いつでも申請を受け付けています。好きな日時を選んでください。",
+    "they_must_accept": "相手の承認が必要です。",
     "series": "シリーズ",
-    "no_hour_slot": "{team} に {hours} 時間の空き枠はありません",
-    "best_of": "Best of {option}",
+    "no_hour_slot": "{team}には{hours}時間の空き枠がありません",
+    "best_of": "{option}本先取",
     "send_request": "申請を送信",
-    "cannot_scrim_self": "自チーム同士でスクリムはできません",
-    "time_must_be_future": "提案する日時は未来の時刻にしてください",
+    "cannot_scrim_self": "自分のチームとはスクリムできません",
+    "time_must_be_future": "提案する時間は未来の日時にしてください",
     "request_sent": "スクリム申請を送信しました",
     "request_send_error": "スクリム申請を送信できませんでした",
-    "elo_range": "ELO 範囲",
-    "any_region": "すべてのリージョン",
-    "alerts_description": "条件に合うチームがスクリムを募集したら通知を受け取れます。",
-    "add_alert": "+ 通知を追加",
-    "no_alerts": "通知はまだありません。",
-    "alert_created": "スクリム通知を作成しました",
-    "playtime_tooltip": "プレイ時間 — ここで始めたスクリムはまだ続いています",
-    "available_start": "開始可能",
+    "elo_range": "ELO範囲",
+    "any_region": "リージョン指定なし",
+    "alerts_description": "条件に合うチームがスクリム募集を開始したら通知します。",
+    "add_alert": "＋アラートを追加",
+    "no_alerts": "アラートはまだありません。",
+    "alert_created": "スクリムアラートを作成しました",
+    "playtime_tooltip": "プレイ時間 — ここで開始したスクリムはまだ進行中です",
+    "available_start": "開始可能時刻",
     "playtime_legend": "プレイ時間（約1時間）",
-    "selected_start": "選択中の開始時刻",
-    "match_window": "試合枠（{hours} 時間）",
-    "opponents_can_request": "— 相手から申請できます",
-    "longest_block": "最長ブロック ≈ {hours} 時間",
-    "paint_to_unlock": "— {format} を有効にするには {hours} 時間以上のブロックを塗ってください。",
-    "availability_grid_help": "ドラッグしてチームが対応できる開始時刻を塗ります（ローカル時間）。スクリムは約1時間かかるため、薄いブロックが実際の拘束時間を示します。",
+    "selected_start": "選択した開始時刻",
+    "match_window": "試合枠（{hours}時間）",
+    "opponents_can_request": "— 相手チームが申請可能",
+    "longest_block": "最長ブロック ≈ {hours}時間",
+    "paint_to_unlock": "— {format}を有効にするには{hours}時間以上のブロックを塗ってください。",
+    "availability_grid_help": "ドラッグしてチームが対応可能な開始時刻を塗ってください（現地時間）。スクリムは約1時間かかるため、薄く表示された部分が実際に確保される時間です。",
     "no_availability_set": "このチームはまだ空き時間を設定していません。",
     "finder_title": "スクリムファインダー",
-    "finder_description": "チームを公開し、対戦相手の条件を決めて、スクリムの予定を管理します。",
+    "finder_description": "自分のチームを公開し、対戦相手の条件を設定して、スクリムのスケジュールを管理します。",
     "open_to_scrims": "スクリム募集中",
-    "closed": "停止中",
+    "closed": "募集終了",
     "finder_tab": "ファインダー",
     "requests_tab": "申請",
     "elo_label": "ELO",
     "no_active_requests": "進行中のスクリム申請はありません。",
-    "start_challenge_help": "{link} からチームに挑戦して始めましょう。",
+    "start_challenge_help": "{link}からチームに挑戦して始めましょう。",
     "finder_link": "スクリムファインダー",
-    "outgoing": "送信 →",
+    "outgoing": "送信済み →",
     "incoming": "受信 ←",
-    "auto_matched": "· 自動マッチ",
-    "view_scheduled_match": "予定された試合を表示 →",
+    "auto_matched": "・自動マッチング",
+    "view_scheduled_match": "予定された試合を見る →",
     "cancel_scrim": "スクリムをキャンセル",
-    "counter": "再提案",
-    "waiting_response": "{name} の返答待ちです。",
-    "waiting_opponent": "{name} を待っています。",
-    "scrim_accepted": "スクリムを承諾しました",
-    "scrim_declined": "スクリムを辞退しました",
-    "new_time_proposed": "新しい日時を提案しました",
+    "counter": "カウンター",
+    "waiting_response": "{name}の返答待ちです。",
+    "waiting_opponent": "{name}を待っています。",
+    "scrim_accepted": "スクリムが承認されました",
+    "scrim_declined": "スクリムが拒否されました",
+    "new_time_proposed": "新しい時間が提案されました",
     "request_cancelled": "スクリム申請をキャンセルしました",
-    "discoverable_help": "チームをスクリム募集一覧に表示します。試合形式は挑戦する側が選びます。",
+    "discoverable_help": "自分のチームをスクリム募集で検索可能にします。試合形式は挑戦してきた相手が選びます。",
     "regions_section": "リージョン",
-    "no_regions_available": "現在利用できるリージョンはありません。",
+    "no_regions_available": "現在利用可能なリージョンはありません。",
     "maps_section": "マップ",
-    "no_maps_selected": "マップが未選択です。編集からスクリム用のマップを選んでください。",
+    "no_maps_selected": "マップが選択されていません — 編集からスクリムで使うマップを選んでください。",
     "search_maps": "マップを検索…",
     "official": "公式",
-    "workshop": "ワークショップ",
-    "active_duty": "Active Duty",
-    "no_maps_match": "条件に合うマップはありません。",
-    "accepted_elo_range": "受け付ける ELO 範囲",
-    "fivestack_elo": "5Stack ELO",
-    "weekly_availability": "週間の空き時間",
-    "allow_outside_hours": "この時間外の申請も受け付ける",
-    "outside_hours_help": "塗った空き時間に限らず、相手が任意の日時を提案できます。空き時間を未設定のままにすると、いつでも申請を受け付けます。",
-    "notes_section": "メモ",
-    "notes_placeholder": "サーバー設定、アンチチート、ボイスなど、相手に伝えたいこと",
+    "workshop": "Workshop",
+    "active_duty": "アクティブデューティ",
+    "no_maps_match": "フィルター条件に一致するマップがありません。",
+    "accepted_elo_range": "受け入れるELO範囲",
+    "fivestack_elo": "5stack ELO",
+    "weekly_availability": "週間空き時間",
+    "allow_outside_hours": "この時間外の申請も許可する",
+    "outside_hours_help": "相手チームは塗った空き時間以外の時間も提案できます。空き時間を未設定のままにすると、いつでも申請を受け付けます。",
+    "notes_section": "備考",
+    "notes_placeholder": "サーバー設定・アンチチート・ボイスなど、相手チームに伝えたいことがあれば記入してください",
     "settings_saved": "スクリム設定を保存しました",
-    "settings_save_error": "スクリム設定を保存できませんでした",
+    "settings_save_error": "スクリム設定の保存に失敗しました",
     "calendar_link_copied": "カレンダーリンクをコピーしました",
-    "calendar_subscription_help": "この URL をカレンダーアプリで購読すると、予定されたスクリムを確認できます。",
+    "calendar_subscription_help": "このURLをカレンダーアプリに登録すると、予定されているスクリムを確認できます。",
     "calendar_link_error": "カレンダーリンクを取得できませんでした",
     "subscribe_to_matches": "予定された試合を購読"
   },
@@ -1128,8 +1125,8 @@
   },
   "tournament_match_impact": {
     "source_reset": "元の試合（勝者をリセット）",
-    "delete_recreate": "試合は削除され、再作成されます",
-    "slot_reset": "ブラケットの枠と状態がリセットされます"
+    "delete_recreate": "この試合は削除され、再作成されます",
+    "slot_reset": "ブラケット枠の状態がリセットされます"
   },
   "stream_deck_status": {
     "live": "LIVE",
@@ -1138,61 +1135,45 @@
     "spinning_up": "準備中",
     "check_in": "チェックイン",
     "starting_capture": "キャプチャを開始中",
-    "connecting_to_game_short": "ゲームに接続中",
+    "connecting_to_game_short": "接続中",
     "live_short": "配信中",
-    "errored": "エラー"
+    "errored": "エラー発生"
   },
   "gpu_pool_status": {
-    "no_nodes": "利用できる GPU ノードがありません",
-    "live_busy": "GPU 使用中：ライブ配信が進行中です",
-    "demo_busy": "GPU 使用中：デモを再生中です",
-    "highlights_busy": "GPU 使用中：ハイライトをレンダリング中です",
-    "streaming_disabled": "すべての GPU ノードでライブ配信が無効です",
-    "demo_disabled": "すべての GPU ノードでデモ再生が無効です",
-    "rendering_disabled": "すべての GPU ノードでレンダリングが無効です",
+    "no_nodes": "現在利用可能なGPUノードがありません",
+    "live_busy": "GPU使用中: ライブ配信が進行中です",
+    "demo_busy": "GPU使用中: デモが再生中です",
+    "highlights_busy": "GPU使用中: ハイライトをレンダリング中です",
+    "streaming_disabled": "すべてのGPUノードでライブ配信が無効です",
+    "demo_disabled": "すべてのGPUノードでデモ再生が無効です",
+    "rendering_disabled": "すべてのGPUノードでレンダリングが無効です",
     "live_gotv": "ライブ（GOTV）",
-    "live_direct": "ライブ（ダイレクト）",
+    "live_direct": "ライブ（Direct）",
     "live_match": "ライブ試合",
     "unknown_user": "不明なユーザー",
     "system_user": "システム",
     "demo_playback_label": "デモ再生",
     "demo_playback_subline": "デモ再生",
-    "highlights_render_label": "ハイライトのレンダリング",
-    "highlight_render_subline": "ハイライトのレンダリング"
-  },
-  "trophies_manage_form": {
-    "placement": "順位",
-    "team": "チーム",
-    "player": "プレイヤー"
+    "highlights_render_label": "ハイライトレンダリング",
+    "highlight_render_subline": "ハイライトレンダリング"
   },
   "shortcut_overlay": {
     "to_close": "で閉じる"
   },
-  "trophies": {
-    "title": "トロフィー",
-    "no_trophies": "トロフィーはまだありません",
-    "no_trophies_description": "トーナメントで上位3位に入るとトロフィーを獲得できます。",
-    "mvp": "MVP",
-    "first_place": "1位",
-    "second_place": "2位",
-    "third_place": "3位",
-    "tournament": "トーナメント",
-    "placement": "順位"
-  },
   "image_upload": {
-    "hint_square": "ドラッグ＆ドロップまたはクリック · PNG、JPEG、WebP",
-    "hint_banner": "ドラッグ＆ドロップまたはクリック · 横長 3:1 バナー",
-    "hint_cover": "ドラッグ＆ドロップまたはクリック · 16:9 カバー",
-    "replace": "差し替え",
+    "hint_square": "ドラッグ＆ドロップまたはクリック・PNG、JPEG、WebP",
+    "hint_banner": "ドラッグ＆ドロップまたはクリック・横長3:1バナー",
+    "hint_cover": "ドラッグ＆ドロップまたはクリック・16:9カバー",
+    "replace": "置き換え",
     "remove": "削除",
-    "drop_to_upload": "ドロップでアップロード",
+    "drop_to_upload": "ドロップしてアップロード",
     "uploaded": "画像をアップロードしました",
     "removed": "画像を削除しました",
-    "upload_failed": "アップロードできませんでした",
-    "remove_failed": "画像を削除できませんでした",
+    "upload_failed": "アップロードに失敗しました",
+    "remove_failed": "画像の削除に失敗しました",
     "crop": {
       "title": "画像を調整",
-      "description": "ドラッグで位置を調整、スクロールで拡大縮小します。枠内が保存される範囲です。",
+      "description": "ドラッグで位置調整、スクロールでズームできます。フレーム内が保存される範囲です。",
       "fit_whole": "全体を表示",
       "apply": "適用"
     }
@@ -1208,94 +1189,94 @@
     "player_avatar": "プレイヤーアバター",
     "player_roster_image": "プレイヤーのロスター画像",
     "upload_success": "アバターをアップロードしました",
-    "upload_failed": "アバターをアップロードできませんでした",
+    "upload_failed": "アバターのアップロードに失敗しました",
     "remove_success": "アバターを削除しました",
-    "remove_failed": "アバターを削除できませんでした",
-    "too_large": "画像は {size}MB 以下にしてください",
-    "invalid_type": "PNG、JPEG、WebP の画像のみ使用できます",
+    "remove_failed": "アバターの削除に失敗しました",
+    "too_large": "画像は{size}MB以下にしてください",
+    "invalid_type": "PNG、JPEG、WebP画像のみ使用できます",
     "uploading": "アップロード中...",
-    "drop_to_upload": "ドロップでアップロード",
-    "hint": "ドラッグ＆ドロップまたはクリック · PNG、JPEG、WebP · 最大 5 MB",
-    "roster_hint": "ドラッグ＆ドロップまたはクリック · 胸から上、400×420 · ブラウザ側でリサイズし、切り抜きと背景除去ができます",
-    "bg_removal_failed": "背景を除去できませんでした",
+    "drop_to_upload": "ドロップしてアップロード",
+    "hint": "ドラッグ＆ドロップまたはクリック・PNG、JPEG、WebP・最大5MB",
+    "roster_hint": "ドラッグ＆ドロップまたはクリック・上半身、400×420・ブラウザ内でリサイズ後、切り抜きと背景除去が可能",
+    "bg_removal_failed": "背景の除去に失敗しました",
     "roster_editor": {
       "title": "ロスター画像を編集",
-      "description": "胸から上のポートレートに切り抜きます。必要に応じて背景を除去し、透過画像にできます。",
-      "size_hint": "出力：{w}×{h} WebP · 透過背景に対応",
+      "description": "上半身のポートレートに切り抜きます。背景を除去して透過画像にすることもできます。",
+      "size_hint": "出力: {w}×{h} WebP・透過背景対応",
       "remove_bg": "背景を除去",
       "removing_bg": "背景を除去中…",
-      "notice_player": "このプレイヤーがチームに所属しない試合で使用されます。チーム所属の試合では、チームのロスター画像が使われます。",
-      "notice_team": "このプレイヤーがこのチームの一員として参加する試合で使用されます。ソロ・個人戦ではプレイヤー自身のロスター画像が使われます。",
-      "bulk_label": "自分のチームにも適用",
+      "notice_player": "このプレイヤーがチームに所属していない試合で使用されます。チーム所属の試合ではチームのロスター画像が使用されます。",
+      "notice_team": "このプレイヤーがこのチームの一員として参加する試合で使用されます。個人参加の試合ではプレイヤー自身のロスター画像が使用されます。",
+      "bulk_label": "自分のチームにも適用する",
       "bulk_will_overwrite": "既存の画像を上書きします",
-      "bulk_success": "{count} チームに適用しました",
-      "bulk_failed": "{name} に適用できませんでした"
+      "bulk_success": "{count}チームに適用しました",
+      "bulk_failed": "{name}への適用に失敗しました"
     }
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU 使用率",
-      "memory_usage": "メモリ使用量",
+      "cpu_usage": "CPU使用率",
+      "memory_usage": "メモリ使用率",
       "services": "サービス",
       "service": "サービス",
       "network": "ネットワーク",
       "search_services_placeholder": "サービスまたはノードを検索...",
       "filter_by_node": "ノードで絞り込み",
-      "no_services_found": "条件に合うサービスはありません。",
+      "no_services_found": "現在のフィルターに一致するサービスがありません。",
       "search_nodes_placeholder": "ゲームサーバーノードを検索...",
       "cpu_short": "CPU",
       "memory_short": "メモリ",
-      "memory_share_tooltip": "{label} が使用中 — このノードの総 RAM の {percent}% です。赤いバーがほぼ満杯なら、1つのサービスがノードのメモリを占有しています。",
+      "memory_share_tooltip": "{label}が使用中 — このノードの総RAMの{percent}%です。ほぼ満杯の赤いバーは、1つのサービスがノードのメモリを占有していることを示します。",
       "disk_short": "ディスク",
       "network_short": "ネットワーク",
-      "no_nodes_found": "条件に合うゲームサーバーノードはありません。",
+      "no_nodes_found": "現在のフィルターに一致するゲームサーバーノードがありません。",
       "only_online_nodes": "オンラインのノードのみ"
     },
     "system_logs": {
-      "follow_logs": "ログを追従",
+      "follow_logs": "ログを追跡",
       "timestamps": "タイムスタンプ"
     },
-    "coming_soon": "近日公開",
+    "coming_soon": "近日公開！",
     "tournaments": {
       "title": "トーナメント",
-      "description": "開催中・受付中・今後のトーナメントを一覧し、状態や日付で絞り込んで目的のブラケットを探せます。",
+      "description": "ライブ・募集中・開催予定のトーナメントを閲覧、またはステータスや日付で絞り込んで特定のブラケットを探せます。",
       "create": "トーナメントを作成",
-      "open_for_registration": "登録受付中",
+      "open_for_registration": "参加登録受付中",
       "section_live": "LIVE.TOURNAMENTS",
       "section_registration": "REGISTRATION.FEED",
       "section_upcoming": "UPCOMING.TOURNAMENTS",
       "section_recent": "RECENT.TOURNAMENTS",
       "section_results": "FILTERED.RESULTS",
       "no_tournaments_title": "待機中 — トーナメントなし",
-      "no_tournaments_description": "開催中・予定・最近終了したトーナメントはありません。",
+      "no_tournaments_description": "ライブ・予定・最近終了したトーナメントはありません。",
       "filter": {
         "search_placeholder": "トーナメント名で検索…",
         "status_all": "すべて",
-        "status_live": "開催中",
-        "status_registration": "受付中",
-        "status_upcoming": "今後",
+        "status_live": "ライブ",
+        "status_registration": "募集中",
+        "status_upcoming": "開催予定",
         "status_finished": "終了",
-        "date_all": "全期間",
-        "date_7d": "過去7日",
-        "date_30d": "過去30日",
-        "date_90d": "過去90日",
-        "date_6m": "過去6か月",
+        "date_all": "すべての期間",
+        "date_7d": "過去7日間",
+        "date_30d": "過去30日間",
+        "date_90d": "過去90日間",
+        "date_6m": "過去6ヶ月",
         "date_1y": "過去1年",
-        "no_results_title": "該当するトーナメントなし",
-        "no_results_description": "フィルターを解除するか、検索条件を広げてください。"
+        "no_results_title": "該当するトーナメントがありません",
+        "no_results_description": "フィルターを解除するか、検索範囲を広げてください。"
       },
       "tabs": {
-        "upcoming": "今後"
+        "upcoming": "開催予定"
       }
     },
     "manage_tournaments": {
       "title": "トーナメント管理",
-      "description": "プラットフォーム上のすべてのトーナメントを確認・管理します。",
-      "search_by_id": "トーナメント ID で検索",
-      "enter_tournament_id": "トーナメント ID を入力...",
+      "description": "プラットフォーム上の全トーナメントを表示・管理します。",
+      "search_by_id": "トーナメントIDで検索",
+      "enter_tournament_id": "トーナメントIDを入力...",
       "search_by_name": "名前で検索",
       "enter_tournament_name": "トーナメント名を入力...",
-      "clear_all": "すべて解除",
+      "clear_all": "すべてクリア",
       "sort_by": "並び替え",
       "created_at": "作成日",
       "start": "開始日",
@@ -1305,28 +1286,28 @@
     },
     "scrims": {
       "title": "スクリムファインダー",
-      "description": "スクリム募集中のチームを一覧し、リージョンやマップで絞り込んで申請を送れます。",
-      "disabled_message": "スクリムファインダーは管理者によって現在無効にされています。",
+      "description": "スクリム募集中のチームを閲覧し、リージョンやマップで絞り込んで申請を送信できます。",
+      "disabled_message": "スクリムファインダーは現在、管理者により無効化されています。",
       "search_placeholder": "チームを検索",
       "regions_label": "リージョン",
       "regions_section": "リージョン",
-      "filter_regions_placeholder": "リージョンを絞り込み",
+      "filter_regions_placeholder": "リージョンで絞り込み",
       "no_regions_found": "リージョンが見つかりません。",
       "preferred_maps": "希望マップ",
-      "no_map_preferences": "希望マップは未設定です。",
-      "team_avg_elo": "チーム平均 ELO",
+      "no_map_preferences": "マップの希望は設定されていません。",
+      "team_avg_elo": "チーム平均ELO",
       "sort_by": "並び替え",
       "sort_name": "名前",
       "sort_elo": "ELO",
       "sort_reliable": "信頼度",
-      "sort_instructions": "クリックで追加 · もう一度で昇順・降順を切り替え。並び順が優先度になります。",
+      "sort_instructions": "クリックで追加・再クリックで順序を反転。並び順が優先度になります。",
       "today": "今日",
-      "no_teams_today": "今日対応できるチームはありません。",
+      "no_teams_today": "今日利用可能なチームはありません。",
       "time_to": "〜",
       "open_team_new_tab": "チームを新しいタブで開く",
       "request_scrim": "スクリムを申請",
-      "available_teams": "対応可能なチーム",
-      "no_teams_match": "条件に合うチームはありません。"
+      "available_teams": "募集中のチーム",
+      "no_teams_match": "フィルター条件に一致するチームがありません。"
     },
     "teams": {
       "title": "チーム",
@@ -1335,47 +1316,47 @@
       "no_teams": "チームが見つかりません。",
       "search": "検索...",
       "vetos": {
-        "section": "マップ傾向と Veto 傾向",
-        "description": "このチームがマップ Veto をどう進めるか、そして実際にサーバーで各マップがどう機能したかを示します。",
-        "loading": "Veto 履歴を読み込み中…",
-        "empty_title": "Veto 履歴なし",
-        "empty_description": "このチームには、マップ Veto が記録された完了済みの試合がまだありません。",
-        "most_banned": "最多 Ban",
-        "most_picked": "最多 Pick",
+        "section": "マップ傾向とVeto傾向",
+        "description": "このチームがマップVetoにどう臨むか、そして各マップがサーバー上で実際にどう機能するかを示します。",
+        "loading": "Veto履歴を読み込み中…",
+        "empty_title": "Veto履歴なし",
+        "empty_description": "このチームはまだマップVetoが記録された試合を完了していません。",
+        "most_banned": "最多Ban",
+        "most_picked": "最多Pick",
         "comfort_map": "得意マップ",
-        "comfort_hint": "{n} 試合以上必要",
+        "comfort_hint": "{n}試合以上のプレイが必要",
         "bans_short": "Ban",
         "picks_short": "Pick",
-        "played_short": "試合",
+        "played_short": "プレイ",
         "col_map": "マップ",
-        "col_played": "試合数",
+        "col_played": "プレイ数",
         "col_win": "勝率",
-        "col_banned": "Ban",
-        "col_picked": "Pick",
-        "col_first_ban": "初手 Ban",
-        "col_first_pick": "初手 Pick",
+        "col_banned": "Ban数",
+        "col_picked": "Pick数",
+        "col_first_ban": "初手Ban",
+        "col_first_pick": "初手Pick",
         "col_decider": "デサイダー",
-        "based_on": "{n} 件の Veto 記録に基づく"
+        "based_on": "{n}件のVeto記録に基づく"
       },
       "veto_sim": {
-        "section": "Veto シミュレーション",
-        "description": "両チームの Veto 履歴をもとに、指定した相手との Veto 結果とマップ勝率を予測します。",
+        "section": "Vetoシミュレーション",
+        "description": "両チームのVeto傾向から、選択した相手との想定Veto結果とマップ勝率を推定します。",
         "opponent": "対戦相手",
-        "select_opponent": "対戦相手チームを選択",
-        "estimate_notice": "あくまで予測です。過去の Veto 傾向から算出したもので、結果を保証するものではありません。",
-        "loading": "相手の Veto 履歴を読み込み中…",
-        "no_self_title": "このチームの Veto 履歴なし",
-        "no_self_description": "シミュレーションには、このチームのマップ Veto 記録が必要です。",
+        "select_opponent": "対戦相手のチームを選択",
+        "estimate_notice": "あくまで推定です — 過去のVeto傾向から算出したもので、結果を保証するものではありません。",
+        "loading": "相手チームのVeto履歴を読み込み中…",
+        "no_self_title": "このチームにVeto履歴がありません",
+        "no_self_description": "シミュレーションには、このチームのマップVeto記録が必要です。",
         "pick_opponent_title": "対戦相手を選択",
-        "pick_opponent_description": "マップ Veto をシミュレートする相手チームを選択してください。",
-        "no_opp_title": "相手の Veto 履歴なし",
-        "no_opp_description": "選択した相手には、シミュレーションに使えるマップ Veto の記録がありません。",
-        "confidence_self": "このチーム：{n} 件",
-        "confidence_opp": "対戦相手：{n} 件",
+        "pick_opponent_description": "マップVetoをシミュレートする対戦相手のチームを選択してください。",
+        "no_opp_title": "対戦相手にVeto履歴がありません",
+        "no_opp_description": "選択した対戦相手には、シミュレーションに使えるマップVeto記録がありません。",
+        "confidence_self": "このチーム: {n}件の記録",
+        "confidence_opp": "対戦相手: {n}件の記録",
         "col_map": "マップ",
-        "col_ban": "Ban 確率",
-        "col_pick": "Pick 確率",
-        "col_play": "採用確率",
+        "col_ban": "Ban確率",
+        "col_pick": "Pick確率",
+        "col_play": "プレイ確率",
         "col_predicted_win": "予測勝率"
       }
     },
@@ -1622,38 +1603,38 @@
           "refresh_dialog_title": "検索インデックスを再構築しますか？",
           "refresh_dialog_description": "全プレイヤーを Typesense の検索インデックスへバッチ単位で再同期します。処理はバックグラウンドで実行され、進捗はこの画面で確認できます。",
           "recompute_elo_title": "プレイヤー ELO の再計算",
-          "recompute_elo_description": "終了した全試合を順番にバッチで再生し、全プレイヤーのELOを消去して再構築します。シーズンが有効な場合は、各シーズン内の試合からシーズンELOも再構築します。ELOの計算式を変更した後や、レーティングがおかしい場合に使用してください。ELOの再計算に合わせて検索結果も自動的に更新されます。",
-          "recompute_elo_button": "ELO再計算",
+          "recompute_elo_description": "全プレイヤーのELOを消去し、終了済みの全試合を時系列順にバッチで再生して再構築します。シーズンが有効な場合、各シーズンのELOもそのシーズン内の試合から再構築されます。ELOの計算式を変更した場合やレーティングがおかしいと感じた場合に使用してください。検索結果はELOの再計算に合わせて自動的に更新されます。",
+          "recompute_elo_button": "ELOを再計算",
           "recomputing_elo": "再計算中...",
-          "recompute_elo_queued": "ELOの再計算を開始しました",
-          "recompute_elo_failed": "ELOの再計算を開始できませんでした",
+          "recompute_elo_queued": "ELO再計算を開始しました",
+          "recompute_elo_failed": "ELO再計算を開始できませんでした",
           "recompute_elo_dialog_title": "全プレイヤーのELOを再計算しますか？",
-          "recompute_elo_dialog_description": "既存のELOをすべて消去し、終了した全試合を時系列順に（バッチで）再生して一から再構築します。実行中はランキングが一時的に不完全になります。進捗はこの画面で確認できます。",
+          "recompute_elo_dialog_description": "既存のELOをすべて消去し、終了済みの全試合を時系列順（バッチ処理）で再生してゼロから再構築します。処理中はランキングが一時的に不完全になります。進行状況はここで確認できます。",
           "progress_running": "{processed} / {total}（{percent}%）",
           "progress_eta": "残り約{eta}",
           "progress_failed_count": "{failed}件失敗",
           "progress_completed": "{total}件完了",
-          "progress_canceled": "{completed} / {total}でキャンセル",
-          "progress_errored": "エラー — サーバーログを確認してください",
-          "already_running": "すでに実行中",
+          "progress_canceled": "{completed} / {total}でキャンセルされました",
+          "progress_errored": "失敗しました — サーバーログを確認してください",
+          "already_running": "実行中です",
           "cancel_button": "キャンセル",
           "cancel_requested": "キャンセルを要求しました",
           "recompute_elo_canceled_title": "ELO再計算をキャンセルしました",
           "recompute_elo_complete_title": "ELO再計算が完了しました",
-          "recompute_elo_complete_desc": "{total}件中{completed}件の試合を処理、{failed}件失敗",
-          "reindex_canceled_title": "検索インデックスの再構築をキャンセルしました",
-          "reindex_complete_title": "検索インデックスの再構築が完了しました",
-          "reindex_complete_desc": "{total}人中{completed}人のプレイヤーを再インデックス、{failed}件失敗",
-          "scan_bans_title": "Steam Banスキャン",
-          "scan_bans_description": "出場メンバーに入ったことのある全プレイヤーについて、SteamのVAC/ゲームBanを確認します。有効なBanがあるアカウントは自動的にBanされます。",
-          "scan_button": "Steam Banスキャン",
+          "recompute_elo_complete_desc": "{total}件中{completed}件処理、{failed}件失敗",
+          "reindex_canceled_title": "検索の再インデックスをキャンセルしました",
+          "reindex_complete_title": "検索の再インデックスが完了しました",
+          "reindex_complete_desc": "{total}人中{completed}人を再インデックス、{failed}人失敗",
+          "scan_bans_title": "Steam BANをスキャン",
+          "scan_bans_description": "ロスターに入ったことのある全プレイヤーのSteam VAC・ゲームBANを確認します。有効なBANがあるアカウントは自動的にBANされます。",
+          "scan_button": "Steam BANをスキャン",
           "scanning": "スキャン中...",
-          "scan_queued": "Steam Banスキャンをキューに追加しました",
-          "scan_failed": "Steam Banスキャンをキューに追加できませんでした",
-          "scan_dialog_title": "全プレイヤーのSteam Banをスキャンしますか？",
-          "scan_dialog_description": "出場メンバーに入ったことのある全プレイヤーについて、SteamのVAC/ゲームBan確認をバックグラウンドで実行します。検出されたBanは自動的に適用されます。プレイヤー数によっては時間がかかる場合があります。",
+          "scan_queued": "Steam BANスキャンをキューに追加しました",
+          "scan_failed": "Steam BANスキャンをキューに追加できませんでした",
+          "scan_dialog_title": "全プレイヤーのSteam BANをスキャンしますか？",
+          "scan_dialog_description": "ロスターに入ったことのある全プレイヤーを対象に、バックグラウンドでSteam VAC・ゲームBANチェックをキューに追加します。検出されたBANは自動的に適用されます。プレイヤー数によっては時間がかかる場合があります。",
           "danger_zone_title": "危険な操作",
-          "danger_zone_description": "これらの操作は負荷が高く、全プレイヤーを対象にバックグラウンドで実行されます。必要なときは自動的に実行されるため、手動実行は本当に必要な場合のみにしてください。"
+          "danger_zone_description": "これらの操作は負荷が高く、全プレイヤーを対象にバックグラウンドで実行されます。必要なときは自動的に実行されるため、本当に必要な場合のみ手動で実行してください。"
         },
         "branding": {
           "general": "全般",
@@ -1661,51 +1642,51 @@
           "brand_name": "ブランド名",
           "brand_name_description": "サイドバーとページタイトルに表示されます。",
           "border_radius": "角丸の半径",
-          "border_radius_description": "ボタン・カード・入力欄の角の丸みを調整します。",
+          "border_radius_description": "ボタン、カード、入力欄の丸みを調整します。",
           "show_separators": "区切り線を表示",
           "show_separators_description": "セクション間に水平の区切り線を表示します。",
           "logo": "ロゴ",
-          "logo_description": "正方形の画像を1点アップロードしてください（512×512のPNG推奨）。アプリ全体で使用され、PWAのインストールアイコンの生成にも使われます。ICOファイルは非対応です。",
+          "logo_description": "正方形の画像を1枚アップロードしてください（512×512のPNG推奨）。アプリ全体で使用され、PWAインストールアイコンの生成にも使われます。ICOファイルには対応していません。",
           "upload_logo": "ロゴをアップロード",
-          "favicon": "ファビコン",
-          "favicon_description": "任意。ブラウザタブ用のシンプルなマークです。PNG、ICO、WebPに対応。",
-          "upload_favicon": "ファビコンをアップロード",
+          "favicon": "Favicon",
+          "favicon_description": "任意項目です。ブラウザタブ用のシンプルなマークです。PNG、ICO、WebPに対応しています。",
+          "upload_favicon": "Faviconをアップロード",
           "remove": "削除",
           "login_page": "ログインページ",
           "login_page_description": "ログインページのフッターリンクをカスタマイズします。",
           "show_login_footer": "ログインフッターを表示",
           "show_login_footer_description": "ログインページにフッターリンクを表示します。",
-          "footer_text": "フッターのテキスト",
-          "footer_url": "フッターのURL",
+          "footer_text": "フッターテキスト",
+          "footer_url": "フッターURL",
           "theme_colors": "テーマカラー",
-          "theme_colors_description": "テーマカラーをカスタマイズします。変更はその場でプレビューされます。",
+          "theme_colors_description": "テーマカラーをカスタマイズします。変更はリアルタイムでプレビューされます。",
           "light_mode": "ライトモード",
           "dark_mode": "ダークモード",
-          "save_branding": "ブランド設定を保存",
+          "save_branding": "ブランディングを保存",
           "reset_to_defaults": "初期設定に戻す",
-          "reset_confirm_title": "ブランド設定を初期化しますか？",
-          "reset_confirm_description": "ブランド名、カラー、ログインフッター、アップロードしたロゴ・ファビコン・アプリアイコンがすべて消去され、5Stackの既定テーマに戻ります。元に戻せません。",
+          "reset_confirm_title": "ブランディングを初期設定に戻しますか？",
+          "reset_confirm_description": "ブランド名、カラー、ログインフッター、アップロード済みのロゴ・favicon・アプリアイコンをすべて消去し、5Stackの初期テーマに戻します。この操作は元に戻せません。",
           "export_theme": "テーマをエクスポート",
           "import_theme": "テーマをインポート",
           "upload_failed": "アップロードできませんでした",
           "delete_failed": "削除できませんでした",
           "logo_uploaded": "ロゴをアップロードしました",
-          "favicon_uploaded": "ファビコンをアップロードしました",
+          "favicon_uploaded": "Faviconをアップロードしました",
           "icon_uploaded": "アプリアイコンをアップロードしました",
           "logo_removed": "ロゴを削除しました",
-          "favicon_removed": "ファビコンを削除しました",
+          "favicon_removed": "Faviconを削除しました",
           "icon_removed": "アプリアイコンを削除しました",
-          "branding_saved": "ブランド設定を保存しました",
+          "branding_saved": "ブランディングを保存しました",
           "save_failed": "保存できませんでした",
-          "branding_reset": "ブランド設定を初期化しました",
+          "branding_reset": "ブランディングを初期設定に戻しました",
           "reset_failed": "初期化できませんでした",
           "theme_exported": "テーマをエクスポートしました",
           "export_failed": "エクスポートできませんでした",
           "import_failed": "インポートできませんでした",
-          "invalid_theme_file": "テーマファイルの形式が正しくありません",
+          "invalid_theme_file": "無効なテーマファイルです",
           "sections": {
-            "core": "基本",
-            "cards_borders": "カードと枠線",
+            "core": "コア",
+            "cards_borders": "カード・境界線",
             "sidebar": "サイドバー",
             "top_nav": "トップナビ",
             "tactical": "タクティカル"
@@ -1714,62 +1695,62 @@
             "background": "背景",
             "foreground": "前景（テキスト）",
             "primary": "プライマリ（ボタン）",
-            "primary_foreground": "プライマリ前景（ボタンのテキスト）",
+            "primary_foreground": "プライマリ前景（ボタンテキスト）",
             "secondary": "セカンダリ",
             "secondary_foreground": "セカンダリ前景",
             "accent": "アクセント（選択項目）",
             "accent_foreground": "アクセント前景",
             "muted": "ミュート（控えめな背景）",
             "muted_foreground": "ミュート前景（補助テキスト）",
-            "destructive": "破壊的操作（削除・エラー）",
-            "destructive_foreground": "破壊的操作の前景",
+            "destructive": "デストラクティブ（削除・エラー）",
+            "destructive_foreground": "デストラクティブ前景",
             "warning": "警告",
-            "warning_foreground": "警告の前景",
-            "card": "カードの背景",
-            "card_foreground": "カードのテキスト",
-            "border": "枠線",
-            "popover": "ポップオーバーの背景",
-            "popover_foreground": "ポップオーバーのテキスト",
-            "input": "入力欄の枠線",
+            "warning_foreground": "警告前景",
+            "card": "カード背景",
+            "card_foreground": "カードテキスト",
+            "border": "境界線",
+            "popover": "ポップオーバー背景",
+            "popover_foreground": "ポップオーバーテキスト",
+            "input": "入力欄の境界線",
             "ring": "フォーカスリング",
-            "sidebar_background": "サイドバーの背景",
-            "sidebar_foreground": "サイドバーのテキスト",
-            "sidebar_accent": "サイドバーの選択/ホバー",
-            "sidebar_accent_foreground": "サイドバー選択時のテキスト",
-            "sidebar_border": "サイドバーの枠線",
-            "sidebar_primary": "サイドバーのプライマリ",
-            "sidebar_primary_foreground": "サイドバーのプライマリテキスト",
-            "sidebar_ring": "サイドバーのフォーカスリング",
-            "topnav_background": "トップナビの背景",
-            "topnav_foreground": "トップナビのテキスト",
-            "topnav_accent": "トップナビのホバー",
-            "topnav_accent_foreground": "トップナビのホバーテキスト",
-            "topnav_border": "トップナビの枠線",
-            "topnav_primary": "トップナビのプライマリ",
-            "topnav_primary_foreground": "トップナビのプライマリテキスト",
-            "topnav_ring": "トップナビのフォーカスリング",
-            "tactical_amber": "タクティカルアクセント（アンバーの強調）",
-            "tactical_amber_foreground": "タクティカルアクセントの前景"
+            "sidebar_background": "サイドバー背景",
+            "sidebar_foreground": "サイドバーテキスト",
+            "sidebar_accent": "サイドバー選択・ホバー",
+            "sidebar_accent_foreground": "サイドバー選択テキスト",
+            "sidebar_border": "サイドバー境界線",
+            "sidebar_primary": "サイドバープライマリ",
+            "sidebar_primary_foreground": "サイドバープライマリテキスト",
+            "sidebar_ring": "サイドバーフォーカスリング",
+            "topnav_background": "トップナビ背景",
+            "topnav_foreground": "トップナビテキスト",
+            "topnav_accent": "トップナビホバー",
+            "topnav_accent_foreground": "トップナビホバーテキスト",
+            "topnav_border": "トップナビ境界線",
+            "topnav_primary": "トップナビプライマリ",
+            "topnav_primary_foreground": "トップナビプライマリテキスト",
+            "topnav_ring": "トップナビフォーカスリング",
+            "tactical_amber": "タクティカルアクセント（アンバーのハイライト）",
+            "tactical_amber_foreground": "タクティカルアクセント前景"
           },
-          "assets_section": "ロゴとファビコン",
-          "assets_section_description": "ロゴ（アプリ全体で使用され、PWAのインストールアイコンの生成にも使われます）と、任意でファビコンをアップロードします。"
+          "assets_section": "ロゴ・Favicon",
+          "assets_section_description": "ロゴ（アプリ全体とPWAインストールアイコンの生成に使用）と、任意のfaviconをアップロードします。"
         },
         "fixtures": {
           "dev_only_notice": "フィクスチャは開発モードでのみ利用できます。",
-          "load_title": "デモ用フィクスチャの読み込み",
-          "load_description": "テスト用のサンプルプレイヤー、チーム、試合、トーナメントをデータベースに投入します。",
+          "load_title": "デモフィクスチャを読み込む",
+          "load_description": "テスト用に、サンプルのプレイヤー、チーム、試合、トーナメントをデータベースに投入します。",
           "loading": "読み込み中...",
-          "loaded_title": "デモ用フィクスチャ読み込み済み",
-          "loaded_description": "現在、フィクスチャデータがデータベースに読み込まれています。",
+          "loaded_title": "デモフィクスチャを読み込み済み",
+          "loaded_description": "フィクスチャデータが現在データベースに読み込まれています。",
           "processing": "処理中...",
           "load_dialog_title": "フィクスチャデータを読み込みますか？",
-          "load_dialog_description": "プレイヤー40人、チーム8つ、試合約120件、トーナメント4件をデータベースに挿入します。これは開発用のサンプルデータです。",
+          "load_dialog_description": "プレイヤー40人、チーム8つ、試合約120件、トーナメント4つをデータベースに追加します。これは開発用のサンプルデータです。",
           "load_button": "フィクスチャを読み込む",
           "reload_dialog_title": "フィクスチャデータを再読み込みしますか？",
-          "reload_dialog_description": "既存のフィクスチャデータをすべて削除し、新しいデータを読み込み直します。フィクスチャのプレイヤー・試合・トーナメントに加えた変更は失われます。",
+          "reload_dialog_description": "既存のフィクスチャデータをすべて削除し、新しいコピーを再読み込みします。フィクスチャのプレイヤー・試合・トーナメントに加えた変更は失われます。",
           "reload_button": "フィクスチャを再読み込み",
           "remove_dialog_title": "フィクスチャデータを削除しますか？",
-          "remove_dialog_description": "フィクスチャのプレイヤー、チーム、試合、トーナメントをデータベースからすべて削除します。この操作は元に戻せません。",
+          "remove_dialog_description": "フィクスチャのプレイヤー、チーム、試合、トーナメントをすべてデータベースから削除します。この操作は元に戻せません。",
           "remove_button": "フィクスチャを削除",
           "loaded_success": "フィクスチャを読み込みました",
           "load_failed": "フィクスチャを読み込めませんでした",
@@ -1779,20 +1760,20 @@
         "servers": {
           "title": "サーバー設定",
           "plugin_runtime_section": "プラグインランタイム",
-          "plugin_runtime_description": "ゲームサーバーで動作させるCS2プラグインフレームワークです。どちらのフレームワークも同じ試合ロジックを実装していますが、読み込むサードパーティプラグインやgamedataファイルが異なります。",
-          "plugin_runtime_warning": "切り替えても、カスタムプラグインがaddons/swiftlys2とaddons/counterstrikesharpの間で移動することはありません。すでに稼働中のサーバーは、再作成されるまで現在のイメージのままです。",
+          "plugin_runtime_description": "ゲームサーバーが使用するCS2プラグインフレームワークです。どちらのフレームワークも同じ試合ロジックを実装していますが、読み込むサードパーティプラグインとgamedataファイルが異なります。",
+          "plugin_runtime_warning": "切り替えても、カスタムプラグインがaddons/swiftlys2とaddons/counterstrikesharpの間で自動的に移動することはありません。既に稼働中のサーバーは、リサイクルされるまで現在のイメージを使い続けます。",
           "plugin_runtime_locked": "パネルAPIにSERVER_IMAGE環境変数が設定されており、この選択より優先されます。ここでランタイムを選択するには、この環境変数を削除してください。",
-          "cpu_section": "CPUピン留め",
-          "disk_section": "ディスクの確保",
-          "enable_cpu_pinning": "CPUピン留めを有効化",
-          "enable_cpu_pinning_description": "ゲームサーバーノードでCPUピン留めを有効にして、パフォーマンスを向上させます",
-          "number_of_cpus_per_server": "サーバーあたりのCPU数",
-          "number_of_cpus_per_server_description": "各ゲームサーバーに割り当てる専用CPUコア数です（CPUピン留めが有効な場合のみ使用されます）。",
-          "reserved_disk_space_fresh_gb": "必要なディスク容量 - 新規インストール（GB）",
-          "reserved_disk_space_fresh_gb_description": "ノードを新規に構築する（CS2が未インストール）際に必要な最小ディスク容量（GB）です。0にすると無効になります。",
-          "reserved_disk_space_existing_gb": "必要なディスク容量 - インストール済み（GB）",
-          "reserved_disk_space_existing_gb_description": "ノードにCS2がすでにインストールされている場合に必要な最小ディスク容量（GB）です。0にすると無効になります。",
-          "update_cpu_pinning": "CPUピン留めを更新しました"
+          "cpu_section": "CPUピニング",
+          "disk_section": "ディスク予約",
+          "enable_cpu_pinning": "CPUピニングを有効化",
+          "enable_cpu_pinning_description": "ゲームサーバーノードでCPUピニングを有効にし、パフォーマンスを向上させます",
+          "number_of_cpus_per_server": "サーバーごとのCPU数",
+          "number_of_cpus_per_server_description": "各ゲームサーバーに割り当てる専用CPUコア数です（CPUピニングが有効な場合のみ使用されます）。",
+          "reserved_disk_space_fresh_gb": "必要ディスク容量 - 新規インストール（GB）",
+          "reserved_disk_space_fresh_gb_description": "ノードの新規プロビジョニング時（CS2未インストール）に必要な最小ディスク容量（GB）です。0にすると無効になります。",
+          "reserved_disk_space_existing_gb": "必要ディスク容量 - 既存インストール（GB）",
+          "reserved_disk_space_existing_gb_description": "ノードに既にCS2がインストールされている場合に必要な最小ディスク容量（GB）です。0にすると無効になります。",
+          "update_cpu_pinning": "CPUピニングを更新しました"
         },
         "highlights": {
           "title": "ハイライト",
@@ -1801,77 +1782,77 @@
         "linked_accounts": {
           "title": "試合インポート",
           "section": "試合インポート",
-          "enabled": "CS2の試合インポートを許可",
-          "enabled_description": "プレイヤーがSteamの試合履歴認証コードを連携して公式CS2の試合をインポートできるようにし、デモのアップロードも許可します。オフにすると認証コード入力欄が非表示になり、外部インポートがブロックされます。",
-          "updated": "外部試合の設定を更新しました",
+          "enabled": "CS2試合のインポートを許可",
+          "enabled_description": "プレイヤーがSteamの試合履歴認証コードを連携して公式CS2試合をインポートできるようにし、デモのアップロードも許可します。無効にすると認証コード入力フォームが非表示になり、外部インポートがブロックされます。",
+          "updated": "外部試合設定を更新しました",
           "disabled_notice": "外部試合のインポートは現在、管理者によって無効化されています。",
-          "faceit_enabled": "Faceitの試合をインポート",
-          "faceit_enabled_description": "既定はオフです。連携済みプレイヤーのFaceit試合履歴（直近30日）を取得して試合をインポートします。外部試合の有効化とFaceit APIキーが必要で、デモのダウンロードにはDownloads APIへのアクセス権も必要です。",
+          "faceit_enabled": "Faceit試合をインポート",
+          "faceit_enabled_description": "デフォルトで無効です。連携済みプレイヤーのFaceit試合履歴（過去30日分）をポーリングし、試合をインポートします。External Matchesの有効化とFaceit APIキーが必要です。デモのダウンロードにはDownloads APIへのアクセスも必要です。",
           "faceit_setup_guide": "セットアップガイド",
-          "faceit_downloads_api_link": "Downloads APIのアクセス権を申請",
+          "faceit_downloads_api_link": "Downloads APIアクセスを申請",
           "faceit_test": "Faceit連携をテスト",
-          "faceit_test_description": "Faceit APIキーが有効か、デモをダウンロードできるかを確認します。",
+          "faceit_test_description": "Faceit APIキーが機能するか、デモをダウンロードできるかを確認します。",
           "faceit_test_button": "テスト",
           "faceit_testing": "テスト中…",
           "faceit_data_api": "Data API",
           "faceit_downloads_api": "Downloads API",
-          "faceit_test_failed": "Faceitのテストに問題が発生しました"
+          "faceit_test_failed": "Faceitのテストに失敗しました"
         },
         "steam_presence": {
           "title": "Steamプレゼンス",
           "section": "Steamプレゼンス",
           "enabled": "プレゼンスを有効化",
-          "enabled_description": "既定はオンです。フレンドボットが連携済みプレイヤーのSteamプレゼンスを監視し、1時間ごとの取得を待たずに試合終了と同時にインポートします。停止したい場合はオフにしてください。",
-          "updated": "Steamプレゼンスの設定を更新しました",
-          "active": "稼働中",
+          "enabled_description": "デフォルトで有効です。フレンドボットが連携済みプレイヤーのSteamプレゼンスをリアルタイムで監視し、1時間ごとのポーリングを待たずに試合終了時点で即座にインポートします。キルスイッチとして無効化できます。",
+          "updated": "Steamプレゼンス設定を更新しました",
+          "active": "有効",
           "disabled": "無効",
           "live": "ライブ",
           "setup": "仕組み",
-          "setup_step1": "ボット専用のSteamアカウントを用意し、Steam Guardを有効にしてください。STEAM_USERのアカウントは他で使用しており競合するため、使い回さないでください。",
-          "setup_step2": "下から追加します。自動的にログインし、Steam Guardの確認が必要な場合はボットに2FA入力欄が表示されます。メールまたはSteamアプリのコードを入力してください。初回ログイン後はサインイン状態が維持され、再度求められることはありません。",
-          "setup_step3": "プレイヤーは設定画面またはプロフィールリンクからボットをSteamフレンドに追加します。フレンドになると、試合終了と同時にインポートされます。",
+          "setup_step1": "ボット専用のSteamアカウントを用意し、Steam Guardを有効にしてください。STEAM_USERアカウントは他の用途で使われているため、再利用すると競合します。",
+          "setup_step2": "下記でアカウントを追加してください。自動的にログインします。Steam Guardの確認が求められた場合はボットに2FA入力欄が表示されるので、メールまたはSteamアプリのコードを入力してください。初回ログイン後はサインインした状態が保たれ、再度求められることはありません。",
+          "setup_step3": "プレイヤーは（設定画面またはプロフィールリンクから）ボットをSteamフレンドに追加します。フレンドになると、試合終了時点で即座にインポートされます。",
           "add_bot": "ボットを追加",
-          "add_bot_description": "プレゼンス用のプールにSteamアカウントを追加します。サインイン状態を保つため、認証情報が保存されます。",
+          "add_bot_description": "プレゼンスプールにSteamアカウントを追加します。サインイン状態を維持するため、認証情報が保存されます。",
           "username": "Steamユーザー名",
           "password": "パスワード",
           "add": "追加",
           "account_added": "ボットアカウントを追加しました — まもなくログインします",
           "account_add_failed": "ボットアカウントを追加できませんでした",
-          "account_removed": "Bot アカウントを削除しました。",
-          "account_remove_failed": "Bot アカウントを削除できませんでした。しばらくしてから再試行してください。",
-          "remove_confirm": "Bot アカウント {name} を削除しますか？割り当て済みのプレイヤーは別の Bot に再割り当てされます。",
-          "needs_2fa": "2FA が必要",
-          "needs_2fa_email": "このアカウント宛にメールで届いた Steam Guard コードを入力してログインを完了してください。",
-          "needs_2fa_app": "このアカウントの Steam モバイルアプリに表示されている Steam Guard コードを入力してログインを完了してください。",
-          "code_wrong": "前回のコードが正しくありませんでした。もう一度入力してください。",
+          "account_removed": "Botアカウントを削除しました",
+          "account_remove_failed": "Botアカウントの削除に失敗しました",
+          "remove_confirm": "Botアカウント{name}を削除しますか？割り当てられているプレイヤーは再割り当てされます。",
+          "needs_2fa": "2FAが必要",
+          "needs_2fa_email": "ログインを完了するには、このアカウント宛に届いたSteam Guardコードを入力してください。",
+          "needs_2fa_app": "ログインを完了するには、Steamモバイルアプリに表示されたこのアカウントのSteam Guardコードを入力してください。",
+          "code_wrong": "前回のコードが間違っていました。もう一度お試しください。",
           "code_placeholder": "コード",
           "submit_code": "送信",
           "code_submitted": "コードを送信しました。ログイン中…",
-          "code_failed": "Steam Guard コードを送信できませんでした。しばらくしてから再試行してください。",
+          "code_failed": "Steam Guardコードの送信に失敗しました",
           "status": "ステータス",
           "bots": "Bot",
-          "bots_description": "プレゼンスプールに登録されている Steam アカウントと、その稼働状況です。",
-          "no_bots": "Bot なし",
-          "no_bots_hint": "Steam アカウントを追加すると、プレイヤーの試合の監視を開始できます。",
-          "add_first_bot": "最初の Bot を追加",
+          "bots_description": "プレゼンスプール内のSteamアカウントとそのライブステータスです。",
+          "no_bots": "Botがまだありません",
+          "no_bots_hint": "プレイヤーの試合を監視するには、Steamアカウントを追加してください。",
+          "add_first_bot": "最初のBotを追加",
           "bot": "Bot",
           "online": "オンライン",
           "online_yes": "オンライン",
           "online_no": "オフライン",
           "watching": "監視中",
           "pending": "保留中",
-          "pending_tooltip": "Bot が割り当て済みですが、まだ Steam フレンドに追加していないプレイヤーです。",
-          "capacity": "収容数",
-          "capacity_tooltip": "全 Bot のフレンド枠の合計です。各 Bot の Steam レベルから自動判定されます（250 + 5 × レベル、最大 2000）。",
-          "fetch_failed": "プレゼンスの状況を読み込めませんでした。しばらくしてから再試行してください。",
-          "fetch_hint": "API が最新ビルドで動作していること、マイグレーションと Hasura メタデータが適用されていること、Web の GraphQL 型が再生成されていること（yarn codegen）を確認してください。"
+          "pending_tooltip": "Botが割り当てられたものの、まだSteamフレンドに追加していないプレイヤーです。",
+          "capacity": "キャパシティ",
+          "capacity_tooltip": "全Bot合計のフレンド枠数です。各BotのSteamレベルから自動検出されます（250 + 5 × レベル、最大2000）。",
+          "fetch_failed": "プレゼンスステータスの読み込みに失敗しました",
+          "fetch_hint": "APIが最新ビルドで稼働していること、マイグレーションとHasuraメタデータが適用されていること、Web側のGraphQL型が再生成されていること（yarn codegen）を確認してください。"
         },
         "scrim_finder": {
           "title": "スクリムファインダー",
           "section": "スクリムファインダー",
           "enabled": "スクリムファインダーを有効化",
-          "enabled_description": "チームが空き時間を公開し、対戦相手を探してスクリムを組めるようになります。既定で有効です。オフにするとスクリムファインダーは全画面で非表示になり、自動マッチングも停止します。",
-          "updated": "スクリムファインダーの設定を更新しました。"
+          "enabled_description": "チームが空き状況を公開し、対戦相手を探し、スクリムを予約できるようにします。デフォルトで有効です。オフにするとスクリムファインダーが全体で非表示になり、自動マッチングも停止します。",
+          "updated": "スクリムファインダー設定を更新しました"
         },
         "demo_settings": {
           "title": "デモ",
@@ -1883,133 +1864,133 @@
           "unit_days": "（日）",
           "unit_gb": "（GB）",
           "cloudflare_worker_url": "Cloudflare Worker URL",
-          "retention_storage_description": "デモは少なくとも最小保持期間のあいだ保存されます。合計容量が最大ストレージを超えると、保持期間を過ぎた古いデモから順に削除されます。",
-          "cloudflare_worker_url_description": "S3 バケットへのリクエストを中継する Cloudflare Worker を任意で指定できます。デモとハイライトのダウンロードがバケットの下り転送量に計上されなくなります（Backblaze ↔ Cloudflare 間は無料）。空欄の場合は S3 から直接配信します。",
-          "test_s3_description": "S3 への接続を確認し、デモ用バケットにファイルをアップロードします。",
-          "test_upload": "アップロードテスト",
+          "retention_storage_description": "デモは最小保持期間の間は保持されます。合計ストレージが最大値を超えると、保持期間を過ぎた古いデモから削除されます。",
+          "cloudflare_worker_url_description": "S3バケットへのリクエストをプロキシするCloudflare Workerです（任意）。デモとハイライトのダウンロードがバケットのegressにカウントされなくなります（BackblazeとCloudflare間の帯域は無料）。空欄の場合はS3から直接配信します。",
+          "test_s3_description": "S3接続をテストし、デモ用バケットにファイルをアップロードします。",
+          "test_upload": "アップロードをテスト",
           "test_upload_success": "アップロードテスト成功",
-          "test_upload_failed": "アップロードテストは完了しませんでした",
-          "test_download": "ダウンロードテスト",
-          "test_download_failed": "ダウンロードテストは完了しませんでした",
-          "demo_network_limiter": "デモ転送の全体帯域制限",
-          "demo_network_limiter_description": "ゲームサーバーノードが完了したデモファイルを S3 に転送する際に使用するアップロード帯域の上限です。",
-          "updated_s3_settings": "S3 設定を更新しました。",
+          "test_upload_failed": "アップロードテスト失敗",
+          "test_download": "ダウンロードをテスト",
+          "test_download_failed": "ダウンロードテスト失敗",
+          "demo_network_limiter": "デモのグローバル帯域制限",
+          "demo_network_limiter_description": "ゲームサーバーノードが完了したデモファイルをS3へ転送する際に使用するアップロード帯域の上限です。",
+          "updated_s3_settings": "S3設定を更新しました",
           "clips_min_retention": "最小保持期間",
-          "clips_retention_storage_description": "ハイライトは少なくとも最小保持期間のあいだ保存されます。合計容量が最大ストレージを超えると、保持期間を過ぎた古いハイライトから順に削除されます。",
+          "clips_retention_storage_description": "ハイライトは最小保持期間の間は保持されます。合計ストレージが最大値を超えると、保持期間を過ぎた古いハイライトから削除されます。",
           "clips_max_storage": "最大ストレージ",
           "highlights_section": "ハイライト",
-          "clip_video_codec": "ハイライトのコーデック",
-          "clip_video_codec_description": "H.264 は既定値で、ブラウザや端末を問わず最も広く再生できます。H.265 (HEVC) は同等の画質でファイルサイズが約 30% 小さく、最近の Chrome、Edge、Safari、iOS ではハードウェアデコードされますが、対応環境は限られます。GPU が NVENC HEVC に対応していない場合、H.265 は自動的に H.264 にフォールバックします。",
-          "clip_fps": "ハイライトの FPS",
-          "clip_fps_description": "レンダリングしたハイライトと手動編集クリップの出力フレームレートです。60 FPS はより滑らかですが、エンコード負荷とファイルサイズが倍になります。30 FPS は軽量な選択肢です。",
-          "clip_resolution": "ハイライトの解像度",
-          "clip_resolution_description": "レンダリングしたハイライトと手動編集クリップの既定の出力解像度です。レンダーダイアログでクリップごとに変更もできます。1080p は画質とファイルサイズのバランスが良く、720p はファイルサイズが約 50% 小さくなります。GPU ノードが 1440p でレンダリングするとどちらも品質が上がります（ストリーマーが選択した出力解像度へスーパーサンプリングします）。",
+          "clip_video_codec": "ハイライトコーデック",
+          "clip_video_codec_description": "H.264はブラウザ・デバイスを問わず最も広く再生互換性があるデフォルト設定です。H.265（HEVC）は同等の画質でファイルサイズが約30%小さくなり、最近のChrome・Edge・Safari・iOSではハードウェアデコードされますが、対応環境は限られます。GPUがNVENC HEVCに対応していない場合、H.265は自動的にH.264にフォールバックします。",
+          "clip_fps": "ハイライトFPS",
+          "clip_fps_description": "レンダーされたハイライトと手動編集クリップの出力フレームレートです。60 FPSはより滑らかですが、エンコード処理とファイルサイズが倍になります。30 FPSは軽量な選択肢です。",
+          "clip_resolution": "ハイライト解像度",
+          "clip_resolution_description": "レンダーされたハイライトと手動編集クリップのデフォルト出力解像度です。ユーザーはレンダーダイアログでクリップごとに上書きできます。1080pは画質とファイルサイズのバランスが良く、720pはファイルサイズが約50%小さくなります。GPUノードで1440pでレンダーすると、ストリーマーが選択した出力解像度にスーパーサンプリングして縮小するため、どちらも画質が向上します。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（推奨）",
           "clip_bake_branding": "プレイヤーチップとアウトロをハイライトに焼き込む",
-          "clip_bake_branding_description": "プレイヤーチップのオーバーレイとブランドのアウトロをハイライトファイルに直接焼き込みます。オフにするとオーバーレイなしの素の映像を出力します。",
+          "clip_bake_branding_description": "プレイヤーチップのオーバーレイとブランドアウトロをハイライトファイルに直接レンダーします。無効にすると、オーバーレイなしの生キャプチャを出力します。",
           "auto_generate_match_clips": "試合ハイライトを自動生成",
-          "auto_generate_match_clips_description": "試合終了後に、各プレイヤーの試合まとめハイライトをキューに追加します。",
-          "auto_generate_match_clips_imported": "インポートした試合も対象にする",
-          "auto_generate_match_clips_imported_description": "5Stack 外からインポートした試合（Valve のマッチ履歴など）でもハイライトを自動生成します。インポートした試合でレンダーキューが溢れないよう、既定ではオフです。",
-          "pause_renders_during_active_match": "試合中はハイライトのレンダーを一時停止",
-          "pause_renders_during_active_match_description": "GPU ノード上のサーバーで試合が Live になったとき、実行中のハイライトレンダーを自動で一時停止し、ゲームサーバーとレンダーポッドが GPU を奪い合わないようにします。試合が終わるとレンダーは自動的に再開します。",
-          "auto_clip_default_visibility": "自動生成ハイライトの既定の公開範囲",
-          "auto_clip_filters_section": "自動ハイライトのフィルター",
-          "auto_clip_always_include_knife": "ナイフキルは常に含める",
-          "auto_clip_always_include_knife_description": "ナイフキルを取ったプレイヤーには、そのラウンドが最小キル数のフィルターを満たさない場合でも、ハイライトの末尾にナイフキルを最大 3 件追加します。",
-          "auto_clip_min_kills": "ハイライト生成に必要な最小キル数",
-          "auto_clip_min_kills_description": "プレイヤーのベストラウンドがこのキル数に達したときだけハイライトを自動生成します。値を上げると、1 試合で全員分のクリップが作られるのを防げます。",
-          "auto_clip_min_kills_any": "キルがあれば（全員）",
-          "auto_clip_min_kills_2k": "2キル以上（2K+）",
-          "auto_clip_min_kills_3k": "3キル以上（3K+）",
-          "auto_clip_min_kills_4k": "4キル以上（4K+）",
-          "auto_clip_min_kills_ace": "エースのみ（5K）",
+          "auto_generate_match_clips_description": "試合終了後、各プレイヤーの試合ダイジェストハイライトをキューに追加します。",
+          "auto_generate_match_clips_imported": "インポートした試合も含める",
+          "auto_generate_match_clips_imported_description": "5stack外部からインポートした試合（例：Valveの試合履歴）についてもハイライトを自動生成します。インポートした試合でレンダーキューが溢れないよう、デフォルトではオフです。",
+          "pause_renders_during_active_match": "試合進行中はハイライトレンダーを一時停止",
+          "pause_renders_during_active_match_description": "GPUノード上のサーバーで試合がLiveになった際、進行中のハイライトレンダーを自動的に一時停止し、ゲームサーバーとレンダーポッドがGPUを取り合わないようにします。試合終了後、レンダーは自動的に再開します。",
+          "auto_clip_default_visibility": "自動生成ハイライトのデフォルト公開範囲",
+          "auto_clip_filters_section": "自動ハイライトフィルター",
+          "auto_clip_always_include_knife": "ナイフキルを必ず含める",
+          "auto_clip_always_include_knife_description": "ナイフキルを決めたプレイヤーには、最小キル数フィルターを満たさないラウンドであっても、ハイライトリールの末尾に最大3件のナイフキルを追加します。",
+          "auto_clip_min_kills": "ハイライトを生成する最小キル数",
+          "auto_clip_min_kills_description": "そのプレイヤーのベストラウンドがこのキル数に達した場合のみ、ハイライトを自動生成します。値を上げることで、試合ごとに全員分のクリップが生成されるのを防げます。",
+          "auto_clip_min_kills_any": "1キル以上（全員）",
+          "auto_clip_min_kills_2k": "2キル以上",
+          "auto_clip_min_kills_3k": "3キル以上",
+          "auto_clip_min_kills_4k": "4キル以上",
+          "auto_clip_min_kills_ace": "エースのみ（5キル）",
           "visibility_private": "非公開",
           "visibility_public": "公開",
-          "default_hud_mode": "既定の HUD スタイル",
-          "default_hud_mode_description": "ゲームストリーマーポッドが起動時に読み込む JTs Hud Manager のレイアウトです。ライブ配信、デモ再生、ハイライトの一括生成で使われます。配信ごとにプレイヤーコントロールから切り替えることもできます。",
+          "default_hud_mode": "デフォルトHUDスタイル",
+          "default_hud_mode_description": "ライブ配信・デモ再生・バッチハイライト生成時に、ゲームストリーマーポッドが起動時に読み込むJTs Hud Managerのレイアウトです。ストリーマーは配信ごとにプレイヤーコントロールからスタイルを切り替えられます。",
           "hud_mode_horizontal": "横型",
           "hud_mode_vertical": "縦型",
           "playback_section": "再生",
-          "reparse_warning_title": "すべてのデモを再解析します。非常に長い時間がかかることがあります。",
-          "reparse_warning_body": "デモは 1 件ずつ再処理されるため、件数によっては数時間から数日かかります。内容を理解している場合か、デモの解析方法が大きく変わるアップデートの後だけ実行してください。アップデートで追加された新しいスタッツは、試合が閲覧された時点で自動的に再解析されます。これは一括で強制実行するための機能です。",
-          "reparse_button": "全デモを再解析",
-          "reparse_running": "デモを再解析中…",
-          "reparse_failed_count": "{count} 件エラー",
+          "reparse_warning_title": "すべてのデモを再パースします。非常に時間がかかる場合があります。",
+          "reparse_warning_body": "デモは1件ずつ再処理されるため、保有数によっては数時間から数日かかることがあります。内容を理解したうえで実行するか、アップデートでデモの解析方法が変わった場合にのみ行ってください。アップデートによる新しいスタッツは試合閲覧時に自動的に再パースされます。これは一括で強制実行するための機能です。",
+          "reparse_button": "全デモを再パース",
+          "reparse_running": "デモを再パース中…",
+          "reparse_failed_count": "{count}件失敗",
           "reparse_cancel": "キャンセル",
-          "reparse_last_run": "前回の実行: {completed} / {total} 件処理、{failed} 件エラー。",
-          "reparse_confirm_title": "すべてのデモを再解析しますか？",
-          "reparse_confirm_body": "全デモを 1 件ずつ再解析するバックグラウンドジョブをキューに入れます。非常に長い時間がかかることがあります。内容を理解している場合か、デモの解析方法が大きく変わったアップデートの後以外は推奨しません。いつでもキャンセルできます。",
-          "reparse_confirm_action": "再解析を開始する",
-          "reparse_started": "再解析を開始しました。バックグラウンドで 1 件ずつ処理されるため、このページを閉じても問題ありません。",
+          "reparse_last_run": "前回の実行: {completed} / {total} 件処理、{failed} 件失敗。",
+          "reparse_confirm_title": "すべてのデモを再パースしますか？",
+          "reparse_confirm_body": "全デモを1件ずつ再パースするバックグラウンドジョブをキューに追加します。非常に時間がかかる場合があるため、内容を理解しているか、アップデートでデモの解析方法が変わった場合以外は推奨されません。いつでもキャンセルできます。",
+          "reparse_confirm_action": "再パースを開始",
+          "reparse_started": "再パースを開始しました。バックグラウンドで1件ずつ実行されます。このページは閉じても構いません。",
           "reparse_cancel_requested": "キャンセルを受け付けました。現在のデモの処理後に停止します。",
-          "reparse_complete_title": "デモの再解析が完了しました",
-          "reparse_canceled_title": "デモの再解析をキャンセルしました",
-          "reparse_complete_desc": "{completed} / {total} 件処理、{failed} 件エラー。",
+          "reparse_complete_title": "デモの再パースが完了しました",
+          "reparse_canceled_title": "デモの再パースをキャンセルしました",
+          "reparse_complete_desc": "{completed} / {total} 件処理、{failed} 件失敗。",
           "orphaned_open_button": "孤立アップロードをスキャン",
           "orphaned_title": "孤立アップロード",
-          "orphaned_dialog_description": "データベースに対応するレコードがないデモ、再生、ハイライトのオブジェクトをバケットからスキャンし、記録上のストレージ使用量を修正します。バックグラウンドで実行されるため、このダイアログを閉じて後で確認できます。",
-          "orphaned_scan_now": "スキャン開始",
+          "orphaned_dialog_description": "データベースに対応する行がないデモ・再生用・ハイライトオブジェクトをバケット内でスキャンし、記録済みストレージサイズを修正します。バックグラウンドで実行されるため、このダイアログを閉じて後で確認できます。",
+          "orphaned_scan_now": "今すぐスキャン",
           "orphaned_rescan": "再スキャン",
-          "orphaned_scanning": "スキャン中… 時間がかかることがあります。閉じても問題ありません。後で確認してください。",
-          "orphaned_no_results": "まだスキャンは実行されていません。",
-          "orphaned_last_scanned": "最終スキャン",
+          "orphaned_scanning": "スキャン中…しばらく時間がかかります。閉じて後で確認しても問題ありません。",
+          "orphaned_no_results": "スキャンはまだ実行されていません。",
+          "orphaned_last_scanned": "最終スキャン日時",
           "orphaned_total_size": "合計サイズ",
           "orphaned_tracked": "記録済み",
           "orphaned_orphaned": "孤立",
           "orphaned_other": "その他",
           "orphaned_largest": "サイズが大きい孤立オブジェクト",
-          "orphaned_more": "ほか {count} 件（非表示）",
-          "orphaned_delete_all": "孤立分をすべて削除",
-          "orphaned_delete_confirm": "孤立オブジェクト {count} 件（{size}）を完全に削除しますか？元に戻せません。",
-          "orphaned_deleted": "{count} 件を削除し、{size} を解放しました",
-          "orphaned_scan_started": "スキャンを開始しました。オブジェクト数によっては時間がかかります。完了時に通知されるので、このまま閉じて問題ありません。",
+          "orphaned_more": "…他{count}件（非表示）",
+          "orphaned_delete_all": "孤立オブジェクトをすべて削除",
+          "orphaned_delete_confirm": "孤立オブジェクト{count}件（{size}）を完全に削除しますか？この操作は取り消せません。",
+          "orphaned_deleted": "{count}件のオブジェクトを削除し、{size}を解放しました",
+          "orphaned_scan_started": "スキャンを開始しました。オブジェクト数によっては時間がかかります。完了時に通知されるため、閉じても構いません。",
           "orphaned_none_found": "孤立オブジェクトは見つかりませんでした。",
-          "orphaned_tooltip": "データベースから参照されなくなったデモ、再生、ハイライトのファイルを S3 内から探し、容量を回収します。バックグラウンドで実行されます。",
+          "orphaned_tooltip": "データベースから参照されなくなったデモ・再生用・ハイライトファイルをS3内で検索し、容量を回収します。バックグラウンドで実行されます。",
           "orphaned_complete_title": "孤立アップロードのスキャンが完了しました",
-          "orphaned_complete_found": "孤立オブジェクト {count} 件（{size}）が見つかりました",
-          "orphaned_complete_none": "孤立アップロードはありませんでした",
+          "orphaned_complete_found": "孤立オブジェクト{count}件を検出しました — {size}",
+          "orphaned_complete_none": "孤立アップロードは見つかりませんでした",
           "orphaned_view_results": "結果を表示",
           "orphaned_demos": "デモ",
           "orphaned_highlights": "ハイライト",
-          "orphaned_breakdown": "記録済みの内訳",
+          "orphaned_breakdown": "記録済み内訳",
           "orphaned_scanning_short": "スキャン中…",
-          "orphaned_demos_count": "デモ {count} 件",
-          "orphaned_highlights_count": "ハイライト {count} 件",
-          "orphaned_object_count": "ファイル {count} 件"
+          "orphaned_demos_count": "デモ{count}件",
+          "orphaned_highlights_count": "ハイライト{count}件",
+          "orphaned_object_count": "ファイル{count}件"
         },
         "update_map_pools": {
           "title": "マッププールの自動更新",
-          "description": "アクティブデューティのマッププールにマップが追加・削除されたとき、マッププールを自動で追加・更新します。"
+          "description": "アクティブデュティプールにマップが追加・削除された際、マッププールを自動的に追加・更新します。"
         },
         "leagues": {
           "title": "リーグ",
           "section": "リーグ",
-          "description": "実力別ディビジョンでの総当たりのシーズン制です。週ごとの試合枠、ロスターのロック、プレーオフ、シーズン間の昇降格に対応します。運用は管理者が行います。",
-          "manage_description": "シーズン、登録、日程はリーグページから作成・管理できます。",
-          "manage": "シーズン管理",
+          "description": "スキル別ディビジョンで行う総当たり戦のシーズン制です。週次の試合期間、ロスターロック、プレーオフ、シーズン間の昇格・降格があります。管理者が運営します。",
+          "manage_description": "リーグページからシーズン・登録・スケジュールを作成・管理します。",
+          "manage": "シーズンを管理",
           "divisions_section": "ディビジョン",
-          "divisions_description": "チームが振り分けられ、シーズンごとに昇降格する階層です。所属チームがない階層は、そのシーズンは開催されません。",
+          "divisions_description": "各シーズンでチームが所属し、昇格・降格の対象となる階層です。チームがいない階層は、そのシーズンでは開催されません。",
           "allow_request_title": "チームによるディビジョン希望を許可",
-          "allow_request_hint": "オフの場合、チームは希望なしで登録し、管理者が振り分けます。",
+          "allow_request_hint": "オフの場合、チームはディビジョン希望なしで登録し、管理者が配置します。",
           "registration_section": "登録",
-          "registration_description": "リーグシーズンへのチーム登録方法"
+          "registration_description": "チームがリーグシーズンに登録する方法です"
         },
         "teams": {
           "title": "チーム",
           "roster_section": "ロスターと控え",
-          "roster_description": "リーグとトーナメント全体で使われるチーム共通のロスター規定です。ロスターの人数と、5 人のスターターを支える控えの人数を決めます。",
-          "min_roster": "ロスターの最小人数",
-          "max_roster": "ロスターの最大人数",
-          "roster_hint": "チームは承認に最小人数が必要で、最大人数は超えられません。",
-          "max_subs": "控え"
+          "roster_description": "リーグ・トーナメント全体で使用されるチーム共通のロスタールールです。ロスターの人数と、スタメン5人を支える控えの人数を設定します。",
+          "min_roster": "最小ロスター人数",
+          "max_roster": "最大ロスター人数",
+          "roster_hint": "承認されるには最小人数以上が必要で、最大人数を超えることはできません。",
+          "max_subs": "控え人数"
         },
         "events": {
           "title": "イベント",
           "section": "イベント",
-          "description": "トーナメント、チーム、プレイヤーをまとめたイベントです。ランキング、順位表、メディアギャラリーを備えます。既定ではオフで、有効にするとイベントページが表示されます。",
-          "manage": "イベント管理",
+          "description": "トーナメント・チーム・プレイヤーをまとめたキュレーション型イベントです。ランキング・順位・メディアギャラリーを含みます。デフォルトはオフで、有効にするとイベントページが表示されます。",
+          "manage": "イベントを管理",
           "permissions_section": "権限",
           "permissions_description": "イベントを作成できるプレイヤーを制御します。",
           "create_events_role": "イベント作成に必要な最小ロール"
@@ -2017,49 +1998,49 @@
         "plugins": {
           "title": "プラグイン",
           "section": "プラグイン",
-          "description": "外部のマイクロフロントエンドアプリを登録し、パネル内のネイティブページとして表示します。",
+          "description": "外部のマイクロフロントエンドアプリを登録し、パネル内にネイティブページとして表示します。",
           "docs_link": "プラグインのドキュメントを読む",
           "add": "プラグインを追加",
-          "empty_title": "プラグインなし",
-          "empty_description": "プラグインの URL を 5Stack に指定すると、パネル内のネイティブページとして表示されます。",
+          "empty_title": "プラグインがまだありません",
+          "empty_description": "5Stackにプラグインの URLを指定すると、パネル内にネイティブページとして表示されます。",
           "public": "公開",
           "add_title": "プラグインを追加",
           "edit_title": "プラグインを編集",
           "delete_title": "プラグインを削除",
-          "delete_description": "「{title}」とその /apps ルートをパネルから削除します。この操作は取り消せません。",
+          "delete_description": "「{title}」とパネル内の/appsルートを削除します。この操作は取り消せません。",
           "delete_confirm": "削除する",
-          "form_description": "このプラグインの読み込み方法と表示できる対象を設定します。",
+          "form_description": "このプラグインの読み込み方法と公開範囲を設定します。",
           "is_default_hint": "パネルのランディングページに設定します。",
           "fields": {
             "title": "タイトル",
             "slug": "スラッグ",
             "icon": "アイコン",
-            "remote_entry_url": "リモートエントリ URL",
-            "remote_scope": "リモートスコープ",
-            "exposed_module": "公開モジュール",
+            "remote_entry_url": "Remote Entry URL",
+            "remote_scope": "Remote Scope",
+            "exposed_module": "Exposed Module",
             "required_role": "必要な権限",
-            "nav_group": "ナビグループ",
-            "nav_order": "表示順",
+            "nav_group": "ナビゲーショングループ",
+            "nav_order": "ナビゲーション順",
             "enabled": "有効",
             "is_default": "デフォルトページ",
-            "icon_hint": "lucide のアイコン名、または画像 URL。例：",
-            "remote_entry_url_hint": "パネルが読み込む Module Federation の remoteEntry.js です（通常は .../assets/remoteEntry.js）。",
-            "remote_scope_hint": "プラグインの Federation コンテナ名です（vite federation 設定の `name`）。",
-            "exposed_module_hint": "公開モジュールのパスです。例：./App",
+            "icon_hint": "lucideアイコン名または画像URLを指定します。例：",
+            "remote_entry_url_hint": "パネルが読み込むModule Federationのremote Entry.js（通常は.../assets/remoteEntry.js）です。",
+            "remote_scope_hint": "プラグインのFederationコンテナ名です（vite federation設定内の`name`）。",
+            "exposed_module_hint": "公開モジュールのパスです（例：./App）。",
             "nav_group_placeholder": "Apps",
-            "nav_group_hint": "サイドバーでまとめる見出しです（任意）。空欄の場合はデフォルトの Apps グループになります。",
-            "nav_order_hint": "数値が小さいほど先に表示されます。こだわらない場合は 0 のままで構いません。",
-            "profile_tab_label": "プレイヤープロフィールのタブ",
-            "profile_tab_label_placeholder": "インベントリ",
-            "profile_tab_label_hint": "このラベルでプラグインをプレイヤープロフィールのタブとして表示します。空欄ならタブは追加されません。プラグインにはそのプロフィールの Steam ID が渡されます。",
+            "nav_group_hint": "サイドバーでこのプラグインをまとめる見出し（任意）。空欄の場合はデフォルトのAppsグループに入ります。",
+            "nav_order_hint": "数値が小さいほど先頭に表示されます。気にしない場合は0のままにしてください。",
+            "profile_tab_label": "プレイヤープロフィールタブ",
+            "profile_tab_label_placeholder": "Inventory",
+            "profile_tab_label_hint": "このラベルでプレイヤープロフィールにタブとして表示します。空欄の場合はタブを表示しません。プラグインにはプロフィールのSteam IDが渡されます。",
             "deployments": "デプロイメント",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "イメージ更新を監視する Kubernetes デプロイメント名です。カンマ区切りで指定します。更新はヘッダーに 5Stack 自身のサービスと並んで表示されます。"
+            "deployments_hint": "イメージ更新を監視するKubernetesデプロイメント名です。カンマ区切り。更新は5stack自身のサービスと並んでヘッダーに表示されます。"
           },
-          "detect_label": "URL から自動検出",
+          "detect_label": "URLから自動検出",
           "detect": "検出",
-          "detect_hint": "プラグインのベース URL（または 5stack-plugin.json）を貼り付けると、マニフェストから以下の項目を自動入力します。",
-          "detect_failed": "その URL では 5stack-plugin.json マニフェストを読み取れませんでした。",
+          "detect_hint": "プラグインのベースURL（または5stack-plugin.json）を貼り付けると、マニフェストから以下の項目を自動入力します。",
+          "detect_failed": "そのURLに5stack-plugin.jsonマニフェストが見つかりませんでした。",
           "detect_success": "プラグイン情報を検出しました。",
           "optional": "（任意）",
           "advanced": "詳細設定",
@@ -2067,9 +2048,16 @@
             "choose": "アイコンを選択",
             "custom": "カスタムアイコン",
             "search": "アイコンを検索…",
-            "custom_hint": "または画像 URL やインライン SVG を貼り付けます（プラグイン提供のものなど）。",
-            "custom_placeholder": "https://… 、<svg…> 、またはアイコン名"
+            "custom_hint": "または画像URLかインラインSVGを貼り付けてください（プラグイン由来のものなど）。",
+            "custom_placeholder": "https://… 、<svg…>、またはアイコン名"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2078,88 +2066,88 @@
       },
       "matchmaking": {
         "title": "マッチメイキング設定",
-        "average_latency": "遅延",
+        "average_latency": "レイテンシ",
         "preferred": "優先",
-        "max_acceptable_latency": "許容できる最大遅延",
-        "max_latency_description": "優先リージョンが未設定の場合、マッチメイキングはこの値未満の遅延のリージョンのみを使用します。",
+        "max_acceptable_latency": "許容できる最大レイテンシ",
+        "max_latency_description": "優先リージョンが設定されていない場合、マッチメイキングはこの値未満のレイテンシのリージョンのみを使用します。",
         "show_match_ready_modal": {
           "title": "試合・ドラフトルームのポップアップ",
-          "description": "試合やドラフトルームの準備が整った際に、すぐ移動できるリンク付きのポップアップを表示します。無効にするとリダイレクトされず、トップナビのボタンから移動します。"
+          "description": "試合またはドラフトルームの準備ができたときにポップアップを表示し、すぐに移動できるリンクを表示します。無効にすると自動遷移せず、トップナビのボタンから移動する形になります。"
         }
       },
       "linked_accounts": {
-        "presence_title": "5Stack Steam ボット",
-        "presence_description": "ボットを Steam フレンドに追加すると、コンペティティブと Premier の試合が終了した瞬間に自動で取り込まれます。",
-        "presence_connect": "ボットをフレンドに追加",
-        "presence_add_bot": "Steam でボットを開く",
-        "presence_pending": "申請を送ると1分以内にボットが承認し、自動的に「接続済み」に切り替わります。",
-        "presence_connected": "接続済み — 取り込みは即時です。",
+        "presence_title": "5stack Steamボット",
+        "presence_description": "ボットをSteamフレンドに追加すると、コンペティティブ・プレミアの試合が終了した瞬間に自動でインポートされます。",
+        "presence_connect": "ボットをフレンド追加",
+        "presence_add_bot": "Steamでボットを開く",
+        "presence_pending": "申請を送ると通常1分以内にボットが承認し、自動的に「接続済み」に切り替わります。",
+        "presence_connected": "接続済み — インポートは即時に行われます。",
         "presence_not_connected": "まだ接続されていません。",
-        "presence_self_label": "フレンドからの見え方",
-        "presence_unavailable": "現在 5Stack ボットを利用できません。しばらくしてから再試行するか、管理者にお問い合わせください。",
-        "need_two_codes": "Valve から2つのコードが必要です：",
-        "step_auth_prefix": "自分の",
-        "steam_auth_code": "Steam ゲーム認証コード",
-        "step_auth_mid": "— Steam のヘルプページで次の項目を確認します",
-        "access_match_history": "「試合履歴へのアクセス」",
-        "step_auth_and_click": "そしてクリックします",
-        "create_auth_code": "認証コードを作成",
-        "generated_once": "Steam アカウントごとに一度だけ生成されます。",
+        "presence_self_label": "フレンドから見た表示",
+        "presence_unavailable": "現在5stackボットを利用できません。しばらくしてから再試行するか、管理者に問い合わせてください。",
+        "need_two_codes": "Valveから2つのコードが必要です：",
+        "step_auth_prefix": "あなたの",
+        "steam_auth_code": "Steamゲーム認証コード",
+        "step_auth_mid": "— Steamヘルプページの以下の項目を確認してください：",
+        "access_match_history": "「Access to Your Match History」",
+        "step_auth_and_click": "を確認し、以下をクリックします：",
+        "create_auth_code": "Create Authentication Code",
+        "generated_once": "Steamアカウントごとに1回だけ生成されます。",
         "step_share_prefix": "最近の",
-        "match_share_code": "試合共有コード",
-        "step_share_copy": "— コピー元",
-        "watch_your_matches": "観戦 → 自分の試合",
-        "step_share_within_30": "CS2 内（過去30日以内の試合であれば起点として利用できます）。",
+        "match_share_code": "マッチ共有コード",
+        "step_share_copy": "— 以下からコピーしてください：",
+        "watch_your_matches": "Watch → Your Matches",
+        "step_share_within_30": "CS2内で（過去30日以内の試合であれば起点として利用できます）。",
         "auth_code": "認証コード",
         "share_code": "共有コード",
-        "linking": "連携中…",
-        "link_match_history": "試合履歴を連携",
-        "toast_linked": "CS2 の試合履歴を連携しました",
-        "toast_could_not_link": "連携できませんでした",
-        "toast_unlinked": "CS2 の試合履歴の連携を解除しました",
+        "linking": "リンク中…",
+        "link_match_history": "試合履歴をリンク",
+        "toast_linked": "CS2試合履歴をリンクしました",
+        "toast_could_not_link": "リンクできませんでした",
+        "toast_unlinked": "CS2試合履歴のリンクを解除しました",
         "toast_polled": "試合履歴を取得しました",
-        "toast_collected": "新しい共有コードを {count} 件取得しました",
-        "toast_poll_failed": "取得できませんでした",
-        "toast_cleared_import": "保留中の取り込みをクリアしました",
+        "toast_collected": "{count}件の新しい共有コードを収集しました",
+        "toast_poll_failed": "取得に失敗しました",
+        "toast_cleared_import": "保留中のインポートをクリアしました",
         "unknown_error": "不明なエラー",
-        "linked_errors": "連携済み · エラーあり",
-        "linked": "連携済み",
+        "linked_errors": "リンク済み・エラー",
+        "linked": "リンク済み",
         "last_poll": "最終取得",
-        "never": "なし",
+        "never": "未実行",
         "polling": "取得中…",
         "poll_now": "今すぐ取得",
         "unlinking": "解除中…",
-        "unlink": "連携解除",
+        "unlink": "リンク解除",
         "most_recent_share_code": "最新の共有コード",
         "scanned": "スキャン済み",
-        "last_error": "最後のエラー",
-        "unlink_confirm_title": "試合履歴の連携を解除しますか？",
-        "unlink_confirm_description": "公式 CS2 の試合と Premier ランクの取り込みを停止します。Steam の認証コードと共有コードでいつでも再連携できます。",
-        "polling_banner_title": "試合履歴を取得しています…",
-        "polling_banner_description": "Valve から最近の試合をスキャンしています。見つかった保留中の取り込みが下に表示されます。",
-        "pending_imports": "保留中の取り込み",
-        "pending_imports_description": "連携アカウントが取り込み待ちの試合です。ここで失敗するデモは、30日以上前で Valve が配信を終えている場合がほとんどです。",
-        "importing": "取り込み中…",
-        "show_less": "折りたたむ",
-        "show_more": "さらに {count} 件表示",
+        "last_error": "直近のエラー",
+        "unlink_confirm_title": "試合履歴のリンクを解除しますか？",
+        "unlink_confirm_description": "公式CS2の試合とプレミアランクのインポートを停止します。SteamIDの認証コードと共有コードでいつでも再リンクできます。",
+        "polling_banner_title": "試合履歴を取得中…",
+        "polling_banner_description": "Valveから最近の試合をスキャンしています。保留中のインポートは見つかり次第、以下に表示されます。",
+        "pending_imports": "保留中のインポート",
+        "pending_imports_description": "リンク済みアカウントで待機中の試合です。ここで失敗するデモは通常30日以上経過しており、Valveでのホストが終了しています。",
+        "importing": "インポート中…",
+        "show_less": "表示を減らす",
+        "show_more": "他{count}件を表示",
         "upload_demo": "デモをアップロード",
-        "upload_demo_description": "CS2 の .dem ファイルをドロップすると試合スタッツを取り込みます。試合履歴の連携有無にかかわらず利用できます。",
-        "drop_to_upload": "ドロップでアップロード",
-        "click_to_choose": "クリックして選択、または .dem ファイルをドラッグ",
-        "demo_files_only": "CS2 のデモファイルのみ · 1ファイル",
+        "upload_demo_description": "CS2の.demファイルをドロップすると試合スタッツをインポートします。試合履歴のリンク有無に関わらず利用できます。",
+        "drop_to_upload": "ドロップしてアップロード",
+        "click_to_choose": "クリックして選択、または.demファイルをドラッグ",
+        "demo_files_only": "CS2デモファイルのみ・1ファイル",
         "uploading": "アップロード中…",
-        "finishing": "仕上げ中…",
+        "finishing": "完了処理中…",
         "toast_wrong_file_type": "ファイル形式が違います",
-        "toast_drop_dem_file": "CS2 の .dem ファイルをドロップしてください。",
-        "error_invalid_demo": "有効な CS2 デモ（.dem）ファイルではありません",
-        "upload_success_message": "アップロードしました — 取り込み中です。まもなく試合が表示されます。",
+        "toast_drop_dem_file": "CS2の.demファイルをドロップしてください。",
+        "error_invalid_demo": "有効なCS2デモ（.dem）ファイルではありません",
+        "upload_success_message": "アップロード完了 — インポート中です。まもなく試合が表示されます。",
         "toast_demo_uploaded": "デモをアップロードしました",
-        "toast_demo_uploaded_description": "取り込み中です — まもなく試合が表示されます。",
-        "toast_upload_failed": "アップロードできませんでした"
+        "toast_demo_uploaded_description": "インポート中です — まもなく試合が表示されます。",
+        "toast_upload_failed": "アップロードに失敗しました"
       }
     },
     "watch": {
-      "title": "観戦",
+      "title": "Watch",
       "section_live_tournaments": "LIVE.TOURNAMENTS",
       "section_streaming_now": "STREAMING.NOW",
       "section_live_matches": "LIVE.MATCHES",
@@ -2168,23 +2156,32 @@
       "section_recent_matches": "RECENT.MATCHES",
       "section_recent_tournaments": "RECENT.TOURNAMENTS",
       "section_recent_highlights": "RECENT.HIGHLIGHTS",
-      "no_live_matches": "STANDBY · ライブ中の試合なし",
-      "upcoming": "開催予定"
+      "no_live_matches": "STANDBY・配信中の試合なし",
+      "cold_start": {
+        "title": "スコープに反応なし",
+        "description": "ライブ試合もトーナメントも、記録もまだありません。試合を開始すれば、このページは自動的に埋まっていきます — スコアはリアルタイムで反映され、終了後にはハイライトとデモが追加されます。",
+        "cta": "プレイを開始",
+        "cta_guest": "サインインしてプレイ",
+        "channel_matches": "ライブ試合",
+        "channel_tournaments": "トーナメント",
+        "channel_highlights": "ハイライト",
+        "channel_status": "信号待機中"
+      }
     },
     "highlights": {
       "title": "ハイライト",
       "queue": "キュー",
       "render_queue": "レンダーキュー",
-      "render_queue_description": "プラットフォーム全体で実行中・最近完了したレンダーバッチです。",
-      "clear_player_filter": "プレイヤー絞り込みを解除",
+      "render_queue_description": "プラットフォーム全体の処理中・完了直後のレンダーバッチです。",
+      "clear_player_filter": "プレイヤーフィルターをクリア",
       "filter_by_player": "プレイヤーで絞り込み",
       "view_mode": "表示モード",
-      "view_mode_filter_disabled": "絞り込み中は解除されます",
+      "view_mode_filter_disabled": "絞り込み中はクリアされます",
       "filter_labels": {
         "visibility": "公開範囲",
         "date": "日付",
-        "kills": "キル",
-        "sort": "並び順"
+        "kills": "キル数",
+        "sort": "並び替え"
       },
       "since": {
         "all": "全期間",
@@ -2198,14 +2195,14 @@
         "3": "3キル以上",
         "4": "4キル以上",
         "5": "5キル",
-        "any": "キル数不問"
+        "any": "キル数指定なし"
       },
       "view_modes": {
         "matches": "試合クリップ",
         "singles": "単体クリップ"
       },
       "sort": {
-        "recent": "新しい順",
+        "recent": "新着順",
         "views": "再生数順"
       },
       "visibility_filter": {
@@ -2214,30 +2211,30 @@
         "private": "非公開"
       },
       "empty": {
-        "no_match_filters": "この条件に一致するクリップはありません",
+        "no_match_filters": "この条件に一致するクリップがありません",
         "no_clips_yet": "まだクリップがありません",
-        "try_widening": "条件を広げるか、いずれかを解除してみてください。",
-        "try_different_admin": "別の条件を試すか、新しいクリップのレンダー完了をお待ちください。",
-        "check_back_soon": "レンダーされた公開クリップがここに表示されます。しばらくしてからご確認ください。",
-        "clear_player": "プレイヤーを解除",
-        "clear_date": "日付を解除",
-        "clear_kills": "キル数を解除"
+        "try_widening": "条件を緩めるか、一部をクリアしてみてください。",
+        "try_different_admin": "別の条件を試すか、新しいクリップのレンダーをお待ちください。",
+        "check_back_soon": "公開クリップはレンダーが完了次第ここに表示されます。しばらくしてから確認してください。",
+        "clear_player": "プレイヤーをクリア",
+        "clear_date": "日付をクリア",
+        "clear_kills": "キル数をクリア"
       }
     },
     "news": {
       "title": "ニュース",
-      "back": "ニュース一覧へ戻る",
-      "updated": "{date} 更新",
-      "written_by": "執筆者",
+      "back": "ニュースに戻る",
+      "updated": "{date}に更新",
+      "written_by": "投稿者",
       "cover_editor": {
         "title": "カバー画像を調整",
-        "description": "記事に合わせてトリミングします。ロゴをページ上にきれいに配置するには背景の削除を使用します。",
-        "hint": "スクロールで拡大縮小 · ドラッグで移動 · Fit で全体を表示",
-        "fit": "全体表示"
+        "description": "記事に合わせて切り抜きます。背景を削除するとロゴがページ上できれいに収まります。",
+        "hint": "スクロールでズーム・ドラッグで移動・Fitで全体表示",
+        "fit": "Fit"
       },
       "new_article": "新規記事",
       "mark_read": "既読にする",
-      "empty": "ニュース記事はまだありません。しばらくしてからご確認ください。",
+      "empty": "まだニュース記事がありません — しばらくしてから確認してください。",
       "manage": {
         "title": "ニュース管理",
         "view_news": "ニュースを表示",
@@ -2245,9 +2242,9 @@
         "edit": "編集",
         "delete": "削除",
         "delete_confirm_title": "この投稿を削除しますか？",
-        "delete_confirm_description": "ニュース投稿を完全に削除します。この操作は取り消せません。",
+        "delete_confirm_description": "このニュース投稿を完全に削除します。この操作は取り消せません。",
         "publish": "公開",
-        "unpublish": "非公開",
+        "unpublish": "非公開にする",
         "draft": "下書き",
         "published": "公開済み",
         "saved": "投稿を保存しました",
@@ -2255,28 +2252,28 @@
         "published_toast": "投稿を公開しました",
         "unpublished_toast": "投稿を下書きに戻しました",
         "save_failed": "投稿を保存できませんでした",
-        "empty": "投稿はまだありません。最初の投稿を作成してください。",
-        "views": "表示数"
+        "empty": "まだ投稿がありません。最初の投稿を作成しましょう。",
+        "views": "閲覧数"
       },
       "form": {
         "title_label": "タイトル",
-        "title_placeholder": "投稿のタイトル",
-        "teaser_label": "リード文",
-        "teaser_placeholder": "ニュース一覧に表示される短い要約",
+        "title_placeholder": "投稿タイトル",
+        "teaser_label": "ティザー",
+        "teaser_placeholder": "ニュース一覧に表示される短い概要",
         "cover_label": "カバー画像",
         "cover_hint": "クリックまたは画像をドロップ",
-        "cover_formats": "PNG · JPG · WEBP · GIF · 10MB まで",
+        "cover_formats": "PNG・JPG・WEBP・GIF・最大10MB",
         "cover_replace": "差し替え",
         "cover_remove": "削除",
         "content_label": "本文",
-        "save_draft": "下書きを保存",
+        "save_draft": "下書き保存",
         "save_changes": "変更を保存",
         "publish": "公開",
-        "write": "編集",
+        "write": "執筆",
         "preview": "プレビュー",
         "preview_full": "投稿をプレビュー",
-        "preview_empty": "書き始めるとプレビューが表示されます。",
-        "back_to_edit": "エディタへ戻る",
+        "preview_empty": "執筆を始めると投稿のプレビューが表示されます。",
+        "back_to_edit": "編集に戻る",
         "upload_image": "画像をアップロード",
         "uploading": "アップロード中…",
         "uploading_image": "画像をアップロード中…"
@@ -2284,9 +2281,9 @@
     },
     "seasons": {
       "title": "シーズン",
-      "description": "競技シーズンを作成・管理します。通常試合の ELO はシーズンごとに 5000 にリセットされます。",
-      "create_title": "シーズン作成",
-      "season_number": "シーズン {number}",
+      "description": "コンペティティブシーズンの作成・管理を行います。通常戦のELOは各シーズン開始時に5000にリセットされます。",
+      "create_title": "シーズンを作成",
+      "season_number": "シーズン{number}",
       "description_label": "説明",
       "description_placeholder": "説明（任意）",
       "start_label": "開始日",
@@ -2295,14 +2292,14 @@
       "ongoing": "継続中",
       "current": "現在",
       "off_season": "オフシーズン",
-      "matches_label": "試合",
-      "ledger_title": "シーズン履歴",
-      "utc_hint": "日付は UTC で、00:00 開始です。継続中のシーズンにする場合は終了日を空欄にします。",
-      "create_button": "シーズン {number} を作成",
-      "active": "開催中",
+      "matches_label": "試合数",
+      "ledger_title": "シーズン台帳",
+      "utc_hint": "日付はUTCで00:00開始です。継続中のシーズンにする場合は終了日を空欄にしてください。",
+      "create_button": "シーズン{number}を作成",
+      "active": "進行中",
       "upcoming": "開催予定",
       "ended": "終了",
-      "ends_in": "終了まで {time}",
+      "ends_in": "残り{time}",
       "ends_in_label": "終了まで",
       "set_end": "終了日を設定",
       "change_start": "開始日を変更",
@@ -2313,43 +2310,43 @@
       "upcoming_title": "開催予定のシーズン",
       "past_title": "過去のシーズン",
       "rebuild": "再構築",
-      "rebuild_elo": "ELO を再構築",
+      "rebuild_elo": "ELOを再構築",
       "rebuild_required": "再構築が必要",
-      "needs_rebuild_notice": "このシーズンの ELO は最新ではなく、順位表が正しくありません。再構築すると試合から ELO とスタッツを再計算します。",
+      "needs_rebuild_notice": "このシーズンのELOが古く、順位が正しくありません。再構築すると試合からELOとスタッツを再計算します。",
       "delete": "削除",
       "deleted": "シーズンを削除しました",
       "delete_confirm_title": "このシーズンを削除しますか？",
-      "delete_confirm_description": "シーズンを削除し、その試合はシーズンなしに戻ります（ELO 履歴は保持され、削除されません）。このシーズンのスタッツはクリアされます。この操作は取り消せません。",
-      "rebuild_confirm_title": "シーズンの ELO を再構築しますか？",
-      "rebuild_confirm_description": "このシーズンの全試合から ELO とスタッツを再計算します。通常は自動で実行されるため、データが不正に見える場合のみ再構築してください。バックグラウンドで実行され、時間がかかることがあります。",
-      "empty": "作成済みのシーズンはありません。上から最初のシーズンを作成してください。",
+      "delete_confirm_description": "シーズンが削除され、対象の試合はシーズンなしに戻ります（ELO履歴は削除されず保持されます）。このシーズンのスタッツはクリアされます。この操作は取り消せません。",
+      "rebuild_confirm_title": "シーズンのELOを再構築しますか？",
+      "rebuild_confirm_description": "このシーズンの全試合からELOとスタッツを再計算します。通常は自動で実行されるため、データがおかしい場合のみ再構築してください。バックグラウンドで実行され、時間がかかることがあります。",
+      "empty": "まだシーズンが作成されていません。上から最初のシーズンを作成してください。",
       "created": "シーズンを作成しました",
-      "error_end_before_start": "終了日は開始日より後に設定してください。",
+      "error_end_before_start": "終了日は開始日より後にしてください。",
       "error_overlap": "この期間は既存のシーズンと重複しています。",
       "error_generic": "問題が発生しました。もう一度お試しください。",
-      "backfill_running": "シーズンの ELO を再構築中…",
-      "backfill_queued": "シーズンのバックフィルをキューに追加しました",
-      "backfill_cancel_requested": "キャンセルを要求しました",
-      "backfill_canceled_title": "シーズンのバックフィルをキャンセルしました",
-      "backfill_complete_title": "シーズンのバックフィルが完了しました",
-      "backfill_complete_desc": "{total} 試合中 {completed} 試合を再構築しました（{failed} 件失敗）。"
+      "backfill_running": "シーズンのELOを再構築中…",
+      "backfill_queued": "シーズンの再構築をキューに追加しました",
+      "backfill_cancel_requested": "キャンセルをリクエストしました",
+      "backfill_canceled_title": "シーズンの再構築をキャンセルしました",
+      "backfill_complete_title": "シーズンの再構築が完了しました",
+      "backfill_complete_desc": "{total}試合中{completed}試合を再構築しました（{failed}件失敗）。"
     },
     "regions": {
       "title": "リージョン",
-      "description": "リージョンを使うとゲームサーバーを地理的な場所でグループ分けできます。プレイヤーはマッチメイキング時に優先リージョンを選択し、試合設定時に望まないリージョンを Veto できます。",
-      "create": "リージョン作成",
+      "description": "リージョンを使うと地理的な場所ごとにゲームサーバーをグループ化できます。プレイヤーはマッチメイキング時に優先リージョンを選択したり、マッチ設定時に望まないリージョンをVetoできます。",
+      "create": "リージョンを作成",
       "table": {
-        "available_servers": "利用可能サーバー / 全サーバー",
-        "use_lan_ip": "LAN 接続を必須",
-        "use_lan_ip_description": "このリージョンのゲームサーバーへは LAN の IP アドレスからのみ接続できるようにします。",
-        "use_steam_relay": "Steam Relay を使用",
-        "use_steam_relay_description": "ゲームサーバーの IP アドレスを外部から隠すため Steam Relay を有効にします。"
+        "available_servers": "利用可能サーバー数 / 総サーバー数",
+        "use_lan_ip": "LAN接続を必須にする",
+        "use_lan_ip_description": "このリージョンのゲームサーバーへの接続をLAN IPアドレスからのみに制限します。",
+        "use_steam_relay": "Steam Relayを使用",
+        "use_steam_relay_description": "ゲームサーバーのIPアドレスを一般に非公開にするため、Steam Relayを有効にします。"
       },
-      "edit": "リージョン編集",
-      "set_label": "ラベル編集",
+      "edit": "リージョンを編集",
+      "set_label": "ラベルを編集",
       "delete": {
-        "title": "リージョン削除",
-        "description": "このリージョンを削除しますか？この操作は取り消せません。"
+        "title": "リージョンを削除",
+        "description": "このリージョンを削除してもよろしいですか？この操作は取り消せません。"
       },
       "deleted": "リージョンを削除しました"
     },
@@ -2579,6 +2576,7 @@
     "play": {
       "title": "プレイ",
       "open_registration_tournaments": {
+        "section_label": "TOURNAMENTS",
         "description": "誰でも登録して参加できるトーナメントです。"
       },
       "matchmaking": {
@@ -2715,53 +2713,53 @@
     },
     "game_server_nodes": {
       "title": "ゲームサーバーノード",
-      "description": "ゲームサーバーノードは、サーバーの提供範囲を複数のリージョンへ拡張したり、オンデマンドサーバーの冗長性を確保したりします。",
+      "description": "ゲームサーバーノードを使うと、別リージョンへサーバー提供を拡大したり、オンデマンドサーバーの冗長化を実現できます。",
       "not_supported": {
-        "title": "このパネルは現在ゲームサーバーノードに対応していません。",
+        "title": "現在のパネルはゲームサーバーノードに対応していません。",
         "description": "ゲームサーバーノードの設定方法はドキュメントを参照してください。"
       },
       "no_nodes_title": "ゲームサーバーノードなし",
       "display_metrics": "メトリクス表示",
       "create": "ゲームサーバーノードを作成",
-      "cs_version_info": "CS2 バージョン情報:",
+      "cs_version_info": "CS2バージョン情報:",
       "hide_offline": "オフラインノードを非表示",
       "only_enabled": "有効なノードのみ",
       "setup_dialog": {
         "title": "ゲームサーバーノードのセットアップ",
-        "description": "このインストールスクリプトをサーバーで実行して 5Stack に接続します",
+        "description": "サーバー上で以下のインストールスクリプトを実行し、5Stackに接続してください",
         "installation_script": "インストールスクリプト",
-        "waiting_title": "ノードの接続を待機中...",
-        "waiting_description": "サーバーでインストールスクリプトを実行してください。ノードが接続されるとステータスは自動的に更新されます。",
-        "new_node": "ゲームサーバーノードが接続されました",
+        "waiting_title": "ノードの接続を待機しています...",
+        "waiting_description": "サーバー上でインストールスクリプトを実行してください。ノードが接続すると状態が自動的に更新されます。",
+        "new_node": "ゲームサーバーノードの接続が完了しました",
         "close": "閉じる"
       },
       "status": {
         "setup": "セットアップ",
-        "not_accepting": "新規試合を受付停止中"
+        "not_accepting": "新規試合の受付停止中"
       },
       "table": {
         "node": "ノード",
-        "cs_build_id": "CS2 ビルド",
-        "capacity": "収容数",
+        "cs_build_id": "CS2ビルド",
+        "capacity": "キャパシティ",
         "ports": "ポート",
-        "available": "利用可能",
+        "available": "空き",
         "ports_tooltip": "ノードへの転送ポート",
         "no_nodes": "ゲームサーバーノードなし",
         "supports_low_latency": "低遅延対応",
-        "supports_cpu_pinning": "CPU ピニング対応",
-        "cpu_governor": "CPU ガバナー"
+        "supports_cpu_pinning": "CPUピニング対応",
+        "cpu_governor": "CPUガバナー"
       },
       "last_updated": "最終更新: {date}",
       "max_label": "最大:",
       "ports_label": "ポート:",
-      "cpu_hardware": "CPU とハードウェア"
+      "cpu_hardware": "CPU・ハードウェア"
     },
     "dedicated_servers": {
       "title": "専用サーバー",
-      "description": "専用サーバーは 5Stack に常時接続され、試合・トーナメント・パブリック対戦のホストに自動的に使用されます。",
+      "description": "専用サーバーは5Stackに常時接続され、試合・トーナメント・パブリックプレイのホストに自動で使用されます。",
       "docs_link": "セットアップガイドを見る",
       "no_servers_title": "専用サーバーなし",
-      "no_servers": "専用サーバーが見つかりません。",
+      "no_servers": "専用サーバーが見つかりませんでした。",
       "create": {
         "title": "専用サーバーを作成"
       },
@@ -2770,7 +2768,7 @@
         "label": "ラベル",
         "type": "種別",
         "port": "ゲームポート",
-        "tv_port": "TV ポート",
+        "tv_port": "TVポート",
         "enabled": "有効"
       },
       "detail": {
@@ -2778,8 +2776,8 @@
         "eyebrow": "専用サーバー",
         "status_label": {
           "connected": "接続済み",
-          "disconnected": "未接続",
-          "no_rcon": "RCON なし",
+          "disconnected": "切断",
+          "no_rcon": "RCONなし",
           "version_mismatch": "バージョン不一致"
         },
         "server_plugin_config": "サーバープラグイン設定",
@@ -2789,17 +2787,17 @@
         "files": "ファイル",
         "player_management": "プレイヤー管理",
         "no_players": "現在このサーバーにプレイヤーはいません",
-        "sanctions_wip_title": "対応中",
-        "sanctions_wip": "キックは現在も利用できます。パブリックサーバーでのミュート・ギャグのリアルタイム適用は対応中です。新しい 5Stack パブリックサーバープラグインを近日公開予定で、公開後はミュート・ギャグが自動的に適用されます。",
+        "sanctions_wip_title": "対応中の機能です",
+        "sanctions_wip": "キックは現時点で利用できます。パブリックサーバーでのミュート・ゲグの即時反映は現在対応中です。新しい5Stackパブリックサーバープラグインが近日公開予定で、リリース後はミュート・ゲグも自動的に適用されます。",
         "status": {
-          "disconnected": "サーバーは未接続です",
-          "no_rcon": "サーバーは接続済みですが RCON が利用できません",
-          "connected": "サーバーは接続済みで RCON も利用できます",
-          "plugin_version_mismatch": "プラグインのバージョンが最新ではありません"
+          "disconnected": "サーバーは切断されています",
+          "no_rcon": "サーバーは接続していますがRCONが利用できません",
+          "connected": "サーバーは接続しておりRCONも利用可能です",
+          "plugin_version_mismatch": "プラグインが最新バージョンではありません"
         },
         "delete_confirm": {
           "title": "本当によろしいですか？",
-          "description": "この操作は取り消せません。サーバーは完全に削除され、関連データもサーバーから削除されます。",
+          "description": "この操作は取り消せません。サーバーおよび関連データが完全に削除されます。",
           "continue": "続行"
         }
       }
@@ -2808,23 +2806,23 @@
       "title": "パブリックサーバー",
       "players": "プレイヤー",
       "no_servers_title": "利用可能なサーバーなし",
-      "no_public_servers": "現在利用できるパブリックサーバーはありません。",
-      "no_public_servers_admin": "専用サーバーのページからパブリックサーバーを設定すると、ここに表示されます。",
+      "no_public_servers": "現在利用可能なパブリックサーバーはありません。",
+      "no_public_servers_admin": "専用サーバーページからパブリックサーバーを設定すると、ここに表示されます。",
       "setup_public_server": "パブリックサーバーを設定",
-      "lan_servers_title": "LAN サーバー",
+      "lan_servers_title": "LANサーバー",
       "manage": "管理"
     },
     "map_pools": {
       "title": "マッププール",
       "form": {
         "name": "名前",
-        "name_description": "サーバーが認識するゲーム内のマップ名と一致している必要があります。",
+        "name_description": "ゲーム内でサーバーが認識するマップ名と一致させる必要があります。",
         "label": "ラベル",
         "poster": "ポスター（任意）",
         "poster_placeholder": "http://example.com/poster.png",
-        "patch": "パッチ画像（任意）",
+        "patch": "パッチ（任意）",
         "patch_placeholder": "http://example.com/patch.png",
-        "workshop_map_id": "ワークショップマップ ID（任意）",
+        "workshop_map_id": "Workshopマップ ID（任意）",
         "create_map": "マップを作成",
         "delete_map": "マップを削除",
         "delete_confirm": {
@@ -2835,25 +2833,25 @@
           "create": "マップを作成しました",
           "update": "マップを更新しました",
           "delete": "マップを削除しました",
-          "workshop_refresh": "ワークショップマップの情報を更新しました"
+          "workshop_refresh": "Workshopマップ情報を更新しました"
         },
         "error": {
-          "create": "マップを作成できませんでした",
-          "update": "マップを更新できませんでした",
-          "invalid_workshop": "ワークショップマップ ID が無効です。Steam ワークショップに存在する ID か確認してください。",
-          "workshop_refresh": "ワークショップマップの情報を更新できませんでした"
+          "create": "マップの作成中にエラーが発生しました",
+          "update": "マップの更新中にエラーが発生しました",
+          "invalid_workshop": "Workshopマップ IDが無効です。Steam WorkshopでIDが存在するか確認してください。",
+          "workshop_refresh": "Workshopマップ情報の更新中にエラーが発生しました"
         },
-        "refresh_workshop": "情報を更新"
+        "refresh_workshop": "詳細を更新"
       },
       "pool": {
-        "modify_maps": "プール内のマップを変更",
-        "pool_heading": "{type} プール"
+        "modify_maps": "プール内のマップを編集",
+        "pool_heading": "{type}プール"
       },
-      "add_new_map": "マップを追加",
+      "add_new_map": "新規マップを追加",
       "maps": "利用可能なマップ",
       "active_duty": "アクティブデューティ",
-      "available_modes": "対応モード",
-      "workshop_id": "ワークショップリンク",
+      "available_modes": "利用可能なモード",
+      "workshop_id": "Workshopリンク",
       "search": "マップを検索"
     },
     "map_pool": {
@@ -2862,10 +2860,10 @@
       "save_success": "マッププールを保存しました"
     },
     "manage_matches": {
-      "only_my_matches": "自分が主催した試合のみ",
-      "no_matches": "試合が見つかりません。",
+      "only_my_matches": "自分が主催する試合のみ",
+      "no_matches": "試合が見つかりませんでした。",
       "enter_name": "名前を入力...",
-      "enter_match_id": "試合 ID を入力...",
+      "enter_match_id": "試合IDを入力...",
       "enter_team_name": "チーム名を入力...",
       "filter_by_regions": "リージョンで絞り込み",
       "sort_by": "並び替え",
@@ -2879,10 +2877,10 @@
     },
     "leaderboard": {
       "title": "ランキング",
-      "no_results": "選択した条件に該当するランキングデータはありません。",
+      "no_results": "選択したフィルターに該当するランキングデータがありません。",
       "categories": {
         "elo": "ELO",
-        "best_rating": "HLTV レーティング",
+        "best_rating": "HLTVレーティング",
         "best_adr": "ADR",
         "best_kpr": "KPR",
         "best_kast": "KAST",
@@ -2890,22 +2888,22 @@
         "best_kdr": "KDR",
         "best_win_rate": "勝率",
         "highest_hs_pct": "HS%",
-        "trophies": "トロフィー"
+        "awards": "アワード"
       },
       "time_periods": {
-        "last_7_days": "過去7日",
-        "last_30_days": "過去30日",
+        "last_7_days": "過去7日間",
+        "last_30_days": "過去30日間",
         "all_time": "全期間"
       },
       "match_types": {
-        "all": "全種別",
-        "competitive": "競技",
-        "wingman": "ウイングマン",
+        "all": "すべての種別",
+        "competitive": "コンペティティブ",
+        "wingman": "ウィングマン",
         "duel": "デュエル",
         "scrimmage": "スクリム"
       },
       "roles": {
-        "all": "全ロール",
+        "all": "すべてのロール",
         "Sniper": "スナイパー",
         "Entry": "エントリー",
         "Support": "サポート",
@@ -2913,37 +2911,37 @@
       },
       "columns": {
         "rank": "#",
-        "matches": "試合"
+        "matches": "試合数"
       },
       "col": {
         "elo": "ELO",
-        "elo_change": "ELO 増減",
+        "elo_change": "ELO変動",
         "win_streak": "連勝",
-        "kdr": "K/D",
+        "kdr": "K/D比",
         "kills": "キル",
         "deaths": "デス",
         "wins": "勝利",
         "losses": "敗北",
         "hs_pct": "HS%",
-        "total_kills": "総キル",
+        "total_kills": "総キル数",
         "gold": "金",
         "silver": "銀",
         "bronze": "銅",
         "mvp": "MVP",
-        "rating": "HLTV レーティング",
+        "rating": "HLTVレーティング",
         "adr": "ADR",
         "kpr": "KPR",
         "dpr": "DPR",
         "kast": "KAST",
         "udr": "UDR",
-        "util_damage": "ユーティダメ",
+        "util_damage": "util与ダメ",
         "rounds": "ラウンド"
       },
       "exclude_tournaments": "トーナメントを除外"
     },
     "database": {
       "query_copied": "クエリをクリップボードにコピーしました",
-      "copy_failed": "クリップボードにコピーできませんでした",
+      "copy_failed": "クリップボードへのコピーに失敗しました",
       "filters": {
         "select_schemas": "スキーマを選択...",
         "search_schemas": "スキーマを検索...",
@@ -2951,10 +2949,10 @@
         "schemas_selected": "件のスキーマを選択中"
       },
       "tabs": {
-        "queries": "クエリ性能",
+        "queries": "クエリパフォーマンス",
         "connections": "接続",
-        "locks": "ロックとトランザクション",
-        "io": "I/O とバッファ",
+        "locks": "ロック・トランザクション",
+        "io": "I/O・バッファ",
         "index_usage": "インデックス使用状況",
         "storage": "ストレージ",
         "timescale": "TimescaleDB",
@@ -2968,220 +2966,251 @@
         "app": "アプリ",
         "client": "クライアント",
         "state": "状態",
-        "duration": "継続時間",
+        "duration": "経過時間",
         "query": "クエリ",
         "pid": "PID"
       },
       "query_performance": {
         "no_stats": "クエリ統計が見つかりません",
-        "search_query": "クエリ検索",
-        "min_calls": "最小呼出数",
+        "search_query": "クエリを検索",
+        "min_calls": "最小呼び出し数",
         "sort_by": "並び替え",
         "avg_time": "平均時間",
         "max_time": "最大時間",
         "total_time": "合計時間",
-        "calls": "呼出数",
+        "calls": "呼び出し数",
         "temp_blocks": "一時ブロック",
-        "filter_by_query_text": "クエリ文で絞り込み...",
+        "filter_by_query_text": "クエリテキストで絞り込み...",
         "search_tables": "テーブルを検索...",
         "search_indexes": "インデックスを検索...",
-        "granted": "許可済み",
+        "granted": "付与済み",
         "mode": "モード",
         "relation": "リレーション"
       },
       "connections": {
-        "no_active_queries": "実行中のクエリはありません",
+        "no_active_queries": "アクティブなクエリはありません",
         "no_connections": "接続が見つかりません",
-        "active_queries_title": "実行中のクエリ",
-        "all_connections_title": "全接続",
+        "active_queries_title": "アクティブなクエリ",
+        "all_connections_title": "すべての接続",
         "wait_event": "待機イベント",
         "total": "合計",
         "active": "アクティブ",
         "idle": "アイドル",
-        "idle_in_txn": "Txn 内アイドル",
+        "idle_in_txn": "トランザクション内アイドル",
         "waiting": "待機中"
       },
       "locks": {
         "no_locks": "アクティブなロックはありません",
-        "no_table_stats": "テーブル統計がありません",
+        "no_table_stats": "テーブル統計はありません",
         "stats_title": "データベース統計",
         "cache_hit_ratio": "キャッシュヒット率",
         "active_backends": "アクティブバックエンド",
-        "tuples_inserted": "挿入タプル",
-        "tuples_updated": "更新タプル",
-        "tuples_deleted": "削除タプル",
+        "tuples_inserted": "挿入タプル数",
+        "tuples_updated": "更新タプル数",
+        "tuples_deleted": "削除タプル数",
         "current_locks": "現在のロック",
         "lock_type": "ロック種別",
         "table_maintenance_title": "テーブルメンテナンス統計",
-        "live_tuples": "有効タプル",
-        "dead_tuples": "デッドタプル",
-        "last_vacuum": "最終 Vacuum",
-        "last_autovacuum": "最終 Autovacuum",
-        "last_analyze": "最終 Analyze",
-        "commits": "コミット",
-        "rollbacks": "ロールバック",
-        "deadlocks": "デッドロック"
+        "live_tuples": "有効タプル数",
+        "dead_tuples": "デッドタプル数",
+        "last_vacuum": "最終VACUUM",
+        "last_autovacuum": "最終自動VACUUM",
+        "last_analyze": "最終ANALYZE",
+        "commits": "コミット数",
+        "rollbacks": "ロールバック数",
+        "deadlocks": "デッドロック数"
       },
       "io": {
         "tabs": {
-          "table_io": "テーブル I/O",
-          "index_io": "インデックス I/O"
+          "table_io": "テーブルI/O",
+          "index_io": "インデックスI/O"
         },
-        "table_io_stats": "テーブル I/O 統計",
-        "index_io_stats": "インデックス I/O 統計",
-        "no_table_stats": "テーブル I/O 統計がありません",
-        "no_index_io_stats": "インデックス I/O 統計がありません",
-        "heap_hits": "ヒープヒット",
-        "heap_reads": "ヒープ読取",
-        "index_hits": "インデックスヒット",
-        "index_reads": "インデックス読取",
-        "blocks_hit": "ブロックヒット",
-        "blocks_read": "ブロック読取",
+        "table_io_stats": "テーブルI/O統計",
+        "index_io_stats": "インデックスI/O統計",
+        "no_table_stats": "テーブルI/O統計はありません",
+        "no_index_io_stats": "インデックスI/O統計はありません",
+        "heap_hits": "ヒープヒット数",
+        "heap_reads": "ヒープ読み取り数",
+        "index_hits": "インデックスヒット数",
+        "index_reads": "インデックス読み取り数",
+        "blocks_hit": "ブロックヒット数",
+        "blocks_read": "ブロック読み取り数",
         "cache_hit_pct": "キャッシュヒット率"
       },
       "index_usage": {
-        "title": "インデックス使用統計",
+        "title": "インデックス使用状況統計",
         "schema": "スキーマ",
         "table": "テーブル",
         "index": "インデックス",
-        "index_scans": "インデックススキャン",
-        "tuples_read": "読取タプル",
-        "tuples_fetched": "取得タプル",
+        "index_scans": "インデックススキャン数",
+        "tuples_read": "読み取りタプル数",
+        "tuples_fetched": "取得タプル数",
         "index_size": "インデックスサイズ",
         "table_size": "テーブルサイズ",
         "size_ratio": "テーブル比",
-        "no_stats": "インデックス使用統計がありません"
+        "no_stats": "インデックス使用状況統計はありません"
       },
       "storage": {
         "overview": "ストレージ概要",
-        "total_database_size": "データベース総サイズ",
-        "total_table_size": "テーブル総サイズ",
-        "total_indexes_size": "インデックス総サイズ",
-        "reclaimable_space": "回収可能領域",
-        "from_dead_tuples": "デッドタプル由来",
+        "total_database_size": "データベース合計サイズ",
+        "total_table_size": "テーブル合計サイズ",
+        "total_indexes_size": "インデックス合計サイズ",
+        "reclaimable_space": "回収可能な領域",
+        "from_dead_tuples": "デッドタプルによるもの",
         "table_sizes": "テーブルストレージ詳細",
         "schema": "スキーマ",
         "table": "テーブル",
         "total_size": "合計サイズ",
         "table_size": "テーブルサイズ",
         "indexes_size": "インデックス",
-        "live_tuples": "有効タプル",
-        "dead_tuples": "デッドタプル",
+        "live_tuples": "有効タプル数",
+        "dead_tuples": "デッドタプル数",
         "dead_tuple_size": "デッドタプルサイズ",
-        "no_tables": "テーブルストレージ情報がありません"
+        "no_tables": "テーブルストレージ情報はありません"
       },
       "timescale": {
-        "no_data_title": "TimescaleDB データなし",
-        "no_data_description": "TimescaleDB 拡張がインストールされていないか、ハイパーテーブルが設定されていません。",
-        "no_jobs": "バックグラウンドジョブは設定されていません",
-        "total_chunks": "チャンク総数",
+        "no_data_title": "TimescaleDBデータなし",
+        "no_data_description": "TimescaleDB拡張がインストールされていないか、ハイパーテーブルが設定されていません。",
+        "no_jobs": "バックグラウンドジョブが設定されていません",
+        "total_chunks": "総チャンク数",
         "background_jobs": "バックグラウンドジョブ",
         "hypertable_name": "ハイパーテーブル名",
         "hypertables": "ハイパーテーブル",
         "hypertable": "ハイパーテーブル",
         "chunks": "チャンク",
         "compression": "圧縮",
-        "job_id": "ジョブ ID",
+        "job_id": "ジョブID",
         "job_type": "ジョブ種別",
-        "last_run_status": "前回実行の状態",
+        "last_run_status": "最終実行ステータス",
         "next_start": "次回開始",
         "not_run": "未実行",
-        "not_scheduled": "予定なし"
+        "not_scheduled": "未スケジュール"
       },
       "backups": {
-        "no_backups": "データベースのバックアップはありません"
+        "no_backups": "データベースバックアップはありません"
       },
       "query_detail": {
         "title": "クエリ詳細",
         "query": "クエリ",
         "copy": "コピー",
         "query_copied": "クエリをクリップボードにコピーしました",
-        "plan_copied": "実行計画をクリップボードにコピーしました",
-        "copy_failed": "クリップボードにコピーできませんでした",
+        "plan_copied": "実行プランをクリップボードにコピーしました",
+        "copy_failed": "クリップボードへのコピーに失敗しました",
         "statistics": "統計",
-        "calls": "呼出数",
+        "calls": "呼び出し数",
         "avg_time": "平均時間",
         "max_time": "最大時間",
-        "total_rows": "総行数",
+        "total_rows": "合計行数",
         "execution_times": "実行時間（ms）",
         "min": "最小",
         "mean": "平均",
         "max": "最大",
         "std_dev": "標準偏差",
         "buffer_stats": "バッファ統計",
-        "shared_blocks_hit": "共有ブロックヒット",
-        "shared_blocks_read": "共有ブロック読取",
+        "shared_blocks_hit": "共有ブロックヒット数",
+        "shared_blocks_read": "共有ブロック読み取り数",
         "cache_hit_ratio": "キャッシュヒット率",
-        "local_blocks_hit": "ローカルブロックヒット",
-        "local_blocks_read": "ローカルブロック読取",
-        "temp_blocks_written": "一時ブロック書込",
-        "execution_plan": "実行計画",
-        "no_explain_plan": "このクエリの EXPLAIN プランは生成できませんでした",
+        "local_blocks_hit": "ローカルブロックヒット数",
+        "local_blocks_read": "ローカルブロック読み取り数",
+        "temp_blocks_written": "書き込み一時ブロック数",
+        "execution_plan": "実行プラン",
+        "no_explain_plan": "このクエリのEXPLAINプランを生成できませんでした",
         "not_found": "クエリ詳細が見つかりません"
       }
     },
     "events": {
       "title": "イベント",
-      "description": "イベントと、その配下のトーナメント・ランキング・順位表を閲覧できます。",
+      "description": "イベントと、それに属するトーナメント・ランキング・順位表を閲覧できます。",
       "create": "イベントを作成",
       "date_tbd": "日程未定",
-      "no_events_title": "イベントなし",
+      "no_events_title": "イベントはまだありません",
       "no_events_description": "現在表示できるイベントはありません。しばらくしてから確認してください。",
-      "live_now": "開催中",
+      "live_now": "配信中",
       "upcoming": "開催予定",
       "past_events": "過去のイベント"
     },
     "manage_events": {
       "title": "イベント管理",
-      "description": "プラットフォーム上の全イベントを確認・管理します。",
-      "no_events_title": "イベントなし",
+      "description": "プラットフォーム上のすべてのイベントを閲覧・管理します。",
+      "no_events_title": "イベントはまだありません",
       "no_events_description": "主催しているイベントはまだありません。"
     },
     "plugins": {
       "not_found_title": "ページが見つかりません",
-      "not_found_description": "このプラグインは存在しないか、提供が終了しています。",
-      "forbidden_title": "アクセス制限",
-      "forbidden_description": "このページを表示する権限がありません。",
-      "error_title": "ページを読み込めませんでした"
+      "not_found_description": "このプラグインは存在しないか、利用できなくなっています。",
+      "forbidden_title": "アクセス制限中",
+      "forbidden_description": "このページを閲覧する権限がありません。",
+      "error_title": "ページの読み込みに失敗しました"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
-    "description": "独自のルール・マップ・出場メンバーで試合を作成できます"
+    "description": "独自のルール・マップ・出場メンバーで試合を作成"
   },
   "layouts": {
     "account_settings": {
       "title": "アカウント設定",
-      "description": "アカウントの設定と各種オプションを管理します",
+      "description": "アカウント設定と各種プレファレンスを管理します",
       "select_section": "セクションを選択"
     },
     "application_settings": {
       "title": "アプリケーション設定",
-      "description": "アプリ全体に影響する設定です。",
+      "description": "アプリケーション全体に影響する設定です。",
       "select_section": "セクションを選択",
       "branding_nav": "ブランディング",
-      "fixtures_nav": "対戦日程",
+      "fixtures_nav": "対戦カード",
       "seasons_nav": "シーズン",
       "groups": {
         "platform": "プラットフォーム",
-        "competition": "大会",
+        "competition": "競技",
         "match_setup": "試合設定",
-        "content_media": "コンテンツ・メディア",
+        "content_media": "コンテンツ & メディア",
         "integrations": "連携",
         "infrastructure": "インフラ",
         "theme": "外観",
         "developer": "開発者",
         "general": "一般",
-        "media": "録画・メディア",
-        "additional_features": "追加機能"
+        "media": "録画 & メディア",
+        "additional_features": "追加機能",
+        "players_teams": "プラットフォーム"
       }
     },
     "system_update": {
-      "title": "システム更新あり",
-      "description": "以下のサービスに更新があります:",
-      "note": "注意: 新しい更新の処理と検証には数分かかります。",
-      "fix_link": "システムのアップグレードが終わらない場合は、バージョンの修正が必要かもしれません",
+      "title": "システムアップデートあり",
+      "description": "以下のサービスにアップデートがあります:",
+      "note": "ご注意ください: 新しいアップデートの処理と検証には数分かかります。",
+      "fix_link": "システムアップグレードが繰り返し発生する場合は、バージョンの修正が必要な可能性があります",
       "updating": "システム更新中",
-      "panel_update": "パネルが最新ではありません。pull して更新スクリプトを実行してください"
+      "panel_update": "パネルが古いバージョンです。最新のアップデートスクリプトを取得して実行してください"
     },
     "match_lobby": {
       "versus": "VS"
@@ -3191,8 +3220,8 @@
       "dismiss": "閉じる",
       "dismiss_all": "すべて閉じる",
       "delete_all_read": "既読をすべて削除",
-      "review_orphaned_uploads": "未紐付けのアップロードを確認",
-      "no_notifications_title": "通知なし",
+      "review_orphaned_uploads": "孤立アップロードを確認",
+      "no_notifications_title": "通知はありません",
       "no_notifications": "現在、通知はありません。",
       "toast": {
         "draft_invite": "ドラフト招待",
@@ -3200,23 +3229,23 @@
         "tournament_invite": "トーナメント招待",
         "lobby_invite": "ロビー招待",
         "friend_request": "フレンド申請",
-        "invited_you": "から招待されました:",
-        "invited_party": "がパーティーに招待しました",
+        "invited_you": "があなたを招待しました",
+        "invited_party": "があなたをパーティーに招待しました",
         "wants_to_be_friends": "がフレンドになりたがっています"
       }
     },
     "app_nav": {
       "brand": "5stack",
-      "systems_online": "{count} システム稼働中 | {count} システム稼働中",
+      "systems_online": "{count} 件のシステムがオンライン | {count} 件のシステムがオンライン",
       "navigation": {
         "dashboard": "マイスタッツ",
         "play": "プレイ",
         "watch": "観戦",
         "tournaments": "トーナメント",
-        "public_servers": "パブリックサーバー",
+        "public_servers": "公開サーバー",
         "players": "プレイヤー",
         "teams": "チーム",
-        "scrims": "スクリム検索",
+        "scrims": "スクリムファインダー",
         "leaderboard": "ランキング",
         "search": "検索",
         "highlights": "ハイライト",
@@ -3236,7 +3265,7 @@
         "servers": "サーバー",
         "dedicated_servers": "専用サーバー",
         "game_server_nodes": "ゲームサーバーノード",
-        "gpu_nodes": "GPU ノード",
+        "gpu_nodes": "GPUノード",
         "app_settings": "アプリ設定",
         "alerts": "アラート",
         "seasons": "シーズン",
@@ -3244,7 +3273,8 @@
         "manage_tournaments": "トーナメント管理",
         "manage_league": "リーグ管理",
         "stream_deck": "ストリームデッキ",
-        "manage_events": "イベント管理"
+        "manage_events": "イベント管理",
+        "awards": "Awards"
       },
       "system": {
         "title": "システム",
@@ -3259,7 +3289,7 @@
       },
       "footer": {
         "report_issue": "問題を報告",
-        "join_discord": "Discord に参加"
+        "join_discord": "Discordに参加"
       },
       "tooltips": {
         "dashboard": "マイスタッツ",
@@ -3270,23 +3300,23 @@
         "teams": "チーム",
         "leaderboard": "ランキング",
         "news": "ニュース",
-        "public_servers": "パブリックサーバー",
+        "public_servers": "公開サーバー",
         "regions": "リージョン",
         "servers": "サーバー",
         "dedicated_servers": "専用サーバー",
         "game_server_nodes": "ゲームサーバーノード",
-        "gpu_nodes": "GPU ノード",
+        "gpu_nodes": "GPUノード",
         "system_logs": "システムログ",
         "database": "データベース",
         "system_metrics": "システムメトリクス",
         "app_settings": "アプリ設定",
         "alerts": "サイト全体のアラートバナーを管理",
         "report_issue": "問題を報告",
-        "join_discord": "Discord に参加",
+        "join_discord": "Discordに参加",
         "manage_matches": "試合管理",
         "manage_tournaments": "トーナメント管理",
         "manage_league": "リーグ管理",
-        "search_players": "プレイヤー検索",
+        "search_players": "プレイヤーを検索",
         "leagues": "リーグ",
         "events": "イベント",
         "manage_events": "イベント管理"
@@ -3298,6 +3328,12 @@
       },
       "plugins": {
         "title": "アプリ"
+      },
+      "competition": {
+        "title": "管理"
+      },
+      "platform": {
+        "title": "管理"
       }
     },
     "top_nav": {
@@ -3306,26 +3342,26 @@
       "community_menu": "コミュニティ",
       "watch_menu": "観戦",
       "login": "ログインしてプレイ",
-      "login_aria": "Steam でサインイン",
-      "authorize": "認証",
-      "secure_access": "/ セキュアアクセス",
+      "login_aria": "Steamでサインイン",
+      "authorize": "AUTHORIZE",
+      "secure_access": "/ SECURE ACCESS",
       "play": {
         "find_match": "試合を探す",
         "tournaments": "トーナメント",
         "leagues": "リーグ",
-        "scrim_finder": "スクリム検索",
-        "public_servers": "パブリックサーバー",
+        "scrim_finder": "スクリムファインダー",
+        "public_servers": "公開サーバー",
         "hero": {
-          "title": "プレイ＆対戦",
-          "subtitle": "試合やトーナメントに参加。",
-          "primary": "メイン"
+          "title": "プレイ & 対戦",
+          "subtitle": "試合やトーナメントに参加しよう。",
+          "primary": "PRIMARY"
         },
-        "operations": "オペレーション"
+        "operations": "OPERATIONS"
       },
       "community": {
         "watch": {
           "title": "観戦",
-          "subtitle": "試合・トーナメントを観戦"
+          "subtitle": "試合やトーナメントを観戦"
         },
         "players": {
           "title": "プレイヤー",
@@ -3333,27 +3369,27 @@
         },
         "teams": {
           "title": "チーム",
-          "subtitle": "チームの検索と管理"
+          "subtitle": "チームを検索・管理"
         },
         "leaderboard": {
           "title": "ランキング",
-          "subtitle": "上位プレイヤーと順位"
+          "subtitle": "トッププレイヤーとランキング"
         },
         "social": {
           "title": "ソーシャル",
           "join_discord": {
-            "title": "Discord に参加",
+            "title": "Discordに参加",
             "subtitle": "チャット、サポート、お知らせ"
           }
         },
-        "roster": "ロスター",
+        "roster": "ROSTER",
         "highlights": {
           "title": "ハイライト",
           "subtitle": "プラットフォーム全体のクリップ"
         },
         "news": {
           "title": "ニュース",
-          "subtitle": "{brand} のニュース"
+          "subtitle": "{brand}のニュース"
         }
       }
     },
@@ -3364,38 +3400,38 @@
     },
     "lobby_panel": {
       "lobby_invites": "ロビー招待",
-      "your_squad": "あなたのスクワッド",
-      "squad_description": "メンバーをまとめて招待を送り、ボイス / Discord の準備をします。",
-      "create_lobby_description": "ロビーを作成してフレンドを招待し、一緒にキューへ入れます。",
+      "your_squad": "自分のスクワッド",
+      "squad_description": "チームを編成し、招待を送り、ボイス／Discordコミュニケーションの準備をしましょう。",
+      "create_lobby_description": "ロビーを作成してフレンドを招待し、一緒にキューに入りましょう。",
       "create_lobby_button": "ロビーを作成",
       "voice_discord": "ボイス & Discord",
-      "discord_linked": "Discord 連携済み",
-      "link_discord": "Discord を連携",
+      "discord_linked": "Discord連携済み",
+      "link_discord": "Discordを連携",
       "find_match": "試合を探す"
     },
     "chat_panel": {
       "default_title": "チャット",
-      "participants_in_chat": "{count} 人が参加中",
-      "pop_out_tooltip": "別ウィンドウで開く",
-      "no_chats_title": "チャットなし",
+      "participants_in_chat": "チャット参加者 {count} 人",
+      "pop_out_tooltip": "ウィンドウとして切り離す",
+      "no_chats_title": "チャットはまだありません",
       "no_chats_description": "チャットに参加すると、ここに表示されます。"
     },
     "recent_games": {
       "title": "最近の試合",
-      "last_matches": "直近 {count} 試合",
+      "last_matches": "直近{count}試合",
       "performance": "パフォーマンス",
       "draws_label": "引き分け",
-      "most_played_maps": "プレイの多いマップ",
+      "most_played_maps": "プレイ回数の多いマップ",
       "no_maps": "プレイするとマップがここに表示されます。",
-      "no_recent_matches_title": "最近の試合なし",
+      "no_recent_matches_title": "最近の試合はありません",
       "no_recent_matches_description": "試合をプレイすると、ここに表示されます。"
     },
     "public_header": {
-      "secure_channel": "セキュアチャンネル"
+      "secure_channel": "SECURE CHANNEL"
     }
   },
   "alt_text": {
-    "steam_login": "Steam ログイン",
+    "steam_login": "Steamログイン",
     "discord": "Discord",
     "map_poster": "マップポスター",
     "map_patch": "マップパッチ"
@@ -3403,28 +3439,28 @@
   "pwa": {
     "install": {
       "title": "ホーム画面に追加",
-      "description": "このサイトはアプリのような機能を提供します。ホーム画面に追加すると簡単にアクセスできます。",
-      "step1": "「共有」ボタンを押す",
-      "step2": "「ホーム画面に追加」を選択",
+      "description": "このウェブサイトはアプリのような機能を提供します。ホーム画面に追加すると簡単にアクセスできます。",
+      "step1": "「共有」ボタンを押します",
+      "step2": "「ホーム画面に追加」を選択します",
       "tooltip": "アプリをインストール",
       "button": "アプリをインストール"
     }
   },
   "roster_picker": {
-    "add_starter": "先発を追加",
+    "add_starter": "スタメンを追加",
     "add_substitute": "控えを追加",
     "search": "プレイヤーを検索…",
-    "none": "利用可能なプレイヤーなし"
+    "none": "利用可能なプレイヤーがいません"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "これらのファイルはサーバー起動時に `csgo` ディレクトリへマウントされます。",
+    "manage_custom_plugins_and_shared_files": "これらのファイルは、サーバー起動時に`csgo`ディレクトリにマウントされます。",
     "any": "指定なし",
     "remove": "削除",
     "edit": "編集",
     "view": "表示",
     "done": "完了",
-    "accept": "承認",
-    "decline": "拒否",
+    "accept": "承諾",
+    "decline": "辞退",
     "previous": "前へ",
     "next": "次へ",
     "back": "戻る",
@@ -3439,18 +3475,18 @@
     "save_changes": "変更を保存",
     "save_bar": {
       "unsaved_changes": "未保存の変更",
-      "review_and_save": "編集内容を確認してから保存",
-      "has_errors": "設定が不正",
-      "resolve_errors": "強調表示された項目を修正すると保存できます"
+      "review_and_save": "編集内容を確認してから保存してください",
+      "has_errors": "無効な設定",
+      "resolve_errors": "保存するにはハイライトされた項目を修正してください"
     },
     "error": "エラー",
     "enabled": "有効",
     "all": "すべて",
-    "tbd": "未定",
-    "team_a": "チーム A",
-    "team_b": "チーム B",
-    "team_1": "チーム 1",
-    "team_2": "チーム 2",
+    "tbd": "TBD",
+    "team_a": "Aチーム",
+    "team_b": "Bチーム",
+    "team_1": "チーム1",
+    "team_2": "チーム2",
     "unknown": "不明",
     "untitled": "無題",
     "na": "N/A",
@@ -3459,14 +3495,14 @@
     "or": "または",
     "yes": "はい",
     "no": "いいえ",
-    "more": "その他",
+    "more": "もっと見る",
     "columns": "列",
     "none": "なし",
     "failed": "失敗",
     "disabled": "無効",
     "online": "オンライン",
     "offline": "オフライン",
-    "degraded": "性能低下",
+    "degraded": "低下",
     "never": "なし",
     "live": "ライブ",
     "finished": "終了",
@@ -3478,25 +3514,25 @@
     "system": "システム",
     "hide_details": "詳細を隠す",
     "show_details": "詳細を表示",
-    "enter_fullscreen": "全画面表示",
-    "exit_fullscreen": "全画面を終了",
+    "enter_fullscreen": "フルスクリーンにする",
+    "exit_fullscreen": "フルスクリーンを終了",
     "download": "ダウンロード",
     "upload": "アップロード",
     "sort_ascending": "昇順で並べ替え",
     "sort_descending": "降順で並べ替え",
-    "see_all": "すべて表示",
-    "standby_no_activity": "スタンバイ · アクティビティなし",
+    "see_all": "すべて見る",
+    "standby_no_activity": "STANDBY・NO ACTIVITY",
     "players": "プレイヤー",
-    "duration": "時間",
-    "your_schedule": "スケジュール",
-    "your_schedule_description": "現在参加している試合とトーナメントです。",
-    "highlights": "ハイライト",
+    "duration": "所要時間",
+    "your_schedule": "あなたのスケジュール",
+    "your_schedule_description": "現在参加中の試合やトーナメントです。",
+    "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "はい",
       "no": "いいえ"
     },
     "are_you_sure": "このコマンドを実行しますか？",
-    "are_you_sure_short": "実行しますか？",
+    "are_you_sure_short": "よろしいですか？",
     "no_tables_found": "テーブルが見つかりません",
     "actions": {
       "edit": "編集",
@@ -3504,7 +3540,7 @@
     },
     "actions_label": "操作",
     "close": "閉じる",
-    "confirm": "確定",
+    "confirm": "確認",
     "refresh": "更新",
     "create": "作成",
     "rename": "名前を変更",
@@ -3512,22 +3548,22 @@
     "saving": "保存中...",
     "loading": "読み込み中...",
     "undo": "元に戻す",
-    "redo": "やり直し",
+    "redo": "やり直す",
     "name": "名前",
     "description": "説明",
     "status": "ステータス",
     "region": "リージョン",
-    "filters": "絞り込み",
+    "filters": "フィルター",
     "options": "オプション",
     "date": "日付",
-    "reset_filters": "絞り込みをリセット",
+    "reset_filters": "フィルターをリセット",
     "player": "プレイヤー",
     "plugin_version": "プラグインバージョン",
     "pick_date": "日付を選択",
     "team_name": "チーム名",
     "coaches": "コーチ",
-    "map_veto": "マップ Veto",
-    "round": "ラウンド {number}",
+    "map_veto": "マップVeto",
+    "round": "ラウンド{number}",
     "stats": {
       "wins": "勝利",
       "losses": "敗北",
@@ -3537,50 +3573,50 @@
       "win_rate": "勝率"
     },
     "address_search": {
-      "placeholder": "住所または会場を検索",
-      "no_results": "該当する場所が見つかりません"
+      "placeholder": "住所や会場を検索",
+      "no_results": "一致する場所が見つかりません"
     }
   },
   "spotlight_search": {
     "placeholder": "プレイヤーを検索...",
     "searching": "検索中...",
     "no_players_found": "プレイヤーが見つかりません",
-    "start_typing": "入力するとプレイヤーを検索します"
+    "start_typing": "入力してプレイヤーを検索"
   },
   "file_manager_store": {
-    "load_directory_failed": "ディレクトリを読み込めませんでした",
-    "read_file_failed": "ファイルを読み取れませんでした",
-    "create_directory_failed": "ディレクトリを作成できませんでした",
-    "delete_item_failed": "項目を削除できませんでした",
-    "rename_item_failed": "項目の名前を変更できませんでした",
-    "move_item_failed": "項目を移動できませんでした",
-    "save_file_failed": "ファイルを保存できませんでした",
-    "network_error": "ネットワークエラー",
-    "upload_cancelled": "アップロードを中止しました"
+    "load_directory_failed": "ディレクトリを読み込めませんでした。",
+    "read_file_failed": "ファイルを読み込めませんでした。",
+    "create_directory_failed": "ディレクトリを作成できませんでした。",
+    "delete_item_failed": "項目を削除できませんでした。",
+    "rename_item_failed": "項目の名前を変更できませんでした。",
+    "move_item_failed": "項目を移動できませんでした。",
+    "save_file_failed": "ファイルを保存できませんでした。",
+    "network_error": "ネットワークエラーが発生しました。",
+    "upload_cancelled": "アップロードがキャンセルされました。"
   },
   "file_manager": {
     "location": "場所",
-    "dedicated_server_files": "専用サーバーのファイル",
-    "game_server_node_files": "ゲームサーバーノードのファイル",
+    "dedicated_server_files": "専用サーバーファイル",
+    "game_server_node_files": "ゲームサーバーノードファイル",
     "loading_server_info": "サーバー情報を読み込み中...",
     "create_directory": {
-      "title": "新規ディレクトリ作成",
+      "title": "新規ディレクトリを作成",
       "description": "新しいディレクトリの名前を入力してください",
       "label": "ディレクトリ名",
       "placeholder": "my-directory"
     },
     "create_file": {
-      "title": "新規ファイル作成",
+      "title": "新規ファイルを作成",
       "description": "新しいファイルの名前を入力してください",
       "label": "ファイル名",
       "placeholder": "my-file.txt",
-      "failed": "ファイルを作成できませんでした"
+      "failed": "ファイルを作成できませんでした。"
     },
     "delete_confirm": {
-      "title_file": "ファイル削除",
-      "title_directory": "ディレクトリ削除",
+      "title_file": "ファイルを削除",
+      "title_directory": "ディレクトリを削除",
       "description_file": "「{name}」を削除しますか？この操作は取り消せません。",
-      "description_directory": "「{name}」を削除しますか？中身もすべて完全に削除されます。"
+      "description_directory": "「{name}」を削除しますか？内容はすべて完全に削除されます。"
     },
     "rename": {
       "title_file": "ファイル名を変更",
@@ -3589,12 +3625,12 @@
       "label": "新しい名前"
     },
     "editor": {
-      "title": "ファイル編集: {path}",
-      "description": "ファイルの内容を編集します",
+      "title": "ファイルを編集: {path}",
+      "description": "ファイルの内容を変更します",
       "loading": "ファイルを読み込み中...",
       "save_success": "ファイルを保存しました。",
-      "load_failed": "ファイルを読み込めませんでした",
-      "save_failed": "ファイルを保存できませんでした",
+      "load_failed": "ファイルを読み込めませんでした。",
+      "save_failed": "ファイルを保存できませんでした。",
       "unsaved_close": "未保存の変更があります。閉じますか？"
     },
     "upload": {
@@ -3604,8 +3640,8 @@
       "max_size": "最大ファイルサイズ: 100MB",
       "uploading": "ファイルをアップロード中...",
       "complete": "アップロード完了",
-      "complete_with_errors": "アップロード完了（エラーあり）",
-      "files_failed": "{count} 件のファイルをアップロードできませんでした"
+      "complete_with_errors": "エラーを含めてアップロードが完了しました。",
+      "files_failed": "{count} 件のファイルのアップロードに失敗しました。"
     },
     "toolbar": {
       "new_file": "新規ファイル",
@@ -3616,7 +3652,7 @@
     "tree": {
       "folder_name_placeholder": "フォルダ名",
       "file_name_placeholder": "ファイル名",
-      "drop_hint": "ここにファイルをドロップ、または右クリックで作成",
+      "drop_hint": "ここにファイルをドロップ、または右クリックで新規作成",
       "files": "ファイル",
       "current": "現在"
     },
@@ -3624,15 +3660,15 @@
       "menu_file_label": "ファイル",
       "menu_edit_label": "編集",
       "menu_view_label": "表示",
-      "no_file_open_title": "ファイル未選択",
-      "no_file_open_description": "ブラウザーから編集するファイルを選択してください",
+      "no_file_open_title": "開いているファイルはありません",
+      "no_file_open_description": "ブラウザからファイルを選択して編集してください",
       "close": "閉じる",
       "close_all": "すべて閉じる",
       "enable_word_wrap": "折り返しを有効化",
       "disable_word_wrap": "折り返しを無効化",
       "show_minimap": "ミニマップを表示",
       "hide_minimap": "ミニマップを隠す",
-      "no_file_open": "ファイル未選択",
+      "no_file_open": "開いているファイルはありません",
       "unsaved_changes": "未保存の変更があります。閉じますか？",
       "unsaved_changes_all": "未保存の変更があります。すべてのファイルを閉じますか？"
     },
@@ -3671,8 +3707,8 @@
     "team": "チームチャット"
   },
   "latency_status": {
-    "measuring": "計測中...",
-    "excellent": "非常に良好",
+    "measuring": "測定中...",
+    "excellent": "優秀",
     "good": "良好",
     "fair": "普通",
     "poor": "不良"
@@ -3681,8 +3717,8 @@
     "fallback_title": "チャット",
     "not_found": "チャットが見つかりません",
     "back_to_hub": "ハブに戻る",
-    "not_open_title": "このチャットは現在のセッションで開かれていません。",
-    "not_open_description": "先にハブのサイドバーから開き、もう一度ポップアウトしてください。"
+    "not_open_title": "このチャットは現在のセッションでは開かれていません。",
+    "not_open_description": "先にハブサイドバーから開いてから、再度切り離してください。"
   },
   "tournament": {
     "admin_label": "管理者",
@@ -3692,7 +3728,7 @@
     "results_table": {
       "matches": "試合"
     },
-    "final_standings_podium": "▚ 最終順位 · 表彰台",
+    "final_standings_podium": "▚ FINAL STANDINGS · PODIUM",
     "page": {
       "tournament_eyebrow": "トーナメント",
       "back_to_league": "リーグへ戻る",
@@ -3728,25 +3764,6 @@
     },
     "standings_section": {
       "no_roster": "ロスターなし"
-    },
-    "trophies_config": {
-      "title": "トロフィー設定",
-      "organizer_access_required": "主催者権限が必要",
-      "award_trophies": "トロフィー授与",
-      "custom": "カスタム",
-      "custom_image": "カスタム画像",
-      "custom_name": "カスタム名",
-      "silhouette": "シルエット",
-      "reset": "リセット",
-      "remove_image_hint": "画像を削除すると名前やシルエットを変更できます",
-      "hint": "画像をアップロードするか、既定の賞をカスタマイズします。"
-    },
-    "trophies_manage": {
-      "manual_awards": "手動授与",
-      "add_award": "賞を追加",
-      "no_manual_awards": "手動授与なし",
-      "remove": "削除",
-      "hint": "ブラケットの集計とは別にトロフィーを授与します。"
     },
     "compact_card": {
       "tournament": "トーナメント",
@@ -4098,9 +4115,9 @@
     "server": {
       "remove": "サーバーを削除",
       "confirm_remove": "このサーバーを削除しますか？",
-      "remove_description": "トーナメントからこのサーバーを削除します"
+      "remove_description": "このサーバーをトーナメントから削除します。"
     },
-    "open_match_actions": "試合の操作を開く",
+    "open_match_actions": "試合アクションを開く",
     "location": {
       "tab": "開催地",
       "view_on_map": "地図で見る"
@@ -4109,18 +4126,18 @@
       "title": "賞金",
       "manage_title": "賞金",
       "manage_hint": "トーナメントページに表示される順位と賞金額です。",
-      "organizer_access_required": "主催者権限が必要",
+      "organizer_access_required": "主催者権限が必要です",
       "add": "追加",
       "distribution": "賞金配分",
       "place_placeholder": "#1",
       "prize_placeholder": "$1000",
-      "reorder_hint": "ドラッグで並べ替えると順位は自動で振り直されます。ラベルを入力すると上書きできます。",
+      "reorder_hint": "ドラッグで並び替え — 順位は自動で振り直されます。ラベルを入力すると上書きできます。",
       "move_up": "上へ移動",
       "move_down": "下へ移動"
     },
     "stats": {
       "prize_pool": "賞金総額",
-      "teams": "チーム",
+      "teams": "チーム数",
       "format": "形式",
       "starts": "開始",
       "location": "開催地"
@@ -4136,42 +4153,83 @@
       "upload": "バナーをアップロード",
       "replace": "バナーを差し替え",
       "remove": "削除",
-      "removed": "バナーを削除しました。",
-      "updated": "バナーを更新しました。",
+      "removed": "バナーを削除しました",
+      "updated": "バナーを更新しました",
       "empty_hint": "バナーを追加",
-      "hint": "トーナメントページの上部に表示されます。3:1 のワイド枠に切り抜かれます。",
-      "upload_failed": "バナーをアップロードできませんでした。"
+      "hint": "トーナメントページの上部に表示されます。3:1のワイド比率でクロップされます。",
+      "upload_failed": "バナーのアップロードに失敗しました。"
+    },
+    "awards_config": {
+      "title": "アワード設定",
+      "organizer_access_required": "主催者権限が必要",
+      "custom": "カスタム",
+      "custom_image": "カスタム画像",
+      "custom_name": "カスタム名",
+      "silhouette": "シルエット",
+      "reset": "リセット",
+      "hint": "各順位に付与するアワードを選択するか、名前とアートを上書きします。",
+      "award": "アワード",
+      "award_default": "デフォルト",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "手動アワード",
+      "add_award": "アワードを追加",
+      "no_manual_awards": "手動アワードなし",
+      "remove": "削除",
+      "hint": "ブラケットの集計とは別にアワードを付与します。",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
     "highlights": {
-      "subtitle": "このチームのプレイヤーが登場する最近のクリップです。",
-      "empty": "このチームのプレイヤーのハイライトはまだありません。"
+      "subtitle": "このチームの所属選手が写った最近のクリップです。",
+      "empty": "このチームの所属選手のハイライトはまだありません。"
     },
     "rank_summary": {
-      "reliable": "信頼度 {pct}%",
-      "reputation_title": "完了 {completed} 件 · 不参加 {noShows} 件"
+      "reliable": "信頼度{pct}%",
+      "reputation_title": "完了{completed}件・不参加{noShows}件"
     },
     "tabs": {
       "overview": "概要",
       "stats": "スタッツ",
       "highlights": "ハイライト",
-      "scrim": "スクリム検索"
+      "scrim": "スクリム募集"
     },
-    "scrim_open_description": "このチームはスクリムを受け付けています。空き時間から日時を選んで挑戦を送ってください。",
+    "scrim_open_description": "このチームはスクリムを募集しています — 空き時間から日時を選んで対戦を申し込みましょう。",
     "career": {
-      "title": "チーム成績",
-      "description": "このチームが戦った全試合を通じた、プレイヤーごとの通算集計です。",
-      "empty_title": "スタッツなし",
-      "empty_description": "このチームには、スタッツが記録された完了済みの試合がありません。",
-      "matches": "試合",
-      "maps_played": "マップ",
+      "title": "チームパフォーマンス",
+      "description": "このチームがこれまでプレイした全試合における、選手別の通算スタッツです。",
+      "empty_title": "スタッツはまだありません",
+      "empty_description": "このチームにはスタッツが記録された完了試合がありません。",
+      "matches": "試合数",
+      "maps_played": "マップ数",
       "map_win_pct": "マップ勝率",
-      "team_rating": "平均 HLTV レーティング",
+      "team_rating": "平均HLTV Rating",
       "player": "プレイヤー",
       "maps": "マップ",
       "rounds": "ラウンド",
-      "rating": "HLTV レーティング",
+      "rating": "HLTV Rating",
       "kpr": "KPR",
       "dpr": "DPR",
       "kd": "K/D",
@@ -4180,7 +4238,7 @@
     },
     "hero": {
       "roster": "ロスター",
-      "matches": "試合"
+      "matches": "試合数"
     },
     "table": {
       "team": "チーム",
@@ -4189,21 +4247,21 @@
     "invite": {
       "team_title": "チーム招待",
       "tournament_title": "トーナメント招待",
-      "tournament_message": "トーナメントへの参加に招待されています。",
-      "team_message": "チームへの参加に招待されています。",
+      "tournament_message": "トーナメントへの参加に招待されました",
+      "team_message": "チームへの参加に招待されました",
       "invited_by": "招待者",
       "deny": "拒否",
-      "accept": "承認"
+      "accept": "承諾"
     },
     "roles": {
       "captain": "キャプテン"
     },
-    "leave": "チームを退出",
+    "leave": "チームを脱退",
     "management": {
       "edit": "チームを編集"
     },
     "confirm": {
-      "leave": "このチームを退出しますか？",
+      "leave": "このチームを脱退しますか？",
       "delete": {
         "title": "チームを削除",
         "description": "このチームを削除しますか？この操作は取り消せません。"
@@ -4216,37 +4274,37 @@
       "bench": "ベンチ",
       "substitutes": "控え",
       "invite_player": "プレイヤーを招待",
-      "pending_invites": "保留中の招待",
+      "pending_invites": "招待中",
       "rank_source": "ランク"
     },
     "form": {
-      "identity": "チーム情報",
-      "name_placeholder": "チーム名を入力...",
+      "identity": "基本情報",
+      "name_placeholder": "チーム名を入力…",
       "short_name": "略称",
-      "short_name_placeholder": "略称を入力（最大5文字）...",
+      "short_name_placeholder": "略称を入力（最大5文字）…",
       "owner": "チームオーナー",
-      "select_owner": "チームオーナーを選択...",
-      "inviting": "招待予定",
-      "inviting_hint": "チーム作成時に、これらのプレイヤーへ招待が送られます。",
+      "select_owner": "チームオーナーを選択…",
+      "inviting": "招待",
+      "inviting_hint": "これらのプレイヤーはチーム作成時に招待されます。",
       "create": "チームを作成",
       "is_organization": {
         "label": "組織チーム",
-        "description": "組織チームはトーナメントに紐付けて、メンバーに主催者権限を付与できます。"
+        "description": "組織チームはトーナメントと紐づけることで、メンバーに主催者権限を付与できます。"
       }
     },
     "roster_count_players": "人",
     "search": {
-      "found_teams": "{count} チームが見つかりました",
-      "placeholder": "チームを検索...",
+      "found_teams": "{count}チーム見つかりました",
+      "placeholder": "チームを検索…",
       "my_teams_only": "自分のチームのみ",
       "tournament_winners": "トーナメント優勝チーム",
-      "scrims_only": "スクリム受付中",
+      "scrims_only": "スクリム募集中",
       "no_teams_found": "チームが見つかりません",
       "owner": "オーナー",
       "captain": "キャプテン",
       "ineligible_short": "ロック中",
-      "tournament_join_requires_owner_or_captain": "トーナメントに参加できるのは、オーナーまたはキャプテンを務めるチームのみです。",
-      "not_enough_players": "挑戦するには {count} 人以上のプレイヤーが必要です。",
+      "tournament_join_requires_owner_or_captain": "オーナーまたはキャプテンを務めるチームでのみトーナメントに参加できます。",
+      "not_enough_players": "対戦を申し込むには最低{count}人必要です。",
       "selected": "選択中"
     },
     "member": {
@@ -4255,30 +4313,30 @@
       "benched": "ベンチ",
       "substitute": "控え",
       "remove": "メンバーを削除",
-      "cancel_invite": "招待を取り消す",
+      "cancel_invite": "招待を取り消し",
       "confirm_cancel_invite": "この招待を取り消しますか？",
       "confirm_remove": "このメンバーを削除しますか？",
-      "cancel_invite_description": "このメンバーへの招待を取り消します",
-      "remove_description": "このメンバーをチームから削除します",
+      "cancel_invite_description": "このメンバーへの招待を取り消します。",
+      "remove_description": "このメンバーをチームから削除します。",
       "roster_image": "ロスター画像",
-      "roster_image_description": "このチームでの {name} のロスター画像をアップロードします。プレイヤーの既定画像より優先されます。"
+      "roster_image_description": "このチームでの{name}のロスター画像をアップロードします。選手のデフォルト画像を上書きします。"
     },
     "calendar": {
-      "subscribe": "試合を購読",
-      "link_copied": "カレンダーのリンクをコピーしました。",
-      "subscription_help": "この URL をカレンダーアプリで購読すると、このチームの全試合（スクリム、リーグ戦、トーナメント）を確認できます。",
-      "link_error": "カレンダーのリンクを取得できませんでした。"
+      "subscribe": "試合をカレンダー登録",
+      "link_copied": "カレンダーリンクをコピーしました",
+      "subscription_help": "このURLをカレンダーアプリに登録すると、このチームのスクリム・リーグ戦・トーナメントなど全ての試合が表示されます。",
+      "link_error": "カレンダーリンクを取得できませんでした"
     }
   },
   "match": {
     "open_match": "試合を開く",
     "picks_label": "Pick",
-    "full_page": "全画面ページ",
+    "full_page": "全画面表示",
     "match_overview": "試合概要",
-    "no_multi_kill_rounds": "{count} キルのラウンドは見つかりませんでした。",
+    "no_multi_kill_rounds": "{count}キルラウンドは見つかりませんでした。",
     "map_filter_active": "マップフィルター適用中",
     "scoreboard": "スコアボード",
-    "maps_not_picked": "マップ未決定",
+    "maps_not_picked": "マップ未選択",
     "admin": "管理者",
     "round_kills": "ラウンドキル",
     "planting": "設置中",
@@ -4286,40 +4344,40 @@
     "lineups": "出場メンバー",
     "tap_to_unmute": "タップでミュート解除",
     "auto_director": "オートディレクター",
-    "match_scheduled_for": "試合は {time} に予定されています。",
-    "start_now_or_schedule": "今すぐ試合を開始するか、後の日時を予定してください。",
+    "match_scheduled_for": "試合は{time}に予定されています。",
+    "start_now_or_schedule": "今すぐ試合を開始するか、後の時間を予約してください。",
     "keyboard_shortcuts": "キーボードショートカット",
     "up_next": "次の試合",
     "head_to_head_matrix": {
       "damage": "ダメージ",
       "your_weapons": "自分の武器",
       "their_weapons": "相手の武器",
-      "flashes_on_them": "相手に当てたフラッシュ",
-      "flashes_on_you": "自分が受けたフラッシュ"
+      "flashes_on_them": "相手へのフラッシュ",
+      "flashes_on_you": "自分へのフラッシュ"
     },
-    "team_stats_heading": "{name} のスタッツ",
+    "team_stats_heading": "{name}のスタッツ",
     "all_maps": "全マップ",
     "stream": {
       "watch": "ライブ配信",
-      "no_preview": "プレビューなし",
+      "no_preview": "プレビューはまだありません",
       "rendering_highlights": "ハイライト生成中",
       "expand_preview": "プレビューを拡大",
-      "watching": "{count} 人が視聴中",
+      "watching": "{count}人視聴中",
       "rendering_clip": "クリップ生成中",
       "acquiring_signal": "信号取得中",
-      "signal_lost": "信号が途絶えました",
+      "signal_lost": "信号ロスト",
       "idle": "待機中",
       "access_denied": "配信を利用できません",
-      "access_denied_hint": "このライブ配信にはアクセスできません。出場中の試合をプレイヤーが視聴することはできません。"
+      "access_denied_hint": "このライブ配信への権限がありません — 出場選手は自分が出ている試合を視聴できません。"
     },
     "elo_details": {
-      "title": "ELO 変動の詳細",
+      "title": "ELO変動の詳細",
       "formula": {
-        "k_factor_hint": "K ファクター。補正前の基本となる ELO 変動幅です。",
-        "delta_hint": "Δ = 実績（{actual}）− 期待値（{expected}）。プラスならチーム ELO の予測を上回ったことを示します。",
-        "perf_hint": "パフォーマンス倍率。チーム平均に対する KDA と、チームダメージの占有率で変動します。勝利時は 0.8×〜1.2× の範囲です。",
-        "series_hint": "シリーズ倍率。マップ差で決まります。BO1 = ×1、BO3 ストレート = ×2、BO5 ストレート = ×3。接戦ほど ELO の変動は小さくなります。",
-        "result_hint": "すべての倍率を適用し、整数に丸めた最終的な ELO 変動です。"
+        "k_factor_hint": "K係数 — 各種補正前の基本ELO変動率です。",
+        "delta_hint": "Δ＝実際の結果（{actual}）－期待値（{expected}）。プラスであればチームELOの予測を上回ったことを意味します。",
+        "perf_hint": "パフォーマンス倍率 — チーム平均に対するKDAとチームダメージに占める割合で算出されます。勝利時は0.8×〜1.2×の範囲です。",
+        "series_hint": "シリーズ倍率 — マップの純差分です。BO1は×1、BO3ストレートは×2、BO5ストレートは×3。僅差のシリーズほどELOの変動は小さくなります。",
+        "result_hint": "全ての倍率適用後の最終ELO変動を四捨五入した値です。"
       }
     },
     "simple": {
@@ -4333,29 +4391,29 @@
       "group": {
         "game_settings": "ゲーム設定",
         "team_settings": "チーム設定",
-        "veto_settings": "Veto 設定",
-        "control_settings": "操作権限設定"
+        "veto_settings": "Veto設定",
+        "control_settings": "コントロール設定"
       },
       "filter_maps": "マップを絞り込み",
       "table": {
         "no_matches_found": "試合が見つかりません"
       },
       "type": {
-        "label": "試合タイプ"
+        "label": "試合形式"
       },
       "best_of": {
         "label": "Best Of",
-        "description": "指定した試合数のうち、過半数を勝ったチームが勝者となります",
-        "placeholder": "Best Of の値を選択",
+        "description": "指定した試合数のうち、過半数を先取したチームが勝者となります。",
+        "placeholder": "Best Ofの値を選択",
         "option": "Best of {count}"
       },
       "map_veto_settings": {
-        "short_on": "両チームがマッププールから Ban と Pick を行います。",
+        "short_on": "チームがマッププールからBanとPickを行います。",
         "short_off": "マップは下で手動選択します。",
-        "learn_more": "Veto の仕組み",
+        "learn_more": "Vetoの仕組み",
         "custom_pool": "カスタムマッププール",
         "active_duty": "アクティブデューティマッププール",
-        "custom_pool_tooltip": "カスタムマッププールを選ぶと、現在のアクティブデューティ外のマップも選択できます"
+        "custom_pool_tooltip": "カスタムマッププールを選択すると、現在のアクティブデューティプール外のマップも選択できます。"
       },
       "advanced": {
         "title": "詳細設定",
@@ -4364,207 +4422,207 @@
         "toggle": "詳細設定の表示切替",
         "overtime": {
           "label": "オーバータイム",
-          "description": "オーバータイムは 1 回につき 6 ラウンド制です。"
+          "description": "各オーバータイムはBest of 6で行われます。"
         },
         "knife_round": {
           "label": "ナイフラウンド",
-          "description": "ナイフラウンドは、どちらのチームも Veto でそのマップを Pick していない場合のみ行われます。"
+          "description": "ナイフラウンドは、VetoでどちらのチームもそのマップをPickしなかった場合のみ行われます。"
         },
         "max_rounds": {
           "label": "最大ラウンド数",
-          "description": "サイドが入れ替わるまでに行うラウンド数です。",
+          "description": "サイドが入れ替わるまでにプレイするラウンド数です。",
           "placeholder": "最大ラウンド数を選択"
         },
         "region": {
           "title": "リージョン設定",
-          "lan_match": "LAN 試合",
+          "lan_match": "LAN試合",
           "veto": {
             "label": "Veto",
-            "description": "両チームがサーバーのリージョンを Veto・選択できるようにします。"
+            "description": "チームがサーバーリージョンをVetoで選択できるようにします。"
           },
           "preferred": "優先リージョン",
           "placeholder": "リージョンを選択",
           "any": "指定なし",
-          "description": "この試合で優先するリージョンを選択します。"
+          "description": "この試合の優先リージョンを選択します。"
         },
         "substitutes": {
           "label": "控えの人数",
-          "description": "各出場メンバーに追加の枠を設けます。",
-          "range": "0〜5 の値を入力してください。"
+          "description": "各ロスターに追加される控え枠の数です。",
+          "range": "0〜5の範囲で入力してください。"
         },
         "tv_delay": {
-          "label": "TV ディレイ",
-          "range": "0〜120 の値を入力してください。"
+          "label": "TV遅延",
+          "range": "0〜120の範囲で入力してください。"
         },
         "timeouts": {
           "tactical": {
             "label": "タクティカルタイムアウト設定",
-            "description": "タクティカルタイムアウトは .tac と入力して要求し、長さは 30 秒です。"
+            "description": "タクティカルタイムアウトは.tacと入力することで呼び出せ、30秒間続きます。"
           },
           "technical": {
             "label": "テクニカルタイムアウト設定",
-            "description": "テクニカルタイムアウトは .pause と入力して要求し、時間制限はありません。"
+            "description": "テクニカルタイムアウトは.pauseと入力することで呼び出せ、時間制限はありません。"
           },
           "options": {
             "admins": "管理者",
             "coaches": "コーチ",
-            "captains": "コーチ / キャプテン",
+            "captains": "コーチ・キャプテン",
             "everyone": "全員"
           }
         },
         "default_models": {
-          "label": "既定のプレイヤーモデル",
-          "description": "試合の全プレイヤーに既定のプレイヤーモデルを適用します。"
+          "label": "デフォルトプレイヤーモデル",
+          "description": "この試合の全プレイヤーにデフォルトのプレイヤーモデルを適用します。"
         },
         "check_in_settings": {
           "label": "チェックイン設定",
-          "description": "試合開始前のチェックイン方法を設定します。",
+          "description": "試合開始前のプレイヤーのチェックイン方法を制御します。",
           "options": {
             "admins": "管理者",
             "captains": "キャプテン",
-            "everyone": "全プレイヤーのチェックインが必要"
+            "everyone": "全プレイヤーのチェックインが必須"
           }
         },
         "ready_settings": {
           "label": "準備完了設定",
-          "description": "試合開始の準備完了をどう判定するかを設定します。",
+          "description": "試合開始の準備完了と判定する条件を制御します。",
           "options": {
             "admins": "管理者",
             "coaches": "コーチ",
             "captains": "キャプテン",
-            "everyone": "全プレイヤーの準備完了が必要"
+            "everyone": "全プレイヤーの準備完了が必須"
           }
         },
         "auto_cancellation": {
           "label": "試合の自動キャンセル",
-          "description": "設定した時間内に開始されない試合を自動でキャンセルします。",
+          "description": "設定した時間内に開始されなかった試合を自動でキャンセルします。",
           "auto_cancel_duration": {
-            "label": "自動キャンセルまでの時間（分）",
-            "description": "この試合・トーナメントに限り、アプリ全体の自動キャンセル時間を上書きします。"
+            "label": "自動キャンセル時間（分）",
+            "description": "この試合／トーナメントについて、アプリ全体の自動キャンセル時間を上書きします。"
           },
           "live_match_timeout": {
-            "label": "試合中のタイムアウト（分）",
-            "description": "この試合・トーナメントに限り、アプリ全体の試合中タイムアウトを上書きします。"
+            "label": "試合中タイムアウト（分）",
+            "description": "この試合／トーナメントについて、アプリ全体の試合中タイムアウトを上書きします。"
           }
         },
         "match_mode": {
           "label": "試合モード",
-          "description": "試合のスケジュール方法を設定します。Auto はシステムが自動で組み、Admin は手動でのスケジュールが必要です。",
+          "description": "試合のスケジュール方法を制御します。オートモードではシステムが自動でスケジュールし、管理者モードでは手動でのスケジュールが必要です。",
           "options": {
-            "auto": "Auto",
-            "admin": "Admin"
+            "auto": "オート",
+            "admin": "管理者"
           }
         },
         "default_player_models": {
-          "description": "試合の全プレイヤーに既定のプレイヤーモデルを適用します。"
+          "description": "この試合の全プレイヤーにデフォルトのプレイヤーモデルを適用します。"
         },
         "round_restart_delay": {
-          "label": "ラウンド再開までの遅延",
-          "range": "ラウンドが再開するまでの秒数です。空欄にするとサーバーの既定値になります。"
+          "label": "ラウンド再開遅延",
+          "range": "ラウンド再開までの秒数です。空欄の場合はサーバーのデフォルト値が使われます。"
         },
         "halftime_pausematch": {
           "label": "ハーフタイムで一時停止",
-          "description": "ハーフタイムで試合を一時停止し、管理者が再開するまで待機します。配信時に便利です。"
+          "description": "ハーフタイムで試合を一時停止し、管理者が再開するまで待機します — 配信時に便利です。"
         }
       },
       "max_rounds": "最大ラウンド数",
-      "tv_delay": "TV ディレイ",
+      "tv_delay": "TV遅延",
       "seconds": "秒",
       "coaches": "コーチ",
       "overtime": "オーバータイム",
       "knife_round": "ナイフラウンド",
-      "region_veto": "リージョン Veto",
+      "region_veto": "リージョンVeto",
       "substitutes": "控え",
       "timeout_setting": "タイムアウト設定",
       "tech_timeout_setting": "テクニカルタイムアウト設定",
       "ready_setting": "準備完了設定",
       "check_in_setting": "チェックイン設定",
       "advanced_settings": "詳細設定を表示",
-      "default_player_models": "既定のプレイヤーモデル"
+      "default_player_models": "デフォルトプレイヤーモデル"
     },
     "schedule": {
-      "schedule": "予定",
+      "schedule": "予約",
       "start_match": "試合を開始",
-      "reset": "予定日時をリセット"
+      "reset": "予約時刻をリセット"
     },
     "player": {
       "captain": "キャプテン",
       "status": {
-        "offline_not_ready": "オフラインかつ準備未完了",
-        "online_not_ready": "オンラインだが準備未完了",
+        "offline_not_ready": "オフライン・未準備",
+        "online_not_ready": "オンライン・未準備",
         "ready": "準備完了",
-        "online_not_in_game": "オンラインだがゲーム未参加",
+        "online_not_in_game": "オンライン・ゲーム外",
         "in_game": "ゲーム参加中"
       },
-      "assign_slot": "枠を割り当て"
+      "assign_slot": "スロットを割り当て"
     },
     "buy_types": {
-      "section_title": "購入タイプ別の内訳",
+      "section_title": "購入タイプ別内訳",
       "win": "勝利",
       "you": "自チーム",
-      "opponent": "相手",
+      "opponent": "相手チーム",
       "win_axis": "勝率",
       "no_data": "購入タイプのデータがありません",
       "matchups": {
-        "pistol_v_pistol": "Pistol v Pistol",
-        "full_v_full": "Full v Full",
-        "full_v_eco": "Full v Eco",
-        "full_v_force": "Full v Force",
-        "eco_v_full": "Eco v Full",
-        "force_v_full": "Force v Full"
+        "pistol_v_pistol": "ピストル vs ピストル",
+        "full_v_full": "フルバイ vs フルバイ",
+        "full_v_eco": "フルバイ vs エコ",
+        "full_v_force": "フルバイ vs フォースブイ",
+        "eco_v_full": "エコ vs フルバイ",
+        "force_v_full": "フォースブイ vs フルバイ"
       }
     },
     "radar": {
-      "title": "プレイヤー対決",
-      "player_a": "プレイヤー A",
-      "player_b": "プレイヤー B",
+      "title": "プレイヤー対戦比較",
+      "player_a": "プレイヤーA",
+      "player_b": "プレイヤーB",
       "select_player": "プレイヤーを選択",
       "vs": "vs",
       "metric": "指標",
-      "no_data": "選択したプレイヤーのスタッツはありません。",
+      "no_data": "選択したプレイヤーのスタッツがありません。",
       "axes": {
-        "rating": "HLTV レーティング",
+        "rating": "HLTV Rating",
         "kast": "KAST",
         "adr": "ADR",
         "kpr": "KPR",
-        "opening": "開幕 K/D",
-        "opening_attempts": "開幕交戦数",
-        "trade_kills": "トレードキル/ラウンド",
+        "opening": "オープニングK/D",
+        "opening_attempts": "オープニング試行数",
+        "trade_kills": "トレードキル／ラウンド",
         "kd": "K/D",
-        "traded": "トレードされたデス/ラウンド",
+        "traded": "トレードデス／ラウンド",
         "dpr": "DPR",
         "udr": "UDR",
-        "flash_assists": "フラッシュアシスト/ラウンド"
+        "flash_assists": "フラッシュアシスト／ラウンド"
       }
     },
     "team_stats": {
-      "sides_title": "サイド別の内訳",
+      "sides_title": "サイド別内訳",
       "no_data": {
         "title": "ラウンドデータなし",
-        "description": "チームスタッツは、この試合のラウンドごとのデータが記録されると表示されます。"
+        "description": "この試合のラウンド別データが記録され次第、チームスタッツが表示されます。"
       },
       "kpi": {
         "round_win": "ラウンド勝率",
-        "pistol_win": "Pistol 勝率",
-        "opening_win": "開幕勝率",
+        "pistol_win": "ピストル勝率",
+        "opening_win": "オープニング勝率",
         "trade": "トレード率",
-        "man_advantage": "5v5 勝率",
-        "man_disadvantage": "4v5 勝率",
+        "man_advantage": "5v5勝率",
+        "man_disadvantage": "4v5勝率",
         "udr": "UDR",
-        "flash_assists_pr": "フラッシュアシスト/ラウンド"
+        "flash_assists_pr": "フラッシュアシスト／ラウンド"
       },
       "side": {
-        "ct": "CT サイド",
-        "t": "T サイド"
+        "ct": "CTサイド",
+        "t": "Tサイド"
       },
       "buy": {
-        "pistol": "Pistol",
-        "eco": "Eco",
-        "force": "Force",
-        "full": "Full"
+        "pistol": "ピストル",
+        "eco": "エコ",
+        "force": "フォースブイ",
+        "full": "フルバイ"
       },
-      "buy_mix": "購入構成",
-      "rounds_won": "ラウンド勝利"
+      "buy_mix": "購入割合",
+      "rounds_won": "ラウンド獲得"
     },
     "heatmaps": {
       "select_map": "マップを選択",
@@ -4574,12 +4632,12 @@
       "util_damage": "ユーティリティダメージ",
       "render_heat": "ヒート",
       "render_dots": "ドット",
-      "trajectories": "軌跡",
+      "trajectories": "軌道",
       "all_players": "全プレイヤー",
       "all_rounds": "全ラウンド",
-      "plotted": "{count} 地点をプロット",
-      "no_radar_title": "レーダーなし",
-      "no_radar_description": "このマップのレーダー画像またはキャリブレーションデータがありません。",
+      "plotted": "{count}件をプロット",
+      "no_radar_title": "レーダーがありません",
+      "no_radar_description": "このマップにはレーダー画像またはキャリブレーションデータがありません。",
       "utility_types": {
         "HighExplosive": "HE",
         "Molotov": "モロトフ",
@@ -4591,21 +4649,21 @@
     "map_analysis": {
       "title": "マップ分析",
       "mode_heatmap": "ヒートマップ",
-      "mode_movement": "経路",
+      "mode_movement": "移動経路",
       "filter_stat": "スタッツ",
-      "filter_render": "表示形式",
+      "filter_render": "表示",
       "filter_side": "サイド",
       "filter_player": "プレイヤー",
-      "filter_type": "種類",
+      "filter_type": "種別",
       "filter_team": "チーム",
       "filter_window": "期間",
-      "open_2d_playback": "2D 再生を開く",
-      "open_3d_playback": "3D リプレイを開く"
+      "open_2d_playback": "2Dプレイバックを開く",
+      "open_3d_playback": "3Dリプレイを開く"
     },
     "roles": {
       "title": "検出されたロール",
-      "description": "この試合の AWP 使用率、開幕デュエルへの関与、ユーティリティ量から自動判定しています。",
-      "no_data": "この試合はロールを判定するにはデータが不足しています。",
+      "description": "各プレイヤーのAWP使用状況、オープニングデュエルへの関与、この試合でのユーティリティ使用量から自動検出されます。",
+      "no_data": "この試合ではロールを検出するのに十分なデータがありません。",
       "names": {
         "sniper": "スナイパー",
         "entry": "エントリー",
@@ -4993,53 +5051,53 @@
     "check_in": {
       "checked_in": "チェックイン済み",
       "check_in": "チェックイン",
-      "checked_in_description": "試合開始に必要な {required} 人中 {checked} 人がチェックイン済みです。"
+      "checked_in_description": "試合開始に必要な{required}人中{checked}人がチェックインしました"
     },
     "coach": {
       "assign": "コーチを割り当て"
     },
-    "map_number": "マップ {count}",
+    "map_number": "マップ{count}",
     "map_tbd": "マップ未定",
     "server": {
-      "offline": "サーバーがオフラインです。",
+      "offline": "サーバーがオフラインです！",
       "booting": "サーバー起動中",
-      "assign": "試合サーバーを割り当て",
+      "assign": "マッチサーバーを割り当て",
       "select": "サーバーを選択",
       "dedicated": "専用サーバー",
       "on_demand": "オンデマンド",
-      "assigned": "割り当て済み試合サーバー",
+      "assigned": "割り当て済みマッチサーバー",
       "reboot_label": "サーバー再起動",
       "reboot": "サーバーを再起動",
       "rebooting": "再起動中...",
-      "reboot_description": "試合の状態を変えずに、この試合のオンデマンドゲームサーバーを作り直します。",
-      "reboot_confirm_title": "試合サーバーを再起動しますか？",
-      "reboot_confirm_description": "現在のオンデマンド試合サーバーを再起動します。サーバーが再接続するまで試合は現在の状態のまま維持されます。",
-      "reboot_started": "サーバーの再起動を開始しました。",
+      "reboot_description": "試合の状態を変更せずに、この試合のオンデマンドゲームサーバーを作り直します。",
+      "reboot_confirm_title": "マッチサーバーを再起動しますか？",
+      "reboot_confirm_description": "現在のオンデマンドマッチサーバーを再起動します。サーバーが再接続するまで試合は現在の状態のまま維持されます。",
+      "reboot_started": "サーバーの再起動を開始しました",
       "join_server": "サーバーに参加",
-      "join_as_spectator": "観戦者向け情報",
-      "join_tv_stream": "TV配信情報",
-      "tv_delay": "TVは {delay} 秒遅延しています。配信の準備が整うまでお待ちください。"
+      "join_as_spectator": "観戦者用接続情報",
+      "join_tv_stream": "TV配信接続情報",
+      "tv_delay": "TVは{delay}秒遅延しています。配信の準備が整うまでお待ちください。"
     },
     "replay": {
-      "select_map": "上からリプレイするマップを選択",
+      "select_map": "上のマップを選択してリプレイ",
       "select": "選択",
-      "selected": "選択中",
-      "load": "リプレイを読み込む",
+      "selected": "選択済み",
+      "load": "リプレイを読み込み",
       "open": "2Dリプレイを開く",
       "open_3d": "3Dリプレイを開く",
       "loading": "リプレイを読み込み中…",
-      "no_position_data": "位置データがありません。デモを再解析するとリプレイが生成されます。",
+      "no_position_data": "位置データがありません — デモを再パースするとリプレイが利用可能になります。",
       "toggle_to_slots": "スロット番号表示に切り替え",
       "toggle_to_avatars": "プレイヤーアバター表示に切り替え",
       "hide_scoreboard": "スコアボードを隠す",
       "show_scoreboard": "スコアボードを表示",
-      "rotate_title": "端末を横向きに",
-      "rotate_description": "リプレイビューアーは横向きでの表示に最適化されています。端末を横に回して続けてください。",
-      "popout": "別ウィンドウで開く",
-      "phase_freeze": "フリーズ",
+      "rotate_title": "デバイスを回転してください",
+      "rotate_description": "リプレイビューアは横向きでの表示が最適です。デバイスを横向きにしてください。",
+      "popout": "別ウィンドウでポップアウト",
+      "phase_freeze": "フリーズタイム",
       "phase_bomb": "ボム",
-      "bomb_planted": "{site} に設置",
-      "bomb_defused": "解除",
+      "bomb_planted": "{site}に設置",
+      "bomb_defused": "解除済み",
       "bomb_exploded": "爆発",
       "prev_round": "前のラウンド",
       "next_round": "次のラウンド",
@@ -5049,65 +5107,65 @@
       "pause": "一時停止",
       "headshot": "ヘッドショット",
       "defuse_kit": "解除キット",
-      "follow_hint": "下のプレイヤーをクリックすると、マップ上で追従します。",
-      "follow_stop": "クリックで追従を解除",
-      "follow_player": "クリックでマップ上の {name} を追従",
-      "counter_terrorists": "カウンターテロリスト",
-      "terrorists": "テロリスト",
+      "follow_hint": "下のプレイヤーをクリックするとマップ上で追跡できます。",
+      "follow_stop": "クリックで追跡を停止",
+      "follow_player": "クリックで{name}をマップ上で追跡",
+      "counter_terrorists": "Counter-Terrorists",
+      "terrorists": "Terrorists",
       "shortcuts_title": "ショートカット",
       "shortcut_play": "再生",
       "shortcut_step": "コマ送り",
       "shortcut_round": "ラウンド",
       "shortcut_speed": "速度",
       "overlays": "オーバーレイ",
-      "overlay_c4": "C4所持者",
+      "overlay_c4": "C4保持者",
       "overlay_defuser": "解除キット",
-      "overlay_ground_bomb": "落下・設置済みボム",
-      "overlay_ground_kits": "落下した解除キット",
-      "pathing_off": "移動経路オフ",
-      "pathing_progress": "現在ティックまでの経路",
+      "overlay_ground_bomb": "落下・設置されたボム",
+      "overlay_ground_kits": "落下したキット",
+      "pathing_off": "軌跡オフ",
+      "pathing_progress": "現在のティックまで軌跡表示",
       "overlay_buy_section": "購入ラウンドオーバーレイ",
-      "overlay_buy_window": "対象時間：フリーズタイムから {sec} 秒",
-      "overlay_buy_explainer": "フルバイ {count} ラウンド・フリーズ後 {sec} 秒間",
+      "overlay_buy_window": "ウィンドウ: フリーズタイムから{sec}秒",
+      "overlay_buy_explainer": "フルバイラウンド{count}件・フリーズ後最初の{sec}秒",
       "loading_map": "マップを読み込み中…",
       "chrome": {
-        "view_2d": "2D 俯瞰レーダー表示",
-        "view_3d": "3D マップ表示",
-        "enter_fullscreen": "全画面",
-        "exit_fullscreen": "全画面を終了",
+        "view_2d": "2Dトップダウンレーダー表示",
+        "view_3d": "3Dマップ表示",
+        "enter_fullscreen": "フルスクリーン",
+        "exit_fullscreen": "フルスクリーン終了",
         "cam_orbit": "ORBIT",
-        "cam_orbit_tip": "オービットカメラ — 左ドラッグで視点、右ドラッグで旋回、スクロールでズーム、WASDで移動",
+        "cam_orbit_tip": "オービットカメラ — 左ドラッグで視点移動、右ドラッグで周回、スクロールでズーム、WASDで移動",
         "cam_top": "TOP",
-        "cam_top_tip": "俯瞰カメラ",
+        "cam_top_tip": "トップダウンカメラ",
         "cam_chase": "CHASE",
-        "cam_chase_tip": "追従中のプレイヤーを追いかけます",
+        "cam_chase_tip": "追跡中のプレイヤーを追いかける",
         "roof": "ROOF",
-        "roof_tip": "屋根のカット — 中央が自動（屋根を消して状況が見える状態）。上げるほど表示、下げるほどカット、最大でマップ全体。",
+        "roof_tip": "屋根カット — 中央は自動（屋根なし、視界確保）。上で表示範囲拡大、下でカット拡大、最大でマップ全体表示。",
         "play_by_play": "PLAY BY PLAY",
-        "play_by_play_tip": "ラウンドの実況ログを表示します",
+        "play_by_play_tip": "このラウンドのプレイバイプレイイベントログを表示",
         "more": "その他のオプション",
-        "utility_heatmap": "ユーティリティヒートマップ",
-        "utility_heatmap_tip": "ラウンドのユーティリティ着弾ヒートマップ",
+        "utility_heatmap": "UTILITY HEATMAP",
+        "utility_heatmap_tip": "このラウンドのユーティリティ着弾ヒートマップ",
         "pbp_header": "PLAY BY PLAY · RD {round}",
-        "clear_count": "{count} 件をクリア",
-        "no_events": "イベントなし",
+        "clear_count": "クリア {count}",
+        "no_events": "まだイベントがありません",
         "alive_count": "生存 {count}",
         "showing_avatars": "アバター表示中 — クリックで番号表示",
         "showing_numbers": "番号表示中 — クリックでアバター表示",
-        "trace_tip": "プレイヤーの移動軌跡（点線）",
-        "deaths_tip": "デス（キル地点）マーカー",
-        "util_summary": "ユーティリティ集計",
-        "util_summary_tip": "ユーティリティ集計 — 複数の購入ラウンドを同一の時間軸に重ねて、両チームのユーティリティ構成・タイミング・位置を比較します",
-        "round_remove": "ラウンド {n} — クリックで集計から除外",
-        "round_add": "ラウンド {n} — クリックで集計に追加",
-        "round_jump": "ラウンド {n} へ移動",
-        "clear_highlighted_util": "ユーティリティの強調表示を解除",
-        "hide_util": "{type} のユーティリティを非表示",
-        "show_util": "{type} のユーティリティを表示",
-        "util_thrown_by": "{type} · 投擲：{name}",
+        "trace_tip": "プレイヤー移動軌跡（点線）",
+        "deaths_tip": "デス（キル位置）マーカー",
+        "util_summary": "UTIL SUMMARY",
+        "util_summary_tip": "ユーティリティサマリー — 複数の購入ラウンドを共通の時間軸に重ね、各チームのユーティリティ運用・タイミング・位置を比較",
+        "round_remove": "ラウンド{n} — クリックでサマリーから削除",
+        "round_add": "ラウンド{n} — クリックでサマリーに追加",
+        "round_jump": "ラウンド{n}へ移動",
+        "clear_highlighted_util": "ハイライト中のユーティリティをクリア",
+        "hide_util": "{type}ユーティリティを隠す",
+        "show_util": "{type}ユーティリティを表示",
+        "util_thrown_by": "{type}・投擲者：{name}",
         "utility": "ユーティリティ",
-        "click_to_clear": " — クリックで解除",
-        "click_to_highlight": " — クリックで強調",
+        "click_to_clear": " — クリックでクリア",
+        "click_to_highlight": " — クリックでハイライト",
         "pause": "一時停止",
         "play": "再生",
         "window": "WINDOW",
@@ -5115,47 +5173,47 @@
         "all": "ALL",
         "team_1": "チーム1",
         "team_2": "チーム2",
-        "kb_play_pause": "再生／一時停止",
+        "kb_play_pause": "再生 / 一時停止",
         "kb_step_frame": "コマ送り",
-        "kb_prev_next_round": "前後のラウンド",
+        "kb_prev_next_round": "前 / 次のラウンド",
         "kb_speed": "速度",
         "kb_3d_camera": "3Dカメラ",
-        "kb_look": "視点／追従オービット",
-        "kb_orbit": "旋回",
+        "kb_look": "視点移動 / 追跡オービット",
+        "kb_orbit": "周回",
         "kb_zoom": "ズーム",
         "kb_fly": "移動",
-        "kb_up_down": "上昇／下降",
-        "following_on_map": "マップ上で追従中",
-        "bomb_carrier": "ボム所持者"
+        "kb_up_down": "上 / 下",
+        "following_on_map": "マップ上で追跡中",
+        "bomb_carrier": "ボム保持者"
       },
       "auto_clip_preset": "プリセットから自動クリップ",
-      "hold_scoreboard": "長押しでスコアボードを表示",
-      "swap_sides": "サイドを入れ替え（手動）",
+      "hold_scoreboard": "長押しでスコアボード表示",
+      "swap_sides": "サイドを入れ替え（手動オーバーライド）",
       "hide_clip_editor": "クリップエディタを隠す",
       "open_clip_editor": "クリップエディタを開く",
-      "kills_by": "キル（本人）",
-      "deaths_of": "デス（本人）",
+      "kills_by": "キル元",
+      "deaths_of": "デス対象",
       "has_c4": "C4所持",
       "damage_this_round": "このラウンドのダメージ",
-      "kevlar_helmet": "ケブラー＋ヘルメット",
+      "kevlar_helmet": "ケブラー + ヘルメット",
       "kevlar_only": "ケブラーのみ",
       "bomb_dropped": "ボム落下",
-      "bomb_planted_label": "ボム設置",
-      "bomb_dropped_by": "{name} が落下",
-      "kit_dropped_by": "{name} が落下",
+      "bomb_planted_label": "ボム設置済み",
+      "bomb_dropped_by": "{name}が落下",
+      "kit_dropped_by": "{name}が落下",
       "unknown_player": "不明",
-      "kill_filter_by_title": "プレイヤーのキルを表示中 — クリックでデス表示に切り替え",
-      "kill_filter_of_title": "プレイヤーのデスを表示中 — クリックでキル表示に切り替え"
+      "kill_filter_by_title": "プレイヤーのキルを表示中 — クリックでそのプレイヤーのデス表示に切り替え",
+      "kill_filter_of_title": "プレイヤーのデスを表示中 — クリックでそのプレイヤーのキル表示に切り替え"
     },
     "player_details_panel": {
-      "stats_unavailable": "この試合のスタッツはありません。",
+      "stats_unavailable": "この試合のスタッツは利用できません。",
       "map_label": "マップ",
       "all_maps": "すべて",
       "map_not_played": "このマップはプレイされていません"
     },
     "player_strip": {
       "highlights": "ハイライト",
-      "overflow_more": "他 {count} 件",
+      "overflow_more": "他{count}件",
       "default_clip_title": "ハイライト",
       "kills": "キル",
       "deaths": "デス",
@@ -5168,22 +5226,22 @@
       "all": "すべて"
     },
     "source_badge": {
-      "imported_external": "外部ソースからの取り込み — 5Stackの試合ではありません"
+      "imported_external": "外部ソースからインポート — 5stackの試合ではありません"
     },
     "scoreboard_overlay": {
       "final": "終了",
       "live": "ライブ"
     },
     "admin_bar": {
-      "rcon_unavailable": "RCON を利用できません",
-      "not_controllable": "この試合は操作できる状態ではありません。"
+      "rcon_unavailable": "RCON利用不可",
+      "not_controllable": "試合は操作可能な状態ではありません。"
     }
   },
   "ui": {
     "tooltips": {
-      "fullscreen": "全画面",
+      "fullscreen": "フルスクリーン",
       "toggle_right_sidebar": "右サイドバーの切り替え",
-      "view_steam_profile": "Steam プロフィールを表示",
+      "view_steam_profile": "Steamプロフィールを見る",
       "zoom_in": "拡大",
       "zoom_in_scroll": "拡大（Ctrl/Cmd + スクロール）",
       "zoom_out": "縮小",
@@ -5200,7 +5258,7 @@
       "download_visible": "表示中のログをダウンロード",
       "download_full": "全ログをダウンロード",
       "empty": "ログはまだありません",
-      "empty_hint": "サービスが出力の配信を開始すると、ここにログが表示されます。"
+      "empty_hint": "サービスが出力の配信を開始するとここにログが表示されます。"
     },
     "scroll": {
       "left": "左へスクロール",
@@ -5211,19 +5269,19 @@
     "unmute": "ミュート解除",
     "mute": "ミュート",
     "edit_title": "タイトルを編集",
-    "tournament_match": "トーナメントの試合",
-    "pin_overlay": "フローティング表示に固定",
+    "tournament_match": "トーナメント試合",
+    "pin_overlay": "フローティングオーバーレイとして固定",
     "open_new_window": "新しいウィンドウで開く",
-    "playing_in_popout": "別ウィンドウで再生中",
-    "focus_window": "ウィンドウを表示",
+    "playing_in_popout": "ポップアウトウィンドウで再生中",
+    "focus_window": "ウィンドウにフォーカス",
     "playing_in_pip": "ピクチャーインピクチャーで再生中",
-    "return_here": "ここに戻す",
-    "login_to_watch": "ライブ配信を視聴するにはログインしてください",
+    "return_here": "ここに戻る",
+    "login_to_watch": "ログインしてライブ配信を視聴",
     "login_to_watch_action": "ログイン",
     "show_keyboard_shortcuts": "キーボードショートカットを表示",
-    "hold_to_show_scoreboard": "長押しでスコアボードを表示",
-    "close_popout": "別ウィンドウを閉じる",
-    "trophy_rack": "トロフィー棚",
+    "hold_to_show_scoreboard": "長押しでスコアボード表示",
+    "close_popout": "ポップアウトを閉じる",
+    "trophy_rack": "トロフィーラック",
     "click_to_view_tournament": "クリックでトーナメントを表示",
     "auto_clip": "自動クリップ",
     "create_clip": "クリップを作成",
@@ -5231,12 +5289,12 @@
   },
   "player": {
     "performance": {
-      "description": "各項目は他の全プレイヤーとの比較でパーセンタイル化し、100点満点でスコア化しています。50が平均的なプレイヤーで、高いほど優秀です。ラベルにカーソルを合わせると測定内容が表示されます。",
-      "you": "自分",
+      "description": "各項目は他の全プレイヤーとの比較でパーセンタイル換算した100点満点のスコアです — 50が平均的なプレイヤーで、高いほど優れています。ラベルにカーソルを合わせると測定内容が表示されます。",
+      "you": "あなた",
       "compare": "比較",
-      "focus_areas": "重点項目",
+      "focus_areas": "重点分野",
       "provisional": "暫定",
-      "not_enough_data": "評価に必要な試合数が足りません。もっとプレイするとパフォーマンスの内訳が表示されます。",
+      "not_enough_data": "このプレイヤーを評価するにはまだ試合数が足りません — もっとプレイするとパフォーマンス分析が解放されます。",
       "categories": {
         "aim": "エイム",
         "positioning": "ポジショニング",
@@ -5244,67 +5302,67 @@
       },
       "consistency": {
         "title": "安定性",
-        "description": "各試合ごとに、その試合のエイム・ポジショニング・ユーティリティを合算した総合スコアが付きます。直近の試合での推移を示しており、線が平坦なほど安定したプレイです。",
+        "description": "各試合はエイム・ポジショニング・ユーティリティを組み合わせた1つの総合スコアを持ちます。これは直近の試合にわたる推移を示すもので、線が平坦なほど安定したプレイを意味します。",
         "overall": "総合",
-        "not_enough": "調子の推移を見るには、もう数試合プレイしてください。",
+        "not_enough": "もう少し試合をこなすと調子の推移が表示されます。",
         "rock_solid": "非常に安定",
         "steady": "安定",
         "streaky": "ムラあり"
       },
       "tiers": {
-        "subpar": "平均以下",
-        "average": "平均",
-        "good": "good",
+        "subpar": "低調",
+        "average": "平均的",
+        "good": "良好",
         "elite": "エリート"
       },
       "metrics": {
         "accuracy_score": {
-          "label": "命中率",
-          "coach": "乱射よりも、狙いを定めた少ない射撃の方が当たります。落ち着いて1発ずつ撃ち切りましょう。"
+          "label": "命中精度",
+          "coach": "連射するより、少数で的確な射撃の方が命中率が上がります — 落ち着いて一発ごとに撃ち切りましょう。"
         },
         "hs_score": {
           "label": "ヘッドショット",
-          "coach": "角待ちやクリアリングの間もクロスヘアを頭の高さに保ち、初弾でヘッドショットを狙いましょう。"
+          "coach": "角待ち・クリア時にクロスヘアを頭の高さに保つと、初弾がヘッドショットになりやすくなります。"
         },
         "spotted_score": {
           "label": "視認時命中率",
-          "coach": "敵が実際に見えている状況での命中率です。敵が出てくる位置をあらかじめ狙っておきましょう。"
+          "coach": "敵が実際に見えている時の命中率です — 敵が現れる場所に先置きでエイムしましょう。"
         },
         "crosshair_score": {
           "label": "クロスヘア配置",
-          "coach": "頭の高さにプリエイムを合わせ、ほとんど動かさずに撃てる状態を保ちましょう。"
+          "coach": "頭の高さの先置きポイントを維持し、最小限の動きで命中させましょう。"
         },
         "ttd_score": {
-          "label": "反応",
-          "coach": "狭い角度を持ちましょう。敵が現れる範囲が狭いほど、反応も射撃も速くなります。"
+          "label": "反応速度",
+          "coach": "より狭い角度で待つほど敵が画面に映る範囲が減り、反応と射撃が速くなります。"
         },
         "counter_strafe_score": {
           "label": "カウンターストレイフ",
-          "coach": "撃つ直前に逆方向のキーを叩いて完全に止まりましょう。移動中の射撃は極端に散ります。"
+          "coach": "射撃前に逆キーをタップして完全に停止しましょう — 移動中の射撃は大きく散弾します。"
         },
         "survival_score": {
           "label": "生存",
-          "coach": "命を無駄にせず価値と引き換えに。無策なピークやチームから離れすぎる動きは避けましょう。"
+          "coach": "命を価値と引き換えにしましょう — ドライピークや味方から離れすぎた過剰な前進は避けてください。"
         },
         "traded_score": {
-          "label": "トレードポジション",
-          "coach": "味方の近くで戦えば、倒されてもトレードしてもらえます。ただ死ぬのは避けましょう。"
+          "label": "トレード位置取り",
+          "coach": "味方の近くで戦えば、死んでもトレードされます。無駄死にを避けましょう。"
         },
         "kast_score": {
-          "label": "ラウンド貢献",
-          "coach": "毎ラウンド、キル・アシスト・生存・トレードのいずれかを残しましょう。何もないラウンドはチームの負担になります。"
+          "label": "ラウンド貢献度",
+          "coach": "毎ラウンド何かをしましょう — キル、アシスト、生存、トレードされるのいずれかです。何もできないラウンドはチームの足を引っ張ります。"
         },
         "flash_assists_score": {
           "label": "フラッシュアシスト",
-          "coach": "自分のためだけでなく、角を詰める味方のためにポップフラッシュを投げましょう。"
+          "coach": "自分のためだけでなく、角を取りに行く味方のためにポップフラッシュを使いましょう。"
         },
         "blind_score": {
           "label": "フラッシュ効果",
-          "coach": "ピークの直前に、敵の頭上ではなく実際に目を潰せるフラッシュを投げましょう。"
+          "coach": "ピーク直前に敵の視界を実際に奪えるフラッシュを投げましょう — 頭上を越えないように。"
         },
         "util_eff_score": {
           "label": "ユーティリティダメージ",
-          "coach": "定番ポジション向けの HE / モロトフのライナップをいくつか覚えて、1投ごとに確実なダメージを取りましょう。"
+          "coach": "よく使われるポイント向けのHE・モロトフのライナップを覚え、各ナードから実質的なダメージを引き出しましょう。"
         }
       }
     },
@@ -5314,24 +5372,24 @@
     },
     "kick": {
       "button": "キック",
-      "title": "{name} をキック",
-      "description": "プレイヤーをサーバーから退出させます。Banされていなければ再参加できます。必要に応じて、プレイヤーに表示される理由を入力できます。",
+      "title": "{name}をキック",
+      "description": "サーバーからプレイヤーを削除します。BANされていなければ再参加できます。プレイヤーに表示する理由を任意で入力できます。",
       "reason_label": "理由",
       "reason_placeholder": "理由（任意）...",
-      "confirm": "キックする",
-      "kicked": "{name} をキックしました。"
+      "confirm": "プレイヤーをキック",
+      "kicked": "{name}をキックしました"
     },
     "sanction": {
-      "button": "処分を科す",
-      "typed_player": "{type}：プレイヤー",
+      "button": "プレイヤーを処分",
+      "typed_player": "{type}対象プレイヤー",
       "reason_label": "理由",
-      "reason_placeholder": "処分の理由を入力...",
-      "reason_description": "この処分の理由を明確に入力してください",
+      "reason_placeholder": "処分理由を入力...",
+      "reason_description": "この処分の明確な理由を入力してください",
       "types": {
-        "ban_description": "すべての活動に参加できなくなります",
-        "mute_description": "ゲーム内のボイスチャットを使用できなくなります",
-        "gag_description": "ゲーム内のテキストチャットを使用できなくなります",
-        "silence_description": "ボイスとテキストの両方を使用できなくなります"
+        "ban_description": "プレイヤーはあらゆるアクティビティに参加できません",
+        "mute_description": "プレイヤーはゲーム内でボイスチャットを使用できません",
+        "gag_description": "プレイヤーはゲーム内でテキストチャットを使用できません",
+        "silence_description": "プレイヤーはミュート・ガグの両方が適用されます"
       },
       "durations": {
         "15_minutes": "15分",
@@ -5345,78 +5403,78 @@
     },
     "search": {
       "no_players_found": "プレイヤーが見つかりません。",
-      "found_players": "該当プレイヤー",
+      "found_players": "検索結果",
       "placeholder": "プレイヤーを検索..."
     },
     "sanctions": {
       "title": "処分",
-      "banned": "Ban中",
-      "muted": "ミュート中",
-      "gagged": "チャット禁止中",
-      "silenced": "全チャット禁止中",
+      "banned": "BAN",
+      "muted": "ミュート",
+      "gagged": "ガグ",
+      "silenced": "サイレンス",
       "duration_label": "期間",
       "select_duration": "期間を選択",
       "sanctions": "処分",
-      "expires": "期限",
+      "expires": "失効",
       "expired_on": "失効日",
-      "issued": "適用日",
-      "view_steam": "Steam でBanを確認",
+      "issued": "発行日",
+      "view_steam": "SteamでBANを確認",
       "permanent": "無期限",
       "active": "有効",
-      "expired": "失効",
-      "cannot_edit_expired": "失効した処分は編集できません — 新規に追加してください",
+      "expired": "失効済み",
+      "cannot_edit_expired": "失効済みの処分は編集できません — 新しく追加してください",
       "edit": "編集",
       "remove": "削除",
-      "edit_title": "処分の終了",
+      "edit_title": "処分を終了",
       "edit_description": "この処分が解除される日時を設定します。",
       "end_time": "終了日時",
-      "end_time_hint": "空欄のままにすると無期限になります。過去の日時を設定すると即時終了します。",
+      "end_time_hint": "無期限のままにするには空欄にしてください。今すぐ終了するには過去の日付を設定します。",
       "clear_date": "日付をクリア",
-      "updated": "処分を更新しました。",
-      "update_failed": "処分を更新できませんでした。しばらくしてから再試行してください。",
+      "updated": "処分を更新しました",
+      "update_failed": "処分を更新できませんでした。",
       "confirm_remove": "処分を削除",
       "remove_description": "この処分を削除しますか？この操作は取り消せません。",
-      "removed": "処分を削除しました。",
-      "remove_failed": "処分を削除できませんでした。しばらくしてから再試行してください。",
-      "abandoned_matches": "放棄した試合",
+      "removed": "処分を削除しました",
+      "remove_failed": "処分を削除できませんでした。",
+      "abandoned_matches": "放棄された試合",
       "match": "試合",
       "no_sanctions": "処分なし",
-      "remove_abandoned": "放棄記録を削除",
-      "confirm_remove_abandoned": "放棄記録を削除",
-      "remove_abandoned_description": "この放棄した試合の記録を削除しますか？この操作は取り消せません。",
-      "abandoned_removed": "放棄記録を削除しました。",
-      "abandoned_remove_failed": "放棄記録を削除できませんでした。しばらくしてから再試行してください。"
+      "remove_abandoned": "放棄試合記録を削除",
+      "confirm_remove_abandoned": "放棄試合記録を削除",
+      "remove_abandoned_description": "この放棄試合の記録を削除しますか？この操作は取り消せません。",
+      "abandoned_removed": "放棄試合記録を削除しました",
+      "abandoned_remove_failed": "放棄試合記録を削除できませんでした。"
     },
     "registration": {
       "title": "名前を登録",
-      "description": "この名前は、参加するすべての試合・トーナメントで使用されます。",
-      "warning": "登録後に名前は変更できません",
+      "description": "参加するすべての試合・トーナメントでこの名前が使用されます。",
+      "warning": "この名前は送信後に変更できません",
       "name_label": "名前",
       "confirm_button": "名前を確定",
-      "success": "名前を確定しました。"
+      "success": "名前を確定しました"
     },
     "status": {
       "add_friend": "フレンドに追加",
-      "vac_banned": "Steam で VAC Ban 済み",
-      "vac_banned_count": "Steam の VAC Ban {count} 件",
-      "game_banned": "Steam でゲームBan済み",
-      "game_banned_count": "Steam のゲームBan {count} 件"
+      "vac_banned": "SteamでVAC BAN",
+      "vac_banned_count": "SteamでVAC BAN {count}件",
+      "game_banned": "Steamでゲーム内BAN",
+      "game_banned_count": "Steamでゲーム内BAN {count}件"
     },
     "change_name": {
       "name_label": "名前",
-      "success": "プレイヤー名を変更しました。",
-      "request_success": "名前の変更を申請しました。"
+      "success": "プレイヤー名を変更しました",
+      "request_success": "名前変更をリクエストしました"
     },
     "pending_imports": {
-      "title": "CS2 の取り込み待ち",
-      "importing": "取り込み中…"
+      "title": "CS2インポート保留中",
+      "importing": "インポート中…"
     },
-    "all_time_peak": "過去最高"
+    "all_time_peak": "歴代最高"
   },
   "maps": {
     "label": "マップ",
     "veto": {
-      "pick": "マップを Pick"
+      "pick": "マップをPick"
     },
     "official": "公式マップ",
     "workshop": "ワークショップマップ",
@@ -5433,35 +5491,35 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
-        "description": "チーム連携をフルに使う、王道の5対5競技モードです"
+        "description": "フルチーム連携によるクラシックな5対5の競技体験"
       },
       "wingman": {
-        "description": "友達と組んで、テンポの速い2対2の試合で戦います"
+        "description": "フレンドとペアを組んでテンポの速い2v2で対戦"
       },
       "duel": {
-        "description": "個人技を磨くのに最適な、1対1の競技モードです"
+        "description": "個人スキルの練習に最適な1対1の競技体験"
       }
     },
-    "cancel_matchmaking": "マッチメイキングを中止",
-    "in_queue_label": "キュー参加中",
+    "cancel_matchmaking": "マッチメイキングをキャンセル",
+    "in_queue_label": "キュー中",
     "searching": "検索中",
     "elapsed": "経過時間",
     "queue_wait": {
       "zero": "0秒",
       "seconds": "{count}秒",
-      "minutes_seconds": "{minutes}分 {seconds}秒"
+      "minutes_seconds": "{minutes}分{seconds}秒"
     },
-    "match_found": "試合が見つかりました",
-    "waiting_for_players": "プレイヤー待ち",
-    "waiting_on_others": "他のプレイヤー待ち",
+    "match_found": "マッチが見つかりました",
+    "waiting_for_players": "プレイヤーを待機中",
+    "waiting_on_others": "他の参加者を待機中",
     "confirmed": "確定済み",
     "ready": "準備完了",
-    "locked_in": "参加確定",
+    "locked_in": "確定",
     "check_in": "チェックイン",
-    "go_to_match": "試合ページへ",
+    "go_to_match": "試合へ移動",
     "toasts": {
-      "your_veto_title": "Veto の順番です",
-      "your_veto_desc": "順番が回ってきました。試合ページで Ban または Pick してください。"
+      "your_veto_title": "あなたのVetoの番です",
+      "your_veto_desc": "あなたの番です — 試合ページでBanまたはPickしてください。"
     },
     "disable_match_ready_modal_hint": "このポップアップを表示しない",
     "disable_match_ready_modal_action": "マッチメイキング設定で無効化",
@@ -5507,7 +5565,11 @@
       "toggle": "設定を調整"
     },
     "high_latency_warning": "レイテンシが高すぎるため競技マッチに参加できません。",
-    "no_preferred_regions": "マッチメイキング設定で優先リージョンを1つ以上選択してください。"
+    "no_preferred_regions": "マッチメイキング設定で優先リージョンを1つ以上選択してください。",
+    "party_size": {
+      "unavailable": "{size}人パーティーはこのモードにキューできません",
+      "requirement": "{half}人以下、または{full}人ちょうどでキューしてください"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -6329,10 +6391,10 @@
       "captains": "キャプテンドラフト",
       "captains_desc": "2人のキャプテンが交互にプレイヤーを指名します。",
       "host": "ホストが振り分け",
-      "host_desc": "両チームを自分で編成します。",
+      "host_desc": "自分で両チームを編成します。",
       "pug": "自動振り分け",
-      "pug_desc": "ドラフトなし。ロビーが埋まると自動でチームが均等化されます。",
-      "teams": "既存チーム",
+      "pug_desc": "ドラフトなし — ロビーが埋まると自動でチームが振り分けられます。",
+      "teams": "既存チーム対戦",
       "teams_desc": "保存済みのチームを2つ選んで対戦させます。"
     },
     "mode_short": {
@@ -6343,20 +6405,20 @@
     },
     "access": {
       "open": "公開",
-      "open_desc": "誰でも公開リストから見つけて参加できます。",
+      "open_desc": "公開リストから誰でも見つけて参加できます。",
       "friends": "フレンド",
-      "friends_desc": "ロビー内プレイヤーのフレンドだけが閲覧できます。",
+      "friends_desc": "ロビー内プレイヤーのフレンドのみ閲覧できます。",
       "invite": "招待",
       "invite_desc": "共有した招待リンクからのみ参加できます。",
       "private": "非公開",
-      "private_desc": "許可した人だけが参加でき、リストには表示されません。"
+      "private_desc": "許可した相手のみ — リストには表示されません。"
     },
-    "active_alert_title": "ドラフトルームに参加中",
-    "active_alert_desc": "進行中のドラフトルームがあります。戻ってメンバーをまとめましょう。",
+    "active_alert_title": "ドラフトルームに参加中です",
+    "active_alert_desc": "参加中のドラフトルームがあります。戻ってスクワッドを維持しましょう。",
     "toasts": {
-      "your_pick_title": "指名の番です",
-      "your_pick_desc": "持ち時間が進行中です。次のプレイヤーを指名してください。",
-      "removed_title": "ドラフトから除外",
+      "your_pick_title": "あなたの指名順です",
+      "your_pick_desc": "指名時間です — 次のプレイヤーをドラフトしてください。",
+      "removed_title": "ドラフトから除外されました",
       "removed_desc": "ドラフトルームから外れました。"
     }
   },
@@ -6364,12 +6426,12 @@
     "created": "リーグを作成しました",
     "not_found": "リーグが見つかりません",
     "status": {
-      "Setup": "セットアップ",
-      "Active": "進行中",
+      "Setup": "準備中",
+      "Active": "開催中",
       "Archived": "アーカイブ済み"
     },
     "season_status": {
-      "Setup": "セットアップ",
+      "Setup": "準備中",
       "RegistrationOpen": "登録受付中",
       "RegistrationClosed": "登録締切",
       "Live": "開催中",
@@ -6380,57 +6442,57 @@
     "list": {
       "eyebrow": "競技",
       "title": "リーグ",
-      "subtitle": "シーズン制ディビジョン、週次の試合、昇格と降格",
+      "subtitle": "シーズン制のディビジョン、週次の試合、昇格と降格",
       "settings": "リーグ設定"
     },
     "history": {
       "seasons": "シーズン履歴",
-      "playing_in": "{season} に参加中",
+      "playing_in": "{season}に出場中",
       "current_division": "現在のディビジョン",
-      "highest_division": "最高ディビジョン",
+      "highest_division": "最高到達ディビジョン",
       "none": "—"
     },
     "divisions": {
       "title": "ディビジョン",
       "empty": "ディビジョンはまだ設定されていません。",
-      "add": "ティア {tier} を追加",
+      "add": "ティア{tier}を追加",
       "name_placeholder": "ディビジョン名（例：Open、Main、Invite）",
-      "tier_hint": "ティア1が最上位ディビジョンです。チームはティア1に向かって昇格し、そこから離れる方向に降格します。",
-      "reorder_hint": "ドラッグしてディビジョンの序列を並べ替えます。ティア1が最上位で、チームはそこへ昇格し、そこから降格します。",
+      "tier_hint": "ティア1が最上位ディビジョンです。チームはティア1に向かって昇格し、そこから遠ざかる方向に降格します。",
+      "reorder_hint": "ディビジョンをドラッグして序列を並び替えます。ティア1が最上位ディビジョンで、チームはそこへ昇格しそこから降格します。",
       "delete_title": "ディビジョンを削除しますか？",
-      "delete_description": "{name} を序列から削除します。残りのディビジョンは番号が振り直されます。この操作は取り消せません。"
+      "delete_description": "{name}を序列から削除します。残りのディビジョンは番号が振り直されます。この操作は取り消せません。"
     },
     "seasons": {
       "title": "シーズン",
       "empty": "シーズンはまだありません。",
-      "teams_count": "{count} チーム",
+      "teams_count": "{count}チーム",
       "deleted": "シーズンを削除しました",
       "delete_title": "シーズンを削除しますか？",
-      "delete_description": "{name} を登録・日程・結果ごと完全に削除します。この操作は取り消せません。"
+      "delete_description": "{name}を登録・スケジュール・結果を含めて完全に削除します。この操作は取り消せません。"
     },
     "season_form": {
       "title": "シーズンを作成",
-      "name": "名称",
-      "name_placeholder": "例：シーズン1",
+      "name": "名前",
+      "name_placeholder": "例：Season 1",
       "signup_opens": "登録開始",
       "signup_closes": "登録締切",
       "starts_at": "シーズン開始",
-      "weeks": "対戦週数",
+      "weeks": "試合週数",
       "games_per_week": "週あたりの試合数",
-      "auto_format_hint": "各ディビジョンの形式は規模に応じて自動選択されます。シーズンのラウンド数に収まる場合は総当たり、収まらない場合はスイス形式のグループになります。",
-      "roster_lock_week": "ロスター固定週",
-      "playoff_seats": "プレーオフ枠",
-      "min_roster": "最小ロスター",
+      "auto_format_hint": "各ディビジョンの形式は規模に応じて自動選択されます。シーズンのラウンド数に収まる場合は総当たり、そうでない場合はスイスグループになります。",
+      "roster_lock_week": "ロスターロック週",
+      "playoff_seats": "プレーオフ出場枠",
+      "min_roster": "最少ロスター人数",
       "promote": "昇格",
       "relegate": "降格",
       "direct_promote": "自動昇格",
-      "relegation_up": "入れ替え戦（上位）",
-      "relegation_down": "入れ替え戦（下位）",
+      "relegation_up": "降格プレーオフ（上位）",
+      "relegation_down": "降格プレーオフ（下位）",
       "direct_relegate": "自動降格",
       "best_of": "Best of",
       "playoff_best_of": "プレーオフ Best of",
-      "default_day": "既定の試合曜日",
-      "default_time": "既定の試合時刻",
+      "default_day": "デフォルト試合曜日",
+      "default_time": "デフォルト試合時刻",
       "weekdays": {
         "0": "日曜日",
         "1": "月曜日",
@@ -6440,49 +6502,49 @@
         "5": "金曜日",
         "6": "土曜日"
       },
-      "weeks_hint": "シーズン開始から1カレンダー週につき1対戦週です。チーム同士がその週内で時刻を合意し、合意がない対戦は既定の曜日・時刻になります。",
+      "weeks_hint": "シーズン開始からカレンダー週ごとに1試合週です。各週内でチーム同士が時間を合意し、合意がない対戦はデフォルトの曜日・時刻に従います。",
       "create": "シーズンを作成",
       "created": "シーズンを作成しました",
       "no_map_pool": "有効な競技用マッププールが見つかりません",
       "errors": {
-        "signup_order": "登録開始は締切より前である必要があります。",
-        "signup_after_start": "登録はシーズン開始より前に締め切る必要があります。"
+        "signup_order": "登録開始は締切より前に設定してください。",
+        "signup_after_start": "登録締切はシーズン開始より前に設定してください。"
       },
-      "min_teams_hint": "ディビジョンの開催には承認済みチームが4つ以上必要です。それ未満のディビジョンはシーズン開始時にスキップされます。"
+      "min_teams_hint": "ディビジョンの開催には承認済みチームが最低4つ必要です — 満たないディビジョンはシーズン開始時にスキップされます。"
     },
     "overview": {
       "signup_window": "登録期間",
       "starts": "開始",
-      "weeks": "対戦週数",
-      "playoff_seats": "プレーオフ枠",
-      "roster_locked": "ロスター固定済み",
-      "roster_locks": "ロスター固定：{date}",
+      "weeks": "試合週数",
+      "playoff_seats": "プレーオフ出場枠",
+      "roster_locked": "ロスターロック済み",
+      "roster_locks": "ロスターロック：{date}",
       "format": "形式",
       "teams": "チーム",
       "playoffs": "プレーオフ",
-      "weeks_count": "{count} 週",
-      "across_divisions": "{count} ディビジョン合計",
-      "playoff_seats_count": "{count} 枠"
+      "weeks_count": "{count}週",
+      "across_divisions": "{count}ディビジョン合計",
+      "playoff_seats_count": "{count}枠"
     },
     "phases": {
       "registration": "登録",
       "regular_season": "レギュラーシーズン",
       "playoffs": "プレーオフ",
-      "complete": "完了",
+      "complete": "終了",
       "opens_soon": "まもなく開始",
-      "teams_stat": "{count} チーム",
-      "advance_stat": "{count} 進出"
+      "teams_stat": "{count}チーム",
+      "advance_stat": "{count}チーム進出"
     },
     "bracket": {
       "regular_season": "レギュラーシーズン",
       "playoffs": "プレーオフ",
-      "open_full": "全体表示",
-      "empty": "ブラケットはシーズン開始後、トーナメントが生成されると表示されます。",
+      "open_full": "全体表示を開く",
+      "empty": "シーズンが始まりトーナメントが生成されるとブラケットが表示されます。",
       "format": {
         "RoundRobin": "総当たり",
         "Swiss": "スイス",
-        "SingleElimination": "シングル",
-        "DoubleElimination": "ダブル"
+        "SingleElimination": "シングルエリミネーション",
+        "DoubleElimination": "ダブルエリミネーション"
       }
     },
     "manage": {
@@ -6496,16 +6558,16 @@
     "tabs": {
       "overview": "概要",
       "teams": "チーム",
-      "schedule": "日程",
+      "schedule": "スケジュール",
       "standings": "順位表",
       "playoffs": "プレーオフ",
       "bracket": "ブラケット",
-      "movements": "昇降格",
+      "movements": "移動",
       "stats": "スタッツ"
     },
     "actions": {
       "open_registration": "登録を開始",
-      "close_registration": "登録を締切",
+      "close_registration": "登録を締め切る",
       "reopen_registration": "登録を再開",
       "start_season": "シーズンを開始",
       "cancel_season": "シーズンを中止",
@@ -6513,36 +6575,36 @@
     },
     "join": {
       "title": "チームを登録",
-      "title_admin": "チームを登録",
+      "title_admin": "チームを登録する",
       "team": "チーム",
       "pick_team": "チームを選択",
       "requested_division": "希望ディビジョン",
       "assign_division": "ディビジョンを割り当て（自動承認）",
       "no_preference": "指定なし",
-      "roster": "シーズンロスター（{selected} 名選択、最低 {min} 名）",
-      "roster_range": "シーズンロスター（{selected} 名選択・{min}〜{max} 名）",
+      "roster": "シーズンロスター（{selected}人選択中、最少{min}人）",
+      "roster_range": "シーズンロスター（{selected}人選択中・{min}〜{max}人）",
       "group": {
         "starters": "スターター",
         "substitutes": "控え",
         "benched": "ベンチ"
       },
-      "available": "選択可能",
-      "min_roster_warning": "登録には最低 {min} 名を選択してください。",
+      "available": "参加可能",
+      "min_roster_warning": "登録には最低{min}人のプレイヤーを選択してください。",
       "register": "登録",
       "registered": "チームを登録しました",
-      "no_teams": "登録できるチームを管理していません。まずチームを作成してください。",
-      "cta_hint": "管理しているチームを登録し、シーズンロスターを確定します。"
+      "no_teams": "登録可能な管理チームがありません。まずチームを作成してください。",
+      "cta_hint": "管理しているチームを登録し、シーズンロスターを確定させましょう。"
     },
     "my_team": {
-      "title": "マイチーム — {team}",
+      "title": "自分のチーム — {team}",
       "add_players": "プレイヤーを追加",
       "make_starter": "スターターにする",
-      "make_sub": "控えに移す",
-      "subs_full": "ベンチが満員です（最大 {max}）",
-      "lineup_full": "出場メンバーが満員です（スターター {max} 名）",
-      "no_starters": "スターターがいません。プレイヤーを追加して出場メンバーを揃えてください。",
+      "make_sub": "控えに移動",
+      "subs_full": "ベンチが満員です（最大{max}人）",
+      "lineup_full": "出場メンバーが満員です（最大{max}人）",
+      "no_starters": "スターターがまだいません — プレイヤーを追加して出場メンバーを埋めてください。",
       "roster_changes": "ロスター変更",
-      "withdraw": "シーズンから辞退",
+      "withdraw": "シーズンを辞退",
       "declined": "登録は却下されました。",
       "declined_with_reason": "登録は却下されました：{reason}",
       "resubmit": "再審査に提出"
@@ -6562,84 +6624,84 @@
       "division": "ディビジョン",
       "status": "ステータス",
       "actions": "操作",
-      "empty": "登録済みのチームはまだありません。",
+      "empty": "登録済みチームはまだありません。",
       "unassigned": "未割り当て",
-      "assign_to_approve": "承認するにはディビジョンを割り当て",
+      "assign_to_approve": "承認にはディビジョンの割り当てが必要です",
       "requested": "希望",
-      "approve_needs_division": "承認する前にディビジョンを割り当ててください。",
-      "approve_needs_roster": "承認には最低 {min} 名のプレイヤーが必要です。",
+      "approve_needs_division": "このチームを承認するにはディビジョンを割り当ててください。",
+      "approve_needs_roster": "承認には最低{min}人のプレイヤーが必要です。",
       "approve": "承認",
-      "readmit": "再受入",
-      "revoke": "取消",
-      "waitlist": "補欠",
+      "readmit": "再承認",
+      "revoke": "取り消し",
+      "waitlist": "補欠に回す",
       "decline": "却下",
       "decline_title": "登録を却下しますか？",
-      "decline_reason_hint": "任意で理由を伝えられます。登録受付中であれば再提出できます。",
+      "decline_reason_hint": "任意でチームに理由を伝えられます。登録受付中であれば再提出できます。",
       "decline_reason_placeholder": "理由（任意）",
-      "players": "名",
-      "review_summary": "審査待ち {pending} 件・補欠 {waitlisted} 件",
+      "players": "人",
+      "review_summary": "審査待ち{pending}件・補欠{waitlisted}件",
       "remove": "削除",
-      "remove_title": "チームをシーズンから外しますか？",
-      "remove_description": "チームはシーズンから辞退扱いになり、枠が空きます。登録受付中であれば再受入できます。",
-      "remove_description_live": "チームは辞退扱いとなり、残りの対戦はすべて相手チームの不戦勝になります。この操作は取り消せません。",
-      "removed": "チームをシーズンから外しました"
+      "remove_title": "チームをシーズンから削除しますか？",
+      "remove_description": "チームはシーズンから辞退扱いとなり、枠が解放されます。登録受付中であれば再承認できます。",
+      "remove_description_live": "チームは辞退し、残りの対戦はすべて対戦相手の不戦勝となります。この操作は取り消せません。",
+      "removed": "チームをシーズンから削除しました"
     },
     "schedule": {
-      "week": "第 {week} 週",
-      "season_number": "シーズン {number}",
-      "default_time": "既定",
+      "week": "第{week}週",
+      "season_number": "シーズン{number}",
+      "default_time": "デフォルト",
       "my_matches": "自分の試合",
-      "no_matches_filter": "条件に一致する試合はありません。",
-      "unscheduled_count": "{count} 件未定",
-      "needs_you": "{count} 件要対応",
+      "no_matches_filter": "この条件に一致する試合はありません。",
+      "unscheduled_count": "未スケジュール{count}件",
+      "needs_you": "{count}件が対応待ち",
       "filter": {
         "all": "すべて",
-        "unscheduled": "未定",
-        "scheduled": "確定済み",
+        "unscheduled": "未スケジュール",
+        "scheduled": "スケジュール済み",
         "finished": "終了"
       },
       "no_matchups": "今週の対戦はありません。",
       "bye": "不戦勝（Bye）",
-      "unscheduled": "未定",
-      "view_match": "試合を表示",
-      "propose": "日時を提案",
-      "propose_new": "別の日時を提案",
-      "proposed": "日時を提案しました",
-      "propose_title": "試合日時を提案",
-      "propose_description": "{from} から {to} の間で日時を選んでください。相手キャプテンの承諾が必要です。",
+      "unscheduled": "未スケジュール",
+      "view_match": "試合を見る",
+      "propose": "時間を提案",
+      "propose_new": "新しい時間を提案",
+      "proposed": "時間を提案しました",
+      "propose_title": "試合時間を提案",
+      "propose_description": "{from}から{to}の間で時間を選んでください。対戦相手のキャプテンの承認が必要です。",
       "message_placeholder": "メッセージ（任意）",
-      "outside_window": "提案された日時が対戦週の範囲外です。",
-      "proposed_by": "提案者",
-      "accept": "承諾",
+      "outside_window": "提案された時間は試合週の期間外です。",
+      "proposed_by": "提案者：",
+      "accept": "承認",
       "counter": "再提案",
-      "decline": "辞退",
-      "awaiting_opponent": "相手の返答待ち",
+      "decline": "却下",
+      "awaiting_opponent": "対戦相手の返答待ち",
       "winner": "勝者",
-      "defaults_to": "合意がない場合は {time} に自動設定",
-      "history": "過去の提案（{count}）",
+      "defaults_to": "合意がない場合は{time}に自動スケジュールされます",
+      "history": "過去の提案（{count}件）",
       "status_chip": {
-        "needs_scheduling": "日程調整が必要",
-        "scheduled": "確定済み",
+        "needs_scheduling": "スケジュール未定",
+        "scheduled": "スケジュール済み",
         "finished": "終了"
       },
       "status": {
-        "Accepted": "承諾済み",
+        "Accepted": "承認済み",
         "Declined": "却下",
-        "Countered": "再提案",
-        "Superseded": "無効",
+        "Countered": "再提案済み",
+        "Superseded": "更新済み",
         "Expired": "期限切れ"
       },
       "forfeit": "不戦敗",
-      "forfeit_win": "{team} に勝利を付与",
+      "forfeit_win": "{team}に勝利を付与",
       "forfeit_awarded": "不戦勝を付与しました",
-      "not_started": "シーズンはまだ開始していません。ディビジョンのシード決定後に日程が表示されます。"
+      "not_started": "シーズンはまだ開始していません — ディビジョンのシード後にスケジュールが表示されます。"
     },
     "schedule_task": {
-      "schedule_title": "試合の日程を調整",
-      "respond_title": "試合日時が提案されました",
-      "confirm_title": "試合日時を確認",
-      "context": "シーズン {season}・第 {week} 週",
-      "more": "他 {count} 件"
+      "schedule_title": "試合をスケジュール",
+      "respond_title": "試合時間が提案されました",
+      "confirm_title": "試合時間を確定",
+      "context": "シーズン{season}・第{week}週",
+      "more": "他{count}件"
     },
     "standings": {
       "team": "チーム",
@@ -6650,65 +6712,65 @@
       "playoffs": "プレーオフ",
       "search": "チームを検索",
       "empty": "結果はまだありません。",
-      "removed": "除外",
+      "removed": "削除済み",
       "open_tournament": "トーナメントを開く",
       "legend": {
-        "advances": "プレーオフ進出（上位 {n}）",
-        "cutoff": "プレーオフ進出ライン",
+        "advances": "プレーオフ進出（上位{n}）",
+        "cutoff": "プレーオフボーダーライン",
         "your_team": "自分のチーム",
         "all_advance": "全チームがプレーオフに進出"
       }
     },
     "playoffs": {
-      "view_bracket": "ブラケットを表示",
-      "pending": "プレーオフのブラケットはレギュラーシーズン終了時にシードされます。",
-      "not_started": "プレーオフはまだ始まっていません。",
-      "scheduling": "{division}・プレーオフ日程調整"
+      "view_bracket": "ブラケットを見る",
+      "pending": "プレーオフブラケットはレギュラーシーズン終了時にシードされます。",
+      "not_started": "プレーオフはまだ開始していません。",
+      "scheduling": "{division}・プレーオフスケジュール調整"
     },
     "movements": {
       "rank": "順位",
       "team": "チーム",
-      "movement": "昇降格",
-      "override": "手動変更",
+      "movement": "移動",
+      "override": "上書き",
       "status": "ステータス",
-      "empty": "昇降格はまだ算出されていません。",
-      "keep_computed": "算出結果を維持",
+      "empty": "移動はまだ計算されていません。",
+      "keep_computed": "計算結果を維持",
       "approved": "承認済み",
       "pending": "審査待ち",
-      "approve_all": "すべての昇降格を承認",
-      "approved_all": "昇降格を承認しました",
-      "relegation_playoffs": "入れ替え戦",
+      "approve_all": "すべての移動を承認",
+      "approved_all": "移動を承認しました",
+      "relegation_playoffs": "降格プレーオフ",
       "playoff_resolved": "決着済み",
       "bands": {
-        "RelegationUp": "入れ替え戦（上位）",
-        "RelegationDown": "入れ替え戦（下位）"
+        "RelegationUp": "降格プレーオフ（上位）",
+        "RelegationDown": "降格プレーオフ（下位）"
       }
     },
     "settings": {
       "title": "シーズン設定",
-      "hint": "ほとんどの項目は後から編集できます。ブラケットを規定する対戦週数と週あたりの試合数のみ、シーズン開始後は固定されます。",
-      "schedule": "日程",
-      "dates": "日付",
-      "locked_started": "固定済み — シーズン開始",
-      "weeks_count": "対戦週数",
+      "hint": "ほとんどの項目はいつでも編集できます。試合週数と週あたりの試合数のみ、シーズン開始後はロックされます（ブラケットを規定する値のため）。",
+      "schedule": "スケジュール",
+      "dates": "日程",
+      "locked_started": "ロック済み — シーズン開始済み",
+      "weeks_count": "試合週数",
       "games_per_week": "週あたりの試合数",
       "signup_opens": "登録開始",
       "signup_closes": "登録締切",
       "starts_at": "シーズン開始",
-      "roster_lock": "ロスター固定"
+      "roster_lock": "ロスターロック"
     },
     "series": {
       "title": "シリーズ形式",
       "week_title": "レギュラーシーズン（週ごと）",
       "playoff_title": "プレーオフ（ラウンドごと）",
-      "hint": "変更はまだ作成されていない試合に適用されます。作成済みの試合は現在の形式を維持します。",
+      "hint": "変更はまだ作成されていない試合に適用されます — 既にスケジュール済みの試合は元の形式のままです。",
       "save": "シリーズ形式を保存",
       "saved": "シリーズ形式を保存しました",
       "third_place_match": "3位決定戦",
       "bracket_type": "ブラケット形式",
       "advance_count": "進出チーム数",
-      "advance_hint": "各ディビジョンからプレーオフブラケットに進む数です。",
-      "structure_locked": "ブラケット形式と決定戦はシーズン開始後に固定されます。シリーズの長さは引き続き編集できます。",
+      "advance_hint": "各ディビジョンからプレーオフブラケットに進出する人数です。",
+      "structure_locked": "ブラケット形式と3位決定戦の有無はシーズン開始後にロックされます。シリーズ長は引き続き編集可能です。",
       "stage_types": {
         "SingleElimination": "シングルエリミネーション",
         "DoubleElimination": "ダブルエリミネーション"
@@ -6719,37 +6781,37 @@
       "team": "チーム",
       "maps": "マップ",
       "kdr": "K/D",
-      "empty": "スタッツはまだありません。リーグの試合が行われると表示されます。"
+      "empty": "スタッツはまだありません — リーグの試合が行われると表示されます。"
     },
     "rollover": {
       "create_next": "次のシーズンを作成",
-      "created": "{name} を作成しました"
+      "created": "{name}を作成しました"
     },
     "restart": {
-      "action": "セットアップに戻す",
-      "done": "シーズンをセットアップに戻しました"
+      "action": "準備中に戻す",
+      "done": "シーズンを準備中に戻しました"
     },
     "readiness": {
-      "title": "シーズン準備状況",
+      "title": "シーズン開始準備",
       "division_sizes": "ディビジョン規模",
-      "rosters_ok": "登録済みチームはすべて最小ロスター人数を満たしています",
-      "rosters_thin": "最小ロスター人数に満たないチーム"
+      "rosters_ok": "登録済みの全チームが最少ロスター人数を満たしています",
+      "rosters_thin": "最少ロスター人数に満たないチーム"
     },
     "about": {
       "title": "リーグの仕組み",
-      "register": "登録受付中にチームを登録し、シーズンロスターに入れるプレイヤーを選びます。",
-      "placement": "管理者が登録内容を審査し、実力別ディビジョンにチームを配置します。継続参加チームは獲得したディビジョンを維持します。",
-      "weekly": "毎週1試合の対戦が組まれます。いずれかのキャプテンが対戦週内の日時を提案し、相手キャプテンが承諾します。試合開始までは何度でも調整できます。",
-      "default_night": "日時の合意がない場合、試合はその週のリーグ既定の開催時間に設定されます。",
-      "roster_lock": "ロスターはシーズン途中で固定されます。登録済みのプレイヤーのみがリーグ戦に出場でき、1シーズンにつき1チームにしか所属できません。",
-      "playoffs": "順位表の上位チームがプレーオフブラケットに進出します。プレーオフの日程も同じ方法で調整します。",
-      "movement": "最終順位が次シーズンのディビジョン間の昇格・降格を決定します。"
+      "register": "登録受付期間中にチームを登録し、シーズンロスターに入れるプレイヤーを選びます。",
+      "placement": "管理者が登録内容を審査し、チームを実力別のディビジョンに割り当てます。継続チームは獲得したディビジョンを維持します。",
+      "weekly": "毎週1回対戦があります。どちらかのキャプテンが試合週内の時間を提案し、対戦相手のキャプテンが承認します — 試合開始まで再交渉できます。",
+      "default_night": "時間が合意されない場合、その週のリーグ既定の試合日に自動設定されます。",
+      "roster_lock": "シーズン途中でロスターがロックされます — ロスター登録済みのプレイヤーのみリーグ戦に出場でき、1シーズンにつき所属できるチームは1つだけです。",
+      "playoffs": "順位表の上位チームがプレーオフブラケットに進出し、キャプテンが同じ方法でプレーオフの試合をスケジュールします。",
+      "movement": "最終順位により、翌シーズンのディビジョン間の昇格・降格が決まります。"
     },
     "confirm": {
       "cancel_season_title": "このシーズンを中止しますか？",
-      "cancel_season_description": "中止すると全チームのシーズンが終了します。登録は締め切られ、残りの試合はすべて取りやめとなり、シーズンを再開することはできません。",
+      "cancel_season_description": "中止すると全チームのシーズンが終了します。登録が締め切られ、残りの試合はすべて取り消され、シーズンは再開できません。",
       "withdraw_title": "シーズンから辞退しますか？",
-      "withdraw_description": "チームはこのシーズンの出場枠を手放します。登録受付中であれば再登録できますが、枠とディビジョンの割り当ては保持されません。"
+      "withdraw_description": "チームはこのシーズンの枠を放棄します。登録受付中であれば再登録できますが、元の枠とディビジョンの割り当ては保持されません。"
     },
     "calendar": {
       "month": "月",
@@ -7039,5 +7101,45 @@
       "axis_hs": "HS%",
       "axis_assist": "アシスト"
     }
+  },
+  "awards": {
+    "title": "アワード",
+    "mvp": "MVP",
+    "first_place": "優勝",
+    "second_place": "準優勝",
+    "third_place": "3位",
+    "tournament": "トーナメント",
+    "placement": "順位",
+    "no_awards": "アワードはまだありません",
+    "no_awards_description": "トーナメントで上位3位以内に入るか、アワードを付与されると、ここに追加されます。",
+    "granted": "付与済み",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "トーナメントを見る"
+  },
+  "awards_manage_form": {
+    "team": "チーム",
+    "player": "プレイヤー",
+    "award": "アワード",
+    "recipient": "Recipient"
   }
 }

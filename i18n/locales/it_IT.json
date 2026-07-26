@@ -866,9 +866,6 @@
     "next_page": "Pagina successiva",
     "last_page": "Ultima pagina"
   },
-  "trophies_modal": {
-    "view_tournament": "VEDI TORNEO"
-  },
   "toasts": {
     "link_copied": "Link copiato",
     "copy_failed": "Copia non riuscita",
@@ -995,7 +992,7 @@
     "missing": "Mancante",
     "cancelled": "Annullato",
     "uploading_to_library": "Caricamento nella tua libreria",
-    "render_failed": "Rendering fallito",
+    "render_failed": "Rendering non riuscito",
     "queued_waiting": "In coda — in attesa di uno slot di rendering",
     "rendering_on_pod": "Rendering sul pod game-streamer",
     "submitting": "Invio…",
@@ -1061,11 +1058,11 @@
     "request_send_error": "Impossibile inviare la richiesta di scrim",
     "elo_range": "Fascia ELO",
     "any_region": "Qualsiasi regione",
-    "alerts_description": "Ricevi una notifica quando un team che soddisfa i tuoi criteri si apre alle scrim.",
+    "alerts_description": "Ricevi una notifica quando un team che soddisfa i tuoi criteri si apre agli scrim.",
     "add_alert": "+ Aggiungi avviso",
     "no_alerts": "Nessun avviso.",
     "alert_created": "Avviso scrim creato",
-    "playtime_tooltip": "Durata — una scrim iniziata qui sarebbe ancora in corso",
+    "playtime_tooltip": "Durata — uno scrim iniziato qui sarebbe ancora in corso",
     "available_start": "Inizio disponibile",
     "playtime_legend": "Durata (~1 ora)",
     "selected_start": "Inizio selezionato",
@@ -1073,11 +1070,11 @@
     "opponents_can_request": "— gli avversari possono richiedere",
     "longest_block": "Blocco più lungo ≈ {hours}h",
     "paint_to_unlock": "— traccia un blocco di almeno {hours}h per sbloccare {format}.",
-    "availability_grid_help": "Trascina per tracciare gli orari di inizio in cui il tuo team è disponibile (ora locale). Una scrim dura circa un'ora, quindi i blocchi sfumati mostrano il tuo impegno reale.",
+    "availability_grid_help": "Trascina per tracciare gli orari di inizio in cui il tuo team è disponibile (ora locale). Uno scrim dura circa un'ora, quindi i blocchi sfumati mostrano il tuo impegno reale.",
     "no_availability_set": "Questo team non ha ancora impostato alcuna disponibilità.",
     "finder_title": "Cerca scrim",
-    "finder_description": "Metti in vetrina il tuo team, decidi contro chi giocare e gestisci il calendario delle scrim.",
-    "open_to_scrims": "Aperto alle scrim",
+    "finder_description": "Metti in vetrina il tuo team, decidi contro chi giocare e gestisci il calendario degli scrim.",
+    "open_to_scrims": "Aperto agli scrim",
     "closed": "Chiuso",
     "finder_tab": "Ricerca",
     "requests_tab": "Richieste",
@@ -1087,17 +1084,17 @@
     "finder_link": "Cerca scrim",
     "outgoing": "In uscita →",
     "incoming": "In arrivo ←",
-    "auto_matched": "· abbinata in automatico",
+    "auto_matched": "· abbinato in automatico",
     "view_scheduled_match": "Vedi match programmato →",
     "cancel_scrim": "Annulla scrim",
     "counter": "Controproposta",
     "waiting_response": "In attesa della risposta di {name}.",
     "waiting_opponent": "In attesa di {name}.",
-    "scrim_accepted": "Scrim accettata",
-    "scrim_declined": "Scrim rifiutata",
+    "scrim_accepted": "Scrim accettato",
+    "scrim_declined": "Scrim rifiutato",
     "new_time_proposed": "Nuovo orario proposto",
     "request_cancelled": "Richiesta di scrim annullata",
-    "discoverable_help": "Rendi il tuo team visibile per le scrim. Sono gli avversari a scegliere il formato del match quando ti sfidano.",
+    "discoverable_help": "Rendi il tuo team visibile per gli scrim. Sono gli avversari a scegliere il formato del match quando ti sfidano.",
     "regions_section": "Regioni",
     "no_regions_available": "Nessuna regione al momento disponibile.",
     "maps_section": "Mappe",
@@ -1117,7 +1114,7 @@
     "settings_saved": "Impostazioni scrim salvate",
     "settings_save_error": "Impossibile salvare le impostazioni scrim",
     "calendar_link_copied": "Link del calendario copiato",
-    "calendar_subscription_help": "Iscriviti a questo URL nella tua app calendario per vedere le scrim programmate.",
+    "calendar_subscription_help": "Iscriviti a questo URL nella tua app calendario per vedere gli scrim programmati.",
     "calendar_link_error": "Impossibile ottenere il link del calendario",
     "subscribe_to_matches": "Iscriviti ai match programmati"
   },
@@ -1160,24 +1157,8 @@
     "highlights_render_label": "Rendering highlight",
     "highlight_render_subline": "Rendering highlight"
   },
-  "trophies_manage_form": {
-    "placement": "Piazzamento",
-    "team": "Team",
-    "player": "Giocatore"
-  },
   "shortcut_overlay": {
     "to_close": "per chiudere"
-  },
-  "trophies": {
-    "title": "Trofei",
-    "no_trophies": "Ancora nessun trofeo",
-    "no_trophies_description": "Arriva tra i primi 3 di un torneo per guadagnare un trofeo.",
-    "mvp": "MVP",
-    "first_place": "1° posto",
-    "second_place": "2° posto",
-    "third_place": "3° posto",
-    "tournament": "Torneo",
-    "placement": "Piazzamento"
   },
   "image_upload": {
     "hint_square": "Trascina o clicca · PNG, JPEG, WebP",
@@ -1188,7 +1169,7 @@
     "drop_to_upload": "Rilascia per caricare",
     "uploaded": "Immagine caricata",
     "removed": "Immagine rimossa",
-    "upload_failed": "Caricamento fallito",
+    "upload_failed": "Caricamento non riuscito",
     "remove_failed": "Impossibile rimuovere l'immagine",
     "crop": {
       "title": "Regola immagine",
@@ -1208,7 +1189,7 @@
     "player_avatar": "Avatar del giocatore",
     "player_roster_image": "Immagine roster del giocatore",
     "upload_success": "Avatar caricato",
-    "upload_failed": "Caricamento dell'avatar fallito",
+    "upload_failed": "Caricamento dell'avatar non riuscito",
     "remove_success": "Avatar rimosso",
     "remove_failed": "Impossibile rimuovere l'avatar",
     "too_large": "L'immagine deve essere di {size}MB o meno",
@@ -1305,7 +1286,7 @@
     },
     "scrims": {
       "title": "Cerca scrim",
-      "description": "Sfoglia i team aperti alle scrim, filtra per regione e mappe, poi invia una richiesta.",
+      "description": "Sfoglia i team aperti agli scrim, filtra per regione e mappe, poi invia una richiesta.",
       "disabled_message": "La ricerca scrim è al momento disattivata dal tuo amministratore.",
       "search_placeholder": "Cerca team",
       "regions_label": "Regioni",
@@ -2070,6 +2051,13 @@
             "custom_hint": "Oppure incolla un URL immagine o un SVG inline (es. da un plugin).",
             "custom_placeholder": "https://… , <svg…> o un nome di icona"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2169,7 +2157,16 @@
       "section_recent_tournaments": "TORNEI.RECENTI",
       "section_recent_highlights": "HIGHLIGHT.RECENTI",
       "no_live_matches": "STANDBY · NESSUN MATCH LIVE",
-      "upcoming": "In arrivo"
+      "cold_start": {
+        "title": "Niente all'orizzonte",
+        "description": "Nessun match live, nessun torneo, ancora nulla negli archivi. Avvia un match e questa pagina si riempirà da sola — punteggi in tempo reale, poi highlight e demo a fine partita.",
+        "cta": "Inizia a giocare",
+        "cta_guest": "Accedi per giocare",
+        "channel_matches": "Match live",
+        "channel_tournaments": "Tornei",
+        "channel_highlights": "Highlight",
+        "channel_status": "In attesa di segnale"
+      }
     },
     "highlights": {
       "title": "Highlight",
@@ -2579,6 +2576,7 @@
     "play": {
       "title": "Gioca",
       "open_registration_tournaments": {
+        "section_label": "TORNEI",
         "description": "Tornei con iscrizioni aperte a tutti."
       },
       "matchmaking": {
@@ -2715,7 +2713,7 @@
     },
     "game_server_nodes": {
       "title": "Nodi server di gioco",
-      "description": "I nodi server di gioco estendono i tuoi server ad altre regioni o forniscono ridondanza per i server on-demand.",
+      "description": "I nodi server di gioco estendono la tua offerta di server in altre regioni o garantiscono ridondanza per i server on-demand.",
       "not_supported": {
         "title": "Il tuo pannello al momento non supporta i nodi server di gioco.",
         "description": "Consulta la documentazione per configurare i nodi server di gioco."
@@ -2758,8 +2756,8 @@
     },
     "dedicated_servers": {
       "title": "Server dedicati",
-      "description": "I server dedicati restano connessi a 5Stack e vengono usati automaticamente per ospitare match, tornei e partite pubbliche.",
-      "docs_link": "Vedi la guida di configurazione",
+      "description": "I server dedicati restano connessi a 5Stack e vengono usati automaticamente per ospitare match, tornei e gioco pubblico.",
+      "docs_link": "Vedi la guida alla configurazione",
       "no_servers_title": "Nessun server dedicato",
       "no_servers": "Nessun server dedicato trovato.",
       "create": {
@@ -2782,7 +2780,7 @@
           "no_rcon": "Nessun RCON",
           "version_mismatch": "Versione non corrispondente"
         },
-        "server_plugin_config": "Config plugin server",
+        "server_plugin_config": "Config plugin del server",
         "hide_config": "Nascondi config",
         "show_config": "Mostra config",
         "config_location": "Questa config va inserita in:",
@@ -2790,7 +2788,7 @@
         "player_management": "Gestione giocatori",
         "no_players": "Nessun giocatore attualmente su questo server",
         "sanctions_wip_title": "Lavori in corso",
-        "sanctions_wip": "I kick funzionano già. Mute e gag in tempo reale sui server pubblici sono ancora in lavorazione: arriverà presto un nuovo plugin 5Stack per i server pubblici e da quel momento mute e gag verranno applicati automaticamente.",
+        "sanctions_wip": "I kick funzionano già. Il mute/gag live sui server pubblici è ancora in lavorazione: presto arriverà un nuovo plugin 5Stack per i server pubblici e mute e gag verranno applicati automaticamente.",
         "status": {
           "disconnected": "Il server è disconnesso",
           "no_rcon": "Il server è connesso ma RCON non è disponibile",
@@ -2799,7 +2797,7 @@
         },
         "delete_confirm": {
           "title": "Eliminare il server?",
-          "description": "L'operazione è irreversibile. Il server verrà eliminato definitivamente insieme ai dati associati.",
+          "description": "L'operazione è irreversibile. Il server verrà eliminato definitivamente e i dati associati rimossi dai nostri server.",
           "continue": "Continua"
         }
       }
@@ -2818,13 +2816,13 @@
       "title": "Map pool",
       "form": {
         "name": "Nome",
-        "name_description": "Deve corrispondere al nome della mappa riconosciuto dal server nel gioco.",
+        "name_description": "Deve corrispondere al nome della mappa nel gioco riconosciuto dal server.",
         "label": "Etichetta",
-        "poster": "Poster (opzionale)",
+        "poster": "Poster (facoltativo)",
         "poster_placeholder": "http://example.com/poster.png",
-        "patch": "Patch (opzionale)",
+        "patch": "Patch (facoltativo)",
         "patch_placeholder": "http://example.com/patch.png",
-        "workshop_map_id": "ID mappa Workshop (opzionale)",
+        "workshop_map_id": "ID mappa Workshop (facoltativo)",
         "create_map": "Crea mappa",
         "delete_map": "Elimina mappa",
         "delete_confirm": {
@@ -2846,19 +2844,19 @@
         "refresh_workshop": "Aggiorna dettagli"
       },
       "pool": {
-        "modify_maps": "Modifica le mappe del pool",
+        "modify_maps": "Modifica le mappe nel pool",
         "pool_heading": "Pool {type}"
       },
       "add_new_map": "Aggiungi mappa",
       "maps": "Mappe disponibili",
-      "active_duty": "Active Duty",
+      "active_duty": "Active duty",
       "available_modes": "Disponibile nelle modalità",
       "workshop_id": "Link Workshop",
       "search": "Cerca mappe"
     },
     "map_pool": {
       "toggle_pool_type": "Map pool aggiornati",
-      "toggle_active_pool": "Stato di attività delle mappe aggiornato",
+      "toggle_active_pool": "Stato attività delle mappe aggiornato",
       "save_success": "Map pool salvato"
     },
     "manage_matches": {
@@ -2888,9 +2886,9 @@
         "best_kast": "KAST",
         "best_udr": "UDR",
         "best_kdr": "KDR",
-        "best_win_rate": "Percentuale vittorie",
+        "best_win_rate": "% vittorie",
         "highest_hs_pct": "HS%",
-        "trophies": "Trofei"
+        "awards": "Trofei"
       },
       "time_periods": {
         "last_7_days": "Ultimi 7 giorni",
@@ -2936,7 +2934,7 @@
         "dpr": "DPR",
         "kast": "KAST",
         "udr": "UDR",
-        "util_damage": "Danno util",
+        "util_damage": "Danni utility",
         "rounds": "Round"
       },
       "exclude_tournaments": "Escludi tornei"
@@ -2975,7 +2973,7 @@
       "query_performance": {
         "no_stats": "Nessuna statistica sulle query",
         "search_query": "Cerca query",
-        "min_calls": "Chiamate min",
+        "min_calls": "Chiamate min.",
         "sort_by": "Ordina per",
         "avg_time": "Tempo medio",
         "max_time": "Tempo max",
@@ -3003,16 +3001,16 @@
       },
       "locks": {
         "no_locks": "Nessun lock attivo",
-        "no_table_stats": "Nessuna statistica sulle tabelle",
-        "stats_title": "Statistiche database",
+        "no_table_stats": "Nessuna statistica sulle tabelle disponibile",
+        "stats_title": "Statistiche del database",
         "cache_hit_ratio": "Cache hit ratio",
         "active_backends": "Backend attivi",
         "tuples_inserted": "Tuple inserite",
         "tuples_updated": "Tuple aggiornate",
         "tuples_deleted": "Tuple eliminate",
-        "current_locks": "Lock attuali",
+        "current_locks": "Lock correnti",
         "lock_type": "Tipo di lock",
-        "table_maintenance_title": "Statistiche manutenzione tabelle",
+        "table_maintenance_title": "Statistiche di manutenzione tabelle",
         "live_tuples": "Tuple vive",
         "dead_tuples": "Tuple morte",
         "last_vacuum": "Ultimo vacuum",
@@ -3029,8 +3027,8 @@
         },
         "table_io_stats": "Statistiche I/O tabelle",
         "index_io_stats": "Statistiche I/O indici",
-        "no_table_stats": "Nessuna statistica I/O sulle tabelle",
-        "no_index_io_stats": "Nessuna statistica I/O sugli indici",
+        "no_table_stats": "Nessuna statistica I/O sulle tabelle disponibile",
+        "no_index_io_stats": "Nessuna statistica I/O sugli indici disponibile",
         "heap_hits": "Heap hit",
         "heap_reads": "Heap read",
         "index_hits": "Index hit",
@@ -3040,17 +3038,17 @@
         "cache_hit_pct": "Cache hit %"
       },
       "index_usage": {
-        "title": "Statistiche uso indici",
+        "title": "Statistiche di uso degli indici",
         "schema": "Schema",
         "table": "Tabella",
         "index": "Indice",
-        "index_scans": "Scansioni indice",
+        "index_scans": "Scan indice",
         "tuples_read": "Tuple lette",
         "tuples_fetched": "Tuple recuperate",
         "index_size": "Dimensione indice",
         "table_size": "Dimensione tabella",
         "size_ratio": "% della tabella",
-        "no_stats": "Nessuna statistica sull'uso degli indici"
+        "no_stats": "Nessuna statistica di uso degli indici disponibile"
       },
       "storage": {
         "overview": "Panoramica storage",
@@ -3068,11 +3066,11 @@
         "live_tuples": "Tuple vive",
         "dead_tuples": "Tuple morte",
         "dead_tuple_size": "Dimensione tuple morte",
-        "no_tables": "Nessuna informazione sullo storage delle tabelle"
+        "no_tables": "Nessuna informazione sullo storage delle tabelle disponibile"
       },
       "timescale": {
         "no_data_title": "Nessun dato TimescaleDB",
-        "no_data_description": "L'estensione TimescaleDB non è installata oppure non è configurata alcuna hypertable.",
+        "no_data_description": "L'estensione TimescaleDB non è installata oppure non ci sono hypertable configurate.",
         "no_jobs": "Nessun job in background configurato",
         "total_chunks": "Chunk totali",
         "background_jobs": "Job in background",
@@ -3116,17 +3114,17 @@
         "local_blocks_read": "Blocchi locali letti",
         "temp_blocks_written": "Blocchi temp scritti",
         "execution_plan": "Piano di esecuzione",
-        "no_explain_plan": "Non è stato possibile generare il piano EXPLAIN per questa query",
+        "no_explain_plan": "Impossibile generare il piano EXPLAIN per questa query",
         "not_found": "Dettagli della query non trovati"
       }
     },
     "events": {
       "title": "Eventi",
-      "description": "Esplora gli eventi con i relativi tornei, classifiche e piazzamenti.",
+      "description": "Sfoglia gli eventi con i relativi tornei, classifiche e graduatorie.",
       "create": "Crea evento",
       "date_tbd": "Data da definire",
       "no_events_title": "Nessun evento",
-      "no_events_description": "Al momento non ci sono eventi da mostrare. Torna a controllare più tardi.",
+      "no_events_description": "Al momento non ci sono eventi da mostrare. Torna a controllare più avanti.",
       "live_now": "Live ora",
       "upcoming": "In arrivo",
       "past_events": "Eventi passati"
@@ -3135,18 +3133,48 @@
       "title": "Gestisci eventi",
       "description": "Visualizza e gestisci tutti gli eventi della piattaforma.",
       "no_events_title": "Nessun evento",
-      "no_events_description": "Non stai organizzando ancora nessun evento."
+      "no_events_description": "Non stai organizzando nessun evento."
     },
     "plugins": {
       "not_found_title": "Pagina non trovata",
       "not_found_description": "Questo plugin non esiste o non è più disponibile.",
       "forbidden_title": "Accesso limitato",
       "forbidden_description": "Non hai i permessi per vedere questa pagina.",
-      "error_title": "Impossibile caricare la pagina"
+      "error_title": "Caricamento della pagina non riuscito"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
-    "description": "Costruisci il tuo match con regole, mappe e lineup personalizzate"
+    "description": "Crea il tuo match con regole, mappe e lineup personalizzate"
   },
   "layouts": {
     "account_settings": {
@@ -3156,7 +3184,7 @@
     },
     "application_settings": {
       "title": "Impostazioni applicazione",
-      "description": "Impostazioni che influiscono sull'applicazione.",
+      "description": "Impostazioni che influenzano l'applicazione.",
       "select_section": "Seleziona sezione",
       "branding_nav": "Branding",
       "fixtures_nav": "Calendario",
@@ -3164,7 +3192,7 @@
       "groups": {
         "platform": "Piattaforma",
         "competition": "Competizione",
-        "match_setup": "Setup match",
+        "match_setup": "Configurazione match",
         "content_media": "Contenuti e media",
         "integrations": "Integrazioni",
         "infrastructure": "Infrastruttura",
@@ -3172,16 +3200,17 @@
         "developer": "Sviluppatore",
         "general": "Generale",
         "media": "Registrazione e media",
-        "additional_features": "Funzionalità aggiuntive"
+        "additional_features": "Funzionalità aggiuntive",
+        "players_teams": "Piattaforma"
       }
     },
     "system_update": {
       "title": "Aggiornamento di sistema disponibile",
-      "description": "I seguenti servizi hanno aggiornamenti:",
-      "note": "Nota: l'elaborazione e la verifica dei nuovi aggiornamenti richiedono qualche minuto.",
-      "fix_link": "Se l'aggiornamento di sistema persiste, potresti dover correggere le tue versioni",
-      "updating": "Aggiornamento di sistema in corso",
-      "panel_update": "Il tuo pannello non è aggiornato: esegui il pull e lancia lo script di aggiornamento"
+      "description": "I seguenti servizi hanno aggiornamenti disponibili:",
+      "note": "Nota: l'elaborazione e la verifica dei nuovi aggiornamenti richiede alcuni minuti.",
+      "fix_link": "Se l'aggiornamento di sistema persiste, potresti dover correggere le versioni",
+      "updating": "Aggiornamento del sistema in corso",
+      "panel_update": "Il tuo pannello non è aggiornato, esegui il pull e lo script di aggiornamento"
     },
     "match_lobby": {
       "versus": "VS"
@@ -3190,8 +3219,8 @@
       "title": "Notifiche",
       "dismiss": "Ignora",
       "dismiss_all": "Ignora tutte",
-      "delete_all_read": "Elimina lette",
-      "review_orphaned_uploads": "Controlla gli upload orfani",
+      "delete_all_read": "Elimina tutte le lette",
+      "review_orphaned_uploads": "Rivedi upload orfani",
       "no_notifications_title": "Nessuna notifica",
       "no_notifications": "Nessuna notifica al momento.",
       "toast": {
@@ -3201,15 +3230,15 @@
         "lobby_invite": "Invito alla lobby",
         "friend_request": "Richiesta di amicizia",
         "invited_you": "ti ha invitato a",
-        "invited_party": "ti ha invitato nel suo gruppo",
-        "wants_to_be_friends": "vuole essere tuo amico"
+        "invited_party": "ti ha invitato nel suo party",
+        "wants_to_be_friends": "vuole diventare tuo amico"
       }
     },
     "app_nav": {
       "brand": "5stack",
       "systems_online": "{count} sistema online | {count} sistemi online",
       "navigation": {
-        "dashboard": "Le mie stat",
+        "dashboard": "Le mie statistiche",
         "play": "Gioca",
         "watch": "Guarda",
         "tournaments": "Tornei",
@@ -3244,7 +3273,8 @@
         "manage_tournaments": "Gestisci tornei",
         "manage_league": "Gestisci lega",
         "stream_deck": "Stream Deck",
-        "manage_events": "Gestisci eventi"
+        "manage_events": "Gestisci eventi",
+        "awards": "Awards"
       },
       "system": {
         "title": "Sistema",
@@ -3259,10 +3289,10 @@
       },
       "footer": {
         "report_issue": "Segnala un problema",
-        "join_discord": "Entra nel nostro Discord"
+        "join_discord": "Unisciti al nostro Discord"
       },
       "tooltips": {
-        "dashboard": "Le mie stat",
+        "dashboard": "Le mie statistiche",
         "play": "Gioca",
         "watch": "Guarda",
         "tournaments": "Tornei",
@@ -3280,9 +3310,9 @@
         "database": "Database",
         "system_metrics": "Metriche di sistema",
         "app_settings": "Impostazioni app",
-        "alerts": "Gestisci i banner di avviso globali",
+        "alerts": "Gestisci i banner di avviso su tutto il sito",
         "report_issue": "Segnala un problema",
-        "join_discord": "Entra nel nostro Discord",
+        "join_discord": "Unisciti al nostro Discord",
         "manage_matches": "Gestisci match",
         "manage_tournaments": "Gestisci tornei",
         "manage_league": "Gestisci lega",
@@ -3293,15 +3323,21 @@
       },
       "logout_dialog": {
         "title": "Esci",
-        "description": "Vuoi uscire dall'account?",
+        "description": "Uscire dall'account?",
         "confirm": "Esci"
       },
       "plugins": {
         "title": "App"
+      },
+      "competition": {
+        "title": "Amministrazione"
+      },
+      "platform": {
+        "title": "Amministrazione"
       }
     },
     "top_nav": {
-      "home": "Le mie stat",
+      "home": "Le mie statistiche",
       "play_menu": "Gioca",
       "community_menu": "Community",
       "watch_menu": "Guarda",
@@ -3317,7 +3353,7 @@
         "public_servers": "Server pubblici",
         "hero": {
           "title": "Gioca e competi",
-          "subtitle": "Entra in match e tornei.",
+          "subtitle": "Partecipa a match e tornei.",
           "primary": "PRINCIPALE"
         },
         "operations": "OPERAZIONI"
@@ -3333,16 +3369,16 @@
         },
         "teams": {
           "title": "Team",
-          "subtitle": "Trova e gestisci i team"
+          "subtitle": "Trova e gestisci team"
         },
         "leaderboard": {
           "title": "Classifica",
-          "subtitle": "Migliori giocatori e rank"
+          "subtitle": "I migliori giocatori e le classifiche"
         },
         "social": {
           "title": "Social",
           "join_discord": {
-            "title": "Entra nel nostro Discord",
+            "title": "Unisciti al nostro Discord",
             "subtitle": "Chat, supporto e annunci"
           }
         },
@@ -3364,11 +3400,11 @@
     },
     "lobby_panel": {
       "lobby_invites": "Inviti alla lobby",
-      "your_squad": "Il tuo squad",
-      "squad_description": "Organizza il team, manda inviti e preparati per le comunicazioni vocali / Discord.",
-      "create_lobby_description": "Crea una lobby per invitare gli amici e mettervi in coda insieme.",
+      "your_squad": "La tua squadra",
+      "squad_description": "Organizza il tuo team, invia inviti e preparati per voice / comms su Discord.",
+      "create_lobby_description": "Crea una lobby per invitare amici e mettersi in coda insieme.",
       "create_lobby_button": "Crea lobby",
-      "voice_discord": "Voce e Discord",
+      "voice_discord": "Voice e Discord",
       "discord_linked": "Discord collegato",
       "link_discord": "Collega Discord",
       "find_match": "Trova un match"
@@ -3376,38 +3412,38 @@
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} in chat",
-      "pop_out_tooltip": "Apri in una finestra",
-      "no_chats_title": "Ancora nessuna chat",
-      "no_chats_description": "Quando entri in una chat, comparirà qui."
+      "pop_out_tooltip": "Apri in finestra separata",
+      "no_chats_title": "Nessuna chat ancora",
+      "no_chats_description": "Una volta che entri in una chat, apparirà qui."
     },
     "recent_games": {
       "title": "Partite recenti",
       "last_matches": "Ultimi {count} match",
-      "performance": "Rendimento",
+      "performance": "Prestazioni",
       "draws_label": "Pareggi",
       "most_played_maps": "Mappe più giocate",
-      "no_maps": "Le mappe compariranno qui man mano che giochi.",
+      "no_maps": "Le mappe appariranno qui man mano che giochi.",
       "no_recent_matches_title": "Nessun match recente",
-      "no_recent_matches_description": "Quando giochi qualche partita, comparirà qui."
+      "no_recent_matches_description": "Una volta giocate alcune partite, appariranno qui."
     },
     "public_header": {
       "secure_channel": "CANALE SICURO"
     }
   },
   "alt_text": {
-    "steam_login": "Accesso Steam",
+    "steam_login": "Login Steam",
     "discord": "Discord",
-    "map_poster": "Poster della mappa",
-    "map_patch": "Patch della mappa"
+    "map_poster": "Poster mappa",
+    "map_patch": "Patch mappa"
   },
   "pwa": {
     "install": {
-      "title": "Aggiungi alla schermata home",
-      "description": "Questo sito offre funzioni da app. Aggiungilo alla schermata home per accedervi rapidamente.",
-      "step1": "Premi il pulsante «Condividi»",
-      "step2": "Seleziona «Aggiungi a Home»",
-      "tooltip": "Installa l'app",
-      "button": "Installa l'app"
+      "title": "Aggiungi alla schermata Home",
+      "description": "Questo sito offre funzionalità simili a un'app. Aggiungilo alla schermata Home per un accesso rapido.",
+      "step1": "Premi il pulsante \"Condividi\"",
+      "step2": "Seleziona \"Aggiungi a Home\"",
+      "tooltip": "Installa app",
+      "button": "Installa app"
     }
   },
   "roster_picker": {
@@ -3426,20 +3462,20 @@
     "accept": "Accetta",
     "decline": "Rifiuta",
     "previous": "Precedente",
-    "next": "Avanti",
+    "next": "Successivo",
     "back": "Indietro",
     "delete": "Elimina",
-    "clear": "Svuota",
+    "clear": "Cancella",
     "cancel": "Annulla",
     "save": "Salva",
-    "reset": "Reimposta",
+    "reset": "Ripristina",
     "copy": "Copia",
     "update": "Aggiorna",
     "discard": "Scarta",
     "save_changes": "Salva modifiche",
     "save_bar": {
       "unsaved_changes": "Modifiche non salvate",
-      "review_and_save": "Controlla le modifiche, poi salva",
+      "review_and_save": "Rivedi le modifiche, poi salva",
       "has_errors": "Impostazioni non valide",
       "resolve_errors": "Correggi i campi evidenziati per salvare"
     },
@@ -3469,7 +3505,7 @@
     "degraded": "Degradato",
     "never": "Mai",
     "live": "Live",
-    "finished": "Concluso",
+    "finished": "Terminato",
     "scheduled": "Programmato",
     "show_metrics": "Mostra metriche",
     "hide_metrics": "Nascondi metriche",
@@ -3478,25 +3514,25 @@
     "system": "Sistema",
     "hide_details": "Nascondi dettagli",
     "show_details": "Mostra dettagli",
-    "enter_fullscreen": "Schermo intero",
+    "enter_fullscreen": "Attiva schermo intero",
     "exit_fullscreen": "Esci da schermo intero",
     "download": "Scarica",
     "upload": "Carica",
-    "sort_ascending": "Ordine crescente",
-    "sort_descending": "Ordine decrescente",
-    "see_all": "Vedi tutto",
+    "sort_ascending": "Ordina crescente",
+    "sort_descending": "Ordina decrescente",
+    "see_all": "Vedi tutti",
     "standby_no_activity": "STANDBY · NESSUNA ATTIVITÀ",
     "players": "giocatori",
     "duration": "Durata",
     "your_schedule": "Il tuo calendario",
-    "your_schedule_description": "Match e tornei a cui stai partecipando.",
+    "your_schedule_description": "Match e tornei di cui fai parte al momento.",
     "highlights": "HIGHLIGHT",
     "boolean": {
       "yes": "Sì",
       "no": "No"
     },
     "are_you_sure": "Eseguire questo comando?",
-    "are_you_sure_short": "Confermi?",
+    "are_you_sure_short": "Sei sicuro?",
     "no_tables_found": "Nessuna tabella trovata",
     "actions": {
       "edit": "Modifica",
@@ -3508,9 +3544,9 @@
     "refresh": "Aggiorna",
     "create": "Crea",
     "rename": "Rinomina",
-    "creating": "Creazione...",
-    "saving": "Salvataggio...",
-    "loading": "Caricamento...",
+    "creating": "Creazione in corso…",
+    "saving": "Salvataggio in corso…",
+    "loading": "Caricamento…",
     "undo": "Annulla",
     "redo": "Ripeti",
     "name": "Nome",
@@ -3520,13 +3556,13 @@
     "filters": "Filtri",
     "options": "Opzioni",
     "date": "Data",
-    "reset_filters": "Reimposta filtri",
+    "reset_filters": "Ripristina filtri",
     "player": "Giocatore",
     "plugin_version": "Versione plugin",
     "pick_date": "Scegli una data",
-    "team_name": "Nome del team",
+    "team_name": "Nome team",
     "coaches": "Coach",
-    "map_veto": "Veto mappe",
+    "map_veto": "Veto mappa",
     "round": "Round {number}",
     "stats": {
       "wins": "Vittorie",
@@ -3537,7 +3573,7 @@
       "win_rate": "% vittorie"
     },
     "address_search": {
-      "placeholder": "Cerca un indirizzo o una sede",
+      "placeholder": "Cerca un indirizzo o un locale",
       "no_results": "Nessun luogo corrispondente trovato"
     }
   },
@@ -3559,10 +3595,10 @@
     "upload_cancelled": "Caricamento annullato"
   },
   "file_manager": {
-    "location": "Percorso",
+    "location": "Posizione",
     "dedicated_server_files": "File del server dedicato",
     "game_server_node_files": "File del nodo server di gioco",
-    "loading_server_info": "Caricamento informazioni del server...",
+    "loading_server_info": "Caricamento informazioni server...",
     "create_directory": {
       "title": "Crea nuova directory",
       "description": "Inserisci un nome per la nuova directory",
@@ -3579,7 +3615,7 @@
     "delete_confirm": {
       "title_file": "Elimina file",
       "title_directory": "Elimina directory",
-      "description_file": "Eliminare «{name}»? L'operazione è irreversibile.",
+      "description_file": "Eliminare «{name}»? L'operazione non può essere annullata.",
       "description_directory": "Eliminare «{name}»? Tutto il contenuto verrà eliminato definitivamente."
     },
     "rename": {
@@ -3590,22 +3626,22 @@
     },
     "editor": {
       "title": "Modifica file: {path}",
-      "description": "Modifica il contenuto del file",
+      "description": "Apporta modifiche al contenuto del file",
       "loading": "Caricamento file...",
-      "save_success": "File salvato correttamente",
+      "save_success": "File salvato con successo!",
       "load_failed": "Impossibile caricare il file",
       "save_failed": "Impossibile salvare il file",
-      "unsaved_close": "Hai modifiche non salvate. Chiudere comunque?"
+      "unsaved_close": "Ci sono modifiche non salvate. Chiudere comunque?"
     },
     "upload": {
       "title": "Carica file",
       "description": "Seleziona i file da caricare nella directory corrente",
-      "drag_drop": "Trascina qui i file oppure clicca per sfogliare",
+      "drag_drop": "Trascina qui i file o clicca per selezionarli",
       "max_size": "Dimensione massima file: 100MB",
       "uploading": "Caricamento file in corso...",
       "complete": "Caricamento completato",
       "complete_with_errors": "Caricamento completato con errori",
-      "files_failed": "Caricamento non riuscito per {count} file"
+      "files_failed": "{count} file non caricati"
     },
     "toolbar": {
       "new_file": "Nuovo file",
@@ -3616,9 +3652,9 @@
     "tree": {
       "folder_name_placeholder": "nome cartella",
       "file_name_placeholder": "nome file",
-      "drop_hint": "Trascina qui i file o clicca destro per creare",
+      "drop_hint": "Trascina qui i file o fai clic destro per crearne",
       "files": "file",
-      "current": "Corrente"
+      "current": "Attuale"
     },
     "details_panel": {
       "menu_file_label": "File",
@@ -3627,19 +3663,19 @@
       "no_file_open_title": "Nessun file aperto",
       "no_file_open_description": "Seleziona un file dal browser per modificarlo",
       "close": "Chiudi",
-      "close_all": "Chiudi tutto",
+      "close_all": "Chiudi tutti",
       "enable_word_wrap": "Attiva a capo automatico",
       "disable_word_wrap": "Disattiva a capo automatico",
       "show_minimap": "Mostra minimappa",
       "hide_minimap": "Nascondi minimappa",
       "no_file_open": "Nessun file aperto",
-      "unsaved_changes": "Hai modifiche non salvate. Chiudere comunque?",
-      "unsaved_changes_all": "Hai modifiche non salvate. Chiudere tutti i file?"
+      "unsaved_changes": "Ci sono modifiche non salvate. Chiudere comunque?",
+      "unsaved_changes_all": "Ci sono modifiche non salvate. Chiudere tutti i file comunque?"
     },
     "tabs": {
-      "unsaved_changes_warning": "Hai modifiche non salvate in altri file. Chiuderli comunque?",
-      "unsaved_changes_right_warning": "Hai modifiche non salvate nei file a destra. Chiuderli comunque?",
-      "unsaved_changes_left_warning": "Hai modifiche non salvate nei file a sinistra. Chiuderli comunque?"
+      "unsaved_changes_warning": "Ci sono modifiche non salvate in altri file. Chiuderli comunque?",
+      "unsaved_changes_right_warning": "Ci sono modifiche non salvate nei file a destra. Chiuderli comunque?",
+      "unsaved_changes_left_warning": "Ci sono modifiche non salvate nei file a sinistra. Chiuderli comunque?"
     }
   },
   "error": {
@@ -3651,7 +3687,7 @@
     "streamer": "Streamer",
     "moderator": "Moderatore",
     "match_organizer": "Organizzatore match",
-    "tournament_organizer": "Organizzatore tornei",
+    "tournament_organizer": "Organizzatore torneo",
     "administrator": "Amministratore"
   },
   "chat_tab_labels": {
@@ -3672,7 +3708,7 @@
   },
   "latency_status": {
     "measuring": "Misurazione...",
-    "excellent": "Ottima",
+    "excellent": "Eccellente",
     "good": "Buona",
     "fair": "Discreta",
     "poor": "Scarsa"
@@ -3681,8 +3717,8 @@
     "fallback_title": "Chat",
     "not_found": "Chat non trovata",
     "back_to_hub": "Torna all'hub",
-    "not_open_title": "Questa chat non è aperta nella tua sessione.",
-    "not_open_description": "Aprila prima dalla barra laterale dell'hub, poi staccala di nuovo."
+    "not_open_title": "Questa chat non è attualmente aperta nella tua sessione.",
+    "not_open_description": "Aprila prima dalla sidebar dell'hub, poi riaprila in una finestra separata."
   },
   "tournament": {
     "admin_label": "Admin",
@@ -3700,14 +3736,14 @@
       "match_options_tab": "Opzioni match",
       "organizers_tab": "Organizzatori",
       "my_team": "Il mio team",
-      "my_team_hint": "Gestisci il tuo roster, gli inviti e lo stato di prontezza per questo torneo.",
+      "my_team_hint": "Gestisci roster, inviti e prontezza del tuo team per questo torneo.",
       "roster_section": "Roster",
-      "no_teams_yet": "Ancora nessun team.",
+      "no_teams_yet": "Nessun team ancora.",
       "information_tab": "Informazioni",
       "about_section": "Info",
       "match_settings": "Impostazioni match",
       "read_more": "Leggi di più",
-      "read_less": "Leggi di meno"
+      "read_less": "Leggi meno"
     },
     "feature_card": {
       "tournament": "Torneo",
@@ -3718,58 +3754,39 @@
     },
     "results_section": {
       "no_data": "NESSUN DATO",
-      "mvp": "MIGLIOR GIOCATORE",
-      "no_matches_played": "Ancora nessun match giocato"
+      "mvp": "GIOCATORE PIÙ VALIDO",
+      "no_matches_played": "Nessun match giocato ancora"
     },
     "swiss": {
-      "advanced": "QUALIFICATO",
+      "advanced": "AVANZATO",
       "eliminated": "ELIMINATO",
       "final_results": "Risultati finali"
     },
     "standings_section": {
       "no_roster": "NESSUN ROSTER"
     },
-    "trophies_config": {
-      "title": "Configurazione trofei",
-      "organizer_access_required": "SERVE ACCESSO DA ORGANIZZATORE",
-      "award_trophies": "ASSEGNA TROFEI",
-      "custom": "PERSONALIZZATO",
-      "custom_image": "Immagine personalizzata",
-      "custom_name": "Nome personalizzato",
-      "silhouette": "Silhouette",
-      "reset": "Reimposta",
-      "remove_image_hint": "Rimuovi l'immagine per personalizzare nome o silhouette",
-      "hint": "Carica un'immagine o personalizza il premio predefinito."
-    },
-    "trophies_manage": {
-      "manual_awards": "Premi manuali",
-      "add_award": "Aggiungi premio",
-      "no_manual_awards": "NESSUN PREMIO MANUALE",
-      "remove": "Rimuovi",
-      "hint": "Assegna un trofeo al di fuori del calcolo del bracket."
-    },
     "compact_card": {
       "tournament": "Torneo",
       "live": "Live",
       "ended": "Concluso",
-      "starts": "Inizio",
+      "starts": "Inizia",
       "teams": "Team",
       "champion": "Campione",
       "second": "2°",
       "third": "3°",
-      "player_finished": "Giocatore arrivato {rank}"
+      "player_finished": "Il giocatore ha chiuso {rank}"
     },
     "recent": {
       "see_all": "Vedi tutti",
-      "standby_no_tournaments": "STANDBY · NESSUN TORNEO"
+      "standby_no_tournaments": "IN ATTESA · NESSUN TORNEO"
     },
-    "paused_banner": "Questo torneo è in pausa. Nessun nuovo match verrà programmato automaticamente.",
+    "paused_banner": "Questo torneo è in pausa. Nessun nuovo match verrà pianificato automaticamente.",
     "overview": "Panoramica",
     "updated": "Torneo aggiornato",
     "settings": "Impostazioni",
     "join": {
       "title": "Unisciti al torneo",
-      "add_self_to_lineup": "Aggiungiti alla lineup",
+      "add_self_to_lineup": "Aggiungiti al lineup",
       "team_owner": "Proprietario del team",
       "requirements": "Ti servono almeno {count} giocatori per unirti a questo torneo",
       "roster_range": "Lineup ({selected} selezionati · fino a {max} giocatori)",
@@ -3779,7 +3796,7 @@
         "benched": "In panchina"
       },
       "already_rostered": "In un altro team",
-      "min_lineup_warning": "Seleziona almeno {min} giocatori per iscriverti."
+      "min_lineup_warning": "Seleziona almeno {min} giocatori per registrarti."
     },
     "tournament_team": {
       "remove": "Rimuovi team",
@@ -3791,43 +3808,43 @@
     },
     "form": {
       "create": "Crea torneo",
-      "name": "Nome torneo",
+      "name": "Nome del torneo",
       "description": "Descrizione",
-      "start": "Data d'inizio",
+      "start": "Data di inizio",
       "section": {
         "branding": "Branding",
         "details": "Dettagli",
         "classification": "Classificazione e sede",
-        "schedule": "Calendario"
+        "schedule": "Programma"
       },
       "discord_notifications": "Notifiche Discord",
-      "discord_notifications_description": "Attiva le notifiche Discord per i cambi di stato dei match di questo torneo. Se disattivate, vengono inviate solo le notifiche nel pannello.",
+      "discord_notifications_description": "Attiva le notifiche Discord per i cambi di stato dei match in questo torneo. Se disattivate, vengono inviate solo notifiche a pannello.",
       "auto_start": {
         "label": "Avvio automatico",
-        "description": "Se attivo, i match del torneo vengono programmati automaticamente. Se disattivo, un organizzatore deve programmare ogni match manualmente."
+        "description": "Se attivo, i match del torneo vengono pianificati automaticamente. Se disattivo, un organizzatore deve pianificare ogni match manualmente."
       },
       "negotiated_scheduling": {
-        "label": "Programmazione concordata",
-        "description": "I capitani propongono e concordano gli orari dei match (con finestre opzionali per fase), invece di far partire i match automaticamente."
+        "label": "Pianificazione concordata",
+        "description": "I capitani dei team propongono e concordano gli orari dei match (con finestre opzionali per fase), invece di far partire i match automaticamente."
       },
       "create_bar": {
         "ready": "Pronto per la creazione",
-        "ready_hint": "È tutto a posto — crea il tuo torneo",
+        "ready_hint": "Tutto ok — crea il tuo torneo",
         "incomplete": "Campi obbligatori mancanti",
-        "incomplete_hint": "Inserisci il nome del torneo e la data d'inizio per continuare"
+        "incomplete_hint": "Inserisci nome del torneo e data di inizio per continuare"
       },
       "logo": {
         "label": "Logo"
       },
       "homepage": {
-        "label": "Sito",
-        "description": "Link esterno per biglietti, informazioni o iscrizioni.",
-        "link": "Sito",
+        "label": "Homepage",
+        "description": "Link esterno per biglietti, info o registrazione.",
+        "link": "Homepage",
         "create_event": "Crea una pagina evento"
       },
       "location": {
-        "label": "Luogo",
-        "description": "Cerca la sede o la città; il segnaposto sulla mappa viene impostato automaticamente."
+        "label": "Località",
+        "description": "Cerca la sede o la città; il pin sulla mappa viene impostato automaticamente."
       },
       "categories": {
         "label": "Categorie"
@@ -3835,23 +3852,23 @@
     },
     "notifications": {
       "title": "Discord",
-      "webhook": "URL webhook",
-      "webhook_placeholder": "Lascia vuoto per usare il valore globale",
+      "webhook": "URL Webhook",
+      "webhook_placeholder": "Lascia vuoto per usare il predefinito globale",
       "role_id": "ID ruolo",
-      "role_id_placeholder": "Lascia vuoto per usare il valore globale",
+      "role_id_placeholder": "Lascia vuoto per usare il predefinito globale",
       "role_id_description": "Puoi aggiungere più ID ruolo separati da virgole.",
       "save": "Salva",
-      "saved": "Impostazioni notifiche aggiornate",
-      "save_error": "Impossibile salvare le impostazioni delle notifiche",
+      "saved": "Impostazioni di notifica aggiornate",
+      "save_error": "Impossibile salvare le impostazioni di notifica",
       "map_paused": "Mappa in pausa",
       "status": {
-        "PickingPlayers": "Scelta giocatori",
-        "Scheduled": "Programmato",
+        "PickingPlayers": "Selezione giocatori",
+        "Scheduled": "Pianificato",
         "WaitingForCheckIn": "In attesa di check-in",
         "WaitingForServer": "In attesa del server",
         "Veto": "Veto",
         "Live": "Live",
-        "Finished": "Concluso",
+        "Finished": "Terminato",
         "Tie": "Pareggio",
         "Canceled": "Annullato",
         "Forfeit": "Forfait",
@@ -3861,7 +3878,7 @@
     },
     "voice": {
       "title": "Canali vocali",
-      "description": "Crea automaticamente canali vocali Discord per i match del torneo. I giocatori vengono spostati nei canali dei team quando i match iniziano.",
+      "description": "Crea automaticamente canali vocali Discord per i match del torneo. I giocatori vengono spostati nei canali del team all'inizio dei match.",
       "guild_id_placeholder": "ID server Discord",
       "enable_voice": "Attiva canali vocali",
       "guild_id": "ID server Discord"
@@ -3870,7 +3887,7 @@
       "tournament": "Torneo",
       "type": "Tipo",
       "teams_joined": "Team iscritti",
-      "starts": "Inizio",
+      "starts": "Inizia",
       "no_tournaments_found": "Nessun torneo trovato",
       "maps_label": "Mappe:"
     },
@@ -3881,101 +3898,101 @@
       "delete": "Elimina fase",
       "edit_title": "Modifica fase",
       "confirm_delete": "Elimina fase",
-      "delete_description": "Eliminare questa fase? L'operazione è irreversibile.",
+      "delete_description": "Eliminare questa fase?",
       "deleted": "Fase eliminata",
       "delete_failed": "Impossibile eliminare la fase",
       "group": "Girone {group}",
-      "no_standings": "Ancora nessuna classifica",
+      "no_standings": "Nessuna classifica ancora",
       "stage_tab": "Fase {stage}",
       "min_teams": "Team minimi",
-      "min_teams_placeholder": "Seleziona i team minimi...",
+      "min_teams_placeholder": "Seleziona il minimo di team...",
       "max_teams": "Team massimi",
-      "max_teams_placeholder": "Seleziona i team massimi...",
+      "max_teams_placeholder": "Seleziona il massimo di team...",
       "max_rounds": "Round massimi (opzionale)",
       "max_rounds_placeholder": "Lascia vuoto per un girone all'italiana completo",
-      "max_rounds_description": "Limita il girone all'italiana a questo numero di round; ogni team affronta altrettanti avversari diversi. Lascia vuoto per far giocare tutti contro tutti.",
+      "max_rounds_description": "Limita il girone all'italiana a questo numero di round; ogni team affronta altrettanti avversari distinti. Lascia vuoto per giocare contro tutti.",
       "swiss_no_elimination": "Girone svizzero (senza eliminazione)",
-      "swiss_no_elimination_description": "Accoppia per record a ogni round ma senza mai eliminare — ogni team gioca un numero fisso di round ed è classificato in un'unica tabella (stile ESEA). Disattivato = sistema svizzero Valve (qualificato a 3 vittorie / fuori a 3 sconfitte).",
+      "swiss_no_elimination_description": "Accoppia per record ad ogni round ma senza mai eliminare — ogni team gioca un numero fisso di round ed è classificato in un'unica tabella (stile ESEA). Off = sistema svizzero Valve (avanza a 3 vittorie / eliminato a 3 sconfitte).",
       "swiss_rounds": "Round",
-      "swiss_rounds_placeholder": "Numero di round svizzeri",
-      "swiss_rounds_description": "Quanti round gioca il girone svizzero.",
+      "swiss_rounds_placeholder": "Numero di round del sistema svizzero",
+      "swiss_rounds_description": "Quanti round gioca il girone a sistema svizzero.",
       "create": "Crea fase",
       "add_another": "Aggiungi un'altra fase",
       "not_setup": "Fasi del torneo non configurate",
       "groups": "Gironi",
       "groups_placeholder": "Inserisci il numero di gironi per questa fase...",
-      "default_best_of": "Best of predefinito",
-      "default_best_of_description": "Il formato match predefinito usato per tutti i round di questa fase.",
-      "per_round_best_of": "Best of per round",
-      "third_place_match": "Attiva finale 3° posto",
-      "third_place_match_description": "Crea una finale per il 3° posto tra i due perdenti delle semifinali.",
-      "decider_best_of": "Spareggio 3° posto",
-      "advanced_settings": "Impostazioni avanzate fase",
+      "default_best_of": "Formato predefinito",
+      "default_best_of_description": "Il formato di match predefinito usato per tutti i round di questa fase.",
+      "per_round_best_of": "Formato per round",
+      "third_place_match": "Attiva match per il 3° posto",
+      "third_place_match_description": "Crea un match per il 3° posto tra le due squadre sconfitte in semifinale.",
+      "decider_best_of": "Decider per il 3° posto",
+      "advanced_settings": "Impostazioni avanzate della fase",
       "teams_count": "{count} team",
       "final_map_advantage": {
-        "label": "Vantaggio mappa in finale",
-        "description": "Vantaggio in mappe con cui il team del bracket vincenti arriva alla grande finale. Deve restare sotto il numero di mappe necessarie per vincere."
+        "label": "Vantaggio mappe finale",
+        "description": "Vantaggio in punti mappa che il team dell'upper bracket porta nella finale. Deve restare sotto le mappe necessarie per vincere."
       }
     },
     "bracket": {
-      "schedule_title": "Programma match",
-      "currently_scheduled": "Attualmente programmato",
-      "save_schedule": "Salva programmazione",
-      "clear_schedule": "Azzera",
-      "past_time_error": "L'orario programmato deve essere nel futuro",
+      "schedule_title": "Pianifica match",
+      "currently_scheduled": "Attualmente pianificato",
+      "save_schedule": "Salva pianificazione",
+      "clear_schedule": "Cancella",
+      "past_time_error": "L'orario pianificato deve essere nel futuro",
       "fit_to_view": "Adatta alla vista",
       "share_title": "Condividi bracket",
-      "share_description": "Condividi o incorpora questo bracket su siti di eventi e schermi.",
+      "share_description": "Condividi o incorpora questo bracket su siti eventi e schermi.",
       "share_link": "Link diretto",
-      "share_embed": "Codice di incorporamento",
+      "share_embed": "Codice embed",
       "share_specific_stage": "Fase specifica",
-      "share_specific_stage_help": "Mostra sempre questa esatta fase.",
+      "share_specific_stage_help": "Mostra sempre questa fase esatta.",
       "share_current_stage": "Fase corrente",
       "share_current_stage_help": "Passa automaticamente alla fase live; in mancanza, mostra l'ultima.",
-      "share_cycle_all": "Cicla tutte le fasi",
-      "share_cycle_all_help": "Ruota tra tutte le fasi a intervalli. Nella doppia eliminazione alterna anche bracket vincenti e perdenti.",
-      "share_cycle_interval": "Intervallo del ciclo (secondi)",
+      "share_cycle_all": "Ruota tutte le fasi",
+      "share_cycle_all_help": "Ruota tra tutte le fasi a intervalli. Nel doppia eliminazione alterna anche upper e lower bracket.",
+      "share_cycle_interval": "Intervallo di rotazione (secondi)",
       "share_open": "Apri",
       "share_copy": "Copia",
-      "share_copied": "Copiato",
+      "share_copied": "Copiato!",
       "share_button": "Condividi",
-      "popout_button": "Finestra separata",
+      "popout_button": "Popout",
       "view_split": "Vista divisa",
       "view_scroll": "Scorrimento pagina",
-      "hide_finished": "Nascondi round conclusi",
-      "focus_upper": "Concentra sul bracket superiore",
-      "focus_lower": "Concentra sul bracket inferiore",
+      "hide_finished": "Nascondi round terminati",
+      "focus_upper": "Focus su upper bracket",
+      "focus_lower": "Focus su lower bracket",
       "restore_split": "Ripristina vista divisa",
       "click_to_expand": "clicca per espandere",
       "expand_button": "Espandi",
       "divider_hint": "Trascina per ridimensionare · doppio clic per reimpostare",
       "embed_current_label": "LIVE",
-      "embed_winner_label": "Bracket superiore",
-      "embed_loser_label": "Bracket inferiore",
+      "embed_winner_label": "Upper bracket",
+      "embed_loser_label": "Lower bracket",
       "embed_no_stage": "Nessuna fase attiva.",
       "zoom_fit": "Adatta"
     },
     "match": {
       "reset_winner": "Reimposta vincitore",
-      "reset_warning": "Cambiare questo risultato può eliminare i match successivi nel bracket",
+      "reset_warning": "Modificare questo risultato può eliminare i match successivi nel bracket",
       "winner_after_reset": "Vincitore dopo il reset",
-      "scheduled_at": "Programmato per",
+      "scheduled_at": "Pianificato per",
       "continue": "Continua",
-      "reset_chain_warning": "Questo reimposta la catena del bracket selezionata e può rimuovere match successivi già giocati. Usalo solo per correzioni da admin del torneo.",
-      "final_confirmation_required": "Serve la conferma finale",
+      "reset_chain_warning": "Questo reimposterà la catena di bracket selezionata e può rimuovere match successivi già giocati. Usalo solo per correzioni amministrative del torneo.",
+      "final_confirmation_required": "Conferma finale richiesta",
       "confirm_reset": "Conferma reset",
       "team_1": "Team 1",
       "team_2": "Team 2",
       "round_match": "{prefix} Round {round} Match {match}",
-      "bye_round": "Round di riposo",
-      "scheduled_for": "Programmato per",
-      "upper_bracket": "Bracket superiore",
-      "lower_bracket": "Bracket inferiore",
+      "bye_round": "Round di bye",
+      "scheduled_for": "Pianificato per",
+      "upper_bracket": "Upper bracket",
+      "lower_bracket": "Lower bracket",
       "winner_of": "Vincitore di",
-      "loser_of": "Perdente di",
+      "loser_of": "Sconfitto di",
       "winner_arrow": "Vincitore →",
-      "loser_arrow": "Perdente →",
-      "winner_bracket_arrow": "Bracket vincenti →",
+      "loser_arrow": "Sconfitto →",
+      "winner_bracket_arrow": "Upper bracket →",
       "round_match_ref": "Round {round}, Match {match}",
       "round_ref": "Round {round}",
       "wb_round_match_ref": "WB Round {round}, Match {match}",
@@ -3983,46 +4000,46 @@
       "lb_round_match_ref": "LB Round {round}, Match {match}",
       "lb_round_ref": "LB Round {round}",
       "winner": "Vincitore",
-      "loser": "Perdente",
+      "loser": "Sconfitto",
       "round_match_compact": "R{round}M{match}",
       "round_compact": "R{round}",
       "wb_round_match_compact": "WB R{round}M{match}",
       "wb_round_compact": "WB R{round}",
       "lb_round_match_compact": "LB R{round}M{match}",
       "lb_round_compact": "LB R{round}",
-      "third_place_decider": "Spareggio 3° posto",
-      "reset_title": "Reimpostare il vincitore del match?",
-      "affected_chain_preview": "Anteprima della catena di match coinvolta:",
+      "third_place_decider": "Decider per il 3° posto",
+      "reset_title": "Reimpostare il vincitore del match del torneo?",
+      "affected_chain_preview": "Anteprima catena di match interessati:",
       "delete_recreate": "Elimina e ricrea",
       "reset_only": "Solo reset",
-      "no_affected_chain": "Nessuna catena del bracket coinvolta è stata restituita.",
-      "no_winner_reset": "Nessun vincitore (torna a configurazione)",
-      "winner_cleared_hint": "Il vincitore verrà azzerato. Aggiungi un orario per mantenere il match programmato, oppure lascia vuoto per passarlo in attesa di check-in.",
-      "winner_reassigned_hint": "Il vincitore verrà riassegnato alla lineup che selezioni.",
-      "scheduled_optional_hint": "Opzionale. Imposta un orario se vuoi che questo match resti programmato.",
+      "no_affected_chain": "Nessuna catena di bracket interessata restituita.",
+      "no_winner_reset": "Nessun vincitore (reset a setup)",
+      "winner_cleared_hint": "Il vincitore verrà rimosso. Imposta un orario per mantenere questo match pianificato, oppure lascialo vuoto per spostarlo in attesa di check-in.",
+      "winner_reassigned_hint": "Il vincitore verrà riassegnato al lineup che selezioni.",
+      "scheduled_optional_hint": "Opzionale. Imposta un orario se vuoi che questo match resti pianificato.",
       "remove_downstream_ack": "Capisco che questo può rimuovere match successivi già giocati.",
-      "review_chain_hint": "Controlla la catena coinvolta qui sopra prima di continuare.",
+      "review_chain_hint": "Rivedi la catena interessata sopra prima di continuare.",
       "irreversible_action": "Azione irreversibile",
       "confirm_reset_chain_ack": "Confermo di voler reimpostare questa catena di match del torneo."
     },
     "round_labels": {
       "round": "Round {number}",
-      "opening_round": "Round iniziale",
+      "opening_round": "Round di apertura",
       "quarter_finals": "Quarti di finale",
       "semi_finals": "Semifinali",
       "final": "Finale",
-      "grand_final": "Grande finale",
+      "grand_final": "Finalissima",
       "wb_round": "WB Round {number}",
-      "wb_opening_round": "WB Round iniziale",
+      "wb_opening_round": "WB Round di apertura",
       "wb_quarter_finals": "WB Quarti di finale",
       "wb_semi_finals": "WB Semifinali",
       "wb_final": "WB Finale",
       "lb_round": "LB Round {number}",
       "lb_final": "LB Finale",
       "winner": "Vincitore",
-      "advances_to_next_stage": "Passa alla fase successiva",
+      "advances_to_next_stage": "Avanza alla fase successiva",
       "regular_rounds": "Round regolari",
-      "advancement_matches": "Match di qualificazione",
+      "advancement_matches": "Match di avanzamento",
       "elimination_matches": "Match di eliminazione"
     },
     "standings": {
@@ -4036,16 +4053,16 @@
       "description": "Gestisci gli organizzatori del torneo",
       "add": "Aggiungi organizzatore",
       "no_organizers": "Nessun organizzatore",
-      "no_organizers_description": "Non è ancora stato aggiunto nessun organizzatore a questo torneo",
+      "no_organizers_description": "Nessun organizzatore è stato ancora aggiunto a questo torneo",
       "remove": "Rimuovi organizzatore",
       "confirm_remove": "Rimuovere questo organizzatore?",
-      "remove_description": "L'organizzatore verrà rimosso dal torneo",
+      "remove_description": "Questo rimuoverà l'organizzatore dal torneo",
       "organized_by": "Organizzato da",
       "teams": {
         "title": "Team organizzatori",
         "description": "Collega un team per rendere tutti i suoi membri organizzatori di questo torneo.",
         "add": "Collega un team",
-        "members_note": "Ogni membro di un team collegato diventa organizzatore del torneo. Rimuovendo il team si rimuovono gli organizzatori che ha aggiunto.",
+        "members_note": "Ogni membro di un team collegato diventa organizzatore del torneo. Rimuovendo il team si rimuovono anche gli organizzatori che ha aggiunto.",
         "none": "Nessun team organizzatore collegato.",
         "remove_confirm": "Rimuovere {name} e l'accesso da organizzatore dei suoi membri?",
         "remove": "Rimuovi"
@@ -4054,8 +4071,8 @@
     "team": {
       "eligible": "Idoneo",
       "not_eligible": "Servono altri {count} giocatori",
-      "leave_tournament": "Lascia il torneo",
-      "leave_team": "Lascia il team",
+      "leave_tournament": "Abbandona torneo",
+      "leave_team": "Lascia team",
       "slot": "Slot {number}",
       "add_player": "Aggiungi giocatore",
       "pending_invites": "Inviti in sospeso",
@@ -4065,11 +4082,11 @@
       "no_roles": "Nessun ruolo disponibile",
       "remove_member": "Rimuovi membro",
       "confirm_remove_member": "Rimuovere questo membro?",
-      "remove_member_description": "Il membro verrà rimosso dal team del torneo",
-      "min_roster_locked": "Il torneo è iniziato — aggiungi una riserva prima di rimuovere un giocatore, il roster non può scendere sotto la lineup minima",
+      "remove_member_description": "Questo rimuoverà il membro dal team del torneo",
+      "min_roster_locked": "Il torneo è già iniziato — aggiungi una riserva prima di rimuovere un giocatore, il roster non può scendere sotto il lineup minimo",
       "cancel_invite": "Annulla invito",
       "confirm_cancel_invite": "Annullare questo invito?",
-      "cancel_invite_description": "L'invito per questo membro verrà annullato",
+      "cancel_invite_description": "Questo annullerà l'invito per questo membro",
       "seed_label": "Seed",
       "seed_display": "Seed #{seed}"
     },
@@ -4078,8 +4095,8 @@
       "my_teams": "Il mio team"
     },
     "actions": {
-      "open_registration": "Apri iscrizioni",
-      "close_registration": "Chiudi iscrizioni",
+      "open_registration": "Apri le registrazioni",
+      "close_registration": "Chiudi le registrazioni",
       "start": "Avvia torneo",
       "cancel": "Annulla torneo",
       "delete": "Elimina torneo",
@@ -4088,11 +4105,11 @@
       "deleted": "Torneo eliminato",
       "delete_failed": "Impossibile eliminare il torneo",
       "pause": "Metti in pausa il torneo",
-      "resume": "Riprendi il torneo",
-      "reset_to_setup": "Torna a configurazione",
+      "resume": "Riprendi torneo",
+      "reset_to_setup": "Reimposta a setup",
       "confirm_pause": "Metti in pausa il torneo",
-      "pause_description": "Mettere in pausa questo torneo? Nessun nuovo match verrà programmato automaticamente finché non lo riprendi.",
-      "resume_description": "Riprendere questo torneo? Tutti i match in sospeso verranno programmati subito.",
+      "pause_description": "Mettere in pausa questo torneo? Nessun nuovo match verrà pianificato automaticamente finché non riprende.",
+      "resume_description": "Riprendere questo torneo? Tutti i match in sospeso verranno pianificati immediatamente.",
       "update_status_failed": "Impossibile aggiornare lo stato del torneo"
     },
     "server": {
@@ -4141,6 +4158,47 @@
       "empty_hint": "Aggiungi un banner",
       "hint": "Mostrato in cima alla pagina del torneo. Ritagliato in un formato largo 3:1.",
       "upload_failed": "Caricamento del banner non riuscito"
+    },
+    "awards_config": {
+      "title": "Configurazione trofei",
+      "organizer_access_required": "ACCESSO ORGANIZZATORE RICHIESTO",
+      "custom": "PERSONALIZZATO",
+      "custom_image": "Immagine personalizzata",
+      "custom_name": "Nome personalizzato",
+      "silhouette": "Silhouette",
+      "reset": "Reimposta",
+      "hint": "Carica un'immagine o personalizza il premio predefinito.",
+      "award": "Nome personalizzato",
+      "award_default": "Reimposta",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "Premi manuali",
+      "add_award": "Aggiungi premio",
+      "no_manual_awards": "NESSUN PREMIO MANUALE",
+      "remove": "Rimuovi",
+      "hint": "Assegna un trofeo al di fuori del calcolo del bracket.",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
@@ -4620,11 +4678,11 @@
       }
     },
     "economy": {
-      "section": "Economia del round",
-      "description": "Soldi a inizio round di ogni team lungo tutta la mappa.",
+      "section": "Economia dei round",
+      "description": "Il denaro di ogni team a inizio round lungo tutta la mappa.",
       "select_map": "Seleziona mappa",
-      "empty_title": "Nessun dato di economia",
-      "empty_description": "I soldi per round non sono ancora disponibili per questa mappa.",
+      "empty_title": "Nessun dato sull'economia",
+      "empty_description": "Il denaro per round non è ancora disponibile per questa mappa.",
       "round_won_by": "Round vinto da {team}",
       "no_winner": "Nessun vincitore",
       "team_1": "Team 1",
@@ -4641,11 +4699,11 @@
       "team_1": "Team 1",
       "team_2": "Team 2",
       "summary": "{rounds} round, {paths} percorsi",
-      "sampled": "Percorsi campionati per mantenere veloce il rendering"
+      "sampled": "Percorsi campionati per mantenere il rendering fluido"
     },
     "tabs": {
       "overview": "Panoramica",
-      "scoreboard": "Scoreboard",
+      "scoreboard": "Tabellone",
       "general": "Generale",
       "more": "Altro",
       "economy": "Economia",
@@ -4654,7 +4712,7 @@
       "aim_stats": "Mira",
       "opening_duels": "Duelli d'apertura",
       "clutches": "Clutch",
-      "head_to_head": "Scontro diretto",
+      "head_to_head": "Testa a testa",
       "roles": "Ruoli",
       "map_analysis": "Analisi mappa",
       "mobile_label_map": "Filtro mappa",
@@ -4662,7 +4720,7 @@
       "settings": "Impostazioni match",
       "streams": "Live stream del match",
       "admin": "Admin",
-      "randomize_teams": "Team casuali",
+      "randomize_teams": "Randomizza team",
       "swap_lineups": "Scambia lineup",
       "restore_round": "Ripristina round",
       "select_round_to_restore": "Seleziona il round da ripristinare",
@@ -4674,10 +4732,10 @@
     },
     "status": {
       "cancelled": "Annullato",
-      "waiting_server": "In attesa del server ...",
-      "scheduled_asap": "Programmato appena possibile",
+      "waiting_server": "In attesa del server…",
+      "scheduled_asap": "Programmato ASAP",
       "paused": "In pausa",
-      "tied": "Pareggio"
+      "tied": "In parità"
     },
     "winner": {
       "set": "Imposta vincitore del match",
@@ -4689,38 +4747,38 @@
     "region_veto": {
       "ban_label": "Ban",
       "banning": "sta bannando una regione",
-      "organizer_override": "Override dell'organizzatore",
+      "organizer_override": "Override dell'organizzatore del match",
       "confirm_ban": "Conferma ban",
       "server_region": "Regione del server",
       "select_region": "Seleziona una regione",
       "no_regions_available": "Nessuna regione disponibile",
-      "no_regions_available_description": "Non ci sono regioni disponibili per questo server. Contatta un amministratore per aggiungerne una.",
+      "no_regions_available_description": "Non ci sono regioni disponibili per questo server. Contatta un amministratore per aggiungere una regione.",
       "set_server_region": "Imposta regione del server"
     },
     "commands": {
       "pause_match": "Metti in pausa il match",
       "resume_match": "Riprendi il match",
-      "skip_knife": "Salta il knife round",
+      "skip_knife": "Salta knife round",
       "force_ready": "Forza pronto",
-      "reset_to_knife": "Torna al knife round",
-      "reset_to_warmup": "Torna al riscaldamento"
+      "reset_to_knife": "Reimposta al knife round",
+      "reset_to_warmup": "Reimposta al warmup"
     },
     "picks": {
       "decider": "Decider",
-      "empty": "Nessun pick del veto",
+      "empty": "Nessun pick di veto",
       "counter_terrorist": "Counter-Terrorist",
       "terrorist": "Terrorist",
       "action_pick": "{team} ha scelto {map}",
       "action_ban": "{team} ha bannato {map}",
       "action_side": "{team} ha scelto {side} su {map}",
-      "action_decider": "{map} è stata la decider",
+      "action_decider": "{map} è stata il decider",
       "side_picked_by": "{team} ha scelto {side}",
-      "starts_on": "{team} inizia da {side}"
+      "starts_on": "{team} inizia su {side}"
     },
     "decider": "Decider",
     "map_veto": {
       "is_picking": "sta scegliendo una",
-      "organizer_override": "Override dell'organizzatore",
+      "organizer_override": "Override dell'organizzatore del match",
       "pick": "Pick",
       "confirm": "Conferma {type}"
     },
@@ -4729,11 +4787,11 @@
     },
     "auto_canceling": "Annullamento automatico",
     "actions": {
-      "call_support": "Chiedi supporto",
-      "start_veto": "Avvia il veto",
-      "skip_checkin": "Salta il check-in",
-      "cancel": "Annulla il match",
-      "delete": "Elimina il match",
+      "call_support": "Richiedi supporto",
+      "start_veto": "Avvia veto",
+      "skip_checkin": "Salta check-in",
+      "cancel": "Annulla match",
+      "delete": "Elimina match",
       "canceled": "Match annullato",
       "deleted": "Match eliminato",
       "requested_organizer": "Organizzatore richiesto",
@@ -4742,38 +4800,38 @@
       "match_paused": "Match in pausa",
       "match_resumed": "Match ripreso",
       "start_live": "Avvia live stream",
-      "pause_highlights_and_start_live": "Metti in pausa gli highlight e avvia la live",
-      "start_live_preempt_highlights_hint": "Gli highlight si fermano dopo quello corrente · la live parte appena la GPU si libera",
+      "pause_highlights_and_start_live": "Metti in pausa gli highlight e avvia il live stream",
+      "start_live_preempt_highlights_hint": "Gli highlight si mettono in pausa dopo quello in corso · il live parte quando la GPU si libera",
       "start_live_direct": "Diretto",
       "start_live_direct_hint": "Osservatore sulla porta di gioco · nessun ritardo",
       "start_live_tv": "TV (GOTV)",
-      "start_live_tv_hint": "Rispetta tv_delay · sicuro durante il gioco",
+      "start_live_tv_hint": "Rispetta tv_delay · sicuro mentre si gioca",
       "start_live_waiting_tv": "In attesa della connessione TV…",
-      "stop_live": "Ferma il live stream",
-      "cancel_live_boot": "Annulla il live stream (avvio…)",
+      "stop_live": "Interrompi live stream",
+      "cancel_live_boot": "Annulla live stream (avvio in corso…)",
       "create_clips": "Crea highlight dei giocatori",
-      "create_clips_needs_gpu_node": "Registra un nodo GPU per mettere in coda gli highlight (offline va bene — i job partono quando torna online)",
-      "live_started": "Live stream in avvio",
-      "live_stopped": "Live stream fermato",
+      "create_clips_needs_gpu_node": "Registra un nodo GPU per mettere in coda gli highlight (va bene anche offline — i job partono quando torna online)",
+      "live_started": "Avvio del live stream",
+      "live_stopped": "Live stream interrotto",
       "live_switched": "Live stream spostato su questo match",
-      "live_busy_elsewhere": "Il live stream è già attivo su un altro match — spostalo invece",
+      "live_busy_elsewhere": "Il live stream è già attivo su un altro match — passa a questo invece",
       "live_unavailable": "Live stream non disponibile",
       "switch_stream_here": "Sposta lo stream su questo match",
       "server_offline": "Il server è offline",
-      "cancel_live_pending": "Annulla il live stream (in attesa…)",
-      "live_pending_hint": "In attesa della GPU — parte da solo appena si libera",
-      "pause_renders": "Metti in pausa i render degli highlight",
-      "pause_renders_hint": "Si ferma dopo l'highlight corrente",
-      "pause_renders_started": "I render si fermeranno dopo l'highlight corrente",
-      "resume_renders": "Riprendi i render degli highlight",
-      "resume_renders_hint": "Riprende gli highlight rimanenti",
-      "resume_renders_started": "Render degli highlight in ripresa",
-      "clips_started": "Render degli highlight dei giocatori in coda",
-      "reparse_demos": "Rianalizza le demo del match",
-      "reparse_demos_started": "Rianalisi di tutte le demo di questo match"
+      "cancel_live_pending": "Annulla live stream (in attesa…)",
+      "live_pending_hint": "In attesa della GPU — passa in automatico appena libera",
+      "pause_renders": "Metti in pausa il rendering degli highlight",
+      "pause_renders_hint": "Si ferma dopo l'highlight in corso",
+      "pause_renders_started": "Il rendering si fermerà dopo l'highlight in corso",
+      "resume_renders": "Riprendi il rendering degli highlight",
+      "resume_renders_hint": "Continua con gli highlight rimanenti",
+      "resume_renders_started": "Ripresa del rendering degli highlight",
+      "clips_started": "Rendering degli highlight dei giocatori in coda",
+      "reparse_demos": "Rianalizza demo del match",
+      "reparse_demos_started": "Rianalisi di tutte le demo di questo match in corso"
     },
     "delete_confirm": {
-      "title": "Elimina il match",
+      "title": "Elimina match",
       "description": "Eliminare questo match? L'operazione è irreversibile."
     },
     "lineup": {
@@ -4781,160 +4839,160 @@
       "lineup_2": "Lineup 2",
       "stats": {
         "flashes_thrown": "Flash lanciate",
-        "flash_assists": "Assist da flash",
+        "flash_assists": "Flash assist",
         "enemies_flashed": "Nemici accecati",
         "team_flashed": "Compagni accecati",
-        "avg_blind_time": "Tempo medio di cecità",
-        "he_damage": "Danni HE",
-        "molotov_damage": "Danni da fuoco",
+        "avg_blind_time": "Tempo medio di accecamento",
+        "he_damage": "Danno HE",
+        "molotov_damage": "Danno da fuoco",
         "utility_summary_total": "totale",
         "utility_summary_flashes": "Flash",
         "utility_summary_smokes": "Smoke",
         "utility_summary_hes": "HE",
         "utility_summary_molotovs": "Molotov",
-        "he_team_damage": "Danni HE ai compagni",
+        "he_team_damage": "Danno HE ai compagni",
         "unused_utility": "Utility inutilizzata",
         "seconds": "secondi",
-        "trade_kill_opportunities": "Occasioni di trade",
-        "trade_kill_attempts": "Tentativi di trade",
-        "trade_kill_pct": "Trade %",
-        "traded_death_opportunities": "Occasioni morte tradata",
-        "traded_death_attempts": "Tentativi morte tradata",
-        "traded_death_pct": "Morti tradate %",
+        "trade_kill_opportunities": "Occasioni di trade kill",
+        "trade_kill_attempts": "Tentativi di trade kill",
+        "trade_kill_pct": "% trade kill",
+        "traded_death_opportunities": "Occasioni di morte tradata",
+        "traded_death_attempts": "Tentativi di morte tradata",
+        "traded_death_pct": "% morte tradata",
         "net_trade": "Trade netti",
         "accuracy": "Precisione",
         "estimated": "Stimato",
-        "estimated_tooltip": "Questa mappa non ha una mesh di collisione, quindi la linea di vista non è stata verificata — le statistiche di avvistamento, mirino, tempo al danno e ingaggi qui sono stimate.",
+        "estimated_tooltip": "Questa mappa non ha una collision mesh, quindi la linea di vista non è stata validata: le statistiche di avvistamento, mira, tempo al danno e ingaggio qui riportate sono stimate.",
         "rifle_accuracy": "Precisione fucili",
         "pistol_accuracy": "Precisione pistole",
         "sniper_accuracy": "Precisione sniper",
         "head_accuracy": "Precisione alla testa",
-        "hs_kill_pct": "HS Kill %",
+        "hs_kill_pct": "% kill HS",
         "time_to_damage": "Tempo al danno",
         "spotted_acc": "Conversione avvistamenti",
-        "crosshair_placement": "Posizione del mirino",
+        "crosshair_placement": "Posizionamento del mirino",
         "counter_strafing": "Counter-strafe",
         "first_bullet_accuracy": "Precisione primo colpo",
         "tracking": "Tracking",
-        "wasted_magazine_pct": "Caricatore sprecato %",
+        "wasted_magazine_pct": "% caricatore sprecato",
         "spray_accuracy": "Precisione in spray",
-        "accuracy_spotted": "Precisione (avvistato)",
+        "accuracy_spotted": "Precisione (nemico avvistato)",
         "calc_header": "Come viene calcolato",
         "tooltips": {
           "accuracy": {
             "title": "Precisione (tutti i colpi)",
-            "description": "Sul totale dei proiettili sparati, quanti hanno colpito un nemico. Dipende dal volume di fuoco — sniper e giocatori di pistola sparano poco e colpiscono spesso, quindi il valore li avvantaggia. Meglio confrontare le precisioni per arma.",
+            "description": "Sul totale dei proiettili sparati, quanti hanno colpito un nemico. Dipende dal volume di fuoco — sniper e giocatori di pistola sparano di rado e colpiscono con una percentuale alta, quindi questo numero li favorisce. Confronta invece la precisione per singola arma.",
             "calculation": "Tutti i colpi a segno divisi per tutti i colpi sparati, con ogni arma."
           },
           "rifle_accuracy": {
             "title": "Precisione fucili",
-            "description": "Precisione solo con i fucili (AK, M4, AUG, Galil, FAMAS, SG). Il confronto di mira più equo — fucile contro fucile — perché non è gonfiato dalle armi a basso rateo di fuoco.",
-            "calculation": "Colpi a segno con fucile divisi per i colpi sparati con fucile. Mostrato solo con almeno 5 colpi di fucile."
+            "description": "Precisione solo con i fucili (AK, M4, AUG, Galil, FAMAS, SG). Il confronto di mira più equo — fucile contro fucile — perché non è gonfiato da armi a bassa cadenza di fuoco.",
+            "calculation": "Colpi a segno con fucile divisi per i colpi sparati con fucile. Mostrato solo con almeno 5 colpi con fucile."
           },
           "pistol_accuracy": {
             "title": "Precisione pistole",
-            "description": "Precisione solo con le pistole (Glock, USP, P250, Deagle, Five-Seven, Tec-9, CZ, doppiette, Revolver).",
-            "calculation": "Colpi a segno con pistola divisi per i colpi sparati con pistola. Mostrato solo con almeno 5 colpi di pistola."
+            "description": "Precisione solo con le pistole (Glock, USP, P250, Deagle, Five-Seven, Tec-9, CZ, Dualies, Revolver).",
+            "calculation": "Colpi a segno con pistola divisi per i colpi sparati con pistola. Mostrato solo con almeno 5 colpi con pistola."
           },
           "sniper_accuracy": {
             "title": "Precisione sniper",
-            "description": "Precisione con i fucili con mirino (AWP, SSG, SCAR-20, G3SG1). Naturalmente alta — sono armi da pochi colpi, spesso letali al primo — quindi confronta gli AWPer tra loro.",
-            "calculation": "Colpi a segno con sniper divisi per i colpi sparati con sniper. Mostrato solo con almeno 5 colpi di sniper."
+            "description": "Precisione con i fucili di precisione (AWP, SSG, SCAR-20, G3SG1). Naturalmente alta — sono armi a basso volume, un colpo alla volta — quindi confronta gli AWPer tra loro.",
+            "calculation": "Colpi a segno con sniper divisi per i colpi sparati con sniper. Mostrato solo con almeno 5 colpi con sniper."
           },
           "accuracy_spotted": {
             "title": "Precisione (nemico avvistato)",
-            "description": "Precisione quando stavi davvero sparando a un nemico nel tuo campo visivo. Lo spam attraverso smoke o muri è escluso.",
-            "calculation": "Colpi a segno su nemici avvistati divisi per i colpi sparati mentre un nemico era visibile."
+            "description": "Precisione quando stavi effettivamente sparando a un nemico nel tuo campo visivo. Lo spam attraverso fumo o muri è escluso.",
+            "calculation": "Colpi a segno su nemici avvistati divisi per i colpi sparati mentre un nemico era in vista."
           },
           "head_accuracy": {
-            "title": "Precisione headshot",
-            "description": "Quanti dei tuoi colpi a segno sono andati alla testa. Esclude i colpi con AWP.",
-            "calculation": "Colpi alla testa divisi per il totale dei colpi a segno (AWP esclusa da entrambi)."
+            "title": "Precisione alla testa",
+            "description": "Quanti dei tuoi colpi a segno sono andati in testa. Esclude i colpi con AWP.",
+            "calculation": "Colpi in testa divisi per i colpi totali a segno (AWP esclusa da entrambi)."
           },
           "hs_kill_pct": {
-            "title": "HS Kill %",
-            "description": "Percentuale delle tue kill fatte di headshot, come mostrato nella scoreboard.",
-            "calculation": "Kill da headshot divise per le kill totali."
+            "title": "% kill HS",
+            "description": "Percentuale delle tue kill fatte con headshot, come mostrato sul tabellone.",
+            "calculation": "Kill con headshot divise per le kill totali."
           },
           "time_to_damage": {
             "title": "Tempo al danno",
-            "description": "Tempo medio da quando vedi un nemico a quando gli infliggi danno. Le tenute d'angolo e i casi di trigger discipline sono esclusi.",
-            "calculation": "Per ogni ingaggio, il tempo dall'avvistamento iniziale al primo danno su quel nemico. Media su tutti gli ingaggi; limitato a 3s."
+            "description": "Tempo medio dal primo avvistamento di un nemico all'aver inflitto danno. Le giocate di trigger discipline / hold-angle sono escluse.",
+            "calculation": "Per ogni ingaggio, tempo dal primo avvistamento al primo danno inflitto a quel nemico. Media su tutti gli ingaggi; limitato a 3s."
           },
           "spotted_acc": {
             "title": "Conversione avvistamenti",
-            "description": "Dei nemici che hai avvistato, a quanti hai poi inflitto danno — misura di ingaggio/aggressività, non di mira. (Da non confondere con Precisione (avvistato), che è la percentuale di colpi a segno mentre spari a un nemico visibile.)",
-            "calculation": "Nemici che hai avvistato e poi danneggiato in quel round, divisi per il totale dei nemici avvistati."
+            "description": "Dei nemici che hai avvistato, a quanti hai poi inflitto danno — una misura di ingaggio/aggressività, non di mira. (Da non confondere con Precisione (nemico avvistato), che è la percentuale di colpi a segno mentre spari a un nemico visibile.)",
+            "calculation": "Nemici avvistati e poi danneggiati in quel round, divisi per il totale dei nemici avvistati."
           },
           "crosshair_placement": {
-            "title": "Posizione del mirino",
-            "description": "Angolo medio (in gradi) di cui hai spostato il mirino dal primo avvistamento del nemico fino a colpirlo. Più basso è, meglio è.",
-            "calculation": "Per ogni ingaggio, l'angolo tra la direzione di vista al primo avvistamento e quella al primo colpo a segno. Gli anomali oltre 45° sono esclusi."
+            "title": "Posizionamento del mirino",
+            "description": "Angolo medio (in gradi) di spostamento del mirino dal primo avvistamento del nemico fino al colpo a segno. Più basso è meglio.",
+            "calculation": "Per ogni ingaggio, l'angolo tra la direzione dello sguardo al momento del primo avvistamento e al primo colpo a segno. Sono esclusi gli outlier oltre 45°."
           },
           "counter_strafing": {
             "title": "Counter-strafe",
-            "description": "Quanto spesso ti sei fermato prima di sparare con un fucile. Conta solo i colpi di fucile su un nemico visibile; esclude il movimento da accovacciato.",
-            "calculation": "Colpi di fucile su un nemico avvistato con velocità sotto il 34% del massimo dell'arma, divisi per tutti i colpi di fucile su nemici avvistati (non accovacciato)."
+            "description": "Quanto spesso ti sei fermato prima di sparare con un fucile. Conta solo i colpi con fucile verso un nemico in vista; esclude i movimenti in accovacciamento completo.",
+            "calculation": "Colpi con fucile verso un nemico avvistato con velocità inferiore al 34% del massimo dell'arma, divisi per tutti i colpi con fucile verso nemici avvistati (non accovacciato)."
           },
           "first_bullet_accuracy": {
             "title": "Precisione primo colpo",
-            "description": "Quanto spesso il tuo primo colpo di un ingaggio va a segno — il colpo che decide la maggior parte dei duelli. Più alto è, meglio è.",
-            "calculation": "Primi colpi che hanno inflitto danno divisi per i primi colpi sparati, su ogni ingaggio (uno per ciascun nemico su cui hai aperto il fuoco)."
+            "description": "Quanto spesso il primo colpo di un ingaggio va a segno — il colpo che decide la maggior parte dei duelli. Più alto è meglio.",
+            "calculation": "Primi colpi che hanno inflitto danno divisi per i primi colpi sparati, su ogni ingaggio (uno per ciascun nemico contro cui hai aperto il fuoco)."
           },
           "tracking": {
             "title": "Tracking (tempo sul bersaglio)",
-            "description": "Durante l'ingaggio con un nemico vivo, per quanta parte del tempo il mirino è rimasto su di lui. Più alto è, meglio è.",
-            "calculation": "Frame in cui la tua vista è rimasta entro ~5° dal nemico, divisi per tutti i frame della finestra di ingaggio."
+            "description": "Mentre ingaggi un nemico vivo, per quanto tempo il mirino è rimasto su di lui. Più alto è meglio.",
+            "calculation": "Frame in cui la visuale è rimasta entro ~5° dal nemico, divisi per tutti i frame della finestra di ingaggio."
           },
           "spray_accuracy": {
             "title": "Precisione in spray",
-            "description": "La tua precisione dal secondo colpo in poi di una raffica — quelli dove il rinculo conta di più.",
-            "calculation": "Colpi a segno attribuiti allo spray divisi per il totale dei colpi in spray. Un colpo è in spray se lo stesso giocatore ha sparato entro i 250ms precedenti."
+            "description": "La tua precisione dal secondo colpo in poi di una raffica — i colpi in cui il rinculo conta di più.",
+            "calculation": "Colpi a segno attribuiti a colpi in spray divisi per il totale dei colpi in spray. Un colpo è considerato spray se lo stesso sparatore ha sparato nei 250ms precedenti."
           },
           "wasted_magazine_pct": {
-            "title": "Caricatore sprecato %",
-            "description": "Quanto spesso ricarichi con proiettili ancora nel caricatore. Più basso è, meglio è — finire il caricatore è più efficiente.",
+            "title": "% caricatore sprecato",
+            "description": "Quanto spesso ricarichi con ancora proiettili nel caricatore. Più basso è meglio — finire il caricatore è più efficiente.",
             "calculation": "Proiettili rimasti nel caricatore a ogni ricarica, divisi per (colpi sparati + proiettili sprecati)."
           },
           "trade_kill_opportunities": {
-            "title": "Occasioni di trade",
-            "description": "Round in cui un compagno è morto mentre eri vivo — cioè avevi la possibilità di tradare.",
+            "title": "Occasioni di trade kill",
+            "description": "Round in cui un compagno è morto mentre eri ancora vivo — cioè avevi la possibilità di fare un trade.",
             "calculation": "Round distinti in cui almeno un compagno è stato ucciso da un nemico mentre eri ancora vivo."
           },
           "trade_kill_attempts": {
-            "title": "Tentativi di trade",
-            "description": "Nemici che hai ucciso poco dopo che avevano ucciso un tuo compagno.",
-            "calculation": "Kill su un nemico entro 5 secondi da quando ha ucciso un tuo compagno."
+            "title": "Tentativi di trade kill",
+            "description": "Nemici uccisi poco dopo che avevano ucciso un tuo compagno.",
+            "calculation": "Kill contro un nemico entro 5 secondi da quando ha ucciso uno dei tuoi compagni."
           },
           "trade_kill_pct": {
-            "title": "Trade %",
-            "description": "Quanto spesso hai trasformato un'occasione di trade in un trade riuscito.",
-            "calculation": "Trade riusciti divisi per i round con occasione di trade."
+            "title": "% trade kill",
+            "description": "Quanto spesso hai trasformato un'occasione di trade in una trade kill.",
+            "calculation": "Trade kill riuscite divise per i round con occasione di trade kill."
           },
           "traded_death_opportunities": {
-            "title": "Occasioni morte tradata",
-            "description": "Le tue morti per mano nemica — ognuna era un'occasione per un compagno di tradarti.",
+            "title": "Occasioni di morte tradata",
+            "description": "Le tue morti contro nemici — cioè ogni morte era un'occasione per un compagno di fare trade per te.",
             "calculation": "Numero totale di volte in cui sei stato ucciso da un nemico."
           },
           "traded_death_attempts": {
-            "title": "Tentativi morte tradata",
-            "description": "Tentativi totali del tuo team di tradare le tue morti (un compagno che uccide chi ti ha ucciso entro 5s).",
+            "title": "Tentativi di morte tradata",
+            "description": "Tentativi di trade totali fatti dal tuo team sulle tue morti (un compagno che uccide il tuo killer entro 5s).",
             "calculation": "Somma di ogni kill di un compagno che ha tradato una tua morte entro 5 secondi."
           },
           "traded_death_pct": {
-            "title": "Morti tradate %",
+            "title": "% morte tradata",
             "description": "Quanto spesso le tue morti sono state vendicate da un compagno.",
-            "calculation": "Le tue morti tradate da un compagno entro 5 secondi, divise per le morti totali."
+            "calculation": "Le tue morti tradate da un compagno entro 5 secondi, divise per il totale delle morti."
           },
           "net_trade": {
             "title": "Trade netti",
-            "description": "Il tuo contributo al bilancio dei trade del team.",
-            "calculation": "I trade che hai completato meno le tue morti non tradate."
+            "description": "Il tuo contributo al bilancio di trade del team.",
+            "calculation": "Trade kill completate meno le tue morti non tradate."
           }
         }
       },
-      "discord_user": "Questo è un utente Discord: per abilitare il tracciamento delle statistiche registra il tuo id discord scrivendo",
-      "discord_link": "nel canale discord ufficiale."
+      "discord_user": "Questo è un utente Discord, registra il tuo ID Discord per abilitare il tracciamento delle statistiche scrivendo",
+      "discord_link": "nel canale Discord ufficiale."
     },
     "overview": {
       "promote_captain": "Promuovi a capitano",
@@ -4942,47 +5000,47 @@
       "remove_from_lineup": "Rimuovi dalla lineup",
       "leave_lineup": "Lascia la lineup",
       "render_highlight": "Renderizza highlight…",
-      "update_team_name": "Aggiorna nome del team",
+      "update_team_name": "Aggiorna nome team",
       "kd": "K/D",
       "hltv": "HLTV",
       "hs": "HS%",
       "kast": "KAST",
-      "survived": "Sopravvissuti",
-      "team_damage": "Danni ai compagni",
-      "multi_kill_rounds": "Round multi kill",
+      "survived": "Sopravvissuto",
+      "team_damage": "Danno al team",
+      "multi_kill_rounds": "Round multikill",
       "mkr": "MKR",
-      "knifes": "Coltello",
+      "knifes": "Coltelli",
       "zeus": "Zeus",
-      "total_damage": "Danni totali",
+      "total_damage": "Danno totale",
       "substitute": "(riserva)",
       "slot": "Slot {number}",
       "tooltips": {
         "hltv": {
           "title": "HLTV Rating 2.0",
-          "description": "Rating composito da kill/round, morti/round, assist/round, ADR e KAST. >1.0 è sopra la media; >1.2 è da top player, <0.85 è scarso."
+          "description": "Rating composito basato su kill/round, morti/round, assist/round, ADR e KAST. >1.0 significa sopra la media; >1.2 è élite, <0.85 è scarso."
         },
         "kast": {
           "title": "KAST %",
-          "description": "Percentuale di round in cui hai contribuito: kill, assist, sei sopravvissuto o sei stato tradato dopo la morte. I pro stanno in media sul 70–80%."
+          "description": "Percentuale di round in cui hai dato un contributo: hai ottenuto una kill, un assist, sei sopravvissuto al round, o sei stato tradato dopo essere morto. I pro fanno in media 70–80%."
         },
         "survived": {
           "title": "Round sopravvissuti",
-          "description": "Round finiti da vivo (non compari come vittima di nessuna kill). Include round vinti, persi e di save."
+          "description": "Round finiti da vivo (non sei comparso come vittima di alcuna kill). Include round vinti, persi e in save."
         }
       }
     },
     "opening_duels": {
       "attempts": "Tentativi",
-      "success": "Riusciti",
-      "traded": "Tradati",
-      "most_killed": "Più ucciso",
+      "success": "Successo",
+      "traded": "Tradate",
+      "most_killed": "Più uccisi",
       "best_weapon": "Arma migliore",
-      "most_died_to": "Ucciso più da"
+      "most_died_to": "Morto di più contro"
     },
     "clutches": {
       "won": "Vinti",
       "lost": "Persi",
-      "saved": "Save",
+      "saved": "Salvati",
       "no_attempts": "Nessun tentativo di clutch",
       "vs": "vs {count}",
       "vs_short": "1v{count}",
@@ -4991,9 +5049,9 @@
       "saves": "Save"
     },
     "check_in": {
-      "checked_in": "Check-in fatto",
+      "checked_in": "Check-in effettuato",
       "check_in": "Check-in",
-      "checked_in_description": "Hanno fatto il check-in {checked} giocatori su {required} richiesti per iniziare il match"
+      "checked_in_description": "Hai fatto il check-in di {checked} giocatori su {required} richiesti per iniziare il match"
     },
     "coach": {
       "assign": "Assegna coach"
@@ -5003,72 +5061,72 @@
     "server": {
       "offline": "Il server è offline",
       "booting": "Avvio server",
-      "assign": "Assegna server del match",
+      "assign": "Assegna server match",
       "select": "Seleziona un server",
       "dedicated": "Server dedicati",
       "on_demand": "On demand",
-      "assigned": "Server del match assegnato",
+      "assigned": "Server match assegnato",
       "reboot_label": "Riavvio server",
       "reboot": "Riavvia server",
-      "rebooting": "Riavvio in corso...",
+      "rebooting": "Riavvio in corso…",
       "reboot_description": "Ricrea il server di gioco on demand di questo match senza cambiare lo stato del match.",
       "reboot_confirm_title": "Riavviare il server del match?",
-      "reboot_confirm_description": "Il server on demand del match viene riavviato e il match resta nello stato attuale mentre il server si riconnette.",
+      "reboot_confirm_description": "Il server on demand attuale verrà riavviato e il match resterà nel suo stato attuale mentre il server si riconnette.",
       "reboot_started": "Riavvio del server avviato",
-      "join_server": "Entra nel server",
+      "join_server": "Unisciti al server",
       "join_as_spectator": "Dettagli spettatore",
       "join_tv_stream": "Dettagli stream TV",
-      "tv_delay": "La TV ha un ritardo di {delay} secondi, attesa che lo stream sia pronto."
+      "tv_delay": "La TV è ritardata di {delay} secondi, in attesa che lo stream sia pronto."
     },
     "replay": {
-      "select_map": "Seleziona una mappa qui sopra per il replay",
+      "select_map": "Seleziona una mappa sopra per il replay",
       "select": "Seleziona",
       "selected": "Selezionata",
       "load": "Carica replay",
       "open": "Apri replay 2D",
       "open_3d": "Apri replay 3D",
       "loading": "Caricamento replay…",
-      "no_position_data": "Nessun dato di posizione — rianalizza la demo per popolare il replay.",
-      "toggle_to_slots": "Passa ai numeri di slot",
+      "no_position_data": "Nessun dato di posizione — analizza di nuovo la demo per popolare il replay.",
+      "toggle_to_slots": "Passa ai numeri slot",
       "toggle_to_avatars": "Passa agli avatar dei giocatori",
-      "hide_scoreboard": "Nascondi scoreboard",
-      "show_scoreboard": "Mostra scoreboard",
+      "hide_scoreboard": "Nascondi tabellone",
+      "show_scoreboard": "Mostra tabellone",
       "rotate_title": "Ruota il dispositivo",
-      "rotate_description": "Il visualizzatore replay funziona meglio in orizzontale. Gira il dispositivo di lato per continuare.",
+      "rotate_description": "Il visualizzatore di replay funziona meglio in orizzontale. Ruota il dispositivo per continuare.",
       "popout": "Apri in una finestra separata",
       "phase_freeze": "Freeze",
       "phase_bomb": "Bomba",
-      "bomb_planted": "Piazzata {site}",
+      "bomb_planted": "Piazzata su {site}",
       "bomb_defused": "Disinnescata",
       "bomb_exploded": "Esplosa",
       "prev_round": "Round precedente",
       "next_round": "Round successivo",
-      "step_back": "Indietro di un passo",
-      "step_forward": "Avanti di un passo",
+      "step_back": "Indietro di un frame",
+      "step_forward": "Avanti di un frame",
       "play": "Riproduci",
       "pause": "Pausa",
       "headshot": "Headshot",
-      "defuse_kit": "Kit di disinnesco",
-      "follow_hint": "Clicca un giocatore qui sotto per seguirlo sulla mappa.",
+      "defuse_kit": "Kit disinnesco",
+      "follow_hint": "Clicca su un giocatore qui sotto per seguirlo sulla mappa.",
       "follow_stop": "Clicca per smettere di seguire",
       "follow_player": "Clicca per seguire {name} sulla mappa",
-      "counter_terrorists": "Counter-Terrorist",
-      "terrorists": "Terrorist",
+      "counter_terrorists": "Counter-Terrorists",
+      "terrorists": "Terrorists",
       "shortcuts_title": "Scorciatoie",
       "shortcut_play": "riproduci",
-      "shortcut_step": "passo",
+      "shortcut_step": "frame",
       "shortcut_round": "round",
       "shortcut_speed": "velocità",
       "overlays": "Overlay",
       "overlay_c4": "Portatore C4",
-      "overlay_defuser": "Kit di disinnesco",
+      "overlay_defuser": "Kit disinnesco",
       "overlay_ground_bomb": "Bomba a terra / piazzata",
       "overlay_ground_kits": "Kit a terra",
-      "pathing_off": "Tracciato off",
-      "pathing_progress": "Tracciato fino al tick attuale",
+      "pathing_off": "Percorso disattivato",
+      "pathing_progress": "Percorso fino al tick attuale",
       "overlay_buy_section": "Overlay round di buy",
-      "overlay_buy_window": "Finestra: {sec}s dal freezetime",
-      "overlay_buy_explainer": "{count} round di full buy · primi {sec}s dopo il freeze",
+      "overlay_buy_window": "Finestra: {sec}s dall'inizio del freezetime",
+      "overlay_buy_explainer": "{count} round di full-buy · primi {sec}s dopo il freeze",
       "loading_map": "caricamento mappa…",
       "chrome": {
         "view_2d": "Vista radar 2D dall'alto",
@@ -5076,37 +5134,37 @@
         "enter_fullscreen": "Schermo intero",
         "exit_fullscreen": "Esci da schermo intero",
         "cam_orbit": "ORBITA",
-        "cam_orbit_tip": "Camera in orbita — trascina sinistro per guardare, destro per orbitare, scroll per zoom, WASD per volare",
+        "cam_orbit_tip": "Camera a orbita — trascina col tasto sinistro per guardarti intorno, col destro per orbitare, scroll per zoomare, WASD per volare",
         "cam_top": "ALTO",
         "cam_top_tip": "Camera dall'alto",
         "cam_chase": "INSEGUI",
         "cam_chase_tip": "Insegui il giocatore seguito",
         "roof": "TETTO",
-        "roof_tip": "Taglio dei tetti — al centro è automatico (tetti nascosti, azione visibile). Su = mostra di più, giù = taglia di più, max = mappa intera.",
-        "play_by_play": "AZIONE PER AZIONE",
-        "play_by_play_tip": "Mostra il registro eventi azione per azione del round",
+        "roof_tip": "Taglio tetti — al centro è automatico (tetti nascosti, azione visibile). Su = mostra di più, giù = taglia di più, max = mappa completa.",
+        "play_by_play": "PLAY BY PLAY",
+        "play_by_play_tip": "Mostra il log degli eventi play-by-play del round",
         "more": "Altre opzioni",
         "utility_heatmap": "HEATMAP UTILITY",
-        "utility_heatmap_tip": "Heatmap di atterraggio delle utility nel round",
-        "pbp_header": "AZIONE PER AZIONE · RD {round}",
+        "utility_heatmap_tip": "Heatmap degli atterraggi di utility per il round",
+        "pbp_header": "PLAY BY PLAY · RD {round}",
         "clear_count": "pulisci {count}",
-        "no_events": "nessun evento",
+        "no_events": "nessun evento ancora",
         "alive_count": "{count} vivi",
-        "showing_avatars": "Avatar attivi — clicca per i numeri",
-        "showing_numbers": "Numeri attivi — clicca per gli avatar",
-        "trace_tip": "Traccia di movimento del giocatore (percorso tratteggiato)",
-        "deaths_tip": "Marcatori delle morti (posizione delle kill)",
-        "util_summary": "RIEPILOGO UTIL",
-        "util_summary_tip": "Riepilogo utility — sovrapponi più round di buy su un unico timer per confrontare setup, tempi e posizioni delle utility di ogni team",
-        "round_remove": "Round {n} — clicca per rimuoverlo dal riepilogo",
-        "round_add": "Round {n} — clicca per aggiungerlo al riepilogo",
+        "showing_avatars": "Avatar visibili — clicca per i numeri",
+        "showing_numbers": "Numeri visibili — clicca per gli avatar",
+        "trace_tip": "Traccia movimento giocatore (percorso punteggiato)",
+        "deaths_tip": "Indicatori di morte (posizione kill)",
+        "util_summary": "RIEPILOGO UTILITY",
+        "util_summary_tip": "Riepilogo utility — sovrapponi più round di buy su un unico orologio condiviso per confrontare setup, tempistiche e posizioni di utility dei due team",
+        "round_remove": "Round {n} — clicca per rimuovere dal riepilogo",
+        "round_add": "Round {n} — clicca per aggiungere al riepilogo",
         "round_jump": "Vai al round {n}",
-        "clear_highlighted_util": "Rimuovi evidenziazione utility",
+        "clear_highlighted_util": "Cancella utility evidenziata",
         "hide_util": "Nascondi utility {type}",
         "show_util": "Mostra utility {type}",
         "util_thrown_by": "{type} · lanciata da {name}",
         "utility": "Utility",
-        "click_to_clear": " — clicca per pulire",
+        "click_to_clear": " — clicca per cancellare",
         "click_to_highlight": " — clicca per evidenziare",
         "pause": "Pausa",
         "play": "Riproduci",
@@ -5116,36 +5174,36 @@
         "team_1": "Team 1",
         "team_2": "Team 2",
         "kb_play_pause": "riproduci / pausa",
-        "kb_step_frame": "passo frame",
-        "kb_prev_next_round": "round prec. / succ.",
+        "kb_step_frame": "avanza frame",
+        "kb_prev_next_round": "round precedente / successivo",
         "kb_speed": "velocità",
         "kb_3d_camera": "camera 3D",
-        "kb_look": "guarda / orbita in follow",
+        "kb_look": "guarda / segui-orbita",
         "kb_orbit": "orbita",
         "kb_zoom": "zoom",
         "kb_fly": "vola",
         "kb_up_down": "su / giù",
-        "following_on_map": "Seguito sulla mappa",
-        "bomb_carrier": "Portatore della bomba"
+        "following_on_map": "In modalità sequela sulla mappa",
+        "bomb_carrier": "Portatore bomba"
       },
       "auto_clip_preset": "Clip automatica da preset",
-      "hold_scoreboard": "Tieni premuto per la scoreboard",
-      "swap_sides": "Inverti lati (forzatura manuale)",
+      "hold_scoreboard": "Tieni premuto per mostrare il tabellone",
+      "swap_sides": "Scambia lati (override manuale)",
       "hide_clip_editor": "Nascondi editor clip",
       "open_clip_editor": "Apri editor clip",
       "kills_by": "Kill di",
       "deaths_of": "Morti di",
       "has_c4": "Ha il C4",
-      "damage_this_round": "Danni in questo round",
+      "damage_this_round": "Danno in questo round",
       "kevlar_helmet": "Kevlar + casco",
       "kevlar_only": "Solo kevlar",
       "bomb_dropped": "Bomba lasciata a terra",
       "bomb_planted_label": "Bomba piazzata",
       "bomb_dropped_by": "Da {name}",
-      "kit_dropped_by": "Lasciato da {name}",
+      "kit_dropped_by": "Lasciato a terra da {name}",
       "unknown_player": "sconosciuto",
-      "kill_filter_by_title": "Mostra le kill FATTE dal giocatore — clicca per passare alle morti SUBITE",
-      "kill_filter_of_title": "Mostra le morti SUBITE dal giocatore — clicca per passare alle kill FATTE"
+      "kill_filter_by_title": "Mostra kill FATTI dal giocatore — clicca per passare alle morti SUBITE",
+      "kill_filter_of_title": "Mostra morti SUBITE dal giocatore — clicca per passare ai kill FATTI"
     },
     "player_details_panel": {
       "stats_unavailable": "Statistiche non disponibili per questo match.",
@@ -5155,7 +5213,7 @@
     },
     "player_strip": {
       "highlights": "Highlight",
-      "overflow_more": "+{count} altri",
+      "overflow_more": "+{count}",
       "default_clip_title": "Highlight",
       "kills": "Kill",
       "deaths": "Morti",
@@ -5182,12 +5240,12 @@
   "ui": {
     "tooltips": {
       "fullscreen": "Schermo intero",
-      "toggle_right_sidebar": "Mostra/nascondi barra destra",
+      "toggle_right_sidebar": "Attiva/disattiva sidebar destra",
       "view_steam_profile": "Vedi profilo Steam",
-      "zoom_in": "Ingrandisci",
-      "zoom_in_scroll": "Ingrandisci (Ctrl/Cmd + scroll)",
-      "zoom_out": "Riduci",
-      "zoom_out_scroll": "Riduci (Ctrl/Cmd + scroll)",
+      "zoom_in": "Zoom avanti",
+      "zoom_in_scroll": "Zoom avanti (Ctrl/Cmd + Scroll)",
+      "zoom_out": "Zoom indietro",
+      "zoom_out_scroll": "Zoom indietro (Ctrl/Cmd + Scroll)",
       "loading": "Caricamento",
       "settings_section": "Sezione impostazioni",
       "match_section": "Sezione match",
@@ -5199,29 +5257,29 @@
       "jump_to_live": "Vai al live",
       "download_visible": "Scarica i log visibili",
       "download_full": "Scarica i log completi",
-      "empty": "Nessun log",
-      "empty_hint": "I log compariranno qui quando il servizio inizierà a trasmettere l'output."
+      "empty": "Ancora nessun log",
+      "empty_hint": "I log appariranno qui non appena il servizio inizierà a trasmettere output."
     },
     "scroll": {
       "left": "Scorri a sinistra",
       "right": "Scorri a destra"
     },
-    "toggle_sidebar": "Mostra/nascondi barra laterale",
+    "toggle_sidebar": "Attiva/disattiva sidebar",
     "volume": "Volume",
     "unmute": "Riattiva audio",
     "mute": "Disattiva audio",
     "edit_title": "Modifica titolo",
-    "tournament_match": "Match di torneo",
-    "pin_overlay": "Fissa come overlay fluttuante",
+    "tournament_match": "Match del torneo",
+    "pin_overlay": "Fissa come overlay flottante",
     "open_new_window": "Apri in una nuova finestra",
-    "playing_in_popout": "In riproduzione nella finestra separata",
-    "focus_window": "Porta in primo piano",
+    "playing_in_popout": "In riproduzione in finestra separata",
+    "focus_window": "Metti a fuoco la finestra",
     "playing_in_pip": "In riproduzione in picture-in-picture",
     "return_here": "Torna qui",
     "login_to_watch": "Accedi per guardare lo stream live",
     "login_to_watch_action": "Accedi",
-    "show_keyboard_shortcuts": "Mostra le scorciatoie da tastiera",
-    "hold_to_show_scoreboard": "Tieni premuto per la scoreboard",
+    "show_keyboard_shortcuts": "Mostra scorciatoie da tastiera",
+    "hold_to_show_scoreboard": "Tieni premuto per mostrare il tabellone",
     "close_popout": "Chiudi finestra separata",
     "trophy_rack": "Bacheca trofei",
     "click_to_view_tournament": "Clicca per vedere il torneo",
@@ -5231,12 +5289,12 @@
   },
   "player": {
     "performance": {
-      "description": "Ogni area vale fino a 100 ed è il tuo percentile rispetto a tutti gli altri giocatori — 50 è un giocatore medio, più alto è meglio. Passa il mouse su un'etichetta per vedere cosa misura.",
+      "description": "Ogni area riceve un punteggio su 100 in base al tuo percentile rispetto a tutti gli altri giocatori — 50 è un giocatore nella media, più alto è meglio. Passa il mouse su un'etichetta per vedere cosa misura.",
       "you": "Tu",
       "compare": "Confronto",
       "focus_areas": "Aree da migliorare",
       "provisional": "Provvisorio",
-      "not_enough_data": "Non ci sono ancora abbastanza partite per valutare questo giocatore — gioca di più per sbloccare l'analisi delle prestazioni.",
+      "not_enough_data": "Non ci sono ancora abbastanza partite per valutare questo giocatore — gioca di più per sbloccare il tuo report prestazioni.",
       "categories": {
         "aim": "Mira",
         "positioning": "Posizionamento",
@@ -5244,15 +5302,15 @@
       },
       "consistency": {
         "title": "Costanza",
-        "description": "Ogni match riceve un punteggio complessivo (mira, posizionamento e utility di quel match, combinati). Qui lo vedi sui tuoi match recenti — una linea più piatta significa un rendimento più costante.",
+        "description": "Ogni match riceve un punteggio complessivo (Mira, Posizionamento e Utility per quel match, combinati). Questo grafico lo traccia sui tuoi match recenti — una linea più piatta indica un rendimento più costante.",
         "overall": "Complessivo",
-        "not_enough": "Gioca qualche match in più per vedere l'andamento della tua forma.",
+        "not_enough": "Gioca qualche altro match per vedere il trend della tua forma.",
         "rock_solid": "Solidissimo",
         "steady": "Costante",
         "streaky": "Altalenante"
       },
       "tiers": {
-        "subpar": "Sotto la media",
+        "subpar": "Sottotono",
         "average": "Nella media",
         "good": "Buono",
         "elite": "Elite"
@@ -5260,78 +5318,78 @@
       "metrics": {
         "accuracy_score": {
           "label": "Precisione",
-          "coach": "Meno colpi ma più ragionati vanno a segno più spesso dello spray — rallenta e cura ogni colpo."
+          "coach": "Meno colpi ma più mirati vanno a segno più spesso dello spray — rallenta e impegnati su ogni colpo."
         },
         "hs_score": {
           "label": "Headshot",
-          "coach": "Tieni il mirino all'altezza della testa mentre tieni e pulisci gli angoli, così il primo colpo è un headshot."
+          "coach": "Tieni il mirino all'altezza della testa mentre pushi e controlli gli angoli, così il primo colpo è già un headshot."
         },
         "spotted_score": {
-          "label": "Precisione a bersaglio visibile",
-          "coach": "La tua percentuale di colpi a segno quando il nemico è davvero visibile — pre-punta i punti da cui escono i nemici."
+          "label": "Precisione a vista",
+          "coach": "La tua percentuale di colpi a segno quando il nemico è davvero visibile — pre-punta i punti da cui spuntano i nemici."
         },
         "crosshair_score": {
-          "label": "Crosshair placement",
-          "coach": "Tieni il pre-aim all'altezza della testa così devi muovere pochissimo per centrare il colpo."
+          "label": "Posizionamento mirino",
+          "coach": "Tieni il mirino sui pre-aim a livello testa così devi muoverti a malapena per colpire."
         },
         "ttd_score": {
           "label": "Reazione",
-          "coach": "Tieni angoli più stretti — meno spazio ha il nemico per apparire, più veloce reagisci e spari."
+          "coach": "Tieni angoli più stretti — meno schermo occupa un nemico quando appare, più veloce reagisci e spari."
         },
         "counter_strafe_score": {
           "label": "Counter-strafe",
-          "coach": "Premi il tasto opposto per fermarti di colpo prima di sparare — i colpi in movimento sono imprecisissimi."
+          "coach": "Premi il tasto opposto per fermarti di scatto prima di sparare — i colpi in movimento sono molto imprecisi."
         },
         "survival_score": {
           "label": "Sopravvivenza",
-          "coach": "Vendi cara la pelle — evita i dry peek e di allontanarti troppo dal team."
+          "coach": "Scambia la tua vita per un vantaggio — evita i peek a secco e l'iperestensione lontano dal team."
         },
         "traded_score": {
-          "label": "Posizionamento per il trade",
+          "label": "Posizionamento per trade",
           "coach": "Combatti vicino ai compagni così quando muori vieni tradato, invece di morire gratis."
         },
         "kast_score": {
-          "label": "Impatto nel round",
-          "coach": "Fai qualcosa ogni round — una kill, un assist, sopravvivi o fatti tradare. I round vuoti danneggiano il team."
+          "label": "Impatto sul round",
+          "coach": "Fai qualcosa ogni round — un kill, un assist, sopravvivi o fatti tradare. I round a vuoto danneggiano il team."
         },
         "flash_assists_score": {
-          "label": "Assist con flash",
-          "coach": "Lancia pop-flash per i compagni che aprono un angolo, non solo per te."
+          "label": "Assist da flash",
+          "coach": "Fai pop-flash per i compagni che pushano un angolo, non solo per te stesso."
         },
         "blind_score": {
-          "label": "Efficacia delle flash",
-          "coach": "Lancia flash che accecano davvero i nemici subito prima di un peek — non sopra le loro teste."
+          "label": "Efficacia flash",
+          "coach": "Lancia flash che accecano davvero i nemici appena prima di un peek — non sopra le loro teste."
         },
         "util_eff_score": {
-          "label": "Danni da utility",
-          "coach": "Impara qualche line-up di HE e molotov per i punti più comuni e ricava danni veri da ogni granata."
+          "label": "Danno da utility",
+          "coach": "Impara qualche lineup di HE / molotov per i punti più comuni per infliggere danno reale con ogni nade."
         }
       }
     },
     "player": {
-      "steam_id": "SteamID",
+      "steam_id": "Steam ID",
       "steam": "Steam"
     },
     "kick": {
       "button": "Espelli",
       "title": "Espelli {name}",
-      "description": "Rimuove il giocatore dal server. Può rientrare a meno che non sia bannato. Puoi indicare un motivo da mostrare al giocatore.",
+      "description": "Rimuove il giocatore dal server. Può rientrare a meno che non sia bannato. Puoi indicare un motivo che verrà mostrato al giocatore.",
       "reason_label": "Motivo",
-      "reason_placeholder": "Motivo facoltativo...",
+      "reason_placeholder": "Motivo opzionale...",
       "confirm": "Espelli giocatore",
       "kicked": "{name} espulso"
     },
     "sanction": {
       "button": "Sanziona giocatore",
-      "typed_player": "{type} giocatore",
+      "typed_player": "Giocatore {type}",
       "reason_label": "Motivo",
       "reason_placeholder": "Inserisci il motivo della sanzione...",
       "reason_description": "Indica un motivo chiaro per questa sanzione",
       "types": {
-        "ban_description": "Il giocatore non può partecipare a nessuna attività",
+        "ban_description": "Il giocatore non può partecipare ad alcuna attività",
         "mute_description": "Il giocatore non può usare la chat vocale in gioco",
         "gag_description": "Il giocatore non può usare la chat testuale in gioco",
-        "silence_description": "Giocatore con chat vocale e testuale bloccate"
+        "silence_description": "Giocatore silenziato in voce e testo"
       },
       "durations": {
         "15_minutes": "15 minuti",
@@ -5351,16 +5409,16 @@
     "sanctions": {
       "title": "Sanzioni",
       "banned": "Bannato",
-      "muted": "Mutato",
-      "gagged": "Chat bloccata",
+      "muted": "Silenziato (voce)",
+      "gagged": "Silenziato (testo)",
       "silenced": "Silenziato",
       "duration_label": "Durata",
-      "select_duration": "Seleziona la durata",
+      "select_duration": "Seleziona durata",
       "sanctions": "Sanzioni",
       "expires": "Scade",
       "expired_on": "Scaduta",
       "issued": "Emessa",
-      "view_steam": "Vedi il ban su Steam",
+      "view_steam": "Vedi ban su Steam",
       "permanent": "Permanente",
       "active": "Attiva",
       "expired": "Scaduta",
@@ -5368,9 +5426,9 @@
       "edit": "Modifica",
       "remove": "Rimuovi",
       "edit_title": "Termina sanzione",
-      "edit_description": "Imposta quando questa sanzione decade.",
-      "end_time": "Fine",
-      "end_time_hint": "Lascia vuoto per mantenere la sanzione permanente. Imposta una data passata per terminarla subito.",
+      "edit_description": "Imposta quando questa sanzione termina.",
+      "end_time": "Ora di fine",
+      "end_time_hint": "Lascia vuoto per mantenere questa sanzione permanente. Imposta una data passata per terminarla subito.",
       "clear_date": "Cancella data",
       "updated": "Sanzione aggiornata",
       "update_failed": "Impossibile aggiornare la sanzione",
@@ -5389,29 +5447,29 @@
     },
     "registration": {
       "title": "Registra il tuo nome",
-      "description": "Questo nome sarà usato per tutti i match e i tornei a cui partecipi.",
-      "warning": "Questo nome non può essere cambiato dopo la conferma",
+      "description": "Questo nome verrà usato per tutti i match / tornei a cui partecipi.",
+      "warning": "Questo nome non può essere modificato dopo l'invio",
       "name_label": "Nome",
       "confirm_button": "Conferma nome",
       "success": "Nome confermato"
     },
     "status": {
-      "add_friend": "Aggiungi agli amici",
+      "add_friend": "Aggiungi come amico",
       "vac_banned": "Ban VAC su Steam",
       "vac_banned_count": "{count} ban VAC su Steam",
-      "game_banned": "Game ban su Steam",
-      "game_banned_count": "{count} game ban su Steam"
+      "game_banned": "Ban di gioco su Steam",
+      "game_banned_count": "{count} ban di gioco su Steam"
     },
     "change_name": {
       "name_label": "Nome",
       "success": "Nome del giocatore cambiato",
-      "request_success": "Cambio nome richiesto"
+      "request_success": "Richiesta di cambio nome inviata"
     },
     "pending_imports": {
       "title": "Import CS2 in sospeso",
       "importing": "Importazione…"
     },
-    "all_time_peak": "PICCO ASSOLUTO"
+    "all_time_peak": "PICCO STORICO"
   },
   "maps": {
     "label": "Mappe",
@@ -5436,16 +5494,16 @@
         "description": "La classica esperienza competitiva 5 contro 5 con piena coordinazione di team"
       },
       "wingman": {
-        "description": "Fai squadra con un amico e gioca match 2v2 dal ritmo serrato"
+        "description": "Fai squadra con un amico e gareggia in match 2v2 ad alta velocità"
       },
       "duel": {
-        "description": "Un'esperienza competitiva 1 contro 1, perfetta per allenare la skill individuale"
+        "description": "Un'esperienza competitiva 1 contro 1, perfetta per allenare l'abilità individuale"
       }
     },
     "cancel_matchmaking": "Annulla matchmaking",
     "in_queue_label": "In coda",
-    "searching": "Ricerca",
-    "elapsed": "Trascorso",
+    "searching": "Ricerca in corso",
+    "elapsed": "Tempo trascorso",
     "queue_wait": {
       "zero": "0 secondi",
       "seconds": "{count} secondi",
@@ -5456,11 +5514,11 @@
     "waiting_on_others": "In attesa degli altri",
     "confirmed": "Confermato",
     "ready": "Pronto",
-    "locked_in": "Confermato in coda",
+    "locked_in": "Bloccato",
     "check_in": "Check-in",
     "go_to_match": "Vai al match",
     "toasts": {
-      "your_veto_title": "Tocca a te il veto",
+      "your_veto_title": "Tocca a te vetare",
       "your_veto_desc": "Tocca a te — banna o scegli nella pagina del match."
     },
     "disable_match_ready_modal_hint": "Non vuoi questo popup?",
@@ -5507,7 +5565,11 @@
       "toggle": "Modifica impostazioni"
     },
     "high_latency_warning": "La tua latenza è troppo alta per i match competitivi",
-    "no_preferred_regions": "Seleziona almeno una regione preferita nelle impostazioni matchmaking"
+    "no_preferred_regions": "Seleziona almeno una regione preferita nelle impostazioni matchmaking",
+    "party_size": {
+      "unavailable": "Un gruppo di {size} non può mettersi in coda per questa modalità",
+      "requirement": "Mettiti in coda con {half} o meno giocatori, oppure esattamente {full}"
+    }
   },
   "game_server": {
     "lan_ip": "IP LAN",
@@ -5863,26 +5925,26 @@
       "take_manual_control": "Clicca per prendere il controllo manuale"
     },
     "page_title": "Stream Deck",
-    "page_description": "Prendi il controllo di una GPU per trasmettere un match live, cambiare destinazione e usare l'auto-regia.",
-    "capacity": "Capienza",
-    "full": "Pieno",
-    "off_air_description": "Nessuna trasmissione attiva. Scegli un match live qui sotto per prendere una GPU e iniziare lo streaming.",
-    "auto_director": "Auto-regia",
+    "page_description": "Prendi il controllo di una GPU per trasmettere un match live, cambia destinazione e avvia l'auto-regista.",
+    "capacity": "Capacità",
+    "full": "Piena",
+    "off_air_description": "Nessuna diretta attiva. Scegli un match live qui sotto per prendere il controllo di una GPU e iniziare lo streaming.",
+    "auto_director": "Auto-regista",
     "stop": "Ferma",
-    "playing_in_popout": "In riproduzione nel pop-out",
-    "preview_paused": "L'anteprima è in pausa qui così la finestra in primo piano gestisce lo stream.",
-    "cycle": "Scorri",
+    "playing_in_popout": "In riproduzione nella finestra pop-out",
+    "preview_paused": "L'anteprima è in pausa qui: la finestra attiva gestisce lo stream.",
+    "cycle": "Ciclo",
     "prev": "Prec",
     "next": "Succ",
-    "use_keyboard": "Usa tastiera",
+    "use_keyboard": "Usa la tastiera",
     "match_count": "{count} match | {count} match",
-    "tiles_hint": "I riquadri appariranno qui appena un match va live.",
+    "tiles_hint": "I riquadri appariranno qui non appena un match diventa live.",
     "offline": "offline",
     "exit": "Esci",
-    "swap_sides": "Inverti lati (forzatura manuale)",
-    "refresh_hud": "Aggiorna HUD (ricarica immagini giocatori)",
-    "autodirector_on": "L'auto-regia è attiva.",
-    "autodirector_hint": "È CS2 a scegliere la camera: cliccare un bersaglio o premere un tasto la disattiva e passa al controllo manuale."
+    "swap_sides": "Scambia lati (override manuale)",
+    "refresh_hud": "Aggiorna HUD (ricarica le immagini giocatori)",
+    "autodirector_on": "L'auto-regista è attivo.",
+    "autodirector_hint": "CS2 sceglie la camera — cliccare un target o premere un tasto disattiva questa modalità e passa al controllo manuale."
   },
   "system_metrics_extras": {
     "gpu_usage": "Utilizzo GPU",
@@ -5900,7 +5962,7 @@
   },
   "file_manager_extras": {
     "close": "Chiudi",
-    "close_others": "Chiudi gli altri",
+    "close_others": "Chiudi altri",
     "close_to_right": "Chiudi a destra",
     "close_to_left": "Chiudi a sinistra",
     "upload_cancelled": "Caricamento annullato",
@@ -5909,13 +5971,13 @@
   "database_extras": {
     "all_tables": "Tutte le tabelle",
     "details": "Dettagli",
-    "modal_description": "Statistiche dettagliate delle query e visualizzazione del piano di esecuzione"
+    "modal_description": "Statistiche dettagliate della query e visualizzazione del piano di esecuzione"
   },
   "demo_network_limiter": {
     "network_limit": "Limite di rete (Mbps)",
     "unlimited": "Illimitato",
     "unlimited_short": "Illimitato",
-    "title": "Limitatore di rete demo",
+    "title": "Limitatore rete demo",
     "description": "Configura il limite di velocità di rete per il download dei file demo",
     "updated": "Limitatore di rete aggiornato"
   },
@@ -5923,41 +5985,41 @@
     "editor": {
       "title": "Editor clip",
       "auto": "Auto",
-      "auto_current_spectator": "Auto (spettatore attuale)",
-      "no_players_yet_demo": "Ancora nessun giocatore: aspetta che la demo parta.",
+      "auto_current_spectator": "Auto (spettatore corrente)",
+      "no_players_yet_demo": "Ancora nessun giocatore — attendi l'avvio della demo.",
       "split": "Dividi",
       "delete": "Elimina",
       "close": "Chiudi",
       "segments": "Segmenti",
       "title_label": "Titolo",
       "resolution": "Risoluzione",
-      "render": "Renderizza",
+      "render": "Render",
       "add": "Aggiungi",
       "stop": "Ferma",
       "preview": "Anteprima",
       "drag_rail_hint": "clicca e trascina sulla barra vuota per aggiungere un intervallo",
-      "pov_hint": "clicca il chip per cambiare il giocatore osservato"
+      "pov_hint": "clicca il chip per cambiare il giocatore spettato"
     },
     "detail": {
       "default_title": "Highlight",
       "visibility": "Visibilità",
       "signal_lost": "Segnale perso",
       "clip_not_found": "Clip non trovata",
-      "clip_not_found_description": "Potrebbe essere stata eliminata, oppure non hai i permessi per vederla.",
+      "clip_not_found_description": "Potrebbe essere stata eliminata, oppure non hai i permessi per visualizzarla.",
       "title_label": "Titolo",
       "other_clips": "Altre clip",
       "view_match": "Vedi match",
       "highlight_clip_viewer": "Visualizzatore clip highlight",
       "render_finalizing": "Finalizzazione render…",
-      "just_now": "proprio ora"
+      "just_now": "adesso"
     },
     "render_queue": {
       "queued": "In coda",
       "cancel": "Annulla",
       "render": "Render",
-      "upload": "Caricamento",
+      "upload": "Carica",
       "recently_finished": "Completati di recente",
-      "status_rendering": "Render su {count} GPU | Render su {count} GPU",
+      "status_rendering": "Rendering su {count} GPU | Rendering su {count} GPU",
       "status_paused": "In pausa",
       "status_no_gpu_registered": "Nessun nodo GPU registrato",
       "status_no_gpu_free": "In attesa di una GPU libera",
@@ -5969,54 +6031,54 @@
       "resume_blocked_live": "Impossibile riprendere — uno stream live sta usando la GPU",
       "unknown_match": "Match sconosciuto",
       "open_match": "Apri match",
-      "retry_failed": "Riprova i falliti",
+      "retry_failed": "Riprova",
       "render_pod_booting": "Avvio del pod di render",
-      "requeue_clip": "Rimetti la clip in coda",
+      "requeue_clip": "Rimetti clip in coda",
       "preview_clip": "Anteprima clip",
-      "view_logs": "Vedi i log del job di render",
+      "view_logs": "Vedi log del job di render",
       "hide_clips": "Nascondi clip",
       "show_all_clips": "Mostra tutte le {count} clip",
-      "clear_all": "Svuota tutto",
-      "clear_batch": "Svuota lotto",
+      "clear_all": "Cancella tutto",
+      "clear_batch": "Cancella batch",
       "show_less": "Mostra meno",
       "show_more": "Mostra altri {count}",
       "empty_title": "La coda di render è vuota",
-      "empty_description": "I job di render degli highlight messi in coda dai match compaiono qui mentre si avviano, renderizzano e caricano.",
+      "empty_description": "I job di render degli highlight avviati dai match compariranno qui durante avvio, rendering e caricamento.",
       "done_count": "{done}/{total} completati",
-      "err_count": "{count} err",
+      "err_count": "{count} errori",
       "queued_count": "{count} in coda",
       "clip_count": "{count} clip",
-      "done_only_count": "{count} completati",
-      "cancelled_count": "{count} annullati",
-      "retry_failed_count": "Riprova i falliti ({count})",
+      "done_only_count": "{count} completate",
+      "cancelled_count": "{count} annullate",
+      "retry_failed_count": "Riprova ({count})",
       "retry_all_clips": "Riprova tutte le {count} clip"
     },
     "create_dialog": {
       "title": "Clip automatica",
-      "description": "Scegli un giocatore e un preset: il server analizza le kill del match, costruisce i segmenti e renderizza un mp4.",
+      "description": "Scegli un giocatore e un preset — il server analizza le kill parsate del match, crea i segmenti e renderizza un mp4.",
       "player": "Giocatore",
       "pick_player_placeholder": "Scegli un giocatore da mettere in evidenza",
-      "no_players_yet": "Nessun giocatore trovato: aspetta che la demo parta e riprova.",
+      "no_players_yet": "Ancora nessun giocatore trovato — attendi l'avvio della demo e riprova.",
       "other_group": "Altro",
       "preset": "Preset",
       "title_label": "Titolo",
-      "title_placeholder": "Per impostazione predefinita usa il nome del preset",
+      "title_placeholder": "Predefinito: nome del preset",
       "resolution": "Risoluzione",
       "submit": "Genera highlight"
     },
     "presets": {
       "multikills": "Multi-kill",
       "multikills_hint": "Ogni round con 2+ kill, tagliato sull'azione",
-      "best_round": "Round migliore",
-      "best_round_hint": "Il round singolo con più kill",
-      "knife": "Kill di coltello",
-      "knife_hint": "Ogni frag di coltello con 5s di introduzione",
-      "recap": "Riepilogo match",
-      "recap_hint": "Ogni round in cui il giocatore ha fatto almeno una kill"
+      "best_round": "Miglior round",
+      "best_round_hint": "Il singolo round con più kill",
+      "knife": "Kill con coltello",
+      "knife_hint": "Ogni frag col coltello con 5s di anticipo",
+      "recap": "Recap del match",
+      "recap_hint": "Ogni round in cui il giocatore ha ottenuto almeno una kill"
     },
     "render_progress": {
       "render": "Render",
-      "upload": "Caricamento",
+      "upload": "Carica",
       "cancel_render": "Annulla render",
       "download": "Scarica",
       "open_clip": "Apri clip",
@@ -6028,7 +6090,7 @@
     "untitled_clip": "Clip senza titolo",
     "delete_dialog": {
       "title": "Eliminare questa clip?",
-      "description": "La clip viene rimossa dalla libreria e il file sottostante viene eliminato. L'operazione è irreversibile.",
+      "description": "La clip viene rimossa dalla libreria e il file viene eliminato. L'operazione è irreversibile.",
       "deleting": "Eliminazione…",
       "delete": "Elimina"
     },
@@ -6038,9 +6100,9 @@
     "default_player": "Giocatore",
     "clip_count": "clip | clip",
     "details": "Dettagli",
-    "link_copied": "Link copiato",
+    "link_copied": "Link copiato!",
     "share_clip": "Condividi clip",
-    "open_details": "Apri i dettagli di {title}",
+    "open_details": "Apri dettagli di {title}",
     "open_player_profile": "Apri il profilo di {name}",
     "kills_in_clip": "{count} kill nella clip | {count} kill nella clip",
     "plays_count": "{count} riproduzione | {count} riproduzioni",
@@ -6050,21 +6112,21 @@
       "public": "Pubblica",
       "public_hint": "Presente nel feed degli highlight",
       "private": "Privata",
-      "private_hint": "Nascosta dai feed — l'URL del file resta riproducibile se condiviso"
+      "private_hint": "Nascosta dai feed — l'URL del file funziona comunque se condiviso"
     },
     "no_highlights_from_map": "Nessun highlight da questa mappa.",
     "render_dialog": {
-      "title": "Renderizza highlight",
-      "description": "Metti in coda un highlight in un clic da una demo di questo match.",
+      "title": "Render highlight",
+      "description": "Metti in coda un highlight con un click da una demo di questo match.",
       "map": "Mappa",
       "pick_map": "Scegli una mappa",
       "no_moments": "Nessun momento degno di highlight per {target} su questa mappa.",
       "this_player": "questo giocatore",
-      "queue_render": "Metti in coda"
+      "queue_render": "Metti in coda il render"
     }
   },
   "time_ago": {
-    "just_now": "proprio ora",
+    "just_now": "adesso",
     "minutes": "{n}m fa",
     "hours": "{n}h fa",
     "days": "{n}g fa",
@@ -6079,8 +6141,8 @@
       "type": "Tipo",
       "result": "Risultato",
       "map": "Mappa",
-      "rating": "Rating HLTV",
-      "elo": "ELO"
+      "rating": "HLTV Rating",
+      "elo": "Elo"
     },
     "source": {
       "internal": "5Stack",
@@ -6101,7 +6163,7 @@
     "win": "VITTORIA",
     "loss": "SCONFITTA",
     "maps": "MAPPE",
-    "damage": "DANNI",
+    "damage": "DANNO",
     "score": "PUNTEGGIO",
     "impact": "IMPATTO",
     "current": "ATTUALE",
@@ -6121,53 +6183,53 @@
     }
   },
   "draft_games": {
-    "nav_label": "Lobby draft",
+    "nav_label": "Draft lobby",
     "create_custom_match": "Crea draft room",
-    "leader_required": "Solo il leader del gruppo può creare un match.",
-    "rehost": "Ricrea l'ultima",
+    "leader_required": "Solo il leader del party può creare un match.",
+    "rehost": "Ripeti l'ultima",
     "rehost_hint": "Ricrea la tua ultima lobby con le stesse impostazioni",
-    "search_placeholder": "Cerca per giocatore...",
-    "no_results": "Nessun match corrisponde ai filtri.",
+    "search_placeholder": "Cerca per nome giocatore...",
+    "no_results": "Nessun match corrisponde ai tuoi filtri.",
     "filters": {
       "avg_rank": "Rank medio",
-      "has_space": "Con posti liberi",
+      "has_space": "Ha posti liberi",
       "any": "Qualsiasi",
-      "clear": "Pulisci ({count})"
+      "clear": "Rimuovi ({count})"
     },
     "sort": {
-      "filling": "Quasi pieni",
+      "filling": "Più vicini al pieno",
       "newest": "Più recenti",
       "rank_high": "Rank: alto",
       "rank_low": "Rank: basso"
     },
     "empty": "Nessun match aperto. Creane uno per iniziare.",
     "create": {
-      "captain_selection": "Scelta capitani",
+      "captain_selection": "Selezione capitani",
       "draft_order": "Ordine di draft",
-      "rank_gate": "Limite di rank (opzionale)",
+      "rank_gate": "Filtro rank (opzionale)",
       "start": "Avvia",
       "deploy": "Crea",
       "require_approval": "Richiedi approvazione",
-      "require_approval_desc": "I giocatori chiedono di entrare: scegli tu chi gioca dalla coda.",
+      "require_approval_desc": "I giocatori richiedono di unirsi — scegli tu chi gioca dalla coda.",
       "host_only": "Solo host",
       "host_only_desc": "Crea e gestisci questa lobby senza essere aggiunto come giocatore.",
       "keep_lobby": "Tieni la lobby unita",
-      "keep_lobby_desc": "I tuoi {count} giocatori in lobby entrano nello stesso team.",
+      "keep_lobby_desc": "I tuoi {count} giocatori della lobby si uniscono allo stesso team.",
       "access": "Accesso alla lobby",
       "teams": "Team",
-      "no_formats": "Duel non ha formati: è sempre 1v1 con divisione automatica.",
-      "teams_desc": "Serve almeno un team. Il secondo è opzionale: lascialo aperto per un match team contro tutti.",
-      "team_1_required": "Team 1 (obbligatorio)",
+      "no_formats": "Duel non ha formati — è sempre auto-diviso 1v1.",
+      "teams_desc": "È richiesto un solo team. Il secondo team è opzionale — lascialo vuoto per un match team contro tutti.",
+      "team_1_required": "Team 1 (richiesto)",
       "team_2_optional": "Team 2 (opzionale)",
       "team_1_required_error": "Seleziona almeno un team prima di creare.",
-      "inner_squad": "Inner squad",
-      "inner_squad_on_desc": "Dividi il roster di questo team su entrambi i lati per uno scrim interno.",
-      "inner_squad_off_desc": "Riempi un lato con questo team e lascia l'altro aperto a giocatori esterni.",
-      "roster_desc": "I titolari vengono inseriti automaticamente: tocca un giocatore per spostarlo tra lineup e panchina. I membri possono essere scambiati anche in lobby.",
+      "inner_squad": "Squad interna",
+      "inner_squad_on_desc": "Dividi il roster di questo team su entrambi i lati per uno scrim intra-squad.",
+      "inner_squad_off_desc": "Riempi un lato con questo team e lascia l'altro aperto ai giocatori esterni.",
+      "roster_desc": "I titolari vengono compilati automaticamente — tocca un giocatore per spostarlo tra lineup e panchina. I membri possono essere scambiati anche in lobby.",
       "starting": "Titolari",
       "bench": "Panchina",
       "no_roster": "Nessun membro del roster trovato.",
-      "clear_team": "Pulisci team",
+      "clear_team": "Svuota team",
       "both_teams_private": "Con entrambi i team impostati la lineup è bloccata, quindi questa lobby resta privata.",
       "step_format": "Modalità draft",
       "step_settings": "Impostazioni match",
@@ -6181,9 +6243,9 @@
       "lobby": "lobby"
     },
     "captain_selection": {
-      "top_elo_two": "I 2 migliori per rank",
-      "host_and_next": "Host e miglior rank dopo",
-      "random_two": "Due a caso",
+      "top_elo_two": "Top 2 per rank",
+      "host_and_next": "Host e secondo più alto",
+      "random_two": "Due casuali",
       "manual": "Manuale"
     },
     "draft_order": {
@@ -6195,96 +6257,96 @@
       "pool": "Pool",
       "region": "Regione",
       "custom": "Personalizzato",
-      "pending_requests": "Richieste in attesa",
+      "pending_requests": "Richieste in sospeso",
       "players": "Giocatori",
       "subs": "Riserve",
       "requests": "Richieste",
-      "join_party": "Entra col gruppo ({count})",
-      "join_party_hint": "Porta tutto il tuo gruppo di matchmaking in questa lobby",
-      "join": "Entra",
+      "join_party": "Unisciti col party ({count})",
+      "join_party_hint": "Porta tutto il tuo party di matchmaking in questa lobby",
+      "join": "Unisciti",
       "view": "Vedi",
       "request": "Richiedi",
       "requested": "Richiesto",
-      "join_error": "Impossibile entrare nel match. Riprova."
+      "join_error": "Impossibile unirsi al match. Riprova."
     },
     "room": {
       "team": "Team {team}",
       "pool": "Giocatori disponibili",
       "captain": "Capitano",
       "pick": "Pick",
-      "empty_pool": "Tutti i giocatori sono stati scelti",
+      "empty_pool": "Tutti i giocatori sono stati draftati",
       "leave": "Esci",
       "loading": "Caricamento draft room...",
       "avg": "Media",
       "open_slot": "Slot libero",
       "draft_log": "Log del draft",
       "log_picked": "ha scelto",
-      "log_empty": "Ancora nessun pick.",
+      "log_empty": "Nessuna pick ancora.",
       "team_alpha": "Team 1",
       "team_bravo": "Team 2",
-      "squad_ready": "Squadra pronta",
+      "squad_ready": "Squad pronta",
       "expires_in": "La lobby scade tra",
       "extend": "Tieni la room aperta per altri 30 minuti",
       "host_assigning": "L'host sta assegnando i team",
-      "host_hint": "Riempi gli slot liberi qui sopra per aggiungere giocatori direttamente a un team.",
+      "host_hint": "Riempi gli slot liberi sopra per aggiungere giocatori direttamente a un team.",
       "make_captain": "Rendi capitano",
       "choose_captains": "Scegli i capitani",
-      "choose_captains_hint": "Scegli un capitano per ogni team per iniziare il draft.",
+      "choose_captains_hint": "Scegli un capitano per ogni team per avviare il draft.",
       "pick_captains": "Scegli i capitani",
       "captain_picking": "{name} sta scegliendo…",
       "your_pick": "Tocca a te",
-      "alpha_picking": "Sceglie il Team 1",
-      "bravo_picking": "Sceglie il Team 2",
+      "alpha_picking": "Il Team 1 sceglie",
+      "bravo_picking": "Il Team 2 sceglie",
       "standby": "In attesa",
-      "pick_order": "Ordine dei pick",
-      "on_the_clock": "Al turno",
+      "pick_order": "Ordine di pick",
+      "on_the_clock": "Sotto pressione del tempo",
       "draft": "Draft",
-      "comms": "Chat lobby",
-      "chat_players_only": "Durante il draft possono scrivere solo i giocatori.",
+      "comms": "Chat della lobby",
+      "chat_players_only": "Solo i giocatori possono chattare durante il draft.",
       "login_to_chat": "Accedi per partecipare alla conversazione.",
       "login": "Accedi",
       "host_label": "Host",
       "avg_rank": "Rank medio",
-      "queue": "Richieste di ingresso",
-      "queue_empty": "Nessuna richiesta in attesa.",
+      "queue": "Richieste di partecipazione",
+      "queue_empty": "Nessuna richiesta in sospeso.",
       "accept": "Accetta",
       "accept_backup": "Accetta come riserva",
       "deny": "Rifiuta",
-      "request": "Chiedi di entrare",
+      "request": "Richiedi di unirti",
       "edit_settings": "Modifica impostazioni",
       "start_match": "Avvia match",
       "starting": "Avvio…",
       "pick_teams": "Seleziona entrambi i team per iniziare",
       "vs": "vs",
-      "copy_invite": "Copia link d'invito",
-      "invite_copied": "Link d'invito copiato",
+      "copy_invite": "Copia link di invito",
+      "invite_copied": "Link di invito copiato",
       "back_to_room": "Torna alla draft room",
       "join_prompt": "Entra — c'è uno slot libero",
-      "request_prompt": "Per entrare in questa lobby serve l'approvazione dell'host",
-      "request_pending": "La tua richiesta è in attesa di approvazione dell'host",
+      "request_prompt": "Questa lobby richiede l'approvazione dell'host per entrare",
+      "request_pending": "La tua richiesta è in attesa dell'approvazione dell'host",
       "waitlist": "Riserve",
       "backups": "Riserve",
       "side_backups": "Riserve {team}",
       "unassigned_backups": "Riserve non assegnate",
-      "no_backups": "Trascina qui un giocatore per mandarlo in panchina",
-      "drop_to_bench": "Trascina qui un giocatore per mandarlo in panchina",
-      "side_full": "Questo lato è già pieno",
-      "checking_in": "Check-in — {ready}/{total} pronti",
-      "waitlist_prompt": "Lobby piena: entra nella coda riserve e vieni inserito se si libera uno slot",
-      "waitlist_pending": "Sei nella coda riserve: entrerai in automatico appena si libera uno slot",
-      "join_waitlist": "Entra in lista d'attesa",
-      "leave_waitlist": "Esci dalla lista d'attesa",
-      "invite_pending": "Sei stato invitato in questa lobby",
+      "no_backups": "Trascina qui un giocatore per metterlo in panchina",
+      "drop_to_bench": "Trascina qui un giocatore per metterlo in panchina",
+      "side_full": "Questo lato è già al completo",
+      "checking_in": "Check-in in corso — {ready}/{total} pronti",
+      "waitlist_prompt": "Lobby piena — unisciti alla coda riserve e verrai aggiunto automaticamente se si libera uno slot",
+      "waitlist_pending": "Sei in coda riserve — entrerai automaticamente quando si libera uno slot",
+      "join_waitlist": "Unisciti alla lista d'attesa",
+      "leave_waitlist": "Lascia la lista d'attesa",
+      "invite_pending": "Sei stato invitato a questa lobby",
       "accept_invite": "Accetta",
       "decline_invite": "Rifiuta",
       "invited": "Invitato",
-      "invite_pending_short": "In attesa",
+      "invite_pending_short": "In sospeso",
       "cancel_invite": "Annulla invito",
       "invite_to_draft": "Invita al draft",
       "invite_sent": "Hai invitato {name} al tuo draft",
       "picks_first": "{name} sceglie per primo",
-      "match_starting": "Match in avvio — server in accensione",
-      "no_regions_available_description": "Nessuna regione ha server di gioco disponibili. Il draft non può partire finché non torna online un server: contatta un amministratore.",
+      "match_starting": "Avvio match — avvio server in corso",
+      "no_regions_available_description": "Nessuna regione ha server disponibili. Il draft non può iniziare finché un server non torna online — contatta un amministratore.",
       "assign_all": "Assegna tutti i giocatori",
       "need_full": "In attesa di giocatori",
       "search_requests": "Cerca richieste",
@@ -6296,14 +6358,14 @@
       "current_draft": "La tua draft room",
       "host_room": "Draft room di {name}",
       "kick": "Espelli",
-      "start_player": "Titolare",
+      "start_player": "Avvia",
       "go_to_room": "Vai alla draft room",
       "min": "Min",
       "max": "Max",
       "no_matches": "Nessuna richiesta corrispondente",
       "cancel_draft": "Annulla draft",
       "cancel_draft_confirm_title": "Annullare questa draft room?",
-      "cancel_draft_confirm_description": "La room verrà chiusa per tutti e l'operazione è irreversibile.",
+      "cancel_draft_confirm_description": "Questo chiuderà la room per tutti e non può essere annullato.",
       "kick_confirm_title": "Rimuovere questo giocatore?",
       "kick_confirm_description": "Verrà rimosso dalla draft room.",
       "load_failed": "Impossibile caricare questa draft room.",
@@ -6328,34 +6390,34 @@
     "mode": {
       "captains": "Draft con capitani",
       "captains_desc": "Due capitani scelgono i giocatori a turno.",
-      "host": "Assegna l'host",
-      "host_desc": "Componi tu entrambi i team.",
+      "host": "Assegnazione host",
+      "host_desc": "Costruisci tu entrambi i team.",
       "pug": "Divisione automatica",
-      "pug_desc": "Niente draft — i team vengono bilanciati in automatico quando la lobby si riempie.",
-      "teams": "Team già formati",
-      "teams_desc": "Scegli due team salvati da far scontrare."
+      "pug_desc": "Nessun draft — i team vengono bilanciati automaticamente al riempimento della lobby.",
+      "teams": "Team predefiniti",
+      "teams_desc": "Scegli due team salvati per farli scontrare."
     },
     "mode_short": {
       "captains": "Capitani",
       "host": "Host",
-      "pug": "Auto",
+      "pug": "Divisione automatica",
       "teams": "Team"
     },
     "access": {
       "open": "Aperta",
       "open_desc": "Chiunque può trovarla e unirsi dalla lista pubblica.",
       "friends": "Amici",
-      "friends_desc": "La vedono solo gli amici dei giocatori nella lobby.",
+      "friends_desc": "Solo gli amici dei giocatori in lobby possono vederla.",
       "invite": "Invito",
-      "invite_desc": "Si entra solo tramite il link d'invito che condividi.",
+      "invite_desc": "Ci si unisce solo tramite il link di invito che condividi.",
       "private": "Privata",
-      "private_desc": "Solo chi fai entrare tu — nascosta dalla lista."
+      "private_desc": "Solo le persone che ammetti — nascosta dalla lista."
     },
     "active_alert_title": "Sei in una draft room",
-    "active_alert_desc": "Hai una draft room attiva. Rientra per tenere insieme la squadra.",
+    "active_alert_desc": "Hai una draft room attiva. Rientra per tenere unito il tuo squad.",
     "toasts": {
       "your_pick_title": "Tocca a te",
-      "your_pick_desc": "Sei sul cronometro — scegli il prossimo giocatore.",
+      "your_pick_desc": "Sei sotto tempo — scegli il tuo prossimo giocatore.",
       "removed_title": "Rimosso dal draft",
       "removed_desc": "Non sei più nella draft room."
     }
@@ -6385,24 +6447,24 @@
     },
     "history": {
       "seasons": "Storico stagioni",
-      "playing_in": "In gara in {season}",
+      "playing_in": "In gioco in {season}",
       "current_division": "Divisione attuale",
-      "highest_division": "Divisione più alta",
+      "highest_division": "Divisione più alta raggiunta",
       "none": "—"
     },
     "divisions": {
       "title": "Divisioni",
-      "empty": "Nessuna divisione configurata.",
-      "add": "Aggiungi tier {tier}",
+      "empty": "Nessuna divisione configurata ancora.",
+      "add": "Aggiungi livello {tier}",
       "name_placeholder": "Nome divisione (es. Open, Main, Invite)",
-      "tier_hint": "Il tier 1 è la divisione più alta. I team vengono promossi verso il tier 1 e retrocessi allontanandosi da esso.",
-      "reorder_hint": "Trascina le divisioni per riordinare la scala. Il tier 1 è la divisione più alta; i team vengono promossi verso di esso e retrocessi allontanandosi.",
+      "tier_hint": "Il livello 1 è la divisione più alta. I team vengono promossi verso il livello 1 e retrocessi lontano da esso.",
+      "reorder_hint": "Trascina le divisioni per riordinare la scala. Il livello 1 è la divisione più alta; i team vengono promossi verso di essa e retrocessi lontano da essa.",
       "delete_title": "Eliminare la divisione?",
       "delete_description": "Rimuove {name} dalla scala. Le divisioni restanti vengono rinumerate. L'operazione è irreversibile."
     },
     "seasons": {
       "title": "Stagioni",
-      "empty": "Ancora nessuna stagione.",
+      "empty": "Nessuna stagione ancora.",
       "teams_count": "{count} team",
       "deleted": "Stagione eliminata",
       "delete_title": "Eliminare la stagione?",
@@ -6415,22 +6477,22 @@
       "signup_opens": "Apertura iscrizioni",
       "signup_closes": "Chiusura iscrizioni",
       "starts_at": "Inizio stagione",
-      "weeks": "Settimane di match",
-      "games_per_week": "Partite a settimana",
-      "auto_format_hint": "Il formato di ogni divisione viene scelto automaticamente in base alla sua dimensione: girone all'italiana completo se rientra nei round della stagione, altrimenti un girone con sistema svizzero.",
+      "weeks": "Settimane di gioco",
+      "games_per_week": "Match a settimana",
+      "auto_format_hint": "Il formato di ogni divisione viene scelto automaticamente in base alla sua dimensione: un girone all'italiana completo se rientra nei round della stagione, altrimenti un girone con sistema svizzero.",
       "roster_lock_week": "Settimana di blocco roster",
       "playoff_seats": "Posti playoff",
       "min_roster": "Roster minimo",
       "promote": "Promuovi",
       "relegate": "Retrocedi",
       "direct_promote": "Promozione diretta",
-      "relegation_up": "Spareggio salita",
-      "relegation_down": "Spareggio discesa",
+      "relegation_up": "Playoff retrocessione (su)",
+      "relegation_down": "Playoff retrocessione (giù)",
       "direct_relegate": "Retrocessione diretta",
-      "best_of": "Best of",
-      "playoff_best_of": "Best of playoff",
-      "default_day": "Giorno match predefinito",
-      "default_time": "Orario match predefinito",
+      "best_of": "Al meglio di",
+      "playoff_best_of": "Playoff al meglio di",
+      "default_day": "Giorno di gioco predefinito",
+      "default_time": "Orario predefinito",
       "weekdays": {
         "0": "Domenica",
         "1": "Lunedì",
@@ -6440,23 +6502,23 @@
         "5": "Venerdì",
         "6": "Sabato"
       },
-      "weeks_hint": "Una settimana di match per ogni settimana di calendario dall'inizio della stagione. I team concordano un orario all'interno di ogni settimana; gli scontri senza accordo ricadono su giorno e orario predefiniti.",
+      "weeks_hint": "Una settimana di gioco per ogni settimana di calendario a partire dall'inizio della stagione. I team concordano un orario entro la settimana; i match non concordati usano il giorno e l'orario predefiniti.",
       "create": "Crea stagione",
       "created": "Stagione creata",
       "no_map_pool": "Nessun map pool competitivo attivo trovato",
       "errors": {
-        "signup_order": "Le iscrizioni devono aprirsi prima di chiudersi.",
-        "signup_after_start": "Le iscrizioni devono chiudersi prima dell'inizio della stagione."
+        "signup_order": "Le iscrizioni devono aprire prima di chiudere.",
+        "signup_after_start": "Le iscrizioni devono chiudere prima dell'inizio della stagione."
       },
-      "min_teams_hint": "Una divisione ha bisogno di almeno 4 team approvati per partire — quelle più piccole vengono saltate all'inizio della stagione."
+      "min_teams_hint": "Una divisione richiede almeno 4 team approvati per partire — le divisioni più piccole vengono saltate all'inizio della stagione."
     },
     "overview": {
       "signup_window": "Finestra iscrizioni",
       "starts": "Inizio",
-      "weeks": "Settimane di match",
+      "weeks": "Settimane di gioco",
       "playoff_seats": "Posti playoff",
       "roster_locked": "Roster bloccato",
-      "roster_locks": "Il roster si blocca il {date}",
+      "roster_locks": "Roster si blocca il {date}",
       "format": "Formato",
       "teams": "Team",
       "playoffs": "Playoff",
@@ -6469,7 +6531,7 @@
       "regular_season": "Stagione regolare",
       "playoffs": "Playoff",
       "complete": "Conclusa",
-      "opens_soon": "Apre a breve",
+      "opens_soon": "Apertura a breve",
       "teams_stat": "{count} team",
       "advance_stat": "{count} avanzano"
     },
@@ -6477,18 +6539,18 @@
       "regular_season": "Stagione regolare",
       "playoffs": "Playoff",
       "open_full": "Apri vista completa",
-      "empty": "Il bracket compare all'inizio della stagione, una volta generati i tornei.",
+      "empty": "Il bracket appare non appena la stagione inizia e i suoi tornei vengono generati.",
       "format": {
         "RoundRobin": "Girone all'italiana",
         "Swiss": "Sistema svizzero",
-        "SingleElimination": "Elim. singola",
-        "DoubleElimination": "Elim. doppia"
+        "SingleElimination": "Eliminazione singola",
+        "DoubleElimination": "Doppia eliminazione"
       }
     },
     "manage": {
       "title": "Impostazioni",
       "open": "Apri scheda gestione",
-      "phase_controls": "Fase stagione",
+      "phase_controls": "Fase della stagione",
       "current": "Attuale",
       "registrations": "Iscrizioni",
       "danger_zone": "Zona pericolosa"
@@ -6517,7 +6579,7 @@
       "team": "Team",
       "pick_team": "Scegli un team",
       "requested_division": "Divisione richiesta",
-      "assign_division": "Assegna divisione (approva in automatico)",
+      "assign_division": "Assegna divisione (approva automaticamente)",
       "no_preference": "Nessuna preferenza",
       "roster": "Roster stagionale ({selected} selezionati, minimo {min})",
       "roster_range": "Roster stagionale ({selected} selezionati · {min}–{max} giocatori)",
@@ -6526,21 +6588,21 @@
         "substitutes": "Riserve",
         "benched": "In panchina"
       },
-      "available": "Disponibili",
+      "available": "Disponibile",
       "min_roster_warning": "Seleziona almeno {min} giocatori per iscriverti.",
-      "register": "Iscrivi",
+      "register": "Iscriviti",
       "registered": "Team iscritto",
-      "no_teams": "Non gestisci nessun team che possa iscriversi. Crea prima un team.",
-      "cta_hint": "Iscrivi un team che gestisci e definisci il suo roster stagionale."
+      "no_teams": "Non gestisci nessun team che può iscriversi. Crea prima un team.",
+      "cta_hint": "Iscrivi un team che gestisci e blocca il suo roster stagionale."
     },
     "my_team": {
       "title": "Il mio team — {team}",
       "add_players": "Aggiungi giocatore",
       "make_starter": "Rendi titolare",
       "make_sub": "Sposta tra le riserve",
-      "subs_full": "Panchina piena (max {max})",
-      "lineup_full": "Lineup completa ({max} titolari)",
-      "no_starters": "Ancora nessun titolare — aggiungi giocatori per completare la lineup.",
+      "subs_full": "Panchina piena ({max} massimo)",
+      "lineup_full": "Formazione piena ({max} titolari)",
+      "no_starters": "Nessun titolare ancora — aggiungi giocatori per completare la formazione.",
       "roster_changes": "Modifiche al roster",
       "withdraw": "Ritirati dalla stagione",
       "declined": "La tua iscrizione è stata rifiutata.",
@@ -6562,26 +6624,26 @@
       "division": "Divisione",
       "status": "Stato",
       "actions": "Azioni",
-      "empty": "Ancora nessun team iscritto.",
+      "empty": "Nessun team iscritto ancora.",
       "unassigned": "Non assegnata",
       "assign_to_approve": "Assegna una divisione per approvare",
       "requested": "richiesta",
       "approve_needs_division": "Assegna una divisione prima di approvare questo team.",
-      "approve_needs_roster": "Il team deve avere almeno {min} giocatori per essere approvato.",
+      "approve_needs_roster": "Il team ha bisogno di almeno {min} giocatori prima di poter essere approvato.",
       "approve": "Approva",
       "readmit": "Riammetti",
       "revoke": "Revoca",
       "waitlist": "Lista d'attesa",
       "decline": "Rifiuta",
       "decline_title": "Rifiutare l'iscrizione?",
-      "decline_reason_hint": "Puoi spiegare al team il motivo. Può inviare di nuovo l'iscrizione finché è aperta.",
+      "decline_reason_hint": "Puoi indicare al team il motivo. Potrà inviare di nuovo l'iscrizione finché le iscrizioni sono aperte.",
       "decline_reason_placeholder": "Motivo (facoltativo)",
       "players": "giocatori",
-      "review_summary": "{pending} in attesa · {waitlisted} in lista d'attesa da revisionare",
+      "review_summary": "{pending} in attesa · {waitlisted} in lista d'attesa da rivedere",
       "remove": "Rimuovi",
       "remove_title": "Rimuovere il team dalla stagione?",
-      "remove_description": "Il team viene ritirato dalla stagione e il suo posto si libera. Puoi riammetterlo finché le iscrizioni sono aperte.",
-      "remove_description_live": "Il team viene ritirato e tutti i suoi scontri rimanenti sono assegnati a tavolino agli avversari. L'operazione è irreversibile.",
+      "remove_description": "Il team viene ritirato dalla stagione e il suo posto viene liberato. Puoi riammetterlo finché le iscrizioni sono aperte.",
+      "remove_description_live": "Il team viene ritirato e tutti i suoi match rimanenti vengono assegnati a tavolino agli avversari. L'operazione è irreversibile.",
       "removed": "Team rimosso dalla stagione"
     },
     "schedule": {
@@ -6590,32 +6652,32 @@
       "default_time": "Predefinito",
       "my_matches": "I miei match",
       "no_matches_filter": "Nessun match corrisponde a questi filtri.",
-      "unscheduled_count": "{count} non programmati",
-      "needs_you": "{count} richiedono te",
+      "unscheduled_count": "{count} da programmare",
+      "needs_you": "{count} richiedono la tua conferma",
       "filter": {
         "all": "Tutti",
-        "unscheduled": "Non programmati",
+        "unscheduled": "Da programmare",
         "scheduled": "Programmati",
         "finished": "Conclusi"
       },
-      "no_matchups": "Nessuno scontro questa settimana.",
+      "no_matchups": "Nessun incontro questa settimana.",
       "bye": "Bye (vittoria a tavolino)",
-      "unscheduled": "Non programmato",
+      "unscheduled": "Da programmare",
       "view_match": "Vedi match",
       "propose": "Proponi orario",
       "propose_new": "Proponi nuovo orario",
       "proposed": "Orario proposto",
       "propose_title": "Proponi un orario per il match",
-      "propose_description": "Scegli un orario tra {from} e {to}. Il capitano avversario deve accettare.",
+      "propose_description": "Scegli un orario tra {from} e {to}. Il capitano avversario deve accettarlo.",
       "message_placeholder": "Messaggio (facoltativo)",
-      "outside_window": "L'orario proposto è fuori dalla finestra della settimana di match.",
+      "outside_window": "L'orario proposto è fuori dalla finestra della settimana di gioco.",
       "proposed_by": "da",
       "accept": "Accetta",
-      "counter": "Controproposta",
+      "counter": "Controproponi",
       "decline": "Rifiuta",
       "awaiting_opponent": "In attesa dell'avversario",
       "winner": "Vincitore",
-      "defaults_to": "Programmato in automatico alle {time} se non si trova un accordo",
+      "defaults_to": "Programmato automaticamente per {time} se non si concorda un orario",
       "history": "Proposte passate ({count})",
       "status_chip": {
         "needs_scheduling": "Da programmare",
@@ -6623,21 +6685,21 @@
         "finished": "Concluso"
       },
       "status": {
-        "Accepted": "Accettata",
-        "Declined": "Rifiutata",
-        "Countered": "Controproposta",
-        "Superseded": "Sostituita",
-        "Expired": "Scaduta"
+        "Accepted": "Accettato",
+        "Declined": "Rifiutato",
+        "Countered": "Controproposto",
+        "Superseded": "Sostituito",
+        "Expired": "Scaduto"
       },
-      "forfeit": "Forfait",
+      "forfeit": "Vittoria a tavolino",
       "forfeit_win": "Assegna la vittoria a {team}",
-      "forfeit_awarded": "Forfait assegnato",
-      "not_started": "La stagione non è ancora iniziata — il calendario compare una volta formate le divisioni."
+      "forfeit_awarded": "Vittoria a tavolino assegnata",
+      "not_started": "La stagione non è ancora iniziata — il calendario appare non appena le divisioni vengono seedate."
     },
     "schedule_task": {
       "schedule_title": "Programma il tuo match",
-      "respond_title": "È stato proposto un orario",
-      "confirm_title": "Conferma l'orario del match",
+      "respond_title": "È stato proposto un orario per il match",
+      "confirm_title": "Conferma l'orario del tuo match",
       "context": "Stagione {season} · Settimana {week}",
       "more": "altri {count}"
     },
@@ -6645,15 +6707,15 @@
       "team": "Team",
       "record": "V–S",
       "rounds": "Round",
-      "round_diff": "RD",
-      "remaining": "Restanti",
+      "round_diff": "DR",
+      "remaining": "Rimasti",
       "playoffs": "Playoff",
       "search": "Cerca team",
-      "empty": "Ancora nessun risultato.",
+      "empty": "Nessun risultato ancora.",
       "removed": "Rimosso",
       "open_tournament": "Apri torneo",
       "legend": {
-        "advances": "Avanza ai playoff (primi {n})",
+        "advances": "Avanza ai playoff (top {n})",
         "cutoff": "Soglia playoff",
         "your_team": "Il tuo team",
         "all_advance": "Tutti i team avanzano ai playoff"
@@ -6661,37 +6723,37 @@
     },
     "playoffs": {
       "view_bracket": "Vedi bracket",
-      "pending": "Il bracket dei playoff viene generato alla fine della stagione regolare.",
+      "pending": "Il bracket playoff viene seedato al termine della stagione regolare.",
       "not_started": "I playoff non sono ancora iniziati.",
       "scheduling": "{division} · programmazione playoff"
     },
     "movements": {
-      "rank": "Pos.",
+      "rank": "Rank",
       "team": "Team",
       "movement": "Movimento",
-      "override": "Forza",
+      "override": "Sovrascrivi",
       "status": "Stato",
-      "empty": "Nessun movimento ancora calcolato.",
-      "keep_computed": "Mantieni il calcolo",
-      "approved": "Approvati",
-      "pending": "Da revisionare",
+      "empty": "Nessun movimento calcolato ancora.",
+      "keep_computed": "Mantieni calcolato",
+      "approved": "Approvato",
+      "pending": "In attesa di revisione",
       "approve_all": "Approva tutti i movimenti",
       "approved_all": "Movimenti approvati",
-      "relegation_playoffs": "Spareggi retrocessione",
+      "relegation_playoffs": "Playoff di retrocessione",
       "playoff_resolved": "Risolto",
       "bands": {
-        "RelegationUp": "Spareggio retrocessione (salita)",
-        "RelegationDown": "Spareggio retrocessione (discesa)"
+        "RelegationUp": "Playoff retrocessione (su)",
+        "RelegationDown": "Playoff retrocessione (giù)"
       }
     },
     "settings": {
       "title": "Configurazione stagione",
-      "hint": "Quasi tutto resta modificabile — solo il numero di settimane di match e le partite a settimana si bloccano all'avvio della stagione (definiscono i bracket).",
+      "hint": "Quasi tutto resta modificabile — solo il numero di settimane di gioco e i match a settimana si bloccano una volta avviata la stagione (definiscono i bracket).",
       "schedule": "Calendario",
       "dates": "Date",
       "locked_started": "Bloccato — stagione avviata",
-      "weeks_count": "Settimane di match",
-      "games_per_week": "Partite a settimana",
+      "weeks_count": "Settimane di gioco",
+      "games_per_week": "Match a settimana",
       "signup_opens": "Apertura iscrizioni",
       "signup_closes": "Chiusura iscrizioni",
       "starts_at": "Inizio stagione",
@@ -6699,19 +6761,19 @@
     },
     "series": {
       "title": "Formato serie",
-      "week_title": "Stagione regolare (a settimana)",
+      "week_title": "Stagione regolare (per settimana)",
       "playoff_title": "Playoff (per round)",
-      "hint": "Le modifiche valgono per i match non ancora creati — quelli già programmati mantengono il loro formato.",
+      "hint": "Le modifiche si applicano ai match non ancora creati — i match già programmati mantengono il loro formato.",
       "save": "Salva formato serie",
       "saved": "Formato serie salvato",
       "third_place_match": "Finale per il terzo posto",
       "bracket_type": "Tipo di bracket",
       "advance_count": "Team che avanzano",
-      "advance_hint": "Quanti team per divisione entrano nel bracket dei playoff.",
-      "structure_locked": "Il tipo di bracket e la finale di spareggio si bloccano all'avvio della stagione; la lunghezza delle serie resta modificabile.",
+      "advance_hint": "Quanti per divisione accedono al bracket playoff.",
+      "structure_locked": "Il tipo di bracket e la finale per il terzo posto si bloccano una volta avviata la stagione; la lunghezza della serie resta modificabile.",
       "stage_types": {
         "SingleElimination": "Eliminazione singola",
-        "DoubleElimination": "Eliminazione doppia"
+        "DoubleElimination": "Doppia eliminazione"
       }
     },
     "stats": {
@@ -6719,15 +6781,15 @@
       "team": "Team",
       "maps": "Mappe",
       "kdr": "K/D",
-      "empty": "Ancora nessuna statistica — compaiono dopo i primi match di lega."
+      "empty": "Nessuna statistica ancora — appare non appena vengono giocati match di lega."
     },
     "rollover": {
-      "create_next": "Crea la prossima stagione",
+      "create_next": "Crea prossima stagione",
       "created": "{name} creata"
     },
     "restart": {
-      "action": "Riporta a configurazione",
-      "done": "Stagione riportata a configurazione"
+      "action": "Reimposta a configurazione",
+      "done": "Stagione reimpostata a configurazione"
     },
     "readiness": {
       "title": "Prontezza stagione",
@@ -6737,30 +6799,30 @@
     },
     "about": {
       "title": "Come funziona la lega",
-      "register": "Iscrivi il tuo team mentre le iscrizioni sono aperte e scegli i giocatori del roster stagionale.",
-      "placement": "Gli admin revisionano le iscrizioni e collocano i team nelle divisioni per livello. I team di ritorno mantengono la divisione conquistata.",
-      "weekly": "Ogni settimana hai uno scontro. Uno dei due capitani propone un orario all'interno della settimana di match e il capitano avversario accetta — potete rinegoziare finché il match non parte.",
-      "default_night": "Se non si trova un accordo, il match ricade sulla serata di gioco della lega per quella settimana.",
-      "roster_lock": "I roster si bloccano a metà stagione — solo i giocatori nel roster possono giocare i match di lega, e un giocatore può stare in un solo team per stagione.",
-      "playoffs": "I migliori team della classifica si qualificano per il bracket dei playoff; i capitani programmano i match dei playoff allo stesso modo.",
+      "register": "Iscrivi il tuo team mentre le iscrizioni sono aperte e scegli i giocatori del tuo roster stagionale.",
+      "placement": "Gli admin rivedono le iscrizioni e assegnano i team alle divisioni di livello. I team di ritorno mantengono la divisione conquistata.",
+      "weekly": "Ogni settimana hai un incontro. Uno dei due capitani propone un orario entro la settimana di gioco e il capitano avversario lo accetta — potete rinegoziare finché il match non va live.",
+      "default_night": "Se non si concorda un orario, il match va di default alla serata di gioco della lega per quella settimana.",
+      "roster_lock": "I roster si bloccano a metà stagione — solo i giocatori rostered possono disputare match di lega, e un giocatore può stare in un solo team a stagione.",
+      "playoffs": "I team migliori in classifica si qualificano per il bracket playoff; i capitani programmano i match playoff allo stesso modo.",
       "movement": "La classifica finale decide promozioni e retrocessioni tra divisioni per la stagione successiva."
     },
     "confirm": {
       "cancel_season_title": "Annullare questa stagione?",
-      "cancel_season_description": "L'annullamento chiude la stagione per tutti i team: le iscrizioni si chiudono, tutti i match rimanenti vengono cancellati e la stagione non può essere riavviata.",
+      "cancel_season_description": "L'annullamento termina la stagione per tutti i team: le iscrizioni si chiudono, tutti i match rimanenti vengono cancellati e la stagione non può essere riavviata.",
       "withdraw_title": "Ritirarsi dalla stagione?",
-      "withdraw_description": "Il tuo team rinuncia al posto in questa stagione. Se le iscrizioni sono ancora aperte puoi registrarti di nuovo, ma il posto e la divisione assegnata non vengono conservati."
+      "withdraw_description": "Il tuo team rinuncia al suo posto in questa stagione. Se le iscrizioni sono ancora aperte puoi iscriverti di nuovo, ma il tuo posto e l'assegnazione di divisione non vengono mantenuti."
     },
     "calendar": {
       "month": "Mese",
       "agenda": "Agenda",
       "times_in": "Orari in",
-      "default_night": "Serata predefinita",
+      "default_night": "Sera predefinita",
       "default_short": "Predefinito",
-      "needs_you": "Richiede te",
-      "all_clear": "Non c'è nulla in attesa. Ogni match della stagione ha un orario.",
+      "needs_you": "Serve te",
+      "all_clear": "Non c'è nulla in attesa. Ogni match di questa stagione ha un orario.",
       "upcoming": "In arrivo",
-      "no_upcoming": "Nessun match da giocare.",
+      "no_upcoming": "Nessun match ancora da giocare.",
       "more": "altri",
       "status": {
         "won": "Vinto",
@@ -6776,7 +6838,7 @@
       },
       "legend": {
         "awaiting": "In attesa di te",
-        "agreed": "Concordato / predefinito",
+        "agreed": "Concordato / default",
         "won": "Vinto",
         "lost": "Perso",
         "window": "Nella tua finestra di match"
@@ -6789,8 +6851,8 @@
       "n_unscheduled": "{count} non programmati",
       "n_awaiting": "{count} in attesa di risposta",
       "col": {
-        "week": "Sett.",
-        "matchup": "Sfida",
+        "week": "Sett",
+        "matchup": "Incontro",
         "status": "Stato",
         "time": "Orario",
         "proposed_by": "Proposto da"
@@ -6799,24 +6861,24 @@
   },
   "event": {
     "card": {
-      "organizing": "Organizza",
+      "organizing": "Organizzazione",
       "tournaments": "Tornei",
       "organized_by": "Organizzato da"
     },
     "tabs": {
       "leaderboard": "Classifica",
-      "standings": "Piazzamenti",
+      "standings": "Standing",
       "tournaments": "Tornei",
       "teams": "Team e giocatori",
       "settings": "Impostazioni",
       "media": "Media",
       "overview": "Panoramica",
-      "story": "Racconto",
+      "story": "Storia",
       "matches": "Match"
     },
     "not_found": {
       "title": "Evento non trovato",
-      "description": "Questo evento non esiste o non hai i permessi per visualizzarlo."
+      "description": "Questo evento non esiste o non hai accesso per visualizzarlo."
     },
     "tournaments": {
       "none": "Nessun torneo fa ancora parte di questo evento."
@@ -6833,36 +6895,36 @@
     "deleted": "Evento eliminato",
     "danger_zone": {
       "title": "Zona pericolosa",
-      "description": "Eliminando un evento lo rimuovi in modo permanente, inclusi i suoi media e la sua classifica. I match e i tornei collegati all'evento non vengono eliminati."
+      "description": "Eliminare un evento lo rimuove definitivamente, inclusi media e classifica. I match e i tornei collegati all'evento non vengono eliminati."
     },
     "confirm": {
       "delete": {
         "title": "Eliminare questo evento?",
-        "description": "«{name}» verrà eliminato in modo permanente. L'operazione è irreversibile."
+        "description": "«{name}» verrà eliminato definitivamente. L'operazione è irreversibile."
       }
     },
     "form": {
       "name": "Nome evento",
       "description": "Descrizione",
-      "starts_at": "Inizio",
-      "ends_at": "Fine",
+      "starts_at": "Inizia il",
+      "ends_at": "Finisce il",
       "dates": "Date evento",
       "pick_dates": "Scegli un intervallo di date",
-      "start_required": "La data di inizio è obbligatoria, così l'evento raccoglie solo i match giocati da quella data in poi",
+      "start_required": "È richiesta una data di inizio, in modo che l'evento raccolga solo i match giocati da quella data in poi",
       "start_time": "Ora di inizio",
       "end_time": "Ora di fine",
       "create": "Crea evento",
       "create_bar": {
         "ready": "Pronto per la creazione",
-        "ready_hint": "È tutto a posto, crea il tuo evento quando vuoi.",
+        "ready_hint": "Va tutto bene, crea il tuo evento quando sei pronto.",
         "incomplete": "Campi obbligatori mancanti",
-        "incomplete_hint": "Inserisci il nome dell'evento e una data di inizio per continuare"
+        "incomplete_hint": "Compila il nome dell'evento e una data di inizio per continuare"
       },
       "visibility": "Visibilità",
       "media_access": "Caricamento media",
       "sections": {
         "details": "Dettagli",
-        "schedule": "Calendario",
+        "schedule": "Programma",
         "access": "Accesso"
       }
     },
@@ -6870,7 +6932,7 @@
       "categories": {
         "rating": "Rating",
         "adr": "ADR",
-        "kdr": "Rapporto K/D",
+        "kdr": "K/D Ratio",
         "kills": "Kill",
         "wins": "Vittorie"
       },
@@ -6884,41 +6946,41 @@
         "deaths_short": "D",
         "matches": "Match"
       },
-      "no_results": "Nessun risultato in classifica."
+      "no_results": "Ancora nessun risultato in classifica."
     },
     "standings": {
       "champion": "Campione",
-      "runner_up": "Secondo",
+      "runner_up": "Secondo posto",
       "third": "Terzo posto",
       "mvp": "MVP",
       "gold": "Oro",
       "silver": "Argento",
       "bronze": "Bronzo",
-      "none": "Ancora nessun piazzamento per i tornei di questo evento.",
+      "none": "Ancora nessuno standing per i tornei di questo evento.",
       "medal_table": "Medagliere"
     },
     "membership": {
-      "title": "Partecipazione",
+      "title": "Membri",
       "detach": "Rimuovi",
       "tournaments": {
         "title": "Tornei",
-        "none": "Nessun torneo collegato.",
-        "search_placeholder": "Cerca tra i tuoi tornei...",
+        "none": "Ancora nessun torneo collegato.",
+        "search_placeholder": "Cerca i tuoi tornei...",
         "none_found": "Nessun torneo trovato"
       },
       "teams": {
         "title": "Team",
-        "none": "Nessun team collegato.",
+        "none": "Ancora nessun team collegato.",
         "search_placeholder": "Cerca team..."
       },
       "players": {
         "title": "Giocatori",
-        "none": "Nessun giocatore collegato.",
+        "none": "Ancora nessun giocatore collegato.",
         "search_placeholder": "Cerca giocatori...",
         "import": "Importa dai tornei",
         "import_none": "Nessun nuovo giocatore trovato nei tornei di questo evento.",
         "import_success": "Importati {count} giocatori dai roster dei tornei.",
-        "import_hint": "Aggiunge a questo evento tutti i giocatori nei roster dei tornei collegati."
+        "import_hint": "Aggiunge a questo evento ogni giocatore in roster nei tornei collegati."
       },
       "organizers": {
         "title": "Organizzatori",
@@ -6941,7 +7003,7 @@
     },
     "media": {
       "none": "Nessun media è stato ancora caricato in questo evento.",
-      "drop_to_upload": "Rilascia per caricare",
+      "drop_to_upload": "Trascina per caricare",
       "click_to_choose": "Clicca per scegliere un file o trascinalo qui",
       "supported_types": "Immagini (PNG, JPEG, WebP, GIF fino a 10MB), video MP4 (fino a 512MB) e audio MP3 (fino a 50MB)",
       "uploaded": "Media caricato",
@@ -6956,14 +7018,14 @@
       "untitled": "Senza titolo",
       "details": "Dettagli",
       "title_label": "Titolo",
-      "title_placeholder": "Dai un titolo a questo media",
+      "title_placeholder": "Assegna un titolo a questo media",
       "saved": "Salvato",
       "players_label": "Giocatori taggati",
-      "no_players": "Nessun giocatore taggato.",
+      "no_players": "Ancora nessun giocatore taggato.",
       "tag_players": "Tagga un giocatore...",
       "audio": "Audio",
       "queue_processing": "Elaborazione",
-      "no_participants": "Nessun partecipante all'evento da taggare",
+      "no_participants": "Ancora nessun partecipante da taggare",
       "show_more": "Carica altri media",
       "filter_by_player": "Filtra per giocatore...",
       "none_for_player": "Nessun media taggato con questo giocatore.",
@@ -6987,14 +7049,14 @@
     },
     "overview": {
       "for_you": "Per te",
-      "rank": "Rank evento",
+      "rank": "Rank nell'evento",
       "rating": "Rating",
       "kd": "K/D",
       "matches": "Match",
-      "no_my_matches": "Nessuno dei tuoi match fa ancora parte di questo evento."
+      "no_my_matches": "Ancora nessuno dei tuoi match fa parte di questo evento."
     },
     "matches": {
-      "none": "Nessun match è stato ancora giocato nei tornei di questo evento.",
+      "none": "Ancora nessun match giocato nei tornei di questo evento.",
       "load_more": "Carica altri match"
     },
     "story": {
@@ -7010,13 +7072,13 @@
       "remove": "Rimuovi banner",
       "updated": "Banner aggiornato",
       "removed": "Banner rimosso",
-      "empty_hint": "Nessun banner — clicca per caricarlo",
-      "hint": "Mostrato a tutta larghezza in cima alla pagina dell'evento. Dimensione ottimale: 1920×640 (3:1). Immagini fino a 10MB o video MP4 fino a 512MB.",
+      "empty_hint": "Ancora nessun banner — clicca per caricarlo",
+      "hint": "Mostrato a tutta larghezza in cima alla pagina evento. Dimensione ottimale: 1920×640 (3:1). Immagini fino a 10MB o video MP4 fino a 512MB.",
       "editor": {
         "title": "Regola banner",
-        "description": "Trascina per posizionare e scorri per zoomare dentro la cornice 3:1 del banner. Usa «Adatta tutta l'immagine» se l'immagine non deve essere ritagliata: la pagina riempie i lati con una copia sfocata.",
-        "fit_whole": "Adatta tutta l'immagine",
-        "reset": "Reimposta",
+        "description": "Trascina per posizionare e scorri per zoomare all'interno del frame 3:1 del banner. Usa «Adatta immagine intera» se l'immagine non deve essere ritagliata — la pagina riempie i lati con una copia sfocata.",
+        "fit_whole": "Adatta immagine intera",
+        "reset": "Ripristina",
         "apply": "Usa come banner"
       }
     },
@@ -7029,15 +7091,55 @@
       "adr": "ADR",
       "hs": "HS%",
       "matches": "Match",
-      "tab_stats": "Statistiche",
+      "tab_stats": "Stat",
       "tab_matches": "Match",
       "compare_with": "Confronta con...",
-      "clear_compare": "Azzera confronto",
+      "clear_compare": "Rimuovi confronto",
       "axis_frags": "Frag",
       "axis_kd": "K/D",
       "axis_adr": "ADR",
       "axis_hs": "HS%",
       "axis_assist": "Assist"
     }
+  },
+  "awards": {
+    "title": "Trofei",
+    "mvp": "MVP",
+    "first_place": "1° posto",
+    "second_place": "2° posto",
+    "third_place": "3° posto",
+    "tournament": "Torneo",
+    "placement": "Piazzamento",
+    "no_awards": "Ancora nessun trofeo",
+    "no_awards_description": "Arriva tra i primi 3 di un torneo per guadagnare un trofeo.",
+    "granted": "MVP",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "VEDI TORNEO"
+  },
+  "awards_manage_form": {
+    "team": "Team",
+    "player": "Giocatore",
+    "award": "Team",
+    "recipient": "Recipient"
   }
 }

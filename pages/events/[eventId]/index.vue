@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import { validate as validateUUID } from "uuid";
-import { Trash2 } from "lucide-vue-next";
+import { Trash2, Medal } from "lucide-vue-next";
+import AwardComposer from "~/components/award/AwardComposer.vue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -235,7 +236,19 @@ function formatTournamentStatus(status?: string | null): string {
                 </div>
               </div>
 
-              <h1 :class="heroTitleClasses">{{ event.name }}</h1>
+              <div class="flex items-start justify-between gap-3">
+                <h1 :class="heroTitleClasses">{{ event.name }}</h1>
+                <button
+                  v-if="canGrantAwards"
+                  type="button"
+                  class="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                  :title="$t('awards.composer.grant_here')"
+                  :aria-label="$t('awards.composer.grant_here')"
+                  @click="awardComposerOpen = true"
+                >
+                  <Medal class="h-4 w-4" />
+                </button>
+              </div>
               <p
                 v-if="event.description"
                 class="mt-1.5 max-w-[70ch] text-sm text-muted-foreground"
@@ -512,6 +525,12 @@ function formatTournamentStatus(status?: string | null): string {
       </AlertDialogContent>
     </AlertDialog>
   </div>
+
+  <AwardComposer
+    v-if="event && awardComposerOpen"
+    v-model:open="awardComposerOpen"
+    :event-id="event.id"
+  />
 </template>
 
 <script lang="ts">
@@ -640,6 +659,7 @@ const EVENT_LEADERBOARD_ROWS = gql`
 export default {
   data() {
     return {
+      awardComposerOpen: false,
       event: undefined as any,
       loading: true,
       leaderboardRows: [] as any[],
@@ -710,6 +730,9 @@ export default {
     },
   },
   computed: {
+    canGrantAwards() {
+      return useApplicationSettingsStore().canGrantAwards;
+    },
     // Mirrors the Hasura delete permission on events: the creating organizer,
     // or tournament_organizer and above. Co-organizers can manage the event
     // (is_organizer) but cannot delete it.

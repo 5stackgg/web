@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
-import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
+import AwardBadge from "~/components/award/AwardBadge.vue";
 import {
   Tooltip,
   TooltipContent,
@@ -91,7 +91,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
         </div>
       </div>
 
-      <!-- Top 5 starters by ELO + recent trophies -->
+      <!-- Top 5 starters by ELO + recent awards -->
       <div v-if="topStarters(team).length" class="flex items-center gap-1.5">
         <div class="flex -space-x-1.5">
           <Avatar
@@ -120,14 +120,14 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           +{{ extraCount(team) }}
         </span>
 
-        <!-- Recent trophies (last 5) -->
+        <!-- Recent awards (last 5) -->
         <div
-          v-if="recentTrophies(team).length"
+          v-if="recentAwards(team).length"
           class="ml-auto flex items-center gap-1"
         >
           <TooltipProvider
-            v-for="trophy in recentTrophies(team)"
-            :key="trophy.id"
+            v-for="grant in recentAwards(team)"
+            :key="grant.id"
             :delay-duration="0"
           >
             <Tooltip>
@@ -135,18 +135,19 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                 <button
                   type="button"
                   class="rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
-                  :aria-label="trophyAriaLabel(trophy)"
-                  @click.stop.prevent="goToTournament(trophy.tournament_id)"
+                  :aria-label="awardAriaLabel(grant)"
+                  @click.stop.prevent="goToTournament(grant.tournament_id)"
                 >
-                  <TrophyBadge
-                    :tournament-id="trophy.tournament_id"
-                    :placement="trophy.placement"
-                    :tournament-name="trophy.tournament?.name"
-                    :tournament-start="trophy.tournament?.start"
-                    :tournament-type="trophy.tournament?.stages?.[0]?.type"
-                    :custom-name="trophy.trophy_config?.custom_name"
-                    :silhouette-override="trophy.trophy_config?.silhouette"
-                    :image-url="trophy.trophy_config?.image_url"
+                  <AwardBadge
+                    :award="grant.award"
+                    :seed-key="grant.tournament_id || grant.award?.id"
+                    :placement="grant.placement"
+                    :tournament-name="grant.tournament?.name"
+                    :tournament-start="grant.tournament?.start"
+                    :tournament-type="grant.tournament?.stages?.[0]?.type"
+                    :custom-name="grant.tournament_award?.custom_name"
+                    :silhouette-override="grant.tournament_award?.silhouette"
+                    :image-url="grant.tournament_award?.image_url"
                     size="xs"
                     :interactive="false"
                   />
@@ -156,22 +157,22 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                 <div class="flex flex-col gap-0.5">
                   <div class="font-semibold leading-tight">
                     {{
-                      trophy.trophy_config?.custom_name ||
-                      trophy.tournament?.name ||
+                      grant.tournament_award?.custom_name ||
+                      grant.tournament?.name ||
                       "Tournament"
                     }}
                   </div>
                   <div
                     class="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
                   >
-                    <span :style="{ color: placementColor(trophy.placement) }">
-                      {{ placementLabel(trophy.placement) }}
+                    <span :style="{ color: placementColor(grant.placement) }">
+                      {{ placementLabel(grant.placement) }}
                     </span>
-                    <span v-if="trophy.tournament?.start" class="opacity-50"
+                    <span v-if="grant.tournament?.start" class="opacity-50"
                       >·</span
                     >
-                    <span v-if="trophy.tournament?.start">
-                      {{ formatTrophyDate(trophy.tournament.start) }}
+                    <span v-if="grant.tournament?.start">
+                      {{ formatAwardDate(grant.tournament.start) }}
                     </span>
                   </div>
                   <div
@@ -184,10 +185,10 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
             </Tooltip>
           </TooltipProvider>
           <span
-            v-if="extraTrophies(team) > 0"
+            v-if="extraAwards(team) > 0"
             class="inline-flex items-center justify-center rounded border border-border bg-muted/40 px-1.5 h-7 text-[0.6rem] font-mono tabular-nums text-muted-foreground"
           >
-            +{{ extraTrophies(team) }}
+            +{{ extraAwards(team) }}
           </span>
         </div>
       </div>
@@ -216,18 +217,26 @@ interface RosterEntry {
   player?: RosterPlayer | null;
 }
 
-interface TrophyEntry {
+interface AwardEntry {
   id: string;
-  placement: number;
+  placement?: number | null;
   placement_tier?: string | null;
-  tournament_id: string;
+  tournament_id?: string | null;
+  created_at?: string | null;
+  award?: {
+    id: string;
+    name?: string | null;
+    tier?: string | null;
+    silhouette?: number | null;
+    image_url?: string | null;
+  } | null;
   tournament?: {
     id?: string;
     name?: string | null;
     start?: string | null;
     stages?: Array<{ type?: string | null }> | null;
   } | null;
-  trophy_config?: {
+  tournament_award?: {
     custom_name?: string | null;
     silhouette?: number | null;
     image_url?: string | null;
@@ -240,7 +249,7 @@ export default {
       required: true,
       type: Object,
     },
-    trophiesByTeamId: {
+    awardsByTeamId: {
       type: Object,
       default: () => ({}),
     },
@@ -269,13 +278,13 @@ export default {
     rosterCount(team: { roster?: RosterEntry[] }): number {
       return team.roster?.length ?? 0;
     },
-    teamTrophies(team: { id: string }): TrophyEntry[] {
+    teamAwards(team: { id: string }): AwardEntry[] {
       return (
-        (this.trophiesByTeamId as Record<string, TrophyEntry[]>)[team.id] ?? []
+        (this.awardsByTeamId as Record<string, AwardEntry[]>)[team.id] ?? []
       );
     },
-    recentTrophies(team: { id: string }): TrophyEntry[] {
-      return [...this.teamTrophies(team)]
+    recentAwards(team: { id: string }): AwardEntry[] {
+      return [...this.teamAwards(team)]
         .sort((a, b) => {
           const da = a.tournament?.start
             ? new Date(a.tournament.start).getTime()
@@ -287,8 +296,8 @@ export default {
         })
         .slice(0, 5);
     },
-    extraTrophies(team: { id: string }): number {
-      return Math.max(0, this.teamTrophies(team).length - 5);
+    extraAwards(team: { id: string }): number {
+      return Math.max(0, this.teamAwards(team).length - 5);
     },
     placementLabel(placement: number): string {
       if (placement === 0) return "MVP";
@@ -304,7 +313,7 @@ export default {
       if (placement === 3) return "hsl(28 70% 52%)";
       return "hsl(var(--muted-foreground))";
     },
-    formatTrophyDate(iso?: string | null): string {
+    formatAwardDate(iso?: string | null): string {
       if (!iso) return "";
       const d = new Date(iso);
       if (Number.isNaN(d.getTime())) return "";
@@ -316,12 +325,12 @@ export default {
         })
         .toUpperCase();
     },
-    trophyAriaLabel(trophy: TrophyEntry): string {
+    awardAriaLabel(grant: AwardEntry): string {
       const name =
-        trophy.trophy_config?.custom_name ||
-        trophy.tournament?.name ||
+        grant.tournament_award?.custom_name ||
+        grant.tournament?.name ||
         "tournament";
-      return `${this.placementLabel(trophy.placement)} — ${name}`;
+      return `${this.placementLabel(grant.placement)} — ${name}`;
     },
     goToTournament(tournamentId?: string | null) {
       if (!tournamentId) return;

@@ -7,6 +7,29 @@ import {
   weaponBasename,
 } from "~/utilities/weaponIcon";
 import { kdColor } from "~/utils/statTiers";
+import {
+  activeBlastsAt,
+  decodeSmokeVolume,
+  smokeAlive,
+  smokeBloom,
+  smokeFootprint,
+  traceContour,
+  C4_BLAST_FULL_RADIUS,
+  C4_BLAST_RADIUS,
+  HE_BLAST_FULL_RADIUS,
+  HE_BLAST_RADIUS,
+  SMOKE_CONTOUR_LEVELS,
+  SMOKE_UPSAMPLE,
+  upsampleFootprint,
+  bulletSwirlAlpha,
+  type DecodedSmokeVolume,
+  flameFlicker,
+  infernoAlive,
+  liveFlames,
+  type Inferno,
+  type SmokeBlast,
+  type SmokeVolume,
+} from "~/utils/smokeVolume";
 import { moneyOf, isFullBuyRound } from "~/utilities/buyType";
 
 // Canonical icon first (5Stack/new demos); if it 404s, retry the legacy
@@ -219,6 +242,12 @@ const props = defineProps<{
     gid: number;
     pts: Array<{ t: number; x: number; y: number; z: number }>;
   }>;
+  // Per-smoke occupancy grids measured against the map's collision mesh
+  // (blob schema v9+). Absent on older blobs, which fall back to a disc.
+  smokeVolumes?: SmokeVolume[];
+  // Per-molotov flame positions and lifetimes (blob schema v9+). Absent on
+  // older blobs, which fall back to the invented flame cluster.
+  infernos?: Inferno[];
   shots?: Shot[];
   damages?: Damage[];
   demoPlayers?: DemoPlayer[];
@@ -1056,7 +1085,11 @@ const TRACER_MISS_LEN = 1400; // source units a miss bullet flies before vanishi
 // renderer can lerp the streak along the path each frame.
 const tracersNow = computed(() => {
   if (viewMode.value !== "3d") return [];
-  const t0 = currentTick.value;
+  // The smoothed tick, not the raw one. `currentTick` steps once per sample
+  // (0.25s), so anything animated from it moves at 4Hz — which is exactly what
+  // made tracers look like stuttering line segments rather than travelling
+  // bullets. Player positions already interpolate; shots must too.
+  const t0 = smoothCurrentTick.value;
   const out: Array<{
     ex: number;
     ey: number;
@@ -1251,18 +1284,46 @@ function resolveGrenadePosition(
 }
 
 // Grenade lifetimes (in ticks @ 64 tps — close enough at 128 too).
-const GRENADE_LIFETIME_TICKS: Record<Grenade["type"], number> = {
-  Smoke: 18 * 64,
-  Molotov: 7 * 64,
-  HE: 2 * 64,
-  Flash: 2.5 * 64,
-  Decoy: 15 * 64,
+// How long a detonation stays on screen, in seconds of playback.
+//
+// These are the effects' real durations, not animation taste. An HE detonates
+// and is over — showing a two-second fireball made the radar read as though the
+// blast lingered. Smoke is a fallback only: a measured cloud carries its own
+// SmokeExpired tick and uses that instead.
+const GRENADE_LIFETIME_SECS: Record<Grenade["type"], number> = {
+  Smoke: 18,
+  Molotov: 7,
+  HE: 0.7,
+  Flash: 0.5,
+  Decoy: 15,
+};
+
+// Real blast geometry, in source units, shared with the parser. Drawing at
+// these radii means an explosion is the right size next to the measured smoke
+// beside it, at any radar zoom.
+const BLAST_GEOMETRY = {
+  // Full-strength radius and outer influence of an HE, per the CS2 smoke
+  // shader's own coefficients.
+  heCore: 100,
+  heOuter: 250,
+  // The shockwave front travels at about 1250 u/s, which is what makes the
+  // expanding ring take 0.2s to cross its influence radius rather than
+  // whatever looked good.
+  frontSpeed: 1250,
+  // An inferno covers roughly this much ground.
+  fireRadius: 150,
+  flashRadius: 110,
+  decoyRadius: 90,
 };
 
 type ResolvedGrenade = Grenade & {
   rx: number;
   ry: number;
   rz: number;
+  // Deploy progress 0→1 for smokes, from the measured start tick. The 3D volume
+  // cannot derive this itself: it only sees remaining-lifetime, and a smoke's
+  // lifetime is ~18s while its bloom is about one.
+  bloom?: number;
   // Remaining lifetime fraction [0,1] at the current playback tick —
   // drives the depleting timer ring around timed grenades.
   life: number;
@@ -1278,6 +1339,89 @@ const smoothCurrentTick = computed(() => {
   return t0 + (t1 - t0) * fractional.value;
 });
 
+// Converts a radius in source units to radar pixels at the current projection,
+// by projecting a point that far away and measuring. Doing it through project()
+// rather than a fixed ratio keeps blasts correctly sized on multi-level maps
+// and at any zoom.
+function worldRadiusPx(at: { x: number; y: number; z?: number }, r: number) {
+  const a = project(at);
+  const b = project({ x: at.x + r, y: at.y, z: at.z });
+  return Math.abs(b.x - a.x) || 1;
+}
+
+// Deterministic 0→1 noise from an integer, so flicker is a function of the
+// playback tick. Wall-clock randomness would make a paused frame shimmer and a
+// scrubbed one differ every pass.
+function tickNoise(n: number): number {
+  const x = Math.sin(n * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// Every detonation's visual state, derived from playback time.
+//
+// The effects used to be SMIL <animate> with wall-clock durations, which meant
+// an explosion played at real-time speed even while the replay was paused,
+// scrubbing, or in slow motion. Deriving the geometry from `life` instead ties
+// the animation to the tick clock, so a blast is frozen when the replay is
+// frozen and unfolds correctly when stepping frame by frame.
+const detonationVisuals = computed(() => {
+  const rate = props.tickRate || 64;
+  return detonationsByTick.value.map((g) => {
+    const life = g.life ?? 1;
+    const at = { x: g.rx, y: g.ry, z: g.rz };
+    const secs = (1 - life) * ((GRENADE_LIFETIME_SECS[g.type] ?? 1) || 1);
+    const px = (r: number) => worldRadiusPx(at, r);
+
+    // The shockwave front travels at a real speed, so how far it has got is a
+    // matter of elapsed seconds rather than a tuned curve.
+    const frontU = Math.min(
+      BLAST_GEOMETRY.heOuter,
+      secs * BLAST_GEOMETRY.frontSpeed,
+    );
+    const frontProgress = frontU / BLAST_GEOMETRY.heOuter;
+
+    return {
+      g,
+      life,
+      secs,
+      p: project(at),
+      // Flash of light at the instant of detonation, gone in a few frames.
+      spark: Math.max(0, 1 - secs / 0.09),
+      // Expanding pressure ring, fading as it thins out.
+      frontPx: px(frontU),
+      frontAlpha: Math.max(0, 1 - frontProgress) ** 0.7,
+      corePx: px(BLAST_GEOMETRY.heCore),
+      outerPx: px(BLAST_GEOMETRY.heOuter),
+      firePx: px(BLAST_GEOMETRY.fireRadius),
+      flashPx: px(BLAST_GEOMETRY.flashRadius),
+      decoyPx: px(BLAST_GEOMETRY.decoyRadius),
+      // Residual dust, rising and fading after the bang.
+      dustPx: px(BLAST_GEOMETRY.heCore * (1.05 + 0.5 * (1 - life))),
+      dustAlpha: Math.max(0, life ** 1.6) * 0.5,
+      // Fire breathes; keyed off the tick so a paused frame holds still.
+      flicker:
+        0.82 +
+        0.18 * tickNoise(Math.floor(smoothCurrentTick.value / 3) + g.tick),
+      // Fraction of a burn still to run, for the depletion arc.
+      remain: life,
+      rate,
+    };
+  });
+});
+
+// A smoke knows exactly when it cleared, because the engine told us. Everything
+// else falls back to its nominal duration.
+function grenadeLifetimeTicks(g: Grenade): number {
+  const rate = props.tickRate || 64;
+  if (g.type === "Smoke" && g.grenade_id != null) {
+    const dec = smokeVolumesByGid.value.get(Number(g.grenade_id));
+    if (dec?.src.end_tick && dec.src.end_tick > dec.src.start_tick) {
+      return dec.src.end_tick - dec.src.start_tick;
+    }
+  }
+  return (GRENADE_LIFETIME_SECS[g.type] ?? 1) * rate;
+}
+
 function resolveDetonation(g: Grenade, life: number): ResolvedGrenade | null {
   const resolved = resolveGrenadePosition(g);
   if (!resolved) return null;
@@ -1288,9 +1432,289 @@ function resolveDetonation(g: Grenade, life: number): ResolvedGrenade | null {
     rz: resolved.z,
     life,
   };
+  if (g.type === "Smoke" && g.grenade_id != null) {
+    const dec = smokeVolumesByGid.value.get(Number(g.grenade_id));
+    if (dec) {
+      r.bloom = smokeBloom(
+        dec.src,
+        smoothCurrentTick.value,
+        props.tickRate || 64,
+      );
+    }
+  }
   if (!isProjectedInside({ x: r.rx, y: r.ry, z: r.rz })) return null;
   return r;
 }
+
+// Decoded smoke grids, keyed by grenade id so a detonation can find its own
+// measured shape. Decoding is the expensive half, so it happens once per blob
+// rather than per frame.
+const smokeVolumesByGid = computed(() => {
+  const out = new Map<number, DecodedSmokeVolume>();
+  for (const v of props.smokeVolumes ?? []) {
+    if (v.gid == null) continue;
+    const dec = decodeSmokeVolume(v);
+    if (dec) out.set(Number(v.gid), dec);
+  }
+  return out;
+});
+
+// Explosions that displace smoke, derived from events already in the blob. The
+// parser applies the same thinning to its sightline tests, so the hole drawn
+// here is the hole the stats believe in.
+const smokeBlasts = computed<SmokeBlast[]>(() => {
+  const out: SmokeBlast[] = [];
+  for (const g of props.grenades ?? []) {
+    if (g.type !== "HE" || g.phase !== "detonated") continue;
+    out.push({
+      x: g.x,
+      y: g.y,
+      z: g.z,
+      tick: g.tick,
+      radius: HE_BLAST_RADIUS,
+      full: HE_BLAST_FULL_RADIUS,
+    });
+  }
+  for (const b of props.demoBombs ?? []) {
+    if (b.type !== "exploded" || (!b.x && !b.y && !b.z)) continue;
+    out.push({
+      x: b.x as number,
+      y: b.y as number,
+      z: b.z as number,
+      tick: b.tick,
+      radius: C4_BLAST_RADIUS,
+      full: C4_BLAST_FULL_RADIUS,
+    });
+  }
+  return out;
+});
+
+// The blasts thinning smoke right now. Resolved here because this component
+// owns the clock; the 3D renderer takes them as a prop.
+const activeSmokeBlasts = computed(() => {
+  if (!smokeBlasts.value.length) return [];
+  const t = overlayMode.value ? 0 : smoothCurrentTick.value;
+  if (!t) return [];
+  return activeBlastsAt(smokeBlasts.value, t, props.tickRate || 64);
+});
+
+// Smoke silhouettes to draw at the current tick, already projected to radar
+// space. Each cloud is traced at several density levels so it reads as a body
+// of gas with a dense core rather than a flat cut-out, and grows from its
+// detonation point over the bloom window — the same ramp the parser applies
+// when deciding whether a sightline was blocked.
+const smokeShapesNow = computed(() => {
+  const shapes: Array<{
+    key: string;
+    bands: Array<{ d: string; level: number }>;
+    team: string | null;
+  }> = [];
+  if (!props.smokeVolumes?.length) return shapes;
+  const rate = props.tickRate || 64;
+  const t = overlayMode.value ? 0 : smoothCurrentTick.value;
+  if (!t) return shapes;
+  const blasts = activeBlastsAt(smokeBlasts.value, t, rate);
+
+  for (const g of roundGrenades.value) {
+    if (g.type !== "Smoke" || g.phase !== "detonated") continue;
+    const gid = g.grenade_id == null ? null : Number(g.grenade_id);
+    if (gid == null) continue;
+    const dec = smokeVolumesByGid.value.get(gid);
+    if (!dec) continue;
+    if (!smokeAlive(dec.src, t)) continue;
+    const bloom = smokeBloom(dec.src, t, rate);
+    if (bloom <= 0) continue;
+
+    // Blasts only matter to a cloud they actually reach; skip the per-cell
+    // thinning entirely for clouds nowhere near one.
+    const near = blasts.filter((b) => {
+      const cx = dec.ox + (dec.dx * dec.vs) / 2;
+      const cy = dec.oy + (dec.dy * dec.vs) / 2;
+      const cz = dec.oz + (dec.dz * dec.vs) / 2;
+      const reach = b.r + (Math.max(dec.dx, dec.dy, dec.dz) * dec.vs) / 2;
+      return (
+        (cx - b.x) ** 2 + (cy - b.y) ** 2 + (cz - b.z) ** 2 < reach * reach
+      );
+    });
+    // Contours traced straight off 16-unit cells stair-step badly; the field
+    // underneath is smooth, so interpolate before tracing.
+    const up = upsampleFootprint(dec, smokeFootprint(dec, near), SMOKE_UPSAMPLE);
+
+    // Grow from the grid's own centre so the cloud billows outward in place.
+    const cx = dec.ox + (dec.dx * dec.vs) / 2;
+    const cy = dec.oy + (dec.dy * dec.vs) / 2;
+    const z = dec.oz + (dec.dz * dec.vs) / 2;
+
+    const bands: Array<{ d: string; level: number }> = [];
+    for (const level of SMOKE_CONTOUR_LEVELS) {
+      let d = "";
+      for (const loop of traceContour(up.view, up.mask, level)) {
+        for (let i = 0; i < loop.length; i++) {
+          const p = loop[i];
+          const s = project({
+            x: cx + (p.x - cx) * bloom,
+            y: cy + (p.y - cy) * bloom,
+            z,
+          });
+          d += `${i === 0 ? "M" : "L"}${s.x.toFixed(1)},${s.y.toFixed(1)}`;
+        }
+        d += "Z";
+      }
+      if (d) bands.push({ d, level });
+    }
+    if (bands.length) {
+      shapes.push({ key: `sv-${gid}`, bands, team: g.thrower_team ?? null });
+    }
+  }
+  return shapes;
+});
+
+// Bullets disturb smoke as they pass through it. Per the CS2 shader breakdown
+// this is a swirl — the trail offsets where the shader samples rather than
+// thinning the cloud — so it is drawn but deliberately has no effect on
+// sightlines. Shooting a smoke does not open it, and the parser agrees.
+const smokeSwirlsNow = computed(() => {
+  const out: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; a: number }> = [];
+  if (!props.smokeVolumes?.length || overlayMode.value) return out;
+  const rate = props.tickRate || 64;
+  const t = smoothCurrentTick.value;
+  if (!t) return out;
+
+  const live: DecodedSmokeVolume[] = [];
+  for (const g of roundGrenades.value) {
+    if (g.type !== "Smoke" || g.phase !== "detonated") continue;
+    const gid = g.grenade_id == null ? null : Number(g.grenade_id);
+    if (gid == null) continue;
+    const dec = smokeVolumesByGid.value.get(gid);
+    if (dec && smokeAlive(dec.src, t)) live.push(dec);
+  }
+  if (!live.length) return out;
+
+  for (const sh of activeRoundShots.value) {
+    if (sh.eye_x == null || sh.eye_y == null) continue;
+    const a = bulletSwirlAlpha(sh.tick, t, rate);
+    if (a <= 0) continue;
+    // Where the bullet went: the victim on a hit, else out along the shot line.
+    let tx: number;
+    let ty: number;
+    if (sh.result && sh.impact_x != null && sh.impact_y != null) {
+      tx = sh.impact_x;
+      ty = sh.impact_y;
+    } else if (sh.yaw != null) {
+      const yr = (sh.yaw * Math.PI) / 180;
+      tx = sh.eye_x + Math.cos(yr) * TRACER_MISS_LEN;
+      ty = sh.eye_y + Math.sin(yr) * TRACER_MISS_LEN;
+    } else {
+      continue;
+    }
+    for (const dec of live) {
+      // Clip the shot to the cloud's footprint; only the part inside swirls.
+      const lo = { x: dec.ox, y: dec.oy };
+      const hi = { x: dec.ox + dec.dx * dec.vs, y: dec.oy + dec.dy * dec.vs };
+      const dxs = tx - sh.eye_x;
+      const dys = ty - sh.eye_y;
+      let t0 = 0;
+      let t1 = 1;
+      let ok = true;
+      for (const [o, d, mn, mx] of [
+        [sh.eye_x, dxs, lo.x, hi.x],
+        [sh.eye_y, dys, lo.y, hi.y],
+      ] as Array<[number, number, number, number]>) {
+        if (Math.abs(d) < 1e-9) {
+          if (o < mn || o > mx) {
+            ok = false;
+            break;
+          }
+          continue;
+        }
+        let p = (mn - o) / d;
+        let q = (mx - o) / d;
+        if (p > q) [p, q] = [q, p];
+        if (p > t0) t0 = p;
+        if (q < t1) t1 = q;
+        if (t0 > t1) {
+          ok = false;
+          break;
+        }
+      }
+      if (!ok || t1 - t0 < 1e-3) continue;
+      const p1 = project({ x: sh.eye_x + dxs * t0, y: sh.eye_y + dys * t0 });
+      const p2 = project({ x: sh.eye_x + dxs * t1, y: sh.eye_y + dys * t1 });
+      out.push({
+        key: `sw-${sh.tick}-${dec.src.gid}-${out.length}`,
+        x1: p1.x,
+        y1: p1.y,
+        x2: p2.x,
+        y2: p2.y,
+        a,
+      });
+    }
+  }
+  return out;
+});
+
+// Fire, as the engine recorded it. Each flame is a real networked position with
+// its own lifetime, so the burn drawn here is the exact ground the molotov
+// denied — and a burn a smoke put out visibly dies back rather than being cut.
+const infernoFlamesNow = computed(() => {
+  const out: Array<{
+    key: string;
+    cx: number;
+    cy: number;
+    r: number;
+    core: number;
+    hot: number;
+    team: string | null;
+  }> = [];
+  if (!props.infernos?.length || overlayMode.value) return out;
+  const rate = props.tickRate || 64;
+  const t = smoothCurrentTick.value;
+  if (!t) return out;
+
+  for (const inf of props.infernos) {
+    if (inf.round !== activeRound.value) continue;
+    if (!infernoAlive(inf, t)) continue;
+    for (const f of liveFlames(inf, t, rate)) {
+      const at = { x: f.x, y: f.y, z: f.z };
+      const p = project(at);
+      // The engine's flames sit ~65 units apart, so each patch is sized in
+      // world units to bridge that gap — otherwise the burn reads as a scatter
+      // of dots instead of one body of fire. Sizing in world units also keeps
+      // it right at any radar zoom.
+      const flick = 0.78 + 0.22 * flameFlicker(f.x, f.y, Math.floor(t / 3));
+      const px = worldRadiusPx(at, 52);
+      out.push({
+        key: `fl-${inf.id}-${out.length}`,
+        cx: p.x,
+        cy: p.y,
+        // Wide, faint patch marking denied ground...
+        r: px * flick * (0.6 + 0.4 * f.intensity),
+        // ...and a small bright ember at the flame itself, so the burn reads
+        // as fire rather than a coloured region.
+        core: px * 0.34 * (0.5 + 0.5 * flick) * f.intensity,
+        hot: f.intensity * flick,
+        team: inf.thrower_team ?? null,
+      });
+    }
+  }
+  return out;
+});
+
+// Burns already drawn from real flame data, so the invented cluster does not
+// stack on top.
+const infernoRoundsWithFlames = computed(() => {
+  const s = new Set<number>();
+  for (const f of infernoFlamesNow.value) {
+    s.add(Number(f.key.split("-")[1]));
+  }
+  return s;
+});
+
+// Which smokes the measured-shape layer already drew, so the fallback disc
+// isn't stacked on top of them.
+const smokeGidsWithShape = computed(
+  () => new Set(smokeShapesNow.value.map((s) => s.key.slice(3))),
+);
 
 const detonationsByTick = computed<ResolvedGrenade[]>(() => {
   // Overlay: union of every selected round's active detonations, each
@@ -1312,7 +1736,7 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
             overlayTeam.value
         )
           continue;
-        const lifetime = GRENADE_LIFETIME_TICKS[g.type] ?? 64;
+        const lifetime = grenadeLifetimeTicks(g);
         if (t - g.tick > lifetime) continue;
         const r = resolveDetonation(g, 1 - (t - g.tick) / lifetime);
         if (r) out.push(r);
@@ -1326,7 +1750,7 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
   for (const g of roundGrenades.value) {
     if (g.phase !== "detonated") continue;
     if (g.tick > t) continue;
-    const lifetime = GRENADE_LIFETIME_TICKS[g.type] ?? 64;
+    const lifetime = grenadeLifetimeTicks(g);
     if (t - g.tick > lifetime) continue;
     const r = resolveDetonation(g, 1 - (t - g.tick) / lifetime);
     if (r) out.push(r);
@@ -3375,6 +3799,11 @@ function openReplayPopout() {
     match: props.match,
     positions: props.positions,
     grenades: props.grenades,
+    // The popout treats a handoff as a complete payload and never fetches the
+    // blob, so anything omitted here is simply missing over there.
+    grenadeTrajectories: props.grenadeTrajectories,
+    smokeVolumes: props.smokeVolumes,
+    infernos: props.infernos,
     shots: props.shots,
     damages: props.damages,
     demoPlayers: props.demoPlayers,
@@ -3698,6 +4127,35 @@ watch(overlayMode, (on) => {
               <feGaussianBlur stdDeviation="1.2" />
             </filter>
 
+            <!-- Gentler turbulence for measured smoke volumes. The decorative
+                 filter above displaces edges by up to ±7px, which was fine when
+                 the shape was an invented disc but would push a real silhouette
+                 through a wall. This adds texture without relocating the
+                 boundary. -->
+            <filter
+              id="smoke-volume-displace"
+              x="-20%"
+              y="-20%"
+              width="140%"
+              height="140%"
+            >
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.05 0.06"
+                numOctaves="2"
+                seed="7"
+                result="vnoise"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="vnoise"
+                scale="3.5"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+              <feGaussianBlur stdDeviation="0.9" />
+            </filter>
+
             <!-- Soft outer halo for smoke -->
             <radialGradient id="smoke-grad" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="rgba(245,245,245,0.55)" />
@@ -3742,6 +4200,37 @@ watch(overlayMode, (on) => {
             </radialGradient>
 
             <!-- HE shockwave: layered glow for thick, "displaced air" ring. -->
+            <!-- Merges the per-flame patches into one body of fire. A plain
+                 blur, deliberately: pushing the alpha back up afterwards (as an
+                 earlier version did) turns the burn into a flat orange cut-out
+                 that hides the ground it is supposed to be marking. -->
+            <filter id="fire-soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="5" />
+            </filter>
+
+            <!-- Tight bloom on the embers so the hot points read through the
+                 soft fill without smearing into it. -->
+            <filter id="fire-embers" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.6" />
+            </filter>
+
+            <!-- Residual dust after a bang: dense at the seat of the blast,
+                 gone by the edge of its lethal radius. -->
+            <radialGradient id="he-dust" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="hsl(30 42% 72%)" stop-opacity="0.85" />
+              <stop offset="55%" stop-color="hsl(28 34% 58%)" stop-opacity="0.42" />
+              <stop offset="100%" stop-color="hsl(26 30% 48%)" stop-opacity="0" />
+            </radialGradient>
+
+            <!-- The ground an inferno denies: hottest at its heart, ragged at
+                 the rim where the fire is thinnest. -->
+            <radialGradient id="fire-area" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="hsl(36 100% 62%)" stop-opacity="0.9" />
+              <stop offset="45%" stop-color="hsl(24 100% 52%)" stop-opacity="0.6" />
+              <stop offset="82%" stop-color="hsl(14 92% 44%)" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="hsl(10 85% 38%)" stop-opacity="0" />
+            </radialGradient>
+
             <filter id="he-glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="1.2" />
               <feComponentTransfer>
@@ -3802,28 +4291,111 @@ watch(overlayMode, (on) => {
             </g>
           </g>
 
+          <!-- Fire, as the engine recorded it: one soft patch per real flame,
+               overlapping into the ragged footprint an inferno actually has.
+               Drawn beneath the smoke so a molotov being smothered reads
+               correctly — the smoke sits over the dying fire. -->
+          <g v-if="infernoFlamesNow.length">
+            <!-- The ground the fire denies: wide, soft and translucent, so the
+                 map underneath still reads. This is the part a player needs to
+                 judge, so it is sized from the real flame positions. -->
+            <g filter="url(#fire-soft)" opacity="0.62">
+              <circle
+                v-for="fl of infernoFlamesNow"
+                :key="fl.key"
+                :cx="fl.cx"
+                :cy="fl.cy"
+                :r="fl.r"
+                fill="url(#fire-area)"
+                :opacity="0.22 + 0.3 * fl.hot"
+              />
+            </g>
+            <!-- The flames themselves, at their networked positions. -->
+            <g filter="url(#fire-embers)">
+              <circle
+                v-for="fl of infernoFlamesNow"
+                :key="fl.key + '-e'"
+                :cx="fl.cx"
+                :cy="fl.cy"
+                :r="fl.core"
+                fill="url(#fire-core)"
+                :opacity="0.35 + 0.45 * fl.hot"
+              />
+            </g>
+          </g>
+
+          <!-- Smoke silhouettes, as the parser measured them against the
+               map's collision mesh. A cloud thrown into a corridor is drawn
+               corridor-shaped and one thrown at a wall stops there, because
+               this is the same volume the sightline stats were computed from.
+               The turbulence filter still softens the edge so it reads as gas
+               rather than a polygon. -->
+          <g v-if="smokeShapesNow.length" filter="url(#smoke-volume-displace)">
+            <template v-for="sh of smokeShapesNow" :key="sh.key">
+              <path
+                v-for="band of sh.bands"
+                :key="sh.key + '-' + band.level"
+                :d="band.d"
+                :fill="`rgba(206,215,226,${(0.1 + band.level * 0.22).toFixed(3)})`"
+                stroke="none"
+              />
+            </template>
+          </g>
+          <!-- Bullet swirl: a brief disturbance where a shot crossed a cloud.
+               Cosmetic by design — see smokeSwirlsNow. -->
+          <g v-if="smokeSwirlsNow.length">
+            <line
+              v-for="sw of smokeSwirlsNow"
+              :key="sw.key"
+              :x1="sw.x1"
+              :y1="sw.y1"
+              :x2="sw.x2"
+              :y2="sw.y2"
+              stroke="rgba(238,244,252,0.55)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              :opacity="sw.a * 0.7"
+            />
+          </g>
+
+          <!-- Team tint on the outermost contour only, outside the turbulence
+               filter so identifying who threw it stays unambiguous. -->
+          <g v-if="smokeShapesNow.length">
+            <path
+              v-for="sh of smokeShapesNow"
+              :key="sh.key + '-ring'"
+              :d="sh.bands[0].d"
+              fill="none"
+              :stroke="sh.team ? colorFor(sh.team) : 'rgba(200,210,222,0.45)'"
+              stroke-width="1.1"
+              stroke-opacity="0.34"
+            />
+          </g>
+
           <!-- Detonated grenades — animated SVG primitives. Rendered in
                BOTH single-round and buy-round-overlay modes (the data
                source switches; the markup is identical).
-               Smoke = pulsing gray disc with team-tinted ring,
+               Smoke = measured silhouette above, or a disc on older blobs,
                HE    = exploding starburst that flares then fades,
                Molotov = flickering layered flames,
                Flash = bright burst that decays,
                Decoy = dashed ring. -->
           <g
-            v-for="g of detonationsByTick"
-            :key="'grn-' + g.round + '-' + (g.grenade_id ?? g.tick)"
+            v-for="d of detonationVisuals"
+            :key="'grn-' + d.g.round + '-' + (d.g.grenade_id ?? d.g.tick)"
           >
-            <g
-              :transform="`translate(${project({ x: g.rx, y: g.ry, z: g.rz }).x}, ${project({ x: g.rx, y: g.ry, z: g.rz }).y})`"
-            >
-              <template v-if="g.type === 'Smoke'">
-                <!-- Filled footprint disc shows the area the smoke covers. -->
+            <g :transform="`translate(${d.p.x}, ${d.p.y})`">
+              <!-- Smoke without a measured volume (blob schema < v9): fall
+                   back to the old fixed disc, which is a guess but better than
+                   drawing nothing. Clouds that DO have a volume are drawn as
+                   their real silhouette in the layer below. -->
+              <template
+                v-if="
+                  d.g.type === 'Smoke' &&
+                  !smokeGidsWithShape.has(String(d.g.grenade_id))
+                "
+              >
                 <circle r="34" fill="rgba(200,210,222,0.16)" />
-                <!-- Volumetric smoke: a cluster of overlapping soft puffs
-                     that billow out on deploy and drift, under the
-                     turbulence-displace filter so the silhouette stays
-                     organic. Reads like a real CS smoke, not one disc. -->
                 <g filter="url(#smoke-displace)">
                   <circle
                     v-for="(puff, pi) in SMOKE_PUFFS"
@@ -3857,459 +4429,125 @@ watch(overlayMode, (on) => {
                 <circle
                   r="34"
                   fill="none"
-                  :stroke="colorFor(g.thrower_team)"
+                  :stroke="colorFor(d.g.thrower_team)"
                   stroke-width="1.4"
                   stroke-opacity="0.5"
                 />
               </template>
 
-              <template v-else-if="g.type === 'HE'">
-                <g filter="url(#he-glow)">
-                  <circle fill="hsl(38, 100%, 58%)">
-                    <animate
-                      attributeName="r"
-                      values="4;38;30"
-                      keyTimes="0;0.22;1"
-                      dur="1.3s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="1;0.95;0.6;0"
-                      keyTimes="0;0.3;0.6;1"
-                      dur="1.3s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <circle
-                    fill="none"
-                    stroke="hsl(45, 100%, 75%)"
-                    stroke-width="3"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="2"
-                      to="64"
-                      dur="1s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="1;0.85;0"
-                      keyTimes="0;0.4;1"
-                      dur="1s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="stroke-width"
-                      from="4.5"
-                      to="0.5"
-                      dur="1s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <circle
-                    fill="none"
-                    stroke="hsl(28, 100%, 65%)"
-                    stroke-width="2.5"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="0"
-                      to="50"
-                      dur="1.2s"
-                      begin="0.12s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.85"
-                      to="0"
-                      dur="1.2s"
-                      begin="0.12s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <circle
-                    fill="none"
-                    stroke="hsl(0, 80%, 55%)"
-                    stroke-width="1.8"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="0"
-                      to="36"
-                      dur="1.4s"
-                      begin="0.24s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.7"
-                      to="0"
-                      dur="1.4s"
-                      begin="0.24s"
-                      fill="freeze"
-                    />
-                  </circle>
-                </g>
-                <!-- Bright core flash + sharp starburst body -->
-                <polygon
-                  points="0,-26 5,-6 26,-5 9,4 17,23 0,10 -17,23 -9,4 -26,-5 -5,-6"
-                  fill="hsl(40, 100%, 60%)"
-                  stroke="hsl(55, 100%, 85%)"
-                  stroke-width="1.4"
-                >
-                  <animateTransform
-                    attributeName="transform"
-                    type="scale"
-                    values="0.2;1.6;1.15;1"
-                    keyTimes="0;0.3;0.6;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;1;0.7;0"
-                    keyTimes="0;0.35;0.7;1"
-                    dur="1.6s"
-                    fill="freeze"
-                  />
-                </polygon>
-                <!-- Debris spokes — eight short radial lines that
-                     shoot outward and fade. -->
-                <g
-                  v-for="ang in [0, 45, 90, 135, 180, 225, 270, 315]"
-                  :key="`he-spoke-${ang}`"
-                  :transform="`rotate(${ang})`"
-                >
-                  <line
-                    x1="3"
-                    y1="0"
-                    x2="3"
-                    y2="0"
-                    stroke="hsl(55, 100%, 75%)"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  >
-                    <animate
-                      attributeName="x2"
-                      from="6"
-                      to="36"
-                      dur="0.75s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="1;0.6;0"
-                      keyTimes="0;0.5;1"
-                      dur="0.85s"
-                      fill="freeze"
-                    />
-                  </line>
-                </g>
-                <!-- Hot core that pulses then dies. -->
-                <circle fill="hsl(55, 100%, 92%)">
-                  <animate
-                    attributeName="r"
-                    values="10;5;0"
-                    keyTimes="0;0.5;1"
-                    dur="1.2s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;0.6;0"
-                    keyTimes="0;0.5;1"
-                    dur="1.2s"
-                    fill="freeze"
-                  />
-                </circle>
-                <circle fill="rgba(48, 30, 20, 0.3)">
-                  <animate
-                    attributeName="r"
-                    values="14;28;32"
-                    keyTimes="0;0.5;1"
-                    dur="2s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0;0.3;0.22;0"
-                    keyTimes="0;0.25;0.6;1"
-                    dur="2s"
-                    fill="freeze"
-                  />
-                </circle>
-              </template>
-
-              <template v-else-if="g.type === 'Molotov'">
-                <!-- Fire pool: a radial gradient core wrapped in a
-                     turbulence-displaced layer so the silhouette
-                     constantly flickers as if licked by tongues of
-                     flame. Embers float up out of the pool. -->
-                <!-- Outer heat haze (no displace, just a soft glow) -->
-                <circle r="34" fill="rgba(255, 40, 0, 0.14)">
-                  <animate
-                    attributeName="r"
-                    values="6;34;32;34"
-                    keyTimes="0;0.15;0.6;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.1;0.18;0.12;0.16"
-                    dur="1.4s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-                <!-- Filled burning-area disc under the flames. -->
-                <circle r="30" fill="rgba(255,120,40,0.18)" />
-                <!-- Main fire body: a scatter of flame cells across the
-                     burn footprint (spreading fire, not one disc), each
-                     flickering under the displace filter. -->
-                <g filter="url(#fire-displace)">
-                  <circle
-                    v-for="(cell, ci) in FIRE_CELLS"
-                    :key="'fc-' + ci"
-                    :cx="cell.dx"
-                    :cy="cell.dy"
-                    fill="url(#fire-core)"
-                  >
-                    <animate
-                      attributeName="r"
-                      :values="`0;${cell.r * 1.2};${cell.r};${cell.r * 1.1};${cell.r}`"
-                      keyTimes="0;0.3;0.6;0.85;1"
-                      :begin="`${cell.d}s`"
-                      dur="0.9s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.8;1;0.8;0.95;0.8"
-                      dur="0.6s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <!-- Inner hot core -->
-                  <circle r="9" fill="rgba(255, 250, 200, 0.95)">
-                    <animate
-                      attributeName="r"
-                      values="5;10;7;9;5"
-                      dur="0.45s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.9;1;0.85;0.95;0.9"
-                      dur="0.45s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </g>
-                <!-- Floating embers: small bright dots that drift up
-                     and fade. Six embers staggered for randomness. -->
-                <g
-                  v-for="(em, ei) of [
-                    { x: -6, y: 4, d: '1.2s' },
-                    { x: 5, y: 7, d: '1.5s' },
-                    { x: -2, y: -2, d: '1s' },
-                    { x: 8, y: -4, d: '1.7s' },
-                    { x: -9, y: -3, d: '1.3s' },
-                    { x: 3, y: 6, d: '1.4s' },
-                  ]"
-                  :key="`em-${ei}`"
-                >
-                  <circle
-                    :cx="em.x"
-                    :cy="em.y"
-                    r="1.2"
-                    fill="rgba(255, 230, 140, 0.95)"
-                  >
-                    <animate
-                      attributeName="cy"
-                      :values="`${em.y};${em.y - 18}`"
-                      :dur="em.d"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0;1;0.8;0"
-                      keyTimes="0;0.2;0.6;1"
-                      :dur="em.d"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="r"
-                      values="0.8;1.4;0.6"
-                      :dur="em.d"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </g>
-              </template>
-
-              <template v-else-if="g.type === 'Flash'">
-                <!-- Pop: blinding white shockwave expands outward. -->
-                <circle fill="url(#flash-core)">
-                  <animate
-                    attributeName="r"
-                    values="2;46;52;48"
-                    keyTimes="0;0.12;0.5;1"
-                    dur="2.3s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;1;0.85;0.4;0"
-                    keyTimes="0;0.25;0.5;0.8;1"
-                    dur="2.3s"
-                    fill="freeze"
-                  />
-                </circle>
-                <circle fill="rgba(255, 255, 255, 0.92)">
-                  <animate
-                    attributeName="r"
-                    from="2"
-                    to="30"
-                    dur="0.16s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.95;0.95;0.45;0"
-                    keyTimes="0;0.45;0.75;1"
-                    dur="2.1s"
-                    fill="freeze"
-                  />
-                </circle>
-                <!-- Sharp ring chasing the shockwave -->
+              <!-- HE: a bang, not a fireball. The spark is over in a few frames,
+                   the pressure front crosses its 250u influence radius at the
+                   engine's own 1250 u/s, and what lingers is dust. Radii are
+                   world units projected to the radar, so a blast reads at the
+                   right size against the smoke beside it. -->
+              <template v-else-if="d.g.type === 'HE'">
                 <circle
-                  fill="none"
-                  stroke="rgba(220, 240, 255, 0.95)"
-                  stroke-width="1.8"
-                >
-                  <animate
-                    attributeName="r"
-                    from="0"
-                    to="40"
-                    dur="0.6s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    from="1"
-                    to="0"
-                    dur="0.8s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="stroke-width"
-                    from="3"
-                    to="0.3"
-                    dur="0.8s"
-                    fill="freeze"
-                  />
-                </circle>
-                <!-- Sharp star core -->
-                <polygon
-                  points="0,-22 5,-5 22,0 5,5 0,22 -5,5 -22,0 -5,-5"
-                  fill="rgba(245, 250, 255, 0.98)"
-                >
-                  <animateTransform
-                    attributeName="transform"
-                    type="scale"
-                    values="0.1;1.5;1.1;0.95"
-                    keyTimes="0;0.25;0.5;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;0.9;0.5;0"
-                    keyTimes="0;0.4;0.7;1"
-                    dur="1.9s"
-                    fill="freeze"
-                  />
-                </polygon>
-                <!-- Cyan-tinted secondary star at 22.5° for sharpness. -->
-                <polygon
-                  points="0,-14 3,-3 14,0 3,3 0,14 -3,3 -14,0 -3,-3"
-                  fill="rgba(180, 220, 255, 0.85)"
-                  transform="rotate(22.5)"
-                >
-                  <animateTransform
-                    attributeName="transform"
-                    type="scale"
-                    values="0.1;1.3;0.85"
-                    keyTimes="0;0.4;1"
-                    dur="1s"
-                    additive="sum"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.85;0.5;0"
-                    keyTimes="0;0.4;1"
-                    dur="1.6s"
-                    fill="freeze"
-                  />
-                </polygon>
-              </template>
-
-              <template v-else-if="g.type === 'Decoy'">
+                  v-if="d.dustAlpha > 0.01"
+                  :r="d.dustPx"
+                  fill="url(#he-dust)"
+                  :opacity="d.dustAlpha"
+                />
                 <circle
-                  r="20"
+                  v-if="d.frontAlpha > 0.01"
+                  :r="d.frontPx"
                   fill="none"
-                  :stroke="colorFor(g.thrower_team)"
-                  stroke-width="2"
-                  stroke-dasharray="3 3"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="0.4;0.8;0.4"
-                    dur="0.5s"
-                    repeatCount="indefinite"
+                  stroke="hsl(34 100% 68%)"
+                  :stroke-width="0.6 + 3.2 * d.frontAlpha"
+                  :opacity="0.9 * d.frontAlpha"
+                />
+                <g v-if="d.spark > 0.01" filter="url(#he-glow)">
+                  <circle
+                    :r="d.corePx * (0.35 + 0.5 * (1 - d.spark))"
+                    fill="hsl(44 100% 88%)"
+                    :opacity="d.spark"
                   />
-                  <animateTransform
-                    attributeName="transform"
-                    type="rotate"
-                    from="0"
-                    to="360"
-                    dur="6s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
+                </g>
               </template>
 
-              <!-- Lifetime ring: a track + a depleting arc (top-start,
-                   clockwise) so you can read how long a timed grenade has
-                   left at a glance. pathLength=1 makes the dash a direct
-                   fraction of the remaining life. -->
+              <!-- Molotov: the ground it actually denies. A filled burn at the
+                   real inferno radius, breathing on a tick-keyed flicker so a
+                   paused frame holds still. -->
+              <template
+                v-else-if="
+                  d.g.type === 'Molotov' &&
+                  !infernoRoundsWithFlames.size
+                "
+              >
+                <circle
+                  :r="d.firePx"
+                  fill="url(#fire-area)"
+                  :opacity="0.5 * d.flicker * Math.min(1, d.life * 4)"
+                />
+                <circle
+                  :r="d.firePx * 0.45"
+                  fill="url(#fire-core)"
+                  :opacity="0.75 * d.flicker * Math.min(1, d.life * 4)"
+                />
+                <circle
+                  :r="d.firePx"
+                  fill="none"
+                  stroke="hsl(22 100% 60%)"
+                  stroke-width="1.1"
+                  :opacity="0.55 * d.flicker * Math.min(1, d.life * 4)"
+                  stroke-dasharray="5 4"
+                />
+              </template>
+
+              <!-- Flash: a pop. Same physical front as an HE, no afterglow —
+                   the blinding happens on players, not on the ground. -->
+              <template v-else-if="d.g.type === 'Flash'">
+                <circle
+                  v-if="d.frontAlpha > 0.01"
+                  :r="d.frontPx * 0.55"
+                  fill="none"
+                  stroke="hsl(48 100% 92%)"
+                  :stroke-width="0.6 + 2.6 * d.frontAlpha"
+                  :opacity="0.85 * d.frontAlpha"
+                />
+                <g v-if="d.spark > 0.01" filter="url(#he-glow)">
+                  <circle
+                    :r="d.flashPx * (0.3 + 0.7 * (1 - d.spark))"
+                    fill="#fffdf4"
+                    :opacity="d.spark"
+                  />
+                </g>
+              </template>
+
+              <!-- Decoy: it only pretends. Dashed, hollow, deliberately weak. -->
+              <template v-else-if="d.g.type === 'Decoy'">
+                <circle
+                  :r="d.decoyPx"
+                  fill="none"
+                  :stroke="colorFor(d.g.thrower_team)"
+                  stroke-width="1.1"
+                  stroke-dasharray="3 6"
+                  :opacity="0.5 * Math.min(1, d.life * 4)"
+                />
+              </template>
+
               <g
                 v-if="
-                  g.type === 'Smoke' ||
-                  g.type === 'Molotov' ||
-                  g.type === 'Decoy'
+                  d.g.type === 'Smoke' ||
+                  d.g.type === 'Molotov' ||
+                  d.g.type === 'Decoy'
                 "
                 transform="rotate(-90)"
                 style="pointer-events: none"
               >
                 <circle
-                  :r="grenadeRingRadius(g.type)"
+                  :r="grenadeRingRadius(d.g.type)"
                   fill="none"
                   stroke="hsl(0 0% 0% / 0.35)"
                   stroke-width="2"
                 />
                 <circle
-                  :r="grenadeRingRadius(g.type)"
+                  :r="grenadeRingRadius(d.g.type)"
                   fill="none"
-                  :stroke="colorFor(g.thrower_team)"
+                  :stroke="colorFor(d.g.thrower_team)"
                   stroke-width="2"
                   stroke-linecap="round"
                   pathLength="1"
-                  :stroke-dasharray="`${g.life} 1`"
+                  :stroke-dasharray="`${d.g.life} 1`"
                   stroke-opacity="0.9"
                 />
               </g>
@@ -5270,6 +5508,11 @@ watch(overlayMode, (on) => {
           :grenades="detonationsByTick"
           :in-flight="inFlightGrenades"
           :grenade-trajectories="grenadeTrajectories || []"
+          :smoke-volumes="smokeVolumes || []"
+          :infernos="infernos || []"
+          :tick="smoothCurrentTick"
+          :tick-rate="tickRate || 64"
+          :active-blasts="activeSmokeBlasts"
           :heat-points="roundDetonations"
           :bomb="bombMarker"
           :deaths="deaths3d"

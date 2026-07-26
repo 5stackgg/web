@@ -866,9 +866,6 @@
     "next_page": "Next page",
     "last_page": "Last page"
   },
-  "trophies_modal": {
-    "view_tournament": "VIEW TOURNAMENT"
-  },
   "toasts": {
     "link_copied": "Link copied",
     "copy_failed": "Copy failed",
@@ -1160,24 +1157,8 @@
     "highlights_render_label": "Highlights Render",
     "highlight_render_subline": "Highlight render"
   },
-  "trophies_manage_form": {
-    "placement": "Placement",
-    "team": "Team",
-    "player": "Player"
-  },
   "shortcut_overlay": {
     "to_close": "to close"
-  },
-  "trophies": {
-    "title": "Trophies",
-    "no_trophies": "No Trophies Yet",
-    "no_trophies_description": "Finish in the top 3 of a tournament to earn a trophy.",
-    "mvp": "MVP",
-    "first_place": "1st Place",
-    "second_place": "2nd Place",
-    "third_place": "3rd Place",
-    "tournament": "Tournament",
-    "placement": "Placement"
   },
   "image_upload": {
     "hint_square": "Drag & drop or click · PNG, JPEG, WebP",
@@ -1254,6 +1235,87 @@
     "system_logs": {
       "follow_logs": "Follow Logs",
       "timestamps": "Timestamps"
+    },
+    "system_telemetry": {
+      "title": "Fleet Telemetry",
+      "no_data": "No data reported yet",
+      "installs": {
+        "title": "Panels",
+        "online": "Online Now",
+        "total": "All Time",
+        "total_hint": "Distinct panels that have ever reported, counted by anonymous install id.",
+        "active_24h": "Active 24h",
+        "active_7d": "Active 7d",
+        "new_30d": "New 30d",
+        "retained_180d": "Retained",
+        "retained_180d_hint": "Panels first seen over 180 days ago that are still reporting this week."
+      },
+      "totals": {
+        "title": "Fleet Totals",
+        "window": "panels active in the last 30 days",
+        "self_reported": "Panels are self-hosted and report these counts themselves; values are validated on arrival but cannot be independently verified.",
+        "game_server_nodes": "Game Server Nodes",
+        "servers": "Servers",
+        "dedicated_servers": "Dedicated",
+        "public_servers": "Public",
+        "capacity": "Player Slots",
+        "matches": "Matches All Time",
+        "matches_week": "Matches 7d",
+        "matches_month": "Matches 30d",
+        "matches_year": "Matches 1y",
+        "maps_played": "Maps Played",
+        "players": "Players",
+        "players_active": "Active Players 30d",
+        "teams": "Teams"
+      },
+      "activity": {
+        "matches": "Matches Per Day (90d)",
+        "matches_unit": "matches"
+      },
+      "growth": {
+        "title": "New Panels Per Month",
+        "unit": "panels"
+      },
+      "features": {
+        "title": "Feature Adoption",
+        "feature": "Feature",
+        "enabled": "Enabled",
+        "using": "With Data",
+        "records": "Records",
+        "keys": {
+          "tournaments": "Tournaments",
+          "leagues": "Leagues",
+          "seasons": "Seasons",
+          "events": "Events",
+          "news": "News",
+          "highlights": "Highlights",
+          "clip_renders": "Clip Renders",
+          "system_alerts": "System Alerts",
+          "awards": "Awards",
+          "scrims": "Scrim Finder",
+          "matchmaking": "Matchmaking",
+          "custom_pages": "Plugins",
+          "external_matches": "External Matches",
+          "faceit_import": "FACEIT Import",
+          "draft_games": "Draft Games",
+          "demos": "Demos",
+          "sanctions": "Sanctions",
+          "api_keys": "API Keys",
+          "gamedata_validations": "Gamedata Validations",
+          "steam_presence": "Steam Presence",
+          "discord_bot": "Discord Bot",
+          "game_server_nodes": "Game Server Nodes",
+          "version_pinning": "Version Pinning",
+          "stream_login_protection": "Stream Login Protection",
+          "player_name_registration": "Player Name Registration",
+          "league_division_requests": "League Division Requests",
+          "branding": "Custom Branding"
+        }
+      },
+      "versions": {
+        "title": "Panel Versions",
+        "unknown": "unknown"
+      }
     },
     "coming_soon": "Coming Soon!",
     "tournaments": {
@@ -2070,6 +2132,13 @@
             "custom_hint": "Or paste an image URL or inline SVG (e.g. from a plugin).",
             "custom_placeholder": "https://… , <svg…>, or an icon name"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2900,7 +2969,7 @@
         "best_kdr": "KDR",
         "best_win_rate": "Win Rate",
         "highest_hs_pct": "HS%",
-        "trophies": "Trophies"
+        "awards": "Awards"
       },
       "time_periods": {
         "last_7_days": "Last 7 Days",
@@ -3153,6 +3222,36 @@
       "forbidden_title": "Access restricted",
       "forbidden_description": "You don't have permission to view this page.",
       "error_title": "Failed to load page"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "Create an award to grant by hand, or to attach to a tournament placement.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
@@ -3182,7 +3281,8 @@
         "developer": "Developer",
         "general": "General",
         "media": "Recording & Media",
-        "additional_features": "Additional Features"
+        "additional_features": "Additional Features",
+        "players_teams": "Players & Teams"
       }
     },
     "system_update": {
@@ -3254,7 +3354,8 @@
         "manage_tournaments": "Manage Tournaments",
         "manage_league": "Manage League",
         "stream_deck": "Stream Deck",
-        "manage_events": "Manage Events"
+        "manage_events": "Manage Events",
+        "awards": "Awards"
       },
       "system": {
         "title": "System",
@@ -3308,6 +3409,12 @@
       },
       "plugins": {
         "title": "Apps"
+      },
+      "competition": {
+        "title": "Competition"
+      },
+      "platform": {
+        "title": "Platform"
       }
     },
     "top_nav": {
@@ -3739,25 +3846,6 @@
     "standings_section": {
       "no_roster": "NO ROSTER"
     },
-    "trophies_config": {
-      "title": "Trophy Configuration",
-      "organizer_access_required": "ORGANIZER ACCESS REQUIRED",
-      "award_trophies": "AWARD TROPHIES",
-      "custom": "CUSTOM",
-      "custom_image": "Custom Image",
-      "custom_name": "Custom Name",
-      "silhouette": "Silhouette",
-      "reset": "Reset",
-      "remove_image_hint": "Remove image to customize name or silhouette",
-      "hint": "Upload an image or customize the default award."
-    },
-    "trophies_manage": {
-      "manual_awards": "Manual Awards",
-      "add_award": "Add Award",
-      "no_manual_awards": "NO MANUAL AWARDS",
-      "remove": "Remove",
-      "hint": "Grant a trophy outside of the bracket calculation."
-    },
     "compact_card": {
       "tournament": "Tournament",
       "live": "Live",
@@ -4153,6 +4241,47 @@
       "empty_hint": "Add a banner",
       "hint": "Shown across the top of the tournament page. Cropped to a wide 3:1 frame.",
       "upload_failed": "Banner upload failed"
+    },
+    "awards_config": {
+      "title": "Award Configuration",
+      "organizer_access_required": "ORGANIZER ACCESS REQUIRED",
+      "custom": "CUSTOM",
+      "custom_image": "Custom Image",
+      "custom_name": "Custom Name",
+      "silhouette": "Silhouette",
+      "reset": "Reset",
+      "hint": "Pick the award for each placement, or override its name and art.",
+      "award": "Award",
+      "award_default": "Default",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "Manual Awards",
+      "add_award": "Add Award",
+      "no_manual_awards": "NO MANUAL AWARDS",
+      "remove": "Remove",
+      "hint": "Grant an award outside of the bracket calculation.",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award to grant first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
@@ -7055,5 +7184,45 @@
       "axis_hs": "HS%",
       "axis_assist": "Assist"
     }
+  },
+  "awards": {
+    "title": "Awards",
+    "mvp": "MVP",
+    "first_place": "1st Place",
+    "second_place": "2nd Place",
+    "third_place": "3rd Place",
+    "tournament": "Tournament",
+    "placement": "Placement",
+    "no_awards": "No Awards Yet",
+    "no_awards_description": "Finish in the top 3 of a tournament, or be granted an award, to fill this case.",
+    "granted": "Granted",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "VIEW TOURNAMENT"
+  },
+  "awards_manage_form": {
+    "team": "Team",
+    "player": "Player",
+    "award": "Award",
+    "recipient": "Recipient"
   }
 }

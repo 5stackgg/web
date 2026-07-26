@@ -866,9 +866,6 @@
     "next_page": "Nächste Seite",
     "last_page": "Letzte Seite"
   },
-  "trophies_modal": {
-    "view_tournament": "TURNIER ANSEHEN"
-  },
   "toasts": {
     "link_copied": "Link kopiert",
     "copy_failed": "Kopieren fehlgeschlagen",
@@ -1160,24 +1157,8 @@
     "highlights_render_label": "Highlights-Render",
     "highlight_render_subline": "Highlight-Render"
   },
-  "trophies_manage_form": {
-    "placement": "Platzierung",
-    "team": "Team",
-    "player": "Spieler"
-  },
   "shortcut_overlay": {
     "to_close": "zum Schließen"
-  },
-  "trophies": {
-    "title": "Trophäen",
-    "no_trophies": "Noch keine Trophäen",
-    "no_trophies_description": "Beende ein Turnier unter den Top 3, um eine Trophäe zu bekommen.",
-    "mvp": "MVP",
-    "first_place": "1. Platz",
-    "second_place": "2. Platz",
-    "third_place": "3. Platz",
-    "tournament": "Turnier",
-    "placement": "Platzierung"
   },
   "image_upload": {
     "hint_square": "Ziehen & ablegen oder klicken · PNG, JPEG, WebP",
@@ -2070,6 +2051,13 @@
             "custom_hint": "Oder füge eine Bild-URL oder Inline-SVG ein (z. B. aus einem Plugin).",
             "custom_placeholder": "https://… , <svg…> oder ein Icon-Name"
           }
+        },
+        "awards": {
+          "title": "Awards",
+          "permissions_section": "Permissions",
+          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "create_awards_role": "Manage Awards Role",
+          "grant_awards_role": "Grant Awards Role"
         }
       },
       "language": {
@@ -2169,7 +2157,16 @@
       "section_recent_tournaments": "LETZTE.TURNIERE",
       "section_recent_highlights": "LETZTE.HIGHLIGHTS",
       "no_live_matches": "STANDBY · KEINE LIVE-MATCHES",
-      "upcoming": "Kommend"
+      "cold_start": {
+        "title": "Nichts in Sicht",
+        "description": "Keine Live-Matches, keine Turniere, noch nichts in den Büchern. Starte ein Match und diese Seite füllt sich von selbst — Ergebnisse in Echtzeit, dann Highlights und Demos, sobald es vorbei ist.",
+        "cta": "Jetzt spielen",
+        "cta_guest": "Zum Spielen anmelden",
+        "channel_matches": "Live-Matches",
+        "channel_tournaments": "Turniere",
+        "channel_highlights": "Highlights",
+        "channel_status": "Warte auf Signal"
+      }
     },
     "highlights": {
       "title": "Highlights",
@@ -2393,22 +2390,22 @@
       "detail": {
         "all_short": "Alle",
         "settings_changed": "Eigene Einstellungen aktiv",
-        "source_all_unavailable_elo": "„Alle“ gibt es im ELO-Tab nicht — es wird nur 5Stack ELO gezeigt.",
+        "source_all_unavailable_elo": "„Alle“ ist im ELO-Tab nicht verfügbar — es wird nur 5Stack-ELO angezeigt.",
         "external_warning": {
           "title": "Keine Match-Historie verknüpft",
           "description": "Verknüpfe deinen Steam-Match-History-Auth-Code, um deine Premier-, Competitive- und Wingman-Matches zu importieren.",
           "cta": "Einrichten"
         },
         "tabs": {
-          "performance": "Leistung",
+          "performance": "Performance",
           "breakdown": "Aufschlüsselung",
           "elo": "ELO",
           "maps": "Maps",
           "arsenal": "Arsenal",
-          "combat": "Kampf"
+          "combat": "Combat"
         },
         "roles": {
-          "no_data": "Zu wenige aktuelle Matches, um eine Rolle zu erkennen.",
+          "no_data": "Nicht genug aktuelle Matches, um eine Rolle zu erkennen.",
           "primary": "Primär",
           "secondary": "Sekundär",
           "rifler_detail": "ausgeglichener Rifler",
@@ -2421,7 +2418,7 @@
         "matches": "Matches",
         "no_matches": "Noch keine Matches",
         "no_matches_description": "Die Match-Historie erscheint hier, sobald Matches gespielt wurden.",
-        "no_matches_self_description": "Spring in ein Match — Stats, ELO und Match-Historie füllen sich dann hier.",
+        "no_matches_self_description": "Spring in ein Match — deine Stats, ELO und Match-Historie füllen sich hier nach und nach.",
         "edit_player": "Spieler bearbeiten",
         "friend": "Freund",
         "name": "Name",
@@ -2437,7 +2434,7 @@
         "custom_range": "Eigener Zeitraum",
         "custom_window_active": "Eigener Zeitraum aktiv. Ein Preset zu wählen setzt ihn zurück.",
         "exclude_tournaments": "Turniere ausschließen",
-        "exclude_tournaments_description": "Turnier-Matches in Stats und Diagramm überspringen.",
+        "exclude_tournaments_description": "Turnier-Matches in Stats und Chart überspringen.",
         "current_elo": "Aktuelle ELO",
         "source": "Quelle",
         "provider": "Anbieter",
@@ -2462,10 +2459,10 @@
         "acquiring_telemetry": "Telemetrie wird geladen …",
         "matches_section": "MATCHES",
         "intro": {
-          "section": "Leistungsüberblick",
+          "section": "Performance-Übersicht",
           "last_n": "Letzte {n} Matches",
-          "empty_title": "Keine geparsten Matches",
-          "empty_description": "Detaillierte Leistungsstats erscheinen hier, sobald dieser Spieler Matches beendet hat und diese geparst wurden.",
+          "empty_title": "Keine ausgewerteten Matches",
+          "empty_description": "Detaillierte Performance-Stats erscheinen hier, sobald dieser Spieler Matches beendet hat und sie ausgewertet sind.",
           "adr": "ADR",
           "kd": "K/D",
           "kpr": "KPR",
@@ -2488,9 +2485,9 @@
         },
         "maps": {
           "section": "MAPS",
-          "description": "Karriereleistung nach Map aufgeschlüsselt, inklusive Aufteilung nach T- und CT-Seite.",
+          "description": "Karriere-Performance pro Map, aufgeteilt nach T- und CT-Seite.",
           "empty_title": "Noch keine Map-Daten",
-          "empty_description": "Sobald dieser Spieler Matches beendet, erscheint hier die Leistung pro Map.",
+          "empty_description": "Sobald dieser Spieler Matches beendet, erscheint hier die Performance pro Map.",
           "played_short": "GSP",
           "rating_label": "HLTV Rating",
           "win_rate": "Siegquote",
@@ -2511,21 +2508,21 @@
         "weapons_table": {
           "section": "Waffen",
           "empty_title": "Keine Waffendaten",
-          "empty_description": "Für diesen Spieler sind noch keine Waffen-Kills erfasst.",
+          "empty_description": "Für diesen Spieler sind noch keine Kills mit Waffen erfasst.",
           "weapon": "Waffe",
           "kills": "Kills",
           "adr": "ADR",
           "kpr": "KPR",
           "rounds": "Runden",
-          "rounds_tooltip": "Runden mit einem Kill durch diese Waffe (Runden, in denen sie nur gehalten wurde, sind nicht sichtbar)",
+          "rounds_tooltip": "Runden mit einem Kill durch diese Waffe (Runden, in denen sie nur getragen wurde, sind nicht sichtbar)",
           "rating": "HLTV Rating",
           "rating_tooltip": "Näherungswert aus KPR + ADR + Impact (keine Deaths/KAST pro Waffe, daher nur als Richtwert)",
           "economy": "Economy",
-          "economy_tooltip": "Waffen-Rating angepasst an die Buy-Kosten — Frags mit günstigeren Waffen zählen höher (~1,0 = dem Preis entsprechend)"
+          "economy_tooltip": "Waffen-Rating angepasst an die Buy-Kosten — Frags mit günstigeren Waffen zählen höher (~1,0 = angemessen für den Preis)"
         },
         "career_duels": {
           "section": "Opening Duels",
-          "description": "Ergebnisse des ersten Kills der Runde über die letzten {count} Maps.",
+          "description": "Ausgang der ersten Kills einer Runde über die letzten {count} Maps.",
           "empty_title": "Keine Opening Duels",
           "empty_description": "Für diesen Spieler sind in den letzten Matches keine Opening Duels erfasst.",
           "win_label": "Opening-Sieg",
@@ -2558,7 +2555,7 @@
         "compare": {
           "label": "Vergleichen mit",
           "select_label": "Spieler vergleichen",
-          "description": "Blendet die Werte dieses Spielers in allen Stats-Tabs ein.",
+          "description": "Legt die Werte dieses Spielers über alle Stats-Tabs.",
           "vs": "vs"
         },
         "elo_history_dialog": {
@@ -2579,6 +2576,7 @@
     "play": {
       "title": "Spielen",
       "open_registration_tournaments": {
+        "section_label": "TURNIERE",
         "description": "Turniere mit offener Anmeldung, denen jeder beitreten kann."
       },
       "matchmaking": {
@@ -2586,8 +2584,8 @@
         "leader_required": "Nur der Party-Leader kann das Matchmaking starten."
       },
       "draft_games": {
-        "section_label": "OFFENE.MATCHES",
-        "description": "Durchstöbere offene Pick-up-Games oder erstelle eins — die Captains draften die Teams."
+        "section_label": "OPEN.MATCHES",
+        "description": "Durchstöbere offene Pick-up-Games oder erstell eins — die Captains draften die Teams."
       }
     },
     "matches": {
@@ -2604,7 +2602,7 @@
         "individual": "Einzeln",
         "select_team": "Team wählen",
         "team_n": "Team {n}",
-        "lineups_desc": "Wähl ein Team pro Seite oder weise {count} Spieler einzeln zu.",
+        "lineups_desc": "Wähl für jede Seite ein Team oder weise {count} Spieler einzeln zu.",
         "submit": "Match planen"
       },
       "match_updated": "Match aktualisiert",
@@ -2619,7 +2617,7 @@
       "preset_finished": "Beendet",
       "clear": "ZURÜCKSETZEN",
       "clear_short": "Zurücksetzen",
-      "lineup_only": "Nur Matches mit mir",
+      "lineup_only": "Nur Matches, in denen ich bin",
       "include_external": "Externe Matches einbeziehen",
       "standby_no_matches": "STANDBY · KEINE MATCHES GEFUNDEN",
       "create_page": {
@@ -2639,7 +2637,7 @@
     "gpu_nodes": {
       "title": "GPU-Nodes",
       "gpu_unknown": "GPU",
-      "description": "GPU-fähige Game-Server-Nodes, die Live-Streams, Demo-Wiedergabe und Highlight-Renders hosten. Jede GPU bedient immer nur einen Verbraucher gleichzeitig.",
+      "description": "GPU-fähige Game-Server-Nodes, die Live-Streams, Demo-Wiedergabe und Highlight-Renders hosten. Jede GPU bedient höchstens einen Verbraucher gleichzeitig.",
       "metrics": "Metriken",
       "meter": {
         "compute": "GPUs"
@@ -2651,10 +2649,10 @@
       "disabled": "Deaktiviert",
       "enabled": "Aktiviert",
       "accepting_matches": "Nimmt Matches an",
-      "toggle_enabled_help": "Wenn aus, ist die Node komplett deaktiviert — keine GPU-Arbeit und keine Match-Zuweisung.",
-      "toggle_scheduling_help": "Wenn aus, führt die Node laufende Matches weiter, nimmt aber keine neuen an.",
-      "toggle_enabled_failed": "Aktivierungsstatus der Node konnte nicht umgeschaltet werden",
-      "toggle_scheduling_failed": "Zuweisungsstatus konnte nicht umgeschaltet werden",
+      "toggle_enabled_help": "Wenn aus, ist der Node komplett deaktiviert — keine GPU-Arbeit und keine Match-Zuteilung.",
+      "toggle_scheduling_help": "Wenn aus, führt der Node laufende Matches weiter, nimmt aber keine neuen an.",
+      "toggle_enabled_failed": "Node-Status konnte nicht umgeschaltet werden",
+      "toggle_scheduling_failed": "Zuteilungs-Status konnte nicht umgeschaltet werden",
       "toggle_workload_failed": "GPU-Workload-Verfügbarkeit konnte nicht umgeschaltet werden",
       "control": {
         "title": "Node-Steuerung"
@@ -2669,9 +2667,9 @@
         "rendering_desc": "Highlight- & Clip-Renders"
       },
       "bake": {
-        "help": "Den Vulkan-Shader-Cache dieser Node vorab bauen, damit das erste Match warm startet.",
-        "cancel_help": "Laufendes Shader-Pre-Bake abbrechen.",
-        "logs_help": "Logs des Shader-Pre-Bake-Jobs ansehen.",
+        "help": "Den Vulkan-Shader-Cache dieses Nodes vorbauen, damit das erste Match warm startet.",
+        "cancel_help": "Den laufenden Shader-Pre-Bake abbrechen.",
+        "logs_help": "Die Logs des Shader-Pre-Bake-Jobs ansehen.",
         "started": "Shader-Bake gestartet",
         "failed": "Shader-Bake konnte nicht gestartet werden",
         "cancelled": "Shader-Bake abgebrochen",
@@ -2683,19 +2681,19 @@
       },
       "empty": {
         "title": "Keine GPU-Nodes",
-        "description": "Es wurden keine Game-Server-Nodes mit GPU registriert. Aktiviere GPU-Support auf einer Node, damit sie für Streaming und Rendering verfügbar wird."
+        "description": "Es sind keine Game-Server-Nodes mit GPU registriert. Aktiviere GPU-Unterstützung auf einem Node, damit er für Streaming und Rendering verfügbar wird."
       },
       "steam_pool": {
         "title": "Steam-Accounts",
-        "description": "Pool, den GPU-Nodes für Rendering, Demo-Wiedergabe und Live-Spectating nutzen. Jeder laufende Pod belegt einen Account, der Pool braucht also mindestens so viele Accounts wie du GPU-Nodes hast, um voll parallel zu arbeiten.",
+        "description": "Pool, den GPU-Nodes für Rendering, Demo-Wiedergabe und Live-Zuschauen nutzen. Jeder laufende Pod belegt einen Account, der Pool braucht also mindestens so viele Accounts wie du GPU-Nodes hast, um voll parallel zu arbeiten.",
         "accounts_label": "Pool",
         "add": "Account hinzufügen",
         "add_title": "Steam-Account hinzufügen",
-        "add_description": "Der Account muss Steam Guard deaktiviert haben. Benutzername und Passwort werden unverändert gespeichert und in Render-Pods eingespeist.",
+        "add_description": "Beim Account muss Steam Guard deaktiviert sein. Benutzername und Passwort werden unverändert gespeichert und in Render-Pods eingespielt.",
         "username": "Benutzername",
         "password": "Passwort",
         "empty": "Noch keine Steam-Accounts.",
-        "empty_warning_title": "Es sind GPU-Nodes registriert, aber der Steam-Account-Pool ist leer — Highlight-Renders und Live-Spectating schlagen fehl, bis du mindestens einen Account hinzufügst.",
+        "empty_warning_title": "Es sind GPU-Nodes registriert, aber der Steam-Account-Pool ist leer — Highlight-Renders und Live-Zuschauen schlagen fehl, bis du mindestens einen Account hinzufügst.",
         "short_warning_title": "Nur {accounts} Steam-Account(s) für {nodes} GPU-Node(s) — manche Renders warten in der Queue auf einen Account.",
         "added": "Steam-Account hinzugefügt",
         "add_failed": "Account konnte nicht hinzugefügt werden",
@@ -2711,7 +2709,7 @@
           "bake": "Shader-Bake"
         }
       },
-      "stop": "Stopp"
+      "stop": "Stoppen"
     },
     "game_server_nodes": {
       "title": "Game-Server-Nodes",
@@ -2890,7 +2888,7 @@
         "best_kdr": "KDR",
         "best_win_rate": "Siegrate",
         "highest_hs_pct": "HS%",
-        "trophies": "Trophäen"
+        "awards": "Auszeichnungen"
       },
       "time_periods": {
         "last_7_days": "Letzte 7 Tage",
@@ -3143,6 +3141,36 @@
       "forbidden_title": "Zugriff eingeschränkt",
       "forbidden_description": "Du hast keine Berechtigung, diese Seite zu sehen.",
       "error_title": "Seite konnte nicht geladen werden"
+    },
+    "awards": {
+      "title": "Awards",
+      "description": "Author awards and hand them out to players and teams.",
+      "catalog_section": "Award Catalog",
+      "new_award": "New Award",
+      "edit_award": "Edit Award",
+      "no_awards": "No awards yet.",
+      "built_in": "Built-in",
+      "holders": "holders",
+      "name": "Name",
+      "description_label": "Description",
+      "tier": "Tier",
+      "artwork": "Artwork",
+      "allow_multiple": "Allow Multiple",
+      "allow_multiple_hint": "Let the same recipient hold this award more than once.",
+      "grant": "Grant Award",
+      "note": "Note",
+      "delete": "Delete",
+      "built_in_hint": "Required by tournament automation; cannot be deleted",
+      "no_awards_title": "No awards yet",
+      "search_placeholder": "Search awards",
+      "all_tiers": "All",
+      "no_matches_title": "No matching awards",
+      "no_matches": "No award matches the current filters.",
+      "clear_filters": "Clear filters",
+      "identity": "Identity",
+      "appearance": "Appearance",
+      "rules": "Rules",
+      "artwork_after_save": "Save the award first, then upload its artwork."
     }
   },
   "custom_match": {
@@ -3156,10 +3184,10 @@
     },
     "application_settings": {
       "title": "App-Einstellungen",
-      "description": "Einstellungen, die die App betreffen.",
+      "description": "Einstellungen, die die gesamte Anwendung betreffen.",
       "select_section": "Bereich wählen",
       "branding_nav": "Branding",
-      "fixtures_nav": "Ansetzungen",
+      "fixtures_nav": "Spielplan",
       "seasons_nav": "Seasons",
       "groups": {
         "platform": "Plattform",
@@ -3172,13 +3200,14 @@
         "developer": "Entwickler",
         "general": "Allgemein",
         "media": "Aufnahme & Medien",
-        "additional_features": "Weitere Funktionen"
+        "additional_features": "Weitere Funktionen",
+        "players_teams": "Plattform"
       }
     },
     "system_update": {
       "title": "System-Update verfügbar",
       "description": "Für diese Dienste gibt es Updates:",
-      "note": "Hinweis: Es dauert ein paar Minuten, bis die Updates verarbeitet und geprüft sind.",
+      "note": "Hinweis: Das Verarbeiten und Prüfen der neuen Updates dauert ein paar Minuten.",
       "fix_link": "Wenn ein System-Upgrade hängen bleibt, musst du eventuell deine Versionen korrigieren",
       "updating": "System wird aktualisiert",
       "panel_update": "Dein Panel ist veraltet — hol dir die neue Version und führ das Update-Skript aus"
@@ -3193,7 +3222,7 @@
       "delete_all_read": "Alle gelesenen löschen",
       "review_orphaned_uploads": "Verwaiste Uploads prüfen",
       "no_notifications_title": "Keine Benachrichtigungen",
-      "no_notifications": "Aktuell keine Benachrichtigungen.",
+      "no_notifications": "Momentan keine Benachrichtigungen.",
       "toast": {
         "draft_invite": "Draft-Einladung",
         "team_invite": "Team-Einladung",
@@ -3201,7 +3230,7 @@
         "lobby_invite": "Lobby-Einladung",
         "friend_request": "Freundschaftsanfrage",
         "invited_you": "hat dich eingeladen zu",
-        "invited_party": "hat dich in die Party eingeladen",
+        "invited_party": "hat dich in seine Party eingeladen",
         "wants_to_be_friends": "will mit dir befreundet sein"
       }
     },
@@ -3238,13 +3267,14 @@
         "game_server_nodes": "Game-Server-Nodes",
         "gpu_nodes": "GPU-Nodes",
         "app_settings": "App-Einstellungen",
-        "alerts": "Hinweise",
+        "alerts": "Alerts",
         "seasons": "Seasons",
         "manage_matches": "Matches verwalten",
         "manage_tournaments": "Turniere verwalten",
         "manage_league": "Liga verwalten",
         "stream_deck": "Stream Deck",
-        "manage_events": "Events verwalten"
+        "manage_events": "Events verwalten",
+        "awards": "Awards"
       },
       "system": {
         "title": "System",
@@ -3280,7 +3310,7 @@
         "database": "Datenbank",
         "system_metrics": "System-Metriken",
         "app_settings": "App-Einstellungen",
-        "alerts": "Seitenweite Hinweisbanner verwalten",
+        "alerts": "Seitenweite Alert-Banner verwalten",
         "report_issue": "Problem melden",
         "join_discord": "Tritt unserem Discord bei",
         "manage_matches": "Matches verwalten",
@@ -3298,6 +3328,12 @@
       },
       "plugins": {
         "title": "Apps"
+      },
+      "competition": {
+        "title": "Administration"
+      },
+      "platform": {
+        "title": "Administration"
       }
     },
     "top_nav": {
@@ -3305,7 +3341,7 @@
       "play_menu": "Spielen",
       "community_menu": "Community",
       "watch_menu": "Zuschauen",
-      "login": "Anmelden und spielen",
+      "login": "Anmelden zum Spielen",
       "login_aria": "Über Steam anmelden",
       "authorize": "AUTORISIEREN",
       "secure_access": "/ SICHERER ZUGANG",
@@ -3353,7 +3389,7 @@
         },
         "news": {
           "title": "News",
-          "subtitle": "{brand}-News"
+          "subtitle": "{brand} News"
         }
       }
     },
@@ -3365,7 +3401,7 @@
     "lobby_panel": {
       "lobby_invites": "Lobby-Einladungen",
       "your_squad": "Dein Squad",
-      "squad_description": "Stell dein Team auf, verschick Einladungen und bereite Voice- bzw. Discord-Comms vor.",
+      "squad_description": "Stell dein Team zusammen, verschick Einladungen und bereite Voice- / Discord-Comms vor.",
       "create_lobby_description": "Erstell eine Lobby, um Freunde einzuladen und gemeinsam in die Queue zu gehen.",
       "create_lobby_button": "Lobby erstellen",
       "voice_discord": "Voice & Discord",
@@ -3388,7 +3424,7 @@
       "most_played_maps": "Meistgespielte Maps",
       "no_maps": "Maps erscheinen hier, sobald du spielst.",
       "no_recent_matches_title": "Keine aktuellen Matches",
-      "no_recent_matches_description": "Sobald du ein paar Spiele gemacht hast, erscheinen sie hier."
+      "no_recent_matches_description": "Sobald du ein paar Spiele gespielt hast, erscheinen sie hier."
     },
     "public_header": {
       "secure_channel": "SICHERER KANAL"
@@ -3402,8 +3438,8 @@
   },
   "pwa": {
     "install": {
-      "title": "Zum Homescreen hinzufügen",
-      "description": "Diese Website bietet App-Funktionen. Füg sie zu deinem Homescreen hinzu, um schnell darauf zuzugreifen.",
+      "title": "Zum Startbildschirm hinzufügen",
+      "description": "Diese Website bietet App-Funktionen. Füg sie deinem Startbildschirm hinzu, um schneller darauf zuzugreifen.",
       "step1": "Tippe auf „Teilen“",
       "step2": "Wähle „Zum Home-Bildschirm“",
       "tooltip": "App installieren",
@@ -3417,7 +3453,7 @@
     "none": "Keine Spieler verfügbar"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "Diese Dateien werden beim Serverstart in das Verzeichnis `csgo` gemountet.",
+    "manage_custom_plugins_and_shared_files": "Diese Dateien werden beim Serverstart in das `csgo`-Verzeichnis gemountet.",
     "any": "Beliebig",
     "remove": "Entfernen",
     "edit": "Bearbeiten",
@@ -3441,7 +3477,7 @@
       "unsaved_changes": "Nicht gespeicherte Änderungen",
       "review_and_save": "Prüf deine Änderungen und speichere sie",
       "has_errors": "Ungültige Einstellungen",
-      "resolve_errors": "Korrigier die markierten Felder zum Speichern"
+      "resolve_errors": "Korrigiere die markierten Felder zum Speichern"
     },
     "error": "Fehler",
     "enabled": "Aktiviert",
@@ -3453,7 +3489,7 @@
     "team_2": "Team 2",
     "unknown": "Unbekannt",
     "untitled": "Ohne Titel",
-    "na": "K/A",
+    "na": "K. A.",
     "clip": "Clip",
     "vs": "vs",
     "or": "oder",
@@ -3471,25 +3507,25 @@
     "live": "Live",
     "finished": "Beendet",
     "scheduled": "Geplant",
-    "show_metrics": "Metriken einblenden",
+    "show_metrics": "Metriken anzeigen",
     "hide_metrics": "Metriken ausblenden",
     "connected": "Verbunden",
     "disconnected": "Getrennt",
     "system": "System",
     "hide_details": "Details ausblenden",
-    "show_details": "Details einblenden",
+    "show_details": "Details anzeigen",
     "enter_fullscreen": "Vollbild an",
     "exit_fullscreen": "Vollbild aus",
     "download": "Herunterladen",
     "upload": "Hochladen",
     "sort_ascending": "Aufsteigend sortieren",
     "sort_descending": "Absteigend sortieren",
-    "see_all": "Alle anzeigen",
+    "see_all": "Alle ansehen",
     "standby_no_activity": "STANDBY · KEINE AKTIVITÄT",
     "players": "Spieler",
     "duration": "Dauer",
     "your_schedule": "Dein Zeitplan",
-    "your_schedule_description": "Matches und Turniere, bei denen du gerade dabei bist.",
+    "your_schedule_description": "Matches und Turniere, bei denen du aktuell dabei bist.",
     "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "Ja",
@@ -3510,7 +3546,7 @@
     "rename": "Umbenennen",
     "creating": "Wird erstellt...",
     "saving": "Wird gespeichert...",
-    "loading": "Lädt...",
+    "loading": "Wird geladen...",
     "undo": "Rückgängig",
     "redo": "Wiederholen",
     "name": "Name",
@@ -3524,7 +3560,7 @@
     "player": "Spieler",
     "plugin_version": "Plugin-Version",
     "pick_date": "Datum wählen",
-    "team_name": "Team-Name",
+    "team_name": "Teamname",
     "coaches": "Coaches",
     "map_veto": "Map-Veto",
     "round": "Runde {number}",
@@ -3534,7 +3570,7 @@
       "kills": "Kills",
       "deaths": "Deaths",
       "assists": "Assists",
-      "win_rate": "Siegquote"
+      "win_rate": "Winrate"
     },
     "address_search": {
       "placeholder": "Nach Adresse oder Location suchen",
@@ -3545,7 +3581,7 @@
     "placeholder": "Spieler suchen...",
     "searching": "Suche läuft...",
     "no_players_found": "Keine Spieler gefunden",
-    "start_typing": "Tipp los, um Spieler zu suchen"
+    "start_typing": "Tippe los, um Spieler zu suchen"
   },
   "file_manager_store": {
     "load_directory_failed": "Verzeichnis konnte nicht geladen werden",
@@ -3560,8 +3596,8 @@
   },
   "file_manager": {
     "location": "Pfad",
-    "dedicated_server_files": "Dateien des Dedicated Servers",
-    "game_server_node_files": "Dateien der Game-Server-Node",
+    "dedicated_server_files": "Dedicated-Server-Dateien",
+    "game_server_node_files": "Game-Server-Node-Dateien",
     "loading_server_info": "Serverinformationen werden geladen...",
     "create_directory": {
       "title": "Neues Verzeichnis erstellen",
@@ -3579,8 +3615,8 @@
     "delete_confirm": {
       "title_file": "Datei löschen",
       "title_directory": "Verzeichnis löschen",
-      "description_file": "Willst du „{name}“ wirklich löschen? Das lässt sich nicht rückgängig machen.",
-      "description_directory": "Willst du „{name}“ wirklich löschen? Der gesamte Inhalt wird dauerhaft gelöscht."
+      "description_file": "„{name}“ wirklich löschen? Das lässt sich nicht rückgängig machen.",
+      "description_directory": "„{name}“ wirklich löschen? Der gesamte Inhalt wird dauerhaft gelöscht."
     },
     "rename": {
       "title_file": "Datei umbenennen",
@@ -3599,7 +3635,7 @@
     },
     "upload": {
       "title": "Dateien hochladen",
-      "description": "Wähl Dateien aus, die ins aktuelle Verzeichnis hochgeladen werden",
+      "description": "Wähle Dateien für den Upload ins aktuelle Verzeichnis",
       "drag_drop": "Dateien hierher ziehen oder klicken zum Auswählen",
       "max_size": "Maximale Dateigröße: 100MB",
       "uploading": "Dateien werden hochgeladen...",
@@ -3625,12 +3661,12 @@
       "menu_edit_label": "Bearbeiten",
       "menu_view_label": "Ansicht",
       "no_file_open_title": "Keine Datei geöffnet",
-      "no_file_open_description": "Wähl links eine Datei zum Bearbeiten aus",
+      "no_file_open_description": "Wähl im Browser eine Datei zum Bearbeiten",
       "close": "Schließen",
       "close_all": "Alle schließen",
       "enable_word_wrap": "Zeilenumbruch an",
       "disable_word_wrap": "Zeilenumbruch aus",
-      "show_minimap": "Minimap einblenden",
+      "show_minimap": "Minimap anzeigen",
       "hide_minimap": "Minimap ausblenden",
       "no_file_open": "Keine Datei geöffnet",
       "unsaved_changes": "Du hast nicht gespeicherte Änderungen. Wirklich schließen?",
@@ -3638,16 +3674,16 @@
     },
     "tabs": {
       "unsaved_changes_warning": "Du hast nicht gespeicherte Änderungen in anderen Dateien. Wirklich schließen?",
-      "unsaved_changes_right_warning": "Du hast nicht gespeicherte Änderungen in den Dateien rechts. Wirklich schließen?",
-      "unsaved_changes_left_warning": "Du hast nicht gespeicherte Änderungen in den Dateien links. Wirklich schließen?"
+      "unsaved_changes_right_warning": "Du hast nicht gespeicherte Änderungen in Dateien rechts davon. Wirklich schließen?",
+      "unsaved_changes_left_warning": "Du hast nicht gespeicherte Änderungen in Dateien links davon. Wirklich schließen?"
     }
   },
   "error": {
-    "generic": "Es ist ein Fehler aufgetreten. Versuch es erneut."
+    "generic": "Ein Fehler ist aufgetreten. Versuch es erneut."
   },
   "roles": {
-    "user": "Nutzer",
-    "verified_user": "Verifizierter Nutzer",
+    "user": "Benutzer",
+    "verified_user": "Verifizierter Benutzer",
     "streamer": "Streamer",
     "moderator": "Moderator",
     "match_organizer": "Match-Veranstalter",
@@ -3674,7 +3710,7 @@
     "measuring": "Wird gemessen...",
     "excellent": "Exzellent",
     "good": "Gut",
-    "fair": "Mittel",
+    "fair": "Okay",
     "poor": "Schlecht"
   },
   "chat_page": {
@@ -3682,7 +3718,7 @@
     "not_found": "Chat nicht gefunden",
     "back_to_hub": "Zurück zum Hub",
     "not_open_title": "Dieser Chat ist in deiner Session gerade nicht geöffnet.",
-    "not_open_description": "Öffne ihn zuerst in der Hub-Sidebar und lös ihn dann wieder ab."
+    "not_open_description": "Öffne ihn zuerst in der Hub-Sidebar und lös ihn dann wieder heraus."
   },
   "tournament": {
     "admin_label": "Admin",
@@ -3728,25 +3764,6 @@
     },
     "standings_section": {
       "no_roster": "KEIN ROSTER"
-    },
-    "trophies_config": {
-      "title": "Trophäen-Konfiguration",
-      "organizer_access_required": "VERANSTALTER-ZUGRIFF ERFORDERLICH",
-      "award_trophies": "TROPHÄEN VERGEBEN",
-      "custom": "EIGENE",
-      "custom_image": "Eigenes Bild",
-      "custom_name": "Eigener Name",
-      "silhouette": "Silhouette",
-      "reset": "Zurücksetzen",
-      "remove_image_hint": "Bild entfernen, um Name oder Silhouette anzupassen",
-      "hint": "Lade ein Bild hoch oder passe die Standard-Auszeichnung an."
-    },
-    "trophies_manage": {
-      "manual_awards": "Manuelle Auszeichnungen",
-      "add_award": "Auszeichnung hinzufügen",
-      "no_manual_awards": "KEINE MANUELLEN AUSZEICHNUNGEN",
-      "remove": "Entfernen",
-      "hint": "Vergib eine Trophäe außerhalb der Bracket-Berechnung."
     },
     "compact_card": {
       "tournament": "Turnier",
@@ -4141,6 +4158,47 @@
       "empty_hint": "Banner hinzufügen",
       "hint": "Wird oben auf der Turnierseite angezeigt. Auf ein breites 3:1-Format zugeschnitten.",
       "upload_failed": "Banner-Upload fehlgeschlagen"
+    },
+    "awards_config": {
+      "title": "Auszeichnungs-Konfiguration",
+      "organizer_access_required": "VERANSTALTER-ZUGRIFF ERFORDERLICH",
+      "custom": "EIGENE",
+      "custom_image": "Eigenes Bild",
+      "custom_name": "Eigener Name",
+      "silhouette": "Silhouette",
+      "reset": "Zurücksetzen",
+      "hint": "Wähle die Auszeichnung für jede Platzierung oder überschreibe Name und Grafik.",
+      "award": "Auszeichnung",
+      "award_default": "Standard",
+      "pick_award": "Choose an award",
+      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
+      "new_award": "New award",
+      "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
+      "upload_image": "Upload image",
+      "replace_image": "Replace image",
+      "custom_image_hint": "Overrides the award's artwork for this tournament only.",
+      "silhouettes": {
+        "auto": "Auto",
+        "0": "Chalice",
+        "1": "Faceted",
+        "2": "Star",
+        "3": "Shield",
+        "4": "Laurel"
+      },
+      "artwork": "Artwork",
+      "silhouette_unused": "Silhouette is unused while artwork is set.",
+      "placement": "Placement",
+      "unsaved": "Unsaved"
+    },
+    "awards_manage": {
+      "manual_awards": "Manuelle Auszeichnungen",
+      "add_award": "Auszeichnung hinzufügen",
+      "no_manual_awards": "KEINE MANUELLEN AUSZEICHNUNGEN",
+      "remove": "Entfernen",
+      "hint": "Vergib eine Auszeichnung außerhalb der Bracket-Berechnung.",
+      "no_participants": "Teams must register before awards can be granted.",
+      "no_awards": "Create an award in the catalog first.",
+      "choose_award": "Choose an award…"
     }
   },
   "team": {
@@ -4624,7 +4682,7 @@
       "description": "Das Startgeld beider Teams pro Runde über die ganze Map.",
       "select_map": "Map wählen",
       "empty_title": "Keine Economy-Daten",
-      "empty_description": "Für diese Map gibt es noch kein Geld pro Runde.",
+      "empty_description": "Für diese Map gibt es noch keine Geldwerte pro Runde.",
       "round_won_by": "Runde gewonnen von {team}",
       "no_winner": "Kein Sieger",
       "team_1": "Team 1",
@@ -4662,20 +4720,20 @@
       "settings": "Match-Einstellungen",
       "streams": "Live-Streams zum Match",
       "admin": "Admin",
-      "randomize_teams": "Teams auslosen",
+      "randomize_teams": "Teams zufällig verteilen",
       "swap_lineups": "Lineups tauschen",
       "restore_round": "Runde wiederherstellen",
-      "select_round_to_restore": "Wähle die Runde zum Wiederherstellen",
-      "server_information": "Server-Informationen",
+      "select_round_to_restore": "Wähle die Runde, die wiederhergestellt werden soll",
+      "server_information": "Server-Infos",
       "type": "Typ",
       "region": "Region",
       "no_logs_title": "Keine Logs verfügbar",
-      "no_logs_description": "Es sind keine Logs verfügbar und kein Server verbunden."
+      "no_logs_description": "Es sind keine Logs verfügbar und kein Server ist verbunden."
     },
     "status": {
       "cancelled": "Abgebrochen",
-      "waiting_server": "Warten auf Server ...",
-      "scheduled_asap": "Startet sobald möglich",
+      "waiting_server": "Warte auf Server ...",
+      "scheduled_asap": "Startet schnellstmöglich",
       "paused": "Pausiert",
       "tied": "Unentschieden"
     },
@@ -4694,7 +4752,7 @@
       "server_region": "Server-Region",
       "select_region": "Region wählen",
       "no_regions_available": "Keine Regionen verfügbar",
-      "no_regions_available_description": "Für diesen Server sind keine Regionen verfügbar. Wende dich an einen Admin, damit eine Region angelegt wird.",
+      "no_regions_available_description": "Für diesen Server sind keine Regionen verfügbar. Wende dich an einen Admin, damit eine Region hinzugefügt wird.",
       "set_server_region": "Server-Region festlegen"
     },
     "commands": {
@@ -4712,14 +4770,14 @@
       "terrorist": "Terrorist",
       "action_pick": "{team} hat {map} gepickt",
       "action_ban": "{team} hat {map} gebannt",
-      "action_side": "{team} hat {side} auf {map} gewählt",
+      "action_side": "{team} wählt {side} auf {map}",
       "action_decider": "{map} war der Decider",
-      "side_picked_by": "{team} hat {side} gewählt",
+      "side_picked_by": "{team} wählt {side}",
       "starts_on": "{team} startet auf {side}"
     },
     "decider": "Decider",
     "map_veto": {
-      "is_picking": "pickt eine",
+      "is_picking": "pickt gerade eine",
       "organizer_override": "Override durch Veranstalter",
       "pick": "Pick",
       "confirm": "{type} bestätigen"
@@ -4745,14 +4803,14 @@
       "pause_highlights_and_start_live": "Highlights pausieren & Live-Stream starten",
       "start_live_preempt_highlights_hint": "Highlights pausieren nach dem aktuellen · Live startet, sobald die GPU frei ist",
       "start_live_direct": "Direkt",
-      "start_live_direct_hint": "Observer über Game-Port · ohne Verzögerung",
+      "start_live_direct_hint": "Observer über den Game-Port · ohne Verzögerung",
       "start_live_tv": "TV (GOTV)",
-      "start_live_tv_hint": "Beachtet tv_delay · sicher im laufenden Match",
-      "start_live_waiting_tv": "Warten auf TV-Verbindung…",
+      "start_live_tv_hint": "Berücksichtigt tv_delay · sicher im laufenden Match",
+      "start_live_waiting_tv": "Warte auf TV-Verbindung…",
       "stop_live": "Live-Stream stoppen",
       "cancel_live_boot": "Live-Stream abbrechen (startet…)",
       "create_clips": "Spieler-Highlights erstellen",
-      "create_clips_needs_gpu_node": "Registriere eine GPU-Node, um Highlights einzureihen (offline ist okay — Jobs starten, sobald sie wieder online ist)",
+      "create_clips_needs_gpu_node": "Registriere eine GPU-Node, um Highlights einzureihen (offline ist okay — die Jobs starten, sobald sie wieder online ist)",
       "live_started": "Live-Stream startet",
       "live_stopped": "Live-Stream gestoppt",
       "live_switched": "Live-Stream auf dieses Match umgeschaltet",
@@ -4761,10 +4819,10 @@
       "switch_stream_here": "Stream auf dieses Match umschalten",
       "server_offline": "Server ist offline",
       "cancel_live_pending": "Live-Stream abbrechen (ausstehend…)",
-      "live_pending_hint": "Warten auf GPU — startet automatisch, sobald frei",
+      "live_pending_hint": "Warte auf GPU — startet automatisch, sobald sie frei ist",
       "pause_renders": "Highlight-Renders pausieren",
       "pause_renders_hint": "Stoppt nach dem aktuellen Highlight",
-      "pause_renders_started": "Renders pausieren nach dem aktuellen Highlight",
+      "pause_renders_started": "Die Renders pausieren nach dem aktuellen Highlight",
       "resume_renders": "Highlight-Renders fortsetzen",
       "resume_renders_hint": "Macht mit den restlichen Highlights weiter",
       "resume_renders_started": "Highlight-Renders werden fortgesetzt",
@@ -4804,31 +4862,31 @@
         "net_trade": "Netto-Trade",
         "accuracy": "Trefferquote",
         "estimated": "Geschätzt",
-        "estimated_tooltip": "Diese Map hat kein Collision-Mesh, deshalb ließ sich die Sichtlinie nicht prüfen — Werte zu Sichtungen, Crosshair, Time to Damage und Duellen sind hier geschätzt.",
+        "estimated_tooltip": "Diese Map hat kein Collision-Mesh, also konnte die Sichtlinie nicht geprüft werden — Spotted-, Crosshair-, Time-to-Damage- und Engagement-Werte sind hier geschätzt.",
         "rifle_accuracy": "Rifle-Trefferquote",
         "pistol_accuracy": "Pistolen-Trefferquote",
         "sniper_accuracy": "Sniper-Trefferquote",
         "head_accuracy": "Kopf-Trefferquote",
-        "hs_kill_pct": "HS-Kill %",
+        "hs_kill_pct": "HS-Kills %",
         "time_to_damage": "Time to Damage",
-        "spotted_acc": "Sichtungs-Conversion",
+        "spotted_acc": "Spot-Conversion",
         "crosshair_placement": "Crosshair Placement",
         "counter_strafing": "Counter-Strafing",
-        "first_bullet_accuracy": "Erster-Schuss-Trefferquote",
+        "first_bullet_accuracy": "Erste-Kugel-Trefferquote",
         "tracking": "Tracking",
         "wasted_magazine_pct": "Verschwendetes Mag %",
         "spray_accuracy": "Spray-Trefferquote",
-        "accuracy_spotted": "Trefferquote (gesichtet)",
-        "calc_header": "So wird gerechnet",
+        "accuracy_spotted": "Trefferquote (gespottet)",
+        "calc_header": "So wird es berechnet",
         "tooltips": {
           "accuracy": {
             "title": "Trefferquote (alle Schüsse)",
-            "description": "Wie viele deiner abgefeuerten Kugeln einen Gegner getroffen haben. Stark volumenabhängig — Sniper und Pistolenspieler schießen selten und treffen anteilig oft, das schönt den Wert. Vergleiche lieber die Trefferquoten pro Waffe.",
+            "description": "Wie viele deiner abgefeuerten Kugeln einen Gegner getroffen haben. Stark volumenabhängig — Sniper- und Pistolenspieler schießen selten und treffen anteilig oft, der Wert schmeichelt ihnen also. Vergleiche lieber die Trefferquoten pro Waffe.",
             "calculation": "Alle Treffer geteilt durch alle Schüsse, über alle Waffen hinweg."
           },
           "rifle_accuracy": {
             "title": "Rifle-Trefferquote",
-            "description": "Trefferquote nur mit Rifles (AK, M4, AUG, Galil, FAMAS, SG). Der fairste Aim-Vergleich — Rifle gegen Rifle — weil ihn Waffen mit niedriger Feuerrate nicht aufblähen.",
+            "description": "Trefferquote nur mit Rifles (AK, M4, AUG, Galil, FAMAS, SG). Der fairste Aim-Vergleich — Rifle gegen Rifle — weil er nicht von Waffen mit niedriger Feuerrate aufgeblasen wird.",
             "calculation": "Rifle-Treffer geteilt durch Rifle-Schüsse. Wird erst ab 5 Rifle-Schüssen angezeigt."
           },
           "pistol_accuracy": {
@@ -4842,104 +4900,104 @@
             "calculation": "Sniper-Treffer geteilt durch Sniper-Schüsse. Wird erst ab 5 Sniper-Schüssen angezeigt."
           },
           "accuracy_spotted": {
-            "title": "Trefferquote (Gegner gesichtet)",
-            "description": "Trefferquote, wenn du tatsächlich auf einen Gegner in deinem Sichtfeld geschossen hast. Spam durch Smokes oder Wände zählt nicht.",
-            "calculation": "Treffer auf gesichtete Gegner geteilt durch Schüsse, die du mit einem Gegner im Sichtfeld abgegeben hast."
+            "title": "Trefferquote (Gegner gespottet)",
+            "description": "Deine Trefferquote, wenn du tatsächlich auf einen Gegner im Sichtfeld geschossen hast. Spam durch Smokes oder Wände zählt nicht.",
+            "calculation": "Treffer an gespotteten Gegnern geteilt durch Schüsse, die du mit einem Gegner im Sichtfeld abgegeben hast."
           },
           "head_accuracy": {
             "title": "Headshot-Trefferquote",
-            "description": "Wie viele deiner Treffer in den Kopf gingen. Schüsse mit der AWP zählen nicht.",
-            "calculation": "Kopftreffer geteilt durch alle Treffer (AWP in beiden Werten ausgenommen)."
+            "description": "Wie viele deiner Treffer im Kopf gelandet sind. Schüsse mit der AWP zählen nicht.",
+            "calculation": "Kopftreffer geteilt durch alle Treffer (AWP in beiden ausgeschlossen)."
           },
           "hs_kill_pct": {
-            "title": "HS-Kill %",
+            "title": "HS-Kills %",
             "description": "Anteil deiner Kills, die Headshots waren — so wie es das Scoreboard zeigt.",
             "calculation": "Headshot-Kills geteilt durch alle Kills."
           },
           "time_to_damage": {
             "title": "Time to Damage",
-            "description": "Durchschnittliche Zeit vom ersten Sichten eines Gegners bis zum ersten Schaden an ihm. Trigger-Discipline- und Angle-Hold-Situationen zählen nicht.",
-            "calculation": "Pro Duell die Zeit von der ersten Sichtung bis zum ersten Schaden an diesem Gegner. Gemittelt über alle Duelle, gedeckelt bei 3s."
+            "description": "Durchschnittliche Zeit vom ersten Sichtkontakt mit einem Gegner bis zum ersten Schaden an ihm. Halten von Angles ohne Schuss zählt nicht mit.",
+            "calculation": "Pro Engagement die Zeit vom ersten Spot bis zum ersten Schaden an diesem Gegner. Über alle Engagements gemittelt, gedeckelt bei 3 s."
           },
           "spotted_acc": {
-            "title": "Sichtungs-Conversion",
-            "description": "Wie vielen der von dir gesichteten Gegner du danach Schaden zugefügt hast — ein Maß für Duell-Bereitschaft, nicht für Aim. (Im Gegensatz zu „Trefferquote (gesichtet)“, deiner Trefferrate beim Schießen auf einen sichtbaren Gegner.)",
-            "calculation": "Gegner, die du in der Runde gesichtet und danach beschädigt hast, geteilt durch alle von dir gesichteten Gegner."
+            "title": "Spot-Conversion",
+            "description": "Wie vielen der von dir gespotteten Gegner du danach auch Schaden zugefügt hast — ein Maß für Engagement und Aggression, nicht für Aim. (Im Gegensatz zur Trefferquote (gespottet), die deine Kugel-Trefferrate beim Schießen auf sichtbare Gegner ist.)",
+            "calculation": "Gegner, die du in der Runde gespottet und danach beschädigt hast, geteilt durch alle von dir gespotteten Gegner."
           },
           "crosshair_placement": {
             "title": "Crosshair Placement",
-            "description": "Durchschnittlicher Winkel (in Grad), um den sich dein Crosshair vom ersten Sichten des Gegners bis zum Treffer bewegt hat. Weniger ist besser.",
-            "calculation": "Pro Duell der Winkel zwischen deiner Blickrichtung bei der ersten Sichtung und beim ersten Treffer. Ausreißer über 45° zählen nicht."
+            "description": "Durchschnittlicher Winkel (in Grad), um den sich dein Crosshair vom ersten Sichtkontakt bis zum Treffer bewegt hat. Weniger ist besser.",
+            "calculation": "Pro Engagement der Winkel zwischen deiner Blickrichtung beim ersten Spot und beim ersten Treffer. Ausreißer über 45° zählen nicht."
           },
           "counter_strafing": {
             "title": "Counter-Strafing",
             "description": "Wie oft du vor dem Schuss mit einer Rifle stehen geblieben bist. Zählt nur Rifle-Schüsse auf sichtbare Gegner; Bewegung in voller Hocke zählt nicht.",
-            "calculation": "Rifle-Schüsse auf einen gesichteten Gegner mit unter 34 % der Maximalgeschwindigkeit der Waffe, geteilt durch alle Rifle-Schüsse auf gesichtete Gegner (nicht geduckt)."
+            "calculation": "Rifle-Schüsse auf gespottete Gegner mit weniger als 34 % der Maximalgeschwindigkeit der Waffe, geteilt durch alle Rifle-Schüsse auf gespottete Gegner (nicht geduckt)."
           },
           "first_bullet_accuracy": {
-            "title": "Erster-Schuss-Trefferquote",
-            "description": "Wie oft dein erster Schuss im Duell sitzt — der Schuss, der die meisten Duelle entscheidet. Mehr ist besser.",
-            "calculation": "Erste Schüsse mit Schaden geteilt durch alle ersten Schüsse, über alle Duelle (einer pro Gegner, den du zuerst beschossen hast)."
+            "title": "Erste-Kugel-Trefferquote",
+            "description": "Wie oft dein Eröffnungsschuss im Duell sitzt — der Schuss, der die meisten Duelle entscheidet. Mehr ist besser.",
+            "calculation": "Erste Schüsse mit Schaden geteilt durch alle ersten Schüsse, über alle Engagements (einer pro Gegner, den du eröffnet hast)."
           },
           "tracking": {
             "title": "Tracking (Zeit auf dem Ziel)",
-            "description": "Wie viel der Zeit dein Crosshair im Duell auf dem lebenden Gegner geblieben ist. Mehr ist besser.",
-            "calculation": "Frames, in denen dein Blick innerhalb von ~5° zum Gegner blieb, geteilt durch alle Frames des Duellfensters."
+            "description": "Wie viel Zeit dein Crosshair während eines Duells auf dem lebenden Gegner geblieben ist. Mehr ist besser.",
+            "calculation": "Frames, in denen dein Blick innerhalb von ca. 5° am Gegner blieb, geteilt durch alle Frames des Engagement-Fensters."
           },
           "spray_accuracy": {
             "title": "Spray-Trefferquote",
             "description": "Deine Trefferquote ab dem zweiten Schuss einer Salve — dort, wo der Rückstoß am meisten ausmacht.",
-            "calculation": "Treffer aus Spray-Schüssen geteilt durch alle Spray-Schüsse. Ein Schuss zählt als Spray-Schuss, wenn derselbe Schütze in den 250 ms davor gefeuert hat."
+            "calculation": "Treffer aus Spray-Schüssen geteilt durch alle Spray-Schüsse. Ein Schuss gilt als Spray-Schuss, wenn derselbe Schütze in den 250 ms davor geschossen hat."
           },
           "wasted_magazine_pct": {
             "title": "Verschwendetes Magazin %",
-            "description": "Wie oft du nachlädst, obwohl noch Kugeln im Magazin sind. Weniger ist besser — das Magazin leer zu schießen ist effizienter.",
+            "description": "Wie oft du mit Kugeln im Magazin nachlädst. Weniger ist besser — das Magazin leer zu schießen ist effizienter.",
             "calculation": "Beim Nachladen verbliebene Kugeln geteilt durch (abgefeuerte + verschwendete Kugeln)."
           },
           "trade_kill_opportunities": {
             "title": "Trade-Kill-Chancen",
             "description": "Runden, in denen ein Teammate starb, während du noch gelebt hast — du hattest also die Chance zu traden.",
-            "calculation": "Verschiedene Runden, in denen mindestens ein Teammate von einem Gegner gekillt wurde, während du noch am Leben warst."
+            "calculation": "Runden, in denen mindestens ein Teammate von einem Gegner gekillt wurde, während du noch gelebt hast."
           },
           "trade_kill_attempts": {
             "title": "Trade-Kill-Versuche",
-            "description": "Gegner, die du kurz nach ihrem Kill an einem Teammate erledigt hast.",
+            "description": "Gegner, die du kurz nachdem sie einen Teammate gekillt haben, gekillt hast.",
             "calculation": "Kills an einem Gegner innerhalb von 5 Sekunden, nachdem er einen deiner Teammates gekillt hat."
           },
           "trade_kill_pct": {
             "title": "Trade-Kill %",
-            "description": "Wie oft du eine Trade-Chance in einen Trade-Kill umgemünzt hast.",
-            "calculation": "Erfolgreiche Trade-Kills geteilt durch Runden mit Trade-Chance."
+            "description": "Wie oft du eine Trade-Chance in einen Trade-Kill verwandelt hast.",
+            "calculation": "Erfolgreiche Trade-Kills geteilt durch die Runden mit Trade-Chance."
           },
           "traded_death_opportunities": {
             "title": "Getradete-Death-Chancen",
-            "description": "Deine Deaths durch Gegner — jeder war eine Chance für einen Teammate, dich zu traden.",
+            "description": "Deine Deaths durch Gegner — jeder davon war eine Chance für einen Teammate, dich zu traden.",
             "calculation": "Wie oft du insgesamt von einem Gegner gekillt wurdest."
           },
           "traded_death_attempts": {
             "title": "Getradete-Death-Versuche",
-            "description": "Alle Trade-Versuche deines Teams auf deine Deaths (ein Teammate killt deinen Killer innerhalb von 5s).",
+            "description": "Alle Trade-Versuche deines Teams auf deine Deaths (ein Teammate killt deinen Killer innerhalb von 5 s).",
             "calculation": "Summe aller Teammate-Kills, die einen deiner Deaths innerhalb von 5 Sekunden getradet haben."
           },
           "traded_death_pct": {
             "title": "Getradete Deaths %",
             "description": "Wie oft deine Deaths von einem Teammate gerächt wurden.",
-            "calculation": "Deine von einem Teammate innerhalb von 5 Sekunden getradeten Deaths, geteilt durch alle Deaths."
+            "calculation": "Deine Deaths, die ein Teammate innerhalb von 5 Sekunden getradet hat, geteilt durch alle Deaths."
           },
           "net_trade": {
             "title": "Netto-Trade",
             "description": "Dein Beitrag zur Trade-Bilanz deines Teams.",
-            "calculation": "Deine erfolgreichen Trade-Kills minus deine ungetradeten Deaths."
+            "calculation": "Deine abgeschlossenen Trade-Kills minus deiner ungetradeten Deaths."
           }
         }
       },
-      "discord_user": "Das ist ein Discord-Nutzer. Registriere deine Discord-ID, um Stat-Tracking zu aktivieren — schreibe dazu",
-      "discord_link": "im offiziellen Discord-Channel."
+      "discord_user": "Das ist ein Discord-User. Registriere deine Discord-ID für Stat-Tracking, indem du",
+      "discord_link": "im offiziellen Discord-Channel eingibst."
     },
     "overview": {
       "promote_captain": "Zum Captain machen",
       "switch_teams": "Team wechseln",
-      "remove_from_lineup": "Aus Lineup entfernen",
+      "remove_from_lineup": "Aus dem Lineup entfernen",
       "leave_lineup": "Lineup verlassen",
       "render_highlight": "Highlight rendern…",
       "update_team_name": "Teamnamen ändern",
@@ -4959,15 +5017,15 @@
       "tooltips": {
         "hltv": {
           "title": "HLTV Rating 2.0",
-          "description": "Kombiniertes Rating aus Kills/Runde, Deaths/Runde, Assists/Runde, ADR und KAST. >1.0 ist überdurchschnittlich, >1.2 ist Weltklasse, <0.85 ist schwach."
+          "description": "Kombiniertes Rating aus Kills/Runde, Deaths/Runde, Assists/Runde, ADR und KAST. >1,0 ist überdurchschnittlich, >1,2 ist Weltklasse, <0,85 ist schwach."
         },
         "kast": {
           "title": "KAST %",
-          "description": "Anteil der Runden, in denen du etwas beigetragen hast: Kill, Assist, Runde überlebt oder nach deinem Death getradet. Pros liegen bei 70–80 %."
+          "description": "Anteil der Runden, in denen du beigetragen hast: Kill, Assist, Runde überlebt oder nach deinem Death getradet. Profis liegen bei 70–80 %."
         },
         "survived": {
           "title": "Überlebte Runden",
-          "description": "Runden, die du lebend beendet hast (kein Kill hat dich als Opfer). Zählt gewonnene, verlorene und gesavte Runden."
+          "description": "Runden, die du lebend beendet hast (kein Kill mit dir als Opfer). Zählt gewonnene, verlorene und gesavte Runden."
         }
       }
     },
@@ -4977,12 +5035,12 @@
       "traded": "Getradet",
       "most_killed": "Meist gekillt",
       "best_weapon": "Beste Waffe",
-      "most_died_to": "Häufigster Killer"
+      "most_died_to": "Meist gestorben gegen"
     },
     "clutches": {
       "won": "Gewonnen",
       "lost": "Verloren",
-      "saved": "Gesavt",
+      "saved": "Gesaved",
       "no_attempts": "Keine Clutch-Versuche",
       "vs": "vs {count}",
       "vs_short": "1v{count}",
@@ -5507,7 +5565,11 @@
       "toggle": "Einstellungen anpassen"
     },
     "high_latency_warning": "Deine Latenz ist zu hoch für kompetitive Matches",
-    "no_preferred_regions": "Wähle in den Matchmaking-Einstellungen mindestens eine bevorzugte Region"
+    "no_preferred_regions": "Wähle in den Matchmaking-Einstellungen mindestens eine bevorzugte Region",
+    "party_size": {
+      "unavailable": "Party mit {size} Spielern kann für diesen Modus nicht in die Queue",
+      "requirement": "Queue mit {half} oder weniger, oder genau {full} Spielern"
+    }
   },
   "game_server": {
     "lan_ip": "LAN-IP",
@@ -7039,5 +7101,45 @@
       "axis_hs": "HS%",
       "axis_assist": "Assist"
     }
+  },
+  "awards": {
+    "title": "Auszeichnungen",
+    "mvp": "MVP",
+    "first_place": "1. Platz",
+    "second_place": "2. Platz",
+    "third_place": "3. Platz",
+    "tournament": "Turnier",
+    "placement": "Platzierung",
+    "no_awards": "Noch keine Auszeichnungen",
+    "no_awards_description": "Belege bei einem Turnier einen der Top 3 Plätze oder erhalte eine Auszeichnung, um diese Vitrine zu füllen.",
+    "granted": "Vergeben",
+    "composer": {
+      "title": "Create & assign award",
+      "award": "Award",
+      "new": "New",
+      "existing": "Existing",
+      "choose": "Choose an award…",
+      "assign": "Assign",
+      "artwork_needs_award": "Artwork attaches to the award, so save it first.",
+      "create_to_upload": "Create award to add artwork",
+      "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
+      "scope_global": "Not tied to a tournament, season or event.",
+      "scope_tournament": "Belongs to this tournament.",
+      "scope_season": "Belongs to this season.",
+      "scope_event": "Belongs to this event.",
+      "scope_league_season": "Belongs to this league season.",
+      "grant_here": "Grant award",
+      "load_existing": "Load an existing award…",
+      "editing": "Editing: {name}"
+    }
+  },
+  "awards_modal": {
+    "view_tournament": "TURNIER ANSEHEN"
+  },
+  "awards_manage_form": {
+    "team": "Team",
+    "player": "Spieler",
+    "award": "Auszeichnung",
+    "recipient": "Recipient"
   }
 }

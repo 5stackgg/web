@@ -26,6 +26,7 @@ import {
   AlertTriangle,
   Megaphone,
   Leaf,
+  Medal,
   CalendarRange,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
@@ -330,10 +331,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               group.name || $t("layouts.app_nav.plugins.title")
             }}</SidebarGroupLabel>
             <SidebarMenu>
-              <SidebarMenuItem
-                v-for="plugin in group.plugins"
-                :key="plugin.id"
-              >
+              <SidebarMenuItem v-for="plugin in group.plugins" :key="plugin.id">
                 <SidebarMenuButton as-child :tooltip="plugin.title">
                   <NuxtLink
                     :to="`/apps/${plugin.slug}`"
@@ -498,14 +496,37 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
         <SidebarGroup
           v-if="
-            isAdmin || isMatchOrganizer || isTournamentOrganizer || isStreamer
+            isAdmin ||
+            isMatchOrganizer ||
+            isTournamentOrganizer ||
+            canManageAwards ||
+            canGrantAwards
           "
         >
           <SidebarGroupLabel>{{
-            $t("layouts.app_nav.administration.title")
+            $t("layouts.app_nav.competition.title")
           }}</SidebarGroupLabel>
 
           <SidebarMenu>
+            <SidebarMenuItem
+              v-if="canManageAwards || canGrantAwards"
+              :tooltip="$t('layouts.app_nav.administration.awards')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.administration.awards')"
+              >
+                <NuxtLink
+                  :to="{ name: 'awards' }"
+                  :class="{
+                    'router-link-active': isRouteActive('awards'),
+                  }"
+                >
+                  <Medal />
+                  {{ $t("layouts.app_nav.administration.awards") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             <SidebarMenuItem
               v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer"
               :tooltip="$t('layouts.app_nav.tooltips.manage_matches')"
@@ -591,6 +612,64 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
+            <template v-if="isAdmin">
+              <SidebarMenuItem
+                v-if="isAdmin && seasonsEnabled"
+                :tooltip="$t('layouts.app_nav.administration.seasons')"
+              >
+                <SidebarMenuButton
+                  as-child
+                  :tooltip="$t('layouts.app_nav.administration.seasons')"
+                >
+                  <NuxtLink
+                    :to="{ name: 'seasons' }"
+                    :class="{
+                      'router-link-active': isRouteActive('seasons'),
+                    }"
+                  >
+                    <Leaf />
+                    {{ $t("layouts.app_nav.administration.seasons") }}
+                    <AlertTriangle
+                      v-if="seasonsRebuildCount > 0"
+                      class="ml-auto h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+                    />
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </template>
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <Separator
+          v-if="showSeparators && (isAdmin || isStreamer)"
+          class="mx-4 w-auto"
+        />
+
+        <SidebarGroup v-if="isAdmin || isStreamer">
+          <SidebarGroupLabel>{{
+            $t("layouts.app_nav.platform.title")
+          }}</SidebarGroupLabel>
+
+          <SidebarMenu>
+            <SidebarMenuItem
+              v-if="isAdmin"
+              :tooltip="$t('layouts.app_nav.tooltips.alerts')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.alerts')"
+              >
+                <NuxtLink
+                  :to="{ name: 'system-alerts' }"
+                  :class="{
+                    'router-link-active': isRouteActive('system-alerts'),
+                  }"
+                >
+                  <Megaphone />
+                  {{ $t("layouts.app_nav.administration.alerts") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             <SidebarMenuItem
               :tooltip="$t('layouts.app_nav.administration.stream_deck')"
             >
@@ -794,47 +873,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </DropdownMenu>
               </SidebarMenuItem>
 
-              <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.alerts')">
-                <SidebarMenuButton
-                  as-child
-                  :tooltip="$t('layouts.app_nav.tooltips.alerts')"
-                >
-                  <NuxtLink
-                    :to="{ name: 'system-alerts' }"
-                    :class="{
-                      'router-link-active': isRouteActive('system-alerts'),
-                    }"
-                  >
-                    <Megaphone />
-                    {{ $t("layouts.app_nav.administration.alerts") }}
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem
-                v-if="isAdmin && seasonsEnabled"
-                :tooltip="$t('layouts.app_nav.administration.seasons')"
-              >
-                <SidebarMenuButton
-                  as-child
-                  :tooltip="$t('layouts.app_nav.administration.seasons')"
-                >
-                  <NuxtLink
-                    :to="{ name: 'seasons' }"
-                    :class="{
-                      'router-link-active': isRouteActive('seasons'),
-                    }"
-                  >
-                    <Leaf />
-                    {{ $t("layouts.app_nav.administration.seasons") }}
-                    <AlertTriangle
-                      v-if="seasonsRebuildCount > 0"
-                      class="ml-auto h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                    />
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
               <SidebarMenuItem
                 :tooltip="$t('layouts.app_nav.tooltips.app_settings')"
               >
@@ -952,18 +990,23 @@ function onLeftNavTouchEnd(e: TouchEvent) {
         </SidebarGroup>
 
         <SidebarGroup v-if="telemetryStats?.online > 0 && sideBarOpen">
-          <Badge
-            size="sm"
-            variant="outline"
-            class="p-2 flex items-center gap-2"
+          <NuxtLink
+            :to="{ name: 'system-telemetry' }"
+            :title="$t('pages.system_telemetry.title')"
           >
-            <Server class="w-3 h-3" />
-            {{
-              $t("layouts.app_nav.systems_online", telemetryStats.online, {
-                count: telemetryStats.online,
-              })
-            }}
-          </Badge>
+            <Badge
+              size="sm"
+              variant="outline"
+              class="p-2 flex items-center gap-2 w-full transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              <Server class="w-3 h-3" />
+              {{
+                $t("layouts.app_nav.systems_online", telemetryStats.online, {
+                  count: telemetryStats.online,
+                })
+              }}
+            </Badge>
+          </NuxtLink>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
@@ -1220,6 +1263,12 @@ export default {
     },
     seasonsEnabled() {
       return useApplicationSettingsStore().seasonsEnabled;
+    },
+    canManageAwards() {
+      return useApplicationSettingsStore().canManageAwards;
+    },
+    canGrantAwards() {
+      return useApplicationSettingsStore().canGrantAwards;
     },
     leaguesEnabled() {
       return useApplicationSettingsStore().leaguesEnabled;

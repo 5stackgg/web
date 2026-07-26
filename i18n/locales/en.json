@@ -1276,7 +1276,8 @@
         "community": "Community",
         "matches_caption": "hosted across the fleet",
         "players_caption": "in a lineup, last 30 days",
-        "hosted_hint": "Hosted counts only matches a panel ran itself. Imported matches come from FACEIT or CS2 match history and are listed separately."
+        "hosted_hint": "Hosted counts only matches a panel ran itself. Imported matches come from FACEIT or CS2 match history and are listed separately.",
+        "gpu_nodes": "GPU Nodes"
       },
       "activity": {
         "matches": "Matches Hosted Per Day (90d)",
@@ -1296,7 +1297,7 @@
           "seasons": "Seasons",
           "events": "Events",
           "news": "News",
-          "highlights": "Highlights",
+          "highlights": "Auto Highlights",
           "clip_renders": "Clip Renders",
           "system_alerts": "System Alerts",
           "awards": "Awards",
@@ -1317,14 +1318,18 @@
           "stream_login_protection": "Stream Login Protection",
           "player_name_registration": "Player Name Registration",
           "league_division_requests": "League Division Requests",
-          "branding": "Custom Branding"
+          "branding": "Custom Branding",
+          "demo_playback": "Demo Playback",
+          "live_streaming": "Live Streaming",
+          "highlights_imported": "Auto Highlights (Imported)",
+          "clip_branding": "Clip Branding"
         },
         "panels_using": "Panels Using",
         "total": "Total",
         "optional": "Optional Features",
         "optional_hint": "Features an admin can switch on or off in application settings.",
         "capabilities": "Detected Capabilities",
-        "capabilities_hint": "Not switches — the panel detects these from whether the Discord, Tailscale, or Steam credentials are configured.",
+        "capabilities_hint": "Not application settings — these come from detected credentials (Discord, Tailscale, Steam) or from the GPU workload switches on each game server node.",
         "configured": "Configured",
         "always": "Always Available",
         "always_hint": "Ship with every panel and cannot be turned off, so only usage is meaningful."

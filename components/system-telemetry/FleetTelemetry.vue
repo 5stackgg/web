@@ -257,13 +257,16 @@ import {
   FLEET_INSTALLS_CHART_COLORS,
 } from "~/utilities/chartColors";
 
-// Reported through the same `supports_*` settings as the toggles, but an admin
-// cannot switch these on — detectFeatures() derives them from whether the
-// Discord / Tailscale / Steam credentials are configured.
+// Not application settings. The first three are derived from whether the
+// Discord / Tailscale / Steam credentials are configured; the GPU workloads are
+// switched per game server node, so "on" means a node is carrying that work.
 const CAPABILITY_KEYS = [
   "discord_bot",
   "game_server_nodes",
   "version_pinning",
+  "demo_playback",
+  "clip_renders",
+  "live_streaming",
 ];
 
 export default {
@@ -282,6 +285,7 @@ export default {
           },
           totals: {
             gameServerNodes: true,
+            gpuNodes: true,
             servers: true,
             dedicatedServers: true,
             publicServers: true,
@@ -471,6 +475,10 @@ export default {
             {
               label: this.$t("pages.system_telemetry.totals.game_server_nodes"),
               value: totals?.gameServerNodes ?? 0,
+            },
+            {
+              label: this.$t("pages.system_telemetry.totals.gpu_nodes"),
+              value: totals?.gpuNodes ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.servers"),

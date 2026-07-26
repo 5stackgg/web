@@ -238,6 +238,7 @@ onMounted(() => {
   const CEIL_CULL_MARGIN = 256;
 
   const scene = new THREE.Scene();
+
   const camera = new THREE.PerspectiveCamera(55, 1, 1, 100000);
 
   const controls = new OrbitControls(camera, el);
@@ -1834,6 +1835,11 @@ onMounted(() => {
       depthTest: false,
       side: THREE.DoubleSide,
     });
+  // Tube tessellation, shared with the draw-range slicing that reveals the
+  // trail as the grenade flies.
+  const ARC_SEGMENTS = 32;
+  const ARC_RADIAL = 6;
+
   const arcs = Array.from({ length: 12 }, () => {
     const m = new THREE.Mesh(new THREE.BufferGeometry(), arcMat());
     m.frustumCulled = false;
@@ -1841,6 +1847,24 @@ onMounted(() => {
     m.renderOrder = 997;
     scene.add(m);
     return m;
+  });
+
+  // A soft glow that rides the grenade itself.
+  const arcHeads = Array.from({ length: 12 }, () => {
+    const sp: any = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: SPARKTEX,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+        blending: THREE.AdditiveBlending,
+        opacity: 0,
+      }),
+    );
+    sp.visible = false;
+    sp.renderOrder = 998;
+    scene.add(sp);
+    return sp;
   });
   // heat discs
   const heat = Array.from({ length: 64 }, () => {
@@ -2363,25 +2387,60 @@ onMounted(() => {
       if (!g) {
         projs[i].grp.visible = false;
         arcs[i].visible = false;
+        arcHeads[i].visible = false;
         continue;
       }
       const hex = NADE_COL[g.type] ?? 0xffffff;
-      const curve = arcCurve(g);
-      const tube = new THREE.TubeGeometry(curve, 32, 6 * U + 1.5, 6, false);
-      arcs[i].geometry.dispose();
-      arcs[i].geometry = tube;
-      arcs[i].visible = true;
-      arcs[i].userData.gid = g.gid ?? null;
-      const m = arcs[i].material as THREE.MeshStandardMaterial;
+      const arc: any = arcs[i];
+      // Rebuild the tube only when the slot changes grenade. This used to run
+      // every frame — disposing and re-tessellating a 32-segment tube per
+      // grenade per frame — which is pure waste, since the flight path is fixed
+      // the moment the nade is thrown.
+      const arcKey = `${g.key}`;
+      if (arc.userData.arcKey !== arcKey) {
+        arc.userData.arcKey = arcKey;
+        arc.userData.curve = arcCurve(g);
+        arc.geometry.dispose();
+        arc.geometry = new THREE.TubeGeometry(
+          arc.userData.curve,
+          ARC_SEGMENTS,
+          6 * U + 1.5,
+          6,
+          false,
+        );
+      }
+      const curve = arc.userData.curve as THREE.Curve<THREE.Vector3>;
+      arc.visible = true;
+      arc.userData.gid = g.gid ?? null;
+
+      // Reveal the trail only as far as the grenade has actually flown. A
+      // TubeGeometry emits its triangles in order along the curve, so a prefix
+      // of the index buffer is exactly the flown portion — which turns a static
+      // line into the nade drawing its own arc as it travels.
+      const prog = Math.max(0, Math.min(1, g.progress));
+      const flownSegs = Math.max(1, Math.ceil(prog * ARC_SEGMENTS));
+      arc.geometry.setDrawRange(0, flownSegs * ARC_RADIAL * 6);
+
+      const m = arc.material as THREE.MeshStandardMaterial;
       m.color.setHex(hex);
       m.emissive.setHex(hex);
       // the grenade model rides the SAME curve as the line (so it never drifts
       // off onto its own path).
       const nm = projs[i];
-      curve.getPoint(Math.max(0, Math.min(1, g.progress)), _v);
+      curve.getPoint(prog, _v);
       nm.grp.visible = true;
       nm.grp.position.copy(_v);
       for (const k in nm.models) nm.models[k].visible = k === g.type;
+
+      // A glow riding the head, so the eye tracks the grenade rather than the
+      // line it leaves behind.
+      const gl: any = arcHeads[i];
+      gl.visible = true;
+      gl.position.copy(_v);
+      const gs = (26 + 10 * Math.sin(prog * 22)) * U;
+      gl.scale.set(gs, gs, 1);
+      gl.material.color.setHex(hex);
+      gl.material.opacity = 0.55;
     }
 
     // heat discs
@@ -2490,21 +2549,20 @@ onMounted(() => {
 
   // ===== post-processing =====
   //
-  // Bloom only, and deliberately so. An earlier version added screen-space
-  // ambient occlusion to give the untextured collision hull some structure —
-  // but GTAO at device pixel ratio on a canvas this size runs into seconds per
-  // frame, and at the distance this camera normally sits its occlusion radius
-  // was too small to see anyway. Paying that much for something invisible is
-  // the worst of both, so the map's structure now comes from the normal-based
-  // surface tint on its material instead, which costs nothing.
+  // One bloom pass over the whole scene, with a high threshold so only
+  // genuinely hot things (muzzle flashes, fire, flashbangs, tracers) cross it
+  // and UI stays crisp.
   //
-  // Bloom stays because it is what makes muzzle flashes, fire and flashbangs
-  // read as light rather than as bright pixels, and it is cheap at half
-  // resolution.
+  // Proper selective bloom — a second scene render with non-glowing objects
+  // blacked out — was implemented and measured here, and it was unusable: over
+  // four seconds per frame, because it means rendering this map twice and
+  // swapping materials across the whole graph every frame. Threshold control is
+  // far cheaper and gets most of the way, provided UI colours stay below it.
   //
-  // Falls back to plain rendering if the composer cannot be built, so a driver
-  // that dislikes any of this degrades to what was there before rather than a
-  // black screen.
+  // Ambient occlusion was also tried and removed: GTAO at device pixel ratio on
+  // a canvas this size ran to seconds per frame, and at the distance this camera
+  // sits its radius was too small to see. The map's structure comes from the
+  // normal-based tint on its material instead, which costs nothing.
   const FX_PIXEL_RATIO = Math.min(devicePixelRatio, 1);
   let composer: EffectComposer | null = null;
   let bloom: UnrealBloomPass | null = null;
@@ -2512,9 +2570,9 @@ onMounted(() => {
     composer = new EffectComposer(renderer);
     composer.setPixelRatio(FX_PIXEL_RATIO);
     composer.addPass(new RenderPass(scene, camera));
-    // Threshold high enough that only genuinely hot things bloom; the map and
-    // player tokens must not smear.
-    bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.62, 0.75, 0.9);
+    // strength, radius, threshold. The threshold is the important one: team
+    // colours and nameplates sit below it, fire and flashes above.
+    bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.75, 0.7, 0.94);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
   } catch (err) {

@@ -108,7 +108,7 @@ const isSectionExpanded = (section: string) => {
     <TableCell class="hidden xl:table-cell">
       <div class="flex flex-col gap-2">
         <div class="flex gap-1 text-xs">
-          <FiveStackToolTip>
+          <FiveStackToolTip interactive>
             <template #trigger>
               <div
                 :class="{
@@ -256,7 +256,7 @@ const isSectionExpanded = (section: string) => {
         </div>
 
         <div class="flex gap-2">
-          <FiveStackToolTip>
+          <FiveStackToolTip interactive>
             <template #trigger>
               <div class="cursor-pointer">
                 <Activity
@@ -284,7 +284,7 @@ const isSectionExpanded = (section: string) => {
             </div>
           </FiveStackToolTip>
 
-          <FiveStackToolTip>
+          <FiveStackToolTip interactive>
             <template #trigger>
               <div class="cursor-pointer">
                 <Cpu

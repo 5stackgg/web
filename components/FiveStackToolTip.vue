@@ -13,12 +13,14 @@ const props = withDefaults(
     asChild?: boolean;
     delayDuration?: number;
     tapToggle?: boolean;
+    interactive?: boolean;
   }>(),
   {
     size: 12,
     asChild: false,
     delayDuration: 0,
     tapToggle: true,
+    interactive: false,
   },
 );
 
@@ -73,6 +75,7 @@ onBeforeUnmount(() => {
     <TooltipProvider
       :ignoreNonKeyboardFocus="true"
       :delay-duration="delayDuration"
+      :disable-hoverable-content="!interactive"
     >
       <Tooltip
         :open="isTouch ? open : undefined"

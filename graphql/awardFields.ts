@@ -11,14 +11,21 @@ export const awardDefinitionFields = Selector("awards")({
   allow_multiple: true,
 });
 
-// The catalog groups by what an award belongs to, so it pulls the scope
-// columns and enough of each owner to label the group.
-export const awardCatalogFields = Selector("awards")({
+// An award belongs to at most one owner, and both the composer and the catalog
+// need to know which, so the scope columns travel with the definition. The ids
+// alone stay cheap enough to load anywhere the definition is loaded.
+export const awardScopedDefinitionFields = Selector("awards")({
   ...awardDefinitionFields,
   tournament_id: true,
   event_id: true,
   season_id: true,
   league_season_id: true,
+});
+
+// The catalog groups by what an award belongs to, so on top of the scope
+// columns it pulls enough of each owner to label the group.
+export const awardCatalogFields = Selector("awards")({
+  ...awardScopedDefinitionFields,
   tournament: {
     id: true,
     name: true,

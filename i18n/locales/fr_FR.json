@@ -3177,7 +3177,16 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "Tous",
+      "group_season_awards": "Récompenses de saison",
+      "group_tournament_awards": "Récompenses de tournoi",
+      "group_builtin_awards": "Récompenses intégrées",
+      "group_custom_awards": "Récompenses personnalisées",
+      "group_custom_tournament_awards": "Récompenses de tournoi personnalisées",
+      "group_custom_event_awards": "Récompenses d'événement personnalisées",
+      "group_custom_season_awards": "Récompenses de saison personnalisées",
+      "group_custom_league_awards": "Récompenses de ligue personnalisées"
     }
   },
   "custom_match": {
@@ -7136,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "Aucun destinataire éligible.",
+      "award_unavailable": "Cette récompense n'a pas pu être chargée.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

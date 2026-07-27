@@ -1112,11 +1112,7 @@
     "notes_section": "Notes",
     "notes_placeholder": "Anything opponents should know — server prefs, anti-cheat, voice, etc.",
     "settings_saved": "Scrim settings saved",
-    "settings_save_error": "Failed to save scrim settings",
-    "calendar_link_copied": "Calendar link copied",
-    "calendar_subscription_help": "Subscribe to this URL in your calendar app to see scheduled scrims.",
-    "calendar_link_error": "Could not get calendar link",
-    "subscribe_to_matches": "Subscribe to Scheduled Matches"
+    "settings_save_error": "Failed to save scrim settings"
   },
   "elo_chart_bucket": {
     "monthly": "Monthly",
@@ -1180,24 +1176,14 @@
   },
   "avatar": {
     "upload": "Upload avatar",
-    "change": "Change avatar",
-    "remove": "Remove avatar",
-    "upload_roster": "Upload roster",
-    "change_roster": "Change roster",
-    "remove_roster": "Remove roster",
     "team_avatar": "Team avatar",
     "player_avatar": "Player avatar",
     "player_roster_image": "Player roster image",
     "upload_success": "Avatar uploaded",
     "upload_failed": "Avatar upload failed",
-    "remove_success": "Avatar removed",
-    "remove_failed": "Failed to remove avatar",
     "too_large": "Image must be {size}MB or smaller",
     "invalid_type": "Only PNG, JPEG, or WebP images are allowed",
     "uploading": "Uploading...",
-    "drop_to_upload": "Drop to upload",
-    "hint": "Drag & drop or click · PNG, JPEG, WebP · up to 5 MB",
-    "roster_hint": "Drag & drop or click · head & shoulders, 400×420 · resized in the browser, then crop and remove background",
     "bg_removal_failed": "Failed to remove background",
     "roster_editor": {
       "title": "Edit roster image",
@@ -1253,8 +1239,6 @@
         "total_caption": "distinct panels ever seen"
       },
       "totals": {
-        "title": "Fleet Totals",
-        "window": "panels active in the last 30 days",
         "self_reported": "Panels are self-hosted and report these counts themselves; values are validated on arrival but cannot be independently verified. Infrastructure is a point-in-time count from each panel's latest report, not a running total.",
         "game_server_nodes": "Game Server Nodes",
         "game_server_nodes_caption": "currently registered",
@@ -1299,7 +1283,6 @@
         "unit": "panels"
       },
       "features": {
-        "title": "Feature Adoption",
         "feature": "Feature",
         "enabled": "Enabled",
         "keys": {
@@ -1346,7 +1329,6 @@
         "always_hint": "Ship with every panel and cannot be turned off, so only usage is meaningful."
       }
     },
-    "coming_soon": "Coming Soon!",
     "tournaments": {
       "title": "Tournaments",
       "description": "Browse live, open, and upcoming tournaments, or filter by status and date to find a specific bracket.",
@@ -1490,7 +1472,6 @@
           "created": "Created",
           "last_used": "Last Used",
           "never": "Never",
-          "actions": "Actions",
           "delete_confirmation_title": "Delete API Key",
           "delete_confirmation_description": "Are you sure you want to delete the API key \"{label}\"? This action cannot be undone and any applications using this key will lose access.",
           "create_api_key": "Create API Key",
@@ -1539,12 +1520,10 @@
           "title": "Notification sounds",
           "description": "Play a sound for chat messages, match events, and other alerts."
         },
-        "test": "Test",
         "volume": {
           "title": "Volume"
         },
         "preview": "Preview sounds",
-        "play": "Play",
         "sounds": {
           "chat": {
             "title": "Chat message",
@@ -1607,22 +1586,19 @@
           "section": "News",
           "description": "Publish your own Counter-Strike news posts to a News page on your platform. Authorized authors write posts with a Markdown editor and images; drafts stay private until you publish them.",
           "manage": "Manage Posts",
-          "manage_description": "Create, edit and publish news posts.",
           "label_section": "Label",
           "label_description": "Rename the News section as it appears in navigation and page titles.",
           "label": "Display name",
           "permissions_section": "Permissions",
           "permissions_description": "Choose the minimum role allowed to create and publish news posts.",
-          "post_news_role": "Who can post news",
-          "about": "Posts you publish appear on the public News page. Drafts stay hidden until you publish them."
+          "post_news_role": "Who can post news"
         },
         "seasons": {
           "title": "Seasons",
           "section": "Seasons",
           "description": "Competitive seasons reset regular-match ELO to a 5000 baseline each season and scope stats and filtering per season; when disabled, ELO is a single global ladder. Tournament ELO stays season-independent.",
           "manage": "Manage Seasons",
-          "manage_description": "Create, end and backfill competitive seasons.",
-          "about": "When enabled, season filtering appears across players, the leaderboard and tournaments, and ELO/stats become season-scoped. When disabled, ELO is a single global ladder and no season filtering is shown."
+          "manage_description": "Create, end and backfill competitive seasons."
         },
         "discord": {
           "title": "Discord Notifications",
@@ -1708,7 +1684,6 @@
           "refresh_button": "Reindex Search",
           "refreshing": "Reindexing...",
           "refresh_queued": "Search reindex started",
-          "refresh_failed": "Failed to start search reindex",
           "error_occurred": "An error occurred",
           "refresh_dialog_title": "Reindex the search index?",
           "refresh_dialog_description": "This will re-sync every player into the Typesense search index in batches. It runs in the background and you can watch its progress here.",
@@ -1717,7 +1692,6 @@
           "recompute_elo_button": "Recompute ELO",
           "recomputing_elo": "Recomputing...",
           "recompute_elo_queued": "ELO recompute started",
-          "recompute_elo_failed": "Failed to start ELO recompute",
           "recompute_elo_dialog_title": "Recompute all player ELO?",
           "recompute_elo_dialog_description": "This wipes all existing ELO and rebuilds it from scratch by replaying every finished match in chronological order (in batches). The leaderboard will be temporarily incomplete while it runs. You can watch its progress here.",
           "progress_running": "{processed} / {total} ({percent}%)",
@@ -1725,8 +1699,6 @@
           "progress_failed_count": "{failed} failed",
           "progress_completed": "Completed {total}",
           "progress_canceled": "Canceled at {completed} / {total}",
-          "progress_errored": "Failed — see server logs",
-          "already_running": "Already running",
           "cancel_button": "Cancel",
           "cancel_requested": "Cancellation requested",
           "recompute_elo_canceled_title": "ELO recompute canceled",
@@ -1757,11 +1729,8 @@
           "show_separators_description": "Display horizontal divider lines between sections.",
           "logo": "Logo",
           "logo_description": "Upload one square image (512×512 PNG recommended). Used app-wide and to generate your PWA install icon. ICO files aren't supported.",
-          "upload_logo": "Upload Logo",
           "favicon": "Favicon",
           "favicon_description": "Optional. A simpler mark for the browser tab. PNG, ICO or WebP.",
-          "upload_favicon": "Upload Favicon",
-          "remove": "Remove",
           "login_page": "Login Page",
           "login_page_description": "Customize the login page footer link.",
           "show_login_footer": "Show Login Footer",
@@ -1772,20 +1741,11 @@
           "theme_colors_description": "Customize the theme colors. Changes are previewed live.",
           "light_mode": "Light Mode",
           "dark_mode": "Dark Mode",
-          "save_branding": "Save Branding",
           "reset_to_defaults": "Reset to Defaults",
           "reset_confirm_title": "Reset branding to defaults?",
           "reset_confirm_description": "This clears your brand name, colors, login footer, and uploaded logo/favicon/app icon, restoring the default 5Stack theme. This cannot be undone.",
           "export_theme": "Export Theme",
           "import_theme": "Import Theme",
-          "upload_failed": "Upload failed",
-          "delete_failed": "Delete failed",
-          "logo_uploaded": "Logo uploaded",
-          "favicon_uploaded": "Favicon uploaded",
-          "icon_uploaded": "App icon uploaded",
-          "logo_removed": "Logo removed",
-          "favicon_removed": "Favicon removed",
-          "icon_removed": "App icon removed",
           "branding_saved": "Branding saved",
           "save_failed": "Save failed",
           "branding_reset": "Branding reset to defaults",
@@ -1914,9 +1874,6 @@
           "enabled": "Enable Presence",
           "enabled_description": "On by default. Friend bots watch linked players' live Steam presence and import their matches the moment they finish, instead of waiting for the hourly poll. Turn off as a kill-switch.",
           "updated": "Updated steam presence settings",
-          "active": "Active",
-          "disabled": "Disabled",
-          "live": "Live",
           "setup": "How it works",
           "setup_step1": "Dedicate a Steam account for the bot with Steam Guard enabled. Don't reuse your STEAM_USER account — that one is used elsewhere and would conflict.",
           "setup_step2": "Add it below. It logs in automatically; if Steam Guard prompts, a 2FA box appears on the bot — enter the code from email or the Steam app. After the first login it stays signed in and won't ask again.",
@@ -1939,7 +1896,6 @@
           "submit_code": "Submit",
           "code_submitted": "Code submitted — logging in…",
           "code_failed": "Failed to submit Steam Guard code",
-          "status": "Status",
           "bots": "Bots",
           "bots_description": "Steam accounts in the presence pool and their live status.",
           "no_bots": "No bots yet",
@@ -2133,7 +2089,6 @@
             "nav_order": "Nav Order",
             "enabled": "Enabled",
             "is_default": "Default Page",
-            "icon_hint": "A lucide icon name or an image URL. Examples:",
             "remote_entry_url_hint": "The Module Federation remoteEntry.js the panel loads (usually .../assets/remoteEntry.js).",
             "remote_scope_hint": "The plugin's Federation container name (its `name` in vite federation config).",
             "exposed_module_hint": "The exposed module path, e.g. ./App.",
@@ -2151,7 +2106,6 @@
           "detect": "Detect",
           "detect_hint": "Paste the plugin's base URL (or its 5stack-plugin.json) and we'll fill in the fields below from its manifest.",
           "detect_failed": "Could not read a 5stack-plugin.json manifest at that URL.",
-          "detect_success": "Detected plugin details.",
           "optional": "(optional)",
           "advanced": "Advanced settings",
           "icon_picker": {
@@ -2165,7 +2119,7 @@
         "awards": {
           "title": "Awards",
           "permissions_section": "Permissions",
-          "permissions_description": "Choose who can author awards and who can hand them out.",
+          "permissions_description": "Choose who can author awards and who can grant them.",
           "create_awards_role": "Manage Awards Role",
           "grant_awards_role": "Grant Awards Role"
         }
@@ -2266,7 +2220,6 @@
       "section_recent_matches": "RECENT.MATCHES",
       "section_recent_tournaments": "RECENT.TOURNAMENTS",
       "section_recent_highlights": "RECENT.HIGHLIGHTS",
-      "no_live_matches": "STANDBY · NO LIVE MATCHES",
       "cold_start": {
         "title": "Nothing on the scope",
         "description": "No live matches, no tournaments, nothing in the books yet. Start a match and this page fills in on its own — scores as they happen, then highlights and demos once it wraps.",
@@ -2336,12 +2289,6 @@
       "back": "Back to News",
       "updated": "Updated {date}",
       "written_by": "Written by",
-      "cover_editor": {
-        "title": "Adjust Cover Image",
-        "description": "Crop to fit the article. Use Remove Background to make logos sit cleanly on the page.",
-        "hint": "Scroll to zoom · drag to move · Fit shows the whole image",
-        "fit": "Fit"
-      },
       "new_article": "New Article",
       "mark_read": "Mark as read",
       "empty": "No news articles yet — check back soon.",
@@ -2372,9 +2319,6 @@
         "teaser_placeholder": "A short summary shown in the news list",
         "cover_label": "Cover Image",
         "cover_hint": "Click or drop an image",
-        "cover_formats": "PNG · JPG · WEBP · GIF · up to 10MB",
-        "cover_replace": "Replace",
-        "cover_remove": "Remove",
         "content_label": "Content",
         "save_draft": "Save Draft",
         "save_changes": "Save Changes",
@@ -2417,8 +2361,6 @@
       "make_ongoing": "Make Ongoing",
       "end_now": "End Now",
       "updated": "Season updated",
-      "upcoming_title": "Upcoming Seasons",
-      "past_title": "Past Seasons",
       "rebuild": "Rebuild",
       "rebuild_elo": "Rebuild ELO",
       "rebuild_required": "Rebuild Required",
@@ -2490,8 +2432,6 @@
       "is_muted": "Muted",
       "table": {
         "elo": "Elo",
-        "elo_track_season": "Season",
-        "elo_track_tournament": "Tournament",
         "last_sign_in_at": "Last Sign In At",
         "privilege": "Privilege",
         "kdr": "KDR",
@@ -3254,10 +3194,9 @@
     },
     "awards": {
       "title": "Awards",
-      "description": "Author awards and hand them out to players and teams.",
+      "description": "Author awards and grant them to players and teams.",
       "catalog_section": "Award Catalog",
       "new_award": "New Award",
-      "edit_award": "Edit Award",
       "no_awards": "Create an award to grant by hand, or to attach to a tournament placement.",
       "built_in": "Built-in",
       "holders": "holders",
@@ -3270,24 +3209,29 @@
       "grant": "Grant Award",
       "note": "Note",
       "delete": "Delete",
-      "built_in_hint": "Required by tournament automation; cannot be deleted",
-      "no_awards_title": "No awards yet",
+      "built_in_hint": "Required by tournament automation; cannot be deleted.",
+      "no_awards_title": "No Awards Yet",
       "search_placeholder": "Search awards",
       "all_tiers": "All",
-      "no_matches_title": "No matching awards",
+      "no_matches_title": "No Matching Awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
-      "identity": "Identity",
-      "appearance": "Appearance",
-      "rules": "Rules",
-      "artwork_after_save": "Save the award first, then upload its artwork.",
+      "clear_filters": "Clear Filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "All",
+      "group_season_awards": "Built-in Season Awards",
+      "group_tournament_awards": "Built-in Tournament Awards",
+      "group_builtin_awards": "Built-in Awards",
+      "group_custom_awards": "Custom Awards",
+      "group_custom_tournament_awards": "Custom Tournament Awards",
+      "group_custom_event_awards": "Custom Event Awards",
+      "group_custom_season_awards": "Custom Season Awards",
+      "group_custom_league_awards": "Custom League Awards"
     }
   },
   "custom_match": {
@@ -3305,9 +3249,7 @@
       "select_section": "Select section",
       "branding_nav": "Branding",
       "fixtures_nav": "Fixtures",
-      "seasons_nav": "Seasons",
       "groups": {
-        "platform": "Platform",
         "competition": "Competition",
         "match_setup": "Match Setup",
         "content_media": "Content & Media",
@@ -3315,9 +3257,6 @@
         "infrastructure": "Infrastructure",
         "theme": "Appearance",
         "developer": "Developer",
-        "general": "General",
-        "media": "Recording & Media",
-        "additional_features": "Additional Features",
         "players_teams": "Players & Teams"
       }
     },
@@ -3847,9 +3786,7 @@
     },
     "final_standings_podium": "▚ FINAL STANDINGS · PODIUM",
     "page": {
-      "tournament_eyebrow": "Tournament",
       "back_to_league": "Back to League",
-      "view_match_options": "View match options",
       "match_options_tab": "Match Options",
       "organizers_tab": "Organizers",
       "my_team": "My Team",
@@ -3863,9 +3800,7 @@
       "read_less": "Read less"
     },
     "feature_card": {
-      "tournament": "Tournament",
       "teams": "Teams",
-      "stages": "Stages",
       "default_label": "Tournament",
       "organized_by": "By {team}"
     },
@@ -3912,8 +3847,7 @@
         "substitutes": "Substitutes",
         "benched": "Benched"
       },
-      "already_rostered": "On another team",
-      "min_lineup_warning": "Select at least {min} players to register."
+      "already_rostered": "On another team"
     },
     "tournament_team": {
       "remove": "Remove Team",
@@ -3944,12 +3878,6 @@
         "label": "Negotiated Scheduling",
         "description": "Team captains propose and agree on match times (with optional per-stage windows), instead of matches starting automatically."
       },
-      "create_bar": {
-        "ready": "Ready to create",
-        "ready_hint": "Everything looks good — create your tournament",
-        "incomplete": "Required fields missing",
-        "incomplete_hint": "Fill in the tournament name and start date to continue"
-      },
       "logo": {
         "label": "Logo"
       },
@@ -3963,8 +3891,6 @@
         "label": "Location",
         "description": "Search for the venue or city; the map pin is set automatically."
       },
-      "latitude": {},
-      "longitude": {},
       "categories": {
         "label": "Categories"
       }
@@ -3999,7 +3925,6 @@
       "title": "Voice Channels",
       "description": "Automatically create Discord voice channels for tournament matches. Players are moved to team channels when matches begin.",
       "guild_id_placeholder": "Discord Server ID",
-      "enable_voice": "Enable Voice Channels",
       "guild_id": "Discord Server ID"
     },
     "table": {
@@ -4237,18 +4162,12 @@
       "remove_description": "This will remove the server from the tournament"
     },
     "open_match_actions": "Open match actions",
-    "location": {
-      "tab": "Location",
-      "view_on_map": "View on map"
-    },
     "prizes": {
       "title": "Prizes",
-      "manage_title": "Prizes",
       "manage_hint": "Prize places and amounts shown on the tournament page.",
       "organizer_access_required": "Organizer access required",
       "add": "Add",
       "distribution": "Prize Distribution",
-      "place_placeholder": "#1",
       "prize_placeholder": "$1000",
       "reorder_hint": "Drag to reorder — places renumber automatically. Type a label to override.",
       "move_up": "Move up",
@@ -4270,54 +4189,45 @@
     "banner": {
       "label": "Banner",
       "upload": "Upload Banner",
-      "replace": "Replace Banner",
-      "remove": "Remove",
-      "removed": "Banner removed",
-      "updated": "Banner updated",
-      "empty_hint": "Add a banner",
       "hint": "Shown across the top of the tournament page. Cropped to a wide 3:1 frame.",
       "upload_failed": "Banner upload failed"
     },
     "awards_config": {
       "title": "Award Configuration",
-      "organizer_access_required": "ORGANIZER ACCESS REQUIRED",
-      "custom": "CUSTOM",
+      "organizer_access_required": "Organizer access required",
+      "custom": "Custom",
       "custom_image": "Custom Image",
       "custom_name": "Custom Name",
       "silhouette": "Silhouette",
       "reset": "Reset",
-      "hint": "Pick the award for each placement, or override its name and art.",
+      "hint": "Choose the award for each placement, or override its name and art.",
       "award": "Award",
       "award_default": "Default",
-      "pick_award": "Choose an award",
-      "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
-      "new_award": "New award",
+      "pick_award": "Choose an award…",
+      "pick_award_hint": "Choose an existing award for this placement, or create a new one.",
+      "new_award": "New Award",
       "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
-      "upload_image": "Upload image",
-      "replace_image": "Replace image",
       "custom_image_hint": "Overrides the award's artwork for this tournament only.",
       "silhouettes": {
-        "auto": "Auto",
         "0": "Chalice",
         "1": "Faceted",
         "2": "Star",
         "3": "Shield",
-        "4": "Laurel"
+        "4": "Laurel",
+        "auto": "Auto"
       },
       "artwork": "Artwork",
       "silhouette_unused": "Silhouette is unused while artwork is set.",
-      "placement": "Placement",
       "unsaved": "Unsaved"
     },
     "awards_manage": {
       "manual_awards": "Manual Awards",
       "add_award": "Add Award",
-      "no_manual_awards": "NO MANUAL AWARDS",
+      "no_manual_awards": "No manual awards",
       "remove": "Remove",
       "hint": "Grant an award outside of the bracket calculation.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award to grant first.",
-      "choose_award": "Choose an award…"
+      "no_awards": "Create an award to grant first."
     }
   },
   "team": {
@@ -4842,7 +4752,6 @@
       "randomize_teams": "Randomize Teams",
       "swap_lineups": "Swap Lineups",
       "restore_round": "Restore Round",
-      "select_round_to_restore": "Select the round to restore",
       "server_information": "Server Information",
       "type": "Type",
       "region": "Region",
@@ -5400,7 +5309,6 @@
     "show_keyboard_shortcuts": "Show keyboard shortcuts",
     "hold_to_show_scoreboard": "Hold to show scoreboard",
     "close_popout": "Close popout",
-    "trophy_rack": "Trophy rack",
     "click_to_view_tournament": "Click to view tournament",
     "auto_clip": "Auto clip",
     "create_clip": "Create clip",
@@ -5593,7 +5501,6 @@
     "current_elo": "CURRENT"
   },
   "maps": {
-    "label": "Maps",
     "veto": {
       "pick": "Pick Map"
     },
@@ -6544,13 +6451,7 @@
     }
   },
   "league": {
-    "created": "League created",
     "not_found": "League not found",
-    "status": {
-      "Setup": "Setup",
-      "Active": "Active",
-      "Archived": "Archived"
-    },
     "season_status": {
       "Setup": "Setup",
       "RegistrationOpen": "Registration Open",
@@ -6561,7 +6462,6 @@
       "Canceled": "Canceled"
     },
     "list": {
-      "eyebrow": "Competition",
       "title": "League",
       "subtitle": "Seasonal divisions, weekly match play, promotion and relegation",
       "settings": "League Settings"
@@ -6574,11 +6474,9 @@
       "none": "—"
     },
     "divisions": {
-      "title": "Divisions",
       "empty": "No divisions configured yet.",
       "add": "Add tier {tier}",
       "name_placeholder": "Division name (e.g. Open, Main, Invite)",
-      "tier_hint": "Tier 1 is the top division. Teams are promoted toward tier 1 and relegated away from it.",
       "reorder_hint": "Drag divisions to reorder the ladder. Tier 1 is the top division; teams are promoted toward it and relegated away from it.",
       "delete_title": "Delete division?",
       "delete_description": "Remove {name} from the ladder. Remaining divisions are renumbered. This cannot be undone."
@@ -6586,15 +6484,12 @@
     "seasons": {
       "title": "Seasons",
       "empty": "No seasons yet.",
-      "teams_count": "{count} teams",
       "deleted": "Season deleted",
       "delete_title": "Delete season?",
       "delete_description": "Permanently delete {name}, including its registrations, schedule and results. This cannot be undone."
     },
     "season_form": {
       "title": "Create Season",
-      "name": "Name",
-      "name_placeholder": "e.g. Season 1",
       "signup_opens": "Signups open",
       "signup_closes": "Signups close",
       "starts_at": "Season starts",
@@ -6603,9 +6498,6 @@
       "auto_format_hint": "Each division's format is chosen automatically from its size: a full round robin when it fits the season's rounds, otherwise a Swiss group.",
       "roster_lock_week": "Roster lock week",
       "playoff_seats": "Playoff seats",
-      "min_roster": "Min roster",
-      "promote": "Promote",
-      "relegate": "Relegate",
       "direct_promote": "Direct promote",
       "relegation_up": "Relegation up",
       "relegation_down": "Relegation down",
@@ -6634,18 +6526,10 @@
       "min_teams_hint": "A division needs at least 4 approved teams to run — smaller divisions are skipped at season start."
     },
     "overview": {
-      "signup_window": "Signup window",
-      "starts": "Starts",
       "weeks": "Match weeks",
-      "playoff_seats": "Playoff seats",
       "roster_locked": "Roster locked",
       "roster_locks": "Roster locks {date}",
-      "format": "Format",
-      "teams": "Teams",
-      "playoffs": "Playoffs",
-      "weeks_count": "{count} weeks",
-      "across_divisions": "across {count} divisions",
-      "playoff_seats_count": "{count} seats"
+      "weeks_count": "{count} weeks"
     },
     "phases": {
       "registration": "Registration",
@@ -6670,10 +6554,6 @@
     },
     "manage": {
       "title": "Settings",
-      "open": "Open manage tab",
-      "phase_controls": "Season phase",
-      "current": "Current",
-      "registrations": "Registrations",
       "danger_zone": "Danger zone"
     },
     "tabs": {
@@ -6681,7 +6561,6 @@
       "teams": "Teams",
       "schedule": "Schedule",
       "standings": "Standings",
-      "playoffs": "Playoffs",
       "bracket": "Bracket",
       "movements": "Movements",
       "stats": "Stats"
@@ -6702,14 +6581,6 @@
       "requested_division": "Requested division",
       "assign_division": "Assign division (auto-approves)",
       "no_preference": "No preference",
-      "roster": "Season roster ({selected} selected, minimum {min})",
-      "roster_range": "Season roster ({selected} selected · {min}–{max} players)",
-      "group": {
-        "starters": "Starters",
-        "substitutes": "Substitutes",
-        "benched": "Benched"
-      },
-      "available": "Available",
       "min_roster_warning": "Select at least {min} players to register.",
       "register": "Register",
       "registered": "Team registered",
@@ -6717,7 +6588,6 @@
       "cta_hint": "Register a team you manage and lock in its season roster."
     },
     "my_team": {
-      "title": "My team — {team}",
       "add_players": "Add player",
       "make_starter": "Make starter",
       "make_sub": "Move to substitutes",
@@ -6759,7 +6629,6 @@
       "decline_title": "Decline registration?",
       "decline_reason_hint": "Optionally tell the team why. They can resubmit while registration is open.",
       "decline_reason_placeholder": "Reason (optional)",
-      "players": "players",
       "review_summary": "{pending} pending · {waitlisted} waitlisted awaiting review",
       "remove": "Remove",
       "remove_title": "Remove team from season?",
@@ -6770,20 +6639,9 @@
     "schedule": {
       "week": "Week {week}",
       "season_number": "Season {number}",
-      "default_time": "Default",
       "my_matches": "My matches",
-      "no_matches_filter": "No matches match these filters.",
-      "unscheduled_count": "{count} unscheduled",
-      "needs_you": "{count} need you",
-      "filter": {
-        "all": "All",
-        "unscheduled": "Unscheduled",
-        "scheduled": "Scheduled",
-        "finished": "Finished"
-      },
       "no_matchups": "No matchups this week.",
       "bye": "Bye (free win)",
-      "unscheduled": "Unscheduled",
       "view_match": "View match",
       "propose": "Propose time",
       "propose_new": "Propose new time",
@@ -6798,13 +6656,6 @@
       "decline": "Decline",
       "awaiting_opponent": "Waiting on opponent",
       "winner": "Winner",
-      "defaults_to": "Auto-scheduled {time} if no time is agreed",
-      "history": "Past proposals ({count})",
-      "status_chip": {
-        "needs_scheduling": "Needs scheduling",
-        "scheduled": "Scheduled",
-        "finished": "Finished"
-      },
       "status": {
         "Accepted": "Accepted",
         "Declined": "Declined",
@@ -6820,7 +6671,6 @@
     "schedule_task": {
       "schedule_title": "Schedule your match",
       "respond_title": "A match time was proposed",
-      "confirm_title": "Confirm your match time",
       "context": "Season {season} · Week {week}",
       "more": "{count} more"
     },
@@ -6830,11 +6680,9 @@
       "rounds": "Rounds",
       "round_diff": "RD",
       "remaining": "Left",
-      "playoffs": "Playoffs",
       "search": "Search team",
       "empty": "No results yet.",
       "removed": "Removed",
-      "open_tournament": "Open tournament",
       "legend": {
         "advances": "Advances to playoffs (top {n})",
         "cutoff": "Playoff cutoff",
@@ -6843,9 +6691,6 @@
       }
     },
     "playoffs": {
-      "view_bracket": "View bracket",
-      "pending": "Playoff bracket is seeded when the regular season completes.",
-      "not_started": "Playoffs haven't started yet.",
       "scheduling": "{division} · playoff scheduling"
     },
     "movements": {
@@ -6898,10 +6743,6 @@
       }
     },
     "stats": {
-      "player": "Player",
-      "team": "Team",
-      "maps": "Maps",
-      "kdr": "K/D",
       "empty": "No stats yet — they appear once league matches are played."
     },
     "rollover": {
@@ -7027,8 +6868,6 @@
     "form": {
       "name": "Event Name",
       "description": "Description",
-      "starts_at": "Starts At",
-      "ends_at": "Ends At",
       "dates": "Event Dates",
       "pick_dates": "Pick a date range",
       "start_required": "A start date is required so the event only gathers matches played from that date onward",
@@ -7160,8 +6999,7 @@
       "link_title_placeholder": "Optional title",
       "link_add": "Add",
       "link_invalid": "Enter a valid http(s) URL",
-      "link_added": "Link added",
-      "external_open": "Open link"
+      "link_added": "Link added"
     },
     "phase": {
       "upcoming": "Upcoming",
@@ -7172,18 +7010,12 @@
       "for_you": "For you",
       "rank": "Event rank",
       "rating": "Rating",
-      "kd": "K/D",
-      "matches": "Matches",
-      "no_my_matches": "None of your matches are part of this event yet."
+      "matches": "Matches"
     },
     "matches": {
-      "none": "No matches have been played in this event's tournaments yet.",
-      "load_more": "Load more matches"
+      "none": "No matches have been played in this event's tournaments yet."
     },
     "story": {
-      "only_mine": "Only my moments",
-      "none": "Nothing has happened at this event yet.",
-      "none_mine": "You have no moments at this event yet.",
       "highlights": "Highlights"
     },
     "banner": {
@@ -7194,14 +7026,7 @@
       "updated": "Banner updated",
       "removed": "Banner removed",
       "empty_hint": "No banner yet — click to upload",
-      "hint": "Shown full-width at the top of the event page. Optimal size: 1920×640 (3:1). Images up to 10MB or MP4 video up to 512MB.",
-      "editor": {
-        "title": "Adjust banner",
-        "description": "Drag to position and scroll to zoom inside the 3:1 banner frame. Use “Fit whole image” if the art must not be cropped — the page fills the sides with a blurred copy.",
-        "fit_whole": "Fit whole image",
-        "reset": "Reset",
-        "apply": "Use as banner"
-      }
+      "hint": "Shown full-width at the top of the event page. Optimal size: 1920×640 (3:1). Images up to 10MB or MP4 video up to 512MB."
     },
     "player": {
       "full_profile": "Full profile",
@@ -7232,35 +7057,31 @@
     "tournament": "Tournament",
     "placement": "Placement",
     "no_awards": "No Awards Yet",
-    "no_awards_description": "Finish in the top 3 of a tournament, or be granted an award, to fill this case.",
     "granted": "Granted",
     "composer": {
-      "title": "Create & assign award",
+      "title": "Create & Assign Award",
       "award": "Award",
-      "new": "New",
-      "existing": "Existing",
-      "choose": "Choose an award…",
-      "assign": "Assign",
+      "assign": "Recipient",
       "artwork_needs_award": "Artwork attaches to the award, so save it first.",
-      "create_to_upload": "Create award to add artwork",
+      "create_to_upload": "Create Award to Add Artwork",
       "team_fans_out": "Granting to a team also gives the award to everyone on its roster.",
       "scope_global": "Not tied to a tournament, season or event.",
       "scope_tournament": "Belongs to this tournament.",
       "scope_season": "Belongs to this season.",
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
-      "grant_here": "Grant award",
+      "grant_here": "Grant Award",
+      "no_recipients": "No eligible recipients.",
+      "award_unavailable": "This award could not be loaded.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }
   },
   "awards_modal": {
-    "view_tournament": "VIEW TOURNAMENT"
+    "view_tournament": "View Tournament"
   },
   "awards_manage_form": {
     "team": "Team",
-    "player": "Player",
-    "award": "Award",
-    "recipient": "Recipient"
+    "player": "Player"
   }
 }

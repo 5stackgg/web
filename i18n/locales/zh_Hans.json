@@ -3085,7 +3085,16 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "全部",
+      "group_season_awards": "赛季奖项",
+      "group_tournament_awards": "锦标赛奖项",
+      "group_builtin_awards": "内置奖项",
+      "group_custom_awards": "自定义奖项",
+      "group_custom_tournament_awards": "自定义锦标赛奖项",
+      "group_custom_event_awards": "自定义活动奖项",
+      "group_custom_season_awards": "自定义赛季奖项",
+      "group_custom_league_awards": "自定义联赛奖项"
     }
   },
   "custom_match": {
@@ -6923,6 +6932,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "没有符合条件的获奖者。",
+      "award_unavailable": "无法加载该奖项。",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

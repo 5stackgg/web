@@ -3177,7 +3177,16 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "전체",
+      "group_season_awards": "시즌 어워드",
+      "group_tournament_awards": "토너먼트 어워드",
+      "group_builtin_awards": "기본 어워드",
+      "group_custom_awards": "커스텀 어워드",
+      "group_custom_tournament_awards": "커스텀 토너먼트 어워드",
+      "group_custom_event_awards": "커스텀 이벤트 어워드",
+      "group_custom_season_awards": "커스텀 시즌 어워드",
+      "group_custom_league_awards": "커스텀 리그 어워드"
     }
   },
   "custom_match": {
@@ -7136,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "받을 수 있는 대상이 없습니다.",
+      "award_unavailable": "이 어워드를 불러오지 못했습니다.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

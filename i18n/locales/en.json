@@ -1259,7 +1259,7 @@
         "game_server_nodes": "Game Server Nodes",
         "game_server_nodes_caption": "currently registered",
         "servers": "Servers",
-        "servers_caption": "excludes on-demand slots",
+        "servers_caption": "currently registered",
         "public_servers": "Public",
         "public_servers_caption": "non-ranked servers",
         "matches": "Matches Hosted",

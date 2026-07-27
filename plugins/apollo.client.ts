@@ -3,7 +3,10 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
-import { DefaultApolloClient, provideApolloClient } from "@vue/apollo-composable";
+import {
+  DefaultApolloClient,
+  provideApolloClient,
+} from "@vue/apollo-composable";
 import { createHttpLink, from, split } from "@apollo/client/core";
 import type { ApolloClient } from "@apollo/client/core";
 import type {
@@ -53,6 +56,16 @@ export default defineNuxtPlugin((nuxtApp) => {
     // incoming into existing, keeping fields written by earlier queries.
     match_options: {
       merge: true,
+    },
+    // The award page subscribes to one award's full recipient list, so every
+    // push is a complete replacement — merge:false says so explicitly and
+    // silences the "cache data may be lost" warning a grant/revoke triggers.
+    awards: {
+      fields: {
+        recipients: {
+          merge: false,
+        },
+      },
     },
     Query: {
       fields: {

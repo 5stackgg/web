@@ -47,6 +47,7 @@ import { usePlayerContext } from "~/composables/usePlayerContext";
 import { useTeamContext } from "~/composables/useTeamContext";
 import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import { useSeasonContext } from "~/composables/useSeasonContext";
+import { useAwardContext } from "~/composables/useAwardContext";
 
 export default {
   computed: {
@@ -65,6 +66,7 @@ export default {
       const teamc = useTeamContext();
       const drc = useDraftRoomContext();
       const sc = useSeasonContext();
+      const ac = useAwardContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
@@ -153,6 +155,19 @@ export default {
           }
           breadcrumbs.push({
             text: teamc.value.name,
+            to: path,
+          });
+          return;
+        }
+
+        // Awards: show the award name once its context matches the segment;
+        // until then skip the crumb rather than leaking a raw uuid.
+        if (segments[0] === "awards" && index === 1) {
+          if (ac.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: ac.value.name,
             to: path,
           });
           return;

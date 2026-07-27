@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -10,6 +10,7 @@ import NewsArticleView from "~/components/news/NewsArticleView.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   ArrowLeft,
+  Save,
   Send,
   Undo2,
   Eye,
@@ -173,14 +174,32 @@ const unpublish = async () => {
   }
 };
 
+// ⌘S / Ctrl+S saves without publishing, from anywhere on the page (the body
+// textarea has focus most of the time). Never changes publish state.
+const onSaveShortcut = (event: KeyboardEvent) => {
+  if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "s") {
+    return;
+  }
+  event.preventDefault();
+  if (loading.value || saving.value) {
+    return;
+  }
+  saveChanges();
+};
+
 onMounted(() => {
   if (!canPostNews.value) {
     navigateTo("/news");
     return;
   }
+  window.addEventListener("keydown", onSaveShortcut);
   if (!isNew.value) {
     fetchPost();
   }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onSaveShortcut);
 });
 </script>
 
@@ -311,9 +330,11 @@ onMounted(() => {
       <div
         class="sticky bottom-0 -mx-1 flex flex-wrap items-center justify-end gap-2 border-t border-border/60 bg-background/80 px-1 py-3 backdrop-blur"
       >
+        <!-- Both buttons take a solid fill: an outline variant next to the
+             filled primary measures the same but reads as smaller. -->
         <template v-if="status === 'published'">
           <Button
-            variant="outline"
+            variant="secondary"
             class="gap-2"
             :disabled="saving"
             @click="unpublish"
@@ -322,15 +343,18 @@ onMounted(() => {
             {{ $t("pages.news.manage.unpublish") }}
           </Button>
           <Button class="gap-2" :loading="saving" @click="saveChanges">
+            <Save class="h-4 w-4" />
             {{ $t("pages.news.form.save_changes") }}
           </Button>
         </template>
         <template v-else>
           <Button
-            variant="outline"
+            variant="secondary"
+            class="gap-2"
             :disabled="saving"
             @click="saveChanges"
           >
+            <Save class="h-4 w-4" />
             {{ $t("pages.news.form.save_draft") }}
           </Button>
           <Button class="gap-2" :loading="saving" @click="publish">

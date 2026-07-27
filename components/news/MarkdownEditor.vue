@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch, onBeforeUnmount } from "vue";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
 import { Button } from "~/components/ui/button";
 import { Spinner } from "~/components/ui/spinner";
+import NewsVideoDialog from "~/components/news/NewsVideoDialog.vue";
+import { toast } from "@/components/ui/toast";
+import {
+  isEmbeddableVideoUrl,
+  renderNewsMarkdown,
+  videoToken,
+} from "~/utilities/newsMarkdown";
 import {
   Bold,
   Italic,
@@ -14,6 +19,7 @@ import {
   Link as LinkIcon,
   Code,
   Image as ImageIcon,
+  Film,
 } from "lucide-vue-next";
 
 const props = defineProps<{
@@ -48,15 +54,7 @@ onBeforeUnmount(() => {
   }
 });
 
-const rendered = computed(() => {
-  if (!import.meta.client) {
-    return "";
-  }
-  const html = marked.parse(debouncedValue.value || "", {
-    breaks: true,
-  }) as string;
-  return DOMPurify.sanitize(html);
-});
+const rendered = computed(() => renderNewsMarkdown(debouncedValue.value));
 
 function replaceSelection(
   transform: (selected: string) => { text: string; selectStart?: number; selectEnd?: number },
@@ -145,6 +143,30 @@ async function onFileSelected(event: Event) {
   const replacement = url ? `![](${url})` : "";
   emit("update:modelValue", (props.modelValue || "").replace(token, replacement));
 }
+
+const videoDialogOpen = ref(false);
+
+// The token is a block, so keep it on its own line regardless of where the
+// caret happened to be.
+function insertVideo(videoMarkdown: string) {
+  replaceSelection(() => {
+    const text = `\n${videoMarkdown}\n`;
+    return { text };
+  });
+}
+
+// Pasting a YouTube/Twitch link (or a direct video file) turns straight into an
+// embed instead of a bare link. Only URLs that actually produce a player are
+// converted — ordinary links paste through untouched.
+function onPaste(event: ClipboardEvent) {
+  const pasted = event.clipboardData?.getData("text/plain")?.trim();
+  if (!pasted || !isEmbeddableVideoUrl(pasted)) {
+    return;
+  }
+  event.preventDefault();
+  insertVideo(videoToken(pasted));
+  toast({ title: useNuxtApp().$i18n.t("pages.news.form.video.auto_embedded") });
+}
 </script>
 
 <template>
@@ -186,6 +208,16 @@ async function onFileSelected(event: Event) {
         <Spinner v-if="isUploading" class="h-4 w-4" />
         <ImageIcon v-else class="h-4 w-4" />
       </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        class="h-8 w-8"
+        :title="$t('pages.news.form.video.title')"
+        @click="videoDialogOpen = true"
+      >
+        <Film class="h-4 w-4" />
+      </Button>
       <input
         ref="fileInput"
         type="file"
@@ -194,6 +226,8 @@ async function onFileSelected(event: Event) {
         @change="onFileSelected"
       />
     </div>
+
+    <NewsVideoDialog v-model:open="videoDialogOpen" @insert="insertVideo" />
 
     <div
       v-if="isUploading"
@@ -213,6 +247,7 @@ async function onFileSelected(event: Event) {
           :value="modelValue"
           class="h-[60vh] min-h-[24rem] w-full resize-y rounded-md border border-input bg-background p-3 font-mono text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
+          @paste="onPaste"
         />
       </div>
       <div class="space-y-1">

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
+import { renderNewsMarkdown } from "~/utilities/newsMarkdown";
 
 /**
  * Presentational view of a full news article — date, title, teaser, cover, and
@@ -29,13 +28,9 @@ const formatDate = (value: string | null | undefined) => {
   });
 };
 
-const renderedContent = computed(() => {
-  if (!import.meta.client || !props.contentMarkdown) {
-    return "";
-  }
-  const html = marked.parse(props.contentMarkdown, { breaks: true }) as string;
-  return DOMPurify.sanitize(html);
-});
+const renderedContent = computed(() =>
+  renderNewsMarkdown(props.contentMarkdown),
+);
 </script>
 
 <template>

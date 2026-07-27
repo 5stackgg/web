@@ -2330,7 +2330,22 @@
         "back_to_edit": "Back to Editor",
         "upload_image": "Upload image",
         "uploading": "Uploading…",
-        "uploading_image": "Uploading image…"
+        "uploading_image": "Uploading image…",
+        "video": {
+          "title": "Insert Video",
+          "description": "Embed a YouTube or Twitch link, or upload an MP4.",
+          "tab_link": "Link",
+          "tab_upload": "Upload",
+          "link_hint": "Paste a YouTube or Twitch URL. Other links render as a plain link. Pasting one straight into the body embeds it too.",
+          "will_embed": "Will embed as a player",
+          "will_link": "Not embeddable — will render as a link",
+          "choose_file": "Choose MP4",
+          "upload_hint": "MP4 up to 512MB. A poster frame is captured automatically.",
+          "uploading": "Uploading… {percent}%",
+          "replace_poster": "Replace poster",
+          "insert": "Insert",
+          "auto_embedded": "Video link embedded"
+        }
       }
     },
     "seasons": {

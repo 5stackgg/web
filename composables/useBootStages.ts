@@ -13,7 +13,6 @@ export type BootStageMeta =
 
 export type BootStage = {
   key: string;
-  // Markers never render, so they carry no label.
   label?: string;
   // How a non-emitted stage renders once we're past it:
   //   required    → ✓ silently (must have happened)

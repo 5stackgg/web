@@ -289,7 +289,6 @@ const TERMINAL = new Set(["done", "error", "cancelled"]);
 type BatchGroup = {
   matchMapId: string;
   jobs: Job[];
-  // jobs minus the terminal ones — the batch the pod is working on now.
   activeJobs: Job[];
   activeJob: Job | undefined;
   sample: Job;

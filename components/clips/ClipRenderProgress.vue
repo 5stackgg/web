@@ -127,7 +127,6 @@ onBeforeUnmount(() => {
   activeSub = null;
 });
 
-// Newest boot tick from the render pod, if it has started booting for us.
 const bootEntry = computed<BootEntry | null>(() => {
   const history = job.value?.status_history;
   if (!Array.isArray(history)) return null;
@@ -216,8 +215,6 @@ const phaseStatus = computed<{
   const s = job.value?.status;
   if (isDone.value) return { render: "done", upload: "done" };
   if (s === "uploading") return { render: "done", upload: "active" };
-  // While the pod is still booting nothing has started yet — the stepper
-  // above is carrying the story, so don't claim the render is under way.
   if (s === "rendering" || (s === "queued" && !isBooting.value)) {
     return { render: "active", upload: "pending" };
   }

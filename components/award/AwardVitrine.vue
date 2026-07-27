@@ -72,86 +72,94 @@ const isBuiltIn = computed(() => !!props.award.system_key);
       aria-hidden="true"
     ></span>
 
-    <!-- Stage: the specimen stands uplit on a plinth -->
-    <div class="relative flex items-end justify-center px-4 pb-3 pt-6">
-      <div
-        class="pointer-events-none absolute inset-x-4 bottom-2 top-1/4 opacity-45 blur-2xl transition-opacity duration-300 group-hover/vitrine:opacity-90 motion-reduce:transition-none"
-        :style="{
-          background: `radial-gradient(ellipse 72% 62% at 50% 100%, ${accent} 0%, transparent 70%)`,
-        }"
-        aria-hidden="true"
-      ></div>
-      <div
-        class="pointer-events-none absolute inset-x-8 bottom-2 h-[1px]"
-        :style="{
-          background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
-          opacity: 0.5,
-        }"
-        aria-hidden="true"
-      ></div>
-      <AwardBadge
-        :award="award"
-        :seed-key="award.id"
-        size="md"
-        :interactive="false"
-        :show-name="false"
-        class="relative z-[1] transition-transform duration-300 group-hover/vitrine:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover/vitrine:translate-y-0"
-      />
-    </div>
-
-    <!-- Designation plate: the full name, never truncated -->
-    <div class="relative flex flex-1 flex-col gap-1.5 px-4 pb-3">
-      <div class="flex items-start gap-2">
-        <h3
-          class="flex-1 text-pretty text-[0.82rem] font-bold uppercase leading-[1.25] tracking-[0.06em] text-foreground"
-        >
-          {{ award.name }}
-        </h3>
-        <span
-          v-if="isBuiltIn"
-          class="mt-[0.1rem] shrink-0 rounded-sm border border-border/80 px-1.5 py-[0.1rem] font-mono text-[0.5rem] uppercase leading-none tracking-[0.16em] text-muted-foreground/80"
-          :title="$t('pages.awards.built_in_hint')"
-        >
-          {{ $t("pages.awards.built_in") }}
-        </span>
+    <!-- The card body opens the award; the instrument row below stays outside
+         the link so its buttons keep their own clicks. -->
+    <NuxtLink
+      :to="`/awards/${award.id}`"
+      class="relative flex flex-1 flex-col"
+      :aria-label="award.name || undefined"
+    >
+      <!-- Stage: the specimen stands uplit on a plinth -->
+      <div class="relative flex items-end justify-center px-4 pb-3 pt-6">
+        <div
+          class="pointer-events-none absolute inset-x-4 bottom-2 top-1/4 opacity-45 blur-2xl transition-opacity duration-300 group-hover/vitrine:opacity-90 motion-reduce:transition-none"
+          :style="{
+            background: `radial-gradient(ellipse 72% 62% at 50% 100%, ${accent} 0%, transparent 70%)`,
+          }"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="pointer-events-none absolute inset-x-8 bottom-2 h-[1px]"
+          :style="{
+            background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+            opacity: 0.5,
+          }"
+          aria-hidden="true"
+        ></div>
+        <AwardBadge
+          :award="award"
+          :seed-key="award.id"
+          size="md"
+          :interactive="false"
+          :show-name="false"
+          class="relative z-[1] transition-transform duration-300 group-hover/vitrine:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover/vitrine:translate-y-0"
+        />
       </div>
 
-      <p
-        v-if="award.description"
-        class="line-clamp-2 text-[0.72rem] leading-snug text-muted-foreground"
-      >
-        {{ award.description }}
-      </p>
-    </div>
+      <!-- Designation plate: the full name, never truncated -->
+      <div class="relative flex flex-1 flex-col gap-1.5 px-4 pb-3">
+        <div class="flex items-start gap-2">
+          <h3
+            class="flex-1 text-pretty text-[0.82rem] font-bold uppercase leading-[1.25] tracking-[0.06em] text-foreground transition-colors duration-150 group-hover/vitrine:text-[hsl(var(--tac-amber))]"
+          >
+            {{ award.name }}
+          </h3>
+          <span
+            v-if="isBuiltIn"
+            class="mt-[0.1rem] shrink-0 rounded-sm border border-border/80 px-1.5 py-[0.1rem] font-mono text-[0.5rem] uppercase leading-none tracking-[0.16em] text-muted-foreground/80"
+            :title="$t('pages.awards.built_in_hint')"
+          >
+            {{ $t("pages.awards.built_in") }}
+          </span>
+        </div>
 
-    <!-- Data strip -->
-    <div
-      class="relative flex items-center justify-between gap-2 border-t border-border/60 px-4 py-2"
-    >
-      <!-- The dot carries the tier colour; the label stays on a themed token so
-           silver/bronze remain legible on the light theme too. -->
-      <span
-        class="inline-flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground"
+        <p
+          v-if="award.description"
+          class="line-clamp-2 text-[0.72rem] leading-snug text-muted-foreground"
+        >
+          {{ award.description }}
+        </p>
+      </div>
+
+      <!-- Data strip -->
+      <div
+        class="relative flex items-center justify-between gap-2 border-t border-border/60 px-4 py-2"
       >
+        <!-- The dot carries the tier colour; the label stays on a themed token so
+           silver/bronze remain legible on the light theme too. -->
         <span
-          class="inline-block h-1.5 w-1.5 rounded-full"
-          :style="{ background: accent, boxShadow: `0 0 6px ${accent}` }"
-        ></span>
-        {{ tier }}
-      </span>
-      <span class="inline-flex items-baseline gap-1.5">
-        <span
-          class="font-mono text-sm font-bold leading-none tabular-nums text-foreground"
+          class="inline-flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground"
         >
-          {{ String(holders).padStart(2, "0") }}
+          <span
+            class="inline-block h-1.5 w-1.5 rounded-full"
+            :style="{ background: accent, boxShadow: `0 0 6px ${accent}` }"
+          ></span>
+          {{ tier }}
         </span>
-        <span
-          class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-        >
-          {{ $t("pages.awards.holders") }}
+        <span class="inline-flex items-baseline gap-1.5">
+          <span
+            class="font-mono text-sm font-bold leading-none tabular-nums text-foreground"
+          >
+            {{ String(holders).padStart(2, "0") }}
+          </span>
+          <span
+            class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
+          >
+            {{ $t("pages.awards.holders") }}
+          </span>
         </span>
-      </span>
-    </div>
+      </div>
+    </NuxtLink>
 
     <!-- Instrument row -->
     <div

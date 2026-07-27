@@ -3247,6 +3247,30 @@
       "group_custom_event_awards": "Custom Event Awards",
       "group_custom_season_awards": "Custom Season Awards",
       "group_custom_league_awards": "Custom League Awards"
+    },
+    "award_detail": {
+      "not_found_title": "Award Not Found",
+      "not_found": "This award does not exist, or it has been deleted.",
+      "holders_section": "Holders",
+      "no_holders_title": "No Holders Yet",
+      "no_holders": "Nobody has been granted this award.",
+      "total_holders": "Grants",
+      "unique_players": "Players",
+      "unique_teams": "Teams",
+      "first_granted": "First Granted",
+      "last_granted": "Last Granted",
+      "filter_all": "All",
+      "filter_players": "Players",
+      "filter_teams": "Teams",
+      "granted_by": "Granted by {name}",
+      "source_manual": "Granted by hand",
+      "source_tournament": "Tournament placement",
+      "source_season": "Season automation",
+      "revoke": "Revoke",
+      "confirm_revoke": {
+        "title": "Revoke this award?",
+        "description": "{name} will no longer hold this award. This cannot be undone."
+      }
     }
   },
   "custom_match": {
@@ -7094,7 +7118,8 @@
     }
   },
   "awards_modal": {
-    "view_tournament": "View Tournament"
+    "view_tournament": "View Tournament",
+    "view_award": "View Award"
   },
   "awards_manage_form": {
     "team": "Team",

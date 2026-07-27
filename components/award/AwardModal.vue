@@ -270,21 +270,43 @@ const awardTeam = computed(() => {
         </div>
       </dl>
 
-      <NuxtLink
-        v-if="award.tournament_id"
-        :to="`/tournaments/${award.tournament_id}`"
-        class="group/link inline-flex items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
-      >
-        <span
-          class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
-          >▚</span
+      <!-- Navigating unmounts the page hosting this dialog, so close it first
+           rather than letting it tear down mid-transition. -->
+      <div class="flex flex-wrap items-stretch gap-2">
+        <NuxtLink
+          v-if="award.tournament_id"
+          :to="`/tournaments/${award.tournament_id}`"
+          class="group/link inline-flex flex-1 items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
+          @click="emit('update:open', false)"
         >
-        {{ $t("awards_modal.view_tournament") }}
-        <span
-          class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
-          >◢</span
+          <span
+            class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
+            >▚</span
+          >
+          {{ $t("awards_modal.view_tournament") }}
+          <span
+            class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
+            >◢</span
+          >
+        </NuxtLink>
+
+        <NuxtLink
+          v-if="award.award?.id"
+          :to="`/awards/${award.award.id}`"
+          class="group/link inline-flex flex-1 items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
+          @click="emit('update:open', false)"
         >
-      </NuxtLink>
+          <span
+            class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
+            >▚</span
+          >
+          {{ $t("awards_modal.view_award") }}
+          <span
+            class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
+            >◢</span
+          >
+        </NuxtLink>
+      </div>
     </DialogContent>
   </Dialog>
 </template>

@@ -157,12 +157,10 @@ const tierRack = computed(() => {
     { key: "bronze" as const, label: "3RD", full: "3rd Place" },
     { key: "special" as const, label: "AWD", full: "Awards" },
   ];
-  return tiers.filter((tier) => {
-    if (tier.key === "mvp" && props.hideMvp) return false;
-    // The standalone counter only earns its slot once something fills it.
-    if (tier.key === "special" && counts.value.special === 0) return false;
-    return true;
-  });
+  // Standalone awards are a category of their own, so the counter holds its
+  // slot at zero like the medals do — hiding it read as though they were not
+  // being counted at all.
+  return tiers.filter((tier) => !(tier.key === "mvp" && props.hideMvp));
 });
 </script>
 
@@ -243,12 +241,13 @@ const tierRack = computed(() => {
       v-if="sorted.length"
       class="relative grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
     >
-      <button
+      <!-- Two affordances on one pedestal: the badge opens this grant, the
+           nameplate opens the award itself. The wrapper keeps group/pedestal
+           so the uplight and nameplate hover states still fire. -->
+      <div
         v-for="grant in sorted"
         :key="grant.id"
-        type="button"
-        class="group/pedestal relative flex flex-col items-center gap-2 rounded-sm px-2 pb-3 pt-4 transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
-        @click="openAward(grant)"
+        class="group/pedestal relative flex flex-col items-center gap-2 rounded-sm px-2 pb-3 pt-4 transition-transform duration-200 hover:-translate-y-0.5"
       >
         <!-- Uplight -->
         <div
@@ -258,22 +257,32 @@ const tierRack = computed(() => {
           }"
         ></div>
 
-        <AwardBadge
-          :award="grant.award"
-          :seed-key="grant.tournament_id || grant.award?.id"
-          :placement="grant.placement"
-          :tournament-name="grant.tournament?.name"
-          :tournament-start="grant.tournament?.start"
-          :tournament-type="grant.tournament?.stages?.[0]?.type"
-          :custom-name="grant.tournament_award?.custom_name"
-          :silhouette-override="grant.tournament_award?.silhouette"
-          :image-url="grant.tournament_award?.image_url"
-          size="md"
-          class="relative z-[1]"
-        />
+        <button
+          type="button"
+          class="relative z-[1] rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+          :aria-label="grantName(grant)"
+          @click="openAward(grant)"
+        >
+          <AwardBadge
+            :award="grant.award"
+            :seed-key="grant.tournament_id || grant.award?.id"
+            :placement="grant.placement"
+            :tournament-name="grant.tournament?.name"
+            :tournament-start="grant.tournament?.start"
+            :tournament-type="grant.tournament?.stages?.[0]?.type"
+            :custom-name="grant.tournament_award?.custom_name"
+            :silhouette-override="grant.tournament_award?.silhouette"
+            :image-url="grant.tournament_award?.image_url"
+            size="md"
+          />
+        </button>
 
-        <!-- Stenciled nameplate -->
-        <div class="relative z-[1] mt-1 w-full">
+        <!-- Stenciled nameplate. A grant whose award is gone has nowhere to
+             go, and NuxtLink renders an inert anchor for a null target. -->
+        <NuxtLink
+          :to="grant.award?.id ? `/awards/${grant.award.id}` : null"
+          class="relative z-[1] mt-1 block w-full rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+        >
           <div
             class="truncate text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-foreground group-hover/pedestal:text-[hsl(var(--tac-amber))]"
             :title="grantName(grant)"
@@ -288,8 +297,8 @@ const tierRack = computed(() => {
             {{ formatAwardDate(grant.tournament?.start || grant.created_at) }}
             <span class="h-[1px] w-2 bg-border"></span>
           </div>
-        </div>
-      </button>
+        </NuxtLink>
+      </div>
     </div>
 
     <AwardModal

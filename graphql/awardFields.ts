@@ -1,4 +1,5 @@
 import { order_by, Selector } from "~/generated/zeus";
+import { playerFields } from "~/graphql/playerFields";
 
 export const awardDefinitionFields = Selector("awards")({
   id: true,
@@ -93,5 +94,40 @@ export const awardFields = Selector("award_recipients")({
     id: true,
     name: true,
     short_name: true,
+  },
+});
+
+// The trophy cases read a grant from the holder's side, so they never had to
+// name who holds it. The award page reads from the other side — one award,
+// every holder — so the row carries the player, and every scope a grant can be
+// pinned to.
+export const awardRecipientDetailFields = Selector("award_recipients")({
+  ...awardFields,
+  event_id: true,
+  season_id: true,
+  league_season_id: true,
+  player: playerFields,
+  awarded_by: {
+    steam_id: true,
+    name: true,
+  },
+  team: {
+    id: true,
+    name: true,
+    short_name: true,
+    avatar_url: true,
+  },
+  event: {
+    id: true,
+    name: true,
+  },
+  season: {
+    id: true,
+    number: true,
+  },
+  league_season: {
+    id: true,
+    name: true,
+    season_number: true,
   },
 });

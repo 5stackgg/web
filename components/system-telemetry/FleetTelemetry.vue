@@ -111,6 +111,9 @@ import {
             <div class="mt-1 text-xl font-semibold tabular-nums">
               {{ format(stat.value) }}
             </div>
+            <div class="mt-0.5 text-[0.68rem] text-muted-foreground">
+              {{ stat.caption }}
+            </div>
           </div>
         </div>
       </section>
@@ -287,9 +290,7 @@ export default {
             gameServerNodes: true,
             gpuNodes: true,
             servers: true,
-            dedicatedServers: true,
             publicServers: true,
-            serverCapacity: true,
             matches: true,
             matchesWeek: true,
             matchesMonth: true,
@@ -297,7 +298,9 @@ export default {
             matchesImported: true,
             matchesImportedMonth: true,
             mapsPlayed: true,
+            playersKnown: true,
             playersRegistered: true,
+            playersPlayed: true,
             playersActive30d: true,
             teams: true,
           },
@@ -474,27 +477,29 @@ export default {
           stats: [
             {
               label: this.$t("pages.system_telemetry.totals.game_server_nodes"),
+              caption: this.$t(
+                "pages.system_telemetry.totals.game_server_nodes_caption",
+              ),
               value: totals?.gameServerNodes ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.gpu_nodes"),
+              caption: this.$t(
+                "pages.system_telemetry.totals.gpu_nodes_caption",
+              ),
               value: totals?.gpuNodes ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.servers"),
+              caption: this.$t("pages.system_telemetry.totals.servers_caption"),
               value: totals?.servers ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.dedicated_servers"),
-              value: totals?.dedicatedServers ?? 0,
-            },
-            {
               label: this.$t("pages.system_telemetry.totals.public_servers"),
+              caption: this.$t(
+                "pages.system_telemetry.totals.public_servers_caption",
+              ),
               value: totals?.publicServers ?? 0,
-            },
-            {
-              label: this.$t("pages.system_telemetry.totals.capacity"),
-              value: totals?.serverCapacity ?? 0,
             },
           ],
         },
@@ -504,22 +509,27 @@ export default {
           stats: [
             {
               label: this.$t("pages.system_telemetry.totals.matches_week"),
+              caption: this.$t("pages.system_telemetry.totals.last_7d"),
               value: totals?.matchesWeek ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.matches_month"),
+              caption: this.$t("pages.system_telemetry.totals.last_30d"),
               value: totals?.matchesMonth ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.matches_year"),
+              caption: this.$t("pages.system_telemetry.totals.last_1y"),
               value: totals?.matchesYear ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.maps_played"),
+              caption: this.$t("pages.system_telemetry.totals.all_time"),
               value: totals?.mapsPlayed ?? 0,
             },
             {
               label: this.$t("pages.system_telemetry.totals.matches_imported"),
+              caption: this.$t("pages.system_telemetry.totals.all_time"),
               value: totals?.matchesImported ?? 0,
               muted: true,
             },
@@ -527,6 +537,7 @@ export default {
               label: this.$t(
                 "pages.system_telemetry.totals.matches_imported_month",
               ),
+              caption: this.$t("pages.system_telemetry.totals.last_30d"),
               value: totals?.matchesImportedMonth ?? 0,
               muted: true,
             },
@@ -534,14 +545,32 @@ export default {
         },
         {
           title: this.$t("pages.system_telemetry.totals.community"),
+          hint: this.$t("pages.system_telemetry.totals.community_hint"),
           stats: [
             {
               label: this.$t("pages.system_telemetry.totals.players"),
+              caption: this.$t(
+                "pages.system_telemetry.totals.signed_in_caption",
+              ),
               value: totals?.playersRegistered ?? 0,
             },
             {
+              label: this.$t("pages.system_telemetry.totals.players_played"),
+              caption: this.$t("pages.system_telemetry.totals.all_time"),
+              value: totals?.playersPlayed ?? 0,
+            },
+            {
               label: this.$t("pages.system_telemetry.totals.teams"),
+              caption: this.$t("pages.system_telemetry.totals.all_time"),
               value: totals?.teams ?? 0,
+            },
+            {
+              label: this.$t("pages.system_telemetry.totals.players_known"),
+              caption: this.$t(
+                "pages.system_telemetry.totals.players_known_caption",
+              ),
+              value: totals?.playersKnown ?? 0,
+              muted: true,
             },
           ],
         },

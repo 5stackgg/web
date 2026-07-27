@@ -3181,6 +3181,7 @@
       "scope_all": "Все",
       "group_season_awards": "Награды сезона",
       "group_tournament_awards": "Награды турнира",
+      "group_builtin_awards": "Встроенные награды",
       "group_custom_awards": "Пользовательские награды",
       "group_custom_tournament_awards": "Пользовательские награды турниров",
       "group_custom_event_awards": "Пользовательские награды событий",
@@ -7144,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "Нет подходящих получателей.",
+      "award_unavailable": "Не удалось загрузить эту награду.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

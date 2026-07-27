@@ -3181,6 +3181,7 @@
       "scope_all": "すべて",
       "group_season_awards": "シーズンアワード",
       "group_tournament_awards": "トーナメントアワード",
+      "group_builtin_awards": "組み込みアワード",
       "group_custom_awards": "カスタムアワード",
       "group_custom_tournament_awards": "カスタムトーナメントアワード",
       "group_custom_event_awards": "カスタムイベントアワード",
@@ -7144,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "対象となる受賞者がいません。",
+      "award_unavailable": "このアワードを読み込めませんでした。",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

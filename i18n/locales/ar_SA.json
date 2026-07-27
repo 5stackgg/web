@@ -3181,6 +3181,7 @@
       "scope_all": "الكل",
       "group_season_awards": "جوائز الموسم",
       "group_tournament_awards": "جوائز البطولة",
+      "group_builtin_awards": "جوائز مدمجة",
       "group_custom_awards": "جوائز مخصصة",
       "group_custom_tournament_awards": "جوائز بطولة مخصصة",
       "group_custom_event_awards": "جوائز فعالية مخصصة",
@@ -7144,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "لا يوجد مستلمون مؤهلون.",
+      "award_unavailable": "تعذر تحميل هذه الجائزة.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

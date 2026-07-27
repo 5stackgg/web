@@ -216,17 +216,21 @@ watch(
     </div>
   </PageTransition>
 
+  <!-- The catalog row travels with the id, so the panel opens already reading
+       as its award rather than blank until its own query lands. -->
   <AwardComposer
     v-if="editOpen"
     v-model:open="editOpen"
-    :award-id="editAwardId || null"
+    :award-id="editAward?.id || null"
+    :award="editAward"
     @saved="editOpen = false"
   />
 
   <AwardComposer
     v-if="grantOpen"
     v-model:open="grantOpen"
-    :award-id="grantAwardId || null"
+    :award-id="grantAward?.id || null"
+    :award="grantAward"
     grant
     @saved="grantOpen = false"
   />
@@ -252,8 +256,8 @@ export default {
       scopeFilter: "all",
       editOpen: false,
       grantOpen: false,
-      editAwardId: "",
-      grantAwardId: "",
+      editAward: null as any,
+      grantAward: null as any,
     };
   },
   apollo: {
@@ -307,13 +311,20 @@ export default {
         })),
       ];
     },
+    // Where an award sits is asked three times over — for the tabs, the filter
+    // and the regions — so it is resolved once and carried alongside it.
+    scopedAwards(): Array<{ award: any; scope: any }> {
+      return this.awards.map((award: any) => ({
+        award,
+        scope: this.scopeOf(award),
+      }));
+    },
     // One tab per owner kind, so tournament awards can be read on their own
     // instead of hunting through the whole catalog.
     scopeTabs(): Array<{ key: string; label: string; count: number }> {
       const counts = new Map<string, number>();
-      for (const award of this.awards) {
-        const kind = this.scopeOf(award).kind;
-        counts.set(kind, (counts.get(kind) ?? 0) + 1);
+      for (const entry of this.scopedAwards) {
+        counts.set(entry.scope.kind, (counts.get(entry.scope.kind) ?? 0) + 1);
       }
 
       const kinds = [
@@ -340,13 +351,10 @@ export default {
         ...kinds,
       ];
     },
-    visibleAwards(): any[] {
+    visibleAwards(): Array<{ award: any; scope: any }> {
       const term = this.search.trim().toLowerCase();
-      return this.awards.filter((award: any) => {
-        if (
-          this.scopeFilter !== "all" &&
-          this.scopeOf(award).kind !== this.scopeFilter
-        ) {
+      return this.scopedAwards.filter(({ award, scope }) => {
+        if (this.scopeFilter !== "all" && scope.kind !== this.scopeFilter) {
           return false;
         }
         if (
@@ -376,8 +384,7 @@ export default {
     }> {
       const regions = new Map<string, any>();
 
-      for (const award of this.visibleAwards) {
-        const scope = this.scopeOf(award);
+      for (const { award, scope } of this.visibleAwards) {
         let region = regions.get(scope.regionKey);
         if (!region) {
           region = {
@@ -458,7 +465,7 @@ export default {
           kind: "tournament",
           regionKey: "custom:tournament",
           regionLabel: this.$t("pages.awards.group_custom_tournament_awards"),
-          regionRank: 3,
+          regionRank: 4,
           groupKey: `tournament:${award.tournament_id}`,
           groupLabel:
             award.tournament?.name ?? this.$t("pages.awards.scope_gone"),
@@ -469,7 +476,7 @@ export default {
           kind: "event",
           regionKey: "custom:event",
           regionLabel: this.$t("pages.awards.group_custom_event_awards"),
-          regionRank: 4,
+          regionRank: 5,
           groupKey: `event:${award.event_id}`,
           groupLabel: award.event?.name ?? this.$t("pages.awards.scope_gone"),
         };
@@ -479,7 +486,7 @@ export default {
           kind: "season",
           regionKey: "custom:season",
           regionLabel: this.$t("pages.awards.group_custom_season_awards"),
-          regionRank: 5,
+          regionRank: 6,
           groupKey: `season:${award.season_id}`,
           groupLabel: award.season
             ? this.$t("pages.awards.season_label", {
@@ -493,7 +500,7 @@ export default {
           kind: "league",
           regionKey: "custom:league",
           regionLabel: this.$t("pages.awards.group_custom_league_awards"),
-          regionRank: 6,
+          regionRank: 7,
           groupKey: `league:${award.league_season_id}`,
           groupLabel:
             award.league_season?.name ?? this.$t("pages.awards.scope_gone"),
@@ -504,23 +511,34 @@ export default {
       // whatever was authored here. Each is a single row, so it carries no
       // sub-heading.
       const systemKey = String(award.system_key ?? "");
-      const unscoped = systemKey.startsWith("season_")
+      // A system_key at all is what makes a card built-in elsewhere (see
+      // AwardVitrine), so anything carrying one stays on a built-in shelf even
+      // when its family is not one this page knows how to name. Otherwise a
+      // new seed family would file itself under "Custom" while still rendering
+      // as locked and uneditable.
+      const unscoped = !systemKey
         ? {
-            key: "builtin:season",
-            label: this.$t("pages.awards.group_season_awards"),
-            rank: 0,
+            key: "custom:global",
+            label: this.$t("pages.awards.group_custom_awards"),
+            rank: 3,
           }
-        : systemKey.startsWith("tournament_")
+        : systemKey.startsWith("season_")
           ? {
-              key: "builtin:tournament",
-              label: this.$t("pages.awards.group_tournament_awards"),
-              rank: 1,
+              key: "builtin:season",
+              label: this.$t("pages.awards.group_season_awards"),
+              rank: 0,
             }
-          : {
-              key: "custom:global",
-              label: this.$t("pages.awards.group_custom_awards"),
-              rank: 2,
-            };
+          : systemKey.startsWith("tournament_")
+            ? {
+                key: "builtin:tournament",
+                label: this.$t("pages.awards.group_tournament_awards"),
+                rank: 1,
+              }
+            : {
+                key: "builtin:other",
+                label: this.$t("pages.awards.group_builtin_awards"),
+                rank: 2,
+              };
 
       return {
         kind: "global",
@@ -537,15 +555,15 @@ export default {
       this.scopeFilter = "all";
     },
     openCreate() {
-      this.editAwardId = "";
+      this.editAward = null;
       this.editOpen = true;
     },
     openEdit(award: any) {
-      this.editAwardId = award.id;
+      this.editAward = award;
       this.editOpen = true;
     },
     openGrantFor(award: any | null) {
-      this.grantAwardId = award?.id || "";
+      this.grantAward = award ?? null;
       this.grantOpen = true;
     },
     async removeAward(award: any) {

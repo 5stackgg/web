@@ -3368,6 +3368,7 @@
       "scope_all": "Todos",
       "group_season_awards": "Prêmios da temporada",
       "group_tournament_awards": "Prêmios do torneio",
+      "group_builtin_awards": "Prêmios integrados",
       "group_custom_awards": "Prêmios personalizados",
       "group_custom_tournament_awards": "Prêmios de torneio personalizados",
       "group_custom_event_awards": "Prêmios de evento personalizados",
@@ -7600,6 +7601,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "Nenhum destinatário elegível.",
+      "award_unavailable": "Não foi possível carregar este prêmio.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

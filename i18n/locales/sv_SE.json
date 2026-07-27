@@ -3181,6 +3181,7 @@
       "scope_all": "Alla",
       "group_season_awards": "Säsongsutmärkelser",
       "group_tournament_awards": "Turneringsutmärkelser",
+      "group_builtin_awards": "Inbyggda utmärkelser",
       "group_custom_awards": "Egna utmärkelser",
       "group_custom_tournament_awards": "Egna turneringsutmärkelser",
       "group_custom_event_awards": "Egna evenemangsutmärkelser",
@@ -7144,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "Inga behöriga mottagare.",
+      "award_unavailable": "Den här utmärkelsen kunde inte laddas.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

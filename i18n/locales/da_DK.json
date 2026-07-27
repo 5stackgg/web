@@ -3181,6 +3181,7 @@
       "scope_all": "Alle",
       "group_season_awards": "Sæsonpriser",
       "group_tournament_awards": "Turneringspriser",
+      "group_builtin_awards": "Indbyggede priser",
       "group_custom_awards": "Brugerdefinerede priser",
       "group_custom_tournament_awards": "Brugerdefinerede turneringspriser",
       "group_custom_event_awards": "Brugerdefinerede begivenhedspriser",
@@ -7144,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "Ingen kvalificerede modtagere.",
+      "award_unavailable": "Denne pris kunne ikke indlæses.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

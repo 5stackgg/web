@@ -25,15 +25,22 @@ import {
 import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
-import { awardDefinitionFields } from "~/graphql/awardFields";
+import { awardScopedDefinitionFields } from "~/graphql/awardFields";
 
 type ScopeKind = "global" | "tournament" | "season" | "event" | "league_season";
+type RecipientKind = "none" | "player" | "team";
 
 const props = withDefaults(
   defineProps<{
     open: boolean;
     /** Preselect an existing award, e.g. "Grant" on a catalog card. */
     awardId?: string | null;
+    /**
+     * The already-loaded row for `awardId`, when the caller has it. The panel
+     * then reads as its award immediately instead of blank until the catalog
+     * query lands.
+     */
+    award?: Record<string, any> | null;
     /**
      * Grant-only: the award is being handed out, not authored, so its
      * definition and artwork are shown as-is and a recipient is required.
@@ -63,6 +70,7 @@ const props = withDefaults(
   }>(),
   {
     awardId: null,
+    award: null,
     grant: false,
     tournamentId: null,
     seasonId: null,
@@ -83,10 +91,12 @@ const emit = defineEmits<{
 
 const TIERS = ["special", "mvp", "gold", "silver", "bronze"];
 
+const { t } = useI18n();
 const { client } = useApolloClient();
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
 const awards = ref<any[]>([]);
+const catalogLoaded = ref(false);
 const pickerOpen = ref(false);
 const saving = ref(false);
 const error = ref<string | null>(null);
@@ -101,7 +111,7 @@ const draft = ref({
   image_url: null as string | null,
 });
 const recipient = ref<{
-  kind: "none" | "player" | "team";
+  kind: RecipientKind;
   player: any;
   team: any;
 }>({ kind: "none", player: null, team: null });
@@ -117,11 +127,15 @@ const scope = computed<{ kind: ScopeKind; id: string | null }>(() => {
   return { kind: "global", id: null };
 });
 
-const selectedAward = computed(() =>
-  mode.value === "existing"
-    ? awards.value.find((a) => a.id === draft.value.id) || null
-    : null,
-);
+/**
+ * The catalog row behind an id. The caller's copy wins so the panel can render
+ * before the query resolves, and it is the only source when the query fails.
+ */
+function findAward(id: string): Record<string, any> | null {
+  if (!id) return null;
+  if (props.award?.id === id) return props.award;
+  return awards.value.find((a) => a.id === id) ?? null;
+}
 
 const previewAward = computed(() => ({
   id: draft.value.id || "new-award",
@@ -152,8 +166,25 @@ const hasRecipient = computed(
     (recipient.value.kind === "team" && !!recipient.value.team),
 );
 
+/**
+ * Working on an existing award needs its current row: to show what is being
+ * handed out, and to send its scope back rather than blanking it. Until the
+ * row is in hand there is nothing safe to save.
+ */
+const awardRowReady = computed(
+  () => !props.awardId || !!findAward(props.awardId),
+);
+
+/**
+ * The named award is genuinely absent rather than still on its way, so the
+ * panel can say so instead of flashing an error while the catalog loads.
+ */
+const awardMissing = computed(
+  () => catalogLoaded.value && !awardRowReady.value,
+);
+
 const canSave = computed(() => {
-  if (saving.value) return false;
+  if (saving.value || !awardRowReady.value) return false;
   if (granting.value) return hasRecipient.value;
   return !!draft.value.name.trim();
 });
@@ -171,24 +202,32 @@ const tierChoices = computed(() =>
   TIERS.map((tier) => ({ key: tier, label: tier })),
 );
 
-const recipientChoices = computed(() => {
-  const options = [];
-  // Granting has no point without a recipient, so "none" is not on offer.
-  if (!granting.value) {
-    options.push({ key: "none", label: "None" });
-  }
-  if (!props.playerOptions || props.playerOptions.length) {
-    options.push({ key: "player", label: "Player" });
-  }
-  if (!props.teamOptions || props.teamOptions.length) {
-    options.push({ key: "team", label: "Team" });
-  }
-  return options;
-});
+const recipientChoices = computed<Array<{ key: RecipientKind; label: string }>>(
+  () => {
+    const options: Array<{ key: RecipientKind; label: string }> = [];
+    // Granting has no point without a recipient, so "none" is not on offer.
+    if (!granting.value) {
+      options.push({ key: "none", label: t("common.none") });
+    }
+    if (!props.playerOptions || props.playerOptions.length) {
+      options.push({ key: "player", label: t("awards_manage_form.player") });
+    }
+    if (!props.teamOptions || props.teamOptions.length) {
+      options.push({ key: "team", label: t("awards_manage_form.team") });
+    }
+    return options;
+  },
+);
+
+/**
+ * The draft as applyAward() left it, so a catalog that lands late can tell an
+ * untouched panel from one already being typed into.
+ */
+let appliedDraft = "";
 
 /** Fills the draft from a known award, so its fields show as-is. */
 function applyAward(id: string) {
-  const found = awards.value.find((a) => a.id === id);
+  const found = findAward(id);
   draft.value = {
     id,
     name: found?.name ?? "",
@@ -197,6 +236,7 @@ function applyAward(id: string) {
     allow_multiple: !!found?.allow_multiple,
     image_url: found?.image_url ?? null,
   };
+  appliedDraft = JSON.stringify(draft.value);
 }
 
 function reset() {
@@ -208,7 +248,7 @@ function reset() {
       : props.team
         ? "team"
         : granting.value
-          ? ((recipientChoices.value[0]?.key ?? "player") as any)
+          ? (recipientChoices.value[0]?.key ?? "player")
           : "none",
     player: props.player,
     team: props.team,
@@ -217,37 +257,54 @@ function reset() {
   error.value = null;
 }
 
-watch(
-  () => props.open,
-  (open) => {
-    if (open) reset();
-  },
-  { immediate: true },
-);
-
 async function loadAwards() {
   const { data } = await client.query({
     query: typedGql("query")({
-      awards: [{ order_by: [{ name: order_by.asc }] }, awardDefinitionFields],
+      awards: [
+        { order_by: [{ name: order_by.asc }] },
+        awardScopedDefinitionFields,
+      ],
     }),
     fetchPolicy: "network-only",
   });
   awards.value = (data as any)?.awards ?? [];
+  catalogLoaded.value = true;
 }
 
 watch(
   () => props.open,
   async (open) => {
     if (!open) return;
-    await loadAwards();
+    catalogLoaded.value = false;
+    reset();
+    try {
+      await loadAwards();
+    } catch (err: any) {
+      // Surfaced rather than swallowed: without the catalog the panel cannot
+      // show what it is about to hand out or save without re-homing it.
+      error.value = err?.message ?? String(err);
+      return;
+    }
     // The catalog arrives after reset(), so a preselected award only becomes
-    // fillable now.
-    if (props.awardId && draft.value.id === props.awardId) {
+    // fillable now — unless it is already filled, or typed over in the mean
+    // time.
+    if (
+      props.awardId &&
+      draft.value.id === props.awardId &&
+      JSON.stringify(draft.value) === appliedDraft
+    ) {
       applyAward(props.awardId);
     }
   },
   { immediate: true },
 );
+
+/** Switching who receives it drops whoever was picked for the old kind. */
+function selectRecipientKind(kind: unknown) {
+  recipient.value.kind = kind as RecipientKind;
+  recipient.value.player = null;
+  recipient.value.team = null;
+}
 
 function onPicked(id: string) {
   mode.value = "existing";
@@ -257,6 +314,7 @@ function onPicked(id: string) {
 /** Creates or updates the award row; returns its id. */
 async function persistAward(): Promise<string> {
   const creating = !draft.value.id;
+  const existing = creating ? null : findAward(draft.value.id);
   const { data } = await client.mutate({
     mutation: typedGql("mutation")({
       saveAward: [
@@ -280,18 +338,38 @@ async function persistAward(): Promise<string> {
       description: draft.value.description.trim() || null,
       tier: draft.value.tier,
       allow_multiple: draft.value.allow_multiple,
-      // Only a new award takes the panel's scope; editing an existing one must
-      // not silently re-home it.
-      tournament_id: creating ? props.tournamentId : null,
-      season_id: creating ? props.seasonId : null,
-      event_id: creating ? props.eventId : null,
-      league_season_id: creating ? props.leagueSeasonId : null,
+      // Only a new award takes the panel's scope; editing an existing one
+      // sends its own scope back, so a save can neither re-home it nor — if
+      // the mutation reads a null as "clear this" — orphan it.
+      tournament_id: creating
+        ? props.tournamentId
+        : (existing?.tournament_id ?? null),
+      season_id: creating ? props.seasonId : (existing?.season_id ?? null),
+      event_id: creating ? props.eventId : (existing?.event_id ?? null),
+      league_season_id: creating
+        ? props.leagueSeasonId
+        : (existing?.league_season_id ?? null),
     },
   });
   const saved = (data as any)?.saveAward;
   draft.value.id = saved?.id ?? "";
   draft.value.image_url = saved?.image_url ?? null;
   return draft.value.id;
+}
+
+/**
+ * Where the recipient belongs: the panel's scope when it was opened from one,
+ * otherwise the award's own, so a tournament award granted from the catalog
+ * still lands on that tournament instead of nowhere.
+ */
+function scopeForGrant(id: string) {
+  const source = findAward(id);
+  return {
+    tournament_id: props.tournamentId ?? source?.tournament_id ?? null,
+    season_id: props.seasonId ?? source?.season_id ?? null,
+    event_id: props.eventId ?? source?.event_id ?? null,
+    league_season_id: props.leagueSeasonId ?? source?.league_season_id ?? null,
+  };
 }
 
 /** Saves the award without closing, so artwork can be attached to it. */
@@ -335,10 +413,7 @@ async function submit() {
         }),
         variables: {
           award_id: id,
-          tournament_id: props.tournamentId,
-          season_id: props.seasonId,
-          event_id: props.eventId,
-          league_season_id: props.leagueSeasonId,
+          ...scopeForGrant(id),
           player_steam_id:
             recipient.value.kind === "player"
               ? String(recipient.value.player.steam_id)
@@ -406,9 +481,15 @@ async function submit() {
             {{ $t("awards.composer.award") }}
           </div>
 
+          <!-- The row never turned up, so there is nothing to show and nothing
+               safe to save. Say so rather than offering a blank award. -->
+          <p v-if="awardMissing" class="text-xs text-destructive">
+            {{ $t("awards.composer.award_unavailable") }}
+          </p>
+
           <!-- Granting hands out the award as it stands, so it reads rather
                than edits. -->
-          <div v-if="granting" class="space-y-1.5">
+          <div v-else-if="granting" class="space-y-1.5">
             <div class="flex items-baseline gap-2">
               <span class="min-w-0 flex-1 truncate text-sm font-semibold">{{
                 draft.name
@@ -416,7 +497,9 @@ async function submit() {
               <span
                 class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.2em]"
                 :style="{ color: accent }"
-                >{{ draft.tier }}</span
+                >{{
+                  TIER_PALETTES[resolveAwardTier(null, draft.tier)].label
+                }}</span
               >
             </div>
             <p v-if="draft.description" class="text-xs text-muted-foreground">
@@ -550,17 +633,20 @@ async function submit() {
           </template>
 
           <template v-else>
+            <!-- Nothing to hand the award to, e.g. a tournament whose roster is
+                 still empty. Saying so beats an empty row of choices. -->
+            <p
+              v-if="!recipientChoices.length"
+              class="text-xs text-muted-foreground"
+            >
+              {{ $t("awards.composer.no_recipients") }}
+            </p>
             <AnimatedFilters
+              v-else
               :model-value="recipient.kind"
               square
               :options="recipientChoices"
-              @update:model-value="
-                (key) => {
-                  recipient.kind = key as any;
-                  recipient.player = null;
-                  recipient.team = null;
-                }
-              "
+              @update:model-value="(key) => selectRecipientKind(key)"
             />
 
             <template v-if="recipient.kind === 'player'">
@@ -629,7 +715,7 @@ async function submit() {
               <TeamSearch
                 v-else
                 :label="$t('ui_extras.select_team_placeholder')"
-                :model-value="recipient.team"
+                :model-value="recipient.team?.id ?? ''"
                 @selected="(t) => (recipient.team = t)"
               />
               <p class="text-xs text-muted-foreground">

@@ -3181,6 +3181,7 @@
       "scope_all": "Усі",
       "group_season_awards": "Нагороди сезону",
       "group_tournament_awards": "Нагороди турніру",
+      "group_builtin_awards": "Вбудовані нагороди",
       "group_custom_awards": "Власні нагороди",
       "group_custom_tournament_awards": "Власні нагороди турнірів",
       "group_custom_event_awards": "Власні нагороди подій",
@@ -7144,6 +7145,8 @@
       "scope_event": "Belongs to this event.",
       "scope_league_season": "Belongs to this league season.",
       "grant_here": "Grant award",
+      "no_recipients": "Немає відповідних отримувачів.",
+      "award_unavailable": "Не вдалося завантажити цю нагороду.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
     }

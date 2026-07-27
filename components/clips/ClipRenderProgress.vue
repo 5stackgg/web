@@ -142,11 +142,26 @@ const bootEntry = computed<BootEntry | null>(() => {
   }
   return newest;
 });
+const { stagesFor } = useBootStages();
+
+// The pod stops broadcasting boot ticks once it reaches the last stage, then
+// renders the batch one clip at a time. A job further down that batch stays
+// `queued` with a full boot history — without this it would keep showing the
+// stepper and claim "Queuing demo" while it's really just waiting its turn.
+const bootFinished = computed(() => {
+  const stage = bootEntry.value?.boot_stage?.split(":")[0];
+  if (!stage) return false;
+  const stages = stagesFor("highlights");
+  return stage === stages[stages.length - 1]?.key;
+});
+
 const isBooting = computed(
-  () => job.value?.status === "queued" && bootEntry.value !== null,
+  () =>
+    job.value?.status === "queued" &&
+    bootEntry.value !== null &&
+    !bootFinished.value,
 );
 
-const { stagesFor } = useBootStages();
 const bootStageLabel = computed<string | null>(() => {
   const stage = bootEntry.value?.boot_stage?.split(":")[0];
   if (!stage) return null;

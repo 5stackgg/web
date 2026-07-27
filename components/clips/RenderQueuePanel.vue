@@ -32,6 +32,7 @@ import { Button } from "~/components/ui/button";
 import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
 import Pagination from "~/components/Pagination.vue";
 import BootSequence from "~/components/match/BootSequence.vue";
+import { useBootStages } from "~/composables/useBootStages";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
 import {
@@ -288,6 +289,7 @@ const TERMINAL = new Set(["done", "error", "cancelled"]);
 type BatchGroup = {
   matchMapId: string;
   jobs: Job[];
+  activeJobs: Job[];
   activeJob: Job | undefined;
   sample: Job;
   startedAt: string;
@@ -371,15 +373,21 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   const inFlightCount = sorted.length - terminalCount;
   const overallProgress = sorted.length === 0 ? 0 : progressSum / sorted.length;
 
-  const isPaused = sorted.some((j) => j.paused === true);
+  // Boot state belongs to the jobs the pod is actually booting for. `sorted`
+  // also carries this map's recently-finished rows (they share the group), so
+  // reading paused/queued/last_status_at off the whole list lets one old done
+  // row suppress the boot panel for a brand-new batch.
+  const active = sorted.filter((j) => !TERMINAL.has(j.status));
+  const isPaused = active.some((j) => j.paused === true);
 
   let bootInfo: BatchGroup["bootInfo"] = null;
-  const noneStarted = sorted.every((j) => j.status === "queued");
+  const noneStarted =
+    active.length > 0 && active.every((j) => j.status === "queued");
   if (noneStarted && !isPaused) {
     const firedStages = new Set<string>();
     const stageFirstAt = new Map<string, number>();
     let latest: { entry: StatusHistoryEntry; at: number } | null = null;
-    for (const j of sorted) {
+    for (const j of active) {
       const history = j.status_history;
       if (!Array.isArray(history)) continue;
       for (const e of history) {
@@ -405,7 +413,7 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
     // Staleness uses the row's last_status_at (bumped every tick), not the
     // history `at` (now frozen at stage start) — else a long shader compile
     // would look dead and the boot UI would vanish mid-stage.
-    const freshestActivity = sorted.reduce((acc, j) => {
+    const freshestActivity = active.reduce((acc, j) => {
       const ts = Date.parse(j.last_status_at ?? j.created_at);
       return Number.isFinite(ts) && ts > acc ? ts : acc;
     }, 0);
@@ -429,6 +437,7 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   return {
     matchMapId,
     jobs: sorted,
+    activeJobs: active,
     activeJob,
     sample: sorted[0],
     startedAt: oldest,
@@ -529,6 +538,28 @@ function isMissingClip(j: Job): boolean {
 
 function effectiveStatus(j: Job): string {
   return isMissingClip(j) ? "missing" : j.status;
+}
+
+const { stagesFor } = useBootStages();
+const bootStageLabels = computed(() => {
+  const labels = new Map<string, string>();
+  for (const stage of stagesFor("highlights")) {
+    if (stage.label) labels.set(stage.key, stage.label);
+  }
+  return labels;
+});
+
+// Every row reads "queued" for the whole pod boot — the api deliberately
+// leaves the row status alone for booting ticks so the batch supervisor can
+// still find it. Show what the pod is actually doing instead.
+function jobStatusLabel(g: BatchGroup, j: Job): string {
+  const status = effectiveStatus(j);
+  if (status !== "queued" || !g.bootInfo) return statusLabel(status);
+  const label = bootStageLabels.value.get(g.bootInfo.stage);
+  if (!label) return statusLabel(status);
+  return g.bootInfo.progress === null
+    ? label
+    : `${label} ${Math.round(g.bootInfo.progress * 100)}%`;
 }
 
 function statusLabel(s: string): string {
@@ -1174,7 +1205,7 @@ const queueStatus = computed<{
               <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
                 <BootSequence
                   mode="highlights"
-                  :histories="g.jobs.map((j) => j.status_history)"
+                  :histories="g.activeJobs.map((j) => j.status_history)"
                   :card="false"
                   class="flex-1"
                 />
@@ -1252,12 +1283,12 @@ const queueStatus = computed<{
                     :class="STATUS_TONE[effectiveStatus(j)]?.pill"
                   >
                     <template v-if="j === g.activeJob">
-                      {{ statusLabel(effectiveStatus(j)) }}
+                      {{ jobStatusLabel(g, j) }}
                       <span class="opacity-60">·</span>
                       {{ formatTimeAgo(j.last_status_at ?? j.created_at) }}
                     </template>
                     <template v-else>
-                      {{ statusLabel(effectiveStatus(j)) }}
+                      {{ jobStatusLabel(g, j) }}
                     </template>
                   </span>
                   <Tooltip v-if="isAdmin && TERMINAL.has(j.status)">

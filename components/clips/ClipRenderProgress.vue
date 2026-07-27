@@ -7,6 +7,8 @@ import { CheckCircle2, AlertCircle, Download } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
+import BootSequence from "~/components/match/BootSequence.vue";
+import { useBootStages } from "~/composables/useBootStages";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -26,6 +28,13 @@ const emit = defineEmits<{ (e: "close"): void }>();
 // reassigns `this.$apollo`, which conflicts with a setup binding.
 const nuxtApp = useNuxtApp();
 
+type BootEntry = {
+  status: string;
+  at: string;
+  boot_stage?: string;
+  boot_progress?: number;
+};
+
 const job = ref<null | {
   id: string;
   status: string;
@@ -33,6 +42,9 @@ const job = ref<null | {
   progress: number | string | null;
   error_message: string | null;
   clip_id: string | null;
+  // Pod boot ticks. The row status stays "queued" for the whole boot, so
+  // this is the only place the real stage shows up.
+  status_history: BootEntry[] | null;
 }>(null);
 const clip = ref<null | { id: string; download_url: string; title?: string }>(
   null,
@@ -115,7 +127,53 @@ onBeforeUnmount(() => {
   activeSub = null;
 });
 
+const bootEntry = computed<BootEntry | null>(() => {
+  const history = job.value?.status_history;
+  if (!Array.isArray(history)) return null;
+  let newest: BootEntry | null = null;
+  let newestAt = -Infinity;
+  for (const entry of history) {
+    if (entry?.status !== "booting" || !entry.boot_stage) continue;
+    const at = Date.parse(entry.at);
+    if (!Number.isFinite(at) || at < newestAt) continue;
+    newest = entry;
+    newestAt = at;
+  }
+  return newest;
+});
+const { stagesFor } = useBootStages();
+
+// The pod stops broadcasting boot ticks once it reaches the last stage, then
+// renders the batch one clip at a time. A job further down that batch stays
+// `queued` with a full boot history — without this it would keep showing the
+// stepper and claim "Queuing demo" while it's really just waiting its turn.
+const bootFinished = computed(() => {
+  const stage = bootEntry.value?.boot_stage?.split(":")[0];
+  if (!stage) return false;
+  const stages = stagesFor("highlights");
+  return stage === stages[stages.length - 1]?.key;
+});
+
+const isBooting = computed(
+  () =>
+    job.value?.status === "queued" &&
+    bootEntry.value !== null &&
+    !bootFinished.value,
+);
+
+const bootStageLabel = computed<string | null>(() => {
+  const stage = bootEntry.value?.boot_stage?.split(":")[0];
+  if (!stage) return null;
+  return stagesFor("highlights").find((s) => s.key === stage)?.label ?? null;
+});
+
 const statusLabel = computed(() => {
+  if (isBooting.value && bootStageLabel.value) {
+    const progress = bootEntry.value?.boot_progress;
+    return typeof progress === "number"
+      ? `${bootStageLabel.value} ${Math.round(progress * 100)}%`
+      : bootStageLabel.value;
+  }
   switch (job.value?.status) {
     case "queued":
       return t("render_queue_status.queued_waiting");
@@ -157,7 +215,7 @@ const phaseStatus = computed<{
   const s = job.value?.status;
   if (isDone.value) return { render: "done", upload: "done" };
   if (s === "uploading") return { render: "done", upload: "active" };
-  if (s === "rendering" || s === "queued") {
+  if (s === "rendering" || (s === "queued" && !isBooting.value)) {
     return { render: "active", upload: "pending" };
   }
   return { render: "pending", upload: "pending" };
@@ -172,6 +230,14 @@ const phaseStatus = computed<{
       <Spinner v-else class="h-5 w-5 text-muted-foreground" />
       <span class="text-sm">{{ statusLabel }}</span>
     </div>
+
+    <BootSequence
+      v-if="isBooting"
+      mode="highlights"
+      :histories="[job?.status_history ?? []]"
+      :card="false"
+      class="rounded-md border border-border/40 bg-card/40 p-3"
+    />
 
     <div
       v-if="!isError"

@@ -439,6 +439,38 @@ function onSeekHover(e: PointerEvent) {
   if (scrubbing.value || !hasDuration.value) return;
   hoverFrac.value = fracFromEvent(e);
 }
+
+// Arrow keys are the stage's clip-prev/next binding, so they only seek while
+// the track itself holds focus — hence stopPropagation, or focusing the
+// scrubber would both seek and skip the clip.
+const SEEK_STEP_SECONDS = 5;
+function onSeekKeydown(e: KeyboardEvent) {
+  const v = videoRef.value;
+  if (!v || !hasDuration.value) return;
+  let target: number | null = null;
+  if (e.key === "ArrowLeft") target = v.currentTime - SEEK_STEP_SECONDS;
+  else if (e.key === "ArrowRight") target = v.currentTime + SEEK_STEP_SECONDS;
+  else if (e.key === "Home") target = 0;
+  else if (e.key === "End") target = duration.value;
+  else return;
+  e.preventDefault();
+  e.stopPropagation();
+  seekToFrac(Math.min(1, Math.max(0, target / duration.value)));
+  syncProgress();
+  bumpControls();
+}
+
+// The readout is centred on the cursor, but the stage clips overflow — pin it
+// inside the track at either end instead of letting it get cut in half.
+const hoverTipStyle = computed(() => {
+  const frac = hoverFrac.value ?? 0;
+  const translate = frac < 0.06 ? "0" : frac > 0.94 ? "-100%" : "-50%";
+  return {
+    left: `${(frac * 100).toFixed(2)}%`,
+    transform: `translateX(${translate})`,
+  };
+});
+
 // --- Keyboard ------------------------------------------------------------
 // Consumers bind prev/next arrows on window, but a fullscreen player owns
 // keyboard focus inside its own subtree, so those window handlers never
@@ -633,8 +665,10 @@ watch(
 
 onBeforeUnmount(() => {
   stopProgressLoop();
-  clearControlsTimer();
+  // Before clearControlsTimer, not after: unmounting mid-drag ends the drag,
+  // and ending a drag re-arms the controls-hide timeout.
   onSeekUp();
+  clearControlsTimer();
   if (introOverlayTimer) clearTimeout(introOverlayTimer);
   teardownVisibilityObserver();
   // Explicitly tear down playback before the element detaches. A
@@ -680,7 +714,10 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     <template #video>
       <!-- Crossfade clip swaps so next/prev and auto-advance don't hard-cut.
            Keyed on clipKey, so it only fires on clip changes — fullscreen
-           toggles don't remount the video and stay instant. -->
+           toggles don't remount the video and stay instant.
+           preload="metadata" (not "none"): the scrubber is inert until
+           `duration` is known, and these surfaces autoplay anyway. Costs one
+           metadata range request per clip swap even if playback never starts. -->
       <Transition name="clip-swap" @leave="onClipLeave">
         <video
           v-if="src"
@@ -761,7 +798,10 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
          Stays visible during playback so viewers always see who they're
          watching, on which map, and when the clip was created. -->
     <div class="pointer-events-none absolute inset-x-0 bottom-0">
-      <div class="p-4 sm:p-5">
+      <!-- Bottom padding clears the h-5 seek strip below, so the slot's own
+           pointer-events-auto bits (the player profile link) never sit on top
+           of the scrubber's grab area. -->
+      <div class="p-4 pb-6 sm:p-5 sm:pb-7">
         <slot name="bottom" />
       </div>
     </div>
@@ -822,10 +862,17 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           ? 'pointer-events-auto cursor-pointer'
           : 'pointer-events-none'
       "
+      role="slider"
+      :tabindex="hasDuration ? 0 : -1"
       :aria-label="$t('ui_extras.seek')"
+      aria-valuemin="0"
+      :aria-valuemax="Math.round(duration)"
+      :aria-valuenow="Math.round(displayFrac * duration)"
+      :aria-valuetext="formatTime(displayFrac * duration)"
       @pointerdown="onSeekDown"
       @pointermove="onSeekHover"
       @pointerleave="hoverFrac = null"
+      @keydown="onSeekKeydown"
       @click.stop
     >
       <div
@@ -851,8 +898,8 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
         <!-- Time readout above the cursor while hovering/dragging. -->
         <span
           v-if="hoverFrac !== null && hasDuration"
-          class="pointer-events-none absolute bottom-full mb-2 -translate-x-1/2 rounded border border-white/15 bg-black/85 px-1.5 py-0.5 font-mono text-[0.65rem] leading-none tabular-nums text-white/90 backdrop-blur-sm"
-          :style="{ left: `${(hoverFrac * 100).toFixed(2)}%` }"
+          class="pointer-events-none absolute bottom-full mb-2 rounded border border-white/15 bg-black/85 px-1.5 py-0.5 font-mono text-[0.65rem] leading-none tabular-nums text-white/90 backdrop-blur-sm"
+          :style="hoverTipStyle"
         >
           {{ formatTime(hoverFrac * duration) }}
         </span>

@@ -4,7 +4,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
-  <FiveStackToolTip>
+  <FiveStackToolTip interactive>
     <template #trigger>
       <div
         class="h-2 w-2 rounded-full relative"

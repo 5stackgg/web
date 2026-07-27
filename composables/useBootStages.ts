@@ -5,20 +5,30 @@ import { useI18n } from "vue-i18n";
 // boot stepper (BootSequence.vue).
 export type BootMode = "live" | "demo" | "highlights" | "bake";
 
-export type BootStageMeta = "required" | "conditional" | "implicit";
+export type BootStageMeta =
+  | "required"
+  | "conditional"
+  | "implicit"
+  | "marker";
 
 export type BootStage = {
   key: string;
-  label: string;
+  // Markers never render, so they carry no label.
+  label?: string;
   // How a non-emitted stage renders once we're past it:
   //   required    → ✓ silently (must have happened)
   //   conditional → "skipped" (warm pod / stock map / cached creds)
   //   implicit    → hidden entirely (internal sub-step)
+  //   marker      → never rendered and never becomes the current stage;
+  //                 exists only so a concurrentUntil gate has something
+  //                 to close on
   meta: BootStageMeta;
-  // Keep the stage in the spinning "current" state after it fires, until the
-  // named gating stage fires — covers background work (demo download) that
-  // runs in parallel and only blocks at a known checkpoint.
-  concurrentUntil?: string;
+  // Keep the stage in the spinning "current" state after it fires, until any
+  // of the named gating stages fires — covers background work (demo download)
+  // that runs in parallel and only blocks at a known checkpoint. List the
+  // later fallbacks too: a pod on an older image emits no demo_ready, and
+  // without a fallback its row would spin for the whole session.
+  concurrentUntil?: string[];
 };
 
 export function useBootStages() {
@@ -68,8 +78,9 @@ export function useBootStages() {
             key: "downloading_demo",
             label: t("live_stages.downloading_demo"),
             meta: "required",
-            concurrentUntil: "launching_cs2",
+            concurrentUntil: ["demo_ready", "launching_cs2"],
           },
+          { key: "demo_ready", meta: "marker" },
           {
             key: "downloading_cs2",
             label: t("live_stages.downloading_cs2"),
@@ -114,8 +125,9 @@ export function useBootStages() {
             key: "downloading_demo",
             label: t("live_stages.downloading_demo"),
             meta: "required",
-            concurrentUntil: "launching_cs2",
+            concurrentUntil: ["demo_ready", "launching_cs2"],
           },
+          { key: "demo_ready", meta: "marker" },
           {
             key: "downloading_cs2",
             label: t("live_stages.downloading_cs2"),

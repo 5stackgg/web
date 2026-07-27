@@ -46,6 +46,14 @@ const emit = defineEmits<{ (e: "skip"): void }>();
 
 const stages = computed<BootStage[]>(() => stagesFor(props.mode));
 const KNOWN = computed(() => new Set(stages.value.map((s) => s.key)));
+// Markers are tracked (they close concurrentUntil gates) but never shown and
+// never chosen as the current stage — they're checkpoints, not steps.
+const MARKERS = computed(
+  () =>
+    new Set(
+      stages.value.filter((s) => s.meta === "marker").map((s) => s.key),
+    ),
+);
 const orderOf = (key: string) => stages.value.findIndex((s) => s.key === key);
 
 const isErrored = computed(() => props.status === "errored");
@@ -120,6 +128,7 @@ const bootInfo = computed<BootInfo | null>(() => {
       firedStages.add(e.stage);
       const prev = stageFirstAt.get(e.stage);
       if (prev === undefined || e.at < prev) stageFirstAt.set(e.stage, e.at);
+      if (MARKERS.value.has(e.stage)) continue;
       if (!latest || e.at > latest.at) latest = e;
     }
   }
@@ -127,7 +136,11 @@ const bootInfo = computed<BootInfo | null>(() => {
   // Fold the freshly pushed status into the picture so the current stage
   // never lags the history fan-out (and so bake's live progress shows).
   const pushed =
-    props.status && KNOWN.value.has(props.status) ? props.status : null;
+    props.status &&
+    KNOWN.value.has(props.status) &&
+    !MARKERS.value.has(props.status)
+      ? props.status
+      : null;
   if (pushed) {
     firedStages.add(pushed);
     if (!stageFirstAt.has(pushed) && props.lastStatusAt) {
@@ -149,6 +162,7 @@ const bootInfo = computed<BootInfo | null>(() => {
     let last: string | null = null;
     let lastOrder = -1;
     for (const key of firedStages) {
+      if (MARKERS.value.has(key)) continue;
       const o = orderOf(key);
       if (o > lastOrder) {
         lastOrder = o;
@@ -187,7 +201,7 @@ function stageStateFor(stage: BootStage): StageState {
   if (
     stage.concurrentUntil &&
     info.firedStages.has(stage.key) &&
-    !info.firedStages.has(stage.concurrentUntil)
+    !stage.concurrentUntil.some((gate) => info.firedStages.has(gate))
   ) {
     return "current";
   }
@@ -204,6 +218,7 @@ const visibleStages = computed(() => {
   const info = bootInfo.value;
   if (!info) return [];
   return stages.value.filter((s) => {
+    if (s.meta === "marker") return false;
     if (s.meta !== "implicit") return true;
     return info.firedStages.has(s.key) || info.current === s.key;
   });
@@ -340,8 +355,10 @@ const pct = computed(() => {
           <!-- Inline meta for every stage except the active rich-progress
                stage, which moves its numbers into the block below. -->
           <template v-if="!detailActive(stage.key)">
+            <!-- `pct` belongs to bootInfo.current, so it must not bleed onto a
+                 concurrent row that merely renders as "current" too. -->
             <span
-              v-if="stageStateFor(stage) === 'current' && pct !== null"
+              v-if="bootInfo.current === stage.key && pct !== null"
               class="font-mono text-[0.65rem] tabular-nums opacity-80"
             >
               {{ pct.toFixed(1) }}%

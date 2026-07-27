@@ -369,7 +369,7 @@ export default {
 
 // Every write is still individually authorized by the API-minted HMAC token
 // below; the prefix list only bounds which trees are writable at all.
-const UPLOAD_PREFIXES = ["demo-uploads/", "events/"];
+const UPLOAD_PREFIXES = ["demo-uploads/", "events/", "news/"];
 // B2 multipart part ceiling we accept; the API chunks at 64MiB so anything
 // larger is a malformed/abusive request.
 const MAX_PART_BYTES = 64 * 1024 * 1024;

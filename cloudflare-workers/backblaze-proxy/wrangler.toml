@@ -21,9 +21,13 @@ S3_ENDPOINT = "s3.us-east-005.backblazeb2.com"
 # Leave unset to disable view counting.
 API_URL = "https://api.5stack.gg"
 
+# A prefix in UPLOAD_PREFIXES only authorizes the write; the request reaches
+# the worker at all only via one of these patterns. "demo*" covers both
+# /demos and the /demo-uploads multipart prefix.
 routes = [
   { pattern = "demo-dl.5stack.gg/demo*",  zone_name = "5stack.gg" },
   { pattern = "demo-dl.5stack.gg/clips*", zone_name = "5stack.gg" },
+  { pattern = "demo-dl.5stack.gg/news*",  zone_name = "5stack.gg" },
 ]
 
 # Secrets (S3_ACCESS_KEY, S3_SECRET):

@@ -369,6 +369,8 @@ export default {
 
 // Every write is still individually authorized by the API-minted HMAC token
 // below; the prefix list only bounds which trees are writable at all.
+// NOTE: a prefix here is necessary but NOT sufficient — the request only
+// reaches the worker if a route pattern in wrangler.toml matches its path.
 const UPLOAD_PREFIXES = ["demo-uploads/", "events/", "news/"];
 // B2 multipart part ceiling we accept; the API chunks at 64MiB so anything
 // larger is a malformed/abusive request.

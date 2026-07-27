@@ -103,6 +103,15 @@ watch(
           </div>
         </div>
 
+        <!-- Awards belong to a tournament, a season or nothing at all, so the
+             catalog is read one owner at a time. -->
+        <AnimatedFilters
+          v-if="scopeTabs.length"
+          v-model="scopeFilter"
+          square
+          :options="scopeTabs"
+        />
+
         <div
           v-if="loadingAwards"
           class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
@@ -143,49 +152,63 @@ watch(
           </Button>
         </Empty>
 
-        <div v-else class="space-y-5">
+        <div v-else class="space-y-6">
           <div
-            v-for="group in groupedAwards"
-            :key="group.key"
-            class="space-y-2.5"
+            v-for="region in awardRegions"
+            :key="region.key"
+            class="space-y-3"
           >
-            <!-- A lone unscoped group is the whole catalog, so labelling it
+            <!-- A lone unsplit region is the whole catalog, so labelling it
                  adds a header that says nothing. -->
             <div
-              v-if="groupedAwards.length > 1"
+              v-if="awardRegions.length > 1 || region.groups.length > 1"
               class="flex items-center gap-2.5"
             >
               <span
-                v-if="group.kind !== 'global'"
-                class="rounded-sm border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-[0.4rem] py-[0.02rem] font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ group.kindLabel }}
-              </span>
-              <span
                 class="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-muted-foreground"
               >
-                {{ group.label }}
+                {{ region.label }}
               </span>
               <span class="h-px flex-1 bg-border/60"></span>
               <span class="font-mono text-[0.6rem] text-muted-foreground">
-                {{ String(group.awards.length).padStart(2, "0") }}
+                {{ String(region.total).padStart(2, "0") }}
               </span>
             </div>
 
             <div
-              class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+              v-for="group in region.groups"
+              :key="group.key"
+              class="space-y-2.5"
             >
-              <AwardVitrine
-                v-for="(award, i) in group.awards"
-                :key="award.id"
-                :award="award"
-                :index="i"
-                :can-manage="canManage"
-                :can-grant="canGrantAwards"
-                @edit="openEdit(award)"
-                @grant="openGrantFor(award)"
-                @remove="removeAward(award)"
-              />
+              <!-- The owner names a row only inside a region that has owners;
+                   the built-in and unscoped regions are a single row. -->
+              <div v-if="group.label" class="flex items-center gap-2">
+                <span
+                  class="rounded-sm border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-[0.4rem] py-[0.02rem] font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ group.label }}
+                </span>
+                <span class="h-px flex-1 bg-border/40"></span>
+                <span class="font-mono text-[0.56rem] text-muted-foreground/70">
+                  {{ String(group.awards.length).padStart(2, "0") }}
+                </span>
+              </div>
+
+              <div
+                class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+              >
+                <AwardVitrine
+                  v-for="(award, i) in group.awards"
+                  :key="award.id"
+                  :award="award"
+                  :index="i"
+                  :can-manage="canManage"
+                  :can-grant="canGrantAwards"
+                  @edit="openEdit(award)"
+                  @grant="openGrantFor(award)"
+                  @remove="removeAward(award)"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -204,6 +227,7 @@ watch(
     v-if="grantOpen"
     v-model:open="grantOpen"
     :award-id="grantAwardId || null"
+    grant
     @saved="grantOpen = false"
   />
 </template>
@@ -225,6 +249,7 @@ export default {
       loadingAwards: true,
       search: "",
       tierFilter: "all",
+      scopeFilter: "all",
       editOpen: false,
       grantOpen: false,
       editAwardId: "",
@@ -255,6 +280,18 @@ export default {
       },
     },
   },
+  watch: {
+    // A scope disappears when its last award goes, so the tab it was on must
+    // not strand the page on an empty filter.
+    scopeTabs(tabs: Array<{ key: string }>) {
+      if (
+        this.scopeFilter !== "all" &&
+        !tabs.some((tab) => tab.key === this.scopeFilter)
+      ) {
+        this.scopeFilter = "all";
+      }
+    },
+  },
   computed: {
     tierFilterOptions(): Array<{ key: string; label: string; count: number }> {
       return [
@@ -270,9 +307,48 @@ export default {
         })),
       ];
     },
+    // One tab per owner kind, so tournament awards can be read on their own
+    // instead of hunting through the whole catalog.
+    scopeTabs(): Array<{ key: string; label: string; count: number }> {
+      const counts = new Map<string, number>();
+      for (const award of this.awards) {
+        const kind = this.scopeOf(award).kind;
+        counts.set(kind, (counts.get(kind) ?? 0) + 1);
+      }
+
+      const kinds = [
+        { key: "global", label: this.$t("pages.awards.scope_global") },
+        { key: "tournament", label: this.$t("pages.awards.scope_tournament") },
+        { key: "season", label: this.$t("pages.awards.scope_season") },
+        { key: "event", label: this.$t("pages.awards.scope_event") },
+        { key: "league", label: this.$t("pages.awards.scope_league") },
+      ]
+        .filter((entry) => (counts.get(entry.key) ?? 0) > 0)
+        .map((entry) => ({ ...entry, count: counts.get(entry.key) as number }));
+
+      // Everything sits in one scope, so tabs would only restate the catalog.
+      if (kinds.length < 2) {
+        return [];
+      }
+
+      return [
+        {
+          key: "all",
+          label: this.$t("pages.awards.scope_all"),
+          count: this.awards.length,
+        },
+        ...kinds,
+      ];
+    },
     visibleAwards(): any[] {
       const term = this.search.trim().toLowerCase();
       return this.awards.filter((award: any) => {
+        if (
+          this.scopeFilter !== "all" &&
+          this.scopeOf(award).kind !== this.scopeFilter
+        ) {
+          return false;
+        }
         if (
           this.tierFilter !== "all" &&
           resolveAwardTier(null, award.tier) !== this.tierFilter
@@ -287,32 +363,59 @@ export default {
           .includes(term);
       });
     },
-    // Awards belong to at most one owner, so the catalog reads as that owner's
-    // shelf: unscoped first, then a section per tournament/event/season/league.
-    groupedAwards(): Array<{
+    // The catalog reads as regions of like awards — the built-in season and
+    // tournament sets, then what was authored here. A region owned by
+    // tournaments (or events, seasons, leagues) stays one region and splits
+    // into a row per owner inside it, so its awards are found together instead
+    // of scattered down the page.
+    awardRegions(): Array<{
       key: string;
-      kind: string;
-      kindLabel: string;
       label: string;
-      awards: any[];
+      total: number;
+      groups: Array<{ key: string; label: string; awards: any[] }>;
     }> {
-      const order = ["global", "tournament", "event", "season", "league"];
-      const groups = new Map<string, any>();
+      const regions = new Map<string, any>();
 
       for (const award of this.visibleAwards) {
         const scope = this.scopeOf(award);
-        const group = groups.get(scope.key);
+        let region = regions.get(scope.regionKey);
+        if (!region) {
+          region = {
+            key: scope.regionKey,
+            label: scope.regionLabel,
+            rank: scope.regionRank,
+            groups: new Map<string, any>(),
+          };
+          regions.set(scope.regionKey, region);
+        }
+        const group = region.groups.get(scope.groupKey);
         if (group) {
           group.awards.push(award);
           continue;
         }
-        groups.set(scope.key, { ...scope, awards: [award] });
+        region.groups.set(scope.groupKey, {
+          key: scope.groupKey,
+          label: scope.groupLabel,
+          awards: [award],
+        });
       }
 
-      return [...groups.values()].sort((a, b) => {
-        const byKind = order.indexOf(a.kind) - order.indexOf(b.kind);
-        return byKind !== 0 ? byKind : a.label.localeCompare(b.label);
-      });
+      return [...regions.values()]
+        .sort((a, b) => a.rank - b.rank)
+        .map((region) => {
+          const groups = [...region.groups.values()].sort((a: any, b: any) =>
+            a.label.localeCompare(b.label),
+          );
+          return {
+            key: region.key,
+            label: region.label,
+            total: groups.reduce(
+              (sum: number, group: any) => sum + group.awards.length,
+              0,
+            ),
+            groups,
+          };
+        });
     },
     // Ordered mvp -> special, skipping tiers nothing occupies.
     tierIndex(): Array<{ tier: string; count: number; accent: string }> {
@@ -343,33 +446,42 @@ export default {
   },
   methods: {
     scopeOf(award: any): {
-      key: string;
       kind: string;
-      kindLabel: string;
-      label: string;
+      regionKey: string;
+      regionLabel: string;
+      regionRank: number;
+      groupKey: string;
+      groupLabel: string;
     } {
       if (award.tournament_id) {
         return {
-          key: `tournament:${award.tournament_id}`,
           kind: "tournament",
-          kindLabel: this.$t("pages.awards.scope_tournament"),
-          label: award.tournament?.name ?? this.$t("pages.awards.scope_gone"),
+          regionKey: "custom:tournament",
+          regionLabel: this.$t("pages.awards.group_custom_tournament_awards"),
+          regionRank: 3,
+          groupKey: `tournament:${award.tournament_id}`,
+          groupLabel:
+            award.tournament?.name ?? this.$t("pages.awards.scope_gone"),
         };
       }
       if (award.event_id) {
         return {
-          key: `event:${award.event_id}`,
           kind: "event",
-          kindLabel: this.$t("pages.awards.scope_event"),
-          label: award.event?.name ?? this.$t("pages.awards.scope_gone"),
+          regionKey: "custom:event",
+          regionLabel: this.$t("pages.awards.group_custom_event_awards"),
+          regionRank: 4,
+          groupKey: `event:${award.event_id}`,
+          groupLabel: award.event?.name ?? this.$t("pages.awards.scope_gone"),
         };
       }
       if (award.season_id) {
         return {
-          key: `season:${award.season_id}`,
           kind: "season",
-          kindLabel: this.$t("pages.awards.scope_season"),
-          label: award.season
+          regionKey: "custom:season",
+          regionLabel: this.$t("pages.awards.group_custom_season_awards"),
+          regionRank: 5,
+          groupKey: `season:${award.season_id}`,
+          groupLabel: award.season
             ? this.$t("pages.awards.season_label", {
                 number: award.season.number,
               })
@@ -378,23 +490,51 @@ export default {
       }
       if (award.league_season_id) {
         return {
-          key: `league:${award.league_season_id}`,
           kind: "league",
-          kindLabel: this.$t("pages.awards.scope_league"),
-          label:
+          regionKey: "custom:league",
+          regionLabel: this.$t("pages.awards.group_custom_league_awards"),
+          regionRank: 6,
+          groupKey: `league:${award.league_season_id}`,
+          groupLabel:
             award.league_season?.name ?? this.$t("pages.awards.scope_gone"),
         };
       }
+      // The unscoped shelf is where the built-ins live, so it splits by what
+      // hands them out: season automation, tournament automation, then
+      // whatever was authored here. Each is a single row, so it carries no
+      // sub-heading.
+      const systemKey = String(award.system_key ?? "");
+      const unscoped = systemKey.startsWith("season_")
+        ? {
+            key: "builtin:season",
+            label: this.$t("pages.awards.group_season_awards"),
+            rank: 0,
+          }
+        : systemKey.startsWith("tournament_")
+          ? {
+              key: "builtin:tournament",
+              label: this.$t("pages.awards.group_tournament_awards"),
+              rank: 1,
+            }
+          : {
+              key: "custom:global",
+              label: this.$t("pages.awards.group_custom_awards"),
+              rank: 2,
+            };
+
       return {
-        key: "global",
         kind: "global",
-        kindLabel: "",
-        label: this.$t("pages.awards.scope_global"),
+        regionKey: unscoped.key,
+        regionLabel: unscoped.label,
+        regionRank: unscoped.rank,
+        groupKey: unscoped.key,
+        groupLabel: "",
       };
     },
     clearFilters() {
       this.search = "";
       this.tierFilter = "all";
+      this.scopeFilter = "all";
     },
     openCreate() {
       this.editAwardId = "";

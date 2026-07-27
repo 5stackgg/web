@@ -3177,7 +3177,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "Все",
+      "group_season_awards": "Награды сезона",
+      "group_tournament_awards": "Награды турнира",
+      "group_custom_awards": "Пользовательские награды",
+      "group_custom_tournament_awards": "Пользовательские награды турниров",
+      "group_custom_event_awards": "Пользовательские награды событий",
+      "group_custom_season_awards": "Пользовательские награды сезонов",
+      "group_custom_league_awards": "Пользовательские награды лиг"
     }
   },
   "custom_match": {

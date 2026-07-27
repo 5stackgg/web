@@ -3177,7 +3177,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "Alle",
+      "group_season_awards": "Sæsonpriser",
+      "group_tournament_awards": "Turneringspriser",
+      "group_custom_awards": "Brugerdefinerede priser",
+      "group_custom_tournament_awards": "Brugerdefinerede turneringspriser",
+      "group_custom_event_awards": "Brugerdefinerede begivenhedspriser",
+      "group_custom_season_awards": "Brugerdefinerede sæsonpriser",
+      "group_custom_league_awards": "Brugerdefinerede ligapriser"
     }
   },
   "custom_match": {

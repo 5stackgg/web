@@ -3177,7 +3177,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "Alla",
+      "group_season_awards": "Säsongsutmärkelser",
+      "group_tournament_awards": "Turneringsutmärkelser",
+      "group_custom_awards": "Egna utmärkelser",
+      "group_custom_tournament_awards": "Egna turneringsutmärkelser",
+      "group_custom_event_awards": "Egna evenemangsutmärkelser",
+      "group_custom_season_awards": "Egna säsongsutmärkelser",
+      "group_custom_league_awards": "Egna ligautmärkelser"
     }
   },
   "custom_match": {

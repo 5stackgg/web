@@ -34,6 +34,11 @@ const props = withDefaults(
     open: boolean;
     /** Preselect an existing award, e.g. "Grant" on a catalog card. */
     awardId?: string | null;
+    /**
+     * Grant-only: the award is being handed out, not authored, so its
+     * definition and artwork are shown as-is and a recipient is required.
+     */
+    grant?: boolean;
     /** Pre-set and lock the scope when opened from that context. */
     tournamentId?: string | null;
     seasonId?: string | null;
@@ -58,6 +63,7 @@ const props = withDefaults(
   }>(),
   {
     awardId: null,
+    grant: false,
     tournamentId: null,
     seasonId: null,
     eventId: null,
@@ -137,7 +143,20 @@ const artworkSrc = computed(() => {
 /** Artwork needs a row to attach to, so it unlocks once the award exists. */
 const awardId = computed(() => draft.value.id);
 
-const canSave = computed(() => !saving.value && !!draft.value.name.trim());
+/** Handing out a known award: nothing about it is editable here. */
+const granting = computed(() => props.grant && !!props.awardId);
+
+const hasRecipient = computed(
+  () =>
+    (recipient.value.kind === "player" && !!recipient.value.player) ||
+    (recipient.value.kind === "team" && !!recipient.value.team),
+);
+
+const canSave = computed(() => {
+  if (saving.value) return false;
+  if (granting.value) return hasRecipient.value;
+  return !!draft.value.name.trim();
+});
 
 const recipientLabel = computed(() => {
   if (recipient.value.kind === "player") {
@@ -153,28 +172,44 @@ const tierChoices = computed(() =>
 );
 
 const recipientChoices = computed(() => {
-  const options = [{ key: "none", label: "None" }];
-  if (!props.teamOptions || props.teamOptions.length) {
-    options.push({ key: "team", label: "Team" });
+  const options = [];
+  // Granting has no point without a recipient, so "none" is not on offer.
+  if (!granting.value) {
+    options.push({ key: "none", label: "None" });
   }
   if (!props.playerOptions || props.playerOptions.length) {
-    options.splice(1, 0, { key: "player", label: "Player" });
+    options.push({ key: "player", label: "Player" });
+  }
+  if (!props.teamOptions || props.teamOptions.length) {
+    options.push({ key: "team", label: "Team" });
   }
   return options;
 });
 
+/** Fills the draft from a known award, so its fields show as-is. */
+function applyAward(id: string) {
+  const found = awards.value.find((a) => a.id === id);
+  draft.value = {
+    id,
+    name: found?.name ?? "",
+    description: found?.description ?? "",
+    tier: found?.tier ?? "special",
+    allow_multiple: !!found?.allow_multiple,
+    image_url: found?.image_url ?? null,
+  };
+}
+
 function reset() {
   mode.value = props.awardId ? "existing" : "new";
-  draft.value = {
-    id: props.awardId ?? "",
-    name: "",
-    description: "",
-    tier: "special",
-    allow_multiple: false,
-    image_url: null,
-  };
+  applyAward(props.awardId ?? "");
   recipient.value = {
-    kind: props.player ? "player" : props.team ? "team" : "none",
+    kind: props.player
+      ? "player"
+      : props.team
+        ? "team"
+        : granting.value
+          ? ((recipientChoices.value[0]?.key ?? "player") as any)
+          : "none",
     player: props.player,
     team: props.team,
   };
@@ -202,23 +237,21 @@ async function loadAwards() {
 
 watch(
   () => props.open,
-  (open) => {
-    if (open) loadAwards();
+  async (open) => {
+    if (!open) return;
+    await loadAwards();
+    // The catalog arrives after reset(), so a preselected award only becomes
+    // fillable now.
+    if (props.awardId && draft.value.id === props.awardId) {
+      applyAward(props.awardId);
+    }
   },
   { immediate: true },
 );
 
 function onPicked(id: string) {
-  const found = awards.value.find((a) => a.id === id);
   mode.value = "existing";
-  draft.value = {
-    id,
-    name: found?.name ?? "",
-    description: found?.description ?? "",
-    tier: found?.tier ?? "special",
-    allow_multiple: !!found?.allow_multiple,
-    image_url: found?.image_url ?? null,
-  };
+  applyAward(id);
 }
 
 /** Creates or updates the award row; returns its id. */
@@ -279,7 +312,8 @@ async function submit() {
   saving.value = true;
   error.value = null;
   try {
-    const id = await persistAward();
+    // Granting never rewrites the award it is handing out.
+    const id = granting.value ? props.awardId! : await persistAward();
     if (!id) throw new Error("Award was not saved");
 
     if (recipient.value.kind !== "none") {
@@ -330,9 +364,17 @@ async function submit() {
   <Sheet :open="open" @update:open="(v) => emit('update:open', v)">
     <SheetContent class="flex flex-col gap-0">
       <SheetHeader>
-        <SheetTitle>{{ $t("awards.composer.title") }}</SheetTitle>
+        <SheetTitle>{{
+          granting
+            ? $t("awards.composer.grant_here")
+            : $t("awards.composer.title")
+        }}</SheetTitle>
         <SheetDescription class="sr-only">
-          {{ $t("awards.composer.title") }}
+          {{
+            granting
+              ? $t("awards.composer.grant_here")
+              : $t("awards.composer.title")
+          }}
         </SheetDescription>
       </SheetHeader>
 
@@ -364,9 +406,28 @@ async function submit() {
             {{ $t("awards.composer.award") }}
           </div>
 
+          <!-- Granting hands out the award as it stands, so it reads rather
+               than edits. -->
+          <div v-if="granting" class="space-y-1.5">
+            <div class="flex items-baseline gap-2">
+              <span class="min-w-0 flex-1 truncate text-sm font-semibold">{{
+                draft.name
+              }}</span>
+              <span
+                class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.2em]"
+                :style="{ color: accent }"
+                >{{ draft.tier }}</span
+              >
+            </div>
+            <p v-if="draft.description" class="text-xs text-muted-foreground">
+              {{ draft.description }}
+            </p>
+          </div>
+
           <!-- Loading an existing award fills these fields, so an award can be
                customised at any point rather than only at creation. -->
           <button
+            v-if="!granting"
             type="button"
             class="flex h-9 w-full items-center gap-2 rounded-md border border-dashed border-border bg-muted/20 px-2 text-left text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-foreground"
             @click="pickerOpen = true"
@@ -381,42 +442,44 @@ async function submit() {
             <span class="shrink-0 text-[0.6rem]">&#9662;</span>
           </button>
 
-          <label class="flex flex-col gap-1.5">
-            <span class="text-sm font-medium">{{
-              $t("pages.awards.name")
-            }}</span>
-            <Input v-model="draft.name" maxlength="60" />
-          </label>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-sm font-medium">{{
-              $t("pages.awards.description_label")
-            }}</span>
-            <Textarea v-model="draft.description" rows="2" />
-          </label>
-          <div class="flex flex-col gap-1.5">
-            <span class="text-sm font-medium">{{
-              $t("pages.awards.tier")
-            }}</span>
-            <AnimatedFilters
-              v-model="draft.tier"
-              square
-              :options="tierChoices"
-            />
-          </div>
-          <label class="flex items-center justify-between gap-3">
-            <span class="flex flex-col">
+          <template v-if="!granting">
+            <label class="flex flex-col gap-1.5">
               <span class="text-sm font-medium">{{
-                $t("pages.awards.allow_multiple")
+                $t("pages.awards.name")
               }}</span>
-              <span class="text-xs text-muted-foreground">{{
-                $t("pages.awards.allow_multiple_hint")
+              <Input v-model="draft.name" maxlength="60" />
+            </label>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-sm font-medium">{{
+                $t("pages.awards.description_label")
               }}</span>
-            </span>
-            <Switch v-model="draft.allow_multiple" />
-          </label>
+              <Textarea v-model="draft.description" rows="2" />
+            </label>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-sm font-medium">{{
+                $t("pages.awards.tier")
+              }}</span>
+              <AnimatedFilters
+                v-model="draft.tier"
+                square
+                :options="tierChoices"
+              />
+            </div>
+            <label class="flex items-center justify-between gap-3">
+              <span class="flex flex-col">
+                <span class="text-sm font-medium">{{
+                  $t("pages.awards.allow_multiple")
+                }}</span>
+                <span class="text-xs text-muted-foreground">{{
+                  $t("pages.awards.allow_multiple_hint")
+                }}</span>
+              </span>
+              <Switch v-model="draft.allow_multiple" />
+            </label>
+          </template>
         </div>
 
-        <div class="space-y-2">
+        <div v-if="!granting" class="space-y-2">
           <div :class="[tacticalSectionLabelClasses, 'mb-0']">
             <span :class="tacticalSectionTickClasses"></span>
             {{ $t("pages.awards.artwork") }}
@@ -532,6 +595,7 @@ async function submit() {
               <PlayerSearch
                 v-else
                 :label="$t('ui_extras.select_player_placeholder')"
+                :selected="recipient.player"
                 @selected="(p) => (recipient.player = p)"
               />
             </template>
@@ -565,6 +629,7 @@ async function submit() {
               <TeamSearch
                 v-else
                 :label="$t('ui_extras.select_team_placeholder')"
+                :model-value="recipient.team"
                 @selected="(t) => (recipient.team = t)"
               />
               <p class="text-xs text-muted-foreground">

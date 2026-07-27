@@ -3177,7 +3177,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "Tutti",
+      "group_season_awards": "Premi della stagione",
+      "group_tournament_awards": "Premi del torneo",
+      "group_custom_awards": "Premi personalizzati",
+      "group_custom_tournament_awards": "Premi del torneo personalizzati",
+      "group_custom_event_awards": "Premi dell'evento personalizzati",
+      "group_custom_season_awards": "Premi della stagione personalizzati",
+      "group_custom_league_awards": "Premi della lega personalizzati"
     }
   },
   "custom_match": {

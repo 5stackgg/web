@@ -3085,7 +3085,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "全部",
+      "group_season_awards": "赛季奖项",
+      "group_tournament_awards": "锦标赛奖项",
+      "group_custom_awards": "自定义奖项",
+      "group_custom_tournament_awards": "自定义锦标赛奖项",
+      "group_custom_event_awards": "自定义活动奖项",
+      "group_custom_season_awards": "自定义赛季奖项",
+      "group_custom_league_awards": "自定义联赛奖项"
     }
   },
   "custom_match": {

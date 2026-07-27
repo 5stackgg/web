@@ -3177,7 +3177,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "Tümü",
+      "group_season_awards": "Sezon Ödülleri",
+      "group_tournament_awards": "Turnuva Ödülleri",
+      "group_custom_awards": "Özel Ödüller",
+      "group_custom_tournament_awards": "Özel Turnuva Ödülleri",
+      "group_custom_event_awards": "Özel Etkinlik Ödülleri",
+      "group_custom_season_awards": "Özel Sezon Ödülleri",
+      "group_custom_league_awards": "Özel Lig Ödülleri"
     }
   },
   "custom_match": {

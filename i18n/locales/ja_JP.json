@@ -3177,7 +3177,15 @@
       "scope_season": "Season",
       "scope_league": "League",
       "season_label": "Season {number}",
-      "scope_gone": "Unknown"
+      "scope_gone": "Unknown",
+      "scope_all": "すべて",
+      "group_season_awards": "シーズンアワード",
+      "group_tournament_awards": "トーナメントアワード",
+      "group_custom_awards": "カスタムアワード",
+      "group_custom_tournament_awards": "カスタムトーナメントアワード",
+      "group_custom_event_awards": "カスタムイベントアワード",
+      "group_custom_season_awards": "カスタムシーズンアワード",
+      "group_custom_league_awards": "カスタムリーグアワード"
     }
   },
   "custom_match": {

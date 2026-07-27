@@ -13,7 +13,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
 
 <template>
   <HoverCard
-    v-if="competitiveElo || wingmanElo || duelElo"
+    v-if="snapshotElo || competitiveElo || wingmanElo || duelElo"
     :open-delay="80"
     :close-delay="140"
   >
@@ -22,13 +22,13 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         type="button"
         :class="triggerClasses"
         :style="{ '--tier-rgb': primaryTier.rgb }"
-        :aria-label="`ELO, primary ${primaryTier.label} ${primaryElo}`"
+        :aria-label="`ELO, primary ${primaryTier.label} ${displayElo}`"
       >
         <template v-if="bordered">
           <span :class="triggerNotchClasses" aria-hidden="true"></span>
         </template>
         <span :class="triggerValueClasses">
-          {{ primaryElo ?? "—" }}
+          {{ displayElo ?? "—" }}
         </span>
       </button>
     </HoverCardTrigger>
@@ -63,7 +63,10 @@ const isMobile = useMediaQuery("(max-width: 768px)");
           <span :class="headerChevronClasses">◢</span>
           ELO
         </span>
-        <span :class="headerCountClasses"> {{ activeCount }}/3 </span>
+        <span :class="headerCountClasses">
+          <template v-if="snapshotElo">{{ $t("player.at_match_start") }}</template>
+          <template v-else>{{ activeCount }}/3</template>
+        </span>
       </header>
 
       <div :class="rowsContainerClasses">
@@ -127,7 +130,19 @@ const isMobile = useMediaQuery("(max-width: 768px)");
       </div>
 
       <footer
-        v-if="peakRow"
+        v-if="currentRow"
+        :class="footerClasses"
+        :style="{ '--peak-rgb': currentRow.rgb }"
+      >
+        <span :class="footerLabelClasses">{{ $t("player.current_elo") }}</span>
+        <span :class="footerDotClasses" aria-hidden="true"></span>
+        <span :class="footerValueClasses">
+          {{ currentRow.value.toLocaleString() }}
+        </span>
+      </footer>
+
+      <footer
+        v-else-if="peakRow"
         :class="footerClasses"
         :style="{ '--peak-rgb': peakRow.peakRgb }"
       >
@@ -200,6 +215,13 @@ export default {
       required: false,
       default: "competitive",
     },
+    // ELO the player held going into a specific match. When set, the chip
+    // reports that point-in-time value instead of their live rating.
+    atElo: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     bordered: {
       type: Boolean,
       required: false,
@@ -233,15 +255,56 @@ export default {
         this.duelElo
       );
     },
+    snapshotElo(): number | null {
+      const value = Number(this.atElo);
+      return Number.isFinite(value) && value > 0 ? value : null;
+    },
+    displayElo(): number | undefined {
+      return this.snapshotElo ?? this.primaryElo;
+    },
     primaryTier(): RankTier {
-      return this.primaryElo ? tierFor(this.primaryElo) : RANK_TIERS.at(-1)!;
+      return this.displayElo ? tierFor(this.displayElo) : RANK_TIERS.at(-1)!;
     },
     activeCount(): number {
       return [this.competitiveElo, this.wingmanElo, this.duelElo].filter(
         Boolean,
       ).length;
     },
+    modeLabels(): Record<ModeKey, string> {
+      return {
+        competitive: this.$t("pages.leaderboard.match_types.competitive"),
+        wingman: this.$t("pages.leaderboard.match_types.wingman"),
+        duel: this.$t("pages.leaderboard.match_types.duel"),
+      };
+    },
+    // Snapshot mode swaps the all-time-peak footer for the player's live
+    // rating, so the historical value has something to be read against.
+    currentRow(): { value: number; rgb: string } | null {
+      if (!this.snapshotElo) {
+        return null;
+      }
+      const value = this.elo?.[this.modeKey];
+      if (!value) {
+        return null;
+      }
+      return { value, rgb: tierFor(value).rgb };
+    },
     eloRows(): ModeRow[] {
+      if (this.snapshotElo) {
+        return [
+          {
+            key: this.modeKey,
+            mode: this.modeLabels[this.modeKey],
+            label: this.modeLabels[this.modeKey],
+            value: this.snapshotElo,
+            peak: undefined,
+            atPeak: false,
+            rgb: tierFor(this.snapshotElo).rgb,
+            bracketProgress: bracketProgress(this.snapshotElo),
+          },
+        ];
+      }
+
       const seed: Array<{
         key: ModeKey;
         mode: string;
@@ -251,22 +314,22 @@ export default {
       }> = [
         {
           key: "competitive",
-          mode: this.$t("pages.leaderboard.match_types.competitive"),
-          label: this.$t("pages.leaderboard.match_types.competitive"),
+          mode: this.modeLabels.competitive,
+          label: this.modeLabels.competitive,
           value: this.competitiveElo,
           peak: this.peak?.competitive,
         },
         {
           key: "wingman",
-          mode: this.$t("pages.leaderboard.match_types.wingman"),
-          label: this.$t("pages.leaderboard.match_types.wingman"),
+          mode: this.modeLabels.wingman,
+          label: this.modeLabels.wingman,
           value: this.wingmanElo,
           peak: this.peak?.wingman,
         },
         {
           key: "duel",
-          mode: this.$t("pages.leaderboard.match_types.duel"),
-          label: this.$t("pages.leaderboard.match_types.duel"),
+          mode: this.modeLabels.duel,
+          label: this.modeLabels.duel,
           value: this.duelElo,
           peak: this.peak?.duel,
         },

@@ -112,7 +112,11 @@ const DASH = "—";
         </DropdownMenu>
         <div class="min-w-0 flex-1">
           <div class="hidden md:block">
-            <LineupMember :match="match" :member="member">
+            <LineupMember
+              :match="match"
+              :member="member"
+              :at-elo="memberStartElo"
+            >
               <template v-if="member.player?.steam_id" #avatar-badge>
                 <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
               </template>
@@ -172,6 +176,7 @@ const DASH = "—";
                     <PlayerElo
                       v-if="!isExternalMatch"
                       :elo="member.player.elo"
+                      :at-elo="memberStartElo"
                       :type="match?.options?.type"
                     />
                     <PlayerFaceitRank
@@ -839,6 +844,12 @@ export default {
           (ec: any) => String(ec.player_steam_id) === String(steamId),
         ) ?? null
       );
+    },
+    // v_player_elo.current_elo is the rating going *into* the match
+    // (updated_elo is the one coming out).
+    memberStartElo() {
+      const startElo = Number(this.memberEloChange?.current_elo);
+      return Number.isFinite(startElo) ? startElo : null;
     },
   },
 };

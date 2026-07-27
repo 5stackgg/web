@@ -221,6 +221,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               <PlayerElo
                 v-else-if="!external"
                 :elo="player.elo"
+                :at-elo="atElo"
                 :type="matchType"
               />
             </template>
@@ -245,6 +246,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <PlayerElo
               v-else-if="showElo && !external"
               :elo="player.elo"
+              :at-elo="atElo"
               :type="matchType"
             />
             <slot name="elo-postfix"></slot>
@@ -345,6 +347,10 @@ export default {
     },
     matchType: {
       type: String,
+      default: null,
+    },
+    atElo: {
+      type: Number,
       default: null,
     },
     external: {

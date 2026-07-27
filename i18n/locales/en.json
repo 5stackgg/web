@@ -5588,7 +5588,9 @@
       "title": "Pending CS2 imports",
       "importing": "Importing…"
     },
-    "all_time_peak": "ALL-TIME PEAK"
+    "all_time_peak": "ALL-TIME PEAK",
+    "at_match_start": "AT MATCH START",
+    "current_elo": "CURRENT"
   },
   "maps": {
     "label": "Maps",

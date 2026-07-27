@@ -749,6 +749,8 @@ onMounted(() => {
                 :clip-key="clip.id"
                 @ended="onModalEnded"
                 @progress="onModalProgress"
+                @prev="openPreviousClip"
+                @next="openNextClip"
               >
                 <template #empty>
                   <div

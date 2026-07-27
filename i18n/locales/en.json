@@ -5836,6 +5836,7 @@
     "unmute": "Unmute",
     "play": "Play",
     "pause": "Pause",
+    "seek": "Seek",
     "fullscreen": "Fullscreen",
     "exit_fullscreen": "Exit fullscreen",
     "fullscreen_f_key": "Fullscreen (F)",

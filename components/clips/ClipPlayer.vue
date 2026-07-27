@@ -28,7 +28,7 @@ const { t } = useI18n();
 // (featured clip) and the clip detail modal. Encapsulates: custom
 // play/pause overlay, hover-armed center button, auto-hide controls
 // during playback, audio toggle + volume slider, fullscreen, and the
-// thin amber progress bar. Consumers contribute their own chrome via
+// draggable amber scrub bar. Consumers contribute their own chrome via
 // slots (top-left / top-right / bottom) so each surface keeps its
 // unique controls (share, edit pencil, player display, etc.) without
 // duplicating the player UX.
@@ -56,6 +56,10 @@ const emit = defineEmits<{
   play: [];
   pause: [];
   ended: [];
+  // Arrow-key clip navigation. Emitted from the player because a
+  // fullscreen stage swallows the consumer's window-level key handlers.
+  prev: [];
+  next: [];
   // Fires roughly every animation frame while playing. Lets the parent
   // implement near-end behavior (auto-advance) without polling itself.
   progress: [info: { progress: number; currentTime: number; duration: number }];
@@ -71,6 +75,7 @@ const playing = ref(false);
 const muted = ref(props.initialMuted);
 const volume = ref(1);
 const progress = ref(0);
+const duration = ref(0);
 const isFullscreen = ref(false);
 // Once playback has actually started we treat subsequent clipKey changes
 // as auto-advances and suppress the big center play/pause button so the
@@ -102,10 +107,12 @@ function clearControlsTimer() {
 function bumpControls() {
   controlsVisible.value = true;
   clearControlsTimer();
-  if (!playing.value) return;
+  // Never fade the chrome out from under a finger/cursor that's dragging
+  // the seek bar.
+  if (!playing.value || scrubbing.value) return;
   controlsHideTimer = setTimeout(() => {
     controlsHideTimer = null;
-    if (!playing.value) return;
+    if (!playing.value || scrubbing.value) return;
     if (showIntroOverlay.value) {
       bumpControls();
       return;
@@ -114,6 +121,7 @@ function bumpControls() {
   }, CONTROLS_HIDE_DELAY);
 }
 function hideControls() {
+  if (scrubbing.value) return;
   clearControlsTimer();
   if (playing.value && !showIntroOverlay.value) {
     controlsVisible.value = false;
@@ -146,6 +154,9 @@ watch(
   () => props.clipKey,
   () => {
     progress.value = 0;
+    duration.value = 0;
+    scrubFrac.value = null;
+    hoverFrac.value = null;
     // Don't reset `playing` here — the new <video> element is paused
     // naturally on mount and its @play event will flip the ref to true
     // as soon as playback actually starts. Resetting synchronously caused
@@ -172,6 +183,9 @@ function emitProgressSnapshot() {
   if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
     return;
   }
+  // Suppress while dragging — the parent's near-end auto-advance would
+  // otherwise fire the moment someone scrubs to the right edge.
+  if (scrubbing.value) return;
   emit("progress", {
     progress: progress.value,
     currentTime: video.currentTime,
@@ -189,8 +203,10 @@ function syncProgress() {
   const video = videoRef.value;
   if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
     progress.value = 0;
+    duration.value = 0;
     return;
   }
+  duration.value = video.duration;
   progress.value = Math.min(1, video.currentTime / video.duration);
   const now = Date.now();
   if (now - lastProgressEmitMs >= PROGRESS_EMIT_INTERVAL_MS) {
@@ -353,6 +369,105 @@ function setVolume(value: number) {
   }
 }
 
+// --- Seeking -------------------------------------------------------------
+// Viewers kept trying to drag the thin amber progress strip to rewind, so
+// it's a real scrubber now: click or drag it, mouse or touch.
+// `scrubFrac` holds the drag position so the bar tracks the pointer 1:1
+// instead of waiting on the video's own timeupdate; it clears on release.
+const seekEl = ref<HTMLElement | null>(null);
+const scrubbing = ref(false);
+const scrubFrac = ref<number | null>(null);
+const hoverFrac = ref<number | null>(null);
+
+const hasDuration = computed(() => duration.value > 0);
+const displayFrac = computed(() => scrubFrac.value ?? progress.value);
+
+function formatTime(seconds: number) {
+  const total = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
+
+function fracFromEvent(e: PointerEvent) {
+  const rect = seekEl.value?.getBoundingClientRect();
+  if (!rect || rect.width === 0) return null;
+  return Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+}
+function seekToFrac(frac: number) {
+  const v = videoRef.value;
+  if (!v || !Number.isFinite(v.duration) || v.duration <= 0) return;
+  // Stop just shy of the end so dragging fully right doesn't fire `ended`
+  // (and the consumer's auto-advance) mid-drag.
+  v.currentTime = Math.min(frac * v.duration, Math.max(0, v.duration - 0.05));
+}
+
+function onSeekMove(e: PointerEvent) {
+  if (!scrubbing.value) return;
+  const frac = fracFromEvent(e);
+  if (frac === null) return;
+  scrubFrac.value = frac;
+  hoverFrac.value = frac;
+  seekToFrac(frac);
+}
+function onSeekUp(e?: PointerEvent) {
+  if (!scrubbing.value) return;
+  scrubbing.value = false;
+  scrubFrac.value = null;
+  // Touch has no hover state to fall back on, so drop the readout on
+  // release; a mouse keeps it until the cursor leaves the track.
+  if (!e || e.pointerType !== "mouse") hoverFrac.value = null;
+  window.removeEventListener("pointermove", onSeekMove);
+  window.removeEventListener("pointerup", onSeekUp);
+  window.removeEventListener("pointercancel", onSeekUp);
+  syncProgress();
+  bumpControls();
+}
+function onSeekDown(e: PointerEvent) {
+  if (e.button > 0 || !hasDuration.value) return;
+  const frac = fracFromEvent(e);
+  if (frac === null) return;
+  e.preventDefault();
+  scrubbing.value = true;
+  scrubFrac.value = frac;
+  hoverFrac.value = frac;
+  seekToFrac(frac);
+  bumpControls();
+  window.addEventListener("pointermove", onSeekMove);
+  window.addEventListener("pointerup", onSeekUp);
+  window.addEventListener("pointercancel", onSeekUp);
+}
+function onSeekHover(e: PointerEvent) {
+  if (scrubbing.value || !hasDuration.value) return;
+  hoverFrac.value = fracFromEvent(e);
+}
+// --- Keyboard ------------------------------------------------------------
+// Consumers bind prev/next arrows on window, but a fullscreen player owns
+// keyboard focus inside its own subtree, so those window handlers never
+// see the keypress. Handling it here on the stage element covers both:
+// we stop propagation so the window handler can't also fire and skip two
+// clips at once.
+function onStageKeydown(e: KeyboardEvent) {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const target = e.target as HTMLElement | null;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target?.isContentEditable
+  ) {
+    return;
+  }
+  // Space activates a focused button on its own — don't also toggle
+  // playback out from under it.
+  const onButton = !!target?.closest?.("button, a, [role='button']");
+  if (e.key === "ArrowLeft") emit("prev");
+  else if (e.key === "ArrowRight") emit("next");
+  else if ((e.key === " " && !onButton) || e.key === "k") void toggle();
+  else if (e.key === "f") void toggleFullscreen();
+  else if (e.key === "m") toggleMute();
+  else return;
+  e.preventDefault();
+  e.stopPropagation();
+}
+
 type IosVideoEl = HTMLVideoElement & {
   webkitEnterFullscreen?: () => void;
   webkitExitFullscreen?: () => void;
@@ -450,6 +565,12 @@ function onFullscreenChange() {
   };
   const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
   isFullscreen.value = fsElement === stageEl.value;
+  if (isFullscreen.value) {
+    // Park focus on the stage so arrow keys reach onStageKeydown — in
+    // fullscreen the rest of the page is inert and focus otherwise sits
+    // on whatever button opened it (or nothing at all).
+    stageEl.value?.focus?.({ preventScroll: true });
+  }
   if (!isFullscreen.value) {
     try {
       screen.orientation.unlock();
@@ -513,6 +634,7 @@ watch(
 onBeforeUnmount(() => {
   stopProgressLoop();
   clearControlsTimer();
+  onSeekUp();
   if (introOverlayTimer) clearTimeout(introOverlayTimer);
   teardownVisibilityObserver();
   // Explicitly tear down playback before the element detaches. A
@@ -543,7 +665,8 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
   <StreamCanvas
     ref="stageRef"
     :is-live="true"
-    class="group/player aspect-video w-full overflow-hidden rounded-md border border-border/60 text-left"
+    tabindex="-1"
+    class="group/player aspect-video w-full overflow-hidden rounded-md border border-border/60 text-left focus:outline-none"
     :class="
       isFullscreen
         ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
@@ -552,6 +675,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     @mousemove="bumpControls"
     @mouseleave="hideControls"
     @touchstart="bumpControls"
+    @keydown="onStageKeydown"
   >
     <template #video>
       <!-- Crossfade clip swaps so next/prev and auto-advance don't hard-cut.
@@ -567,9 +691,10 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           class="absolute inset-0 h-full w-full cursor-pointer object-contain"
           :muted="muted"
           playsinline
-          preload="none"
+          preload="metadata"
           @ended="onVideoEnded"
           @loadedmetadata="syncProgress"
+          @seeked="syncProgress"
           @pause="onVideoPause"
           @play="onVideoPlay"
           @volumechange="onVideoVolumeChange"
@@ -644,7 +769,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     <!-- Audio + fullscreen tray — bottom-right, fixed. Volume slider
          expands on hover, mute hides the slider so muted-state isn't
          visually confusing. -->
-    <div class="absolute bottom-3 right-3 z-[3] flex items-center gap-2">
+    <div class="absolute bottom-3 right-3 z-[4] flex items-center gap-2">
       <div class="group/vol flex items-center">
         <button
           type="button"
@@ -684,15 +809,55 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       </button>
     </div>
 
-    <!-- Progress bar — thin amber strip glued to the bottom edge. -->
-    <span
-      class="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden bg-white/10"
+    <!-- Scrubber — the amber strip glued to the bottom edge, now
+         draggable. The wrapper is taller than the bar itself so it's easy
+         to grab with a thumb or a hurried cursor; the bar thickens and
+         grows a knob on hover/drag. Playback stays on the video click /
+         center button — this is seeking only. -->
+    <div
+      ref="seekEl"
+      class="group/seek absolute inset-x-0 bottom-0 z-[3] flex h-5 touch-none select-none items-end px-[2px] pb-1"
+      :class="
+        hasDuration
+          ? 'pointer-events-auto cursor-pointer'
+          : 'pointer-events-none'
+      "
+      :aria-label="$t('ui_extras.seek')"
+      @pointerdown="onSeekDown"
+      @pointermove="onSeekHover"
+      @pointerleave="hoverFrac = null"
+      @click.stop
     >
-      <span
-        class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_hsl(var(--tac-amber)/0.45)]"
-        :style="{ width: `${(progress * 100).toFixed(2)}%` }"
-      ></span>
-    </span>
+      <div
+        class="relative h-0.5 w-full rounded-full bg-white/15 transition-[height] duration-150 group-hover/seek:h-[5px]"
+        :class="scrubbing ? '!h-[5px]' : ''"
+      >
+        <!-- Hover preview fill — lights the track ahead of the playhead so
+             the drop target is obvious before committing. -->
+        <span
+          v-if="hoverFrac !== null && !scrubbing"
+          class="absolute inset-y-0 left-0 rounded-full bg-white/35"
+          :style="{ width: `${(hoverFrac * 100).toFixed(2)}%` }"
+        ></span>
+        <span
+          class="absolute inset-y-0 left-0 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_hsl(var(--tac-amber)/0.45)]"
+          :style="{ width: `${(displayFrac * 100).toFixed(2)}%` }"
+        ></span>
+        <span
+          class="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/40 bg-[hsl(var(--tac-amber))] opacity-0 shadow-[0_0_10px_hsl(var(--tac-amber)/0.6)] transition-opacity duration-150 group-hover/seek:opacity-100"
+          :class="scrubbing ? '!opacity-100' : ''"
+          :style="{ left: `${(displayFrac * 100).toFixed(2)}%` }"
+        ></span>
+        <!-- Time readout above the cursor while hovering/dragging. -->
+        <span
+          v-if="hoverFrac !== null && hasDuration"
+          class="pointer-events-none absolute bottom-full mb-2 -translate-x-1/2 rounded border border-white/15 bg-black/85 px-1.5 py-0.5 font-mono text-[0.65rem] leading-none tabular-nums text-white/90 backdrop-blur-sm"
+          :style="{ left: `${(hoverFrac * 100).toFixed(2)}%` }"
+        >
+          {{ formatTime(hoverFrac * duration) }}
+        </span>
+      </div>
+    </div>
   </StreamCanvas>
 </template>
 

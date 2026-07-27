@@ -4,7 +4,7 @@ import PlayerStatusDisplay from "./PlayerStatusDisplay.vue";
 
 <template>
   <template v-if="member.player">
-    <PlayerStatusDisplay :member="member" :match="match">
+    <PlayerStatusDisplay :member="member" :match="match" :at-elo="atElo">
       <template v-if="$slots['name-postfix']" #name-postfix>
         <slot name="name-postfix"></slot>
       </template>
@@ -50,6 +50,11 @@ export default {
     match: {
       type: Object,
       required: false,
+    },
+    atElo: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
 };

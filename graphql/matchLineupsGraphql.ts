@@ -51,7 +51,25 @@ export const matchLineups = Selector("match_lineups")({
       steam_id: true,
       checked_in: true,
       placeholder_name: true,
-      player: playerFields,
+      player: {
+        ...playerFields,
+        // Faceit level/elo as of this match — PlayerDisplay prefers this over
+        // the player's live faceit_skill_level/faceit_elo when it's present.
+        faceit_rank_history: [
+          {
+            where: {
+              match_id: {
+                _eq: $("matchId", "uuid!"),
+              },
+            },
+            limit: 1,
+          },
+          {
+            skill_level: true,
+            elo: true,
+          },
+        ],
+      },
     },
   ],
 });

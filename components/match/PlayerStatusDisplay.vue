@@ -25,6 +25,7 @@ const { isMobile } = useSidebar();
     :show-elo="true"
     :compact="isMobile"
     :match-type="match?.options?.type"
+    :at-elo="atElo"
     :external="isExternalMatch"
   >
     <template v-slot:avatar-corner v-if="member.captain">
@@ -164,6 +165,11 @@ export default {
     showName: {
       default: false,
       type: Boolean,
+    },
+    atElo: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   computed: {

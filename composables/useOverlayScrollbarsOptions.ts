@@ -2,11 +2,10 @@ import { computed } from "vue";
 import type { PartialOptions } from "overlayscrollbars";
 
 export function useOverlayScrollbarsOptions() {
-  const colorMode = useColorMode();
-
   const options = computed<PartialOptions>(() => ({
     scrollbars: {
-      theme: colorMode.value === "dark" ? "os-theme-light" : "os-theme-dark",
+      // The app is dark-only, so the light-on-dark scrollbar theme is fixed.
+      theme: "os-theme-light",
       autoHide: "scroll",
     },
   }));

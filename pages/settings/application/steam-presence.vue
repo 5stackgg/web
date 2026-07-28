@@ -4,10 +4,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-
-definePageMeta({
-  middleware: "admin",
-});
 </script>
 
 <template>
@@ -381,7 +377,8 @@ const REFRESH_MS = 5000;
 
 export default {
   // Admin-only debug dashboard for the Steam presence bot.
-  // (admin middleware is set via definePageMeta in <script setup> above.)
+  // (the whole /settings/application subtree is gated by
+  // middleware/settings-application.global.ts.)
   data() {
     return {
       status: null as PresenceAdminStatus | null,

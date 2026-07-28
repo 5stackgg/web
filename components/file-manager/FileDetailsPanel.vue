@@ -219,7 +219,6 @@ import { useI18n } from "vue-i18n";
 import { loadMonaco } from "~/utilities/loadMonaco";
 
 const store = useFileManagerStore();
-const colorMode = useColorMode();
 const { t } = useI18n();
 
 // Editor state
@@ -297,7 +296,6 @@ async function createEditor() {
 
   monaco ??= await loadMonaco();
 
-  const theme = colorMode.value === "dark" ? "vs-dark" : "vs";
   const language = getLanguageFromPath(store.activeFilePath);
   const initialContent = store.activeFile.content;
 
@@ -306,7 +304,7 @@ async function createEditor() {
   editor = monaco.editor.create(editorContainer.value, {
     value: initialContent,
     language,
-    theme,
+    theme: "vs-dark",
     automaticLayout: true,
     minimap: { enabled: showMinimap.value },
     scrollBeyondLastLine: false,
@@ -393,15 +391,6 @@ watch(
       }
     } else {
       destroyEditor();
-    }
-  },
-);
-
-watch(
-  () => colorMode.value,
-  (newMode) => {
-    if (editor && monaco) {
-      monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
     }
   },
 );

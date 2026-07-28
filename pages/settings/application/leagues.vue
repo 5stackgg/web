@@ -18,10 +18,6 @@ import {
   REORDER_DIVISIONS_MUTATION,
 } from "~/graphql/leagues";
 
-definePageMeta({
-  middleware: "admin",
-});
-
 const { client: apolloClient } = useApolloClient();
 const { t } = useI18n();
 

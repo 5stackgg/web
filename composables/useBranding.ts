@@ -1,54 +1,8 @@
 import { computed, watch } from "vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
-const lightColorMap: Record<string, string> = {
-  // Core
-  "public.color_background": "--background",
-  "public.color_foreground": "--foreground",
-  "public.color_primary": "--primary",
-  "public.color_primary_foreground": "--primary-foreground",
-  "public.color_secondary": "--secondary",
-  "public.color_secondary_foreground": "--secondary-foreground",
-  "public.color_accent": "--accent",
-  "public.color_accent_foreground": "--accent-foreground",
-  "public.color_muted": "--muted",
-  "public.color_muted_foreground": "--muted-foreground",
-  "public.color_destructive": "--destructive",
-  "public.color_destructive_foreground": "--destructive-foreground",
-  "public.color_warning": "--warning",
-  "public.color_warning_foreground": "--warning-foreground",
-  // Cards & Borders
-  "public.color_card": "--card",
-  "public.color_card_foreground": "--card-foreground",
-  "public.color_border": "--border",
-  "public.color_popover": "--popover",
-  "public.color_popover_foreground": "--popover-foreground",
-  "public.color_input": "--input",
-  "public.color_ring": "--ring",
-  // Sidebar
-  "public.color_sidebar_background": "--sidebar-background",
-  "public.color_sidebar_foreground": "--sidebar-foreground",
-  "public.color_sidebar_accent": "--sidebar-accent",
-  "public.color_sidebar_accent_foreground": "--sidebar-accent-foreground",
-  "public.color_sidebar_border": "--sidebar-border",
-  "public.color_sidebar_primary": "--sidebar-primary",
-  "public.color_sidebar_primary_foreground": "--sidebar-primary-foreground",
-  "public.color_sidebar_ring": "--sidebar-ring",
-  // Top Nav
-  "public.color_topnav_background": "--topnav-background",
-  "public.color_topnav_foreground": "--topnav-foreground",
-  "public.color_topnav_accent": "--topnav-accent",
-  "public.color_topnav_accent_foreground": "--topnav-accent-foreground",
-  "public.color_topnav_border": "--topnav-border",
-  "public.color_topnav_primary": "--topnav-primary",
-  "public.color_topnav_primary_foreground": "--topnav-primary-foreground",
-  "public.color_topnav_ring": "--topnav-ring",
-  // Tactical
-  "public.color_tactical_amber": "--tac-amber",
-  "public.color_tactical_amber_foreground": "--tac-amber-foreground",
-};
-
-const darkColorMap: Record<string, string> = {
+// The app is dark-only, so these are the only branding colors applied.
+const colorMap: Record<string, string> = {
   // Core
   "public.color_dark_background": "--background",
   "public.color_dark_foreground": "--foreground",
@@ -98,7 +52,6 @@ const darkColorMap: Record<string, string> = {
 
 export function useBranding() {
   const store = useApplicationSettingsStore();
-  const colorMode = useColorMode();
 
   const brandName = computed(() => {
     return store.settings.find(
@@ -116,14 +69,11 @@ export function useBranding() {
     return null;
   });
 
-  // Apply custom CSS variables based on color mode
+  // Apply custom branding CSS variables
   watch(
-    [() => store.settings, () => colorMode.value],
+    () => store.settings,
     () => {
-      const isDark = colorMode.value === "dark";
-      const map = isDark ? darkColorMap : lightColorMap;
-
-      for (const [settingKey, cssVar] of Object.entries(map)) {
+      for (const [settingKey, cssVar] of Object.entries(colorMap)) {
         const setting = store.settings.find(
           (s: { name: string }) => s.name === settingKey,
         );

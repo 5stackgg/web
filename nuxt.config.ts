@@ -47,6 +47,8 @@ export default defineNuxtConfig({
         { property: "og:url", content: url },
         { property: "og:image", content: `${url}/_ipx/_/favicon/512.png` },
       ],
+      // The app is dark-only. shadcn's light palette still lives under :root,
+      // but <html> is permanently in the .dark scope so it is never used.
       htmlAttrs: {
         class: "dark",
         style: "background-color: hsl(240 10% 3.9%)",
@@ -177,7 +179,6 @@ export default defineNuxtConfig({
     "@nuxtjs/apollo",
     "@pinia/nuxt",
     "@nuxtjs/tailwindcss",
-    "@nuxtjs/color-mode",
     "shadcn-nuxt",
     "@nuxt/image",
     "@vite-pwa/nuxt",
@@ -277,11 +278,6 @@ export default defineNuxtConfig({
       background_color: "#000000",
       display: "standalone",
     },
-  },
-
-  colorMode: {
-    classSuffix: "",
-    preference: "dark",
   },
 
   devtools: {

@@ -6,6 +6,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
+import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -86,6 +87,10 @@ const stageLabel = computed(() => {
   return bestOf ? `${stageType} · BO${bestOf}` : stageType;
 });
 
+const playerRankLabel = computed(() =>
+  tournamentPlayerRankLabel(props.tournament),
+);
+
 const statusText = computed(() => {
   return (
     props.statusLabel ||
@@ -122,10 +127,7 @@ const statusChipClasses = computed(() => {
       aria-hidden="true"
       class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/tournament:scale-105"
     />
-    <TournamentMapMosaic
-      v-else-if="mapPosters.length"
-      :posters="mapPosters"
-    />
+    <TournamentMapMosaic v-else-if="mapPosters.length" :posters="mapPosters" />
     <div
       v-else
       class="absolute inset-0"
@@ -172,17 +174,30 @@ const statusChipClasses = computed(() => {
         </div>
       </div>
 
-      <span
-        class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] backdrop-blur-sm"
-        :class="statusChipClasses"
-      >
+      <div class="flex shrink-0 items-center gap-1.5">
         <span
-          v-if="isLive"
-          aria-hidden="true"
-          class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[hsl(var(--destructive))]"
-        ></span>
-        <span class="max-w-[10rem] truncate">{{ statusText }}</span>
-      </span>
+          v-if="playerRankLabel"
+          class="inline-flex items-center rounded-full bg-[hsl(var(--tac-amber)/0.22)] px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+          :title="
+            $t('tournament.compact_card.player_finished', {
+              rank: playerRankLabel,
+            })
+          "
+        >
+          {{ playerRankLabel }}
+        </span>
+        <span
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] backdrop-blur-sm"
+          :class="statusChipClasses"
+        >
+          <span
+            v-if="isLive"
+            aria-hidden="true"
+            class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[hsl(var(--destructive))]"
+          ></span>
+          <span class="max-w-[10rem] truncate">{{ statusText }}</span>
+        </span>
+      </div>
     </div>
 
     <!-- BOTTOM: name + meta row -->

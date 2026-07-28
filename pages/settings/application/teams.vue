@@ -9,10 +9,6 @@ import { toast } from "@/components/ui/toast";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 
-definePageMeta({
-  middleware: "admin",
-});
-
 const { client: apolloClient } = useApolloClient();
 const { t } = useI18n();
 

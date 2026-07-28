@@ -53,10 +53,6 @@ import {
 } from "lucide-vue-next";
 
 const DOCS_URL = "https://docs.5stack.gg/plugins/";
-
-definePageMeta({
-  middleware: "admin",
-});
 </script>
 
 <template>

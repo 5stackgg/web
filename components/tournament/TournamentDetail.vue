@@ -32,7 +32,10 @@ import {
   ArrowLeft,
   Globe,
   MapPin,
+  ChevronsDownUp,
+  ChevronsUpDown,
 } from "lucide-vue-next";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -650,12 +653,42 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             "
           >
             <div class="min-w-0">
-              <div :class="[tacticalSectionLabelClasses, 'mb-[0.85rem]']">
-                <span :class="tacticalSectionTickClasses"></span>
-                {{ $t("tournament.page.roster_section") }}
-                <span :class="tacticalSectionCountClasses">
-                  {{ visibleTeams.length }}
-                </span>
+              <div
+                class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
+              >
+                <div :class="tacticalSectionLabelClasses">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("tournament.page.roster_section") }}
+                  <span :class="tacticalSectionCountClasses">
+                    {{ filteredTeams.length }}
+                  </span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <AnimatedFilters
+                    v-if="visibleTeams.length > 1"
+                    v-model="teamFilter"
+                    :options="teamFilterOptions"
+                    square
+                  />
+                  <Button
+                    v-if="filteredTeams.length > 1"
+                    variant="outline"
+                    size="sm"
+                    class="h-8"
+                    @click="toggleAllTeams"
+                  >
+                    <component
+                      :is="allTeamsCollapsed ? ChevronsUpDown : ChevronsDownUp"
+                      class="mr-1.5 h-4 w-4"
+                    />
+                    {{
+                      allTeamsCollapsed
+                        ? $t("tournament.teams_filter.expand_all")
+                        : $t("tournament.teams_filter.collapse_all")
+                    }}
+                  </Button>
+                </div>
               </div>
 
               <div
@@ -665,16 +698,26 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 {{ $t("tournament.page.no_teams_yet") }}
               </div>
 
+              <div
+                v-else-if="filteredTeams.length === 0"
+                class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+              >
+                {{ $t("tournament.teams_filter.no_matches") }}
+              </div>
+
               <div class="space-y-4">
                 <PageTransition
-                  v-for="(team, index) of visibleTeams"
+                  v-for="(team, index) of filteredTeams"
                   :key="team.id"
-                  :delay="index * 40"
+                  :delay="Math.min(index, 12) * 40"
                 >
                   <div :class="tournamentTeamCardClasses">
                     <TournamentTeam
                       :tournament="tournament"
                       :team="team"
+                      :collapsible="true"
+                      :collapsed="collapsedTeams.has(team.id)"
+                      @toggle-collapsed="toggleTeamCollapsed(team.id)"
                     ></TournamentTeam>
                   </div>
                 </PageTransition>
@@ -918,6 +961,8 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
+      teamFilter: "all",
+      collapsedTeams: new Set(),
       myTeamLoaded: false,
       e_match_types: [],
     };
@@ -1510,8 +1555,52 @@ export default {
     },
     visibleTeams() {
       const teams = this.tournament?.teams || [];
-      if (!this.tournamentHasStarted) return teams;
-      return teams.filter((team) => !!team.eligible_at);
+      const visible = this.tournamentHasStarted
+        ? teams.filter((team) => !!team.eligible_at)
+        : teams;
+
+      // tournament_team_invites is only selectable by the `user` role, so the
+      // public teams query can't ask for invites. Swap in the myTeam copy,
+      // which carries them, so pending invites show on this tab too.
+      if (!this.myTeam) return visible;
+      return visible.map((team) =>
+        team.id === this.myTeam.id ? this.myTeam : team,
+      );
+    },
+    incompleteTeams() {
+      return this.visibleTeams.filter((team) => !team.eligible_at);
+    },
+    filteredTeams() {
+      if (this.teamFilter === "incomplete") return this.incompleteTeams;
+      if (this.teamFilter === "ready") {
+        return this.visibleTeams.filter((team) => !!team.eligible_at);
+      }
+      return this.visibleTeams;
+    },
+    teamFilterOptions() {
+      const incomplete = this.incompleteTeams.length;
+      return [
+        {
+          key: "all",
+          label: this.$t("tournament.teams_filter.all"),
+          count: this.visibleTeams.length,
+        },
+        {
+          key: "ready",
+          label: this.$t("tournament.teams_filter.ready"),
+          count: this.visibleTeams.length - incomplete,
+        },
+        {
+          key: "incomplete",
+          label: this.$t("tournament.teams_filter.incomplete"),
+          count: incomplete,
+        },
+      ];
+    },
+    allTeamsCollapsed() {
+      const teams = this.filteredTeams;
+      if (teams.length === 0) return false;
+      return teams.every((team) => this.collapsedTeams.has(team.id));
     },
     statusTier() {
       const s = this.tournament?.status;
@@ -1580,6 +1669,24 @@ export default {
     },
   },
   methods: {
+    toggleTeamCollapsed(teamId) {
+      if (this.collapsedTeams.has(teamId)) {
+        this.collapsedTeams.delete(teamId);
+        return;
+      }
+      this.collapsedTeams.add(teamId);
+    },
+    toggleAllTeams() {
+      if (this.allTeamsCollapsed) {
+        for (const team of this.filteredTeams) {
+          this.collapsedTeams.delete(team.id);
+        }
+        return;
+      }
+      for (const team of this.filteredTeams) {
+        this.collapsedTeams.add(team.id);
+      }
+    },
     syncActiveTabFromRoute() {
       if (!this.tournament) {
         return;

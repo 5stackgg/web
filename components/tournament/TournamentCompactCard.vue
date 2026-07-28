@@ -12,6 +12,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
+import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
 
 const { t } = useI18n();
 
@@ -210,29 +211,8 @@ const timeLabel = computed(() => {
   return t("tournament.compact_card.starts");
 });
 
-const playerRank = computed<number | null>(() => {
-  const teamId = props.tournament?.rosters?.[0]?.tournament_team_id;
-  if (!teamId) return null;
-  const stages = [...(props.tournament?.stages || [])].sort(
-    (a: any, b: any) => (Number(b.order) || 0) - (Number(a.order) || 0),
-  );
-  for (const stage of stages) {
-    const row = (stage?.results || []).find(
-      (r: any) => r.tournament_team_id === teamId,
-    );
-    if (row?.rank) return Number(row.rank);
-  }
-  return null;
-});
-
-function ordinal(n: number): string {
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-}
-
 const playerRankLabel = computed(() =>
-  playerRank.value ? ordinal(playerRank.value) : null,
+  tournamentPlayerRankLabel(props.tournament),
 );
 
 const runnerUps = computed(() => {

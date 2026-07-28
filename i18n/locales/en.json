@@ -1739,8 +1739,6 @@
           "footer_url": "Footer URL",
           "theme_colors": "Theme Colors",
           "theme_colors_description": "Customize the theme colors. Changes are previewed live.",
-          "light_mode": "Light Mode",
-          "dark_mode": "Dark Mode",
           "reset_to_defaults": "Reset to Defaults",
           "reset_confirm_title": "Reset branding to defaults?",
           "reset_confirm_description": "This clears your brand name, colors, login footer, and uploaded logo/favicon/app icon, restoring the default 5Stack theme. This cannot be undone.",
@@ -2505,6 +2503,8 @@
         "custom_window_active": "Custom window active. Choosing a preset clears it.",
         "exclude_tournaments": "Exclude tournaments",
         "exclude_tournaments_description": "Skip tournament matches in stats and chart.",
+        "tournaments_section_label": "TOURNAMENTS",
+        "tournaments_description": "Tournaments this player has competed in.",
         "current_elo": "Current ELO",
         "source": "Source",
         "provider": "Provider",
@@ -4164,6 +4164,10 @@
       "slot": "Slot {number}",
       "add_player": "Add Player",
       "pending_invites": "Pending Invites",
+      "member_added": "Player Added",
+      "member_added_description": "{name} was added to your roster",
+      "invite_sent": "Invite Sent",
+      "invite_sent_description": "{name} has been invited and needs to accept before they join your roster",
       "new": "Create New Team",
       "select": "Select Existing Team",
       "select_role": "Select Role",
@@ -4272,6 +4276,16 @@
       "hint": "Grant an award outside of the bracket calculation.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award to grant first."
+    },
+    "teams_filter": {
+      "all": "All",
+      "ready": "Ready",
+      "incomplete": "Needs Players",
+      "no_matches": "No teams match this filter",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "collapse_all": "Collapse All",
+      "expand_all": "Expand All"
     }
   },
   "team": {

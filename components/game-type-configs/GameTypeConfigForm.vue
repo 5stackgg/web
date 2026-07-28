@@ -86,13 +86,11 @@ export default {
     const editorInstance = ref<Monaco.editor.IStandaloneCodeEditor | null>(
       null,
     );
-    const colorMode = useColorMode();
     let monaco: typeof Monaco | null = null;
 
     return {
       editorContainer,
       editorInstance,
-      colorMode,
       monaco,
     };
   },
@@ -123,25 +121,16 @@ export default {
   beforeUnmount() {
     this.destroyEditor();
   },
-  watch: {
-    "colorMode.value"(newMode: string) {
-      if (this.editorInstance && this.monaco) {
-        this.monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
-      }
-    },
-  },
   methods: {
     async createEditor() {
       if (!this.editorContainer || !this.gameTypeConfig?.cfg) return;
 
       this.monaco ??= await loadMonaco();
 
-      const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
-
       this.editorInstance = this.monaco.editor.create(this.editorContainer, {
         value: this.gameTypeConfig.cfg,
         language: "plaintext",
-        theme,
+        theme: "vs-dark",
         automaticLayout: true,
         minimap: { enabled: false },
         scrollBeyondLastLine: false,

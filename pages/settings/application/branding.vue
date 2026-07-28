@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LucideSun, LucideMoon } from "lucide-vue-next";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
@@ -268,58 +267,8 @@ definePageMeta({
             $t('pages.settings.application.branding.theme_colors_description')
           "
         >
-          <template #action>
-            <div class="flex items-center gap-3">
-              <span class="text-sm font-medium">
-                {{
-                  colorMode === "dark"
-                    ? $t("pages.settings.application.branding.dark_mode")
-                    : $t("pages.settings.application.branding.light_mode")
-                }}
-              </span>
-              <button
-                type="button"
-                role="switch"
-                :aria-checked="colorMode === 'dark'"
-                :aria-label="
-                  colorMode === 'dark'
-                    ? $t('pages.settings.application.branding.dark_mode')
-                    : $t('pages.settings.application.branding.light_mode')
-                "
-                class="relative inline-flex h-8 w-16 shrink-0 cursor-pointer items-center rounded-full border transition-colors duration-300"
-                :class="
-                  colorMode === 'dark'
-                    ? 'border-slate-600 bg-gradient-to-r from-slate-800 to-indigo-950'
-                    : 'border-amber-300/70 bg-gradient-to-r from-sky-300 to-amber-200'
-                "
-                @click="colorMode = colorMode === 'dark' ? 'light' : 'dark'"
-              >
-                <LucideSun
-                  class="pointer-events-none absolute left-2 h-3.5 w-3.5 text-amber-400 transition-opacity"
-                  :class="colorMode === 'dark' ? 'opacity-70' : 'opacity-0'"
-                />
-                <LucideMoon
-                  class="pointer-events-none absolute right-2 h-3.5 w-3.5 text-slate-200 transition-opacity"
-                  :class="colorMode === 'dark' ? 'opacity-0' : 'opacity-70'"
-                />
-                <span
-                  class="pointer-events-none absolute flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300"
-                  :class="
-                    colorMode === 'dark' ? 'translate-x-9' : 'translate-x-1'
-                  "
-                >
-                  <LucideMoon
-                    v-if="colorMode === 'dark'"
-                    class="h-3.5 w-3.5 text-indigo-600"
-                  />
-                  <LucideSun v-else class="h-3.5 w-3.5 text-amber-500" />
-                </span>
-              </button>
-            </div>
-          </template>
-
           <div
-            v-for="section in currentColorSections"
+            v-for="section in colorSections"
             :key="section.titleKey"
             class="space-y-3"
           >
@@ -376,245 +325,8 @@ interface ColorSection {
   fields: ColorField[];
 }
 
-const lightColorSections: ColorSection[] = [
-  {
-    titleKey: "pages.settings.application.branding.sections.core",
-    fields: [
-      {
-        key: "public.color_background",
-        labelKey: "pages.settings.application.branding.colors.background",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_foreground",
-        labelKey: "pages.settings.application.branding.colors.foreground",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_primary",
-        labelKey: "pages.settings.application.branding.colors.primary",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_primary_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.primary_foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_secondary",
-        labelKey: "pages.settings.application.branding.colors.secondary",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_secondary_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.secondary_foreground",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_accent",
-        labelKey: "pages.settings.application.branding.colors.accent",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_accent_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.accent_foreground",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_muted",
-        labelKey: "pages.settings.application.branding.colors.muted",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_muted_foreground",
-        labelKey: "pages.settings.application.branding.colors.muted_foreground",
-        default: "240 3.8% 46.1%",
-      },
-      {
-        key: "public.color_destructive",
-        labelKey: "pages.settings.application.branding.colors.destructive",
-        default: "0 84.2% 60.2%",
-      },
-      {
-        key: "public.color_destructive_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.destructive_foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_warning",
-        labelKey: "pages.settings.application.branding.colors.warning",
-        default: "36 100% 50%",
-      },
-      {
-        key: "public.color_warning_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.warning_foreground",
-        default: "0 0% 100%",
-      },
-    ],
-  },
-  {
-    titleKey: "pages.settings.application.branding.sections.cards_borders",
-    fields: [
-      {
-        key: "public.color_card",
-        labelKey: "pages.settings.application.branding.colors.card",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_card_foreground",
-        labelKey: "pages.settings.application.branding.colors.card_foreground",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_border",
-        labelKey: "pages.settings.application.branding.colors.border",
-        default: "240 5.9% 90%",
-      },
-      {
-        key: "public.color_popover",
-        labelKey: "pages.settings.application.branding.colors.popover",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_popover_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.popover_foreground",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_input",
-        labelKey: "pages.settings.application.branding.colors.input",
-        default: "240 5.9% 90%",
-      },
-      {
-        key: "public.color_ring",
-        labelKey: "pages.settings.application.branding.colors.ring",
-        default: "240 10% 3.9%",
-      },
-    ],
-  },
-  {
-    titleKey: "pages.settings.application.branding.sections.sidebar",
-    fields: [
-      {
-        key: "public.color_sidebar_background",
-        labelKey:
-          "pages.settings.application.branding.colors.sidebar_background",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_sidebar_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.sidebar_foreground",
-        default: "240 5.3% 26.1%",
-      },
-      {
-        key: "public.color_sidebar_accent",
-        labelKey: "pages.settings.application.branding.colors.sidebar_accent",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_sidebar_accent_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.sidebar_accent_foreground",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_sidebar_border",
-        labelKey: "pages.settings.application.branding.colors.sidebar_border",
-        default: "220 13% 91%",
-      },
-      {
-        key: "public.color_sidebar_primary",
-        labelKey: "pages.settings.application.branding.colors.sidebar_primary",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_sidebar_primary_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.sidebar_primary_foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_sidebar_ring",
-        labelKey: "pages.settings.application.branding.colors.sidebar_ring",
-        default: "217.2 91.2% 59.8%",
-      },
-    ],
-  },
-  {
-    titleKey: "pages.settings.application.branding.sections.top_nav",
-    fields: [
-      {
-        key: "public.color_topnav_background",
-        labelKey:
-          "pages.settings.application.branding.colors.topnav_background",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_topnav_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.topnav_foreground",
-        default: "240 5.3% 26.1%",
-      },
-      {
-        key: "public.color_topnav_accent",
-        labelKey: "pages.settings.application.branding.colors.topnav_accent",
-        default: "142 77% 73%",
-      },
-      {
-        key: "public.color_topnav_accent_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.topnav_accent_foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_topnav_border",
-        labelKey: "pages.settings.application.branding.colors.topnav_border",
-        default: "220 13% 91%",
-      },
-      {
-        key: "public.color_topnav_primary",
-        labelKey: "pages.settings.application.branding.colors.topnav_primary",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_topnav_primary_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.topnav_primary_foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_topnav_ring",
-        labelKey: "pages.settings.application.branding.colors.topnav_ring",
-        default: "217.2 91.2% 59.8%",
-      },
-    ],
-  },
-  {
-    titleKey: "pages.settings.application.branding.sections.tactical",
-    fields: [
-      {
-        key: "public.color_tactical_amber",
-        labelKey: "pages.settings.application.branding.colors.tactical_amber",
-        default: "33 94% 58%",
-      },
-      {
-        key: "public.color_tactical_amber_foreground",
-        labelKey:
-          "pages.settings.application.branding.colors.tactical_amber_foreground",
-        default: "0 0% 10%",
-      },
-    ],
-  },
-];
-
-const darkColorSections: ColorSection[] = [
+// The app is dark-only — these are the branding colors applied to :root.
+const themeColorSections: ColorSection[] = [
   {
     titleKey: "pages.settings.application.branding.sections.core",
     fields: [
@@ -860,7 +572,6 @@ export default {
       loginFooterText: "",
       loginFooterUrl: "",
       colorValues: {} as Record<string, string>,
-      colorMode: "dark" as "light" | "dark",
       saving: false,
       exporting: false,
       baseline: null as string | null,
@@ -911,8 +622,8 @@ export default {
         ? `https://${this.apiDomain}/branding/favicon?v=${encodeURIComponent(setting.value)}`
         : null;
     },
-    currentColorSections(): ColorSection[] {
-      return this.colorMode === "dark" ? darkColorSections : lightColorSections;
+    colorSections(): ColorSection[] {
+      return themeColorSections;
     },
     brandingSnapshot(): string {
       return JSON.stringify({
@@ -1175,11 +886,13 @@ export default {
           "public.login_footer_url",
           "public.login_show_footer",
         ];
-        for (const sections of [lightColorSections, darkColorSections]) {
-          for (const section of sections) {
-            for (const field of section.fields) {
-              brandingKeys.push(field.key);
-            }
+        for (const section of themeColorSections) {
+          for (const field of section.fields) {
+            brandingKeys.push(field.key);
+            // Also clear the retired light-mode keys from older installs.
+            brandingKeys.push(
+              field.key.replace("public.color_dark_", "public.color_"),
+            );
           }
         }
 

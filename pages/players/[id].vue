@@ -2824,7 +2824,10 @@ const playerHeroTeamChipDotClasses =
 
       <PageTransition v-if="playerId">
         <RecentTournaments
-          section-label="TOURNAMENTS"
+          :section-label="$t('pages.players.detail.tournaments_section_label')"
+          :section-description="
+            $t('pages.players.detail.tournaments_description')
+          "
           :statuses="[
             e_tournament_status_enum.Finished,
             e_tournament_status_enum.Live,
@@ -2834,7 +2837,9 @@ const playerHeroTeamChipDotClasses =
           ]"
           status-variant="finished"
           order-direction="desc"
+          card="simple"
           horizontal
+          see-all-as-modal
           hide-when-empty
           :player-steam-id="playerId"
           :limit="8"

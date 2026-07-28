@@ -87,7 +87,6 @@ const emit = defineEmits<{
 }>();
 
 const store = useFileManagerStore();
-const colorMode = useColorMode();
 
 const editorContainer = ref<HTMLElement | null>(null);
 const editorInstance = ref<Monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -150,13 +149,12 @@ async function createEditor() {
 
   monaco ??= await loadMonaco();
 
-  const theme = colorMode.value === "dark" ? "vs-dark" : "vs";
   const language = getLanguageFromPath(props.filePath);
 
   editorInstance.value = monaco.editor.create(editorContainer.value, {
     value: fileContent.value,
     language,
-    theme,
+    theme: "vs-dark",
     automaticLayout: true,
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
@@ -183,15 +181,6 @@ watch(
     } else {
       destroyEditor();
       resetState();
-    }
-  },
-);
-
-watch(
-  () => colorMode.value,
-  (newMode) => {
-    if (editorInstance.value && monaco) {
-      monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
     }
   },
 );

@@ -35,9 +35,22 @@ import MapDisplay from "~/components/MapDisplay.vue";
       <div class="flex flex-col gap-2 w-full">
         <!-- Status on top row -->
         <div class="flex justify-between items-start w-full">
-          <Badge class="text-xs">{{
-            tournament.e_tournament_status.description
-          }}</Badge>
+          <div class="flex items-center gap-1.5">
+            <Badge class="text-xs">{{
+              tournament.e_tournament_status.description
+            }}</Badge>
+            <span
+              v-if="playerRankLabel"
+              class="inline-flex items-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.18)] px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+              :title="
+                $t('tournament.compact_card.player_finished', {
+                  rank: playerRankLabel,
+                })
+              "
+            >
+              {{ playerRankLabel }}
+            </span>
+          </div>
           <ArrowRight></ArrowRight>
         </div>
         <!-- Type and Stage on second row -->
@@ -94,6 +107,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
 
 export default {
   props: {
@@ -143,6 +157,9 @@ export default {
         return this.tournament.stages[0].e_tournament_stage_type.description;
       }
       return null;
+    },
+    playerRankLabel() {
+      return tournamentPlayerRankLabel(this.tournament);
     },
   },
 };

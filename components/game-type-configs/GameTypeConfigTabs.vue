@@ -148,7 +148,6 @@ export default {
   },
   data() {
     return {
-      colorMode: useColorMode(),
       pendingContainers: new Map<string, HTMLElement>(),
       dirtyTypes: new Set<string>(),
     };
@@ -165,15 +164,6 @@ export default {
           }
         });
       },
-    },
-    "colorMode.value"(newMode: string) {
-      if (!monaco) {
-        return;
-      }
-
-      editorsMap.forEach((editor) => {
-        monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
-      });
     },
     activeTab(newTab: string) {
       this.$nextTick(() => {
@@ -264,13 +254,11 @@ export default {
 
       monaco ??= await loadMonaco();
 
-      const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
-
       try {
         const editor = monaco.editor.create(el, {
           value: config.cfg,
           language: "plaintext",
-          theme,
+          theme: "vs-dark",
           automaticLayout: true,
           minimap: { enabled: false },
           scrollBeyondLastLine: false,

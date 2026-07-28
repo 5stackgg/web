@@ -152,33 +152,33 @@ import Separator from "../ui/separator/Separator.vue";
         {{ member.role }}
       </span>
     </div>
-  </div>
 
-  <AlertDialog :open="removeMemberDialog">
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{{
-          $t("tournament.team.confirm_remove_member")
-        }}</AlertDialogTitle>
-        <AlertDialogDescription>
-          {{
-            $t("tournament.team.remove_member_description", {
-              name: member.player.name,
-              steam_id: member.player.steam_id,
-            })
-          }}
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel @click="removeMemberDialog = false">{{
-          $t("common.cancel")
-        }}</AlertDialogCancel>
-        <AlertDialogAction @click.stop="removeMember">{{
-          $t("common.confirm")
-        }}</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
+    <AlertDialog :open="removeMemberDialog">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("tournament.team.confirm_remove_member")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{
+              $t("tournament.team.remove_member_description", {
+                name: member.player.name,
+                steam_id: member.player.steam_id,
+              })
+            }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel @click="removeMemberDialog = false">{{
+            $t("common.cancel")
+          }}</AlertDialogCancel>
+          <AlertDialogAction @click.stop="removeMember">{{
+            $t("common.confirm")
+          }}</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>
 </template>
 
 <script lang="ts">

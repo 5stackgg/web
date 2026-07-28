@@ -10,7 +10,14 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Label } from "~/components/ui/label";
-import { LogOut, Trash2, UserMinus, UserPlus, Pencil } from "lucide-vue-next";
+import {
+  ChevronDown,
+  LogOut,
+  Trash2,
+  UserMinus,
+  UserPlus,
+  Pencil,
+} from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import {
   AlertDialog,
@@ -27,8 +34,8 @@ import { toast } from "~/components/ui/toast";
 
 <template>
   <div v-if="team && e_team_roles" class="flex flex-col gap-4">
-    <header class="flex items-start justify-between gap-4 flex-wrap">
-      <div class="min-w-0 flex-1 flex items-start gap-3">
+    <header class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="min-w-0 flex-1 flex items-center gap-3">
         <div
           class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
         >
@@ -45,7 +52,7 @@ import { toast } from "~/components/ui/toast";
             {{ (displayShortName || displayName || "?").slice(0, 3) }}
           </span>
         </div>
-        <div class="min-w-0 flex-1 flex flex-col gap-2">
+        <div class="min-w-0 flex-1 flex flex-col gap-[0.35rem]">
           <h2
             class="group/identity font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15] flex items-center gap-2"
           >
@@ -174,7 +181,7 @@ import { toast } from "~/components/ui/toast";
           <div class="flex items-center gap-2 flex-wrap">
             <span
               v-if="finalPlacement"
-              class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
+              class="inline-flex h-6 items-center gap-[0.4rem] px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
               :style="placementBadgeStyle"
             >
               <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
@@ -183,7 +190,7 @@ import { toast } from "~/components/ui/toast";
 
             <span
               v-if="showEligibilityBadge"
-              class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
+              class="inline-flex h-6 items-center gap-[0.4rem] px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
               :class="
                 team.eligible_at
                   ? 'text-success bg-success/10 border-success/40'
@@ -205,21 +212,21 @@ import { toast } from "~/components/ui/toast";
 
             <span
               v-if="!canEditSeed && team.seed"
-              class="px-2 py-[0.15rem] font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
+              class="inline-flex h-6 items-center px-2 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
             >
               {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
             </span>
 
             <label
               v-if="canEditSeed"
-              class="inline-flex items-center gap-[0.45rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
+              class="inline-flex h-6 items-center gap-[0.45rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
             >
               <span>{{ $t("tournament.team.seed_label") }}</span>
               <Input
                 type="number"
                 min="1"
                 placeholder="-"
-                class="h-7 w-16"
+                class="h-6 w-16"
                 :model-value="team.seed ?? ''"
                 @update:model-value="onSeedChange"
               />
@@ -262,6 +269,24 @@ import { toast } from "~/components/ui/toast";
         >
           <Trash2 class="h-4 w-4" />
         </Button>
+
+        <Button
+          v-if="collapsible"
+          variant="outline"
+          size="icon"
+          class="h-8 w-8"
+          :title="
+            collapsed
+              ? $t('tournament.teams_filter.expand')
+              : $t('tournament.teams_filter.collapse')
+          "
+          @click="$emit('toggle-collapsed')"
+        >
+          <ChevronDown
+            class="h-4 w-4 transition-transform duration-200"
+            :class="{ '-rotate-180': !collapsed }"
+          />
+        </Button>
       </div>
     </header>
 
@@ -294,7 +319,10 @@ import { toast } from "~/components/ui/toast";
       </AlertDialogContent>
     </AlertDialog>
 
-    <div v-if="team.roster" class="flex flex-col gap-[0.85rem]">
+    <div
+      v-if="team.roster && !collapsed"
+      class="flex flex-col gap-[0.85rem]"
+    >
       <div
         class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.24em] uppercase text-muted-foreground"
       >
@@ -302,10 +330,14 @@ import { toast } from "~/components/ui/toast";
         {{ $t("common.player") }}
       </div>
 
-      <div class="flex flex-col gap-2">
+      <TransitionGroup
+        name="roster-row"
+        tag="div"
+        class="relative flex flex-col gap-2"
+      >
         <TournamentTeamMemberRow
           v-for="member in team.roster"
-          :key="member.id"
+          :key="member.player.steam_id"
           :member="member"
           :team="team"
           :tournament="tournament"
@@ -318,17 +350,33 @@ import { toast } from "~/components/ui/toast";
         <div
           v-for="slot of Math.max(0, requiredPlayers - team.roster.length)"
           :key="`slot-${slot}`"
-          class="flex items-center justify-between gap-3 px-[0.85rem] py-[0.65rem] border border-dashed border-border rounded-md bg-muted/10"
         >
-          <div
-            class="flex items-center gap-[0.65rem] min-w-0 text-muted-foreground"
+          <PlayerSearch
+            v-if="team.can_manage"
+            :label="$t('tournament.team.add_player')"
+            :self="true"
+            :exclude="excludedFromSearch"
+            :team-id="team.team_id"
+            @selected="addMember"
           >
-            <span
-              class="font-mono text-[0.75rem] font-bold tracking-[0.1em] text-muted-foreground/55"
-            >
+            <button type="button" class="roster-slot roster-slot--open">
+              <span class="roster-slot__index font-mono">
+                {{ (slot + team.roster.length).toString().padStart(2, "0") }}
+              </span>
+              <span class="roster-slot__avatar">
+                <UserPlus class="h-4 w-4" />
+              </span>
+              <span class="roster-slot__label">
+                {{ $t("tournament.team.add_player") }}
+              </span>
+            </button>
+          </PlayerSearch>
+
+          <div v-else class="roster-slot">
+            <span class="roster-slot__index font-mono">
               {{ (slot + team.roster.length).toString().padStart(2, "0") }}
             </span>
-            <span class="text-[0.85rem]">
+            <span class="roster-slot__label">
               {{
                 $t("tournament.team.slot", {
                   number: slot + team.roster.length,
@@ -336,19 +384,8 @@ import { toast } from "~/components/ui/toast";
               }}
             </span>
           </div>
-          <div v-if="slot === 1 && team.can_manage" class="flex-shrink-0">
-            <PlayerSearch
-              :label="$t('tournament.team.add_player')"
-              :self="true"
-              :exclude="
-                team.roster?.map((member) => member.player.steam_id) || []
-              "
-              :team-id="team.team_id"
-              @selected="addMember"
-            />
-          </div>
         </div>
-      </div>
+      </TransitionGroup>
 
       <div
         v-if="team.invites && team.invites.length > 0"
@@ -365,13 +402,17 @@ import { toast } from "~/components/ui/toast";
             {{ team.invites.length }}
           </span>
         </div>
-        <div class="flex flex-col gap-2">
+        <TransitionGroup
+          name="roster-row"
+          tag="div"
+          class="relative flex flex-col gap-2"
+        >
           <TournamentTeamInvite
             v-for="invite in team.invites"
             :key="invite.id"
             :invite="invite"
           ></TournamentTeamInvite>
-        </div>
+        </TransitionGroup>
       </div>
     </div>
   </div>
@@ -383,6 +424,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
+  emits: ["toggle-collapsed"],
   props: {
     team: {
       type: Object,
@@ -391,6 +433,14 @@ export default {
     tournament: {
       type: Object,
       required: true,
+    },
+    collapsible: {
+      type: Boolean,
+      default: false,
+    },
+    collapsed: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -458,6 +508,15 @@ export default {
         e_tournament_status_enum.Cancelled,
         e_tournament_status_enum.CancelledMinTeams,
       ].includes(status);
+    },
+    excludedFromSearch() {
+      const roster = (this.team.roster || []).map(
+        (member) => member.player.steam_id,
+      );
+      const invited = (this.team.invites || []).map(
+        (invite) => invite.player.steam_id,
+      );
+      return roster.concat(invited);
     },
     canLeaveTournament() {
       if (!this.team.can_manage) return false;
@@ -742,6 +801,9 @@ export default {
                 player_steam_id: {
                   _eq: useAuthStore().me.steam_id,
                 },
+                tournament_team_id: {
+                  _eq: this.team.id,
+                },
               },
             },
             {
@@ -752,23 +814,51 @@ export default {
       });
     },
     async addMember(member) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_tournament_team_roster_one: [
-            {
-              object: {
-                player_steam_id: member.steam_id,
-                tournament_team_id: this.team.id,
-                tournament_id:
-                  this.$route.params.tournamentId || this.$route.params.id,
+      try {
+        const result = await this.$apollo.mutate({
+          mutation: generateMutation({
+            insert_tournament_team_roster_one: [
+              {
+                object: {
+                  player_steam_id: member.steam_id,
+                  tournament_team_id: this.team.id,
+                  tournament_id:
+                    this.$route.params.tournamentId || this.$route.params.id,
+                },
               },
-            },
-            {
-              player_steam_id: true,
-            },
-          ],
-        }),
-      });
+              {
+                player_steam_id: true,
+              },
+            ],
+          }),
+        });
+
+        // tbi_tournament_team_roster swallows the insert and raises an invite
+        // instead unless the session can add players outright, so a null row
+        // means "invited", not "failed".
+        const added = Boolean(
+          result.data?.insert_tournament_team_roster_one?.player_steam_id,
+        );
+
+        toast({
+          title: added
+            ? this.$t("tournament.team.member_added")
+            : this.$t("tournament.team.invite_sent"),
+          description: added
+            ? this.$t("tournament.team.member_added_description", {
+                name: member.name,
+              })
+            : this.$t("tournament.team.invite_sent_description", {
+                name: member.name,
+              }),
+        });
+      } catch (error: unknown) {
+        toast({
+          title: this.$t("tournament.team.add_player"),
+          description: error instanceof Error ? error.message : String(error),
+          variant: "destructive",
+        });
+      }
     },
     async removeTeam() {
       this.removeTeamDialog = false;
@@ -806,3 +896,73 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Matches the filled player row. PlayerDisplay's intrinsic two-line content is
+   50px — taller than its own min-h-12 — so match that, not the 3rem floor. */
+.roster-slot {
+  display: flex;
+  width: 100%;
+  min-height: calc(50px + 1.3rem + 2px);
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px dashed hsl(var(--border));
+  border-radius: 0.375rem;
+  background: hsl(var(--muted) / 0.1);
+  color: hsl(var(--muted-foreground));
+  transition:
+    border-color 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+.roster-slot--open {
+  cursor: pointer;
+  text-align: left;
+}
+.roster-slot--open:hover {
+  border-color: hsl(var(--tac-amber) / 0.55);
+  background: hsl(var(--tac-amber) / 0.06);
+  color: hsl(var(--tac-amber));
+}
+.roster-slot__index {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: hsl(var(--muted-foreground) / 0.55);
+}
+.roster-slot--open:hover .roster-slot__index {
+  color: hsl(var(--tac-amber) / 0.7);
+}
+.roster-slot__avatar {
+  display: grid;
+  place-items: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex-shrink: 0;
+  border: 1px dashed hsl(var(--border));
+  border-radius: 0.375rem;
+  transition: border-color 0.16s ease;
+}
+.roster-slot--open:hover .roster-slot__avatar {
+  border-color: hsl(var(--tac-amber) / 0.5);
+}
+.roster-slot__label {
+  font-size: 0.85rem;
+}
+
+.roster-row-move,
+.roster-row-enter-active,
+.roster-row-leave-active {
+  transition: all 0.25s ease;
+}
+.roster-row-enter-from,
+.roster-row-leave-to {
+  opacity: 0;
+  transform: translateX(0.5rem);
+}
+.roster-row-leave-active {
+  position: absolute;
+  width: 100%;
+}
+</style>

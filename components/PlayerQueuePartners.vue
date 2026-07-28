@@ -31,10 +31,14 @@ import { tacticalSectionLabelClasses } from "~/utilities/tacticalClasses";
           <div
             class="font-mono text-sm font-semibold tabular-nums leading-none"
           >
+            <!-- Plural choice goes in the second arg; a named `count` alone
+                 does not select a branch (see LeftNav's systems_online). -->
             {{
-              $t("pages.players.queue_partners.matches", {
-                count: partner.matches_together,
-              })
+              $t(
+                "pages.players.queue_partners.matches",
+                partner.matches_together,
+                { count: partner.matches_together },
+              )
             }}
           </div>
           <div
@@ -78,15 +82,11 @@ export default {
       default: 6,
     },
   },
-  data() {
-    return {
-      rows: [] as Array<any>,
-    };
-  },
   computed: {
     // Most-played first, most-recent breaking ties (see the order_by note).
     partners(): Array<any> {
-      return [...(this as any).rows].sort((a: any, b: any) => {
+      const rows = (this as any).v_player_queue_partners ?? [];
+      return [...rows].sort((a: any, b: any) => {
         if (b.matches_together !== a.matches_together) {
           return b.matches_together - a.matches_together;
         }
@@ -109,43 +109,41 @@ export default {
     },
   },
   apollo: {
-    $subscribe: {
-      v_player_queue_partners: {
-        query: typedGql("subscription")({
-          v_player_queue_partners: [
-            {
-              where: {
-                steam_id: {
-                  _eq: $("steamId", "bigint!"),
-                },
+    // A plain query, not a subscription: this only changes when a match
+    // finishes, and a live socket per profile view is not worth that.
+    v_player_queue_partners: {
+      fetchPolicy: "cache-and-network",
+      query: typedGql("query")({
+        v_player_queue_partners: [
+          {
+            where: {
+              steam_id: {
+                _eq: $("steamId", "bigint!"),
               },
-              // Single key: a second order_by entry also overruns the
-              // instantiation budget. Recency is a tiebreak only, so it is
-              // applied client-side in `partners`.
-              order_by: [{ matches_together: order_by.desc }],
-              limit: $("limit", "Int!"),
             },
-            {
-              partner_steam_id: true,
-              matches_together: true,
-              wins_together: true,
-              last_played_at: true,
-              partner: partnerFields,
-            },
-          ],
-        }),
-        variables: function (): { steamId: string; limit: number } {
-          return {
-            steamId: (this as any).playerId,
-            limit: (this as any).limit,
-          };
-        },
-        skip: function () {
-          return !(this as any).playerId;
-        },
-        result: function ({ data }: { data: any }) {
-          (this as any).rows = data?.v_player_queue_partners ?? [];
-        },
+            // Single key: a second order_by entry overruns the type checker's
+            // instantiation budget on a schema this size. Recency is a
+            // tiebreak only, so it is applied client-side in `partners`.
+            order_by: [{ matches_together: order_by.desc }],
+            limit: $("limit", "Int!"),
+          },
+          {
+            partner_steam_id: true,
+            matches_together: true,
+            wins_together: true,
+            last_played_at: true,
+            partner: partnerFields,
+          },
+        ],
+      }),
+      variables: function (): { steamId: string; limit: number } {
+        return {
+          steamId: (this as any).playerId,
+          limit: (this as any).limit,
+        };
+      },
+      skip: function () {
+        return !(this as any).playerId;
       },
     },
   },

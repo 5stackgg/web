@@ -10,11 +10,25 @@ export type PartyMember = {
   party_source?: string | null;
 };
 
+// Keyed on the match object's identity. Every row asks for its own party index,
+// so without this the whole match is re-walked once per row on every render.
+// Safe because the cache misses whenever the query hands back a new object,
+// which is exactly when the lineups can have changed.
+const orderCache = new WeakMap<object, Map<string, number>>();
+
 // Ordered by first appearance so colours don't shuffle between renders.
 export function matchPartyOrder(match: any): Map<string, number> {
-  const order = new Map<string, number>();
+  if (!match || typeof match !== "object") {
+    return new Map();
+  }
 
-  for (const lineup of [match?.lineup_1, match?.lineup_2]) {
+  const cached = orderCache.get(match);
+  if (cached) {
+    return cached;
+  }
+
+  const order = new Map<string, number>();
+  for (const lineup of [match.lineup_1, match.lineup_2]) {
     for (const member of lineup?.lineup_players ?? []) {
       const partyId = member?.party_id;
       if (partyId && !order.has(partyId)) {
@@ -23,6 +37,7 @@ export function matchPartyOrder(match: any): Map<string, number> {
     }
   }
 
+  orderCache.set(match, order);
   return order;
 }
 

@@ -2443,7 +2443,7 @@
       "played_matches": "Played Matches",
       "queue_partners": {
         "title": "Queued With",
-        "matches": "{count} together | {count} together",
+        "matches": "{count} match | {count} matches",
         "win_rate": "{pct}% won"
       },
       "min_sanctions": "Minimum Sanctions",

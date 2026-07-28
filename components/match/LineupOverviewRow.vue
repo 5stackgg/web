@@ -48,8 +48,6 @@ const DASH = "—";
           'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
       ]"
     >
-      <!-- Sits just inside the 2px current-user rail so both stay legible on
-           your own row. -->
       <PartyBadge
         :index="memberPartyIndex"
         :source="member.party_source"

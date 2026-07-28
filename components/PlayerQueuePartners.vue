@@ -31,8 +31,6 @@ import { tacticalSectionLabelClasses } from "~/utilities/tacticalClasses";
           <div
             class="font-mono text-sm font-semibold tabular-nums leading-none"
           >
-            <!-- Plural choice goes in the second arg; a named `count` alone
-                 does not select a branch (see LeftNav's systems_online). -->
             {{
               $t(
                 "pages.players.queue_partners.matches",
@@ -59,9 +57,8 @@ import { tacticalSectionLabelClasses } from "~/utilities/tacticalClasses";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
-// Just what PlayerDisplay renders. The shared playerFields selector is 24
-// columns wide (including the `elo` computed field) and pushes this query
-// past the type checker's instantiation depth on a schema this size.
+// Not the shared playerFields selector: at 24 columns it pushes this query past
+// the type checker's instantiation depth.
 const partnerFields = {
   name: true,
   role: true,
@@ -83,7 +80,6 @@ export default {
     },
   },
   computed: {
-    // Most-played first, most-recent breaking ties (see the order_by note).
     partners(): Array<any> {
       const rows = (this as any).v_player_queue_partners ?? [];
       return [...rows].sort((a: any, b: any) => {
@@ -109,8 +105,6 @@ export default {
     },
   },
   apollo: {
-    // A plain query, not a subscription: this only changes when a match
-    // finishes, and a live socket per profile view is not worth that.
     v_player_queue_partners: {
       fetchPolicy: "cache-and-network",
       query: typedGql("query")({
@@ -121,9 +115,8 @@ export default {
                 _eq: $("steamId", "bigint!"),
               },
             },
-            // Single key: a second order_by entry overruns the type checker's
-            // instantiation budget on a schema this size. Recency is a
-            // tiebreak only, so it is applied client-side in `partners`.
+            // Single key: a second entry overruns the instantiation budget,
+            // so the recency tiebreak is applied client-side.
             order_by: [{ matches_together: order_by.desc }],
             limit: $("limit", "Int!"),
           },

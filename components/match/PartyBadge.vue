@@ -16,9 +16,7 @@ const props = defineProps<{
   members?: string[];
 }>();
 
-// Deliberately off the tac-amber axis: amber is spoken for by "this is you"
-// and the CTA treatment, so a party rail in amber would read as the wrong
-// signal. These sit far enough apart in hue to be told apart at 3px wide.
+// Off the tac-amber axis on purpose — amber means "this is you".
 const PARTY_HUES = [190, 152, 275, 350, 96];
 
 const hue = computed(() => PARTY_HUES[(props.index ?? 0) % PARTY_HUES.length]);
@@ -36,8 +34,7 @@ const sourceLabel = computed(() => {
   }
 });
 
-// The tooltip is pointer/focus only, so the party members go in the accessible
-// name too — otherwise a screen reader gets a colour and nothing else.
+// The tooltip is pointer/focus only, so a screen reader needs the names here.
 const accessibleLabel = computed(() =>
   props.members?.length
     ? `${t(sourceLabel.value)}: ${props.members.join(", ")}`
@@ -49,19 +46,15 @@ const accessibleLabel = computed(() =>
   <TooltipProvider v-if="index !== null" :delay-duration="150">
     <Tooltip>
       <TooltipTrigger as-child>
-        <!-- The visible mark is 3px, which is far too small to hover or tap, so
-             the trigger is a wider transparent strip with the bar drawn inside
-             it. Focusable so the tooltip is reachable without a pointer; the
-             strip sits inside the cell's left padding so it does not swallow
-             clicks meant for the row menu. -->
+        <!-- Wider transparent strip: 3px is too small to hover or tap. Sits
+             inside the cell's left padding so it misses the row menu. -->
         <button
           type="button"
           class="group/party absolute left-0 top-0 bottom-0 z-10 flex w-[9px] cursor-help items-stretch outline-none"
           :aria-label="accessibleLabel"
         >
-          <!-- Square ends, full row height: two party members on adjacent rows
-               merge into one unbroken bar, which is the whole point. Rounding
-               or insetting the ends would chop it into ticks. -->
+          <!-- Square ends, full height: adjacent party members merge into one
+               unbroken bar. Rounding the ends would chop it into ticks. -->
           <span
             aria-hidden="true"
             class="ml-[3px] w-[3px] transition-[box-shadow] group-focus-visible/party:ring-2 group-focus-visible/party:ring-white/70"

@@ -51,7 +51,6 @@ export const matchLineups = Selector("match_lineups")({
       steam_id: true,
       checked_in: true,
       placeholder_name: true,
-      // Who queued together. Same value = same party; null = solo.
       party_id: true,
       party_source: true,
       player: {

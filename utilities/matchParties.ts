@@ -1,19 +1,13 @@
-// Party colouring for a match's lineups. party_id is a uuid (or a lobby id),
-// which is meaningless to look at, so each distinct party in the match gets a
-// small index that the badge turns into a colour.
-//
-// Indexed across the whole match rather than per lineup: a 5stack lobby big
-// enough to fill both sides is split across them and must keep one colour.
+// Indexed across the whole match, not per lineup: a lobby big enough to fill
+// both sides is split across them and must keep one colour.
 
 export type PartyMember = {
   party_id?: string | null;
   party_source?: string | null;
 };
 
-// Keyed on the match object's identity. Every row asks for its own party index,
-// so without this the whole match is re-walked once per row on every render.
-// Safe because the cache misses whenever the query hands back a new object,
-// which is exactly when the lineups can have changed.
+// Every row asks for its own index, so without this the match is re-walked once
+// per row per render. Keyed on identity, so a new result object busts it.
 const orderCache = new WeakMap<object, Map<string, number>>();
 
 // Ordered by first appearance so colours don't shuffle between renders.
@@ -52,9 +46,6 @@ export function partyIndexOf(
   return matchPartyOrder(match).get(partyId) ?? null;
 }
 
-// Everyone who queued alongside this player, for the rail's tooltip. Spans both
-// lineups: a 5stack lobby that fills the whole match is split across the two
-// sides and they still queued together.
 export function partyMemberNames(
   match: any,
   member: (PartyMember & { steam_id?: string | number | null }) | null,

@@ -15,10 +15,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-definePageMeta({
-  middleware: "admin",
-});
 </script>
 
 <template>

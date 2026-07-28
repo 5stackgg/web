@@ -6,10 +6,6 @@ import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { CalendarDays } from "lucide-vue-next";
-
-definePageMeta({
-  middleware: "admin",
-});
 </script>
 
 <template>

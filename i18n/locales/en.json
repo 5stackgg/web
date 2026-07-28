@@ -2441,6 +2441,11 @@
         "headshot_pct": "HeadShot %"
       },
       "played_matches": "Played Matches",
+      "queue_partners": {
+        "title": "Queued With",
+        "matches": "{count} match | {count} matches",
+        "win_rate": "{pct}% won"
+      },
       "min_sanctions": "Minimum Sanctions",
       "is_banned": "Banned",
       "is_gagged": "Gagged",
@@ -4829,6 +4834,11 @@
       "force_ready": "Force Ready",
       "reset_to_knife": "Reset to Knife",
       "reset_to_warmup": "Reset to Warmup"
+    },
+    "party": {
+      "queued": "Queued together",
+      "queued_lobby": "Queued together in a lobby",
+      "queued_valve": "Queued together (Valve party)"
     },
     "picks": {
       "decider": "Decider",

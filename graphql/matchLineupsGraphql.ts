@@ -51,6 +51,8 @@ export const matchLineups = Selector("match_lineups")({
       steam_id: true,
       checked_in: true,
       placeholder_name: true,
+      party_id: true,
+      party_source: true,
       player: {
         ...playerFields,
         // Faceit level/elo as of this match — PlayerDisplay prefers this over

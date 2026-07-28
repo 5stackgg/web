@@ -43,11 +43,16 @@ const DASH = "—";
     <TableCell
       v-if="!hideMember"
       :class="[
-        'w-[110px] md:w-[220px] sticky left-0 z-30 border-r border-border touch-pan-y [transform:translateZ(0)]',
+        'relative w-[110px] md:w-[220px] sticky left-0 z-30 border-r border-border touch-pan-y [transform:translateZ(0)]',
         stickyCellClass(member) ||
           'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
       ]"
     >
+      <PartyBadge
+        :index="memberPartyIndex"
+        :source="member.party_source"
+        :members="memberPartyNames"
+      />
       <div class="flex items-center gap-1 min-w-0">
         <DropdownMenu v-if="canDoActions">
           <DropdownMenuTrigger as-child>
@@ -358,12 +363,15 @@ const DASH = "—";
 
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
+import PartyBadge from "~/components/match/PartyBadge.vue";
+import { partyIndexOf, partyMemberNames } from "~/utilities/matchParties";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   components: {
     LineupMember,
+    PartyBadge,
   },
   data() {
     return {
@@ -844,6 +852,12 @@ export default {
           (ec: any) => String(ec.player_steam_id) === String(steamId),
         ) ?? null
       );
+    },
+    memberPartyIndex() {
+      return partyIndexOf(this.match, this.member);
+    },
+    memberPartyNames() {
+      return partyMemberNames(this.match, this.member);
     },
     // v_player_elo.current_elo is the rating going *into* the match
     // (updated_elo is the one coming out).

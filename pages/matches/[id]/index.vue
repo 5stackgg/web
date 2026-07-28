@@ -199,13 +199,14 @@ const vsBaseClasses =
           <div class="inline-flex items-center gap-2 ml-auto">
             <span
               v-if="match.options?.type"
-              class="inline-flex items-center self-stretch px-[0.7rem] py-[0.25rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground"
+              class="inline-flex items-center self-stretch px-[0.7rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground"
             >
               {{ match.options.type }}
             </span>
             <MatchSourceBadge
               v-if="match.source !== 'faceit'"
               :source="match.source"
+              class="self-stretch px-[0.7rem] text-[0.62rem] leading-none"
             />
             <MatchActions :match="match" />
           </div>

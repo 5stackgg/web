@@ -216,7 +216,7 @@ const setEloSource = (key: string) => {
       <PlayerSearch
         v-if="team.can_invite"
         :label="$t('team.members.invite_player')"
-        :exclude="team?.roster.map((m) => m.player.steam_id) || []"
+        :ineligible="ineligibleMembers"
         @selected="onInvite"
       >
         <Button
@@ -345,6 +345,29 @@ export default {
     },
   },
   computed: {
+    // Covers pending invites too — without them you could re-invite someone
+    // who already has an outstanding invite and get a silent no-op.
+    ineligibleMembers(): Record<string, string> {
+      const map: Record<string, string> = {};
+
+      for (const member of this.team?.roster || []) {
+        if (!member.player?.steam_id) continue;
+        map[String(member.player.steam_id)] = this.$t(
+          member.role === "Invite"
+            ? "player.search.ineligible.team_invite_pending"
+            : "player.search.ineligible.on_team",
+        );
+      }
+
+      for (const invite of this.team_invites || []) {
+        if (!invite.player?.steam_id) continue;
+        map[String(invite.player.steam_id)] = this.$t(
+          "player.search.ineligible.team_invite_pending",
+        );
+      }
+
+      return map;
+    },
     sortedRoster(): any[] {
       return (this.team?.roster || []).slice().sort((a: any, b: any) => {
         const roleOrder = { Admin: 1, Invite: 2, Member: 3 } as Record<

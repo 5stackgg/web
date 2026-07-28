@@ -20,7 +20,7 @@ import ManageSection from "~/components/common/ManageSection.vue";
     >
       <PlayerSearch
         :label="$t('tournament.organizer.add')"
-        :exclude="excludeOrganizers"
+        :ineligible="ineligibleOrganizers"
         @selected="addOrganizer"
       ></PlayerSearch>
 
@@ -82,14 +82,20 @@ export default {
     },
   },
   computed: {
-    excludeOrganizers() {
-      const organizers = this.tournament.organizers?.map(
-        ({ organizer }) => organizer.steam_id,
+    ineligibleOrganizers() {
+      const map: Record<string, string> = {};
+
+      for (const { organizer } of this.tournament.organizers || []) {
+        map[String(organizer.steam_id)] = this.$t(
+          "player.search.ineligible.tournament_organizer",
+        );
+      }
+
+      map[String(this.tournament.admin.steam_id)] = this.$t(
+        "player.search.ineligible.tournament_admin",
       );
 
-      organizers.push(this.tournament.admin.steam_id);
-
-      return organizers;
+      return map;
     },
   },
 };

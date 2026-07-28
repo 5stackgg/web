@@ -67,11 +67,13 @@ export const useSearchStore = defineStore("searchStore", () => {
 
   return {
     onlineOnly,
+    // Returns every match; the caller windows it (PlayerSearch pages through
+    // this list the same way it pages the Typesense results).
     search: (query: string, exclude: string[]) => {
       if (!query) {
-        return onlinePlayers.value
-          .slice(0, 10)
-          .filter((player) => !exclude.includes(player.steam_id));
+        return onlinePlayers.value.filter(
+          (player) => !exclude.includes(player.steam_id),
+        );
       }
 
       const results = miniSearch.search(query, {

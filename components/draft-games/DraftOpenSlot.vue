@@ -1,10 +1,25 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Plus } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 
-defineProps<{
+const props = defineProps<{
   exclude: Array<string>;
 }>();
+
+const { t } = useI18n();
+
+// The reason is uniform here, so callers keep passing a plain id list and the
+// map is built at the leaf.
+const ineligible = computed(() =>
+  Object.fromEntries(
+    props.exclude.map((steamId) => [
+      String(steamId),
+      t("player.search.ineligible.in_draft"),
+    ]),
+  ),
+);
 
 const emit = defineEmits<{
   selected: [steamId: string, player: { steam_id: string }];
@@ -19,7 +34,7 @@ const onSelected = (player: { steam_id: string }) => {
   <div>
     <PlayerSearch
       :label="$t('draft_games.room.search_player')"
-      :exclude="exclude"
+      :ineligible="ineligible"
       :group-by-friends="true"
       :self="true"
       @selected="onSelected"

@@ -750,7 +750,11 @@ const submit = form.handleSubmit(async (values: any) => {
               :model-value="team1Id"
               my-teams
               :min-players="perTeam"
-              :exclude="team2Id ? [team2Id] : []"
+              :ineligible="
+                team2Id
+                  ? { [team2Id]: $t('team.search.ineligible.other_side') }
+                  : {}
+              "
               @selected="(team) => (team1Id = team.id)"
             />
             <div v-if="!innerSquad" class="flex items-center gap-2">
@@ -759,7 +763,11 @@ const submit = form.handleSubmit(async (values: any) => {
                   :label="$t('draft_games.create.team_2_optional')"
                   :model-value="team2Id"
                   :min-players="perTeam"
-                  :exclude="team1Id ? [team1Id] : []"
+                  :ineligible="
+                    team1Id
+                      ? { [team1Id]: $t('team.search.ineligible.other_side') }
+                      : {}
+                  "
                   @selected="(team) => (team2Id = team.id)"
                 />
               </div>

@@ -54,7 +54,10 @@ const { height: viewportHeight } = useVisualViewport();
         class="flex flex-col"
         :style="{ height: `${viewportHeight * 0.9}px` }"
       >
-        <div class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col">
+        <div
+          ref="scrollEl"
+          class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col"
+        >
           <div class="flex-1" />
           <div
             v-if="!teams?.length"
@@ -133,6 +136,14 @@ const { height: viewportHeight } = useVisualViewport();
                 {{ teamDisabledReason(team) }}
               </p>
             </div>
+          </div>
+
+          <div v-if="hasMore" ref="sentinelEl" class="h-px w-full shrink-0" />
+          <div
+            v-if="loadingMore"
+            class="py-2 text-center text-xs text-muted-foreground"
+          >
+            {{ $t("team.search.loading_more") }}
           </div>
         </div>
 
@@ -240,7 +251,7 @@ const { height: viewportHeight } = useVisualViewport();
           </div>
         </div>
 
-        <div class="max-h-[300px] overflow-y-auto">
+        <div ref="scrollEl" class="max-h-[300px] overflow-y-auto">
           <div
             v-if="!teams?.length"
             class="p-4 text-center text-muted-foreground"
@@ -327,6 +338,14 @@ const { height: viewportHeight } = useVisualViewport();
               </div>
             </div>
           </div>
+
+          <div v-if="hasMore" ref="sentinelEl" class="h-px w-full" />
+          <div
+            v-if="loadingMore"
+            class="py-2 text-center text-xs text-muted-foreground"
+          >
+            {{ $t("team.search.loading_more") }}
+          </div>
         </div>
       </div>
     </PopoverContent>
@@ -334,8 +353,12 @@ const { height: viewportHeight } = useVisualViewport();
 </template>
 
 <script lang="ts">
+import { markRaw } from "vue";
+import { order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { teamAvgElo, teamAvgPremier } from "~/utilities/teamElo";
+
+const PAGE_SIZE = 25;
 
 interface Team {
   id: string;
@@ -357,10 +380,20 @@ export default {
       type: String,
       required: true,
     },
+    // Team ids that must never be rendered. Reserve this for cases with
+    // nothing useful to say (the team you're already on, filter chips) — for
+    // "it exists but you can't pick it", use `ineligible`.
     exclude: {
-      type: Array,
+      type: Array as () => string[],
       required: false,
-      default: [],
+      default: () => [],
+    },
+    // team id -> sentence explaining why it can't be selected. These stay in
+    // the results, rendered dimmed with the reason underneath.
+    ineligible: {
+      type: Object as () => Record<string, string>,
+      required: false,
+      default: () => ({}),
     },
     modelValue: {
       type: [String, Number, Array, Object],
@@ -407,6 +440,16 @@ export default {
       myTeamsOnly: false,
       selectedIndex: 0,
       activeRow: null as HTMLElement | null,
+      // The my-teams / teamOptions branches search an in-memory list, so they
+      // page by widening a window instead of re-querying.
+      localPool: [] as Team[],
+      visibleCount: PAGE_SIZE,
+      remoteHasMore: false,
+      loadingMore: false,
+      searching: false,
+      // Guards against a slow early request overwriting a newer one.
+      searchToken: 0,
+      observer: null as IntersectionObserver | null,
       debouncedSearch: debounce((query: string) => {
         this.searchTeams(query);
       }, 300),
@@ -422,9 +465,18 @@ export default {
           this.searchTeams();
           this.$nextTick(() => {
             (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+            this.ensureObserver();
           });
+        } else {
+          this.observer?.disconnect();
+          this.observer = null;
         }
       },
+    },
+    // The sentinel only exists while there's another page, and the panel
+    // remounts on open, so re-bind whenever either flips.
+    hasMore() {
+      this.$nextTick(() => this.ensureObserver());
     },
     modelValue: {
       once: true,
@@ -480,6 +532,16 @@ export default {
       const source = this.teams ?? this.teamOptions;
       return source?.find((team) => team.id === id);
     },
+    isLocalMode(): boolean {
+      return !!this.teamOptions || this.myTeamsOnly || this.myTeams;
+    },
+    hasMore(): boolean {
+      if (this.teams === undefined) return false;
+      if (this.isLocalMode) {
+        return this.visibleCount < this.localPool.length;
+      }
+      return this.remoteHasMore;
+    },
   },
   methods: {
     setActiveRow(el: HTMLElement | null) {
@@ -490,23 +552,48 @@ export default {
         this.activeRow?.scrollIntoView({ block: "nearest" });
       });
     },
+    // Skip rows Enter can't act on, rather than parking the cursor on one.
+    moveSelection(delta: number) {
+      const indexes: number[] = [];
+      (this.teams ?? []).forEach((team, index) => {
+        if (this.canSelectTeam(team) && !this.isSelected(team)) {
+          indexes.push(index);
+        }
+      });
+      if (!indexes.length) return;
+
+      const position = indexes.indexOf(this.selectedIndex);
+      if (position === -1) {
+        this.selectedIndex =
+          delta > 0 ? indexes[0] : indexes[indexes.length - 1];
+        return;
+      }
+      const next = Math.min(Math.max(position + delta, 0), indexes.length - 1);
+      this.selectedIndex = indexes[next];
+    },
     onKeydown(event: KeyboardEvent) {
       const list = this.teams ?? [];
       if (!list.length) return;
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        this.selectedIndex = Math.min(this.selectedIndex + 1, list.length - 1);
+        this.moveSelection(1);
         this.scrollActiveIntoView();
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
-        this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+        this.moveSelection(-1);
         this.scrollActiveIntoView();
       } else if (event.key === "Enter") {
         event.preventDefault();
         if (list[this.selectedIndex]) this.select(list[this.selectedIndex]);
       }
     },
+    ineligibleReason(team: Team): string | undefined {
+      return this.ineligible[String(team.id)];
+    },
     canSelectTeam(team: Team): boolean {
+      if (this.ineligibleReason(team)) {
+        return false;
+      }
       if (this.minPlayers && (team.player_count ?? 0) < this.minPlayers) {
         return false;
       }
@@ -526,6 +613,12 @@ export default {
       return this.$t("team.search.ineligible_short");
     },
     teamDisabledReason(team: Team): string {
+      // Most specific first — "already in this tournament" beats "not enough
+      // players" when both are true.
+      const ineligible = this.ineligibleReason(team);
+      if (ineligible) {
+        return ineligible;
+      }
       if (this.minPlayers && (team.player_count ?? 0) < this.minPlayers) {
         return this.$t("team.search.not_enough_players", {
           count: this.minPlayers,
@@ -534,10 +627,13 @@ export default {
       if (!this.tournamentJoinSelector || this.canSelectTeam(team)) return "";
       return this.$t("team.search.tournament_join_requires_owner_or_captain");
     },
-    async enrichTeams() {
+    // Only the rows passed in are enriched, so scrolling doesn't re-query
+    // stats for everything already on screen.
+    async enrichTeams(targets?: Team[]) {
+      const rows = targets ?? this.teams ?? [];
       // Only fetch roster details when a consumer needs eligibility / ELO.
-      if (!this.showStats || !this.teams?.length) return;
-      const ids = this.teams.map((team) => team.id);
+      if (!this.showStats || !rows.length) return;
+      const ids = rows.map((team) => team.id);
       const { data } = await this.$apollo.query({
         query: generateQuery({
           teams: [
@@ -562,17 +658,26 @@ export default {
       const detailsById = new Map<string, any>(
         (data.teams || []).map((team: any) => [team.id, team]),
       );
-      this.teams = this.teams.map((team) => {
+      const merge = (team: Team) => {
         const details = detailsById.get(team.id);
-        const roster = details?.roster || [];
+        if (!details) return team;
+        const roster = details.roster || [];
         return {
           ...team,
-          avatar_url: team.avatar_url ?? details?.avatar_url ?? null,
+          avatar_url: team.avatar_url ?? details.avatar_url ?? null,
           player_count: roster.length,
           avg_elo: teamAvgElo(roster),
           avg_premier: teamAvgPremier(roster),
         };
-      });
+      };
+
+      // Merge back by id — the list may have grown or been replaced while
+      // this query was in flight.
+      this.teams = (this.teams ?? []).map(merge);
+      // The pool too: applyLocalWindow re-derives `teams` from it, so leaving
+      // the pool unenriched would drop player_count on every scroll — and with
+      // it the minPlayers eligibility that depends on it.
+      this.localPool = this.localPool.map(merge);
     },
     teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
       if (!team.avatar_url) return null;
@@ -597,48 +702,9 @@ export default {
       this.$emit("selected", team);
       this.$emit("update:modelValue", team);
     },
-    async searchTeams(query?: string) {
-      if (query !== undefined) {
-        this.query = query;
-      }
-
-      this.selectedIndex = 0;
-
-      if (this.teamOptions) {
-        const search = this.query.toLowerCase();
-        this.teams = this.teamOptions.filter((team) => {
-          if (this.exclude.includes(team.id)) {
-            return false;
-          }
-          return !search || (team.name || "").toLowerCase().includes(search);
-        });
-        await this.enrichTeams();
-        return;
-      }
-
-      if (this.myTeamsOnly || this.myTeams) {
-        this.teams = this.me.teams.filter((team: Team) => {
-          if (this.exclude.includes(team.id)) {
-            return false;
-          }
-
-          const isTeamCaptain = team.captain_steam_id === this.me?.steam_id;
-          const isTeamOwner = team.owner_steam_id === this.me?.steam_id;
-          if (
-            this.isAdmin &&
-            team.role !== e_team_roles_enum.Admin &&
-            !isTeamOwner &&
-            !isTeamCaptain
-          ) {
-            return this.tournamentJoinSelector;
-          }
-
-          return true;
-        });
-        await this.enrichTeams();
-        return;
-      }
-
+    // `exclude` is a hard hide and stays in the query; `ineligible` never
+    // touches it, which is what keeps those teams visible-but-dimmed.
+    async fetchTeamsPage(offset: number): Promise<Team[]> {
       const { data } = await this.$apollo.query({
         query: generateQuery({
           teams: [
@@ -661,6 +727,11 @@ export default {
                   ],
                 ],
               },
+              // Paging without an order is undefined — rows would repeat and
+              // go missing across pages.
+              order_by: [{ name: order_by.asc }],
+              limit: PAGE_SIZE,
+              offset,
             },
             {
               id: true,
@@ -671,9 +742,135 @@ export default {
           ],
         }),
       });
-      this.teams = data.teams;
-      await this.enrichTeams();
+
+      return data.teams as Team[];
     },
+    applyLocalWindow(): Team[] {
+      const previous = this.teams?.length ?? 0;
+      this.teams = this.localPool.slice(0, this.visibleCount);
+      return this.teams.slice(previous);
+    },
+    async searchTeams(query?: string) {
+      if (query !== undefined) {
+        this.query = query;
+      }
+
+      this.selectedIndex = 0;
+      this.visibleCount = PAGE_SIZE;
+      this.remoteHasMore = false;
+      this.searchToken += 1;
+      const token = this.searchToken;
+
+      if (this.teamOptions) {
+        const search = this.query.toLowerCase();
+        this.localPool = this.teamOptions.filter((team) => {
+          if (this.exclude.includes(team.id)) {
+            return false;
+          }
+          return !search || (team.name || "").toLowerCase().includes(search);
+        });
+        this.teams = [];
+        await this.enrichTeams(this.applyLocalWindow());
+        return;
+      }
+
+      if (this.myTeamsOnly || this.myTeams) {
+        this.localPool = this.me.teams.filter((team: Team) => {
+          if (this.exclude.includes(team.id)) {
+            return false;
+          }
+
+          const isTeamCaptain = team.captain_steam_id === this.me?.steam_id;
+          const isTeamOwner = team.owner_steam_id === this.me?.steam_id;
+          if (
+            this.isAdmin &&
+            team.role !== e_team_roles_enum.Admin &&
+            !isTeamOwner &&
+            !isTeamCaptain
+          ) {
+            return this.tournamentJoinSelector;
+          }
+
+          return true;
+        });
+        this.teams = [];
+        await this.enrichTeams(this.applyLocalWindow());
+        return;
+      }
+
+      this.searching = true;
+      try {
+        const rows = await this.fetchTeamsPage(0);
+        // A slower earlier keystroke must not clobber a newer result set.
+        if (token !== this.searchToken) return;
+
+        this.teams = rows;
+        this.remoteHasMore = rows.length === PAGE_SIZE;
+        await this.enrichTeams(rows);
+      } finally {
+        if (token === this.searchToken) {
+          this.searching = false;
+        }
+      }
+    },
+    async loadMore() {
+      // While page 1 is still in flight `teams` describes the previous query —
+      // appending to it would mix two result sets.
+      if (this.searching || this.loadingMore || !this.hasMore) {
+        return;
+      }
+
+      if (this.isLocalMode) {
+        this.visibleCount += PAGE_SIZE;
+        await this.enrichTeams(this.applyLocalWindow());
+        return;
+      }
+
+      this.loadingMore = true;
+      const token = this.searchToken;
+      try {
+        const rows = await this.fetchTeamsPage(this.teams?.length ?? 0);
+        if (token !== this.searchToken) return;
+
+        const seen = new Set((this.teams ?? []).map((team) => team.id));
+        const fresh = rows.filter((team) => !seen.has(team.id));
+
+        this.teams = (this.teams ?? []).concat(fresh);
+        this.remoteHasMore = rows.length === PAGE_SIZE;
+        await this.enrichTeams(fresh);
+      } finally {
+        this.loadingMore = false;
+        // If the new page didn't push the sentinel out of the root, no fresh
+        // intersection event fires — re-binding re-reports it.
+        this.$nextTick(() => this.ensureObserver());
+      }
+    },
+    ensureObserver() {
+      this.observer?.disconnect();
+      this.observer = null;
+
+      const root = this.$refs.scrollEl as HTMLElement | undefined;
+      const sentinel = this.$refs.sentinelEl as HTMLElement | undefined;
+      if (!root || !sentinel || typeof IntersectionObserver === "undefined") {
+        return;
+      }
+
+      this.observer = markRaw(
+        new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) this.loadMore();
+            }
+          },
+          { root, rootMargin: "0px 0px 200px 0px" },
+        ),
+      );
+      this.observer.observe(sentinel);
+    },
+  },
+  beforeUnmount() {
+    this.observer?.disconnect();
+    this.observer = null;
   },
 };
 </script>

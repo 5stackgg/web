@@ -31,10 +31,10 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     <FormField v-slot="{ value, handleChange }" name="new_team">
       <FormItem>
         <Card
-          class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+          class="h-9 rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
           @click="handleChange(!value)"
         >
-          <div class="flex flex-row items-center justify-between p-4">
+          <div class="flex h-full flex-row items-center justify-between px-4">
             <div class="space-y-0.5">
               <FormLabel>{{ $t("tournament.team.new") }}</FormLabel>
             </div>
@@ -58,10 +58,10 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       >
         <FormItem>
           <Card
-            class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+            class="h-9 rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
             @click="handleChange(!value)"
           >
-            <div class="flex flex-row items-center justify-between p-4">
+            <div class="flex h-full flex-row items-center justify-between px-4">
               <div class="space-y-0.5">
                 <FormLabel>{{
                   $t("tournament.join.add_self_to_lineup")
@@ -83,7 +83,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         :label="$t('tournament.join.team_owner')"
         @selected="setOwnerTeamOwner"
         :selected="teamOwner"
-        :exclude="existingTournamentPlayerSteamIds"
+        :ineligible="ineligibleTournamentPlayers"
         v-if="!form.values.add_self_to_lineup && form.values.new_team"
       ></PlayerSearch>
     </template>
@@ -96,7 +96,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
             :my-teams="canSelectAnyTeam ? false : true"
             :is-admin="canSelectAnyTeam ? false : true"
             :tournament-join-selector="!canSelectAnyTeam"
-            :exclude="existingTeamIds"
+            :ineligible="ineligibleTeams"
             @selected="
               async (team) => {
                 handleChange(String(team.id));
@@ -109,10 +109,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         </FormItem>
       </FormField>
 
-      <div
-        v-if="form.values.team_id && rosterGroups.length"
-        class="space-y-2"
-      >
+      <div v-if="form.values.team_id && rosterGroups.length" class="space-y-2">
         <label
           class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
@@ -305,21 +302,29 @@ export default {
     canSelectAnyTeam() {
       return this.tournament.is_organizer || useAuthStore().isAdmin;
     },
-    existingTeamIds() {
-      return (this.tournament.teams || [])
-        .map((t) => t.team_id)
-        .filter(Boolean);
+    ineligibleTeams(): Record<string, string> {
+      const map: Record<string, string> = {};
+      for (const team of this.tournament.teams || []) {
+        if (team.team_id) {
+          map[String(team.team_id)] = this.$t(
+            "team.search.ineligible.in_tournament",
+          );
+        }
+      }
+      return map;
     },
-    existingTournamentPlayerSteamIds() {
-      const steamIds = new Set<string>();
+    ineligibleTournamentPlayers(): Record<string, string> {
+      const map: Record<string, string> = {};
       for (const team of this.tournament.teams || []) {
         for (const entry of team.roster || []) {
           if (entry.player?.steam_id) {
-            steamIds.add(entry.player.steam_id);
+            map[String(entry.player.steam_id)] = this.$t(
+              "tournament.join.owner_on_a_team",
+            );
           }
         }
       }
-      return Array.from(steamIds);
+      return map;
     },
     maxLineup() {
       return (
@@ -329,7 +334,7 @@ export default {
       );
     },
     takenSteamIds() {
-      return new Set(this.existingTournamentPlayerSteamIds.map(String));
+      return new Set(Object.keys(this.ineligibleTournamentPlayers));
     },
     rosterGroups() {
       const sortByName = (list: any[]) =>
@@ -422,7 +427,10 @@ export default {
       if (this.isTaken(member)) {
         return "cursor-not-allowed opacity-40";
       }
-      if (!this.selectedPlayers.has(member.player_steam_id) && this.atLineupCap) {
+      if (
+        !this.selectedPlayers.has(member.player_steam_id) &&
+        this.atLineupCap
+      ) {
         return "cursor-not-allowed opacity-50";
       }
       return "cursor-pointer";

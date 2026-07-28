@@ -84,7 +84,7 @@ import { Badge } from "~/components/ui/badge";
           :self="false"
           @selected="(player) => inviteToLobby(player.steam_id)"
           :registeredOnly="true"
-          :exclude="lobby?.players.map((player) => player.player.steam_id)"
+          :ineligible="ineligibleLobbyPlayers"
         >
           <Button
             variant="outline"
@@ -119,6 +119,14 @@ export default {
         return this.me.steam_id === player.steam_id;
       });
       return me?.captain;
+    },
+    ineligibleLobbyPlayers(): Record<string, string> {
+      return Object.fromEntries(
+        (this.lobby?.players || []).map(({ player }: { player: any }) => [
+          String(player.steam_id),
+          this.$t("player.search.ineligible.in_lobby"),
+        ]),
+      );
     },
     maxPlayersLabel() {
       // Fallback if max size is not available on the lobby object.

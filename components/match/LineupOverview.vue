@@ -123,6 +123,7 @@ import {
   DialogClose,
 } from "~/components/ui/dialog";
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
+import { matchIneligiblePlayers } from "~/utilities/matchIneligiblePlayers";
 import { e_match_status_enum } from "~/generated/zeus";
 import PlayerDisplay from "../PlayerDisplay.vue";
 import { PencilIcon } from "lucide-vue-next";
@@ -444,12 +445,13 @@ import {
       <TableBody>
         <LineupOverviewRow
           :match="match"
-          :member="member"
+          :member="row"
           :lineup="lp"
           :show-stats="showStats"
           :hide-member="hideMember"
           :match-side="matchSide"
-          v-for="member of sortRows(lp.lineup_players, buildSortGetters(match))"
+          v-for="row of sortRows(lp.lineup_players, buildSortGetters(match))"
+          :key="row.steam_id ?? row.placeholder_name"
         ></LineupOverviewRow>
         <TableRow
           v-for="slot of Math.max(
@@ -466,7 +468,7 @@ import {
             <AssignPlayerToLineup
               v-if="canAddToLineupFor(lp)"
               :lineup="lp"
-              :exclude="excludePlayers"
+              :ineligible="ineligiblePlayers"
               :match-id="match.id"
             >
               <button
@@ -597,25 +599,8 @@ export default {
     maxPlayers() {
       return this.match.max_players_per_lineup;
     },
-    excludePlayers() {
-      if (!this.match) {
-        return [];
-      }
-
-      const players = [];
-
-      players.push(...this.match.lineup_1.lineup_players);
-      players.push(...this.match.lineup_2.lineup_players);
-
-      if (this.match.lineup_1.coach) {
-        players.push(this.match.lineup_1.coach);
-      }
-
-      if (this.match.lineup_2.coach) {
-        players.push(this.match.lineup_2.coach);
-      }
-
-      return players;
+    ineligiblePlayers() {
+      return matchIneligiblePlayers(this.match, this.$t);
     },
   },
   methods: {

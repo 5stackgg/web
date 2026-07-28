@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import { Button } from "~/components/ui/button";
 import {
@@ -67,6 +68,17 @@ const subsCap = computed(() =>
 
 const availableTeams = computed(() =>
   props.teams.filter((team) => !props.registeredTeamIds.includes(team.id)),
+);
+
+const { t } = useI18n();
+
+const ineligibleTeams = computed(() =>
+  Object.fromEntries(
+    props.registeredTeamIds.map((teamId) => [
+      String(teamId),
+      t("team.search.ineligible.in_season"),
+    ]),
+  ),
 );
 
 const selectedTeam = computed<ManagedTeam | null>(() => {
@@ -194,7 +206,7 @@ function submit() {
             :label="$t('league.join.pick_team')"
             :my-teams="false"
             :is-admin="false"
-            :exclude="registeredTeamIds"
+            :ineligible="ineligibleTeams"
             :model-value="selectedTeamId"
             @selected="selectAnyTeam"
           ></TeamSearch>

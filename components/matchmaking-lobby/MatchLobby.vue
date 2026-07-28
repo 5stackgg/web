@@ -8,7 +8,8 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 <template>
   <div
-    class="relative flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
+    class="relative flex items-center justify-between gap-2 bg-background rounded-full py-1 pr-2 border border-gray-700 h-12"
+    :class="isCaptain ? 'pl-2' : 'pl-4'"
   >
     <MatchmakingLobbyAccess :lobby="lobby" v-if="isCaptain" />
 
@@ -65,7 +66,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             :self="false"
             @selected="(player) => inviteToLobby(player.steam_id)"
             :registeredOnly="true"
-            :exclude="lobby?.players.map((player) => player.player.steam_id)"
+            :ineligible="ineligibleLobbyPlayers"
           >
             <div
               class="w-8 h-8 rounded-full p-0.5 bg-gray-800 border border-gray-600 flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors duration-200"
@@ -120,6 +121,14 @@ export default {
         return this.me.steam_id === player.steam_id;
       });
       return me?.captain;
+    },
+    ineligibleLobbyPlayers(): Record<string, string> {
+      return Object.fromEntries(
+        (this.lobby?.players || []).map(({ player }: { player: any }) => [
+          String(player.steam_id),
+          this.$t("player.search.ineligible.in_lobby"),
+        ]),
+      );
     },
   },
   methods: {

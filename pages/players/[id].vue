@@ -2939,7 +2939,7 @@ const playerHeroTeamChipDotClasses =
   </div>
 
   <Sheet
-    v-if="player"
+    v-if="player && canEditPlayer"
     :open="editPlayerSheet"
     @update:open="(open) => (editPlayerSheet = open)"
   >
@@ -3302,12 +3302,9 @@ export default {
       return useAuthStore().isRoleAbove(this.player.role);
     },
     canEditPlayer() {
-      return (
-        this.canEditAvatar ||
-        this.canEditName ||
-        this.canEditCountry ||
-        this.canEditRole
-      );
+      // Only fields actually rendered inside the edit sheet — the role editor
+      // lives inline in the hero, so it must not open an otherwise empty sheet.
+      return this.canEditAvatar || this.canEditName || this.canEditCountry;
     },
     bulkApplyTeams() {
       const me = useAuthStore().me;

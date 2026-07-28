@@ -8,6 +8,12 @@ import {
 import { useSidebar } from "../ui/sidebar";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import { Crown } from "lucide-vue-next";
+import PartyBadge from "~/components/match/PartyBadge.vue";
+import {
+  partyIndexOf,
+  partyMemberNames,
+  partyRingShadow,
+} from "~/utilities/matchParties";
 
 const { isMobile } = useSidebar();
 </script>
@@ -27,7 +33,16 @@ const { isMobile } = useSidebar();
     :match-type="match?.options?.type"
     :at-elo="atElo"
     :external="isExternalMatch"
+    :avatar-ring="partyRing"
   >
+    <template v-slot:avatar-corner-start v-if="partyIndex !== null">
+      <PartyBadge
+        :index="partyIndex"
+        :source="member.party_source"
+        :members="partyNames"
+      />
+    </template>
+
     <template v-slot:avatar-corner v-if="member.captain">
       <span
         :title="$t('match.player.captain')"
@@ -53,10 +68,12 @@ const { isMobile } = useSidebar();
       <FiveStackToolTip side="top" as-child>
         <template #trigger>
           <span
-            class="absolute -top-1 h-2 w-2 z-30 cursor-default"
+            class="absolute h-2 w-2 z-30 cursor-default"
             :class="{
               'left-0': !flip,
               '-right-1': flip,
+              '-bottom-1': statusAtBottom,
+              '-top-1': !statusAtBottom,
             }"
           >
             <span
@@ -175,6 +192,23 @@ export default {
   computed: {
     e_match_status_enum() {
       return e_match_status_enum;
+    },
+    partyIndex() {
+      return partyIndexOf(this.match, this.member);
+    },
+    partyNames() {
+      return partyMemberNames(this.match, this.member);
+    },
+    partyRing() {
+      if (this.partyIndex === null) {
+        return null;
+      }
+      return partyRingShadow(this.partyIndex);
+    },
+    // The party chip takes the avatar's top-left corner, so the ping moves down
+    // to the one corner nothing else claims (the crown owns bottom-right).
+    statusAtBottom() {
+      return this.partyIndex !== null && !this.flip;
     },
     // Imported from outside 5stack (e.g. Valve / Faceit match history).
     isExternalMatch() {

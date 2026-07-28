@@ -40,8 +40,10 @@ const buttonShape = computed(() => {
   if (props.size === "lg") {
     return `inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2.5 font-mono text-[0.72rem] font-bold uppercase leading-tight tracking-[0.08em] ${base}`;
   }
+  // h-[1.375rem] + the container's p-1 and 1px border lands the whole strip on
+  // exactly 2rem, so a square filter group lines up with adjacent h-8 buttons.
   return props.square
-    ? `inline-flex items-center justify-center gap-1.5 rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] ${base}`
+    ? `inline-flex h-[1.375rem] items-center justify-center gap-1.5 rounded px-2.5 font-mono text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] ${base}`
     : `inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs tracking-[0.06em] ${base}`;
 });
 function buttonState(opt: FilterOption) {

@@ -3891,7 +3891,8 @@
         "substitutes": "Substitutes",
         "benched": "Benched"
       },
-      "already_rostered": "On another team"
+      "already_rostered": "On another team",
+      "owner_on_a_team": "Already rostered on a team in this tournament."
     },
     "tournament_team": {
       "remove": "Remove Team",
@@ -4163,6 +4164,12 @@
       "leave_team": "Leave Team",
       "slot": "Slot {number}",
       "add_player": "Add Player",
+      "ineligible": {
+        "on_this_roster": "Already on this roster.",
+        "on_other_team": "Already rostered on {team} in this tournament.",
+        "invite_pending": "You've already invited them — waiting on their response."
+      },
+      "already_in_tournament": "That player is already on a team in this tournament.",
       "pending_invites": "Pending Invites",
       "member_added": "Player Added",
       "member_added_description": "{name} was added to your roster",
@@ -4392,7 +4399,15 @@
       "ineligible_short": "Locked",
       "tournament_join_requires_owner_or_captain": "You can only join a tournament with teams where you are the owner or captain.",
       "not_enough_players": "Needs at least {count} players to challenge.",
-      "selected": "Selected"
+      "selected": "Selected",
+      "loading_more": "Loading more...",
+      "ineligible": {
+        "in_tournament": "Already entered in this tournament.",
+        "in_season": "Already registered for this season.",
+        "tournament_organizer": "Already an organizer for this tournament.",
+        "in_event": "Already attached to this event.",
+        "other_side": "Already picked as the other team."
+      }
     },
     "member": {
       "coach": "Coach",
@@ -5494,7 +5509,20 @@
     "search": {
       "no_players_found": "No Players Found.",
       "found_players": "Players Found",
-      "placeholder": "Search players..."
+      "placeholder": "Search players...",
+      "loading_more": "Loading more...",
+      "ineligible": {
+        "in_lineup": "Already in this match's lineup.",
+        "coaching": "Already coaching in this match.",
+        "on_team": "Already on this team.",
+        "team_invite_pending": "You've already invited them — waiting on their response.",
+        "in_lobby": "Already in your lobby.",
+        "in_draft": "Already in this draft.",
+        "in_event": "Already attached to this event.",
+        "event_organizer": "Already an organizer for this event.",
+        "tournament_organizer": "Already an organizer for this tournament.",
+        "tournament_admin": "The tournament admin is always an organizer."
+      }
     },
     "sanctions": {
       "title": "Sanctions",

@@ -58,9 +58,13 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         alignTop ? 'items-start justify-start' : 'items-center justify-center',
       ]"
     >
-      <div class="relative">
+      <div class="relative flex">
         <slot name="avatar">
-          <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' || compact }">
+          <Avatar
+            shape="square"
+            :class="{ 'h-8 w-8': size === 'xs' || compact }"
+            :style="avatarRing ? { boxShadow: avatarRing } : undefined"
+          >
             <AvatarImage
               :src="playerAvatarSrc"
               :alt="player.name"
@@ -96,6 +100,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         v-if="$slots['avatar-corner']"
       >
         <slot name="avatar-corner"></slot>
+      </div>
+      <div
+        class="absolute -top-1 -left-1 z-10"
+        v-if="$slots['avatar-corner-start']"
+      >
+        <slot name="avatar-corner-start"></slot>
       </div>
     </div>
     <div
@@ -292,6 +302,10 @@ export default {
     showName: {
       type: Boolean,
       default: true,
+    },
+    avatarRing: {
+      type: String,
+      default: null,
     },
     showFlag: {
       type: Boolean,

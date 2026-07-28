@@ -4838,8 +4838,7 @@
     "party": {
       "queued": "Queued together",
       "queued_lobby": "Queued together in a lobby",
-      "queued_valve": "Queued together (Valve party)",
-      "queued_faceit": "Queued together (FACEIT party)"
+      "queued_valve": "Queued together (Valve party)"
     },
     "picks": {
       "decider": "Decider",

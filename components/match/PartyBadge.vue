@@ -27,8 +27,6 @@ const sourceLabel = computed(() => {
       return "match.party.queued_lobby";
     case "valve":
       return "match.party.queued_valve";
-    case "faceit":
-      return "match.party.queued_faceit";
     default:
       return "match.party.queued";
   }

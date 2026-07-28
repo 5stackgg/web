@@ -315,10 +315,14 @@ const submit = form.handleSubmit(async (values: any) => {
                     :label="$t('pages.matches.schedule.select_team')"
                     :model-value="side.teamId"
                     :min-players="perTeam"
-                    :exclude="
+                    :ineligible="
                       lineups[index === 0 ? 1 : 0].teamId
-                        ? [lineups[index === 0 ? 1 : 0].teamId]
-                        : []
+                        ? {
+                            [lineups[index === 0 ? 1 : 0].teamId]: $t(
+                              'team.search.ineligible.other_side',
+                            ),
+                          }
+                        : {}
                     "
                     @selected="(team) => (side.teamId = team.id)"
                   />

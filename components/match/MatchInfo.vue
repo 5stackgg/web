@@ -7,6 +7,7 @@ import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
+import { matchIneligiblePlayers } from "~/utilities/matchIneligiblePlayers";
 </script>
 
 <template>
@@ -48,7 +49,7 @@ import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
             <AssignCoachToLineup
               v-if="lineup.can_update_lineup"
               :lineup="lineup"
-              :exclude="excludePlayers"
+              :ineligible="ineligiblePlayers"
             />
           </li>
         </ul>
@@ -108,21 +109,8 @@ export default {
     hasContent() {
       return this.showAnyActionSection || this.match.options.coaches;
     },
-    excludePlayers() {
-      const players = [];
-
-      players.push(...this.match.lineup_1.lineup_players);
-      players.push(...this.match.lineup_2.lineup_players);
-
-      if (this.match.lineup_1.coach) {
-        players.push(this.match.lineup_1.coach);
-      }
-
-      if (this.match.lineup_2.coach) {
-        players.push(this.match.lineup_2.coach);
-      }
-
-      return players;
+    ineligiblePlayers() {
+      return matchIneligiblePlayers(this.match, this.$t);
     },
   },
 };

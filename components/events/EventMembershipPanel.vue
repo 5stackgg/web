@@ -83,7 +83,7 @@ function formatEventDate(value?: string | null): string | null {
           <div class="min-w-[220px] flex-1">
             <PlayerSearch
               :label="$t('event.membership.players.search_placeholder')"
-              :exclude="attachedPlayerSteamIds"
+              :ineligible="ineligiblePlayers"
               @selected="attachPlayer"
             />
           </div>
@@ -142,7 +142,7 @@ function formatEventDate(value?: string | null): string | null {
           <div class="min-w-[220px] flex-1">
             <TeamSearch
               :label="$t('event.membership.teams.search_placeholder')"
-              :exclude="attachedTeamIds"
+              :ineligible="ineligibleTeams"
               @selected="attachTeam"
             />
           </div>
@@ -189,7 +189,7 @@ function formatEventDate(value?: string | null): string | null {
         <div class="max-w-md">
           <PlayerSearch
             :label="$t('event.membership.organizers.search_placeholder')"
-            :exclude="attachedOrganizerSteamIds"
+            :ineligible="ineligibleOrganizers"
             @selected="attachOrganizer"
           />
         </div>
@@ -485,6 +485,30 @@ export default {
         this.event?.organizer_steam_id,
         ...(this.event?.organizers || []).map((entry: any) => entry.steam_id),
       ].filter(Boolean);
+    },
+    ineligibleTeams(): Record<string, string> {
+      return Object.fromEntries(
+        this.attachedTeamIds.map((teamId: string) => [
+          String(teamId),
+          this.$t("team.search.ineligible.in_event"),
+        ]),
+      );
+    },
+    ineligiblePlayers(): Record<string, string> {
+      return Object.fromEntries(
+        this.attachedPlayerSteamIds.map((steamId: string) => [
+          String(steamId),
+          this.$t("player.search.ineligible.in_event"),
+        ]),
+      );
+    },
+    ineligibleOrganizers(): Record<string, string> {
+      return Object.fromEntries(
+        this.attachedOrganizerSteamIds.map((steamId: string) => [
+          String(steamId),
+          this.$t("player.search.ineligible.event_organizer"),
+        ]),
+      );
     },
   },
   methods: {

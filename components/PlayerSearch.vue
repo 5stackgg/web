@@ -3,6 +3,7 @@ import { CaretSortIcon } from "@radix-icons/vue";
 import { Switch } from "~/components/ui/switch";
 import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerSearchRow from "~/components/PlayerSearchRow.vue";
 import { useMediaQuery } from "@vueuse/core";
 import debounce from "~/utilities/debounce";
 
@@ -47,7 +48,10 @@ const { height: viewportHeight } = useVisualViewport();
         class="flex flex-col"
         :style="{ height: `${viewportHeight * 0.9}px` }"
       >
-        <div class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col">
+        <div
+          ref="scrollEl"
+          class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col"
+        >
           <div class="flex-1" />
 
           <!-- Grouped: Friends / Others -->
@@ -72,29 +76,20 @@ const { height: viewportHeight } = useVisualViewport();
                   </span>
                 </div>
                 <div class="divide-y">
-                  <div
+                  <PlayerSearchRow
                     v-for="player in group.players"
                     :key="`g-${group.key}-${player.steam_id}`"
                     :ref="
-                      player.steam_id === activeSteamId
+                      indexOfPlayer(player) === selectedIndex
                         ? setActiveRow
                         : undefined
                     "
-                    class="px-3 py-2 cursor-pointer"
-                    :class="
-                      player.steam_id === activeSteamId
-                        ? 'bg-accent'
-                        : 'hover:bg-accent'
-                    "
-                    @click="select(player)"
-                    @mouseenter="
-                      selectedIndex = flatResults.findIndex(
-                        (p) => p.steam_id === player.steam_id,
-                      )
-                    "
-                  >
-                    <PlayerDisplay :player="player" />
-                  </div>
+                    :player="player"
+                    :active="indexOfPlayer(player) === selectedIndex"
+                    :reason="reasonFor(player)"
+                    @select="select(player)"
+                    @hover="onHover(indexOfPlayer(player))"
+                  />
                 </div>
               </div>
             </template>
@@ -109,21 +104,26 @@ const { height: viewportHeight } = useVisualViewport();
             </div>
 
             <div v-else class="divide-y">
-              <div
+              <PlayerSearchRow
                 v-for="(player, index) in displayPlayers"
-                :key="`player-${player.steam_id}}`"
+                :key="`player-${player.steam_id}`"
                 :ref="index === selectedIndex ? setActiveRow : undefined"
-                class="px-3 py-2 cursor-pointer"
-                :class="
-                  index === selectedIndex ? 'bg-accent' : 'hover:bg-accent'
-                "
-                @click="select(player)"
-                @mouseenter="selectedIndex = index"
-              >
-                <PlayerDisplay :player="player" />
-              </div>
+                :player="player"
+                :active="index === selectedIndex"
+                :reason="reasonFor(player)"
+                @select="select(player)"
+                @hover="onHover(index)"
+              />
             </div>
           </template>
+
+          <div v-if="hasMore" ref="sentinelEl" class="h-px w-full shrink-0" />
+          <div
+            v-if="loadingMore"
+            class="py-2 text-center text-xs text-muted-foreground"
+          >
+            {{ $t("player.search.loading_more") }}
+          </div>
         </div>
 
         <div
@@ -225,7 +225,7 @@ const { height: viewportHeight } = useVisualViewport();
           </div>
         </div>
 
-        <div class="max-h-[300px] overflow-y-auto">
+        <div ref="scrollEl" class="max-h-[300px] overflow-y-auto">
           <!-- Grouped: Friends / Others -->
           <template v-if="groupByFriends">
             <div
@@ -248,29 +248,20 @@ const { height: viewportHeight } = useVisualViewport();
                   </span>
                 </div>
                 <div class="divide-y">
-                  <div
+                  <PlayerSearchRow
                     v-for="player in group.players"
                     :key="`g-${group.key}-${player.steam_id}`"
                     :ref="
-                      player.steam_id === activeSteamId
+                      indexOfPlayer(player) === selectedIndex
                         ? setActiveRow
                         : undefined
                     "
-                    class="px-3 py-2 cursor-pointer"
-                    :class="
-                      player.steam_id === activeSteamId
-                        ? 'bg-accent'
-                        : 'hover:bg-accent'
-                    "
-                    @click="select(player)"
-                    @mouseenter="
-                      selectedIndex = flatResults.findIndex(
-                        (p) => p.steam_id === player.steam_id,
-                      )
-                    "
-                  >
-                    <PlayerDisplay :player="player" />
-                  </div>
+                    :player="player"
+                    :active="indexOfPlayer(player) === selectedIndex"
+                    :reason="reasonFor(player)"
+                    @select="select(player)"
+                    @hover="onHover(indexOfPlayer(player))"
+                  />
                 </div>
               </div>
             </template>
@@ -291,22 +282,27 @@ const { height: viewportHeight } = useVisualViewport();
               </div>
 
               <div class="divide-y">
-                <div
+                <PlayerSearchRow
                   v-for="(player, index) in displayPlayers"
-                  :key="`player-${player.steam_id}}`"
+                  :key="`player-${player.steam_id}`"
                   :ref="index === selectedIndex ? setActiveRow : undefined"
-                  class="px-3 py-2 cursor-pointer"
-                  :class="
-                    index === selectedIndex ? 'bg-accent' : 'hover:bg-accent'
-                  "
-                  @click="select(player)"
-                  @mouseenter="selectedIndex = index"
-                >
-                  <PlayerDisplay :player="player" />
-                </div>
+                  :player="player"
+                  :active="index === selectedIndex"
+                  :reason="reasonFor(player)"
+                  @select="select(player)"
+                  @hover="onHover(index)"
+                />
               </div>
             </div>
           </template>
+
+          <div v-if="hasMore" ref="sentinelEl" class="h-px w-full" />
+          <div
+            v-if="loadingMore"
+            class="py-2 text-center text-xs text-muted-foreground"
+          >
+            {{ $t("player.search.loading_more") }}
+          </div>
         </div>
       </div>
     </PopoverContent>
@@ -314,6 +310,8 @@ const { height: viewportHeight } = useVisualViewport();
 </template>
 
 <script lang="ts">
+import { markRaw } from "vue";
+
 interface Player {
   steam_id: string;
   role?: string;
@@ -331,10 +329,17 @@ interface Player {
 }
 
 interface SearchResponse {
+  found?: number;
   hits: Array<{
-    document: Player;
+    document: Player & {
+      elo_competitive?: number;
+      elo_wingman?: number;
+      elo_duel?: number;
+    };
   }>;
 }
+
+const PAGE_SIZE = 25;
 
 export default {
   emits: ["selected"],
@@ -343,10 +348,23 @@ export default {
       type: String,
       required: true,
     },
+    // Steam ids that must never be rendered at all. Reserve this for cases
+    // with nothing useful to say ("you", already-picked filter chips) — for
+    // "they exist but you can't pick them", use `ineligible` so the row shows
+    // up dimmed with a reason instead of silently vanishing.
     exclude: {
-      type: Array,
+      type: Array as () => string[],
       required: false,
-      default: [],
+      default: () => [],
+    },
+    // steam_id -> sentence explaining why that player can't be selected. These
+    // are deliberately NOT filtered out of the query: they render dimmed and
+    // non-selectable so the user can tell "already on a roster" from
+    // "no such player".
+    ineligible: {
+      type: Object as () => Record<string, string>,
+      required: false,
+      default: () => ({}),
     },
     teamId: {
       type: String,
@@ -384,6 +402,16 @@ export default {
       players: undefined as Player[] | undefined,
       selectedIndex: 0,
       activeRow: null as HTMLElement | null,
+      page: 1,
+      totalFound: 0,
+      loadingMore: false,
+      searching: false,
+      // The online path searches a local store that returns everything at
+      // once, so it pages client-side instead of re-querying.
+      visibleCount: PAGE_SIZE,
+      // Guards against a slow early request overwriting a newer one.
+      searchToken: 0,
+      observer: null as IntersectionObserver | null,
       debouncedSearch: debounce((query: string) => {
         this.searchPlayers(query);
       }, 300),
@@ -393,8 +421,22 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    // Only hard-hidden ids reach the query. `ineligible` never does.
+    hardExcluded(): string[] {
+      const ids = (this.exclude as string[]).map(String);
+      if (!this.canSelectSelf && this.me?.steam_id) {
+        ids.push(String(this.me.steam_id));
+      }
+      return ids;
+    },
     canSelectSelf() {
-      return this.self && this.me && !this.exclude.includes(this.me.steam_id);
+      return (
+        this.self &&
+        this.me &&
+        !(this.exclude as string[])
+          .map(String)
+          .includes(String(this.me.steam_id))
+      );
     },
     // The current user, surfaced as a selectable entry (the online presence
     // list never contains yourself). Hidden once you're in `exclude`, i.e.
@@ -424,10 +466,23 @@ export default {
         elo: me.elo,
       } as Player;
     },
+    // The slice of `players` currently on screen. The API path grows by
+    // fetching more pages, the online path by widening this window.
+    loadedPlayers(): Player[] {
+      const base = this.players ?? [];
+      return this.onlineOnly ? base.slice(0, this.visibleCount) : base;
+    },
+    hasMore(): boolean {
+      if (this.players === undefined) return false;
+      if (this.onlineOnly) {
+        return this.visibleCount < this.players.length;
+      }
+      return this.players.length < this.totalFound;
+    },
     // Non-grouped results with `me` pinned to the top when selectable.
     displayPlayers(): Player[] {
-      const base = this.players ?? [];
-      if (!this.selfPlayer) return base as Player[];
+      const base = this.loadedPlayers;
+      if (!this.selfPlayer) return base;
       const meId = String(this.me?.steam_id);
       return [
         this.selfPlayer,
@@ -461,7 +516,7 @@ export default {
         (store.onlinePlayerSteamIds as string[]).map(String),
       );
       const q = this.query.toLowerCase();
-      const excluded = new Set((this.exclude as string[]).map(String));
+      const excluded = new Set(this.hardExcluded);
       const meId = String(this.me?.steam_id ?? "");
 
       return (store.friends as any[])
@@ -482,7 +537,7 @@ export default {
     // Normal search results, minus anyone already shown in the Friends section.
     otherPlayers(): Player[] {
       const meId = this.selfPlayer ? String(this.me?.steam_id) : null;
-      return (this.players ?? []).filter(
+      return this.loadedPlayers.filter(
         (p: Player) =>
           !this.friendIds.has(String(p.steam_id)) &&
           (meId === null || String(p.steam_id) !== meId),
@@ -518,29 +573,72 @@ export default {
       }
       return this.displayPlayers;
     },
-    activeSteamId(): string | undefined {
-      return this.flatResults[this.selectedIndex]?.steam_id;
+    flatIndexBySteamId(): Map<string, number> {
+      return new Map(
+        this.flatResults.map((p, i) => [String(p.steam_id), i] as const),
+      );
+    },
+    selectableIndexes(): number[] {
+      const indexes: number[] = [];
+      this.flatResults.forEach((player, index) => {
+        if (!this.isIneligible(player)) indexes.push(index);
+      });
+      return indexes;
     },
   },
   methods: {
-    setActiveRow(el: HTMLElement | null) {
-      this.activeRow = el;
+    indexOfPlayer(player: Player): number {
+      return this.flatIndexBySteamId.get(String(player.steam_id)) ?? -1;
+    },
+    reasonFor(player: Player): string | undefined {
+      if (!player) return undefined;
+      return this.ineligible[String(player.steam_id)];
+    },
+    isIneligible(player: Player): boolean {
+      return !!this.reasonFor(player);
+    },
+    firstSelectableIndex(): number {
+      return this.selectableIndexes[0] ?? 0;
+    },
+    // The row component's root is a plain div, but a ref on a component hands
+    // back the instance — unwrap it or scrollIntoView silently no-ops.
+    setActiveRow(el: any) {
+      this.activeRow = (el && el.$el) || el;
     },
     scrollActiveIntoView() {
       this.$nextTick(() => {
         this.activeRow?.scrollIntoView({ block: "nearest" });
       });
     },
+    moveSelection(delta: number) {
+      const indexes = this.selectableIndexes;
+      if (!indexes.length) return;
+      const position = indexes.indexOf(this.selectedIndex);
+      if (position === -1) {
+        this.selectedIndex =
+          delta > 0 ? indexes[0] : indexes[indexes.length - 1];
+        return;
+      }
+      const next = Math.min(Math.max(position + delta, 0), indexes.length - 1);
+      this.selectedIndex = indexes[next];
+    },
+    onHover(index: number) {
+      // Never park the keyboard cursor on a row Enter can't act on.
+      if (index < 0) return;
+      if (!this.isIneligible(this.flatResults[index])) {
+        this.selectedIndex = index;
+      }
+    },
     onKeydown(event: KeyboardEvent) {
       const list = this.flatResults;
       if (!list.length) return;
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        this.selectedIndex = Math.min(this.selectedIndex + 1, list.length - 1);
+        this.moveSelection(1);
         this.scrollActiveIntoView();
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
-        this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+        this.moveSelection(-1);
         this.scrollActiveIntoView();
       } else if (event.key === "Enter") {
         event.preventDefault();
@@ -555,41 +653,29 @@ export default {
       });
     },
     select(player: Player) {
-      if (!player) {
+      if (!player || this.isIneligible(player)) {
         return;
       }
       this.open = false;
       this.$emit("selected", player);
     },
-    async searchPlayers(query?: string) {
-      if (query !== undefined) {
-        this.query = query;
-      }
-
-      const exclude =
-        !this.canSelectSelf && this.me?.steam_id
-          ? (this.exclude as string[]).concat(this.me.steam_id)
-          : (this.exclude as string[]);
-
-      this.selectedIndex = 0;
-
-      if (this.onlineOnly) {
-        this.players = useSearchStore().search(this.query, exclude);
-        return;
-      }
-
-      const response = await $fetch("/api/players-search", {
+    async fetchPage(
+      page: number,
+    ): Promise<{ players: Player[]; found: number }> {
+      const response = (await $fetch("/api/players-search", {
         method: "post",
         body: {
           query: this.query,
           teamId: this.teamId,
-          exclude: exclude,
+          exclude: this.hardExcluded,
           registeredOnly: this.registeredOnly,
+          page,
+          per_page: PAGE_SIZE,
         },
-      });
+      })) as SearchResponse;
 
-      const fetchedPlayers = (response as SearchResponse).hits.map(
-        ({ document }) => {
+      return {
+        players: response.hits.map(({ document }) => {
           return {
             role: document.role,
             steam_id: document.steam_id,
@@ -605,11 +691,106 @@ export default {
               duel: document.elo_duel,
             },
           } as Player;
-        },
-      );
-
-      this.players = fetchedPlayers;
+        }),
+        found: response.found ?? response.hits.length,
+      };
     },
+    async searchPlayers(query?: string) {
+      if (query !== undefined) {
+        this.query = query;
+      }
+
+      this.page = 1;
+      this.visibleCount = PAGE_SIZE;
+      this.searchToken += 1;
+      const token = this.searchToken;
+
+      if (this.onlineOnly) {
+        this.players = useSearchStore().search(this.query, this.hardExcluded);
+        this.totalFound = this.players.length;
+        this.selectedIndex = this.firstSelectableIndex();
+        return;
+      }
+
+      this.searching = true;
+      try {
+        const { players, found } = await this.fetchPage(1);
+        // A slower earlier keystroke must not clobber a newer result set.
+        if (token !== this.searchToken) return;
+
+        this.players = players;
+        this.totalFound = found;
+        this.selectedIndex = this.firstSelectableIndex();
+      } finally {
+        if (token === this.searchToken) {
+          this.searching = false;
+        }
+      }
+    },
+    async loadMore() {
+      // While page 1 is still in flight `players`/`totalFound` describe the
+      // previous query — appending to them would mix two result sets.
+      if (this.searching || this.loadingMore || !this.hasMore) {
+        return;
+      }
+
+      if (this.onlineOnly) {
+        this.visibleCount += PAGE_SIZE;
+        return;
+      }
+
+      this.loadingMore = true;
+      const token = this.searchToken;
+      try {
+        const nextPage = this.page + 1;
+        const { players, found } = await this.fetchPage(nextPage);
+        if (token !== this.searchToken) return;
+
+        this.page = nextPage;
+        this.totalFound = found;
+
+        // Typesense can repeat a document across pages when the underlying
+        // collection shifts mid-scroll; keys must stay unique.
+        const seen = new Set(
+          (this.players ?? []).map((p) => String(p.steam_id)),
+        );
+        this.players = (this.players ?? []).concat(
+          players.filter((p) => !seen.has(String(p.steam_id))),
+        );
+      } finally {
+        this.loadingMore = false;
+        // If the freshly appended page didn't push the sentinel out of the
+        // root, no new intersection event fires and paging stalls. Re-binding
+        // re-reports an already-intersecting target.
+        this.$nextTick(() => this.ensureObserver());
+      }
+    },
+    ensureObserver() {
+      this.observer?.disconnect();
+      this.observer = null;
+
+      const root = this.$refs.scrollEl as HTMLElement | undefined;
+      const sentinel = this.$refs.sentinelEl as HTMLElement | undefined;
+      if (!root || !sentinel || typeof IntersectionObserver === "undefined") {
+        return;
+      }
+
+      this.observer = markRaw(
+        new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) this.loadMore();
+            }
+          },
+          { root, rootMargin: "0px 0px 200px 0px" },
+        ),
+      );
+      this.observer.observe(sentinel);
+    },
+  },
+  beforeUnmount() {
+    this.observer?.disconnect();
+    this.observer = null;
   },
   watch: {
     query(newQuery: string) {
@@ -621,13 +802,21 @@ export default {
           this.searchPlayers();
           this.$nextTick(() => {
             (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+            this.ensureObserver();
           });
+        } else {
+          this.observer?.disconnect();
+          this.observer = null;
         }
       },
     },
+    // The sentinel only exists while there's another page to fetch, and the
+    // whole panel remounts on open, so re-bind whenever either flips.
+    hasMore() {
+      this.$nextTick(() => this.ensureObserver());
+    },
     exclude(newExclude: string[], oldExclude: string[]) {
       if (newExclude.length !== oldExclude.length) {
-        console.log("exclude changed");
         this.searchPlayers();
       }
     },

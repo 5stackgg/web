@@ -5,7 +5,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 <template>
   <PlayerSearch
     :label="$t('match.coach.assign')"
-    :exclude="exclude.map((player) => player.steam_id)"
+    :ineligible="ineligible"
     :team-id="lineup.team_id"
     @selected="(player) => updateCoach(player.steam_id, lineup.id)"
   ></PlayerSearch>
@@ -20,10 +20,10 @@ export default {
       type: Object,
       required: true,
     },
-    exclude: {
-      type: Array,
-      required: true,
-      default: [],
+    ineligible: {
+      type: Object as () => Record<string, string>,
+      required: false,
+      default: () => ({}),
     },
   },
   methods: {

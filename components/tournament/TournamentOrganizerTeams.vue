@@ -30,7 +30,7 @@ import ManageSection from "~/components/common/ManageSection.vue";
   >
     <TeamSearch
       :label="$t('tournament.organizer.teams.add')"
-      :exclude="linkedTeamIds"
+      :ineligible="ineligibleTeams"
       @selected="addTeam"
     ></TeamSearch>
 
@@ -111,8 +111,13 @@ export default {
     linkedTeams() {
       return this.tournament.organizer_teams ?? [];
     },
-    linkedTeamIds(): string[] {
-      return this.linkedTeams.map(({ team_id }: any) => team_id);
+    ineligibleTeams(): Record<string, string> {
+      return Object.fromEntries(
+        this.linkedTeams.map(({ team_id }: any) => [
+          String(team_id),
+          this.$t("team.search.ineligible.tournament_organizer"),
+        ]),
+      );
     },
   },
   methods: {

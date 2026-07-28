@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Switch } from "@/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -16,16 +15,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           :description="
             $t('pages.settings.application.telemetry.telemetry_description')
           "
-          clickable-header
-          @header-click="toggleTelemetry"
-        >
-          <template #action>
-            <Switch
-              :model-value="telemetryEnabled"
-              @update:model-value="toggleTelemetry"
-            />
-          </template>
-        </SettingsSection>
+        />
 
         <SettingsSection
           id="analytics"
@@ -101,33 +91,6 @@ export default {
     },
   },
   methods: {
-    async toggleTelemetry() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings: [
-            {
-              objects: [
-                {
-                  name: "telemetry",
-                  value: this.telemetryEnabled ? "false" : "true",
-                },
-              ],
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t("pages.settings.application.telemetry.update_success"),
-      });
-    },
     async updateTelemetrySettings() {
       if (this.submitting) {
         return;
@@ -170,13 +133,6 @@ export default {
   computed: {
     settings() {
       return useApplicationSettingsStore().settings;
-    },
-    telemetryEnabled() {
-      return (
-        this.settings.find((setting) => {
-          return setting.name === "telemetry";
-        })?.value !== "false"
-      );
     },
   },
 };

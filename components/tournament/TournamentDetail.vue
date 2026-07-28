@@ -32,8 +32,8 @@ import {
   ArrowLeft,
   Globe,
   MapPin,
-  ChevronsDownUp,
-  ChevronsUpDown,
+  Minimize,
+  Maximize,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "@/components/ui/button";
@@ -79,6 +79,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import {
   tacticalCtaButtonClasses,
   tacticalSectionDescriptionClasses,
@@ -154,17 +155,23 @@ const tournamentAdminPanelClasses =
   "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
 const tournamentAdminCornerClasses =
   "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
-const tournamentAdminHeaderClasses =
-  "mb-[0.4rem] inline-flex items-center gap-2";
-const tournamentAdminTickClasses =
-  "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
-const tournamentAdminLabelClasses =
-  "font-mono text-[0.65rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]";
 const tournamentAdminTitleClasses =
   "mb-[0.35rem] font-sans text-[1.1rem] font-bold uppercase tracking-[0.05em] text-foreground";
 const tournamentAdminDescClasses =
   "mb-4 text-[0.8rem] leading-[1.4] text-muted-foreground";
 const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
+
+function setTeamEnterDelay(el: Element) {
+  const step = Number((el as HTMLElement).dataset.stagger ?? 0);
+  if (!step) {
+    return;
+  }
+  (el as HTMLElement).style.transitionDelay = `${step * 40}ms`;
+}
+
+function clearTeamEnterDelay(el: Element) {
+  (el as HTMLElement).style.transitionDelay = "";
+}
 </script>
 
 <template>
@@ -644,123 +651,176 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
           </PageTransition>
         </TabsContent>
         <TabsContent value="teams">
-          <div
-            class="grid gap-6 items-start"
-            :class="
-              tournament.is_organizer
-                ? 'lg:grid-cols-[minmax(0,1fr)_360px]'
-                : 'grid-cols-1'
-            "
-          >
-            <div class="min-w-0">
-              <div
-                class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
-              >
-                <div :class="tacticalSectionLabelClasses">
-                  <span :class="tacticalSectionTickClasses"></span>
-                  {{ $t("tournament.page.roster_section") }}
-                  <span :class="tacticalSectionCountClasses">
-                    {{ filteredTeams.length }}
-                  </span>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                  <AnimatedFilters
-                    v-if="visibleTeams.length > 1"
-                    v-model="teamFilter"
-                    :options="teamFilterOptions"
-                    square
-                  />
-                  <Button
-                    v-if="filteredTeams.length > 1"
-                    variant="outline"
-                    size="sm"
-                    class="h-8"
-                    @click="toggleAllTeams"
-                  >
-                    <component
-                      :is="allTeamsCollapsed ? ChevronsUpDown : ChevronsDownUp"
-                      class="mr-1.5 h-4 w-4"
-                    />
-                    {{
-                      allTeamsCollapsed
-                        ? $t("tournament.teams_filter.expand_all")
-                        : $t("tournament.teams_filter.collapse_all")
-                    }}
-                  </Button>
-                </div>
-              </div>
-
-              <div
-                v-if="visibleTeams.length === 0"
-                class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-              >
-                {{ $t("tournament.page.no_teams_yet") }}
-              </div>
-
-              <div
-                v-else-if="filteredTeams.length === 0"
-                class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-              >
-                {{ $t("tournament.teams_filter.no_matches") }}
-              </div>
-
-              <div class="space-y-4">
-                <PageTransition
-                  v-for="(team, index) of filteredTeams"
-                  :key="team.id"
-                  :delay="Math.min(index, 12) * 40"
+          <PageTransition>
+            <div
+              class="grid gap-6 items-start"
+              :class="
+                tournament.is_organizer
+                  ? 'lg:grid-cols-[minmax(0,1fr)_360px]'
+                  : 'grid-cols-1'
+              "
+            >
+              <div class="min-w-0">
+                <div
+                  class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
                 >
-                  <div :class="tournamentTeamCardClasses">
-                    <TournamentTeam
-                      :tournament="tournament"
-                      :team="team"
-                      :collapsible="true"
-                      :collapsed="collapsedTeams.has(team.id)"
-                      @toggle-collapsed="toggleTeamCollapsed(team.id)"
-                    ></TournamentTeam>
+                  <div :class="tacticalSectionLabelClasses">
+                    <span :class="tacticalSectionTickClasses"></span>
+                    {{ $t("tournament.page.roster_section") }}
+                    <span :class="tacticalSectionCountClasses">
+                      {{ filteredTeams.length }}
+                    </span>
                   </div>
+
+                  <div class="flex flex-wrap items-center gap-2">
+                    <AnimatedFilters
+                      v-if="visibleTeams.length > 1"
+                      v-model="teamFilter"
+                      :options="teamFilterOptions"
+                      square
+                    />
+                    <Button
+                      v-if="visibleTeams.length > 0"
+                      variant="outline"
+                      size="sm"
+                      class="h-8"
+                      @click="toggleAllTeams"
+                    >
+                      <Transition
+                        mode="out-in"
+                        enter-active-class="transition-[opacity,transform] duration-150 ease-out motion-reduce:!duration-0"
+                        leave-active-class="transition-[opacity,transform] duration-100 ease-in motion-reduce:!duration-0"
+                        enter-from-class="opacity-0 scale-90 motion-reduce:scale-100"
+                        leave-to-class="opacity-0 scale-90 motion-reduce:scale-100"
+                      >
+                        <component
+                          :is="allTeamsCollapsed ? Maximize : Minimize"
+                          :key="allTeamsCollapsed ? 'expand' : 'collapse'"
+                          class="mr-1.5 h-4 w-4 shrink-0"
+                        />
+                      </Transition>
+                      <!-- Both labels stacked in one grid cell reserve the wider
+                           of the two, so swapping states can't resize the button. -->
+                      <span class="grid">
+                        <span
+                          class="invisible col-start-1 row-start-1 grid"
+                          aria-hidden="true"
+                        >
+                          <span
+                            class="col-start-1 row-start-1 whitespace-nowrap"
+                          >
+                            {{ $t("tournament.teams_filter.collapse_all") }}
+                          </span>
+                          <span
+                            class="col-start-1 row-start-1 whitespace-nowrap"
+                          >
+                            {{ $t("tournament.teams_filter.expand_all") }}
+                          </span>
+                        </span>
+                        <Transition
+                          mode="out-in"
+                          enter-active-class="transition-opacity duration-150 ease-out motion-reduce:!duration-0"
+                          leave-active-class="transition-opacity duration-100 ease-in motion-reduce:!duration-0"
+                          enter-from-class="opacity-0"
+                          leave-to-class="opacity-0"
+                        >
+                          <span
+                            :key="allTeamsCollapsed ? 'expand' : 'collapse'"
+                            class="col-start-1 row-start-1 whitespace-nowrap text-center"
+                          >
+                            {{
+                              allTeamsCollapsed
+                                ? $t("tournament.teams_filter.expand_all")
+                                : $t("tournament.teams_filter.collapse_all")
+                            }}
+                          </span>
+                        </Transition>
+                      </span>
+                    </Button>
+                  </div>
+                </div>
+
+                <FadeSwap>
+                  <div
+                    v-if="visibleTeams.length === 0"
+                    key="no-teams"
+                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                  >
+                    {{ $t("tournament.page.no_teams_yet") }}
+                  </div>
+
+                  <div
+                    v-else-if="filteredTeams.length === 0"
+                    key="no-matches"
+                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                  >
+                    {{ $t("tournament.teams_filter.no_matches") }}
+                  </div>
+
+                  <TransitionGroup
+                    v-else
+                    key="teams"
+                    tag="div"
+                    class="flex flex-col gap-4"
+                    enter-active-class="transition-[opacity,transform] duration-[420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+                    enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
+                    leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
+                    leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
+                    move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
+                    @before-enter="setTeamEnterDelay"
+                    @after-enter="clearTeamEnterDelay"
+                    @enter-cancelled="clearTeamEnterDelay"
+                  >
+                    <div
+                      v-for="(team, index) of filteredTeams"
+                      :key="team.id"
+                      :data-stagger="Math.min(index, 12)"
+                      :class="tournamentTeamCardClasses"
+                    >
+                      <TournamentTeam
+                        :tournament="tournament"
+                        :team="team"
+                        :collapsible="true"
+                        :collapsed="collapsedTeams.has(team.id)"
+                        @toggle-collapsed="toggleTeamCollapsed(team.id)"
+                      ></TournamentTeam>
+                    </div>
+                  </TransitionGroup>
+                </FadeSwap>
+              </div>
+
+              <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
+                <PageTransition :delay="150">
+                  <aside :class="tournamentAdminPanelClasses">
+                    <div
+                      :class="[
+                        tournamentAdminCornerClasses,
+                        '-left-px -top-px border-l-2 border-t-2',
+                      ]"
+                    ></div>
+                    <div
+                      :class="[
+                        tournamentAdminCornerClasses,
+                        '-bottom-px -right-px border-b-2 border-r-2',
+                      ]"
+                    ></div>
+
+                    <h3 :class="tournamentAdminTitleClasses">
+                      {{ $t("tournament.add_team.title") }}
+                    </h3>
+                    <p :class="tournamentAdminDescClasses">
+                      {{ $t("tournament.add_team.description") }}
+                    </p>
+                    <div :class="tournamentAdminBodyClasses">
+                      <TournamentJoinForm
+                        :tournament="tournament"
+                      ></TournamentJoinForm>
+                    </div>
+                  </aside>
                 </PageTransition>
               </div>
             </div>
-
-            <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
-              <PageTransition :delay="150">
-                <aside :class="tournamentAdminPanelClasses">
-                  <div
-                    :class="[
-                      tournamentAdminCornerClasses,
-                      '-left-px -top-px border-l-2 border-t-2',
-                    ]"
-                  ></div>
-                  <div
-                    :class="[
-                      tournamentAdminCornerClasses,
-                      '-bottom-px -right-px border-b-2 border-r-2',
-                    ]"
-                  ></div>
-
-                  <div :class="tournamentAdminHeaderClasses">
-                    <span :class="tournamentAdminTickClasses"></span>
-                    <span :class="tournamentAdminLabelClasses">{{
-                      $t("tournament.admin_label")
-                    }}</span>
-                  </div>
-                  <h3 :class="tournamentAdminTitleClasses">
-                    {{ $t("tournament.add_team.title") }}
-                  </h3>
-                  <p :class="tournamentAdminDescClasses">
-                    {{ $t("tournament.add_team.description") }}
-                  </p>
-                  <div :class="tournamentAdminBodyClasses">
-                    <TournamentJoinForm
-                      :tournament="tournament"
-                    ></TournamentJoinForm>
-                  </div>
-                </aside>
-              </PageTransition>
-            </div>
-          </div>
+          </PageTransition>
         </TabsContent>
         <TabsContent v-if="standingsTabVisible" value="standings">
           <PageTransition>

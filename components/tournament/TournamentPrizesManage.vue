@@ -253,7 +253,10 @@ async function onAdd(prize: string, place: string) {
 
 <template>
   <div class="mx-auto grid max-w-3xl gap-8">
-    <ManageSection :hint="$t('tournament.prizes.manage_hint')">
+    <ManageSection
+      :label="$t('tournament.prizes.title')"
+      :hint="$t('tournament.prizes.manage_hint')"
+    >
       <template #action>
         <div v-if="pool" class="text-right">
           <div

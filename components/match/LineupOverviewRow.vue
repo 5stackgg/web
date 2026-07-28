@@ -48,11 +48,6 @@ const DASH = "—";
           'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
       ]"
     >
-      <PartyBadge
-        :index="memberPartyIndex"
-        :source="member.party_source"
-        :members="memberPartyNames"
-      />
       <div class="flex items-center gap-1 min-w-0">
         <DropdownMenu v-if="canDoActions">
           <DropdownMenuTrigger as-child>
@@ -141,7 +136,13 @@ const DASH = "—";
                   class="shrink-0"
                 >
                   <div class="relative">
-                    <Avatar shape="square" class="h-9 w-9">
+                    <Avatar
+                      shape="square"
+                      class="h-9 w-9"
+                      :style="
+                        memberPartyRing ? { boxShadow: memberPartyRing } : undefined
+                      "
+                    >
                       <AvatarImage
                         v-if="mobileAvatarSrc"
                         :src="mobileAvatarSrc"
@@ -151,6 +152,16 @@ const DASH = "—";
                         member.player.name.slice(0, 2)
                       }}</AvatarFallback>
                     </Avatar>
+                    <span
+                      v-if="memberPartyIndex !== null"
+                      class="absolute -top-1 -left-1 z-10"
+                    >
+                      <PartyBadge
+                        :index="memberPartyIndex"
+                        :source="member.party_source"
+                        :members="memberPartyNames"
+                      />
+                    </span>
                     <span
                       v-if="member.captain"
                       :title="$t('match.player.captain')"
@@ -364,7 +375,11 @@ const DASH = "—";
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
 import PartyBadge from "~/components/match/PartyBadge.vue";
-import { partyIndexOf, partyMemberNames } from "~/utilities/matchParties";
+import {
+  partyIndexOf,
+  partyMemberNames,
+  partyRingShadow,
+} from "~/utilities/matchParties";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 
@@ -858,6 +873,12 @@ export default {
     },
     memberPartyNames() {
       return partyMemberNames(this.match, this.member);
+    },
+    memberPartyRing() {
+      if (this.memberPartyIndex === null) {
+        return null;
+      }
+      return partyRingShadow(this.memberPartyIndex);
     },
     // v_player_elo.current_elo is the rating going *into* the match
     // (updated_elo is the one coming out).

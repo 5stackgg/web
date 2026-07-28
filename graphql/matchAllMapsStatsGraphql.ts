@@ -20,6 +20,8 @@ export const matchAllMapsStats = Selector("match_lineups")({
       steam_id: true,
       checked_in: true,
       placeholder_name: true,
+      party_id: true,
+      party_source: true,
       player: {
         ...playerFields,
         match_stats: [

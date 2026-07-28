@@ -36,3 +36,30 @@ export function partyIndexOf(
   }
   return matchPartyOrder(match).get(partyId) ?? null;
 }
+
+// Everyone who queued alongside this player, for the rail's tooltip. Spans both
+// lineups: a 5stack lobby that fills the whole match is split across the two
+// sides and they still queued together.
+export function partyMemberNames(
+  match: any,
+  member: (PartyMember & { steam_id?: string | number | null }) | null,
+): string[] {
+  const partyId = member?.party_id;
+  if (!partyId) {
+    return [];
+  }
+
+  const names: string[] = [];
+  for (const lineup of [match?.lineup_1, match?.lineup_2]) {
+    for (const other of lineup?.lineup_players ?? []) {
+      if (other?.party_id !== partyId) {
+        continue;
+      }
+      const name = other?.player?.name ?? other?.placeholder_name;
+      if (name) {
+        names.push(name);
+      }
+    }
+  }
+  return names;
+}

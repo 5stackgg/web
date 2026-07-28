@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { cn } from "~/lib/utils";
 
 const { t } = useI18n();
+
+defineOptions({ inheritAttrs: false });
 
 const props = defineProps<{
   source?: string | null;
@@ -28,7 +31,7 @@ const classes =
 <template>
   <FiveStackToolTip v-if="visible" as-child :delay-duration="120">
     <template #trigger>
-      <span :class="classes">
+      <span :class="cn(classes, $attrs.class as string)">
         {{ label }}
       </span>
     </template>

@@ -10,17 +10,17 @@ import {
 const props = defineProps<{
   index: number | null;
   source?: string | null;
+  members?: string[];
 }>();
 
-// Distinct hues rather than theme tokens: the badge's only job is to say
-// "these players are the same group", so the colours must read as unrelated
-// to each other and to the surrounding UI. Cycles if a match ever has more
-// parties than colours.
-const PARTY_HUES = [199, 152, 47, 280, 12];
+// Deliberately off the tac-amber axis: amber is spoken for by "this is you"
+// and the CTA treatment, so a party rail in amber would read as the wrong
+// signal. These sit far enough apart in hue to be told apart at 3px wide.
+const PARTY_HUES = [190, 152, 275, 350, 96];
 
 const hue = computed(() => PARTY_HUES[(props.index ?? 0) % PARTY_HUES.length]);
 
-const label = computed(() => {
+const sourceLabel = computed(() => {
   switch (props.source) {
     case "lobby":
       return "match.party.queued_lobby";
@@ -35,22 +35,31 @@ const label = computed(() => {
 </script>
 
 <template>
-  <TooltipProvider v-if="index !== null">
+  <TooltipProvider v-if="index !== null" :delay-duration="150">
     <Tooltip>
       <TooltipTrigger as-child>
+        <!-- Square ends, full row height: two party members on adjacent rows
+             merge into one unbroken bar, which is the whole point. Rounding or
+             insetting the ends would chop it into ticks. -->
         <span
-          class="inline-flex h-3.5 min-w-3.5 shrink-0 items-center justify-center rounded-[3px] px-1 text-[9px] font-semibold leading-none tabular-nums"
+          class="absolute left-[3px] top-0 bottom-0 z-10 w-[3px] cursor-help"
           :style="{
-            backgroundColor: `hsl(${hue} 70% 50% / 0.18)`,
-            color: `hsl(${hue} 70% 62%)`,
-            boxShadow: `inset 0 0 0 1px hsl(${hue} 70% 50% / 0.45)`,
+            backgroundColor: `hsl(${hue} 68% 52%)`,
+            boxShadow: `0 0 6px hsl(${hue} 68% 52% / 0.55)`,
           }"
-        >
-          {{ index + 1 }}
-        </span>
+          :aria-label="$t(sourceLabel)"
+        />
       </TooltipTrigger>
-      <TooltipContent>
-        {{ $t(label) }}
+      <TooltipContent side="right" class="max-w-[220px]">
+        <div
+          class="font-mono text-[0.6rem] uppercase tracking-[0.18em]"
+          :style="{ color: `hsl(${hue} 68% 62%)` }"
+        >
+          {{ $t(sourceLabel) }}
+        </div>
+        <div v-if="members?.length" class="mt-1 text-xs leading-relaxed">
+          {{ members.join(", ") }}
+        </div>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>

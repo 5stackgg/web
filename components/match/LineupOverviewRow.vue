@@ -117,6 +117,12 @@ const DASH = "—";
               :member="member"
               :at-elo="memberStartElo"
             >
+              <template v-if="memberPartyIndex !== null" #name-postfix>
+                <PartyBadge
+                  :index="memberPartyIndex"
+                  :source="member.party_source"
+                />
+              </template>
               <template v-if="member.player?.steam_id" #avatar-badge>
                 <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
               </template>
@@ -358,12 +364,15 @@ const DASH = "—";
 
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
+import PartyBadge from "~/components/match/PartyBadge.vue";
+import { partyIndexOf } from "~/utilities/matchParties";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   components: {
     LineupMember,
+    PartyBadge,
   },
   data() {
     return {
@@ -844,6 +853,9 @@ export default {
           (ec: any) => String(ec.player_steam_id) === String(steamId),
         ) ?? null
       );
+    },
+    memberPartyIndex() {
+      return partyIndexOf(this.match, this.member);
     },
     // v_player_elo.current_elo is the rating going *into* the match
     // (updated_elo is the one coming out).

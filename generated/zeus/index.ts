@@ -1667,9 +1667,10 @@ export type ValueTypes = {
 	matchesWeek?:boolean | `@${string}`,
 	matchesYear?:boolean | `@${string}`,
 	playersActive30d?:boolean | `@${string}`,
+	playersKnown?:boolean | `@${string}`,
+	playersPlayed?:boolean | `@${string}`,
 	playersRegistered?:boolean | `@${string}`,
 	publicServers?:boolean | `@${string}`,
-	serverCapacity?:boolean | `@${string}`,
 	servers?:boolean | `@${string}`,
 	teams?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -7824,6 +7825,127 @@ count?: [{	columns?: Array<ValueTypes["e_match_mode_select_column"]> | undefined
 	_set?: ValueTypes["e_match_mode_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
 	where: ValueTypes["e_match_mode_bool_exp"] | Variable<any, string>
+};
+	/** columns and relationships of "e_match_party_sources" */
+["e_match_party_sources"]: AliasType<{
+	description?:boolean | `@${string}`,
+match_lineup_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_lineup_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_lineup_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineup_players"]],
+match_lineup_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_lineup_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_lineup_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineup_players_aggregate"]],
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_match_party_sources" */
+["e_match_party_sources_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_match_party_sources_aggregate_fields"],
+	nodes?:ValueTypes["e_match_party_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_match_party_sources" */
+["e_match_party_sources_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_match_party_sources_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_match_party_sources_max_fields"],
+	min?:ValueTypes["e_match_party_sources_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_match_party_sources". All fields are combined with a logical 'AND'. */
+["e_match_party_sources_bool_exp"]: {
+	_and?: Array<ValueTypes["e_match_party_sources_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_match_party_sources_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_lineup_players?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>,
+	match_lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_match_party_sources" */
+["e_match_party_sources_constraint"]:e_match_party_sources_constraint;
+	["e_match_party_sources_enum"]:e_match_party_sources_enum;
+	/** Boolean expression to compare columns of type "e_match_party_sources_enum". All fields are combined with logical 'AND'. */
+["e_match_party_sources_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_match_party_sources_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_match_party_sources_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_match_party_sources_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_match_party_sources_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_match_party_sources" */
+["e_match_party_sources_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	match_lineup_players?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_match_party_sources_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_match_party_sources_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_match_party_sources" */
+["e_match_party_sources_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_match_party_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_match_party_sources" */
+["e_match_party_sources_on_conflict"]: {
+	constraint: ValueTypes["e_match_party_sources_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_match_party_sources_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_match_party_sources". */
+["e_match_party_sources_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_match_party_sources */
+["e_match_party_sources_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_match_party_sources" */
+["e_match_party_sources_select_column"]:e_match_party_sources_select_column;
+	/** input type for updating data in table "e_match_party_sources" */
+["e_match_party_sources_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_match_party_sources" */
+["e_match_party_sources_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_match_party_sources_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_party_sources_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_match_party_sources" */
+["e_match_party_sources_update_column"]:e_match_party_sources_update_column;
+	["e_match_party_sources_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_match_party_sources_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_match_party_sources_bool_exp"] | Variable<any, string>
 };
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: AliasType<{
@@ -18823,6 +18945,8 @@ count?: [{	columns?: Array<ValueTypes["match_demo_sessions_select_column"]> | un
 	/** An object relationship */
 	lineup?:ValueTypes["match_lineups"],
 	match_lineup_id?:boolean | `@${string}`,
+	party_id?:boolean | `@${string}`,
+	party_source?:boolean | `@${string}`,
 	placeholder_name?:boolean | `@${string}`,
 	/** An object relationship */
 	player?:ValueTypes["players"],
@@ -18913,6 +19037,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	party_source?: ValueTypes["e_match_party_sources_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	placeholder_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
@@ -18931,6 +19057,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	party_source?: ValueTypes["e_match_party_sources_enum"] | undefined | null | Variable<any, string>,
 	placeholder_name?: string | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
@@ -18940,6 +19068,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	discord_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
+	party_id?:boolean | `@${string}`,
 	placeholder_name?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -18949,6 +19078,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	discord_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placeholder_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -18957,6 +19087,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	discord_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
+	party_id?:boolean | `@${string}`,
 	placeholder_name?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -18966,6 +19097,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	discord_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placeholder_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -18991,6 +19123,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	party_source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	placeholder_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -19012,6 +19146,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	discord_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	party_source?: ValueTypes["e_match_party_sources_enum"] | undefined | null | Variable<any, string>,
 	placeholder_name?: string | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
@@ -19056,6 +19192,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	discord_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	party_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	party_source?: ValueTypes["e_match_party_sources_enum"] | undefined | null | Variable<any, string>,
 	placeholder_name?: string | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
@@ -23715,6 +23853,9 @@ delete_e_match_map_status_by_pk?: [{	value: string | Variable<any, string>},Valu
 delete_e_match_mode?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_match_mode_bool_exp"] | Variable<any, string>},ValueTypes["e_match_mode_mutation_response"]],
 delete_e_match_mode_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_mode"]],
+delete_e_match_party_sources?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_match_party_sources_bool_exp"] | Variable<any, string>},ValueTypes["e_match_party_sources_mutation_response"]],
+delete_e_match_party_sources_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_party_sources"]],
 delete_e_match_status?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_match_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
 delete_e_match_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_status"]],
@@ -24283,6 +24424,12 @@ insert_e_match_mode?: [{	/** the rows to be inserted */
 insert_e_match_mode_one?: [{	/** the row to be inserted */
 	object: ValueTypes["e_match_mode_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_match_mode_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_mode"]],
+insert_e_match_party_sources?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_match_party_sources_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_match_party_sources_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources_mutation_response"]],
+insert_e_match_party_sources_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_match_party_sources_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_match_party_sources_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources"]],
 insert_e_match_status?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_match_status_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_match_status_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
@@ -25409,6 +25556,13 @@ update_e_match_mode_by_pk?: [{	/** sets the columns of the filtered rows to the 
 	_set?: ValueTypes["e_match_mode_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_match_mode_pk_columns_input"] | Variable<any, string>},ValueTypes["e_match_mode"]],
 update_e_match_mode_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["e_match_mode_updates"]> | Variable<any, string>},ValueTypes["e_match_mode_mutation_response"]],
+update_e_match_party_sources?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_match_party_sources_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_match_party_sources_bool_exp"] | Variable<any, string>},ValueTypes["e_match_party_sources_mutation_response"]],
+update_e_match_party_sources_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_match_party_sources_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_match_party_sources_pk_columns_input"] | Variable<any, string>},ValueTypes["e_match_party_sources"]],
+update_e_match_party_sources_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_match_party_sources_updates"]> | Variable<any, string>},ValueTypes["e_match_party_sources_mutation_response"]],
 update_e_match_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_match_status_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_match_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
@@ -26016,12 +26170,22 @@ update_pending_match_import_players_by_pk?: [{	/** increments the numeric column
 	_set?: ValueTypes["pending_match_import_players_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["pending_match_import_players_pk_columns_input"] | Variable<any, string>},ValueTypes["pending_match_import_players"]],
 update_pending_match_import_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["pending_match_import_players_updates"]> | Variable<any, string>},ValueTypes["pending_match_import_players_mutation_response"]],
-update_pending_match_imports?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["pending_match_imports_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["pending_match_imports_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["pending_match_imports_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["pending_match_imports_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["pending_match_imports_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["pending_match_imports_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["pending_match_imports_bool_exp"] | Variable<any, string>},ValueTypes["pending_match_imports_mutation_response"]],
-update_pending_match_imports_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["pending_match_imports_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["pending_match_imports_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["pending_match_imports_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["pending_match_imports_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["pending_match_imports_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["pending_match_imports_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["pending_match_imports_pk_columns_input"] | Variable<any, string>},ValueTypes["pending_match_imports"]],
 update_pending_match_imports_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["pending_match_imports_updates"]> | Variable<any, string>},ValueTypes["pending_match_imports_mutation_response"]],
@@ -28098,6 +28262,8 @@ count?: [{	columns?: Array<ValueTypes["pending_match_import_players_select_colum
 	error?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_start_time?:boolean | `@${string}`,
+parties?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["pending_match_import_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -28137,6 +28303,10 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	variance?:ValueTypes["pending_match_imports_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_append_input"]: {
+	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: AliasType<{
 	valve_match_id?:boolean | `@${string}`,
@@ -28152,6 +28322,7 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	parties?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	players?: ValueTypes["pending_match_import_players_bool_exp"] | undefined | null | Variable<any, string>,
 	players_aggregate?: ValueTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	share_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -28161,6 +28332,18 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 };
 	/** unique or primary key constraints on table "pending_match_imports" */
 ["pending_match_imports_constraint"]:pending_match_imports_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["pending_match_imports_delete_at_path_input"]: {
+	parties?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["pending_match_imports_delete_elem_input"]: {
+	parties?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["pending_match_imports_delete_key_input"]: {
+	parties?: string | undefined | null | Variable<any, string>
+};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 	valve_match_id?: ValueTypes["numeric"] | undefined | null | Variable<any, string>
@@ -28172,6 +28355,7 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: string | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	players?: ValueTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	share_code?: string | undefined | null | Variable<any, string>,
 	status?: string | undefined | null | Variable<any, string>,
@@ -28231,6 +28415,7 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parties?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	players_aggregate?: ValueTypes["pending_match_import_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	share_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -28241,6 +28426,10 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 ["pending_match_imports_pk_columns_input"]: {
 	valve_match_id: ValueTypes["numeric"] | Variable<any, string>
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_prepend_input"]: {
+	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
 	/** select columns of table "pending_match_imports" */
 ["pending_match_imports_select_column"]:pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
@@ -28250,6 +28439,7 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: string | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	share_code?: string | undefined | null | Variable<any, string>,
 	status?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -28284,6 +28474,7 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: string | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	share_code?: string | undefined | null | Variable<any, string>,
 	status?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -28297,8 +28488,18 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	/** update columns of table "pending_match_imports" */
 ["pending_match_imports_update_column"]:pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["pending_match_imports_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["pending_match_imports_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["pending_match_imports_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["pending_match_imports_delete_key_input"] | undefined | null | Variable<any, string>,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["pending_match_imports_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["pending_match_imports_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -42184,6 +42385,19 @@ e_match_mode_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["e_match_mode_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_match_mode_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_mode_aggregate"]],
 e_match_mode_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_mode"]],
+e_match_party_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_party_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_party_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources"]],
+e_match_party_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_party_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_party_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources_aggregate"]],
+e_match_party_sources_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_party_sources"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_match_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -44132,6 +44346,18 @@ v_player_multi_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_player_multi_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_multi_kills_aggregate"]],
+v_player_queue_partners?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners"]],
+v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners_aggregate"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_weapon_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -46363,6 +46589,23 @@ e_match_mode_stream?: [{	/** maximum number of rows returned in a single batch *
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["e_match_mode_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_match_mode_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_mode"]],
+e_match_party_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_party_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_party_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources"]],
+e_match_party_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_party_sources_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_party_sources_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources_aggregate"]],
+e_match_party_sources_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_party_sources"]],
+e_match_party_sources_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_match_party_sources_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_party_sources_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_party_sources"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_match_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -48853,6 +49096,22 @@ v_player_multi_kills_stream?: [{	/** maximum number of rows returned in a single
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["v_player_multi_kills_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_multi_kills"]],
+v_player_queue_partners?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners"]],
+v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_queue_partners_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners_aggregate"]],
+v_player_queue_partners_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["v_player_queue_partners_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_queue_partners"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_weapon_damage_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -62637,6 +62896,168 @@ count?: [{	columns?: Array<ValueTypes["v_player_multi_kills_select_column"]> | u
 	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "v_player_queue_partners" */
+["v_player_queue_partners"]: AliasType<{
+	first_played_at?:boolean | `@${string}`,
+	last_played_at?:boolean | `@${string}`,
+	matches_together?:boolean | `@${string}`,
+	/** An object relationship */
+	partner?:ValueTypes["players"],
+	partner_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ValueTypes["players"],
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["v_player_queue_partners_aggregate_fields"],
+	nodes?:ValueTypes["v_player_queue_partners"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["v_player_queue_partners_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["v_player_queue_partners_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["v_player_queue_partners_max_fields"],
+	min?:ValueTypes["v_player_queue_partners_min_fields"],
+	stddev?:ValueTypes["v_player_queue_partners_stddev_fields"],
+	stddev_pop?:ValueTypes["v_player_queue_partners_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["v_player_queue_partners_stddev_samp_fields"],
+	sum?:ValueTypes["v_player_queue_partners_sum_fields"],
+	var_pop?:ValueTypes["v_player_queue_partners_var_pop_fields"],
+	var_samp?:ValueTypes["v_player_queue_partners_var_samp_fields"],
+	variance?:ValueTypes["v_player_queue_partners_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_queue_partners_avg_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
+["v_player_queue_partners_bool_exp"]: {
+	_and?: Array<ValueTypes["v_player_queue_partners_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["v_player_queue_partners_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["v_player_queue_partners_bool_exp"]> | undefined | null | Variable<any, string>,
+	first_played_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_played_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	matches_together?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	partner?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	partner_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	wins_together?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["v_player_queue_partners_max_fields"]: AliasType<{
+	first_played_at?:boolean | `@${string}`,
+	last_played_at?:boolean | `@${string}`,
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_queue_partners_min_fields"]: AliasType<{
+	first_played_at?:boolean | `@${string}`,
+	last_played_at?:boolean | `@${string}`,
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_queue_partners". */
+["v_player_queue_partners_order_by"]: {
+	first_played_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_played_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	matches_together?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	partner?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	partner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	wins_together?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "v_player_queue_partners" */
+["v_player_queue_partners_select_column"]:v_player_queue_partners_select_column;
+	/** aggregate stddev on columns */
+["v_player_queue_partners_stddev_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_queue_partners_stddev_pop_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_queue_partners_stddev_samp_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_queue_partners" */
+["v_player_queue_partners_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["v_player_queue_partners_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_queue_partners_stream_cursor_value_input"]: {
+	first_played_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_played_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	matches_together?: number | undefined | null | Variable<any, string>,
+	partner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	wins_together?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["v_player_queue_partners_sum_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_queue_partners_var_pop_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_queue_partners_var_samp_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_queue_partners_variance_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: AliasType<{
 	damage?:boolean | `@${string}`,
@@ -66167,9 +66588,10 @@ export type ResolverInputTypes = {
 	matchesWeek?:boolean | `@${string}`,
 	matchesYear?:boolean | `@${string}`,
 	playersActive30d?:boolean | `@${string}`,
+	playersKnown?:boolean | `@${string}`,
+	playersPlayed?:boolean | `@${string}`,
 	playersRegistered?:boolean | `@${string}`,
 	publicServers?:boolean | `@${string}`,
-	serverCapacity?:boolean | `@${string}`,
 	servers?:boolean | `@${string}`,
 	teams?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -72324,6 +72746,127 @@ count?: [{	columns?: Array<ResolverInputTypes["e_match_mode_select_column"]> | u
 	_set?: ResolverInputTypes["e_match_mode_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_match_mode_bool_exp"]
+};
+	/** columns and relationships of "e_match_party_sources" */
+["e_match_party_sources"]: AliasType<{
+	description?:boolean | `@${string}`,
+match_lineup_players?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_lineup_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_lineup_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null},ResolverInputTypes["match_lineup_players"]],
+match_lineup_players_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_lineup_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_lineup_players_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null},ResolverInputTypes["match_lineup_players_aggregate"]],
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_match_party_sources" */
+["e_match_party_sources_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_match_party_sources_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_match_party_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_match_party_sources" */
+["e_match_party_sources_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_match_party_sources_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_match_party_sources_max_fields"],
+	min?:ResolverInputTypes["e_match_party_sources_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_match_party_sources". All fields are combined with a logical 'AND'. */
+["e_match_party_sources_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_match_party_sources_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_match_party_sources_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	match_lineup_players?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null,
+	match_lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_match_party_sources" */
+["e_match_party_sources_constraint"]:e_match_party_sources_constraint;
+	["e_match_party_sources_enum"]:e_match_party_sources_enum;
+	/** Boolean expression to compare columns of type "e_match_party_sources_enum". All fields are combined with logical 'AND'. */
+["e_match_party_sources_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_match_party_sources_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_match_party_sources_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_match_party_sources_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_match_party_sources_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_match_party_sources" */
+["e_match_party_sources_insert_input"]: {
+	description?: string | undefined | null,
+	match_lineup_players?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_match_party_sources_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_match_party_sources_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_match_party_sources" */
+["e_match_party_sources_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_match_party_sources"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_match_party_sources" */
+["e_match_party_sources_on_conflict"]: {
+	constraint: ResolverInputTypes["e_match_party_sources_constraint"],
+	update_columns: Array<ResolverInputTypes["e_match_party_sources_update_column"]>,
+	where?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_match_party_sources". */
+["e_match_party_sources_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	match_lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_match_party_sources */
+["e_match_party_sources_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_match_party_sources" */
+["e_match_party_sources_select_column"]:e_match_party_sources_select_column;
+	/** input type for updating data in table "e_match_party_sources" */
+["e_match_party_sources_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_match_party_sources" */
+["e_match_party_sources_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_match_party_sources_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_party_sources_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_match_party_sources" */
+["e_match_party_sources_update_column"]:e_match_party_sources_update_column;
+	["e_match_party_sources_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_match_party_sources_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_match_party_sources_bool_exp"]
 };
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: AliasType<{
@@ -83323,6 +83866,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_demo_sessions_select_column
 	/** An object relationship */
 	lineup?:ResolverInputTypes["match_lineups"],
 	match_lineup_id?:boolean | `@${string}`,
+	party_id?:boolean | `@${string}`,
+	party_source?:boolean | `@${string}`,
 	placeholder_name?:boolean | `@${string}`,
 	/** An object relationship */
 	player?:ResolverInputTypes["players"],
@@ -83413,6 +83958,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	lineup?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	party_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	party_source?: ResolverInputTypes["e_match_party_sources_enum_comparison_exp"] | undefined | null,
 	placeholder_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
@@ -83431,6 +83978,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	party_id?: ResolverInputTypes["uuid"] | undefined | null,
+	party_source?: ResolverInputTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
@@ -83440,6 +83989,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	discord_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
+	party_id?:boolean | `@${string}`,
 	placeholder_name?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -83449,6 +83999,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	discord_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	party_id?: ResolverInputTypes["order_by"] | undefined | null,
 	placeholder_name?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -83457,6 +84008,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	discord_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
+	party_id?:boolean | `@${string}`,
 	placeholder_name?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -83466,6 +84018,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	discord_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	party_id?: ResolverInputTypes["order_by"] | undefined | null,
 	placeholder_name?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -83491,6 +84044,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	party_id?: ResolverInputTypes["order_by"] | undefined | null,
+	party_source?: ResolverInputTypes["order_by"] | undefined | null,
 	placeholder_name?: ResolverInputTypes["order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -83512,6 +84067,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	discord_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	party_id?: ResolverInputTypes["uuid"] | undefined | null,
+	party_source?: ResolverInputTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
@@ -83556,6 +84113,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	discord_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	party_id?: ResolverInputTypes["uuid"] | undefined | null,
+	party_source?: ResolverInputTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
@@ -88215,6 +88774,9 @@ delete_e_match_map_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_
 delete_e_match_mode?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_match_mode_bool_exp"]},ResolverInputTypes["e_match_mode_mutation_response"]],
 delete_e_match_mode_by_pk?: [{	value: string},ResolverInputTypes["e_match_mode"]],
+delete_e_match_party_sources?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_match_party_sources_bool_exp"]},ResolverInputTypes["e_match_party_sources_mutation_response"]],
+delete_e_match_party_sources_by_pk?: [{	value: string},ResolverInputTypes["e_match_party_sources"]],
 delete_e_match_status?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_match_status_bool_exp"]},ResolverInputTypes["e_match_status_mutation_response"]],
 delete_e_match_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_status"]],
@@ -88783,6 +89345,12 @@ insert_e_match_mode?: [{	/** the rows to be inserted */
 insert_e_match_mode_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["e_match_mode_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_match_mode_on_conflict"] | undefined | null},ResolverInputTypes["e_match_mode"]],
+insert_e_match_party_sources?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_match_party_sources_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_match_party_sources_on_conflict"] | undefined | null},ResolverInputTypes["e_match_party_sources_mutation_response"]],
+insert_e_match_party_sources_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_match_party_sources_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_match_party_sources_on_conflict"] | undefined | null},ResolverInputTypes["e_match_party_sources"]],
 insert_e_match_status?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_match_status_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_match_status_on_conflict"] | undefined | null},ResolverInputTypes["e_match_status_mutation_response"]],
@@ -89909,6 +90477,13 @@ update_e_match_mode_by_pk?: [{	/** sets the columns of the filtered rows to the 
 	_set?: ResolverInputTypes["e_match_mode_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_match_mode_pk_columns_input"]},ResolverInputTypes["e_match_mode"]],
 update_e_match_mode_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["e_match_mode_updates"]>},ResolverInputTypes["e_match_mode_mutation_response"]],
+update_e_match_party_sources?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_match_party_sources_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_match_party_sources_bool_exp"]},ResolverInputTypes["e_match_party_sources_mutation_response"]],
+update_e_match_party_sources_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_match_party_sources_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_match_party_sources_pk_columns_input"]},ResolverInputTypes["e_match_party_sources"]],
+update_e_match_party_sources_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_match_party_sources_updates"]>},ResolverInputTypes["e_match_party_sources_mutation_response"]],
 update_e_match_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_match_status_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_match_status_bool_exp"]},ResolverInputTypes["e_match_status_mutation_response"]],
@@ -90516,12 +91091,22 @@ update_pending_match_import_players_by_pk?: [{	/** increments the numeric column
 	_set?: ResolverInputTypes["pending_match_import_players_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["pending_match_import_players_pk_columns_input"]},ResolverInputTypes["pending_match_import_players"]],
 update_pending_match_import_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["pending_match_import_players_updates"]>},ResolverInputTypes["pending_match_import_players_mutation_response"]],
-update_pending_match_imports?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["pending_match_imports_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["pending_match_imports_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["pending_match_imports_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["pending_match_imports_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["pending_match_imports_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["pending_match_imports_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["pending_match_imports_bool_exp"]},ResolverInputTypes["pending_match_imports_mutation_response"]],
-update_pending_match_imports_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["pending_match_imports_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["pending_match_imports_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["pending_match_imports_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["pending_match_imports_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["pending_match_imports_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["pending_match_imports_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["pending_match_imports_pk_columns_input"]},ResolverInputTypes["pending_match_imports"]],
 update_pending_match_imports_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["pending_match_imports_updates"]>},ResolverInputTypes["pending_match_imports_mutation_response"]],
@@ -92598,6 +93183,8 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_import_players_sele
 	error?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_start_time?:boolean | `@${string}`,
+parties?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["pending_match_import_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -92637,6 +93224,10 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	variance?:ResolverInputTypes["pending_match_imports_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_append_input"]: {
+	parties?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: AliasType<{
 	valve_match_id?:boolean | `@${string}`,
@@ -92652,6 +93243,7 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	parties?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	players?: ResolverInputTypes["pending_match_import_players_bool_exp"] | undefined | null,
 	players_aggregate?: ResolverInputTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null,
 	share_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -92661,6 +93253,18 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 };
 	/** unique or primary key constraints on table "pending_match_imports" */
 ["pending_match_imports_constraint"]:pending_match_imports_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["pending_match_imports_delete_at_path_input"]: {
+	parties?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["pending_match_imports_delete_elem_input"]: {
+	parties?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["pending_match_imports_delete_key_input"]: {
+	parties?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 	valve_match_id?: ResolverInputTypes["numeric"] | undefined | null
@@ -92672,6 +93276,7 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz"] | undefined | null,
+	parties?: ResolverInputTypes["jsonb"] | undefined | null,
 	players?: ResolverInputTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
@@ -92731,6 +93336,7 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: ResolverInputTypes["order_by"] | undefined | null,
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match_start_time?: ResolverInputTypes["order_by"] | undefined | null,
+	parties?: ResolverInputTypes["order_by"] | undefined | null,
 	players_aggregate?: ResolverInputTypes["pending_match_import_players_aggregate_order_by"] | undefined | null,
 	share_code?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
@@ -92741,6 +93347,10 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 ["pending_match_imports_pk_columns_input"]: {
 	valve_match_id: ResolverInputTypes["numeric"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_prepend_input"]: {
+	parties?: ResolverInputTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "pending_match_imports" */
 ["pending_match_imports_select_column"]:pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
@@ -92750,6 +93360,7 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz"] | undefined | null,
+	parties?: ResolverInputTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -92784,6 +93395,7 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz"] | undefined | null,
+	parties?: ResolverInputTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -92797,8 +93409,18 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	/** update columns of table "pending_match_imports" */
 ["pending_match_imports_update_column"]:pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["pending_match_imports_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["pending_match_imports_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["pending_match_imports_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["pending_match_imports_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["pending_match_imports_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["pending_match_imports_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -106684,6 +107306,19 @@ e_match_mode_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["e_match_mode_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_match_mode_bool_exp"] | undefined | null},ResolverInputTypes["e_match_mode_aggregate"]],
 e_match_mode_by_pk?: [{	value: string},ResolverInputTypes["e_match_mode"]],
+e_match_party_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_party_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_party_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_match_party_sources"]],
+e_match_party_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_party_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_party_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_match_party_sources_aggregate"]],
+e_match_party_sources_by_pk?: [{	value: string},ResolverInputTypes["e_match_party_sources"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_match_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -108632,6 +109267,18 @@ v_player_multi_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_player_multi_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_multi_kills_aggregate"]],
+v_player_queue_partners?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners"]],
+v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners_aggregate"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_weapon_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -110863,6 +111510,23 @@ e_match_mode_stream?: [{	/** maximum number of rows returned in a single batch *
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["e_match_mode_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_match_mode_bool_exp"] | undefined | null},ResolverInputTypes["e_match_mode"]],
+e_match_party_sources?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_party_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_party_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_match_party_sources"]],
+e_match_party_sources_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_party_sources_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_party_sources_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_match_party_sources_aggregate"]],
+e_match_party_sources_by_pk?: [{	value: string},ResolverInputTypes["e_match_party_sources"]],
+e_match_party_sources_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_match_party_sources_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_party_sources_bool_exp"] | undefined | null},ResolverInputTypes["e_match_party_sources"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_match_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -113353,6 +114017,22 @@ v_player_multi_kills_stream?: [{	/** maximum number of rows returned in a single
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["v_player_multi_kills_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_multi_kills"]],
+v_player_queue_partners?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners"]],
+v_player_queue_partners_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_queue_partners_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners_aggregate"]],
+v_player_queue_partners_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["v_player_queue_partners_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null},ResolverInputTypes["v_player_queue_partners"]],
 v_player_weapon_damage?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_weapon_damage_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -127137,6 +127817,168 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_multi_kills_select_colum
 	kills?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "v_player_queue_partners" */
+["v_player_queue_partners"]: AliasType<{
+	first_played_at?:boolean | `@${string}`,
+	last_played_at?:boolean | `@${string}`,
+	matches_together?:boolean | `@${string}`,
+	/** An object relationship */
+	partner?:ResolverInputTypes["players"],
+	partner_steam_id?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["v_player_queue_partners_aggregate_fields"],
+	nodes?:ResolverInputTypes["v_player_queue_partners"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["v_player_queue_partners_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["v_player_queue_partners_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["v_player_queue_partners_max_fields"],
+	min?:ResolverInputTypes["v_player_queue_partners_min_fields"],
+	stddev?:ResolverInputTypes["v_player_queue_partners_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["v_player_queue_partners_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["v_player_queue_partners_stddev_samp_fields"],
+	sum?:ResolverInputTypes["v_player_queue_partners_sum_fields"],
+	var_pop?:ResolverInputTypes["v_player_queue_partners_var_pop_fields"],
+	var_samp?:ResolverInputTypes["v_player_queue_partners_var_samp_fields"],
+	variance?:ResolverInputTypes["v_player_queue_partners_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_queue_partners_avg_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
+["v_player_queue_partners_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["v_player_queue_partners_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
+	first_played_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_played_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	matches_together?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	partner?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	partner_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	wins_together?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_queue_partners_max_fields"]: AliasType<{
+	first_played_at?:boolean | `@${string}`,
+	last_played_at?:boolean | `@${string}`,
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_queue_partners_min_fields"]: AliasType<{
+	first_played_at?:boolean | `@${string}`,
+	last_played_at?:boolean | `@${string}`,
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_queue_partners". */
+["v_player_queue_partners_order_by"]: {
+	first_played_at?: ResolverInputTypes["order_by"] | undefined | null,
+	last_played_at?: ResolverInputTypes["order_by"] | undefined | null,
+	matches_together?: ResolverInputTypes["order_by"] | undefined | null,
+	partner?: ResolverInputTypes["players_order_by"] | undefined | null,
+	partner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	wins_together?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_queue_partners" */
+["v_player_queue_partners_select_column"]:v_player_queue_partners_select_column;
+	/** aggregate stddev on columns */
+["v_player_queue_partners_stddev_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_queue_partners_stddev_pop_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_queue_partners_stddev_samp_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_queue_partners" */
+["v_player_queue_partners_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["v_player_queue_partners_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_queue_partners_stream_cursor_value_input"]: {
+	first_played_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_played_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_queue_partners_sum_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_queue_partners_var_pop_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_queue_partners_var_samp_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_queue_partners_variance_fields"]: AliasType<{
+	matches_together?:boolean | `@${string}`,
+	partner_steam_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	wins_together?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: AliasType<{
 	damage?:boolean | `@${string}`,
@@ -130591,9 +131433,10 @@ export type ModelTypes = {
 	matchesWeek: number,
 	matchesYear: number,
 	playersActive30d: number,
+	playersKnown: number,
+	playersPlayed: number,
 	playersRegistered: number,
 	publicServers: number,
-	serverCapacity: number,
 	servers: number,
 	teams: number
 };
@@ -136292,6 +137135,110 @@ export type ModelTypes = {
 	_set?: ModelTypes["e_match_mode_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["e_match_mode_bool_exp"]
+};
+	/** columns and relationships of "e_match_party_sources" */
+["e_match_party_sources"]: {
+		description: string,
+	/** An array relationship */
+	match_lineup_players: Array<ModelTypes["match_lineup_players"]>,
+	/** An aggregate relationship */
+	match_lineup_players_aggregate: ModelTypes["match_lineup_players_aggregate"],
+	value: string
+};
+	/** aggregated selection of "e_match_party_sources" */
+["e_match_party_sources_aggregate"]: {
+		aggregate?: ModelTypes["e_match_party_sources_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["e_match_party_sources"]>
+};
+	/** aggregate fields of "e_match_party_sources" */
+["e_match_party_sources_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_match_party_sources_max_fields"] | undefined | null,
+	min?: ModelTypes["e_match_party_sources_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_match_party_sources". All fields are combined with a logical 'AND'. */
+["e_match_party_sources_bool_exp"]: {
+	_and?: Array<ModelTypes["e_match_party_sources_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["e_match_party_sources_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["e_match_party_sources_bool_exp"]> | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	match_lineup_players?: ModelTypes["match_lineup_players_bool_exp"] | undefined | null,
+	match_lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
+	value?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["e_match_party_sources_constraint"]:e_match_party_sources_constraint;
+	["e_match_party_sources_enum"]:e_match_party_sources_enum;
+	/** Boolean expression to compare columns of type "e_match_party_sources_enum". All fields are combined with logical 'AND'. */
+["e_match_party_sources_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_match_party_sources_enum"] | undefined | null,
+	_in?: Array<ModelTypes["e_match_party_sources_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ModelTypes["e_match_party_sources_enum"] | undefined | null,
+	_nin?: Array<ModelTypes["e_match_party_sources_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_match_party_sources" */
+["e_match_party_sources_insert_input"]: {
+	description?: string | undefined | null,
+	match_lineup_players?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_match_party_sources_max_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_match_party_sources_min_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_match_party_sources" */
+["e_match_party_sources_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_match_party_sources"]>
+};
+	/** on_conflict condition type for table "e_match_party_sources" */
+["e_match_party_sources_on_conflict"]: {
+	constraint: ModelTypes["e_match_party_sources_constraint"],
+	update_columns: Array<ModelTypes["e_match_party_sources_update_column"]>,
+	where?: ModelTypes["e_match_party_sources_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_match_party_sources". */
+["e_match_party_sources_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined | null,
+	match_lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
+	value?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_match_party_sources */
+["e_match_party_sources_pk_columns_input"]: {
+	value: string
+};
+	["e_match_party_sources_select_column"]:e_match_party_sources_select_column;
+	/** input type for updating data in table "e_match_party_sources" */
+["e_match_party_sources_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_match_party_sources" */
+["e_match_party_sources_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_match_party_sources_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_party_sources_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	["e_match_party_sources_update_column"]:e_match_party_sources_update_column;
+	["e_match_party_sources_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_match_party_sources_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_match_party_sources_bool_exp"]
 };
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: {
@@ -146325,6 +147272,8 @@ export type ModelTypes = {
 	/** An object relationship */
 	lineup: ModelTypes["match_lineups"],
 	match_lineup_id: ModelTypes["uuid"],
+	party_id?: ModelTypes["uuid"] | undefined | null,
+	party_source?: ModelTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	/** An object relationship */
 	player?: ModelTypes["players"] | undefined | null,
@@ -146411,6 +147360,8 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	lineup?: ModelTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	party_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	party_source?: ModelTypes["e_match_party_sources_enum_comparison_exp"] | undefined | null,
 	placeholder_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	player?: ModelTypes["players_bool_exp"] | undefined | null,
 	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null
@@ -146428,6 +147379,8 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	lineup?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	match_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	party_id?: ModelTypes["uuid"] | undefined | null,
+	party_source?: ModelTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
@@ -146437,6 +147390,7 @@ export type ModelTypes = {
 		discord_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	party_id?: ModelTypes["uuid"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
@@ -146445,6 +147399,7 @@ export type ModelTypes = {
 	discord_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	match_lineup_id?: ModelTypes["order_by"] | undefined | null,
+	party_id?: ModelTypes["order_by"] | undefined | null,
 	placeholder_name?: ModelTypes["order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null
 };
@@ -146453,6 +147408,7 @@ export type ModelTypes = {
 		discord_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	party_id?: ModelTypes["uuid"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
@@ -146461,6 +147417,7 @@ export type ModelTypes = {
 	discord_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	match_lineup_id?: ModelTypes["order_by"] | undefined | null,
+	party_id?: ModelTypes["order_by"] | undefined | null,
 	placeholder_name?: ModelTypes["order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null
 };
@@ -146485,6 +147442,8 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	lineup?: ModelTypes["match_lineups_order_by"] | undefined | null,
 	match_lineup_id?: ModelTypes["order_by"] | undefined | null,
+	party_id?: ModelTypes["order_by"] | undefined | null,
+	party_source?: ModelTypes["order_by"] | undefined | null,
 	placeholder_name?: ModelTypes["order_by"] | undefined | null,
 	player?: ModelTypes["players_order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null
@@ -146503,6 +147462,8 @@ export type ModelTypes = {
 	discord_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	party_id?: ModelTypes["uuid"] | undefined | null,
+	party_source?: ModelTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
@@ -146544,6 +147505,8 @@ export type ModelTypes = {
 	discord_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	match_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	party_id?: ModelTypes["uuid"] | undefined | null,
+	party_source?: ModelTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
@@ -150791,6 +151754,10 @@ export type ModelTypes = {
 	delete_e_match_mode?: ModelTypes["e_match_mode_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_match_mode" */
 	delete_e_match_mode_by_pk?: ModelTypes["e_match_mode"] | undefined | null,
+	/** delete data from the table: "e_match_party_sources" */
+	delete_e_match_party_sources?: ModelTypes["e_match_party_sources_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_match_party_sources" */
+	delete_e_match_party_sources_by_pk?: ModelTypes["e_match_party_sources"] | undefined | null,
 	/** delete data from the table: "e_match_status" */
 	delete_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_match_status" */
@@ -151408,6 +152375,10 @@ export type ModelTypes = {
 	insert_e_match_mode?: ModelTypes["e_match_mode_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_match_mode" */
 	insert_e_match_mode_one?: ModelTypes["e_match_mode"] | undefined | null,
+	/** insert data into the table: "e_match_party_sources" */
+	insert_e_match_party_sources?: ModelTypes["e_match_party_sources_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_match_party_sources" */
+	insert_e_match_party_sources_one?: ModelTypes["e_match_party_sources"] | undefined | null,
 	/** insert data into the table: "e_match_status" */
 	insert_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_match_status" */
@@ -152233,6 +153204,12 @@ export type ModelTypes = {
 	update_e_match_mode_by_pk?: ModelTypes["e_match_mode"] | undefined | null,
 	/** update multiples rows of table: "e_match_mode" */
 	update_e_match_mode_many?: Array<ModelTypes["e_match_mode_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_match_party_sources" */
+	update_e_match_party_sources?: ModelTypes["e_match_party_sources_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_match_party_sources" */
+	update_e_match_party_sources_by_pk?: ModelTypes["e_match_party_sources"] | undefined | null,
+	/** update multiples rows of table: "e_match_party_sources" */
+	update_e_match_party_sources_many?: Array<ModelTypes["e_match_party_sources_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_match_status" */
 	update_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_match_status" */
@@ -154465,6 +155442,7 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
+	parties?: ModelTypes["jsonb"] | undefined | null,
 	/** An array relationship */
 	players: Array<ModelTypes["pending_match_import_players"]>,
 	/** An aggregate relationship */
@@ -154493,6 +155471,10 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["pending_match_imports_var_samp_fields"] | undefined | null,
 	variance?: ModelTypes["pending_match_imports_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_append_input"]: {
+	parties?: ModelTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: {
 		valve_match_id?: number | undefined | null
@@ -154507,6 +155489,7 @@ export type ModelTypes = {
 	error?: ModelTypes["String_comparison_exp"] | undefined | null,
 	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	match_start_time?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	parties?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	players?: ModelTypes["pending_match_import_players_bool_exp"] | undefined | null,
 	players_aggregate?: ModelTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null,
 	share_code?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -154515,6 +155498,18 @@ export type ModelTypes = {
 	valve_match_id?: ModelTypes["numeric_comparison_exp"] | undefined | null
 };
 	["pending_match_imports_constraint"]:pending_match_imports_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["pending_match_imports_delete_at_path_input"]: {
+	parties?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["pending_match_imports_delete_elem_input"]: {
+	parties?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["pending_match_imports_delete_key_input"]: {
+	parties?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 	valve_match_id?: ModelTypes["numeric"] | undefined | null
@@ -154526,6 +155521,7 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
+	parties?: ModelTypes["jsonb"] | undefined | null,
 	players?: ModelTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
@@ -154582,6 +155578,7 @@ export type ModelTypes = {
 	error?: ModelTypes["order_by"] | undefined | null,
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match_start_time?: ModelTypes["order_by"] | undefined | null,
+	parties?: ModelTypes["order_by"] | undefined | null,
 	players_aggregate?: ModelTypes["pending_match_import_players_aggregate_order_by"] | undefined | null,
 	share_code?: ModelTypes["order_by"] | undefined | null,
 	status?: ModelTypes["order_by"] | undefined | null,
@@ -154592,6 +155589,10 @@ export type ModelTypes = {
 ["pending_match_imports_pk_columns_input"]: {
 	valve_match_id: ModelTypes["numeric"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_prepend_input"]: {
+	parties?: ModelTypes["jsonb"] | undefined | null
+};
 	["pending_match_imports_select_column"]:pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
 ["pending_match_imports_set_input"]: {
@@ -154600,6 +155601,7 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
+	parties?: ModelTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -154631,6 +155633,7 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
+	parties?: ModelTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -154642,8 +155645,18 @@ export type ModelTypes = {
 };
 	["pending_match_imports_update_column"]:pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["pending_match_imports_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["pending_match_imports_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["pending_match_imports_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["pending_match_imports_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ModelTypes["pending_match_imports_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["pending_match_imports_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["pending_match_imports_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -167511,6 +168524,12 @@ export type ModelTypes = {
 	e_match_mode_aggregate: ModelTypes["e_match_mode_aggregate"],
 	/** fetch data from the table: "e_match_mode" using primary key columns */
 	e_match_mode_by_pk?: ModelTypes["e_match_mode"] | undefined | null,
+	/** fetch data from the table: "e_match_party_sources" */
+	e_match_party_sources: Array<ModelTypes["e_match_party_sources"]>,
+	/** fetch aggregated fields from the table: "e_match_party_sources" */
+	e_match_party_sources_aggregate: ModelTypes["e_match_party_sources_aggregate"],
+	/** fetch data from the table: "e_match_party_sources" using primary key columns */
+	e_match_party_sources_by_pk?: ModelTypes["e_match_party_sources"] | undefined | null,
 	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<ModelTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
@@ -167861,9 +168880,9 @@ export type ModelTypes = {
 	match_demo_sessions_aggregate: ModelTypes["match_demo_sessions_aggregate"],
 	/** fetch data from the table: "match_demo_sessions" using primary key columns */
 	match_demo_sessions_by_pk?: ModelTypes["match_demo_sessions"] | undefined | null,
-	/** fetch data from the table: "match_lineup_players" */
+	/** An array relationship */
 	match_lineup_players: Array<ModelTypes["match_lineup_players"]>,
-	/** fetch aggregated fields from the table: "match_lineup_players" */
+	/** An aggregate relationship */
 	match_lineup_players_aggregate: ModelTypes["match_lineup_players_aggregate"],
 	/** fetch data from the table: "match_lineup_players" using primary key columns */
 	match_lineup_players_by_pk?: ModelTypes["match_lineup_players"] | undefined | null,
@@ -168384,6 +169403,10 @@ export type ModelTypes = {
 	v_player_multi_kills: Array<ModelTypes["v_player_multi_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_multi_kills" */
 	v_player_multi_kills_aggregate: ModelTypes["v_player_multi_kills_aggregate"],
+	/** fetch data from the table: "v_player_queue_partners" */
+	v_player_queue_partners: Array<ModelTypes["v_player_queue_partners"]>,
+	/** fetch aggregated fields from the table: "v_player_queue_partners" */
+	v_player_queue_partners_aggregate: ModelTypes["v_player_queue_partners_aggregate"],
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<ModelTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -170109,6 +171132,14 @@ export type ModelTypes = {
 	e_match_mode_by_pk?: ModelTypes["e_match_mode"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "e_match_mode" */
 	e_match_mode_stream: Array<ModelTypes["e_match_mode"]>,
+	/** fetch data from the table: "e_match_party_sources" */
+	e_match_party_sources: Array<ModelTypes["e_match_party_sources"]>,
+	/** fetch aggregated fields from the table: "e_match_party_sources" */
+	e_match_party_sources_aggregate: ModelTypes["e_match_party_sources_aggregate"],
+	/** fetch data from the table: "e_match_party_sources" using primary key columns */
+	e_match_party_sources_by_pk?: ModelTypes["e_match_party_sources"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_match_party_sources" */
+	e_match_party_sources_stream: Array<ModelTypes["e_match_party_sources"]>,
 	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<ModelTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
@@ -170523,9 +171554,9 @@ export type ModelTypes = {
 	match_demo_sessions_by_pk?: ModelTypes["match_demo_sessions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "match_demo_sessions" */
 	match_demo_sessions_stream: Array<ModelTypes["match_demo_sessions"]>,
-	/** fetch data from the table: "match_lineup_players" */
+	/** An array relationship */
 	match_lineup_players: Array<ModelTypes["match_lineup_players"]>,
-	/** fetch aggregated fields from the table: "match_lineup_players" */
+	/** An aggregate relationship */
 	match_lineup_players_aggregate: ModelTypes["match_lineup_players_aggregate"],
 	/** fetch data from the table: "match_lineup_players" using primary key columns */
 	match_lineup_players_by_pk?: ModelTypes["match_lineup_players"] | undefined | null,
@@ -171223,6 +172254,12 @@ export type ModelTypes = {
 	v_player_multi_kills_aggregate: ModelTypes["v_player_multi_kills_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_multi_kills" */
 	v_player_multi_kills_stream: Array<ModelTypes["v_player_multi_kills"]>,
+	/** fetch data from the table: "v_player_queue_partners" */
+	v_player_queue_partners: Array<ModelTypes["v_player_queue_partners"]>,
+	/** fetch aggregated fields from the table: "v_player_queue_partners" */
+	v_player_queue_partners_aggregate: ModelTypes["v_player_queue_partners_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_queue_partners" */
+	v_player_queue_partners_stream: Array<ModelTypes["v_player_queue_partners"]>,
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<ModelTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -183995,6 +185032,154 @@ export type ModelTypes = {
 	kills?: ModelTypes["order_by"] | undefined | null,
 	round?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "v_player_queue_partners" */
+["v_player_queue_partners"]: {
+		first_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	/** An object relationship */
+	partner?: ModelTypes["players"] | undefined | null,
+	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	player?: ModelTypes["players"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregated selection of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate"]: {
+		aggregate?: ModelTypes["v_player_queue_partners_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["v_player_queue_partners"]>
+};
+	/** aggregate fields of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate_fields"]: {
+		avg?: ModelTypes["v_player_queue_partners_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["v_player_queue_partners_max_fields"] | undefined | null,
+	min?: ModelTypes["v_player_queue_partners_min_fields"] | undefined | null,
+	stddev?: ModelTypes["v_player_queue_partners_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["v_player_queue_partners_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["v_player_queue_partners_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["v_player_queue_partners_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["v_player_queue_partners_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["v_player_queue_partners_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["v_player_queue_partners_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["v_player_queue_partners_avg_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
+["v_player_queue_partners_bool_exp"]: {
+	_and?: Array<ModelTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["v_player_queue_partners_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
+	first_played_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_played_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	matches_together?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	partner?: ModelTypes["players_bool_exp"] | undefined | null,
+	partner_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	player?: ModelTypes["players_bool_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	wins_together?: ModelTypes["Int_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_queue_partners_max_fields"]: {
+		first_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate min on columns */
+["v_player_queue_partners_min_fields"]: {
+		first_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** Ordering options when selecting data from "v_player_queue_partners". */
+["v_player_queue_partners_order_by"]: {
+	first_played_at?: ModelTypes["order_by"] | undefined | null,
+	last_played_at?: ModelTypes["order_by"] | undefined | null,
+	matches_together?: ModelTypes["order_by"] | undefined | null,
+	partner?: ModelTypes["players_order_by"] | undefined | null,
+	partner_steam_id?: ModelTypes["order_by"] | undefined | null,
+	player?: ModelTypes["players_order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null,
+	wins_together?: ModelTypes["order_by"] | undefined | null
+};
+	["v_player_queue_partners_select_column"]:v_player_queue_partners_select_column;
+	/** aggregate stddev on columns */
+["v_player_queue_partners_stddev_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["v_player_queue_partners_stddev_pop_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["v_player_queue_partners_stddev_samp_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** Streaming cursor of the table "v_player_queue_partners" */
+["v_player_queue_partners_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["v_player_queue_partners_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_queue_partners_stream_cursor_value_input"]: {
+	first_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_played_at?: ModelTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_queue_partners_sum_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: ModelTypes["bigint"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate var_pop on columns */
+["v_player_queue_partners_var_pop_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["v_player_queue_partners_var_samp_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["v_player_queue_partners_variance_fields"]: {
+		matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: {
 		damage?: ModelTypes["bigint"] | undefined | null,
@@ -187372,9 +188557,10 @@ export type GraphQLTypes = {
 	matchesWeek: number,
 	matchesYear: number,
 	playersActive30d: number,
+	playersKnown: number,
+	playersPlayed: number,
 	playersRegistered: number,
 	publicServers: number,
-	serverCapacity: number,
 	servers: number,
 	teams: number
 };
@@ -193477,6 +194663,119 @@ export type GraphQLTypes = {
 	_set?: GraphQLTypes["e_match_mode_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["e_match_mode_bool_exp"]
+};
+	/** columns and relationships of "e_match_party_sources" */
+["e_match_party_sources"]: {
+	__typename: "e_match_party_sources",
+	description: string,
+	/** An array relationship */
+	match_lineup_players: Array<GraphQLTypes["match_lineup_players"]>,
+	/** An aggregate relationship */
+	match_lineup_players_aggregate: GraphQLTypes["match_lineup_players_aggregate"],
+	value: string
+};
+	/** aggregated selection of "e_match_party_sources" */
+["e_match_party_sources_aggregate"]: {
+	__typename: "e_match_party_sources_aggregate",
+	aggregate?: GraphQLTypes["e_match_party_sources_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["e_match_party_sources"]>
+};
+	/** aggregate fields of "e_match_party_sources" */
+["e_match_party_sources_aggregate_fields"]: {
+	__typename: "e_match_party_sources_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_match_party_sources_max_fields"] | undefined | null,
+	min?: GraphQLTypes["e_match_party_sources_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_match_party_sources". All fields are combined with a logical 'AND'. */
+["e_match_party_sources_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_match_party_sources_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["e_match_party_sources_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["e_match_party_sources_bool_exp"]> | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	match_lineup_players?: GraphQLTypes["match_lineup_players_bool_exp"] | undefined | null,
+	match_lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_match_party_sources" */
+["e_match_party_sources_constraint"]: e_match_party_sources_constraint;
+	["e_match_party_sources_enum"]: e_match_party_sources_enum;
+	/** Boolean expression to compare columns of type "e_match_party_sources_enum". All fields are combined with logical 'AND'. */
+["e_match_party_sources_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_match_party_sources_enum"] | undefined | null,
+	_in?: Array<GraphQLTypes["e_match_party_sources_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: GraphQLTypes["e_match_party_sources_enum"] | undefined | null,
+	_nin?: Array<GraphQLTypes["e_match_party_sources_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_match_party_sources" */
+["e_match_party_sources_insert_input"]: {
+		description?: string | undefined | null,
+	match_lineup_players?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_match_party_sources_max_fields"]: {
+	__typename: "e_match_party_sources_max_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_match_party_sources_min_fields"]: {
+	__typename: "e_match_party_sources_min_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_match_party_sources" */
+["e_match_party_sources_mutation_response"]: {
+	__typename: "e_match_party_sources_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_match_party_sources"]>
+};
+	/** on_conflict condition type for table "e_match_party_sources" */
+["e_match_party_sources_on_conflict"]: {
+		constraint: GraphQLTypes["e_match_party_sources_constraint"],
+	update_columns: Array<GraphQLTypes["e_match_party_sources_update_column"]>,
+	where?: GraphQLTypes["e_match_party_sources_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_match_party_sources". */
+["e_match_party_sources_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined | null,
+	match_lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
+	value?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_match_party_sources */
+["e_match_party_sources_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_match_party_sources" */
+["e_match_party_sources_select_column"]: e_match_party_sources_select_column;
+	/** input type for updating data in table "e_match_party_sources" */
+["e_match_party_sources_set_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_match_party_sources" */
+["e_match_party_sources_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_match_party_sources_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_party_sources_stream_cursor_value_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_match_party_sources" */
+["e_match_party_sources_update_column"]: e_match_party_sources_update_column;
+	["e_match_party_sources_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_match_party_sources_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_match_party_sources_bool_exp"]
 };
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: {
@@ -204133,6 +205432,8 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	lineup: GraphQLTypes["match_lineups"],
 	match_lineup_id: GraphQLTypes["uuid"],
+	party_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_source?: GraphQLTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	/** An object relationship */
 	player?: GraphQLTypes["players"] | undefined | null,
@@ -204222,6 +205523,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	lineup?: GraphQLTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	party_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	party_source?: GraphQLTypes["e_match_party_sources_enum_comparison_exp"] | undefined | null,
 	placeholder_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null
@@ -204240,6 +205543,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	lineup?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_source?: GraphQLTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
@@ -204250,6 +205555,7 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -204258,6 +205564,7 @@ export type GraphQLTypes = {
 		discord_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["order_by"] | undefined | null,
+	party_id?: GraphQLTypes["order_by"] | undefined | null,
 	placeholder_name?: GraphQLTypes["order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
@@ -204267,6 +205574,7 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -204275,6 +205583,7 @@ export type GraphQLTypes = {
 		discord_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["order_by"] | undefined | null,
+	party_id?: GraphQLTypes["order_by"] | undefined | null,
 	placeholder_name?: GraphQLTypes["order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
@@ -204300,6 +205609,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	lineup?: GraphQLTypes["match_lineups_order_by"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["order_by"] | undefined | null,
+	party_id?: GraphQLTypes["order_by"] | undefined | null,
+	party_source?: GraphQLTypes["order_by"] | undefined | null,
 	placeholder_name?: GraphQLTypes["order_by"] | undefined | null,
 	player?: GraphQLTypes["players_order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null
@@ -204321,6 +205632,8 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_source?: GraphQLTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -204365,6 +205678,8 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_id?: GraphQLTypes["uuid"] | undefined | null,
+	party_source?: GraphQLTypes["e_match_party_sources_enum"] | undefined | null,
 	placeholder_name?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -208777,6 +210092,10 @@ export type GraphQLTypes = {
 	delete_e_match_mode?: GraphQLTypes["e_match_mode_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_match_mode" */
 	delete_e_match_mode_by_pk?: GraphQLTypes["e_match_mode"] | undefined | null,
+	/** delete data from the table: "e_match_party_sources" */
+	delete_e_match_party_sources?: GraphQLTypes["e_match_party_sources_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_match_party_sources" */
+	delete_e_match_party_sources_by_pk?: GraphQLTypes["e_match_party_sources"] | undefined | null,
 	/** delete data from the table: "e_match_status" */
 	delete_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_match_status" */
@@ -209394,6 +210713,10 @@ export type GraphQLTypes = {
 	insert_e_match_mode?: GraphQLTypes["e_match_mode_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_match_mode" */
 	insert_e_match_mode_one?: GraphQLTypes["e_match_mode"] | undefined | null,
+	/** insert data into the table: "e_match_party_sources" */
+	insert_e_match_party_sources?: GraphQLTypes["e_match_party_sources_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_match_party_sources" */
+	insert_e_match_party_sources_one?: GraphQLTypes["e_match_party_sources"] | undefined | null,
 	/** insert data into the table: "e_match_status" */
 	insert_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_match_status" */
@@ -210219,6 +211542,12 @@ export type GraphQLTypes = {
 	update_e_match_mode_by_pk?: GraphQLTypes["e_match_mode"] | undefined | null,
 	/** update multiples rows of table: "e_match_mode" */
 	update_e_match_mode_many?: Array<GraphQLTypes["e_match_mode_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_match_party_sources" */
+	update_e_match_party_sources?: GraphQLTypes["e_match_party_sources_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_match_party_sources" */
+	update_e_match_party_sources_by_pk?: GraphQLTypes["e_match_party_sources"] | undefined | null,
+	/** update multiples rows of table: "e_match_party_sources" */
+	update_e_match_party_sources_many?: Array<GraphQLTypes["e_match_party_sources_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_match_status" */
 	update_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_match_status" */
@@ -212523,6 +213852,7 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
+	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	/** An array relationship */
 	players: Array<GraphQLTypes["pending_match_import_players"]>,
 	/** An aggregate relationship */
@@ -212553,6 +213883,10 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["pending_match_imports_var_samp_fields"] | undefined | null,
 	variance?: GraphQLTypes["pending_match_imports_variance_fields"] | undefined | null
 };
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_append_input"]: {
+		parties?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: {
 	__typename: "pending_match_imports_avg_fields",
@@ -212568,6 +213902,7 @@ export type GraphQLTypes = {
 	error?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	parties?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	players?: GraphQLTypes["pending_match_import_players_bool_exp"] | undefined | null,
 	players_aggregate?: GraphQLTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null,
 	share_code?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -212577,6 +213912,18 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "pending_match_imports" */
 ["pending_match_imports_constraint"]: pending_match_imports_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["pending_match_imports_delete_at_path_input"]: {
+		parties?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["pending_match_imports_delete_elem_input"]: {
+		parties?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["pending_match_imports_delete_key_input"]: {
+		parties?: string | undefined | null
+};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 		valve_match_id?: GraphQLTypes["numeric"] | undefined | null
@@ -212588,6 +213935,7 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
+	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	players?: GraphQLTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
@@ -212647,6 +213995,7 @@ export type GraphQLTypes = {
 	error?: GraphQLTypes["order_by"] | undefined | null,
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match_start_time?: GraphQLTypes["order_by"] | undefined | null,
+	parties?: GraphQLTypes["order_by"] | undefined | null,
 	players_aggregate?: GraphQLTypes["pending_match_import_players_aggregate_order_by"] | undefined | null,
 	share_code?: GraphQLTypes["order_by"] | undefined | null,
 	status?: GraphQLTypes["order_by"] | undefined | null,
@@ -212657,6 +214006,10 @@ export type GraphQLTypes = {
 ["pending_match_imports_pk_columns_input"]: {
 		valve_match_id: GraphQLTypes["numeric"]
 };
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["pending_match_imports_prepend_input"]: {
+		parties?: GraphQLTypes["jsonb"] | undefined | null
+};
 	/** select columns of table "pending_match_imports" */
 ["pending_match_imports_select_column"]: pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
@@ -212666,6 +214019,7 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
+	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -212700,6 +214054,7 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
+	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -212713,8 +214068,18 @@ export type GraphQLTypes = {
 	/** update columns of table "pending_match_imports" */
 ["pending_match_imports_update_column"]: pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
-		/** increments the numeric columns with given value of the filtered values */
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["pending_match_imports_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["pending_match_imports_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["pending_match_imports_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["pending_match_imports_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
 	_inc?: GraphQLTypes["pending_match_imports_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["pending_match_imports_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["pending_match_imports_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -226042,6 +227407,12 @@ export type GraphQLTypes = {
 	e_match_mode_aggregate: GraphQLTypes["e_match_mode_aggregate"],
 	/** fetch data from the table: "e_match_mode" using primary key columns */
 	e_match_mode_by_pk?: GraphQLTypes["e_match_mode"] | undefined | null,
+	/** fetch data from the table: "e_match_party_sources" */
+	e_match_party_sources: Array<GraphQLTypes["e_match_party_sources"]>,
+	/** fetch aggregated fields from the table: "e_match_party_sources" */
+	e_match_party_sources_aggregate: GraphQLTypes["e_match_party_sources_aggregate"],
+	/** fetch data from the table: "e_match_party_sources" using primary key columns */
+	e_match_party_sources_by_pk?: GraphQLTypes["e_match_party_sources"] | undefined | null,
 	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<GraphQLTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
@@ -226392,9 +227763,9 @@ export type GraphQLTypes = {
 	match_demo_sessions_aggregate: GraphQLTypes["match_demo_sessions_aggregate"],
 	/** fetch data from the table: "match_demo_sessions" using primary key columns */
 	match_demo_sessions_by_pk?: GraphQLTypes["match_demo_sessions"] | undefined | null,
-	/** fetch data from the table: "match_lineup_players" */
+	/** An array relationship */
 	match_lineup_players: Array<GraphQLTypes["match_lineup_players"]>,
-	/** fetch aggregated fields from the table: "match_lineup_players" */
+	/** An aggregate relationship */
 	match_lineup_players_aggregate: GraphQLTypes["match_lineup_players_aggregate"],
 	/** fetch data from the table: "match_lineup_players" using primary key columns */
 	match_lineup_players_by_pk?: GraphQLTypes["match_lineup_players"] | undefined | null,
@@ -226915,6 +228286,10 @@ export type GraphQLTypes = {
 	v_player_multi_kills: Array<GraphQLTypes["v_player_multi_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_multi_kills" */
 	v_player_multi_kills_aggregate: GraphQLTypes["v_player_multi_kills_aggregate"],
+	/** fetch data from the table: "v_player_queue_partners" */
+	v_player_queue_partners: Array<GraphQLTypes["v_player_queue_partners"]>,
+	/** fetch aggregated fields from the table: "v_player_queue_partners" */
+	v_player_queue_partners_aggregate: GraphQLTypes["v_player_queue_partners_aggregate"],
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<GraphQLTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -228729,6 +230104,14 @@ export type GraphQLTypes = {
 	e_match_mode_by_pk?: GraphQLTypes["e_match_mode"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "e_match_mode" */
 	e_match_mode_stream: Array<GraphQLTypes["e_match_mode"]>,
+	/** fetch data from the table: "e_match_party_sources" */
+	e_match_party_sources: Array<GraphQLTypes["e_match_party_sources"]>,
+	/** fetch aggregated fields from the table: "e_match_party_sources" */
+	e_match_party_sources_aggregate: GraphQLTypes["e_match_party_sources_aggregate"],
+	/** fetch data from the table: "e_match_party_sources" using primary key columns */
+	e_match_party_sources_by_pk?: GraphQLTypes["e_match_party_sources"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_match_party_sources" */
+	e_match_party_sources_stream: Array<GraphQLTypes["e_match_party_sources"]>,
 	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<GraphQLTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
@@ -229143,9 +230526,9 @@ export type GraphQLTypes = {
 	match_demo_sessions_by_pk?: GraphQLTypes["match_demo_sessions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "match_demo_sessions" */
 	match_demo_sessions_stream: Array<GraphQLTypes["match_demo_sessions"]>,
-	/** fetch data from the table: "match_lineup_players" */
+	/** An array relationship */
 	match_lineup_players: Array<GraphQLTypes["match_lineup_players"]>,
-	/** fetch aggregated fields from the table: "match_lineup_players" */
+	/** An aggregate relationship */
 	match_lineup_players_aggregate: GraphQLTypes["match_lineup_players_aggregate"],
 	/** fetch data from the table: "match_lineup_players" using primary key columns */
 	match_lineup_players_by_pk?: GraphQLTypes["match_lineup_players"] | undefined | null,
@@ -229843,6 +231226,12 @@ export type GraphQLTypes = {
 	v_player_multi_kills_aggregate: GraphQLTypes["v_player_multi_kills_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_multi_kills" */
 	v_player_multi_kills_stream: Array<GraphQLTypes["v_player_multi_kills"]>,
+	/** fetch data from the table: "v_player_queue_partners" */
+	v_player_queue_partners: Array<GraphQLTypes["v_player_queue_partners"]>,
+	/** fetch aggregated fields from the table: "v_player_queue_partners" */
+	v_player_queue_partners_aggregate: GraphQLTypes["v_player_queue_partners_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_queue_partners" */
+	v_player_queue_partners_stream: Array<GraphQLTypes["v_player_queue_partners"]>,
 	/** fetch data from the table: "v_player_weapon_damage" */
 	v_player_weapon_damage: Array<GraphQLTypes["v_player_weapon_damage"]>,
 	/** fetch aggregated fields from the table: "v_player_weapon_damage" */
@@ -243336,6 +244725,168 @@ export type GraphQLTypes = {
 	kills?: GraphQLTypes["order_by"] | undefined | null,
 	round?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "v_player_queue_partners" */
+["v_player_queue_partners"]: {
+	__typename: "v_player_queue_partners",
+	first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	/** An object relationship */
+	partner?: GraphQLTypes["players"] | undefined | null,
+	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	/** An object relationship */
+	player?: GraphQLTypes["players"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregated selection of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate"]: {
+	__typename: "v_player_queue_partners_aggregate",
+	aggregate?: GraphQLTypes["v_player_queue_partners_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["v_player_queue_partners"]>
+};
+	/** aggregate fields of "v_player_queue_partners" */
+["v_player_queue_partners_aggregate_fields"]: {
+	__typename: "v_player_queue_partners_aggregate_fields",
+	avg?: GraphQLTypes["v_player_queue_partners_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["v_player_queue_partners_max_fields"] | undefined | null,
+	min?: GraphQLTypes["v_player_queue_partners_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["v_player_queue_partners_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["v_player_queue_partners_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["v_player_queue_partners_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["v_player_queue_partners_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["v_player_queue_partners_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["v_player_queue_partners_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["v_player_queue_partners_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["v_player_queue_partners_avg_fields"]: {
+	__typename: "v_player_queue_partners_avg_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_player_queue_partners". All fields are combined with a logical 'AND'. */
+["v_player_queue_partners_bool_exp"]: {
+		_and?: Array<GraphQLTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["v_player_queue_partners_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["v_player_queue_partners_bool_exp"]> | undefined | null,
+	first_played_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_played_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	matches_together?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	partner?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	partner_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	wins_together?: GraphQLTypes["Int_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_queue_partners_max_fields"]: {
+	__typename: "v_player_queue_partners_max_fields",
+	first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate min on columns */
+["v_player_queue_partners_min_fields"]: {
+	__typename: "v_player_queue_partners_min_fields",
+	first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** Ordering options when selecting data from "v_player_queue_partners". */
+["v_player_queue_partners_order_by"]: {
+		first_played_at?: GraphQLTypes["order_by"] | undefined | null,
+	last_played_at?: GraphQLTypes["order_by"] | undefined | null,
+	matches_together?: GraphQLTypes["order_by"] | undefined | null,
+	partner?: GraphQLTypes["players_order_by"] | undefined | null,
+	partner_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	player?: GraphQLTypes["players_order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	wins_together?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_queue_partners" */
+["v_player_queue_partners_select_column"]: v_player_queue_partners_select_column;
+	/** aggregate stddev on columns */
+["v_player_queue_partners_stddev_fields"]: {
+	__typename: "v_player_queue_partners_stddev_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["v_player_queue_partners_stddev_pop_fields"]: {
+	__typename: "v_player_queue_partners_stddev_pop_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["v_player_queue_partners_stddev_samp_fields"]: {
+	__typename: "v_player_queue_partners_stddev_samp_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** Streaming cursor of the table "v_player_queue_partners" */
+["v_player_queue_partners_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["v_player_queue_partners_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_queue_partners_stream_cursor_value_input"]: {
+		first_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_played_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	matches_together?: number | undefined | null,
+	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_queue_partners_sum_fields"]: {
+	__typename: "v_player_queue_partners_sum_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate var_pop on columns */
+["v_player_queue_partners_var_pop_fields"]: {
+	__typename: "v_player_queue_partners_var_pop_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["v_player_queue_partners_var_samp_fields"]: {
+	__typename: "v_player_queue_partners_var_samp_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["v_player_queue_partners_variance_fields"]: {
+	__typename: "v_player_queue_partners_variance_fields",
+	matches_together?: number | undefined | null,
+	partner_steam_id?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	wins_together?: number | undefined | null
+};
 	/** columns and relationships of "v_player_weapon_damage" */
 ["v_player_weapon_damage"]: {
 	__typename: "v_player_weapon_damage",
@@ -246968,6 +248519,25 @@ export enum e_match_mode_update_column {
 	description = "description",
 	value = "value"
 }
+/** unique or primary key constraints on table "e_match_party_sources" */
+export enum e_match_party_sources_constraint {
+	e_match_party_sources_pkey = "e_match_party_sources_pkey"
+}
+export enum e_match_party_sources_enum {
+	faceit = "faceit",
+	lobby = "lobby",
+	valve = "valve"
+}
+/** select columns of table "e_match_party_sources" */
+export enum e_match_party_sources_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_match_party_sources" */
+export enum e_match_party_sources_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_match_status" */
 export enum e_match_status_constraint {
 	e_match_status_pkey = "e_match_status_pkey"
@@ -248274,6 +249844,8 @@ export enum match_lineup_players_select_column {
 	discord_id = "discord_id",
 	id = "id",
 	match_lineup_id = "match_lineup_id",
+	party_id = "party_id",
+	party_source = "party_source",
 	placeholder_name = "placeholder_name",
 	steam_id = "steam_id"
 }
@@ -248294,6 +249866,8 @@ export enum match_lineup_players_update_column {
 	discord_id = "discord_id",
 	id = "id",
 	match_lineup_id = "match_lineup_id",
+	party_id = "party_id",
+	party_source = "party_source",
 	placeholder_name = "placeholder_name",
 	steam_id = "steam_id"
 }
@@ -248875,6 +250449,7 @@ export enum pending_match_imports_select_column {
 	error = "error",
 	map_name = "map_name",
 	match_start_time = "match_start_time",
+	parties = "parties",
 	share_code = "share_code",
 	status = "status",
 	updated_at = "updated_at",
@@ -248887,6 +250462,7 @@ export enum pending_match_imports_update_column {
 	error = "error",
 	map_name = "map_name",
 	match_start_time = "match_start_time",
+	parties = "parties",
 	share_code = "share_code",
 	status = "status",
 	updated_at = "updated_at",
@@ -251361,6 +252937,15 @@ export enum v_player_multi_kills_select_column {
 	match_id = "match_id",
 	round = "round"
 }
+/** select columns of table "v_player_queue_partners" */
+export enum v_player_queue_partners_select_column {
+	first_played_at = "first_played_at",
+	last_played_at = "last_played_at",
+	matches_together = "matches_together",
+	partner_steam_id = "partner_steam_id",
+	steam_id = "steam_id",
+	wins_together = "wins_together"
+}
 /** select columns of table "v_player_weapon_damage" */
 export enum v_player_weapon_damage_select_column {
 	damage = "damage",
@@ -252217,6 +253802,20 @@ type ZEUS_VARIABLES = {
 	["e_match_mode_stream_cursor_value_input"]: ValueTypes["e_match_mode_stream_cursor_value_input"];
 	["e_match_mode_update_column"]: ValueTypes["e_match_mode_update_column"];
 	["e_match_mode_updates"]: ValueTypes["e_match_mode_updates"];
+	["e_match_party_sources_bool_exp"]: ValueTypes["e_match_party_sources_bool_exp"];
+	["e_match_party_sources_constraint"]: ValueTypes["e_match_party_sources_constraint"];
+	["e_match_party_sources_enum"]: ValueTypes["e_match_party_sources_enum"];
+	["e_match_party_sources_enum_comparison_exp"]: ValueTypes["e_match_party_sources_enum_comparison_exp"];
+	["e_match_party_sources_insert_input"]: ValueTypes["e_match_party_sources_insert_input"];
+	["e_match_party_sources_on_conflict"]: ValueTypes["e_match_party_sources_on_conflict"];
+	["e_match_party_sources_order_by"]: ValueTypes["e_match_party_sources_order_by"];
+	["e_match_party_sources_pk_columns_input"]: ValueTypes["e_match_party_sources_pk_columns_input"];
+	["e_match_party_sources_select_column"]: ValueTypes["e_match_party_sources_select_column"];
+	["e_match_party_sources_set_input"]: ValueTypes["e_match_party_sources_set_input"];
+	["e_match_party_sources_stream_cursor_input"]: ValueTypes["e_match_party_sources_stream_cursor_input"];
+	["e_match_party_sources_stream_cursor_value_input"]: ValueTypes["e_match_party_sources_stream_cursor_value_input"];
+	["e_match_party_sources_update_column"]: ValueTypes["e_match_party_sources_update_column"];
+	["e_match_party_sources_updates"]: ValueTypes["e_match_party_sources_updates"];
 	["e_match_status_bool_exp"]: ValueTypes["e_match_status_bool_exp"];
 	["e_match_status_constraint"]: ValueTypes["e_match_status_constraint"];
 	["e_match_status_enum"]: ValueTypes["e_match_status_enum"];
@@ -253567,14 +255166,19 @@ type ZEUS_VARIABLES = {
 	["pending_match_import_players_var_pop_order_by"]: ValueTypes["pending_match_import_players_var_pop_order_by"];
 	["pending_match_import_players_var_samp_order_by"]: ValueTypes["pending_match_import_players_var_samp_order_by"];
 	["pending_match_import_players_variance_order_by"]: ValueTypes["pending_match_import_players_variance_order_by"];
+	["pending_match_imports_append_input"]: ValueTypes["pending_match_imports_append_input"];
 	["pending_match_imports_bool_exp"]: ValueTypes["pending_match_imports_bool_exp"];
 	["pending_match_imports_constraint"]: ValueTypes["pending_match_imports_constraint"];
+	["pending_match_imports_delete_at_path_input"]: ValueTypes["pending_match_imports_delete_at_path_input"];
+	["pending_match_imports_delete_elem_input"]: ValueTypes["pending_match_imports_delete_elem_input"];
+	["pending_match_imports_delete_key_input"]: ValueTypes["pending_match_imports_delete_key_input"];
 	["pending_match_imports_inc_input"]: ValueTypes["pending_match_imports_inc_input"];
 	["pending_match_imports_insert_input"]: ValueTypes["pending_match_imports_insert_input"];
 	["pending_match_imports_obj_rel_insert_input"]: ValueTypes["pending_match_imports_obj_rel_insert_input"];
 	["pending_match_imports_on_conflict"]: ValueTypes["pending_match_imports_on_conflict"];
 	["pending_match_imports_order_by"]: ValueTypes["pending_match_imports_order_by"];
 	["pending_match_imports_pk_columns_input"]: ValueTypes["pending_match_imports_pk_columns_input"];
+	["pending_match_imports_prepend_input"]: ValueTypes["pending_match_imports_prepend_input"];
 	["pending_match_imports_select_column"]: ValueTypes["pending_match_imports_select_column"];
 	["pending_match_imports_set_input"]: ValueTypes["pending_match_imports_set_input"];
 	["pending_match_imports_stream_cursor_input"]: ValueTypes["pending_match_imports_stream_cursor_input"];
@@ -255137,6 +256741,11 @@ type ZEUS_VARIABLES = {
 	["v_player_multi_kills_var_pop_order_by"]: ValueTypes["v_player_multi_kills_var_pop_order_by"];
 	["v_player_multi_kills_var_samp_order_by"]: ValueTypes["v_player_multi_kills_var_samp_order_by"];
 	["v_player_multi_kills_variance_order_by"]: ValueTypes["v_player_multi_kills_variance_order_by"];
+	["v_player_queue_partners_bool_exp"]: ValueTypes["v_player_queue_partners_bool_exp"];
+	["v_player_queue_partners_order_by"]: ValueTypes["v_player_queue_partners_order_by"];
+	["v_player_queue_partners_select_column"]: ValueTypes["v_player_queue_partners_select_column"];
+	["v_player_queue_partners_stream_cursor_input"]: ValueTypes["v_player_queue_partners_stream_cursor_input"];
+	["v_player_queue_partners_stream_cursor_value_input"]: ValueTypes["v_player_queue_partners_stream_cursor_value_input"];
 	["v_player_weapon_damage_bool_exp"]: ValueTypes["v_player_weapon_damage_bool_exp"];
 	["v_player_weapon_damage_order_by"]: ValueTypes["v_player_weapon_damage_order_by"];
 	["v_player_weapon_damage_select_column"]: ValueTypes["v_player_weapon_damage_select_column"];

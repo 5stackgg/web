@@ -13,6 +13,7 @@ import {
   __federation_method_getRemote,
   __federation_method_unwrapDefault,
 } from "__federation__";
+import { useI18n } from "vue-i18n";
 import { usePluginsStore } from "~/stores/Plugins";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useToast } from "~/components/ui/toast/use-toast";
@@ -41,6 +42,12 @@ const props = defineProps<{
 const plugins = usePluginsStore();
 const authStore = useAuthStore();
 const { toast } = useToast();
+// A remote has its own vue-i18n instance (or none), so it cannot resolve host
+// messages by importing anything — the translator itself has to be handed over,
+// same as `navigate` and `notify`. `locale` rides along so the plugin can react
+// to a language switch (its own number/date formatting) rather than only
+// re-resolving strings.
+const { t, locale } = useI18n();
 
 // A remote cannot reach the host's composables — it is a separate bundle with
 // its own module graph, and `useToast` keeps its state in module scope, so an
@@ -155,6 +162,8 @@ watch(
       :navigate="navigate"
       :navigate-app="navigateApp"
       :notify="notify"
+      :t="t"
+      :locale="locale"
     />
 
     <div

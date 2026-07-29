@@ -15,6 +15,7 @@ import {
 } from "__federation__";
 import { usePluginsStore } from "~/stores/Plugins";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useToast } from "~/components/ui/toast/use-toast";
 
 // Resolves a plugin by slug and mounts its remote. Routing is deliberately NOT
 // owned here — the caller passes `path`/`query`/`navigate`, because where a
@@ -39,6 +40,22 @@ const props = defineProps<{
 
 const plugins = usePluginsStore();
 const authStore = useAuthStore();
+const { toast } = useToast();
+
+// A remote cannot reach the host's composables — it is a separate bundle with
+// its own module graph, and `useToast` keeps its state in module scope, so an
+// imported copy would push onto a toast list nothing renders. So the capability
+// is handed down as a function, exactly like `navigate` above.
+//
+// Kept deliberately narrow (message + kind) rather than exposing ToastProps: a
+// plugin should not be able to reach into the host's design system, and a
+// smaller surface is one the host can keep honouring as that system changes.
+function notify(message: string, kind: "error" | "success" = "error") {
+  toast({
+    description: message,
+    variant: kind === "error" ? "destructive" : undefined,
+  });
+}
 
 type Status = "loading" | "ready" | "error" | "forbidden" | "not-found";
 
@@ -137,6 +154,7 @@ watch(
       :query="query"
       :navigate="navigate"
       :navigate-app="navigateApp"
+      :notify="notify"
     />
 
     <div

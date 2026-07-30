@@ -22934,6 +22934,7 @@ region_veto_picks_aggregate?: [{	/** distinct select on columns */
 	server_region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?:boolean | `@${string}`,
+	share_code?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
@@ -23125,6 +23126,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_plugin_runtime?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	server_region?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	server_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	share_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -23182,6 +23184,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	server_error?: string | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	share_code?: string | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
@@ -23232,6 +23235,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?:boolean | `@${string}`,
+	share_code?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -23257,6 +23261,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	share_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23303,6 +23308,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?:boolean | `@${string}`,
+	share_code?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -23328,6 +23334,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	share_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23422,6 +23429,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_plugin_runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_region?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	share_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -23455,6 +23463,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	server_error?: string | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	share_code?: string | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
@@ -23524,6 +23533,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	server_error?: string | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	share_code?: string | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
@@ -26170,22 +26180,12 @@ update_pending_match_import_players_by_pk?: [{	/** increments the numeric column
 	_set?: ValueTypes["pending_match_import_players_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["pending_match_import_players_pk_columns_input"] | Variable<any, string>},ValueTypes["pending_match_import_players"]],
 update_pending_match_import_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["pending_match_import_players_updates"]> | Variable<any, string>},ValueTypes["pending_match_import_players_mutation_response"]],
-update_pending_match_imports?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ValueTypes["pending_match_imports_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ValueTypes["pending_match_imports_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ValueTypes["pending_match_imports_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ValueTypes["pending_match_imports_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ValueTypes["pending_match_imports_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["pending_match_imports_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["pending_match_imports_bool_exp"] | Variable<any, string>},ValueTypes["pending_match_imports_mutation_response"]],
-update_pending_match_imports_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ValueTypes["pending_match_imports_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ValueTypes["pending_match_imports_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ValueTypes["pending_match_imports_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ValueTypes["pending_match_imports_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ValueTypes["pending_match_imports_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["pending_match_imports_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["pending_match_imports_pk_columns_input"] | Variable<any, string>},ValueTypes["pending_match_imports"]],
 update_pending_match_imports_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["pending_match_imports_updates"]> | Variable<any, string>},ValueTypes["pending_match_imports_mutation_response"]],
@@ -28262,8 +28262,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_import_players_select_colum
 	error?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_start_time?:boolean | `@${string}`,
-parties?: [{	/** JSON select path */
-	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["pending_match_import_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -28303,10 +28301,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	variance?:ValueTypes["pending_match_imports_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_append_input"]: {
-	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
-};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: AliasType<{
 	valve_match_id?:boolean | `@${string}`,
@@ -28322,7 +28316,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
-	parties?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	players?: ValueTypes["pending_match_import_players_bool_exp"] | undefined | null | Variable<any, string>,
 	players_aggregate?: ValueTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	share_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -28332,18 +28325,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 };
 	/** unique or primary key constraints on table "pending_match_imports" */
 ["pending_match_imports_constraint"]:pending_match_imports_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["pending_match_imports_delete_at_path_input"]: {
-	parties?: Array<string> | undefined | null | Variable<any, string>
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["pending_match_imports_delete_elem_input"]: {
-	parties?: number | undefined | null | Variable<any, string>
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["pending_match_imports_delete_key_input"]: {
-	parties?: string | undefined | null | Variable<any, string>
-};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 	valve_match_id?: ValueTypes["numeric"] | undefined | null | Variable<any, string>
@@ -28355,7 +28336,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: string | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	players?: ValueTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	share_code?: string | undefined | null | Variable<any, string>,
 	status?: string | undefined | null | Variable<any, string>,
@@ -28415,7 +28395,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	parties?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	players_aggregate?: ValueTypes["pending_match_import_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	share_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -28426,10 +28405,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 ["pending_match_imports_pk_columns_input"]: {
 	valve_match_id: ValueTypes["numeric"] | Variable<any, string>
 };
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_prepend_input"]: {
-	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
-};
 	/** select columns of table "pending_match_imports" */
 ["pending_match_imports_select_column"]:pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
@@ -28439,7 +28414,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: string | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	share_code?: string | undefined | null | Variable<any, string>,
 	status?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -28474,7 +28448,6 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	error?: string | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_start_time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	parties?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	share_code?: string | undefined | null | Variable<any, string>,
 	status?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -28488,18 +28461,8 @@ count?: [{	columns?: Array<ValueTypes["pending_match_imports_select_column"]> | 
 	/** update columns of table "pending_match_imports" */
 ["pending_match_imports_update_column"]:pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
-	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ValueTypes["pending_match_imports_append_input"] | undefined | null | Variable<any, string>,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ValueTypes["pending_match_imports_delete_at_path_input"] | undefined | null | Variable<any, string>,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ValueTypes["pending_match_imports_delete_elem_input"] | undefined | null | Variable<any, string>,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ValueTypes["pending_match_imports_delete_key_input"] | undefined | null | Variable<any, string>,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["pending_match_imports_inc_input"] | undefined | null | Variable<any, string>,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ValueTypes["pending_match_imports_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["pending_match_imports_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -30643,6 +30606,7 @@ count?: [{	columns?: Array<ValueTypes["player_damages_select_column"]> | undefin
 	/** An object relationship */
 	player?:ValueTypes["players"],
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	/** An object relationship */
 	season?:ValueTypes["seasons"],
 	season_id?:boolean | `@${string}`,
@@ -30692,6 +30656,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -30723,6 +30688,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	performance_multiplier?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	season?: ValueTypes["seasons_bool_exp"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -30751,6 +30717,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	performance_multiplier?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	series_multiplier?: number | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["float8"] | undefined | null | Variable<any, string>
@@ -30778,6 +30745,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	performance_multiplier?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	season?: ValueTypes["seasons_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	series_multiplier?: number | undefined | null | Variable<any, string>,
@@ -30806,6 +30774,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -30833,6 +30802,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -30876,6 +30846,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	season?: ValueTypes["seasons_order_by"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -30912,6 +30883,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	performance_multiplier?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	series_multiplier?: number | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -30937,6 +30909,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -30961,6 +30934,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -30985,6 +30959,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -31018,6 +30993,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	performance_multiplier?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	series_multiplier?: number | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -31043,6 +31019,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -31077,6 +31054,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -31101,6 +31079,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -31125,6 +31104,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -60209,6 +60189,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_damage_select_column"]> | undefi
 	player_name?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -60348,6 +60329,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60373,6 +60355,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60405,6 +60388,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -60436,6 +60420,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?: string | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	series_multiplier?: number | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
@@ -60466,6 +60451,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -60497,6 +60483,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -60527,6 +60514,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -60558,6 +60546,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -60589,6 +60578,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -60633,6 +60623,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60658,6 +60649,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60682,6 +60674,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60707,6 +60700,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60731,6 +60725,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60756,6 +60751,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60791,6 +60787,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	player_name?: string | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	series_multiplier?: number | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
@@ -60817,6 +60814,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60842,6 +60840,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60866,6 +60865,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60891,6 +60891,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60915,6 +60916,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60940,6 +60942,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -60964,6 +60967,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -60989,6 +60993,7 @@ count?: [{	columns?: Array<ValueTypes["v_player_elo_select_column"]> | undefined
 	performance_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_team_elo_avg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	rating_for_expected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	series_multiplier?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_avg_kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_elo?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -87855,6 +87860,7 @@ region_veto_picks_aggregate?: [{	/** distinct select on columns */
 	server_region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?:boolean | `@${string}`,
+	share_code?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
@@ -88046,6 +88052,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_plugin_runtime?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	server_region?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	server_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	share_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	source?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	started_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum_comparison_exp"] | undefined | null,
@@ -88103,6 +88110,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
@@ -88153,6 +88161,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?:boolean | `@${string}`,
+	share_code?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -88178,6 +88187,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server_error?: ResolverInputTypes["order_by"] | undefined | null,
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	share_code?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	started_at?: ResolverInputTypes["order_by"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -88224,6 +88234,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?:boolean | `@${string}`,
+	share_code?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -88249,6 +88260,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server_error?: ResolverInputTypes["order_by"] | undefined | null,
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	share_code?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	started_at?: ResolverInputTypes["order_by"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -88343,6 +88355,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_plugin_runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	server_region?: ResolverInputTypes["order_by"] | undefined | null,
 	server_type?: ResolverInputTypes["order_by"] | undefined | null,
+	share_code?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	started_at?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
@@ -88376,6 +88389,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
@@ -88445,6 +88459,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
@@ -91091,22 +91106,12 @@ update_pending_match_import_players_by_pk?: [{	/** increments the numeric column
 	_set?: ResolverInputTypes["pending_match_import_players_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["pending_match_import_players_pk_columns_input"]},ResolverInputTypes["pending_match_import_players"]],
 update_pending_match_import_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["pending_match_import_players_updates"]>},ResolverInputTypes["pending_match_import_players_mutation_response"]],
-update_pending_match_imports?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ResolverInputTypes["pending_match_imports_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ResolverInputTypes["pending_match_imports_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ResolverInputTypes["pending_match_imports_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ResolverInputTypes["pending_match_imports_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ResolverInputTypes["pending_match_imports_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["pending_match_imports_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["pending_match_imports_bool_exp"]},ResolverInputTypes["pending_match_imports_mutation_response"]],
-update_pending_match_imports_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ResolverInputTypes["pending_match_imports_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ResolverInputTypes["pending_match_imports_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ResolverInputTypes["pending_match_imports_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ResolverInputTypes["pending_match_imports_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
-	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ResolverInputTypes["pending_match_imports_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_pending_match_imports_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["pending_match_imports_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["pending_match_imports_pk_columns_input"]},ResolverInputTypes["pending_match_imports"]],
 update_pending_match_imports_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["pending_match_imports_updates"]>},ResolverInputTypes["pending_match_imports_mutation_response"]],
@@ -93183,8 +93188,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_import_players_sele
 	error?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_start_time?:boolean | `@${string}`,
-parties?: [{	/** JSON select path */
-	path?: string | undefined | null},boolean | `@${string}`],
 players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["pending_match_import_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -93224,10 +93227,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	variance?:ResolverInputTypes["pending_match_imports_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_append_input"]: {
-	parties?: ResolverInputTypes["jsonb"] | undefined | null
-};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: AliasType<{
 	valve_match_id?:boolean | `@${string}`,
@@ -93243,7 +93242,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
-	parties?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	players?: ResolverInputTypes["pending_match_import_players_bool_exp"] | undefined | null,
 	players_aggregate?: ResolverInputTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null,
 	share_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -93253,18 +93251,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 };
 	/** unique or primary key constraints on table "pending_match_imports" */
 ["pending_match_imports_constraint"]:pending_match_imports_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["pending_match_imports_delete_at_path_input"]: {
-	parties?: Array<string> | undefined | null
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["pending_match_imports_delete_elem_input"]: {
-	parties?: number | undefined | null
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["pending_match_imports_delete_key_input"]: {
-	parties?: string | undefined | null
-};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 	valve_match_id?: ResolverInputTypes["numeric"] | undefined | null
@@ -93276,7 +93262,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz"] | undefined | null,
-	parties?: ResolverInputTypes["jsonb"] | undefined | null,
 	players?: ResolverInputTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
@@ -93336,7 +93321,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: ResolverInputTypes["order_by"] | undefined | null,
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match_start_time?: ResolverInputTypes["order_by"] | undefined | null,
-	parties?: ResolverInputTypes["order_by"] | undefined | null,
 	players_aggregate?: ResolverInputTypes["pending_match_import_players_aggregate_order_by"] | undefined | null,
 	share_code?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
@@ -93347,10 +93331,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 ["pending_match_imports_pk_columns_input"]: {
 	valve_match_id: ResolverInputTypes["numeric"]
 };
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_prepend_input"]: {
-	parties?: ResolverInputTypes["jsonb"] | undefined | null
-};
 	/** select columns of table "pending_match_imports" */
 ["pending_match_imports_select_column"]:pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
@@ -93360,7 +93340,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz"] | undefined | null,
-	parties?: ResolverInputTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -93395,7 +93374,6 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ResolverInputTypes["timestamptz"] | undefined | null,
-	parties?: ResolverInputTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -93409,18 +93387,8 @@ count?: [{	columns?: Array<ResolverInputTypes["pending_match_imports_select_colu
 	/** update columns of table "pending_match_imports" */
 ["pending_match_imports_update_column"]:pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
-	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ResolverInputTypes["pending_match_imports_append_input"] | undefined | null,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ResolverInputTypes["pending_match_imports_delete_at_path_input"] | undefined | null,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ResolverInputTypes["pending_match_imports_delete_elem_input"] | undefined | null,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ResolverInputTypes["pending_match_imports_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["pending_match_imports_inc_input"] | undefined | null,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ResolverInputTypes["pending_match_imports_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["pending_match_imports_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -95564,6 +95532,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_damages_select_column"]> |
 	/** An object relationship */
 	player?:ResolverInputTypes["players"],
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	/** An object relationship */
 	season?:ResolverInputTypes["seasons"],
 	season_id?:boolean | `@${string}`,
@@ -95613,6 +95582,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -95644,6 +95614,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	performance_multiplier?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	season?: ResolverInputTypes["seasons_bool_exp"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -95672,6 +95643,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
 	performance_multiplier?: ResolverInputTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["float8"] | undefined | null
@@ -95699,6 +95671,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	performance_multiplier?: ResolverInputTypes["float8"] | undefined | null,
 	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8"] | undefined | null,
 	season?: ResolverInputTypes["seasons_obj_rel_insert_input"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
@@ -95727,6 +95700,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -95754,6 +95728,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -95797,6 +95772,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	season?: ResolverInputTypes["seasons_order_by"] | undefined | null,
 	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
@@ -95833,6 +95809,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
 	performance_multiplier?: ResolverInputTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -95858,6 +95835,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -95882,6 +95860,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -95906,6 +95885,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -95939,6 +95919,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
 	performance_multiplier?: ResolverInputTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -95964,6 +95945,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -95998,6 +95980,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -96022,6 +96005,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -96046,6 +96030,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	opponent_team_elo_avg?:boolean | `@${string}`,
 	performance_multiplier?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -125130,6 +125115,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_damage_select_column"]> 
 	player_name?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -125269,6 +125255,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125294,6 +125281,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125326,6 +125314,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
@@ -125357,6 +125346,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?: string | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ResolverInputTypes["float8"] | undefined | null,
@@ -125387,6 +125377,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -125418,6 +125409,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
@@ -125448,6 +125440,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	season_id?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
@@ -125479,6 +125472,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
@@ -125510,6 +125504,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	season_id?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
@@ -125554,6 +125549,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125579,6 +125575,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125603,6 +125600,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125628,6 +125626,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125652,6 +125651,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125677,6 +125677,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125712,6 +125713,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	player_name?: string | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["float8"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["float8"] | undefined | null,
 	season_id?: ResolverInputTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ResolverInputTypes["float8"] | undefined | null,
@@ -125738,6 +125740,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125763,6 +125766,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125787,6 +125791,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125812,6 +125817,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125836,6 +125842,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125861,6 +125868,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -125885,6 +125893,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	player_team_elo_avg?:boolean | `@${string}`,
+	rating_for_expected?:boolean | `@${string}`,
 	series_multiplier?:boolean | `@${string}`,
 	team_avg_kda?:boolean | `@${string}`,
 	updated_elo?:boolean | `@${string}`,
@@ -125910,6 +125919,7 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_elo_select_column"]> | u
 	performance_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ResolverInputTypes["order_by"] | undefined | null,
+	rating_for_expected?: ResolverInputTypes["order_by"] | undefined | null,
 	series_multiplier?: ResolverInputTypes["order_by"] | undefined | null,
 	team_avg_kda?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_elo?: ResolverInputTypes["order_by"] | undefined | null
@@ -150832,6 +150842,7 @@ export type ModelTypes = {
 	server_region?: string | undefined | null,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined | null,
+	share_code?: string | undefined | null,
 	source: string,
 	started_at?: ModelTypes["timestamptz"] | undefined | null,
 	status: ModelTypes["e_match_status_enum"],
@@ -150999,6 +151010,7 @@ export type ModelTypes = {
 	server_plugin_runtime?: ModelTypes["String_comparison_exp"] | undefined | null,
 	server_region?: ModelTypes["String_comparison_exp"] | undefined | null,
 	server_type?: ModelTypes["String_comparison_exp"] | undefined | null,
+	share_code?: ModelTypes["String_comparison_exp"] | undefined | null,
 	source?: ModelTypes["String_comparison_exp"] | undefined | null,
 	started_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	status?: ModelTypes["e_match_status_enum_comparison_exp"] | undefined | null,
@@ -151055,6 +151067,7 @@ export type ModelTypes = {
 	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: ModelTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_match_status_enum"] | undefined | null,
@@ -151105,6 +151118,7 @@ export type ModelTypes = {
 	server_region?: string | undefined | null,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -151129,6 +151143,7 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["order_by"] | undefined | null,
 	server_error?: ModelTypes["order_by"] | undefined | null,
 	server_id?: ModelTypes["order_by"] | undefined | null,
+	share_code?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	started_at?: ModelTypes["order_by"] | undefined | null,
 	winning_lineup_id?: ModelTypes["order_by"] | undefined | null
@@ -151175,6 +151190,7 @@ export type ModelTypes = {
 	server_region?: string | undefined | null,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -151199,6 +151215,7 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["order_by"] | undefined | null,
 	server_error?: ModelTypes["order_by"] | undefined | null,
 	server_id?: ModelTypes["order_by"] | undefined | null,
+	share_code?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	started_at?: ModelTypes["order_by"] | undefined | null,
 	winning_lineup_id?: ModelTypes["order_by"] | undefined | null
@@ -151292,6 +151309,7 @@ export type ModelTypes = {
 	server_plugin_runtime?: ModelTypes["order_by"] | undefined | null,
 	server_region?: ModelTypes["order_by"] | undefined | null,
 	server_type?: ModelTypes["order_by"] | undefined | null,
+	share_code?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	started_at?: ModelTypes["order_by"] | undefined | null,
 	status?: ModelTypes["order_by"] | undefined | null,
@@ -151324,6 +151342,7 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: ModelTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_match_status_enum"] | undefined | null,
@@ -151390,6 +151409,7 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["timestamptz"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: ModelTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: ModelTypes["timestamptz"] | undefined | null,
 	status?: ModelTypes["e_match_status_enum"] | undefined | null,
@@ -155442,7 +155462,6 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
-	parties?: ModelTypes["jsonb"] | undefined | null,
 	/** An array relationship */
 	players: Array<ModelTypes["pending_match_import_players"]>,
 	/** An aggregate relationship */
@@ -155471,10 +155490,6 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["pending_match_imports_var_samp_fields"] | undefined | null,
 	variance?: ModelTypes["pending_match_imports_variance_fields"] | undefined | null
 };
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_append_input"]: {
-	parties?: ModelTypes["jsonb"] | undefined | null
-};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: {
 		valve_match_id?: number | undefined | null
@@ -155489,7 +155504,6 @@ export type ModelTypes = {
 	error?: ModelTypes["String_comparison_exp"] | undefined | null,
 	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	match_start_time?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
-	parties?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	players?: ModelTypes["pending_match_import_players_bool_exp"] | undefined | null,
 	players_aggregate?: ModelTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null,
 	share_code?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -155498,18 +155512,6 @@ export type ModelTypes = {
 	valve_match_id?: ModelTypes["numeric_comparison_exp"] | undefined | null
 };
 	["pending_match_imports_constraint"]:pending_match_imports_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["pending_match_imports_delete_at_path_input"]: {
-	parties?: Array<string> | undefined | null
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["pending_match_imports_delete_elem_input"]: {
-	parties?: number | undefined | null
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["pending_match_imports_delete_key_input"]: {
-	parties?: string | undefined | null
-};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 	valve_match_id?: ModelTypes["numeric"] | undefined | null
@@ -155521,7 +155523,6 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
-	parties?: ModelTypes["jsonb"] | undefined | null,
 	players?: ModelTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
@@ -155578,7 +155579,6 @@ export type ModelTypes = {
 	error?: ModelTypes["order_by"] | undefined | null,
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match_start_time?: ModelTypes["order_by"] | undefined | null,
-	parties?: ModelTypes["order_by"] | undefined | null,
 	players_aggregate?: ModelTypes["pending_match_import_players_aggregate_order_by"] | undefined | null,
 	share_code?: ModelTypes["order_by"] | undefined | null,
 	status?: ModelTypes["order_by"] | undefined | null,
@@ -155589,10 +155589,6 @@ export type ModelTypes = {
 ["pending_match_imports_pk_columns_input"]: {
 	valve_match_id: ModelTypes["numeric"]
 };
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_prepend_input"]: {
-	parties?: ModelTypes["jsonb"] | undefined | null
-};
 	["pending_match_imports_select_column"]:pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
 ["pending_match_imports_set_input"]: {
@@ -155601,7 +155597,6 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
-	parties?: ModelTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -155633,7 +155628,6 @@ export type ModelTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: ModelTypes["timestamptz"] | undefined | null,
-	parties?: ModelTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -155645,18 +155639,8 @@ export type ModelTypes = {
 };
 	["pending_match_imports_update_column"]:pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
-	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ModelTypes["pending_match_imports_append_input"] | undefined | null,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ModelTypes["pending_match_imports_delete_at_path_input"] | undefined | null,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ModelTypes["pending_match_imports_delete_elem_input"] | undefined | null,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ModelTypes["pending_match_imports_delete_key_input"] | undefined | null,
 	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ModelTypes["pending_match_imports_inc_input"] | undefined | null,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ModelTypes["pending_match_imports_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["pending_match_imports_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -157713,6 +157697,7 @@ export type ModelTypes = {
 	/** An object relationship */
 	player: ModelTypes["players"],
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	/** An object relationship */
 	season?: ModelTypes["seasons"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
@@ -157759,6 +157744,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -157789,6 +157775,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	player?: ModelTypes["players_bool_exp"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	season?: ModelTypes["seasons_bool_exp"] | undefined | null,
 	season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	series_multiplier?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -157816,6 +157803,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: ModelTypes["float8"] | undefined | null,
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null
@@ -157843,6 +157831,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season?: ModelTypes["seasons_obj_rel_insert_input"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
@@ -157871,6 +157860,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: ModelTypes["float8"] | undefined | null,
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -157897,6 +157887,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: ModelTypes["float8"] | undefined | null,
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -157938,6 +157929,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player?: ModelTypes["players_order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	season?: ModelTypes["seasons_order_by"] | undefined | null,
 	season_id?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
@@ -157973,6 +157965,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: ModelTypes["float8"] | undefined | null,
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -157998,6 +157991,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -158021,6 +158015,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -158044,6 +158039,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -158076,6 +158072,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: ModelTypes["float8"] | undefined | null,
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -158101,6 +158098,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: ModelTypes["float8"] | undefined | null,
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null
@@ -158133,6 +158131,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -158156,6 +158155,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -158179,6 +158179,7 @@ export type ModelTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -182480,6 +182481,7 @@ export type ModelTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null,
@@ -182616,6 +182618,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -182640,6 +182643,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -182672,6 +182676,7 @@ export type ModelTypes = {
 	player_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8_comparison_exp"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	season_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	series_multiplier?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	team_avg_kda?: ModelTypes["float8_comparison_exp"] | undefined | null,
@@ -182703,6 +182708,7 @@ export type ModelTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null,
@@ -182733,6 +182739,7 @@ export type ModelTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null,
@@ -182763,6 +182770,7 @@ export type ModelTypes = {
 	player_name?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	season_id?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
@@ -182793,6 +182801,7 @@ export type ModelTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null,
@@ -182823,6 +182832,7 @@ export type ModelTypes = {
 	player_name?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	season_id?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
@@ -182854,6 +182864,7 @@ export type ModelTypes = {
 	player_name?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	season_id?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
@@ -182889,6 +182900,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -182913,6 +182925,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -182937,6 +182950,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -182961,6 +182975,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -182985,6 +183000,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -183009,6 +183025,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -183044,6 +183061,7 @@ export type ModelTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	season_id?: ModelTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null,
@@ -183070,6 +183088,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["float8"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["float8"] | undefined | null,
+	rating_for_expected?: ModelTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: ModelTypes["float8"] | undefined | null,
 	updated_elo?: number | undefined | null
@@ -183094,6 +183113,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -183118,6 +183138,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -183142,6 +183163,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -183166,6 +183188,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -183190,6 +183213,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -183214,6 +183238,7 @@ export type ModelTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -183238,6 +183263,7 @@ export type ModelTypes = {
 	performance_multiplier?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: ModelTypes["order_by"] | undefined | null,
+	rating_for_expected?: ModelTypes["order_by"] | undefined | null,
 	series_multiplier?: ModelTypes["order_by"] | undefined | null,
 	team_avg_kda?: ModelTypes["order_by"] | undefined | null,
 	updated_elo?: ModelTypes["order_by"] | undefined | null
@@ -209144,6 +209170,7 @@ export type GraphQLTypes = {
 	server_region?: string | undefined | null,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined | null,
+	share_code?: string | undefined | null,
 	source: string,
 	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	status: GraphQLTypes["e_match_status_enum"],
@@ -209314,6 +209341,7 @@ export type GraphQLTypes = {
 	server_plugin_runtime?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	server_region?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	server_type?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	share_code?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	source?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	started_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	status?: GraphQLTypes["e_match_status_enum_comparison_exp"] | undefined | null,
@@ -209371,6 +209399,7 @@ export type GraphQLTypes = {
 	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined | null,
@@ -209422,6 +209451,7 @@ export type GraphQLTypes = {
 	server_region?: string | undefined | null,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -209446,6 +209476,7 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["order_by"] | undefined | null,
 	server_error?: GraphQLTypes["order_by"] | undefined | null,
 	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	share_code?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	started_at?: GraphQLTypes["order_by"] | undefined | null,
 	winning_lineup_id?: GraphQLTypes["order_by"] | undefined | null
@@ -209493,6 +209524,7 @@ export type GraphQLTypes = {
 	server_region?: string | undefined | null,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -209517,6 +209549,7 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["order_by"] | undefined | null,
 	server_error?: GraphQLTypes["order_by"] | undefined | null,
 	server_id?: GraphQLTypes["order_by"] | undefined | null,
+	share_code?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	started_at?: GraphQLTypes["order_by"] | undefined | null,
 	winning_lineup_id?: GraphQLTypes["order_by"] | undefined | null
@@ -209611,6 +209644,7 @@ export type GraphQLTypes = {
 	server_plugin_runtime?: GraphQLTypes["order_by"] | undefined | null,
 	server_region?: GraphQLTypes["order_by"] | undefined | null,
 	server_type?: GraphQLTypes["order_by"] | undefined | null,
+	share_code?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	started_at?: GraphQLTypes["order_by"] | undefined | null,
 	status?: GraphQLTypes["order_by"] | undefined | null,
@@ -209644,6 +209678,7 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined | null,
@@ -209713,6 +209748,7 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	server_error?: string | undefined | null,
 	server_id?: GraphQLTypes["uuid"] | undefined | null,
+	share_code?: string | undefined | null,
 	source?: string | undefined | null,
 	started_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined | null,
@@ -213852,7 +213888,6 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
-	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	/** An array relationship */
 	players: Array<GraphQLTypes["pending_match_import_players"]>,
 	/** An aggregate relationship */
@@ -213883,10 +213918,6 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["pending_match_imports_var_samp_fields"] | undefined | null,
 	variance?: GraphQLTypes["pending_match_imports_variance_fields"] | undefined | null
 };
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_append_input"]: {
-		parties?: GraphQLTypes["jsonb"] | undefined | null
-};
 	/** aggregate avg on columns */
 ["pending_match_imports_avg_fields"]: {
 	__typename: "pending_match_imports_avg_fields",
@@ -213902,7 +213933,6 @@ export type GraphQLTypes = {
 	error?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
-	parties?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	players?: GraphQLTypes["pending_match_import_players_bool_exp"] | undefined | null,
 	players_aggregate?: GraphQLTypes["pending_match_import_players_aggregate_bool_exp"] | undefined | null,
 	share_code?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -213912,18 +213942,6 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "pending_match_imports" */
 ["pending_match_imports_constraint"]: pending_match_imports_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["pending_match_imports_delete_at_path_input"]: {
-		parties?: Array<string> | undefined | null
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["pending_match_imports_delete_elem_input"]: {
-		parties?: number | undefined | null
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["pending_match_imports_delete_key_input"]: {
-		parties?: string | undefined | null
-};
 	/** input type for incrementing numeric columns in table "pending_match_imports" */
 ["pending_match_imports_inc_input"]: {
 		valve_match_id?: GraphQLTypes["numeric"] | undefined | null
@@ -213935,7 +213953,6 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
-	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	players?: GraphQLTypes["pending_match_import_players_arr_rel_insert_input"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
@@ -213995,7 +214012,6 @@ export type GraphQLTypes = {
 	error?: GraphQLTypes["order_by"] | undefined | null,
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match_start_time?: GraphQLTypes["order_by"] | undefined | null,
-	parties?: GraphQLTypes["order_by"] | undefined | null,
 	players_aggregate?: GraphQLTypes["pending_match_import_players_aggregate_order_by"] | undefined | null,
 	share_code?: GraphQLTypes["order_by"] | undefined | null,
 	status?: GraphQLTypes["order_by"] | undefined | null,
@@ -214006,10 +214022,6 @@ export type GraphQLTypes = {
 ["pending_match_imports_pk_columns_input"]: {
 		valve_match_id: GraphQLTypes["numeric"]
 };
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["pending_match_imports_prepend_input"]: {
-		parties?: GraphQLTypes["jsonb"] | undefined | null
-};
 	/** select columns of table "pending_match_imports" */
 ["pending_match_imports_select_column"]: pending_match_imports_select_column;
 	/** input type for updating data in table "pending_match_imports" */
@@ -214019,7 +214031,6 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
-	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -214054,7 +214065,6 @@ export type GraphQLTypes = {
 	error?: string | undefined | null,
 	map_name?: string | undefined | null,
 	match_start_time?: GraphQLTypes["timestamptz"] | undefined | null,
-	parties?: GraphQLTypes["jsonb"] | undefined | null,
 	share_code?: string | undefined | null,
 	status?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -214068,18 +214078,8 @@ export type GraphQLTypes = {
 	/** update columns of table "pending_match_imports" */
 ["pending_match_imports_update_column"]: pending_match_imports_update_column;
 	["pending_match_imports_updates"]: {
-		/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: GraphQLTypes["pending_match_imports_append_input"] | undefined | null,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: GraphQLTypes["pending_match_imports_delete_at_path_input"] | undefined | null,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: GraphQLTypes["pending_match_imports_delete_elem_input"] | undefined | null,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: GraphQLTypes["pending_match_imports_delete_key_input"] | undefined | null,
-	/** increments the numeric columns with given value of the filtered values */
+		/** increments the numeric columns with given value of the filtered values */
 	_inc?: GraphQLTypes["pending_match_imports_inc_input"] | undefined | null,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: GraphQLTypes["pending_match_imports_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["pending_match_imports_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -216224,6 +216224,7 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	player: GraphQLTypes["players"],
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	/** An object relationship */
 	season?: GraphQLTypes["seasons"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -216273,6 +216274,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -216303,6 +216305,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	season?: GraphQLTypes["seasons_bool_exp"] | undefined | null,
 	season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	series_multiplier?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -216331,6 +216334,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null
@@ -216358,6 +216362,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season?: GraphQLTypes["seasons_obj_rel_insert_input"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
@@ -216387,6 +216392,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -216414,6 +216420,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -216456,6 +216463,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player?: GraphQLTypes["players_order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	season?: GraphQLTypes["seasons_order_by"] | undefined | null,
 	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
@@ -216492,6 +216500,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -216518,6 +216527,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -216542,6 +216552,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -216566,6 +216577,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -216598,6 +216610,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -216624,6 +216637,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null
@@ -216658,6 +216672,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -216682,6 +216697,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -216706,6 +216722,7 @@ export type GraphQLTypes = {
 	opponent_team_elo_avg?: number | undefined | null,
 	performance_multiplier?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	steam_id?: number | undefined | null,
 	team_avg_kda?: number | undefined | null
@@ -242039,6 +242056,7 @@ export type GraphQLTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null,
@@ -242178,6 +242196,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242202,6 +242221,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242234,6 +242254,7 @@ export type GraphQLTypes = {
 	player_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	season_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	series_multiplier?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
@@ -242265,6 +242286,7 @@ export type GraphQLTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null,
@@ -242296,6 +242318,7 @@ export type GraphQLTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null,
@@ -242326,6 +242349,7 @@ export type GraphQLTypes = {
 	player_name?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
@@ -242357,6 +242381,7 @@ export type GraphQLTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null,
@@ -242387,6 +242412,7 @@ export type GraphQLTypes = {
 	player_name?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
@@ -242418,6 +242444,7 @@ export type GraphQLTypes = {
 	player_name?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	season_id?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
@@ -242463,6 +242490,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242487,6 +242515,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242512,6 +242541,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242536,6 +242566,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242561,6 +242592,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242585,6 +242617,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242620,6 +242653,7 @@ export type GraphQLTypes = {
 	player_name?: string | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	season_id?: GraphQLTypes["uuid"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null,
@@ -242647,6 +242681,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["float8"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["float8"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["float8"] | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: GraphQLTypes["float8"] | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242671,6 +242706,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242696,6 +242732,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242720,6 +242757,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242745,6 +242783,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242769,6 +242808,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -242794,6 +242834,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: number | undefined | null,
 	player_steam_id?: number | undefined | null,
 	player_team_elo_avg?: number | undefined | null,
+	rating_for_expected?: number | undefined | null,
 	series_multiplier?: number | undefined | null,
 	team_avg_kda?: number | undefined | null,
 	updated_elo?: number | undefined | null
@@ -242818,6 +242859,7 @@ export type GraphQLTypes = {
 	performance_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_team_elo_avg?: GraphQLTypes["order_by"] | undefined | null,
+	rating_for_expected?: GraphQLTypes["order_by"] | undefined | null,
 	series_multiplier?: GraphQLTypes["order_by"] | undefined | null,
 	team_avg_kda?: GraphQLTypes["order_by"] | undefined | null,
 	updated_elo?: GraphQLTypes["order_by"] | undefined | null
@@ -250244,6 +250286,7 @@ export enum matches_select_column {
 	scheduled_at = "scheduled_at",
 	server_error = "server_error",
 	server_id = "server_id",
+	share_code = "share_code",
 	source = "source",
 	started_at = "started_at",
 	status = "status",
@@ -250266,6 +250309,7 @@ export enum matches_update_column {
 	scheduled_at = "scheduled_at",
 	server_error = "server_error",
 	server_id = "server_id",
+	share_code = "share_code",
 	source = "source",
 	started_at = "started_at",
 	status = "status",
@@ -250449,7 +250493,6 @@ export enum pending_match_imports_select_column {
 	error = "error",
 	map_name = "map_name",
 	match_start_time = "match_start_time",
-	parties = "parties",
 	share_code = "share_code",
 	status = "status",
 	updated_at = "updated_at",
@@ -250462,7 +250505,6 @@ export enum pending_match_imports_update_column {
 	error = "error",
 	map_name = "map_name",
 	match_start_time = "match_start_time",
-	parties = "parties",
 	share_code = "share_code",
 	status = "status",
 	updated_at = "updated_at",
@@ -250680,6 +250722,7 @@ export enum player_elo_select_column {
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	season_id = "season_id",
 	series_multiplier = "series_multiplier",
 	steam_id = "steam_id",
@@ -250707,6 +250750,7 @@ export enum player_elo_update_column {
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	season_id = "season_id",
 	series_multiplier = "series_multiplier",
 	steam_id = "steam_id",
@@ -252738,6 +252782,7 @@ export enum v_player_elo_select_column {
 	player_name = "player_name",
 	player_steam_id = "player_steam_id",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	season_id = "season_id",
 	series_multiplier = "series_multiplier",
 	team_avg_kda = "team_avg_kda",
@@ -252754,6 +252799,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_avg_argum
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_corr_arguments_columns" columns of table "v_player_elo" */
@@ -252766,6 +252812,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_corr_argu
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "v_player_elo" */
@@ -252778,6 +252825,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_covar_sam
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_max_arguments_columns" columns of table "v_player_elo" */
@@ -252790,6 +252838,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_max_argum
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_min_arguments_columns" columns of table "v_player_elo" */
@@ -252802,6 +252851,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_min_argum
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "v_player_elo" */
@@ -252814,6 +252864,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_stddev_sa
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_sum_arguments_columns" columns of table "v_player_elo" */
@@ -252826,6 +252877,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_sum_argum
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select "v_player_elo_aggregate_bool_exp_var_samp_arguments_columns" columns of table "v_player_elo" */
@@ -252838,6 +252890,7 @@ export enum v_player_elo_select_column_v_player_elo_aggregate_bool_exp_var_samp_
 	opponent_team_elo_avg = "opponent_team_elo_avg",
 	performance_multiplier = "performance_multiplier",
 	player_team_elo_avg = "player_team_elo_avg",
+	rating_for_expected = "rating_for_expected",
 	team_avg_kda = "team_avg_kda"
 }
 /** select columns of table "v_player_map_losses" */
@@ -255166,19 +255219,14 @@ type ZEUS_VARIABLES = {
 	["pending_match_import_players_var_pop_order_by"]: ValueTypes["pending_match_import_players_var_pop_order_by"];
 	["pending_match_import_players_var_samp_order_by"]: ValueTypes["pending_match_import_players_var_samp_order_by"];
 	["pending_match_import_players_variance_order_by"]: ValueTypes["pending_match_import_players_variance_order_by"];
-	["pending_match_imports_append_input"]: ValueTypes["pending_match_imports_append_input"];
 	["pending_match_imports_bool_exp"]: ValueTypes["pending_match_imports_bool_exp"];
 	["pending_match_imports_constraint"]: ValueTypes["pending_match_imports_constraint"];
-	["pending_match_imports_delete_at_path_input"]: ValueTypes["pending_match_imports_delete_at_path_input"];
-	["pending_match_imports_delete_elem_input"]: ValueTypes["pending_match_imports_delete_elem_input"];
-	["pending_match_imports_delete_key_input"]: ValueTypes["pending_match_imports_delete_key_input"];
 	["pending_match_imports_inc_input"]: ValueTypes["pending_match_imports_inc_input"];
 	["pending_match_imports_insert_input"]: ValueTypes["pending_match_imports_insert_input"];
 	["pending_match_imports_obj_rel_insert_input"]: ValueTypes["pending_match_imports_obj_rel_insert_input"];
 	["pending_match_imports_on_conflict"]: ValueTypes["pending_match_imports_on_conflict"];
 	["pending_match_imports_order_by"]: ValueTypes["pending_match_imports_order_by"];
 	["pending_match_imports_pk_columns_input"]: ValueTypes["pending_match_imports_pk_columns_input"];
-	["pending_match_imports_prepend_input"]: ValueTypes["pending_match_imports_prepend_input"];
 	["pending_match_imports_select_column"]: ValueTypes["pending_match_imports_select_column"];
 	["pending_match_imports_set_input"]: ValueTypes["pending_match_imports_set_input"];
 	["pending_match_imports_stream_cursor_input"]: ValueTypes["pending_match_imports_stream_cursor_input"];

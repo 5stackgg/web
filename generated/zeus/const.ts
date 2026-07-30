@@ -11092,6 +11092,7 @@ export const AllTypesProps: Record<string,any> = {
 		server_plugin_runtime:"String_comparison_exp",
 		server_region:"String_comparison_exp",
 		server_type:"String_comparison_exp",
+		share_code:"String_comparison_exp",
 		source:"String_comparison_exp",
 		started_at:"timestamptz_comparison_exp",
 		status:"e_match_status_enum_comparison_exp",
@@ -11165,6 +11166,7 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"order_by",
 		server_error:"order_by",
 		server_id:"order_by",
+		share_code:"order_by",
 		source:"order_by",
 		started_at:"order_by",
 		winning_lineup_id:"order_by"
@@ -11186,6 +11188,7 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"order_by",
 		server_error:"order_by",
 		server_id:"order_by",
+		share_code:"order_by",
 		source:"order_by",
 		started_at:"order_by",
 		winning_lineup_id:"order_by"
@@ -11268,6 +11271,7 @@ export const AllTypesProps: Record<string,any> = {
 		server_plugin_runtime:"order_by",
 		server_region:"order_by",
 		server_type:"order_by",
+		share_code:"order_by",
 		source:"order_by",
 		started_at:"order_by",
 		status:"order_by",
@@ -15247,22 +15251,12 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"pending_match_import_players_updates"
 		},
 		update_pending_match_imports:{
-			_append:"pending_match_imports_append_input",
-			_delete_at_path:"pending_match_imports_delete_at_path_input",
-			_delete_elem:"pending_match_imports_delete_elem_input",
-			_delete_key:"pending_match_imports_delete_key_input",
 			_inc:"pending_match_imports_inc_input",
-			_prepend:"pending_match_imports_prepend_input",
 			_set:"pending_match_imports_set_input",
 			where:"pending_match_imports_bool_exp"
 		},
 		update_pending_match_imports_by_pk:{
-			_append:"pending_match_imports_append_input",
-			_delete_at_path:"pending_match_imports_delete_at_path_input",
-			_delete_elem:"pending_match_imports_delete_elem_input",
-			_delete_key:"pending_match_imports_delete_key_input",
 			_inc:"pending_match_imports_inc_input",
-			_prepend:"pending_match_imports_prepend_input",
 			_set:"pending_match_imports_set_input",
 			pk_columns:"pending_match_imports_pk_columns_input"
 		},
@@ -16761,9 +16755,6 @@ export const AllTypesProps: Record<string,any> = {
 		valve_match_id:"order_by"
 	},
 	pending_match_imports:{
-		parties:{
-
-		},
 		players:{
 			distinct_on:"pending_match_import_players_select_column",
 			order_by:"pending_match_import_players_order_by",
@@ -16780,9 +16771,6 @@ export const AllTypesProps: Record<string,any> = {
 			columns:"pending_match_imports_select_column"
 		}
 	},
-	pending_match_imports_append_input:{
-		parties:"jsonb"
-	},
 	pending_match_imports_bool_exp:{
 		_and:"pending_match_imports_bool_exp",
 		_not:"pending_match_imports_bool_exp",
@@ -16792,7 +16780,6 @@ export const AllTypesProps: Record<string,any> = {
 		error:"String_comparison_exp",
 		map_name:"String_comparison_exp",
 		match_start_time:"timestamptz_comparison_exp",
-		parties:"jsonb_comparison_exp",
 		players:"pending_match_import_players_bool_exp",
 		players_aggregate:"pending_match_import_players_aggregate_bool_exp",
 		share_code:"String_comparison_exp",
@@ -16801,22 +16788,12 @@ export const AllTypesProps: Record<string,any> = {
 		valve_match_id:"numeric_comparison_exp"
 	},
 	pending_match_imports_constraint: "enum" as const,
-	pending_match_imports_delete_at_path_input:{
-
-	},
-	pending_match_imports_delete_elem_input:{
-
-	},
-	pending_match_imports_delete_key_input:{
-
-	},
 	pending_match_imports_inc_input:{
 		valve_match_id:"numeric"
 	},
 	pending_match_imports_insert_input:{
 		created_at:"timestamptz",
 		match_start_time:"timestamptz",
-		parties:"jsonb",
 		players:"pending_match_import_players_arr_rel_insert_input",
 		updated_at:"timestamptz",
 		valve_match_id:"numeric"
@@ -16836,7 +16813,6 @@ export const AllTypesProps: Record<string,any> = {
 		error:"order_by",
 		map_name:"order_by",
 		match_start_time:"order_by",
-		parties:"order_by",
 		players_aggregate:"pending_match_import_players_aggregate_order_by",
 		share_code:"order_by",
 		status:"order_by",
@@ -16846,14 +16822,10 @@ export const AllTypesProps: Record<string,any> = {
 	pending_match_imports_pk_columns_input:{
 		valve_match_id:"numeric"
 	},
-	pending_match_imports_prepend_input:{
-		parties:"jsonb"
-	},
 	pending_match_imports_select_column: "enum" as const,
 	pending_match_imports_set_input:{
 		created_at:"timestamptz",
 		match_start_time:"timestamptz",
-		parties:"jsonb",
 		updated_at:"timestamptz",
 		valve_match_id:"numeric"
 	},
@@ -16864,18 +16836,12 @@ export const AllTypesProps: Record<string,any> = {
 	pending_match_imports_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		match_start_time:"timestamptz",
-		parties:"jsonb",
 		updated_at:"timestamptz",
 		valve_match_id:"numeric"
 	},
 	pending_match_imports_update_column: "enum" as const,
 	pending_match_imports_updates:{
-		_append:"pending_match_imports_append_input",
-		_delete_at_path:"pending_match_imports_delete_at_path_input",
-		_delete_elem:"pending_match_imports_delete_elem_input",
-		_delete_key:"pending_match_imports_delete_key_input",
 		_inc:"pending_match_imports_inc_input",
-		_prepend:"pending_match_imports_prepend_input",
 		_set:"pending_match_imports_set_input",
 		where:"pending_match_imports_bool_exp"
 	},
@@ -17744,6 +17710,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8_comparison_exp",
 		player:"players_bool_exp",
 		player_team_elo_avg:"float8_comparison_exp",
+		rating_for_expected:"float8_comparison_exp",
 		season:"seasons_bool_exp",
 		season_id:"uuid_comparison_exp",
 		series_multiplier:"Int_comparison_exp",
@@ -17763,6 +17730,7 @@ export const AllTypesProps: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		steam_id:"bigint",
 		team_avg_kda:"float8"
 	},
@@ -17781,6 +17749,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8",
 		player:"players_obj_rel_insert_input",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season:"seasons_obj_rel_insert_input",
 		season_id:"uuid",
 		steam_id:"bigint",
@@ -17814,6 +17783,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player:"players_order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		season:"seasons_order_by",
 		season_id:"order_by",
 		series_multiplier:"order_by",
@@ -17840,6 +17810,7 @@ export const AllTypesProps: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		steam_id:"bigint",
 		team_avg_kda:"float8",
@@ -17862,6 +17833,7 @@ export const AllTypesProps: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		steam_id:"bigint",
 		team_avg_kda:"float8",
@@ -34670,6 +34642,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34701,6 +34674,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"String_comparison_exp",
 		player_steam_id:"bigint_comparison_exp",
 		player_team_elo_avg:"float8_comparison_exp",
+		rating_for_expected:"float8_comparison_exp",
 		season_id:"uuid_comparison_exp",
 		series_multiplier:"Int_comparison_exp",
 		team_avg_kda:"float8_comparison_exp",
@@ -34720,6 +34694,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		team_avg_kda:"float8"
 	},
@@ -34746,6 +34721,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		season_id:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
@@ -34775,6 +34751,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		season_id:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
@@ -34805,6 +34782,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_name:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		season_id:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
@@ -34839,6 +34817,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34862,6 +34841,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34885,6 +34865,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34905,6 +34886,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"float8",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		team_avg_kda:"float8"
 	},
@@ -34927,6 +34909,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34950,6 +34933,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34973,6 +34957,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -34996,6 +34981,7 @@ export const AllTypesProps: Record<string,any> = {
 		performance_multiplier:"order_by",
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
+		rating_for_expected:"order_by",
 		series_multiplier:"order_by",
 		team_avg_kda:"order_by",
 		updated_elo:"order_by"
@@ -43126,6 +43112,7 @@ export const ReturnTypes: Record<string,any> = {
 		server_plugin_runtime:"String",
 		server_region:"String",
 		server_type:"String",
+		share_code:"String",
 		source:"String",
 		started_at:"timestamptz",
 		status:"e_match_status_enum",
@@ -43189,6 +43176,7 @@ export const ReturnTypes: Record<string,any> = {
 		server_plugin_runtime:"String",
 		server_region:"String",
 		server_type:"String",
+		share_code:"String",
 		source:"String",
 		started_at:"timestamptz",
 		tv_connection_string:"String",
@@ -43223,6 +43211,7 @@ export const ReturnTypes: Record<string,any> = {
 		server_plugin_runtime:"String",
 		server_region:"String",
 		server_type:"String",
+		share_code:"String",
 		source:"String",
 		started_at:"timestamptz",
 		tv_connection_string:"String",
@@ -44975,7 +44964,6 @@ export const ReturnTypes: Record<string,any> = {
 		error:"String",
 		map_name:"String",
 		match_start_time:"timestamptz",
-		parties:"jsonb",
 		players:"pending_match_import_players",
 		players_aggregate:"pending_match_import_players_aggregate",
 		share_code:"String",
@@ -45933,6 +45921,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"float8",
 		player:"players",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season:"seasons",
 		season_id:"uuid",
 		series_multiplier:"Int",
@@ -45975,6 +45964,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -45999,6 +45989,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		series_multiplier:"Int",
 		steam_id:"bigint",
@@ -46024,6 +46015,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		series_multiplier:"Int",
 		steam_id:"bigint",
@@ -46051,6 +46043,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -46073,6 +46066,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -46095,6 +46089,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -46117,6 +46112,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"float8",
 		performance_multiplier:"float8",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		series_multiplier:"Int",
 		steam_id:"bigint",
 		team_avg_kda:"float8"
@@ -46139,6 +46135,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -46161,6 +46158,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -46183,6 +46181,7 @@ export const ReturnTypes: Record<string,any> = {
 		opponent_team_elo_avg:"Float",
 		performance_multiplier:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		steam_id:"Float",
 		team_avg_kda:"Float"
@@ -55399,6 +55398,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_name:"String",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
@@ -55441,6 +55441,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"
@@ -55468,6 +55469,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_name:"String",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
@@ -55497,6 +55499,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_name:"String",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		season_id:"uuid",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
@@ -55522,6 +55525,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"
@@ -55545,6 +55549,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"
@@ -55568,6 +55573,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"
@@ -55591,6 +55597,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"float8",
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
+		rating_for_expected:"float8",
 		series_multiplier:"Int",
 		team_avg_kda:"float8",
 		updated_elo:"Int"
@@ -55614,6 +55621,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"
@@ -55637,6 +55645,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"
@@ -55660,6 +55669,7 @@ export const ReturnTypes: Record<string,any> = {
 		performance_multiplier:"Float",
 		player_steam_id:"Float",
 		player_team_elo_avg:"Float",
+		rating_for_expected:"Float",
 		series_multiplier:"Float",
 		team_avg_kda:"Float",
 		updated_elo:"Float"

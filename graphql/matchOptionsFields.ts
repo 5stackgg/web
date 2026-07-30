@@ -19,6 +19,7 @@ export const matchOptionsFields = Selector("match_options")({
   regions: true,
   best_of: true,
   tv_delay: true,
+  veto_pick_timeout: true,
   round_restart_delay: true,
   halftime_pausematch: true,
   number_of_substitutes: true,

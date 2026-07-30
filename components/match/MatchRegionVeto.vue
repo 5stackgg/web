@@ -5,6 +5,7 @@ import { Check } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import DraftClock from "~/components/draft-games/DraftClock.vue";
 import {
   vetoTileClasses,
   vetoTileHoverClasses,
@@ -52,6 +53,15 @@ import {
             class="shrink-0 font-sans uppercase tracking-[0.14em]"
             >{{ $t("match.region_veto.ban_label") }}</Badge
           >
+
+          <DraftClock
+            v-if="vetoPickDeadline"
+            class="shrink-0"
+            compact
+            :deadline="vetoPickDeadline"
+            :total="match.options.veto_pick_timeout"
+            :pulse="isPicking"
+          />
         </div>
 
         <div
@@ -246,6 +256,7 @@ export default {
             },
             {
               region: true,
+              auto_picked: true,
             },
           ],
         }),
@@ -315,6 +326,13 @@ export default {
         return this.match.lineup_2.name;
       }
       return "";
+    },
+    vetoPickDeadline() {
+      if (!this.match.options.veto_pick_timeout) {
+        return null;
+      }
+
+      return this.match.veto_pick_expires_at ?? null;
     },
     isPicking() {
       if (this.canOverride && this.override) {

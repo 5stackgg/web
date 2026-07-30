@@ -139,10 +139,6 @@ module.exports = {
           from: { strokeDashoffset: "0" },
           to: { strokeDashoffset: "calc(var(--flow-length) * -1px)" },
         },
-        "loading-bar": {
-          "0%": { transform: "translateX(-100%)" },
-          "100%": { transform: "translateX(100%)" },
-        },
         "fade-in": {
           from: { opacity: "0", transform: "translateY(5px)" },
           to: { opacity: "1", transform: "translateY(0)" },
@@ -174,7 +170,6 @@ module.exports = {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "spin-smooth": "spin-smooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite",
         "topo-flow": "topo-flow linear infinite",
-        "loading-bar": "loading-bar 2s infinite",
         "fade-in": "fade-in 0.3s ease-out",
         "soft-pulse": "soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "ping-slow": "ping-slow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite",

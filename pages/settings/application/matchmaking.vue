@@ -151,6 +151,32 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                   <FormMessage />
                 </FormItem>
               </FormField>
+
+              <FormField
+                v-slot="{ componentField }"
+                name="public.veto_pick_timeout"
+              >
+                <FormItem>
+                  <FormLabel>
+                    {{ $t("pages.settings.application.veto_pick_timeout") }}
+                    <span class="text-muted-foreground font-normal">(sec)</span>
+                  </FormLabel>
+                  <FormDescription>{{
+                    $t(
+                      "pages.settings.application.veto_pick_timeout_description",
+                    )
+                  }}</FormDescription>
+                  <FormControl>
+                    <Input
+                      v-bind="componentField"
+                      type="number"
+                      min="0"
+                      max="600"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
           </template>
         </SettingsSection>
@@ -320,6 +346,7 @@ export default {
                 .string()
                 .default(e_player_roles_enum.user),
               max_acceptable_latency: z.number().default(100),
+              veto_pick_timeout: z.number().min(0).max(600).default(60),
             }),
           }),
         ),
@@ -331,7 +358,18 @@ export default {
       immediate: true,
       handler(newVal: Array<{ name: string; value: string | null }>) {
         for (const setting of newVal) {
-          if (
+          if (setting.name === "public.veto_pick_timeout") {
+            // Kept out of the branch below: 0 is a meaningful value here (it
+            // disables the veto timer) and `|| 100` would swallow it.
+            const vetoPickTimeout = Number(setting.value);
+
+            (this.form.setFieldValue as any)(
+              setting.name,
+              Number.isFinite(vetoPickTimeout) && vetoPickTimeout >= 0
+                ? vetoPickTimeout
+                : 60,
+            );
+          } else if (
             setting.name === "public.max_acceptable_latency" ||
             setting.name === "auto_cancel_duration" ||
             setting.name === "live_match_timeout"
@@ -502,6 +540,12 @@ export default {
                   {
                     name: "live_match_timeout",
                     value: String((this.form.values as any).live_match_timeout),
+                  },
+                  {
+                    name: "public.veto_pick_timeout",
+                    value: String(
+                      (this.form.values as any).public.veto_pick_timeout,
+                    ),
                   },
                 ],
                 on_conflict: {

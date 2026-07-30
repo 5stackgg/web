@@ -36,6 +36,7 @@ export const setupOptions = (
     map_pool_id: options.map_pool.id,
     regions: selectedRegions,
     tv_delay: options.tv_delay,
+    veto_pick_timeout: options.veto_pick_timeout ?? 60,
     round_restart_delay: options.round_restart_delay ?? null,
     halftime_pausematch: options.halftime_pausematch ?? false,
     check_in_setting: options.check_in_setting,
@@ -71,6 +72,7 @@ export function setupOptionsVariables(
     match_mode: string;
     map_pool_id?: string;
     tv_delay: number;
+    veto_pick_timeout: number;
     round_restart_delay?: number | null;
     halftime_pausematch?: boolean;
     map_pool?: {
@@ -157,6 +159,13 @@ export function setupOptionsVariables(
   }
 
   if (
+    values.veto_pick_timeout === undefined ||
+    values.veto_pick_timeout === null
+  ) {
+    throw new Error("veto_pick_timeout is required");
+  }
+
+  if (
     values.check_in_setting === undefined ||
     values.check_in_setting === null
   ) {
@@ -184,6 +193,7 @@ export function setupOptionsVariables(
     ready_setting: values.ready_setting,
     tech_timeout_setting: values.tech_timeout_setting,
     tv_delay: values.tv_delay,
+    veto_pick_timeout: values.veto_pick_timeout,
     round_restart_delay: values.round_restart_delay ?? null,
     halftime_pausematch: values.halftime_pausematch ?? false,
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
@@ -238,6 +248,7 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
     tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
     tv_delay: $("tv_delay", "Int!"),
+    veto_pick_timeout: $("veto_pick_timeout", "Int!"),
     round_restart_delay: $("round_restart_delay", "Int"),
     halftime_pausematch: $("halftime_pausematch", "Boolean!"),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)

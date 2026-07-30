@@ -74,6 +74,13 @@ import cleanMapName from "~/utilities/cleanMapName";
                     : pick.type
                 }}
               </span>
+              <span
+                v-if="pick.auto_picked"
+                class="auto-pill"
+                :title="$t('match.picks.auto_picked_description')"
+              >
+                {{ $t("match.picks.auto_picked") }}
+              </span>
             </div>
           </div>
 
@@ -399,6 +406,23 @@ export default {
   background: hsl(0 0% 0% / 0.55);
   backdrop-filter: blur(2px);
   text-shadow: 0 1px 2px hsl(0 0% 0% / 0.7);
+}
+
+.auto-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.08rem 0.4rem;
+  border-radius: 9999px;
+  font-family: "Oxanium", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  background: hsl(0 0% 0% / 0.45);
+  border: 1px solid hsl(var(--border) / 0.6);
+  backdrop-filter: blur(2px);
 }
 .pill-pick {
   color: hsl(142 76% 58%);

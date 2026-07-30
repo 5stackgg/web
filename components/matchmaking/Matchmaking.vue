@@ -105,7 +105,7 @@ function releaseSwapHeight(el: Element): void {
               class="pointer-events-none absolute left-0 right-0 top-0 h-[2px] overflow-hidden"
             >
               <span
-                class="block h-full w-1/2 bg-gradient-to-r from-transparent via-[hsl(var(--tac-amber))] to-transparent animate-loading-bar"
+                class="tac-scan-sweep block h-full text-[hsl(var(--tac-amber))]"
               ></span>
             </span>
 

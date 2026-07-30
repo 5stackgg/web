@@ -671,6 +671,7 @@ export default {
               map_veto_type: true,
               map_veto_picking_lineup_id: true,
               region_veto_picking_lineup_id: true,
+              veto_pick_expires_at: true,
               connection_link: true,
               connection_string: true,
               tv_connection_string: true,

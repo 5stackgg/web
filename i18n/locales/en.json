@@ -4474,9 +4474,10 @@
     },
     "elo_details": {
       "title": "Elo Change Details",
+      "rated_at_hint": "The rating you were judged on — a blend of your own ELO and your team's average, measured against the opposing team's average. Teammates who came in rated differently are expected to do different things, so the same result moves them by different amounts.",
       "formula": {
         "k_factor_hint": "K-factor — base ELO swing rate before any modifiers.",
-        "delta_hint": "Δ = actual ({actual}) − expected ({expected}). Positive means you outperformed the team-ELO prediction.",
+        "delta_hint": "Δ = actual ({actual}) − expected ({expected}). Positive means you outperformed what your rating predicted.",
         "perf_hint": "Performance multiplier — scaled by your KDA vs team average and your share of team damage. Bounded 0.8×–1.2× on wins.",
         "series_hint": "Series multiplier — net map differential. BO1 = ×1, BO3 sweep = ×2, BO5 sweep = ×3. Closer series move ELO less.",
         "result_hint": "Final ELO change after all multipliers, rounded to the nearest integer."
@@ -6290,6 +6291,9 @@
     "updated": "UPDATED",
     "series_multiplier": "SERIES MULTIPLIER",
     "team_elo": "TEAM ELO",
+    "rated_at": "RATED AT",
+    "you": "YOU",
+    "team": "TEAM",
     "kda": "KDA",
     "kda_breakdown": "K / D / A",
     "perf": "PERF"

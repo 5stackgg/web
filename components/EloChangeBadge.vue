@@ -17,6 +17,7 @@ interface EloChange {
   updated_elo?: number | string | null;
   player_team_elo_avg?: number | string | null;
   opponent_team_elo_avg?: number | string | null;
+  rating_for_expected?: number | string | null;
   expected_score?: number | string | null;
   actual_score?: number | string | null;
   k_factor?: number | string | null;
@@ -79,8 +80,28 @@ const opponentTeamElo = computed(() =>
   Math.round(toNum(props.eloChange?.opponent_team_elo_avg)),
 );
 
+// The rating the expected score was actually drawn from: a blend of the
+// player's own ELO and their team average. Null on rows written before the
+// blend landed — those were rated on the team average alone.
+const ratingForExpected = computed(() => {
+  const raw = props.eloChange?.rating_for_expected;
+  if (raw === null || raw === undefined) return null;
+  return Math.round(toNum(raw));
+});
+
+const ratedAt = computed(() => ratingForExpected.value ?? playerTeamElo.value);
+
+// Naming the blend only tells the player something when their own rating and
+// their team's average actually disagree — in a Duel, or a lobby where everyone
+// is rated the same, the two are identical and the extra line is noise.
+const showsBlend = computed(
+  () =>
+    ratingForExpected.value !== null &&
+    currentElo.value !== playerTeamElo.value,
+);
+
 const eloGapBar = computed(() => {
-  const p = playerTeamElo.value;
+  const p = ratedAt.value;
   const o = opponentTeamElo.value;
   if (!p && !o) return 50;
   const diff = p - o;
@@ -337,14 +358,25 @@ const chipClipSm = "";
 
           <section class="relative mb-2.5">
             <div class="flex justify-between items-baseline mb-1">
-              <span :class="labelClass">{{ $t("elo_change.team_elo") }}</span>
+              <span
+                :class="[labelClass, showsBlend && 'cursor-help']"
+                :title="
+                  showsBlend ? $t('match.elo_details.rated_at_hint') : undefined
+                "
+              >
+                {{
+                  showsBlend
+                    ? $t("elo_change.rated_at")
+                    : $t("elo_change.team_elo")
+                }}
+              </span>
               <span
                 :class="[
                   monoNum,
                   'text-[11px] font-semibold text-foreground inline-flex gap-1.5',
                 ]"
               >
-                <span>{{ playerTeamElo.toLocaleString() }}</span>
+                <span>{{ ratedAt.toLocaleString() }}</span>
                 <span
                   class="text-muted-foreground font-normal text-[9px] tracking-[0.2em] px-[2px] self-center"
                 >
@@ -364,6 +396,24 @@ const chipClipSm = "";
                 class="absolute top-[-3px] bottom-[-3px] w-[3px] -translate-x-1/2 bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-300 [transition-timing-function:cubic-bezier(0.2,0.8,0.2,1)]"
                 :style="{ left: eloGapBar + '%' }"
               />
+            </div>
+            <div
+              v-if="showsBlend"
+              class="flex justify-end items-baseline gap-1.5 mt-1 font-mono text-[9px] tracking-[0.12em] text-muted-foreground"
+            >
+              <span
+                >{{ $t("elo_change.you") }}
+                <em class="not-italic text-foreground/80 font-semibold">{{
+                  currentElo.toLocaleString()
+                }}</em></span
+              >
+              <span class="opacity-40">·</span>
+              <span
+                >{{ $t("elo_change.team") }}
+                <em class="not-italic text-foreground/80 font-semibold">{{
+                  playerTeamElo.toLocaleString()
+                }}</em></span
+              >
             </div>
           </section>
 

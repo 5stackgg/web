@@ -73,18 +73,26 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Determine ELO field prefix based on track selection
+  // Sort/filter on the unified rating (competitive, else wingman, else duel) —
+  // the number the UI actually renders. Ranking on `_competitive` alone leaves
+  // every wingman/duel-only player tied as "missing".
   const eloTrack = body.elo_track || "season";
-  const eloFieldPrefix = eloTrack === "tournament" ? "tournament_elo" : "elo";
+  const eloField = eloTrack === "tournament" ? "tournament_elo" : "elo";
 
-  // Use provided sort_by or default to name:asc
-  let sortBy = body.sort_by || "name:asc";
+  const [rawSortField, rawSortDirection] = String(
+    body.sort_by || "name:asc",
+  ).split(":");
+  const sortField = rawSortField || "name";
+  const sortDirection = rawSortDirection === "desc" ? "desc" : "asc";
 
-  if (sortBy.includes("elo")) {
-    sortBy = sortBy.replace("elo", `${eloFieldPrefix}_competitive`);
-  }
+  // Unrated players always sink to the bottom, and ties fall back to name so
+  // the order is stable instead of arbitrary.
+  const sortBy =
+    sortField === "elo"
+      ? `${eloField}(missing_values: last):${sortDirection},name:asc`
+      : `${sortField}:${sortDirection}`;
 
-  if (body.registeredOnly || sortBy.includes("last_sign_in_at")) {
+  if (body.registeredOnly || sortField === "last_sign_in_at") {
     filterBy.push(`last_sign_in_at:!~~`);
   }
 
@@ -101,27 +109,19 @@ export default defineEventHandler(async (event) => {
     filterBy.push(`(${rolesFilter})`);
   }
 
-  // Filter by elo range
-  // If only_played_matches is true, ensure elo_min is at least 1
-  let effectiveEloMin = body.elo_min;
   if (body.only_played_matches) {
-    // Players who have played matches will have elo >= 1 (assuming starting elo is 0 or 1)
-    effectiveEloMin =
-      effectiveEloMin !== undefined && effectiveEloMin !== null
-        ? Math.max(1, effectiveEloMin)
-        : 1;
+    filterBy.push(`total_matches:>0`);
   }
 
-  if (effectiveEloMin !== undefined && effectiveEloMin !== null) {
-    filterBy.push(
-      `(${eloFieldPrefix}_competitive:>=${effectiveEloMin} || ${eloFieldPrefix}_wingman:>=${effectiveEloMin} || ${eloFieldPrefix}_duel:>=${effectiveEloMin})`,
-    );
+  // Both bounds read the same rating, so a min and a max can't be satisfied by
+  // two different ladders (competitive 6000 + wingman 4000 used to pass both
+  // "at least 5500" and "at most 4500" at once).
+  if (body.elo_min !== undefined && body.elo_min !== null) {
+    filterBy.push(`${eloField}:>=${body.elo_min}`);
   }
 
   if (body.elo_max !== undefined && body.elo_max !== null) {
-    filterBy.push(
-      `(${eloFieldPrefix}_competitive:<=${body.elo_max} || ${eloFieldPrefix}_wingman:<=${body.elo_max} || ${eloFieldPrefix}_duel:<=${body.elo_max})`,
-    );
+    filterBy.push(`${eloField}:<=${body.elo_max}`);
   }
 
   // Filter by countries

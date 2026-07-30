@@ -56,7 +56,12 @@ onUnmounted(() => {
   window.removeEventListener("keydown", handleResultsKeydown);
 });
 
+const searchToken = ref(0);
+
 const debouncedSearch = debounce(async (searchQuery: string) => {
+  // A slower earlier keystroke must not clobber a newer result set.
+  const token = ++searchToken.value;
+
   if (!searchQuery.trim()) {
     players.value = [];
     return;
@@ -72,6 +77,10 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
         per_page: 10,
       },
     });
+
+    if (token !== searchToken.value) {
+      return;
+    }
 
     players.value = (response.hits || []).map(({ document }: any) => ({
       steam_id: document.steam_id,
@@ -92,10 +101,15 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
       },
     }));
   } catch (error) {
+    if (token !== searchToken.value) {
+      return;
+    }
     console.error("Error searching players:", error);
     players.value = [];
   } finally {
-    loading.value = false;
+    if (token === searchToken.value) {
+      loading.value = false;
+    }
   }
 }, 300);
 

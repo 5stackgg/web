@@ -37,8 +37,12 @@ const { client: apolloClient } = useApolloClient();
 const open = ref(false);
 const query = ref("");
 const results = ref<any[] | undefined>(undefined);
+const searchToken = ref(0);
 
 async function search() {
+  // A slower earlier keystroke must not clobber a newer result set.
+  const token = ++searchToken.value;
+
   // No ownership filter: the event_tournaments insert permission allows an
   // event organizer to attach any tournament they can read.
   const filters: any[] = [];
@@ -53,6 +57,9 @@ async function search() {
     fetchPolicy: "network-only",
     variables: { where: { _and: filters } },
   });
+  if (token !== searchToken.value) {
+    return;
+  }
   results.value = (data as any)?.tournaments || [];
 }
 

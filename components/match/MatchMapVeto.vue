@@ -7,6 +7,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
+import DraftClock from "~/components/draft-games/DraftClock.vue";
 </script>
 
 <template>
@@ -49,6 +50,15 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           class="shrink-0 font-sans uppercase tracking-[0.14em]"
           >{{ pickType }}</Badge
         >
+
+        <DraftClock
+          v-if="vetoPickDeadline"
+          class="shrink-0"
+          compact
+          :deadline="vetoPickDeadline"
+          :total="match.options.veto_pick_timeout"
+          :pulse="isPicking"
+        />
       </div>
 
       <div
@@ -226,6 +236,7 @@ export default {
               },
               side: true,
               type: true,
+              auto_picked: true,
               match_lineup_id: true,
               match_lineup: [
                 {},
@@ -412,6 +423,13 @@ export default {
       }
 
       return this.match.map_veto_type;
+    },
+    vetoPickDeadline() {
+      if (!this.match.options.veto_pick_timeout) {
+        return null;
+      }
+
+      return this.match.veto_pick_expires_at ?? null;
     },
     pickingLineupName() {
       if (this.match.lineup_1.is_picking_map_veto) {

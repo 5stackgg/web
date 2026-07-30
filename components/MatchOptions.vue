@@ -807,6 +807,37 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                   </FormItem>
                 </FormField>
 
+                <FormField v-slot="{ value }" name="veto_pick_timeout">
+                  <FormItem>
+                    <SettingHeader>{{
+                      $t("match.options.advanced.veto_pick_timeout.label")
+                    }}</SettingHeader>
+                    <NumberField
+                      class="gap-2"
+                      :min="0"
+                      :max="600"
+                      :model-value="value"
+                      @update:model-value="
+                        (timeout) => {
+                          form.setFieldValue('veto_pick_timeout', timeout);
+                        }
+                      "
+                    >
+                      <NumberFieldContent>
+                        <NumberFieldDecrement />
+                        <FormControl>
+                          <NumberFieldInput />
+                        </FormControl>
+                        <NumberFieldIncrement />
+                      </NumberFieldContent>
+                    </NumberField>
+                    <FormDescription>
+                      {{ $t("match.options.advanced.veto_pick_timeout.range") }}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
                 <FormField v-slot="{ value }" name="round_restart_delay">
                   <FormItem>
                     <SettingHeader>{{

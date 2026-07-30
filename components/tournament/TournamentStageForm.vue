@@ -528,6 +528,37 @@ import { $ } from "~/generated/zeus";
                   <FormMessage />
                 </FormItem>
               </FormField>
+
+              <FormField v-slot="{ value }" name="veto_pick_timeout">
+                <FormItem>
+                  <SettingHeader>{{
+                    $t("match.options.advanced.veto_pick_timeout.label")
+                  }}</SettingHeader>
+                  <NumberField
+                    class="gap-2"
+                    :min="0"
+                    :max="600"
+                    :model-value="value"
+                    @update:model-value="
+                      (timeout) => {
+                        form.setFieldValue('veto_pick_timeout', timeout);
+                      }
+                    "
+                  >
+                    <NumberFieldContent>
+                      <NumberFieldDecrement />
+                      <FormControl>
+                        <NumberFieldInput />
+                      </FormControl>
+                      <NumberFieldIncrement />
+                    </NumberFieldContent>
+                  </NumberField>
+                  <FormDescription>
+                    {{ $t("match.options.advanced.veto_pick_timeout.range") }}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
           </Card>
 
@@ -965,6 +996,7 @@ export default {
               final_map_advantage: z.number().min(0).default(0),
               // Advanced settings (5 overridable fields)
               tv_delay: z.number().min(0).max(120).default(115),
+              veto_pick_timeout: z.number().min(0).max(600).default(60),
               region_veto: z.boolean().default(true),
               regions: z.string().array().default([]),
               check_in_setting: z
@@ -1277,6 +1309,10 @@ export default {
               stage.options?.tv_delay ??
               this.tournament?.options?.tv_delay ??
               115,
+            veto_pick_timeout:
+              stage.options?.veto_pick_timeout ??
+              this.tournament?.options?.veto_pick_timeout ??
+              60,
             region_veto:
               stage.options?.region_veto ??
               this.tournament?.options?.region_veto ??
@@ -1372,6 +1408,7 @@ export default {
       const options = this.tournament.options;
       this.form.setValues({
         tv_delay: options.tv_delay ?? 115,
+        veto_pick_timeout: options.veto_pick_timeout ?? 60,
         region_veto: options.region_veto ?? true,
         regions: options.regions ?? [],
         check_in_setting:
@@ -1403,6 +1440,7 @@ export default {
 
       if (
         form.tv_delay !== tournamentOptions.tv_delay ||
+        form.veto_pick_timeout !== tournamentOptions.veto_pick_timeout ||
         form.region_veto !== tournamentOptions.region_veto ||
         form.check_in_setting !== tournamentOptions.check_in_setting ||
         form.ready_setting !== tournamentOptions.ready_setting ||
@@ -1438,6 +1476,7 @@ export default {
         variables: {
           id: matchOptionsId,
           tv_delay: form.tv_delay,
+          veto_pick_timeout: form.veto_pick_timeout,
           region_veto: form.region_veto,
           regions: form.regions || [],
           check_in_setting: form.check_in_setting,
@@ -1464,6 +1503,7 @@ export default {
               },
               _set: {
                 tv_delay: $("tv_delay", "Int!"),
+                veto_pick_timeout: $("veto_pick_timeout", "Int!"),
                 region_veto: $("region_veto", "Boolean!"),
                 regions: $("regions", "[String!]!"),
                 check_in_setting: $(
@@ -1508,6 +1548,7 @@ export default {
       const { data } = await (this as any).$apollo.mutate({
         variables: {
           tv_delay: form.tv_delay,
+          veto_pick_timeout: form.veto_pick_timeout,
           region_veto: form.region_veto,
           regions: form.regions || [],
           check_in_setting: form.check_in_setting,
@@ -1531,6 +1572,7 @@ export default {
             {
               object: {
                 tv_delay: $("tv_delay", "Int!"),
+                veto_pick_timeout: $("veto_pick_timeout", "Int!"),
                 region_veto: $("region_veto", "Boolean!"),
                 regions: $("regions", "[String!]!"),
                 check_in_setting: $(

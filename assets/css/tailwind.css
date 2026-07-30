@@ -351,6 +351,37 @@ mark {
     transparent 4px
   );
 }
+/* Scan sweep across the top of the queue / match-confirm panels. The band is a
+   repeating gradient whose period is one track width, painted on a double-width
+   element, so shifting exactly one period (-50%) loops with no seam: the next
+   band enters the left edge as the previous one leaves the right. Colour is
+   currentColor, so callers pick it with text-*. */
+@keyframes tac-scan-sweep {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.tac-scan-sweep {
+  width: 200%;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 12.5%,
+    currentColor 25%,
+    transparent 37.5%,
+    transparent 50%
+  );
+  animation: tac-scan-sweep 2s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tac-scan-sweep {
+    animation: none;
+  }
+}
+
 /* One-shot pulse for clip share buttons — toast is far from the click
    target, so the button itself flashes amber + scales briefly. Used
    by MatchHighlightsReel queue/featured share, HighlightCard, and

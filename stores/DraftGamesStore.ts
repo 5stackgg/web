@@ -275,6 +275,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
             map_veto_type: true,
             map_veto_picking_lineup_id: true,
             region_veto_picking_lineup_id: true,
+            veto_pick_expires_at: true,
             region_veto_picks: {
               type: true,
               region: true,
@@ -289,6 +290,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               regions: true,
               coaches: true,
               check_in_setting: true,
+              veto_pick_timeout: true,
               type: true,
               map_pool: {
                 id: true,

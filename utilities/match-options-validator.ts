@@ -16,6 +16,12 @@ export default function matchOptionsValidator(
     settings.find((setting) => setting.name === "public.default_models")
       ?.value === "true";
 
+  const defaultVetoPickTimeout = Number.parseInt(
+    settings.find((setting) => setting.name === "public.veto_pick_timeout")
+      ?.value ?? "",
+    10,
+  );
+
   return z.object({
     mr: z.string().default("12"),
     map_veto: z.boolean().default(true),
@@ -24,6 +30,15 @@ export default function matchOptionsValidator(
     lan: z.boolean().default(false),
     coaches: z.boolean().default(false),
     tv_delay: z.number().min(0).max(120).default(115),
+    veto_pick_timeout: z
+      .number()
+      .min(0)
+      .max(600)
+      .default(
+        Number.isNaN(defaultVetoPickTimeout) || defaultVetoPickTimeout < 0
+          ? 60
+          : defaultVetoPickTimeout,
+      ),
     round_restart_delay: z.number().min(0).max(60).nullable().optional(),
     halftime_pausematch: z.boolean().default(false),
     knife_round: z.boolean().default(true),

@@ -9,9 +9,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
 
 const mmCardBase =
   "group/mmc relative flex flex-col flex-1 min-h-[120px] px-[1.1rem] pt-4 pb-5 text-left cursor-pointer overflow-hidden isolate border border-border text-foreground [background:linear-gradient(135deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.35)_60%,hsl(var(--tac-amber)/0.05)_100%)] [transition:border-color_180ms_ease,background_220ms_ease,box-shadow_220ms_ease] hover:border-[hsl(var(--tac-amber)/0.55)] hover:[background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--card)/0.45)_55%,hsl(var(--tac-amber)/0.12)_100%)] hover:shadow-[0_0_24px_hsl(var(--tac-amber)/0.12)] focus-visible:outline-none focus-visible:border-[hsl(var(--tac-amber))] focus-visible:shadow-[0_0_0_2px_hsl(var(--tac-amber)/0.35)]";
-
-const mmCardPending =
-  "!border-[hsl(var(--tac-amber))] ![background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--tac-amber)/0.18)_100%)] !shadow-[0_0_32px_hsl(var(--tac-amber)/0.2)]";
 </script>
 
 <template>
@@ -189,14 +186,7 @@ const mmCardPending =
             :class="[
               mmCardBase,
               'transition-all duration-300 ease-out',
-              pendingMatchType === type.value &&
-                `${mmCardPending} scale-[1.03]`,
-              pendingMatchType &&
-                pendingMatchType !== type.value &&
-                'opacity-40 scale-95',
-              (!pendingMatchType || pendingMatchType === type.value) &&
-                canQueueType(type.value) &&
-                'hover:scale-[1.015]',
+              canQueueType(type.value) && 'hover:scale-[1.015]',
               !canQueueType(type.value) &&
                 '!cursor-not-allowed opacity-45 grayscale hover:!border-border hover:!shadow-none',
             ]"
@@ -204,7 +194,6 @@ const mmCardPending =
           >
             <span
               class="absolute inset-0 z-0 pointer-events-none opacity-0 transition-opacity [transition-duration:220ms] [transition-timing-function:ease] [background-image:repeating-linear-gradient(180deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.03)_3px,hsl(var(--tac-amber)/0.03)_4px)] group-hover/mmc:opacity-100"
-              :class="{ '!opacity-100': pendingMatchType === type.value }"
               aria-hidden="true"
             ></span>
 
@@ -217,7 +206,6 @@ const mmCardPending =
                   preferredRegions.map((region) => region.value),
                 ) > 0
               "
-              :class="{ 'opacity-0': pendingMatchType === type.value }"
             >
               {{
                 distinctInQueue(
@@ -233,10 +221,6 @@ const mmCardPending =
             >
               <div
                 class="inline-flex items-center gap-[0.55rem] font-mono text-[0.72rem] font-bold tracking-[0.24em] uppercase text-muted-foreground transition-colors [transition-duration:180ms] group-hover/mmc:text-[hsl(var(--tac-amber))]"
-                :class="{
-                  '!text-[hsl(var(--tac-amber))]':
-                    pendingMatchType === type.value,
-                }"
               >
                 <span
                   class="inline-block w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]"
@@ -244,51 +228,30 @@ const mmCardPending =
                 ></span>
                 {{ type.value.toUpperCase() }}
               </div>
-              <Transition
-                mode="out-in"
-                enter-active-class="transition-all duration-200 ease-out"
-                leave-active-class="transition-all duration-150 ease-in"
-                enter-from-class="opacity-0 scale-90"
-                enter-to-class="opacity-100 scale-100"
-                leave-from-class="opacity-100 scale-100"
-                leave-to-class="opacity-0 scale-90"
-              >
-                <p
-                  v-if="pendingMatchType !== type.value"
-                  :key="`idle-${type.value}`"
-                  class="m-0 text-[0.78rem] leading-[1.5] text-muted-foreground"
-                >
-                  <template v-if="canQueueType(type.value)">
+              <p class="m-0 text-[0.78rem] leading-[1.5] text-muted-foreground">
+                <template v-if="canQueueType(type.value)">
+                  {{
+                    $t(
+                      `matchmaking.match_types.${type.value.toLowerCase()}.description`,
+                    )
+                  }}
+                </template>
+                <template v-else>
+                  <span class="block font-medium text-destructive">
                     {{
-                      $t(
-                        `matchmaking.match_types.${type.value.toLowerCase()}.description`,
-                      )
-                    }}
-                  </template>
-                  <template v-else>
-                    <span class="block font-medium text-destructive">
-                      {{
-                        $t("matchmaking.party_size.unavailable", {
-                          size: partySize,
-                        })
-                      }}
-                    </span>
-                    {{
-                      $t("matchmaking.party_size.requirement", {
-                        half: expectedPlayers(type.value) / 2,
-                        full: expectedPlayers(type.value),
+                      $t("matchmaking.party_size.unavailable", {
+                        size: partySize,
                       })
                     }}
-                  </template>
-                </p>
-                <div
-                  v-else
-                  :key="`pending-${type.value}`"
-                  class="relative z-[1] flex-1 flex items-center justify-center font-sans text-[1.05rem] font-bold tracking-[0.14em] uppercase text-[hsl(var(--tac-amber))] [text-shadow:0_0_12px_hsl(var(--tac-amber)/0.4)]"
-                >
-                  {{ $t("matchmaking.confirm_selection") }}
-                </div>
-              </Transition>
+                  </span>
+                  {{
+                    $t("matchmaking.party_size.requirement", {
+                      half: expectedPlayers(type.value) / 2,
+                      full: expectedPlayers(type.value),
+                    })
+                  }}
+                </template>
+              </p>
             </div>
           </button>
         </div>
@@ -427,13 +390,10 @@ export default {
     return {
       match: undefined as Match | undefined,
       playerSanctions: [] as any[],
-      showConfirmation: false,
-      pendingMatchType: undefined as e_match_types_enum | undefined,
       e_match_types: [] as {
         value: e_match_types_enum;
         description: string;
       }[],
-      confirmationTimeout: undefined as NodeJS.Timeout | undefined,
     };
   },
   methods: {
@@ -489,27 +449,7 @@ export default {
         });
         return;
       }
-      if (this.pendingMatchType === matchType) {
-        // Second click - confirm
-        if (this.confirmationTimeout) {
-          clearTimeout(this.confirmationTimeout);
-          this.confirmationTimeout = undefined;
-        }
-        this.joinMatchmaking(this.pendingMatchType);
-        this.pendingMatchType = undefined;
-        return;
-      }
-
-      // First click - show confirmation state
-      if (this.confirmationTimeout) {
-        clearTimeout(this.confirmationTimeout);
-      }
-
-      this.pendingMatchType = matchType;
-      this.confirmationTimeout = setTimeout(() => {
-        this.pendingMatchType = undefined;
-        this.confirmationTimeout = undefined;
-      }, 5000);
+      this.joinMatchmaking(matchType);
     },
     joinMatchmaking(matchType: e_match_types_enum): void {
       socket.event("matchmaking:join-queue", {

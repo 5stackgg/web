@@ -162,10 +162,7 @@ function findUnusedTranslations(usedKeys, availableKeys) {
 // Function to find all translation files
 async function findAllTranslationFiles() {
   const files = await glob("i18n/locales/*.json");
-  // Filter to only include English translation file
-  return files
-    .filter((file) => path.basename(file, ".json") === "en")
-    .map((file) => ({
+  return files.map((file) => ({
       path: file,
       locale: path.basename(file, ".json"),
     }));

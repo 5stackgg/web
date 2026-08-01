@@ -1402,7 +1402,8 @@
             "confirm": "取消关联"
           },
           "unlinked": "Discord 账户已成功取消关联"
-        }
+        },
+        "linked_accounts": "已连结帐户"
       },
       "notifications": {
         "title": "声音设置",
@@ -1983,6 +1984,80 @@
           "permissions_description": "Choose who can author awards and who can hand them out.",
           "create_awards_role": "Manage Awards Role",
           "grant_awards_role": "Grant Awards Role"
+        },
+        "linked_accounts": {
+          "disabled_notice": "外部比赛汇入目前已被您的管理员停用。",
+          "enabled": "允许汇入 CS2 比赛",
+          "enabled_description": "让玩家连结其 Steam 对战记录验证码以汇入官方 CS2 比赛，并允许上传 demo。关闭此选项会隐藏验证码表单并封锁外部汇入。",
+          "faceit_data_api": "Data API",
+          "faceit_downloads_api": "Downloads API",
+          "faceit_downloads_api_link": "申请 Downloads API 存取权限",
+          "faceit_enabled": "汇入 Faceit 比赛",
+          "faceit_enabled_description": "预设关闭。轮询已连结玩家的 Faceit 对战记录（近 30 天）并汇入其比赛。需启用外部比赛并提供 Faceit API 金钥——下载 demo 另需 Downloads API 存取权限。",
+          "faceit_setup_guide": "设定指南",
+          "faceit_test": "测试 Faceit 整合",
+          "faceit_test_button": "测试",
+          "faceit_test_description": "验证 Faceit API 金钥是否可用，以及能否下载 demo。",
+          "faceit_test_failed": "Faceit 测试失败",
+          "faceit_testing": "测试中…",
+          "section": "比赛汇入",
+          "title": "比赛汇入",
+          "updated": "外部比赛设定已更新"
+        },
+        "plugins": {
+          "add": "新增外挂",
+          "add_title": "新增外挂",
+          "advanced": "进阶设定",
+          "delete_confirm": "删除",
+          "delete_description": "这将从面板中移除「{title}」及其 /apps 路由。此操作无法复原。",
+          "delete_title": "删除外挂",
+          "description": "注册外部微前端应用程式，让它们以原生页面的方式显示在你的面板中。",
+          "detect": "侦测",
+          "detect_failed": "无法在该 URL 读取 5stack-plugin.json 资讯清单。",
+          "detect_hint": "贴上外挂的基础 URL（或其 5stack-plugin.json），我们会依其资讯清单填入下方栏位。",
+          "detect_label": "从 URL 自动侦测",
+          "docs_link": "阅读外挂文件",
+          "edit_title": "编辑外挂",
+          "empty_description": "将 5Stack 指向某个外挂的 URL，它就会以原生页面的方式显示在你的面板中。",
+          "empty_title": "尚无外挂",
+          "fields": {
+            "deployments": "部署",
+            "deployments_hint": "要监看映像更新的 Kubernetes 部署名称，以逗号分隔。更新会与 5Stack 自身服务一起显示在标头中。",
+            "deployments_placeholder": "inventory-frontend, inventory-backend",
+            "enabled": "已启用",
+            "exposed_module": "公开模组",
+            "exposed_module_hint": "公开的模组路径，例如 ./App。",
+            "icon": "图示",
+            "is_default": "预设页面",
+            "nav_group": "导览群组",
+            "nav_group_hint": "选填标题，用於在侧边栏中分组。留空则使用预设的 Apps 群组。",
+            "nav_group_placeholder": "Apps",
+            "nav_order": "导览排序",
+            "nav_order_hint": "数字越小越靠前。不在意的话请留 0。",
+            "profile_tab_label": "玩家个人档案分页",
+            "profile_tab_label_hint": "以此标签将此外挂显示为玩家个人档案上的分页。留空则不显示分页。外挂会收到该档案的 Steam ID。",
+            "profile_tab_label_placeholder": "库存",
+            "remote_entry_url": "远端进入点 URL",
+            "remote_entry_url_hint": "面板载入的 Module Federation remoteEntry.js（通常是 .../assets/remoteEntry.js）。",
+            "remote_scope": "远端范围",
+            "remote_scope_hint": "外挂的 Federation 容器名称（vite federation 设定中的 `name`）。",
+            "required_role": "所需角色",
+            "slug": "代称 (Slug)",
+            "title": "标题"
+          },
+          "form_description": "设定此外挂的载入方式以及谁可以看到它。",
+          "icon_picker": {
+            "choose": "选择图示",
+            "custom": "自订图示",
+            "custom_hint": "或贴上图片 URL 或内嵌 SVG（例如来自外挂）。",
+            "custom_placeholder": "https://… 、<svg…> 或图示名称",
+            "search": "搜寻图示…"
+          },
+          "is_default_hint": "将此设为面板的首页。",
+          "optional": "（选填）",
+          "public": "公开",
+          "section": "外挂",
+          "title": "外挂"
         }
       },
       "language": {
@@ -2069,6 +2144,76 @@
         "toast_demo_uploaded": "Demo 已上传",
         "toast_demo_uploaded_description": "正在导入——您的比赛将很快显示。",
         "toast_upload_failed": "上传失败"
+      },
+      "linked_accounts": {
+        "access_match_history": "「存取您的比赛纪录」",
+        "auth_code": "验证码",
+        "click_to_choose": "点击选择或拖曳 .dem 档案",
+        "create_auth_code": "建立验证码",
+        "demo_files_only": "仅限 CS2 Demo 档案 · 单一档案",
+        "drop_to_upload": "放开以上传",
+        "error_invalid_demo": "不是有效的 CS2 Demo (.dem) 档案",
+        "finishing": "完成中…",
+        "generated_once": "每个 Steam 帐号仅产生一次。",
+        "importing": "汇入中…",
+        "last_error": "上次错误",
+        "last_poll": "上次轮询",
+        "link_match_history": "连结比赛纪录",
+        "linked": "已连结",
+        "linked_errors": "已连结 · 有错误",
+        "linking": "连结中…",
+        "match_share_code": "比赛分享码",
+        "most_recent_share_code": "最新的分享码",
+        "need_two_codes": "您需要来自 Valve 的两组代码：",
+        "never": "从未",
+        "pending_imports": "待处理汇入",
+        "pending_imports_description": "您已连结帐号正在等待的比赛。此处失败的 Demo 通常已超过 30 天，Valve 不再提供。",
+        "poll_now": "立即轮询",
+        "polling": "轮询中…",
+        "polling_banner_description": "正在向 Valve 扫描您近期的比赛。找到後待处理的汇入会显示在下方。",
+        "polling_banner_title": "正在轮询您的比赛纪录…",
+        "presence_add_bot": "在 Steam 上开启机器人",
+        "presence_connect": "将机器人加为好友",
+        "presence_connected": "已连接——汇入即时完成。",
+        "presence_description": "将机器人加为 Steam 好友，即可在您的竞技与 Premier 比赛结束当下自动汇入。",
+        "presence_not_connected": "尚未连接。",
+        "presence_pending": "送出邀请後机器人会在一分钟内接受——状态会自动变为已连接。",
+        "presence_self_label": "好友看到的您",
+        "presence_title": "5Stack Steam 机器人",
+        "presence_unavailable": "5Stack 机器人目前无法使用——请稍後再试或联络管理员。",
+        "scanned": "已扫描",
+        "share_code": "分享码",
+        "show_less": "显示较少",
+        "show_more": "再显示 {count} 笔",
+        "steam_auth_code": "Steam 游戏验证码",
+        "step_auth_and_click": "并点击",
+        "step_auth_mid": "——在 Steam 说明页面上，查看",
+        "step_auth_prefix": "您的",
+        "step_share_copy": "——复制自",
+        "step_share_prefix": "最近的一组",
+        "step_share_within_30": "於 CS2 中（最近 30 天内的任一场比赛皆可作为起点）。",
+        "toast_cleared_import": "已清除待处理汇入",
+        "toast_collected": "已收集 {count} 组新的分享码",
+        "toast_could_not_link": "无法连结",
+        "toast_demo_uploaded": "Demo 已上传",
+        "toast_demo_uploaded_description": "正在汇入——您的比赛将很快显示。",
+        "toast_drop_dem_file": "请拖入 CS2 .dem 档案。",
+        "toast_linked": "已连结 CS2 比赛纪录",
+        "toast_poll_failed": "轮询失败",
+        "toast_polled": "已轮询比赛纪录",
+        "toast_unlinked": "已取消连结 CS2 比赛纪录",
+        "toast_upload_failed": "上传失败",
+        "toast_wrong_file_type": "档案类型错误",
+        "unknown_error": "未知错误",
+        "unlink": "取消连结",
+        "unlink_confirm_description": "我们将停止汇入您的官方 CS2 比赛与 Premier 等级。您随时可用 Steam 验证码与分享码重新连结。",
+        "unlink_confirm_title": "取消连结比赛纪录？",
+        "unlinking": "取消连结中…",
+        "upload_demo": "上传 Demo",
+        "upload_demo_description": "拖入 CS2 .dem 档案即可汇入比赛数据。无论是否已连结比赛纪录皆可使用。",
+        "upload_success_message": "已上传——正在汇入。您的比赛将很快显示。",
+        "uploading": "上传中…",
+        "watch_your_matches": "观战 → 您的比赛"
       }
     },
     "watch": {
@@ -2082,7 +2227,17 @@
       "section_recent_tournaments": "最近·赛事",
       "section_recent_highlights": "最近·高光",
       "no_live_matches": "待命 · 无进行中比赛",
-      "upcoming": "即将开始"
+      "upcoming": "即将开始",
+      "cold_start": {
+        "channel_highlights": "精华片段",
+        "channel_matches": "即时比赛",
+        "channel_status": "等待讯号中",
+        "channel_tournaments": "赛事",
+        "cta": "开始游戏",
+        "cta_guest": "登入以开始游戏",
+        "description": "没有进行中的比赛，也没有赛事，纪录还是一片空白。开始一场比赛，此页面便会自动填满——即时比分，结束後还有精华片段与完整录影。",
+        "title": "目前尚无动态"
+      }
     },
     "highlights": {
       "title": "高光时刻",
@@ -2192,7 +2347,22 @@
         "back_to_edit": "返回编辑器",
         "upload_image": "上传图片",
         "uploading": "上传中……",
-        "uploading_image": "正在上传图片……"
+        "uploading_image": "正在上传图片……",
+        "video": {
+          "auto_embedded": "嵌入视频链接",
+          "choose_file": "选择MP4",
+          "description": "嵌入 YouTube 或 Twitch 链接，或上传 MP4。",
+          "insert": "插入",
+          "link_hint": "粘贴 YouTube 或 Twitch URL。其他链接呈现为普通链接。将其直接粘贴到主体中也会将其嵌入。",
+          "replace_poster": "更换海报",
+          "tab_link": "关联",
+          "tab_upload": "上传",
+          "title": "插入视频",
+          "upload_hint": "MP4 最大 512MB。自动捕获海报框架。",
+          "uploading": "正在上传...{percent}%",
+          "will_embed": "将作为玩家嵌入",
+          "will_link": "不可嵌入 - 将呈现为链接"
+        }
       }
     },
     "seasons": {
@@ -2486,13 +2656,21 @@
           "best_gain": "单次最大增益",
           "worst_loss": "单次最大损失",
           "view_match": "查看比赛"
-        }
+        },
+        "tournaments_description": "该球员参加过的比赛。",
+        "tournaments_section_label": "锦标赛"
+      },
+      "queue_partners": {
+        "matches": "{count} 比赛 | {count} 比赛",
+        "title": "排队的人",
+        "win_rate": "{pct}% 获胜"
       }
     },
     "play": {
       "title": "游戏",
       "open_registration_tournaments": {
-        "description": "开放报名且任何人都可以加入的赛事。"
+        "description": "开放报名且任何人都可以加入的赛事。",
+        "section_label": "赛事"
       },
       "matchmaking": {
         "description": "单人排队或与您的队伍一起排队——队伍将被自动平衡，比赛将为您开始。",
@@ -3095,6 +3273,144 @@
       "group_custom_event_awards": "自定义活动奖项",
       "group_custom_season_awards": "自定义赛季奖项",
       "group_custom_league_awards": "自定义联赛奖项"
+    },
+    "award_detail": {
+      "confirm_revoke": {
+        "description": "{name}将不再持有该奖项。此操作无法撤消。",
+        "title": "撤销这个奖项？"
+      },
+      "filter_all": "全部",
+      "filter_players": "玩家",
+      "filter_teams": "团队",
+      "first_granted": "首次授予",
+      "granted_by": "由 {name} 授予",
+      "holders_section": "支架",
+      "last_granted": "最后授予",
+      "no_holders": "没有人被授予这个奖项。",
+      "no_holders_title": "还没有持有人",
+      "not_found": "该奖项不存在，或已被删除。",
+      "not_found_title": "未找到奖项",
+      "revoke": "撤销",
+      "source_manual": "亲手授予",
+      "source_season": "季节自动化",
+      "source_tournament": "比赛安排",
+      "total_holders": "补助金",
+      "unique_players": "玩家",
+      "unique_teams": "团队"
+    },
+    "plugins": {
+      "error_title": "页面载入失败",
+      "forbidden_description": "您没有权限检视此页面。",
+      "forbidden_title": "存取受限",
+      "not_found_description": "此外挂不存在或已不再提供。",
+      "not_found_title": "找不到页面"
+    },
+    "system_telemetry": {
+      "activity": {
+        "matches": "每天举办的比赛（90天）",
+        "matches_unit": "比赛"
+      },
+      "features": {
+        "always": "随时可用",
+        "always_hint": "每个面板都附带并且无法关闭，因此只有使用才有意义。",
+        "capabilities": "检测到的能力",
+        "capabilities_hint": "不是应用程序设置 - 这些来自检测到的凭据（Discord、Tailscale、Steam）或来自每个游戏服务器节点上的 GPU 工作负载交换机。",
+        "configured": "已配置",
+        "enabled": "启用",
+        "feature": "特征",
+        "keys": {
+          "api_keys": "API 密钥",
+          "awards": "奖项",
+          "branding": "定制品牌",
+          "clip_branding": "剪辑品牌",
+          "clip_renders": "剪辑渲染",
+          "custom_pages": "插件",
+          "demo_playback": "演示播放",
+          "demos": "演示",
+          "discord_bot": "不和谐机器人",
+          "draft_games": "选秀游戏",
+          "events": "活动",
+          "external_matches": "外部比赛",
+          "faceit_import": "FACEIT导入",
+          "game_server_nodes": "游戏服务器节点",
+          "gamedata_validations": "游戏数据验证",
+          "highlights": "自动亮点",
+          "highlights_imported": "自动高光（导入）",
+          "league_division_requests": "联赛分区要求",
+          "leagues": "联赛",
+          "live_streaming": "直播",
+          "matchmaking": "对接会",
+          "news": "消息",
+          "player_name_registration": "玩家姓名注册",
+          "sanctions": "制裁",
+          "scrims": "稀松布查找器",
+          "seasons": "季节",
+          "steam_presence": "蒸汽存在",
+          "stream_login_protection": "串流登录保护",
+          "system_alerts": "系统警报",
+          "tournaments": "锦标赛",
+          "version_pinning": "版本固定"
+        },
+        "optional": "可选功能",
+        "optional_hint": "管理员可以在应用程序设置中打开或关闭的功能。",
+        "panels_using": "面板使用",
+        "total": "全部的"
+      },
+      "growth": {
+        "title": "每月新面板",
+        "unit": "面板"
+      },
+      "installs": {
+        "active_24h": "24小时活跃",
+        "active_7d": "活跃7天",
+        "live": "最近一小时内报告",
+        "new_30d": "新30天",
+        "online": "现已上线",
+        "online_caption": "一小时内心跳",
+        "retained_180d": "保留180d",
+        "retained_180d_hint": "小组在 180 多天前首次出现，本周仍在报告。",
+        "title": "面板",
+        "total": "所有时间",
+        "total_caption": "见过的独特面板"
+      },
+      "no_data": "尚未报告数据",
+      "title": "舰队遥测",
+      "totals": {
+        "all_time": "所有时间",
+        "community": "社区",
+        "community_hint": "玩家会统计至少登录过一次 Steam 的帐户。面板还为它仅在阵容、演示或制裁中见过的每个 Steam ID 存储一行 - 这些单独计数为“已看到的 Steam ID”。",
+        "game_server_nodes": "游戏服务器节点",
+        "game_server_nodes_caption": "目前已注册",
+        "gpu_nodes": "GPU节点",
+        "gpu_nodes_caption": "目前已注册",
+        "hosted_hint": "托管计数仅与面板自行运行相匹配。导入的比赛来自 FACEIT 或 CS2 比赛历史记录并单独列出。",
+        "infrastructure": "基础设施",
+        "last_1y": "过去 365 天",
+        "last_30d": "过去 30 天",
+        "last_7d": "过去 7 天",
+        "maps_played": "玩过的地图",
+        "match_volume": "匹配量",
+        "matches": "主办比赛",
+        "matches_caption": "整个舰队的所有时间",
+        "matches_imported": "进口火柴",
+        "matches_imported_month": "进口30天",
+        "matches_month": "主持30天",
+        "matches_week": "主持7天",
+        "matches_year": "主持1年",
+        "players": "玩家",
+        "players_active": "活跃玩家 30 天",
+        "players_caption": "过去 30 天的阵容",
+        "players_known": "看到的 Steam ID",
+        "players_known_caption": "包括从未登录过",
+        "players_played": "打了一场比赛",
+        "public_servers": "民众",
+        "public_servers_caption": "非排名服务器",
+        "self_reported": "小组是自行托管的，并自行报告这些计数；值在抵达时验证，但无法独立验证。基础设施是每个小组最新报告中的时间点计数，而不是运行总数。",
+        "servers": "服务器",
+        "servers_caption": "目前已注册",
+        "signed_in_caption": "至少登录一次",
+        "teams": "团队"
+      }
     }
   },
   "custom_match": {
@@ -3255,6 +3571,9 @@
       },
       "platform": {
         "title": "管理"
+      },
+      "plugins": {
+        "title": "应用程式"
       }
     },
     "top_nav": {
@@ -3492,6 +3811,10 @@
       "deaths": "死亡",
       "assists": "助攻",
       "win_rate": "胜率"
+    },
+    "address_search": {
+      "no_results": "找不到符合的地点",
+      "placeholder": "搜寻地址或场馆"
     }
   },
   "spotlight_search": {
@@ -3655,13 +3978,19 @@
       "my_team": "我的队伍",
       "my_team_hint": "管理您的阵容、邀请以及此赛事的准备状态。",
       "roster_section": "阵容",
-      "no_teams_yet": "暂无队伍。"
+      "no_teams_yet": "暂无队伍。",
+      "about_section": "关於",
+      "information_tab": "资讯",
+      "match_settings": "比赛设定",
+      "read_less": "显示较少",
+      "read_more": "显示更多"
     },
     "feature_card": {
       "tournament": "赛事",
       "teams": "队伍",
       "stages": "阶段",
-      "default_label": "赛事"
+      "default_label": "赛事",
+      "organized_by": "由 {team} 主办"
     },
     "results_section": {
       "no_data": "无数据",
@@ -3707,7 +4036,8 @@
         "benched": "替补席"
       },
       "already_rostered": "已在其他队伍",
-      "min_lineup_warning": "至少选择 {min} 名玩家才能注册。"
+      "min_lineup_warning": "至少选择 {min} 名玩家才能注册。",
+      "owner_on_a_team": "已经入选参加本次比赛的队伍。"
     },
     "tournament_team": {
       "remove": "移除队伍",
@@ -3737,6 +4067,28 @@
         "ready_hint": "一切看起来都很好——创建您的赛事",
         "incomplete": "缺少必填字段",
         "incomplete_hint": "填写赛事名称和开始日期以继续"
+      },
+      "categories": {
+        "label": "分类"
+      },
+      "homepage": {
+        "create_event": "建立活动页面",
+        "description": "票务、资讯或报名的外部连结。",
+        "label": "官方网页",
+        "link": "官方网页"
+      },
+      "location": {
+        "description": "搜寻场地或城市；地图标记会自动设定。",
+        "label": "地点"
+      },
+      "logo": {
+        "label": "标志"
+      },
+      "section": {
+        "branding": "品牌识别",
+        "classification": "分类与场地",
+        "details": "详细资料",
+        "schedule": "赛程"
       }
     },
     "notifications": {
@@ -3762,13 +4114,15 @@
         "Canceled": "已取消",
         "Forfeit": "弃权",
         "Surrendered": "投降"
-      }
+      },
+      "disabled_hint": "此赛事的 Discord 通知已关闭。"
     },
     "voice": {
       "title": "语音频道",
       "description": "自动为赛事比赛创建 Discord 语音频道。比赛开始时，玩家会被移动到队伍频道。",
       "guild_id_placeholder": "Discord 服务器 ID",
-      "enable_voice": "启用语音频道"
+      "enable_voice": "启用语音频道",
+      "guild_id": "Discord 伺服器 ID"
     },
     "table": {
       "tournament": "赛事",
@@ -3815,7 +4169,11 @@
       "third_place_match_description": "在两名半决赛失利者之间创建季军赛。",
       "decider_best_of": "季军赛最好",
       "advanced_settings": "高级阶段设置",
-      "teams_count": "{count} 支队伍"
+      "teams_count": "{count} 支队伍",
+      "final_map_advantage": {
+        "description": "胜者组队伍带入总决赛的地图分领先优势。必须低於获胜所需的地图数。",
+        "label": "决赛地图优势"
+      }
     },
     "bracket": {
       "schedule_title": "安排比赛",
@@ -3940,7 +4298,16 @@
       "remove": "移除组织者",
       "confirm_remove": "您确定要移除此组织者吗？",
       "remove_description": "这将从赛事中移除此组织者",
-      "organized_by": "组织者"
+      "organized_by": "组织者",
+      "teams": {
+        "add": "连结队伍",
+        "description": "连结一支队伍，让其所有成员成为此赛事的主办方。",
+        "members_note": "已连结队伍的每位成员都会成为赛事主办方。移除该队伍会一并移除其带来的主办方权限。",
+        "none": "未连结任何主办团队。",
+        "remove": "移除",
+        "remove_confirm": "要移除 {name} 及其成员的主办方权限吗？",
+        "title": "主办团队"
+      }
     },
     "team": {
       "eligible": "符合条件",
@@ -3962,7 +4329,17 @@
       "confirm_cancel_invite": "您确定要取消此邀请吗？",
       "cancel_invite_description": "这将取消对该成员的邀请",
       "seed_label": "种子排名",
-      "seed_display": "种子 #{seed}"
+      "seed_display": "种子 #{seed}",
+      "already_in_tournament": "该球员已经在参加本次锦标赛的球队中。",
+      "ineligible": {
+        "invite_pending": "您已经邀请了他们 - 正在等待他们的回复。",
+        "on_other_team": "已列入本次锦标赛的 {team} 名单。",
+        "on_this_roster": "已经在这个名单上了。"
+      },
+      "invite_sent": "邀请已发送",
+      "invite_sent_description": "{name} 已收到邀请，需要接受邀请才能加入您的名册",
+      "member_added": "已添加玩家",
+      "member_added_description": "{name} 已添加到您的名册中"
     },
     "teams": {
       "count": "{count} 支队伍",
@@ -4010,17 +4387,18 @@
       "replace_image": "Replace image",
       "custom_image_hint": "Overrides the award's artwork for this tournament only.",
       "silhouettes": {
-        "auto": "Auto",
         "0": "Chalice",
         "1": "Faceted",
         "2": "Star",
         "3": "Shield",
-        "4": "Laurel"
+        "4": "Laurel",
+        "auto": "Auto"
       },
       "artwork": "Artwork",
       "silhouette_unused": "Silhouette is unused while artwork is set.",
       "placement": "Placement",
-      "unsaved": "Unsaved"
+      "unsaved": "Unsaved",
+      "hint": "为每个名次选择奖项，或自订其名称与图片。"
     },
     "awards_manage": {
       "manual_awards": "手动颁发",
@@ -4029,7 +4407,48 @@
       "remove": "移除",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first.",
-      "choose_award": "Choose an award…"
+      "choose_award": "Choose an award…",
+      "hint": "在对战表计算之外颁发奖项。"
+    },
+    "banner": {
+      "hint": "显示於赛事页面顶部，会裁切为 3:1 宽幅。",
+      "label": "横幅",
+      "upload": "上传横幅",
+      "upload_failed": "横幅上传失败"
+    },
+    "prizes": {
+      "add": "新增",
+      "distribution": "奖金分配",
+      "manage_hint": "显示在赛事页面上的名次与奖金金额。",
+      "move_down": "下移",
+      "move_up": "上移",
+      "organizer_access_required": "需要主办方权限",
+      "prize_placeholder": "$1000",
+      "reorder_hint": "拖曳以重新排序——名次会自动重新编号。输入标签可覆写。",
+      "title": "奖金"
+    },
+    "stats": {
+      "format": "赛制",
+      "location": "地点",
+      "prize_pool": "总奖金",
+      "starts": "开始时间",
+      "teams": "队伍"
+    },
+    "teams_filter": {
+      "all": "全部",
+      "collapse": "坍塌",
+      "collapse_all": "全部折叠",
+      "expand": "扩张",
+      "expand_all": "全部展开",
+      "incomplete": "需要玩家",
+      "no_matches": "没有团队匹配此过滤器",
+      "ready": "准备好"
+    },
+    "wizard": {
+      "information": "资讯",
+      "location": "地点",
+      "match_options": "比赛选项",
+      "prizes": "奖金"
     }
   },
   "team": {
@@ -4117,7 +4536,11 @@
       "select_owner": "选择队伍拥有者...",
       "inviting": "邀请中",
       "inviting_hint": "创建队伍时，这些玩家将被邀请。",
-      "create": "创建队伍"
+      "create": "创建队伍",
+      "is_organization": {
+        "description": "组织队伍可连结至赛事，让其成员取得主办方权限。",
+        "label": "组织队伍"
+      }
     },
     "roster_count_players": "玩家",
     "search": {
@@ -4132,7 +4555,15 @@
       "ineligible_short": "已锁定",
       "tournament_join_requires_owner_or_captain": "您只能以拥有者或队长身份加入赛事的队伍。",
       "not_enough_players": "至少需要 {count} 名玩家才能发起挑战。",
-      "selected": "已选"
+      "selected": "已选",
+      "ineligible": {
+        "in_event": "已经附上此活动。",
+        "in_season": "已经报名了这个赛季。",
+        "in_tournament": "已经参加了本次比赛。",
+        "other_side": "已经被选为另一支球队。",
+        "tournament_organizer": "已经是本次比赛的组织者。"
+      },
+      "loading_more": "加载更多..."
     },
     "member": {
       "coach": "教练",
@@ -4205,7 +4636,8 @@
         "perf_hint": "表现系数——根据您的 KDA 与队伍平均值的对比以及您的伤害占比进行调整。胜场限制在 0.8×–1.2× 之间。",
         "series_hint": "系列赛系数——净地图差。BO1 = ×1，BO3 横扫 = ×2，BO5 横扫 = ×3。比分越接近，ELO 变化越小。",
         "result_hint": "应用所有系数后的最终 ELO 变化，四舍五入到最接近的整数。"
-      }
+      },
+      "rated_at_hint": "您被评判的评分——您自己的 ELO 和您团队的平均水平的结合，并与对方团队的平均水平进行衡量。评价不同的队友会做不同的事情，因此相同的结果对他们的影响也不同。"
     },
     "simple": {
       "vs": "vs"
@@ -4342,6 +4774,14 @@
         },
         "default_player_models": {
           "description": "为比赛中的所有玩家启用默认玩家模型。"
+        },
+        "halftime_pausematch": {
+          "description": "在中场暂停比赛，直到管理员恢复——适合直播转播使用。",
+          "label": "中场暂停比赛"
+        },
+        "round_restart_delay": {
+          "label": "回合重启延迟",
+          "range": "回合重新开始前的秒数。留白则使用伺服器预设值。"
         }
       },
       "max_rounds": "最大回合数",
@@ -5054,6 +5494,11 @@
     "admin_bar": {
       "rcon_unavailable": "RCON 不可用",
       "not_controllable": "比赛处于不可控状态。"
+    },
+    "party": {
+      "queued": "一起排队",
+      "queued_lobby": "一起在大厅排队",
+      "queued_valve": "一起排队（阀门党）"
     }
   },
   "ui": {
@@ -5223,7 +5668,20 @@
     "search": {
       "no_players_found": "未找到玩家。",
       "found_players": "找到玩家",
-      "placeholder": "搜索玩家..."
+      "placeholder": "搜索玩家...",
+      "ineligible": {
+        "coaching": "已经在本场比赛中执教。",
+        "event_organizer": "已经是本次活动的组织者了。",
+        "in_draft": "已经在这个草案中了。",
+        "in_event": "已经附上此活动。",
+        "in_lineup": "已经在本场比赛的阵容中了。",
+        "in_lobby": "已经在您的大厅了。",
+        "on_team": "已经在这个团队了。",
+        "team_invite_pending": "您已经邀请了他们 - 正在等待他们的回复。",
+        "tournament_admin": "锦标赛管理员始终是组织者。",
+        "tournament_organizer": "已经是本次比赛的组织者。"
+      },
+      "loading_more": "加载更多..."
     },
     "sanctions": {
       "title": "处罚",
@@ -5288,7 +5746,9 @@
       "title": "待导入的 CS2 比赛",
       "importing": "导入中…"
     },
-    "all_time_peak": "历史最高"
+    "all_time_peak": "历史最高",
+    "at_match_start": "比赛开始时",
+    "current_elo": "当前的"
   },
   "maps": {
     "label": "地图",
@@ -5384,7 +5844,11 @@
       "toggle": "调整设置"
     },
     "high_latency_warning": "您的延迟过高，无法进行竞技比赛",
-    "no_preferred_regions": "请在匹配设置中选择至少一个偏好地区"
+    "no_preferred_regions": "请在匹配设置中选择至少一个偏好地区",
+    "party_size": {
+      "requirement": "请以 {half} 人以下，或刚好 {full} 人进行配对",
+      "unavailable": "{size} 人队伍无法配对此模式"
+    }
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -5590,7 +6054,13 @@
       "metamod_info": "Metamod 信息",
       "css_info": "CSS 信息",
       "command_placeholder": "输入命令...",
-      "send": "发送"
+      "send": "发送",
+      "css_version": "CounterStrikeSharp 版本",
+      "fivestack_status": "5Stack 状态",
+      "logs_only_response": "指令已送出。Swiftly 会将此输出写入伺服器纪录，而非 RCON 回应。",
+      "swiftly_plugins": "Swiftly 外挂（伺服器纪录）",
+      "swiftly_status": "Swiftly 状态（伺服器纪录）",
+      "swiftly_version": "Swiftly 版本"
     }
   },
   "components": {
@@ -5641,7 +6111,8 @@
     "previous_clip": "上一个精彩集锦",
     "next_clip": "下一个精彩集锦",
     "hide_xray": "隐藏 X 光",
-    "show_xray": "显示 X 光"
+    "show_xray": "显示 X 光",
+    "seek": "寻找"
   },
   "branding": {
     "site_title_suffix": "Counter-Strike 管理系统"
@@ -5981,7 +6452,10 @@
     "team_elo": "队伍 ELO",
     "kda": "KDA",
     "kda_breakdown": "K / D / A",
-    "perf": "表现系数"
+    "perf": "表现系数",
+    "rated_at": "额定值",
+    "team": "团队",
+    "you": "你"
   },
   "stat": {
     "level": {
@@ -6172,7 +6646,13 @@
       "kick_confirm_title": "移除这名玩家？",
       "kick_confirm_description": "他们将被移出选秀房间。",
       "load_failed": "无法加载此选秀房间。",
-      "match_settings": "比赛设置"
+      "match_settings": "比赛设置",
+      "checking_in": "报到中 — {ready}/{total} 已就绪",
+      "drop_to_bench": "将玩家拖曳至此以移入板凳",
+      "no_backups": "将玩家拖曳至此以移入板凳",
+      "side_backups": "{team} 替补",
+      "side_full": "此侧已满",
+      "unassigned_backups": "未分配替补"
     },
     "bar": {
       "region": "地区",
@@ -6939,12 +7419,31 @@
     }
   },
   "awards_modal": {
-    "view_tournament": "查看赛事"
+    "view_tournament": "查看赛事",
+    "view_award": "查看奖项"
   },
   "awards_manage_form": {
     "team": "队伍",
     "player": "玩家",
     "award": "队伍",
     "recipient": "Recipient"
+  },
+  "image_upload": {
+    "crop": {
+      "apply": "套用",
+      "description": "拖曳以移动位置，滚动以缩放。框内即为将储存的范围。",
+      "fit_whole": "显示全图",
+      "title": "调整图片"
+    },
+    "drop_to_upload": "拖放以上传",
+    "hint_banner": "拖放或点击 · 宽幅 3:1 横幅",
+    "hint_cover": "拖放或点击 · 16:9 封面",
+    "hint_square": "拖放或点击 · PNG、JPEG、WebP",
+    "remove": "移除",
+    "remove_failed": "移除图片失败",
+    "removed": "图片已移除",
+    "replace": "取代",
+    "upload_failed": "上传失败",
+    "uploaded": "图片已上传"
   }
 }

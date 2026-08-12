@@ -2,7 +2,8 @@
 import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
 import EventEmitter from "eventemitter3";
 import { useMatchBackupRounds } from "~/composables/useMatchBackupRounds";
-import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
+import { ChevronUp, GripHorizontal, Shield, Zap } from "lucide-vue-next";
+import { useVetoOverride } from "~/composables/useVetoOverride";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
@@ -29,6 +30,12 @@ const commander = new EventEmitter();
 provide("commander", commander);
 
 const applicationSettings = useApplicationSettingsStore();
+
+const { enabled: vetoOverride } = useVetoOverride(() => props.match?.id);
+
+const isVetoing = computed(
+  () => props.match?.status === e_match_status_enum.Veto,
+);
 
 const open = ref(false);
 const mounted = ref(false);
@@ -211,46 +218,76 @@ function runCommand(
         />
       </div>
 
-      <button
-        type="button"
-        class="flex items-center gap-3 w-full px-4 py-2 hover:bg-muted/40 transition-colors duration-200 ease-out text-left"
-        :class="dragging && 'select-none'"
-        :aria-expanded="open"
-        @click="open = !open"
-      >
-        <div
-          class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border rounded transition-colors duration-200 ease-out"
-          :class="
-            canSendRCONCommands
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-              : 'border-border bg-muted/40 text-muted-foreground'
-          "
+      <!-- Split into three regions so the override toggle can sit between the
+           status and the expander without nesting a button inside a button.
+           The two expander halves shade off the shared `group` rather than
+           their own :hover, otherwise each lights up as its own patch. -->
+      <div class="group flex items-stretch" :class="dragging && 'select-none'">
+        <button
+          type="button"
+          class="flex items-center gap-3 min-w-0 flex-1 pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out text-left"
+          :aria-expanded="open"
+          @click="open = !open"
         >
-          <Shield class="w-3 h-3" />
-          {{ $t("match.admin") }}
+          <div
+            class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border rounded transition-colors duration-200 ease-out"
+            :class="
+              canSendRCONCommands
+                ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                : 'border-border bg-muted/40 text-muted-foreground'
+            "
+          >
+            <Shield class="w-3 h-3" />
+            {{ $t("match.admin") }}
+          </div>
+
+          <span
+            v-if="canSendRCONCommands"
+            class="truncate font-mono text-[0.65rem] tracking-[0.18em] uppercase text-muted-foreground"
+          >
+            {{
+              match.is_server_online
+                ? $t("common.connected")
+                : $t("common.disconnected")
+            }}
+          </span>
+        </button>
+
+        <div
+          v-if="isVetoing"
+          class="flex shrink-0 items-center px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
+        >
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 whitespace-nowrap rounded border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] transition-colors duration-200 ease-out"
+            :class="
+              vetoOverride
+                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.24)]'
+                : 'border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.4)] hover:text-foreground'
+            "
+            :aria-pressed="vetoOverride"
+            @click="vetoOverride = !vetoOverride"
+          >
+            <Zap class="h-3 w-3 shrink-0" />
+            {{ $t("match.admin_bar.veto_override") }}
+          </button>
         </div>
 
-        <span
-          v-if="canSendRCONCommands"
-          class="font-mono text-[0.65rem] tracking-[0.18em] uppercase text-muted-foreground"
+        <button
+          type="button"
+          class="flex shrink-0 items-center gap-1.5 pl-2 pr-4 py-2 text-xs text-muted-foreground group-hover:bg-muted/40 transition-colors duration-200 ease-out"
+          :aria-expanded="open"
+          @click="open = !open"
         >
-          {{
-            match.is_server_online
-              ? $t("common.connected")
-              : $t("common.disconnected")
-          }}
-        </span>
-
-        <span
-          class="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground"
-        >
-          {{ open ? $t("common.close") : $t("common.more") }}
+          <span class="hidden sm:inline">{{
+            open ? $t("common.close") : $t("common.more")
+          }}</span>
           <ChevronUp
             class="w-4 h-4 transition-transform duration-300 ease-out"
             :class="open ? 'rotate-180' : 'rotate-0'"
           />
-        </span>
-      </button>
+        </button>
+      </div>
 
       <div
         class="overflow-hidden"
@@ -286,26 +323,26 @@ function runCommand(
                 </DropdownMenuItem>
 
                 <template v-if="restorableRounds.length > 0">
-                <DropdownMenuSeparator />
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger :disabled="!match.is_server_online">
-                    {{ $t("match.tabs.restore_round") }}
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
-                    <DropdownMenuItem
-                      v-for="round of restorableRounds"
-                      :key="round.round"
-                      :disabled="!match.is_server_online"
-                      @click="send('restore_round', round.round.toString())"
-                    >
-                      {{
-                        $t("common.round", {
-                          number: round.round.toString(),
-                        })
-                      }}
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger :disabled="!match.is_server_online">
+                      {{ $t("match.tabs.restore_round") }}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
+                      <DropdownMenuItem
+                        v-for="round of restorableRounds"
+                        :key="round.round"
+                        :disabled="!match.is_server_online"
+                        @click="send('restore_round', round.round.toString())"
+                      >
+                        {{
+                          $t("common.round", {
+                            number: round.round.toString(),
+                          })
+                        }}
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
                 </template>
               </template>
 

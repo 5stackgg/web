@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed, onUnmounted } from "vue";
+import { computed, toRef } from "vue";
+import { useCountdown } from "~/composables/useCountdown";
 
 const props = withDefaults(
   defineProps<{
@@ -7,58 +8,25 @@ const props = withDefaults(
     total?: number;
     accent?: string;
     pulse?: boolean;
+    compact?: boolean;
   }>(),
   {
     total: 30,
     accent: "var(--tac-amber)",
     pulse: false,
+    compact: false,
   },
 );
-
-const remaining = ref<number>(0);
-let raf: number | null = null;
 
 const RADIUS = 52;
 const CIRC = 2 * Math.PI * RADIUS;
 
-const fraction = computed(() => {
-  if (!props.deadline || props.total <= 0) {
-    return 1;
-  }
-  return Math.max(0, Math.min(1, remaining.value / props.total));
-});
+const { remaining, fraction, urgent } = useCountdown(
+  toRef(props, "deadline"),
+  toRef(props, "total"),
+);
 
 const dashOffset = computed(() => CIRC * (1 - fraction.value));
-
-// Drive the ring off requestAnimationFrame so the stroke interpolates every
-// frame — a setInterval tick makes it visibly step.
-const tick = () => {
-  if (!props.deadline) {
-    remaining.value = 0;
-    raf = null;
-    return;
-  }
-  const ms = new Date(props.deadline).getTime() - Date.now();
-  remaining.value = Math.max(0, ms / 1000);
-  raf = remaining.value > 0 ? requestAnimationFrame(tick) : null;
-};
-
-const start = () => {
-  if (raf) {
-    cancelAnimationFrame(raf);
-  }
-  tick();
-};
-
-watch(() => props.deadline, start, { immediate: true });
-
-onUnmounted(() => {
-  if (raf) {
-    cancelAnimationFrame(raf);
-  }
-});
-
-const urgent = computed(() => remaining.value <= 6 && remaining.value > 0);
 </script>
 
 <template>
@@ -67,7 +35,11 @@ const urgent = computed(() => remaining.value <= 6 && remaining.value > 0);
     :class="{ pulse: pulse }"
     :style="{ '--accent': accent }"
   >
-    <svg viewBox="0 0 120 120" class="h-32 w-32 -rotate-90">
+    <svg
+      viewBox="0 0 120 120"
+      class="-rotate-90"
+      :class="compact ? 'h-16 w-16' : 'h-32 w-32'"
+    >
       <circle
         cx="60"
         cy="60"
@@ -95,13 +67,17 @@ const urgent = computed(() => remaining.value <= 6 && remaining.value > 0);
     <div class="absolute inset-0 grid place-items-center text-center">
       <div>
         <div
-          class="font-mono text-3xl font-bold tabular-nums leading-none"
-          :class="urgent ? 'text-destructive' : 'text-foreground'"
+          class="font-mono font-bold tabular-nums leading-none"
+          :class="[
+            urgent ? 'text-destructive' : 'text-foreground',
+            compact ? 'text-base' : 'text-3xl',
+          ]"
         >
           <template v-if="deadline">{{ Math.ceil(remaining) }}</template>
           <template v-else>—</template>
         </div>
         <div
+          v-if="!compact"
           class="mt-1 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-muted-foreground"
         >
           <slot>SEC</slot>

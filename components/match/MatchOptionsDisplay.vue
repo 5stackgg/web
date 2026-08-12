@@ -257,6 +257,20 @@ const BooleanPill = defineComponent({
                 }}</dt>
                 <dd><BooleanPill :value="options.region_veto" /></dd>
               </div>
+              <div class="settings-row">
+                <dt class="settings-row__label">{{
+                  $t("match.options.veto_pick_timeout")
+                }}</dt>
+                <dd>
+                  {{
+                    options.veto_pick_timeout > 0
+                      ? $t("match.options.veto_pick_timeout_seconds", {
+                          seconds: options.veto_pick_timeout,
+                        })
+                      : $t("common.disabled")
+                  }}
+                </dd>
+              </div>
             </dl>
           </section>
         </div>

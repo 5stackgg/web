@@ -221,7 +221,8 @@ import { $ } from "~/generated/zeus";
             :model-value="value ?? ''"
             :placeholder="$t('tournament.stage.max_rounds_placeholder')"
             @update:model-value="
-              (val) => handleChange(val === '' || val == null ? null : Number(val))
+              (val) =>
+                handleChange(val === '' || val == null ? null : Number(val))
             "
           />
         </FormControl>
@@ -272,7 +273,8 @@ import { $ } from "~/generated/zeus";
               :model-value="value ?? ''"
               :placeholder="$t('tournament.stage.swiss_rounds_placeholder')"
               @update:model-value="
-                (val) => handleChange(val === '' || val == null ? null : Number(val))
+                (val) =>
+                  handleChange(val === '' || val == null ? null : Number(val))
               "
             />
           </FormControl>
@@ -525,6 +527,62 @@ import { $ } from "~/generated/zeus";
                   <FormDescription>
                     {{ $t("match.options.advanced.tv_delay.range") }}
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField
+                v-if="canSetVetoPickTimeout"
+                v-slot="{ value }"
+                name="veto_pick_timeout"
+              >
+                <FormItem>
+                  <div
+                    class="flex flex-row items-center justify-between cursor-pointer"
+                    @click="toggleVetoTimer(!value)"
+                  >
+                    <div class="space-y-0.5">
+                      <SettingHeader>{{
+                        $t("match.options.advanced.veto_pick_timeout.label")
+                      }}</SettingHeader>
+                      <FormDescription>{{
+                        $t(
+                          "match.options.advanced.veto_pick_timeout.description",
+                        )
+                      }}</FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        class="pointer-events-none"
+                        :model-value="value > 0"
+                      />
+                    </FormControl>
+                  </div>
+
+                  <div v-if="value > 0" class="mt-4 pl-4 border-l-2">
+                    <NumberField
+                      class="gap-2"
+                      :min="1"
+                      :max="600"
+                      :model-value="value"
+                      @update:model-value="
+                        (timeout) => {
+                          form.setFieldValue('veto_pick_timeout', timeout);
+                        }
+                      "
+                    >
+                      <NumberFieldContent>
+                        <NumberFieldDecrement />
+                        <FormControl>
+                          <NumberFieldInput />
+                        </FormControl>
+                        <NumberFieldIncrement />
+                      </NumberFieldContent>
+                    </NumberField>
+                    <FormDescription class="mt-2">
+                      {{ $t("match.options.advanced.veto_pick_timeout.range") }}
+                    </FormDescription>
+                  </div>
                   <FormMessage />
                 </FormItem>
               </FormField>
@@ -876,6 +934,7 @@ import {
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { canSetVetoPickTimeout } from "~/utilities/setupOptions";
 import { toast } from "@/components/ui/toast";
 
 interface Region {
@@ -939,6 +998,7 @@ export default {
       showAdvancedSettings: false,
       advHeight: "0px",
       select_single_region: null as string | null,
+      lastVetoPickTimeout: 0,
       roundBestOf: {} as Record<string, string>,
       e_tournament_stage_types: [] as Array<{
         value: string;
@@ -965,6 +1025,7 @@ export default {
               final_map_advantage: z.number().min(0).default(0),
               // Advanced settings (5 overridable fields)
               tv_delay: z.number().min(0).max(120).default(115),
+              veto_pick_timeout: z.number().min(0).max(600).default(60),
               region_veto: z.boolean().default(true),
               regions: z.string().array().default([]),
               check_in_setting: z
@@ -1077,6 +1138,9 @@ export default {
     },
   },
   computed: {
+    canSetVetoPickTimeout() {
+      return canSetVetoPickTimeout();
+    },
     sortedStageTypes() {
       const order = [
         e_tournament_stage_types_enum.SingleElimination,
@@ -1242,6 +1306,23 @@ export default {
     },
   },
   methods: {
+    toggleVetoTimer(enabled: boolean) {
+      if (!enabled) {
+        const current = this.form.values.veto_pick_timeout;
+        if (current > 0) {
+          this.lastVetoPickTimeout = current;
+        }
+        this.form.setFieldValue("veto_pick_timeout", 0);
+        return;
+      }
+
+      this.form.setFieldValue(
+        "veto_pick_timeout",
+        this.lastVetoPickTimeout ||
+          this.tournament?.options?.veto_pick_timeout ||
+          60,
+      );
+    },
     populateStage(stage: any) {
       if (stage) {
         this.form.setValues({
@@ -1277,6 +1358,10 @@ export default {
               stage.options?.tv_delay ??
               this.tournament?.options?.tv_delay ??
               115,
+            veto_pick_timeout:
+              stage.options?.veto_pick_timeout ??
+              this.tournament?.options?.veto_pick_timeout ??
+              60,
             region_veto:
               stage.options?.region_veto ??
               this.tournament?.options?.region_veto ??
@@ -1372,6 +1457,7 @@ export default {
       const options = this.tournament.options;
       this.form.setValues({
         tv_delay: options.tv_delay ?? 115,
+        veto_pick_timeout: options.veto_pick_timeout ?? 60,
         region_veto: options.region_veto ?? true,
         regions: options.regions ?? [],
         check_in_setting:
@@ -1403,6 +1489,7 @@ export default {
 
       if (
         form.tv_delay !== tournamentOptions.tv_delay ||
+        form.veto_pick_timeout !== tournamentOptions.veto_pick_timeout ||
         form.region_veto !== tournamentOptions.region_veto ||
         form.check_in_setting !== tournamentOptions.check_in_setting ||
         form.ready_setting !== tournamentOptions.ready_setting ||
@@ -1438,6 +1525,9 @@ export default {
         variables: {
           id: matchOptionsId,
           tv_delay: form.tv_delay,
+          ...(canSetVetoPickTimeout()
+            ? { veto_pick_timeout: form.veto_pick_timeout }
+            : {}),
           region_veto: form.region_veto,
           regions: form.regions || [],
           check_in_setting: form.check_in_setting,
@@ -1464,6 +1554,9 @@ export default {
               },
               _set: {
                 tv_delay: $("tv_delay", "Int!"),
+                ...(canSetVetoPickTimeout()
+                  ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
+                  : {}),
                 region_veto: $("region_veto", "Boolean!"),
                 regions: $("regions", "[String!]!"),
                 check_in_setting: $(
@@ -1508,6 +1601,9 @@ export default {
       const { data } = await (this as any).$apollo.mutate({
         variables: {
           tv_delay: form.tv_delay,
+          ...(canSetVetoPickTimeout()
+            ? { veto_pick_timeout: form.veto_pick_timeout }
+            : {}),
           region_veto: form.region_veto,
           regions: form.regions || [],
           check_in_setting: form.check_in_setting,
@@ -1531,6 +1627,9 @@ export default {
             {
               object: {
                 tv_delay: $("tv_delay", "Int!"),
+                ...(canSetVetoPickTimeout()
+                  ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
+                  : {}),
                 region_veto: $("region_veto", "Boolean!"),
                 regions: $("regions", "[String!]!"),
                 check_in_setting: $(

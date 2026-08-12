@@ -1674,6 +1674,8 @@
         "auto_cancel_duration_description": "Cancels a match that hasn't gone live (still in picking / veto / waiting) after this many minutes.",
         "live_match_timeout": "Live Match Timeout",
         "live_match_timeout_description": "Safety timeout — a live match is auto-cancelled after this many minutes if it never finishes.",
+        "veto_pick_timeout": "Veto Pick Timer",
+        "veto_pick_timeout_description": "Default seconds each team gets per veto pick on newly created matches. Set to 0 to disable the timer by default.",
         "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
         "players": {
           "permissions_section": "Role Permissions",
@@ -4557,6 +4559,11 @@
           "label": "TV Delay",
           "range": "Enter value between 0 and 120."
         },
+        "veto_pick_timeout": {
+          "label": "Veto Pick Timer",
+          "description": "Automatically pick for a team that runs out of time on their veto turn.",
+          "range": "Seconds each team gets per veto pick before one is made for them."
+        },
         "timeouts": {
           "tactical": {
             "label": "Tactical Timeout Settings",
@@ -4630,6 +4637,8 @@
       },
       "max_rounds": "Max Rounds",
       "tv_delay": "TV Delay",
+      "veto_pick_timeout": "Veto Pick Timer",
+      "veto_pick_timeout_seconds": "{seconds}s",
       "seconds": "seconds",
       "coaches": "Coaches",
       "overtime": "Overtime",
@@ -4849,7 +4858,6 @@
     "region_veto": {
       "ban_label": "Ban",
       "banning": "is Banning a Region",
-      "organizer_override": "Match Organizer Override",
       "confirm_ban": "Confirm Ban",
       "server_region": "Server Region",
       "select_region": "Select A Region",
@@ -4872,6 +4880,8 @@
     },
     "picks": {
       "decider": "Decider",
+      "auto_picked": "Auto",
+      "auto_picked_description": "Picked automatically because the team ran out of time.",
       "empty": "No Veto Picks",
       "counter_terrorist": "Counter-Terrorist",
       "terrorist": "Terrorist",
@@ -4885,7 +4895,6 @@
     "decider": "Decider",
     "map_veto": {
       "is_picking": "is Picking a",
-      "organizer_override": "Match Organizer Override",
       "pick": "Pick",
       "confirm": "Confirm {type}"
     },
@@ -5341,7 +5350,8 @@
     },
     "admin_bar": {
       "rcon_unavailable": "RCON unavailable",
-      "not_controllable": "Match is not in a controllable state."
+      "not_controllable": "Match is not in a controllable state.",
+      "veto_override": "Veto Override"
     }
   },
   "ui": {

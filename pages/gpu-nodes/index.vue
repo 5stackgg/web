@@ -62,7 +62,9 @@ const { status: poolStatus } = useGpuAvailability();
 const { toast } = useToast();
 const apolloClient = useNuxtApp().$apollo.defaultClient;
 
-const steamPoolCount = ref(0);
+const steamPoolTotal = ref(0);
+const steamPoolFree = ref(0);
+const steamPoolLoaded = ref(false);
 let steamPoolSub: { unsubscribe: () => void } | undefined;
 onMounted(() => {
   steamPoolSub = apolloClient
@@ -70,15 +72,16 @@ onMounted(() => {
       query: typedGql("subscription")({
         v_steam_account_pool_status: [
           { limit: 1 } as any,
-          { total_accounts: true },
+          { total_accounts: true, free_accounts: true },
         ],
       } as any),
     })
     .subscribe({
       next: ({ data }: any) => {
-        steamPoolCount.value = Number(
-          data?.v_steam_account_pool_status?.[0]?.total_accounts ?? 0,
-        );
+        const status = data?.v_steam_account_pool_status?.[0];
+        steamPoolTotal.value = Number(status?.total_accounts ?? 0);
+        steamPoolFree.value = Number(status?.free_accounts ?? 0);
+        steamPoolLoaded.value = true;
       },
     });
 });
@@ -86,21 +89,19 @@ onUnmounted(() => {
   steamPoolSub?.unsubscribe();
 });
 
-const poolSteamAccountsLabel = computed(() => {
-  if (!poolStatus.value) {
-    return "—";
-  }
-  return `${steamPoolCount.value}/${poolStatus.value.registered_gpu_nodes}`;
-});
 const poolSteamAccountsTone = computed(() => {
   const nodes = poolStatus.value?.registered_gpu_nodes ?? 0;
   if (nodes === 0) {
     return "muted";
   }
-  if (steamPoolCount.value === 0) {
+  if (steamPoolTotal.value === 0) {
     return "warn";
   }
-  if (steamPoolCount.value < nodes) {
+  // A pool smaller than the node count can never keep every node busy.
+  if (steamPoolTotal.value < nodes) {
+    return "warn";
+  }
+  if (steamPoolFree.value === 0) {
     return "warn";
   }
   return "ok";
@@ -360,8 +361,14 @@ async function stopGpuSession(nodeId: string) {
               $t("pages.gpu_nodes.steam_pool.title")
             }}</span>
             <span class="gpu-stat-val" :data-tone="poolSteamAccountsTone">
-              {{ poolSteamAccountsLabel }}
+              {{ steamPoolLoaded ? steamPoolFree : "—"
+              }}<span class="gpu-stat-den"
+                >/{{ steamPoolLoaded ? steamPoolTotal : "—" }}</span
+              >
             </span>
+            <span class="gpu-stat-sub">{{
+              $t("pages.gpu_nodes.stat.available")
+            }}</span>
           </button>
         </div>
       </template>
@@ -735,7 +742,8 @@ async function stopGpuSession(nodeId: string) {
           >
             <span>{{ $t("pages.gpu_nodes.steam_pool.accounts_label") }}</span>
             <span class="font-mono">
-              {{ steamAccounts.length }}/{{ gpuNodes.length }}
+              {{ freeSteamAccounts }}/{{ steamAccounts.length }}
+              {{ $t("pages.gpu_nodes.stat.available") }}
             </span>
           </div>
           <div
@@ -961,6 +969,11 @@ export default {
       }
 
       return map;
+    },
+    freeSteamAccounts(this: any): number {
+      return this.steamAccounts.filter(
+        (account: any) => (account.claims?.length ?? 0) === 0,
+      ).length;
     },
   },
   methods: {

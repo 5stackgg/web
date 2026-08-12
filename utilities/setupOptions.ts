@@ -5,6 +5,13 @@ import {
 } from "~/generated/zeus";
 import { type FormContext } from "vee-validate";
 
+// Mirrors the match_options column permission: only match_organizer and above
+// may write veto_pick_timeout, so anyone below has to fall through to the
+// platform default instead of sending a column Hasura will reject.
+export function canSetVetoPickTimeout(): boolean {
+  return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+}
+
 export const setupOptions = (
   form: FormContext<any>,
   options: any,
@@ -36,6 +43,7 @@ export const setupOptions = (
     map_pool_id: options.map_pool.id,
     regions: selectedRegions,
     tv_delay: options.tv_delay,
+    veto_pick_timeout: options.veto_pick_timeout ?? 60,
     round_restart_delay: options.round_restart_delay ?? null,
     halftime_pausematch: options.halftime_pausematch ?? false,
     check_in_setting: options.check_in_setting,
@@ -71,6 +79,7 @@ export function setupOptionsVariables(
     match_mode: string;
     map_pool_id?: string;
     tv_delay: number;
+    veto_pick_timeout: number;
     round_restart_delay?: number | null;
     halftime_pausematch?: boolean;
     map_pool?: {
@@ -186,6 +195,11 @@ export function setupOptionsVariables(
     tv_delay: values.tv_delay,
     round_restart_delay: values.round_restart_delay ?? null,
     halftime_pausematch: values.halftime_pausematch ?? false,
+    ...(canSetVetoPickTimeout()
+      ? {
+          veto_pick_timeout: values.veto_pick_timeout,
+        }
+      : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
@@ -240,6 +254,11 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     tv_delay: $("tv_delay", "Int!"),
     round_restart_delay: $("round_restart_delay", "Int"),
     halftime_pausematch: $("halftime_pausematch", "Boolean!"),
+    ...(canSetVetoPickTimeout()
+      ? {
+          veto_pick_timeout: $("veto_pick_timeout", "Int!"),
+        }
+      : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),

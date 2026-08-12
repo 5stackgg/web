@@ -807,33 +807,60 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                   </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ value }" name="veto_pick_timeout">
+                <FormField
+                  v-if="canSetVetoPickTimeout"
+                  v-slot="{ value }"
+                  name="veto_pick_timeout"
+                >
                   <FormItem>
-                    <SettingHeader>{{
-                      $t("match.options.advanced.veto_pick_timeout.label")
-                    }}</SettingHeader>
-                    <NumberField
-                      class="gap-2"
-                      :min="0"
-                      :max="600"
-                      :model-value="value"
-                      @update:model-value="
-                        (timeout) => {
-                          form.setFieldValue('veto_pick_timeout', timeout);
-                        }
-                      "
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="toggleVetoTimer(!value)"
                     >
-                      <NumberFieldContent>
-                        <NumberFieldDecrement />
-                        <FormControl>
-                          <NumberFieldInput />
-                        </FormControl>
-                        <NumberFieldIncrement />
-                      </NumberFieldContent>
-                    </NumberField>
-                    <FormDescription>
-                      {{ $t("match.options.advanced.veto_pick_timeout.range") }}
-                    </FormDescription>
+                      <div class="space-y-0.5">
+                        <SettingHeader>{{
+                          $t("match.options.advanced.veto_pick_timeout.label")
+                        }}</SettingHeader>
+                        <FormDescription>{{
+                          $t(
+                            "match.options.advanced.veto_pick_timeout.description",
+                          )
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value > 0"
+                        />
+                      </FormControl>
+                    </div>
+
+                    <div v-if="value > 0" class="mt-4 pl-4 border-l-2">
+                      <NumberField
+                        class="gap-2"
+                        :min="1"
+                        :max="600"
+                        :model-value="value"
+                        @update:model-value="
+                          (timeout) => {
+                            form.setFieldValue('veto_pick_timeout', timeout);
+                          }
+                        "
+                      >
+                        <NumberFieldContent>
+                          <NumberFieldDecrement />
+                          <FormControl>
+                            <NumberFieldInput />
+                          </FormControl>
+                          <NumberFieldIncrement />
+                        </NumberFieldContent>
+                      </NumberField>
+                      <FormDescription class="mt-2">
+                        {{
+                          $t("match.options.advanced.veto_pick_timeout.range")
+                        }}
+                      </FormDescription>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -863,7 +890,9 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                       </NumberFieldContent>
                     </NumberField>
                     <FormDescription>
-                      {{ $t("match.options.advanced.round_restart_delay.range") }}
+                      {{
+                        $t("match.options.advanced.round_restart_delay.range")
+                      }}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1206,6 +1235,7 @@ import {
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { canSetVetoPickTimeout } from "~/utilities/setupOptions";
 
 interface Map {
   id: string;
@@ -1325,6 +1355,7 @@ export default {
       select_single_region: null as string | null,
       showAdvancedSettings: false,
       advHeight: "0px",
+      lastVetoPickTimeout: 0,
     };
   },
   watch: {
@@ -1665,6 +1696,9 @@ export default {
     canSetcheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
+    canSetVetoPickTimeout() {
+      return canSetVetoPickTimeout();
+    },
     canSetMatchCancellation() {
       return useAuthStore().isRoleAbove(
         e_player_roles_enum.tournament_organizer,
@@ -1682,8 +1716,32 @@ export default {
       )?.value;
       return val || "180";
     },
+    vetoPickTimeoutDefault(): number {
+      const val = Number.parseInt(
+        useApplicationSettingsStore().settings.find(
+          (s) => s.name === "public.veto_pick_timeout",
+        )?.value ?? "",
+        10,
+      );
+      return Number.isNaN(val) || val <= 0 ? 60 : val;
+    },
   },
   methods: {
+    toggleVetoTimer(enabled: boolean) {
+      if (!enabled) {
+        const current = this.form.values.veto_pick_timeout;
+        if (current > 0) {
+          this.lastVetoPickTimeout = current;
+        }
+        this.form.setFieldValue("veto_pick_timeout", 0);
+        return;
+      }
+
+      this.form.setFieldValue(
+        "veto_pick_timeout",
+        this.lastVetoPickTimeout || this.vetoPickTimeoutDefault,
+      );
+    },
     animateAdvanced(open: boolean) {
       const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
       if (!wrap) {

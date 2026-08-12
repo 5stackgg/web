@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
 import { Check } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
-import DraftClock from "~/components/draft-games/DraftClock.vue";
+import VetoTurnBanner from "~/components/match/VetoTurnBanner.vue";
 import {
   vetoTileClasses,
   vetoTileHoverClasses,
@@ -22,59 +21,15 @@ import {
     class="flex flex-col gap-4"
   >
     <template v-if="match.options.region_veto">
-      <div
-        class="mx-auto flex w-full max-w-lg flex-col items-center gap-2 rounded-md border px-5 py-3 backdrop-blur-[6px] transition-colors duration-300"
-        :class="
-          isPicking
-            ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.08)] ring-1 ring-[hsl(var(--tac-amber)/0.25)]'
-            : 'border-border bg-card/40'
-        "
-      >
-        <!-- Never wraps: the two lineups alternate turns, so a long team name
-             wrapping this row made the banner grow and shrink on every ban. -->
-        <div
-          class="flex w-full min-w-0 flex-nowrap items-center justify-center gap-2 text-center"
-        >
-          <span
-            class="min-w-0 truncate font-sans text-lg font-bold uppercase tracking-wide"
-            :class="
-              isPicking ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
-            "
-            :title="banningLineupName"
-          >
-            {{ banningLineupName }}
-          </span>
-          <span
-            class="shrink-0 font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
-            >{{ $t("match.region_veto.banning") }}</span
-          >
-          <Badge
-            variant="destructive"
-            class="shrink-0 font-sans uppercase tracking-[0.14em]"
-            >{{ $t("match.region_veto.ban_label") }}</Badge
-          >
-
-          <DraftClock
-            v-if="vetoPickDeadline"
-            class="shrink-0"
-            compact
-            :deadline="vetoPickDeadline"
-            :total="match.options.veto_pick_timeout"
-            :pulse="isPicking"
-          />
-        </div>
-
-        <div
-          class="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground"
-          @click="override = !override"
-          v-if="canOverride"
-        >
-          <Label class="text-xs text-muted-foreground cursor-pointer">{{
-            $t("match.region_veto.organizer_override")
-          }}</Label>
-          <Switch :model-value="override" />
-        </div>
-      </div>
+      <VetoTurnBanner
+        :lineup-name="banningLineupName"
+        :action="$t('match.region_veto.banning')"
+        :pick-label="$t('match.region_veto.ban_label')"
+        pick-variant="destructive"
+        :active="isPicking"
+        :deadline="vetoPickDeadline"
+        :total="match.options.veto_pick_timeout"
+      />
 
       <div class="container mx-auto px-4">
         <div class="flex flex-wrap justify-center gap-6">
@@ -85,7 +40,9 @@ import {
           >
             <div
               @click="
-                isPicking && !submitting && form.setFieldValue('region', region.value)
+                isPicking &&
+                !submitting &&
+                form.setFieldValue('region', region.value)
               "
               class="h-[180px]"
               :class="[
@@ -224,6 +181,7 @@ import {
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useSound } from "~/composables/useSound";
+import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
 
 export default {
@@ -242,7 +200,7 @@ export default {
       match_map_veto_picks: {
         variables: function () {
           return {
-            matchId: (this.matchId || this.$route.params.id),
+            matchId: this.matchId || this.$route.params.id,
           };
         },
         query: typedGql("subscription")({
@@ -298,7 +256,6 @@ export default {
   data() {
     return {
       picks: [],
-      override: false,
       submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -333,6 +290,9 @@ export default {
       }
 
       return this.match.veto_pick_expires_at ?? null;
+    },
+    override() {
+      return isVetoOverrideEnabled(this.match?.id);
     },
     isPicking() {
       if (this.canOverride && this.override) {
@@ -422,7 +382,7 @@ export default {
             update_matches_by_pk: [
               {
                 pk_columns: {
-                  id: (this.matchId || this.$route.params.id),
+                  id: this.matchId || this.$route.params.id,
                 },
                 _set: {
                   region: $("region", "String!"),
@@ -460,7 +420,7 @@ export default {
           variables: {
             region,
             type: e_veto_pick_types_enum.Ban,
-            match_id: (this.matchId || this.$route.params.id),
+            match_id: this.matchId || this.$route.params.id,
             match_lineup_id: this.match.region_veto_picking_lineup_id,
           },
           mutation: generateMutation({

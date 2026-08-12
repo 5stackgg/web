@@ -5,6 +5,13 @@ import {
 } from "~/generated/zeus";
 import { type FormContext } from "vee-validate";
 
+// Mirrors the match_options column permission: only match_organizer and above
+// may write veto_pick_timeout, so anyone below has to fall through to the
+// platform default instead of sending a column Hasura will reject.
+export function canSetVetoPickTimeout(): boolean {
+  return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+}
+
 export const setupOptions = (
   form: FormContext<any>,
   options: any,
@@ -159,13 +166,6 @@ export function setupOptionsVariables(
   }
 
   if (
-    values.veto_pick_timeout === undefined ||
-    values.veto_pick_timeout === null
-  ) {
-    throw new Error("veto_pick_timeout is required");
-  }
-
-  if (
     values.check_in_setting === undefined ||
     values.check_in_setting === null
   ) {
@@ -193,9 +193,13 @@ export function setupOptionsVariables(
     ready_setting: values.ready_setting,
     tech_timeout_setting: values.tech_timeout_setting,
     tv_delay: values.tv_delay,
-    veto_pick_timeout: values.veto_pick_timeout,
     round_restart_delay: values.round_restart_delay ?? null,
     halftime_pausematch: values.halftime_pausematch ?? false,
+    ...(canSetVetoPickTimeout()
+      ? {
+          veto_pick_timeout: values.veto_pick_timeout,
+        }
+      : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
@@ -248,9 +252,13 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
     tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
     tv_delay: $("tv_delay", "Int!"),
-    veto_pick_timeout: $("veto_pick_timeout", "Int!"),
     round_restart_delay: $("round_restart_delay", "Int"),
     halftime_pausematch: $("halftime_pausematch", "Boolean!"),
+    ...(canSetVetoPickTimeout()
+      ? {
+          veto_pick_timeout: $("veto_pick_timeout", "Int!"),
+        }
+      : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),

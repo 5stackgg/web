@@ -4561,7 +4561,8 @@
         },
         "veto_pick_timeout": {
           "label": "Veto Pick Timer",
-          "range": "Seconds each team gets per veto pick before one is made for them. Set to 0 to disable the timer."
+          "description": "Automatically pick for a team that runs out of time on their veto turn.",
+          "range": "Seconds each team gets per veto pick before one is made for them."
         },
         "timeouts": {
           "tactical": {
@@ -4857,7 +4858,6 @@
     "region_veto": {
       "ban_label": "Ban",
       "banning": "is Banning a Region",
-      "organizer_override": "Match Organizer Override",
       "confirm_ban": "Confirm Ban",
       "server_region": "Server Region",
       "select_region": "Select A Region",
@@ -4895,7 +4895,6 @@
     "decider": "Decider",
     "map_veto": {
       "is_picking": "is Picking a",
-      "organizer_override": "Match Organizer Override",
       "pick": "Pick",
       "confirm": "Confirm {type}"
     },
@@ -5351,7 +5350,8 @@
     },
     "admin_bar": {
       "rcon_unavailable": "RCON unavailable",
-      "not_controllable": "Match is not in a controllable state."
+      "not_controllable": "Match is not in a controllable state.",
+      "veto_override": "Veto Override"
     }
   },
   "ui": {

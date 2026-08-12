@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, computed, onUnmounted } from "vue";
+import { computed, toRef } from "vue";
+import { useCountdown } from "~/composables/useCountdown";
 
 const props = withDefaults(
   defineProps<{
@@ -17,50 +18,15 @@ const props = withDefaults(
   },
 );
 
-const remaining = ref<number>(0);
-let raf: number | null = null;
-
 const RADIUS = 52;
 const CIRC = 2 * Math.PI * RADIUS;
 
-const fraction = computed(() => {
-  if (!props.deadline || props.total <= 0) {
-    return 1;
-  }
-  return Math.max(0, Math.min(1, remaining.value / props.total));
-});
+const { remaining, fraction, urgent } = useCountdown(
+  toRef(props, "deadline"),
+  toRef(props, "total"),
+);
 
 const dashOffset = computed(() => CIRC * (1 - fraction.value));
-
-// Drive the ring off requestAnimationFrame so the stroke interpolates every
-// frame — a setInterval tick makes it visibly step.
-const tick = () => {
-  if (!props.deadline) {
-    remaining.value = 0;
-    raf = null;
-    return;
-  }
-  const ms = new Date(props.deadline).getTime() - Date.now();
-  remaining.value = Math.max(0, ms / 1000);
-  raf = remaining.value > 0 ? requestAnimationFrame(tick) : null;
-};
-
-const start = () => {
-  if (raf) {
-    cancelAnimationFrame(raf);
-  }
-  tick();
-};
-
-watch(() => props.deadline, start, { immediate: true });
-
-onUnmounted(() => {
-  if (raf) {
-    cancelAnimationFrame(raf);
-  }
-});
-
-const urgent = computed(() => remaining.value <= 6 && remaining.value > 0);
 </script>
 
 <template>

@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
 import { Check } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
-import DraftClock from "~/components/draft-games/DraftClock.vue";
+import VetoTurnBanner from "~/components/match/VetoTurnBanner.vue";
 </script>
 
 <template>
@@ -18,59 +17,15 @@ import DraftClock from "~/components/draft-games/DraftClock.vue";
       match.match_maps.length < bestOf
     "
   >
-    <div
-      class="mx-auto mb-4 flex w-full max-w-lg flex-col items-center gap-2 rounded-md border px-5 py-3 backdrop-blur-[6px] transition-colors duration-300"
-      :class="
-        isPicking
-          ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.08)] ring-1 ring-[hsl(var(--tac-amber)/0.25)]'
-          : 'border-border bg-card/40'
-      "
-    >
-      <!-- Never wraps: the two lineups alternate turns, so a long team name
-           wrapping this row made the banner grow and shrink on every pick. The
-           name truncates instead and keeps the full text in its tooltip. -->
-      <div
-        class="flex w-full min-w-0 flex-nowrap items-center justify-center gap-2 text-center"
-      >
-        <span
-          class="min-w-0 truncate font-sans text-lg font-bold uppercase tracking-wide"
-          :class="
-            isPicking ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
-          "
-          :title="pickingLineupName"
-        >
-          {{ pickingLineupName }}
-        </span>
-        <span
-          class="shrink-0 font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
-          >{{ $t("match.map_veto.is_picking") }}</span
-        >
-        <Badge
-          variant="secondary"
-          class="shrink-0 font-sans uppercase tracking-[0.14em]"
-          >{{ pickType }}</Badge
-        >
-
-        <DraftClock
-          v-if="vetoPickDeadline"
-          class="shrink-0"
-          compact
-          :deadline="vetoPickDeadline"
-          :total="match.options.veto_pick_timeout"
-          :pulse="isPicking"
-        />
-      </div>
-
-      <div
-        class="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground"
-        @click="override = !override"
-        v-if="canOverride"
-      >
-        <Label class="text-xs text-muted-foreground cursor-pointer">{{
-          $t("match.map_veto.organizer_override")
-        }}</Label>
-        <Switch :model-value="override" />
-      </div>
+    <div class="mb-4">
+      <VetoTurnBanner
+        :lineup-name="pickingLineupName"
+        :action="$t('match.map_veto.is_picking')"
+        :pick-label="pickType"
+        :active="isPicking"
+        :deadline="vetoPickDeadline"
+        :total="match.options.veto_pick_timeout"
+      />
     </div>
 
     <form @submit.prevent="vetoPick">
@@ -90,12 +45,13 @@ import DraftClock from "~/components/draft-games/DraftClock.vue";
                   form.values.side && form.values.side !== sideOption.value,
                 'hover:scale-110':
                   !submitting &&
-                  (!form.values.side ||
-                    form.values.side !== sideOption.value),
+                  (!form.values.side || form.values.side !== sideOption.value),
                 'pointer-events-none':
                   submitting && form.values.side !== sideOption.value,
               }"
-              @click="!submitting && form.setFieldValue('side', sideOption.value)"
+              @click="
+                !submitting && form.setFieldValue('side', sideOption.value)
+              "
             >
               <NuxtImg
                 :src="sideOption.img"
@@ -188,6 +144,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { useSound } from "~/composables/useSound";
+import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
 
 export default {
@@ -207,7 +164,7 @@ export default {
         variables: function () {
           return {
             order_by: order_by.asc,
-            matchId: (this.matchId || this.$route.params.id),
+            matchId: this.matchId || this.$route.params.id,
           };
         },
         query: typedGql("subscription")({
@@ -258,7 +215,6 @@ export default {
   },
   data() {
     return {
-      override: false,
       submitting: false,
       picks: undefined,
       form: useForm({
@@ -356,7 +312,7 @@ export default {
                   side,
                 }
               : {}),
-            match_id: (this.matchId || this.$route.params.id),
+            match_id: this.matchId || this.$route.params.id,
             match_lineup_id: this.match.map_veto_picking_lineup_id,
           },
           mutation: generateMutation({
@@ -402,6 +358,9 @@ export default {
         this.match.is_organizer ||
         useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
       );
+    },
+    override() {
+      return isVetoOverrideEnabled(this.match?.id);
     },
     isPicking() {
       if (this.canOverride && this.override) {

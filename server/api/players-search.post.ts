@@ -93,7 +93,29 @@ export default defineEventHandler(async (event) => {
       : `${sortField}:${sortDirection}`;
 
   if (body.registeredOnly || sortField === "last_sign_in_at") {
-    filterBy.push(`last_sign_in_at:!~~`);
+    // Both spellings, because `is_registered` is an optional field added with
+    // this change: until the full re-index finishes, no existing document
+    // carries it and matching on it alone returns nothing at all. The
+    // `last_sign_in_at` sentinel ("~~" for never signed in) is what every
+    // already-indexed document has, so it covers the gap and drops out
+    // naturally once every document has been rewritten.
+    filterBy.push(`(is_registered:=true || last_sign_in_at:!~~)`);
+  }
+
+  // Presence is live app state, not something the index knows, so the caller
+  // sends the roster it can see and results are constrained to it.
+  const onlineSteamIds = Array.isArray(body.online_steam_ids)
+    ? body.online_steam_ids.filter((id: unknown) => /^[0-9]+$/.test(String(id)))
+    : null;
+
+  // Nobody online has to mean no results. Falling through to an unfiltered
+  // search would return everyone, which reads as "the filter is broken".
+  if (onlineSteamIds && onlineSteamIds.length === 0) {
+    return { found: 0, hits: [] };
+  }
+
+  if (onlineSteamIds) {
+    filterBy.push(`steam_id:[${onlineSteamIds.join(",")}]`);
   }
 
   // Filter by team
@@ -166,19 +188,29 @@ export default defineEventHandler(async (event) => {
     ...(body.per_page ? { per_page: body.per_page } : {}),
   };
 
-  const results = await client
-    .collections("players")
-    .documents()
-    .search(searchParams);
+  // documents().search() is a GET with every param in the query string, so a
+  // presence filter listing hundreds of steam ids can overrun the request line
+  // and come back as a hard error. multiSearch sends the same search as a POST
+  // body, which has no such ceiling.
+  const results = onlineSteamIds
+    ? (
+        await client.multiSearch.perform<any[]>({
+          searches: [{ collection: "players", ...searchParams }],
+        })
+      ).results[0]
+    : await client.collections("players").documents().search(searchParams);
 
   if (body.registeredOnly) {
     return results;
   }
 
-  // Only do Steam API search if we have a query and no results found
+  // Only do Steam API search if we have a query and no results found. A search
+  // scoped to who is online can't be satisfied by a Steam account we have never
+  // seen, so that path stays out of it.
   if (
     process.env.STEAM_API_KEY &&
     !body.teamId &&
+    !onlineSteamIds &&
     query &&
     results.found === 0
   ) {

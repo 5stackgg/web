@@ -92,6 +92,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Counts down to a future date instead of up from a past one. `seconds`
+    // alone renders now - date, which goes negative for anything upcoming.
+    countdown: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
     hideIcon: {
       required: false,
       type: Boolean,
@@ -129,7 +136,9 @@ export default {
   methods: {
     attach() {
       if (this.unsubscribe) return;
-      this.unsubscribe = subscribe(this.seconds, () => this.updateText());
+      this.unsubscribe = subscribe(this.seconds || this.countdown, () =>
+        this.updateText(),
+      );
     },
     detach() {
       this.unsubscribe?.();
@@ -142,6 +151,24 @@ export default {
         this.text = "";
         return;
       }
+      if (this.countdown) {
+        const remaining = Math.max(
+          0,
+          Math.floor((time.getTime() - Date.now()) / 1000),
+        );
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const seconds = remaining % 60;
+
+        this.text =
+          hours > 0
+            ? `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+                .toString()
+                .padStart(2, "0")}`
+            : `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        return;
+      }
+
       time.setSeconds(time.getSeconds() - 1);
 
       if (this.seconds) {
@@ -154,18 +181,16 @@ export default {
         const minutes = Math.floor((diffInSeconds % 3600) / 60);
         const seconds = diffInSeconds % 60;
 
-        let timeText = "";
-        if (hours > 0) {
-          timeText += `${hours}:`;
-        }
-        if (minutes > 0) {
-          timeText += `${minutes}:`;
-        }
-        if (seconds > 0 || timeText === "") {
-          timeText += `${seconds.toString().padStart(2, "0")}`;
-        }
+        // Every segment below the largest one is always emitted, zero padded.
+        // Dropping empty segments rendered exactly three minutes as "3:", and
+        // collapsed 1h00m30s to "1:30" -- which reads as a minute and a half,
+        // so the timer appeared to run backwards from "59:59".
+        const pad = (value: number) => value.toString().padStart(2, "0");
 
-        this.text = timeText.trim();
+        this.text =
+          hours > 0
+            ? `${hours}:${pad(minutes)}:${pad(seconds)}`
+            : `${minutes}:${pad(seconds)}`;
       } else {
         this.text = timeAgo.format(time);
       }

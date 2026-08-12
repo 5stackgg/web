@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { Input } from "~/components/ui/input";
+import FilterChip from "~/components/common/FilterChip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import debounce from "~/utilities/debounce";
 import { MagnifyingGlassIcon } from "@radix-icons/vue";
@@ -57,6 +58,24 @@ onUnmounted(() => {
 });
 
 const searchToken = ref(0);
+// Off by default: any Steam account stays findable. This narrows results to
+// people who have actually signed in here, for when you're looking for someone
+// you can invite rather than just look up. Shared with the other player
+// searches so the preference does not reset when you switch surfaces.
+const searchStore = useSearchStore();
+const registeredOnly = computed({
+  get: () => searchStore.registeredOnly,
+  set: (value: boolean) => {
+    localStorage.setItem("playerSearchRegisteredOnly", String(value));
+    searchStore.registeredOnly = value;
+  },
+});
+
+// Deliberately NOT the shared playerSearchOnlineOnly preference, which defaults
+// to on. This search exists to reach any player's profile, so defaulting it to
+// the online roster would make everyone who is not currently connected
+// unfindable from the keyboard shortcut. Session-local and off by default.
+const onlineOnly = ref(false);
 
 const debouncedSearch = debounce(async (searchQuery: string) => {
   // A slower earlier keystroke must not clobber a newer result set.
@@ -64,6 +83,14 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
 
   if (!searchQuery.trim()) {
     players.value = [];
+    return;
+  }
+
+  // The online roster is already in memory, so this path needs no request and
+  // no loading state.
+  if (onlineOnly.value) {
+    players.value = searchStore.search(searchQuery, []);
+    loading.value = false;
     return;
   }
 
@@ -75,6 +102,7 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
       body: {
         query: searchQuery,
         per_page: 10,
+        registeredOnly: registeredOnly.value,
       },
     });
 
@@ -94,6 +122,9 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
       is_banned: document.is_banned,
       is_muted: document.is_muted,
       is_gagged: document.is_gagged,
+      // Whether they have ever signed in here, as opposed to a Steam account we
+      // only know about. Every player stays searchable either way.
+      is_registered: document.is_registered,
       elo: {
         competitive: document.elo_competitive,
         wingman: document.elo_wingman,
@@ -116,6 +147,11 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
 watch(query, (newQuery) => {
   selectedIndex.value = 0; // Reset selection when query changes
   debouncedSearch(newQuery);
+});
+
+watch([registeredOnly, onlineOnly], () => {
+  selectedIndex.value = 0;
+  debouncedSearch(query.value);
 });
 
 const selectPlayer = (player: any) => {
@@ -195,6 +231,18 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               class="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base px-0 h-auto"
               autofocus
             />
+
+            <FilterChip
+              :active="onlineOnly"
+              :label="$t('common.online')"
+              @toggle="onlineOnly = !onlineOnly"
+            />
+
+            <FilterChip
+              :active="registeredOnly"
+              :label="$t('search.registered')"
+              @toggle="registeredOnly = !registeredOnly"
+            />
           </div>
 
           <!-- Results -->
@@ -231,6 +279,15 @@ const closeOnOverlayClick = (event: MouseEvent) => {
                 @mouseenter="selectedIndex = index"
               >
                 <PlayerDisplay :player="player" />
+                <!-- A Steam account we know of but who has never signed in
+                     here. Still searchable -- this only sets expectations about
+                     what their profile will have on it. -->
+                <span
+                  v-if="player.is_registered === false"
+                  class="ml-auto shrink-0 rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-muted-foreground"
+                >
+                  {{ $t("search.unregistered") }}
+                </span>
               </div>
             </div>
           </div>

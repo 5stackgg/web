@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Search, RefreshCw } from "lucide-vue-next";
+import { Search, RefreshCw, UserCheck } from "lucide-vue-next";
 import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
 </script>
 
@@ -21,26 +21,52 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
           class="pl-8"
         />
       </div>
-      <Tooltip v-if="friendsOnly">
-        <TooltipTrigger as-child>
-          <Button
-            variant="ghost"
-            size="icon"
-            class="h-9 w-9 transition-opacity"
-            :class="{ 'opacity-50': syncing }"
-            @click="syncSteamFriends"
-          >
-            <RefreshCw
-              class="h-4 w-4 transition-transform"
-              :class="{ 'animate-spin-smooth': syncing }"
-            />
-            <span class="sr-only">{{ $t("matchmaking.friends.sync") }}</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          {{ $t("matchmaking.friends.sync") }}
-        </TooltipContent>
-      </Tooltip>
+      <div v-if="friendsOnly" class="flex shrink-0 items-center gap-0.5">
+        <!-- Steam friends who have never signed in here are still added, so
+             this hides them without changing who gets synced. -->
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button
+              variant="ghost"
+              size="icon"
+              :aria-pressed="registeredFriendsOnly"
+              class="size-9 shrink-0 transition-colors"
+              :class="
+                registeredFriendsOnly
+                  ? 'bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] hover:text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground'
+              "
+              @click="registeredFriendsOnly = !registeredFriendsOnly"
+            >
+              <UserCheck class="size-4" />
+              <span class="sr-only">{{ $t("search.registered_only") }}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {{ $t("search.registered_only") }}
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="size-9 shrink-0 text-muted-foreground transition-opacity"
+              :class="{ 'opacity-50': syncing }"
+              @click="syncSteamFriends"
+            >
+              <RefreshCw
+                class="size-4 transition-transform"
+                :class="{ 'animate-spin-smooth': syncing }"
+              />
+              <span class="sr-only">{{ $t("matchmaking.friends.sync") }}</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {{ $t("matchmaking.friends.sync") }}
+          </TooltipContent>
+        </Tooltip>
+      </div>
     </div>
 
     <div class="flex flex-col gap-4">
@@ -69,7 +95,9 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
             <span
               class="absolute inline-flex h-full w-full rounded-full bg-green-500/60 animate-ping"
             />
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+            <span
+              class="relative inline-flex h-2 w-2 rounded-full bg-green-500"
+            />
           </span>
           {{ $t("common.online") }}
           <span class="ml-auto tabular-nums opacity-70">
@@ -167,6 +195,16 @@ export default {
     onlinePlayers() {
       return useMatchmakingStore().playersOnline;
     },
+    // Writable so the toggle drives the store's own ref, keeping both the
+    // online and offline lists in step.
+    registeredFriendsOnly: {
+      get(): boolean {
+        return useMatchmakingStore().registeredFriendsOnly;
+      },
+      set(value: boolean) {
+        useMatchmakingStore().registeredFriendsOnly = value;
+      },
+    },
     onlineFriends() {
       return useMatchmakingStore().onlineFriends;
     },
@@ -193,8 +231,12 @@ export default {
     },
     filteredOnlinePlayers() {
       if (this.friendsOnly) {
-        return this.onlineFriends.filter((p: any) =>
-          matchesSearch(p, this.searchQuery),
+        // Applied here rather than in the store: the shared friend lists also
+        // feed the hub badge and social panel, which have no such toggle.
+        return this.onlineFriends.filter(
+          (p: any) =>
+            matchesSearch(p, this.searchQuery) &&
+            this.passesRegisteredFilter(p),
         );
       }
 
@@ -219,8 +261,9 @@ export default {
     },
     filteredOfflinePlayers() {
       if (!this.friendsOnly) return [];
-      return this.offlineFriends.filter((p: any) =>
-        matchesSearch(p, this.searchQuery),
+      return this.offlineFriends.filter(
+        (p: any) =>
+          matchesSearch(p, this.searchQuery) && this.passesRegisteredFilter(p),
       );
     },
     isEmpty(): boolean {
@@ -241,6 +284,12 @@ export default {
     },
   },
   methods: {
+    passesRegisteredFilter(player: any) {
+      if (!this.registeredFriendsOnly) {
+        return true;
+      }
+      return useMatchmakingStore().isRegisteredFriend(player);
+    },
     async syncSteamFriends() {
       this.syncing = true;
       try {

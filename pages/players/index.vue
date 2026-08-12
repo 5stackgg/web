@@ -15,6 +15,7 @@ import {
 } from "lucide-vue-next";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import {
@@ -107,264 +108,224 @@ import {
         :show-reset="hasActivePlayerFilters"
         @reset="resetFilters"
       >
-            <form @submit.prevent class="space-y-4">
-              <div class="grid gap-4 grid-cols-1 sm:grid-cols-2">
-                <!-- Elo range slider -->
-                <div class="space-y-3 sm:col-span-2">
-                  <div class="flex items-center justify-between">
-                    <Label>{{ $t("pages.players.elo_range") }}</Label>
-                    <span
-                      class="text-xs font-mono text-[hsl(var(--tac-amber))] tabular-nums"
-                    >
-                      {{ eloRange[0] }} — {{ eloRange[1] }}
-                    </span>
-                  </div>
-                  <Slider
-                    :model-value="eloRange"
-                    @update:model-value="onEloRangeChange"
-                    :min="eloSliderMin"
-                    :max="eloSliderMax"
-                    :step="100"
-                    class="py-2"
-                  />
-                </div>
-
-                <!-- Country multi-select -->
-                <div class="space-y-2">
-                  <Label for="countries-filter">{{
-                    $t("pages.players.filter_by_country")
-                  }}</Label>
-                  <Popover v-model:open="countryPopoverOpen">
-                    <PopoverTrigger as-child>
-                      <Button
-                        id="countries-filter"
-                        role="combobox"
-                        variant="outline"
-                        class="w-full justify-between"
-                      >
-                        <span
-                          v-if="
-                            form.values.countries &&
-                            form.values.countries.length > 0
-                          "
-                          class="text-sm"
-                        >
-                          {{ form.values.countries.length }}
-                          {{ $t("pages.players.countries_selected") }}
-                        </span>
-                        <span v-else class="text-muted-foreground">
-                          {{ $t("pages.players.select_country") }}
-                        </span>
-                        <ChevronsUpDown
-                          class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                        />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent class="w-full p-0">
-                      <Command class="w-[300px]">
-                        <CommandInput
-                          :placeholder="$t('pages.players.search_country')"
-                        />
-                        <CommandEmpty>{{
-                          $t("pages.players.no_country_found")
-                        }}</CommandEmpty>
-                        <CommandList>
-                          <CommandGroup>
-                            <CommandItem
-                              v-for="country in sortedCountries"
-                              :key="country.id"
-                              :value="country.name"
-                              @select="
-                                () => {
-                                  toggleCountry(country.id);
-                                }
-                              "
-                            >
-                              <div class="flex items-center gap-2 w-full">
-                                <TimezoneFlag :country="country.id" />
-                                <span class="truncate">{{ country.name }}</span>
-                              </div>
-                              <Check
-                                :class="[
-                                  'ml-auto h-4 w-4 flex-shrink-0',
-                                  form.values.countries?.includes(country.id)
-                                    ? 'opacity-100'
-                                    : 'opacity-0',
-                                ]"
-                              />
-                            </CommandItem>
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <!-- Privilege/Role multi-select (admin only) -->
-                <div v-if="canViewAdditionalDetails" class="space-y-2">
-                  <Label for="roles-filter">{{
-                    $t("pages.players.filter_by_privilege")
-                  }}</Label>
-                  <Popover v-model:open="rolePopoverOpen">
-                    <PopoverTrigger as-child>
-                      <Button
-                        id="roles-filter"
-                        role="combobox"
-                        variant="outline"
-                        class="w-full justify-between"
-                      >
-                        <span
-                          v-if="
-                            form.values.roles && form.values.roles.length > 0
-                          "
-                          class="text-sm"
-                        >
-                          {{ form.values.roles.length }}
-                          {{ $t("pages.players.privileges_selected") }}
-                        </span>
-                        <span v-else class="text-muted-foreground">
-                          {{ $t("pages.players.select_privileges") }}
-                        </span>
-                        <ChevronsUpDown
-                          class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                        />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent class="w-full p-0">
-                      <Command class="w-[240px]">
-                        <CommandList>
-                          <CommandGroup>
-                            <CommandItem
-                              v-for="role in availableRoles"
-                              :key="role.value"
-                              :value="role.display"
-                              @select="() => toggleRole(role.value)"
-                            >
-                              <span>{{ role.display }}</span>
-                              <Check
-                                :class="[
-                                  'ml-auto h-4 w-4 flex-shrink-0',
-                                  form.values.roles?.includes(role.value)
-                                    ? 'opacity-100'
-                                    : 'opacity-0',
-                                ]"
-                              />
-                            </CommandItem>
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <!-- Min sanctions (admin only) -->
-                <div v-if="canViewAdditionalDetails" class="space-y-2">
-                  <Label for="sanctions-min">{{
-                    $t("pages.players.min_sanctions")
-                  }}</Label>
-                  <Input
-                    id="sanctions-min"
-                    type="number"
-                    :model-value="form.values.sanctionsMin?.toString() || ''"
-                    @update:model-value="
-                      (value) => {
-                        form.setFieldValue(
-                          'sanctionsMin',
-                          value ? parseInt(value as string) || null : null,
-                        );
-                        onFilterChange();
-                      }
-                    "
-                    :placeholder="$t('pages.players.min_sanctions')"
-                    min="0"
-                  />
-                </div>
-              </div>
-
-              <!-- Boolean toggles -->
-              <div class="space-y-0.5 border-t border-border/50 pt-2">
-                <button
-                  type="button"
-                  class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-                  :class="
-                    onlyPlayedMatches
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-foreground/90'
-                  "
-                  @click="onlyPlayedMatches = !onlyPlayedMatches"
+        <form @submit.prevent class="space-y-4">
+          <div class="grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <!-- Elo range slider -->
+            <div class="space-y-3 sm:col-span-2">
+              <div class="flex items-center justify-between">
+                <Label>{{ $t("pages.players.elo_range") }}</Label>
+                <span
+                  class="text-xs font-mono text-[hsl(var(--tac-amber))] tabular-nums"
                 >
-                  <span>{{ $t("pages.players.played_matches") }}</span>
-                  <Check
-                    v-if="onlyPlayedMatches"
-                    class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-                  />
-                </button>
-
-                <template v-if="canViewAdditionalDetails">
-                  <button
-                    type="button"
-                    class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-                    :class="
-                      form.values.isBanned ? 'text-red-500' : 'text-foreground/90'
-                    "
-                    @click="
-                      () => {
-                        form.setFieldValue('isBanned', !form.values.isBanned);
-                        onFilterChange();
-                      }
-                    "
-                  >
-                    <span>{{ $t("pages.players.is_banned") }}</span>
-                    <Check
-                      v-if="form.values.isBanned"
-                      class="h-3.5 w-3.5 text-red-500"
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-                    :class="
-                      form.values.isGagged
-                        ? 'text-yellow-500'
-                        : 'text-foreground/90'
-                    "
-                    @click="
-                      () => {
-                        form.setFieldValue('isGagged', !form.values.isGagged);
-                        onFilterChange();
-                      }
-                    "
-                  >
-                    <span>{{ $t("pages.players.is_gagged") }}</span>
-                    <Check
-                      v-if="form.values.isGagged"
-                      class="h-3.5 w-3.5 text-yellow-500"
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-                    :class="
-                      form.values.isMuted ? 'text-yellow-500' : 'text-foreground/90'
-                    "
-                    @click="
-                      () => {
-                        form.setFieldValue('isMuted', !form.values.isMuted);
-                        onFilterChange();
-                      }
-                    "
-                  >
-                    <span>{{ $t("pages.players.is_muted") }}</span>
-                    <Check
-                      v-if="form.values.isMuted"
-                      class="h-3.5 w-3.5 text-yellow-500"
-                    />
-                  </button>
-                </template>
+                  {{ eloRange[0] }} — {{ eloRange[1] }}
+                </span>
               </div>
-            </form>
-      </FilterMenu>
+              <Slider
+                :model-value="eloRange"
+                @update:model-value="onEloRangeChange"
+                :min="eloSliderMin"
+                :max="eloSliderMax"
+                :step="100"
+                class="py-2"
+              />
+            </div>
 
+            <!-- Country multi-select -->
+            <div class="space-y-2">
+              <Label for="countries-filter">{{
+                $t("pages.players.filter_by_country")
+              }}</Label>
+              <Popover v-model:open="countryPopoverOpen">
+                <PopoverTrigger as-child>
+                  <Button
+                    id="countries-filter"
+                    role="combobox"
+                    variant="outline"
+                    class="w-full justify-between"
+                  >
+                    <span
+                      v-if="
+                        form.values.countries &&
+                        form.values.countries.length > 0
+                      "
+                      class="text-sm"
+                    >
+                      {{ form.values.countries.length }}
+                      {{ $t("pages.players.countries_selected") }}
+                    </span>
+                    <span v-else class="text-muted-foreground">
+                      {{ $t("pages.players.select_country") }}
+                    </span>
+                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-full p-0">
+                  <Command class="w-[300px]">
+                    <CommandInput
+                      :placeholder="$t('pages.players.search_country')"
+                    />
+                    <CommandEmpty>{{
+                      $t("pages.players.no_country_found")
+                    }}</CommandEmpty>
+                    <CommandList>
+                      <CommandGroup>
+                        <CommandItem
+                          v-for="country in sortedCountries"
+                          :key="country.id"
+                          :value="country.name"
+                          @select="
+                            () => {
+                              toggleCountry(country.id);
+                            }
+                          "
+                        >
+                          <div class="flex items-center gap-2 w-full">
+                            <TimezoneFlag :country="country.id" />
+                            <span class="truncate">{{ country.name }}</span>
+                          </div>
+                          <Check
+                            :class="[
+                              'ml-auto h-4 w-4 flex-shrink-0',
+                              form.values.countries?.includes(country.id)
+                                ? 'opacity-100'
+                                : 'opacity-0',
+                            ]"
+                          />
+                        </CommandItem>
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <!-- Privilege/Role multi-select (admin only) -->
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
+              <Label for="roles-filter">{{
+                $t("pages.players.filter_by_privilege")
+              }}</Label>
+              <Popover v-model:open="rolePopoverOpen">
+                <PopoverTrigger as-child>
+                  <Button
+                    id="roles-filter"
+                    role="combobox"
+                    variant="outline"
+                    class="w-full justify-between"
+                  >
+                    <span
+                      v-if="form.values.roles && form.values.roles.length > 0"
+                      class="text-sm"
+                    >
+                      {{ form.values.roles.length }}
+                      {{ $t("pages.players.privileges_selected") }}
+                    </span>
+                    <span v-else class="text-muted-foreground">
+                      {{ $t("pages.players.select_privileges") }}
+                    </span>
+                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-full p-0">
+                  <Command class="w-[240px]">
+                    <CommandList>
+                      <CommandGroup>
+                        <CommandItem
+                          v-for="role in availableRoles"
+                          :key="role.value"
+                          :value="role.display"
+                          @select="() => toggleRole(role.value)"
+                        >
+                          <span>{{ role.display }}</span>
+                          <Check
+                            :class="[
+                              'ml-auto h-4 w-4 flex-shrink-0',
+                              form.values.roles?.includes(role.value)
+                                ? 'opacity-100'
+                                : 'opacity-0',
+                            ]"
+                          />
+                        </CommandItem>
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <!-- Min sanctions (admin only) -->
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
+              <Label for="sanctions-min">{{
+                $t("pages.players.min_sanctions")
+              }}</Label>
+              <Input
+                id="sanctions-min"
+                type="number"
+                :model-value="form.values.sanctionsMin?.toString() || ''"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue(
+                      'sanctionsMin',
+                      value ? parseInt(value as string) || null : null,
+                    );
+                    onFilterChange();
+                  }
+                "
+                :placeholder="$t('pages.players.min_sanctions')"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <!-- Boolean toggles -->
+          <div class="space-y-0.5 border-t border-border/50 pt-2">
+            <FilterToggle
+              v-model="onlyPlayedMatches"
+              :label="$t('pages.players.played_matches')"
+            />
+            <FilterToggle v-model="onlyOnline" :label="$t('common.online')" />
+            <FilterToggle
+              v-model="onlyRegistered"
+              :label="$t('search.registered')"
+            />
+
+            <template v-if="canViewAdditionalDetails">
+              <FilterToggle
+                :model-value="!!form.values.isBanned"
+                :label="$t('pages.players.is_banned')"
+                tone="danger"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('isBanned', value);
+                    onFilterChange();
+                  }
+                "
+              />
+              <FilterToggle
+                :model-value="!!form.values.isGagged"
+                :label="$t('pages.players.is_gagged')"
+                tone="warning"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('isGagged', value);
+                    onFilterChange();
+                  }
+                "
+              />
+              <FilterToggle
+                :model-value="!!form.values.isMuted"
+                :label="$t('pages.players.is_muted')"
+                tone="warning"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('isMuted', value);
+                    onFilterChange();
+                  }
+                "
+              />
+            </template>
+          </div>
+        </form>
+      </FilterMenu>
     </FilterBar>
   </PageTransition>
 
@@ -545,6 +506,8 @@ export default {
       sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
       onlyPlayedMatches:
         this.loadFiltersFromStorage().onlyPlayedMatches || false,
+      onlyOnline: this.loadFiltersFromStorage().onlyOnline || false,
+      onlyRegistered: this.loadFiltersFromStorage().onlyRegistered || false,
       countryPopoverOpen: false,
       rolePopoverOpen: false,
       filtersPopoverOpen: false,
@@ -605,6 +568,12 @@ export default {
     },
     canViewAdditionalDetails() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+    },
+    onlinePlayerSteamIds() {
+      return useMatchmakingStore().onlinePlayerSteamIds as string[];
+    },
+    presenceLoaded() {
+      return useMatchmakingStore().presenceLoaded as boolean;
     },
     eloRange() {
       return [
@@ -699,6 +668,26 @@ export default {
           value: "yes",
           clear: () => {
             this.onlyPlayedMatches = false;
+          },
+        });
+      }
+      if (this.onlyOnline) {
+        chips.push({
+          id: "online",
+          label: this.$t("common.online"),
+          value: "yes",
+          clear: () => {
+            this.onlyOnline = false;
+          },
+        });
+      }
+      if (this.onlyRegistered) {
+        chips.push({
+          id: "registered",
+          label: this.$t("search.registered"),
+          value: "yes",
+          clear: () => {
+            this.onlyRegistered = false;
           },
         });
       }
@@ -806,7 +795,36 @@ export default {
       this.page = 1;
       this.onFilterChange();
     },
-    sortField() {
+    onlyOnline() {
+      this.page = 1;
+      this.onFilterChange();
+    },
+    onlyRegistered() {
+      this.page = 1;
+      this.onFilterChange();
+    },
+    // Presence is pushed in live, so a player going on or offline has to
+    // re-run the search while the filter is on. Deliberately not
+    // onFilterChange(): that resets to page 1, and someone anywhere on the
+    // instance connecting would yank you back to the top of the list.
+    onlinePlayerSteamIds() {
+      if (this.onlyOnline) {
+        this.queueSearch();
+      }
+    },
+    // The first presence payload is what makes the filter applicable at all.
+    presenceLoaded() {
+      if (this.onlyOnline) {
+        this.queueSearch();
+      }
+    },
+    sortField(value: string) {
+      // The server forces the registered filter for this sort -- an unregistered
+      // player has no sign-in to order by. Reflect it in the toggle and chip
+      // instead of quietly dropping people while the UI claims no filter.
+      if (value === "last_sign_in_at") {
+        this.onlyRegistered = true;
+      }
       this.page = 1;
       this.onFilterChange();
     },
@@ -840,6 +858,8 @@ export default {
         isMuted: false,
       });
       this.onlyPlayedMatches = false;
+      this.onlyOnline = false;
+      this.onlyRegistered = false;
       this.sortField = "name";
       this.sortDirection = "asc";
       this.page = 1;
@@ -897,6 +917,8 @@ export default {
             isGagged: this.form.values.isGagged,
             isMuted: this.form.values.isMuted,
             onlyPlayedMatches: this.onlyPlayedMatches,
+            onlyOnline: this.onlyOnline,
+            onlyRegistered: this.onlyRegistered,
             sortField: this.sortField,
             sortDirection: this.sortDirection,
             perPage: this.perPage,
@@ -1027,6 +1049,14 @@ export default {
                 ? this.form.values.isMuted
                 : undefined,
             only_played_matches: this.onlyPlayedMatches,
+            registeredOnly: this.onlyRegistered || undefined,
+            // Held back until presence has actually arrived. Sending an empty
+            // roster means "nobody is online" and returns nothing, which on a
+            // reload is indistinguishable from a broken filter.
+            online_steam_ids:
+              this.onlyOnline && this.presenceLoaded
+                ? this.onlinePlayerSteamIds
+                : undefined,
             elo_track: "season",
             sort_by: this.getSortBy(),
           },

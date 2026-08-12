@@ -11,6 +11,7 @@ import {
   MoreVertical,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import TimeAgo from "~/components/TimeAgo.vue";
 import MatchSelectMapWinner from "~/components/match/MatchSelectMapWinner.vue";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -85,6 +86,24 @@ import mapLabel from "~/utilities/mapLabel";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
+        <!-- Sits on the map it belongs to: the status badge already says the
+             demo is being processed, this says for how long. -->
+        <Tooltip v-if="demoProcessingStartedAt">
+          <TooltipTrigger as-child>
+            <span
+              class="inline-flex h-[1.35rem] items-center gap-1 rounded-sm border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 font-mono text-[0.6rem] font-bold leading-none tracking-[0.1em] text-[hsl(var(--tac-amber))] backdrop-blur-sm [font-variant-numeric:tabular-nums]"
+            >
+              <Spinner class="h-2.5 w-2.5 shrink-0" />
+              <TimeAgo :date="demoProcessingStartedAt" seconds hide-icon />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent class="max-w-[15rem]">
+            <p class="font-semibold">{{ $t("match.demo_processing") }}</p>
+            <p class="mt-1 text-muted-foreground">
+              {{ $t("match.demo_processing_hint") }}
+            </p>
+          </TooltipContent>
+        </Tooltip>
         <template v-if="hasDemo && hasDemoMetadata">
           <Tooltip v-if="mapHasRadar">
             <TooltipTrigger as-child>
@@ -374,6 +393,19 @@ export default {
     });
   },
   computed: {
+    // Anchored on the server's own timestamp, so a refresh keeps counting from
+    // when processing actually began rather than restarting at page load.
+    // Deliberately elapsed time, not a countdown: how long demo upload takes
+    // depends on tv_delay and transfer speed, so any predicted finish would be
+    // a guess that goes stale the moment it is wrong.
+    demoProcessingStartedAt() {
+      if (
+        !["WaitingForTV", "UploadingDemo"].includes(this.matchMap.status ?? "")
+      ) {
+        return null;
+      }
+      return this.matchMap.demo_processing_started_at ?? null;
+    },
     canOpenStats() {
       if (this.matchMap.status === e_match_status_enum.Scheduled) {
         return false;

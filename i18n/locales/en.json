@@ -2981,6 +2981,12 @@
         "Support": "Support",
         "Rifler": "Rifler"
       },
+      "sources": {
+        "overall": "All Sources",
+        "matchmaking": "Matchmaking",
+        "tournament": "Tournament",
+        "league": "League"
+      },
       "columns": {
         "rank": "#",
         "matches": "Matches"
@@ -4850,6 +4856,7 @@
     },
     "winner": {
       "set": "Set Match Winner",
+      "set_failed": "Could not set match winner",
       "select_lineup": "Select Lineup"
     },
     "map_winner": {
@@ -4902,6 +4909,7 @@
       "picked": "Picked"
     },
     "auto_canceling": "Auto Canceling",
+    "demo_processing": "Processing demo",
     "actions": {
       "call_support": "Call for Support",
       "start_veto": "Start Veto",
@@ -5352,7 +5360,8 @@
       "rcon_unavailable": "RCON unavailable",
       "not_controllable": "Match is not in a controllable state.",
       "veto_override": "Veto Override"
-    }
+    },
+    "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes."
   },
   "ui": {
     "tooltips": {
@@ -5688,6 +5697,7 @@
       "title": "Others"
     },
     "banned": "You are banned from matchmaking",
+    "banned_until": "You are banned from matchmaking until {time}",
     "confirm_selection": "Join Queue",
     "in_queue": "in queue",
     "temp_banned": "You are temporarily banned from matchmaking",
@@ -5699,7 +5709,8 @@
     "party_size": {
       "unavailable": "Party of {size} can't queue this mode",
       "requirement": "Queue with {half} or fewer, or exactly {full} players"
-    }
+    },
+    "temp_banned_until": "You are temporarily banned from matchmaking until {time}"
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -5855,7 +5866,9 @@
       "no_access": "You do not have access to this page.",
       "sidebar_hint": "Chat is available in the right sidebar under the Chats tab."
     },
-    "in_chat": "in chat"
+    "in_chat": "in chat",
+    "everyone": "Everyone",
+    "your_team": "Your team"
   },
   "charts": {
     "usage": "Usage",
@@ -7190,5 +7203,10 @@
   "awards_manage_form": {
     "team": "Team",
     "player": "Player"
+  },
+  "search": {
+    "unregistered": "Not registered",
+    "registered_only": "Registered only",
+    "registered": "Registered"
   }
 }

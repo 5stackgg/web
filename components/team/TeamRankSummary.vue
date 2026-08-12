@@ -6,6 +6,8 @@ import PlayerRanks from "~/components/draft-games/PlayerRanks.vue";
 const props = defineProps<{
   ranks?: {
     avg_elo?: number | null;
+    avg_wingman_elo?: number | null;
+    avg_duel_elo?: number | null;
     min_elo?: number | null;
     max_elo?: number | null;
     avg_faceit_level?: number | null;
@@ -23,7 +25,11 @@ const props = defineProps<{
 const hasRanks = computed(() => (props.ranks?.roster_size ?? 0) > 0);
 
 const player = computed(() => ({
-  elo: { competitive: props.ranks?.avg_elo ?? undefined },
+  elo: {
+    competitive: props.ranks?.avg_elo ?? undefined,
+    wingman: props.ranks?.avg_wingman_elo ?? undefined,
+    duel: props.ranks?.avg_duel_elo ?? undefined,
+  },
   premier_rank: props.ranks?.avg_premier ?? undefined,
   // FACEIT levels are 1–10 integers; round the team average so the badge shows
   // a whole level instead of an awkward decimal in the circular icon.

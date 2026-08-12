@@ -641,6 +641,12 @@ export default {
             {
               id: true,
               avatar_url: true,
+              // The canonical team rating: season-aware and excluding coaches.
+              // Averaging the roster here instead silently disagrees with the
+              // team page, which reads this same view.
+              ranks: {
+                avg_elo: true,
+              },
               roster: [
                 { where: { status: { _in: ["Starter", "Substitute"] } } },
                 {
@@ -666,7 +672,9 @@ export default {
           ...team,
           avatar_url: team.avatar_url ?? details.avatar_url ?? null,
           player_count: roster.length,
-          avg_elo: teamAvgElo(roster),
+          // Falls back to the roster average only when the view has no row yet,
+          // so a card never renders blank.
+          avg_elo: details.ranks?.avg_elo ?? teamAvgElo(roster),
           avg_premier: teamAvgPremier(roster),
         };
       };

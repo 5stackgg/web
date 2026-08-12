@@ -330,16 +330,22 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
               >
                 <div class="flex items-center justify-between py-2">
                   <div class="flex flex-col gap-1 flex-1">
+                    <!-- Records predating match_id have nothing to link to, so
+                         they render as plain text rather than a dead link. -->
                     <NuxtLink
+                      v-if="abandonedMatch.match_id"
                       :to="{
                         name: 'matches-id',
-                        params: { id: abandonedMatch.id },
+                        params: { id: abandonedMatch.match_id },
                       }"
                       class="text-sm font-medium hover:underline text-primary"
                     >
                       {{ $t("player.sanctions.match") }}
-                      {{ abandonedMatch.id.slice(0, 8) }}
+                      {{ abandonedMatch.match_id.slice(0, 8) }}
                     </NuxtLink>
+                    <span v-else class="text-sm font-medium">
+                      {{ $t("player.sanctions.match") }}
+                    </span>
                     <div
                       class="text-xs text-muted-foreground flex items-center gap-2"
                     >
@@ -631,6 +637,7 @@ export default {
               id: true,
               steam_id: true,
               abandoned_at: true,
+              match_id: true,
             },
           ],
         }),

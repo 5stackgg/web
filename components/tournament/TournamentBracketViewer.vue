@@ -87,14 +87,28 @@ const isRoundFinished = (round: any): boolean => {
   });
 };
 
-const displayRounds = computed(() => {
-  if (!props.hideFinishedRounds) return props.rounds;
+// A resolved bye is not a real match - its team has already been advanced into
+// the next round - so it never gets a card. Rounds left with nothing are dropped
+// entirely rather than rendering a header over an empty column.
+const visibleRounds = computed(() => {
   const filtered = new Map<number, any>();
-  for (const [k, v] of props.rounds.entries()) {
+  for (const [round, brackets] of props.rounds.entries()) {
+    const visible = (brackets as unknown as any[]).filter(
+      (bracket: any) => bracket && !bracket.bye,
+    );
+    if (visible.length) filtered.set(round, visible);
+  }
+  return filtered;
+});
+
+const displayRounds = computed(() => {
+  if (!props.hideFinishedRounds) return visibleRounds.value;
+  const filtered = new Map<number, any>();
+  for (const [k, v] of visibleRounds.value.entries()) {
     if (!isRoundFinished(v)) filtered.set(k, v);
   }
   // If filtering removes everything, fall back to all rounds so we don't render empty
-  if (filtered.size === 0) return props.rounds;
+  if (filtered.size === 0) return visibleRounds.value;
   return filtered;
 });
 
@@ -362,6 +376,31 @@ watch(displayRounds, () => {
   });
 });
 
+// Built from the unfiltered rounds so hidden byes can still be walked through.
+const bracketsById = computed(() => {
+  const map = new Map<string, any>();
+  for (const [, brackets] of props.rounds.entries()) {
+    for (const bracket of brackets as unknown as any[]) {
+      if (bracket?.id) map.set(bracket.id, bracket);
+    }
+  }
+  return map;
+});
+
+// A hidden bye hands its team straight to its winner parent, so an edge landing
+// on one should terminate at the first bracket that actually renders.
+const resolveVisibleTargetId = (id?: string): string | undefined => {
+  let current = id;
+  for (let hops = 0; current && hops < 16; hops++) {
+    const bracket = bracketsById.value.get(current);
+    // Not in this viewer (cross-group edge): leave it to the DOM lookup
+    if (!bracket) return current;
+    if (!bracket.bye) return current;
+    current = bracket.parent_bracket?.id;
+  }
+  return undefined;
+};
+
 const clearConnectingLines = () => {
   if (bracketContentWrapper.value) {
     const wrapper = bracketContentWrapper.value as HTMLElement;
@@ -406,18 +445,20 @@ const drawConnectingLines = () => {
       ) as HTMLElement;
       if (!sourceMatchEl) continue;
 
-      if (bracket.parent_bracket?.id) {
+      const winnerTargetId = resolveVisibleTargetId(bracket.parent_bracket?.id);
+      if (winnerTargetId) {
         const targetMatchEl = wrapper.querySelector(
-          `#bracket-${bracket.parent_bracket.id}`,
+          `#bracket-${winnerTargetId}`,
         ) as HTMLElement;
         if (targetMatchEl) {
           drawLine(svg, sourceMatchEl, targetMatchEl, "winner");
         }
       }
 
-      if (bracket.loser_bracket?.id) {
+      const loserTargetId = resolveVisibleTargetId(bracket.loser_bracket?.id);
+      if (loserTargetId) {
         const targetMatchEl = wrapper.querySelector(
-          `#bracket-${bracket.loser_bracket.id}`,
+          `#bracket-${loserTargetId}`,
         ) as HTMLElement;
         if (targetMatchEl) {
           drawLine(svg, sourceMatchEl, targetMatchEl, "loser");

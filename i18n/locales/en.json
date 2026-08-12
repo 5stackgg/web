@@ -5360,7 +5360,8 @@
       "rcon_unavailable": "RCON unavailable",
       "not_controllable": "Match is not in a controllable state.",
       "veto_override": "Veto Override"
-    }
+    },
+    "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes."
   },
   "ui": {
     "tooltips": {
@@ -7202,6 +7203,7 @@
   },
   "search": {
     "unregistered": "Not registered",
-    "registered_only": "Registered only"
+    "registered_only": "Registered only",
+    "registered": "Registered"
   }
 }

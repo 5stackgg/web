@@ -5,6 +5,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
 import {
   PlusCircle,
   ArrowUpIcon,
@@ -234,40 +235,20 @@ const fadeTransition = {
         content-class="w-60 space-y-0.5 p-2"
         @reset="resetFilters"
       >
-        <button
-          type="button"
-          @click="toggleOnlyEnabled"
-          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-          :class="
-            onlyEnabled ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
-          "
+        <FilterToggle
+          :model-value="onlyEnabled"
+          :label="$t('pages.game_server_nodes.only_enabled')"
+          @update:model-value="toggleOnlyEnabled"
         >
-          <span class="flex items-center gap-2">
-            <CircleDot class="h-3.5 w-3.5" />
-            {{ $t("pages.game_server_nodes.only_enabled") }}
-          </span>
-          <Check
-            v-if="onlyEnabled"
-            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-          />
-        </button>
-        <button
-          type="button"
-          @click="toggleHideOffline"
-          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-          :class="
-            hideOffline ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
-          "
+          <template #icon><CircleDot class="h-3.5 w-3.5" /></template>
+        </FilterToggle>
+        <FilterToggle
+          :model-value="hideOffline"
+          :label="$t('pages.game_server_nodes.hide_offline')"
+          @update:model-value="toggleHideOffline"
         >
-          <span class="flex items-center gap-2">
-            <Activity class="h-3.5 w-3.5" />
-            {{ $t("pages.game_server_nodes.hide_offline") }}
-          </span>
-          <Check
-            v-if="hideOffline"
-            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-          />
-        </button>
+          <template #icon><Activity class="h-3.5 w-3.5" /></template>
+        </FilterToggle>
       </FilterMenu>
     </FilterBar>
   </PageTransition>

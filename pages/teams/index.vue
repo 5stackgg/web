@@ -8,7 +8,6 @@ import {
   Swords,
   SlidersHorizontal,
   ChevronDown,
-  Check,
 } from "lucide-vue-next";
 import {
   InputGroup,
@@ -22,6 +21,7 @@ import {
 } from "~/components/ui/popover";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import Pagination from "@/components/Pagination.vue";
@@ -112,42 +112,20 @@ import {
         content-class="w-64 space-y-0.5 p-2"
         @reset="resetTeamFilters"
       >
-        <button
-          type="button"
-          @click="toggleTournamentWinners"
-          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-          :class="
-            tournamentWinnersOnly
-              ? 'text-[hsl(var(--tac-amber))]'
-              : 'text-foreground/90'
-          "
+        <FilterToggle
+          :model-value="tournamentWinnersOnly"
+          :label="$t('team.search.tournament_winners')"
+          @update:model-value="toggleTournamentWinners"
         >
-          <span class="flex items-center gap-2">
-            <Trophy class="h-3.5 w-3.5" />
-            {{ $t("team.search.tournament_winners") }}
-          </span>
-          <Check
-            v-if="tournamentWinnersOnly"
-            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-          />
-        </button>
-        <button
-          type="button"
-          @click="toggleScrimsOnly"
-          class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
-          :class="
-            scrimsOnly ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground/90'
-          "
+          <template #icon><Trophy class="h-3.5 w-3.5" /></template>
+        </FilterToggle>
+        <FilterToggle
+          :model-value="scrimsOnly"
+          :label="$t('team.search.scrims_only')"
+          @update:model-value="toggleScrimsOnly"
         >
-          <span class="flex items-center gap-2">
-            <Swords class="h-3.5 w-3.5" />
-            {{ $t("team.search.scrims_only") }}
-          </span>
-          <Check
-            v-if="scrimsOnly"
-            class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-          />
-        </button>
+          <template #icon><Swords class="h-3.5 w-3.5" /></template>
+        </FilterToggle>
       </FilterMenu>
     </FilterBar>
   </PageTransition>

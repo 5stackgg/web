@@ -24,6 +24,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
@@ -116,200 +117,200 @@ function optionRowClass(active: boolean) {
 
   <PageTransition :delay="100" class="mt-6">
     <FilterBar>
-          <!-- Status -->
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                type="button"
-                :class="[
-                  filterTriggerBase,
-                  form.statuses.length
-                    ? filterTriggerActive
-                    : filterTriggerIdle,
-                ]"
-              >
-                <Activity class="h-3.5 w-3.5" />
-                {{ $t("pages.matches.status_label") }}
-                <span v-if="form.statuses.length" :class="filterBadgeClasses">
-                  {{ form.statuses.length }}
-                </span>
-                <ChevronDown class="h-3 w-3 opacity-50" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="start" class="w-60 p-2">
-              <div class="mb-2 flex flex-wrap gap-1.5">
-                <button
-                  type="button"
-                  @click="applyStatusPreset('upcomingLive')"
-                  :class="[
-                    presetBase,
-                    activePresetName === 'upcomingLive'
-                      ? presetActive
-                      : presetIdle,
-                  ]"
-                >
-                  {{ $t("pages.matches.preset_upcoming_live") }}
-                </button>
-                <button
-                  type="button"
-                  @click="applyStatusPreset('finished')"
-                  :class="[
-                    presetBase,
-                    activePresetName === 'finished' ? presetActive : presetIdle,
-                  ]"
-                >
-                  {{ $t("pages.matches.preset_finished") }}
-                </button>
-              </div>
-              <div class="max-h-60 space-y-0.5 overflow-y-auto">
-                <button
-                  v-for="status in matchStatusOptions"
-                  :key="status.value"
-                  type="button"
-                  @click="toggleStatus(status.value)"
-                  class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-                >
-                  <span>{{ status.label }}</span>
-                  <Check
-                    v-if="form.statuses.includes(status.value)"
-                    class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-                  />
-                </button>
-              </div>
-              <button
-                v-if="form.statuses.length"
-                type="button"
-                @click="clearAllStatuses"
-                class="mt-2 flex w-full items-center justify-center gap-1 rounded border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <X class="h-3 w-3" /> {{ $t("pages.matches.clear_short") }}
-              </button>
-            </PopoverContent>
-          </Popover>
-
-          <!-- Filters (teams, players, date window, options) — pinned right -->
-          <FilterMenu
-            class="ml-auto"
-            :count="filtersDrawerCount"
-            :active="filtersDrawerCount > 0"
-            :show-reset="!!activeFilterCount"
-            content-class="w-[min(92vw,340px)] space-y-3 p-3"
-            @reset="resetFilters"
+      <!-- Status -->
+      <Popover>
+        <PopoverTrigger as-child>
+          <button
+            type="button"
+            :class="[
+              filterTriggerBase,
+              form.statuses.length ? filterTriggerActive : filterTriggerIdle,
+            ]"
           >
-          <!-- Teams -->
-          <div class="space-y-1.5">
-            <span
-              class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >
-              {{ $t("pages.matches.teams") }}
+            <Activity class="h-3.5 w-3.5" />
+            {{ $t("pages.matches.status_label") }}
+            <span v-if="form.statuses.length" :class="filterBadgeClasses">
+              {{ form.statuses.length }}
             </span>
-            <TeamSearch
-              :label="$t('pages.manage_matches.enter_team_name')"
-              :exclude="form.teams.map((t) => t.id)"
-              @selected="addTeam"
+            <ChevronDown class="h-3 w-3 opacity-50" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" class="w-60 p-2">
+          <div class="mb-2 flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              @click="applyStatusPreset('upcomingLive')"
+              :class="[
+                presetBase,
+                activePresetName === 'upcomingLive' ? presetActive : presetIdle,
+              ]"
             >
+              {{ $t("pages.matches.preset_upcoming_live") }}
+            </button>
+            <button
+              type="button"
+              @click="applyStatusPreset('finished')"
+              :class="[
+                presetBase,
+                activePresetName === 'finished' ? presetActive : presetIdle,
+              ]"
+            >
+              {{ $t("pages.matches.preset_finished") }}
+            </button>
+          </div>
+          <div class="max-h-60 space-y-0.5 overflow-y-auto">
+            <button
+              v-for="status in matchStatusOptions"
+              :key="status.value"
+              type="button"
+              @click="toggleStatus(status.value)"
+              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+            >
+              <span>{{ status.label }}</span>
+              <Check
+                v-if="form.statuses.includes(status.value)"
+                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+              />
+            </button>
+          </div>
+          <button
+            v-if="form.statuses.length"
+            type="button"
+            @click="clearAllStatuses"
+            class="mt-2 flex w-full items-center justify-center gap-1 rounded border border-border px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <X class="h-3 w-3" /> {{ $t("pages.matches.clear_short") }}
+          </button>
+        </PopoverContent>
+      </Popover>
+
+      <!-- Filters (teams, players, date window, options) — pinned right -->
+      <FilterMenu
+        class="ml-auto"
+        :count="filtersDrawerCount"
+        :active="filtersDrawerCount > 0"
+        :show-reset="!!activeFilterCount"
+        content-class="w-[min(92vw,340px)] space-y-3 p-3"
+        @reset="resetFilters"
+      >
+        <!-- Teams -->
+        <div class="space-y-1.5">
+          <span
+            class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("pages.matches.teams") }}
+          </span>
+          <TeamSearch
+            :label="$t('pages.manage_matches.enter_team_name')"
+            :exclude="form.teams.map((t) => t.id)"
+            @selected="addTeam"
+          >
+            <button
+              type="button"
+              class="flex w-full items-center gap-2 rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+            >
+              <Users class="h-3.5 w-3.5 shrink-0" />
+              <span
+                class="flex-1 truncate text-left normal-case tracking-normal"
+              >
+                {{ $t("pages.manage_matches.enter_team_name") }}
+              </span>
+              <ChevronDown class="h-3 w-3 shrink-0 opacity-50" />
+            </button>
+          </TeamSearch>
+          <div v-if="form.teams.length" class="flex flex-wrap gap-1.5">
+            <span
+              v-for="t in form.teams"
+              :key="t.id"
+              class="inline-flex items-center gap-1.5 rounded bg-[hsl(var(--tac-amber)/0.12)] py-0.5 pl-1 pr-1 text-xs text-[hsl(var(--tac-amber))]"
+            >
+              <Avatar class="h-4 w-4 shrink-0 rounded-sm">
+                <AvatarImage
+                  v-if="teamAvatar(t)"
+                  :src="teamAvatar(t)!"
+                  :alt="t.name"
+                />
+                <AvatarFallback
+                  class="rounded-sm bg-[hsl(var(--tac-amber)/0.15)] text-[8px] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ (t.short_name || t.name).slice(0, 2) }}
+                </AvatarFallback>
+              </Avatar>
+              <span class="max-w-[100px] truncate">{{ t.name }}</span>
               <button
                 type="button"
-                class="flex w-full items-center gap-2 rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                class="text-[hsl(var(--tac-amber)/0.6)] transition-colors hover:text-[hsl(var(--tac-amber))]"
+                @click="removeTeam(t.id)"
               >
-                <Users class="h-3.5 w-3.5 shrink-0" />
-                <span class="flex-1 truncate text-left normal-case tracking-normal">
-                  {{ $t("pages.manage_matches.enter_team_name") }}
-                </span>
-                <ChevronDown class="h-3 w-3 shrink-0 opacity-50" />
+                <X class="h-3 w-3" />
               </button>
-            </TeamSearch>
-            <div v-if="form.teams.length" class="flex flex-wrap gap-1.5">
-              <span
-                v-for="t in form.teams"
-                :key="t.id"
-                class="inline-flex items-center gap-1.5 rounded bg-[hsl(var(--tac-amber)/0.12)] py-0.5 pl-1 pr-1 text-xs text-[hsl(var(--tac-amber))]"
-              >
-                <Avatar class="h-4 w-4 shrink-0 rounded-sm">
-                  <AvatarImage
-                    v-if="teamAvatar(t)"
-                    :src="teamAvatar(t)!"
-                    :alt="t.name"
-                  />
-                  <AvatarFallback
-                    class="rounded-sm bg-[hsl(var(--tac-amber)/0.15)] text-[8px] text-[hsl(var(--tac-amber))]"
-                  >
-                    {{ (t.short_name || t.name).slice(0, 2) }}
-                  </AvatarFallback>
-                </Avatar>
-                <span class="max-w-[100px] truncate">{{ t.name }}</span>
-                <button
-                  type="button"
-                  class="text-[hsl(var(--tac-amber)/0.6)] transition-colors hover:text-[hsl(var(--tac-amber))]"
-                  @click="removeTeam(t.id)"
-                >
-                  <X class="h-3 w-3" />
-                </button>
-              </span>
-            </div>
-          </div>
-
-          <!-- Players -->
-          <div class="space-y-1.5 border-t border-border/50 pt-3">
-            <span
-              class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >
-              {{ $t("pages.matches.players") }}
             </span>
-            <PlayerSearch
-              :label="$t('player.search.placeholder')"
-              :exclude="form.players.map((p) => p.steam_id)"
-              @selected="addPlayer"
+          </div>
+        </div>
+
+        <!-- Players -->
+        <div class="space-y-1.5 border-t border-border/50 pt-3">
+          <span
+            class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("pages.matches.players") }}
+          </span>
+          <PlayerSearch
+            :label="$t('player.search.placeholder')"
+            :exclude="form.players.map((p) => p.steam_id)"
+            @selected="addPlayer"
+          >
+            <button
+              type="button"
+              class="flex w-full items-center gap-2 rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
             >
+              <User class="h-3.5 w-3.5 shrink-0" />
+              <span
+                class="flex-1 truncate text-left normal-case tracking-normal"
+              >
+                {{ $t("player.search.placeholder") }}
+              </span>
+              <ChevronDown class="h-3 w-3 shrink-0 opacity-50" />
+            </button>
+          </PlayerSearch>
+          <div v-if="form.players.length" class="flex flex-wrap gap-1.5">
+            <span
+              v-for="p in form.players"
+              :key="p.steam_id"
+              class="inline-flex items-center gap-1.5 rounded bg-[hsl(var(--tac-amber)/0.12)] py-0.5 pl-1 pr-1 text-xs text-[hsl(var(--tac-amber))]"
+            >
+              <Avatar class="h-4 w-4 shrink-0 rounded-full">
+                <AvatarImage
+                  v-if="playerAvatar(p)"
+                  :src="playerAvatar(p)!"
+                  :alt="p.name"
+                />
+                <AvatarFallback
+                  class="bg-[hsl(var(--tac-amber)/0.15)] text-[8px] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ p.name.slice(0, 2) }}
+                </AvatarFallback>
+              </Avatar>
+              <span class="max-w-[100px] truncate">{{ p.name }}</span>
               <button
                 type="button"
-                class="flex w-full items-center gap-2 rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                class="text-[hsl(var(--tac-amber)/0.6)] transition-colors hover:text-[hsl(var(--tac-amber))]"
+                @click="removePlayer(p.steam_id)"
               >
-                <User class="h-3.5 w-3.5 shrink-0" />
-                <span class="flex-1 truncate text-left normal-case tracking-normal">
-                  {{ $t("player.search.placeholder") }}
-                </span>
-                <ChevronDown class="h-3 w-3 shrink-0 opacity-50" />
+                <X class="h-3 w-3" />
               </button>
-            </PlayerSearch>
-            <div v-if="form.players.length" class="flex flex-wrap gap-1.5">
-              <span
-                v-for="p in form.players"
-                :key="p.steam_id"
-                class="inline-flex items-center gap-1.5 rounded bg-[hsl(var(--tac-amber)/0.12)] py-0.5 pl-1 pr-1 text-xs text-[hsl(var(--tac-amber))]"
-              >
-                <Avatar class="h-4 w-4 shrink-0 rounded-full">
-                  <AvatarImage
-                    v-if="playerAvatar(p)"
-                    :src="playerAvatar(p)!"
-                    :alt="p.name"
-                  />
-                  <AvatarFallback
-                    class="bg-[hsl(var(--tac-amber)/0.15)] text-[8px] text-[hsl(var(--tac-amber))]"
-                  >
-                    {{ p.name.slice(0, 2) }}
-                  </AvatarFallback>
-                </Avatar>
-                <span class="max-w-[100px] truncate">{{ p.name }}</span>
-                <button
-                  type="button"
-                  class="text-[hsl(var(--tac-amber)/0.6)] transition-colors hover:text-[hsl(var(--tac-amber))]"
-                  @click="removePlayer(p.steam_id)"
-                >
-                  <X class="h-3 w-3" />
-                </button>
-              </span>
-            </div>
-          </div>
-
-          <!-- Date window -->
-          <div class="space-y-1.5 border-t border-border/50 pt-3">
-            <span
-              class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >
-              {{ $t("pages.matches.window") }}
             </span>
-            <Popover>
+          </div>
+        </div>
+
+        <!-- Date window -->
+        <div class="space-y-1.5 border-t border-border/50 pt-3">
+          <span
+            class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("pages.matches.window") }}
+          </span>
+          <Popover>
             <PopoverTrigger as-child>
               <button
                 type="button"
@@ -321,7 +322,9 @@ function optionRowClass(active: boolean) {
                 "
               >
                 <CalendarIcon class="h-3.5 w-3.5 shrink-0" />
-                <span class="flex-1 truncate text-left normal-case tracking-normal">
+                <span
+                  class="flex-1 truncate text-left normal-case tracking-normal"
+                >
                   {{
                     form.dateFrom || form.dateTo
                       ? $t("pages.matches.window")
@@ -385,70 +388,49 @@ function optionRowClass(active: boolean) {
                 </div>
               </div>
             </PopoverContent>
-            </Popover>
-          </div>
+          </Popover>
+        </div>
 
-          <!-- Options (shown directly, not behind a nested popover) -->
-          <div class="space-y-0.5 border-t border-border/50 pt-2">
-            <span
-              class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >
-              {{ $t("pages.matches.options") }}
-            </span>
-            <button
-              type="button"
-              @click="includeOutOfLineup = !includeOutOfLineup"
-              :class="optionRowClass(!includeOutOfLineup)"
-            >
-              <span>{{ $t("pages.matches.lineup_only") }}</span>
-              <Check
-                v-if="!includeOutOfLineup"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-            <button
-              type="button"
-              @click="includeExternal = !includeExternal"
-              :class="optionRowClass(includeExternal)"
-            >
-              <span>{{ $t("pages.matches.include_external") }}</span>
-              <Check
-                v-if="includeExternal"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-            <button
-              v-if="canManageMatches"
-              type="button"
-              @click="showOnlyMyMatches = !showOnlyMyMatches"
-              :class="optionRowClass(showOnlyMyMatches)"
-            >
-              <span>{{ $t("pages.manage_matches.only_my_matches") }}</span>
-              <Check
-                v-if="showOnlyMyMatches"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-            <div v-if="canManageMatches" class="relative mt-1.5">
-              <Hash
-                class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/50"
-              />
-              <Input
-                id="match-id-search"
-                :model-value="form.matchId"
-                @update:model-value="
-                  (value) => {
-                    form.matchId = String(value || '');
-                    onFilterChange();
-                  }
-                "
-                :placeholder="$t('pages.manage_matches.enter_match_id')"
-                class="h-8 pl-8 font-mono text-xs"
-              />
-            </div>
+        <!-- Options (shown directly, not behind a nested popover) -->
+        <div class="space-y-0.5 border-t border-border/50 pt-2">
+          <span
+            class="block px-2 pb-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("pages.matches.options") }}
+          </span>
+          <FilterToggle
+            :model-value="!includeOutOfLineup"
+            :label="$t('pages.matches.lineup_only')"
+            @update:model-value="(value) => (includeOutOfLineup = !value)"
+          />
+          <FilterToggle
+            v-model="includeExternal"
+            :label="$t('pages.matches.include_external')"
+          />
+          <FilterToggle
+            v-if="canManageMatches"
+            v-model="showOnlyMyMatches"
+            :label="$t('pages.manage_matches.only_my_matches')"
+          />
+          <div v-if="canManageMatches" class="relative mt-1.5">
+            <Hash
+              class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/50"
+            />
+            <Input
+              id="match-id-search"
+              :model-value="form.matchId"
+              @update:model-value="
+                (value) => {
+                  form.matchId = String(value || '');
+                  onFilterChange();
+                }
+              "
+              :placeholder="$t('pages.manage_matches.enter_match_id')"
+              class="h-8 pl-8 font-mono text-xs"
+            />
           </div>
-          </FilterMenu>
-
+        </div>
+      </FilterMenu>
     </FilterBar>
   </PageTransition>
 

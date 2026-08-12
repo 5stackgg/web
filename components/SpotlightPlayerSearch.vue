@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { Input } from "~/components/ui/input";
+import FilterChip from "~/components/common/FilterChip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import debounce from "~/utilities/debounce";
 import { MagnifyingGlassIcon } from "@radix-icons/vue";
@@ -59,8 +60,27 @@ onUnmounted(() => {
 const searchToken = ref(0);
 // Off by default: any Steam account stays findable. This narrows results to
 // people who have actually signed in here, for when you're looking for someone
-// you can invite rather than just look up.
-const registeredOnly = ref(false);
+// you can invite rather than just look up. Shared with the other player
+// searches so the preference does not reset when you switch surfaces.
+const searchStore = useSearchStore();
+const registeredOnly = computed({
+  get: () => searchStore.registeredOnly,
+  set: (value: boolean) => {
+    localStorage.setItem("playerSearchRegisteredOnly", String(value));
+    searchStore.registeredOnly = value;
+  },
+});
+
+// Same preference the other player searches use. On, results come from the
+// live online roster rather than Typesense, so registration is not a
+// distinction the store can make and that filter steps aside.
+const onlineOnly = computed({
+  get: () => searchStore.onlineOnly,
+  set: (value: boolean) => {
+    localStorage.setItem("playerSearchOnlineOnly", String(value));
+    searchStore.onlineOnly = value;
+  },
+});
 
 const debouncedSearch = debounce(async (searchQuery: string) => {
   // A slower earlier keystroke must not clobber a newer result set.
@@ -68,6 +88,14 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
 
   if (!searchQuery.trim()) {
     players.value = [];
+    return;
+  }
+
+  // The online roster is already in memory, so this path needs no request and
+  // no loading state.
+  if (onlineOnly.value) {
+    players.value = searchStore.search(searchQuery, []);
+    loading.value = false;
     return;
   }
 
@@ -126,7 +154,7 @@ watch(query, (newQuery) => {
   debouncedSearch(newQuery);
 });
 
-watch(registeredOnly, () => {
+watch([registeredOnly, onlineOnly], () => {
   selectedIndex.value = 0;
   debouncedSearch(query.value);
 });
@@ -209,25 +237,17 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               autofocus
             />
 
-            <button
-              type="button"
-              :aria-pressed="registeredOnly"
-              class="shrink-0 flex h-7 cursor-pointer items-center gap-2 rounded-full border px-3 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
-              :class="
-                registeredOnly
-                  ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-              "
-              @click="registeredOnly = !registeredOnly"
-            >
-              <span
-                class="size-1.5 rounded-full transition-colors duration-150"
-                :class="
-                  registeredOnly ? 'bg-[hsl(var(--tac-amber))]' : 'bg-border'
-                "
-              />
-              {{ $t("search.registered_only") }}
-            </button>
+            <FilterChip
+              :active="onlineOnly"
+              :label="$t('common.online')"
+              @toggle="onlineOnly = !onlineOnly"
+            />
+
+            <FilterChip
+              :active="registeredOnly"
+              :label="$t('search.registered')"
+              @toggle="registeredOnly = !registeredOnly"
+            />
           </div>
 
           <!-- Results -->

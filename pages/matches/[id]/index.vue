@@ -414,19 +414,6 @@ const vsBaseClasses =
             <TimeAgo :date="match.cancels_at" countdown hide-icon />
           </span>
           <span
-            v-if="demoProcessingStartedAt"
-            class="inline-flex items-center gap-[0.3rem] text-[0.6rem] leading-none tracking-[0.12em]"
-            :title="$t('match.demo_processing')"
-          >
-            <span>{{ $t("match.demo_processing") }}</span>
-            <TimeAgo :date="demoProcessingStartedAt" seconds hide-icon />
-          </span>
-          <span
-            v-if="demoProcessingStartedAt && isNative && match.options?.best_of"
-            class="opacity-40"
-            >·</span
-          >
-          <span
             v-if="showAutoCancel && isNative && match.options?.best_of"
             class="opacity-40"
             >·</span
@@ -960,20 +947,6 @@ export default {
     },
     tournamentContext() {
       return this.match?.tournament_brackets?.[0]?.stage?.tournament ?? null;
-    },
-    // Anchored on the server's own timestamp, so a refresh keeps counting from
-    // when processing actually began rather than restarting at page load.
-    // Deliberately elapsed time, not a countdown: how long demo upload takes
-    // depends on tv_delay and transfer speed, so any predicted finish would be
-    // a guess that goes stale the moment it is wrong.
-    demoProcessingStartedAt() {
-      const processing = (this.match?.match_maps ?? []).find(
-        (matchMap: any) =>
-          matchMap.demo_processing_started_at &&
-          ["WaitingForTV", "UploadingDemo"].includes(matchMap.status),
-      );
-
-      return processing?.demo_processing_started_at ?? null;
     },
     showAutoCancel() {
       return (

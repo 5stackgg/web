@@ -14,6 +14,7 @@ import {
 import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
 import {
@@ -69,10 +70,10 @@ function optionRowClass(active: boolean) {
         <button
           type="button"
           :class="[
-          tacticalCtaButtonClasses,
-          tacticalHeaderActionClasses,
-          'max-md:aspect-square max-md:!px-0',
-        ]"
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+          ]"
           :title="$t('pages.tournaments.create')"
           @click="navigateTo('/tournaments/create')"
         >
@@ -102,7 +103,10 @@ function optionRowClass(active: boolean) {
           >
             <Activity class="h-3.5 w-3.5" />
             {{ $t("common.status") }}
-            <span v-if="form.values.statuses?.length" :class="filterBadgeClasses">
+            <span
+              v-if="form.values.statuses?.length"
+              :class="filterBadgeClasses"
+            >
               {{ form.values.statuses.length }}
             </span>
             <ChevronDown class="h-3 w-3 opacity-50" />
@@ -195,17 +199,10 @@ function optionRowClass(active: boolean) {
           >
             {{ $t("common.options") }}
           </span>
-          <button
-            type="button"
-            @click="showOnlyMyTournaments = !showOnlyMyTournaments"
-            :class="optionRowClass(showOnlyMyTournaments)"
-          >
-            <span>{{ $t("pages.manage_tournaments.only_my_tournaments") }}</span>
-            <Check
-              v-if="showOnlyMyTournaments"
-              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-            />
-          </button>
+          <FilterToggle
+            v-model="showOnlyMyTournaments"
+            :label="$t('pages.manage_tournaments.only_my_tournaments')"
+          />
         </div>
       </FilterMenu>
     </FilterBar>

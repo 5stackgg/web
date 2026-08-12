@@ -100,6 +100,22 @@ export default defineEventHandler(async (event) => {
     filterBy.push(`is_registered:=true`);
   }
 
+  // Presence is live app state, not something the index knows, so the caller
+  // sends the roster it can see and results are constrained to it.
+  const onlineSteamIds = Array.isArray(body.online_steam_ids)
+    ? body.online_steam_ids.filter((id: unknown) => /^[0-9]+$/.test(String(id)))
+    : null;
+
+  // Nobody online has to mean no results. Falling through to an unfiltered
+  // search would return everyone, which reads as "the filter is broken".
+  if (onlineSteamIds && onlineSteamIds.length === 0) {
+    return { found: 0, hits: [] };
+  }
+
+  if (onlineSteamIds) {
+    filterBy.push(`steam_id:[${onlineSteamIds.join(",")}]`);
+  }
+
   // Filter by team
   if (body.teamId) {
     filterBy.push(`teams:${body.teamId}`);
@@ -179,10 +195,13 @@ export default defineEventHandler(async (event) => {
     return results;
   }
 
-  // Only do Steam API search if we have a query and no results found
+  // Only do Steam API search if we have a query and no results found. A search
+  // scoped to who is online can't be satisfied by a Steam account we have never
+  // seen, so that path stays out of it.
   if (
     process.env.STEAM_API_KEY &&
     !body.teamId &&
+    !onlineSteamIds &&
     query &&
     results.found === 0
   ) {

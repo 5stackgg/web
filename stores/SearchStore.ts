@@ -11,6 +11,12 @@ export const useSearchStore = defineStore("searchStore", () => {
     localStorage.getItem("playerSearchOnlineOnly") !== "false",
   );
 
+  // Off by default: searching an unregistered Steam account is the point of
+  // the search, this only narrows it to people who have signed in here.
+  const registeredOnly = ref<boolean>(
+    localStorage.getItem("playerSearchRegisteredOnly") === "true",
+  );
+
   const onlinePlayers = computed(() => {
     const onlineIds = new Set(
       matchMakingStore.onlinePlayerSteamIds as string[],
@@ -67,6 +73,7 @@ export const useSearchStore = defineStore("searchStore", () => {
 
   return {
     onlineOnly,
+    registeredOnly,
     // Returns every match; the caller windows it (PlayerSearch pages through
     // this list the same way it pages the Typesense results).
     search: (query: string, exclude: string[]) => {

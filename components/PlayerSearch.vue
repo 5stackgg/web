@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { CaretSortIcon } from "@radix-icons/vue";
-import { Switch } from "~/components/ui/switch";
+import { Search } from "lucide-vue-next";
 import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer";
+import FilterRail from "~/components/common/FilterRail.vue";
+import FilterChip from "~/components/common/FilterChip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerSearchRow from "~/components/PlayerSearchRow.vue";
 import { useMediaQuery } from "@vueuse/core";
@@ -141,33 +143,43 @@ const { height: viewportHeight } = useVisualViewport();
           </template>
         </div>
 
-        <div class="flex items-center justify-between p-4 border-t">
-          <input
-            ref="mobileSearchInput"
-            v-model="query"
-            :placeholder="$t('player.search.placeholder')"
-            type="search"
-            inputmode="search"
-            enterkeyhint="search"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
-            class="flex-1 bg-transparent outline-none text-base"
-            @input="
-              (e: Event) =>
-                debouncedSearch((e.target as HTMLInputElement).value)
-            "
-            @keydown="onKeydown"
-          />
-          <div class="flex items-center gap-2 ml-4">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :model-value="onlineOnly"
-              @click="toggleOnlineOnly"
+        <div class="flex flex-col gap-2.5 p-4 border-t">
+          <div class="relative">
+            <Search
+              class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
             />
-            {{ $t("common.online") }}
+            <input
+              ref="mobileSearchInput"
+              v-model="query"
+              :placeholder="$t('player.search.placeholder')"
+              type="search"
+              inputmode="search"
+              enterkeyhint="search"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              class="h-10 w-full rounded-md border border-input bg-background pl-8 pr-3 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-[hsl(var(--tac-amber)/0.6)] focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.4)] [&::-webkit-search-cancel-button]:appearance-none"
+              @input="
+                (e: Event) =>
+                  debouncedSearch((e.target as HTMLInputElement).value)
+              "
+              @keydown="onKeydown"
+            />
           </div>
+          <FilterRail>
+            <FilterChip
+              :active="onlineOnly"
+              :label="$t('common.online')"
+              @toggle="toggleOnlineOnly"
+            />
+            <FilterChip
+              v-if="canFilterRegistered"
+              :active="registeredOnlyFilter"
+              :label="$t('search.registered')"
+              @toggle="toggleRegisteredOnly"
+            />
+          </FilterRail>
         </div>
       </div>
     </DrawerContent>
@@ -201,28 +213,38 @@ const { height: viewportHeight } = useVisualViewport();
     </PopoverTrigger>
     <PopoverContent class="p-0 w-[400px]">
       <div class="flex flex-col">
-        <div class="flex items-center justify-between px-3 py-2 border-b">
-          <input
-            v-model="query"
-            :placeholder="$t('player.search.placeholder')"
-            type="search"
-            inputmode="search"
-            enterkeyhint="search"
-            class="flex-1 bg-transparent outline-none"
-            @input="
-              (e: Event) =>
-                debouncedSearch((e.target as HTMLInputElement).value)
-            "
-            @keydown="onKeydown"
-          />
-          <div class="flex items-center gap-2 ml-4">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :model-value="onlineOnly"
-              @click="toggleOnlineOnly"
+        <div class="flex flex-col gap-2.5 p-3 border-b">
+          <div class="relative">
+            <Search
+              class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
             />
-            {{ $t("common.online") }}
+            <input
+              v-model="query"
+              :placeholder="$t('player.search.placeholder')"
+              type="search"
+              inputmode="search"
+              enterkeyhint="search"
+              class="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-[hsl(var(--tac-amber)/0.6)] focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.4)] [&::-webkit-search-cancel-button]:appearance-none"
+              @input="
+                (e: Event) =>
+                  debouncedSearch((e.target as HTMLInputElement).value)
+              "
+              @keydown="onKeydown"
+            />
           </div>
+          <FilterRail>
+            <FilterChip
+              :active="onlineOnly"
+              :label="$t('common.online')"
+              @toggle="toggleOnlineOnly"
+            />
+            <FilterChip
+              v-if="canFilterRegistered"
+              :active="registeredOnlyFilter"
+              :label="$t('search.registered')"
+              @toggle="toggleRegisteredOnly"
+            />
+          </FilterRail>
         </div>
 
         <div ref="scrollEl" class="max-h-[300px] overflow-y-auto">
@@ -489,6 +511,20 @@ export default {
         ...base.filter((p: Player) => String(p.steam_id) !== meId),
       ];
     },
+    // A context that requires registered players (lobbies, drafts) passes the
+    // prop and owns the filter outright, so there is nothing to offer.
+    canFilterRegistered(): boolean {
+      return !this.registeredOnly;
+    },
+    registeredOnlyFilter: {
+      get(): boolean {
+        return this.registeredOnly || useSearchStore().registeredOnly;
+      },
+      set(value: boolean) {
+        localStorage.setItem("playerSearchRegisteredOnly", value.toString());
+        useSearchStore().registeredOnly = value;
+      },
+    },
     onlineOnly: {
       get() {
         return useSearchStore().onlineOnly;
@@ -652,6 +688,13 @@ export default {
         (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
       });
     },
+    toggleRegisteredOnly() {
+      this.registeredOnlyFilter = !this.registeredOnlyFilter;
+      this.searchPlayers();
+      this.$nextTick(() => {
+        (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+      });
+    },
     select(player: Player) {
       if (!player || this.isIneligible(player)) {
         return;
@@ -668,7 +711,7 @@ export default {
           query: this.query,
           teamId: this.teamId,
           exclude: this.hardExcluded,
-          registeredOnly: this.registeredOnly,
+          registeredOnly: this.registeredOnlyFilter,
           page,
           per_page: PAGE_SIZE,
         },

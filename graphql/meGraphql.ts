@@ -7,6 +7,8 @@ export const meFields = Selector("players")({
   role: true,
   profile_url: true,
   matchmaking_cooldown: true,
+  // Null while banned means the ban is permanent -- there is no date to show.
+  banned_until: true,
   current_lobby_id: true,
   language: true,
   country: true,

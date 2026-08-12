@@ -63,6 +63,7 @@ interface LeaderboardEntry {
   player_steam_id: string;
   player_name: string;
   player_avatar_url: string | null;
+  player_custom_avatar_url: string | null;
   player_country: string | null;
   value: number;
   secondary_value: number | null;
@@ -217,6 +218,7 @@ const LEADERBOARD_QUERY = gql`
     $exclude_tournaments: Boolean!
     $role: String
     $season_id: uuid
+    $source: String
     $limit: Int
     $offset: Int
     $order_by: [leaderboard_entries_order_by!]
@@ -229,6 +231,7 @@ const LEADERBOARD_QUERY = gql`
         _exclude_tournaments: $exclude_tournaments
         _role: $role
         _season_id: $season_id
+        _source: $source
       }
       limit: $limit
       offset: $offset
@@ -237,6 +240,7 @@ const LEADERBOARD_QUERY = gql`
       player_steam_id
       player_name
       player_avatar_url
+      player_custom_avatar_url
       player_country
       value
       secondary_value
@@ -251,6 +255,7 @@ const LEADERBOARD_QUERY = gql`
         _exclude_tournaments: $exclude_tournaments
         _role: $role
         _season_id: $season_id
+        _source: $source
       }
     ) {
       aggregate {
@@ -267,6 +272,7 @@ const PLAYER_RANK_QUERY = gql`
     $match_type: String
     $exclude_tournaments: Boolean!
     $season_id: uuid
+    $source: String
     $player_steam_id: String!
   ) {
     get_player_leaderboard_rank(
@@ -276,6 +282,7 @@ const PLAYER_RANK_QUERY = gql`
         _match_type: $match_type
         _exclude_tournaments: $exclude_tournaments
         _season_id: $season_id
+        _source: $source
         _player_steam_id: $player_steam_id
       }
     ) {
@@ -298,6 +305,7 @@ const category = useRouteTab({
 
 const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
 const ROLE_OPTIONS = ["all", "Sniper", "Entry", "Support", "Rifler"] as const;
+const SOURCE_OPTIONS = ["overall", "matchmaking", "tournament", "league"] as const;
 // Categories backed by per-map stats — the only ones the role view can scope.
 const ROLE_CATEGORIES = new Set([
   "best_rating",
@@ -360,6 +368,9 @@ const matchType = ref<string>(
 );
 const excludeTournaments = ref(false);
 const roleFilter = ref<string>(readQueryParam("role", ROLE_OPTIONS, "all"));
+const sourceFilter = ref<string>(
+  readQueryParam("source", SOURCE_OPTIONS, "overall"),
+);
 const supportsRole = computed(() => ROLE_CATEGORIES.has(category.value));
 
 // Default to the current season when seasons are on and one is active; otherwise
@@ -392,6 +403,7 @@ const leaderboardFilterCount = computed(() => {
   if (matchType.value !== "Competitive") n++;
   if (excludeTournaments.value) n++;
   if (supportsRole.value && roleFilter.value !== "all") n++;
+  if (sourceFilter.value !== "overall") n++;
   return n;
 });
 const scopeLabel = computed(() => {
@@ -492,6 +504,7 @@ const queryVariables = computed(() => ({
   exclude_tournaments: Boolean(excludeTournaments.value),
   role:
     supportsRole.value && roleFilter.value !== "all" ? roleFilter.value : null,
+  source: sourceFilter.value,
   limit: perPage.value,
   offset: offset.value,
   order_by: orderBy.value,
@@ -574,6 +587,7 @@ async function alignPageToHighlightedPlayer(): Promise<boolean> {
         season_id: derivedSeasonId.value,
         match_type: matchType.value === "all" ? null : matchType.value,
         exclude_tournaments: Boolean(excludeTournaments.value),
+        source: sourceFilter.value,
         player_steam_id: sid,
       },
       fetchPolicy: "network-only",
@@ -725,6 +739,7 @@ watch(scope, onFilterChange);
 watch(matchType, onFilterChange);
 watch(excludeTournaments, onFilterChange);
 watch(roleFilter, onFilterChange);
+watch(sourceFilter, onFilterChange);
 watch(highlightedSteamId, (sid) => {
   // A different player was deep-linked — re-resolve their page.
   if (sid && sid !== pageAlignedForSteamId) {
@@ -907,6 +922,19 @@ onMounted(async () => {
             <SelectItem value="Duel">{{
               $t("pages.leaderboard.match_types.duel")
             }}</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select v-model="sourceFilter">
+          <SelectTrigger class="h-8 w-[160px]">
+            <SelectValue
+              :placeholder="$t('pages.leaderboard.sources.overall')"
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem v-for="opt of SOURCE_OPTIONS" :key="opt" :value="opt">
+              {{ $t(`pages.leaderboard.sources.${opt}`) }}
+            </SelectItem>
           </SelectContent>
         </Select>
 
@@ -1343,6 +1371,7 @@ onMounted(async () => {
                         steam_id: entry.player_steam_id,
                         name: entry.player_name,
                         avatar_url: entry.player_avatar_url,
+                        custom_avatar_url: entry.player_custom_avatar_url,
                         country: entry.player_country,
                       }"
                       :show-elo="false"

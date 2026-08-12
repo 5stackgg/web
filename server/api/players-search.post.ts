@@ -93,7 +93,11 @@ export default defineEventHandler(async (event) => {
       : `${sortField}:${sortDirection}`;
 
   if (body.registeredOnly || sortField === "last_sign_in_at") {
-    filterBy.push(`last_sign_in_at:!~~`);
+    // Uses the dedicated bool rather than `last_sign_in_at:!~~`. That was a
+    // string-inequality filter against a timestamp, and timestamps contain
+    // ":", "+" and "." -- so it matched unreliably and silently dropped
+    // registered players from results that asked for registered players only.
+    filterBy.push(`is_registered:=true`);
   }
 
   // Filter by team

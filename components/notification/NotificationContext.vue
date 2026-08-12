@@ -8,7 +8,10 @@ import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
-const MATCH_TYPES = ["MatchStatusChange", "MatchSupport"];
+// MatchAbandoned carries the abandoned match's id, so it gets the same match
+// preview -- an admin seeing the alert can tell which match it was without
+// following the link.
+const MATCH_TYPES = ["MatchStatusChange", "MatchSupport", "MatchAbandoned"];
 const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
 const PLAYER_TYPES = ["PlayerSanctioned"];
@@ -313,6 +316,8 @@ export default defineComponent({
               avatar_url: true,
               ranks: {
                 avg_elo: true,
+                avg_wingman_elo: true,
+                avg_duel_elo: true,
                 avg_faceit_level: true,
                 avg_faceit_elo: true,
                 avg_premier: true,
@@ -330,6 +335,8 @@ export default defineComponent({
               avatar_url: true,
               ranks: {
                 avg_elo: true,
+                avg_wingman_elo: true,
+                avg_duel_elo: true,
                 avg_faceit_level: true,
                 avg_faceit_elo: true,
                 avg_premier: true,

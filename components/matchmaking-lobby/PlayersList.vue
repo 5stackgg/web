@@ -43,6 +43,27 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
       </Tooltip>
     </div>
 
+    <!-- Steam friends who have never signed in here are still added, so this
+         hides them without changing who gets synced. -->
+    <button
+      v-if="friendsOnly"
+      type="button"
+      :aria-pressed="registeredFriendsOnly"
+      class="self-start flex h-7 cursor-pointer items-center gap-2 rounded-full border px-3 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
+      :class="
+        registeredFriendsOnly
+          ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+          : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+      "
+      @click="registeredFriendsOnly = !registeredFriendsOnly"
+    >
+      <span
+        class="size-1.5 rounded-full transition-colors duration-150"
+        :class="registeredFriendsOnly ? 'bg-[hsl(var(--tac-amber))]' : 'bg-border'"
+      />
+      {{ $t("search.registered_only") }}
+    </button>
+
     <div class="flex flex-col gap-4">
       <!-- Incoming friend requests (friends tab) -->
       <section v-if="friendsOnly && incomingRequests.length > 0">
@@ -166,6 +187,16 @@ export default {
     },
     onlinePlayers() {
       return useMatchmakingStore().playersOnline;
+    },
+    // Writable so the toggle drives the store's own ref, keeping both the
+    // online and offline lists in step.
+    registeredFriendsOnly: {
+      get(): boolean {
+        return useMatchmakingStore().registeredFriendsOnly;
+      },
+      set(value: boolean) {
+        useMatchmakingStore().registeredFriendsOnly = value;
+      },
     },
     onlineFriends() {
       return useMatchmakingStore().onlineFriends;

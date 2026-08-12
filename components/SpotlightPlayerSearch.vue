@@ -57,6 +57,10 @@ onUnmounted(() => {
 });
 
 const searchToken = ref(0);
+// Off by default: any Steam account stays findable. This narrows results to
+// people who have actually signed in here, for when you're looking for someone
+// you can invite rather than just look up.
+const registeredOnly = ref(false);
 
 const debouncedSearch = debounce(async (searchQuery: string) => {
   // A slower earlier keystroke must not clobber a newer result set.
@@ -75,6 +79,7 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
       body: {
         query: searchQuery,
         per_page: 10,
+        registeredOnly: registeredOnly.value,
       },
     });
 
@@ -94,6 +99,9 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
       is_banned: document.is_banned,
       is_muted: document.is_muted,
       is_gagged: document.is_gagged,
+      // Whether they have ever signed in here, as opposed to a Steam account we
+      // only know about. Every player stays searchable either way.
+      is_registered: document.is_registered,
       elo: {
         competitive: document.elo_competitive,
         wingman: document.elo_wingman,
@@ -116,6 +124,11 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
 watch(query, (newQuery) => {
   selectedIndex.value = 0; // Reset selection when query changes
   debouncedSearch(newQuery);
+});
+
+watch(registeredOnly, () => {
+  selectedIndex.value = 0;
+  debouncedSearch(query.value);
 });
 
 const selectPlayer = (player: any) => {
@@ -195,6 +208,26 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               class="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base px-0 h-auto"
               autofocus
             />
+
+            <button
+              type="button"
+              :aria-pressed="registeredOnly"
+              class="shrink-0 flex h-7 cursor-pointer items-center gap-2 rounded-full border px-3 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
+              :class="
+                registeredOnly
+                  ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                  : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+              "
+              @click="registeredOnly = !registeredOnly"
+            >
+              <span
+                class="size-1.5 rounded-full transition-colors duration-150"
+                :class="
+                  registeredOnly ? 'bg-[hsl(var(--tac-amber))]' : 'bg-border'
+                "
+              />
+              {{ $t("search.registered_only") }}
+            </button>
           </div>
 
           <!-- Results -->
@@ -231,6 +264,15 @@ const closeOnOverlayClick = (event: MouseEvent) => {
                 @mouseenter="selectedIndex = index"
               >
                 <PlayerDisplay :player="player" />
+                <!-- A Steam account we know of but who has never signed in
+                     here. Still searchable -- this only sets expectations about
+                     what their profile will have on it. -->
+                <span
+                  v-if="player.is_registered === false"
+                  class="ml-auto shrink-0 rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-muted-foreground"
+                >
+                  {{ $t("search.unregistered") }}
+                </span>
               </div>
             </div>
           </div>

@@ -7,6 +7,24 @@ import TimeAgo from "../TimeAgo.vue";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
 
+// Both the ban expiry and the matchmaking cooldown are timestamps. Rendered in
+// the viewer's own locale and timezone -- a raw ISO string is unreadable, and
+// the cooldown was previously passed to the message but never shown at all.
+// Takes unknown because the generated timestamptz scalar is untyped, so the
+// value arrives as {} rather than a string.
+const formatBanExpiry = (value: unknown) => {
+  const date = value instanceof Date ? value : new Date(String(value));
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
 const mmCardBase =
   "group/mmc relative flex flex-col flex-1 min-h-[120px] px-[1.1rem] pt-4 pb-5 text-left cursor-pointer overflow-hidden isolate border border-border text-foreground [background:linear-gradient(135deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.35)_60%,hsl(var(--tac-amber)/0.05)_100%)] [transition:border-color_180ms_ease,background_220ms_ease,box-shadow_220ms_ease] hover:border-[hsl(var(--tac-amber)/0.55)] hover:[background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--card)/0.45)_55%,hsl(var(--tac-amber)/0.12)_100%)] hover:shadow-[0_0_24px_hsl(var(--tac-amber)/0.12)] focus-visible:outline-none focus-visible:border-[hsl(var(--tac-amber))] focus-visible:shadow-[0_0_0_2px_hsl(var(--tac-amber)/0.35)]";
 
@@ -50,7 +68,15 @@ function releaseSwapHeight(el: Element): void {
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
-          {{ $t("matchmaking.banned") }}
+          <!-- No date means the ban is permanent, so there is nothing to
+               count towards -- fall back to the plain message. -->
+          {{
+            me.banned_until
+              ? $t("matchmaking.banned_until", {
+                  time: formatBanExpiry(me.banned_until),
+                })
+              : $t("matchmaking.banned")
+          }}
         </AlertDescription>
       </Alert>
     </template>
@@ -60,7 +86,7 @@ function releaseSwapHeight(el: Element): void {
           <AlertTriangle class="h-4 w-4" />
           {{
             $t("matchmaking.temp_banned", {
-              time: me.matchmaking_cooldown,
+              time: formatBanExpiry(me.matchmaking_cooldown),
             })
           }}
         </AlertDescription>

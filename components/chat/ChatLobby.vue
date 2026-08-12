@@ -331,6 +331,9 @@ export default {
       validator: (value: string) =>
         [
           "match",
+          // One side of a match, keyed `${matchId}:${lineupId}`. Distinct from
+          // "team", which is a real team's permanent room.
+          "match_team",
           "team",
           "matchmaking",
           "organizers",

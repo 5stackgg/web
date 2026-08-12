@@ -411,8 +411,21 @@ const vsBaseClasses =
           >
             <AlertTriangle class="w-2.5 h-2.5 shrink-0" />
             <span>{{ $t("match.auto_canceling") }}</span>
-            <TimeAgo :date="match.cancels_at" hide-icon />
+            <TimeAgo :date="match.cancels_at" countdown hide-icon />
           </span>
+          <span
+            v-if="demoProcessingStartedAt"
+            class="inline-flex items-center gap-[0.3rem] text-[0.6rem] leading-none tracking-[0.12em]"
+            :title="$t('match.demo_processing')"
+          >
+            <span>{{ $t("match.demo_processing") }}</span>
+            <TimeAgo :date="demoProcessingStartedAt" seconds hide-icon />
+          </span>
+          <span
+            v-if="demoProcessingStartedAt && isNative && match.options?.best_of"
+            class="opacity-40"
+            >·</span
+          >
           <span
             v-if="showAutoCancel && isNative && match.options?.best_of"
             class="opacity-40"
@@ -466,6 +479,17 @@ const vsBaseClasses =
             :lobby-id="match.id"
             :play-notification-sound="match.status !== e_match_status_enum.Live"
             v-if="canJoinLobby"
+          />
+        </PageTransition>
+
+        <PageTransition :delay="200">
+          <ChatLobby
+            class="max-h-96"
+            instance="matches/id"
+            type="match_team"
+            :lobby-id="`${match.id}:${myLineupId}`"
+            :play-notification-sound="match.status !== e_match_status_enum.Live"
+            v-if="myLineupId"
           />
         </PageTransition>
 
@@ -712,6 +736,7 @@ export default {
                   lineup_2_side: true,
                   map: mapFields,
                   is_current_map: true,
+                  demo_processing_started_at: true,
                   demos_total_size: true,
                   demos_download_url: true,
                   status: true,
@@ -936,6 +961,20 @@ export default {
     tournamentContext() {
       return this.match?.tournament_brackets?.[0]?.stage?.tournament ?? null;
     },
+    // Anchored on the server's own timestamp, so a refresh keeps counting from
+    // when processing actually began rather than restarting at page load.
+    // Deliberately elapsed time, not a countdown: how long demo upload takes
+    // depends on tv_delay and transfer speed, so any predicted finish would be
+    // a guess that goes stale the moment it is wrong.
+    demoProcessingStartedAt() {
+      const processing = (this.match?.match_maps ?? []).find(
+        (matchMap: any) =>
+          matchMap.demo_processing_started_at &&
+          ["WaitingForTV", "UploadingDemo"].includes(matchMap.status),
+      );
+
+      return processing?.demo_processing_started_at ?? null;
+    },
     showAutoCancel() {
       return (
         this.match?.cancels_at &&
@@ -1001,6 +1040,24 @@ export default {
       return useApplicationSettingsStore().availableRegions.filter((region) => {
         return region.is_lan === false;
       });
+    },
+    // The lineup this viewer plays for, or coaches. Organizers and spectators
+    // get nothing -- team chat is private to the side actually playing. The API
+    // re-checks this on join; this only decides what to render.
+    myLineupId() {
+      if (!this.match) {
+        return null;
+      }
+
+      const mySteamId = useAuthStore().me?.steam_id;
+
+      const mine = [this.match.lineup_1, this.match.lineup_2].find(
+        (lineup) =>
+          lineup?.is_on_lineup ||
+          (mySteamId && lineup?.coach?.steam_id === mySteamId),
+      );
+
+      return mine?.id ?? null;
     },
     canJoinLobby() {
       if (!this.match) {

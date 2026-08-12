@@ -2981,6 +2981,12 @@
         "Support": "Support",
         "Rifler": "Rifler"
       },
+      "sources": {
+        "overall": "All Sources",
+        "matchmaking": "Matchmaking",
+        "tournament": "Tournament",
+        "league": "League"
+      },
       "columns": {
         "rank": "#",
         "matches": "Matches"
@@ -4850,6 +4856,7 @@
     },
     "winner": {
       "set": "Set Match Winner",
+      "set_failed": "Could not set match winner",
       "select_lineup": "Select Lineup"
     },
     "map_winner": {
@@ -4902,6 +4909,7 @@
       "picked": "Picked"
     },
     "auto_canceling": "Auto Canceling",
+    "demo_processing": "Processing demo",
     "actions": {
       "call_support": "Call for Support",
       "start_veto": "Start Veto",
@@ -5688,9 +5696,10 @@
       "title": "Others"
     },
     "banned": "You are banned from matchmaking",
+    "banned_until": "You are banned from matchmaking until {time}",
     "confirm_selection": "Join Queue",
     "in_queue": "in queue",
-    "temp_banned": "You are temporarily banned from matchmaking",
+    "temp_banned": "You are temporarily banned from matchmaking until {time}",
     "settings_section": {
       "toggle": "Adjust Settings"
     },
@@ -7190,5 +7199,9 @@
   "awards_manage_form": {
     "team": "Team",
     "player": "Player"
+  },
+  "search": {
+    "unregistered": "Not registered",
+    "registered_only": "Registered only"
   }
 }

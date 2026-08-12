@@ -93,6 +93,8 @@ function teamRanks(row: TeamSeasonRow) {
     players.map(fn).filter((v): v is number => v != null);
   return {
     avg_elo: avg(nums((p) => p.elo?.competitive)),
+    avg_wingman_elo: avg(nums((p) => p.elo?.wingman)),
+    avg_duel_elo: avg(nums((p) => p.elo?.duel)),
     avg_premier: avg(nums((p) => p.premier_rank)),
     avg_faceit_elo: avg(nums((p) => p.faceit_elo)),
     avg_faceit_level: avg(nums((p) => p.faceit_skill_level)),

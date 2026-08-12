@@ -92,6 +92,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Counts down to a future date instead of up from a past one. `seconds`
+    // alone renders now - date, which goes negative for anything upcoming.
+    countdown: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
     hideIcon: {
       required: false,
       type: Boolean,
@@ -129,7 +136,10 @@ export default {
   methods: {
     attach() {
       if (this.unsubscribe) return;
-      this.unsubscribe = subscribe(this.seconds, () => this.updateText());
+      this.unsubscribe = subscribe(
+        this.seconds || this.countdown,
+        () => this.updateText(),
+      );
     },
     detach() {
       this.unsubscribe?.();
@@ -142,6 +152,24 @@ export default {
         this.text = "";
         return;
       }
+      if (this.countdown) {
+        const remaining = Math.max(
+          0,
+          Math.floor((time.getTime() - Date.now()) / 1000),
+        );
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const seconds = remaining % 60;
+
+        this.text =
+          hours > 0
+            ? `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+                .toString()
+                .padStart(2, "0")}`
+            : `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        return;
+      }
+
       time.setSeconds(time.getSeconds() - 1);
 
       if (this.seconds) {

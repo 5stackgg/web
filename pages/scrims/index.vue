@@ -225,6 +225,8 @@ export default {
                 avatar_url: true,
                 ranks: {
                   avg_elo: true,
+                  avg_wingman_elo: true,
+                  avg_duel_elo: true,
                   min_elo: true,
                   max_elo: true,
                   avg_faceit_level: true,

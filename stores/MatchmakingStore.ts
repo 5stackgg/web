@@ -111,6 +111,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
             presence_updated_at: true,
             player: {
               steam_id: true,
+              is_registered: true,
               is_in_lobby: true,
               is_in_another_match: true,
               is_in_draft: true,
@@ -256,15 +257,24 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     onlinePlayerSteamIds.value.includes(friend.steam_id) ||
     isInCs2(friend.last_presence_state);
 
+  // Steam friends who have never signed in here still land in the list, since
+  // being Steam friends is enough to be added. Off by default so nobody
+  // silently loses people they expect to see.
+  const registeredFriendsOnly = ref(false);
+
+  const isListedFriend = (friend: any) =>
+    friend.status !== "Pending" &&
+    (!registeredFriendsOnly.value || friend.player?.is_registered !== false);
+
   const onlineFriends = computed(() => {
     return friends.value?.filter(
-      (friend: any) => friend.status !== "Pending" && isActiveFriend(friend),
+      (friend: any) => isListedFriend(friend) && isActiveFriend(friend),
     );
   });
 
   const offlineFriends = computed(() => {
     return friends.value?.filter(
-      (friend: any) => friend.status !== "Pending" && !isActiveFriend(friend),
+      (friend: any) => isListedFriend(friend) && !isActiveFriend(friend),
     );
   });
 
@@ -620,6 +630,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     friends,
     onlineFriends,
     offlineFriends,
+    registeredFriendsOnly,
     lobbies,
     currentLobby,
     regionStats,

@@ -927,6 +927,141 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </div>
                   </FormItem>
                 </FormField>
+
+              </div>
+            </Card>
+
+            <!-- Cameras get their own module rather than another row in the
+                 advanced list: it is the one setting that changes what players
+                 must do before they can play, and an organizer needs to see at
+                 a glance whether this match is armed. -->
+            <Card
+              v-if="canSetCameraRequired"
+              class="overflow-hidden transition-colors duration-300"
+              :class="
+                cameraArmed
+                  ? 'border-[hsl(var(--tac-amber)/0.55)] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.12),0_0_40px_-16px_hsl(var(--tac-amber)/0.5)]'
+                  : ''
+              "
+            >
+              <div
+                class="flex items-center gap-2 border-b px-4 py-2.5 transition-colors duration-300"
+                :class="
+                  cameraArmed
+                    ? 'border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.07)]'
+                    : 'border-border bg-muted/30'
+                "
+              >
+                <span class="relative inline-flex h-2 w-2 shrink-0">
+                  <span
+                    v-if="cameraArmed"
+                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber)/0.75)]"
+                  ></span>
+                  <span
+                    class="relative inline-flex h-2 w-2 rounded-full transition-colors duration-300"
+                    :class="
+                      cameraArmed
+                        ? 'bg-[hsl(var(--tac-amber))]'
+                        : 'bg-muted-foreground/40'
+                    "
+                  ></span>
+                </span>
+                <h3
+                  class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition-colors duration-300"
+                  :class="
+                    cameraArmed
+                      ? 'text-[hsl(var(--tac-amber))]'
+                      : 'text-muted-foreground'
+                  "
+                >
+                  {{ $t("match.options.cameras.title") }}
+                </h3>
+              </div>
+
+              <div class="space-y-5 p-4">
+                <FormField v-slot="{ value, handleChange }" name="camera_required">
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between gap-4"
+                      :class="
+                        camerasAvailable
+                          ? 'cursor-pointer'
+                          : 'cursor-not-allowed opacity-60'
+                      "
+                      @click="camerasAvailable && handleChange(!value)"
+                    >
+                      <div class="space-y-1">
+                        <SettingHeader>{{
+                          $t("match.options.cameras.required.label")
+                        }}</SettingHeader>
+                        <FormDescription>{{
+                          camerasAvailable
+                            ? $t("match.options.cameras.required.description")
+                            : $t("match.options.cameras.required.unavailable")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :disabled="!camerasAvailable"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
+
+                <!-- Indented and dimmed while cameras are not required: letting
+                     teammates watch a feed nobody has to publish means nothing. -->
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="camera_allow_teammates"
+                >
+                  <FormItem>
+                    <div
+                      class="border-l-2 pl-4 transition-colors duration-300"
+                      :class="
+                        cameraArmed
+                          ? 'border-[hsl(var(--tac-amber)/0.4)]'
+                          : 'border-border'
+                      "
+                    >
+                      <div
+                        class="flex flex-row items-center justify-between gap-4"
+                        :class="
+                          cameraArmed
+                            ? 'cursor-pointer'
+                            : 'cursor-not-allowed opacity-50'
+                        "
+                        @click="cameraArmed && handleChange(!value)"
+                      >
+                        <div class="space-y-1">
+                          <SettingHeader>{{
+                            $t("match.options.cameras.teammates.label")
+                          }}</SettingHeader>
+                          <FormDescription>{{
+                            $t("match.options.cameras.teammates.description")
+                          }}</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            class="pointer-events-none"
+                            :disabled="!cameraArmed"
+                            :model-value="value"
+                            @update:model-value="handleChange"
+                          />
+                        </FormControl>
+                      </div>
+                    </div>
+                  </FormItem>
+                </FormField>
+
+                <p
+                  class="border-t pt-3 font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground/70"
+                >
+                  {{ $t("match.options.cameras.privacy_note") }}
+                </p>
               </div>
             </Card>
 
@@ -1235,7 +1370,10 @@ import {
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
-import { canSetVetoPickTimeout } from "~/utilities/setupOptions";
+import {
+  canSetCameraRequired,
+  canSetVetoPickTimeout,
+} from "~/utilities/setupOptions";
 
 interface Map {
   id: string;
@@ -1698,6 +1836,17 @@ export default {
     },
     canSetVetoPickTimeout() {
       return canSetVetoPickTimeout();
+    },
+    canSetCameraRequired() {
+      return canSetCameraRequired();
+    },
+    camerasAvailable() {
+      return useApplicationSettingsStore().playerCamerasEnabled;
+    },
+    // Drives the whole module's lit/dormant treatment, and gates the teammate
+    // toggle: allowing teammates to watch feeds nobody publishes is a no-op.
+    cameraArmed() {
+      return this.camerasAvailable && !!this.form.values.camera_required;
     },
     canSetMatchCancellation() {
       return useAuthStore().isRoleAbove(

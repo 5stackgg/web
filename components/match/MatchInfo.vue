@@ -25,6 +25,7 @@ import { matchIneligiblePlayers } from "~/utilities/matchIneligiblePlayers";
     <QuickMatchConnect
       :match="match"
       :hide-booting="hideBooting"
+      :camera-ready="cameraReady"
       v-if="showQuickConnectSection"
     />
 
@@ -68,6 +69,10 @@ export default {
     // In the draft room the booting state is shown by the maps/"Match Starting"
     // panel, so suppress QuickMatchConnect's duplicate booting spinner there.
     hideBooting: {
+      type: Boolean,
+      default: false,
+    },
+    cameraReady: {
       type: Boolean,
       default: false,
     },

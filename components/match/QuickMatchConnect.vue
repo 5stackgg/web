@@ -169,6 +169,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Owned by the match page, which flips it once CameraRequirementOverlay
+    // confirms this viewer's own camera is live.
+    cameraReady: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -199,7 +205,16 @@ export default {
       return this.isAssignedOnDemandServerBooting && !this.hideBooting;
     },
     showConnectPanel() {
-      return !!this.me && this.isLive;
+      return !!this.me && this.isLive && !this.blockedByCamera;
+    },
+    // A rostered player has to publish a camera before the server details are
+    // shown. Coaches and organizers never publish, so they are never blocked.
+    blockedByCamera() {
+      return (
+        !!this.match.options?.camera_required &&
+        !!this.match.is_in_lineup &&
+        !this.cameraReady
+      );
     },
     me() {
       return useAuthStore().me;

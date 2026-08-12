@@ -1647,6 +1647,14 @@
           "minimum_role_to_spectate_description": "Real-time spectator — connects directly to the game server with no delay. Restrict to trusted roles to prevent ghosting.",
           "require_login_section": "Require Sign-In to View Live Streams",
           "require_login_description": "Hide live game streams from signed-out visitors. Discourages cheating by ensuring every viewer is an identifiable account.",
+          "player_cameras_section": "Player Cameras",
+          "player_cameras_description": "Lets organizers require a webcam for a match and watch the feeds live. Needs MediaMTX deployed and reachable over WebRTC from outside your network.",
+          "camera_default": "Require Webcam by Default",
+          "camera_default_description": "New matches start with Require Webcam turned on. Each match can still override it.",
+          "teammates_default": "Teammates Can Watch by Default",
+          "teammates_default_description": "New matches start with teammate viewing turned on. The opposing team is never included.",
+          "voice_chat_section": "Party Voice Chat",
+          "voice_chat_description": "Lets players talk to each other in a matchmaking party. Uses the same WebRTC path as player cameras.",
           "playcast": "Playcast",
           "playcast_description": "Enable Playcast over using TV ports directly. ",
           "playcast_learn_more": "Learn more",
@@ -3513,6 +3521,10 @@
       "create_lobby_description": "Create a lobby to invite friends and queue together.",
       "create_lobby_button": "Create Lobby",
       "voice_discord": "Voice & Discord",
+      "join_voice": "Join Voice",
+      "leave_voice": "Leave",
+      "mute": "Mute",
+      "unmute": "Unmute",
       "discord_linked": "Discord Linked",
       "link_discord": "Link Discord",
       "find_match": "Find a Match"
@@ -4656,7 +4668,20 @@
       "ready_setting": "Ready Setting",
       "check_in_setting": "Check In Setting",
       "advanced_settings": "Show Advanced Settings",
-      "default_player_models": "Default Player Models"
+      "default_player_models": "Default Player Models",
+      "cameras": {
+        "title": "Player Cameras",
+        "required": {
+          "label": "Require Webcam",
+          "description": "Players must connect a webcam before the server details are shown, and the match pauses automatically if a feed drops.",
+          "unavailable": "Player cameras are not enabled on this server."
+        },
+        "teammates": {
+          "label": "Teammates Can Watch",
+          "description": "Let players see the cameras of their own team."
+        },
+        "privacy_note": "The opposing team can never see these feeds. Organizers playing in this match cannot see any of them."
+      }
     },
     "schedule": {
       "schedule": "Schedule",
@@ -4952,7 +4977,8 @@
       "resume_renders_started": "Resuming highlight renders",
       "clips_started": "Player highlight renders queued",
       "reparse_demos": "Reparse Match Demos",
-      "reparse_demos_started": "Reparsing all demos for this match"
+      "reparse_demos_started": "Reparsing all demos for this match",
+      "watch_camera": "Watch Cameras"
     },
     "delete_confirm": {
       "title": "Delete Match",
@@ -7208,5 +7234,28 @@
     "unregistered": "Not registered",
     "registered_only": "Registered only",
     "registered": "Registered"
+  },
+  "camera": {
+    "title": "Camera Required",
+    "subtitle": "This match requires a webcam before you can see the server details.",
+    "choose_mobile": "Use my phone",
+    "choose_pc": "Use this computer",
+    "scan": "Scan this code with your phone",
+    "waiting": "Waiting for your camera…",
+    "preparing": "Preparing your camera link…",
+    "back": "Back",
+    "connect": "Connect camera",
+    "connecting": "Connecting…",
+    "connected": "Your camera is live",
+    "keep_open": "Keep this page open for the rest of the match.",
+    "flip": "Flip camera",
+    "error": "Could not start your camera",
+    "retry": "Try again",
+    "admin_title": "Player Cameras",
+    "admin_empty": "No players on this match.",
+    "call": "Video call",
+    "end_call": "End call",
+    "offline": "Not connected",
+    "stalled": "Feed stalled"
   }
 }

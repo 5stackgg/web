@@ -9,6 +9,7 @@ import {
   Scissors,
   Square,
   Trash2,
+  Video,
   XCircle,
 } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
@@ -255,6 +256,11 @@ import {
           "
         />
 
+        <DropdownMenuItem v-if="canWatchCameras" @click="openCameraGrid">
+          <Video class="text-muted-foreground" />
+          <span>{{ $t("match.actions.watch_camera") }}</span>
+        </DropdownMenuItem>
+
         <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
           <RefreshCw />
           {{ $t("match.actions.reparse_demos") }}
@@ -328,6 +334,7 @@ import {
 
 <script lang="ts">
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import { cameraAdminGridUrl } from "~/composables/useCameraApi";
 import gql from "graphql-tag";
 import { toast } from "@/components/ui/toast";
 
@@ -398,6 +405,14 @@ export default {
     },
   },
   methods: {
+    // Sized for the two-column grid: a full five-player team lays out 2-2-1.
+    openCameraGrid() {
+      window.open(
+        cameraAdminGridUrl(this.match.id),
+        "camera-admin-grid",
+        "width=760,height=780",
+      );
+    },
     async cancelMatch() {
       if (this.cancellingMatch) {
         return;
@@ -892,6 +907,16 @@ export default {
       return (
         this.match.status !== e_match_status_enum.Live &&
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
+      );
+    },
+    // Mirrors CameraService.assertCanWatch: administrators, or an organizer of
+    // this specific match -- not the global tournament_organizer role, which
+    // would reach every tournament's cameras rather than just this one.
+    canWatchCameras() {
+      return (
+        !!this.match.options?.camera_required &&
+        (this.match.is_organizer ||
+          useAuthStore().isRoleAbove(e_player_roles_enum.administrator))
       );
     },
     // Reparse-all is admin-only (matches the Hasura action permission) and

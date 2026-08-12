@@ -18061,6 +18061,185 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** filter the rows which have to be updated */
 	where: ValueTypes["maps_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "match_camera_tokens" */
+["match_camera_tokens"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ValueTypes["matches"],
+	match_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	token?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "match_camera_tokens" */
+["match_camera_tokens_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["match_camera_tokens_aggregate_fields"],
+	nodes?:ValueTypes["match_camera_tokens"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "match_camera_tokens" */
+["match_camera_tokens_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["match_camera_tokens_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["match_camera_tokens_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["match_camera_tokens_max_fields"],
+	min?:ValueTypes["match_camera_tokens_min_fields"],
+	stddev?:ValueTypes["match_camera_tokens_stddev_fields"],
+	stddev_pop?:ValueTypes["match_camera_tokens_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["match_camera_tokens_stddev_samp_fields"],
+	sum?:ValueTypes["match_camera_tokens_sum_fields"],
+	var_pop?:ValueTypes["match_camera_tokens_var_pop_fields"],
+	var_samp?:ValueTypes["match_camera_tokens_var_samp_fields"],
+	variance?:ValueTypes["match_camera_tokens_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["match_camera_tokens_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "match_camera_tokens". All fields are combined with a logical 'AND'. */
+["match_camera_tokens_bool_exp"]: {
+	_and?: Array<ValueTypes["match_camera_tokens_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["match_camera_tokens_bool_exp"]> | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	token?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "match_camera_tokens" */
+["match_camera_tokens_constraint"]:match_camera_tokens_constraint;
+	/** input type for incrementing numeric columns in table "match_camera_tokens" */
+["match_camera_tokens_inc_input"]: {
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "match_camera_tokens" */
+["match_camera_tokens_insert_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	token?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["match_camera_tokens_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	token?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["match_camera_tokens_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	token?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "match_camera_tokens" */
+["match_camera_tokens_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["match_camera_tokens"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "match_camera_tokens" */
+["match_camera_tokens_on_conflict"]: {
+	constraint: ValueTypes["match_camera_tokens_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["match_camera_tokens_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "match_camera_tokens". */
+["match_camera_tokens_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	token?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: match_camera_tokens */
+["match_camera_tokens_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "match_camera_tokens" */
+["match_camera_tokens_select_column"]:match_camera_tokens_select_column;
+	/** input type for updating data in table "match_camera_tokens" */
+["match_camera_tokens_set_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	token?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["match_camera_tokens_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["match_camera_tokens_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["match_camera_tokens_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "match_camera_tokens" */
+["match_camera_tokens_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["match_camera_tokens_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["match_camera_tokens_stream_cursor_value_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	token?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["match_camera_tokens_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "match_camera_tokens" */
+["match_camera_tokens_update_column"]:match_camera_tokens_update_column;
+	["match_camera_tokens_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_camera_tokens_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_camera_tokens_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["match_camera_tokens_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["match_camera_tokens_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["match_camera_tokens_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["match_camera_tokens_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "match_clips" */
 ["match_clips"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -21649,6 +21828,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	auto_cancel_duration?:boolean | `@${string}`,
 	auto_cancellation?:boolean | `@${string}`,
 	best_of?:boolean | `@${string}`,
+	camera_allow_teammates?:boolean | `@${string}`,
+	camera_required?:boolean | `@${string}`,
 	check_in_setting?:boolean | `@${string}`,
 	coaches?:boolean | `@${string}`,
 	default_models?:boolean | `@${string}`,
@@ -21738,6 +21919,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	auto_cancellation?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	best_of?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	camera_required?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	coaches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	default_models?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -21788,6 +21971,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: number | undefined | null | Variable<any, string>,
 	auto_cancellation?: boolean | undefined | null | Variable<any, string>,
 	best_of?: number | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: boolean | undefined | null | Variable<any, string>,
+	camera_required?: boolean | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	default_models?: boolean | undefined | null | Variable<any, string>,
@@ -21875,6 +22060,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	auto_cancellation?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	camera_required?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	coaches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	default_models?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -21917,6 +22104,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: number | undefined | null | Variable<any, string>,
 	auto_cancellation?: boolean | undefined | null | Variable<any, string>,
 	best_of?: number | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: boolean | undefined | null | Variable<any, string>,
+	camera_required?: boolean | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	default_models?: boolean | undefined | null | Variable<any, string>,
@@ -21990,6 +22179,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: number | undefined | null | Variable<any, string>,
 	auto_cancellation?: boolean | undefined | null | Variable<any, string>,
 	best_of?: number | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: boolean | undefined | null | Variable<any, string>,
+	camera_required?: boolean | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	default_models?: boolean | undefined | null | Variable<any, string>,
@@ -24125,6 +24316,9 @@ delete_map_pools_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},Valu
 delete_maps?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["maps_bool_exp"] | Variable<any, string>},ValueTypes["maps_mutation_response"]],
 delete_maps_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["maps"]],
+delete_match_camera_tokens?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["match_camera_tokens_bool_exp"] | Variable<any, string>},ValueTypes["match_camera_tokens_mutation_response"]],
+delete_match_camera_tokens_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_camera_tokens"]],
 delete_match_clips?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["match_clips_bool_exp"] | Variable<any, string>},ValueTypes["match_clips_mutation_response"]],
 delete_match_clips_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_clips"]],
@@ -24843,6 +25037,12 @@ insert_maps?: [{	/** the rows to be inserted */
 insert_maps_one?: [{	/** the row to be inserted */
 	object: ValueTypes["maps_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["maps_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["maps"]],
+insert_match_camera_tokens?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["match_camera_tokens_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["match_camera_tokens_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens_mutation_response"]],
+insert_match_camera_tokens_one?: [{	/** the row to be inserted */
+	object: ValueTypes["match_camera_tokens_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["match_camera_tokens_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens"]],
 insert_match_clips?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["match_clips_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["match_clips_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_clips_mutation_response"]],
@@ -26101,6 +26301,15 @@ update_maps_by_pk?: [{	/** sets the columns of the filtered rows to the given va
 	_set?: ValueTypes["maps_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["maps_pk_columns_input"] | Variable<any, string>},ValueTypes["maps"]],
 update_maps_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["maps_updates"]> | Variable<any, string>},ValueTypes["maps_mutation_response"]],
+update_match_camera_tokens?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_camera_tokens_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_camera_tokens_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["match_camera_tokens_bool_exp"] | Variable<any, string>},ValueTypes["match_camera_tokens_mutation_response"]],
+update_match_camera_tokens_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_camera_tokens_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_camera_tokens_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_camera_tokens_pk_columns_input"] | Variable<any, string>},ValueTypes["match_camera_tokens"]],
+update_match_camera_tokens_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["match_camera_tokens_updates"]> | Variable<any, string>},ValueTypes["match_camera_tokens_mutation_response"]],
 update_match_clips?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["match_clips_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["match_clips_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -43218,6 +43427,19 @@ maps_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["maps_aggregate"]],
 maps_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["maps"]],
+match_camera_tokens?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_camera_tokens_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_camera_tokens_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens"]],
+match_camera_tokens_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_camera_tokens_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_camera_tokens_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens_aggregate"]],
+match_camera_tokens_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_camera_tokens"]],
 match_clips?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_clips_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -47590,6 +47812,23 @@ maps_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["maps_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["maps"]],
+match_camera_tokens?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_camera_tokens_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_camera_tokens_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens"]],
+match_camera_tokens_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_camera_tokens_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_camera_tokens_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens_aggregate"]],
+match_camera_tokens_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_camera_tokens"]],
+match_camera_tokens_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["match_camera_tokens_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_camera_tokens_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_camera_tokens"]],
 match_clips?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_clips_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -83150,6 +83389,185 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["maps_bool_exp"]
 };
+	/** columns and relationships of "match_camera_tokens" */
+["match_camera_tokens"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ResolverInputTypes["matches"],
+	match_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	token?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "match_camera_tokens" */
+["match_camera_tokens_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["match_camera_tokens_aggregate_fields"],
+	nodes?:ResolverInputTypes["match_camera_tokens"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "match_camera_tokens" */
+["match_camera_tokens_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["match_camera_tokens_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["match_camera_tokens_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["match_camera_tokens_max_fields"],
+	min?:ResolverInputTypes["match_camera_tokens_min_fields"],
+	stddev?:ResolverInputTypes["match_camera_tokens_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["match_camera_tokens_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["match_camera_tokens_stddev_samp_fields"],
+	sum?:ResolverInputTypes["match_camera_tokens_sum_fields"],
+	var_pop?:ResolverInputTypes["match_camera_tokens_var_pop_fields"],
+	var_samp?:ResolverInputTypes["match_camera_tokens_var_samp_fields"],
+	variance?:ResolverInputTypes["match_camera_tokens_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["match_camera_tokens_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "match_camera_tokens". All fields are combined with a logical 'AND'. */
+["match_camera_tokens_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["match_camera_tokens_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["match_camera_tokens_bool_exp"]> | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	token?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "match_camera_tokens" */
+["match_camera_tokens_constraint"]:match_camera_tokens_constraint;
+	/** input type for incrementing numeric columns in table "match_camera_tokens" */
+["match_camera_tokens_inc_input"]: {
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "match_camera_tokens" */
+["match_camera_tokens_insert_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	token?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["match_camera_tokens_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	token?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["match_camera_tokens_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	token?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "match_camera_tokens" */
+["match_camera_tokens_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["match_camera_tokens"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "match_camera_tokens" */
+["match_camera_tokens_on_conflict"]: {
+	constraint: ResolverInputTypes["match_camera_tokens_constraint"],
+	update_columns: Array<ResolverInputTypes["match_camera_tokens_update_column"]>,
+	where?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "match_camera_tokens". */
+["match_camera_tokens_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	token?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: match_camera_tokens */
+["match_camera_tokens_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "match_camera_tokens" */
+["match_camera_tokens_select_column"]:match_camera_tokens_select_column;
+	/** input type for updating data in table "match_camera_tokens" */
+["match_camera_tokens_set_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	token?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["match_camera_tokens_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["match_camera_tokens_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["match_camera_tokens_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "match_camera_tokens" */
+["match_camera_tokens_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["match_camera_tokens_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["match_camera_tokens_stream_cursor_value_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	token?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["match_camera_tokens_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "match_camera_tokens" */
+["match_camera_tokens_update_column"]:match_camera_tokens_update_column;
+	["match_camera_tokens_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_camera_tokens_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_camera_tokens_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["match_camera_tokens_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_camera_tokens_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["match_camera_tokens_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["match_camera_tokens_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "match_clips" */
 ["match_clips"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -86738,6 +87156,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	auto_cancel_duration?:boolean | `@${string}`,
 	auto_cancellation?:boolean | `@${string}`,
 	best_of?:boolean | `@${string}`,
+	camera_allow_teammates?:boolean | `@${string}`,
+	camera_required?:boolean | `@${string}`,
 	check_in_setting?:boolean | `@${string}`,
 	coaches?:boolean | `@${string}`,
 	default_models?:boolean | `@${string}`,
@@ -86827,6 +87247,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	auto_cancellation?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	best_of?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	camera_allow_teammates?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	camera_required?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null,
 	coaches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	default_models?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -86877,6 +87299,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -86964,6 +87388,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: ResolverInputTypes["order_by"] | undefined | null,
 	auto_cancellation?: ResolverInputTypes["order_by"] | undefined | null,
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
+	camera_allow_teammates?: ResolverInputTypes["order_by"] | undefined | null,
+	camera_required?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_setting?: ResolverInputTypes["order_by"] | undefined | null,
 	coaches?: ResolverInputTypes["order_by"] | undefined | null,
 	default_models?: ResolverInputTypes["order_by"] | undefined | null,
@@ -87006,6 +87432,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -87079,6 +87507,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -89214,6 +89644,9 @@ delete_map_pools_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["
 delete_maps?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["maps_bool_exp"]},ResolverInputTypes["maps_mutation_response"]],
 delete_maps_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["maps"]],
+delete_match_camera_tokens?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["match_camera_tokens_bool_exp"]},ResolverInputTypes["match_camera_tokens_mutation_response"]],
+delete_match_camera_tokens_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_camera_tokens"]],
 delete_match_clips?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["match_clips_bool_exp"]},ResolverInputTypes["match_clips_mutation_response"]],
 delete_match_clips_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_clips"]],
@@ -89932,6 +90365,12 @@ insert_maps?: [{	/** the rows to be inserted */
 insert_maps_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["maps_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["maps_on_conflict"] | undefined | null},ResolverInputTypes["maps"]],
+insert_match_camera_tokens?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["match_camera_tokens_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_camera_tokens_on_conflict"] | undefined | null},ResolverInputTypes["match_camera_tokens_mutation_response"]],
+insert_match_camera_tokens_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["match_camera_tokens_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_camera_tokens_on_conflict"] | undefined | null},ResolverInputTypes["match_camera_tokens"]],
 insert_match_clips?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["match_clips_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_clips_on_conflict"] | undefined | null},ResolverInputTypes["match_clips_mutation_response"]],
@@ -91190,6 +91629,15 @@ update_maps_by_pk?: [{	/** sets the columns of the filtered rows to the given va
 	_set?: ResolverInputTypes["maps_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["maps_pk_columns_input"]},ResolverInputTypes["maps"]],
 update_maps_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["maps_updates"]>},ResolverInputTypes["maps_mutation_response"]],
+update_match_camera_tokens?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_camera_tokens_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_camera_tokens_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["match_camera_tokens_bool_exp"]},ResolverInputTypes["match_camera_tokens_mutation_response"]],
+update_match_camera_tokens_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_camera_tokens_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_camera_tokens_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_camera_tokens_pk_columns_input"]},ResolverInputTypes["match_camera_tokens"]],
+update_match_camera_tokens_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["match_camera_tokens_updates"]>},ResolverInputTypes["match_camera_tokens_mutation_response"]],
 update_match_clips?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["match_clips_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["match_clips_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -108307,6 +108755,19 @@ maps_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["maps_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["maps_bool_exp"] | undefined | null},ResolverInputTypes["maps_aggregate"]],
 maps_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["maps"]],
+match_camera_tokens?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_camera_tokens_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_camera_tokens_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null},ResolverInputTypes["match_camera_tokens"]],
+match_camera_tokens_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_camera_tokens_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_camera_tokens_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null},ResolverInputTypes["match_camera_tokens_aggregate"]],
+match_camera_tokens_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_camera_tokens"]],
 match_clips?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_clips_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -112679,6 +113140,23 @@ maps_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["maps_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["maps_bool_exp"] | undefined | null},ResolverInputTypes["maps"]],
+match_camera_tokens?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_camera_tokens_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_camera_tokens_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null},ResolverInputTypes["match_camera_tokens"]],
+match_camera_tokens_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_camera_tokens_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_camera_tokens_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null},ResolverInputTypes["match_camera_tokens_aggregate"]],
+match_camera_tokens_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_camera_tokens"]],
+match_camera_tokens_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["match_camera_tokens_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_camera_tokens_bool_exp"] | undefined | null},ResolverInputTypes["match_camera_tokens"]],
 match_clips?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_clips_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -146767,6 +147245,168 @@ export type ModelTypes = {
 	/** filter the rows which have to be updated */
 	where: ModelTypes["maps_bool_exp"]
 };
+	/** columns and relationships of "match_camera_tokens" */
+["match_camera_tokens"]: {
+		created_at: ModelTypes["timestamptz"],
+	id: ModelTypes["uuid"],
+	/** An object relationship */
+	match: ModelTypes["matches"],
+	match_id: ModelTypes["uuid"],
+	steam_id: ModelTypes["bigint"],
+	token: ModelTypes["uuid"]
+};
+	/** aggregated selection of "match_camera_tokens" */
+["match_camera_tokens_aggregate"]: {
+		aggregate?: ModelTypes["match_camera_tokens_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["match_camera_tokens"]>
+};
+	/** aggregate fields of "match_camera_tokens" */
+["match_camera_tokens_aggregate_fields"]: {
+		avg?: ModelTypes["match_camera_tokens_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["match_camera_tokens_max_fields"] | undefined | null,
+	min?: ModelTypes["match_camera_tokens_min_fields"] | undefined | null,
+	stddev?: ModelTypes["match_camera_tokens_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["match_camera_tokens_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["match_camera_tokens_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["match_camera_tokens_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["match_camera_tokens_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["match_camera_tokens_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["match_camera_tokens_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["match_camera_tokens_avg_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "match_camera_tokens". All fields are combined with a logical 'AND'. */
+["match_camera_tokens_bool_exp"]: {
+	_and?: Array<ModelTypes["match_camera_tokens_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["match_camera_tokens_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["match_camera_tokens_bool_exp"]> | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	match?: ModelTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	token?: ModelTypes["uuid_comparison_exp"] | undefined | null
+};
+	["match_camera_tokens_constraint"]:match_camera_tokens_constraint;
+	/** input type for incrementing numeric columns in table "match_camera_tokens" */
+["match_camera_tokens_inc_input"]: {
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "match_camera_tokens" */
+["match_camera_tokens_insert_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	token?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["match_camera_tokens_max_fields"]: {
+		created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	token?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate min on columns */
+["match_camera_tokens_min_fields"]: {
+		created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	token?: ModelTypes["uuid"] | undefined | null
+};
+	/** response of any mutation on the table "match_camera_tokens" */
+["match_camera_tokens_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["match_camera_tokens"]>
+};
+	/** on_conflict condition type for table "match_camera_tokens" */
+["match_camera_tokens_on_conflict"]: {
+	constraint: ModelTypes["match_camera_tokens_constraint"],
+	update_columns: Array<ModelTypes["match_camera_tokens_update_column"]>,
+	where?: ModelTypes["match_camera_tokens_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "match_camera_tokens". */
+["match_camera_tokens_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	match?: ModelTypes["matches_order_by"] | undefined | null,
+	match_id?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null,
+	token?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: match_camera_tokens */
+["match_camera_tokens_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["match_camera_tokens_select_column"]:match_camera_tokens_select_column;
+	/** input type for updating data in table "match_camera_tokens" */
+["match_camera_tokens_set_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	token?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["match_camera_tokens_stddev_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["match_camera_tokens_stddev_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["match_camera_tokens_stddev_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "match_camera_tokens" */
+["match_camera_tokens_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["match_camera_tokens_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["match_camera_tokens_stream_cursor_value_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	match_id?: ModelTypes["uuid"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	token?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["match_camera_tokens_sum_fields"]: {
+		steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	["match_camera_tokens_update_column"]:match_camera_tokens_update_column;
+	["match_camera_tokens_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["match_camera_tokens_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["match_camera_tokens_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["match_camera_tokens_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_camera_tokens_var_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["match_camera_tokens_var_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["match_camera_tokens_variance_fields"]: {
+		steam_id?: number | undefined | null
+};
 	/** columns and relationships of "match_clips" */
 ["match_clips"]: {
 		created_at: ModelTypes["timestamptz"],
@@ -150064,6 +150704,8 @@ export type ModelTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation: boolean,
 	best_of: number,
+	camera_allow_teammates: boolean,
+	camera_required: boolean,
 	check_in_setting: ModelTypes["e_check_in_settings_enum"],
 	coaches: boolean,
 	default_models?: boolean | undefined | null,
@@ -150141,6 +150783,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	auto_cancellation?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	best_of?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	camera_allow_teammates?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	camera_required?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null,
 	coaches?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	default_models?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -150190,6 +150834,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -150274,6 +150920,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: ModelTypes["order_by"] | undefined | null,
 	auto_cancellation?: ModelTypes["order_by"] | undefined | null,
 	best_of?: ModelTypes["order_by"] | undefined | null,
+	camera_allow_teammates?: ModelTypes["order_by"] | undefined | null,
+	camera_required?: ModelTypes["order_by"] | undefined | null,
 	check_in_setting?: ModelTypes["order_by"] | undefined | null,
 	coaches?: ModelTypes["order_by"] | undefined | null,
 	default_models?: ModelTypes["order_by"] | undefined | null,
@@ -150315,6 +150963,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -150385,6 +151035,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -152406,6 +153058,10 @@ export type ModelTypes = {
 	delete_maps?: ModelTypes["maps_mutation_response"] | undefined | null,
 	/** delete single row from the table: "maps" */
 	delete_maps_by_pk?: ModelTypes["maps"] | undefined | null,
+	/** delete data from the table: "match_camera_tokens" */
+	delete_match_camera_tokens?: ModelTypes["match_camera_tokens_mutation_response"] | undefined | null,
+	/** delete single row from the table: "match_camera_tokens" */
+	delete_match_camera_tokens_by_pk?: ModelTypes["match_camera_tokens"] | undefined | null,
 	/** delete data from the table: "match_clips" */
 	delete_match_clips?: ModelTypes["match_clips_mutation_response"] | undefined | null,
 	/** delete single row from the table: "match_clips" */
@@ -153030,6 +153686,10 @@ export type ModelTypes = {
 	insert_maps?: ModelTypes["maps_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "maps" */
 	insert_maps_one?: ModelTypes["maps"] | undefined | null,
+	/** insert data into the table: "match_camera_tokens" */
+	insert_match_camera_tokens?: ModelTypes["match_camera_tokens_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "match_camera_tokens" */
+	insert_match_camera_tokens_one?: ModelTypes["match_camera_tokens"] | undefined | null,
 	/** insert data into the table: "match_clips" */
 	insert_match_clips?: ModelTypes["match_clips_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "match_clips" */
@@ -153955,6 +154615,12 @@ export type ModelTypes = {
 	update_maps_by_pk?: ModelTypes["maps"] | undefined | null,
 	/** update multiples rows of table: "maps" */
 	update_maps_many?: Array<ModelTypes["maps_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "match_camera_tokens" */
+	update_match_camera_tokens?: ModelTypes["match_camera_tokens_mutation_response"] | undefined | null,
+	/** update single row of the table: "match_camera_tokens" */
+	update_match_camera_tokens_by_pk?: ModelTypes["match_camera_tokens"] | undefined | null,
+	/** update multiples rows of table: "match_camera_tokens" */
+	update_match_camera_tokens_many?: Array<ModelTypes["match_camera_tokens_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "match_clips" */
 	update_match_clips?: ModelTypes["match_clips_mutation_response"] | undefined | null,
 	/** update single row of the table: "match_clips" */
@@ -169324,6 +169990,12 @@ export type ModelTypes = {
 	maps_aggregate: ModelTypes["maps_aggregate"],
 	/** fetch data from the table: "maps" using primary key columns */
 	maps_by_pk?: ModelTypes["maps"] | undefined | null,
+	/** fetch data from the table: "match_camera_tokens" */
+	match_camera_tokens: Array<ModelTypes["match_camera_tokens"]>,
+	/** fetch aggregated fields from the table: "match_camera_tokens" */
+	match_camera_tokens_aggregate: ModelTypes["match_camera_tokens_aggregate"],
+	/** fetch data from the table: "match_camera_tokens" using primary key columns */
+	match_camera_tokens_by_pk?: ModelTypes["match_camera_tokens"] | undefined | null,
 	/** An array relationship */
 	match_clips: Array<ModelTypes["match_clips"]>,
 	/** An aggregate relationship */
@@ -171994,6 +172666,14 @@ export type ModelTypes = {
 	maps_by_pk?: ModelTypes["maps"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "maps" */
 	maps_stream: Array<ModelTypes["maps"]>,
+	/** fetch data from the table: "match_camera_tokens" */
+	match_camera_tokens: Array<ModelTypes["match_camera_tokens"]>,
+	/** fetch aggregated fields from the table: "match_camera_tokens" */
+	match_camera_tokens_aggregate: ModelTypes["match_camera_tokens_aggregate"],
+	/** fetch data from the table: "match_camera_tokens" using primary key columns */
+	match_camera_tokens_by_pk?: ModelTypes["match_camera_tokens"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "match_camera_tokens" */
+	match_camera_tokens_stream: Array<ModelTypes["match_camera_tokens"]>,
 	/** An array relationship */
 	match_clips: Array<ModelTypes["match_clips"]>,
 	/** An aggregate relationship */
@@ -205067,6 +205747,185 @@ export type GraphQLTypes = {
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["maps_bool_exp"]
 };
+	/** columns and relationships of "match_camera_tokens" */
+["match_camera_tokens"]: {
+	__typename: "match_camera_tokens",
+	created_at: GraphQLTypes["timestamptz"],
+	id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	match: GraphQLTypes["matches"],
+	match_id: GraphQLTypes["uuid"],
+	steam_id: GraphQLTypes["bigint"],
+	token: GraphQLTypes["uuid"]
+};
+	/** aggregated selection of "match_camera_tokens" */
+["match_camera_tokens_aggregate"]: {
+	__typename: "match_camera_tokens_aggregate",
+	aggregate?: GraphQLTypes["match_camera_tokens_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["match_camera_tokens"]>
+};
+	/** aggregate fields of "match_camera_tokens" */
+["match_camera_tokens_aggregate_fields"]: {
+	__typename: "match_camera_tokens_aggregate_fields",
+	avg?: GraphQLTypes["match_camera_tokens_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["match_camera_tokens_max_fields"] | undefined | null,
+	min?: GraphQLTypes["match_camera_tokens_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["match_camera_tokens_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["match_camera_tokens_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["match_camera_tokens_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["match_camera_tokens_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["match_camera_tokens_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["match_camera_tokens_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["match_camera_tokens_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["match_camera_tokens_avg_fields"]: {
+	__typename: "match_camera_tokens_avg_fields",
+	steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "match_camera_tokens". All fields are combined with a logical 'AND'. */
+["match_camera_tokens_bool_exp"]: {
+		_and?: Array<GraphQLTypes["match_camera_tokens_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["match_camera_tokens_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["match_camera_tokens_bool_exp"]> | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
+	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	token?: GraphQLTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "match_camera_tokens" */
+["match_camera_tokens_constraint"]: match_camera_tokens_constraint;
+	/** input type for incrementing numeric columns in table "match_camera_tokens" */
+["match_camera_tokens_inc_input"]: {
+		steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "match_camera_tokens" */
+["match_camera_tokens_insert_input"]: {
+		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	token?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["match_camera_tokens_max_fields"]: {
+	__typename: "match_camera_tokens_max_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	token?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate min on columns */
+["match_camera_tokens_min_fields"]: {
+	__typename: "match_camera_tokens_min_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	token?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** response of any mutation on the table "match_camera_tokens" */
+["match_camera_tokens_mutation_response"]: {
+	__typename: "match_camera_tokens_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["match_camera_tokens"]>
+};
+	/** on_conflict condition type for table "match_camera_tokens" */
+["match_camera_tokens_on_conflict"]: {
+		constraint: GraphQLTypes["match_camera_tokens_constraint"],
+	update_columns: Array<GraphQLTypes["match_camera_tokens_update_column"]>,
+	where?: GraphQLTypes["match_camera_tokens_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "match_camera_tokens". */
+["match_camera_tokens_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	match?: GraphQLTypes["matches_order_by"] | undefined | null,
+	match_id?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	token?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: match_camera_tokens */
+["match_camera_tokens_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "match_camera_tokens" */
+["match_camera_tokens_select_column"]: match_camera_tokens_select_column;
+	/** input type for updating data in table "match_camera_tokens" */
+["match_camera_tokens_set_input"]: {
+		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	token?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["match_camera_tokens_stddev_fields"]: {
+	__typename: "match_camera_tokens_stddev_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["match_camera_tokens_stddev_pop_fields"]: {
+	__typename: "match_camera_tokens_stddev_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["match_camera_tokens_stddev_samp_fields"]: {
+	__typename: "match_camera_tokens_stddev_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "match_camera_tokens" */
+["match_camera_tokens_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["match_camera_tokens_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["match_camera_tokens_stream_cursor_value_input"]: {
+		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	token?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["match_camera_tokens_sum_fields"]: {
+	__typename: "match_camera_tokens_sum_fields",
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** update columns of table "match_camera_tokens" */
+["match_camera_tokens_update_column"]: match_camera_tokens_update_column;
+	["match_camera_tokens_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["match_camera_tokens_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["match_camera_tokens_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["match_camera_tokens_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_camera_tokens_var_pop_fields"]: {
+	__typename: "match_camera_tokens_var_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["match_camera_tokens_var_samp_fields"]: {
+	__typename: "match_camera_tokens_var_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["match_camera_tokens_variance_fields"]: {
+	__typename: "match_camera_tokens_variance_fields",
+	steam_id?: number | undefined | null
+};
 	/** columns and relationships of "match_clips" */
 ["match_clips"]: {
 	__typename: "match_clips",
@@ -208499,6 +209358,8 @@ export type GraphQLTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation: boolean,
 	best_of: number,
+	camera_allow_teammates: boolean,
+	camera_required: boolean,
 	check_in_setting: GraphQLTypes["e_check_in_settings_enum"],
 	coaches: boolean,
 	default_models?: boolean | undefined | null,
@@ -208579,6 +209440,8 @@ export type GraphQLTypes = {
 	auto_cancel_duration?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	auto_cancellation?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	best_of?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	camera_allow_teammates?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	camera_required?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null,
 	coaches?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	default_models?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -208629,6 +209492,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -208716,6 +209581,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: GraphQLTypes["order_by"] | undefined | null,
 	auto_cancellation?: GraphQLTypes["order_by"] | undefined | null,
 	best_of?: GraphQLTypes["order_by"] | undefined | null,
+	camera_allow_teammates?: GraphQLTypes["order_by"] | undefined | null,
+	camera_required?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_setting?: GraphQLTypes["order_by"] | undefined | null,
 	coaches?: GraphQLTypes["order_by"] | undefined | null,
 	default_models?: GraphQLTypes["order_by"] | undefined | null,
@@ -208758,6 +209625,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -208831,6 +209700,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -210923,6 +211794,10 @@ export type GraphQLTypes = {
 	delete_maps?: GraphQLTypes["maps_mutation_response"] | undefined | null,
 	/** delete single row from the table: "maps" */
 	delete_maps_by_pk?: GraphQLTypes["maps"] | undefined | null,
+	/** delete data from the table: "match_camera_tokens" */
+	delete_match_camera_tokens?: GraphQLTypes["match_camera_tokens_mutation_response"] | undefined | null,
+	/** delete single row from the table: "match_camera_tokens" */
+	delete_match_camera_tokens_by_pk?: GraphQLTypes["match_camera_tokens"] | undefined | null,
 	/** delete data from the table: "match_clips" */
 	delete_match_clips?: GraphQLTypes["match_clips_mutation_response"] | undefined | null,
 	/** delete single row from the table: "match_clips" */
@@ -211547,6 +212422,10 @@ export type GraphQLTypes = {
 	insert_maps?: GraphQLTypes["maps_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "maps" */
 	insert_maps_one?: GraphQLTypes["maps"] | undefined | null,
+	/** insert data into the table: "match_camera_tokens" */
+	insert_match_camera_tokens?: GraphQLTypes["match_camera_tokens_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "match_camera_tokens" */
+	insert_match_camera_tokens_one?: GraphQLTypes["match_camera_tokens"] | undefined | null,
 	/** insert data into the table: "match_clips" */
 	insert_match_clips?: GraphQLTypes["match_clips_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "match_clips" */
@@ -212472,6 +213351,12 @@ export type GraphQLTypes = {
 	update_maps_by_pk?: GraphQLTypes["maps"] | undefined | null,
 	/** update multiples rows of table: "maps" */
 	update_maps_many?: Array<GraphQLTypes["maps_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "match_camera_tokens" */
+	update_match_camera_tokens?: GraphQLTypes["match_camera_tokens_mutation_response"] | undefined | null,
+	/** update single row of the table: "match_camera_tokens" */
+	update_match_camera_tokens_by_pk?: GraphQLTypes["match_camera_tokens"] | undefined | null,
+	/** update multiples rows of table: "match_camera_tokens" */
+	update_match_camera_tokens_many?: Array<GraphQLTypes["match_camera_tokens_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "match_clips" */
 	update_match_clips?: GraphQLTypes["match_clips_mutation_response"] | undefined | null,
 	/** update single row of the table: "match_clips" */
@@ -228386,6 +229271,12 @@ export type GraphQLTypes = {
 	maps_aggregate: GraphQLTypes["maps_aggregate"],
 	/** fetch data from the table: "maps" using primary key columns */
 	maps_by_pk?: GraphQLTypes["maps"] | undefined | null,
+	/** fetch data from the table: "match_camera_tokens" */
+	match_camera_tokens: Array<GraphQLTypes["match_camera_tokens"]>,
+	/** fetch aggregated fields from the table: "match_camera_tokens" */
+	match_camera_tokens_aggregate: GraphQLTypes["match_camera_tokens_aggregate"],
+	/** fetch data from the table: "match_camera_tokens" using primary key columns */
+	match_camera_tokens_by_pk?: GraphQLTypes["match_camera_tokens"] | undefined | null,
 	/** An array relationship */
 	match_clips: Array<GraphQLTypes["match_clips"]>,
 	/** An aggregate relationship */
@@ -231145,6 +232036,14 @@ export type GraphQLTypes = {
 	maps_by_pk?: GraphQLTypes["maps"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "maps" */
 	maps_stream: Array<GraphQLTypes["maps"]>,
+	/** fetch data from the table: "match_camera_tokens" */
+	match_camera_tokens: Array<GraphQLTypes["match_camera_tokens"]>,
+	/** fetch aggregated fields from the table: "match_camera_tokens" */
+	match_camera_tokens_aggregate: GraphQLTypes["match_camera_tokens_aggregate"],
+	/** fetch data from the table: "match_camera_tokens" using primary key columns */
+	match_camera_tokens_by_pk?: GraphQLTypes["match_camera_tokens"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "match_camera_tokens" */
+	match_camera_tokens_stream: Array<GraphQLTypes["match_camera_tokens"]>,
 	/** An array relationship */
 	match_clips: Array<GraphQLTypes["match_clips"]>,
 	/** An aggregate relationship */
@@ -250448,6 +251347,28 @@ export enum maps_update_column {
 	type = "type",
 	workshop_map_id = "workshop_map_id"
 }
+/** unique or primary key constraints on table "match_camera_tokens" */
+export enum match_camera_tokens_constraint {
+	match_camera_tokens_match_id_steam_id_key = "match_camera_tokens_match_id_steam_id_key",
+	match_camera_tokens_pkey = "match_camera_tokens_pkey",
+	match_camera_tokens_token_key = "match_camera_tokens_token_key"
+}
+/** select columns of table "match_camera_tokens" */
+export enum match_camera_tokens_select_column {
+	created_at = "created_at",
+	id = "id",
+	match_id = "match_id",
+	steam_id = "steam_id",
+	token = "token"
+}
+/** update columns of table "match_camera_tokens" */
+export enum match_camera_tokens_update_column {
+	created_at = "created_at",
+	id = "id",
+	match_id = "match_id",
+	steam_id = "steam_id",
+	token = "token"
+}
 /** unique or primary key constraints on table "match_clips" */
 export enum match_clips_constraint {
 	match_clips_pkey = "match_clips_pkey"
@@ -250786,6 +251707,8 @@ export enum match_options_select_column {
 	auto_cancel_duration = "auto_cancel_duration",
 	auto_cancellation = "auto_cancellation",
 	best_of = "best_of",
+	camera_allow_teammates = "camera_allow_teammates",
+	camera_required = "camera_required",
 	check_in_setting = "check_in_setting",
 	coaches = "coaches",
 	default_models = "default_models",
@@ -250816,6 +251739,8 @@ export enum match_options_update_column {
 	auto_cancel_duration = "auto_cancel_duration",
 	auto_cancellation = "auto_cancellation",
 	best_of = "best_of",
+	camera_allow_teammates = "camera_allow_teammates",
+	camera_required = "camera_required",
 	check_in_setting = "check_in_setting",
 	coaches = "coaches",
 	default_models = "default_models",
@@ -255445,6 +256370,19 @@ type ZEUS_VARIABLES = {
 	["maps_stream_cursor_value_input"]: ValueTypes["maps_stream_cursor_value_input"];
 	["maps_update_column"]: ValueTypes["maps_update_column"];
 	["maps_updates"]: ValueTypes["maps_updates"];
+	["match_camera_tokens_bool_exp"]: ValueTypes["match_camera_tokens_bool_exp"];
+	["match_camera_tokens_constraint"]: ValueTypes["match_camera_tokens_constraint"];
+	["match_camera_tokens_inc_input"]: ValueTypes["match_camera_tokens_inc_input"];
+	["match_camera_tokens_insert_input"]: ValueTypes["match_camera_tokens_insert_input"];
+	["match_camera_tokens_on_conflict"]: ValueTypes["match_camera_tokens_on_conflict"];
+	["match_camera_tokens_order_by"]: ValueTypes["match_camera_tokens_order_by"];
+	["match_camera_tokens_pk_columns_input"]: ValueTypes["match_camera_tokens_pk_columns_input"];
+	["match_camera_tokens_select_column"]: ValueTypes["match_camera_tokens_select_column"];
+	["match_camera_tokens_set_input"]: ValueTypes["match_camera_tokens_set_input"];
+	["match_camera_tokens_stream_cursor_input"]: ValueTypes["match_camera_tokens_stream_cursor_input"];
+	["match_camera_tokens_stream_cursor_value_input"]: ValueTypes["match_camera_tokens_stream_cursor_value_input"];
+	["match_camera_tokens_update_column"]: ValueTypes["match_camera_tokens_update_column"];
+	["match_camera_tokens_updates"]: ValueTypes["match_camera_tokens_updates"];
 	["match_clips_aggregate_bool_exp"]: ValueTypes["match_clips_aggregate_bool_exp"];
 	["match_clips_aggregate_bool_exp_count"]: ValueTypes["match_clips_aggregate_bool_exp_count"];
 	["match_clips_aggregate_order_by"]: ValueTypes["match_clips_aggregate_order_by"];

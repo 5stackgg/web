@@ -4,7 +4,7 @@
     class="flex-1 overflow-y-auto p-3"
     ref="chatMessages"
   >
-    <template v-for="(message, index) in messages" :key="index">
+    <template v-for="(message, index) in messages" :key="messageKey(message)">
       <div
         v-if="
           lastReadCount > 0 &&
@@ -30,7 +30,7 @@
     class="flex-1 overflow-y-auto max-h-screen"
     ref="chatMessages"
   >
-    <template v-for="(message, index) in messages" :key="index">
+    <template v-for="(message, index) in messages" :key="messageKey(message)">
       <div
         v-if="
           lastReadCount > 0 &&
@@ -55,6 +55,7 @@
 
 <script lang="ts">
 import ChatMessage from "~/components/chat/ChatMessage.vue";
+import { chatMessageKey } from "~/web-sockets/Socket";
 
 export default {
   components: {
@@ -86,6 +87,9 @@ export default {
     };
   },
   methods: {
+    messageKey(message: any) {
+      return chatMessageKey(message);
+    },
     checkIfAtBottom() {
       const chatMessages = this.$refs.chatMessages as HTMLElement;
       if (chatMessages) {

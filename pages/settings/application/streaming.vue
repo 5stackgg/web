@@ -115,6 +115,100 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         </SettingsSection>
 
         <SettingsSection
+          id="voice-chat"
+          :title="$t('pages.settings.application.streaming.voice_chat_section')"
+          :description="
+            $t('pages.settings.application.streaming.voice_chat_description')
+          "
+          clickable-header
+          @header-click="toggleVoiceChat"
+        >
+          <template #action>
+            <Switch
+              :model-value="voiceChatEnabled"
+              @update:model-value="toggleVoiceChat"
+            />
+          </template>
+        </SettingsSection>
+
+        <SettingsSection
+          id="player-cameras"
+          :title="
+            $t('pages.settings.application.streaming.player_cameras_section')
+          "
+          :description="
+            $t('pages.settings.application.streaming.player_cameras_description')
+          "
+          clickable-header
+          @header-click="togglePlayerCameras"
+        >
+          <template #action>
+            <Switch
+              :model-value="playerCamerasEnabled"
+              @update:model-value="togglePlayerCameras"
+            />
+          </template>
+
+          <!-- Platform defaults for newly created matches. Existing matches
+               keep whatever they were set up with. -->
+          <div v-if="playerCamerasEnabled" class="mt-4 space-y-4 border-t pt-4">
+            <div
+              class="flex cursor-pointer items-center justify-between gap-4"
+              @click="toggleCameraRequiredDefault"
+            >
+              <div class="space-y-0.5">
+                <p class="text-sm font-medium">
+                  {{
+                    $t("pages.settings.application.streaming.camera_default")
+                  }}
+                </p>
+                <p class="text-xs text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.streaming.camera_default_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Switch
+                class="pointer-events-none"
+                :model-value="cameraRequiredDefault"
+              />
+            </div>
+
+            <div
+              class="flex items-center justify-between gap-4"
+              :class="
+                cameraRequiredDefault
+                  ? 'cursor-pointer'
+                  : 'cursor-not-allowed opacity-50'
+              "
+              @click="cameraRequiredDefault && toggleCameraTeammatesDefault()"
+            >
+              <div class="space-y-0.5">
+                <p class="text-sm font-medium">
+                  {{
+                    $t("pages.settings.application.streaming.teammates_default")
+                  }}
+                </p>
+                <p class="text-xs text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.streaming.teammates_default_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Switch
+                class="pointer-events-none"
+                :disabled="!cameraRequiredDefault"
+                :model-value="cameraTeammatesDefault"
+              />
+            </div>
+          </div>
+        </SettingsSection>
+
+        <SettingsSection
           id="encoding"
           :title="$t('pages.settings.application.streaming.encoding_section')"
         >
@@ -283,6 +377,90 @@ export default {
         title: this.$t("pages.settings.application.streaming.updated"),
       });
     },
+    async toggleVoiceChat() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.voice_chat_enabled",
+                value: this.voiceChatEnabled ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.streaming.updated"),
+      });
+    },
+    async setSetting(name: string, value: boolean) {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: { name, value: value ? "true" : "false" },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.streaming.updated"),
+      });
+    },
+    toggleCameraRequiredDefault() {
+      return this.setSetting(
+        "public.camera_required_default",
+        !this.cameraRequiredDefault,
+      );
+    },
+    toggleCameraTeammatesDefault() {
+      return this.setSetting(
+        "public.camera_allow_teammates_default",
+        !this.cameraTeammatesDefault,
+      );
+    },
+    async togglePlayerCameras() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.player_cameras_enabled",
+                value: this.playerCamerasEnabled ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.streaming.updated"),
+      });
+    },
     async updateSettings() {
       if (this.submitting) {
         return;
@@ -374,6 +552,18 @@ export default {
       }
 
       return false;
+    },
+    voiceChatEnabled() {
+      return useApplicationSettingsStore().voiceChatEnabled;
+    },
+    cameraRequiredDefault() {
+      return useApplicationSettingsStore().cameraRequiredDefault;
+    },
+    cameraTeammatesDefault() {
+      return useApplicationSettingsStore().cameraAllowTeammatesDefault;
+    },
+    playerCamerasEnabled() {
+      return useApplicationSettingsStore().playerCamerasEnabled;
     },
     requireLoginEnabled() {
       return useApplicationSettingsStore().requireLoginForLiveStreams;

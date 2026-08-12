@@ -354,6 +354,42 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Off unless explicitly enabled: cameras need MediaMTX reachable and a
+    // publicly routable WebRTC host, which not every install has.
+    const playerCamerasEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.player_cameras_enabled",
+        )?.value === "true"
+      );
+    });
+
+    // Platform defaults new matches inherit; each match can still override.
+    const cameraRequiredDefault = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.camera_required_default",
+        )?.value === "true"
+      );
+    });
+
+    const cameraAllowTeammatesDefault = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.camera_allow_teammates_default",
+        )?.value === "true"
+      );
+    });
+
+    // Same WebRTC requirement as cameras: off unless explicitly enabled.
+    const voiceChatEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.voice_chat_enabled",
+        )?.value === "true"
+      );
+    });
+
     const newsLabel = computed(() => {
       return (
         settings.value?.find((setting) => setting.name === "public.news_label")
@@ -609,6 +645,10 @@ export const useApplicationSettingsStore = defineStore(
       teamMaxRosterSize,
       teamMaxSubs,
       requireLoginForLiveStreams,
+      playerCamerasEnabled,
+      cameraRequiredDefault,
+      cameraAllowTeammatesDefault,
+      voiceChatEnabled,
       newsLabel,
       postNewsRole,
       canPostNews,

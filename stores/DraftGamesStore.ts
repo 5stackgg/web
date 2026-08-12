@@ -291,6 +291,8 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               coaches: true,
               check_in_setting: true,
               veto_pick_timeout: true,
+              camera_required: true,
+              camera_allow_teammates: true,
               type: true,
               map_pool: {
                 id: true,

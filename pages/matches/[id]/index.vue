@@ -9,6 +9,7 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
+import CameraRequirementOverlay from "~/components/match/CameraRequirementOverlay.vue";
 import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
@@ -161,6 +162,11 @@ const vsBaseClasses =
 
 <template>
   <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
+    <CameraRequirementOverlay
+      v-if="showCameraOverlay"
+      :match-id="match.id"
+      @ready="cameraReady = true"
+    />
     <template v-if="match">
       <PageTransition>
         <header :class="heroClasses">
@@ -465,7 +471,7 @@ const vsBaseClasses =
           :class="showLiveStreamBlock ? 'order-2 lg:order-none' : ''"
         >
           <PageTransition :delay="100">
-            <MatchInfo :match="match"></MatchInfo>
+            <MatchInfo :match="match" :camera-ready="cameraReady"></MatchInfo>
           </PageTransition>
 
           <PageTransition :delay="200">
@@ -650,6 +656,7 @@ export default {
     return {
       match: undefined,
       vetoPickCount: undefined,
+      cameraReady: false,
     };
   },
   apollo: {
@@ -1056,6 +1063,27 @@ export default {
       );
 
       return mine?.id ?? null;
+    },
+    // Stricter than myLineupId on purpose: is_on_lineup is only true for a
+    // rostered player row, and a coach never publishes a camera.
+    showCameraOverlay() {
+      if (!this.match?.options?.camera_required || this.cameraReady) {
+        return false;
+      }
+
+      if (
+        ![
+          e_match_status_enum.Veto,
+          e_match_status_enum.Live,
+          e_match_status_enum.WaitingForServer,
+        ].includes(this.match.status)
+      ) {
+        return false;
+      }
+
+      return !!(
+        this.match.lineup_1?.is_on_lineup || this.match.lineup_2?.is_on_lineup
+      );
     },
     canJoinLobby() {
       if (!this.match) {

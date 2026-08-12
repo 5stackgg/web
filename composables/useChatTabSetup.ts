@@ -4,7 +4,7 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
-import socket, { type ChatType, type Lobby } from "~/web-sockets/Socket";
+import socket, { type Lobby } from "~/web-sockets/Socket";
 
 export function useChatTabSetup() {
   const { t } = useI18n();
@@ -29,11 +29,7 @@ export function useChatTabSetup() {
 
       persistentLobbies.set(
         tab.id,
-        socket.joinLobby(
-          `chat-tab-setup:${tab.id}`,
-          tab.type as ChatType,
-          tab.lobbyId,
-        ),
+        socket.joinLobby(`chat-tab-setup:${tab.id}`, tab.type, tab.lobbyId),
       );
     }
 

@@ -1,0 +1,153 @@
+// The camera routes live on the API rather than the MediaMTX ingress: that
+// ingress forward-auths against /streams/authorize, and a phone that scanned
+// the QR code has no session — its only credential is the token in the URL.
+
+function apiUrl(path: string) {
+  return `https://${useRuntimeConfig().public.apiDomain}/matches/camera/${path}`;
+}
+
+function webUrl(path: string) {
+  return `https://${useRuntimeConfig().public.webDomain}/${path}`;
+}
+
+export function cameraPlayerJoinUrl(matchId: string, token: string) {
+  return webUrl(`matches/${matchId}/camera/${token}`);
+}
+
+export function cameraAdminGridUrl(matchId: string) {
+  return webUrl(`matches/${matchId}/camera-admin`);
+}
+
+export function cameraPlayerPublishUrl(token: string) {
+  return apiUrl(`player/${token}/whip`);
+}
+
+export function cameraPlayerTalkUrl(token: string) {
+  return apiUrl(`player/${token}/talk/whep`);
+}
+
+export function cameraAdminWatchUrl(matchId: string, steamId: string) {
+  return apiUrl(`admin/${matchId}/${steamId}/whep`);
+}
+
+export function cameraAdminTalkUrl(matchId: string, steamId: string) {
+  return apiUrl(`admin/${matchId}/${steamId}/talk/whip`);
+}
+
+export type CameraHealth = "live" | "stalled" | "down";
+
+export type CameraPlayerStatus = {
+  steamId: string;
+  name: string | null;
+  lineupId: string;
+  ready: boolean;
+  // A "stalled" feed is still connected but has stopped delivering frames — it
+  // looks identical to a working camera unless the grid says otherwise.
+  health: CameraHealth;
+};
+
+export type CameraLineup = {
+  id: string;
+  name: string;
+  players: Array<CameraPlayerStatus>;
+};
+
+async function readiness(url: string, credentials?: RequestCredentials) {
+  try {
+    const response = await fetch(url, { credentials });
+
+    if (!response.ok) {
+      return { ready: false };
+    }
+
+    return (await response.json()) as { ready: boolean };
+  } catch {
+    return { ready: false };
+  }
+}
+
+export function fetchCameraStatus(token: string) {
+  return readiness(apiUrl(`player/${token}/status`));
+}
+
+export function fetchCameraTalkStatus(token: string) {
+  return readiness(apiUrl(`player/${token}/talk/status`));
+}
+
+export function fetchAdminTalkStatus(matchId: string, steamId: string) {
+  return readiness(
+    apiUrl(`admin/${matchId}/${steamId}/talk/status`),
+    "include",
+  );
+}
+
+export function hangupPlayerTalk(token: string) {
+  return fetch(apiUrl(`player/${token}/talk/hangup`), {
+    method: "POST",
+  }).catch(() => {});
+}
+
+export function hangupAdminTalk(matchId: string, steamId: string) {
+  return fetch(apiUrl(`admin/${matchId}/${steamId}/talk/hangup`), {
+    method: "POST",
+    credentials: "include",
+  }).catch(() => {});
+}
+
+export async function fetchCameraPlayers(matchId: string) {
+  const response = await fetch(apiUrl(`admin/${matchId}/players`), {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  // One entry for an organizer (both sides); a competitor allowed to watch
+  // their own team gets only theirs.
+  return (await response.json()) as { lineups: Array<CameraLineup> };
+}
+
+// Shared by the player publish page and the admin call: offer, wait for ICE,
+// POST the SDP, apply the answer.
+export async function negotiateWebRtc(
+  pc: RTCPeerConnection,
+  url: string,
+  credentials?: RequestCredentials,
+) {
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  await new Promise<void>((resolve) => {
+    if (pc.iceGatheringState === "complete") {
+      resolve();
+      return;
+    }
+
+    pc.addEventListener("icegatheringstatechange", () => {
+      if (pc.iceGatheringState === "complete") {
+        resolve();
+      }
+    });
+
+    setTimeout(resolve, 1500);
+  });
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/sdp",
+    },
+    body: pc.localDescription?.sdp ?? "",
+    credentials,
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  await pc.setRemoteDescription({
+    type: "answer",
+    sdp: await response.text(),
+  });
+}

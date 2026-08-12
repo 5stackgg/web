@@ -1,6 +1,5 @@
 import { ref, computed } from "vue";
-
-type ChatType = "match" | "team" | "matchmaking" | "organizers" | "tournament";
+import type { ChatType } from "~/web-sockets/Socket";
 
 export interface ChatTab {
   id: string;

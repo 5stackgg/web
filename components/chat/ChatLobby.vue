@@ -306,9 +306,9 @@ import Empty from "~/components/ui/empty/Empty.vue";
 </template>
 
 <script lang="ts">
-import type { PropType } from "vue";
-import socket from "~/web-sockets/Socket";
-import type { Lobby } from "~/web-sockets/Socket";
+import { markRaw, type PropType } from "vue";
+import socket, { chatMessageKey } from "~/web-sockets/Socket";
+import type { ChatType, Lobby, LobbyMessage } from "~/web-sockets/Socket";
 
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { useSound } from "~/composables/useSound";
@@ -320,6 +320,23 @@ const { playNotificationSound } = useSound();
 interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
   scrollToNewDivider?: () => void;
+}
+
+const NO_MESSAGES: LobbyMessage[] = [];
+
+// The same lobby can be mounted in several widgets at once and every one of
+// them is handed an incoming message, but the message only arrives once, so the
+// sound has to be claimed rather than played per widget.
+const notifiedMessages = new Set<string>();
+function claimNotification(key: string) {
+  if (notifiedMessages.has(key)) {
+    return false;
+  }
+  if (notifiedMessages.size > 500) {
+    notifiedMessages.clear();
+  }
+  notifiedMessages.add(key);
+  return true;
 }
 
 export default {
@@ -405,9 +422,7 @@ export default {
   },
   data() {
     return {
-      messages: [] as any[],
       lobby: undefined as Lobby | undefined,
-      lobbyListener: undefined as { stop: () => void } | undefined,
       isMinimized: false,
       unreadCount: 0,
       lastReadMessageCount: 0,
@@ -416,6 +431,11 @@ export default {
     };
   },
   computed: {
+    // Read straight off the lobby: the message list belongs to the lobby, and
+    // every widget on it renders the same one.
+    messages(): LobbyMessage[] {
+      return this.lobby?.messages ?? NO_MESSAGES;
+    },
     // Only a single lineup's room is private; the match room admits both sides.
     isTeamContext() {
       return this.type === "match_team" || this.type === "team";
@@ -519,9 +539,45 @@ export default {
     },
   },
   methods: {
-    updateLobbyMessages(newMessages: any) {
-      this.messages = newMessages.sort((a: any, b: any) => {
-        return a.timestamp - b.timestamp;
+    handleIncomingMessage(message: LobbyMessage) {
+      const mySteamId = useAuthStore().me?.steam_id;
+      const fromSteamId = message?.from?.steam_id;
+      const isOwnMessage =
+        mySteamId != null &&
+        fromSteamId != null &&
+        String(fromSteamId) === String(mySteamId);
+
+      if (this.isMinimized && this.global && !isOwnMessage) {
+        this.unreadCount++;
+      }
+      // Auto-scroll only when already at the bottom.
+      this.safeScrollToBottom(false);
+
+      // Treat our own messages as read everywhere (a parallel ChatLobby
+      // instance for the same lobby receives the echo too and would otherwise
+      // render a "New" divider on our own text). Otherwise, only advance when
+      // actively viewing at the bottom.
+      if (
+        isOwnMessage ||
+        (this.isActiveTab && !this.isMinimized && this.isAtBottom)
+      ) {
+        this.lastReadMessageCount = this.messages.length;
+      }
+
+      if (
+        this.playNotificationSound &&
+        !isOwnMessage &&
+        claimNotification(
+          `${this.type}:${this.lobbyId}:${chatMessageKey(message)}`,
+        )
+      ) {
+        playNotificationSound();
+      }
+
+      this.$emit("message-received", {
+        tabId: this.tabId,
+        message,
+        direction: isOwnMessage ? "outbound" : "inbound",
       });
     },
     toggleMinimize() {
@@ -539,16 +595,7 @@ export default {
       });
     },
     handleSendMessage(message: string) {
-      socket.chat(
-        this.type as
-          | "match"
-          | "team"
-          | "matchmaking"
-          | "organizers"
-          | "tournament",
-        this.lobbyId,
-        message,
-      );
+      socket.chat(this.type as ChatType, this.lobbyId, message);
       // Snap to latest after sending.
       this.safeScrollToBottom(true);
       // Sending a message counts as catching up – clear the \"New\" line.
@@ -584,64 +631,24 @@ export default {
     lobbyId: {
       immediate: true,
       handler() {
-        this.lobbyListener?.stop();
         this.lobby?.leave();
-        this.lobby = socket.joinLobby(
+
+        const lobby = socket.joinLobby(
           this.instance,
-          this.type as
-            | "match"
-            | "team"
-            | "matchmaking"
-            | "organizers"
-            | "tournament",
+          this.type as ChatType,
           this.lobbyId,
         );
-        this.updateLobbyMessages(this.lobby.messages);
+
+        // Kept out of the reactivity graph: the handle is a stable façade, and
+        // the message list it exposes carries its own reactivity.
+        this.lobby = markRaw(lobby);
+
         // Initialize lastReadMessageCount only the first time we join this lobby.
         if (this.lastReadMessageCount === 0) {
-          this.lastReadMessageCount = this.messages.length;
+          this.lastReadMessageCount = lobby.messages.length;
         }
-        this.lobby.on("lobby:messages", this.updateLobbyMessages);
-        this.lobbyListener = socket.listenChat(
-          this.type,
-          this.lobbyId,
-          (message: any) => {
-            this.messages.push(message);
 
-            const mySteamId = useAuthStore().me?.steam_id;
-            const fromSteamId = message?.from?.steam_id;
-            const isOwnMessage =
-              mySteamId != null &&
-              fromSteamId != null &&
-              String(fromSteamId) === String(mySteamId);
-
-            if (this.isMinimized && this.global && !isOwnMessage) {
-              this.unreadCount++;
-            }
-            // Auto-scroll only when already at the bottom.
-            this.safeScrollToBottom(false);
-
-            // Treat our own messages as read everywhere (a parallel
-            // ChatLobby instance for the same lobby receives the echo too
-            // and would otherwise render a \"New\" divider on our own text).
-            // Otherwise, only advance when actively viewing at the bottom.
-            if (
-              isOwnMessage ||
-              (this.isActiveTab && !this.isMinimized && this.isAtBottom)
-            ) {
-              this.lastReadMessageCount = this.messages.length;
-            }
-            if (this.playNotificationSound && !isOwnMessage) {
-              playNotificationSound();
-            }
-
-            this.$emit("message-received", {
-              tabId: this.tabId,
-              message,
-              direction: isOwnMessage ? "outbound" : "inbound",
-            });
-          },
-        );
+        lobby.on("lobby:chat", this.handleIncomingMessage);
       },
     },
     messages: {
@@ -695,7 +702,6 @@ export default {
   },
   beforeUnmount() {
     this.lobby?.leave();
-    this.lobbyListener?.stop();
   },
 };
 </script>

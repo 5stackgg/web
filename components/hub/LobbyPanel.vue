@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { Merge, Waves, MessageCircle, LogOut } from "lucide-vue-next";
+import {
+  Merge,
+  Waves,
+  MessageCircle,
+  LogOut,
+  Mic,
+  MicOff,
+  PhoneOff,
+} from "lucide-vue-next";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
@@ -10,9 +18,21 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { useInvites } from "@/composables/useInvites";
+import { useVoiceChat } from "@/composables/useVoiceChat";
 
 const { t } = useI18n();
 const { hasLobbyInvites } = useInvites();
+
+// Destructured so the template gets auto-unwrapped top-level bindings rather
+// than reaching through .value on a nested ref.
+const {
+  connected: voiceConnected,
+  connecting: voiceConnecting,
+  muted: voiceMuted,
+  join: joinVoice,
+  leave: leaveVoice,
+  toggleMute: toggleVoiceMute,
+} = useVoiceChat(() => (useMatchmakingStore().currentLobby as any)?.id);
 </script>
 
 <template>
@@ -112,6 +132,49 @@ const { hasLobbyInvites } = useInvites();
             </span>
           </div>
           <div class="flex items-center gap-2">
+            <template v-if="voiceChatEnabled">
+              <Button
+                v-if="!voiceConnected"
+                size="xs"
+                variant="outline"
+                class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800/80 text-[11px] px-3"
+                :loading="voiceConnecting"
+                @click="joinVoice()"
+              >
+                <Mic class="h-3 w-3" />
+                {{ $t("layouts.lobby_panel.join_voice") }}
+              </Button>
+
+              <template v-else>
+                <Button
+                  size="xs"
+                  :variant="voiceMuted ? 'destructive' : 'secondary'"
+                  class="h-7 gap-1 rounded-full text-[11px] px-3"
+                  @click="toggleVoiceMute()"
+                >
+                  <component
+                    :is="voiceMuted ? MicOff : Mic"
+                    class="h-3 w-3"
+                  />
+                  {{
+                    voiceMuted
+                      ? $t("layouts.lobby_panel.unmute")
+                      : $t("layouts.lobby_panel.mute")
+                  }}
+                </Button>
+
+                <Button
+                  size="xs"
+                  variant="outline"
+                  class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800/80 text-[11px] px-3"
+                  @click="leaveVoice()"
+                >
+                  <PhoneOff class="h-3 w-3" />
+                  {{ $t("layouts.lobby_panel.leave_voice") }}
+                </Button>
+              </template>
+            </template>
+
             <Button
               size="xs"
               :variant="hasDiscordLinked ? 'secondary' : 'outline'"
@@ -258,6 +321,9 @@ export default {
     },
     hasDiscordLinked() {
       return useAuthStore().hasDiscordLinked;
+    },
+    voiceChatEnabled() {
+      return useApplicationSettingsStore().voiceChatEnabled;
     },
     creatingLobby() {
       return useMatchmakingStore().creatingLobby;

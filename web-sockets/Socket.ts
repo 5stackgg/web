@@ -1,24 +1,65 @@
 import EventEmitter from "eventemitter3";
+import { shallowRef, type ShallowRef } from "vue";
 import type { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 
+export interface LobbyMessage {
+  id?: string;
+  message: string;
+  timestamp: string;
+  from?: {
+    role?: string;
+    name?: string;
+    steam_id?: string;
+    avatar_url?: string;
+    profile_url?: string;
+  };
+}
+
 export interface Lobby {
-  messages: any[];
-  instances: Set<string>;
-  callbacks: Record<string, (data: any) => void>;
-  listeners: ReturnType<typeof Socket.prototype.listen>[];
+  readonly messages: LobbyMessage[];
   on: (event: string, callback: (data: any) => void) => void;
   leave: () => void;
-  setMessages: (data: any[]) => void;
+}
+
+interface LobbyState {
+  messages: ShallowRef<LobbyMessage[]>;
+  seen: Set<string>;
+  instances: Set<string>;
+  callbacks: Map<string, (data: any) => void>;
+  listeners: ReturnType<typeof Socket.prototype.listen>[];
 }
 
 export type ChatType =
   | "match"
+  // One side of a match, keyed `${matchId}:${lineupId}`. Distinct from
+  // "team", which is a real team's permanent room.
+  | "match_team"
   | "team"
   | "matchmaking"
   | "organizers"
   | "tournament"
   | "draft";
+
+// The live `chat` event and the history snapshot sent on every (re)join can
+// carry the same message, so a message needs an identity the client can compare
+// them by. Anything written before the server started stamping an id falls back
+// to a composite key.
+export function chatMessageKey(message: LobbyMessage) {
+  if (message?.id) {
+    return message.id;
+  }
+
+  return [
+    message?.from?.steam_id ?? "",
+    message?.timestamp ?? "",
+    message?.message ?? "",
+  ].join("|");
+}
+
+function chatMessageTime(message: LobbyMessage) {
+  return new Date(message?.timestamp).getTime() || 0;
+}
 
 class Socket extends EventEmitter {
   private listening = new Set();
@@ -35,7 +76,8 @@ class Socket extends EventEmitter {
   private static readonly BASE_DELAY_MS = 1000;
   private static readonly MAX_DELAY_MS = 30000;
 
-  private lobbies: Map<string, Lobby> = new Map();
+  private lobbies: Map<string, LobbyState> = new Map();
+  private instanceCounter = 0;
   private rooms: Map<
     string,
     {
@@ -223,15 +265,6 @@ class Socket extends EventEmitter {
     });
   }
 
-  public listenChat(type: string, id: string, callback: (data: any) => void) {
-    return this.listen(
-      `lobby:${type}:${id}:chat`,
-      (data: { message: string }) => {
-        callback(data);
-      },
-    );
-  }
-
   public listen(event: string, callback: (data: any) => void) {
     this.on(event, callback);
     this.listening.add(event);
@@ -248,55 +281,59 @@ class Socket extends EventEmitter {
 
   public joinLobby(instance: string, type: ChatType, _id: string): Lobby {
     const lobbyId = `${type}:${_id}`;
-    let lobby = this.lobbies.get(lobbyId);
 
-    if (lobby) {
-      lobby.instances.add(instance);
-      return this.createLobbyHandle(lobbyId, lobby, instance, type, _id);
+    // Every call gets its own key even when two callers pass the same label:
+    // the same lobby is routinely open in more than one widget at once (a match
+    // page and the chat sidebar tab for that match), and one of them unmounting
+    // must not tear the lobby down under the other.
+    const instanceKey = `${instance}#${++this.instanceCounter}`;
+
+    const existing = this.lobbies.get(lobbyId);
+
+    if (existing) {
+      existing.instances.add(instanceKey);
+      return this.createLobbyHandle(lobbyId, existing, instanceKey, type, _id);
     }
 
-    lobby = {
-      instances: new Set([instance]),
-      messages: [],
-      callbacks: {},
+    const lobby: LobbyState = {
+      instances: new Set([instanceKey]),
+      messages: shallowRef([]),
+      seen: new Set(),
+      callbacks: new Map(),
       listeners: [],
-      on: function (event: string, callback: (data: any) => void) {
-        this.callbacks[event] = callback;
-      },
-      leave: () => {},
-      setMessages: function (data: any[]) {
-        this.messages = data;
-        for (const [key, callback] of Object.entries(this.callbacks)) {
-          if (key === "lobby:messages" || key.endsWith(":lobby:messages")) {
-            callback(data);
-          }
-        }
-      },
     };
 
     this.lobbies.set(lobbyId, lobby);
 
     lobby.listeners.push(
-      socket.listen(`lobby:${lobbyId}:list`, (data) => {
+      this.listen(`lobby:${lobbyId}:list`, (data) => {
         useMatchLobbyStore().set(lobbyId, data.lobby);
       }),
     );
 
     lobby.listeners.push(
-      socket.listen(`lobby:${lobbyId}:joined`, (data) => {
+      this.listen(`lobby:${lobbyId}:joined`, (data) => {
         useMatchLobbyStore().add(lobbyId, data.user);
       }),
     );
 
     lobby.listeners.push(
-      socket.listen(`lobby:${lobbyId}:left`, (data) => {
+      this.listen(`lobby:${lobbyId}:left`, (data) => {
         useMatchLobbyStore().remove(lobbyId, data.user);
       }),
     );
 
     lobby.listeners.push(
-      socket.listen(`lobby:${lobbyId}:messages`, (data) => {
-        lobby.setMessages(data.messages);
+      this.listen(`lobby:${lobbyId}:messages`, (data) => {
+        this.mergeLobbyMessages(lobby, data.messages);
+      }),
+    );
+
+    // Registered once per lobby, never per widget: the message list belongs to
+    // the lobby, and widgets only observe it.
+    lobby.listeners.push(
+      this.listen(`lobby:${lobbyId}:chat`, (message: LobbyMessage) => {
+        this.addLobbyMessage(lobby, message);
       }),
     );
 
@@ -305,40 +342,90 @@ class Socket extends EventEmitter {
       type,
     });
 
-    return this.createLobbyHandle(lobbyId, lobby, instance, type, _id);
+    return this.createLobbyHandle(lobbyId, lobby, instanceKey, type, _id);
+  }
+
+  private mergeLobbyMessages(lobby: LobbyState, messages: LobbyMessage[]) {
+    const merged = lobby.messages.value.slice();
+
+    for (const message of messages || []) {
+      const key = chatMessageKey(message);
+      if (lobby.seen.has(key)) {
+        continue;
+      }
+      lobby.seen.add(key);
+      merged.push(message);
+    }
+
+    merged.sort((a, b) => chatMessageTime(a) - chatMessageTime(b));
+
+    lobby.messages.value = merged;
+    this.emitToLobbyInstances(lobby, "lobby:messages", merged);
+  }
+
+  private addLobbyMessage(lobby: LobbyState, message: LobbyMessage) {
+    const key = chatMessageKey(message);
+    if (lobby.seen.has(key)) {
+      return;
+    }
+    lobby.seen.add(key);
+
+    const messages = lobby.messages.value.slice();
+    const timestamp = chatMessageTime(message);
+
+    let index = messages.length;
+    while (index > 0 && chatMessageTime(messages[index - 1]) > timestamp) {
+      index--;
+    }
+    messages.splice(index, 0, message);
+
+    lobby.messages.value = messages;
+    this.emitToLobbyInstances(lobby, "lobby:chat", message);
+  }
+
+  private emitToLobbyInstances(
+    lobby: LobbyState,
+    event: string,
+    data: unknown,
+  ) {
+    for (const [key, callback] of lobby.callbacks) {
+      if (!key.endsWith(`:${event}`)) {
+        continue;
+      }
+
+      // One widget blowing up must not cut delivery to the others sharing
+      // this lobby.
+      try {
+        callback(data);
+      } catch (error) {
+        console.error(`[ws] ${key} failed to handle ${event}`, error);
+      }
+    }
   }
 
   private createLobbyHandle(
     lobbyId: string,
-    lobby: Lobby,
-    instance: string,
+    lobby: LobbyState,
+    instanceKey: string,
     type: ChatType,
     id: string,
   ): Lobby {
     return {
       get messages() {
-        return lobby.messages;
+        return lobby.messages.value;
       },
-      get instances() {
-        return lobby.instances;
-      },
-      callbacks: lobby.callbacks,
-      listeners: lobby.listeners,
       on: (event: string, callback: (data: any) => void) => {
-        lobby.callbacks[`${instance}:${event}`] = callback;
+        lobby.callbacks.set(`${instanceKey}:${event}`, callback);
       },
       leave: () => {
-        this.leaveLobbyInstance(lobbyId, instance, type, id);
-      },
-      setMessages: (data: any[]) => {
-        lobby.setMessages(data);
+        this.leaveLobbyInstance(lobbyId, instanceKey, type, id);
       },
     };
   }
 
   private leaveLobbyInstance(
     lobbyId: string,
-    instance: string,
+    instanceKey: string,
     type: ChatType,
     id: string,
   ) {
@@ -347,10 +434,13 @@ class Socket extends EventEmitter {
       return;
     }
 
-    lobby.instances.delete(instance);
-    for (const key of Object.keys(lobby.callbacks)) {
-      if (key.startsWith(`${instance}:`)) {
-        delete lobby.callbacks[key];
+    if (!lobby.instances.delete(instanceKey)) {
+      return;
+    }
+
+    for (const key of lobby.callbacks.keys()) {
+      if (key.startsWith(`${instanceKey}:`)) {
+        lobby.callbacks.delete(key);
       }
     }
 

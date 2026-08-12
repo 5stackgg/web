@@ -131,6 +131,26 @@ const chatType = computed(() => (matchChatReady.value ? "match" : "draft"));
 const chatLobbyId = computed(() =>
   matchChatReady.value ? props.room.match_id : props.room.id,
 );
+// The match page derives its team room from `lineup.is_on_lineup`, but the
+// draft subscription does not select that field — `myMembership.lineup` is the
+// side (1 or 2) this viewer was drafted onto, which maps to the same lineup id.
+// Accepted only: the server's match_team join gate checks the real
+// match_lineups row, and a Waitlist backup was never inserted into it.
+const myMatchLineupId = computed(() => {
+  if (
+    !matchChatReady.value ||
+    myMembership.value?.lineup == null ||
+    myMembership.value?.status !== "Accepted"
+  ) {
+    return null;
+  }
+  return myMembership.value.lineup === 1
+    ? props.match?.lineup_1_id
+    : props.match?.lineup_2_id;
+});
+const teamChatLobbyId = computed(() =>
+  myMatchLineupId.value ? `${props.match.id}:${myMatchLineupId.value}` : null,
+);
 const inLineup = computed(
   () =>
     myMembership.value?.lineup != null &&
@@ -1458,9 +1478,7 @@ const start = () => {
       <!-- Self-status banners live in this column rather than above the room:
            they appear and disappear as the lobby fills, and full width they
            shoved the whole roster down every time. -->
-      <div
-        class="flex flex-col xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)]"
-      >
+      <div class="flex flex-col xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)]">
         <Transition name="banner">
           <div
             v-if="canJoin || hasRequested || isWaitlisted"
@@ -1544,7 +1562,7 @@ const start = () => {
         </Transition>
 
         <div
-          class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:min-h-0 xl:flex-1"
+          class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:min-h-[380px] xl:flex-1"
         >
         <div v-if="showQueue" class="flex min-h-0 flex-1 flex-col">
           <div
@@ -1588,16 +1606,29 @@ const start = () => {
               {{ $t("draft_games.room.comms") }}
             </h3>
           </div>
-          <ChatLobby
-            v-if="me"
-            class="min-h-0 flex-1"
-            instance="draft-room"
-            :type="chatType"
-            :lobby-id="chatLobbyId"
-            :frameless="true"
-            :can-send="canChat"
-            :readonly-hint="$t('draft_games.room.chat_players_only')"
-          />
+          <div v-if="me" class="flex min-h-0 flex-1 flex-col">
+            <ChatLobby
+              class="min-h-0 flex-1"
+              instance="draft-room"
+              :type="chatType"
+              :lobby-id="chatLobbyId"
+              :label="teamChatLobbyId ? $t('chat.everyone') : ''"
+              :frameless="true"
+              :can-send="canChat"
+              :readonly-hint="$t('draft_games.room.chat_players_only')"
+            />
+            <ChatLobby
+              v-if="teamChatLobbyId"
+              class="min-h-0 flex-1 border-t border-border/60"
+              instance="draft-room-team"
+              type="match_team"
+              :lobby-id="teamChatLobbyId"
+              :label="$t('chat.your_team')"
+              :frameless="true"
+              :can-send="inLineup"
+              :readonly-hint="$t('draft_games.room.chat_players_only')"
+            />
+          </div>
           <div
             v-else
             class="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-4 py-6 text-center"

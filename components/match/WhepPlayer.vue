@@ -193,6 +193,25 @@ function unmute() {
   });
 }
 
+// `muted` going false is a request to actually hear this feed, not just to
+// stop offering the pill — the element is still muted from the autoplay
+// workaround above. Two watchers because the prop can flip either before or
+// after playback reaches "playing".
+watch(
+  () => props.muted,
+  (muted) => {
+    if (muted === false && status.value === "playing" && isMuted.value) {
+      unmute();
+    }
+  },
+);
+
+watch(status, (next) => {
+  if (next === "playing" && props.muted === false && isMuted.value) {
+    unmute();
+  }
+});
+
 function tryPlay() {
   const el = videoRef.value;
   if (!el) return;
@@ -652,7 +671,7 @@ defineExpose({ connect, teardown });
          control collapses to the slim icon-only treatment that hides
          on mouse-out, matching twitch/youtube convention. -->
     <button
-      v-if="status === 'playing' && !useFallback && isMuted"
+      v-if="status === 'playing' && !useFallback && isMuted && !muted"
       type="button"
       :aria-label="$t('ui.unmute')"
       class="whep-unmute group/unmute absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.65)] bg-black/75 pl-2 pr-3 py-1.5 backdrop-blur-md cursor-pointer transition-[transform,box-shadow,border-color] duration-150 hover:scale-[1.03] hover:border-[hsl(var(--tac-amber))] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.15),0_0_22px_-4px_hsl(var(--tac-amber)/0.55)]"

@@ -109,7 +109,6 @@ export default {
       required: true,
     },
   },
-  emits: ["open-voice-settings", "open-discord-integration"],
   computed: {
     me() {
       return useAuthStore().me;
@@ -156,12 +155,6 @@ export default {
         default:
           return "bg-zinc-700/40 text-zinc-200 border border-zinc-600/60";
       }
-    },
-    openVoiceSettings() {
-      this.$emit("open-voice-settings");
-    },
-    openDiscordIntegration() {
-      this.$emit("open-discord-integration");
     },
     async inviteToLobby(steam_id: string) {
       await useMatchmakingStore().inviteToLobby(steam_id);

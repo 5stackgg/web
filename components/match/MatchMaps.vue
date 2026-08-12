@@ -80,6 +80,12 @@ import mapLabel from "~/utilities/mapLabel";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ matchMap.status.replace(/([a-z])([A-Z])/g, "$1 $2") }}</Badge
         >
+        <Badge
+          v-else-if="isDecider && match.options.best_of > 1"
+          variant="destructive"
+          class="text-xs px-2 py-0.5 backdrop-blur-sm"
+          >{{ $t("match.decider") }}</Badge
+        >
         <!-- Sits on the map it belongs to: the status badge already says the
              demo is being processed, this says for how long. -->
         <Tooltip v-if="demoProcessingStartedAt">
@@ -98,12 +104,6 @@ import mapLabel from "~/utilities/mapLabel";
             </p>
           </TooltipContent>
         </Tooltip>
-        <Badge
-          v-else-if="isDecider && match.options.best_of > 1"
-          variant="destructive"
-          class="text-xs px-2 py-0.5 backdrop-blur-sm"
-          >{{ $t("match.decider") }}</Badge
-        >
         <template v-if="hasDemo && hasDemoMetadata">
           <Tooltip v-if="mapHasRadar">
             <TooltipTrigger as-child>

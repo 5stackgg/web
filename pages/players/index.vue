@@ -572,6 +572,9 @@ export default {
     onlinePlayerSteamIds() {
       return useMatchmakingStore().onlinePlayerSteamIds as string[];
     },
+    presenceLoaded() {
+      return useMatchmakingStore().presenceLoaded as boolean;
+    },
     eloRange() {
       return [
         this.form.values.eloMin ?? this.eloSliderMin,
@@ -801,13 +804,27 @@ export default {
       this.onFilterChange();
     },
     // Presence is pushed in live, so a player going on or offline has to
-    // re-run the search while the filter is on.
+    // re-run the search while the filter is on. Deliberately not
+    // onFilterChange(): that resets to page 1, and someone anywhere on the
+    // instance connecting would yank you back to the top of the list.
     onlinePlayerSteamIds() {
       if (this.onlyOnline) {
-        this.onFilterChange();
+        this.queueSearch();
       }
     },
-    sortField() {
+    // The first presence payload is what makes the filter applicable at all.
+    presenceLoaded() {
+      if (this.onlyOnline) {
+        this.queueSearch();
+      }
+    },
+    sortField(value: string) {
+      // The server forces the registered filter for this sort -- an unregistered
+      // player has no sign-in to order by. Reflect it in the toggle and chip
+      // instead of quietly dropping people while the UI claims no filter.
+      if (value === "last_sign_in_at") {
+        this.onlyRegistered = true;
+      }
       this.page = 1;
       this.onFilterChange();
     },
@@ -1033,9 +1050,13 @@ export default {
                 : undefined,
             only_played_matches: this.onlyPlayedMatches,
             registeredOnly: this.onlyRegistered || undefined,
-            online_steam_ids: this.onlyOnline
-              ? this.onlinePlayerSteamIds
-              : undefined,
+            // Held back until presence has actually arrived. Sending an empty
+            // roster means "nobody is online" and returns nothing, which on a
+            // reload is indistinguishable from a broken filter.
+            online_steam_ids:
+              this.onlyOnline && this.presenceLoaded
+                ? this.onlinePlayerSteamIds
+                : undefined,
             elo_track: "season",
             sort_by: this.getSortBy(),
           },

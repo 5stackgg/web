@@ -32,7 +32,7 @@ const TONES = {
   },
   warning: {
     label: "text-yellow-500",
-    track: "border-yellow-500/55 bg-yellow-500/18",
+    track: "border-yellow-500/55 bg-yellow-500/20",
     knob: "bg-yellow-500 shadow-[0_0_6px_theme(colors.yellow.500/0.55)]",
   },
 } as const;

@@ -305,7 +305,12 @@ const category = useRouteTab({
 
 const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
 const ROLE_OPTIONS = ["all", "Sniper", "Entry", "Support", "Rifler"] as const;
-const SOURCE_OPTIONS = ["overall", "matchmaking", "tournament", "league"] as const;
+const SOURCE_OPTIONS = [
+  "overall",
+  "matchmaking",
+  "tournament",
+  "league",
+] as const;
 // Categories backed by per-map stats — the only ones the role view can scope.
 const ROLE_CATEGORIES = new Set([
   "best_rating",
@@ -1061,6 +1066,28 @@ onMounted(async () => {
               </Select>
             </div>
 
+            <div class="space-y-2">
+              <span
+                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+              >
+                {{ $t("pages.leaderboard.sources.overall") }}
+              </span>
+              <Select v-model="sourceFilter">
+                <SelectTrigger class="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="opt of SOURCE_OPTIONS"
+                    :key="opt"
+                    :value="opt"
+                  >
+                    {{ $t(`pages.leaderboard.sources.${opt}`) }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div v-if="supportsRole" class="space-y-2">
               <span
                 class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
@@ -1125,6 +1152,15 @@ onMounted(async () => {
             @click="matchType = 'Competitive'"
           >
             {{ matchTypeLabel }}
+            <X class="h-3 w-3 opacity-70" />
+          </button>
+          <button
+            v-if="sourceFilter !== 'overall'"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            @click="sourceFilter = 'overall'"
+          >
+            {{ $t(`pages.leaderboard.sources.${sourceFilter}`) }}
             <X class="h-3 w-3 opacity-70" />
           </button>
           <button

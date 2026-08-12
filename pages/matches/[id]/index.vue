@@ -162,447 +162,472 @@ const vsBaseClasses =
 <template>
   <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
     <template v-if="match">
-    <PageTransition>
-      <header :class="heroClasses">
-        <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]">
-          <span
-            :class="[
-              statusBaseClasses,
-              statusTierClasses[statusTier] || statusTierClasses.neutral,
-            ]"
+      <PageTransition>
+        <header :class="heroClasses">
+          <div
+            class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]"
           >
-            <span class="w-[6px] h-[6px] bg-current rounded-full"></span>
-            {{ match.e_match_status?.description || match.status }}
-          </span>
-          <TimeAgo
-            v-if="
-              match.status === e_match_status_enum.Finished && match.ended_at
-            "
-            :date="match.ended_at"
-            class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
-          />
-          <span
-            v-if="match.label"
-            class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
-          >
-            {{ match.label }}
-          </span>
-          <NuxtLink
-            v-if="tournamentContext"
-            :to="`/tournaments/${tournamentContext.id}`"
-            class="inline-flex items-center gap-[0.4rem] font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground [transition:color_140ms_ease] hover:text-[hsl(var(--tac-amber))] max-sm:w-full max-sm:ml-0"
-          >
-            <span class="text-[hsl(var(--tac-amber))] text-[0.65rem]">◢</span>
-            {{ tournamentContext.name }}
-          </NuxtLink>
-
-          <div class="inline-flex items-center gap-2 ml-auto">
             <span
-              v-if="match.options?.type"
-              class="inline-flex items-center self-stretch px-[0.7rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground"
+              :class="[
+                statusBaseClasses,
+                statusTierClasses[statusTier] || statusTierClasses.neutral,
+              ]"
             >
-              {{ match.options.type }}
+              <span class="w-[6px] h-[6px] bg-current rounded-full"></span>
+              {{ match.e_match_status?.description || match.status }}
             </span>
-            <MatchSourceBadge
-              v-if="match.source !== 'faceit'"
-              :source="match.source"
-              class="self-stretch px-[0.7rem] text-[0.62rem] leading-none"
+            <TimeAgo
+              v-if="
+                match.status === e_match_status_enum.Finished && match.ended_at
+              "
+              :date="match.ended_at"
+              class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
             />
-            <MatchActions :match="match" />
-          </div>
-        </div>
-
-        <div
-          class="flex flex-col gap-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6 items-stretch lg:items-center"
-        >
-          <div
-            class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-start lg:text-left"
-          >
-            <component
-              :is="lineup1TeamId ? 'NuxtLink' : 'div'"
-              :to="lineup1TeamId ? `/teams/${lineup1TeamId}` : undefined"
-              class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
-              :class="
-                lineup1TeamId && 'transition-opacity hover:opacity-80 cursor-pointer'
-              "
-            >
-              <img
-                v-if="lineup1AvatarSrc"
-                :src="lineup1AvatarSrc"
-                :alt="lineup1Name"
-                class="h-full w-full object-cover"
-              />
-              <span
-                v-else
-                class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ (lineup1Name || "?").slice(0, 3) }}
-              </span>
-            </component>
-            <div
-              class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-start"
-            >
-              <span
-                class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-              >
-                {{ $t("match.lineup.lineup_1") }}
-              </span>
-              <NuxtLink
-                v-if="lineup1TeamId"
-                :to="`/teams/${lineup1TeamId}`"
-                :class="[
-                  teamClasses,
-                  match.winning_lineup_id === match.lineup_1_id && 'is-winner',
-                  'transition-opacity hover:opacity-80 cursor-pointer',
-                ]"
-              >
-                <span :class="teamGhostClasses" aria-hidden="true">
-                  {{ lineup1Name }}
-                </span>
-                <span
-                  :class="[
-                    teamMainClasses,
-                    match.winning_lineup_id === match.lineup_1_id &&
-                      teamMainWinnerClasses,
-                  ]"
-                >
-                  {{ lineup1Name }}
-                </span>
-              </NuxtLink>
-              <div
-                v-else
-                :class="[
-                  teamClasses,
-                  match.winning_lineup_id === match.lineup_1_id && 'is-winner',
-                ]"
-              >
-                <span :class="teamGhostClasses" aria-hidden="true">
-                  {{ lineup1Name }}
-                </span>
-                <span
-                  :class="[
-                    teamMainClasses,
-                    match.winning_lineup_id === match.lineup_1_id &&
-                      teamMainWinnerClasses,
-                  ]"
-                >
-                  {{ lineup1Name }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-center">
-            <div v-if="hasScores" class="inline-flex items-center gap-4">
-              <span
-                :class="[
-                  scoreClasses,
-                  mapScores.l1 > mapScores.l2 &&
-                    '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
-                ]"
-              >
-                <AnimatedStat :value="mapScores.l1" />
-              </span>
-              <span :class="[vsBaseClasses, 'uppercase']">{{
-                $t("common.vs")
-              }}</span>
-              <span
-                :class="[
-                  scoreClasses,
-                  mapScores.l2 > mapScores.l1 &&
-                    '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
-                ]"
-              >
-                <AnimatedStat :value="mapScores.l2" />
-              </span>
-            </div>
             <span
-              v-else
-              :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem] uppercase']"
-              >{{ $t("common.vs") }}</span
+              v-if="match.label"
+              class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
             >
+              {{ match.label }}
+            </span>
+            <NuxtLink
+              v-if="tournamentContext"
+              :to="`/tournaments/${tournamentContext.id}`"
+              class="inline-flex items-center gap-[0.4rem] font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground [transition:color_140ms_ease] hover:text-[hsl(var(--tac-amber))] max-sm:w-full max-sm:ml-0"
+            >
+              <span class="text-[hsl(var(--tac-amber))] text-[0.65rem]">◢</span>
+              {{ tournamentContext.name }}
+            </NuxtLink>
+
+            <div class="inline-flex items-center gap-2 ml-auto">
+              <span
+                v-if="match.options?.type"
+                class="inline-flex items-center self-stretch px-[0.7rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground"
+              >
+                {{ match.options.type }}
+              </span>
+              <MatchSourceBadge
+                v-if="match.source !== 'faceit'"
+                :source="match.source"
+                class="self-stretch px-[0.7rem] text-[0.62rem] leading-none"
+              />
+              <MatchActions :match="match" />
+            </div>
           </div>
 
           <div
-            class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-end lg:text-right flex-row-reverse lg:flex-row"
+            class="flex flex-col gap-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6 items-stretch lg:items-center"
           >
             <div
-              class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-end"
+              class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-start lg:text-left"
             >
-              <span
-                class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+              <component
+                :is="lineup1TeamId ? 'NuxtLink' : 'div'"
+                :to="lineup1TeamId ? `/teams/${lineup1TeamId}` : undefined"
+                class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
+                :class="
+                  lineup1TeamId &&
+                  'transition-opacity hover:opacity-80 cursor-pointer'
+                "
               >
-                {{ $t("match.lineup.lineup_2") }}
-              </span>
-              <NuxtLink
-                v-if="lineup2TeamId"
-                :to="`/teams/${lineup2TeamId}`"
-                :class="[
-                  teamClasses,
-                  match.winning_lineup_id === match.lineup_2_id && 'is-winner',
-                  'transition-opacity hover:opacity-80 cursor-pointer',
-                ]"
-              >
-                <span :class="teamGhostClasses" aria-hidden="true">
-                  {{ lineup2Name }}
-                </span>
+                <img
+                  v-if="lineup1AvatarSrc"
+                  :src="lineup1AvatarSrc"
+                  :alt="lineup1Name"
+                  class="h-full w-full object-cover"
+                />
                 <span
-                  :class="[
-                    teamMainClasses,
-                    match.winning_lineup_id === match.lineup_2_id &&
-                      teamMainWinnerClasses,
-                  ]"
+                  v-else
+                  class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
                 >
-                  {{ lineup2Name }}
+                  {{ (lineup1Name || "?").slice(0, 3) }}
                 </span>
-              </NuxtLink>
+              </component>
               <div
-                v-else
-                :class="[
-                  teamClasses,
-                  match.winning_lineup_id === match.lineup_2_id && 'is-winner',
-                ]"
+                class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-start"
               >
-                <span :class="teamGhostClasses" aria-hidden="true">
-                  {{ lineup2Name }}
-                </span>
                 <span
+                  class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+                >
+                  {{ $t("match.lineup.lineup_1") }}
+                </span>
+                <NuxtLink
+                  v-if="lineup1TeamId"
+                  :to="`/teams/${lineup1TeamId}`"
                   :class="[
-                    teamMainClasses,
-                    match.winning_lineup_id === match.lineup_2_id &&
-                      teamMainWinnerClasses,
+                    teamClasses,
+                    match.winning_lineup_id === match.lineup_1_id &&
+                      'is-winner',
+                    'transition-opacity hover:opacity-80 cursor-pointer',
                   ]"
                 >
-                  {{ lineup2Name }}
-                </span>
+                  <span :class="teamGhostClasses" aria-hidden="true">
+                    {{ lineup1Name }}
+                  </span>
+                  <span
+                    :class="[
+                      teamMainClasses,
+                      match.winning_lineup_id === match.lineup_1_id &&
+                        teamMainWinnerClasses,
+                    ]"
+                  >
+                    {{ lineup1Name }}
+                  </span>
+                </NuxtLink>
+                <div
+                  v-else
+                  :class="[
+                    teamClasses,
+                    match.winning_lineup_id === match.lineup_1_id &&
+                      'is-winner',
+                  ]"
+                >
+                  <span :class="teamGhostClasses" aria-hidden="true">
+                    {{ lineup1Name }}
+                  </span>
+                  <span
+                    :class="[
+                      teamMainClasses,
+                      match.winning_lineup_id === match.lineup_1_id &&
+                        teamMainWinnerClasses,
+                    ]"
+                  >
+                    {{ lineup1Name }}
+                  </span>
+                </div>
               </div>
             </div>
-            <component
-              :is="lineup2TeamId ? 'NuxtLink' : 'div'"
-              :to="lineup2TeamId ? `/teams/${lineup2TeamId}` : undefined"
-              class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
-              :class="
-                lineup2TeamId && 'transition-opacity hover:opacity-80 cursor-pointer'
-              "
-            >
-              <img
-                v-if="lineup2AvatarSrc"
-                :src="lineup2AvatarSrc"
-                :alt="lineup2Name"
-                class="h-full w-full object-cover"
-              />
+
+            <div class="flex items-center justify-center">
+              <div v-if="hasScores" class="inline-flex items-center gap-4">
+                <span
+                  :class="[
+                    scoreClasses,
+                    mapScores.l1 > mapScores.l2 &&
+                      '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
+                  ]"
+                >
+                  <AnimatedStat :value="mapScores.l1" />
+                </span>
+                <span :class="[vsBaseClasses, 'uppercase']">{{
+                  $t("common.vs")
+                }}</span>
+                <span
+                  :class="[
+                    scoreClasses,
+                    mapScores.l2 > mapScores.l1 &&
+                      '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
+                  ]"
+                >
+                  <AnimatedStat :value="mapScores.l2" />
+                </span>
+              </div>
               <span
                 v-else
-                class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem] uppercase']"
+                >{{ $t("common.vs") }}</span
               >
-                {{ (lineup2Name || "?").slice(0, 3) }}
-              </span>
-            </component>
-          </div>
-        </div>
+            </div>
 
-        <div
-          class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
-        >
-          <span
-            v-if="showAutoCancel"
-            class="inline-flex items-center gap-[0.3rem] text-[0.6rem] leading-none tracking-[0.12em] text-destructive"
-            :title="$t('match.auto_canceling')"
-          >
-            <AlertTriangle class="w-2.5 h-2.5 shrink-0" />
-            <span>{{ $t("match.auto_canceling") }}</span>
-            <TimeAgo :date="match.cancels_at" countdown hide-icon />
-          </span>
-          <span
-            v-if="showAutoCancel && isNative && match.options?.best_of"
-            class="opacity-40"
-            >·</span
-          >
-          <span v-if="isNative && match.options?.best_of">
-            {{
-              $t("match.options.best_of.option", {
-                count: match.options.best_of,
-              })
-            }}
-          </span>
-          <span
-            v-if="isNative && match.e_region?.description"
-            class="opacity-40"
-            >·</span
-          >
-          <span v-if="isNative && match.e_region?.description">
-            {{ match.e_region.description }}
-          </span>
-          <span v-if="isNative && formattedSchedule" class="opacity-40">·</span>
-          <span v-if="formattedSchedule">
-            {{ formattedSchedule }}
-          </span>
-        </div>
-      </header>
-    </PageTransition>
-
-    <PageTransition v-if="hasMatchClips" :delay="60">
-      <MatchHighlightsReel :match="match" />
-    </PageTransition>
-
-    <div
-      class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
-    >
-      <!-- Left column: match info, chat, maps. On desktop it's the
-           first grid column; on mobile it drops below the stream. -->
-      <div
-        class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0"
-        :class="showLiveStreamBlock ? 'order-2 lg:order-none' : ''"
-      >
-        <PageTransition :delay="100">
-          <MatchInfo :match="match"></MatchInfo>
-        </PageTransition>
-
-        <PageTransition :delay="200">
-          <ChatLobby
-            class="max-h-96"
-            instance="matches/id"
-            type="match"
-            :lobby-id="match.id"
-            :play-notification-sound="match.status !== e_match_status_enum.Live"
-            v-if="canJoinLobby"
-          />
-        </PageTransition>
-
-        <PageTransition :delay="200">
-          <ChatLobby
-            class="max-h-96"
-            instance="matches/id"
-            type="match_team"
-            :lobby-id="`${match.id}:${myLineupId}`"
-            :play-notification-sound="match.status !== e_match_status_enum.Live"
-            v-if="myLineupId"
-          />
-        </PageTransition>
-
-        <PageTransition :delay="200">
-          <div
-            v-if="match.options.best_of && match.options.best_of > 0"
-            class="flex flex-col gap-3"
-          >
-            <div v-for="(slot, index) in mapSlots" :key="index">
-              <MatchMaps
-                v-if="slot"
-                :match="match"
-                :match-map="slot"
-                :is-active="activeStatsMap?.id === slot.id"
-                @open-stats="activeStatsMap = $event"
-              ></MatchMaps>
+            <div
+              class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-end lg:text-right flex-row-reverse lg:flex-row"
+            >
               <div
-                v-else
-                class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
+                class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-end"
+              >
+                <span
+                  class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+                >
+                  {{ $t("match.lineup.lineup_2") }}
+                </span>
+                <NuxtLink
+                  v-if="lineup2TeamId"
+                  :to="`/teams/${lineup2TeamId}`"
+                  :class="[
+                    teamClasses,
+                    match.winning_lineup_id === match.lineup_2_id &&
+                      'is-winner',
+                    'transition-opacity hover:opacity-80 cursor-pointer',
+                  ]"
+                >
+                  <span :class="teamGhostClasses" aria-hidden="true">
+                    {{ lineup2Name }}
+                  </span>
+                  <span
+                    :class="[
+                      teamMainClasses,
+                      match.winning_lineup_id === match.lineup_2_id &&
+                        teamMainWinnerClasses,
+                    ]"
+                  >
+                    {{ lineup2Name }}
+                  </span>
+                </NuxtLink>
+                <div
+                  v-else
+                  :class="[
+                    teamClasses,
+                    match.winning_lineup_id === match.lineup_2_id &&
+                      'is-winner',
+                  ]"
+                >
+                  <span :class="teamGhostClasses" aria-hidden="true">
+                    {{ lineup2Name }}
+                  </span>
+                  <span
+                    :class="[
+                      teamMainClasses,
+                      match.winning_lineup_id === match.lineup_2_id &&
+                        teamMainWinnerClasses,
+                    ]"
+                  >
+                    {{ lineup2Name }}
+                  </span>
+                </div>
+              </div>
+              <component
+                :is="lineup2TeamId ? 'NuxtLink' : 'div'"
+                :to="lineup2TeamId ? `/teams/${lineup2TeamId}` : undefined"
+                class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
+                :class="
+                  lineup2TeamId &&
+                  'transition-opacity hover:opacity-80 cursor-pointer'
+                "
+              >
+                <img
+                  v-if="lineup2AvatarSrc"
+                  :src="lineup2AvatarSrc"
+                  :alt="lineup2Name"
+                  class="h-full w-full object-cover"
+                />
+                <span
+                  v-else
+                  class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ (lineup2Name || "?").slice(0, 3) }}
+                </span>
+              </component>
+            </div>
+          </div>
+
+          <div
+            class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
+          >
+            <span
+              v-if="showAutoCancel"
+              class="inline-flex items-center gap-[0.3rem] text-[0.6rem] leading-none tracking-[0.12em] text-destructive"
+              :title="$t('match.auto_canceling')"
+            >
+              <AlertTriangle class="w-2.5 h-2.5 shrink-0" />
+              <span>{{ $t("match.auto_canceling") }}</span>
+              <TimeAgo :date="match.cancels_at" countdown hide-icon />
+            </span>
+            <span
+              v-if="showAutoCancel && isNative && match.options?.best_of"
+              class="opacity-40"
+              >·</span
+            >
+            <span v-if="isNative && match.options?.best_of">
+              {{
+                $t("match.options.best_of.option", {
+                  count: match.options.best_of,
+                })
+              }}
+            </span>
+            <span
+              v-if="isNative && match.e_region?.description"
+              class="opacity-40"
+              >·</span
+            >
+            <span v-if="isNative && match.e_region?.description">
+              {{ match.e_region.description }}
+            </span>
+            <span v-if="isNative && formattedSchedule" class="opacity-40"
+              >·</span
+            >
+            <span v-if="formattedSchedule">
+              {{ formattedSchedule }}
+            </span>
+          </div>
+        </header>
+      </PageTransition>
+
+      <PageTransition v-if="hasMatchClips" :delay="60">
+        <MatchHighlightsReel :match="match" />
+      </PageTransition>
+
+      <div
+        class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
+      >
+        <!-- Left column: match info, chat, maps. On desktop it's the
+           first grid column; on mobile it drops below the stream. -->
+        <div
+          class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0"
+          :class="showLiveStreamBlock ? 'order-2 lg:order-none' : ''"
+        >
+          <PageTransition :delay="100">
+            <MatchInfo :match="match"></MatchInfo>
+          </PageTransition>
+
+          <PageTransition :delay="200">
+            <ChatLobby
+              class="max-h-96"
+              instance="matches/id"
+              type="match"
+              :label="$t('chat.everyone')"
+              :lobby-id="match.id"
+              :play-notification-sound="
+                match.status !== e_match_status_enum.Live
+              "
+              v-if="canJoinLobby"
+            />
+          </PageTransition>
+
+          <PageTransition :delay="200">
+            <!-- Same status gate as the match room above: chat closes with the
+               match, and being on a lineup is not a reason to keep a room open
+               on something that finished. -->
+            <ChatLobby
+              class="max-h-96"
+              instance="matches/id"
+              type="match_team"
+              :label="$t('chat.your_team')"
+              :lobby-id="`${match.id}:${myLineupId}`"
+              :play-notification-sound="
+                match.status !== e_match_status_enum.Live
+              "
+              v-if="myLineupId && canJoinLobby"
+            />
+          </PageTransition>
+
+          <PageTransition :delay="200">
+            <div
+              v-if="match.options.best_of && match.options.best_of > 0"
+              class="flex flex-col gap-3"
+            >
+              <div v-for="(slot, index) in mapSlots" :key="index">
+                <MatchMaps
+                  v-if="slot"
+                  :match="match"
+                  :match-map="slot"
+                  :is-active="activeStatsMap?.id === slot.id"
+                  @open-stats="activeStatsMap = $event"
+                ></MatchMaps>
+                <div
+                  v-else
+                  class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
+                >
+                  <div
+                    class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+                  >
+                    <div class="flex flex-col items-center gap-1">
+                      <span
+                        class="text-sm uppercase tracking-wide font-semibold"
+                      >
+                        {{ $t("match.map_number", { count: index + 1 }) }}
+                      </span>
+                      <span class="text-xs">
+                        {{ $t("match.map_tbd") }}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="bg-muted/40 border-t border-border/30 px-3 py-2.5"
+                  >
+                    <div class="flex items-center justify-center">
+                      <span class="text-xs text-muted-foreground">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-show="showVetoPicks && vetoPickCount !== 0"
+                class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
               >
                 <div
-                  class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+                  class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
                 >
-                  <div class="flex flex-col items-center gap-1">
-                    <span class="text-sm uppercase tracking-wide font-semibold">
-                      {{ $t("match.map_number", { count: index + 1 }) }}
-                    </span>
-                    <span class="text-xs">
-                      {{ $t("match.map_tbd") }}
-                    </span>
-                  </div>
+                  {{ $t("common.map_veto") }}
                 </div>
-                <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
-                  <div class="flex items-center justify-center">
-                    <span class="text-xs text-muted-foreground">—</span>
-                  </div>
-                </div>
+                <MatchPicksDisplay
+                  v-if="showVetoPicks"
+                  :match="match"
+                  @update:count="vetoPickCount = $event"
+                />
               </div>
             </div>
-            <div
-              v-show="showVetoPicks && vetoPickCount !== 0"
-              class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
-            >
-              <div
-                class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
-              >
-                {{ $t("common.map_veto") }}
-              </div>
-              <MatchPicksDisplay
-                v-if="showVetoPicks"
-                :match="match"
-                @update:count="vetoPickCount = $event"
-              />
-            </div>
-          </div>
-        </PageTransition>
-      </div>
+          </PageTransition>
+        </div>
 
-      <!-- Right column: the live stream surface (game-streamer rows
+        <!-- Right column: the live stream surface (game-streamer rows
            get the full WHEP LiveStreamPlayer; embeds stay in
            StreamEmbed) stacked above the scoreboard/tabs. On mobile it
            rises above the left column so the stream leads. -->
-      <div
-        class="min-w-0 flex flex-col gap-4 md:gap-6"
-        :class="showLiveStreamBlock ? 'order-1 lg:order-none' : ''"
-      >
-        <PageTransition v-if="showLiveStreamBlock">
-          <div class="min-w-0 space-y-4">
-            <LiveStreamPlayer
-              v-if="hasGameStreamer"
-              :match-id="match.id"
-              class="max-w-[1500px] w-full"
-            />
-            <StreamEmbed
-              v-if="embeddableStreams.length > 0"
-              :streams="embeddableStreams"
-              :match-id="match.id"
-              class="max-w-[1500px] w-full overflow-x-auto"
-            />
+        <div
+          class="min-w-0 flex flex-col gap-4 md:gap-6"
+          :class="showLiveStreamBlock ? 'order-1 lg:order-none' : ''"
+        >
+          <PageTransition v-if="showLiveStreamBlock">
+            <div class="min-w-0 space-y-4">
+              <LiveStreamPlayer
+                v-if="hasGameStreamer"
+                :match-id="match.id"
+                class="max-w-[1500px] w-full"
+              />
+              <StreamEmbed
+                v-if="embeddableStreams.length > 0"
+                :streams="embeddableStreams"
+                :match-id="match.id"
+                class="max-w-[1500px] w-full overflow-x-auto"
+              />
+            </div>
+          </PageTransition>
+
+          <div class="min-w-0">
+            <PageTransition :delay="100">
+              <template
+                v-if="
+                  regions.length === 0 &&
+                  match.options.region_veto &&
+                  !match.region
+                "
+              >
+                <Alert
+                  variant="destructive"
+                  class="bg-red-600 text-white max-w-md mb-6"
+                >
+                  <AlertTitle>{{
+                    $t("match.region_veto.no_regions_available")
+                  }}</AlertTitle>
+                  <AlertDescription>
+                    {{
+                      $t("match.region_veto.no_regions_available_description")
+                    }}
+                  </AlertDescription>
+                </Alert>
+              </template>
+            </PageTransition>
+
+            <PageTransition :delay="100">
+              <MatchRegionVeto :match="match" class="pb-6" />
+            </PageTransition>
+
+            <PageTransition :delay="100">
+              <MatchMapVeto :match="match" class="pb-6" />
+            </PageTransition>
+
+            <PageTransition :delay="200">
+              <MatchTabs
+                :match="match"
+                :active-map="activeStatsMap"
+                @clear-active-map="activeStatsMap = null"
+                @select-map="activeStatsMap = $event"
+              ></MatchTabs>
+            </PageTransition>
           </div>
-        </PageTransition>
-
-        <div class="min-w-0">
-          <PageTransition :delay="100">
-            <template
-              v-if="
-                regions.length === 0 &&
-                match.options.region_veto &&
-                !match.region
-              "
-            >
-            <Alert
-              variant="destructive"
-              class="bg-red-600 text-white max-w-md mb-6"
-            >
-              <AlertTitle>{{
-                $t("match.region_veto.no_regions_available")
-              }}</AlertTitle>
-              <AlertDescription>
-                {{ $t("match.region_veto.no_regions_available_description") }}
-              </AlertDescription>
-            </Alert>
-          </template>
-        </PageTransition>
-
-        <PageTransition :delay="100">
-          <MatchRegionVeto :match="match" class="pb-6" />
-        </PageTransition>
-
-        <PageTransition :delay="100">
-          <MatchMapVeto :match="match" class="pb-6" />
-        </PageTransition>
-
-        <PageTransition :delay="200">
-          <MatchTabs
-            :match="match"
-            :active-map="activeStatsMap"
-            @clear-active-map="activeStatsMap = null"
-            @select-map="activeStatsMap = $event"
-          ></MatchTabs>
-        </PageTransition>
         </div>
       </div>
-    </div>
 
-    <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
+      <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
     </template>
   </div>
 </template>

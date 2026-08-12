@@ -5700,7 +5700,7 @@
     "banned_until": "You are banned from matchmaking until {time}",
     "confirm_selection": "Join Queue",
     "in_queue": "in queue",
-    "temp_banned": "You are temporarily banned from matchmaking until {time}",
+    "temp_banned": "You are temporarily banned from matchmaking",
     "settings_section": {
       "toggle": "Adjust Settings"
     },
@@ -5709,7 +5709,8 @@
     "party_size": {
       "unavailable": "Party of {size} can't queue this mode",
       "requirement": "Queue with {half} or fewer, or exactly {full} players"
-    }
+    },
+    "temp_banned_until": "You are temporarily banned from matchmaking until {time}"
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -5865,7 +5866,9 @@
       "no_access": "You do not have access to this page.",
       "sidebar_hint": "Chat is available in the right sidebar under the Chats tab."
     },
-    "in_chat": "in chat"
+    "in_chat": "in chat",
+    "everyone": "Everyone",
+    "your_team": "Your team"
   },
   "charts": {
     "usage": "Usage",

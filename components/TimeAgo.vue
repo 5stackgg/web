@@ -136,9 +136,8 @@ export default {
   methods: {
     attach() {
       if (this.unsubscribe) return;
-      this.unsubscribe = subscribe(
-        this.seconds || this.countdown,
-        () => this.updateText(),
+      this.unsubscribe = subscribe(this.seconds || this.countdown, () =>
+        this.updateText(),
       );
     },
     detach() {
@@ -182,18 +181,16 @@ export default {
         const minutes = Math.floor((diffInSeconds % 3600) / 60);
         const seconds = diffInSeconds % 60;
 
-        let timeText = "";
-        if (hours > 0) {
-          timeText += `${hours}:`;
-        }
-        if (minutes > 0) {
-          timeText += `${minutes}:`;
-        }
-        if (seconds > 0 || timeText === "") {
-          timeText += `${seconds.toString().padStart(2, "0")}`;
-        }
+        // Every segment below the largest one is always emitted, zero padded.
+        // Dropping empty segments rendered exactly three minutes as "3:", and
+        // collapsed 1h00m30s to "1:30" -- which reads as a minute and a half,
+        // so the timer appeared to run backwards from "59:59".
+        const pad = (value: number) => value.toString().padStart(2, "0");
 
-        this.text = timeText.trim();
+        this.text =
+          hours > 0
+            ? `${hours}:${pad(minutes)}:${pad(seconds)}`
+            : `${minutes}:${pad(seconds)}`;
       } else {
         this.text = timeAgo.format(time);
       }

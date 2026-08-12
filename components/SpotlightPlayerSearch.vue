@@ -71,16 +71,11 @@ const registeredOnly = computed({
   },
 });
 
-// Same preference the other player searches use. On, results come from the
-// live online roster rather than Typesense, so registration is not a
-// distinction the store can make and that filter steps aside.
-const onlineOnly = computed({
-  get: () => searchStore.onlineOnly,
-  set: (value: boolean) => {
-    localStorage.setItem("playerSearchOnlineOnly", String(value));
-    searchStore.onlineOnly = value;
-  },
-});
+// Deliberately NOT the shared playerSearchOnlineOnly preference, which defaults
+// to on. This search exists to reach any player's profile, so defaulting it to
+// the online roster would make everyone who is not currently connected
+// unfindable from the keyboard shortcut. Session-local and off by default.
+const onlineOnly = ref(false);
 
 const debouncedSearch = debounce(async (searchQuery: string) => {
   // A slower earlier keystroke must not clobber a newer result set.

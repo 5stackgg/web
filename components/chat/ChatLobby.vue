@@ -164,10 +164,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           variant="global"
           @send-message="handleSendMessage"
         />
-        <div
-          v-else
-          class="px-3 py-2 text-center text-xs text-muted-foreground"
-        >
+        <div v-else class="px-3 py-2 text-center text-xs text-muted-foreground">
           {{ readonlyHint || $t("chat.readonly") }}
         </div>
       </div>
@@ -183,6 +180,20 @@ import Empty from "~/components/ui/empty/Empty.vue";
       class="mb-2 flex items-center justify-between text-[11px] text-muted-foreground gap-3"
     >
       <div class="flex items-center gap-1.5">
+        <!-- Two chat panels can sit stacked on the same page (the whole match
+             room and a single lineup's room) and are otherwise identical, so
+             the one you are typing into has to say which it is. -->
+        <span
+          v-if="label"
+          class="inline-flex items-center rounded-sm border px-1.5 py-[1px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em]"
+          :class="
+            isTeamContext
+              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+              : 'border-border bg-muted/40 text-muted-foreground'
+          "
+        >
+          {{ label }}
+        </span>
         <span
           class="inline-flex h-2.5 w-2.5 rounded-full"
           :class="participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'"
@@ -287,10 +298,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
         variant="embedded"
         @send-message="handleSendMessage"
       />
-      <div
-        v-else
-        class="px-3 py-2 text-center text-xs text-muted-foreground"
-      >
+      <div v-else class="px-3 py-2 text-center text-xs text-muted-foreground">
         {{ readonlyHint || $t("chat.readonly") }}
       </div>
     </div>
@@ -324,6 +332,13 @@ export default {
     lobbyId: {
       type: String,
       required: true,
+    },
+    // Shown as a badge above the messages. Only needed where more than one
+    // lobby is on screen at once.
+    label: {
+      type: String,
+      required: false,
+      default: "",
     },
     type: {
       type: String,
@@ -401,6 +416,10 @@ export default {
     };
   },
   computed: {
+    // Only a single lineup's room is private; the match room admits both sides.
+    isTeamContext() {
+      return this.type === "match_team" || this.type === "team";
+    },
     rightSidebarOffset() {
       const baseOffset = 96;
 

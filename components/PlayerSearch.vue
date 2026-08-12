@@ -561,6 +561,13 @@ export default {
           const id = String(f.steam_id);
           if (excluded.has(id)) return false;
           if (!this.canSelectSelf && id === meId) return false;
+          // The Registered chip has to hold here too. Only the Typesense path
+          // honoured it, so the Friends group kept listing Steam contacts who
+          // never signed in -- and picking one fails downstream, on a surface
+          // that said it was showing registered players only.
+          if (this.registeredOnlyFilter && f.player?.is_registered === false) {
+            return false;
+          }
           // Strictly respect the toggle: online-only -> only online friends,
           // otherwise -> only offline friends.
           const online = onlineIds.has(id);

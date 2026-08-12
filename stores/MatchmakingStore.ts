@@ -38,6 +38,11 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   const playersOnline = ref([]);
   const onlinePlayerSteamIds = ref<string[]>([]);
 
+  // Whether the players-online event has landed at least once. Before it does,
+  // an empty roster is indistinguishable from nobody being online, and callers
+  // that filter on presence have to tell those two apart.
+  const presenceLoaded = ref(false);
+
   const joinedMatchmakingQueues = ref<{
     details?: {
       totalInQueue: number;
@@ -260,11 +265,17 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   // Steam friends who have never signed in here still land in the list, since
   // being Steam friends is enough to be added. Off by default so nobody
   // silently loses people they expect to see.
+  //
+  // Deliberately NOT applied to onlineFriends/offlineFriends below: those feed
+  // the right-hub badge and the social panel, neither of which offers this
+  // toggle, so filtering there made a count drop with nothing on screen to
+  // explain it. The lobby list that owns the toggle applies it itself.
   const registeredFriendsOnly = ref(false);
 
-  const isListedFriend = (friend: any) =>
-    friend.status !== "Pending" &&
-    (!registeredFriendsOnly.value || friend.player?.is_registered !== false);
+  const isRegisteredFriend = (friend: any) =>
+    friend.player?.is_registered !== false;
+
+  const isListedFriend = (friend: any) => friend.status !== "Pending";
 
   const onlineFriends = computed(() => {
     return friends.value?.filter(
@@ -631,11 +642,13 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     onlineFriends,
     offlineFriends,
     registeredFriendsOnly,
+    isRegisteredFriend,
     lobbies,
     currentLobby,
     regionStats,
     playersOnline,
     onlinePlayerSteamIds,
+    presenceLoaded,
     joinedMatchmakingQueues,
 
     checkLatenies,

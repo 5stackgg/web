@@ -84,10 +84,15 @@ function releaseSwapHeight(el: Element): void {
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
+          <!-- Separate key rather than a placeholder bolted onto temp_banned:
+               every other locale already has that key without a {time} token,
+               so reusing it drops the expiry for all of them. -->
           {{
-            $t("matchmaking.temp_banned", {
-              time: formatBanExpiry(me.matchmaking_cooldown),
-            })
+            formatBanExpiry(me.matchmaking_cooldown)
+              ? $t("matchmaking.temp_banned_until", {
+                  time: formatBanExpiry(me.matchmaking_cooldown),
+                })
+              : $t("matchmaking.temp_banned")
           }}
         </AlertDescription>
       </Alert>

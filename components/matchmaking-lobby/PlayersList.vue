@@ -231,8 +231,12 @@ export default {
     },
     filteredOnlinePlayers() {
       if (this.friendsOnly) {
-        return this.onlineFriends.filter((p: any) =>
-          matchesSearch(p, this.searchQuery),
+        // Applied here rather than in the store: the shared friend lists also
+        // feed the hub badge and social panel, which have no such toggle.
+        return this.onlineFriends.filter(
+          (p: any) =>
+            matchesSearch(p, this.searchQuery) &&
+            this.passesRegisteredFilter(p),
         );
       }
 
@@ -257,8 +261,9 @@ export default {
     },
     filteredOfflinePlayers() {
       if (!this.friendsOnly) return [];
-      return this.offlineFriends.filter((p: any) =>
-        matchesSearch(p, this.searchQuery),
+      return this.offlineFriends.filter(
+        (p: any) =>
+          matchesSearch(p, this.searchQuery) && this.passesRegisteredFilter(p),
       );
     },
     isEmpty(): boolean {
@@ -279,6 +284,12 @@ export default {
     },
   },
   methods: {
+    passesRegisteredFilter(player: any) {
+      if (!this.registeredFriendsOnly) {
+        return true;
+      }
+      return useMatchmakingStore().isRegisteredFriend(player);
+    },
     async syncSteamFriends() {
       this.syncing = true;
       try {

@@ -93,11 +93,13 @@ export default defineEventHandler(async (event) => {
       : `${sortField}:${sortDirection}`;
 
   if (body.registeredOnly || sortField === "last_sign_in_at") {
-    // Uses the dedicated bool rather than `last_sign_in_at:!~~`. That was a
-    // string-inequality filter against a timestamp, and timestamps contain
-    // ":", "+" and "." -- so it matched unreliably and silently dropped
-    // registered players from results that asked for registered players only.
-    filterBy.push(`is_registered:=true`);
+    // Both spellings, because `is_registered` is an optional field added with
+    // this change: until the full re-index finishes, no existing document
+    // carries it and matching on it alone returns nothing at all. The
+    // `last_sign_in_at` sentinel ("~~" for never signed in) is what every
+    // already-indexed document has, so it covers the gap and drops out
+    // naturally once every document has been rewritten.
+    filterBy.push(`(is_registered:=true || last_sign_in_at:!~~)`);
   }
 
   // Presence is live app state, not something the index knows, so the caller
@@ -186,10 +188,17 @@ export default defineEventHandler(async (event) => {
     ...(body.per_page ? { per_page: body.per_page } : {}),
   };
 
-  const results = await client
-    .collections("players")
-    .documents()
-    .search(searchParams);
+  // documents().search() is a GET with every param in the query string, so a
+  // presence filter listing hundreds of steam ids can overrun the request line
+  // and come back as a hard error. multiSearch sends the same search as a POST
+  // body, which has no such ceiling.
+  const results = onlineSteamIds
+    ? (
+        await client.multiSearch.perform<any[]>({
+          searches: [{ collection: "players", ...searchParams }],
+        })
+      ).results[0]
+    : await client.collections("players").documents().search(searchParams);
 
   if (body.registeredOnly) {
     return results;

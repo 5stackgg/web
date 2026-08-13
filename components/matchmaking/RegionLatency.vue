@@ -110,12 +110,7 @@ onBeforeUnmount(() => {
       >
         •••
       </span>
-      <span
-        v-else
-        :key="latency"
-        class="transition-opacity duration-300"
-        :class="{ 'opacity-50': isMeasuring }"
-      >
+      <span v-else :key="latency">
         {{ latency }}<span class="ml-0.5 opacity-60">ms</span>
       </span>
     </Transition>

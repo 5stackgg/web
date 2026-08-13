@@ -3,7 +3,6 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import { RefreshCw } from "lucide-vue-next";
-import { Spinner } from "~/components/ui/spinner";
 import { FormSection } from "~/components/ui/form";
 import SettingHeader from "~/components/match/SettingHeader.vue";
 import RegionLatency from "~/components/matchmaking/RegionLatency.vue";
@@ -54,14 +53,15 @@ import RegionLatency from "~/components/matchmaking/RegionLatency.vue";
       v-if="availableRegions.length > 0"
     >
       <template #actions>
+        <!-- Button owns the busy state: it swaps in its own centred spinner,
+             so a second one here would double up. -->
         <Button
           variant="outline"
           size="sm"
+          :loading="isRefreshing"
           @click="refreshLatencies"
-          :disabled="isRefreshing"
         >
-          <Spinner v-if="isRefreshing" class="h-4 w-4 mr-2" />
-          <RefreshCw v-else class="h-4 w-4 mr-2" />
+          <RefreshCw class="h-4 w-4" />
           {{ $t("common.refresh") }}
         </Button>
       </template>

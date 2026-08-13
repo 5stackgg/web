@@ -2,10 +2,8 @@
 // ingress forward-auths against /streams/authorize, and a phone that scanned
 // the QR code has no session — its only credential is the token in the URL.
 
-// Relative: see useVoiceApi. The QR/popup URLs below stay absolute -- a phone
-// scanning a code needs a real address, not a path.
 function apiUrl(path: string) {
-  return `/matches/camera/${path}`;
+  return `https://${useRuntimeConfig().public.apiDomain}/matches/camera/${path}`;
 }
 
 function webUrl(path: string) {

@@ -4,12 +4,13 @@
 // from useCameraApi at the call site rather than re-exported here, so Nuxt's
 // auto-import registry only ever sees one binding for that name.
 //
-// Relative on purpose: an application/sdp body is not CORS-safelisted, so a
-// cross-origin call is preflighted and a dev origin will never pass the API's
-// allowlist. The ingress serves /voice off the web domain instead.
+// Absolute, like every other API call in the app. These are preflighted (an
+// application/sdp body is not CORS-safelisted), so the calling origin has to be
+// in the API's allowlist -- set EXTRA_CORS_ORIGINS to develop from one that is
+// not a configured domain.
 
 function apiUrl(path: string) {
-  return `/voice/${path}`;
+  return `https://${useRuntimeConfig().public.apiDomain}/voice/${path}`;
 }
 
 export function voicePublishUrl(lobbyId: string) {

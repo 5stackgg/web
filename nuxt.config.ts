@@ -172,24 +172,6 @@ export default defineNuxtConfig({
     defaultLocale: "en",
   },
 
-  // Same-origin in production via the api ingress on WEB_DOMAIN; the dev server
-  // has to stand in for that, or every /voice and /matches/camera call from
-  // localhost is a cross-origin preflight the API will refuse.
-  nitro: {
-    devProxy: {
-      "/voice": {
-        target: `https://${process.env.NUXT_PUBLIC_API_DOMAIN}/voice`,
-        changeOrigin: true,
-        cookieDomainRewrite: "localhost",
-      },
-      "/matches/camera": {
-        target: `https://${process.env.NUXT_PUBLIC_API_DOMAIN}/matches/camera`,
-        changeOrigin: true,
-        cookieDomainRewrite: "localhost",
-      },
-    },
-  },
-
   runtimeConfig: {
     public: {
       apiDomain: "",

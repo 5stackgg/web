@@ -381,12 +381,12 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    // Same WebRTC requirement as cameras: off unless explicitly enabled.
+    // On by default, unlike cameras — only an explicit "false" disables it.
     const voiceChatEnabled = computed(() => {
       return (
         settings.value?.find(
           (setting) => setting.name === "public.voice_chat_enabled",
-        )?.value === "true"
+        )?.value !== "false"
       );
     });
 

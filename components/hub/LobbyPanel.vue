@@ -8,7 +8,14 @@ import {
   Mic,
   MicOff,
   PhoneOff,
+  Settings2,
+  AlertCircle,
 } from "lucide-vue-next";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
@@ -29,9 +36,19 @@ const {
   connected: voiceConnected,
   connecting: voiceConnecting,
   muted: voiceMuted,
+  error: voiceError,
+  unsupported: voiceUnsupported,
+  inputDevices: voiceInputDevices,
+  outputDevices: voiceOutputDevices,
+  micDeviceId: voiceMicDeviceId,
+  outputDeviceId: voiceOutputDeviceId,
+  inputLevel: voiceInputLevel,
   join: joinVoice,
   leave: leaveVoice,
   toggleMute: toggleVoiceMute,
+  refreshDevices: refreshVoiceDevices,
+  setMicDevice: setVoiceMicDevice,
+  setOutputDevice: setVoiceOutputDevice,
 } = useVoiceChat(() => (useMatchmakingStore().currentLobby as any)?.id);
 </script>
 
@@ -133,12 +150,111 @@ const {
           </div>
           <div class="flex items-center gap-2">
             <template v-if="voiceChatEnabled">
+              <!-- Device picker lives outside the connected branch so a player
+                   can pick the right mic before joining, not only after. -->
+              <Popover @update:open="(open) => open && refreshVoiceDevices()">
+                <PopoverTrigger as-child>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-zinc-100"
+                    :aria-label="$t('layouts.lobby_panel.voice_settings')"
+                  >
+                    <Settings2 class="h-3.5 w-3.5" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-72 space-y-3" align="end">
+                  <p
+                    class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    {{ $t("layouts.lobby_panel.voice_settings") }}
+                  </p>
+
+                  <label class="block space-y-1">
+                    <span class="text-[11px] text-muted-foreground">
+                      {{ $t("layouts.lobby_panel.microphone") }}
+                    </span>
+                    <select
+                      class="w-full rounded border border-border/60 bg-background/60 px-2 py-1.5 text-xs focus:border-[hsl(var(--tac-amber))] focus:outline-none"
+                      :value="voiceMicDeviceId"
+                      @change="
+                        setVoiceMicDevice(
+                          ($event.target as HTMLSelectElement).value,
+                        )
+                      "
+                    >
+                      <option value="">
+                        {{ $t("layouts.lobby_panel.system_default") }}
+                      </option>
+                      <option
+                        v-for="device in voiceInputDevices"
+                        :key="device.deviceId"
+                        :value="device.deviceId"
+                      >
+                        {{ device.label || device.deviceId }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <label
+                    v-if="voiceOutputDevices.length"
+                    class="block space-y-1"
+                  >
+                    <span class="text-[11px] text-muted-foreground">
+                      {{ $t("layouts.lobby_panel.output") }}
+                    </span>
+                    <select
+                      class="w-full rounded border border-border/60 bg-background/60 px-2 py-1.5 text-xs focus:border-[hsl(var(--tac-amber))] focus:outline-none"
+                      :value="voiceOutputDeviceId"
+                      @change="
+                        setVoiceOutputDevice(
+                          ($event.target as HTMLSelectElement).value,
+                        )
+                      "
+                    >
+                      <option value="">
+                        {{ $t("layouts.lobby_panel.system_default") }}
+                      </option>
+                      <option
+                        v-for="device in voiceOutputDevices"
+                        :key="device.deviceId"
+                        :value="device.deviceId"
+                      >
+                        {{ device.label || device.deviceId }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <!-- Answers "is my mic actually working" without needing a
+                       second person on the call. -->
+                  <div v-if="voiceConnected" class="space-y-1">
+                    <span class="text-[11px] text-muted-foreground">
+                      {{ $t("layouts.lobby_panel.input_level") }}
+                    </span>
+                    <div class="h-1.5 overflow-hidden rounded-full bg-muted">
+                      <div
+                        class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-75"
+                        :style="{ width: Math.round(voiceInputLevel * 100) + '%' }"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <p
+                    v-if="voiceUnsupported"
+                    class="text-[11px] leading-relaxed text-destructive"
+                  >
+                    {{ $t(voiceUnsupported) }}
+                  </p>
+                </PopoverContent>
+              </Popover>
+
               <Button
                 v-if="!voiceConnected"
                 size="xs"
                 variant="outline"
                 class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800/80 text-[11px] px-3"
                 :loading="voiceConnecting"
+                :disabled="!!voiceUnsupported"
                 @click="joinVoice()"
               >
                 <Mic class="h-3 w-3" />
@@ -191,6 +307,14 @@ const {
               </span>
             </Button>
           </div>
+
+          <p
+            v-if="voiceError"
+            class="flex w-full items-start gap-1.5 text-[11px] leading-relaxed text-destructive"
+          >
+            <AlertCircle class="mt-px h-3 w-3 shrink-0" />
+            <span>{{ $t(voiceError) }}</span>
+          </p>
         </div>
       </Transition>
 

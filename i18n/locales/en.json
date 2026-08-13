@@ -1647,14 +1647,6 @@
           "minimum_role_to_spectate_description": "Real-time spectator — connects directly to the game server with no delay. Restrict to trusted roles to prevent ghosting.",
           "require_login_section": "Require Sign-In to View Live Streams",
           "require_login_description": "Hide live game streams from signed-out visitors. Discourages cheating by ensuring every viewer is an identifiable account.",
-          "player_cameras_section": "Player Cameras",
-          "player_cameras_description": "Lets organizers require a webcam for a match and watch the feeds live. Needs MediaMTX deployed and reachable over WebRTC from outside your network.",
-          "camera_default": "Require Webcam by Default",
-          "camera_default_description": "New matches start with Require Webcam turned on. Each match can still override it.",
-          "teammates_default": "Teammates Can Watch by Default",
-          "teammates_default_description": "New matches start with teammate viewing turned on. The opposing team is never included.",
-          "voice_chat_section": "Party Voice Chat",
-          "voice_chat_description": "Lets players talk to each other in a matchmaking party. Uses the same WebRTC path as player cameras.",
           "playcast": "Playcast",
           "playcast_description": "Enable Playcast over using TV ports directly. ",
           "playcast_learn_more": "Learn more",
@@ -1664,6 +1656,18 @@
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recommended)",
           "updated": "Updated Streaming Settings"
+        },
+        "cameras": {
+          "title": "Cameras & Microphones",
+          "cameras_section": "Player Cameras",
+          "cameras_description": "Lets organizers require a webcam for a match and watch the feeds live. Needs MediaMTX deployed and reachable over WebRTC from outside your network.",
+          "required_default": "Require Webcam by Default",
+          "required_default_description": "New matches start with Require Webcam turned on. Each match can still override it.",
+          "teammates_default": "Teammates Can Watch by Default",
+          "teammates_default_description": "New matches start with teammate viewing turned on. The opposing team is never included.",
+          "voice_section": "Party Voice Chat",
+          "voice_description": "Lets players talk to each other in a matchmaking party. Uses the same WebRTC path as player cameras.",
+          "updated": "Updated"
         },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
         "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
@@ -3525,6 +3529,11 @@
       "leave_voice": "Leave",
       "mute": "Mute",
       "unmute": "Unmute",
+      "voice_settings": "Voice Settings",
+      "microphone": "Microphone",
+      "output": "Output",
+      "system_default": "System default",
+      "input_level": "Input level",
       "discord_linked": "Discord Linked",
       "link_discord": "Link Discord",
       "find_match": "Find a Match"
@@ -7257,5 +7266,15 @@
     "end_call": "End call",
     "offline": "Not connected",
     "stalled": "Feed stalled"
+  },
+  "voice": {
+    "errors": {
+      "insecure_origin": "Voice chat needs a secure connection. Open 5stack over HTTPS (or localhost) and try again.",
+      "unsupported": "This browser does not support voice chat.",
+      "permission_denied": "Microphone access was blocked. Allow it in your browser's site settings, then try again.",
+      "no_microphone": "No microphone was found. Connect one and try again.",
+      "microphone_busy": "Your microphone is in use by another application.",
+      "unknown": "Could not start voice chat."
+    }
   }
 }

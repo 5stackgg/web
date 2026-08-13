@@ -68,14 +68,19 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             order: 1,
           },
           {
+            path: "/settings/application/cameras",
+            labelKey: "pages.settings.application.cameras.title",
+            order: 2,
+          },
+          {
             path: "/settings/application/demo-settings",
             labelKey: "pages.settings.application.demo_settings.title",
-            order: 2,
+            order: 3,
           },
           {
             path: "/settings/application/highlights",
             labelKey: "pages.settings.application.highlights.title",
-            order: 3,
+            order: 4,
           },
         ],
       },

@@ -3,8 +3,20 @@
     v-if="isInMatch && match.can_check_in"
     class="flex min-h-[2.625rem] items-center"
   >
+    <!-- Checking in is refused server-side without a live camera, so the
+         button becomes the way to set one up rather than a dead end. -->
     <button
-      v-if="!isCheckedIn"
+      v-if="!isCheckedIn && needsCamera"
+      type="button"
+      :class="[tacticalCtaButtonClasses, 'w-full']"
+      @click="cameraSetupOpen = true"
+    >
+      <LucideVideo class="w-4 h-4" />
+      <span>{{ $t("camera.setup_before_check_in") }}</span>
+    </button>
+
+    <button
+      v-else-if="!isCheckedIn"
       type="button"
       :class="[tacticalCtaButtonClasses, 'w-full disabled:cursor-default']"
       :disabled="loading"
@@ -34,11 +46,36 @@
         }}
       </span>
     </div>
+
+    <Dialog v-model:open="cameraSetupOpen">
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{{ $t("camera.title") }}</DialogTitle>
+          <DialogDescription>{{ $t("camera.subtitle") }}</DialogDescription>
+        </DialogHeader>
+        <CameraSetup
+          :token="cameraToken"
+          :qr-data-url="cameraQrDataUrl"
+          :ready="cameraReady"
+          @open-on-this-computer="openCameraOnThisComputer"
+        />
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script lang="ts">
-import { CheckCircle2 } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { CheckCircle2, LucideVideo } from "lucide-vue-next";
+import CameraSetup from "~/components/match/CameraSetup.vue";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import { useCameraSetup } from "~/composables/useCameraSetup";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_check_in_settings_enum } from "~/generated/zeus";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
@@ -46,15 +83,45 @@ import { Spinner } from "~/components/ui/spinner";
 import { useMinLoading } from "~/composables/useMinLoading";
 
 export default {
-  components: { CheckCircle2, Spinner },
+  components: {
+    CheckCircle2,
+    LucideVideo,
+    Spinner,
+    CameraSetup,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+  },
   props: {
     match: {
       type: Object,
       required: true,
     },
   },
-  setup() {
-    return { tacticalCtaButtonClasses, ...useMinLoading() };
+  setup(props: { match: Record<string, any> }) {
+    const cameraSetupOpen = ref(false);
+    const camera = useCameraSetup(() => String(props.match.id));
+
+    // Only a rostered player publishes; coaches and organizers never do.
+    const needsCamera = computed(
+      () =>
+        props.match.options?.camera_required === true &&
+        props.match.is_in_lineup === true &&
+        !camera.ready.value,
+    );
+
+    return {
+      tacticalCtaButtonClasses,
+      ...useMinLoading(),
+      cameraSetupOpen,
+      needsCamera,
+      cameraToken: camera.token,
+      cameraQrDataUrl: camera.qrDataUrl,
+      cameraReady: camera.ready,
+      openCameraOnThisComputer: camera.openOnThisComputer,
+    };
   },
   computed: {
     me() {

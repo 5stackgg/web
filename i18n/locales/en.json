@@ -7269,7 +7269,8 @@
     "call": "Video call",
     "end_call": "End call",
     "offline": "Not connected",
-    "stalled": "Feed stalled"
+    "stalled": "Feed stalled",
+    "setup_before_check_in": "Set Up Your Camera"
   },
   "voice": {
     "errors": {

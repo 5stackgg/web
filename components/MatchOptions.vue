@@ -982,28 +982,20 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                 <FormField v-slot="{ value, handleChange }" name="camera_required">
                   <FormItem>
                     <div
-                      class="flex flex-row items-center justify-between gap-4"
-                      :class="
-                        camerasAvailable
-                          ? 'cursor-pointer'
-                          : 'cursor-not-allowed opacity-60'
-                      "
-                      @click="camerasAvailable && handleChange(!value)"
+                      class="flex cursor-pointer flex-row items-center justify-between gap-4"
+                      @click="handleChange(!value)"
                     >
                       <div class="space-y-1">
                         <SettingHeader>{{
                           $t("match.options.cameras.required.label")
                         }}</SettingHeader>
                         <FormDescription>{{
-                          camerasAvailable
-                            ? $t("match.options.cameras.required.description")
-                            : $t("match.options.cameras.required.unavailable")
+                          $t("match.options.cameras.required.description")
                         }}</FormDescription>
                       </div>
                       <FormControl>
                         <Switch
                           class="pointer-events-none"
-                          :disabled="!camerasAvailable"
                           :model-value="value"
                           @update:model-value="handleChange"
                         />
@@ -1840,13 +1832,10 @@ export default {
     canSetCameraRequired() {
       return canSetCameraRequired();
     },
-    camerasAvailable() {
-      return useApplicationSettingsStore().playerCamerasEnabled;
-    },
     // Drives the whole module's lit/dormant treatment, and gates the teammate
     // toggle: allowing teammates to watch feeds nobody publishes is a no-op.
     cameraArmed() {
-      return this.camerasAvailable && !!this.form.values.camera_required;
+      return !!this.form.values.camera_required;
     },
     canSetMatchCancellation() {
       return useAuthStore().isRoleAbove(

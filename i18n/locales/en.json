@@ -1659,8 +1659,8 @@
         },
         "cameras": {
           "title": "Cameras & Microphones",
-          "cameras_section": "Player Cameras",
-          "cameras_description": "Lets organizers require a webcam for a match and watch the feeds live. Needs MediaMTX deployed and reachable over WebRTC from outside your network.",
+          "defaults_section": "Match Defaults",
+          "defaults_description": "What a newly created match starts with. Organizers can still change either setting per match, and existing matches are unaffected.",
           "required_default": "Require Webcam by Default",
           "required_default_description": "New matches start with Require Webcam turned on. Each match can still override it.",
           "teammates_default": "Teammates Can Watch by Default",
@@ -4683,8 +4683,7 @@
         "title": "Player Cameras",
         "required": {
           "label": "Require Webcam",
-          "description": "Players must connect a webcam before the server details are shown, and the match pauses automatically if a feed drops.",
-          "unavailable": "Player cameras are not enabled on this server."
+          "description": "Players must connect a webcam before the server details are shown, and the match pauses automatically if a feed drops."
         },
         "teammates": {
           "label": "Teammates Can Watch",

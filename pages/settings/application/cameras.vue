@@ -7,28 +7,17 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 <template>
   <SettingsPage>
+    <!-- Cameras have no on/off of their own: an organizer turns them on per
+         match. These only decide what a newly created match starts with. -->
     <PageTransition :delay="0">
       <SettingsSection
-        id="player-cameras"
-        :title="$t('pages.settings.application.cameras.cameras_section')"
+        id="camera-defaults"
+        :title="$t('pages.settings.application.cameras.defaults_section')"
         :description="
-          $t('pages.settings.application.cameras.cameras_description')
+          $t('pages.settings.application.cameras.defaults_description')
         "
-        clickable-header
-        @header-click="save('public.player_cameras_enabled', !camerasEnabled)"
       >
-        <template #action>
-          <Switch
-            :model-value="camerasEnabled"
-            @update:model-value="
-              (value) => save('public.player_cameras_enabled', value)
-            "
-          />
-        </template>
-
-        <!-- Defaults for newly created matches only. Existing matches keep
-             whatever they were set up with. -->
-        <div v-if="camerasEnabled" class="space-y-4">
+        <div class="space-y-4">
           <div
             class="flex cursor-pointer items-center justify-between gap-4"
             @click="
@@ -64,10 +53,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
             "
             @click="
               cameraRequiredDefault &&
-              save(
-                'public.camera_allow_teammates_default',
-                !teammatesDefault,
-              )
+              save('public.camera_allow_teammates_default', !teammatesDefault)
             "
           >
             <div class="space-y-0.5">
@@ -120,9 +106,6 @@ import { toast } from "@/components/ui/toast";
 
 export default {
   computed: {
-    camerasEnabled(): boolean {
-      return useApplicationSettingsStore().playerCamerasEnabled;
-    },
     cameraRequiredDefault(): boolean {
       return useApplicationSettingsStore().cameraRequiredDefault;
     },

@@ -21,8 +21,11 @@ export function cameraPlayerJoinUrl(matchId: string, token: string) {
   return webUrl(`matches/${matchId}/camera/${token}`);
 }
 
-export function cameraAdminGridUrl(matchId: string) {
-  return webUrl(`matches/${matchId}/camera-admin`);
+// Relative, like the setup popup: an organizer opening the grid is already on
+// the app, and building this from the configured web domain sends them to
+// whatever is deployed there rather than where they are.
+export function cameraAdminGridPath(matchId: string) {
+  return `/matches/${matchId}/camera-admin`;
 }
 
 export function cameraPlayerPublishUrl(token: string) {

@@ -334,7 +334,7 @@ import {
 
 <script lang="ts">
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import { cameraAdminGridUrl } from "~/composables/useCameraApi";
+import { cameraAdminGridPath } from "~/composables/useCameraApi";
 import gql from "graphql-tag";
 import { toast } from "@/components/ui/toast";
 
@@ -408,7 +408,7 @@ export default {
     // Sized for the two-column grid: a full five-player team lays out 2-2-1.
     openCameraGrid() {
       window.open(
-        cameraAdminGridUrl(this.match.id),
+        cameraAdminGridPath(this.match.id),
         "camera-admin-grid",
         "width=760,height=780",
       );

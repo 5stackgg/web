@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Settings2 } from "lucide-vue-next";
+import { Settings2, MessageCircle, Check } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Popover,
@@ -24,12 +24,15 @@ const props = defineProps<{
   inputLevel: number;
   connected: boolean;
   unsupported: string | null;
+  supportsDiscord: boolean;
+  discordLinked: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "open"): void;
   (e: "update:mic", deviceId: string): void;
   (e: "update:output", deviceId: string): void;
+  (e: "linkDiscord"): void;
 }>();
 
 // Select treats "" as no selection and would show the placeholder instead of a
@@ -163,6 +166,35 @@ const levelPercent = computed(() =>
       >
         {{ $t(unsupported) }}
       </p>
+
+      <!-- Account plumbing rather than a control for the call in progress, so
+           it lives here instead of beside the join button. -->
+      <div v-if="supportsDiscord" class="border-t pt-3">
+        <button
+          v-if="!discordLinked"
+          type="button"
+          class="flex w-full items-center justify-between gap-2 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+          @click="emit('linkDiscord')"
+        >
+          <span class="flex items-center gap-1.5">
+            <MessageCircle class="h-3 w-3" />
+            {{ $t("layouts.lobby_panel.link_discord") }}
+          </span>
+          <span class="text-[hsl(var(--tac-amber))]">
+            {{ $t("layouts.lobby_panel.connect") }}
+          </span>
+        </button>
+        <div
+          v-else
+          class="flex items-center justify-between gap-2 text-[11px] text-muted-foreground"
+        >
+          <span class="flex items-center gap-1.5">
+            <MessageCircle class="h-3 w-3" />
+            {{ $t("layouts.lobby_panel.discord_linked") }}
+          </span>
+          <Check class="h-3 w-3 text-emerald-400" />
+        </div>
+      </div>
     </PopoverContent>
   </Popover>
 </template>

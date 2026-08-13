@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 import {
   Merge,
   Waves,
-  MessageCircle,
   LogOut,
   Mic,
   MicOff,
@@ -228,6 +227,9 @@ const {
                   :input-level="voiceInputLevel"
                   :connected="voiceConnected"
                   :unsupported="voiceUnsupported"
+                  :supports-discord="supportsDiscordBot"
+                  :discord-linked="hasDiscordLinked"
+                  @link-discord="linkDiscord"
                   @open="refreshVoiceDevices()"
                   @update:mic="setVoiceMicDevice"
                   @update:output="setVoiceOutputDevice"
@@ -255,23 +257,6 @@ const {
               </p>
             </div>
           </div>
-
-          <button
-            v-if="supportsDiscordBot && !hasDiscordLinked"
-            type="button"
-            class="flex items-center gap-1.5 self-start text-[11px] text-zinc-500 transition-colors hover:text-zinc-300"
-            @click="linkDiscord"
-          >
-            <MessageCircle class="h-3 w-3" />
-            {{ $t("layouts.lobby_panel.link_discord") }}
-          </button>
-          <span
-            v-else-if="hasDiscordLinked"
-            class="flex items-center gap-1.5 self-start text-[11px] text-zinc-600"
-          >
-            <MessageCircle class="h-3 w-3" />
-            {{ $t("layouts.lobby_panel.discord_linked") }}
-          </span>
         </div>
       </Transition>
 

@@ -3539,7 +3539,8 @@
       "find_match": "Find a Match",
       "voice": "Voice",
       "live": "Live",
-      "muted": "Muted"
+      "muted": "Muted",
+      "connect": "Connect"
     },
     "chat_panel": {
       "default_title": "Chat",

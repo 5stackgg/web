@@ -3727,7 +3727,8 @@
     "excellent": "Eccellente",
     "good": "Buona",
     "fair": "Discreta",
-    "poor": "Scarsa"
+    "poor": "Scarsa",
+    "unreachable": "Non raggiungibile"
   },
   "chat_page": {
     "fallback_title": "Chat",

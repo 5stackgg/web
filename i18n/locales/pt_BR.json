@@ -3925,7 +3925,8 @@
     "excellent": "Excelente",
     "good": "Bom",
     "fair": "Razoável",
-    "poor": "Pobre"
+    "poor": "Pobre",
+    "unreachable": "Inacessível"
   },
   "chat_page": {
     "fallback_title": "Chat",

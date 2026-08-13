@@ -450,17 +450,22 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   );
 
   const isRefreshing = ref(false);
+  // Per-region probe state so each row can show its own progress instead of a
+  // single global spinner — a region resolves the moment its probe answers.
+  const probeStates = ref(new Map<string, "measuring" | "unreachable">());
+
   async function refreshLatencies() {
     if (isRefreshing.value) {
       return;
     }
     isRefreshing.value = true;
-    resetLatencies();
-    await Promise.all(
-      useApplicationSettingsStore().availableRegions.map((region) =>
-        getLatency(region.value),
-      ),
-    );
+    const regions = useApplicationSettingsStore().availableRegions;
+    // Previous readings stay on screen until a new one lands, so the table
+    // never flashes empty mid-refresh.
+    regions.forEach((region) => {
+      probeStates.value.set(region.value, "measuring");
+    });
+    await Promise.all(regions.map((region) => getLatency(region.value)));
     isRefreshing.value = false;
   }
 
@@ -475,10 +480,31 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   }
 
   async function getLatency(region: string) {
+    probeStates.value.set(region, "measuring");
+
     return new Promise(async (resolve) => {
-      setTimeout(() => {
+      let settled = false;
+      const settle = (reachable: boolean) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        if (reachable) {
+          probeStates.value.delete(region);
+        } else {
+          // Drop the stale reading so we never show a number for a region we
+          // could not reach on this pass.
+          probeStates.value.set(region, "unreachable");
+          latencies.value.delete(region);
+          localStorage.removeItem(REGION_LATENCY_PREFIX + region);
+        }
         resolve(undefined);
+      };
+
+      setTimeout(() => {
+        settle(latencies.value.has(region));
       }, 5000);
+
       try {
         const buffer = new Uint8Array([0x01]).buffer;
 
@@ -496,15 +522,20 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
           if (event.type === "latency-results") {
             datachannel.close();
             latencies.value.set(region, event.data);
+            settle(true);
           }
         });
 
         datachannel.send("latency-test");
       } catch (error) {
         console.error(`Failed to get latency for ${region}`, error);
-        resolve(undefined);
+        settle(false);
       }
     });
+  }
+
+  function getRegionProbeState(region: string) {
+    return probeStates.value.get(region);
   }
 
   function togglePreferredRegion(region: string) {
@@ -523,13 +554,6 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   function updateMaxAcceptableLatency(latency: number) {
     playerMaxAcceptableLatency.value = latency;
     localStorage.setItem(MAX_LATENCY_KEY, latency.toString());
-  }
-
-  function resetLatencies() {
-    latencies.value.clear();
-    useApplicationSettingsStore().availableRegions.forEach((region) => {
-      localStorage.removeItem(REGION_LATENCY_PREFIX + region.value);
-    });
   }
 
   function getRegionlatencyResult(region: string):
@@ -655,6 +679,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     refreshLatencies,
     isRefreshing,
     getRegionlatencyResult,
+    getRegionProbeState,
     togglePreferredRegion,
     updateMaxAcceptableLatency,
 

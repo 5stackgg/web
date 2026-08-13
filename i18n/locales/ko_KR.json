@@ -3727,7 +3727,8 @@
     "excellent": "매우 좋음",
     "good": "좋음",
     "fair": "보통",
-    "poor": "나쁨"
+    "poor": "나쁨",
+    "unreachable": "연결 불가"
   },
   "chat_page": {
     "fallback_title": "채팅",

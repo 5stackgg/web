@@ -3628,7 +3628,8 @@
     "excellent": "极佳",
     "good": "良好",
     "fair": "一般",
-    "poor": "较差"
+    "poor": "较差",
+    "unreachable": "无法连接"
   },
   "chat_page": {
     "fallback_title": "聊天",

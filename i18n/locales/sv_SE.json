@@ -3727,7 +3727,8 @@
     "excellent": "Utmärkt",
     "good": "Bra",
     "fair": "Okej",
-    "poor": "Dålig"
+    "poor": "Dålig",
+    "unreachable": "Onåbar"
   },
   "chat_page": {
     "fallback_title": "Chatt",

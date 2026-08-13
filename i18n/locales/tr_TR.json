@@ -3727,7 +3727,8 @@
     "excellent": "Mükemmel",
     "good": "İyi",
     "fair": "Orta",
-    "poor": "Zayıf"
+    "poor": "Zayıf",
+    "unreachable": "Ulaşılamıyor"
   },
   "chat_page": {
     "fallback_title": "Sohbet",

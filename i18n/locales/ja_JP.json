@@ -3727,7 +3727,8 @@
     "excellent": "優秀",
     "good": "良好",
     "fair": "普通",
-    "poor": "不良"
+    "poor": "不良",
+    "unreachable": "到達不可"
   },
   "chat_page": {
     "fallback_title": "チャット",

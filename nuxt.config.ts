@@ -59,35 +59,47 @@ export default defineNuxtConfig({
       style: [
         {
           innerHTML: `
-            .pre-loader::before {
-              content: '';
-              box-sizing: border-box;
-              border: 4px solid rgba(255, 255, 255, 0.3);
-              border-top: 4px solid white;
-              border-radius: 50%;
-              width: 50px;
-              height: 50px;
-              animation: spin 1s linear infinite;
-            }
+            /* The overlay lives in ::before/::after rather than on <body>
+               itself: fading <body> would fade the app mounted inside it,
+               so the reveal could only ever be a hard cut. As pseudo
+               elements the panel and spinner fade *over* live content. */
             .pre-loader {
               margin: 0;
+              overflow: hidden;
+            }
+            .pre-loader::before,
+            .pre-loader::after {
+              content: '';
+              position: fixed;
+              z-index: 9999;
+              pointer-events: none;
+              transition: opacity 0.3s ease;
+            }
+            .pre-loader::before {
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
               background-color: hsl(240 10% 3.9%);
               background-image: url("/topo-preloader.svg");
               background-size: cover;
               background-position: center;
               background-repeat: no-repeat;
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              z-index: 9999;
-              transition: opacity 0.3s;
             }
-            .pre-loader--fade {
+            .pre-loader::after {
+              box-sizing: border-box;
+              top: 50%;
+              left: 50%;
+              width: 50px;
+              height: 50px;
+              margin: -25px 0 0 -25px;
+              border: 4px solid rgba(255, 255, 255, 0.3);
+              border-top: 4px solid white;
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+            }
+            .pre-loader--fade::before,
+            .pre-loader--fade::after {
               opacity: 0;
             }
             @keyframes spin {

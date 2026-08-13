@@ -3727,7 +3727,8 @@
     "excellent": "Excellente",
     "good": "Bonne",
     "fair": "Moyenne",
-    "poor": "Mauvaise"
+    "poor": "Mauvaise",
+    "unreachable": "Inaccessible"
   },
   "chat_page": {
     "fallback_title": "Chat",

@@ -3840,7 +3840,8 @@
     "excellent": "Excellent",
     "good": "Good",
     "fair": "Fair",
-    "poor": "Poor"
+    "poor": "Poor",
+    "unreachable": "Unreachable"
   },
   "chat_page": {
     "fallback_title": "Chat",

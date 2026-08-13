@@ -3727,7 +3727,8 @@
     "excellent": "Отлично",
     "good": "Хорошо",
     "fair": "Средне",
-    "poor": "Плохо"
+    "poor": "Плохо",
+    "unreachable": "Недоступен"
   },
   "chat_page": {
     "fallback_title": "Чат",

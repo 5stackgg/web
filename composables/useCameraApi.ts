@@ -177,12 +177,15 @@ export async function negotiateWebRtc(
   }
 
   if (!response.ok) {
-    throw new SignalingError(
-      "http",
-      url,
-      response.status,
-      (await response.text().catch(() => "")).slice(0, 300),
-    );
+    const body = await response.text().catch(() => "");
+
+    // An ingress that has no route for this path answers with a full HTML
+    // error page; quoting it back is noise, the status already said it.
+    const detail = /^\s*</.test(body)
+      ? response.statusText
+      : body.trim().slice(0, 200);
+
+    throw new SignalingError("http", url, response.status, detail);
   }
 
   await pc.setRemoteDescription({

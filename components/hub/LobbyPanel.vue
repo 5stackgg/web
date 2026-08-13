@@ -131,10 +131,9 @@ const {
         </Transition>
       </div>
 
-      <!-- Voice. Discord sits underneath as a secondary link rather than
-           beside the call controls: it is account plumbing, not a control for
-           the call in progress, and pairing them made the row read as two
-           equal buttons. -->
+      <!-- Voice only. Discord linking used to live here, but it is account
+           plumbing for the bot rather than anything to do with the call, and
+           it left an orphan line under the controls. -->
       <Transition name="lobby-item">
         <div
           v-if="currentLobby && squadReady"
@@ -227,9 +226,6 @@ const {
                   :input-level="voiceInputLevel"
                   :connected="voiceConnected"
                   :unsupported="voiceUnsupported"
-                  :supports-discord="supportsDiscordBot"
-                  :discord-linked="hasDiscordLinked"
-                  @link-discord="linkDiscord"
                   @open="refreshVoiceDevices()"
                   @update:mic="setVoiceMicDevice"
                   @update:output="setVoiceOutputDevice"
@@ -382,12 +378,6 @@ export default {
     isElevatedUser() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
-    supportsDiscordBot() {
-      return useApplicationSettingsStore().supportsDiscordBot;
-    },
-    hasDiscordLinked() {
-      return useAuthStore().hasDiscordLinked;
-    },
     voiceChatEnabled() {
       return useApplicationSettingsStore().voiceChatEnabled;
     },
@@ -463,15 +453,6 @@ export default {
           ],
         }),
       });
-    },
-    linkDiscord() {
-      const hasDiscordLinked = useAuthStore().hasDiscordLinked;
-      if (hasDiscordLinked || !this.supportsDiscordBot) {
-        return;
-      }
-      const config = useRuntimeConfig();
-      const redirect = encodeURIComponent(window.location.toString());
-      window.location.href = `https://${config.public.webDomain}/auth/discord?redirect=${redirect}`;
     },
   },
 };

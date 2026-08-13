@@ -2,7 +2,11 @@ import { ref, computed, watch, onScopeDispose } from "vue";
 import gql from "graphql-tag";
 import { useQuery } from "@vue/apollo-composable";
 import QRCode from "qrcode";
-import { cameraPlayerJoinUrl, fetchCameraStatus } from "~/composables/useCameraApi";
+import {
+  cameraPlayerJoinUrl,
+  cameraPlayerPath,
+  fetchCameraStatus,
+} from "~/composables/useCameraApi";
 
 const MY_CAMERA_TOKEN = gql`
   query MyCameraToken($matchId: uuid!) {
@@ -74,12 +78,20 @@ export function useCameraSetup(matchId: () => string) {
     { immediate: true },
   );
 
+  // Same origin as the tab that opened it, rather than the configured web
+  // domain: you are already on the app, and pointing at another deployment
+  // means the popup can land somewhere that has not shipped this page yet.
+  //
   // Landscape on purpose: the join page picks portrait or landscape capture
   // from the window's own orientation, so a narrow popup would ask a landscape
   // webcam for a portrait frame and letterbox it.
   function openOnThisComputer() {
-    if (joinUrl.value) {
-      window.open(joinUrl.value, "camera-connect", "width=900,height=700");
+    if (token.value) {
+      window.open(
+        cameraPlayerPath(matchId(), token.value),
+        "camera-connect",
+        "width=900,height=700",
+      );
     }
   }
 

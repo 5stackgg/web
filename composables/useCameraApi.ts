@@ -10,6 +10,13 @@ function webUrl(path: string) {
   return `https://${useRuntimeConfig().public.webDomain}/${path}`;
 }
 
+export function cameraPlayerPath(matchId: string, token: string) {
+  return `/matches/${matchId}/camera/${token}`;
+}
+
+// Absolute, because this is what goes into the QR code and a phone cannot
+// resolve wherever the current tab happens to be served from. The popup on
+// this computer uses cameraPlayerPath instead.
 export function cameraPlayerJoinUrl(matchId: string, token: string) {
   return webUrl(`matches/${matchId}/camera/${token}`);
 }

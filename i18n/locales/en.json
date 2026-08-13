@@ -7283,6 +7283,29 @@
       "forbidden": "You are not allowed to join voice for this lobby.",
       "not_deployed": "The voice endpoint was not found on the API. It may not be deployed yet.",
       "signaling": "The voice server rejected the connection."
+    },
+    "settings": {
+      "title": "Voice Settings",
+      "description": "Pick your devices and check that people can hear you.",
+      "input": "Input Device",
+      "output": "Output Device",
+      "system_default": "System default",
+      "mic_test": "Mic Check",
+      "listen": "Hear myself",
+      "stop_listening": "Stop",
+      "meter_hint": "Speak — the bar shows what the others are receiving. Green means you are being sent.",
+      "monitor_hint": "You are hearing your own mic. Use headphones, or it will echo.",
+      "join_first": "Join voice to test your microphone.",
+      "input_mode": "Input Mode",
+      "mode_voice": "Voice Activity",
+      "mode_voice_hint": "Only transmit while you are talking.",
+      "mode_open": "Always Transmit",
+      "mode_open_hint": "Send everything your mic picks up.",
+      "sensitivity": "Sensitivity",
+      "test": "Test",
+      "output_unsupported": "This browser does not let a site choose the output device; it uses your system default.",
+      "noise_suppression": "Noise Suppression",
+      "noise_suppression_hint": "Filters steady background noise like fans and keyboards."
     }
   }
 }

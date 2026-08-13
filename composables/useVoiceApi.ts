@@ -6,8 +6,7 @@
 //
 // Absolute, like every other API call in the app. These are preflighted (an
 // application/sdp body is not CORS-safelisted), so the calling origin has to be
-// in the API's allowlist -- set EXTRA_CORS_ORIGINS to develop from one that is
-// not a configured domain.
+// one the API allows.
 
 function apiUrl(path: string) {
   return `https://${useRuntimeConfig().public.apiDomain}/voice/${path}`;

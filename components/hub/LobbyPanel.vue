@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   Merge,
@@ -9,7 +10,8 @@ import {
   PhoneOff,
   AlertCircle,
 } from "lucide-vue-next";
-import VoiceSettingsPopover from "~/components/hub/VoiceSettingsPopover.vue";
+import VoiceSettingsDialog from "~/components/hub/VoiceSettingsDialog.vue";
+import { Settings2 } from "lucide-vue-next";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
@@ -41,10 +43,29 @@ const {
   join: joinVoice,
   leave: leaveVoice,
   toggleMute: toggleVoiceMute,
+  inputMode: voiceInputMode,
+  threshold: voiceThreshold,
+  noiseSuppression: voiceNoiseSuppression,
+  transmitting: voiceTransmitting,
+  monitoring: voiceMonitoring,
   refreshDevices: refreshVoiceDevices,
   setMicDevice: setVoiceMicDevice,
   setOutputDevice: setVoiceOutputDevice,
+  setInputMode: setVoiceInputMode,
+  setThreshold: setVoiceThreshold,
+  setNoiseSuppression: setVoiceNoiseSuppression,
+  toggleMonitor: toggleVoiceMonitor,
+  playTestTone: playVoiceTestTone,
 } = useVoiceChat(() => (useMatchmakingStore().currentLobby as any)?.id);
+
+const voiceSettingsOpen = ref(false);
+
+// Labels only exist once a permission has been granted, so refresh on open
+// rather than showing a list of anonymous device ids.
+function openVoiceSettings() {
+  void refreshVoiceDevices();
+  voiceSettingsOpen.value = true;
+}
 </script>
 
 <template>
@@ -218,18 +239,15 @@ const {
                   </Button>
                 </template>
 
-                <VoiceSettingsPopover
-                  :input-devices="voiceInputDevices"
-                  :output-devices="voiceOutputDevices"
-                  :mic-device-id="voiceMicDeviceId"
-                  :output-device-id="voiceOutputDeviceId"
-                  :input-level="voiceInputLevel"
-                  :connected="voiceConnected"
-                  :unsupported="voiceUnsupported"
-                  @open="refreshVoiceDevices()"
-                  @update:mic="setVoiceMicDevice"
-                  @update:output="setVoiceOutputDevice"
-                />
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-zinc-100"
+                  :aria-label="$t('voice.settings.title')"
+                  @click="openVoiceSettings"
+                >
+                  <Settings2 class="h-3.5 w-3.5" />
+                </Button>
               </template>
             </div>
           </div>
@@ -255,6 +273,29 @@ const {
           </div>
         </div>
       </Transition>
+
+      <VoiceSettingsDialog
+        v-model:open="voiceSettingsOpen"
+        :input-devices="voiceInputDevices"
+        :output-devices="voiceOutputDevices"
+        :mic-device-id="voiceMicDeviceId"
+        :output-device-id="voiceOutputDeviceId"
+        :input-level="voiceInputLevel"
+        :threshold="voiceThreshold"
+        :input-mode="voiceInputMode"
+        :noise-suppression="voiceNoiseSuppression"
+        :transmitting="voiceTransmitting"
+        :monitoring="voiceMonitoring"
+        :connected="voiceConnected"
+        :unsupported="voiceUnsupported"
+        @update:mic="setVoiceMicDevice"
+        @update:output="setVoiceOutputDevice"
+        @update:mode="setVoiceInputMode"
+        @update:threshold="setVoiceThreshold"
+        @update:noise-suppression="setVoiceNoiseSuppression"
+        @toggle-monitor="toggleVoiceMonitor"
+        @test-output="playVoiceTestTone"
+      />
 
       <!-- Dedicated bottom lobby chat area (~25% height) -->
       <Transition name="lobby-item">

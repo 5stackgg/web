@@ -14,6 +14,43 @@ import {
 
 const MIC_DEVICE_KEY = "5stack:voice:mic";
 const OUTPUT_DEVICE_KEY = "5stack:voice:output";
+const INPUT_MODE_KEY = "5stack:voice:input-mode";
+const THRESHOLD_KEY = "5stack:voice:threshold";
+const SUPPRESSION_KEY = "5stack:voice:noise-suppression";
+
+export type VoiceInputMode = "voice" | "open";
+
+// How long the gate stays open after the last sample above threshold. Without
+// it every pause between words clips the tail of the sentence.
+const GATE_HOLD_MS = 320;
+// Ramped rather than switched: a hard 0/1 gain change is an audible click.
+const GATE_RAMP_S = 0.03;
+
+function storedNumber(key: string, fallback: number) {
+  try {
+    const raw = Number(localStorage.getItem(key));
+    return Number.isFinite(raw) && raw > 0 ? raw : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function storedFlag(key: string, fallback: boolean) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw === null ? fallback : raw === "true";
+  } catch {
+    return fallback;
+  }
+}
+
+function remember(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Private browsing — the choice just won't persist.
+  }
+}
 
 function storedDevice(key: string) {
   try {
@@ -52,11 +89,27 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
   // 0..1, driven off the live mic so a player can see their own input working
   // without having to ask someone else whether they can be heard.
   const inputLevel = ref(0);
+  const inputMode = ref<VoiceInputMode>(
+    (storedDevice(INPUT_MODE_KEY) as VoiceInputMode) || "voice",
+  );
+  const threshold = ref(storedNumber(THRESHOLD_KEY, 0.08));
+  const noiseSuppression = ref(storedFlag(SUPPRESSION_KEY, true));
+  // Whether the gate is currently letting audio through, so the UI can show
+  // the same thing the other side is hearing.
+  const transmitting = ref(false);
+  // Loopback so a player can hear themselves. Taken after the gate, so what
+  // they hear is exactly what the other side gets -- including being cut off
+  // when the sensitivity is set too high.
+  const monitoring = ref(false);
 
   let publishPc: RTCPeerConnection | null = null;
   let micStream: MediaStream | null = null;
-  let meterContext: AudioContext | null = null;
+  let audioContext: AudioContext | null = null;
+  let gateGain: GainNode | null = null;
+  let monitorGain: GainNode | null = null;
+  let published: MediaStream | null = null;
   let meterFrame: number | null = null;
+  let openUntil = 0;
   const subscriptions = new Map<
     string,
     { pc: RTCPeerConnection; audio: HTMLAudioElement }
@@ -102,47 +155,93 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     }
   }
 
-  function startMeter(stream: MediaStream) {
-    stopMeter();
+  // The published track comes off this graph, not straight off the mic, so the
+  // gate can open and close without renegotiating anything:
+  //
+  //   mic -> analyser (level + VAD) -> gain (the gate) -> destination -> peer
+  //
+  // Muting and voice activity both drive the same gain, so remote peers only
+  // ever hear silence rather than a track that disappears and comes back.
+  function buildGraph(stream: MediaStream) {
+    teardownGraph();
 
-    try {
-      const context = new AudioContext();
-      meterContext = context;
-      const analyser = context.createAnalyser();
-      analyser.fftSize = 512;
-      context.createMediaStreamSource(stream).connect(analyser);
+    const context = new AudioContext();
+    audioContext = context;
 
-      const samples = new Uint8Array(analyser.frequencyBinCount);
-      const read = () => {
-        analyser.getByteTimeDomainData(samples);
-        let peak = 0;
-        for (const sample of samples) {
-          peak = Math.max(peak, Math.abs(sample - 128));
-        }
-        inputLevel.value = muted.value ? 0 : Math.min(1, peak / 96);
-        meterFrame = requestAnimationFrame(read);
-      };
-      read();
-    } catch {
-      // Meter is a nicety; a failure here must not block the call.
-    }
+    const analyser = context.createAnalyser();
+    analyser.fftSize = 512;
+    const gain = context.createGain();
+    gateGain = gain;
+    const destination = context.createMediaStreamDestination();
+
+    context.createMediaStreamSource(stream).connect(analyser);
+    analyser.connect(gain);
+    gain.connect(destination);
+
+    gain.gain.value = 0;
+    published = destination.stream;
+    monitorGain = context.createGain();
+    monitorGain.gain.value = monitoring.value ? 1 : 0;
+    gain.connect(monitorGain);
+    monitorGain.connect(context.destination);
+
+    const samples = new Uint8Array(analyser.frequencyBinCount);
+    const read = () => {
+      analyser.getByteTimeDomainData(samples);
+
+      let peak = 0;
+      for (const sample of samples) {
+        peak = Math.max(peak, Math.abs(sample - 128));
+      }
+
+      const level = Math.min(1, peak / 96);
+      inputLevel.value = level;
+
+      const now = performance.now();
+      if (level >= threshold.value) {
+        openUntil = now + GATE_HOLD_MS;
+      }
+
+      const gateOpen = inputMode.value === "open" || now < openUntil;
+      const shouldSend = gateOpen && !muted.value;
+
+      if (shouldSend !== transmitting.value) {
+        transmitting.value = shouldSend;
+        gain.gain.setTargetAtTime(
+          shouldSend ? 1 : 0,
+          context.currentTime,
+          GATE_RAMP_S,
+        );
+      }
+
+      meterFrame = requestAnimationFrame(read);
+    };
+    read();
+
+    return destination.stream;
   }
 
-  function stopMeter() {
+  function teardownGraph() {
     if (meterFrame !== null) {
       cancelAnimationFrame(meterFrame);
       meterFrame = null;
     }
 
-    void meterContext?.close().catch(() => {});
-    meterContext = null;
+    void audioContext?.close().catch(() => {});
+    audioContext = null;
+    gateGain = null;
+    monitorGain = null;
+    monitoring.value = false;
+    published = null;
     inputLevel.value = 0;
+    transmitting.value = false;
+    openUntil = 0;
   }
 
   async function openMic() {
     const constraints: MediaTrackConstraints = {
       echoCancellation: true,
-      noiseSuppression: true,
+      noiseSuppression: noiseSuppression.value,
       autoGainControl: true,
     };
 
@@ -164,7 +263,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
         return navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: true,
-            noiseSuppression: true,
+            noiseSuppression: noiseSuppression.value,
             autoGainControl: true,
           },
           video: false,
@@ -235,18 +334,18 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
       // point a device picker can show real names.
       await refreshDevices();
 
+      const outgoing = buildGraph(micStream);
+
       const pc = new RTCPeerConnection({ iceServers: iceServers() });
       publishPc = pc;
 
-      for (const track of micStream.getAudioTracks()) {
-        pc.addTrack(track, micStream);
+      for (const track of outgoing.getAudioTracks()) {
+        pc.addTrack(track, outgoing);
       }
 
       await negotiateWebRtc(pc, voicePublishUrl(id), "include");
 
       connected.value = true;
-      applyMute();
-      startMeter(micStream);
       void poll();
     } catch (caught) {
       error.value = describeError(caught);
@@ -273,7 +372,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
 
   function teardown() {
     connected.value = false;
-    stopMeter();
+    teardownGraph();
 
     if (pollTimer) {
       clearTimeout(pollTimer);
@@ -295,17 +394,10 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     participants.value = [];
   }
 
-  function applyMute() {
-    for (const track of micStream?.getAudioTracks() ?? []) {
-      // Keeps the path published while muted: dropping the track would look
-      // like a disconnect to everyone else and churn the whole session.
-      track.enabled = !muted.value;
-    }
-  }
-
+  // Mute is enforced by the gate in buildGraph, which the render loop applies
+  // on its next frame -- the raw track stays live so the meter keeps reading.
   function toggleMute() {
     muted.value = !muted.value;
-    applyMute();
   }
 
   // Swaps the live track in place so the session survives a device change --
@@ -320,7 +412,8 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
 
     try {
       const replacement = await openMic();
-      const [track] = replacement.getAudioTracks();
+      const outgoing = buildGraph(replacement);
+      const [track] = outgoing.getAudioTracks();
       const sender = publishPc
         ?.getSenders()
         .find((candidate) => candidate.track?.kind === "audio");
@@ -332,10 +425,87 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
       }
 
       micStream = replacement;
-      applyMute();
-      startMeter(replacement);
     } catch (caught) {
       error.value = describeError(caught);
+    }
+  }
+
+  function toggleMonitor() {
+    monitoring.value = !monitoring.value;
+
+    if (monitorGain && audioContext) {
+      monitorGain.gain.setTargetAtTime(
+        monitoring.value ? 1 : 0,
+        audioContext.currentTime,
+        GATE_RAMP_S,
+      );
+    }
+  }
+
+  // Confirms the output picker actually routes somewhere audible, without
+  // needing another person on the call.
+  async function playTestTone() {
+    const context = new AudioContext();
+
+    try {
+      const destination = context.createMediaStreamDestination();
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = 440;
+      // Short fade either side: a square-on/off sine is an unpleasant click.
+      gain.gain.setValueAtTime(0, context.currentTime);
+      gain.gain.linearRampToValueAtTime(0.12, context.currentTime + 0.02);
+      gain.gain.setValueAtTime(0.12, context.currentTime + 0.35);
+      gain.gain.linearRampToValueAtTime(0, context.currentTime + 0.4);
+
+      oscillator.connect(gain);
+      gain.connect(destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.4);
+
+      const audio = new Audio();
+      audio.srcObject = destination.stream;
+      await applyOutput(audio);
+      await audio.play().catch(() => {});
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      audio.pause();
+      audio.srcObject = null;
+    } finally {
+      void context.close().catch(() => {});
+    }
+  }
+
+  function setInputMode(mode: VoiceInputMode) {
+    inputMode.value = mode;
+    remember(INPUT_MODE_KEY, mode);
+  }
+
+  function setThreshold(value: number) {
+    threshold.value = Math.min(1, Math.max(0, value));
+    remember(THRESHOLD_KEY, String(threshold.value));
+  }
+
+  // Applied to the live track where the browser supports it, so toggling it
+  // does not interrupt the call; only a refusal costs a reopen.
+  async function setNoiseSuppression(enabled: boolean) {
+    noiseSuppression.value = enabled;
+    remember(SUPPRESSION_KEY, String(enabled));
+
+    const [track] = micStream?.getAudioTracks() ?? [];
+
+    if (!track) {
+      return;
+    }
+
+    try {
+      await track.applyConstraints({ noiseSuppression: enabled });
+    } catch {
+      if (connected.value) {
+        await setMicDevice(micDeviceId.value);
+      }
     }
   }
 
@@ -466,11 +636,21 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     micDeviceId,
     outputDeviceId,
     inputLevel,
+    inputMode,
+    threshold,
+    noiseSuppression,
+    transmitting,
+    monitoring,
     join,
     leave,
     toggleMute,
     refreshDevices,
     setMicDevice,
     setOutputDevice,
+    setInputMode,
+    setThreshold,
+    setNoiseSuppression,
+    toggleMonitor,
+    playTestTone,
   };
 }

@@ -119,6 +119,23 @@ const BooleanPill = defineComponent({
                 }}</dt>
                 <dd><BooleanPill :value="options.knife_round" /></dd>
               </div>
+              <!-- Only when on: requiring a webcam is unusual enough that
+                   showing "No" on every other match would be noise. -->
+              <div v-if="options.camera_required" class="settings-row">
+                <dt class="settings-row__label">{{
+                  $t("match.options.cameras.required.label")
+                }}</dt>
+                <dd><BooleanPill :value="true" /></dd>
+              </div>
+              <div
+                v-if="options.camera_required && options.camera_allow_teammates"
+                class="settings-row"
+              >
+                <dt class="settings-row__label">{{
+                  $t("match.options.cameras.teammates.label")
+                }}</dt>
+                <dd><BooleanPill :value="true" /></dd>
+              </div>
               <div class="settings-row">
                 <dt class="settings-row__label">{{
                   $t("match.options.advanced.halftime_pausematch.label")

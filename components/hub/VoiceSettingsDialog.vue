@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import {
-  Check,
   Headphones,
   Mic,
   MicOff,
@@ -20,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import DeviceSelect from "~/components/media/DeviceSelect.vue";
 import type { VoiceInputMode } from "~/composables/useVoiceChat";
 
 const props = defineProps<{
@@ -35,6 +35,7 @@ const props = defineProps<{
   transmitting: boolean;
   monitoring: boolean;
   connected: boolean;
+  previewing: boolean;
   unsupported: string | null;
 }>();
 
@@ -49,17 +50,10 @@ const emit = defineEmits<{
   (e: "testOutput"): void;
 }>();
 
-// Browsers repeat the active device as a synthetic "default" entry; showing
-// both makes the list look broken.
-const inputs = computed(() =>
-  props.inputDevices.filter((device) => device.deviceId !== "default"),
-);
+// Only to decide whether this browser can choose an output at all.
 const outputs = computed(() =>
   props.outputDevices.filter((device) => device.deviceId !== "default"),
 );
-
-const deviceName = (device: MediaDeviceInfo, index: number) =>
-  device.label || `Device ${index + 1}`;
 
 const levelPercent = computed(() =>
   Math.round(Math.min(1, Math.max(0, props.inputLevel)) * 100),
@@ -68,8 +62,10 @@ const thresholdPercent = computed(() => Math.round(props.threshold * 100));
 
 // Above the line the bar is the colour of what is actually being sent; below
 // it, muted — so the threshold reads as a decision, not just a marker.
+const live = computed(() => props.connected || props.previewing);
+
 const barClass = computed(() => {
-  if (!props.connected) {
+  if (!live.value) {
     return "bg-zinc-600";
   }
   return props.transmitting
@@ -110,36 +106,14 @@ const barClass = computed(() => {
             </h3>
           </div>
 
-          <!-- A list of real rows rather than a native select: it is the same
-               shape as the rest of the app and shows which one is live. -->
-          <div class="overflow-hidden rounded-lg border">
-            <button
-              v-for="(device, index) in [null, ...inputs]"
-              :key="device?.deviceId ?? 'default'"
-              type="button"
-              class="flex w-full items-center gap-2.5 border-b px-3 py-2.5 text-left text-xs transition-colors last:border-b-0 hover:bg-muted/50"
-              :class="
-                (device?.deviceId ?? '') === micDeviceId ? 'bg-muted/40' : ''
-              "
-              @click="emit('update:mic', device?.deviceId ?? '')"
-            >
-              <Check
-                class="h-3.5 w-3.5 shrink-0"
-                :class="
-                  (device?.deviceId ?? '') === micDeviceId
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-transparent'
-                "
-              />
-              <span class="truncate">
-                {{
-                  device
-                    ? deviceName(device, index - 1)
-                    : $t("voice.settings.system_default")
-                }}
-              </span>
-            </button>
-          </div>
+          <DeviceSelect
+            :icon="Mic"
+            :devices="inputDevices"
+            :model-value="micDeviceId"
+            :level="inputLevel"
+            :active="live"
+            @update:model-value="(id) => emit('update:mic', id)"
+          />
         </section>
 
         <!-- Live check -->
@@ -157,7 +131,7 @@ const barClass = computed(() => {
               size="xs"
               :variant="monitoring ? 'secondary' : 'outline'"
               class="h-7 gap-1.5 text-[11px]"
-              :disabled="!connected"
+              :disabled="!live"
               @click="emit('toggleMonitor')"
             >
               <component
@@ -189,11 +163,11 @@ const barClass = computed(() => {
 
           <p class="text-[11px] leading-relaxed text-muted-foreground">
             {{
-              connected
+              live
                 ? monitoring
                   ? $t("voice.settings.monitor_hint")
                   : $t("voice.settings.meter_hint")
-                : $t("voice.settings.join_first")
+                : $t("voice.settings.mic_starting")
             }}
           </p>
         </section>
@@ -273,34 +247,13 @@ const barClass = computed(() => {
             </Button>
           </div>
 
-          <div v-if="outputs.length" class="overflow-hidden rounded-lg border">
-            <button
-              v-for="(device, index) in [null, ...outputs]"
-              :key="device?.deviceId ?? 'default'"
-              type="button"
-              class="flex w-full items-center gap-2.5 border-b px-3 py-2.5 text-left text-xs transition-colors last:border-b-0 hover:bg-muted/50"
-              :class="
-                (device?.deviceId ?? '') === outputDeviceId ? 'bg-muted/40' : ''
-              "
-              @click="emit('update:output', device?.deviceId ?? '')"
-            >
-              <Check
-                class="h-3.5 w-3.5 shrink-0"
-                :class="
-                  (device?.deviceId ?? '') === outputDeviceId
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-transparent'
-                "
-              />
-              <span class="truncate">
-                {{
-                  device
-                    ? deviceName(device, index - 1)
-                    : $t("voice.settings.system_default")
-                }}
-              </span>
-            </button>
-          </div>
+          <DeviceSelect
+            v-if="outputs.length"
+            :icon="Volume2"
+            :devices="outputDevices"
+            :model-value="outputDeviceId"
+            @update:model-value="(id) => emit('update:output', id)"
+          />
           <p v-else class="text-[11px] text-muted-foreground">
             {{ $t("voice.settings.output_unsupported") }}
           </p>

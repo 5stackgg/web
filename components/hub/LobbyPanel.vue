@@ -48,6 +48,7 @@ const {
   noiseSuppression: voiceNoiseSuppression,
   transmitting: voiceTransmitting,
   monitoring: voiceMonitoring,
+  previewing: voicePreviewing,
   refreshDevices: refreshVoiceDevices,
   setMicDevice: setVoiceMicDevice,
   setOutputDevice: setVoiceOutputDevice,
@@ -56,6 +57,8 @@ const {
   setNoiseSuppression: setVoiceNoiseSuppression,
   toggleMonitor: toggleVoiceMonitor,
   playTestTone: playVoiceTestTone,
+  startPreview: startVoicePreview,
+  stopPreview: stopVoicePreview,
 } = useVoiceChat(() => (useMatchmakingStore().currentLobby as any)?.id);
 
 const voiceSettingsOpen = ref(false);
@@ -63,8 +66,18 @@ const voiceSettingsOpen = ref(false);
 // Labels only exist once a permission has been granted, so refresh on open
 // rather than showing a list of anonymous device ids.
 function openVoiceSettings() {
-  void refreshVoiceDevices();
   voiceSettingsOpen.value = true;
+  // Opens the mic so the meter and mic check work before joining; refreshes
+  // devices as a side effect, since labels need a granted permission.
+  void startVoicePreview();
+}
+
+function closeVoiceSettings(open: boolean) {
+  voiceSettingsOpen.value = open;
+
+  if (!open) {
+    stopVoicePreview();
+  }
 }
 </script>
 
@@ -275,7 +288,9 @@ function openVoiceSettings() {
       </Transition>
 
       <VoiceSettingsDialog
-        v-model:open="voiceSettingsOpen"
+        :open="voiceSettingsOpen"
+        :previewing="voicePreviewing"
+        @update:open="closeVoiceSettings"
         :input-devices="voiceInputDevices"
         :output-devices="voiceOutputDevices"
         :mic-device-id="voiceMicDeviceId"

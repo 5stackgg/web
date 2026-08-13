@@ -1073,6 +1073,9 @@ export default {
 
       if (
         ![
+          // Check-in is gated on a live camera server-side, so the overlay has
+          // to be up by then or a player has no way to satisfy it.
+          e_match_status_enum.WaitingForCheckIn,
           e_match_status_enum.Veto,
           e_match_status_enum.Live,
           e_match_status_enum.WaitingForServer,

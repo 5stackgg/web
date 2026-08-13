@@ -101,6 +101,8 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
   // they hear is exactly what the other side gets -- including being cut off
   // when the sensitivity is set too high.
   const monitoring = ref(false);
+  // Mic is open and metering, but nothing is being sent to anyone.
+  const previewing = ref(false);
 
   let publishPc: RTCPeerConnection | null = null;
   let micStream: MediaStream | null = null;
@@ -232,6 +234,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     gateGain = null;
     monitorGain = null;
     monitoring.value = false;
+    previewing.value = false;
     published = null;
     inputLevel.value = 0;
     transmitting.value = false;
@@ -311,20 +314,20 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     return "voice.errors.unknown";
   }
 
-  async function join() {
-    const id = lobbyId();
-
-    if (!id || connected.value || connecting.value) {
-      return;
+  // Opens the mic and builds the graph without any peer connection, so the
+  // meter, the gate and the loopback all work before joining -- a player can
+  // get their setup right before anyone else can hear them.
+  async function startPreview() {
+    if (micStream) {
+      return true;
     }
 
     const blocked = unsupportedReason();
     if (blocked) {
       error.value = blocked;
-      return;
+      return false;
     }
 
-    connecting.value = true;
     error.value = null;
     errorDetail.value = null;
 
@@ -333,8 +336,39 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
       // Labels are only populated once permission exists, so this is the first
       // point a device picker can show real names.
       await refreshDevices();
+      buildGraph(micStream);
+      previewing.value = true;
+      return true;
+    } catch (caught) {
+      error.value = describeError(caught);
+      teardown();
+      return false;
+    }
+  }
 
-      const outgoing = buildGraph(micStream);
+  function stopPreview() {
+    if (connected.value) {
+      return;
+    }
+
+    teardown();
+  }
+
+  async function join() {
+    const id = lobbyId();
+
+    if (!id || connected.value || connecting.value) {
+      return;
+    }
+
+    connecting.value = true;
+
+    try {
+      if (!(await startPreview()) || !micStream || !published) {
+        return;
+      }
+
+      const outgoing = published;
 
       const pc = new RTCPeerConnection({ iceServers: iceServers() });
       publishPc = pc;
@@ -346,6 +380,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
       await negotiateWebRtc(pc, voicePublishUrl(id), "include");
 
       connected.value = true;
+      previewing.value = false;
       void poll();
     } catch (caught) {
       error.value = describeError(caught);
@@ -641,6 +676,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     noiseSuppression,
     transmitting,
     monitoring,
+    previewing,
     join,
     leave,
     toggleMute,
@@ -652,5 +688,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     setNoiseSuppression,
     toggleMonitor,
     playTestTone,
+    startPreview,
+    stopPreview,
   };
 }

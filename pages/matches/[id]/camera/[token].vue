@@ -7,6 +7,7 @@ import {
   LucideSwitchCamera,
   LucideVideo,
 } from "lucide-vue-next";
+import DeviceSelect from "~/components/media/DeviceSelect.vue";
 import {
   cameraPlayerPublishUrl,
   cameraPlayerTalkUrl,
@@ -33,6 +34,32 @@ let publishPc: RTCPeerConnection | null = null;
 let talkPc: RTCPeerConnection | null = null;
 let facingMode: "user" | "environment" = "user";
 
+const CAMERA_DEVICE_KEY = "5stack:camera:device";
+
+const cameras = ref<Array<MediaDeviceInfo>>([]);
+const cameraDeviceId = ref(
+  (() => {
+    try {
+      return localStorage.getItem(CAMERA_DEVICE_KEY) ?? "";
+    } catch {
+      return "";
+    }
+  })(),
+);
+
+async function refreshCameras() {
+  if (!navigator.mediaDevices?.enumerateDevices) {
+    return;
+  }
+
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    cameras.value = devices.filter((device) => device.kind === "videoinput");
+  } catch {
+    // Labels only exist once permission has been granted; not fatal.
+  }
+}
+
 function iceServers(): Array<RTCIceServer> {
   return [{ urls: "stun:stun.l.google.com:19302" }];
 }
@@ -43,6 +70,16 @@ function videoConstraints(mode: "user" | "environment"): MediaTrackConstraints {
   const portrait =
     typeof window !== "undefined" &&
     window.matchMedia("(orientation: portrait)").matches;
+
+  if (cameraDeviceId.value) {
+    // An explicit device wins over facingMode -- asking for both lets the
+    // browser satisfy the wrong one.
+    return {
+      deviceId: { exact: cameraDeviceId.value },
+      width: { ideal: portrait ? 720 : 1280 },
+      height: { ideal: portrait ? 1280 : 720 },
+    };
+  }
 
   return {
     facingMode: { ideal: mode },
@@ -85,8 +122,56 @@ async function connect() {
   }
 }
 
+// Swaps the live track in place so the publish survives a camera change --
+// renegotiating would drop the feed for a beat.
+async function setCamera(deviceId: string) {
+  cameraDeviceId.value = deviceId;
+
+  try {
+    if (deviceId) {
+      localStorage.setItem(CAMERA_DEVICE_KEY, deviceId);
+    } else {
+      localStorage.removeItem(CAMERA_DEVICE_KEY);
+    }
+  } catch {
+    // Private browsing — the choice just won't persist.
+  }
+
+  if (phase.value !== "connected") {
+    return;
+  }
+
+  try {
+    const replacement = await navigator.mediaDevices.getUserMedia({
+      video: videoConstraints(facingMode),
+      audio: true,
+    });
+
+    const [videoTrack] = replacement.getVideoTracks();
+    const sender = publishPc
+      ?.getSenders()
+      .find((candidate) => candidate.track?.kind === "video");
+
+    await sender?.replaceTrack(videoTrack);
+
+    for (const track of stream?.getTracks() ?? []) {
+      track.stop();
+    }
+
+    stream = replacement;
+
+    if (previewEl.value) {
+      previewEl.value.srcObject = replacement;
+    }
+  } catch {
+    // Keep the existing stream if the chosen camera is unavailable.
+  }
+}
+
 async function flipCamera() {
   const next = facingMode === "user" ? "environment" : "user";
+  // Clear any explicit pick, or videoConstraints ignores the flip entirely.
+  cameraDeviceId.value = "";
 
   try {
     const replacement = await navigator.mediaDevices.getUserMedia({
@@ -212,6 +297,18 @@ onBeforeUnmount(() => {
       </p>
       <p class="text-xs text-muted-foreground">{{ $t("camera.keep_open") }}</p>
     </template>
+
+    <!-- Only worth showing when there is a real choice to make; a phone has
+         the flip button below instead. -->
+    <DeviceSelect
+      v-if="phase === 'connected' && cameras.length > 1"
+      class="w-full max-w-md"
+      :icon="LucideVideo"
+      :devices="cameras"
+      :model-value="cameraDeviceId"
+      :active="true"
+      @update:model-value="setCamera"
+    />
 
     <!-- No object-cover and no forced aspect ratio: either one crops a frame
          whose real ratio does not match the box. -->

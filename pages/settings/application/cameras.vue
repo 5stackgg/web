@@ -7,9 +7,27 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 <template>
   <SettingsPage>
+    <PageTransition :delay="0">
+      <SettingsSection
+        id="voice-chat"
+        :title="$t('pages.settings.application.cameras.voice_section')"
+        :description="$t('pages.settings.application.cameras.voice_description')"
+        clickable-header
+        @header-click="save('public.voice_chat_enabled', !voiceEnabled)"
+      >
+        <template #action>
+          <Switch
+            :model-value="voiceEnabled"
+            @update:model-value="
+              (value) => save('public.voice_chat_enabled', value)
+            "
+          />
+        </template>
+      </SettingsSection>
+    </PageTransition>
     <!-- Cameras have no on/off of their own: an organizer turns them on per
          match. These only decide what a newly created match starts with. -->
-    <PageTransition :delay="0">
+    <PageTransition :delay="120">
       <SettingsSection
         id="camera-defaults"
         :title="$t('pages.settings.application.cameras.defaults_section')"
@@ -78,24 +96,6 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
       </SettingsSection>
     </PageTransition>
 
-    <PageTransition :delay="120">
-      <SettingsSection
-        id="voice-chat"
-        :title="$t('pages.settings.application.cameras.voice_section')"
-        :description="$t('pages.settings.application.cameras.voice_description')"
-        clickable-header
-        @header-click="save('public.voice_chat_enabled', !voiceEnabled)"
-      >
-        <template #action>
-          <Switch
-            :model-value="voiceEnabled"
-            @update:model-value="
-              (value) => save('public.voice_chat_enabled', value)
-            "
-          />
-        </template>
-      </SettingsSection>
-    </PageTransition>
   </SettingsPage>
 </template>
 

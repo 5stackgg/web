@@ -1,5 +1,5 @@
 import { ref, computed, watch, onScopeDispose } from "vue";
-import { negotiateWebRtc } from "~/composables/useCameraApi";
+import { negotiateWebRtc, SignalingError } from "~/composables/useCameraApi";
 import {
   fetchVoiceParticipants,
   voiceLeaveUrl,
@@ -39,7 +39,10 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
   const connected = ref(false);
   const connecting = ref(false);
   const muted = ref(false);
+  // `error` is an i18n key; `errorDetail` is the raw technical line, shown
+  // underneath so a failure can actually be diagnosed rather than guessed at.
   const error = ref<string | null>(null);
+  const errorDetail = ref<string | null>(null);
   const participants = ref<Array<VoiceParticipant>>([]);
 
   const inputDevices = ref<Array<MediaDeviceInfo>>([]);
@@ -172,6 +175,27 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
   }
 
   function describeError(caught: unknown) {
+    // Keep the raw cause visible in the console; the UI gets the short version.
+    console.error("[voice]", caught);
+
+    errorDetail.value = null;
+
+    if (caught instanceof SignalingError) {
+      errorDetail.value = caught.message;
+
+      if (caught.kind === "unreachable") {
+        return "voice.errors.unreachable";
+      }
+      if (caught.status === 401 || caught.status === 403) {
+        return "voice.errors.forbidden";
+      }
+      if (caught.status === 404) {
+        return "voice.errors.not_deployed";
+      }
+
+      return "voice.errors.signaling";
+    }
+
     const name = (caught as Error)?.name;
 
     if (name === "NotAllowedError" || name === "SecurityError") {
@@ -184,7 +208,8 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
       return "voice.errors.microphone_busy";
     }
 
-    return (caught as Error)?.message || "voice.errors.unknown";
+    errorDetail.value = (caught as Error)?.message ?? String(caught);
+    return "voice.errors.unknown";
   }
 
   async function join() {
@@ -202,6 +227,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
 
     connecting.value = true;
     error.value = null;
+    errorDetail.value = null;
 
     try {
       micStream = await openMic();
@@ -432,6 +458,7 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     connecting,
     muted,
     error,
+    errorDetail,
     unsupported,
     participants,
     inputDevices,

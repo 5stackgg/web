@@ -108,6 +108,25 @@ export async function fetchCameraPlayers(matchId: string) {
   return (await response.json()) as { lineups: Array<CameraLineup> };
 }
 
+// A bare fetch rejection is reported by every browser as "Failed to fetch",
+// which tells nobody anything -- CORS, DNS, a refused connection and mixed
+// content all look identical. Carry enough to tell them apart.
+export class SignalingError extends Error {
+  constructor(
+    public readonly kind: "unreachable" | "http",
+    public readonly url: string,
+    public readonly status?: number,
+    public readonly detail?: string,
+  ) {
+    super(
+      kind === "unreachable"
+        ? `could not reach ${url}: ${detail}`
+        : `${url} responded ${status}: ${detail}`,
+    );
+    this.name = "SignalingError";
+  }
+}
+
 // Shared by the player publish page and the admin call: offer, wait for ICE,
 // POST the SDP, apply the answer.
 export async function negotiateWebRtc(
@@ -133,17 +152,35 @@ export async function negotiateWebRtc(
     setTimeout(resolve, 1500);
   });
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/sdp",
-    },
-    body: pc.localDescription?.sdp ?? "",
-    credentials,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/sdp",
+      },
+      body: pc.localDescription?.sdp ?? "",
+      credentials,
+    });
+  } catch (cause) {
+    // application/sdp is not a CORS-safelisted content type, so this is a
+    // preflighted request -- a blocked OPTIONS lands here too.
+    throw new SignalingError(
+      "unreachable",
+      url,
+      undefined,
+      (cause as Error)?.message ?? String(cause),
+    );
+  }
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    throw new SignalingError(
+      "http",
+      url,
+      response.status,
+      (await response.text().catch(() => "")).slice(0, 300),
+    );
   }
 
   await pc.setRemoteDescription({

@@ -1665,8 +1665,8 @@
           "required_default_description": "New matches start with Require Webcam turned on. Each match can still override it.",
           "teammates_default": "Teammates Can Watch by Default",
           "teammates_default_description": "New matches start with teammate viewing turned on. The opposing team is never included.",
-          "voice_section": "Party Voice Chat",
-          "voice_description": "Lets players talk to each other in a matchmaking party. Uses the same WebRTC path as player cameras.",
+          "voice_section": "Lobby Voice Chat",
+          "voice_description": "Lets players talk to each other in a matchmaking lobby. Uses the same WebRTC path as player cameras.",
           "updated": "Updated"
         },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
@@ -3536,7 +3536,10 @@
       "input_level": "Input level",
       "discord_linked": "Discord Linked",
       "link_discord": "Link Discord",
-      "find_match": "Find a Match"
+      "find_match": "Find a Match",
+      "voice": "Voice",
+      "live": "Live",
+      "muted": "Muted"
     },
     "chat_panel": {
       "default_title": "Chat",
@@ -7274,7 +7277,11 @@
       "permission_denied": "Microphone access was blocked. Allow it in your browser's site settings, then try again.",
       "no_microphone": "No microphone was found. Connect one and try again.",
       "microphone_busy": "Your microphone is in use by another application.",
-      "unknown": "Could not start voice chat."
+      "unknown": "Could not start voice chat.",
+      "unreachable": "Could not reach the API. This is usually a CORS rule or the API not being reachable from this address — check the detail below and the browser console.",
+      "forbidden": "You are not allowed to join voice for this lobby.",
+      "not_deployed": "The voice endpoint was not found on the API. It may not be deployed yet.",
+      "signaling": "The voice server rejected the connection."
     }
   }
 }

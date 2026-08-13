@@ -8,14 +8,9 @@ import {
   Mic,
   MicOff,
   PhoneOff,
-  Settings2,
   AlertCircle,
 } from "lucide-vue-next";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
+import VoiceSettingsPopover from "~/components/hub/VoiceSettingsPopover.vue";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
@@ -37,6 +32,7 @@ const {
   connecting: voiceConnecting,
   muted: voiceMuted,
   error: voiceError,
+  errorDetail: voiceErrorDetail,
   unsupported: voiceUnsupported,
   inputDevices: voiceInputDevices,
   outputDevices: voiceOutputDevices,
@@ -136,185 +132,146 @@ const {
         </Transition>
       </div>
 
-      <!-- Voice & Discord row just above lobby chat -->
+      <!-- Voice. Discord sits underneath as a secondary link rather than
+           beside the call controls: it is account plumbing, not a control for
+           the call in progress, and pairing them made the row read as two
+           equal buttons. -->
       <Transition name="lobby-item">
         <div
           v-if="currentLobby && squadReady"
-          class="border-t border-zinc-800 pt-3 mt-1 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400"
+          class="mt-1 flex flex-col gap-2.5 border-t border-zinc-800 pt-3"
         >
-          <div class="flex items-center gap-2">
-            <Waves class="h-3.5 w-3.5 text-indigo-400" />
-            <span class="font-semibold tracking-wide uppercase">
-              {{ $t("layouts.lobby_panel.voice_discord") }}
-            </span>
-          </div>
-          <div class="flex items-center gap-2">
-            <template v-if="voiceChatEnabled">
-              <!-- Device picker lives outside the connected branch so a player
-                   can pick the right mic before joining, not only after. -->
-              <Popover @update:open="(open) => open && refreshVoiceDevices()">
-                <PopoverTrigger as-child>
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex min-w-0 items-center gap-2">
+              <span class="relative inline-flex h-2 w-2 shrink-0">
+                <span
+                  v-if="voiceConnected && !voiceMuted"
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/70"
+                ></span>
+                <span
+                  class="relative inline-flex h-2 w-2 rounded-full transition-colors"
+                  :class="
+                    voiceConnected
+                      ? voiceMuted
+                        ? 'bg-[hsl(var(--tac-amber))]'
+                        : 'bg-emerald-400'
+                      : 'bg-zinc-600'
+                  "
+                ></span>
+              </span>
+              <span
+                class="truncate font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em]"
+                :class="voiceConnected ? 'text-zinc-200' : 'text-zinc-500'"
+              >
+                {{ $t("layouts.lobby_panel.voice") }}
+              </span>
+              <span
+                v-if="voiceConnected"
+                class="truncate text-[10px] text-zinc-500"
+              >
+                {{
+                  voiceMuted
+                    ? $t("layouts.lobby_panel.muted")
+                    : $t("layouts.lobby_panel.live")
+                }}
+              </span>
+            </div>
+
+            <div class="flex shrink-0 items-center gap-1.5">
+              <template v-if="voiceChatEnabled">
+                <Button
+                  v-if="!voiceConnected"
+                  size="xs"
+                  variant="outline"
+                  class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 px-3 text-[11px] hover:bg-zinc-800/80"
+                  :loading="voiceConnecting"
+                  :disabled="!!voiceUnsupported"
+                  @click="joinVoice()"
+                >
+                  <Mic class="h-3 w-3" />
+                  {{ $t("layouts.lobby_panel.join_voice") }}
+                </Button>
+
+                <template v-else>
+                  <Button
+                    size="xs"
+                    :variant="voiceMuted ? 'destructive' : 'secondary'"
+                    class="h-7 w-7 rounded-full p-0"
+                    :aria-label="
+                      voiceMuted
+                        ? $t('layouts.lobby_panel.unmute')
+                        : $t('layouts.lobby_panel.mute')
+                    "
+                    @click="toggleVoiceMute()"
+                  >
+                    <component
+                      :is="voiceMuted ? MicOff : Mic"
+                      class="h-3.5 w-3.5"
+                    />
+                  </Button>
                   <Button
                     size="xs"
                     variant="ghost"
-                    class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-zinc-100"
-                    :aria-label="$t('layouts.lobby_panel.voice_settings')"
+                    class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-destructive"
+                    :aria-label="$t('layouts.lobby_panel.leave_voice')"
+                    @click="leaveVoice()"
                   >
-                    <Settings2 class="h-3.5 w-3.5" />
+                    <PhoneOff class="h-3.5 w-3.5" />
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent class="w-72 space-y-3" align="end">
-                  <p
-                    class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    {{ $t("layouts.lobby_panel.voice_settings") }}
-                  </p>
+                </template>
 
-                  <label class="block space-y-1">
-                    <span class="text-[11px] text-muted-foreground">
-                      {{ $t("layouts.lobby_panel.microphone") }}
-                    </span>
-                    <select
-                      class="w-full rounded border border-border/60 bg-background/60 px-2 py-1.5 text-xs focus:border-[hsl(var(--tac-amber))] focus:outline-none"
-                      :value="voiceMicDeviceId"
-                      @change="
-                        setVoiceMicDevice(
-                          ($event.target as HTMLSelectElement).value,
-                        )
-                      "
-                    >
-                      <option value="">
-                        {{ $t("layouts.lobby_panel.system_default") }}
-                      </option>
-                      <option
-                        v-for="device in voiceInputDevices"
-                        :key="device.deviceId"
-                        :value="device.deviceId"
-                      >
-                        {{ device.label || device.deviceId }}
-                      </option>
-                    </select>
-                  </label>
-
-                  <label
-                    v-if="voiceOutputDevices.length"
-                    class="block space-y-1"
-                  >
-                    <span class="text-[11px] text-muted-foreground">
-                      {{ $t("layouts.lobby_panel.output") }}
-                    </span>
-                    <select
-                      class="w-full rounded border border-border/60 bg-background/60 px-2 py-1.5 text-xs focus:border-[hsl(var(--tac-amber))] focus:outline-none"
-                      :value="voiceOutputDeviceId"
-                      @change="
-                        setVoiceOutputDevice(
-                          ($event.target as HTMLSelectElement).value,
-                        )
-                      "
-                    >
-                      <option value="">
-                        {{ $t("layouts.lobby_panel.system_default") }}
-                      </option>
-                      <option
-                        v-for="device in voiceOutputDevices"
-                        :key="device.deviceId"
-                        :value="device.deviceId"
-                      >
-                        {{ device.label || device.deviceId }}
-                      </option>
-                    </select>
-                  </label>
-
-                  <!-- Answers "is my mic actually working" without needing a
-                       second person on the call. -->
-                  <div v-if="voiceConnected" class="space-y-1">
-                    <span class="text-[11px] text-muted-foreground">
-                      {{ $t("layouts.lobby_panel.input_level") }}
-                    </span>
-                    <div class="h-1.5 overflow-hidden rounded-full bg-muted">
-                      <div
-                        class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-75"
-                        :style="{ width: Math.round(voiceInputLevel * 100) + '%' }"
-                      ></div>
-                    </div>
-                  </div>
-
-                  <p
-                    v-if="voiceUnsupported"
-                    class="text-[11px] leading-relaxed text-destructive"
-                  >
-                    {{ $t(voiceUnsupported) }}
-                  </p>
-                </PopoverContent>
-              </Popover>
-
-              <Button
-                v-if="!voiceConnected"
-                size="xs"
-                variant="outline"
-                class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800/80 text-[11px] px-3"
-                :loading="voiceConnecting"
-                :disabled="!!voiceUnsupported"
-                @click="joinVoice()"
-              >
-                <Mic class="h-3 w-3" />
-                {{ $t("layouts.lobby_panel.join_voice") }}
-              </Button>
-
-              <template v-else>
-                <Button
-                  size="xs"
-                  :variant="voiceMuted ? 'destructive' : 'secondary'"
-                  class="h-7 gap-1 rounded-full text-[11px] px-3"
-                  @click="toggleVoiceMute()"
-                >
-                  <component
-                    :is="voiceMuted ? MicOff : Mic"
-                    class="h-3 w-3"
-                  />
-                  {{
-                    voiceMuted
-                      ? $t("layouts.lobby_panel.unmute")
-                      : $t("layouts.lobby_panel.mute")
-                  }}
-                </Button>
-
-                <Button
-                  size="xs"
-                  variant="outline"
-                  class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800/80 text-[11px] px-3"
-                  @click="leaveVoice()"
-                >
-                  <PhoneOff class="h-3 w-3" />
-                  {{ $t("layouts.lobby_panel.leave_voice") }}
-                </Button>
+                <VoiceSettingsPopover
+                  :input-devices="voiceInputDevices"
+                  :output-devices="voiceOutputDevices"
+                  :mic-device-id="voiceMicDeviceId"
+                  :output-device-id="voiceOutputDeviceId"
+                  :input-level="voiceInputLevel"
+                  :connected="voiceConnected"
+                  :unsupported="voiceUnsupported"
+                  @open="refreshVoiceDevices()"
+                  @update:mic="setVoiceMicDevice"
+                  @update:output="setVoiceOutputDevice"
+                />
               </template>
-            </template>
-
-            <Button
-              size="xs"
-              :variant="hasDiscordLinked ? 'secondary' : 'outline'"
-              class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800/80 text-[11px] px-3"
-              :disabled="!supportsDiscordBot || hasDiscordLinked"
-              @click="linkDiscord"
-            >
-              <MessageCircle class="h-3 w-3" />
-              <span v-if="hasDiscordLinked">
-                {{ $t("layouts.lobby_panel.discord_linked") }}
-              </span>
-              <span v-else>
-                {{ $t("layouts.lobby_panel.link_discord") }}
-              </span>
-            </Button>
+            </div>
           </div>
 
-          <p
+          <!-- Full-width so a long message wraps under the controls instead of
+               squeezing them; the technical line is kept but de-emphasised. -->
+          <div
             v-if="voiceError"
-            class="flex w-full items-start gap-1.5 text-[11px] leading-relaxed text-destructive"
+            class="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-2"
           >
-            <AlertCircle class="mt-px h-3 w-3 shrink-0" />
-            <span>{{ $t(voiceError) }}</span>
-          </p>
+            <AlertCircle class="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" />
+            <div class="min-w-0 space-y-0.5">
+              <p class="text-[11px] leading-relaxed text-destructive">
+                {{ $t(voiceError) }}
+              </p>
+              <p
+                v-if="voiceErrorDetail"
+                class="break-all font-mono text-[10px] leading-relaxed text-destructive/60"
+              >
+                {{ voiceErrorDetail }}
+              </p>
+            </div>
+          </div>
+
+          <button
+            v-if="supportsDiscordBot && !hasDiscordLinked"
+            type="button"
+            class="flex items-center gap-1.5 self-start text-[11px] text-zinc-500 transition-colors hover:text-zinc-300"
+            @click="linkDiscord"
+          >
+            <MessageCircle class="h-3 w-3" />
+            {{ $t("layouts.lobby_panel.link_discord") }}
+          </button>
+          <span
+            v-else-if="hasDiscordLinked"
+            class="flex items-center gap-1.5 self-start text-[11px] text-zinc-600"
+          >
+            <MessageCircle class="h-3 w-3" />
+            {{ $t("layouts.lobby_panel.discord_linked") }}
+          </span>
         </div>
       </Transition>
 

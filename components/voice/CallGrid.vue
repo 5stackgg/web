@@ -144,9 +144,9 @@ const columns = computed(() => {
     <TransitionGroup
       tag="div"
       :class="['grid gap-2', compact ? '' : 'min-h-0', columns]"
-      enter-active-class="transition-[opacity,transform] [transition-duration:320ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-      leave-active-class="transition-[opacity,transform] [transition-duration:200ms] ease-in motion-reduce:![transition-duration:1ms]"
-      move-class="transition-transform [transition-duration:320ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      leave-active-class="transition-[opacity,transform] [transition-duration:150ms] ease-in motion-reduce:![transition-duration:1ms]"
+      move-class="transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
       enter-from-class="opacity-0 scale-90 translate-y-1"
       leave-to-class="opacity-0 scale-90"
     >
@@ -177,12 +177,16 @@ const columns = computed(() => {
          the list and faded there, on top of its neighbour. Collapsing the row's
          own height keeps it exactly where it is and closes the gap over the
          same duration, which is what the absolute version was trying to buy. -->
+    <!-- The 6px between rows rides *inside* each row's clipped cell (top
+         padding, first row offset by the container's negative margin), so a
+         leaving row closes its own gap -- the container's flex gap survived
+         the collapse and snapped shut at removal. -->
     <TransitionGroup
       tag="div"
-      class="flex flex-col gap-1.5 empty:hidden"
-      enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      class="-mt-1.5 flex flex-col empty:hidden"
+      enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
       leave-active-class="voice-row-leave"
-      move-class="transition-transform [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      move-class="transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
       enter-from-class="opacity-0 -translate-y-1 scale-[0.98]"
       leave-to-class="voice-row-leave-to"
     >
@@ -198,7 +202,7 @@ const columns = computed(() => {
       >
         <div class="min-h-0">
           <div
-            class="flex items-center gap-2.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-2.5 py-2"
+            class="mt-1.5 flex items-center gap-2.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-2.5 py-2"
             aria-hidden="true"
           >
             <span
@@ -215,6 +219,7 @@ const columns = computed(() => {
         class="grid grid-rows-[1fr]"
       >
         <div class="min-h-0">
+          <div class="pt-1.5">
           <CallVoiceRow
             :participant="participant"
             :is-me="isMe(participant.steamId)"
@@ -223,6 +228,7 @@ const columns = computed(() => {
               isMe(participant.steamId) ? onToggleSelfMute : undefined
             "
           />
+          </div>
         </div>
       </div>
     </TransitionGroup>
@@ -259,8 +265,8 @@ const columns = computed(() => {
    while leaving -- permanently, it would cut the speaking ring off every row. */
 .voice-row-leave {
   transition:
-    grid-template-rows 0.26s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.09s ease;
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease;
 }
 .voice-row-leave > * {
   overflow: hidden;
@@ -280,8 +286,8 @@ const columns = computed(() => {
 .call-collapse-enter-active,
 .call-collapse-leave-active {
   transition:
-    grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.22s ease;
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
 }
 .call-collapse-enter-from,
 .call-collapse-leave-to {

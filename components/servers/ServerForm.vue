@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { Fold } from "~/components/ui/transitions";
 import {
   FormControl,
   FormField,
@@ -142,20 +143,21 @@ const showConnectPassword = ref(false);
           </FormItem>
         </FormField>
 
-        <Alert
-          v-if="form.values.game === 'csgo' && !form.values.use_valve_modes"
-          variant="warning"
+        <Fold
+          :open="form.values.game === 'csgo' && !form.values.use_valve_modes"
         >
-          <AlertTitle>{{
-            $t("server.form.csgo_ranked_unavailable_title")
-          }}</AlertTitle>
-          <AlertDescription>{{
-            $t("server.form.csgo_ranked_unavailable_description")
-          }}</AlertDescription>
-        </Alert>
+          <Alert variant="warning">
+            <AlertTitle>{{
+              $t("server.form.csgo_ranked_unavailable_title")
+            }}</AlertTitle>
+            <AlertDescription>{{
+              $t("server.form.csgo_ranked_unavailable_description")
+            }}</AlertDescription>
+          </Alert>
+        </Fold>
 
+        <Fold :open="!!form.values.use_valve_modes">
         <FormField
-          v-if="form.values.use_valve_modes"
           v-slot="{ componentField }"
           name="type"
         >
@@ -182,6 +184,7 @@ const showConnectPassword = ref(false);
             <FormMessage />
           </FormItem>
         </FormField>
+        </Fold>
       </div>
     </FormSection>
 
@@ -214,7 +217,7 @@ const showConnectPassword = ref(false);
 
     <FormSection :title="$t('server.form.connection')">
       <div class="grid gap-4">
-        <template v-if="gameServerNodes.length > 0 && !server">
+        <Fold :open="gameServerNodes.length > 0 && !server">
           <FormField v-slot="{ componentField }" name="use_game_server_node">
             <FormItem
               class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors"
@@ -239,9 +242,11 @@ const showConnectPassword = ref(false);
               </FormControl>
             </FormItem>
           </FormField>
-        </template>
+        </Fold>
 
-        <template v-if="!useGameServerNode && !isEditingGameServerNode">
+        <!-- Manual host fields fold with the configuration switch above. -->
+        <Fold :open="!useGameServerNode && !isEditingGameServerNode">
+        <div class="grid gap-4">
           <FormField v-slot="{ componentField }" name="region">
             <FormItem>
               <FormLabel>{{ $t("server.form.region") }}</FormLabel>
@@ -300,15 +305,18 @@ const showConnectPassword = ref(false);
               </FormItem>
             </FormField>
           </div>
-        </template>
+        </div>
+        </Fold>
 
-        <FormField
-          v-slot="{ componentField }"
-          name="game_server_node_id"
-          v-if="
+        <Fold
+          :open="
             (useGameServerNode && gameServerNodes.length > 0) ||
             isEditingGameServerNode
           "
+        >
+        <FormField
+          v-slot="{ componentField }"
+          name="game_server_node_id"
         >
           <FormItem>
             <FormLabel>{{ $t("server.form.game_server_node") }}</FormLabel>
@@ -340,13 +348,12 @@ const showConnectPassword = ref(false);
             }}</FormDescription>
           </FormItem>
         </FormField>
+        </Fold>
       </div>
     </FormSection>
 
-    <FormSection
-      v-if="isPublicServerType"
-      :title="$t('server.form.connect_password')"
-    >
+    <Fold :open="isPublicServerType">
+    <FormSection :title="$t('server.form.connect_password')">
       <div class="grid gap-4">
         <FormField
           v-slot="{ componentField }"
@@ -400,6 +407,7 @@ const showConnectPassword = ref(false);
         </FormField>
       </div>
     </FormSection>
+    </Fold>
 
     <Button
       v-if="!server"

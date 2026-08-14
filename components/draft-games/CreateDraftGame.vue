@@ -21,6 +21,7 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { setupOptions, setupOptionsVariables } from "~/utilities/setupOptions";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { HeightMorph, HeightSwap, Fold } from "~/components/ui/transitions";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import MatchOptions from "~/components/MatchOptions.vue";
@@ -673,7 +674,11 @@ const submit = form.handleSubmit(async (values: any) => {
       </template>
     </div>
 
-    <div class="step-stack relative">
+    <!-- The shell eases between step heights while the leaver fades out of
+         flow -- the sticky footer and scrollbar used to snap by the full
+         difference on frame one. v-show keeps panels mounted for their
+         state. -->
+    <HeightMorph :state="step" class="step-stack">
     <Transition name="step">
       <div v-show="step === 2" class="space-y-5">
         <section v-if="!isDuel">
@@ -689,8 +694,8 @@ const submit = form.handleSubmit(async (values: any) => {
           </p>
         </section>
 
-        <Transition name="reveal">
-          <section v-if="showKeepTogether">
+        <Fold :open="showKeepTogether">
+          <section>
             <div
               class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
               :class="{
@@ -731,9 +736,12 @@ const submit = form.handleSubmit(async (values: any) => {
               />
             </div>
           </section>
-        </Transition>
+        </Fold>
 
-        <section v-if="mode === 'Teams'">
+        <!-- Picking Teams used to detonate this whole section (two combos +
+             the roster picker) in one frame while its neighbours animated. -->
+        <Fold :open="mode === 'Teams'">
+        <section>
           <div :class="tacticalSectionLabelClasses">
             <span :class="tacticalSectionTickClasses"></span>
             {{ $t("draft_games.create.teams") }}
@@ -785,9 +793,8 @@ const submit = form.handleSubmit(async (values: any) => {
             </div>
           </div>
 
-          <Transition name="reveal">
+          <Fold :open="!!team1Id && !team2Id">
             <div
-              v-if="team1Id && !team2Id"
               class="mt-3 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
               :class="{
                 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
@@ -821,9 +828,10 @@ const submit = form.handleSubmit(async (values: any) => {
               </div>
               <Switch class="pointer-events-none" :model-value="innerSquad" />
             </div>
-          </Transition>
+          </Fold>
 
-          <div v-if="team1Id" class="mt-4">
+          <Fold :open="!!team1Id">
+          <div class="mt-4">
             <p class="mb-2 text-[0.72rem] leading-snug text-muted-foreground">
               {{ $t("draft_games.create.roster_desc") }}
             </p>
@@ -836,10 +844,12 @@ const submit = form.handleSubmit(async (values: any) => {
               :initial-assignment="initialAssignment"
             />
           </div>
+          </Fold>
         </section>
+        </Fold>
 
-        <Transition name="reveal">
-          <section v-if="mode === 'Captains'" class="space-y-4">
+        <Fold :open="mode === 'Captains'">
+          <section class="space-y-4">
             <div class="flex flex-col gap-1.5">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
@@ -869,7 +879,7 @@ const submit = form.handleSubmit(async (values: any) => {
               />
             </div>
           </section>
-        </Transition>
+        </Fold>
       </div>
     </Transition>
 
@@ -998,7 +1008,7 @@ const submit = form.handleSubmit(async (values: any) => {
         </section>
       </div>
     </Transition>
-    </div>
+    </HeightMorph>
 
     <div
       v-if="!editing"
@@ -1014,35 +1024,41 @@ const submit = form.handleSubmit(async (values: any) => {
         <ArrowLeft class="h-4 w-4" />
         {{ $t("draft_games.create.back") }}
       </Button>
-      <Button
-        v-if="step < steps.length"
-        type="button"
-        class="gap-2"
-        @click="next"
-      >
-        {{ $t("draft_games.create.next") }}
-        <ArrowRight class="h-4 w-4" />
-      </Button>
-      <button
-        v-else
-        type="submit"
-        :class="[
-          tacticalCtaButtonClasses,
-          'relative h-9 !py-0 disabled:cursor-default',
-        ]"
-        :disabled="submitting"
-      >
-        <span
-          v-if="submitting"
-          class="absolute inset-0 flex items-center justify-center"
+      <!-- Next and Deploy are different widths; the shell tweens between
+           them instead of the footer's right edge snapping. -->
+      <HeightSwap axis="x">
+        <Button
+          v-if="step < steps.length"
+          key="next"
+          type="button"
+          class="gap-2"
+          @click="next"
         >
-          <Spinner />
-        </span>
-        <span :class="{ invisible: submitting }">
-          {{ $t("draft_games.create.deploy") }}
-        </span>
-        <ArrowRight class="h-4 w-4" :class="{ invisible: submitting }" />
-      </button>
+          {{ $t("draft_games.create.next") }}
+          <ArrowRight class="h-4 w-4" />
+        </Button>
+        <button
+          v-else
+          key="deploy"
+          type="submit"
+          :class="[
+            tacticalCtaButtonClasses,
+            'relative h-9 !py-0 disabled:cursor-default',
+          ]"
+          :disabled="submitting"
+        >
+          <span
+            v-if="submitting"
+            class="absolute inset-0 flex items-center justify-center"
+          >
+            <Spinner />
+          </span>
+          <span :class="{ invisible: submitting }">
+            {{ $t("draft_games.create.deploy") }}
+          </span>
+          <ArrowRight class="h-4 w-4" :class="{ invisible: submitting }" />
+        </button>
+      </HeightSwap>
     </div>
 
     <SettingsSaveBar
@@ -1057,18 +1073,19 @@ const submit = form.handleSubmit(async (values: any) => {
 </template>
 
 <style scoped>
+/* The leaver goes out of flow so two steps never stack; the HeightMorph shell
+   owns the height while they trade. Opacity/transform only, so the fades keep
+   playing even when the entering step is heavy. */
 .step-enter-active {
   transition:
-    opacity 0.25s ease,
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .step-leave-active {
   position: absolute;
   inset-inline: 0;
   top: 0;
-  transition:
-    opacity 0.12s ease,
-    transform 0.12s ease;
+  transition: opacity 0.11s ease-in;
 }
 .step-enter-from {
   opacity: 0;
@@ -1076,29 +1093,11 @@ const submit = form.handleSubmit(async (values: any) => {
 }
 .step-leave-to {
   opacity: 0;
-  transform: translateX(-8px);
 }
-
-.reveal-enter-active {
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    max-height 0.3s ease;
-  overflow: hidden;
-  max-height: 400px;
-}
-.reveal-leave-active {
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    max-height 0.2s ease;
-  overflow: hidden;
-  max-height: 400px;
-}
-.reveal-enter-from,
-.reveal-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-  max-height: 0;
+@media (prefers-reduced-motion: reduce) {
+  .step-enter-active,
+  .step-leave-active {
+    transition-duration: 1ms;
+  }
 }
 </style>

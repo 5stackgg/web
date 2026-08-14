@@ -36,22 +36,51 @@ import {
   <div class="flex gap-2 items-center" v-if="canAct || canWatchCameras">
     <MatchCameraStatus v-if="canWatchCameras" :match-id="match.id" />
 
-    <Button
-      v-if="canPauseResume"
-      size="sm"
-      variant="outline"
-      @click="togglePause"
-      :disabled="!match.is_server_online"
-      :class="[
-        'h-9 gap-1.5 font-mono text-[0.62rem] font-bold tracking-[0.18em] uppercase',
-        isPaused
-          ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
-          : 'border-[hsl(var(--destructive)/0.55)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)] hover:text-destructive',
-      ]"
+    <!-- The pause control appears when a map goes live; its column animates
+         0fr -> 1fr so the kebab slides over instead of jumping. Both labels
+         are always laid out (one invisible), so Pause <-> Resume never
+         changes the button's width -- only the colors cross-fade. -->
+    <Transition
+      enter-active-class="pause-reveal"
+      enter-from-class="pause-reveal-collapsed"
+      leave-active-class="pause-reveal"
+      leave-to-class="pause-reveal-collapsed"
     >
-      <component :is="isPaused ? Play : Pause" class="h-3 w-3" />
-      {{ isPaused ? $t("match.actions.resume") : $t("match.actions.pause") }}
-    </Button>
+      <div v-if="canPauseResume" class="grid min-w-0 grid-cols-[1fr]">
+        <div class="min-w-0 overflow-hidden">
+          <Button
+            size="sm"
+            variant="outline"
+            @click="togglePause"
+            :disabled="!match.is_server_online"
+            :class="[
+              'h-9 gap-1.5 font-mono text-[0.62rem] font-bold tracking-[0.18em] uppercase transition-colors',
+              isPaused
+                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
+                : 'border-[hsl(var(--destructive)/0.55)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)] hover:text-destructive',
+            ]"
+          >
+            <component :is="isPaused ? Play : Pause" class="h-3 w-3" />
+            <span class="grid text-center">
+              <span
+                class="col-start-1 row-start-1"
+                :class="{ invisible: isPaused }"
+                :aria-hidden="isPaused"
+              >
+                {{ $t("match.actions.pause") }}
+              </span>
+              <span
+                class="col-start-1 row-start-1"
+                :class="{ invisible: !isPaused }"
+                :aria-hidden="!isPaused"
+              >
+                {{ $t("match.actions.resume") }}
+              </span>
+            </span>
+          </Button>
+        </div>
+      </div>
+    </Transition>
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
@@ -930,3 +959,22 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* The pause control's column collapses to a true zero -- the cell carries no
+   padding of its own, so nothing is left to snap when the element unmounts. */
+.pause-reveal {
+  transition:
+    grid-template-columns 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.pause-reveal-collapsed {
+  grid-template-columns: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pause-reveal {
+    transition-duration: 1ms;
+  }
+}
+</style>

@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
-import { useHubState } from "@/composables/useHubState";
+import { useHubState, setActiveHub } from "@/composables/useHubState";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
@@ -30,6 +30,7 @@ import NotificationsPanel from "~/components/hub/NotificationsPanel.vue";
 import LobbyPanel from "~/components/hub/LobbyPanel.vue";
 import VoicePanel from "~/components/hub/VoicePanel.vue";
 import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
+import { useVoiceChannels } from "~/composables/useVoiceChannels";
 
 const {
   setRightSidebarOpen,
@@ -197,6 +198,24 @@ const voiceBadgeLabel = computed(() =>
   formatBadgeCount(voiceMemberCount.value),
 );
 
+// With no call running and nothing to join, the voice tab has nothing to say:
+// channels come from a party or a match, both of which start on the lobby tab.
+// So instead of a panel explaining that, the tab disables itself — and if the
+// hub is sitting on it when the last channel disappears, it moves to lobby.
+const { channels: voiceChannels } = useVoiceChannels();
+const voiceAvailable = computed(
+  () => inVoice.value || voiceChannels.value.length > 0,
+);
+watch(
+  [voiceAvailable, activeHub],
+  ([available, hub]) => {
+    if (!available && hub === "voice") {
+      setActiveHub("lobby");
+    }
+  },
+  { immediate: true },
+);
+
 // Pop-in/out for the count circles (bouncy enter, quick fade-shrink leave)
 const badgePopTransition = {
   enterActiveClass:
@@ -247,12 +266,14 @@ const hubPanels = [
   { name: "recent-games", component: RecentGamesPanel },
 ] as const;
 
-function hubBtnClass(hub: string) {
+function hubBtnClass(hub: string, disabled = false) {
   return [
     "relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200",
-    isHubActive(hub)
-      ? "text-[hsl(var(--tac-amber))]"
-      : "text-sidebar-foreground/50 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-sidebar-foreground",
+    disabled
+      ? "text-sidebar-foreground/20"
+      : isHubActive(hub)
+        ? "text-[hsl(var(--tac-amber))]"
+        : "text-sidebar-foreground/50 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-sidebar-foreground",
   ];
 }
 
@@ -329,7 +350,7 @@ function onHubTouchEnd(e: TouchEvent) {
           class="absolute top-0 left-0 w-0.5 rounded-r-full z-10 pointer-events-none bg-[hsl(var(--tac-amber))]"
           :class="
             hasAnimated
-              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0s]'
+              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0.35s_cubic-bezier(0.34,1.56,0.64,1)]'
               : ''
           "
           :style="{
@@ -344,7 +365,7 @@ function onHubTouchEnd(e: TouchEvent) {
           class="absolute top-0 left-2 right-2 rounded-md z-0 pointer-events-none bg-[hsl(var(--tac-amber)/0.1)]"
           :class="
             hasAnimated
-              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0s]'
+              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0.35s_cubic-bezier(0.34,1.56,0.64,1)]'
               : ''
           "
           :style="{
@@ -418,10 +439,13 @@ function onHubTouchEnd(e: TouchEvent) {
           </span>
         </button>
 
-        <!-- Voice — who is in the channel, and the faders for them -->
+        <!-- Voice — who is in the channel, and the faders for them. Nothing to
+             join and no call running means nothing to show: the tab greys out,
+             and parties start from the lobby tab. -->
         <button
           :ref="setHubButtonRef('voice')"
-          :class="[hubBtnClass('voice'), 'z-[1]']"
+          :disabled="!voiceAvailable"
+          :class="[hubBtnClass('voice', !voiceAvailable), 'z-[1]']"
           @click="selectHub('voice')"
         >
           <span class="relative inline-flex">

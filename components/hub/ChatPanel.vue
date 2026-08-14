@@ -12,6 +12,7 @@ import {
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
@@ -325,10 +326,24 @@ function handlePopOut() {
 
         <TooltipProvider>
           <template v-for="tab in orderedTabs" :key="tab.id">
-            <div
-              v-if="tab.id === firstDirectTabId"
-              class="my-1 h-px w-8 shrink-0 bg-border"
-            />
+            <!-- Folds its 9px open instead of teleporting every button below
+                 it while the accent bar is still springing to a position it
+                 measured after the shift. -->
+            <Transition
+              enter-active-class="chat-fold"
+              enter-from-class="chat-fold-collapsed"
+              leave-active-class="chat-fold"
+              leave-to-class="chat-fold-collapsed"
+            >
+              <div
+                v-if="tab.id === firstDirectTabId"
+                class="grid w-full shrink-0 grid-rows-[1fr]"
+              >
+                <div class="min-h-0 flex justify-center">
+                  <div class="my-1 h-px w-8 bg-border" />
+                </div>
+              </div>
+            </Transition>
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
@@ -396,9 +411,11 @@ function handlePopOut() {
       <div v-else class="flex-1" />
     </div>
 
-    <!-- Right chat area -->
-    <div class="flex-1 min-w-0 flex flex-col">
-      <template v-if="orderedTabs.length">
+    <!-- Right chat area. Closing the last conversation dissolves to the empty
+         state instead of cutting; both branches fill the column, so a plain
+         crossfade is the right tool. -->
+    <FadeSwap class="flex-1 min-w-0">
+      <div v-if="orderedTabs.length" key="chats" class="h-full flex flex-col">
         <!-- Header with channel title + participants + controls -->
         <div
           class="flex items-center justify-between px-3 py-3 border-b border-border bg-card/30"
@@ -480,26 +497,42 @@ function handlePopOut() {
           </div>
         </div>
 
-        <div
-          v-if="isParticipantsOpen && activeParticipants.length"
-          class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200 flex gap-2 overflow-x-auto"
+        <!-- Folds open between the header and the scroller instead of
+             snatching 33px from the chat body on a frame; the strip's own
+             padding and border ride inside the clipped row. -->
+        <Transition
+          enter-active-class="chat-fold"
+          enter-from-class="chat-fold-collapsed"
+          leave-active-class="chat-fold"
+          leave-to-class="chat-fold-collapsed"
         >
           <div
-            v-for="p in activeParticipants"
-            :key="p.steam_id"
-            class="flex items-center gap-1.5 bg-zinc-900/70 rounded-full px-2 py-0.5"
+            v-if="isParticipantsOpen && activeParticipants.length"
+            class="shrink-0 grid grid-rows-[1fr]"
           >
-            <img
-              v-if="p.avatar_url"
-              :src="p.avatar_url"
-              alt=""
-              class="w-4 h-4 rounded-full object-cover"
-            />
-            <span class="truncate max-w-[8rem]">
-              {{ p.name }}
-            </span>
+            <div class="min-h-0">
+              <div
+                class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200 flex gap-2 overflow-x-auto"
+              >
+                <div
+                  v-for="p in activeParticipants"
+                  :key="p.steam_id"
+                  class="flex items-center gap-1.5 bg-zinc-900/70 rounded-full px-2 py-0.5"
+                >
+                  <img
+                    v-if="p.avatar_url"
+                    :src="p.avatar_url"
+                    alt=""
+                    class="w-4 h-4 rounded-full object-cover"
+                  />
+                  <span class="truncate max-w-[8rem]">
+                    {{ p.name }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </Transition>
 
         <div class="flex-1 min-h-0 flex flex-col">
           <ChatLobby
@@ -520,8 +553,8 @@ function handlePopOut() {
             "
           />
         </div>
-      </template>
-      <div v-else class="flex-1 flex flex-col">
+      </div>
+      <div v-else key="empty" class="h-full flex flex-col">
         <Empty>
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
@@ -533,6 +566,28 @@ function handlePopOut() {
           </div>
         </Empty>
       </div>
-    </div>
+    </FadeSwap>
   </div>
 </template>
+
+<style scoped>
+/* Small rail/header inserts fold their height in place; padding and borders
+   ride the clipped cell so the collapsed state floors at zero. */
+.chat-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.15s ease;
+}
+.chat-fold > * {
+  overflow: hidden;
+}
+.chat-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-fold {
+    transition-duration: 1ms;
+  }
+}
+</style>

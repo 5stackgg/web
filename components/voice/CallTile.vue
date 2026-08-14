@@ -140,9 +140,13 @@ function initials(name: string | null) {
     <!-- No camera. The avatar keeps the tile the same size either way, so the
          grid never reflows when somebody turns one on.
          It sits above the video, so fading it out *is* the camera turning on --
-         one transition rather than two that have to agree. -->
+         one transition rather than two that have to agree.
+         The enter is instant on purpose: a camera going OFF kills the picture
+         on its own frame (the stream is gone, the video is black), so a slow
+         avatar fade-in was 200ms of black tile. Cover immediately; save the
+         long dissolve for the direction that has something to reveal. -->
     <Transition
-      enter-active-class="transition-opacity duration-200 ease-out motion-reduce:!duration-[1ms]"
+      enter-active-class="transition-opacity duration-[1ms]"
       leave-active-class="transition-[opacity,transform] duration-[420ms] ease-out motion-reduce:!duration-[1ms]"
       enter-from-class="opacity-0"
       leave-to-class="opacity-0 scale-105"

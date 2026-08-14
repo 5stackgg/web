@@ -246,8 +246,11 @@ const dismissItem = (item: ToastItem) => {
 
 <template>
   <ClientOnly>
+    <!-- No v-if on this container: it is invisible and pointer-events-none
+         when empty, and gating it on the list emptying in the same tick as the
+         last toast's dismissal used to unmount the group mid-leave -- the
+         single-toast case (the common one) never played its exit. -->
     <div
-      v-if="displayList.length > 0"
       class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] hidden flex-col transition-[right] duration-200 ease-linear md:left-auto md:flex md:w-[340px]"
       :class="
         rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]'
@@ -258,13 +261,22 @@ const dismissItem = (item: ToastItem) => {
         tag="div"
         class="pointer-events-auto flex flex-col gap-3"
       >
+        <!-- Each toast is a grid wrapper so a leaver collapses its height in
+             place -- position:absolute put a dismissed toast at the column's
+             origin (a flex child's static position), fading it out on top of
+             the stack. -->
         <div
           v-for="entry in displayList"
           :key="entry.key"
+          class="grid grid-rows-[1fr]"
+          :class="hoveredGroup === entry.key ? 'z-50' : 'z-0'"
+        >
+        <div class="min-h-0">
+        <div
           class="relative origin-bottom transition-all duration-200"
           :class="[
             { 'pb-2.5': entry.count > 1 },
-            hoveredGroup === entry.key ? 'z-50 scale-[1.04]' : 'z-0',
+            hoveredGroup === entry.key ? 'scale-[1.04]' : '',
             hoveredGroup && hoveredGroup !== entry.key
               ? 'scale-[0.92] opacity-30 blur-[2px]'
               : '',
@@ -296,14 +308,23 @@ const dismissItem = (item: ToastItem) => {
             </div>
           </Transition>
 
-          <template v-if="hoveredGroup !== entry.key && entry.count > 1">
+          <!-- The stacked-card peeks fade with the fan instead of vanishing
+               the instant the cursor arrives. -->
+          <Transition
+            enter-active-class="transition-opacity duration-200"
+            leave-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
             <div
-              v-if="entry.count >= 3"
-              class="toast-peek toast-peek-2"
+              v-if="hoveredGroup !== entry.key && entry.count > 1"
+              class="absolute inset-0"
               aria-hidden="true"
-            />
-            <div class="toast-peek toast-peek-1" aria-hidden="true" />
-          </template>
+            >
+              <div v-if="entry.count >= 3" class="toast-peek toast-peek-2" />
+              <div class="toast-peek toast-peek-1" />
+            </div>
+          </Transition>
 
           <ToastCard
             :item="entry.item"
@@ -324,6 +345,8 @@ const dismissItem = (item: ToastItem) => {
               <VoiceRosterPreview variant="stack" :channel-id="entry.item.channelId" />
             </template>
           </ToastCard>
+        </div>
+        </div>
         </div>
       </TransitionGroup>
     </div>
@@ -346,22 +369,38 @@ const dismissItem = (item: ToastItem) => {
   transform: translateY(12px) scale(0.94);
   opacity: 0.45;
 }
+/* Toasts fold their row open and shut in place; the stack above rides normal
+   flow instead of snapping when the leaver is finally removed. */
 .toast-enter-active {
   transition:
+    grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.32s ease;
 }
 .toast-leave-active {
   transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.22s ease,
     opacity 0.22s ease;
-  position: absolute;
-  width: 100%;
+}
+.toast-enter-active > *,
+.toast-leave-active > * {
+  overflow: hidden;
 }
 .toast-enter-from,
 .toast-leave-to {
+  grid-template-rows: 0fr;
   transform: translateY(16px) scale(0.92);
   opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-enter-active,
+  .toast-leave-active,
+  .toast-move,
+  .fan-enter-active,
+  .fan-leave-active {
+    transition-duration: 1ms;
+  }
 }
 .toast-move {
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);

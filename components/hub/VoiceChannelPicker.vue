@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { Plus } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
 import { useVoiceSession } from "~/composables/useVoiceSession";
 import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
 import { useVoiceElsewhere } from "~/composables/useVoiceElsewhere";
@@ -65,63 +63,46 @@ async function join(channel: VoiceChannel) {
 <template>
   <!-- Anchored to the top and led by the list. The absence of a call is already
        obvious from the panel being empty, so an icon and a centred "not in a
-       voice channel" were decoration in front of the only useful thing here. -->
+       voice channel" were decoration in front of the only useful thing here.
+       With nothing to join at all this renders nothing: the hub disables the
+       voice tab in that state and points at the lobby tab instead, so this
+       never has to explain where channels come from. -->
   <div
-    v-if="channels.length || !switcher"
+    v-if="channels.length"
     class="flex flex-col gap-2 px-3 py-3"
     :class="switcher ? '' : 'flex-1'"
   >
-    <template v-if="channels.length">
-      <p
-        class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-zinc-600"
-      >
-        {{
-          switcher
-            ? $t("layouts.voice_panel.picker.switch")
-            : $t("layouts.voice_panel.picker.available")
-        }}
-      </p>
+    <p
+      class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-zinc-600"
+    >
+      {{
+        switcher
+          ? $t("layouts.voice_panel.picker.switch")
+          : $t("layouts.voice_panel.picker.available")
+      }}
+    </p>
 
-      <!-- Channels come and go on their own -- a party forms, a match ends --
-           so the list changes without anyone touching it. Sliding rather than
-           blinking is what says the list changed rather than the panel
-           re-rendering. -->
-      <TransitionGroup
-        tag="div"
-        class="flex flex-col gap-2"
-        enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-        leave-active-class="transition-[opacity,transform] [transition-duration:160ms] ease-in motion-reduce:![transition-duration:1ms]"
-        move-class="transition-transform [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-        enter-from-class="opacity-0 translate-y-2"
-        leave-to-class="opacity-0 -translate-y-1"
-      >
-        <VoiceChannelRow
-          v-for="channel in channels"
-          :key="channel.id"
-          :channel="channel"
-          :elsewhere="heldElsewhere(channel.id)"
-          :compact="switcher"
-          @join="join(channel)"
-        />
-      </TransitionGroup>
-    </template>
-
-    <!-- Nothing to join, so the only useful thing left is making one. Never
-         shown as a switcher: "start a party" under a running call is not the
-         next thing anyone wants. -->
-    <template v-else-if="!switcher">
-      <p class="text-[11px] leading-relaxed text-zinc-500">
-        {{ $t("layouts.voice_panel.picker.nothing") }}
-      </p>
-      <Button
-        variant="outline"
-        size="sm"
-        class="w-full gap-1.5 border-zinc-700 bg-zinc-900/80 text-[11px] hover:bg-zinc-800/80"
-        @click="navigateTo('/play')"
-      >
-        <Plus class="h-3.5 w-3.5" />
-        {{ $t("layouts.voice_panel.picker.start_party") }}
-      </Button>
-    </template>
+    <!-- Channels come and go on their own -- a party forms, a match ends --
+         so the list changes without anyone touching it. Sliding rather than
+         blinking is what says the list changed rather than the panel
+         re-rendering. -->
+    <TransitionGroup
+      tag="div"
+      class="flex flex-col gap-2"
+      enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+      move-class="transition-transform [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      enter-from-class="opacity-0 translate-y-2"
+      leave-to-class="opacity-0 -translate-y-1"
+    >
+      <VoiceChannelRow
+        v-for="channel in channels"
+        :key="channel.id"
+        :channel="channel"
+        :elsewhere="heldElsewhere(channel.id)"
+        :compact="switcher"
+        @join="join(channel)"
+      />
+    </TransitionGroup>
   </div>
 </template>

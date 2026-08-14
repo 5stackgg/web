@@ -119,9 +119,13 @@ const slots = computed(() => {
     </div>
 
     <TransitionGroup name="roster" tag="div" class="flex flex-1 flex-col gap-2">
-      <DraftPlayerCard
+      <div
         v-for="player in players"
         :key="player.steam_id"
+        class="grid grid-rows-[1fr]"
+      >
+      <div class="min-h-0">
+      <DraftPlayerCard
         :member="player"
         :accent="accent"
         :is-captain="player.steam_id === captainSteamId"
@@ -150,6 +154,8 @@ const slots = computed(() => {
           </Transition>
         </template>
       </DraftPlayerCard>
+      </div>
+      </div>
       <template v-if="addable">
         <DraftOpenSlot
           v-for="index in Math.max(0, perTeam - players.length)"
@@ -229,18 +235,34 @@ const slots = computed(() => {
   opacity: 0;
   transform: scale(0.7);
 }
+/* A leaving card collapses its own height in place -- position:absolute put
+   it at the flex container's origin (its static position), fading it out on
+   top of the panel title. */
 .roster-move,
-.roster-enter-active,
-.roster-leave-active {
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+.roster-enter-active {
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.roster-enter-from,
-.roster-leave-to {
+.roster-enter-from {
   opacity: 0;
   transform: translateX(8px);
 }
 .roster-leave-active {
-  position: absolute;
-  width: 100%;
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease-in;
+}
+.roster-leave-active > * {
+  overflow: hidden;
+}
+.roster-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .roster-move,
+  .roster-enter-active,
+  .roster-leave-active {
+    transition-duration: 1ms;
+  }
 }
 </style>

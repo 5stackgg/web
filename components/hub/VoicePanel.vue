@@ -45,7 +45,7 @@ function onScreen() {
          and roster that enter after it land in a branch already invisible. -->
     <Transition
       mode="out-in"
-      enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
       leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
       enter-from-class="opacity-0 translate-y-2"
       leave-to-class="opacity-0 -translate-y-1"

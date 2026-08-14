@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { e_match_status_enum } from "~/generated/zeus";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 </script>
 
 <template>
@@ -31,72 +32,53 @@ import { e_match_status_enum } from "~/generated/zeus";
       <Separator class="my-4" label="OR" v-if="match.connection_string" />
     </template>
 
-    <div v-if="showBootingState && !match.connection_string">
-      <div
-        class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 animate-fade-in"
-      >
+    <!-- One slot, three states -- offline, booting, connect -- traded through
+         a measured height swap instead of popping between very different
+         boxes on the frame the server comes up. The two booting variants
+         (before and after the connection string exists) share one branch and
+         one key, so the string arriving mid-boot changes nothing on screen. -->
+    <HeightSwap>
+      <div v-if="showOffline" key="offline">
         <div
-          class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
+          class="flex items-center gap-2 p-4 rounded-lg border border-destructive/30 bg-destructive/10"
         >
-          <div class="flex items-center justify-center gap-3">
-            <Spinner class="shrink-0" />
-            <span class="text-sm font-medium tracking-wide">{{
-              $t("match.server.booting")
+          <div
+            class="flex items-center justify-center gap-3 rounded-md p-3 w-full bg-background/40 text-destructive"
+          >
+            <AlertTriangle class="w-4 h-4 shrink-0" />
+            <span class="text-sm font-medium">{{
+              $t("match.server.offline")
             }}</span>
           </div>
-          <p
-            v-if="match.server_error"
-            class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
-          >
-            {{ match.server_error }}
-          </p>
         </div>
       </div>
-    </div>
 
-    <div v-if="match.connection_string">
-      <template v-if="!match.is_server_online">
-        <template v-if="match.server_type === 'Dedicated'">
-          <div
-            class="flex items-center gap-2 p-4 rounded-lg border border-destructive/30 bg-destructive/10 animate-fade-in"
-          >
-            <div
-              class="flex items-center justify-center gap-3 rounded-md p-3 w-full bg-background/40 text-destructive"
-            >
-              <AlertTriangle class="w-4 h-4 shrink-0" />
-              <span class="text-sm font-medium">{{
-                $t("match.server.offline")
-              }}</span>
-            </div>
-          </div>
-        </template>
-        <template v-else-if="!hideBooting">
-          <div
-            class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 animate-fade-in"
-          >
-            <div
-              class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
-            >
-              <div class="flex items-center justify-center gap-3">
-                <Spinner class="shrink-0" />
-                <span class="text-sm font-medium tracking-wide">{{
-                  $t("match.server.booting")
-                }}</span>
-              </div>
-              <p
-                v-if="match.server_error"
-                class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
-              >
-                {{ match.server_error }}
-              </p>
-            </div>
-          </div>
-        </template>
-      </template>
-      <template v-else>
+      <div v-else-if="showBooting" key="booting">
         <div
           class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10"
-          v-if="match.connection_string"
+        >
+          <div
+            class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
+          >
+            <div class="flex items-center justify-center gap-3">
+              <Spinner class="shrink-0" />
+              <span class="text-sm font-medium tracking-wide">{{
+                $t("match.server.booting")
+              }}</span>
+            </div>
+            <p
+              v-if="match.server_error"
+              class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
+            >
+              {{ match.server_error }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="showConnect" key="connect">
+        <div
+          class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10"
         >
           <ClipBoard
             :data="match.connection_string"
@@ -136,8 +118,8 @@ import { e_match_status_enum } from "~/generated/zeus";
             </a>
           </template>
         </div>
-      </template>
-    </div>
+      </div>
+    </HeightSwap>
   </div>
 </template>
 
@@ -203,6 +185,29 @@ export default {
     },
     showBootingState() {
       return this.isAssignedOnDemandServerBooting && !this.hideBooting;
+    },
+    // The swap's three branches, mutually exclusive by construction. Booting
+    // deliberately covers both before and after the connection string arrives.
+    showOffline() {
+      return (
+        !!this.match.connection_string &&
+        !this.match.is_server_online &&
+        this.match.server_type === "Dedicated"
+      );
+    },
+    showBooting() {
+      if (this.match.connection_string) {
+        return (
+          !this.match.is_server_online &&
+          this.match.server_type !== "Dedicated" &&
+          !this.hideBooting
+        );
+      }
+
+      return this.showBootingState;
+    },
+    showConnect() {
+      return !!this.match.connection_string && this.match.is_server_online;
     },
     showConnectPanel() {
       return !!this.me && this.isLive && !this.blockedByCamera;

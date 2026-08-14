@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import PlayerLiveStatus from "~/components/matchmaking-lobby/PlayerLiveStatus.vue";
 import { Button } from "~/components/ui/button";
 import {
@@ -200,32 +201,45 @@ const amberHover =
               :truncate-name="true"
             />
             <div class="flex shrink-0 items-center gap-0.5">
-              <!-- Invite to lobby — any invitable player except incoming requests -->
-              <Tooltip v-if="canInviteToLobby && rel !== 'incoming'">
-                <TooltipTrigger as-child>
-                  <Button
-                    variant="ghost"
-                    :class="[actionBtn, amberHover]"
-                    :loading="loadingFor('invite')"
-                    :disabled="busy"
-                    @click="inviteToLobby(player.steam_id)"
-                  >
-                    <Tent class="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{{
-                  $t("matchmaking.friends.invite_to_lobby")
-                }}</TooltipContent>
-              </Tooltip>
-
-              <!-- Relationship-specific actions — animate on change -->
+              <!-- Invite to lobby — any invitable player except incoming
+                   requests. Its column slides 0fr -> 1fr instead of popping in
+                   at the same instant the relationship swap is animating. -->
               <Transition
-                mode="out-in"
-                enter-active-class="transition duration-200 ease-out"
-                leave-active-class="transition duration-150 ease-in"
-                enter-from-class="opacity-0 scale-90"
-                leave-to-class="opacity-0 scale-90"
+                enter-active-class="friend-tool-reveal"
+                enter-from-class="friend-tool-reveal-collapsed"
+                leave-active-class="friend-tool-reveal"
+                leave-to-class="friend-tool-reveal-collapsed"
               >
+                <div
+                  v-if="canInviteToLobby && rel !== 'incoming'"
+                  class="grid min-w-0 grid-cols-[1fr]"
+                >
+                  <div class="min-w-0 overflow-hidden">
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          :class="[actionBtn, amberHover]"
+                          :loading="loadingFor('invite')"
+                          :disabled="busy"
+                          @click="inviteToLobby(player.steam_id)"
+                        >
+                          <Tent class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("matchmaking.friends.invite_to_lobby")
+                      }}</TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+              </Transition>
+
+              <!-- Relationship-specific actions. Measured-width swap: the
+                   cluster's width is held while the old buttons fade and
+                   eased to the new set's width -- accepting a request no
+                   longer double-bounces the row's right edge. -->
+              <HeightSwap axis="x">
                 <div :key="rel" class="flex items-center gap-0.5">
                   <!-- STRANGER -->
                   <template v-if="rel === 'none'">
@@ -355,13 +369,24 @@ const amberHover =
                     </Tooltip>
                   </template>
                 </div>
-              </Transition>
+              </HeightSwap>
             </div>
           </div>
 
+          <!-- The status banner arrives on a socket push, no user action --
+             it folds the row open instead of shoving the whole list down a
+             line in one frame. (transition-opacity on a v-if animated
+             nothing: the element mounted at full opacity.) -->
+          <Transition
+            enter-active-class="friend-banner-fold"
+            enter-from-class="friend-banner-fold-collapsed"
+            leave-active-class="friend-banner-fold"
+            leave-to-class="friend-banner-fold-collapsed"
+          >
+          <div v-if="showBanner" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
           <div
-            v-if="showBanner"
-            class="px-2 pb-2 pt-0.5 transition-opacity duration-200"
+            class="px-2 pb-2 pt-0.5"
             :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
           >
             <PlayerLiveStatus
@@ -401,6 +426,9 @@ const amberHover =
               </Button>
             </div>
           </div>
+          </div>
+          </div>
+          </Transition>
         </div>
       </ContextMenuTrigger>
 
@@ -451,3 +479,39 @@ const amberHover =
     </AlertDialog>
   </div>
 </template>
+
+<style scoped>
+/* The lobby-invite button's column collapses to a true zero (no padding on
+   the cell), so nothing snaps when it unmounts. */
+.friend-tool-reveal {
+  transition:
+    grid-template-columns 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.friend-tool-reveal-collapsed {
+  grid-template-columns: 0fr;
+  opacity: 0;
+}
+
+/* The live-status banner folds the row taller/shorter; its padding rides
+   inside the clipped cell. */
+.friend-banner-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.friend-banner-fold > * {
+  overflow: hidden;
+}
+.friend-banner-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .friend-tool-reveal,
+  .friend-banner-fold {
+    transition-duration: 1ms;
+  }
+}
+</style>

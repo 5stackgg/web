@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Fold } from "~/components/ui/transitions";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import {
   FormControl,
@@ -207,8 +208,10 @@ import { $ } from "~/generated/zeus";
       </FormField>
     </div>
 
+    <!-- Stage-type-dependent sections fold open and shut with the select
+         instead of restructuring the form in one frame. -->
+    <Fold :open="form.values.stage_type === 'RoundRobin'">
     <FormField
-      v-if="form.values.stage_type === 'RoundRobin'"
       v-slot="{ value, handleChange }"
       name="max_rounds"
     >
@@ -232,8 +235,10 @@ import { $ } from "~/generated/zeus";
         <FormMessage />
       </FormItem>
     </FormField>
+    </Fold>
 
-    <template v-if="form.values.stage_type === 'Swiss'">
+    <Fold :open="form.values.stage_type === 'Swiss'">
+    <div class="grid gap-4">
       <FormField v-slot="{ value, handleChange }" name="swiss_no_elimination">
         <FormItem>
           <div
@@ -259,8 +264,9 @@ import { $ } from "~/generated/zeus";
         </FormItem>
       </FormField>
 
+      <!-- Folds under the switch that reveals it, on the switch's own beat. -->
+      <Fold :open="!!form.values.swiss_no_elimination">
       <FormField
-        v-if="form.values.swiss_no_elimination"
         v-slot="{ value, handleChange }"
         name="max_rounds"
       >
@@ -284,7 +290,9 @@ import { $ } from "~/generated/zeus";
           <FormMessage />
         </FormItem>
       </FormField>
-    </template>
+      </Fold>
+    </div>
+    </Fold>
 
     <!-- Section A: Default Best Of -->
     <Card>
@@ -324,11 +332,13 @@ import { $ } from "~/generated/zeus";
     </Card>
 
     <!-- Section B: Third Place Match (SE only) -->
-    <Card
-      v-if="
-        form.values.stage_type === 'SingleElimination' && form.values.max_teams
+    <Fold
+      :open="
+        form.values.stage_type === 'SingleElimination' &&
+        !!form.values.max_teams
       "
     >
+    <Card>
       <div class="p-4 space-y-4">
         <FormField v-slot="{ value, handleChange }" name="third_place_match">
           <FormItem>
@@ -356,11 +366,13 @@ import { $ } from "~/generated/zeus";
         </FormField>
 
         <!-- 3rd Place Decider selector (visible when toggle is on) -->
-        <FormField
-          v-if="
+        <Fold
+          :open="
             form.values.stage_type === 'SingleElimination' &&
-            form.values.third_place_match
+            !!form.values.third_place_match
           "
+        >
+        <FormField
           v-slot="{ componentField }"
           name="decider_best_of"
         >
@@ -389,11 +401,14 @@ import { $ } from "~/generated/zeus";
             <FormMessage />
           </FormItem>
         </FormField>
+        </Fold>
       </div>
     </Card>
+    </Fold>
 
     <!-- Section B2: Final Map Advantage (DE only) -->
-    <Card v-if="form.values.stage_type === 'DoubleElimination'">
+    <Fold :open="form.values.stage_type === 'DoubleElimination'">
+    <Card>
       <div class="flex flex-col space-y-3 p-4">
         <FormField v-slot="{ value }" name="final_map_advantage">
           <FormItem>
@@ -431,6 +446,7 @@ import { $ } from "~/generated/zeus";
         </FormField>
       </div>
     </Card>
+    </Fold>
 
     <!-- Section C: Advanced Settings (collapsible) -->
     <Collapsible v-model:open="showAdvancedSettings">
@@ -453,13 +469,9 @@ import { $ } from "~/generated/zeus";
               }}
             </span>
             <Button type="button" variant="ghost" size="icon" class="h-8 w-8">
-              <ChevronUp
-                v-if="showAdvancedSettings"
-                class="h-4 w-4 transition-transform duration-200"
-              />
               <ChevronDown
-                v-else
-                class="h-4 w-4 transition-transform duration-200"
+                class="h-4 w-4 transition-transform duration-[240ms] motion-reduce:!duration-[1ms]"
+                :class="showAdvancedSettings ? 'rotate-180' : ''"
               />
               <span class="sr-only">{{
                 $t("match.options.advanced.toggle")
@@ -478,13 +490,14 @@ import { $ } from "~/generated/zeus";
       >
         <div class="flex flex-col gap-4">
           <!-- Per-Round Best Of -->
-          <Card
-            v-if="
-              form.values.stage_type &&
+          <Fold
+            :open="
+              !!form.values.stage_type &&
               form.values.stage_type !== 'RoundRobin' &&
-              form.values.max_teams
+              !!form.values.max_teams
             "
           >
+          <Card>
             <div class="p-4">
               <StageRoundBestOfConfig
                 :stage-type="form.values.stage_type"
@@ -496,6 +509,7 @@ import { $ } from "~/generated/zeus";
               />
             </div>
           </Card>
+          </Fold>
 
           <!-- TV Delay -->
           <Card>
@@ -559,30 +573,34 @@ import { $ } from "~/generated/zeus";
                     </FormControl>
                   </div>
 
-                  <div v-if="value > 0" class="mt-4 pl-4 border-l-2">
-                    <NumberField
-                      class="gap-2"
-                      :min="1"
-                      :max="600"
-                      :model-value="value"
-                      @update:model-value="
-                        (timeout) => {
-                          form.setFieldValue('veto_pick_timeout', timeout);
-                        }
-                      "
-                    >
-                      <NumberFieldContent>
-                        <NumberFieldDecrement />
-                        <FormControl>
-                          <NumberFieldInput />
-                        </FormControl>
-                        <NumberFieldIncrement />
-                      </NumberFieldContent>
-                    </NumberField>
-                    <FormDescription class="mt-2">
-                      {{ $t("match.options.advanced.veto_pick_timeout.range") }}
-                    </FormDescription>
-                  </div>
+                  <Fold :open="value > 0">
+                    <div class="mt-4 pl-4 border-l-2">
+                      <NumberField
+                        class="gap-2"
+                        :min="1"
+                        :max="600"
+                        :model-value="value"
+                        @update:model-value="
+                          (timeout) => {
+                            form.setFieldValue('veto_pick_timeout', timeout);
+                          }
+                        "
+                      >
+                        <NumberFieldContent>
+                          <NumberFieldDecrement />
+                          <FormControl>
+                            <NumberFieldInput />
+                          </FormControl>
+                          <NumberFieldIncrement />
+                        </NumberFieldContent>
+                      </NumberField>
+                      <FormDescription class="mt-2">
+                        {{
+                          $t("match.options.advanced.veto_pick_timeout.range")
+                        }}
+                      </FormDescription>
+                    </div>
+                  </Fold>
                   <FormMessage />
                 </FormItem>
               </FormField>
@@ -590,7 +608,8 @@ import { $ } from "~/generated/zeus";
           </Card>
 
           <!-- Region Options -->
-          <Card v-if="availableRegions.length > 1">
+          <Fold :open="availableRegions.length > 1">
+          <Card>
             <div class="p-6 space-y-6">
               <SettingHeader>
                 {{ $t("match.options.advanced.region.title") }}
@@ -753,6 +772,7 @@ import { $ } from "~/generated/zeus";
               </div>
             </div>
           </Card>
+          </Fold>
 
           <!-- Check-in, Ready, Tech Timeout -->
           <Card>
@@ -1903,6 +1923,11 @@ export default {
 <style scoped>
 .adv-collapse {
   overflow: hidden;
-  transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: height 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .adv-collapse {
+    transition-duration: 1ms;
+  }
 }
 </style>

@@ -116,12 +116,42 @@ const onCamera = computed(() =>
     </button>
 
     <!-- Who is in there. Hidden when nobody is: an empty roster reads as broken
-         rather than quiet. -->
-    <div
-      v-if="!compact && inCall.length"
-      class="border-t border-zinc-800/80 bg-zinc-950/40 px-2 py-1.5"
+         rather than quiet. Presence-driven, no user action -- so it folds the
+         card open instead of growing it a border and N rows in one frame; the
+         divider and padding ride inside the clipped cell. -->
+    <Transition
+      enter-active-class="row-roster-fold"
+      enter-from-class="row-roster-fold-collapsed"
+      leave-active-class="row-roster-fold"
+      leave-to-class="row-roster-fold-collapsed"
     >
-      <VoiceRosterPreview :channel-id="channel.id" />
-    </div>
+      <div v-if="!compact && inCall.length" class="grid grid-rows-[1fr]">
+        <div class="min-h-0">
+          <div class="border-t border-zinc-800/80 bg-zinc-950/40 px-2 py-1.5">
+            <VoiceRosterPreview :channel-id="channel.id" />
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.row-roster-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.row-roster-fold > * {
+  overflow: hidden;
+}
+.row-roster-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .row-roster-fold {
+    transition-duration: 1ms;
+  }
+}
+</style>

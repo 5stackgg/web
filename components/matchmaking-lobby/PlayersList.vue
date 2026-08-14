@@ -69,9 +69,25 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
       </div>
     </div>
 
-    <div class="flex flex-col gap-4">
+    <!-- No flex gap here: each section carries its own bottom spacing inside
+         its clipped row, so a section folding away takes its gap with it.
+         The fold wraps the whole section (label + rows): when the last row
+         goes, the leaving subtree is frozen mid-fold and the row rides the
+         section shut instead of being torn down before its own leave. -->
+    <div class="flex flex-col">
       <!-- Incoming friend requests (friends tab) -->
-      <section v-if="friendsOnly && incomingRequests.length > 0">
+      <Transition
+        enter-active-class="friend-section-fold"
+        enter-from-class="friend-section-fold-collapsed"
+        leave-active-class="friend-section-fold"
+        leave-to-class="friend-section-fold-collapsed"
+      >
+      <section
+        v-if="friendsOnly && incomingRequests.length > 0"
+        class="grid grid-rows-[1fr]"
+      >
+        <div class="min-h-0">
+        <div class="pb-4">
         <div class="friend-section-label text-[hsl(var(--tac-amber))]">
           <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]" />
           {{ $t("matchmaking.friends.incoming_requests") }}
@@ -80,16 +96,34 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
           </span>
         </div>
         <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
-          <FriendListItem
+          <div
             v-for="player in incomingRequests"
             :key="player.steam_id"
-            :player="player"
-          />
+            class="grid grid-rows-[1fr]"
+          >
+            <div class="min-h-0">
+              <FriendListItem :player="player" />
+            </div>
+          </div>
         </TransitionGroup>
+        </div>
+        </div>
       </section>
+      </Transition>
 
       <!-- Online -->
-      <section v-if="filteredOnlinePlayers.length > 0">
+      <Transition
+        enter-active-class="friend-section-fold"
+        enter-from-class="friend-section-fold-collapsed"
+        leave-active-class="friend-section-fold"
+        leave-to-class="friend-section-fold-collapsed"
+      >
+      <section
+        v-if="filteredOnlinePlayers.length > 0"
+        class="grid grid-rows-[1fr]"
+      >
+        <div class="min-h-0">
+        <div class="pb-4">
         <div class="friend-section-label">
           <span class="relative flex h-2 w-2">
             <span
@@ -105,16 +139,34 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
           </span>
         </div>
         <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
-          <FriendListItem
+          <div
             v-for="player in filteredOnlinePlayers"
             :key="player.steam_id"
-            :player="player"
-          />
+            class="grid grid-rows-[1fr]"
+          >
+            <div class="min-h-0">
+              <FriendListItem :player="player" />
+            </div>
+          </div>
         </TransitionGroup>
+        </div>
+        </div>
       </section>
+      </Transition>
 
       <!-- Offline (friends tab only) -->
-      <section v-if="friendsOnly && filteredOfflinePlayers.length > 0">
+      <Transition
+        enter-active-class="friend-section-fold"
+        enter-from-class="friend-section-fold-collapsed"
+        leave-active-class="friend-section-fold"
+        leave-to-class="friend-section-fold-collapsed"
+      >
+      <section
+        v-if="friendsOnly && filteredOfflinePlayers.length > 0"
+        class="grid grid-rows-[1fr]"
+      >
+        <div class="min-h-0">
+        <div class="pb-4">
         <div class="friend-section-label">
           <span class="h-2 w-2 rounded-full bg-muted-foreground/40" />
           {{ $t("common.offline") }}
@@ -123,17 +175,34 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
           </span>
         </div>
         <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
-          <FriendListItem
+          <div
             v-for="player in filteredOfflinePlayers"
             :key="player.steam_id"
-            :player="player"
-            :muted="true"
-          />
+            class="grid grid-rows-[1fr]"
+          >
+            <div class="min-h-0">
+              <FriendListItem :player="player" :muted="true" />
+            </div>
+          </div>
         </TransitionGroup>
+        </div>
+        </div>
       </section>
+      </Transition>
 
       <!-- Sent requests (friends tab only) -->
-      <section v-if="friendsOnly && outgoingRequests.length > 0">
+      <Transition
+        enter-active-class="friend-section-fold"
+        enter-from-class="friend-section-fold-collapsed"
+        leave-active-class="friend-section-fold"
+        leave-to-class="friend-section-fold-collapsed"
+      >
+      <section
+        v-if="friendsOnly && outgoingRequests.length > 0"
+        class="grid grid-rows-[1fr]"
+      >
+        <div class="min-h-0">
+        <div class="pb-4">
         <div class="friend-section-label">
           <span class="h-2 w-2 rounded-full bg-muted-foreground/40" />
           {{ $t("matchmaking.friends.sent_requests") }}
@@ -142,21 +211,34 @@ import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
           </span>
         </div>
         <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
-          <FriendListItem
+          <div
             v-for="player in outgoingRequests"
             :key="player.steam_id"
-            :player="player"
-            :muted="true"
-          />
+            class="grid grid-rows-[1fr]"
+          >
+            <div class="min-h-0">
+              <FriendListItem :player="player" :muted="true" />
+            </div>
+          </div>
         </TransitionGroup>
+        </div>
+        </div>
       </section>
+      </Transition>
 
-      <div
-        v-if="isEmpty"
-        class="py-8 text-center text-sm text-muted-foreground"
+      <Transition
+        enter-active-class="transition-opacity [transition-duration:240ms] [transition-delay:200ms] motion-reduce:![transition-duration:1ms]"
+        leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
       >
-        {{ $t("player.search.no_players_found") }}
-      </div>
+        <div
+          v-if="isEmpty"
+          class="py-8 text-center text-sm text-muted-foreground"
+        >
+          {{ $t("player.search.no_players_found") }}
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -325,22 +407,55 @@ export default {
   color: hsl(var(--muted-foreground));
 }
 
-/* Animated list rows */
+/* Animated list rows. A leaving row collapses its own height in place and the
+   rows below ride normal flow up with it. position:absolute looked like the
+   way to free the space, but an absolutely positioned child of a flex column
+   takes the container's origin as its static position -- the row fell out of
+   the hub and faded at the top-left of the panel. */
 .friend-row-move,
-.friend-row-enter-active,
-.friend-row-leave-active {
-  transition: all 0.25s ease;
+.friend-row-enter-active {
+  transition:
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .friend-row-enter-from {
   opacity: 0;
   transform: translateX(0.5rem);
 }
-.friend-row-leave-to {
-  opacity: 0;
-  transform: translateX(0.5rem);
-}
 .friend-row-leave-active {
-  position: absolute;
-  width: 100%;
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease-in;
+}
+.friend-row-leave-active > * {
+  overflow: hidden;
+}
+.friend-row-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+/* A whole section (label + rows) folds shut when its last row goes. The
+   leaving subtree is frozen, so the departing row simply rides the fold; its
+   bottom spacing lives inside the clipped cell and folds with it. */
+.friend-section-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.15s ease;
+}
+.friend-section-fold > * {
+  overflow: hidden;
+}
+.friend-section-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .friend-row-move,
+  .friend-row-enter-active,
+  .friend-row-leave-active,
+  .friend-section-fold {
+    transition-duration: 1ms;
+  }
 }
 </style>

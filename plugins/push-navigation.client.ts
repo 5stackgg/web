@@ -14,7 +14,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       const url = event.data.url;
 
-      if (typeof url !== "string" || !url.startsWith("/")) {
+      // `//evil.test/x` starts with a slash and is a fully qualified URL to
+      // somewhere else, so an in-app path has to be a single leading slash.
+      if (
+        typeof url !== "string" ||
+        !url.startsWith("/") ||
+        url.startsWith("//")
+      ) {
         return;
       }
 

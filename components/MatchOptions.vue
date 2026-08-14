@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
+import { HeightSwap, Fold } from "~/components/ui/transitions";
 import { Separator } from "~/components/ui/separator";
 import { Info, ExternalLink } from "lucide-vue-next";
 import {
@@ -183,6 +184,12 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </span>
                   </template>
                 </div>
+                <Transition
+                  enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+                  leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+                  enter-from-class="opacity-0"
+                  leave-to-class="opacity-0"
+                >
                 <div v-show="form.values.map_veto" class="shrink-0">
                   <FormField
                     v-slot="{ value, handleChange }"
@@ -218,6 +225,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </FormControl>
                   </FormField>
                 </div>
+                </Transition>
               </div>
               <div>
                 <Transition name="collapse">
@@ -245,8 +253,10 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                   </div>
                 </Transition>
 
-                <div class="relative">
-                  <Transition name="map-swap">
+                <!-- Competitive / Wingman / Duel have different map counts, so
+                     the grids are different heights -- the swap eases between
+                     them instead of jumping a tile row under a crossfade. -->
+                <HeightSwap>
                     <div
                       :key="`${form.values.type}-${!!form.values.custom_map_pool}`"
                       class="space-y-6"
@@ -321,8 +331,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                         </div>
                       </template>
                     </div>
-                  </Transition>
-                </div>
+                </HeightSwap>
               </div>
             </div>
           </Card>
@@ -375,13 +384,13 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                 }}
               </span>
               <Button type="button" variant="ghost" size="icon" class="h-8 w-8">
-                <ChevronUp
-                  v-if="showAdvancedSettings"
-                  class="h-4 w-4 transition-transform duration-200"
-                />
+                <!-- One chevron that rotates: the v-if pair hard-swapped
+                     glyphs next to the drawer's glide, and the
+                     transition-transform on them never had anything to
+                     animate. -->
                 <ChevronDown
-                  v-else
-                  class="h-4 w-4 transition-transform duration-200"
+                  class="h-4 w-4 transition-transform duration-[240ms] motion-reduce:!duration-[1ms]"
+                  :class="showAdvancedSettings ? 'rotate-180' : ''"
                 />
                 <span class="sr-only">{{
                   $t("match.options.advanced.toggle")
@@ -835,32 +844,34 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                       </FormControl>
                     </div>
 
-                    <div v-if="value > 0" class="mt-4 pl-4 border-l-2">
-                      <NumberField
-                        class="gap-2"
-                        :min="1"
-                        :max="600"
-                        :model-value="value"
-                        @update:model-value="
-                          (timeout) => {
-                            form.setFieldValue('veto_pick_timeout', timeout);
-                          }
-                        "
-                      >
-                        <NumberFieldContent>
-                          <NumberFieldDecrement />
-                          <FormControl>
-                            <NumberFieldInput />
-                          </FormControl>
-                          <NumberFieldIncrement />
-                        </NumberFieldContent>
-                      </NumberField>
-                      <FormDescription class="mt-2">
-                        {{
-                          $t("match.options.advanced.veto_pick_timeout.range")
-                        }}
-                      </FormDescription>
-                    </div>
+                    <Fold :open="value > 0">
+                      <div class="mt-4 pl-4 border-l-2">
+                        <NumberField
+                          class="gap-2"
+                          :min="1"
+                          :max="600"
+                          :model-value="value"
+                          @update:model-value="
+                            (timeout) => {
+                              form.setFieldValue('veto_pick_timeout', timeout);
+                            }
+                          "
+                        >
+                          <NumberFieldContent>
+                            <NumberFieldDecrement />
+                            <FormControl>
+                              <NumberFieldInput />
+                            </FormControl>
+                            <NumberFieldIncrement />
+                          </NumberFieldContent>
+                        </NumberField>
+                        <FormDescription class="mt-2">
+                          {{
+                            $t("match.options.advanced.veto_pick_timeout.range")
+                          }}
+                        </FormDescription>
+                      </div>
+                    </Fold>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -1152,7 +1163,8 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                       </FormControl>
                     </div>
 
-                    <div v-if="value" class="mt-4 space-y-4 pl-4 border-l-2">
+                    <Fold :open="!!value">
+                    <div class="mt-4 space-y-4 pl-4 border-l-2">
                       <FormField
                         v-slot="{ componentField }"
                         name="auto_cancel_duration"
@@ -1207,6 +1219,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                         </FormItem>
                       </FormField>
                     </div>
+                    </Fold>
                   </FormItem>
                 </FormField>
 
@@ -2008,22 +2021,6 @@ export default {
 /* Whole-grid crossfade when the match type / pool / veto changes, so we fade
    two complete grids over each other instead of letting individual tiles go
    position:absolute and lose their grid-track sizing (which stretches them). */
-.map-swap-enter-active,
-.map-swap-leave-active {
-  transition: opacity 200ms ease;
-}
-
-.map-swap-enter-from,
-.map-swap-leave-to {
-  opacity: 0;
-}
-
-.map-swap-leave-active {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-}
-
 .map-badge-enter-active,
 .map-badge-leave-active {
   transition:
@@ -2039,11 +2036,15 @@ export default {
 
 /* Height-collapse for the custom-pool filter input so toggling the pool
    type doesn't snap the map grid up/down. */
-.collapse-enter-active,
-.collapse-leave-active {
+.collapse-enter-active {
   transition:
     grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 200ms ease;
+}
+.collapse-leave-active {
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 110ms ease-in;
 }
 
 .collapse-enter-from,
@@ -2054,6 +2055,13 @@ export default {
 
 .adv-collapse {
   overflow: hidden;
-  transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: height 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .collapse-enter-active,
+  .collapse-leave-active,
+  .adv-collapse {
+    transition-duration: 1ms;
+  }
 }
 </style>

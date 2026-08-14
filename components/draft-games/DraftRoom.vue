@@ -30,6 +30,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import mapLabel from "~/utilities/mapLabel";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
@@ -734,11 +735,22 @@ const start = () => {
 
     <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
       <div class="min-w-0 space-y-4">
-        <Transition name="phase">
-          <MatchInfo v-if="match" :match="match" hide-booting />
+        <!-- Match info appears when the match is made -- it folds into the
+             column with the room's collapse idiom instead of fading in at
+             full height and shoving the board down. -->
+        <Transition name="collapse">
+          <div v-if="match" class="grid grid-rows-[1fr]">
+            <div class="collapse-clip">
+              <MatchInfo :match="match" hide-booting />
+            </div>
+          </div>
         </Transition>
 
-        <Transition name="stage" mode="out-in">
+        <!-- Stages are wildly different heights (the veto board vs one small
+             starting card), so they trade through a measured height swap --
+             the column eases between them instead of collapsing hundreds of
+             pixels on the handoff frame. -->
+        <HeightSwap>
           <div :key="stage" class="space-y-4">
             <div
               v-if="inVeto"
@@ -1616,7 +1628,7 @@ const start = () => {
               </Transition>
             </div>
           </div>
-        </Transition>
+        </HeightSwap>
 
         <!-- The log only exists once a pick lands, which happens while people
              are watching the board -- it slides in under it. -->
@@ -1878,13 +1890,19 @@ const start = () => {
 .collapse-enter-active,
 .collapse-leave-active {
   transition:
-    grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.22s ease,
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease,
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* Most of these wrappers sit in space-y-4 columns, which put a margin-top on
+   them from outside; the collapse animates it to zero too, or the fold would
+   end with a 16px snap when the element unmounts. !important because
+   Tailwind's space-y selector is more specific than a scoped class. */
 .collapse-enter-from,
 .collapse-leave-to {
   grid-template-rows: 0fr;
+  margin-top: 0 !important;
   opacity: 0;
   transform: translateY(-4px);
 }
@@ -2195,44 +2213,6 @@ const start = () => {
   opacity: 1;
   transform: none;
 }
-.phase-enter-active {
-  transition:
-    opacity 0.45s ease,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.phase-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-}
-.phase-enter-from {
-  opacity: 0;
-  transform: translateY(-10px) scale(0.99);
-}
-.phase-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-.stage-enter-active {
-  transition:
-    opacity 0.4s ease,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.stage-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.stage-enter-from {
-  opacity: 0;
-  transform: translateY(12px) scale(0.985);
-}
-.stage-leave-to {
-  opacity: 0;
-  transform: translateY(-8px) scale(0.99);
-}
-
 .starting-map {
   animation: starting-map-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--i) * 90ms + 150ms);
@@ -2253,10 +2233,6 @@ const start = () => {
   .starting-map {
     animation: none;
   }
-  .stage-enter-active,
-  .stage-leave-active,
-  .phase-enter-active,
-  .phase-leave-active,
   .collapse-enter-active,
   .collapse-leave-active,
   .cta-enter-active,

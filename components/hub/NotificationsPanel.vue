@@ -22,89 +22,142 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
     </div>
     <div class="flex-1 overflow-y-auto p-3 flex flex-col">
       <NewsNotification />
-      <template
-        v-if="
-          scheduleTasks.length > 0 ||
-          team_invites.length > 0 ||
-          tournament_team_invites.length > 0 ||
-          draft_invites.length > 0 ||
-          notifications.length > 0
-        "
+      <!-- Every section folds its own height open and shut -- dismissing the
+           last of anything used to remove rows, invite blocks, separators and
+           the footer on one frame. Each block owns its transition, so a mass
+           dismiss is a set of folds closing rather than a cut; the mb-3
+           spacing rides inside the clipped rows. -->
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="scheduleTasks.length > 0" class="mb-3">
-          <LeagueScheduleStack :tasks="scheduleTasks" />
+        <div v-if="scheduleTasks.length > 0" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
+            <div class="mb-3">
+              <LeagueScheduleStack :tasks="scheduleTasks" />
+            </div>
+          </div>
         </div>
+      </Transition>
 
-        <div
-          v-if="draft_invites.length > 0"
-          class="mb-3 p-3 bg-card/60 border border-border rounded-md"
-        >
-          <DraftInviteNotification
-            :invite="invite"
-            :key="invite.draft_game_id"
-            v-for="invite of draft_invites"
-          />
-          <Separator
-            v-if="
-              team_invites.length > 0 ||
-              tournament_team_invites.length > 0 ||
-              notifications.length > 0
-            "
-          />
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+      >
+        <div v-if="draft_invites.length > 0" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
+            <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
+              <DraftInviteNotification
+                :invite="invite"
+                :key="invite.draft_game_id"
+                v-for="invite of draft_invites"
+              />
+              <Separator
+                v-if="
+                  team_invites.length > 0 ||
+                  tournament_team_invites.length > 0 ||
+                  notifications.length > 0
+                "
+              />
+            </div>
+          </div>
         </div>
+      </Transition>
 
-        <div
-          v-if="team_invites.length > 0"
-          class="mb-3 p-3 bg-card/60 border border-border rounded-md"
-        >
-          <TeamInviteNotification
-            type="team"
-            :invite="invite"
-            :key="invite.id"
-            v-for="invite of team_invites"
-          />
-          <Separator v-if="notifications.length > 0" />
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+      >
+        <div v-if="team_invites.length > 0" class="grid grid-rows-[1fr]">
+          <div class="min-h-0">
+            <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
+              <TeamInviteNotification
+                type="team"
+                :invite="invite"
+                :key="invite.id"
+                v-for="invite of team_invites"
+              />
+              <Separator v-if="notifications.length > 0" />
+            </div>
+          </div>
         </div>
+      </Transition>
 
+      <Transition
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+      >
         <div
           v-if="tournament_team_invites.length > 0"
-          class="mb-3 p-3 bg-card/60 border border-border rounded-md"
+          class="grid grid-rows-[1fr]"
         >
-          <TeamInviteNotification
-            type="tournament"
-            :invite="invite"
-            :key="invite.id"
-            v-for="invite of tournament_team_invites"
-          />
-          <Separator v-if="notifications.length > 0" />
+          <div class="min-h-0">
+            <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
+              <TeamInviteNotification
+                type="tournament"
+                :invite="invite"
+                :key="invite.id"
+                v-for="invite of tournament_team_invites"
+              />
+              <Separator v-if="notifications.length > 0" />
+            </div>
+          </div>
         </div>
+      </Transition>
 
-        <template
+      <TransitionGroup
+        tag="div"
+        class="flex flex-col"
+        enter-active-class="notif-fold"
+        enter-from-class="notif-fold-collapsed"
+        leave-active-class="notif-fold"
+        leave-to-class="notif-fold-collapsed"
+        move-class="notif-move"
+      >
+        <div
           v-for="item of stackedNotifications"
           :key="item.kind === 'single' ? item.notification.id : item.entityId"
+          class="grid grid-rows-[1fr]"
         >
-          <NotificationStack
-            v-if="item.kind === 'stack'"
-            variant="hub"
-            :notifications="item.notifications"
-            @dismiss="dismissNotification"
-            @delete="deleteNotification"
-            @action="handleAction"
-            @dismiss-all="dismissMany"
-            @delete-all="deleteMany"
-          />
-          <NotificationItem
-            v-else
-            variant="hub"
-            :notification="item.notification"
-            @dismiss="dismissNotification"
-            @delete="deleteNotification"
-            @action="handleAction"
-          />
-        </template>
-      </template>
-      <template v-else-if="!unreadNewsArticle">
-        <Empty>
+          <div class="min-h-0">
+            <NotificationStack
+              v-if="item.kind === 'stack'"
+              variant="hub"
+              :notifications="item.notifications"
+              @dismiss="dismissNotification"
+              @delete="deleteNotification"
+              @action="handleAction"
+              @dismiss-all="dismissMany"
+              @delete-all="deleteMany"
+            />
+            <NotificationItem
+              v-else
+              variant="hub"
+              :notification="item.notification"
+              @dismiss="dismissNotification"
+              @delete="deleteNotification"
+              @action="handleAction"
+            />
+          </div>
+        </div>
+      </TransitionGroup>
+
+      <!-- Fades up only after the folds above have closed. -->
+      <Transition
+        enter-active-class="transition-opacity [transition-duration:240ms] [transition-delay:200ms] motion-reduce:![transition-duration:1ms]"
+        leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
+      >
+        <Empty v-if="!hasAnyNotifications && !unreadNewsArticle">
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
               {{ $t("layouts.notifications.no_notifications_title") }}
@@ -114,34 +167,71 @@ import LeagueScheduleStack from "~/components/notification/LeagueScheduleStack.v
             </p>
           </div>
         </Empty>
-      </template>
+      </Transition>
     </div>
 
-    <div
-      class="flex flex-row gap-2 px-3 py-3 border-t border-border"
-      v-if="notifications.length > 0"
+    <Transition
+      enter-active-class="notif-fold"
+      enter-from-class="notif-fold-collapsed"
+      leave-active-class="notif-fold"
+      leave-to-class="notif-fold-collapsed"
     >
-      <Button
-        size="sm"
-        variant="outline"
-        @click="dismissAllNotifications"
-        class="flex-1 justify-center gap-1.5"
+      <div
+        v-if="notifications.length > 0"
+        class="flex-shrink-0 grid grid-rows-[1fr]"
       >
-        <CheckCheck class="h-4 w-4 shrink-0" />
-        {{ $t("layouts.notifications.dismiss_all") }}
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
-        @click="deleteAllReadNotifications"
-        class="flex-1 justify-center gap-1.5 text-destructive hover:bg-destructive hover:text-white"
-      >
-        <Trash2 class="h-4 w-4 shrink-0" />
-        {{ $t("layouts.notifications.delete_all_read") }}
-      </Button>
-    </div>
+        <div class="min-h-0">
+          <div class="flex flex-row gap-2 px-3 py-3 border-t border-border">
+            <Button
+              size="sm"
+              variant="outline"
+              @click="dismissAllNotifications"
+              class="flex-1 justify-center gap-1.5"
+            >
+              <CheckCheck class="h-4 w-4 shrink-0" />
+              {{ $t("layouts.notifications.dismiss_all") }}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              @click="deleteAllReadNotifications"
+              class="flex-1 justify-center gap-1.5 text-destructive hover:bg-destructive hover:text-white"
+            >
+              <Trash2 class="h-4 w-4 shrink-0" />
+              {{ $t("layouts.notifications.delete_all_read") }}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+/* Sections and rows fold their height in place; the clipped cell carries the
+   spacing so nothing is left to snap on unmount. */
+.notif-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.15s ease;
+}
+.notif-fold > * {
+  overflow: hidden;
+}
+.notif-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.notif-move {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .notif-fold,
+  .notif-move {
+    transition-duration: 1ms;
+  }
+}
+</style>
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -168,6 +258,15 @@ export default {
     },
     unreadNewsArticle() {
       return useNotificationStore().unreadNewsArticle;
+    },
+    hasAnyNotifications(): boolean {
+      return (
+        this.scheduleTasks.length > 0 ||
+        this.team_invites.length > 0 ||
+        this.tournament_team_invites.length > 0 ||
+        this.draft_invites.length > 0 ||
+        this.notifications.length > 0
+      );
     },
   },
   methods: {

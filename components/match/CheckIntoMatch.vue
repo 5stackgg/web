@@ -4,10 +4,10 @@
          or not anyone is looking. The clock is set into the button rather than
          parked above it, because the button is the thing being timed -- the
          action and the time left to take it are one control, not two notices.
-         `mode="out-in"` so the outgoing state clears before the next lands;
-         min-h holds the row so nothing below it moves during the handoff. -->
-    <div class="grid min-h-[2.625rem] items-center">
-      <Transition name="checkin-state" mode="out-in">
+         Each branch reserves at least the button's height, so the handoff
+         never dips below the row -- but the checked-in text can wrap taller at
+         narrow widths, and the swap tweens up to it instead of snapping. -->
+    <HeightSwap>
         <!-- Checking in is refused server-side without a live camera, so the
              button becomes the way to set one up rather than a dead end. -->
         <button
@@ -57,7 +57,11 @@
         <!-- No button left to set the clock into, but the deadline still
              applies to everyone else -- it keeps its slot, now framed in its
              own amber rather than cut out of the button's. -->
-        <div v-else key="checked-in" class="flex items-center gap-3">
+        <div
+          v-else
+          key="checked-in"
+          class="flex min-h-[2.625rem] items-center gap-3"
+        >
           <Badge variant="secondary" class="shrink-0 whitespace-nowrap">
             {{ $t("match.check_in.checked_in") }}
           </Badge>
@@ -75,8 +79,7 @@
             }}
           </span>
         </div>
-      </Transition>
-    </div>
+    </HeightSwap>
 
     <Dialog v-model:open="cameraSetupOpen">
       <DialogContent class="sm:max-w-md">
@@ -110,6 +113,7 @@ import { useCameraSetup } from "~/composables/useCameraSetup";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_check_in_settings_enum } from "~/generated/zeus";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Spinner } from "~/components/ui/spinner";
 import { useMinLoading } from "~/composables/useMinLoading";
 
@@ -227,42 +231,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Checking in is a commitment, and the swap should feel like one settling
-   rather than a flicker. Both halves share the same grid cell, so the outgoing
-   state sinks and clears before the confirmation rises into its place --
-   short, one direction, no cross-fade mush. */
-.checkin-state-enter-active {
-  transition:
-    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.checkin-state-leave-active {
-  transition:
-    opacity 140ms ease-in,
-    transform 140ms ease-in;
-}
-
-.checkin-state-enter-from {
-  opacity: 0;
-  transform: translateY(0.375rem);
-}
-
-.checkin-state-leave-to {
-  opacity: 0;
-  transform: translateY(-0.25rem);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .checkin-state-enter-from,
-  .checkin-state-leave-to {
-    transform: none;
-  }
-
-  .checkin-state-enter-active,
-  .checkin-state-leave-active {
-    transition: opacity 120ms linear;
-  }
-}
-</style>

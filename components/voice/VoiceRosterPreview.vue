@@ -47,10 +47,10 @@ function asPlayer(participant: (typeof inCall.value)[number]) {
 
 <template>
   <!-- Faces first, at a glance. -->
-  <div
-    v-if="variant === 'stack' && inCall.length"
-    class="flex items-center gap-2.5"
-  >
+  <!-- Mounted even when empty (invisible at zero height): gating the group on
+       the roster emptying unmounted it in the same tick as the last member's
+       departure, so the final avatar never played its leave. -->
+  <div v-if="variant === 'stack'" class="flex items-center gap-2.5">
     <div class="flex shrink-0 items-center">
       <TransitionGroup
         enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
@@ -95,59 +95,71 @@ function asPlayer(participant: (typeof inCall.value)[number]) {
             class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[hsl(var(--card))] p-[1px] text-[hsl(var(--tac-amber))]"
           />
         </span>
+        <!-- Inside the group, so a fifth member's arrival slides the chip in
+             on the same clock as their avatar instead of popping it. -->
+        <span
+          v-if="overflow > 0"
+          key="overflow"
+          class="-ml-2 flex h-7 w-7 items-center justify-center rounded-full bg-zinc-800 font-mono text-[0.55rem] font-bold text-zinc-400 ring-2 ring-[hsl(var(--card))]"
+        >
+          +{{ overflow }}
+        </span>
       </TransitionGroup>
-
-      <span
-        v-if="overflow > 0"
-        class="-ml-2 flex h-7 w-7 items-center justify-center rounded-full bg-zinc-800 font-mono text-[0.55rem] font-bold text-zinc-400 ring-2 ring-[hsl(var(--card))]"
-      >
-        +{{ overflow }}
-      </span>
     </div>
 
-    <span class="min-w-0 truncate text-[11px] text-muted-foreground">
+    <span
+      v-if="inCall.length"
+      class="min-w-0 truncate text-[11px] text-muted-foreground"
+    >
       {{ $t("layouts.voice_panel.connected", { count: inCall.length }) }}
     </span>
   </div>
 
+  <!-- Mounted even when empty, for the same reason as the stack. A leaving row
+       collapses its own height in place, so the rows below slide up with it
+       instead of holding position through the fade and then snapping. -->
   <TransitionGroup
-    v-else-if="roster.length"
+    v-else
     tag="div"
     class="space-y-0.5"
     enter-active-class="transition-[opacity,transform] [transition-duration:280ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-    leave-active-class="transition-[opacity,transform] [transition-duration:180ms] ease-in motion-reduce:![transition-duration:1ms]"
+    leave-active-class="roster-row-leave"
     move-class="transition-transform [transition-duration:280ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
     enter-from-class="opacity-0 -translate-y-1"
-    leave-to-class="opacity-0 scale-[0.97]"
+    leave-to-class="roster-row-leave-to"
   >
     <div
       v-for="member in roster"
       :key="member.steamId"
-      class="flex items-center gap-2"
+      class="grid grid-rows-[1fr]"
     >
-      <PlayerDisplay
-        class="min-w-0 flex-1"
-        size="xs"
-        :player="asPlayer(member)"
-        :show-flag="false"
-        :show-role="false"
-        :show-online="false"
-        :show-elo="false"
-        :avatar-ring="member.speaking ? '0 0 0 2px rgb(52 211 153)' : null"
-      />
+      <div class="min-h-0">
+        <div class="flex items-center gap-2">
+          <PlayerDisplay
+            class="min-w-0 flex-1"
+            size="xs"
+            :player="asPlayer(member)"
+            :show-flag="false"
+            :show-role="false"
+            :show-online="false"
+            :show-elo="false"
+            :avatar-ring="member.speaking ? '0 0 0 2px rgb(52 211 153)' : null"
+          />
 
-      <!-- The two things that decide whether joining is worth it. -->
-      <span class="flex shrink-0 items-center gap-1">
-        <Video
-          v-if="member.video"
-          class="h-3 w-3 text-[hsl(var(--tac-amber))]"
-        />
-        <component
-          :is="member.speaking ? Mic : MicOff"
-          class="h-3 w-3"
-          :class="member.speaking ? 'text-emerald-400' : 'text-zinc-600'"
-        />
-      </span>
+          <!-- The two things that decide whether joining is worth it. -->
+          <span class="flex shrink-0 items-center gap-1">
+            <Video
+              v-if="member.video"
+              class="h-3 w-3 text-[hsl(var(--tac-amber))]"
+            />
+            <component
+              :is="member.speaking ? Mic : MicOff"
+              class="h-3 w-3"
+              :class="member.speaking ? 'text-emerald-400' : 'text-zinc-600'"
+            />
+          </span>
+        </div>
+      </div>
     </div>
 
     <p
@@ -159,3 +171,26 @@ function asPlayer(participant: (typeof inCall.value)[number]) {
     </p>
   </TransitionGroup>
 </template>
+
+<style scoped>
+/* A leaving row shrinks its own height to nothing, in place -- same idiom as
+   CallGrid's voice rows. Clipped only while leaving so the speaking ring is
+   never cut off at rest. */
+.roster-row-leave {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease-in;
+}
+.roster-row-leave > * {
+  overflow: hidden;
+}
+.roster-row-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .roster-row-leave {
+    transition-duration: 1ms;
+  }
+}
+</style>

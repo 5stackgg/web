@@ -82,6 +82,10 @@ provide("commander", commander);
       :class="{ 'is-active': !!activeMap }"
       aria-live="polite"
     >
+      <!-- Bare clip cell: the bordered box lives inside it, because border
+           width isn't crushed by the 0fr track and floored the "collapsed"
+           banner at ~2px. -->
+      <div>
       <div
         class="relative flex items-center justify-between gap-3 px-3 py-2 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)]"
       >
@@ -124,6 +128,7 @@ provide("commander", commander);
           <Cross2Icon class="w-3 h-3" />
           {{ $t("common.close") }}
         </Button>
+      </div>
       </div>
     </div>
     <!-- Mobile: map filter selector -->

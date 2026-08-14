@@ -33,6 +33,22 @@ onMounted(async () => {
           map_pool_id: true,
           team_1_id: true,
           team_2_id: true,
+          inner_squad: true,
+          team_1: {
+            id: true,
+            name: true,
+          },
+          team_2: {
+            id: true,
+            name: true,
+          },
+          players: [
+            {},
+            {
+              steam_id: true,
+              lineup: true,
+            },
+          ],
           captain_selection: true,
           draft_order: true,
           require_approval: true,

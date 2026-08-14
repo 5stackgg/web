@@ -155,7 +155,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
       <div
         v-if="visible"
         ref="barRef"
-        class="pointer-events-none flex justify-center"
+        class="pointer-events-none flex justify-center transition-[padding-bottom] duration-200 ease-linear"
         :class="
           contained
             ? 'sticky inset-x-0 bottom-0 z-20 px-1 pb-1 pt-2'
@@ -171,7 +171,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
         "
       >
         <div
-          class="save-bar pointer-events-auto flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 backdrop-blur-xl sm:gap-4 sm:px-4"
+          class="save-bar pointer-events-auto flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 backdrop-blur-xl transition-[border-color,box-shadow] duration-300 sm:gap-4 sm:px-4"
           :class="[
             contained ? '' : 'max-w-xl',
             hasErrors
@@ -183,12 +183,19 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
           <span
             class="relative ml-1 flex h-2.5 w-2.5 shrink-0 items-center justify-center"
           >
+            <Transition
+              enter-active-class="transition-opacity duration-300"
+              leave-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              leave-to-class="!opacity-0"
+            >
+              <span
+                v-if="!hasErrors"
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-60"
+              />
+            </Transition>
             <span
-              v-if="!hasErrors"
-              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-60"
-            />
-            <span
-              class="relative inline-flex h-2.5 w-2.5 rounded-full"
+              class="relative inline-flex h-2.5 w-2.5 rounded-full transition-colors duration-300"
               :class="
                 hasErrors
                   ? 'bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.8)]'

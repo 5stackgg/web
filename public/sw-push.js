@@ -36,7 +36,13 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const url = event.notification.data?.url || "/";
+  // Always an in-app path. `//evil.test/x` starts with a slash and is a fully
+  // qualified URL to somewhere else, which openWindow would happily follow.
+  const destination = event.notification.data?.url || "/";
+  const url =
+    destination.startsWith("/") && !destination.startsWith("//")
+      ? destination
+      : "/";
 
   event.waitUntil(
     (async () => {

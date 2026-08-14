@@ -2,6 +2,7 @@
 import { ChevronDown, Merge, Play } from "lucide-vue-next";
 import MatchLobbySelector from "./MatchLobbySelector.vue";
 import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
+import { Spinner } from "~/components/ui/spinner";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const isElevatedUser = computed(() =>
@@ -49,41 +50,72 @@ const isElevatedUser = computed(() =>
     </template>
   </div>
 
-  <Transition name="lobby-nav" mode="out-in">
+  <!-- Deliberately a plain fade, not a measured-width swap: this exact moment
+       is the app's heaviest -- creating a lobby mounts the squad panel, the
+       voice card and the chat dock all at once, and a width tween runs on the
+       main thread, so it froze mid-flight until the mount storm passed and
+       then lurched to the end. Opacity and transform ride the compositor and
+       keep playing through the jank; the width change lands under the
+       leaver's fade instead of animating. -->
+  <Transition
+    mode="out-in"
+    enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+    leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+    enter-from-class="opacity-0 translate-y-1"
+    leave-to-class="opacity-0"
+  >
     <div v-if="currentLobby" key="lobby" class="flex items-center">
+      <!-- The play button's 40px column slides 0fr -> 1fr; its trailing gap
+           rides inside the clipped cell. Deliberately not a nested fade-swap:
+           on some paths it replayed its entrance ~300ms after the outer swap
+           had already settled, and on others it skipped entirely. -->
       <Transition
-        enter-active-class="transition-all duration-300 ease-out"
-        leave-active-class="transition-all duration-200 ease-in"
-        enter-from-class="opacity-0 scale-50 -translate-x-2"
-        enter-to-class="opacity-100 scale-100 translate-x-0"
-        leave-from-class="opacity-100 scale-100 translate-x-0"
-        leave-to-class="opacity-0 scale-50 -translate-x-2"
+        enter-active-class="play-reveal"
+        enter-from-class="play-reveal-collapsed"
+        leave-active-class="play-reveal"
+        leave-to-class="play-reveal-collapsed"
       >
-        <NuxtLink
-          v-if="showPlayButton"
-          to="/play"
-          :title="$t('layouts.lobby_panel.find_match')"
-          class="group/play relative isolate mr-2 inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] no-underline [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
-        >
-          <Play
-            class="relative z-[1] h-4 w-4 fill-current transition-transform duration-300 group-hover/play:scale-110"
-          />
-          <span
-            class="pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full"
-            aria-hidden="true"
-          ></span>
-        </NuxtLink>
+        <div v-if="showPlayButton" class="grid min-w-0 grid-cols-[1fr]">
+          <div class="play-reveal-cell min-w-0">
+            <div class="pr-2">
+              <NuxtLink
+                to="/play"
+                :title="$t('layouts.lobby_panel.find_match')"
+                class="group/play relative isolate inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] no-underline [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+              >
+                <Play
+                  class="relative z-[1] h-4 w-4 fill-current transition-transform duration-300 group-hover/play:scale-110"
+                />
+                <span
+                  class="pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full"
+                  aria-hidden="true"
+                ></span>
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
       </Transition>
 
       <MatchLobby :lobby="currentLobby" />
     </div>
 
+    <!-- This button's whole chrome (gradient frame, fill) is slot content, so
+         Button's busy treatment -- which dissolves the slot under a floating
+         spinner and holds it for its 2s minimum -- reduced it to a lone
+         spinner on empty header for the whole create round-trip. Loading is
+         shown in place instead (icon becomes the spinner, chrome stays), and
+         the click handler deliberately returns nothing so Button's async
+         auto-pending never engages. -->
     <Button
       v-else
       key="create"
       variant="ghost"
-      @click="createLobby"
-      :loading="creatingLobby"
+      @click="
+        () => {
+          void createLobby();
+        }
+      "
+      :disabled="creatingLobby"
       size="default"
       class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
     >
@@ -100,7 +132,8 @@ const isElevatedUser = computed(() =>
       ></span>
 
       <div class="relative flex items-center gap-2 z-10">
-        <Merge class="h-5 w-5 drop-shadow-sm" />
+        <Spinner v-if="creatingLobby" class="h-5 w-5" />
+        <Merge v-else class="h-5 w-5 drop-shadow-sm" />
         <span class="font-semibold">{{
           $t("layouts.lobby_panel.create_lobby_button")
         }}</span>
@@ -299,23 +332,26 @@ export default {
 </script>
 
 <style scoped>
-/* Header lobby nav: create-button ↔ lobby-bar swap */
-.lobby-nav-enter-active {
+/* The play button's column collapses to a true zero (no padding or margin on
+   the cell), so nothing snaps when it unmounts. */
+.play-reveal {
   transition:
-    opacity 0.28s ease,
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    grid-template-columns 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
 }
-.lobby-nav-leave-active {
-  transition:
-    opacity 0.16s ease,
-    transform 0.16s ease;
+/* Clip only while the column is sliding (same deal as HeightSwap): at rest the
+   cell hugs the button exactly, so a permanent overflow-hidden shaved the
+   ring and glow flat on every side that had no padding. */
+.play-reveal .play-reveal-cell {
+  overflow: hidden;
 }
-.lobby-nav-enter-from {
+.play-reveal-collapsed {
+  grid-template-columns: 0fr;
   opacity: 0;
-  transform: translateY(6px) scale(0.96);
 }
-.lobby-nav-leave-to {
-  opacity: 0;
-  transform: translateY(-4px) scale(0.96);
+@media (prefers-reduced-motion: reduce) {
+  .play-reveal {
+    transition-duration: 1ms;
+  }
 }
 </style>

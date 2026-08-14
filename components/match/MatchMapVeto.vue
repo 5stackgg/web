@@ -2,6 +2,7 @@
 import { Button } from "~/components/ui/button";
 import { Check } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
@@ -10,13 +11,21 @@ import VetoTurnBanner from "~/components/match/VetoTurnBanner.vue";
 </script>
 
 <template>
-  <div
-    v-if="
-      (!match.options.region_veto || match.region) &&
-      match.status === 'Veto' &&
-      match.match_maps.length < bestOf
-    "
+  <!-- The veto finishing used to drop this whole block -- banner, grid,
+       separator, picks -- out of the page in one frame. It folds instead. -->
+  <Transition
+    leave-active-class="veto-collapse"
+    leave-to-class="veto-collapse-to"
   >
+    <div
+      v-if="
+        (!match.options.region_veto || match.region) &&
+        match.status === 'Veto' &&
+        match.match_maps.length < bestOf
+      "
+      class="grid grid-rows-[1fr]"
+    >
+      <div class="min-h-0">
     <div class="mb-4">
       <VetoTurnBanner
         :lineup-name="pickingLineupName"
@@ -29,8 +38,15 @@ import VetoTurnBanner from "~/components/match/VetoTurnBanner.vue";
     </div>
 
     <form @submit.prevent="vetoPick">
-      <template v-if="isPicking && pickType === e_veto_pick_types_enum.Side">
-        <div class="flex items-center justify-center gap-10">
+      <!-- The side chooser and the map grid are very different heights, and a
+           BO3 alternates between them every other turn -- so they trade
+           through a measured height swap instead of restacking the page. -->
+      <HeightSwap>
+        <div
+          v-if="isPicking && pickType === e_veto_pick_types_enum.Side"
+          key="side"
+          class="flex items-center justify-center gap-10"
+        >
           <div
             v-for="(sideOption, idx) in sideOptions"
             :key="sideOption.value"
@@ -101,32 +117,36 @@ import VetoTurnBanner from "~/components/match/VetoTurnBanner.vue";
 
           <MapDisplay class="h-[180px] rounded-lg order-1" :map="previousMap" />
         </div>
-      </template>
 
-      <MapSelector
-        v-else
-        :model-value="form.values.map_id"
-        :map-pool="mapPool"
-        :picks="picks"
-        :loading="submitting"
-        :readonly="!isPicking"
-        :confirm-label="$t('match.map_veto.confirm', { type: pickType })"
-        @update:modelValue="
-          (mapId) => {
-            if (pickType !== e_veto_pick_types_enum.Side && !submitting) {
-              form.setFieldValue('map_id', mapId);
-              vetoPick();
-            }
-          }
-        "
-      />
+        <div v-else key="maps">
+          <MapSelector
+            :model-value="form.values.map_id"
+            :map-pool="mapPool"
+            :picks="picks"
+            :loading="submitting"
+            :readonly="!isPicking"
+            :entrance="!picks?.length"
+            :confirm-label="$t('match.map_veto.confirm', { type: pickType })"
+            @update:modelValue="
+              (mapId) => {
+                if (pickType !== e_veto_pick_types_enum.Side && !submitting) {
+                  form.setFieldValue('map_id', mapId);
+                  vetoPick();
+                }
+              }
+            "
+          />
+        </div>
+      </HeightSwap>
     </form>
 
     <Separator class="my-6" />
 
     <!-- Always render so the reserved pick slots show before the first pick. -->
     <MatchPicksDisplay :match="match" :picks="picks" />
-  </div>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <script lang="ts">
@@ -422,3 +442,26 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* The whole block folds shut when the veto completes -- height, then gone.
+   Everything inside (the banner's mb-4, the separator's my-6) rides inside
+   the clipped row, so nothing is left to snap when the element unmounts. */
+.veto-collapse {
+  transition:
+    grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease-in;
+}
+.veto-collapse > * {
+  overflow: hidden;
+}
+.veto-collapse-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .veto-collapse {
+    transition-duration: 1ms;
+  }
+}
+</style>

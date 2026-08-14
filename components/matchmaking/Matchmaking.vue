@@ -3,6 +3,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { AlertTriangle } from "lucide-vue-next";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { Button } from "~/components/ui/button";
+import { Spinner } from "~/components/ui/spinner";
 import TimeAgo from "../TimeAgo.vue";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
@@ -97,18 +98,64 @@ function releaseSwapHeight(el: Element): void {
         </AlertDescription>
       </Alert>
     </template>
-    <template v-else-if="!confirmationDetails">
+    <template v-else>
       <div class="mm-shell">
         <Transition
           name="mm-swap"
           mode="out-in"
           @before-leave="lockSwapHeight"
+          @leave-cancelled="releaseSwapHeight"
           @enter="swapHeightTo"
           @after-enter="releaseSwapHeight"
           @enter-cancelled="releaseSwapHeight"
         >
+          <!-- Match found and its connect row live inside the same measured
+               shell as the queue panel. They used to sit outside it: the
+               confirmation arriving unmounted the whole shell in one frame,
+               and until the match subscription answered there was nothing
+               rendered at all -- ~500px of queue panel, then a blank, then
+               the connect row popping in. -->
+          <div v-if="confirmationDetails && match" key="match">
+            <div class="flex justify-between items-center">
+              <div>
+                <Badge variant="secondary" class="text-lg">
+                  {{ match.status }}
+                </Badge>
+
+                <QuickMatchConnect :match="match" />
+              </div>
+
+              <Button>
+                <NuxtLink
+                  :to="{ name: 'matches-id', params: { id: match.id } }"
+                  class="text-xl font-bold bg-foreground"
+                >
+                  {{ $t("matchmaking.go_to_match") }}
+                </NuxtLink>
+              </Button>
+            </div>
+          </div>
+
           <div
-            v-if="isInQueue && matchMakingQueueDetails"
+            v-else-if="confirmationDetails"
+            key="found"
+            class="relative overflow-hidden rounded-lg border border-border px-6 py-10 sm:px-10 sm:py-12 [backdrop-filter:blur(6px)] [background:linear-gradient(180deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.3)_100%)]"
+          >
+            <div class="relative z-10 flex flex-col items-center gap-3 text-center">
+              <Spinner />
+              <div
+                class="inline-flex items-center gap-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
+              >
+                <span
+                  class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+                ></span>
+                {{ $t("matchmaking.match_found") }}
+              </div>
+            </div>
+          </div>
+
+          <div
+            v-else-if="isInQueue && matchMakingQueueDetails"
             key="queue"
             class="relative overflow-hidden rounded-lg border border-border px-6 py-10 sm:px-10 sm:py-12 [backdrop-filter:blur(6px)] [background:linear-gradient(180deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.3)_100%)]"
           >
@@ -347,26 +394,6 @@ function releaseSwapHeight(el: Element): void {
             </div>
           </div>
         </Transition>
-      </div>
-    </template>
-    <template v-else-if="match">
-      <div class="flex justify-between items-center">
-        <div>
-          <Badge variant="secondary" class="text-lg">
-            {{ match.status }}
-          </Badge>
-
-          <QuickMatchConnect :match="match" />
-        </div>
-
-        <Button>
-          <NuxtLink
-            :to="{ name: 'matches-id', params: { id: match.id } }"
-            class="text-xl font-bold bg-foreground"
-          >
-            {{ $t("matchmaking.go_to_match") }}
-          </NuxtLink>
-        </Button>
       </div>
     </template>
   </div>

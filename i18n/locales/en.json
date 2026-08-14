@@ -3781,8 +3781,6 @@
         "party_detail": "{count} in the lobby",
         "team": "Your team",
         "team_vs": "vs {opponent}",
-        "nothing": "You're not in a party or a match yet. Start one and your squad gets a voice channel with it.",
-        "start_party": "Start a party",
         "switch": "Switch to",
         "elsewhere": "Joined",
         "elsewhere_detail": "Already in this call in another window — join here to move it"

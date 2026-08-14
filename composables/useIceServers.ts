@@ -63,14 +63,17 @@ export function useIceServers() {
         const data = (await response.json()) as IceServers;
 
         cached.value = data.iceServers?.length ? data.iceServers : FALLBACK;
+
         // ttl 0 means no relay is configured, so there is nothing to expire --
         // but still re-ask occasionally in case one gets turned on.
-        expiresAt =
-          Date.now() +
-          Math.max(
-            REFRESH_MARGIN_MS,
-            (data.ttl ? data.ttl * 1000 : 30 * 60_000) - REFRESH_MARGIN_MS,
-          );
+        const lifetime = data.ttl ? data.ttl * 1000 : 30 * 60_000;
+        // Capped at half the lifetime rather than applied flat: a margin wider
+        // than the credentials themselves would cache them past their own
+        // expiry, and coturn rejects every relay candidate that follows with
+        // nothing failing loudly enough to trace.
+        const margin = Math.min(REFRESH_MARGIN_MS, lifetime / 2);
+
+        expiresAt = Date.now() + lifetime - margin;
 
         return cached.value;
       } catch {

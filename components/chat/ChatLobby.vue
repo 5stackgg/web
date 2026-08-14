@@ -2,6 +2,8 @@
 import ChatHeader from "~/components/chat/ChatHeader.vue";
 import ChatMessages from "~/components/chat/ChatMessages.vue";
 import ChatInput from "~/components/chat/ChatInput.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import ChatMatchHeader from "~/components/chat/ChatMatchHeader.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 </script>
@@ -289,75 +291,107 @@ import Empty from "~/components/ui/empty/Empty.vue";
       </ul>
     </div>
     <div class="relative flex flex-1 min-h-0 flex-col gap-2">
-      <ChatMessages
-        v-if="messages.length"
-        ref="chatMessagesRef"
-        :messages="messages"
-        :group-key="isMerged ? viewFilter : ''"
-        variant="embedded"
-        class="flex-1 min-h-0 overflow-y-auto"
-        :last-read-count="tracksReadPosition ? lastReadMessageCount : 0"
-        @bottom-state-change="handleBottomStateChange"
-      />
-      <Empty v-else class="flex-1 text-muted-foreground">
-        <div class="space-y-1">
-          <p class="text-sm font-medium">
-            {{ $t("chat.no_messages_yet", "No messages yet") }}
-          </p>
-          <p class="text-xs text-muted-foreground/80">
-            {{
-              $t(
-                "chat.start_the_conversation",
-                "Say something to start the conversation.",
-              )
-            }}
-          </p>
+      <!-- First message in an empty room dissolves the empty copy under the
+           arriving list instead of trading them on a frame. Both branches
+           fill the same column slot, so a plain crossfade is right. -->
+      <FadeSwap class="flex-1 min-h-0">
+        <ChatMessages
+          v-if="messages.length"
+          key="messages"
+          ref="chatMessagesRef"
+          :messages="messages"
+          :group-key="isMerged ? viewFilter : ''"
+          variant="embedded"
+          class="h-full overflow-y-auto"
+          :last-read-count="tracksReadPosition ? lastReadMessageCount : 0"
+          @bottom-state-change="handleBottomStateChange"
+        />
+        <Empty v-else key="empty" class="h-full text-muted-foreground">
+          <div class="space-y-1">
+            <p class="text-sm font-medium">
+              {{ $t("chat.no_messages_yet", "No messages yet") }}
+            </p>
+            <p class="text-xs text-muted-foreground/80">
+              {{
+                $t(
+                  "chat.start_the_conversation",
+                  "Say something to start the conversation.",
+                )
+              }}
+            </p>
+          </div>
+        </Empty>
+      </FadeSwap>
+      <!-- Floating pills fade rather than blink; they are absolute, so this
+           costs no layout. -->
+      <Transition
+        enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+        leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+        enter-from-class="opacity-0 -translate-y-1"
+        leave-to-class="opacity-0"
+      >
+        <button
+          v-if="
+            tracksReadPosition &&
+            lastReadMessageCount > 0 &&
+            lastReadMessageCount < messages.length &&
+            isAtBottom
+          "
+          type="button"
+          class="absolute top-1 left-1/2 z-10 rounded-full bg-zinc-900/95 border border-zinc-700 text-zinc-100 text-[11px] px-4 py-1 shadow-md hover:bg-zinc-800"
+          style="translate: -50% 0"
+          @click.stop="handleJumpToNewLine"
+        >
+          ↑ {{ $t("chat.jump_to_new", "Jump to new") }}
+        </button>
+      </Transition>
+      <Transition
+        enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+        leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+        enter-from-class="opacity-0 translate-y-1"
+        leave-to-class="opacity-0"
+      >
+        <button
+          v-if="
+            tracksReadPosition &&
+            lastReadMessageCount < messages.length &&
+            !isAtBottom
+          "
+          type="button"
+          class="absolute bottom-20 left-1/2 z-10 rounded-full bg-primary text-primary-foreground text-[11px] px-3 py-1 shadow-md hover:bg-primary/90"
+          style="translate: -50% 0"
+          @click.stop="handleJumpToBottom"
+        >
+          {{ $t("chat.new_messages", "New messages") }} ↓
+        </button>
+      </Transition>
+      <!-- Composer <-> readonly hint are different heights; measured swap. -->
+      <HeightSwap>
+        <ChatInput
+          v-if="canSend"
+          key="composer"
+          ref="chatInputRef"
+          variant="embedded"
+          :channels="chatChannels"
+          :destination="sendTo"
+          @update:destination="sendTo = $event as any"
+          @send-message="handleSendMessage"
+        >
+          <!-- Controls that belong to the destination rather than to chat -- the
+               team voice channel is the same room as the team pill, so it rides
+               the toggle row instead of standing as a second panel. -->
+          <template #actions>
+            <slot name="compose-actions"></slot>
+          </template>
+        </ChatInput>
+        <div
+          v-else
+          key="hint"
+          class="px-3 py-2 text-center text-xs text-muted-foreground"
+        >
+          {{ readonlyHint || $t("chat.readonly") }}
         </div>
-      </Empty>
-      <button
-        v-if="
-          tracksReadPosition &&
-          lastReadMessageCount > 0 &&
-          lastReadMessageCount < messages.length &&
-          isAtBottom
-        "
-        type="button"
-        class="absolute top-1 left-1/2 -translate-x-1/2 z-10 rounded-full bg-zinc-900/95 border border-zinc-700 text-zinc-100 text-[11px] px-4 py-1 shadow-md hover:bg-zinc-800"
-        @click.stop="handleJumpToNewLine"
-      >
-        ↑ {{ $t("chat.jump_to_new", "Jump to new") }}
-      </button>
-      <button
-        v-if="
-          tracksReadPosition &&
-          lastReadMessageCount < messages.length &&
-          !isAtBottom
-        "
-        type="button"
-        class="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 rounded-full bg-primary text-primary-foreground text-[11px] px-3 py-1 shadow-md hover:bg-primary/90"
-        @click.stop="handleJumpToBottom"
-      >
-        {{ $t("chat.new_messages", "New messages") }} ↓
-      </button>
-      <ChatInput
-        v-if="canSend"
-        ref="chatInputRef"
-        variant="embedded"
-        :channels="chatChannels"
-        :destination="sendTo"
-        @update:destination="sendTo = $event as any"
-        @send-message="handleSendMessage"
-      >
-        <!-- Controls that belong to the destination rather than to chat -- the
-             team voice channel is the same room as the team pill, so it rides
-             the toggle row instead of standing as a second panel. -->
-        <template #actions>
-          <slot name="compose-actions"></slot>
-        </template>
-      </ChatInput>
-      <div v-else class="px-3 py-2 text-center text-xs text-muted-foreground">
-        {{ readonlyHint || $t("chat.readonly") }}
-      </div>
+      </HeightSwap>
     </div>
   </div>
 </template>

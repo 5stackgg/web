@@ -9,6 +9,9 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { setupOptionsVariables } from "~/utilities/setupOptions";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import HeightMorph from "~/components/ui/transitions/HeightMorph.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import DateTimePicker from "~/components/common/DateTimePicker.vue";
@@ -16,6 +19,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import DraftTeamPanel from "~/components/draft-games/DraftTeamPanel.vue";
 import { Button } from "~/components/ui/button";
+import { Spinner } from "~/components/ui/spinner";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -81,44 +85,6 @@ const sourceOptions = computed(() => [
 const excludedSteamIds = computed(() =>
   lineups.value.flatMap((s) => s.members.map((m) => m.steam_id)),
 );
-
-// Smooth team↔individual swap: animate the real height (so the Back/Schedule
-// buttons below glide instead of jumping) plus a fade. Driven by JS hooks on a
-// keyed wrapper with mode="out-in".
-const SWAP_MS = 240;
-const onSwapBeforeEnter = (el: HTMLElement) => {
-  el.style.height = "0px";
-  el.style.opacity = "0";
-};
-const onSwapEnter = (el: HTMLElement, done: () => void) => {
-  const target = el.scrollHeight;
-  void el.offsetHeight;
-  el.style.transition = `height ${SWAP_MS}ms ease, opacity ${SWAP_MS}ms ease`;
-  el.style.height = `${target}px`;
-  el.style.opacity = "1";
-  const end = (e: TransitionEvent) => {
-    if (e.propertyName !== "height") return;
-    el.style.transition = "";
-    el.style.height = "";
-    el.removeEventListener("transitionend", end);
-    done();
-  };
-  el.addEventListener("transitionend", end);
-};
-const onSwapLeave = (el: HTMLElement, done: () => void) => {
-  el.style.height = `${el.scrollHeight}px`;
-  el.style.opacity = "1";
-  void el.offsetHeight;
-  el.style.transition = `height ${SWAP_MS}ms ease, opacity ${SWAP_MS}ms ease`;
-  el.style.height = "0px";
-  el.style.opacity = "0";
-  const end = (e: TransitionEvent) => {
-    if (e.propertyName !== "height") return;
-    el.removeEventListener("transitionend", end);
-    done();
-  };
-  el.addEventListener("transitionend", end);
-};
 
 const addPlayer = (sideIndex: number, player: { steam_id: string }) => {
   const side = lineups.value[sideIndex];
@@ -248,7 +214,11 @@ const submit = form.handleSubmit(async (values: any) => {
         </template>
       </div>
 
-      <div class="relative mt-6">
+      <!-- The two steps are wildly different heights; the shell eases between
+           them while the leaver fades out of flow, so the page and footer
+           glide instead of losing thousands of pixels on the Next frame. The
+           panels stay v-show-mounted to preserve their state. -->
+      <HeightMorph :state="step" class="mt-6">
       <!-- Step 1: kickoff + match options (the draft's settings tab) -->
       <Transition name="step">
         <div v-show="step === 1" class="space-y-5">
@@ -263,18 +233,27 @@ const submit = form.handleSubmit(async (values: any) => {
                 {{ $t("pages.matches.schedule.kickoff_asap") }}
               </span>
             </div>
-            <p
-              v-if="scheduledAtLocal && !scheduledValid"
-              class="mt-1.5 text-[0.72rem] text-destructive"
-            >
-              {{ $t("pages.matches.schedule.kickoff_future") }}
-            </p>
+            <Fold :open="!!scheduledAtLocal && !scheduledValid">
+              <p class="mt-1.5 text-[0.72rem] text-destructive">
+                {{ $t("pages.matches.schedule.kickoff_future") }}
+              </p>
+            </Fold>
           </section>
 
           <MatchOptions :form="form" />
 
           <div class="flex justify-end">
-            <Button :disabled="!scheduledValid" @click="goToTeams">
+            <!-- The handler deliberately returns nothing: validation is local
+                 and instant, and Button's async auto-pending would otherwise
+                 lock a spinner over Next for its 2s minimum. -->
+            <Button
+              :disabled="!scheduledValid"
+              @click="
+                () => {
+                  void goToTeams();
+                }
+              "
+            >
               {{ $t("common.next") }}
               <ArrowRight class="ml-1.5 h-4 w-4" />
             </Button>
@@ -302,14 +281,11 @@ const submit = form.handleSubmit(async (values: any) => {
                 block
               />
 
-              <Transition
-                :css="false"
-                mode="out-in"
-                @before-enter="onSwapBeforeEnter"
-                @enter="onSwapEnter"
-                @leave="onSwapLeave"
-              >
-                <div :key="side.mode" class="overflow-hidden">
+              <!-- Keyed remount, so the shared measured swap fits: the old
+                   hand-rolled version collapsed to zero and regrew (double
+                   travel) and clipped focus rings at rest. -->
+              <HeightSwap>
+                <div :key="side.mode">
                   <TeamSearch
                     v-if="side.mode === 'team'"
                     :label="$t('pages.matches.schedule.select_team')"
@@ -342,7 +318,7 @@ const submit = form.handleSubmit(async (values: any) => {
                     @remove="(steamId) => removePlayer(index, steamId)"
                   />
                 </div>
-              </Transition>
+              </HeightSwap>
             </div>
           </div>
 
@@ -357,29 +333,33 @@ const submit = form.handleSubmit(async (values: any) => {
               :disabled="!teamsReady || submitting"
               @click="submit"
             >
-              <CalendarClock class="mr-1.5 h-4 w-4" />
+              <Spinner v-if="submitting" class="mr-1.5 h-4 w-4" />
+              <CalendarClock v-else class="mr-1.5 h-4 w-4" />
               {{ $t("pages.matches.schedule.submit") }}
             </button>
           </div>
         </div>
       </Transition>
-      </div>
+      </HeightMorph>
     </div>
   </PageTransition>
 </template>
 
 <style scoped>
-.step-enter-active,
-.step-leave-active {
+/* The leaver goes out of flow so the two panels never stack; the HeightMorph
+   shell around the stack owns the height while they trade. Opacity/transform
+   only, so the fades keep playing even when the entering step is heavy. */
+.step-enter-active {
   transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .step-leave-active {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  transition: opacity 0.11s ease-in;
 }
 .step-enter-from {
   opacity: 0;
@@ -387,6 +367,11 @@ const submit = form.handleSubmit(async (values: any) => {
 }
 .step-leave-to {
   opacity: 0;
-  transform: translateX(-12px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .step-enter-active,
+  .step-leave-active {
+    transition-duration: 1ms;
+  }
 }
 </style>

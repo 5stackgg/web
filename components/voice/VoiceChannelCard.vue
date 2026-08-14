@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import CallGrid from "~/components/voice/CallGrid.vue";
 import CallPhoneQr from "~/components/voice/CallPhoneQr.vue";
 import VoiceRosterPreview from "~/components/voice/VoiceRosterPreview.vue";
@@ -172,47 +173,6 @@ const conflict = computed(() => {
 });
 
 const switchPrompt = ref(false);
-
-// The joined/not-joined swap is one shell whose height is measured and
-// tweened: frozen where it was while the leaving side fades, then eased to the
-// entering side's real height as it fades in. Height lives on one element with
-// one clock -- the previous version collapsed a grid on each side at once, so
-// mid-swap the card was briefly the sum of both heights and snapped at the
-// end. At rest the shell is height:auto and unclipped, so mid-call growth
-// stays CallGrid's own animation and a speaking ring is never cut off.
-const swapShell = ref<HTMLElement | null>(null);
-
-function freezeSwapHeight() {
-  const shell = swapShell.value;
-
-  if (!shell) {
-    return;
-  }
-
-  shell.style.height = `${shell.getBoundingClientRect().height}px`;
-  shell.classList.add("voice-swap-animating");
-}
-
-function tweenSwapHeight(entering: Element) {
-  const shell = swapShell.value;
-
-  if (!shell) {
-    return;
-  }
-
-  shell.style.height = `${(entering as HTMLElement).offsetHeight}px`;
-}
-
-function releaseSwapHeight() {
-  const shell = swapShell.value;
-
-  if (!shell) {
-    return;
-  }
-
-  shell.style.height = "";
-  shell.classList.remove("voice-swap-animating");
-}
 
 // Joining is a switch when you are already somewhere else, and the session
 // retargets in place rather than refusing -- so without this, Join silently
@@ -462,36 +422,23 @@ async function toggleVideo() {
              shell's height eases to the new side's measured height while it
              fades in. The shell itself never leaves the column, so the flex
              gaps around it hold still for the whole trade. -->
-        <div ref="swapShell">
-          <Transition
-            mode="out-in"
-            enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-            leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
-            enter-from-class="opacity-0 translate-y-1"
-            leave-to-class="opacity-0"
-            @before-leave="freezeSwapHeight"
-            @leave-cancelled="releaseSwapHeight"
-            @enter="tweenSwapHeight"
-            @after-enter="releaseSwapHeight"
-            @enter-cancelled="releaseSwapHeight"
-          >
-            <div v-if="joined" key="call">
-              <CallGrid
-                :participants="participants"
-                :peer-video="owned ? session.peerVideo.value : new Map()"
-                :local-video="owned ? session.localVideo() : null"
-                :my-steam-id="mySteamId"
-                :self-muted="muted"
-                :compact="dense"
-                :awaiting="joined"
-                :on-toggle-self-mute="registry.toggleSessionMute"
-              />
-            </div>
-            <div v-else key="preview">
-              <VoiceRosterPreview :channel-id="channelId" />
-            </div>
-          </Transition>
-        </div>
+        <HeightSwap>
+          <div v-if="joined" key="call">
+            <CallGrid
+              :participants="participants"
+              :peer-video="owned ? session.peerVideo.value : new Map()"
+              :local-video="owned ? session.localVideo() : null"
+              :my-steam-id="mySteamId"
+              :self-muted="muted"
+              :compact="dense"
+              :awaiting="joined"
+              :on-toggle-self-mute="registry.toggleSessionMute"
+            />
+          </div>
+          <div v-else key="preview">
+            <VoiceRosterPreview :channel-id="channelId" />
+          </div>
+        </HeightSwap>
 
         <!-- The three things done during a call, sized to be hit without
              looking, in the place every call app puts them.
@@ -634,16 +581,7 @@ async function toggleVideo() {
 </template>
 
 <style scoped>
-/* On the swap shell only while the two states trade places: the height is
-   frozen, then tweened to the entering side's measured height. Both the tween
-   and the clipping end at rest, so nothing has a ceiling to outgrow mid-call
-   and a speaking ring is never cut off. */
-.voice-swap-animating {
-  overflow: hidden;
-  transition: height 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* The header tools collapse their column the way the swap collapses height:
+/* The header tools collapse their column the way HeightSwap collapses height:
    0fr <-> 1fr, clipped by the cell while it moves. */
 .voice-tools-anim {
   transition:
@@ -656,7 +594,6 @@ async function toggleVideo() {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .voice-swap-animating,
   .voice-tools-anim {
     transition-duration: 1ms;
   }

@@ -20,6 +20,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
@@ -580,56 +581,91 @@ const vsBaseClasses =
               v-if="match.options.best_of && match.options.best_of > 0"
               class="flex flex-col gap-3"
             >
-              <div v-for="(slot, index) in mapSlots" :key="index">
-                <MatchMaps
-                  v-if="slot"
-                  :match="match"
-                  :match-map="slot"
-                  :is-active="activeStatsMap?.id === slot.id"
-                  @open-stats="activeStatsMap = $event"
-                ></MatchMaps>
-                <div
-                  v-else
-                  class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
-                >
-                  <div
-                    class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
-                  >
-                    <div class="flex flex-col items-center gap-1">
-                      <span
-                        class="text-sm uppercase tracking-wide font-semibold"
-                      >
-                        {{ $t("match.map_number", { count: index + 1 }) }}
-                      </span>
-                      <span class="text-xs">
-                        {{ $t("match.map_tbd") }}
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    class="bg-muted/40 border-t border-border/30 px-3 py-2.5"
-                  >
-                    <div class="flex items-center justify-center">
-                      <span class="text-xs text-muted-foreground">—</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                v-show="showVetoPicks && vetoPickCount !== 0"
-                class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
+              <!-- Each veto pick turns a dashed placeholder into a real map
+                   card in place; the two are different heights, so each slot
+                   trades through its own measured swap instead of jerking the
+                   column on every pick. The group collapses the trailing
+                   placeholders away when the match ends. -->
+              <TransitionGroup
+                tag="div"
+                class="flex flex-col gap-3"
+                leave-active-class="map-slot-collapse"
+                leave-to-class="map-slot-collapse-to"
               >
                 <div
-                  class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
+                  v-for="(slot, index) in mapSlots"
+                  :key="index"
+                  class="grid grid-rows-[1fr]"
                 >
-                  {{ $t("common.map_veto") }}
+                  <div class="min-h-0">
+                    <HeightSwap>
+                      <div v-if="slot" key="map">
+                        <MatchMaps
+                          :match="match"
+                          :match-map="slot"
+                          :is-active="activeStatsMap?.id === slot.id"
+                          @open-stats="activeStatsMap = $event"
+                        ></MatchMaps>
+                      </div>
+                      <div
+                        v-else
+                        key="tbd"
+                        class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
+                      >
+                        <div
+                          class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+                        >
+                          <div class="flex flex-col items-center gap-1">
+                            <span
+                              class="text-sm uppercase tracking-wide font-semibold"
+                            >
+                              {{ $t("match.map_number", { count: index + 1 }) }}
+                            </span>
+                            <span class="text-xs">
+                              {{ $t("match.map_tbd") }}
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="bg-muted/40 border-t border-border/30 px-3 py-2.5"
+                        >
+                          <div class="flex items-center justify-center">
+                            <span class="text-xs text-muted-foreground">—</span>
+                          </div>
+                        </div>
+                      </div>
+                    </HeightSwap>
+                  </div>
                 </div>
-                <MatchPicksDisplay
-                  v-if="showVetoPicks"
-                  :match="match"
-                  @update:count="vetoPickCount = $event"
-                />
-              </div>
+              </TransitionGroup>
+              <Transition
+                enter-active-class="map-slot-collapse"
+                enter-from-class="map-slot-collapse-to"
+                leave-active-class="map-slot-collapse"
+                leave-to-class="map-slot-collapse-to"
+              >
+                <div
+                  v-show="showVetoPicks && vetoPickCount !== 0"
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="min-h-0">
+                    <div
+                      class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
+                    >
+                      <div
+                        class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
+                      >
+                        {{ $t("common.map_veto") }}
+                      </div>
+                      <MatchPicksDisplay
+                        v-if="showVetoPicks"
+                        :match="match"
+                        @update:count="vetoPickCount = $event"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Transition>
             </div>
           </PageTransition>
         </div>
@@ -1249,3 +1285,25 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* A map slot leaving (trailing placeholders when the match ends) or the veto
+   picks panel toggling folds its height instead of vanishing in one frame. */
+.map-slot-collapse {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease-in;
+}
+.map-slot-collapse > * {
+  overflow: hidden;
+}
+.map-slot-collapse-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-slot-collapse {
+    transition-duration: 1ms;
+  }
+}
+</style>

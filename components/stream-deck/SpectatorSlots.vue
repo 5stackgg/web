@@ -325,6 +325,8 @@ function press(s: PaddedSlot) {
             autodirectorOn,
             compact,
             layout,
+            cameraState(s.steam_id),
+            isListening(s.steam_id),
           ]"
           :key="`ct-${s.slot}-${s.steam_id || 'empty'}`"
           type="button"
@@ -582,6 +584,8 @@ function press(s: PaddedSlot) {
             autodirectorOn,
             compact,
             layout,
+            cameraState(s.steam_id),
+            isListening(s.steam_id),
           ]"
           :key="`t-${s.slot}-${s.steam_id || 'empty'}`"
           type="button"

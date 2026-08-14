@@ -12,6 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
+import VoiceSettingsButton from "~/components/voice/VoiceSettingsButton.vue";
 import { useVoiceChat } from "~/composables/useVoiceChat";
 
 const props = defineProps<{
@@ -20,6 +21,11 @@ const props = defineProps<{
   lineupId: string;
   label: string;
 }>();
+
+const voice = useVoiceChat(
+  () => props.lineupId,
+  () => props.label,
+);
 
 const {
   connected,
@@ -35,10 +41,7 @@ const {
   joinSwitching,
   leave,
   toggleMute,
-} = useVoiceChat(
-  () => props.lineupId,
-  () => props.label,
-);
+} = voice;
 
 const switchPrompt = ref(false);
 
@@ -122,6 +125,14 @@ onBeforeUnmount(() => {
           <Mic class="h-3.5 w-3.5" />
           {{ $t("voice.join") }}
         </Button>
+
+        <!-- Same device pickers, mic check and sensitivity as the party hub:
+             the settings belong to the microphone, not to one surface. -->
+        <VoiceSettingsButton
+          v-if="!unsupported"
+          :voice="voice"
+          class="h-8 w-8 text-muted-foreground hover:text-foreground"
+        />
       </div>
     </div>
 

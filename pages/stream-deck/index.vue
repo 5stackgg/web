@@ -35,7 +35,6 @@ import {
   Tv,
   Dot,
   RefreshCw,
-  Lock,
 } from "lucide-vue-next";
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
@@ -771,11 +770,6 @@ function matchStatusLabel(m: LiveMatch): string {
               v-if="!canViewMatch(stream.match_id)"
               class="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-md border border-border/60 bg-black px-6 text-center"
             >
-              <div
-                class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
-              >
-                <Lock class="size-5 text-muted-foreground" />
-              </div>
               <p
                 class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
               >

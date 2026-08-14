@@ -501,8 +501,12 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
         resolve(undefined);
       };
 
+      // Reaching the timeout means this pass never answered. Deliberately not
+      // conditioned on `latencies` holding a value: readings survive a refresh
+      // now, so a region that was reachable last week would settle as healthy
+      // forever on a stale number.
       setTimeout(() => {
-        settle(latencies.value.has(region));
+        settle(false);
       }, 5000);
 
       try {

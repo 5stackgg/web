@@ -37,8 +37,11 @@ type CallState = {
 
 const calls = reactive<Record<string, CallState>>({});
 const unmuted = reactive<Record<string, boolean>>({});
-const selfPreviews = ref<Record<string, HTMLVideoElement | null>>({});
+// Deliberately not reactive: a template ref callback writes to this on every
+// render, and doing that to a ref is a reactive write during render.
+const selfPreviews: Record<string, HTMLVideoElement | null> = {};
 const callError = ref<string | null>(null);
+let unmounted = false;
 
 function callState(steamId: string): CallState {
   if (!calls[steamId]) {
@@ -138,6 +141,38 @@ function playerFor(player: CameraPlayerStatus) {
   };
 }
 
+const TALK_FPS = 20;
+const TALK_BITRATE = 300_000;
+
+// A ceiling on the encoder, not just on the capture: an organizer with several
+// calls open is encoding one stream per call.
+async function capTalkEncoder(pc: RTCPeerConnection) {
+  const sender = pc
+    .getSenders()
+    .find((candidate) => candidate.track?.kind === "video");
+
+  if (!sender) {
+    return;
+  }
+
+  try {
+    const parameters = sender.getParameters();
+
+    parameters.encodings = parameters.encodings?.length
+      ? parameters.encodings
+      : [{}];
+
+    for (const encoding of parameters.encodings) {
+      encoding.maxBitrate = TALK_BITRATE;
+      encoding.maxFramerate = TALK_FPS;
+    }
+
+    await sender.setParameters(parameters);
+  } catch {
+    // Older engines reject parts of setParameters; the call is fine without it.
+  }
+}
+
 async function startCall(steamId: string) {
   const state = callState(steamId);
 
@@ -148,8 +183,15 @@ async function startCall(steamId: string) {
   state.connecting = true;
 
   try {
+    // The player sees this in a thumbnail in the corner of their phone, and the
+    // organizer may have several calls open at once, so it is capped the same
+    // way the players' own cameras are rather than taking whatever the webcam
+    // offers -- which is 720p30 on most of them.
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+      video: {
+        height: { ideal: 360 },
+        frameRate: { ideal: TALK_FPS, max: 30 },
+      },
       audio: true,
     });
     state.stream = stream;
@@ -169,10 +211,19 @@ async function startCall(steamId: string) {
       "include",
     );
 
+    await capTalkEncoder(pc);
+
+    // Negotiation outlives the component often enough to matter: the teardown
+    // on unmount already ran and would otherwise be undone right here.
+    if (unmounted) {
+      void endCall(steamId);
+      return;
+    }
+
     state.talking = true;
     unmuted[steamId] = true;
 
-    const preview = selfPreviews.value[steamId];
+    const preview = selfPreviews[steamId];
     if (preview) {
       preview.srcObject = stream;
     }
@@ -217,8 +268,15 @@ function toggleCall(steamId: string) {
 }
 
 onBeforeUnmount(() => {
+  unmounted = true;
+
   for (const steamId of Object.keys(calls)) {
-    if (calls[steamId].talking) {
+    const state = calls[steamId];
+
+    // Not gated on `talking`: a call still connecting already holds a live
+    // getUserMedia stream and an open peer connection, and skipping it leaves
+    // the webcam publishing with the recording indicator lit.
+    if (state.talking || state.stream || state.pc) {
       void endCall(steamId);
     }
   }

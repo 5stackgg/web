@@ -29,7 +29,15 @@ const props = defineProps<{
   // Fill the container instead of letterboxing. Only for webcam tiles, which
   // are small and want the height: a game stream must never be cropped.
   cover?: boolean;
+  // Whether to negotiate the audio track at all. A grid of ten camera tiles
+  // that are all muted still pays for ten opus streams -- decoded, jitter
+  // buffered and paid for in bandwidth -- for audio nobody can hear. Hosts
+  // that start muted pass false and flip it when the viewer asks to listen,
+  // which costs one reconnect on that tile and nothing anywhere else.
+  audio?: boolean;
 }>();
+
+const wantsAudio = computed(() => props.audio !== false);
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 const status = ref<
@@ -232,6 +240,14 @@ watch(
 );
 
 watch(status, (next) => {
+  if (next === "playing") {
+    // Re-baseline the freeze watchdog: a reconnect leaves the last frame
+    // timestamp older than the stall window, which would fire immediately.
+    lastFrameAt = Date.now();
+    lastFramesAt = Date.now();
+    lastFrames = -1;
+  }
+
   if (next === "playing" && props.muted === false && isMuted.value) {
     unmute();
   }
@@ -282,7 +298,12 @@ async function connect() {
     });
 
     pc.addTransceiver("video", { direction: "recvonly" });
-    pc.addTransceiver("audio", { direction: "recvonly" });
+
+    // MediaMTX answers the offer it is given, so leaving the audio transceiver
+    // out is all it takes to stop the server sending audio at all.
+    if (wantsAudio.value) {
+      pc.addTransceiver("audio", { direction: "recvonly" });
+    }
 
     pc.ontrack = (event) => {
       const el = videoRef.value;
@@ -442,6 +463,49 @@ let lastFrames = -1;
 let lastFramesAt = 0;
 let stallWatchActive = false;
 
+// Frame arrivals are reported by the element itself where the browser supports
+// it. getStats() is the fallback: it allocates a full stats report per call,
+// which a grid of ten tiles was paying for every second, forever.
+type FrameVideo = HTMLVideoElement & {
+  requestVideoFrameCallback?: (callback: () => void) => number;
+  cancelVideoFrameCallback?: (handle: number) => void;
+};
+
+let frameHandle: number | null = null;
+let lastFrameAt = 0;
+
+function startFrameWatch() {
+  stopFrameWatch();
+
+  const el = videoRef.value as FrameVideo | null;
+
+  if (!el?.requestVideoFrameCallback) {
+    return false;
+  }
+
+  lastFrameAt = Date.now();
+
+  const tick = () => {
+    lastFrameAt = Date.now();
+    frameHandle = el.requestVideoFrameCallback!(tick);
+  };
+
+  frameHandle = el.requestVideoFrameCallback(tick);
+
+  return true;
+}
+
+function stopFrameWatch() {
+  if (frameHandle === null) {
+    return;
+  }
+
+  (videoRef.value as FrameVideo | null)?.cancelVideoFrameCallback?.(frameHandle);
+  frameHandle = null;
+}
+
+const framesReported = () => frameHandle !== null;
+
 // Inbound video framesDecoded, or null if unavailable.
 async function videoFramesDecoded(): Promise<number | null> {
   if (!pc) return null;
@@ -479,6 +543,11 @@ function armStallTimer() {
   stopStallTimer();
   lastFrames = -1;
   lastFramesAt = Date.now();
+
+  const framed = startFrameWatch();
+
+  // Checked at the stall interval rather than every second: nothing here is a
+  // measurement, it is only a comparison against the last frame's timestamp.
   stallTimer = setInterval(async () => {
     const el = videoRef.value;
     if (!el || status.value !== "playing" || cancelled || useFallback.value) {
@@ -487,6 +556,7 @@ function armStallTimer() {
     if (clipRenderActive.value) {
       lastFrames = -1; // re-baseline so we don't fire when the render ends
       lastFramesAt = Date.now();
+      lastFrameAt = Date.now();
       return;
     }
     // Don't fight a hidden/occluded tab: the browser legitimately stops decoding
@@ -494,8 +564,19 @@ function armStallTimer() {
     // onVisibilityChange handles recovery when the tab comes back.
     if (typeof document !== "undefined" && document.hidden) {
       lastFrames = -1;
+      lastFrameAt = Date.now();
       return;
     }
+
+    if (framesReported()) {
+      if (Date.now() - lastFrameAt < STALL_MS) return;
+      console.debug("[whep] no presented frames — forcing reconnect");
+      lastFrameAt = Date.now();
+      retryDelay = INITIAL_RETRY_DELAY_MS;
+      void teardown().then(() => connect());
+      return;
+    }
+
     const frames = await videoFramesDecoded();
     if (frames === null) return; // can't measure — leave it alone
     if (lastFrames < 0 || frames > lastFrames) {
@@ -511,10 +592,12 @@ function armStallTimer() {
     lastFramesAt = Date.now();
     retryDelay = INITIAL_RETRY_DELAY_MS;
     void teardown().then(() => connect());
-  }, 1_000);
+  }, framed ? STALL_MS : 2_000);
 }
 
 function stopStallTimer() {
+  stopFrameWatch();
+
   if (stallTimer) {
     clearInterval(stallTimer);
     stallTimer = null;
@@ -539,6 +622,9 @@ function onVisibilityChange() {
   // (throttled) pending retry and reconnect now. NOT cancelRetries() — that sets
   // `cancelled` and would kill reconnection for good.
   void tryPlay();
+  // Re-armed first so frame reporting is back before anything below asks
+  // whether frames are being reported.
+  if (!stallTimer) armStallTimer();
   const connected = !!pc && pc.connectionState === "connected";
   if (!cancelled && (!connected || status.value !== "playing")) {
     if (retryHandle) {
@@ -547,6 +633,11 @@ function onVisibilityChange() {
     }
     retryDelay = INITIAL_RETRY_DELAY_MS;
     void connect();
+  } else if (framesReported()) {
+    // Frame callbacks already tell us whether the picture is moving, so the
+    // watchdog covers this for free. Re-baseline and let it run rather than
+    // pulling two stats reports per tile on every alt-tab back.
+    lastFrameAt = Date.now();
   } else {
     // Connected + playing, but the video may have frozen while occluded (audio
     // kept flowing). Chrome usually resumes decoding on visible; if it doesn't,
@@ -569,7 +660,6 @@ function onVisibilityChange() {
       }, 1_200);
     })();
   }
-  if (!stallTimer) armStallTimer();
 }
 
 // Wait for mount so videoRef is bound — `immediate: true` fires
@@ -580,7 +670,12 @@ onMounted(() => {
   document.addEventListener("fullscreenchange", onFullscreenChange);
   document.addEventListener("webkitfullscreenchange", onFullscreenChange);
   document.addEventListener("visibilitychange", onVisibilityChange);
-  window.addEventListener("keydown", onKeyDown);
+
+  // Grids mount one of these per tile; without the guard a ten-player camera
+  // wall registers ten window-level key handlers that all return immediately.
+  if (!props.disableShortcuts) {
+    window.addEventListener("keydown", onKeyDown);
+  }
 
   if (typeof window !== "undefined" && window.matchMedia) {
     coarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
@@ -604,7 +699,7 @@ watch(clipRenderActive, (active, was) => {
 });
 
 watch(
-  () => props.whepUrl,
+  () => [props.whepUrl, wantsAudio.value],
   () => {
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;

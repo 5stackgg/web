@@ -164,10 +164,69 @@ const vsBaseClasses =
 <template>
   <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
     <CameraRequirementOverlay
-      v-if="showCameraOverlay"
+      v-if="cameraGateActive"
       :match-id="match.id"
+      :open="!cameraOverlayDismissed"
       @ready="cameraReady = true"
+      @dismiss="cameraOverlayDismissed = true"
     />
+
+    <!-- Deliberately loud and pinned to the top: the requirement did not go
+         away when the modal was dismissed, and check-in stays blocked until a
+         camera is live. -->
+    <!-- Animating grid rows rather than mounting the bar: a v-if would jump the
+         whole page down a bar-height in one frame. The wrapper only exists while
+         the gate is active, so a normal match never carries its flex gap. The
+         delay lets the modal finish fading before the page starts moving. -->
+    <div
+      v-if="cameraGateActive"
+      class="grid transition-[grid-template-rows] duration-[320ms] ease-out motion-reduce:duration-[1ms]"
+      :class="
+        cameraOverlayDismissed
+          ? 'grid-rows-[1fr] delay-150 motion-reduce:delay-0'
+          : 'grid-rows-[0fr]'
+      "
+    >
+    <div class="overflow-hidden min-h-0">
+    <button
+      type="button"
+      class="camera-nag flex w-full items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-4 py-3 text-left transition-[background-color,opacity] duration-300 hover:bg-[hsl(var(--tac-amber)/0.2)]"
+      :class="cameraOverlayDismissed ? 'opacity-100 delay-200' : 'opacity-0'"
+      :tabindex="cameraOverlayDismissed ? 0 : -1"
+      :aria-hidden="!cameraOverlayDismissed"
+      @click="cameraOverlayDismissed = false"
+    >
+      <span
+        class="relative flex size-2 flex-shrink-0"
+        aria-hidden="true"
+      >
+        <span
+          class="absolute inline-flex size-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+        ></span>
+        <span
+          class="relative inline-flex size-2 rounded-full bg-[hsl(var(--tac-amber))]"
+        ></span>
+      </span>
+
+      <span class="min-w-0 flex-1">
+        <span
+          class="block font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+        >
+          {{ $t("camera.title") }}
+        </span>
+        <span class="block text-xs text-muted-foreground">
+          {{ $t("camera.nag") }}
+        </span>
+      </span>
+
+      <span
+        class="flex-shrink-0 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+      >
+        {{ $t("camera.nag_action") }}
+      </span>
+    </button>
+    </div>
+    </div>
     <template v-if="match">
       <PageTransition>
         <header :class="heroClasses">
@@ -666,6 +725,7 @@ export default {
       match: undefined,
       vetoPickCount: undefined,
       cameraReady: false,
+      cameraOverlayDismissed: false,
     };
   },
   apollo: {
@@ -1075,7 +1135,9 @@ export default {
     },
     // Stricter than myLineupId on purpose: is_on_lineup is only true for a
     // rostered player row, and a coach never publishes a camera.
-    showCameraOverlay() {
+    // Same eligibility the overlay uses, without the dismissal. Dismissing hides
+    // the modal but not the requirement, so the banner keeps the way back.
+    cameraGateActive() {
       if (!this.match?.options?.camera_required || this.cameraReady) {
         return false;
       }

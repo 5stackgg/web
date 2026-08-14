@@ -358,18 +358,36 @@ class Socket extends EventEmitter {
   }
 
   private mergeLobbyMessages(lobby: LobbyState, messages: LobbyMessage[]) {
-    const merged = lobby.messages.value.slice();
+    const snapshot = messages || [];
+    const snapshotKeys = new Set(snapshot.map(chatMessageKey));
 
-    for (const message of messages || []) {
-      const key = chatMessageKey(message);
-      if (lobby.seen.has(key)) {
-        continue;
-      }
-      lobby.seen.add(key);
-      merged.push(message);
-    }
+    // The server sends its whole history for the room, so the snapshot replaces
+    // what we hold rather than being unioned into it. A union never drops what
+    // the server has since expired, and leaves both the list and `seen` growing
+    // for the life of the handle.
+    //
+    // Anything newer than the snapshot is kept: a live message can land in the
+    // window between the server building the snapshot and it arriving here.
+    const newest = snapshot.reduce(
+      (latest, message) => Math.max(latest, chatMessageTime(message)),
+      0,
+    );
+
+    const merged = snapshot.concat(
+      lobby.messages.value.filter((message) => {
+        return (
+          !snapshotKeys.has(chatMessageKey(message)) &&
+          chatMessageTime(message) >= newest
+        );
+      }),
+    );
 
     merged.sort((a, b) => chatMessageTime(a) - chatMessageTime(b));
+
+    lobby.seen.clear();
+    for (const message of merged) {
+      lobby.seen.add(chatMessageKey(message));
+    }
 
     lobby.messages.value = merged;
     this.emitToLobbyInstances(lobby, "lobby:messages", merged);

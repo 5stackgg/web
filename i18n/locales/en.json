@@ -7470,7 +7470,10 @@
       "busy": "Another app is already using the camera. Close it and try again.",
       "unknown": "The camera could not be started. Try again."
     },
-    "media_pending": "Waiting for camera permission…"
+    "media_pending": "Waiting for camera permission…",
+    "dismiss": "Dismiss",
+    "nag": "You are not connected yet. Check-in stays blocked until your camera is live.",
+    "nag_action": "Set up"
   },
   "voice": {
     "errors": {
@@ -7505,7 +7508,9 @@
       "output_unsupported": "This browser does not let a site choose the output device; it uses your system default.",
       "noise_suppression": "Noise Suppression",
       "noise_suppression_hint": "Filters steady background noise like fans and keyboards.",
-      "mic_starting": "Starting your microphone…"
+      "mic_starting": "Starting your microphone…",
+      "mic_in_use": "Your microphone is live in {channel}. These settings apply there as you change them.",
+      "applies_everywhere": "These settings apply to every voice channel."
     },
     "team_voice": "Team Voice",
     "join": "Join",

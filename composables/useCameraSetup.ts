@@ -19,12 +19,24 @@ const MY_CAMERA_TOKEN = gql`
 // Everything needed to get a player's camera publishing: their own token, the
 // QR/popup links built from it, and whether the feed has actually gone live.
 // Shared so the blocking overlay and the check-in prompt behave identically.
-export function useCameraSetup(matchId: () => string) {
+// `enabled` exists because a caller can mount this before it knows whether the
+// match wants cameras at all -- the check-in card builds one per match. Without
+// it, a match with camera_required off polls for a token that will never be
+// minted, every 1.5s, for as long as the page is open.
+export function useCameraSetup(
+  matchId: () => string,
+  enabled: () => boolean = () => true,
+) {
   const { result, refetch } = useQuery<{
     match_camera_tokens: Array<{ token: string }>;
-  }>(MY_CAMERA_TOKEN, () => ({ matchId: matchId() }), {
-    fetchPolicy: "network-only",
-  });
+  }>(
+    MY_CAMERA_TOKEN,
+    () => ({ matchId: matchId() }),
+    () => ({
+      fetchPolicy: "network-only",
+      enabled: enabled(),
+    }),
+  );
 
   const token = computed(
     () => result.value?.match_camera_tokens?.[0]?.token ?? null,
@@ -43,9 +55,15 @@ export function useCameraSetup(matchId: () => string) {
   // A plain polling loop rather than watch(token): the row is minted
   // server-side, so this can start before it exists, and a watch does not
   // re-fire on undefined -> undefined — one miss would wedge it until reload.
+  // Both loops re-arm from inside their own await, so clearing the pending
+  // timer is not enough to stop them -- a poll already in flight when the scope
+  // disposes would schedule the next one and run for the life of the tab.
+  let stopped = false;
+  let running = false;
+
   let tokenTimer: ReturnType<typeof setTimeout> | null = null;
   function pollForToken() {
-    if (token.value) {
+    if (stopped || token.value) {
       return;
     }
 
@@ -57,6 +75,10 @@ export function useCameraSetup(matchId: () => string) {
 
   let statusTimer: ReturnType<typeof setTimeout> | null = null;
   async function pollStatus() {
+    if (stopped) {
+      return;
+    }
+
     if (!token.value) {
       statusTimer = setTimeout(pollStatus, 1500);
       return;
@@ -64,6 +86,10 @@ export function useCameraSetup(matchId: () => string) {
 
     ready.value = (await fetchCameraStatus(token.value)).ready;
     checked.value = true;
+
+    if (stopped) {
+      return;
+    }
 
     statusTimer = setTimeout(pollStatus, 1500);
   }
@@ -96,6 +122,8 @@ export function useCameraSetup(matchId: () => string) {
   }
 
   function stop() {
+    stopped = true;
+    running = false;
     if (tokenTimer) {
       clearTimeout(tokenTimer);
       tokenTimer = null;
@@ -108,8 +136,29 @@ export function useCameraSetup(matchId: () => string) {
     // camera, and it has to outlive whatever opened it.
   }
 
-  pollForToken();
-  void pollStatus();
+  function start() {
+    if (running) {
+      return;
+    }
+    running = true;
+    stopped = false;
+
+    pollForToken();
+    void pollStatus();
+  }
+
+  watch(
+    enabled,
+    (on) => {
+      if (on) {
+        start();
+        return;
+      }
+
+      stop();
+    },
+    { immediate: true },
+  );
 
   onScopeDispose(stop);
 

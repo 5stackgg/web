@@ -8,7 +8,9 @@ import socket from "~/web-sockets/Socket";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
-const POLL_MS = 5000;
+// A backstop, not the signal: the socket pushes the moment a camera flips, so
+// this only has to catch a missed push or a reconnect.
+const POLL_MS = 10000;
 
 type Shared = {
   lineups: Ref<Array<CameraLineup>>;
@@ -61,6 +63,29 @@ function bindSocket() {
   });
 }
 
+// Nobody is reading a camera badge from a tab they cannot see, and the players
+// this runs for are usually in the game. Polling resumes -- with an immediate
+// read, so nothing is stale -- when the tab comes back.
+let visibilityBound = false;
+
+function bindVisibility() {
+  if (visibilityBound || typeof document === "undefined") {
+    return;
+  }
+
+  visibilityBound = true;
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      return;
+    }
+
+    for (const [matchId, entry] of shared) {
+      void load(matchId, entry);
+    }
+  });
+}
+
 function acquire(matchId: string) {
   let entry = shared.get(matchId);
 
@@ -79,10 +104,17 @@ function acquire(matchId: string) {
 
   if (!entry.timer) {
     bindSocket();
+    bindVisibility();
     void load(matchId, entry);
     // Kept as a slow backstop rather than the primary signal: the push covers
     // the moment a camera flips, this catches a missed frame or a reconnect.
-    entry.timer = setInterval(() => load(matchId, entry as Shared), POLL_MS);
+    entry.timer = setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) {
+        return;
+      }
+
+      void load(matchId, entry as Shared);
+    }, POLL_MS);
   }
 
   return entry;

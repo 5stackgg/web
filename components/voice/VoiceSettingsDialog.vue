@@ -37,6 +37,9 @@ const props = defineProps<{
   connected: boolean;
   previewing: boolean;
   unsupported: string | null;
+  // Set when the microphone is live in a different channel. The settings still
+  // apply -- they are shared -- but this dialog is not the one metering.
+  busyChannel?: string | null;
 }>();
 
 const emit = defineEmits<{
@@ -84,6 +87,7 @@ const barClass = computed(() => {
         </DialogTitle>
         <DialogDescription>
           {{ $t("voice.settings.description") }}
+          {{ $t("voice.settings.applies_everywhere") }}
         </DialogDescription>
       </DialogHeader>
 
@@ -167,7 +171,9 @@ const barClass = computed(() => {
                 ? monitoring
                   ? $t("voice.settings.monitor_hint")
                   : $t("voice.settings.meter_hint")
-                : $t("voice.settings.mic_starting")
+                : busyChannel
+                  ? $t("voice.settings.mic_in_use", { channel: busyChannel })
+                  : $t("voice.settings.mic_starting")
             }}
           </p>
         </section>

@@ -147,14 +147,31 @@ const coarsePointer = ref(
     window.matchMedia("(pointer: coarse)").matches,
 );
 
+// This runs on the player's own machine for the length of a match, next to the
+// game. A monitoring camera is watched in a tile a few hundred pixels wide, so
+// capturing and encoding anything near a modern sensor's native resolution is
+// frames per second spent on detail nobody looks at. Everything below is an
+// `ideal`: a camera that cannot do it keeps working at whatever it can.
+const CAPTURE_FPS = 24;
+// Enough for a face and a pair of hands in a grid tile, and roughly a third of
+// the encode cost of the 720p the browser hands out by default.
+const CAPTURE_BITRATE = 350_000;
+
 // Only a touch device has a portrait sensor worth asking for. A webcam handed
 // a portrait constraint answers with a cropped or letterboxed frame, which is
-// how a desktop feed ends up as a phone-shaped sliver -- so ask for nothing and
-// publish whatever the camera calls native.
+// how a desktop feed ends up as a phone-shaped sliver -- so constrain only the
+// height there and let the camera keep its own aspect.
 function videoConstraints(mode: "user" | "environment"): MediaTrackConstraints {
   const preferred: MediaTrackConstraints = coarsePointer.value
-    ? { width: { ideal: 720 }, height: { ideal: 1280 } }
-    : {};
+    ? {
+        width: { ideal: 480 },
+        height: { ideal: 854 },
+        frameRate: { ideal: CAPTURE_FPS, max: 30 },
+      }
+    : {
+        height: { ideal: 360 },
+        frameRate: { ideal: CAPTURE_FPS, max: 30 },
+      };
 
   if (cameraDeviceId.value) {
     // An explicit device wins over facingMode -- asking for both lets the
@@ -184,6 +201,10 @@ const zoomPercent = computed(() => Math.round(reframe.zoom * 100));
 // Detaching the stream is what actually frees the decode; hiding the element
 // alone would keep the player's machine rendering a video it cannot see. The
 // publish is a separate pipeline and is untouched either way.
+//
+// While cropping, the canvas is what gets shown -- it is already the exact
+// surface being published. Feeding its captured stream back into a <video>
+// would decode the frames this machine just finished drawing.
 function syncPreview() {
   const el = previewEl.value;
 
@@ -191,7 +212,7 @@ function syncPreview() {
     return;
   }
 
-  const next = previewVisible.value ? (cropStream ?? stream) : null;
+  const next = previewVisible.value && !cropping.value ? stream : null;
 
   if (el.srcObject !== next) {
     el.srcObject = next;
@@ -244,6 +265,21 @@ function clampCentre() {
   reframe.y = clamp(reframe.y, half, 1 - half);
 }
 
+// Held across frames: getContext is a lookup, not a constructor, but it was
+// being called on every single drawn frame. `alpha: false` lets the compositor
+// skip a blend a camera frame never needs. Deliberately not `desynchronized`:
+// that hands frames straight to the display and is not reliably sampled by
+// captureStream, which is the whole point of this canvas.
+let canvasContext: CanvasRenderingContext2D | null = null;
+
+function cropContext(canvas: HTMLCanvasElement) {
+  if (!canvasContext || canvasContext.canvas !== canvas) {
+    canvasContext = canvas.getContext("2d", { alpha: false });
+  }
+
+  return canvasContext;
+}
+
 function drawCropFrame() {
   const source = sourceEl.value;
   const canvas = canvasEl.value;
@@ -266,7 +302,7 @@ function drawCropFrame() {
     canvas.height = height;
   }
 
-  const context = canvas.getContext("2d");
+  const context = cropContext(canvas);
 
   if (!context) {
     return;
@@ -302,8 +338,15 @@ let frameHandleIsVideo = false;
 let keepAliveTimer: ReturnType<typeof setInterval> | null = null;
 let lastDrawAt = 0;
 
+// Frame callbacks fire at the camera's rate, which can be well above what is
+// published; drawing more often than captureStream will sample is work thrown
+// straight away.
+const MIN_DRAW_INTERVAL_MS = 1000 / CAPTURE_FPS - 2;
+
 function pumpCropFrames() {
-  drawCropFrame();
+  if (Date.now() - lastDrawAt >= MIN_DRAW_INTERVAL_MS) {
+    drawCropFrame();
+  }
 
   const source = sourceEl.value as FrameVideo | null;
 
@@ -364,11 +407,55 @@ function videoSender() {
   );
 }
 
+// Constraints are a request to the camera; this is a ceiling on the encoder,
+// which is where the CPU actually goes. Without it a machine with headroom
+// happily spends it -- on a player who is trying to run a game at the same
+// time. Resolution is held in preference to smoothness: the point of the feed
+// is seeing the player, not fluid motion.
+async function capVideoEncoder(pc: RTCPeerConnection) {
+  const sender = pc
+    .getSenders()
+    .find((candidate) => candidate.track?.kind === "video");
+
+  if (!sender) {
+    return;
+  }
+
+  try {
+    const parameters = sender.getParameters();
+
+    parameters.encodings = parameters.encodings?.length
+      ? parameters.encodings
+      : [{}];
+
+    for (const encoding of parameters.encodings) {
+      encoding.maxBitrate = CAPTURE_BITRATE;
+      encoding.maxFramerate = CAPTURE_FPS;
+    }
+
+    (
+      parameters as RTCRtpSendParameters & { degradationPreference?: string }
+    ).degradationPreference = "maintain-resolution";
+
+    await sender.setParameters(parameters);
+  } catch {
+    // Older engines reject parts of setParameters; the feed is fine without it.
+  }
+}
+
 async function startCrop() {
   const source = sourceEl.value;
   const canvas = canvasEl.value;
 
   if (!source || !canvas || !stream) {
+    return;
+  }
+
+  // Already cropping. Every step of a pinch or a wheel spin lands here, and the
+  // draw loop reads the reframe values live -- so restarting it (cancelling the
+  // frame callback, re-creating the keep-alive interval) is pure churn on a
+  // phone that is already encoding video.
+  if (cropStream && frameHandle !== null) {
     return;
   }
 
@@ -513,11 +600,18 @@ function pointerDistance() {
 }
 
 // The frame is letterboxed inside the stage, so a drag has to be measured
-// against the picture rather than the box it sits in.
+// against the picture rather than the box it sits in. While cropping it is the
+// canvas on show, so the ratio comes from there.
 function pictureSize(rect: DOMRect) {
   const el = previewEl.value;
-  const ratio =
-    el && el.videoWidth && el.videoHeight ? el.videoWidth / el.videoHeight : 0;
+  const canvas = canvasEl.value;
+  const ratio = cropping.value
+    ? canvas && canvas.width && canvas.height
+      ? canvas.width / canvas.height
+      : 0
+    : el && el.videoWidth && el.videoHeight
+      ? el.videoWidth / el.videoHeight
+      : 0;
 
   if (!ratio || !rect.width || !rect.height) {
     return { width: rect.width, height: rect.height };
@@ -683,6 +777,7 @@ async function connect() {
     }
 
     await negotiateWebRtc(pc, cameraPlayerPublishUrl(token.value));
+    await capVideoEncoder(pc);
 
     phase.value = "connected";
     // Only start watching for a call now: the connect click was the user
@@ -771,9 +866,17 @@ async function flipCamera() {
 }
 
 let talkTimer: ReturnType<typeof setTimeout> | null = null;
+// Closing the page while a poll is in flight used to leave the loop running:
+// clearing the timer does nothing to a request that is about to re-arm it, so
+// the page kept polling -- and could still open a peer connection -- forever.
+let disposed = false;
 
 async function pollTalk() {
   const { ready } = await fetchCameraTalkStatus(token.value);
+
+  if (disposed) {
+    return;
+  }
 
   if (ready && !talking.value) {
     await joinTalk();
@@ -781,10 +884,18 @@ async function pollTalk() {
     endTalk();
   }
 
+  if (disposed) {
+    return;
+  }
+
   talkTimer = setTimeout(pollTalk, 2000);
 }
 
 async function joinTalk() {
+  if (disposed) {
+    return;
+  }
+
   try {
     const pc = new RTCPeerConnection({ iceServers: iceServers() });
     talkPc = pc;
@@ -856,6 +967,7 @@ function onDeviceChange() {
 }
 
 onBeforeUnmount(() => {
+  disposed = true;
   navigator.mediaDevices?.removeEventListener?.("devicechange", onDeviceChange);
   stageEl.value?.removeEventListener("wheel", onWheel);
 
@@ -981,13 +1093,27 @@ onBeforeUnmount(() => {
         :class="coarsePointer ? 'aspect-[3/4]' : 'aspect-video'"
       >
         <video
-          v-show="previewVisible"
+          v-show="previewVisible && !cropping"
           ref="previewEl"
           class="absolute inset-0 h-full w-full object-contain"
           autoplay
           playsinline
           muted
         ></video>
+
+        <!-- The published surface itself, shown in place of the preview while
+             cropping. Shrunk rather than hidden when it is not on show: this is
+             what captureStream is publishing, and display:none is not a state
+             worth betting a player's feed on. -->
+        <canvas
+          ref="canvasEl"
+          aria-hidden="true"
+          :class="
+            previewVisible && cropping
+              ? 'absolute inset-0 h-full w-full object-contain'
+              : 'pointer-events-none absolute left-0 top-0 h-px w-px opacity-0'
+          "
+        ></canvas>
 
         <div
           v-show="!previewVisible"
@@ -1182,6 +1308,8 @@ onBeforeUnmount(() => {
       </p>
     </main>
 
+    <!-- Kept renderable rather than hidden: a display:none video is free to
+         stop decoding, and this one is what the crop draws from. -->
     <video
       ref="sourceEl"
       class="pointer-events-none fixed left-0 top-0 h-px w-px opacity-0"
@@ -1190,10 +1318,5 @@ onBeforeUnmount(() => {
       playsinline
       muted
     ></video>
-    <canvas
-      ref="canvasEl"
-      class="pointer-events-none fixed left-0 top-0 h-px w-px opacity-0"
-      aria-hidden="true"
-    ></canvas>
   </div>
 </template>

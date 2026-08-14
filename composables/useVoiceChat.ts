@@ -26,11 +26,25 @@ export type VoiceInputMode = "voice" | "open";
 const GATE_HOLD_MS = 320;
 // Ramped rather than switched: a hard 0/1 gain change is an audible click.
 const GATE_RAMP_S = 0.03;
+// The gate and the meter live here, on the audio thread. See the file itself
+// for why: a main thread loop cost a callback per display refresh and froze
+// solid the moment the player alt-tabbed into the game.
+const GATE_WORKLET_URL = "/voice-gate.worklet.js";
 
 function storedNumber(key: string, fallback: number) {
   try {
-    const raw = Number(localStorage.getItem(key));
-    return Number.isFinite(raw) && raw > 0 ? raw : fallback;
+    const raw = localStorage.getItem(key);
+
+    if (raw === null || raw === "") {
+      return fallback;
+    }
+
+    // 0 is a real setting -- the sensitivity slider's own minimum, an open gate
+    // with no floor -- so it has to survive the round trip. Reading a missing
+    // key as 0 is what made `> 0` look like a sound guard here.
+    const value = Number(raw);
+
+    return Number.isFinite(value) && value >= 0 ? value : fallback;
   } catch {
     return fallback;
   }
@@ -73,6 +87,21 @@ function rememberDevice(key: string, value: string) {
   }
 }
 
+// Which microphone, which speakers, how sensitive the gate is: these describe
+// the player's hardware, not the channel they happen to be in. They live at
+// module scope so the settings dialog reads and writes the same values from
+// every surface -- otherwise changing a device from a match panel would edit a
+// second, private copy while the live party session carried on with the first.
+const inputDevices = ref<Array<MediaDeviceInfo>>([]);
+const outputDevices = ref<Array<MediaDeviceInfo>>([]);
+const micDeviceId = ref(storedDevice(MIC_DEVICE_KEY));
+const outputDeviceId = ref(storedDevice(OUTPUT_DEVICE_KEY));
+const inputMode = ref<VoiceInputMode>(
+  (storedDevice(INPUT_MODE_KEY) as VoiceInputMode) || "voice",
+);
+const threshold = ref(storedNumber(THRESHOLD_KEY, 0.08));
+const noiseSuppression = ref(storedFlag(SUPPRESSION_KEY, true));
+
 export function useVoiceChat(
   lobbyId: () => string | null | undefined,
   channelLabel?: () => string,
@@ -88,18 +117,9 @@ export function useVoiceChat(
   const errorDetail = ref<string | null>(null);
   const participants = ref<Array<VoiceParticipant>>([]);
 
-  const inputDevices = ref<Array<MediaDeviceInfo>>([]);
-  const outputDevices = ref<Array<MediaDeviceInfo>>([]);
-  const micDeviceId = ref(storedDevice(MIC_DEVICE_KEY));
-  const outputDeviceId = ref(storedDevice(OUTPUT_DEVICE_KEY));
   // 0..1, driven off the live mic so a player can see their own input working
   // without having to ask someone else whether they can be heard.
   const inputLevel = ref(0);
-  const inputMode = ref<VoiceInputMode>(
-    (storedDevice(INPUT_MODE_KEY) as VoiceInputMode) || "voice",
-  );
-  const threshold = ref(storedNumber(THRESHOLD_KEY, 0.08));
-  const noiseSuppression = ref(storedFlag(SUPPRESSION_KEY, true));
   // Whether the gate is currently letting audio through, so the UI can show
   // the same thing the other side is hearing.
   const transmitting = ref(false);
@@ -113,15 +133,24 @@ export function useVoiceChat(
   let publishPc: RTCPeerConnection | null = null;
   let micStream: MediaStream | null = null;
   let audioContext: AudioContext | null = null;
+  let gateNode: AudioWorkletNode | null = null;
   let gateGain: GainNode | null = null;
   let monitorGain: GainNode | null = null;
   let published: MediaStream | null = null;
   let meterFrame: number | null = null;
   let openUntil = 0;
+  // A level bar is the only thing that wants a continuous read of the mic, so
+  // nothing is metered until something is on screen to show it.
+  let metering = false;
   const subscriptions = new Map<
     string,
     { pc: RTCPeerConnection; audio: HTMLAudioElement }
   >();
+  // Peers are kept for a beat after they stop publishing: one failed poll of
+  // MediaMTX reports the whole party as gone, and tearing every peer connection
+  // down and renegotiating it a poll later is both audible and expensive.
+  const lastPublishing = new Map<string, number>();
+  const SUBSCRIPTION_GRACE_MS = 15_000;
   let pollTimer: ReturnType<typeof setTimeout> | null = null;
 
   const mySteamId = computed(() => useAuthStore().me?.steam_id ?? null);
@@ -166,68 +195,164 @@ export function useVoiceChat(
   // The published track comes off this graph, not straight off the mic, so the
   // gate can open and close without renegotiating anything:
   //
-  //   mic -> analyser (level + VAD) -> gain (the gate) -> destination -> peer
+  //   mic -> gate worklet (level + VAD + ramped gain) -> destination -> peer
   //
   // Muting and voice activity both drive the same gain, so remote peers only
   // ever hear silence rather than a track that disappears and comes back.
-  function buildGraph(stream: MediaStream) {
+  async function buildGraph(stream: MediaStream) {
     teardownGraph();
 
     const context = new AudioContext();
     audioContext = context;
 
-    const analyser = context.createAnalyser();
-    analyser.fftSize = 512;
-    const gain = context.createGain();
-    gateGain = gain;
+    const source = context.createMediaStreamSource(stream);
     const destination = context.createMediaStreamDestination();
 
-    context.createMediaStreamSource(stream).connect(analyser);
-    analyser.connect(gain);
-    gain.connect(destination);
-
-    gain.gain.value = 0;
-    published = destination.stream;
     monitorGain = context.createGain();
     monitorGain.gain.value = monitoring.value ? 1 : 0;
-    gain.connect(monitorGain);
     monitorGain.connect(context.destination);
 
+    const worklet = await buildGateNode(context);
+
+    if (audioContext !== context) {
+      // Torn down while the worklet module loaded; the context is already
+      // closed and building the fallback on it would throw.
+      return destination.stream;
+    }
+
+    const gate = worklet ?? buildFallbackGate(context);
+
+    source.connect(gate.input);
+    gate.output.connect(destination);
+    // Loopback is taken after the gate, so what a player hears when they
+    // monitor is exactly what the other side gets -- including being cut off
+    // when they set the sensitivity too high.
+    gate.output.connect(monitorGain);
+
+    published = destination.stream;
+
+    return destination.stream;
+  }
+
+  // Returns null when the browser has no AudioWorklet, or the module fails to
+  // load -- both fall back to the main thread graph below.
+  async function buildGateNode(context: AudioContext) {
+    if (!context.audioWorklet) {
+      return null;
+    }
+
+    try {
+      await context.audioWorklet.addModule(GATE_WORKLET_URL);
+    } catch (caught) {
+      console.warn("[voice] gate worklet unavailable", caught);
+      return null;
+    }
+
+    if (audioContext !== context) {
+      // Torn down while the module was loading.
+      return null;
+    }
+
+    const node = new AudioWorkletNode(context, "voice-gate", {
+      numberOfInputs: 1,
+      numberOfOutputs: 1,
+      outputChannelCount: [1],
+      processorOptions: {
+        threshold: threshold.value,
+        mode: inputMode.value,
+        muted: muted.value,
+        meter: metering,
+      },
+    });
+
+    node.port.onmessage = (event) => {
+      const data = event.data as { level?: number; transmitting?: boolean };
+
+      if (typeof data.transmitting === "boolean") {
+        transmitting.value = data.transmitting;
+      }
+
+      if (metering && typeof data.level === "number") {
+        inputLevel.value = data.level;
+      }
+    };
+
+    gateNode = node;
+
+    return { input: node as AudioNode, output: node as AudioNode };
+  }
+
+  // Legacy path for engines without AudioWorklet: an analyser read on an
+  // animation frame. Deliberately fails open while the tab is hidden -- frame
+  // callbacks stop there, and a frozen gate means a player who alt-tabbed into
+  // the game is silently cut off for the rest of the match.
+  function buildFallbackGate(context: AudioContext) {
+    const analyser = context.createAnalyser();
+    analyser.fftSize = 256;
+    const gain = context.createGain();
+    gain.gain.value = 0;
+    gateGain = gain;
+    analyser.connect(gain);
+
     const samples = new Uint8Array(analyser.frequencyBinCount);
+
+    const setGate = (open: boolean) => {
+      if (open === transmitting.value) {
+        return;
+      }
+
+      transmitting.value = open;
+      gain.gain.setTargetAtTime(open ? 1 : 0, context.currentTime, GATE_RAMP_S);
+    };
+
     const read = () => {
+      if (typeof document !== "undefined" && document.hidden) {
+        meterFrame = null;
+        setGate(!muted.value);
+        return;
+      }
+
       analyser.getByteTimeDomainData(samples);
 
       let peak = 0;
-      for (const sample of samples) {
-        peak = Math.max(peak, Math.abs(sample - 128));
+      for (let i = 0; i < samples.length; i++) {
+        const sample = Math.abs(samples[i] - 128);
+        if (sample > peak) {
+          peak = sample;
+        }
       }
 
       const level = Math.min(1, peak / 96);
-      inputLevel.value = level;
+
+      if (metering) {
+        inputLevel.value = level;
+      }
 
       const now = performance.now();
       if (level >= threshold.value) {
         openUntil = now + GATE_HOLD_MS;
       }
 
-      const gateOpen = inputMode.value === "open" || now < openUntil;
-      const shouldSend = gateOpen && !muted.value;
-
-      if (shouldSend !== transmitting.value) {
-        transmitting.value = shouldSend;
-        gain.gain.setTargetAtTime(
-          shouldSend ? 1 : 0,
-          context.currentTime,
-          GATE_RAMP_S,
-        );
-      }
+      setGate((inputMode.value === "open" || now < openUntil) && !muted.value);
 
       meterFrame = requestAnimationFrame(read);
     };
+
+    fallbackVisibility = () => {
+      if (!document.hidden && meterFrame === null && audioContext === context) {
+        read();
+      }
+    };
+
+    document.addEventListener("visibilitychange", fallbackVisibility);
     read();
 
-    return destination.stream;
+    // The mic feeds the analyser; everything downstream comes off the gain, or
+    // the gate would pass audio through ungated.
+    return { input: analyser as AudioNode, output: gain as AudioNode };
   }
+
+  let fallbackVisibility: (() => void) | null = null;
 
   function teardownGraph() {
     if (meterFrame !== null) {
@@ -235,17 +360,69 @@ export function useVoiceChat(
       meterFrame = null;
     }
 
+    if (fallbackVisibility) {
+      document.removeEventListener("visibilitychange", fallbackVisibility);
+      fallbackVisibility = null;
+    }
+
+    if (gateNode) {
+      gateNode.port.onmessage = null;
+      gateNode.disconnect();
+      gateNode = null;
+    }
+
     void audioContext?.close().catch(() => {});
     audioContext = null;
     gateGain = null;
     monitorGain = null;
-    monitoring.value = false;
-    previewing.value = false;
     published = null;
     inputLevel.value = 0;
     transmitting.value = false;
     openUntil = 0;
+    // `monitoring` and `previewing` describe the session, not the graph: this
+    // also runs when the graph is rebuilt for a new microphone, and a device
+    // change is not the player closing their mic check.
   }
+
+  // Nothing to meter until a level bar is on screen. Kept out of `previewing`
+  // on purpose: the settings dialog can be opened mid-call, when the mic is
+  // already live and there is no preview to start.
+  function setMetering(enabled: boolean) {
+    metering = enabled;
+
+    if (!enabled) {
+      inputLevel.value = 0;
+    }
+
+    gateNode?.port.postMessage({ meter: enabled });
+  }
+
+  // The worklet holds its own copy of the gate settings, so pushing changes is
+  // what keeps the two in step. The fallback reads the refs directly.
+  watch([threshold, inputMode, muted], ([nextThreshold, nextMode, nextMuted]) => {
+    if (gateNode) {
+      gateNode.port.postMessage({
+        threshold: nextThreshold,
+        mode: nextMode,
+        muted: nextMuted,
+      });
+      return;
+    }
+
+    // The fallback reads these on an animation frame, which does not run while
+    // the tab is hidden -- exactly when someone alt-tabbed into the game reaches
+    // for mute. Applied straight to the gain there so it still takes effect.
+    if (!gateGain || !audioContext || !document.hidden) {
+      return;
+    }
+
+    transmitting.value = !nextMuted;
+    gateGain.gain.setTargetAtTime(
+      nextMuted ? 0 : 1,
+      audioContext.currentTime,
+      GATE_RAMP_S,
+    );
+  });
 
   async function openMic() {
     const constraints: MediaTrackConstraints = {
@@ -342,7 +519,7 @@ export function useVoiceChat(
       // Labels are only populated once permission exists, so this is the first
       // point a device picker can show real names.
       await refreshDevices();
-      buildGraph(micStream);
+      await buildGraph(micStream);
       previewing.value = true;
       return true;
     } catch (caught) {
@@ -443,6 +620,10 @@ export function useVoiceChat(
 
     micStream = null;
     participants.value = [];
+    lastPublishing.clear();
+    monitoring.value = false;
+    previewing.value = false;
+    setMetering(false);
   }
 
   // Mute is enforced by the gate in buildGraph, which the render loop applies
@@ -451,19 +632,28 @@ export function useVoiceChat(
     muted.value = !muted.value;
   }
 
-  // Swaps the live track in place so the session survives a device change --
-  // renegotiating would drop everyone's audio for a beat.
-  async function setMicDevice(deviceId: string) {
+  // The device is a shared preference, so the change is recorded here and
+  // acted on by whichever session actually holds the microphone -- which may
+  // be a different surface to the one whose dialog is open.
+  function setMicDevice(deviceId: string) {
+    if (deviceId === micDeviceId.value) {
+      return;
+    }
+
     micDeviceId.value = deviceId;
     rememberDevice(MIC_DEVICE_KEY, deviceId);
+  }
 
-    if (!connected.value) {
+  // Swaps the live track in place so the session survives a device change --
+  // renegotiating would drop everyone's audio for a beat.
+  async function useMicDevice() {
+    if (!micStream) {
       return;
     }
 
     try {
       const replacement = await openMic();
-      const outgoing = buildGraph(replacement);
+      const outgoing = await buildGraph(replacement);
       const [track] = outgoing.getAudioTracks();
       const sender = publishPc
         ?.getSenders()
@@ -539,12 +729,14 @@ export function useVoiceChat(
     remember(THRESHOLD_KEY, String(threshold.value));
   }
 
-  // Applied to the live track where the browser supports it, so toggling it
-  // does not interrupt the call; only a refusal costs a reopen.
-  async function setNoiseSuppression(enabled: boolean) {
+  function setNoiseSuppression(enabled: boolean) {
     noiseSuppression.value = enabled;
     remember(SUPPRESSION_KEY, String(enabled));
+  }
 
+  // Applied to the live track where the browser supports it, so toggling it
+  // does not interrupt the call; only a refusal costs a reopen.
+  async function useNoiseSuppression(enabled: boolean) {
     const [track] = micStream?.getAudioTracks() ?? [];
 
     if (!track) {
@@ -554,20 +746,31 @@ export function useVoiceChat(
     try {
       await track.applyConstraints({ noiseSuppression: enabled });
     } catch {
-      if (connected.value) {
-        await setMicDevice(micDeviceId.value);
-      }
+      await useMicDevice();
     }
   }
 
-  async function setOutputDevice(deviceId: string) {
+  function setOutputDevice(deviceId: string) {
     outputDeviceId.value = deviceId;
     rememberDevice(OUTPUT_DEVICE_KEY, deviceId);
+  }
 
+  // Only the session holding the call has anything to route; everywhere else
+  // these watchers are no-ops, which is what makes one shared set of settings
+  // safe to edit from any surface.
+  watch(micDeviceId, () => {
+    void useMicDevice();
+  });
+
+  watch(noiseSuppression, (enabled) => {
+    void useNoiseSuppression(enabled);
+  });
+
+  watch(outputDeviceId, async () => {
     for (const { audio } of subscriptions.values()) {
       await applyOutput(audio);
     }
-  }
+  });
 
   async function applyOutput(audio: HTMLAudioElement) {
     const sinkId = outputDeviceId.value;
@@ -622,6 +825,7 @@ export function useVoiceChat(
     subscription.audio.pause();
     subscription.audio.srcObject = null;
     subscriptions.delete(steamId);
+    lastPublishing.delete(steamId);
   }
 
   async function poll() {
@@ -632,32 +836,61 @@ export function useVoiceChat(
     }
 
     try {
-      participants.value = await fetchVoiceParticipants(id);
+      const next = await fetchVoiceParticipants(id);
 
-      const speaking = new Set(
-        participants.value
+      // Left while the request was in flight: writing here would repopulate a
+      // party the session no longer belongs to.
+      if (!connected.value || lobbyId() !== id) {
+        return;
+      }
+
+      participants.value = next;
+
+      const now = Date.now();
+      const publishing = new Set(
+        // `speaking` is MediaMTX path readiness, ie. "has a live mic", not
+        // voice activity -- the gate keeps the track up through every pause.
+        next
           .filter((participant) => participant.speaking)
           .map((participant) => participant.steamId),
       );
 
-      for (const steamId of speaking) {
+      for (const steamId of publishing) {
+        lastPublishing.set(steamId, now);
+
         if (steamId !== mySteamId.value) {
           void subscribe(steamId);
         }
       }
 
       // Anyone who stopped publishing: drop the peer connection rather than
-      // leaving a dead one open for the rest of the session.
+      // leaving a dead one open for the rest of the session. Held briefly, so a
+      // single unanswered MediaMTX poll doesn't renegotiate the whole party.
       for (const [steamId] of subscriptions) {
-        if (!speaking.has(steamId)) {
-          unsubscribe(steamId);
+        if (publishing.has(steamId)) {
+          continue;
         }
+
+        if (now - (lastPublishing.get(steamId) ?? 0) < SUBSCRIPTION_GRACE_MS) {
+          continue;
+        }
+
+        unsubscribe(steamId);
       }
     } catch {
       // A failed poll is not a reason to tear the session down.
     }
 
-    pollTimer = setTimeout(poll, 3000);
+    if (!connected.value) {
+      return;
+    }
+
+    // Backed off while the tab is hidden: nobody is reading the party list
+    // from inside the game, and the peers that matter are already connected.
+    pollTimer = setTimeout(
+      poll,
+      typeof document !== "undefined" && document.hidden ? 10_000 : 3_000,
+    );
   }
 
   // Leaving the party ends the call: the lobby the session belongs to is gone.
@@ -730,5 +963,8 @@ export function useVoiceChat(
     playTestTone,
     startPreview,
     stopPreview,
+    setMetering,
   };
 }
+
+export type VoiceChat = ReturnType<typeof useVoiceChat>;

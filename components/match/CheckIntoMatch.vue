@@ -102,7 +102,12 @@ export default {
   },
   setup(props: { match: Record<string, any> }) {
     const cameraSetupOpen = ref(false);
-    const camera = useCameraSetup(() => String(props.match.id));
+    const camera = useCameraSetup(
+      () => String(props.match.id),
+      () =>
+        props.match.options?.camera_required === true &&
+        props.match.is_in_lineup === true,
+    );
 
     // Only a rostered player publishes; coaches and organizers never do.
     const needsCamera = computed(

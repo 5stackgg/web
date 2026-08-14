@@ -43,7 +43,6 @@ import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import { useStreamerStore } from "~/stores/StreamerStore";
 import { useAuthStore } from "~/stores/AuthStore";
-import { Lock } from "lucide-vue-next";
 import {
   specSlotsForMatchType,
   resolveKeyToRealSlot,
@@ -83,6 +82,10 @@ const stream = computed<any | null>(() => {
 // authenticated session.
 const authStore = useAuthStore();
 const isInLineup = ref(false);
+// Until this subscription answers we do not know whether the viewer is playing.
+// Rendering the canvas on the optimistic assumption would flash the live feed at
+// a rostered player for exactly as long as the round trip takes.
+const lineupResolved = ref(false);
 let lineupSub: { unsubscribe: () => void } | undefined;
 
 function ensureLineupSubscription() {
@@ -90,6 +93,7 @@ function ensureLineupSubscription() {
   lineupSub = undefined;
   if (!authStore.me?.steam_id) {
     isInLineup.value = false;
+    lineupResolved.value = true;
     return;
   }
   lineupSub = apolloClient
@@ -105,14 +109,28 @@ function ensureLineupSubscription() {
       next: (result: any) => {
         const m = result?.data?.matches_by_pk;
         isInLineup.value = !!(m?.is_in_lineup || m?.is_coach);
+        lineupResolved.value = true;
       },
       error: (err: any) => {
         console.error("[stream-deck] lineup subscription error", err);
+        // Resolved-but-denied: a failed check must not leave the page stuck on
+        // the neutral panel forever, and must not fall open to the feed.
+        isInLineup.value = true;
+        lineupResolved.value = true;
       },
     });
 }
 
 const canView = computed(() => !isInLineup.value);
+
+// Nothing about the stream is knowable until both the streams subscription has
+// answered and we know whether the viewer is playing. Until then the page shows
+// a neutral panel of the same size rather than guessing: guessing means either
+// boot steps for a stream that turns out not to exist, or a live feed flashed at
+// a rostered player.
+const streamStateKnown = computed(
+  () => streamerStore.hasLoaded && lineupResolved.value,
+);
 
 // Mirror the persisted DB autodirector flag into our local toggle so
 // the switch starts in the correct state, but suppress the sync
@@ -686,9 +704,10 @@ watch(spectatedSteamId, (sid) => {
     "
   >
     <!-- ============ TOP BAR ============ -->
-    <header
-      class="border-b border-border/60 bg-card/40 backdrop-blur-sm flex-shrink-0"
-    >
+    <PageTransition :delay="0">
+      <header
+        class="border-b border-border/60 bg-card/40 backdrop-blur-sm flex-shrink-0"
+      >
       <div class="mx-auto max-w-7xl px-4 py-3 flex items-center gap-4">
         <NuxtLink
           to="/stream-deck"
@@ -700,7 +719,10 @@ watch(spectatedSteamId, (sid) => {
 
         <div class="h-6 w-px bg-border/60" />
 
-        <div class="flex items-center gap-3 min-w-0">
+        <div
+          class="flex items-center gap-3 min-w-0 transition-opacity duration-300"
+          :class="streamStateKnown ? 'opacity-100' : 'opacity-0'"
+        >
           <h1 class="font-display text-lg font-bold tracking-tight truncate">
             <span>{{
               stream?.match?.lineup_1?.name ?? $t("common.team_a")
@@ -714,7 +736,10 @@ watch(spectatedSteamId, (sid) => {
           </h1>
         </div>
 
-        <div class="ml-auto flex items-center gap-3 flex-shrink-0">
+        <div
+          class="ml-auto flex min-h-8 items-center gap-3 flex-shrink-0 transition-opacity duration-300"
+          :class="streamStateKnown ? 'opacity-100' : 'opacity-0'"
+        >
           <div class="flex items-center gap-2">
             <Label
               for="autodirector-focus"
@@ -943,21 +968,26 @@ watch(spectatedSteamId, (sid) => {
           </div>
         </div>
       </div>
-    </header>
+      </header>
+    </PageTransition>
 
     <!-- ============ MAIN BODY ============ -->
-    <PageTransition :delay="0" class="flex-1">
+    <PageTransition :delay="90" class="flex-1">
       <div class="mx-auto max-w-7xl w-full px-4 py-6 space-y-5">
+        <!-- Same aspect-video box as both real states, so resolving swaps the
+             contents without moving anything below it. -->
+        <div
+          v-if="!streamStateKnown"
+          class="flex aspect-video w-full items-center justify-center rounded-lg border border-border/70 bg-black"
+        >
+          <Spinner />
+        </div>
+
         <!-- Rostered player/coach: never connect the feed (anti-cheat). -->
         <div
-          v-if="!canView"
+          v-else-if="!canView"
           class="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-lg border border-border/70 bg-black px-6 text-center shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
         >
-          <div
-            class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
-          >
-            <Lock class="size-5 text-muted-foreground" />
-          </div>
           <p
             class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
           >

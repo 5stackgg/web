@@ -19,7 +19,13 @@ import VoiceChannelRow from "~/components/hub/VoiceChannelRow.vue";
 // Two jobs, one list. With no call running this is the way in; with one running
 // it is the way across -- the same channels, minus the one you are already in.
 // Switching used to mean leaving first and then finding the other surface.
-const props = defineProps<{ switcher?: boolean }>();
+//
+// `exclude` pins that "minus" to a channel the caller names instead of the
+// live registry. The voice panel's leaving branch needs this: props on a
+// subtree that is fading out never update, but the registry inside it does --
+// so on hang-up the channel just left would slide back into the dying
+// switcher's list mid-fade.
+const props = defineProps<{ switcher?: boolean; exclude?: string | null }>();
 
 const session = useVoiceSession();
 const registry = useActiveVoiceChannel();
@@ -27,7 +33,9 @@ const { t: $t } = useI18n();
 
 // The registry rather than the session: a call held in another tab is still
 // yours, and offering to "switch" to the channel you are already in is noise.
-const currentId = computed(() => registry.session.value?.id ?? null);
+const currentId = computed(
+  () => props.exclude ?? registry.session.value?.id ?? null,
+);
 
 // Where the server says this player already is. The tab bridge above only sees
 // tabs of one browser profile; this sees every window, browser and device.

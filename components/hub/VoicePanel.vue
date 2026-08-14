@@ -38,19 +38,27 @@ function onScreen() {
          has, and it used to cut between them on a frame. Same curve as the
          voice card itself, so the hub and the page agree about what joining
          looks like. -->
+    <!-- The leave is 110ms on purpose: the card inside the dying branch is
+         still live and starts morphing into its not-joined state the moment
+         the session clears. Its own fade-out runs 110ms too, so everything
+         visible during the branch fade is only ever fading -- the Join button
+         and roster that enter after it land in a branch already invisible. -->
     <Transition
       mode="out-in"
       enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
-      leave-active-class="transition-[opacity,transform] [transition-duration:150ms] ease-in motion-reduce:![transition-duration:1ms]"
+      leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
       enter-from-class="opacity-0 translate-y-2"
       leave-to-class="opacity-0 -translate-y-1"
     >
     <div v-if="session" key="call" class="flex min-h-0 flex-1 flex-col">
       <!-- The other channels you could be in, while you are in one. Switching
            used to mean hanging up first and then going to find the other
-           surface; the session retargets in place, so it never needed to. -->
+           surface; the session retargets in place, so it never needed to.
+           `exclude` pins the hidden row to this branch's channel, so hanging
+           up does not slide it back into the list mid-fade. -->
       <VoiceChannelPicker
         switcher
+        :exclude="session.id"
         class="flex-shrink-0 border-b border-border/60"
       />
 

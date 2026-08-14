@@ -327,73 +327,78 @@ async function toggleVideo() {
             enter-from-class="voice-tools-collapsed"
             leave-to-class="voice-tools-collapsed"
           >
-            <div v-if="joined" class="grid grid-cols-[1fr]">
-              <div
-                class="flex min-w-0 items-center gap-1.5 overflow-hidden pl-1.5"
-              >
-                <FiveStackToolTip
-                  v-if="canControlVideo && !videoOn"
-                  as-child
-                  :delay-duration="120"
-                  side="bottom"
-                >
-                  <template #trigger>
-                    <Button
-                      size="xs"
-                      variant="ghost"
-                      class="h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                      :aria-label="$t('voice.call.phone.use_phone')"
-                      @click="qrRef?.toggle()"
-                    >
-                      <Smartphone class="h-3.5 w-3.5" />
-                    </Button>
-                  </template>
-                  {{ $t("voice.call.phone.use_phone") }}
-                </FiveStackToolTip>
-    
-                <FiveStackToolTip
-                  v-if="videoAllowed"
-                  as-child
-                  :delay-duration="120"
-                  side="bottom"
-                >
-                  <template #trigger>
-                    <Button
-                      size="xs"
-                      variant="ghost"
-                      class="h-6 w-6 shrink-0 rounded-full p-0"
-                      :class="
-                        pip.active.value
-                          ? 'text-[hsl(var(--tac-amber))]'
-                          : 'text-muted-foreground hover:text-foreground'
-                      "
-                      :aria-label="$t('voice.call.pop_out')"
-                      @click="pip.toggle()"
-                    >
-                      <PictureInPicture2 class="h-3.5 w-3.5" />
-                    </Button>
-                  </template>
-                  {{
-                    pip.active.value
-                      ? $t("voice.call.pop_in")
-                      : $t("voice.call.pop_out")
-                  }}
-                </FiveStackToolTip>
-    
-                <FiveStackToolTip as-child :delay-duration="120" side="bottom">
-                  <template #trigger>
-                    <Button
-                      size="xs"
-                      variant="ghost"
-                      class="-mr-1 h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                      :aria-label="$t('voice.call.device_settings')"
-                      @click="navigateTo('/settings/voice')"
-                    >
-                      <Settings2 class="h-3.5 w-3.5" />
-                    </Button>
-                  </template>
-                  {{ $t("voice.call.device_settings") }}
-                </FiveStackToolTip>
+            <!-- The cell and item carry no padding of their own: padding
+                 floors an element's width, so a padded item never reaches the
+                 0fr track's zero and the leftover few pixels snap away when
+                 the element unmounts. The leading gap rides the innermost
+                 wrapper, where it is content and clips with the rest. -->
+            <div v-if="joined" class="grid min-w-0 grid-cols-[1fr]">
+              <div class="min-w-0 overflow-hidden">
+                <div class="flex items-center gap-1.5 pl-1.5">
+                  <FiveStackToolTip
+                    v-if="canControlVideo && !videoOn"
+                    as-child
+                    :delay-duration="120"
+                    side="bottom"
+                  >
+                    <template #trigger>
+                      <Button
+                        size="xs"
+                        variant="ghost"
+                        class="h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                        :aria-label="$t('voice.call.phone.use_phone')"
+                        @click="qrRef?.toggle()"
+                      >
+                        <Smartphone class="h-3.5 w-3.5" />
+                      </Button>
+                    </template>
+                    {{ $t("voice.call.phone.use_phone") }}
+                  </FiveStackToolTip>
+      
+                  <FiveStackToolTip
+                    v-if="videoAllowed"
+                    as-child
+                    :delay-duration="120"
+                    side="bottom"
+                  >
+                    <template #trigger>
+                      <Button
+                        size="xs"
+                        variant="ghost"
+                        class="h-6 w-6 shrink-0 rounded-full p-0"
+                        :class="
+                          pip.active.value
+                            ? 'text-[hsl(var(--tac-amber))]'
+                            : 'text-muted-foreground hover:text-foreground'
+                        "
+                        :aria-label="$t('voice.call.pop_out')"
+                        @click="pip.toggle()"
+                      >
+                        <PictureInPicture2 class="h-3.5 w-3.5" />
+                      </Button>
+                    </template>
+                    {{
+                      pip.active.value
+                        ? $t("voice.call.pop_in")
+                        : $t("voice.call.pop_out")
+                    }}
+                  </FiveStackToolTip>
+      
+                  <FiveStackToolTip as-child :delay-duration="120" side="bottom">
+                    <template #trigger>
+                      <Button
+                        size="xs"
+                        variant="ghost"
+                        class="-mr-1 h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                        :aria-label="$t('voice.call.device_settings')"
+                        @click="navigateTo('/settings/voice')"
+                      >
+                        <Settings2 class="h-3.5 w-3.5" />
+                      </Button>
+                    </template>
+                    {{ $t("voice.call.device_settings") }}
+                  </FiveStackToolTip>
+                </div>
               </div>
             </div>
           </Transition>

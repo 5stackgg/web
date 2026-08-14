@@ -38,6 +38,8 @@ import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { Kbd } from "~/components/ui/kbd";
+import TopoBackground from "~/layouts/components/TopoBackground.vue";
+import { e_player_roles_enum } from "~/generated/zeus";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import { useStreamerStore } from "~/stores/StreamerStore";
@@ -116,16 +118,28 @@ const canView = computed(() => !isInLineup.value);
 
 // Added rather than moved: the deck is streamer-gated while camera watching
 // allows a plain match organizer, so the match page stays the primary entry.
-const cameraGateOpen = computed(
-  () =>
-    canView.value &&
-    canWatchMatchCameras({
+const cameraGateOpen = computed(() => {
+  if (
+    !canWatchMatchCameras({
       is_organizer: stream.value?.match?.is_organizer,
       options: {
         camera_required: stream.value?.match?.options?.camera_required,
       },
-    }),
-);
+    })
+  ) {
+    return false;
+  }
+
+  if (!isInLineup.value) {
+    return true;
+  }
+
+  // Mirrors CameraService.watchScope: a rostered administrator keeps full
+  // access, but any other competitor is refused outright here rather than
+  // scoped -- the deck renders both sides in one grid, and a live view of the
+  // opposing team is the advantage this whole gate exists to prevent.
+  return authStore.isRoleAbove(e_player_roles_enum.administrator);
+});
 
 // Mirror the persisted DB autodirector flag into our local toggle so
 // the switch starts in the correct state, but suppress the sync
@@ -677,9 +691,13 @@ watch(spectatedSteamId, (sid) => {
 </script>
 
 <template>
+  <!-- layout: false drops the app shell, so the standard background comes in
+       explicitly rather than leaving this page on flat black. -->
+  <TopoBackground />
+
   <div
     ref="pageRoot"
-    class="relative min-h-screen bg-[hsl(var(--background))] text-foreground flex flex-col"
+    class="relative z-10 min-h-screen text-foreground flex flex-col"
     style="
       background-image:
         radial-gradient(

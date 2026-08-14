@@ -16,14 +16,8 @@ const alerting = computed(
   () => loaded.value && summary.value.total > 0 && missing.value > 0,
 );
 
-// Sized for the grid's two-column layout: a full five-player team lays out
-// 2-2-1.
 function openGrid() {
-  window.open(
-    cameraAdminGridPath(props.matchId),
-    "camera-admin-grid",
-    "width=760,height=780",
-  );
+  window.open(cameraAdminGridPath(props.matchId), "_blank", "noopener");
 }
 </script>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import CameraGrid from "~/components/match/CameraGrid.vue";
+import TopoBackground from "@/layouts/components/TopoBackground.vue";
 import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
 
 // Opened in a popup from the match page so an organizer can keep the whole
@@ -16,7 +17,11 @@ const { summary, loaded } = useMatchCameraStatus(() => matchId.value);
 </script>
 
 <template>
-  <div class="relative min-h-screen bg-background text-foreground">
+  <!-- layout: false drops the app shell, so the standard background comes in
+       explicitly rather than leaving this popup on flat black. -->
+  <TopoBackground />
+
+  <div class="relative z-10 min-h-screen text-foreground">
     <div
       class="pointer-events-none fixed inset-x-0 top-0 h-56 bg-[radial-gradient(65%_100%_at_50%_0%,hsl(var(--tac-amber)/0.09),transparent_75%)]"
     ></div>
@@ -73,7 +78,7 @@ const { summary, loaded } = useMatchCameraStatus(() => matchId.value);
       </div>
     </header>
 
-    <main class="relative mx-auto w-full max-w-[120rem] px-4 py-5">
+    <main class="relative z-10 mx-auto w-full max-w-[120rem] px-4 py-5">
       <CameraGrid :match-id="matchId" />
     </main>
   </div>

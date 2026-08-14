@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onBeforeUnmount } from "vue";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
 import CameraFeed from "~/components/match/CameraFeed.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
 import {
   LucideLoader2,
@@ -8,7 +11,6 @@ import {
   LucideTriangleAlert,
   LucideVideo,
   LucideVideoOff,
-  LucideVolume2,
 } from "lucide-vue-next";
 import {
   cameraAdminTalkUrl,
@@ -18,15 +20,11 @@ import {
 } from "~/composables/useCameraApi";
 import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
 
-const props = withDefaults(
-  defineProps<{
-    matchId: string;
-    dense?: boolean;
-  }>(),
-  { dense: false },
-);
+const props = defineProps<{
+  matchId: string;
+}>();
 
-const { lineups, error, loaded, refresh } = useMatchCameraStatus(
+const { lineups, players, error, loaded, refresh } = useMatchCameraStatus(
   () => props.matchId,
 );
 
@@ -73,12 +71,6 @@ function toggleListen(steamId: string) {
   unmuted[steamId] = !isListening(steamId);
 }
 
-const tileWidth = computed(() =>
-  props.dense
-    ? "w-[calc(50%-0.25rem)] lg:w-[calc(25%-0.375rem)] 2xl:w-[calc(16.666%-0.42rem)]"
-    : "w-full sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] 2xl:w-[calc(20%-0.6rem)]",
-);
-
 type TileState = "talking" | "stalled" | "offline" | "live";
 
 function tileState(player: CameraPlayerStatus): TileState {
@@ -97,24 +89,53 @@ function tileState(player: CameraPlayerStatus): TileState {
   return "live";
 }
 
-function playerName(player: CameraPlayerStatus) {
-  return player.name?.trim() || player.steamId;
-}
+// The camera API only knows a steam id and a name; the rest of the app renders
+// players with their avatar, so pull the same profile rows it uses.
+const PROFILES = gql`
+  query CameraGridProfiles($steamIds: [bigint!]!) {
+    players(where: { steam_id: { _in: $steamIds } }) {
+      steam_id
+      name
+      avatar_url
+      custom_avatar_url
+      country
+      role
+    }
+  }
+`;
 
-function initials(player: CameraPlayerStatus) {
-  const name = player.name?.trim();
+const steamIds = computed(() => players.value.map((player) => player.steamId));
 
-  if (!name) {
-    return "??";
+const { result: profileResult } = useQuery<{ players: Array<any> }>(
+  PROFILES,
+  () => ({ steamIds: steamIds.value }),
+  () => ({
+    enabled: steamIds.value.length > 0,
+    fetchPolicy: "cache-first",
+  }),
+);
+
+const profiles = computed(() => {
+  const map: Record<string, any> = {};
+
+  for (const profile of profileResult.value?.players ?? []) {
+    map[String(profile.steam_id)] = profile;
   }
 
-  const parts = name.split(/\s+/).filter(Boolean);
+  return map;
+});
 
-  if (parts.length > 1) {
-    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+function playerFor(player: CameraPlayerStatus) {
+  const profile = profiles.value[player.steamId];
+
+  if (profile) {
+    return profile;
   }
 
-  return name.slice(0, 2).toUpperCase();
+  return {
+    steam_id: player.steamId,
+    name: player.name?.trim() || player.steamId,
+  };
 }
 
 async function startCall(steamId: string) {
@@ -210,8 +231,7 @@ onBeforeUnmount(() => {
       <div
         v-for="index in 6"
         :key="index"
-        class="overflow-hidden rounded-xl border"
-        :class="tileWidth"
+        class="w-full overflow-hidden rounded-xl border sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] 2xl:w-[calc(20%-0.6rem)]"
       >
         <div class="aspect-video animate-pulse bg-muted/40"></div>
         <div class="flex items-center gap-2 border-t border-border/60 p-2.5">
@@ -285,16 +305,13 @@ onBeforeUnmount(() => {
           <article
             v-for="player in lineup.players"
             :key="player.steamId"
-            class="group overflow-hidden rounded-xl border bg-card/40 transition-colors"
-            :class="[
-              tileWidth,
-              {
-                'border-[hsl(var(--tac-amber)/0.6)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.25)]':
-                  tileState(player) === 'talking',
-                'border-destructive/60': tileState(player) === 'stalled',
-                'border-destructive/30': tileState(player) === 'offline',
-              },
-            ]"
+            class="group w-full overflow-hidden rounded-xl border bg-card/40 transition-colors sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] 2xl:w-[calc(20%-0.6rem)]"
+            :class="{
+              'border-[hsl(var(--tac-amber)/0.6)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.25)]':
+                tileState(player) === 'talking',
+              'border-destructive/60': tileState(player) === 'stalled',
+              'border-destructive/30': tileState(player) === 'offline',
+            }"
           >
             <div class="relative aspect-video bg-black">
               <CameraFeed
@@ -305,30 +322,16 @@ onBeforeUnmount(() => {
                 @update:unmuted="toggleListen(player.steamId)"
               />
 
+              <!-- Working is the expected state and needs no badge: a quiet
+                   grid is what lets a bad tile catch the eye. -->
               <span
-                v-if="tileState(player) !== 'offline'"
-                class="pointer-events-none absolute left-2 top-2 z-10 inline-flex items-center gap-1.5 rounded-full border bg-black/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.2em] backdrop-blur-sm"
-                :class="
-                  tileState(player) === 'talking'
-                    ? 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
-                    : tileState(player) === 'stalled'
-                      ? 'border-destructive/60 text-destructive'
-                      : 'border-emerald-500/50 text-emerald-400'
-                "
+                v-if="tileState(player) === 'stalled'"
+                class="pointer-events-none absolute left-2 top-2 z-10 inline-flex items-center gap-1.5 rounded-full border border-destructive/60 bg-black/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.2em] text-destructive backdrop-blur-sm"
               >
                 <span
-                  class="inline-flex h-1 w-1 rounded-full bg-current"
-                  :class="tileState(player) !== 'live' ? 'animate-pulse' : ''"
+                  class="inline-flex h-1 w-1 animate-pulse rounded-full bg-current"
                 ></span>
-                {{ $t(`camera.tile.${tileState(player)}`) }}
-              </span>
-
-              <span
-                v-if="isListening(player.steamId)"
-                class="pointer-events-none absolute right-2 top-2 z-10 inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-black/70 px-2 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-              >
-                <LucideVolume2 class="h-2.5 w-2.5" />
-                {{ $t("camera.audio_on") }}
+                {{ $t("camera.tile.stalled") }}
               </span>
 
               <div
@@ -354,48 +357,36 @@ onBeforeUnmount(() => {
             </div>
 
             <div
-              class="flex items-center gap-2 border-t border-border/60 bg-background/40 px-2.5 py-2"
+              class="flex items-center gap-2 border-t border-border/60 bg-background/40 px-2.5 py-1.5"
             >
-              <span
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border font-mono text-[0.6rem] tracking-[0.06em]"
-                :class="
-                  tileState(player) === 'offline'
-                    ? 'border-border bg-muted/30 text-muted-foreground/70'
-                    : 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
-                "
-              >
-                {{ initials(player) }}
-              </span>
-
-              <span class="flex min-w-0 flex-1 flex-col">
-                <span class="truncate text-xs font-medium leading-tight">
-                  {{ playerName(player) }}
-                </span>
-                <span
-                  v-if="!dense"
-                  class="truncate font-mono text-[0.55rem] tracking-[0.12em] text-muted-foreground/60"
-                >
-                  {{ player.steamId }}
-                </span>
-              </span>
-
-              <!-- Fixed width: the label swaps between call and hang up, and a
-                   tile that resizes under the cursor gets misclicked. -->
-              <Button
+              <PlayerDisplay
+                class="min-w-0 flex-1"
                 size="xs"
-                class="h-7 w-[5.75rem] shrink-0 justify-center gap-1.5 px-0 font-mono text-[0.55rem] uppercase tracking-[0.12em]"
+                :player="playerFor(player)"
+                :show-flag="false"
+                :show-role="false"
+                :show-elo="false"
+                :show-online="false"
+                :truncate-name="true"
+              />
+
+              <!-- Reserved width: the label swaps between call and hang up, and
+                   a tile that resizes under the cursor gets misclicked. -->
+              <Button
+                size="sm"
+                class="min-w-[6.25rem] shrink-0"
                 :variant="isTalking(player.steamId) ? 'destructive' : 'outline'"
                 :disabled="!player.ready || isConnecting(player.steamId)"
                 @click="toggleCall(player.steamId)"
               >
                 <LucideLoader2
                   v-if="isConnecting(player.steamId)"
-                  class="h-3 w-3 animate-spin"
+                  class="h-3.5 w-3.5 animate-spin"
                 />
                 <component
                   :is="isTalking(player.steamId) ? LucideVideoOff : LucideVideo"
                   v-else
-                  class="h-3 w-3"
+                  class="h-3.5 w-3.5"
                 />
                 {{
                   isTalking(player.steamId)

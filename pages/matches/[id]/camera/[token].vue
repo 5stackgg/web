@@ -16,6 +16,7 @@ import {
   LucideVolumeX,
 } from "lucide-vue-next";
 import DeviceSelect from "~/components/media/DeviceSelect.vue";
+import TopoBackground from "@/layouts/components/TopoBackground.vue";
 import {
   cameraPlayerPublishUrl,
   cameraPlayerTalkUrl,
@@ -874,25 +875,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    class="relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground"
-  >
-    <div
-      class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(70%_100%_at_50%_0%,hsl(var(--tac-amber)/0.10),transparent_72%)]"
-    ></div>
-    <div
-      class="pointer-events-none absolute inset-0 opacity-[0.035]"
-      style="
-        background-image: repeating-linear-gradient(
-          0deg,
-          currentColor 0,
-          currentColor 1px,
-          transparent 1px,
-          transparent 4px
-        );
-      "
-    ></div>
+  <!-- layout: false drops the app shell, so the standard background comes in
+       explicitly rather than leaving this page on flat black. -->
+  <TopoBackground />
 
+  <div
+    class="relative z-10 flex min-h-screen flex-col overflow-hidden text-foreground"
+  >
     <main
       class="relative mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-3 px-4 py-6"
     >

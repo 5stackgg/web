@@ -52,6 +52,11 @@ export const simpleMatchFields = Selector("matches")({
     id: true,
     name: true,
     is_on_lineup: true,
+    // Coaches get their side's chat room too, same as the API's match_team
+    // gate -- surfaces that only checked is_on_lineup were hiding it from them.
+    coach: {
+      steam_id: true,
+    },
     team_id: true,
     team: {
       name: true,
@@ -78,6 +83,11 @@ export const simpleMatchFields = Selector("matches")({
     id: true,
     name: true,
     is_on_lineup: true,
+    // Coaches get their side's chat room too, same as the API's match_team
+    // gate -- surfaces that only checked is_on_lineup were hiding it from them.
+    coach: {
+      steam_id: true,
+    },
     team_id: true,
     team: {
       name: true,

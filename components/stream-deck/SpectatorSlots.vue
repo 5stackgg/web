@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { Bot } from "lucide-vue-next";
 import {
   effectivePerSideSize,
   keyForSlot,
 } from "~/utilities/streamerSpecSlots";
+import CameraFeed from "~/components/match/CameraFeed.vue";
+import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
 
 const { t } = useI18n();
 
@@ -62,6 +64,16 @@ const props = withDefaults(
     // streamer pod runs cs2-better-autodirector in either mode and
     // the UI mirrors its on/off state.
     autodirectorOn?: boolean;
+    // Set only by the stream deck: gives each slot its player's camera state --
+    // the avatar behind the tile, and the live feed when `cameraVideo` is on.
+    // Null everywhere else, which keeps this component presentational.
+    cameraMatchId?: string | null;
+    // Whether to actually decode the feeds. Off by default: every tile is a
+    // peer connection and a video decode, and the deck index renders a full
+    // row per live match at ~88px a tile -- more than a Steam avatar costs and
+    // less than a Steam avatar shows. The focus popout, where the operator is
+    // looking at one match, opts in.
+    cameraVideo?: boolean;
   }>(),
   {
     teamCtName: null,
@@ -74,8 +86,82 @@ const props = withDefaults(
     compact: false,
     matchType: null,
     autodirectorOn: false,
+    cameraMatchId: null,
+    cameraVideo: false,
   },
 );
+
+const { statusFor, players: cameraPlayers } = useMatchCameraStatus(
+  () => props.cameraMatchId ?? "",
+  () => !!props.cameraMatchId,
+);
+
+// A slot without a steam id has no camera to attach yet -- GSI populates them
+// as the server comes up and the tile must not move when it does.
+//
+// Status is still read when the video is off: that is what puts a player's
+// avatar behind their tile, and it is a shared 10s status poll rather than ten
+// video decodes.
+function cameraState(steamId: string) {
+  if (!props.cameraVideo || !props.cameraMatchId || !steamId) {
+    return null;
+  }
+
+  const status = statusFor(steamId);
+
+  if (!status || !status.ready || status.health === "down") {
+    return null;
+  }
+
+  return status.health === "stalled" ? ("stalled" as const) : ("live" as const);
+}
+
+// A camera that is not working, and only that. Working is the expected state
+// and needs no badge -- a quiet row is what lets a bad tile catch the eye --
+// but with the feeds off there would otherwise be nothing at all to say a
+// player's camera has died.
+function cameraAlert(steamId: string) {
+  if (!props.cameraMatchId || !steamId) {
+    return null;
+  }
+
+  const status = statusFor(steamId);
+
+  if (!status) {
+    return null;
+  }
+
+  if (status.health === "stalled") {
+    return "stalled" as const;
+  }
+
+  return !status.ready || status.health === "down" ? ("down" as const) : null;
+}
+
+// Shown whenever there is no live feed, so a slot always carries a face rather
+// than an empty tile. Matched on steam id because GSI carries no avatar.
+function slotAvatar(steamId: string) {
+  if (!steamId) {
+    return null;
+  }
+
+  return (
+    cameraPlayers.value.find((player) => player.steamId === steamId)
+      ?.avatarUrl ?? null
+  );
+}
+
+const listening = reactive<Record<string, boolean>>({});
+
+function isListening(steamId: string) {
+  return listening[steamId] === true;
+}
+
+// Every feed starts muted: a deck that unmutes ten microphones at once is
+// unusable mid-broadcast.
+function setListening(steamId: string, value: boolean) {
+  listening[steamId] = value;
+}
 
 const emit = defineEmits<{
   (e: "press-slot", slot: number): void;
@@ -223,7 +309,7 @@ function press(s: PaddedSlot) {
         ? 'flex flex-row items-start justify-between gap-6'
         : 'space-y-2',
       autodirectorOn
-        ? 'rounded-md border-t border-dashed border-[hsl(var(--tac-amber)/0.5)] pt-2 transition-[border-color] duration-300'
+        ? 'rounded-md border-t border-[hsl(var(--tac-amber)/0.35)] pt-2 transition-[border-color] duration-300'
         : '',
     ]"
   >
@@ -273,6 +359,9 @@ function press(s: PaddedSlot) {
             autodirectorOn,
             compact,
             layout,
+            cameraState(s.steam_id),
+            cameraAlert(s.steam_id),
+            isListening(s.steam_id),
           ]"
           :key="`ct-${s.slot}-${s.steam_id || 'empty'}`"
           type="button"
@@ -371,6 +460,27 @@ function press(s: PaddedSlot) {
                  anatomy.
                  ============================================ -->
           <template v-else>
+            <CameraFeed
+              v-if="cameraState(s.steam_id)"
+              :match-id="cameraMatchId!"
+              :steam-id="s.steam_id"
+              :state="cameraState(s.steam_id)!"
+              :unmuted="isListening(s.steam_id)"
+              dense
+              scrim
+              click-through
+              class="absolute inset-0 z-0"
+              @update:unmuted="(value) => setListening(s.steam_id, value)"
+            />
+
+            <img
+              v-else-if="slotAvatar(s.steam_id)"
+              :src="slotAvatar(s.steam_id)!"
+              alt=""
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-35"
+            />
+
             <!-- Top-left slot key chip / AUTO badge -->
             <span
               :class="[
@@ -419,7 +529,7 @@ function press(s: PaddedSlot) {
                    inline pill since the tile has the room. -->
             <span
               :class="[
-                'mt-3 truncate max-w-full px-1 text-center font-semibold',
+                'relative z-10 mt-3 truncate max-w-full px-1 text-center font-semibold',
                 compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
                 s.isPlaceholder ? 'italic opacity-60' : '',
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
@@ -428,6 +538,24 @@ function press(s: PaddedSlot) {
               {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
             </span>
 
+
+            <!-- Camera trouble marker. Sits above the health rail so it never
+                 collides with the slot key or the health number. -->
+            <span
+              v-if="cameraAlert(s.steam_id)"
+              class="absolute bottom-2 right-1.5 z-10 inline-flex h-1.5 w-1.5 rounded-full"
+              :class="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? 'bg-destructive animate-pulse'
+                  : 'bg-muted-foreground/60'
+              "
+              :title="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? t('camera.tile.stalled')
+                  : t('camera.offline')
+              "
+              aria-hidden="true"
+            ></span>
             <!-- Footer health rail — thicker than inline so the bar
                    reads as a chunk of UI, not a hairline. Shrinks
                    smoothly on damage. -->
@@ -509,6 +637,9 @@ function press(s: PaddedSlot) {
             autodirectorOn,
             compact,
             layout,
+            cameraState(s.steam_id),
+            cameraAlert(s.steam_id),
+            isListening(s.steam_id),
           ]"
           :key="`t-${s.slot}-${s.steam_id || 'empty'}`"
           type="button"
@@ -599,6 +730,27 @@ function press(s: PaddedSlot) {
                  GRID tile body — full broadcast player card.
                  ============================================ -->
           <template v-else>
+            <CameraFeed
+              v-if="cameraState(s.steam_id)"
+              :match-id="cameraMatchId!"
+              :steam-id="s.steam_id"
+              :state="cameraState(s.steam_id)!"
+              :unmuted="isListening(s.steam_id)"
+              dense
+              scrim
+              click-through
+              class="absolute inset-0 z-0"
+              @update:unmuted="(value) => setListening(s.steam_id, value)"
+            />
+
+            <img
+              v-else-if="slotAvatar(s.steam_id)"
+              :src="slotAvatar(s.steam_id)!"
+              alt=""
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-35"
+            />
+
             <span
               :class="[
                 'absolute top-1 left-1 inline-flex items-center justify-center rounded font-bold tabular-nums leading-none',
@@ -641,7 +793,7 @@ function press(s: PaddedSlot) {
 
             <span
               :class="[
-                'mt-3 truncate max-w-full px-1 text-center font-semibold',
+                'relative z-10 mt-3 truncate max-w-full px-1 text-center font-semibold',
                 compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
                 s.isPlaceholder ? 'italic opacity-60' : '',
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
@@ -650,6 +802,24 @@ function press(s: PaddedSlot) {
               {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
             </span>
 
+
+            <!-- Camera trouble marker. Sits above the health rail so it never
+                 collides with the slot key or the health number. -->
+            <span
+              v-if="cameraAlert(s.steam_id)"
+              class="absolute bottom-2 right-1.5 z-10 inline-flex h-1.5 w-1.5 rounded-full"
+              :class="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? 'bg-destructive animate-pulse'
+                  : 'bg-muted-foreground/60'
+              "
+              :title="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? t('camera.tile.stalled')
+                  : t('camera.offline')
+              "
+              aria-hidden="true"
+            ></span>
             <span
               v-if="s.alive"
               :class="[

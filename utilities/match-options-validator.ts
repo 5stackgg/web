@@ -16,6 +16,15 @@ export default function matchOptionsValidator(
     settings.find((setting) => setting.name === "public.default_models")
       ?.value === "true";
 
+  const defaultCameraRequired =
+    settings.find((setting) => setting.name === "public.camera_required_default")
+      ?.value === "true";
+
+  const defaultCameraAllowTeammates =
+    settings.find(
+      (setting) => setting.name === "public.camera_allow_teammates_default",
+    )?.value === "true";
+
   const defaultVetoPickTimeout = Number.parseInt(
     settings.find((setting) => setting.name === "public.veto_pick_timeout")
       ?.value ?? "",
@@ -41,6 +50,10 @@ export default function matchOptionsValidator(
       ),
     round_restart_delay: z.number().min(0).max(60).nullable().optional(),
     halftime_pausematch: z.boolean().default(false),
+    // vee-validate strips any field this schema does not declare, so a missing
+    // entry here silently drops the value on every submit regardless of the UI.
+    camera_required: z.boolean().default(defaultCameraRequired),
+    camera_allow_teammates: z.boolean().default(defaultCameraAllowTeammates),
     knife_round: z.boolean().default(true),
     default_models: z.boolean().default(defaultPlayerModels),
     overtime: z.boolean().default(true),

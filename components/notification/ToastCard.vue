@@ -14,8 +14,18 @@ withDefaults(
     count?: number;
     pending?: "accept" | "decline" | null;
     elevated?: boolean;
+    // "Accept invite" is wrong for anything that is not an invite. A call is
+    // joined, not accepted, and the card is worth reusing for both.
+    acceptLabel?: string;
+    declineLabel?: string;
   }>(),
-  { count: 1, pending: null, elevated: false },
+  {
+    count: 1,
+    pending: null,
+    elevated: false,
+    acceptLabel: undefined,
+    declineLabel: undefined,
+  },
 );
 
 defineEmits<{ accept: []; decline: []; dismiss: [] }>();
@@ -27,7 +37,16 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
     <div class="flex items-start justify-between gap-2">
       <span class="toast-kind">
         {{ item.kind }}
-        <span v-if="count > 1" class="toast-count">{{ count }}</span>
+        <!-- Fades with the hover fan instead of snapping off the header the
+             instant the group is hovered (the parent forces count to 1). -->
+        <Transition
+          enter-active-class="transition-[opacity,transform] duration-200"
+          leave-active-class="transition-[opacity,transform] duration-200"
+          enter-from-class="opacity-0 scale-75"
+          leave-to-class="opacity-0 scale-75"
+        >
+          <span v-if="count > 1" class="toast-count">{{ count }}</span>
+        </Transition>
       </span>
       <button
         type="button"
@@ -46,6 +65,13 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
     <div class="mt-0.5 text-xs leading-snug text-muted-foreground">
       {{ item.action }}{{ item.detail ? " " + item.detail : "" }}
     </div>
+
+    <!-- Anything the card should show before the buttons -- a voice channel
+         puts its roster here, so the decision is made on who is in there. -->
+    <div v-if="$slots.body" class="toast-body mt-2 border-t border-border/50 pt-2">
+      <slot name="body" />
+    </div>
+
     <div class="mt-2.5 flex gap-2">
       <Button
         size="sm"
@@ -56,7 +82,7 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
         @click="$emit('accept')"
       >
         <Check class="h-3.5 w-3.5" />
-        {{ $t("draft_games.room.accept_invite") }}
+        {{ acceptLabel ?? $t("draft_games.room.accept_invite") }}
       </Button>
       <Button
         size="sm"
@@ -67,7 +93,7 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
         @click="$emit('decline')"
       >
         <X class="h-3.5 w-3.5" />
-        {{ $t("draft_games.room.decline_invite") }}
+        {{ declineLabel ?? $t("draft_games.room.decline_invite") }}
       </Button>
     </div>
   </div>
@@ -107,6 +133,14 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
   background: hsl(var(--tac-amber));
   box-shadow: 0 0 10px hsl(var(--tac-amber) / 0.7);
 }
+/* A voice invite's roster body can be genuinely empty until presence answers.
+   Until something visible is slotted, the divider strip stays hidden -- it
+   used to render as a bare border line and then jump when the first avatar
+   arrived. */
+.toast-body:not(:has(img, svg, p, span)) {
+  display: none;
+}
+
 .toast-count {
   margin-left: 0.35rem;
   display: inline-flex;

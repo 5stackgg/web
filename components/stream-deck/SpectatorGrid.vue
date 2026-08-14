@@ -14,14 +14,25 @@ const props = defineProps<{
   matchType: string | null | undefined;
   controlsActive: boolean;
   flashKey?: string | null;
+  // Already-resolved slot number, for call sites that track the flash as a slot
+  // rather than a keypress. Takes precedence over flashKey.
+  flashSlot?: number | null;
   compact?: boolean;
   // Optional: pass true to render the autodirector "AI piloting" wash
   // on non-active slots. Stream-deck index card surfaces it via the
   // `is_game_streamer + autodirector` row state.
   autodirectorOn?: boolean;
-  // When false, skip the GSI poll entirely. The stream-deck index
-  // card passes false while the focus popout is open so we don't
-  // double-poll the same match or re-render a hidden slot grid.
+  // Render each player's live camera behind their slot. Off by default -- a
+  // tile is a peer connection and a video decode, so only a surface showing one
+  // match at a time (the focus popout) is worth them. Everywhere else the slots
+  // still carry the player's avatar and the camera health indicator, which is
+  // all an 88px tile could show anyway.
+  cameras?: boolean;
+  // When false, skip the GSI poll entirely. Do NOT use this to dedupe against
+  // another window polling the same match: without GSI every slot falls back to
+  // a placeholder with no steam id, which costs the card its player names and
+  // its cameras. useStreamerGsi already stops polling a backgrounded tab, which
+  // is where the real waste was.
   gsiEnabled?: boolean;
 }>();
 
@@ -47,6 +58,10 @@ const {
 // handlers; SpectatorSlots wants the slot integer. Empty string and
 // non-digit values map to null (no flash).
 const flashSlotNum = computed<number | null>(() => {
+  if (props.flashSlot != null) {
+    return props.flashSlot;
+  }
+
   const k = props.flashKey;
   if (!k) return null;
   if (k === "0") return 10;
@@ -67,6 +82,8 @@ const flashSlotNum = computed<number | null>(() => {
     :match-type="matchType ?? undefined"
     :compact="!!compact"
     :autodirector-on="!!autodirectorOn"
+    :camera-match-id="matchId"
+    :camera-video="!!cameras"
     layout="grid"
     @press-slot="(slot: number) => emit('press-slot', slot)"
   />

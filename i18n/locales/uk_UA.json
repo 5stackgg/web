@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "ЗАХИЩЕНИЙ КАНАЛ"
+    },
+    "voice_panel": {
+      "coach": "Тренер"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Чат матчу",
-    "team": "Чат команди",
     "tournament": "Чат турніру",
     "organizers": "Чат організаторів",
     "matchmaking": "Чат черги",
@@ -3719,15 +3721,15 @@
     "organizers": "Глобальне лобі",
     "tournament": "Чат турніру",
     "matchmaking": "Чат черги",
-    "match": "Чат матчу",
-    "team": "Чат команди"
+    "match": "Чат матчу"
   },
   "latency_status": {
     "measuring": "Вимірювання...",
     "excellent": "Відмінна",
     "good": "Добра",
     "fair": "Задовільна",
-    "poor": "Погана"
+    "poor": "Погана",
+    "unreachable": "Недоступний"
   },
   "chat_page": {
     "fallback_title": "Чат",
@@ -7159,5 +7161,10 @@
     "player": "Гравець",
     "award": "Нагорода",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Тренер"
+    }
   }
 }

@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "BEZPIECZNY KANAŁ"
+    },
+    "voice_panel": {
+      "coach": "Trener"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Czat meczu",
-    "team": "Czat drużyny",
     "tournament": "Czat turnieju",
     "organizers": "Czat organizatorów",
     "matchmaking": "Czat kolejki",
@@ -3719,15 +3721,15 @@
     "organizers": "Globalne lobby",
     "tournament": "Czat turnieju",
     "matchmaking": "Czat kolejki",
-    "match": "Czat meczu",
-    "team": "Czat drużyny"
+    "match": "Czat meczu"
   },
   "latency_status": {
     "measuring": "Pomiar...",
     "excellent": "Doskonałe",
     "good": "Dobre",
     "fair": "Przeciętne",
-    "poor": "Słabe"
+    "poor": "Słabe",
+    "unreachable": "Nieosiągalny"
   },
   "chat_page": {
     "fallback_title": "Czat",
@@ -7159,5 +7161,10 @@
     "player": "Gracz",
     "award": "Nagroda",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Trener"
+    }
   }
 }

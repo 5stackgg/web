@@ -69,6 +69,8 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               :src="playerAvatarSrc"
               :alt="player.name"
               v-if="playerAvatarSrc"
+              draggable="false"
+              class="select-none"
             />
             <AvatarFallback>
               <slot name="avatar-fallback">

@@ -382,6 +382,99 @@ mark {
   }
 }
 
+/* Region latency readout (matchmaking settings). Every part of the pill —
+   fill, border, text and the landing flash — derives from one --latency-tier
+   channel, so a tier is a single token swap rather than four parallel colour
+   classes. Fair uses tac-amber instead of --warning: dark-mode --warning is a
+   near-brown that disappears as text on the card background. */
+.latency-readout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 6.5rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid hsl(var(--latency-tier) / 0.22);
+  border-radius: 9999px;
+  background: hsl(var(--latency-tier) / 0.1);
+  color: hsl(var(--latency-tier));
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  font-variant-numeric: tabular-nums;
+  transition:
+    color 300ms ease,
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+.latency-tier-excellent {
+  --latency-tier: var(--success);
+}
+.latency-tier-good {
+  --latency-tier: var(--info);
+}
+.latency-tier-fair {
+  --latency-tier: var(--tac-amber);
+}
+.latency-tier-poor {
+  --latency-tier: var(--destructive);
+}
+.latency-tier-unknown {
+  --latency-tier: var(--muted-foreground);
+}
+/* No route to the region on the last pass — a broken outline, so an
+   unreachable region is distinguishable from a merely slow one at a glance. */
+.latency-readout.is-unreachable {
+  border-style: dashed;
+  background: transparent;
+}
+
+/* Fresh reading arrives: rises into place and throws one ring in its own tier
+   colour, so during a refresh you can see which regions have just landed. */
+@keyframes latency-land {
+  from {
+    box-shadow: 0 0 0 0 hsl(var(--latency-tier) / 0.45);
+  }
+  to {
+    box-shadow: 0 0 0 7px hsl(var(--latency-tier) / 0);
+  }
+}
+.latency-swap-enter-active {
+  transition:
+    opacity 260ms ease-out,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.latency-swap-leave-active {
+  transition:
+    opacity 140ms ease-in,
+    transform 140ms ease-in;
+}
+.latency-swap-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.latency-swap-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.latency-readout.has-landed {
+  animation: latency-land 700ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .latency-readout.has-landed {
+    animation: none;
+  }
+  .latency-swap-enter-active,
+  .latency-swap-leave-active {
+    transition-duration: 1ms;
+  }
+  .latency-swap-enter-from,
+  .latency-swap-leave-to {
+    transform: none;
+  }
+}
+
 /* One-shot pulse for clip share buttons — toast is far from the click
    target, so the button itself flashes amber + scales briefly. Used
    by MatchHighlightsReel queue/featured share, HighlightCard, and

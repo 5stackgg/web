@@ -19,8 +19,12 @@ import { Badge } from "~/components/ui/badge";
         <div
           v-for="slot in sortedPlayers"
           :key="slot.player.steam_id"
-          class="group flex items-center gap-3 rounded-md px-2 py-1.5 border border-transparent hover:border-border hover:bg-muted/40 transition-colors"
+          class="grid grid-rows-[1fr]"
         >
+          <div class="min-h-0">
+            <div
+              class="group flex items-center gap-3 rounded-md px-2 py-1.5 border border-transparent hover:border-border hover:bg-muted/40 transition-colors"
+            >
           <PlayerDisplay
             :player="slot.player"
             :showOnline="true"
@@ -67,6 +71,8 @@ import { Badge } from "~/components/ui/badge";
               <LogOut class="h-3.5 w-3.5 rotate-180" />
             </Button>
           </div>
+            </div>
+          </div>
         </div>
       </TransitionGroup>
 
@@ -109,7 +115,6 @@ export default {
       required: true,
     },
   },
-  emits: ["open-voice-settings", "open-discord-integration"],
   computed: {
     me() {
       return useAuthStore().me;
@@ -157,12 +162,6 @@ export default {
           return "bg-zinc-700/40 text-zinc-200 border border-zinc-600/60";
       }
     },
-    openVoiceSettings() {
-      this.$emit("open-voice-settings");
-    },
-    openDiscordIntegration() {
-      this.$emit("open-discord-integration");
-    },
     async inviteToLobby(steam_id: string) {
       await useMatchmakingStore().inviteToLobby(steam_id);
     },
@@ -186,25 +185,39 @@ export default {
 </script>
 
 <style scoped>
-/* Squad members adding / removing */
+/* Squad members adding / removing. A leaving row collapses its own height in
+   place and the rows below ride normal flow up -- position:absolute put the
+   leaver at the flex container's origin (its static position), where it faded
+   out on top of the first member. */
 .squad-row-enter-active {
   transition:
-    opacity 0.3s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .squad-row-leave-active {
   transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
-  position: absolute;
-  width: 100%;
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease-in;
 }
-.squad-row-enter-from,
-.squad-row-leave-to {
+.squad-row-leave-active > * {
+  overflow: hidden;
+}
+.squad-row-enter-from {
   opacity: 0;
   transform: translateX(12px);
 }
+.squad-row-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
 .squad-row-move {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .squad-row-enter-active,
+  .squad-row-leave-active,
+  .squad-row-move {
+    transition-duration: 1ms;
+  }
 }
 </style>

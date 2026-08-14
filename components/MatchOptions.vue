@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
+import { HeightSwap, Fold } from "~/components/ui/transitions";
 import { Separator } from "~/components/ui/separator";
 import { Info, ExternalLink } from "lucide-vue-next";
 import {
@@ -183,6 +184,12 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </span>
                   </template>
                 </div>
+                <Transition
+                  enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+                  leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+                  enter-from-class="opacity-0"
+                  leave-to-class="opacity-0"
+                >
                 <div v-show="form.values.map_veto" class="shrink-0">
                   <FormField
                     v-slot="{ value, handleChange }"
@@ -218,6 +225,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </FormControl>
                   </FormField>
                 </div>
+                </Transition>
               </div>
               <div>
                 <Transition name="collapse">
@@ -245,8 +253,10 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                   </div>
                 </Transition>
 
-                <div class="relative">
-                  <Transition name="map-swap">
+                <!-- Competitive / Wingman / Duel have different map counts, so
+                     the grids are different heights -- the swap eases between
+                     them instead of jumping a tile row under a crossfade. -->
+                <HeightSwap>
                     <div
                       :key="`${form.values.type}-${!!form.values.custom_map_pool}`"
                       class="space-y-6"
@@ -321,8 +331,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                         </div>
                       </template>
                     </div>
-                  </Transition>
-                </div>
+                </HeightSwap>
               </div>
             </div>
           </Card>
@@ -375,13 +384,13 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                 }}
               </span>
               <Button type="button" variant="ghost" size="icon" class="h-8 w-8">
-                <ChevronUp
-                  v-if="showAdvancedSettings"
-                  class="h-4 w-4 transition-transform duration-200"
-                />
+                <!-- One chevron that rotates: the v-if pair hard-swapped
+                     glyphs next to the drawer's glide, and the
+                     transition-transform on them never had anything to
+                     animate. -->
                 <ChevronDown
-                  v-else
-                  class="h-4 w-4 transition-transform duration-200"
+                  class="h-4 w-4 transition-transform duration-[240ms] motion-reduce:!duration-[1ms]"
+                  :class="showAdvancedSettings ? 'rotate-180' : ''"
                 />
                 <span class="sr-only">{{
                   $t("match.options.advanced.toggle")
@@ -835,32 +844,34 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                       </FormControl>
                     </div>
 
-                    <div v-if="value > 0" class="mt-4 pl-4 border-l-2">
-                      <NumberField
-                        class="gap-2"
-                        :min="1"
-                        :max="600"
-                        :model-value="value"
-                        @update:model-value="
-                          (timeout) => {
-                            form.setFieldValue('veto_pick_timeout', timeout);
-                          }
-                        "
-                      >
-                        <NumberFieldContent>
-                          <NumberFieldDecrement />
-                          <FormControl>
-                            <NumberFieldInput />
-                          </FormControl>
-                          <NumberFieldIncrement />
-                        </NumberFieldContent>
-                      </NumberField>
-                      <FormDescription class="mt-2">
-                        {{
-                          $t("match.options.advanced.veto_pick_timeout.range")
-                        }}
-                      </FormDescription>
-                    </div>
+                    <Fold :open="value > 0">
+                      <div class="mt-4 pl-4 border-l-2">
+                        <NumberField
+                          class="gap-2"
+                          :min="1"
+                          :max="600"
+                          :model-value="value"
+                          @update:model-value="
+                            (timeout) => {
+                              form.setFieldValue('veto_pick_timeout', timeout);
+                            }
+                          "
+                        >
+                          <NumberFieldContent>
+                            <NumberFieldDecrement />
+                            <FormControl>
+                              <NumberFieldInput />
+                            </FormControl>
+                            <NumberFieldIncrement />
+                          </NumberFieldContent>
+                        </NumberField>
+                        <FormDescription class="mt-2">
+                          {{
+                            $t("match.options.advanced.veto_pick_timeout.range")
+                          }}
+                        </FormDescription>
+                      </div>
+                    </Fold>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -927,6 +938,133 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </div>
                   </FormItem>
                 </FormField>
+
+              </div>
+            </Card>
+
+            <!-- Cameras get their own module rather than another row in the
+                 advanced list: it is the one setting that changes what players
+                 must do before they can play, and an organizer needs to see at
+                 a glance whether this match is armed. -->
+            <Card
+              v-if="canSetCameraRequired"
+              class="overflow-hidden transition-colors duration-300"
+              :class="
+                cameraArmed
+                  ? 'border-[hsl(var(--tac-amber)/0.55)] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.12),0_0_40px_-16px_hsl(var(--tac-amber)/0.5)]'
+                  : ''
+              "
+            >
+              <div
+                class="flex items-center gap-2 border-b px-4 py-2.5 transition-colors duration-300"
+                :class="
+                  cameraArmed
+                    ? 'border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.07)]'
+                    : 'border-border bg-muted/30'
+                "
+              >
+                <span class="relative inline-flex h-2 w-2 shrink-0">
+                  <span
+                    v-if="cameraArmed"
+                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber)/0.75)]"
+                  ></span>
+                  <span
+                    class="relative inline-flex h-2 w-2 rounded-full transition-colors duration-300"
+                    :class="
+                      cameraArmed
+                        ? 'bg-[hsl(var(--tac-amber))]'
+                        : 'bg-muted-foreground/40'
+                    "
+                  ></span>
+                </span>
+                <h3
+                  class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition-colors duration-300"
+                  :class="
+                    cameraArmed
+                      ? 'text-[hsl(var(--tac-amber))]'
+                      : 'text-muted-foreground'
+                  "
+                >
+                  {{ $t("match.options.cameras.title") }}
+                </h3>
+              </div>
+
+              <div class="space-y-5 p-4">
+                <FormField v-slot="{ value, handleChange }" name="camera_required">
+                  <FormItem>
+                    <div
+                      class="flex cursor-pointer flex-row items-center justify-between gap-4"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-1">
+                        <SettingHeader>{{
+                          $t("match.options.cameras.required.label")
+                        }}</SettingHeader>
+                        <FormDescription>{{
+                          $t("match.options.cameras.required.description")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
+
+                <!-- Indented and dimmed while cameras are not required: letting
+                     teammates watch a feed nobody has to publish means nothing. -->
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="camera_allow_teammates"
+                >
+                  <FormItem>
+                    <div
+                      class="border-l-2 pl-4 transition-colors duration-300"
+                      :class="
+                        cameraArmed
+                          ? 'border-[hsl(var(--tac-amber)/0.4)]'
+                          : 'border-border'
+                      "
+                    >
+                      <div
+                        class="flex flex-row items-center justify-between gap-4"
+                        :class="
+                          cameraArmed
+                            ? 'cursor-pointer'
+                            : 'cursor-not-allowed opacity-50'
+                        "
+                        @click="cameraArmed && handleChange(!value)"
+                      >
+                        <div class="space-y-1">
+                          <SettingHeader>{{
+                            $t("match.options.cameras.teammates.label")
+                          }}</SettingHeader>
+                          <FormDescription>{{
+                            $t("match.options.cameras.teammates.description")
+                          }}</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            class="pointer-events-none"
+                            :disabled="!cameraArmed"
+                            :model-value="value"
+                            @update:model-value="handleChange"
+                          />
+                        </FormControl>
+                      </div>
+                    </div>
+                  </FormItem>
+                </FormField>
+
+                <p
+                  class="border-t pt-3 font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground/70"
+                >
+                  {{ $t("match.options.cameras.privacy_note") }}
+                </p>
               </div>
             </Card>
 
@@ -1025,7 +1163,8 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                       </FormControl>
                     </div>
 
-                    <div v-if="value" class="mt-4 space-y-4 pl-4 border-l-2">
+                    <Fold :open="!!value">
+                    <div class="mt-4 space-y-4 pl-4 border-l-2">
                       <FormField
                         v-slot="{ componentField }"
                         name="auto_cancel_duration"
@@ -1080,6 +1219,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                         </FormItem>
                       </FormField>
                     </div>
+                    </Fold>
                   </FormItem>
                 </FormField>
 
@@ -1222,6 +1362,11 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
 </template>
 
 <script lang="ts">
+// Imports below are aliased where an option of the same name exists: this file
+// has both a <script setup> and this block, which compile into one module, so a
+// module-scope import shadows the computed when the template resolves it. These
+// return booleans, so the template was reading a function -- always truthy, and
+// so a v-if that never hid anything.
 import { generateQuery } from "~/graphql/graphqlGen";
 import {
   e_player_roles_enum,
@@ -1235,7 +1380,10 @@ import {
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
-import { canSetVetoPickTimeout } from "~/utilities/setupOptions";
+import {
+  canSetCameraRequired as allowsCameraRequired,
+  canSetVetoPickTimeout as allowsVetoPickTimeout,
+} from "~/utilities/setupOptions";
 
 interface Map {
   id: string;
@@ -1697,7 +1845,15 @@ export default {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
     canSetVetoPickTimeout() {
-      return canSetVetoPickTimeout();
+      return allowsVetoPickTimeout();
+    },
+    canSetCameraRequired() {
+      return allowsCameraRequired();
+    },
+    // Drives the whole module's lit/dormant treatment, and gates the teammate
+    // toggle: allowing teammates to watch feeds nobody publishes is a no-op.
+    cameraArmed() {
+      return !!this.form.values.camera_required;
     },
     canSetMatchCancellation() {
       return useAuthStore().isRoleAbove(
@@ -1865,22 +2021,6 @@ export default {
 /* Whole-grid crossfade when the match type / pool / veto changes, so we fade
    two complete grids over each other instead of letting individual tiles go
    position:absolute and lose their grid-track sizing (which stretches them). */
-.map-swap-enter-active,
-.map-swap-leave-active {
-  transition: opacity 200ms ease;
-}
-
-.map-swap-enter-from,
-.map-swap-leave-to {
-  opacity: 0;
-}
-
-.map-swap-leave-active {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-}
-
 .map-badge-enter-active,
 .map-badge-leave-active {
   transition:
@@ -1896,11 +2036,15 @@ export default {
 
 /* Height-collapse for the custom-pool filter input so toggling the pool
    type doesn't snap the map grid up/down. */
-.collapse-enter-active,
-.collapse-leave-active {
+.collapse-enter-active {
   transition:
     grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 200ms ease;
+}
+.collapse-leave-active {
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 110ms ease-in;
 }
 
 .collapse-enter-from,
@@ -1911,6 +2055,13 @@ export default {
 
 .adv-collapse {
   overflow: hidden;
-  transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: height 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .collapse-enter-active,
+  .collapse-leave-active,
+  .adv-collapse {
+    transition-duration: 1ms;
+  }
 }
 </style>

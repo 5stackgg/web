@@ -3,6 +3,7 @@ import { ref, computed, watch } from "vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { HeightSwap } from "~/components/ui/transitions";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -188,7 +189,10 @@ const team2Members = computed(() =>
 
 <template>
   <div v-if="team1?.id" class="space-y-4">
-    <section v-if="innerSquad">
+    <!-- Inner-squad (one stacked list) and split (two columns) are different
+         heights and layouts; measured swap instead of three jumps at once. -->
+    <HeightSwap>
+    <section v-if="innerSquad" key="inner">
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
         {{ nameFor(team1) || $t("draft_games.create.team_1_required") }}
@@ -231,7 +235,7 @@ const team2Members = computed(() =>
       </div>
     </section>
 
-    <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div v-else key="split" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <section
         v-for="side in [
           { lineup: 1, team: team1, members: team1Members },
@@ -290,6 +294,7 @@ const team2Members = computed(() =>
         </div>
       </section>
     </div>
+    </HeightSwap>
   </div>
 </template>
 

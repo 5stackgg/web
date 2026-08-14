@@ -250,6 +250,10 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
           {
             id: true,
             status: true,
+            // The check-in window is a deadline, not an open invitation -- the
+            // match auto-cancels at cancels_at, so the room has to be able to
+            // show how long is left.
+            cancels_at: true,
             region: true,
             e_region: { description: true },
             is_captain: true,
@@ -291,6 +295,8 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               coaches: true,
               check_in_setting: true,
               veto_pick_timeout: true,
+              camera_required: true,
+              camera_allow_teammates: true,
               type: true,
               map_pool: {
                 id: true,
@@ -421,7 +427,10 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
   const joinParty = (draftGameId: string, inviteCode?: string) =>
     getGraphqlClient().mutate({
       mutation: gql`
-        mutation JoinDraftGameAsParty($draftGameId: uuid!, $inviteCode: String) {
+        mutation JoinDraftGameAsParty(
+          $draftGameId: uuid!
+          $inviteCode: String
+        ) {
           joinDraftGameAsParty(
             draftGameId: $draftGameId
             inviteCode: $inviteCode
@@ -466,7 +475,10 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
   const extend = (draftGameId: string) =>
     getGraphqlClient().mutate({
       mutation: gql`
-        mutation ExtendDraftGame($draftGameId: uuid!, $expiresAt: timestamptz!) {
+        mutation ExtendDraftGame(
+          $draftGameId: uuid!
+          $expiresAt: timestamptz!
+        ) {
           update_draft_games_by_pk(
             pk_columns: { id: $draftGameId }
             _set: { expires_at: $expiresAt }
@@ -549,16 +561,26 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     clearMyDraftGame(draftGameId);
   };
 
-  const add = (draftGameId: string, steamId: string) =>
+  // `lineup` drops the player straight into a roster slot instead of landing
+  // them in the lobby pool first and moving them on a second mutation.
+  const add = (draftGameId: string, steamId: string, lineup?: number | null) =>
     getGraphqlClient().mutate({
       mutation: gql`
-        mutation AddDraftPlayer($draftGameId: uuid!, $steamId: String!) {
-          addDraftPlayer(draftGameId: $draftGameId, steamId: $steamId) {
+        mutation AddDraftPlayer(
+          $draftGameId: uuid!
+          $steamId: String!
+          $lineup: Int
+        ) {
+          addDraftPlayer(
+            draftGameId: $draftGameId
+            steamId: $steamId
+            lineup: $lineup
+          ) {
             success
           }
         }
       `,
-      variables: { draftGameId, steamId },
+      variables: { draftGameId, steamId, lineup: lineup ?? null },
     });
 
   const respondInvite = (draftGameId: string, accept: boolean) =>

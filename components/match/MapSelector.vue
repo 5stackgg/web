@@ -18,7 +18,8 @@ import {
       <div
         v-for="(map, idx) in mapPool"
         :key="map.id"
-        class="map-tile relative w-[150px]"
+        class="relative w-[150px]"
+        :class="{ 'map-tile': entrance }"
         :style="{ '--i': idx }"
       >
         <div
@@ -88,6 +89,13 @@ export default {
     readonly: {
       type: Boolean,
       default: false,
+    },
+    // The staggered tile entrance suits the grid's first appearance; a parent
+    // that remounts this mid-veto (the side-pick swap does) turns it off so
+    // the tiles don't parade back in on every turn.
+    entrance: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

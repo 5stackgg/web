@@ -6,6 +6,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import DraftRoom from "~/components/draft-games/DraftRoom.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
@@ -190,9 +191,13 @@ onUnmounted(() => clearTimeout(liveRedirect));
 
 <template>
   <PageTransition>
-    <div>
+    <!-- The room arrives over a subscription, so it lands a beat after the
+         route does -- it dissolves in over the loading line instead of
+         replacing it in one frame. -->
+    <FadeSwap>
       <DraftRoom
         v-if="room"
+        key="room"
         :room="room"
         :match="match"
         :invite-code="inviteCode"
@@ -200,6 +205,7 @@ onUnmounted(() => clearTimeout(liveRedirect));
       <!-- Invite-only room we can't see until we join — preview + choice -->
       <div
         v-else-if="showInvitePrompt"
+        key="invite"
         class="mx-auto mt-16 flex w-full max-w-md flex-col items-center gap-5 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-8 text-center"
       >
         <span
@@ -264,13 +270,14 @@ onUnmounted(() => clearTimeout(liveRedirect));
       </div>
       <div
         v-else-if="loadTimedOut"
+        key="failed"
         class="text-center text-muted-foreground py-12"
       >
         {{ $t("draft_games.room.load_failed") }}
       </div>
-      <div v-else class="text-center text-muted-foreground py-12">
+      <div v-else key="loading" class="text-center text-muted-foreground py-12">
         {{ $t("draft_games.room.loading") }}
       </div>
-    </div>
+    </FadeSwap>
   </PageTransition>
 </template>

@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "ЗАЩИЩЁННЫЙ КАНАЛ"
+    },
+    "voice_panel": {
+      "coach": "Тренер"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Чат матча",
-    "team": "Чат команды",
     "tournament": "Чат турнира",
     "organizers": "Чат организаторов",
     "matchmaking": "Чат очереди",
@@ -3719,15 +3721,15 @@
     "organizers": "Общее лобби",
     "tournament": "Чат турнира",
     "matchmaking": "Чат очереди",
-    "match": "Чат матча",
-    "team": "Чат команды"
+    "match": "Чат матча"
   },
   "latency_status": {
     "measuring": "Измерение…",
     "excellent": "Отлично",
     "good": "Хорошо",
     "fair": "Средне",
-    "poor": "Плохо"
+    "poor": "Плохо",
+    "unreachable": "Недоступен"
   },
   "chat_page": {
     "fallback_title": "Чат",
@@ -7159,5 +7161,10 @@
     "player": "Игрок",
     "award": "Награда",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Тренер"
+    }
   }
 }

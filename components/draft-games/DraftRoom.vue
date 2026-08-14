@@ -29,6 +29,9 @@ import { Spinner } from "~/components/ui/spinner";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import mapLabel from "~/utilities/mapLabel";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
+import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
@@ -113,8 +116,7 @@ const myMembership = computed(() =>
 // there: a Waitlist row with a lineup is that side's backup, never a starter.
 const isMember = computed(() => myMembership.value?.status === "Accepted");
 const isLobbyPhase = computed(
-  () =>
-    !props.room.match_id && ["Open", "Filled"].includes(props.room.status),
+  () => !props.room.match_id && ["Open", "Filled"].includes(props.room.status),
 );
 // Once the match exists there is a single conversation: the match chat.
 // Only switch after lineup players exist — the server's match-chat join gate
@@ -130,6 +132,26 @@ const matchChatReady = computed(
 const chatType = computed(() => (matchChatReady.value ? "match" : "draft"));
 const chatLobbyId = computed(() =>
   matchChatReady.value ? props.room.match_id : props.room.id,
+);
+// The match page derives its team room from `lineup.is_on_lineup`, but the
+// draft subscription does not select that field — `myMembership.lineup` is the
+// side (1 or 2) this viewer was drafted onto, which maps to the same lineup id.
+// Accepted only: the server's match_team join gate checks the real
+// match_lineups row, and a Waitlist backup was never inserted into it.
+const myMatchLineupId = computed(() => {
+  if (
+    !matchChatReady.value ||
+    myMembership.value?.lineup == null ||
+    myMembership.value?.status !== "Accepted"
+  ) {
+    return null;
+  }
+  return myMembership.value.lineup === 1
+    ? props.match?.lineup_1_id
+    : props.match?.lineup_2_id;
+});
+const teamChatLobbyId = computed(() =>
+  myMatchLineupId.value ? `${props.match.id}:${myMatchLineupId.value}` : null,
 );
 const inLineup = computed(
   () =>
@@ -379,11 +401,12 @@ const add = (steamId: string) => {
   );
 };
 
+// Added with the lineup in one shot -- adding then assigning would flash the
+// player through the lobby pool on the way to their slot.
 const addToTeam = (steamId: string, lineup: number) => {
-  return runGuarded(`add:${steamId}`, async () => {
-    await useDraftGamesStore().add(props.room.id, steamId);
-    await useDraftGamesStore().teamAssign(props.room.id, steamId, lineup);
-  });
+  return runGuarded(`add:${steamId}`, () =>
+    useDraftGamesStore().add(props.room.id, steamId, lineup),
+  );
 };
 
 const respondInvite = (accept: boolean) => {
@@ -470,8 +493,7 @@ const canSelfPick = (player: any) =>
 // draft begins.
 const isManualCaptains = computed(
   () =>
-    props.room.mode === "Captains" &&
-    props.room.captain_selection === "Manual",
+    props.room.mode === "Captains" && props.room.captain_selection === "Manual",
 );
 const team1Captain = computed(() =>
   props.room.players.find((p: any) => p.is_captain && p.lineup === 1),
@@ -511,7 +533,10 @@ const teamForSide = (lineup: number): string | undefined => {
   if (lineup === 1) {
     return props.room.team_1_id;
   }
-  return props.room.team_2_id || (props.room.inner_squad ? props.room.team_1_id : undefined);
+  return (
+    props.room.team_2_id ||
+    (props.room.inner_squad ? props.room.team_1_id : undefined)
+  );
 };
 
 const sideName = (lineup: number): string => {
@@ -537,7 +562,8 @@ const canManageSide = (lineup: number) => {
   return !!teamId && myTeamIds.value.has(teamId);
 };
 
-const sideFull = (lineup: number) => startersFor(lineup).length >= perTeam.value;
+const sideFull = (lineup: number) =>
+  startersFor(lineup).length >= perTeam.value;
 
 const startPlayer = (steamId: string, lineup: number) =>
   runGuarded(`swap:${steamId}`, () =>
@@ -643,8 +669,7 @@ const startReady = computed(() => {
   }
   if (isManualCaptains.value) {
     return (
-      accepted.value.length === props.room.capacity &&
-      manualCaptainsReady.value
+      accepted.value.length === props.room.capacity && manualCaptainsReady.value
     );
   }
   return accepted.value.length === props.room.capacity;
@@ -691,695 +716,284 @@ const start = () => {
       @close="settingsOpen = false"
     />
 
-    <Alert
-      v-if="!regionsAvailable && notStarted"
-      variant="destructive"
-      class="bg-red-600 text-white"
-    >
-      <AlertTitle>
-        {{ $t("match.region_veto.no_regions_available") }}
-      </AlertTitle>
-      <AlertDescription>
-        {{ $t("draft_games.room.no_regions_available_description") }}
-      </AlertDescription>
-    </Alert>
+    <!-- Region availability flips with the fleet, not with anything the room
+         did, so the warning eases in rather than shoving the room down. -->
+    <Transition name="collapse">
+      <div v-if="!regionsAvailable && notStarted" class="grid grid-rows-[1fr]">
+        <div class="collapse-clip">
+          <Alert variant="destructive" class="bg-red-600 text-white">
+            <AlertTitle>
+              {{ $t("match.region_veto.no_regions_available") }}
+            </AlertTitle>
+            <AlertDescription>
+              {{ $t("draft_games.room.no_regions_available_description") }}
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    </Transition>
 
     <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
       <div class="min-w-0 space-y-4">
-        <Transition name="phase">
-          <MatchInfo v-if="match" :match="match" hide-booting />
+        <!-- Match info appears when the match is made -- it folds into the
+             column with the room's collapse idiom instead of fading in at
+             full height and shoving the board down. -->
+        <Transition name="collapse">
+          <div v-if="match" class="grid grid-rows-[1fr]">
+            <div class="collapse-clip">
+              <MatchInfo :match="match" hide-booting />
+            </div>
+          </div>
         </Transition>
 
-        <Transition name="stage" mode="out-in">
+        <!-- Stages are wildly different heights (the veto board vs one small
+             starting card), so they trade through a measured height swap --
+             the column eases between them instead of collapsing hundreds of
+             pixels on the handoff frame. -->
+        <HeightSwap>
           <div :key="stage" class="space-y-4">
-        <div
-          v-if="inVeto"
-          class="veto-stage rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-6 [backdrop-filter:blur(8px)]"
-        >
-          <div class="mb-5 flex items-center justify-center gap-2">
-            <h3
-              class="font-sans text-base font-bold uppercase tracking-[0.2em]"
-            >
-              {{ $t(vetoPhaseLabel) }}
-            </h3>
-          </div>
-          <MatchRegionVeto
-            :match="match"
-            :match-id="room.match_id"
-            class="pb-6"
-          />
-          <MatchMapVeto :match="match" :match-id="room.match_id" />
-        </div>
-
-        <div
-          v-else-if="inMatchStarting"
-          class="rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-8 [backdrop-filter:blur(8px)]"
-        >
-          <div class="flex flex-col items-center gap-5 text-center">
-            <div class="flex flex-wrap justify-center gap-3">
-              <div
-                v-for="(m, i) in match.match_maps"
-                :key="m.id"
-                class="starting-map relative h-24 w-40 overflow-hidden rounded-lg border border-border"
-                :style="{ '--i': i }"
-              >
-                <img
-                  v-if="m.map?.poster"
-                  :src="m.map.poster"
-                  class="h-full w-full object-cover"
-                  :alt="mapLabel(m.map)"
-                />
-                <span
-                  class="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1 text-center font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-white"
-                >
-                  {{ mapLabel(m.map) }}
-                </span>
-              </div>
-            </div>
             <div
-              class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+              v-if="inVeto"
+              class="veto-stage rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-6 [backdrop-filter:blur(8px)]"
             >
-              <Spinner class="h-4 w-4" />
-              {{ $t("draft_games.room.match_starting") }}
-            </div>
-          </div>
-        </div>
-
-        <div v-else-if="isTeamsMode" class="space-y-4">
-          <div
-            class="teams-matchup relative flex flex-col items-center gap-6 rounded-xl border border-border bg-card/40 p-8 [backdrop-filter:blur(8px)]"
-          >
-            <div
-              class="grid w-full max-w-2xl grid-cols-[1fr_auto_1fr] items-center gap-4"
-            >
-              <div class="team-slot amber">
-                <span class="team-tick"></span>
-                <span class="truncate">{{
-                  sideName(1) || $t("draft_games.room.team", { team: 1 })
-                }}</span>
-              </div>
-              <div class="vs-badge">
-                <Swords class="h-4 w-4" />
-                {{ $t("draft_games.room.vs") }}
-              </div>
-              <div class="team-slot blue justify-end text-right">
-                <span class="truncate">{{
-                  sideName(2) || $t("draft_games.room.team", { team: 2 })
-                }}</span>
-                <span class="team-tick blue-tick"></span>
-              </div>
-            </div>
-
-            <!-- The hint, the CTA and the check-in readout share one fixed-height
-                 row. Swapping content instead of mounting and unmounting keeps
-                 this panel the same height from an empty lobby right through to
-                 check-in, so the rosters below never jump. -->
-            <div
-              v-if="showStart || isCheckIn"
-              class="flex h-14 w-full items-center justify-center"
-            >
-              <Transition name="cta" mode="out-in">
-                <div
-                  v-if="isCheckIn"
-                  key="checkin"
-                  class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-                >
-                  <span
-                    class="relative grid h-2 w-2 place-items-center"
-                    aria-hidden="true"
-                  >
-                    <span
-                      class="absolute inset-0 animate-ping rounded-full bg-[hsl(var(--tac-amber)/0.5)]"
-                    ></span>
-                    <span
-                      class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
-                    ></span>
-                  </span>
-                  {{
-                    checkInProgress
-                      ? $t("draft_games.room.checking_in", checkInProgress)
-                      : $t("draft_games.room.match_starting")
-                  }}
-                </div>
-
-                <Button
-                  v-else-if="startReady"
-                  key="start"
-                  variant="tactical"
-                  type="button"
-                  :disabled="isPending('start') || !regionsAvailable"
-                  :class="[
-                    tacticalCtaButtonClasses,
-                    'justify-center px-10 py-3.5 text-base',
-                  ]"
-                  @click="start"
-                >
-                  <Spinner v-if="isPending('start')" class="h-5 w-5" />
-                  <Play v-else class="h-5 w-5" />
-                  {{
-                    isPending("start")
-                      ? $t("draft_games.room.starting")
-                      : $t("draft_games.room.start_match")
-                  }}
-                </Button>
-
-                <div
-                  v-else
-                  key="hint"
-                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  {{ $t(startHint) }}
-                </div>
-              </Transition>
-            </div>
-          </div>
-
-          <div class="grid items-stretch gap-4 sm:grid-cols-2">
-            <DraftTeamPanel
-              :title="sideName(1) || $t('draft_games.room.team', { team: 1 })"
-              :players="team1"
-              :per-team="perTeam"
-              accent="amber"
-              :host-steam-id="room.host_steam_id"
-              :check-in-by-steam-id="checkInBySteamId"
-              :removable="canManageSide(1)"
-              :draggable="canManageSide(1)"
-              :droppable="canDropAsStarter(1)"
-              :drag-steam-id="dragSteamId"
-              @remove="(steamId) => benchPlayer(steamId, 1)"
-              @dragstart="onDragStart"
-              @dragend="onDragEnd"
-              @drop="(steamId) => dropAsStarter(1, steamId)"
-            />
-            <DraftTeamPanel
-              :title="
-                sideName(2) || $t('draft_games.room.team', { team: 2 })
-              "
-              :players="team2"
-              :per-team="perTeam"
-              accent="blue"
-              :host-steam-id="room.host_steam_id"
-              :check-in-by-steam-id="checkInBySteamId"
-              :removable="canManageSide(2)"
-              :draggable="canManageSide(2)"
-              :droppable="canDropAsStarter(2)"
-              :drag-steam-id="dragSteamId"
-              @remove="(steamId) => benchPlayer(steamId, 2)"
-              @dragstart="onDragStart"
-              @dragend="onDragEnd"
-              @drop="(steamId) => dropAsStarter(2, steamId)"
-            />
-          </div>
-
-          <!-- One shared pool for an inner squad (a single roster split in two),
-               otherwise a section per side plus a bucket for anyone unsided. -->
-          <template v-if="room.inner_squad">
-            <DraftBackupsPanel
-              :title="$t('draft_games.room.backups')"
-              :players="innerSquadBackups"
-              accent="neutral"
-              :match-type="rankMatchType"
-              :host-steam-id="room.host_steam_id"
-              :drag-steam-id="dragSteamId"
-              :droppable="canDropAsBackup(null)"
-              @dragstart="onDragStart"
-              @dragend="onDragEnd"
-              @drop="(steamId) => dropAsBackup(null, steamId)"
-            >
-              <template #action="{ player }">
-                <div class="flex items-center gap-1.5">
-                  <Button
-                    v-for="side in [1, 2]"
-                    :key="`start-${side}`"
-                    v-show="canManageSide(side)"
-                    variant="ghost"
-                    class="start-btn"
-                    :disabled="
-                      isPending(`swap:${player.steam_id}`) || sideFull(side)
-                    "
-                    :title="
-                      sideFull(side)
-                        ? $t('draft_games.room.side_full')
-                        : $t('draft_games.room.start_player')
-                    "
-                    @click="startPlayer(player.steam_id, side)"
-                  >
-                    {{ side === 1 ? "A" : "B" }}
-                  </Button>
-                  <Button
-                    v-if="
-                      canManageSide(player.lineup ?? 1) &&
-                      player.steam_id !== room.host_steam_id
-                    "
-                    variant="ghost"
-                    class="kick-btn"
-                    :title="$t('draft_games.room.kick')"
-                    @click="kick(player.steam_id)"
-                  >
-                    <X class="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </template>
-            </DraftBackupsPanel>
-          </template>
-
-          <div v-else class="grid items-stretch gap-4 sm:grid-cols-2">
-            <DraftBackupsPanel
-              v-for="side in [1, 2]"
-              :key="`backups-${side}`"
-              :title="
-                $t('draft_games.room.side_backups', {
-                  team: sideName(side) || $t('draft_games.room.team', { team: side }),
-                })
-              "
-              :players="backupsFor(side)"
-              :accent="side === 1 ? 'amber' : 'blue'"
-              :match-type="rankMatchType"
-              :host-steam-id="room.host_steam_id"
-              :drag-steam-id="dragSteamId"
-              :droppable="canDropAsBackup(side)"
-              :empty-label="$t('draft_games.room.no_backups')"
-              @dragstart="onDragStart"
-              @dragend="onDragEnd"
-              @drop="(steamId) => dropAsBackup(side, steamId)"
-            >
-              <template #action="{ player }">
-                <div class="flex items-center gap-1.5">
-                  <Button
-                    v-if="canManageSide(side)"
-                    variant="ghost"
-                    class="start-btn"
-                    :disabled="
-                      isPending(`swap:${player.steam_id}`) || sideFull(side)
-                    "
-                    :title="
-                      sideFull(side)
-                        ? $t('draft_games.room.side_full')
-                        : $t('draft_games.room.start_player')
-                    "
-                    @click="startPlayer(player.steam_id, side)"
-                  >
-                    <ArrowUp class="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    v-if="
-                      canManageSide(side) &&
-                      player.steam_id !== room.host_steam_id
-                    "
-                    variant="ghost"
-                    class="kick-btn"
-                    :title="$t('draft_games.room.kick')"
-                    @click="kick(player.steam_id)"
-                  >
-                    <X class="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </template>
-            </DraftBackupsPanel>
-          </div>
-
-          <DraftBackupsPanel
-            v-if="unsidedPlayers.length > 0"
-            :title="$t('draft_games.room.unassigned_backups')"
-            :players="unsidedPlayers"
-            accent="neutral"
-            :match-type="rankMatchType"
-            :host-steam-id="room.host_steam_id"
-            :drag-steam-id="dragSteamId"
-            :droppable="canDropAsBackup(null)"
-            @dragstart="onDragStart"
-            @dragend="onDragEnd"
-            @drop="(steamId) => dropAsBackup(null, steamId)"
-          >
-            <template #action="{ player }">
-              <div class="flex items-center gap-1.5">
-                <Button
-                  v-for="side in [1, 2]"
-                  :key="`slot-${side}`"
-                  v-show="canManageSide(side)"
-                  variant="ghost"
-                  class="start-btn"
-                  :disabled="
-                    isPending(`swap:${player.steam_id}`) || sideFull(side)
-                  "
-                  :title="
-                    sideFull(side)
-                      ? $t('draft_games.room.side_full')
-                      : sideName(side) || $t('draft_games.room.start_player')
-                  "
-                  @click="startPlayer(player.steam_id, side)"
-                >
-                  {{ side === 1 ? "A" : "B" }}
-                </Button>
-                <Button
-                  v-if="canManage && player.steam_id !== room.host_steam_id"
-                  variant="ghost"
-                  class="kick-btn"
-                  :title="$t('draft_games.room.kick')"
-                  @click="kick(player.steam_id)"
-                >
-                  <X class="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </template>
-          </DraftBackupsPanel>
-        </div>
-
-        <div v-else class="w-full space-y-4">
-          <div
-            v-if="isAssembling || isDrafting || (showStart && startReady)"
-            class="theater relative flex flex-col items-center gap-5 rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
-          >
-            <div
-              v-if="isAssembling"
-              class="flex flex-col items-center gap-4 py-3 text-center"
-            >
-              <div
-                class="assemble-count font-mono text-5xl font-bold leading-none tabular-nums"
-              >
-                {{ accepted.length
-                }}<span class="text-2xl text-muted-foreground/40"
-                  >/{{ room.capacity }}</span
-                >
-              </div>
-
-              <div class="flex flex-wrap items-center justify-center gap-1.5">
-                <span
-                  v-for="slot in room.capacity"
-                  :key="slot"
-                  class="slot"
-                  :class="{
-                    'slot--filled': slot <= accepted.length,
-                    'slot--next': slot === accepted.length + 1,
-                  }"
-                ></span>
-              </div>
-
-              <div
-                v-if="accepted.length >= room.capacity"
-                class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ $t("draft_games.room.squad_ready") }}
-              </div>
-            </div>
-
-            <template v-else-if="isDrafting">
-              <DraftClock
-                :deadline="room.pick_deadline"
-                :accent="clockAccent"
-                :pulse="isMyTurn"
-              >
-                {{ $t("draft_games.room.on_the_clock") }}
-              </DraftClock>
-              <div
-                class="status-banner text-center font-sans text-sm font-bold uppercase tracking-[0.18em]"
-                :class="isMyTurn ? 'is-mine' : ''"
-                :style="{ '--accent': clockAccent }"
-              >
-                <template v-if="isMyTurn">
-                  {{ $t("draft_games.room.your_pick") }}
-                </template>
-                <template v-else-if="currentCaptain">
-                  {{
-                    $t("draft_games.room.captain_picking", {
-                      name: currentCaptain.player.name,
-                    })
-                  }}
-                </template>
-                <template v-else>
-                  {{ $t(statusLabel) }}
-                </template>
-              </div>
-
-              <div v-if="pickTimeline.length" class="pick-order-strip">
-                <span class="pick-order-label">
-                  {{ $t("draft_games.room.pick_order") }}
-                </span>
-                <div class="pick-order-track">
-                  <span
-                    v-for="(slot, index) in pickTimeline"
-                    :key="index"
-                    class="pick-order-chip"
-                    :class="[
-                      `is-${slot.state}`,
-                      slot.lineup === 1 ? 'is-alpha' : 'is-bravo',
-                    ]"
-                  >
-                    {{ slot.lineup === 1 ? "T1" : "T2" }}
-                  </span>
-                </div>
-              </div>
-            </template>
-
-            <Button
-              v-if="showStart && startReady"
-              variant="tactical"
-              type="button"
-              :disabled="isPending('start') || !regionsAvailable"
-              :class="[
-                tacticalCtaButtonClasses,
-                'justify-center px-10 py-3.5 text-base',
-              ]"
-              @click="start"
-            >
-              <Spinner v-if="isPending('start')" class="h-5 w-5" />
-              <Play v-else class="h-5 w-5" />
-              {{
-                isPending("start")
-                  ? $t("draft_games.room.starting")
-                  : $t("draft_games.room.start_match")
-              }}
-            </Button>
-          </div>
-
-          <div
-            v-if="showTeamPanels"
-            class="grid items-start gap-4 sm:grid-cols-2"
-          >
-            <DraftTeamPanel
-              :title="$t('draft_games.room.team_alpha')"
-              :players="team1"
-              :per-team="perTeam"
-              accent="amber"
-              :host-steam-id="room.host_steam_id"
-              :check-in-by-steam-id="checkInBySteamId"
-              :active="isDrafting && currentLineup === 1"
-              :removable="canAssign || (isManualCaptains && canManage)"
-              :self-steam-id="isHostAssigning ? me?.steam_id : undefined"
-              :addable="canAssign && !team1Full"
-              :exclude-steam-ids="memberIds"
-              @add="(steamId) => addToTeam(steamId, 1)"
-              @remove="onTeamRemove"
-            />
-            <DraftTeamPanel
-              :title="$t('draft_games.room.team_bravo')"
-              :players="team2"
-              :per-team="perTeam"
-              accent="blue"
-              :host-steam-id="room.host_steam_id"
-              :check-in-by-steam-id="checkInBySteamId"
-              :active="isDrafting && currentLineup === 2"
-              :removable="canAssign || (isManualCaptains && canManage)"
-              :self-steam-id="isHostAssigning ? me?.steam_id : undefined"
-              :addable="canAssign && !team2Full"
-              :exclude-steam-ids="memberIds"
-              @add="(steamId) => addToTeam(steamId, 2)"
-              @remove="onTeamRemove"
-            />
-          </div>
-
-          <div
-            v-if="isHostAssigning && isOrganizer"
-            class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
-          >
-            <div
-              class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
-            >
-              {{ $t("draft_games.room.host_assigning") }}
-            </div>
-            <div class="text-xs text-muted-foreground/70">
-              {{ $t("draft_games.room.host_hint") }}
-            </div>
-          </div>
-
-          <div
-            v-if="canDesignateCaptain && !manualCaptainsReady"
-            class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
-          >
-            <div
-              class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
-            >
-              {{ $t("draft_games.room.choose_captains") }}
-            </div>
-            <div class="text-xs text-muted-foreground/70">
-              {{ $t("draft_games.room.choose_captains_hint") }}
-            </div>
-          </div>
-
-          <div
-            v-if="
-              !isHostMode ||
-              pool.length > 0 ||
-              waitlist.length > 0 ||
-              invited.length > 0
-            "
-            class="rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
-          >
-            <div class="mb-3 flex items-center gap-2">
-              <span class="pool-tick"></span>
-              <h3
-                class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                {{ $t("draft_games.room.pool") }}
-                <span class="ml-1 text-foreground/70">({{ pool.length }})</span>
-              </h3>
-              <AnimatedFilters
-                v-if="rankSources.length > 1"
-                :model-value="eloSource"
-                :options="rankSources"
-                square
-                class="ml-auto"
-                @update:model-value="setEloSource"
-              />
-            </div>
-
-            <TransitionGroup
-              name="pool"
-              tag="div"
-              class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
-            >
-              <DraftPlayerCard
-                v-for="player in pool"
-                :key="player.steam_id"
-                :member="player"
-                accent="neutral"
-                :match-type="rankMatchType"
-                :is-host="player.steam_id === room.host_steam_id"
-              >
-                <template #action>
-                  <div class="flex items-center gap-1.5">
-                    <Button
-                      v-if="isMyTurn"
-                      variant="tactical"
-                      type="button"
-                      :class="[
-                        tacticalCtaButtonClasses,
-                        'h-7 gap-1 !px-3 !py-0 text-[0.7rem]',
-                      ]"
-                      :disabled="isPending('pick')"
-                      @click="draftPick(player.steam_id)"
-                    >
-                      {{ $t("draft_games.room.draft") }}
-                      <ArrowRight class="h-3 w-3" />
-                    </Button>
-                    <template v-else-if="canAssign || canSelfPick(player)">
-                      <Button
-                        variant="ghost"
-                        class="assign-btn assign-amber"
-                        :disabled="team1Full"
-                        @click="assign(player.steam_id, 1)"
-                      >
-                        1
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        class="assign-btn assign-blue"
-                        :disabled="team2Full"
-                        @click="assign(player.steam_id, 2)"
-                      >
-                        2
-                      </Button>
-                    </template>
-                    <template v-else-if="canDesignateCaptain">
-                      <Button
-                        variant="ghost"
-                        class="assign-btn assign-amber"
-                        :title="$t('draft_games.room.make_captain')"
-                        :disabled="!!team1Captain"
-                        @click="designateCaptain(player.steam_id, 1)"
-                      >
-                        C1
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        class="assign-btn assign-blue"
-                        :title="$t('draft_games.room.make_captain')"
-                        :disabled="!!team2Captain"
-                        @click="designateCaptain(player.steam_id, 2)"
-                      >
-                        C2
-                      </Button>
-                    </template>
-                    <Button
-                      v-if="canManage && player.steam_id !== room.host_steam_id"
-                      variant="ghost"
-                      class="kick-btn"
-                      :title="$t('draft_games.room.kick')"
-                      @click="kick(player.steam_id)"
-                    >
-                      <X class="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </template>
-              </DraftPlayerCard>
-
-              <!-- Key by absolute grid position (pool.length + n), not relative
-                   index, so adding a player only removes the boundary slot — the
-                   rest keep their key and position and never reflow. -->
-              <DraftOpenSlot
-                v-for="n in canInvite && !isHostMode ? openSlots : 0"
-                :key="`slot-${pool.length + n}`"
-                class="draft-open-slot"
-                :exclude="memberIds"
-                @selected="add"
-              />
-            </TransitionGroup>
-
-            <div
-              v-if="pool.length === 0 && openSlots === 0"
-              class="py-6 text-center text-xs text-muted-foreground/50"
-            >
-              {{ $t("draft_games.room.empty_pool") }}
-            </div>
-
-            <div
-              v-if="waitlist.length > 0"
-              class="mt-5 border-t border-dotted border-border/70 pt-4"
-            >
-              <div class="mb-3 flex items-center gap-2">
-                <span class="pool-tick"></span>
+              <div class="mb-5 flex items-center justify-center gap-2">
                 <h3
-                  class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                  class="font-sans text-base font-bold uppercase tracking-[0.2em]"
                 >
-                  {{ $t("draft_games.room.backups") }}
-                  <span class="ml-1 text-foreground/70"
-                    >({{ waitlist.length }})</span
-                  >
+                  {{ $t(vetoPhaseLabel) }}
                 </h3>
               </div>
-              <TransitionGroup
-                name="pool"
-                tag="div"
-                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+              <MatchRegionVeto
+                :match="match"
+                :match-id="room.match_id"
+                class="pb-6"
+              />
+              <MatchMapVeto :match="match" :match-id="room.match_id" />
+            </div>
+
+            <div
+              v-else-if="inMatchStarting"
+              class="rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-8 [backdrop-filter:blur(8px)]"
+            >
+              <div class="flex flex-col items-center gap-5 text-center">
+                <div class="flex flex-wrap justify-center gap-3">
+                  <div
+                    v-for="(m, i) in match.match_maps"
+                    :key="m.id"
+                    class="starting-map relative h-24 w-40 overflow-hidden rounded-lg border border-border"
+                    :style="{ '--i': i }"
+                  >
+                    <img
+                      v-if="m.map?.poster"
+                      :src="m.map.poster"
+                      class="h-full w-full object-cover"
+                      :alt="mapLabel(m.map)"
+                    />
+                    <span
+                      class="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1 text-center font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-white"
+                    >
+                      {{ mapLabel(m.map) }}
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                >
+                  <Spinner class="h-4 w-4" />
+                  {{ $t("draft_games.room.match_starting") }}
+                </div>
+              </div>
+            </div>
+
+            <div v-else-if="isTeamsMode" class="space-y-4">
+              <div
+                class="teams-matchup relative flex flex-col items-center gap-6 rounded-xl border border-border bg-card/40 p-8 [backdrop-filter:blur(8px)]"
               >
-                <DraftPlayerCard
-                  v-for="(player, index) in waitlist"
-                  :key="player.steam_id"
-                  :member="player"
+                <div
+                  class="grid w-full max-w-2xl grid-cols-[1fr_auto_1fr] items-center gap-4"
+                >
+                  <div class="team-slot amber">
+                    <span class="team-tick"></span>
+                    <span class="truncate">{{
+                      sideName(1) || $t("draft_games.room.team", { team: 1 })
+                    }}</span>
+                  </div>
+                  <div class="vs-badge">
+                    <Swords class="h-4 w-4" />
+                    {{ $t("draft_games.room.vs") }}
+                  </div>
+                  <div class="team-slot blue justify-end text-right">
+                    <span class="truncate">{{
+                      sideName(2) || $t("draft_games.room.team", { team: 2 })
+                    }}</span>
+                    <span class="team-tick blue-tick"></span>
+                  </div>
+                </div>
+
+                <!-- The hint and the CTA share one row height, so swapping between
+                 them never moves the rosters below. Check-in is the one state
+                 allowed to grow: it carries a button as well as the readout,
+                 and that happens once, at the very end, where a single settle
+                 costs less than making people leave to find it. -->
+                <div
+                  v-if="showStart || isCheckIn"
+                  class="flex min-h-14 w-full items-center justify-center"
+                >
+                  <Transition name="cta" mode="out-in">
+                    <!-- Check-in is asked for here, not only on the match page.
+                     The draft room is where everyone already is when the match
+                     reaches this state, and telling them "waiting for check in"
+                     without offering the button is a dead end -- they had to go
+                     find the match page to do the one thing being asked of
+                     them. CheckIntoMatch self-gates on can_check_in, so anyone
+                     who cannot (a coach, an organizer watching) still just sees
+                     the count. -->
+                    <div
+                      v-if="isCheckIn"
+                      key="checkin"
+                      class="flex w-full flex-col items-center gap-2.5"
+                    >
+                      <div
+                        class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+                      >
+                        <span
+                          class="relative grid h-2 w-2 place-items-center"
+                          aria-hidden="true"
+                        >
+                          <span
+                            class="absolute inset-0 animate-ping rounded-full bg-[hsl(var(--tac-amber)/0.5)]"
+                          ></span>
+                          <span
+                            class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                          ></span>
+                        </span>
+                        {{
+                          checkInProgress
+                            ? $t(
+                                "draft_games.room.checking_in",
+                                checkInProgress,
+                              )
+                            : $t("draft_games.room.match_starting")
+                        }}
+                      </div>
+
+                      <CheckIntoMatch
+                        v-if="match"
+                        :match="match"
+                        class="w-64"
+                      />
+                    </div>
+
+                    <Button
+                      v-else-if="startReady"
+                      key="start"
+                      variant="tactical"
+                      type="button"
+                      :disabled="isPending('start') || !regionsAvailable"
+                      :class="[
+                        tacticalCtaButtonClasses,
+                        'justify-center px-10 py-3.5 text-base',
+                      ]"
+                      @click="start"
+                    >
+                      <Spinner v-if="isPending('start')" class="h-5 w-5" />
+                      <Play v-else class="h-5 w-5" />
+                      {{
+                        isPending("start")
+                          ? $t("draft_games.room.starting")
+                          : $t("draft_games.room.start_match")
+                      }}
+                    </Button>
+
+                    <div
+                      v-else
+                      key="hint"
+                      class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+                    >
+                      {{ $t(startHint) }}
+                    </div>
+                  </Transition>
+                </div>
+              </div>
+
+              <div class="grid items-stretch gap-4 sm:grid-cols-2">
+                <DraftTeamPanel
+                  :title="
+                    sideName(1) || $t('draft_games.room.team', { team: 1 })
+                  "
+                  :players="team1"
+                  :per-team="perTeam"
+                  accent="amber"
+                  :host-steam-id="room.host_steam_id"
+                  :check-in-by-steam-id="checkInBySteamId"
+                  :removable="canManageSide(1)"
+                  :draggable="canManageSide(1)"
+                  :droppable="canDropAsStarter(1)"
+                  :drag-steam-id="dragSteamId"
+                  @remove="(steamId) => benchPlayer(steamId, 1)"
+                  @dragstart="onDragStart"
+                  @dragend="onDragEnd"
+                  @drop="(steamId) => dropAsStarter(1, steamId)"
+                />
+                <DraftTeamPanel
+                  :title="
+                    sideName(2) || $t('draft_games.room.team', { team: 2 })
+                  "
+                  :players="team2"
+                  :per-team="perTeam"
+                  accent="blue"
+                  :host-steam-id="room.host_steam_id"
+                  :check-in-by-steam-id="checkInBySteamId"
+                  :removable="canManageSide(2)"
+                  :draggable="canManageSide(2)"
+                  :droppable="canDropAsStarter(2)"
+                  :drag-steam-id="dragSteamId"
+                  @remove="(steamId) => benchPlayer(steamId, 2)"
+                  @dragstart="onDragStart"
+                  @dragend="onDragEnd"
+                  @drop="(steamId) => dropAsStarter(2, steamId)"
+                />
+              </div>
+
+              <!-- One shared pool for an inner squad (a single roster split in two),
+               otherwise a section per side plus a bucket for anyone unsided. -->
+              <template v-if="room.inner_squad">
+                <DraftBackupsPanel
+                  :title="$t('draft_games.room.backups')"
+                  :players="innerSquadBackups"
                   accent="neutral"
                   :match-type="rankMatchType"
-                  :is-host="player.steam_id === room.host_steam_id"
+                  :host-steam-id="room.host_steam_id"
+                  :drag-steam-id="dragSteamId"
+                  :droppable="canDropAsBackup(null)"
+                  @dragstart="onDragStart"
+                  @dragend="onDragEnd"
+                  @drop="(steamId) => dropAsBackup(null, steamId)"
                 >
-                  <template #action>
-                    <div class="flex items-center gap-2">
-                      <span
-                        class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                  <template #action="{ player }">
+                    <div class="flex items-center gap-1.5">
+                      <Button
+                        v-for="side in [1, 2]"
+                        :key="`start-${side}`"
+                        v-show="canManageSide(side)"
+                        variant="ghost"
+                        class="start-btn"
+                        :disabled="
+                          isPending(`swap:${player.steam_id}`) || sideFull(side)
+                        "
+                        :title="
+                          sideFull(side)
+                            ? $t('draft_games.room.side_full')
+                            : $t('draft_games.room.start_player')
+                        "
+                        @click="startPlayer(player.steam_id, side)"
                       >
-                        #{{ Number(index) + 1 }}
-                      </span>
+                        {{ side === 1 ? "A" : "B" }}
+                      </Button>
                       <Button
                         v-if="
-                          canManage && player.steam_id !== room.host_steam_id
+                          canManageSide(player.lineup ?? 1) &&
+                          player.steam_id !== room.host_steam_id
                         "
                         variant="ghost"
                         class="kick-btn"
@@ -1390,77 +1004,649 @@ const start = () => {
                       </Button>
                     </div>
                   </template>
-                </DraftPlayerCard>
-              </TransitionGroup>
-            </div>
+                </DraftBackupsPanel>
+              </template>
 
-            <div
-              v-if="canManage && invited.length > 0"
-              class="mt-5 border-t border-dotted border-border/70 pt-4"
-            >
-              <div class="mb-3 flex items-center gap-2">
-                <span class="pool-tick"></span>
-                <h3
-                  class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-                >
-                  {{ $t("draft_games.room.invited") }}
-                  <span class="ml-1 text-foreground/70"
-                    >({{ invited.length }})</span
-                  >
-                </h3>
-              </div>
-              <TransitionGroup
-                name="pool"
-                tag="div"
-                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
-              >
-                <DraftPlayerCard
-                  v-for="player in invited"
-                  :key="player.steam_id"
-                  :member="player"
-                  accent="neutral"
+              <div v-else class="grid items-stretch gap-4 sm:grid-cols-2">
+                <DraftBackupsPanel
+                  v-for="side in [1, 2]"
+                  :key="`backups-${side}`"
+                  :title="
+                    $t('draft_games.room.side_backups', {
+                      team:
+                        sideName(side) ||
+                        $t('draft_games.room.team', { team: side }),
+                    })
+                  "
+                  :players="backupsFor(side)"
+                  :accent="side === 1 ? 'amber' : 'blue'"
                   :match-type="rankMatchType"
-                  :is-host="player.steam_id === room.host_steam_id"
+                  :host-steam-id="room.host_steam_id"
+                  :drag-steam-id="dragSteamId"
+                  :droppable="canDropAsBackup(side)"
+                  :empty-label="$t('draft_games.room.no_backups')"
+                  @dragstart="onDragStart"
+                  @dragend="onDragEnd"
+                  @drop="(steamId) => dropAsBackup(side, steamId)"
                 >
-                  <template #action>
-                    <div class="flex items-center gap-2">
-                      <span
-                        class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                      >
-                        {{ $t("draft_games.room.invite_pending_short") }}
-                      </span>
+                  <template #action="{ player }">
+                    <div class="flex items-center gap-1.5">
                       <Button
+                        v-if="canManageSide(side)"
+                        variant="ghost"
+                        class="start-btn"
+                        :disabled="
+                          isPending(`swap:${player.steam_id}`) || sideFull(side)
+                        "
+                        :title="
+                          sideFull(side)
+                            ? $t('draft_games.room.side_full')
+                            : $t('draft_games.room.start_player')
+                        "
+                        @click="startPlayer(player.steam_id, side)"
+                      >
+                        <ArrowUp class="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        v-if="
+                          canManageSide(side) &&
+                          player.steam_id !== room.host_steam_id
+                        "
                         variant="ghost"
                         class="kick-btn"
-                        :title="$t('draft_games.room.cancel_invite')"
+                        :title="$t('draft_games.room.kick')"
                         @click="kick(player.steam_id)"
                       >
                         <X class="h-3.5 w-3.5" />
                       </Button>
                     </div>
                   </template>
-                </DraftPlayerCard>
-              </TransitionGroup>
+                </DraftBackupsPanel>
+              </div>
+
+              <!-- Only exists while someone is sideless -- it empties as they are
+               slotted, so it folds shut rather than vanishing. -->
+              <Transition name="collapse">
+                <div
+                  v-if="unsidedPlayers.length > 0"
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="collapse-clip">
+                    <DraftBackupsPanel
+                      :title="$t('draft_games.room.unassigned_backups')"
+                      :players="unsidedPlayers"
+                      accent="neutral"
+                      :match-type="rankMatchType"
+                      :host-steam-id="room.host_steam_id"
+                      :drag-steam-id="dragSteamId"
+                      :droppable="canDropAsBackup(null)"
+                      @dragstart="onDragStart"
+                      @dragend="onDragEnd"
+                      @drop="(steamId) => dropAsBackup(null, steamId)"
+                    >
+                      <template #action="{ player }">
+                        <div class="flex items-center gap-1.5">
+                          <Button
+                            v-for="side in [1, 2]"
+                            :key="`slot-${side}`"
+                            v-show="canManageSide(side)"
+                            variant="ghost"
+                            class="start-btn"
+                            :disabled="
+                              isPending(`swap:${player.steam_id}`) ||
+                              sideFull(side)
+                            "
+                            :title="
+                              sideFull(side)
+                                ? $t('draft_games.room.side_full')
+                                : sideName(side) ||
+                                  $t('draft_games.room.start_player')
+                            "
+                            @click="startPlayer(player.steam_id, side)"
+                          >
+                            {{ side === 1 ? "A" : "B" }}
+                          </Button>
+                          <Button
+                            v-if="
+                              canManage &&
+                              player.steam_id !== room.host_steam_id
+                            "
+                            variant="ghost"
+                            class="kick-btn"
+                            :title="$t('draft_games.room.kick')"
+                            @click="kick(player.steam_id)"
+                          >
+                            <X class="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </template>
+                    </DraftBackupsPanel>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+
+            <div v-else class="w-full space-y-4">
+              <!-- In Host mode this whole panel is the CTA: it does not exist until
+               both sides are filled, so it expands into place rather than
+               appearing under the cursor mid-assignment. -->
+              <Transition name="collapse">
+                <div
+                  v-if="isAssembling || isDrafting || (showStart && startReady)"
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="collapse-clip">
+                    <div
+                      class="theater relative flex flex-col items-center gap-5 rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
+                    >
+                      <Transition name="cta" mode="out-in">
+                        <div
+                          v-if="isAssembling"
+                          key="assemble"
+                          class="flex flex-col items-center gap-4 py-3 text-center"
+                        >
+                          <div
+                            class="assemble-count font-mono text-5xl font-bold leading-none tabular-nums"
+                          >
+                            {{ accepted.length
+                            }}<span class="text-2xl text-muted-foreground/40"
+                              >/{{ room.capacity }}</span
+                            >
+                          </div>
+
+                          <div
+                            class="flex flex-wrap items-center justify-center gap-1.5"
+                          >
+                            <span
+                              v-for="slot in room.capacity"
+                              :key="slot"
+                              class="slot"
+                              :class="{
+                                'slot--filled': slot <= accepted.length,
+                                'slot--next': slot === accepted.length + 1,
+                              }"
+                            ></span>
+                          </div>
+
+                          <div
+                            v-if="accepted.length >= room.capacity"
+                            class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
+                          >
+                            {{ $t("draft_games.room.squad_ready") }}
+                          </div>
+                        </div>
+
+                        <div
+                          v-else-if="isDrafting"
+                          key="drafting"
+                          class="flex w-full flex-col items-center gap-5"
+                        >
+                          <DraftClock
+                            :deadline="room.pick_deadline"
+                            :accent="clockAccent"
+                            :pulse="isMyTurn"
+                          >
+                            {{ $t("draft_games.room.on_the_clock") }}
+                          </DraftClock>
+                          <div
+                            class="status-banner text-center font-sans text-sm font-bold uppercase tracking-[0.18em]"
+                            :class="isMyTurn ? 'is-mine' : ''"
+                            :style="{ '--accent': clockAccent }"
+                          >
+                            <template v-if="isMyTurn">
+                              {{ $t("draft_games.room.your_pick") }}
+                            </template>
+                            <template v-else-if="currentCaptain">
+                              {{
+                                $t("draft_games.room.captain_picking", {
+                                  name: currentCaptain.player.name,
+                                })
+                              }}
+                            </template>
+                            <template v-else>
+                              {{ $t(statusLabel) }}
+                            </template>
+                          </div>
+
+                          <div
+                            v-if="pickTimeline.length"
+                            class="pick-order-strip"
+                          >
+                            <span class="pick-order-label">
+                              {{ $t("draft_games.room.pick_order") }}
+                            </span>
+                            <div class="pick-order-track">
+                              <span
+                                v-for="(slot, index) in pickTimeline"
+                                :key="index"
+                                class="pick-order-chip"
+                                :class="[
+                                  `is-${slot.state}`,
+                                  slot.lineup === 1 ? 'is-alpha' : 'is-bravo',
+                                ]"
+                              >
+                                {{ slot.lineup === 1 ? "T1" : "T2" }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </Transition>
+
+                      <Transition name="cta">
+                        <Button
+                          v-if="showStart && startReady"
+                          variant="tactical"
+                          type="button"
+                          :disabled="isPending('start') || !regionsAvailable"
+                          :class="[
+                            tacticalCtaButtonClasses,
+                            'justify-center px-10 py-3.5 text-base',
+                          ]"
+                          @click="start"
+                        >
+                          <Spinner v-if="isPending('start')" class="h-5 w-5" />
+                          <Play v-else class="h-5 w-5" />
+                          {{
+                            isPending("start")
+                              ? $t("draft_games.room.starting")
+                              : $t("draft_games.room.start_match")
+                          }}
+                        </Button>
+                      </Transition>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+
+              <!-- Pug lobbies have no sides until the draft assigns them, so the
+               roster columns grow in instead of appearing under the pool. -->
+              <Transition name="collapse">
+                <div v-if="showTeamPanels" class="grid grid-rows-[1fr]">
+                  <div class="collapse-clip">
+                    <div class="grid items-start gap-4 sm:grid-cols-2">
+                      <DraftTeamPanel
+                        :title="$t('draft_games.room.team_alpha')"
+                        :players="team1"
+                        :per-team="perTeam"
+                        accent="amber"
+                        :host-steam-id="room.host_steam_id"
+                        :check-in-by-steam-id="checkInBySteamId"
+                        :active="isDrafting && currentLineup === 1"
+                        :removable="
+                          canAssign || (isManualCaptains && canManage)
+                        "
+                        :self-steam-id="
+                          isHostAssigning ? me?.steam_id : undefined
+                        "
+                        :addable="canAssign && !team1Full"
+                        :exclude-steam-ids="memberIds"
+                        @add="(steamId) => addToTeam(steamId, 1)"
+                        @remove="onTeamRemove"
+                      />
+                      <DraftTeamPanel
+                        :title="$t('draft_games.room.team_bravo')"
+                        :players="team2"
+                        :per-team="perTeam"
+                        accent="blue"
+                        :host-steam-id="room.host_steam_id"
+                        :check-in-by-steam-id="checkInBySteamId"
+                        :active="isDrafting && currentLineup === 2"
+                        :removable="
+                          canAssign || (isManualCaptains && canManage)
+                        "
+                        :self-steam-id="
+                          isHostAssigning ? me?.steam_id : undefined
+                        "
+                        :addable="canAssign && !team2Full"
+                        :exclude-steam-ids="memberIds"
+                        @add="(steamId) => addToTeam(steamId, 2)"
+                        @remove="onTeamRemove"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+
+              <!-- Both hints are transient instructions -- they retire the moment
+               the thing they ask for is done, so they fold away instead of
+               blinking out from under the rosters. -->
+              <Transition name="collapse">
+                <div
+                  v-if="isHostAssigning && isOrganizer"
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="collapse-clip">
+                    <div
+                      class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
+                    >
+                      <div
+                        class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+                      >
+                        {{ $t("draft_games.room.host_assigning") }}
+                      </div>
+                      <div class="text-xs text-muted-foreground/70">
+                        {{ $t("draft_games.room.host_hint") }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+
+              <Transition name="collapse">
+                <div
+                  v-if="canDesignateCaptain && !manualCaptainsReady"
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="collapse-clip">
+                    <div
+                      class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
+                    >
+                      <div
+                        class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+                      >
+                        {{ $t("draft_games.room.choose_captains") }}
+                      </div>
+                      <div class="text-xs text-muted-foreground/70">
+                        {{ $t("draft_games.room.choose_captains_hint") }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+
+              <!-- A Host lobby has no pool until someone is waiting in it. -->
+              <Transition name="collapse">
+                <div
+                  v-if="
+                    !isHostMode ||
+                    pool.length > 0 ||
+                    waitlist.length > 0 ||
+                    invited.length > 0
+                  "
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="collapse-clip">
+                    <div
+                      class="rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
+                    >
+                      <div class="mb-3 flex items-center gap-2">
+                        <span class="pool-tick"></span>
+                        <h3
+                          class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                        >
+                          {{ $t("draft_games.room.pool") }}
+                          <span class="ml-1 text-foreground/70"
+                            >({{ pool.length }})</span
+                          >
+                        </h3>
+                        <AnimatedFilters
+                          v-if="rankSources.length > 1"
+                          :model-value="eloSource"
+                          :options="rankSources"
+                          square
+                          class="ml-auto"
+                          @update:model-value="setEloSource"
+                        />
+                      </div>
+
+                      <TransitionGroup
+                        name="pool"
+                        tag="div"
+                        class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+                      >
+                        <DraftPlayerCard
+                          v-for="player in pool"
+                          :key="player.steam_id"
+                          :member="player"
+                          accent="neutral"
+                          :match-type="rankMatchType"
+                          :is-host="player.steam_id === room.host_steam_id"
+                        >
+                          <template #action>
+                            <div class="flex items-center gap-1.5">
+                              <Button
+                                v-if="isMyTurn"
+                                variant="tactical"
+                                type="button"
+                                :class="[
+                                  tacticalCtaButtonClasses,
+                                  'h-7 gap-1 !px-3 !py-0 text-[0.7rem]',
+                                ]"
+                                :disabled="isPending('pick')"
+                                @click="draftPick(player.steam_id)"
+                              >
+                                {{ $t("draft_games.room.draft") }}
+                                <ArrowRight class="h-3 w-3" />
+                              </Button>
+                              <template
+                                v-else-if="canAssign || canSelfPick(player)"
+                              >
+                                <Button
+                                  variant="ghost"
+                                  class="assign-btn assign-amber"
+                                  :disabled="team1Full"
+                                  @click="assign(player.steam_id, 1)"
+                                >
+                                  1
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  class="assign-btn assign-blue"
+                                  :disabled="team2Full"
+                                  @click="assign(player.steam_id, 2)"
+                                >
+                                  2
+                                </Button>
+                              </template>
+                              <template v-else-if="canDesignateCaptain">
+                                <Button
+                                  variant="ghost"
+                                  class="assign-btn assign-amber"
+                                  :title="$t('draft_games.room.make_captain')"
+                                  :disabled="!!team1Captain"
+                                  @click="designateCaptain(player.steam_id, 1)"
+                                >
+                                  C1
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  class="assign-btn assign-blue"
+                                  :title="$t('draft_games.room.make_captain')"
+                                  :disabled="!!team2Captain"
+                                  @click="designateCaptain(player.steam_id, 2)"
+                                >
+                                  C2
+                                </Button>
+                              </template>
+                              <Button
+                                v-if="
+                                  canManage &&
+                                  player.steam_id !== room.host_steam_id
+                                "
+                                variant="ghost"
+                                class="kick-btn"
+                                :title="$t('draft_games.room.kick')"
+                                @click="kick(player.steam_id)"
+                              >
+                                <X class="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                          </template>
+                        </DraftPlayerCard>
+
+                        <!-- Key by absolute grid position (pool.length + n), not relative
+                   index, so adding a player only removes the boundary slot — the
+                   rest keep their key and position and never reflow. -->
+                        <DraftOpenSlot
+                          v-for="n in canInvite && !isHostMode ? openSlots : 0"
+                          :key="`slot-${pool.length + n}`"
+                          class="draft-open-slot"
+                          :exclude="memberIds"
+                          @selected="add"
+                        />
+                      </TransitionGroup>
+
+                      <Transition name="cta">
+                        <div
+                          v-if="pool.length === 0 && openSlots === 0"
+                          class="py-6 text-center text-xs text-muted-foreground/50"
+                        >
+                          {{ $t("draft_games.room.empty_pool") }}
+                        </div>
+                      </Transition>
+
+                      <Transition name="collapse">
+                        <div
+                          v-if="waitlist.length > 0"
+                          class="grid grid-rows-[1fr]"
+                        >
+                          <div class="collapse-clip">
+                            <div
+                              class="mt-5 border-t border-dotted border-border/70 pt-4"
+                            >
+                              <div class="mb-3 flex items-center gap-2">
+                                <span class="pool-tick"></span>
+                                <h3
+                                  class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                                >
+                                  {{ $t("draft_games.room.backups") }}
+                                  <span class="ml-1 text-foreground/70"
+                                    >({{ waitlist.length }})</span
+                                  >
+                                </h3>
+                              </div>
+                              <TransitionGroup
+                                name="pool"
+                                tag="div"
+                                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+                              >
+                                <DraftPlayerCard
+                                  v-for="(player, index) in waitlist"
+                                  :key="player.steam_id"
+                                  :member="player"
+                                  accent="neutral"
+                                  :match-type="rankMatchType"
+                                  :is-host="
+                                    player.steam_id === room.host_steam_id
+                                  "
+                                >
+                                  <template #action>
+                                    <div class="flex items-center gap-2">
+                                      <span
+                                        class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                                      >
+                                        #{{ Number(index) + 1 }}
+                                      </span>
+                                      <Button
+                                        v-if="
+                                          canManage &&
+                                          player.steam_id !== room.host_steam_id
+                                        "
+                                        variant="ghost"
+                                        class="kick-btn"
+                                        :title="$t('draft_games.room.kick')"
+                                        @click="kick(player.steam_id)"
+                                      >
+                                        <X class="h-3.5 w-3.5" />
+                                      </Button>
+                                    </div>
+                                  </template>
+                                </DraftPlayerCard>
+                              </TransitionGroup>
+                            </div>
+                          </div>
+                        </div>
+                      </Transition>
+
+                      <Transition name="collapse">
+                        <div
+                          v-if="canManage && invited.length > 0"
+                          class="grid grid-rows-[1fr]"
+                        >
+                          <div class="collapse-clip">
+                            <div
+                              class="mt-5 border-t border-dotted border-border/70 pt-4"
+                            >
+                              <div class="mb-3 flex items-center gap-2">
+                                <span class="pool-tick"></span>
+                                <h3
+                                  class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                                >
+                                  {{ $t("draft_games.room.invited") }}
+                                  <span class="ml-1 text-foreground/70"
+                                    >({{ invited.length }})</span
+                                  >
+                                </h3>
+                              </div>
+                              <TransitionGroup
+                                name="pool"
+                                tag="div"
+                                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+                              >
+                                <DraftPlayerCard
+                                  v-for="player in invited"
+                                  :key="player.steam_id"
+                                  :member="player"
+                                  accent="neutral"
+                                  :match-type="rankMatchType"
+                                  :is-host="
+                                    player.steam_id === room.host_steam_id
+                                  "
+                                >
+                                  <template #action>
+                                    <div class="flex items-center gap-2">
+                                      <span
+                                        class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                                      >
+                                        {{
+                                          $t(
+                                            "draft_games.room.invite_pending_short",
+                                          )
+                                        }}
+                                      </span>
+                                      <Button
+                                        variant="ghost"
+                                        class="kick-btn"
+                                        :title="
+                                          $t('draft_games.room.cancel_invite')
+                                        "
+                                        @click="kick(player.steam_id)"
+                                      >
+                                        <X class="h-3.5 w-3.5" />
+                                      </Button>
+                                    </div>
+                                  </template>
+                                </DraftPlayerCard>
+                              </TransitionGroup>
+                            </div>
+                          </div>
+                        </div>
+                      </Transition>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
             </div>
           </div>
-        </div>
+        </HeightSwap>
+
+        <!-- The log only exists once a pick lands, which happens while people
+             are watching the board -- it slides in under it. -->
+        <Transition name="collapse">
+          <div v-if="hasPicks" class="grid grid-rows-[1fr]">
+            <div class="collapse-clip">
+              <div class="rounded-xl border border-border bg-card/40 p-4">
+                <DraftLog :picks="room.picks" />
+              </div>
+            </div>
           </div>
         </Transition>
-
-        <div
-          v-if="hasPicks"
-          class="rounded-xl border border-border bg-card/40 p-4"
-        >
-          <DraftLog :picks="room.picks" />
-        </div>
       </div>
 
       <!-- Self-status banners live in this column rather than above the room:
            they appear and disappear as the lobby fills, and full width they
            shoved the whole roster down every time. -->
-      <div
-        class="flex flex-col xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)]"
-      >
+      <div class="flex flex-col xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)]">
         <Transition name="banner">
           <div
             v-if="canJoin || hasRequested || isWaitlisted"
@@ -1543,77 +1729,111 @@ const start = () => {
           </div>
         </Transition>
 
+        <!-- Capped rather than left to fill the rail. The rail is a full
+             viewport tall but starts well down the page, and the page is too
+             short to scroll the remainder into view, so anything pinned to the
+             rail's bottom edge -- the message box -- was unreachable. -->
         <div
-          class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:min-h-0 xl:flex-1"
+          class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:min-h-[380px] xl:max-h-[34rem] xl:flex-1"
         >
-        <div v-if="showQueue" class="flex min-h-0 flex-1 flex-col">
-          <div
-            class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5"
-          >
-            <Inbox class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-            <h3
-              class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+          <div v-if="showQueue" class="flex min-h-0 flex-1 flex-col">
+            <div
+              class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5"
             >
-              {{ $t("draft_games.room.queue") }}
-            </h3>
-            <span class="dock-count ml-auto">{{ requests.length }}</span>
+              <Inbox class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
+              <h3
+                class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+              >
+                {{ $t("draft_games.room.queue") }}
+              </h3>
+              <span class="dock-count ml-auto">{{ requests.length }}</span>
+            </div>
+            <div class="min-h-0 flex-1 overflow-y-auto p-3">
+              <DraftRequestQueue
+                compact
+                class="h-full"
+                :draft-game-id="room.id"
+                :requests="requests"
+                :can-manage="isOrganizer"
+                :full="acceptedFull"
+              />
+            </div>
           </div>
-          <div class="min-h-0 flex-1 overflow-y-auto p-3">
-            <DraftRequestQueue
-              compact
-              class="h-full"
-              :draft-game-id="room.id"
-              :requests="requests"
-              :can-manage="isOrganizer"
-              :full="acceptedFull"
-            />
+
+          <div
+            class="flex flex-col"
+            :class="
+              showQueue
+                ? 'h-72 shrink-0 border-t border-border/60'
+                : 'min-h-0 flex-1'
+            "
+          >
+            <div
+              class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5"
+            >
+              <MessagesSquare
+                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+              />
+              <h3
+                class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+              >
+                {{ $t("draft_games.room.comms") }}
+              </h3>
+            </div>
+            <div v-if="me" class="flex min-h-0 flex-1 flex-col">
+              <ChatLobby
+                class="min-h-0 flex-1"
+                instance="draft-room"
+                :type="chatType"
+                :lobby-id="chatLobbyId"
+                :team-lobby-id="teamChatLobbyId ?? undefined"
+                :frameless="true"
+                :can-send="canChat"
+                :readonly-hint="$t('draft_games.room.chat_players_only')"
+              />
+            </div>
+            <div
+              v-else
+              class="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-4 py-6 text-center"
+            >
+              <p class="text-xs text-muted-foreground">
+                {{ $t("draft_games.room.login_to_chat") }}
+              </p>
+              <NuxtLink
+                :to="`/login?redirect=/draft-room/${room.id}`"
+                class="text-xs font-medium text-[hsl(var(--tac-amber))] underline underline-offset-4"
+              >
+                {{ $t("draft_games.room.login") }}
+              </NuxtLink>
+            </div>
           </div>
         </div>
 
-        <div
-          class="flex flex-col"
-          :class="
-            showQueue
-              ? 'h-72 shrink-0 border-t border-border/60'
-              : 'min-h-0 flex-1'
-          "
-        >
+        <!-- Below the Lobby Chat dock and outside it. Inside that card it read
+             as the bottom of the message list -- the dock owns the border, so
+             anything within it belongs to the chat no matter how it is styled. -->
+        <Transition name="collapse">
           <div
-            class="flex items-center gap-2 border-b border-border/60 px-4 py-2.5"
+            v-if="me && myMatchLineupId && inLineup"
+            class="grid shrink-0 grid-rows-[1fr]"
           >
-            <MessagesSquare class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-            <h3
-              class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-            >
-              {{ $t("draft_games.room.comms") }}
-            </h3>
+            <!-- The top margin rides inside the clipped row so the rail does
+                 not hold a 12px gap open while the card is folding away. -->
+            <div class="collapse-clip">
+              <!-- Always present, because it is now the only way in. The strip
+                   on the chat composer existed to start a call before this
+                   section appeared -- which left the same three controls on
+                   screen twice as soon as it had. -->
+              <VoiceChannelCard
+                show-empty
+                class="mt-3"
+                kind="match"
+                :channel-id="myMatchLineupId"
+                :label="$t('layouts.voice_panel.team_comms')"
+              />
+            </div>
           </div>
-          <ChatLobby
-            v-if="me"
-            class="min-h-0 flex-1"
-            instance="draft-room"
-            :type="chatType"
-            :lobby-id="chatLobbyId"
-            :frameless="true"
-            :can-send="canChat"
-            :readonly-hint="$t('draft_games.room.chat_players_only')"
-          />
-          <div
-            v-else
-            class="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-4 py-6 text-center"
-          >
-            <p class="text-xs text-muted-foreground">
-              {{ $t("draft_games.room.login_to_chat") }}
-            </p>
-            <NuxtLink
-              :to="`/login?redirect=/draft-room/${room.id}`"
-              class="text-xs font-medium text-[hsl(var(--tac-amber))] underline underline-offset-4"
-            >
-              {{ $t("draft_games.room.login") }}
-            </NuxtLink>
-          </div>
-        </div>
-        </div>
+        </Transition>
       </div>
     </div>
 
@@ -1662,6 +1882,35 @@ const start = () => {
 .cta-leave-to {
   opacity: 0;
   transform: scale(0.96);
+}
+/* The room is a live board -- panels appear and retire under people while they
+   are reading it, so they use the app's height-collapse idiom (grid-template-rows
+   1fr -> 0fr on a wrapper with a clipped child) and the rest of the column
+   slides instead of snapping. */
+.collapse-enter-active,
+.collapse-leave-active {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-top 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease,
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Most of these wrappers sit in space-y-4 columns, which put a margin-top on
+   them from outside; the collapse animates it to zero too, or the fold would
+   end with a 16px snap when the element unmounts. !important because
+   Tailwind's space-y selector is more specific than a scoped class. */
+.collapse-enter-from,
+.collapse-leave-to {
+  grid-template-rows: 0fr;
+  margin-top: 0 !important;
+  opacity: 0;
+  transform: translateY(-4px);
+}
+/* Clipped only while the row is animating. Left on permanently it would cut
+   the active roster's outer glow and any drop shadow off at the panel edge. */
+.collapse-enter-active .collapse-clip,
+.collapse-leave-active .collapse-clip {
+  overflow: hidden;
 }
 /* The banner collapses its own height and bottom margin so the chat panel
    below it slides rather than jumping when a slot opens. */
@@ -1964,44 +2213,6 @@ const start = () => {
   opacity: 1;
   transform: none;
 }
-.phase-enter-active {
-  transition:
-    opacity 0.45s ease,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.phase-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-}
-.phase-enter-from {
-  opacity: 0;
-  transform: translateY(-10px) scale(0.99);
-}
-.phase-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-.stage-enter-active {
-  transition:
-    opacity 0.4s ease,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.stage-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.stage-enter-from {
-  opacity: 0;
-  transform: translateY(12px) scale(0.985);
-}
-.stage-leave-to {
-  opacity: 0;
-  transform: translateY(-8px) scale(0.99);
-}
-
 .starting-map {
   animation: starting-map-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--i) * 90ms + 150ms);
@@ -2022,10 +2233,10 @@ const start = () => {
   .starting-map {
     animation: none;
   }
-  .stage-enter-active,
-  .stage-leave-active,
-  .phase-enter-active,
-  .phase-leave-active {
+  .collapse-enter-active,
+  .collapse-leave-active,
+  .cta-enter-active,
+  .cta-leave-active {
     transition-duration: 1ms;
   }
 }

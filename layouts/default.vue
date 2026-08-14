@@ -32,6 +32,11 @@ const ClipDetailModal = defineAsyncComponent(
 const ActionToasts = defineAsyncComponent(
   () => import("~/components/notification/ActionToasts.vue"),
 );
+// Owns the voice connection for the whole app session. Mounted here rather than
+// in the hub because the hub is role-gated, and the call is not.
+const VoiceHost = defineAsyncComponent(
+  () => import("~/components/voice/VoiceHost.vue"),
+);
 const OrphanedUploadsDialog = defineAsyncComponent(
   () => import("~/components/settings/OrphanedUploadsDialog.vue"),
 );
@@ -41,6 +46,8 @@ const { activeClipId } = useClipModal();
 
 useGtm();
 useChatTabSetup();
+useChatTabPersistence();
+useIncomingDirectMessages();
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -107,6 +114,8 @@ provide("containContent", containContent);
       </MainContent>
     </SidebarInset>
   </SidebarProvider>
+
+  <VoiceHost v-if="authStore.me" />
 
   <div id="global-chat-container"></div>
 

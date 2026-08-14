@@ -9,13 +9,14 @@ import {
   Bell,
   Clock,
   Users,
+  Mic,
   MessageSquare,
   Tent,
   Pin,
   X,
 } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
-import { useHubState } from "@/composables/useHubState";
+import { useHubState, setActiveHub } from "@/composables/useHubState";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
@@ -27,6 +28,9 @@ import RecentGamesPanel from "~/components/hub/RecentGamesPanel.vue";
 import SidebarChatTab from "~/components/hub/ChatPanel.vue";
 import NotificationsPanel from "~/components/hub/NotificationsPanel.vue";
 import LobbyPanel from "~/components/hub/LobbyPanel.vue";
+import VoicePanel from "~/components/hub/VoicePanel.vue";
+import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
+import { useVoiceChannels } from "~/composables/useVoiceChannels";
 
 const {
   setRightSidebarOpen,
@@ -175,6 +179,43 @@ const lobbyMemberLabel = computed(() =>
 );
 const chatBadgeLabel = computed(() => formatBadgeCount(totalUnread.value));
 
+// The call outlives the page that opened it, so the strip is where "am I still
+// in voice, and who can hear me" is answered from anywhere in the app.
+const { session: voiceSession } = useActiveVoiceChannel();
+const voiceMemberCount = computed(
+  () =>
+    (voiceSession.value?.participants ?? []).filter(
+      (participant) => participant.connected,
+    ).length,
+);
+const inVoice = computed(() => !!voiceSession.value);
+const voiceSpeaking = computed(() =>
+  (voiceSession.value?.participants ?? []).some(
+    (participant) => participant.speaking,
+  ),
+);
+const voiceBadgeLabel = computed(() =>
+  formatBadgeCount(voiceMemberCount.value),
+);
+
+// With no call running and nothing to join, the voice tab has nothing to say:
+// channels come from a party or a match, both of which start on the lobby tab.
+// So instead of a panel explaining that, the tab disables itself — and if the
+// hub is sitting on it when the last channel disappears, it moves to lobby.
+const { channels: voiceChannels } = useVoiceChannels();
+const voiceAvailable = computed(
+  () => inVoice.value || voiceChannels.value.length > 0,
+);
+watch(
+  [voiceAvailable, activeHub],
+  ([available, hub]) => {
+    if (!available && hub === "voice") {
+      setActiveHub("lobby");
+    }
+  },
+  { immediate: true },
+);
+
 // Pop-in/out for the count circles (bouncy enter, quick fade-shrink leave)
 const badgePopTransition = {
   enterActiveClass:
@@ -212,6 +253,7 @@ function isHubActive(hub: string) {
 const hubPanels = [
   { name: "notifications", component: NotificationsPanel },
   { name: "lobby", component: LobbyPanel },
+  { name: "voice", component: VoicePanel },
   {
     name: "chat",
     component: SidebarChatTab,
@@ -224,12 +266,14 @@ const hubPanels = [
   { name: "recent-games", component: RecentGamesPanel },
 ] as const;
 
-function hubBtnClass(hub: string) {
+function hubBtnClass(hub: string, disabled = false) {
   return [
     "relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200",
-    isHubActive(hub)
-      ? "text-[hsl(var(--tac-amber))]"
-      : "text-sidebar-foreground/50 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-sidebar-foreground",
+    disabled
+      ? "text-sidebar-foreground/20"
+      : isHubActive(hub)
+        ? "text-[hsl(var(--tac-amber))]"
+        : "text-sidebar-foreground/50 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-sidebar-foreground",
   ];
 }
 
@@ -306,7 +350,7 @@ function onHubTouchEnd(e: TouchEvent) {
           class="absolute top-0 left-0 w-0.5 rounded-r-full z-10 pointer-events-none bg-[hsl(var(--tac-amber))]"
           :class="
             hasAnimated
-              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0s]'
+              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0.35s_cubic-bezier(0.34,1.56,0.64,1)]'
               : ''
           "
           :style="{
@@ -321,7 +365,7 @@ function onHubTouchEnd(e: TouchEvent) {
           class="absolute top-0 left-2 right-2 rounded-md z-0 pointer-events-none bg-[hsl(var(--tac-amber)/0.1)]"
           :class="
             hasAnimated
-              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0s]'
+              ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),height_0.35s_cubic-bezier(0.34,1.56,0.64,1)]'
               : ''
           "
           :style="{
@@ -390,6 +434,41 @@ function onHubTouchEnd(e: TouchEvent) {
                 class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-0.5 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
               >
                 <AnimatedStat :value="lobbyBadgeLabel" />
+              </span>
+            </Transition>
+          </span>
+        </button>
+
+        <!-- Voice — who is in the channel, and the faders for them. Nothing to
+             join and no call running means nothing to show: the tab greys out,
+             and parties start from the lobby tab. -->
+        <button
+          :ref="setHubButtonRef('voice')"
+          :disabled="!voiceAvailable"
+          :class="[hubBtnClass('voice', !voiceAvailable), 'z-[1]']"
+          @click="selectHub('voice')"
+        >
+          <span class="relative inline-flex">
+            <Mic
+              class="w-5 h-5 transition-colors"
+              :class="
+                inVoice && !isHubActive('voice') ? 'text-emerald-400' : ''
+              "
+            />
+            <Transition v-bind="badgePopTransition">
+              <!-- Member count, and it goes live green while anyone is talking:
+                   the strip is collapsed most of the time, so the badge is the
+                   only place the call can report itself. -->
+              <span
+                v-if="inVoice"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-0.5 text-[0.55rem] font-bold leading-none tabular-nums shadow-sm ring-1 ring-background origin-center transition-colors"
+                :class="
+                  voiceSpeaking
+                    ? 'bg-emerald-400 text-black'
+                    : 'bg-[hsl(var(--tac-amber))] text-black'
+                "
+              >
+                <AnimatedStat :value="voiceBadgeLabel" />
               </span>
             </Transition>
           </span>

@@ -10350,6 +10350,8 @@ export const AllTypesProps: Record<string,any> = {
 		auto_cancel_duration:"Int_comparison_exp",
 		auto_cancellation:"Boolean_comparison_exp",
 		best_of:"Int_comparison_exp",
+		camera_allow_teammates:"Boolean_comparison_exp",
+		camera_required:"Boolean_comparison_exp",
 		check_in_setting:"e_check_in_settings_enum_comparison_exp",
 		coaches:"Boolean_comparison_exp",
 		default_models:"Boolean_comparison_exp",
@@ -10414,6 +10416,8 @@ export const AllTypesProps: Record<string,any> = {
 		auto_cancel_duration:"order_by",
 		auto_cancellation:"order_by",
 		best_of:"order_by",
+		camera_allow_teammates:"order_by",
+		camera_required:"order_by",
 		check_in_setting:"order_by",
 		coaches:"order_by",
 		default_models:"order_by",
@@ -12167,6 +12171,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_news_articles_by_pk:{
 			id:"uuid"
 		},
+		delete_notification_preferences:{
+			where:"notification_preferences_bool_exp"
+		},
+		delete_notification_preferences_by_pk:{
+			steam_id:"bigint"
+		},
 		delete_notifications:{
 			where:"notifications_bool_exp"
 		},
@@ -12337,6 +12347,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_plugin_versions_by_pk:{
 			runtime:"e_plugin_runtimes_enum"
+		},
+		delete_push_subscriptions:{
+			where:"push_subscriptions_bool_exp"
+		},
+		delete_push_subscriptions_by_pk:{
+			id:"uuid"
 		},
 		delete_seasons:{
 			where:"seasons_bool_exp"
@@ -13339,6 +13355,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"news_articles_insert_input",
 			on_conflict:"news_articles_on_conflict"
 		},
+		insert_notification_preferences:{
+			objects:"notification_preferences_insert_input",
+			on_conflict:"notification_preferences_on_conflict"
+		},
+		insert_notification_preferences_one:{
+			object:"notification_preferences_insert_input",
+			on_conflict:"notification_preferences_on_conflict"
+		},
 		insert_notifications:{
 			objects:"notifications_insert_input",
 			on_conflict:"notifications_on_conflict"
@@ -13536,6 +13560,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_plugin_versions_one:{
 			object:"plugin_versions_insert_input",
 			on_conflict:"plugin_versions_on_conflict"
+		},
+		insert_push_subscriptions:{
+			objects:"push_subscriptions_insert_input",
+			on_conflict:"push_subscriptions_on_conflict"
+		},
+		insert_push_subscriptions_one:{
+			object:"push_subscriptions_insert_input",
+			on_conflict:"push_subscriptions_on_conflict"
 		},
 		insert_seasons:{
 			objects:"seasons_insert_input",
@@ -15279,6 +15311,19 @@ export const AllTypesProps: Record<string,any> = {
 		update_news_articles_many:{
 			updates:"news_articles_updates"
 		},
+		update_notification_preferences:{
+			_inc:"notification_preferences_inc_input",
+			_set:"notification_preferences_set_input",
+			where:"notification_preferences_bool_exp"
+		},
+		update_notification_preferences_by_pk:{
+			_inc:"notification_preferences_inc_input",
+			_set:"notification_preferences_set_input",
+			pk_columns:"notification_preferences_pk_columns_input"
+		},
+		update_notification_preferences_many:{
+			updates:"notification_preferences_updates"
+		},
 		update_notifications:{
 			_append:"notifications_append_input",
 			_delete_at_path:"notifications_delete_at_path_input",
@@ -15618,6 +15663,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_plugin_versions_many:{
 			updates:"plugin_versions_updates"
+		},
+		update_push_subscriptions:{
+			_inc:"push_subscriptions_inc_input",
+			_set:"push_subscriptions_set_input",
+			where:"push_subscriptions_bool_exp"
+		},
+		update_push_subscriptions_by_pk:{
+			_inc:"push_subscriptions_inc_input",
+			_set:"push_subscriptions_set_input",
+			pk_columns:"push_subscriptions_pk_columns_input"
+		},
+		update_push_subscriptions_many:{
+			updates:"push_subscriptions_updates"
 		},
 		update_seasons:{
 			_inc:"seasons_inc_input",
@@ -16481,6 +16539,63 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"news_articles_set_input",
 		where:"news_articles_bool_exp"
 	},
+	notification_preferences_aggregate_fields:{
+		count:{
+			columns:"notification_preferences_select_column"
+		}
+	},
+	notification_preferences_bool_exp:{
+		_and:"notification_preferences_bool_exp",
+		_not:"notification_preferences_bool_exp",
+		_or:"notification_preferences_bool_exp",
+		channel:"String_comparison_exp",
+		enabled:"Boolean_comparison_exp",
+		key:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	notification_preferences_constraint: "enum" as const,
+	notification_preferences_inc_input:{
+		steam_id:"bigint"
+	},
+	notification_preferences_insert_input:{
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	notification_preferences_on_conflict:{
+		constraint:"notification_preferences_constraint",
+		update_columns:"notification_preferences_update_column",
+		where:"notification_preferences_bool_exp"
+	},
+	notification_preferences_order_by:{
+		channel:"order_by",
+		enabled:"order_by",
+		key:"order_by",
+		steam_id:"order_by",
+		updated_at:"order_by"
+	},
+	notification_preferences_pk_columns_input:{
+		steam_id:"bigint"
+	},
+	notification_preferences_select_column: "enum" as const,
+	notification_preferences_set_input:{
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	notification_preferences_stream_cursor_input:{
+		initial_value:"notification_preferences_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	notification_preferences_stream_cursor_value_input:{
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	notification_preferences_update_column: "enum" as const,
+	notification_preferences_updates:{
+		_inc:"notification_preferences_inc_input",
+		_set:"notification_preferences_set_input",
+		where:"notification_preferences_bool_exp"
+	},
 	notifications:{
 		actions:{
 
@@ -16544,6 +16659,7 @@ export const AllTypesProps: Record<string,any> = {
 		deleted_at:"timestamptz_comparison_exp",
 		entity_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		in_app:"Boolean_comparison_exp",
 		is_read:"Boolean_comparison_exp",
 		message:"String_comparison_exp",
 		player:"players_bool_exp",
@@ -16605,6 +16721,7 @@ export const AllTypesProps: Record<string,any> = {
 		deleted_at:"order_by",
 		entity_id:"order_by",
 		id:"order_by",
+		in_app:"order_by",
 		is_read:"order_by",
 		message:"order_by",
 		player:"players_order_by",
@@ -22676,6 +22793,7 @@ export const AllTypesProps: Record<string,any> = {
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_bool_exp",
 		name:"String_comparison_exp",
 		name_registered:"Boolean_comparison_exp",
+		notification_timezone:"String_comparison_exp",
 		notifications:"notifications_bool_exp",
 		notifications_aggregate:"notifications_aggregate_bool_exp",
 		objectives:"player_objectives_bool_exp",
@@ -22694,6 +22812,8 @@ export const AllTypesProps: Record<string,any> = {
 		premier_rank_history_aggregate:"player_premier_rank_history_aggregate_bool_exp",
 		premier_rank_updated_at:"timestamptz_comparison_exp",
 		profile_url:"String_comparison_exp",
+		quiet_hours_end:"time_comparison_exp",
+		quiet_hours_start:"time_comparison_exp",
 		role:"e_player_roles_enum_comparison_exp",
 		roster_image_url:"String_comparison_exp",
 		sanctions:"player_sanctions_bool_exp",
@@ -22767,6 +22887,8 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		premier_rank_history:"player_premier_rank_history_arr_rel_insert_input",
 		premier_rank_updated_at:"timestamptz",
+		quiet_hours_end:"time",
+		quiet_hours_start:"time",
 		role:"e_player_roles_enum",
 		sanctions:"player_sanctions_arr_rel_insert_input",
 		season_stats:"player_season_stats_arr_rel_insert_input",
@@ -22849,6 +22971,7 @@ export const AllTypesProps: Record<string,any> = {
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
 		name:"order_by",
 		name_registered:"order_by",
+		notification_timezone:"order_by",
 		notifications_aggregate:"notifications_aggregate_order_by",
 		objectives_aggregate:"player_objectives_aggregate_order_by",
 		owned_teams_aggregate:"teams_aggregate_order_by",
@@ -22860,6 +22983,8 @@ export const AllTypesProps: Record<string,any> = {
 		premier_rank_history_aggregate:"player_premier_rank_history_aggregate_order_by",
 		premier_rank_updated_at:"order_by",
 		profile_url:"order_by",
+		quiet_hours_end:"order_by",
+		quiet_hours_start:"order_by",
 		role:"order_by",
 		roster_image_url:"order_by",
 		sanctions_aggregate:"player_sanctions_aggregate_order_by",
@@ -22894,6 +23019,8 @@ export const AllTypesProps: Record<string,any> = {
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		premier_rank_updated_at:"timestamptz",
+		quiet_hours_end:"time",
+		quiet_hours_start:"time",
 		role:"e_player_roles_enum",
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
@@ -22908,6 +23035,8 @@ export const AllTypesProps: Record<string,any> = {
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		premier_rank_updated_at:"timestamptz",
+		quiet_hours_end:"time",
+		quiet_hours_start:"time",
 		role:"e_player_roles_enum",
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
@@ -22972,6 +23101,75 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"plugin_versions_inc_input",
 		_set:"plugin_versions_set_input",
 		where:"plugin_versions_bool_exp"
+	},
+	push_subscriptions_aggregate_fields:{
+		count:{
+			columns:"push_subscriptions_select_column"
+		}
+	},
+	push_subscriptions_bool_exp:{
+		_and:"push_subscriptions_bool_exp",
+		_not:"push_subscriptions_bool_exp",
+		_or:"push_subscriptions_bool_exp",
+		auth:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		endpoint:"String_comparison_exp",
+		id:"uuid_comparison_exp",
+		last_used_at:"timestamptz_comparison_exp",
+		p256dh:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		user_agent:"String_comparison_exp"
+	},
+	push_subscriptions_constraint: "enum" as const,
+	push_subscriptions_inc_input:{
+		steam_id:"bigint"
+	},
+	push_subscriptions_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		last_used_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	push_subscriptions_on_conflict:{
+		constraint:"push_subscriptions_constraint",
+		update_columns:"push_subscriptions_update_column",
+		where:"push_subscriptions_bool_exp"
+	},
+	push_subscriptions_order_by:{
+		auth:"order_by",
+		created_at:"order_by",
+		endpoint:"order_by",
+		id:"order_by",
+		last_used_at:"order_by",
+		p256dh:"order_by",
+		steam_id:"order_by",
+		user_agent:"order_by"
+	},
+	push_subscriptions_pk_columns_input:{
+		id:"uuid"
+	},
+	push_subscriptions_select_column: "enum" as const,
+	push_subscriptions_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		last_used_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	push_subscriptions_stream_cursor_input:{
+		initial_value:"push_subscriptions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	push_subscriptions_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		last_used_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	push_subscriptions_update_column: "enum" as const,
+	push_subscriptions_updates:{
+		_inc:"push_subscriptions_inc_input",
+		_set:"push_subscriptions_set_input",
+		where:"push_subscriptions_bool_exp"
 	},
 	query_root:{
 		_map_pool:{
@@ -24347,6 +24545,19 @@ export const AllTypesProps: Record<string,any> = {
 		news_articles_by_pk:{
 			id:"uuid"
 		},
+		notification_preferences:{
+			distinct_on:"notification_preferences_select_column",
+			order_by:"notification_preferences_order_by",
+			where:"notification_preferences_bool_exp"
+		},
+		notification_preferences_aggregate:{
+			distinct_on:"notification_preferences_select_column",
+			order_by:"notification_preferences_order_by",
+			where:"notification_preferences_bool_exp"
+		},
+		notification_preferences_by_pk:{
+			steam_id:"bigint"
+		},
 		notifications:{
 			distinct_on:"notifications_select_column",
 			order_by:"notifications_order_by",
@@ -24742,6 +24953,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		plugin_versions_by_pk:{
 			runtime:"e_plugin_runtimes_enum"
+		},
+		push_subscriptions:{
+			distinct_on:"push_subscriptions_select_column",
+			order_by:"push_subscriptions_order_by",
+			where:"push_subscriptions_bool_exp"
+		},
+		push_subscriptions_aggregate:{
+			distinct_on:"push_subscriptions_select_column",
+			order_by:"push_subscriptions_order_by",
+			where:"push_subscriptions_bool_exp"
+		},
+		push_subscriptions_by_pk:{
+			id:"uuid"
 		},
 		readServerFile:{
 
@@ -27893,6 +28117,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"news_articles_stream_cursor_input",
 			where:"news_articles_bool_exp"
 		},
+		notification_preferences:{
+			distinct_on:"notification_preferences_select_column",
+			order_by:"notification_preferences_order_by",
+			where:"notification_preferences_bool_exp"
+		},
+		notification_preferences_aggregate:{
+			distinct_on:"notification_preferences_select_column",
+			order_by:"notification_preferences_order_by",
+			where:"notification_preferences_bool_exp"
+		},
+		notification_preferences_by_pk:{
+			steam_id:"bigint"
+		},
+		notification_preferences_stream:{
+			cursor:"notification_preferences_stream_cursor_input",
+			where:"notification_preferences_bool_exp"
+		},
 		notifications:{
 			distinct_on:"notifications_select_column",
 			order_by:"notifications_order_by",
@@ -28408,6 +28649,23 @@ export const AllTypesProps: Record<string,any> = {
 		plugin_versions_stream:{
 			cursor:"plugin_versions_stream_cursor_input",
 			where:"plugin_versions_bool_exp"
+		},
+		push_subscriptions:{
+			distinct_on:"push_subscriptions_select_column",
+			order_by:"push_subscriptions_order_by",
+			where:"push_subscriptions_bool_exp"
+		},
+		push_subscriptions_aggregate:{
+			distinct_on:"push_subscriptions_select_column",
+			order_by:"push_subscriptions_order_by",
+			where:"push_subscriptions_bool_exp"
+		},
+		push_subscriptions_by_pk:{
+			id:"uuid"
+		},
+		push_subscriptions_stream:{
+			cursor:"push_subscriptions_stream_cursor_input",
+			where:"push_subscriptions_bool_exp"
 		},
 		seasons:{
 			distinct_on:"seasons_select_column",
@@ -30733,6 +30991,17 @@ export const AllTypesProps: Record<string,any> = {
 	teams_variance_order_by:{
 		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
+	},
+	time: `scalar.time` as const,
+	time_comparison_exp:{
+		_eq:"time",
+		_gt:"time",
+		_gte:"time",
+		_in:"time",
+		_lt:"time",
+		_lte:"time",
+		_neq:"time",
+		_nin:"time"
 	},
 	timestamp: `scalar.timestamp` as const,
 	timestamptz: `scalar.timestamptz` as const,
@@ -37580,6 +37849,14 @@ export const ReturnTypes: Record<string,any> = {
 		stream_url:"String",
 		success:"Boolean"
 	},
+	WebPushKeysOutput:{
+		success:"Boolean"
+	},
+	WebPushStatusOutput:{
+		configured:"Boolean",
+		managed_by_environment:"Boolean",
+		subscriptions:"Int"
+	},
 	_map_pool:{
 		map_id:"uuid",
 		map_pool_id:"uuid"
@@ -42812,6 +43089,8 @@ export const ReturnTypes: Record<string,any> = {
 		auto_cancel_duration:"Int",
 		auto_cancellation:"Boolean",
 		best_of:"Int",
+		camera_allow_teammates:"Boolean",
+		camera_required:"Boolean",
 		check_in_setting:"e_check_in_settings_enum",
 		coaches:"Boolean",
 		default_models:"Boolean",
@@ -43622,6 +43901,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_my_friends:"my_friends_mutation_response",
 		delete_news_articles:"news_articles_mutation_response",
 		delete_news_articles_by_pk:"news_articles",
+		delete_notification_preferences:"notification_preferences_mutation_response",
+		delete_notification_preferences_by_pk:"notification_preferences",
 		delete_notifications:"notifications_mutation_response",
 		delete_notifications_by_pk:"notifications",
 		delete_pending_match_import_players:"pending_match_import_players_mutation_response",
@@ -43671,6 +43952,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_players_by_pk:"players",
 		delete_plugin_versions:"plugin_versions_mutation_response",
 		delete_plugin_versions_by_pk:"plugin_versions",
+		delete_push_subscriptions:"push_subscriptions_mutation_response",
+		delete_push_subscriptions_by_pk:"push_subscriptions",
 		delete_seasons:"seasons_mutation_response",
 		delete_seasons_by_pk:"seasons",
 		delete_server_regions:"server_regions_mutation_response",
@@ -43736,6 +44019,7 @@ export const ReturnTypes: Record<string,any> = {
 		denyInvite:"SuccessOutput",
 		denyNameChange:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
+		generateWebPushKeys:"WebPushKeysOutput",
 		getLiveStreamSpecState:"LiveStreamSpecState",
 		getTestUploadLink:"GetTestUploadResponse",
 		grantAward:"AwardRecipient",
@@ -43937,6 +44221,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_my_friends_one:"my_friends",
 		insert_news_articles:"news_articles_mutation_response",
 		insert_news_articles_one:"news_articles",
+		insert_notification_preferences:"notification_preferences_mutation_response",
+		insert_notification_preferences_one:"notification_preferences",
 		insert_notifications:"notifications_mutation_response",
 		insert_notifications_one:"notifications",
 		insert_pending_match_import_players:"pending_match_import_players_mutation_response",
@@ -43987,6 +44273,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_players_one:"players",
 		insert_plugin_versions:"plugin_versions_mutation_response",
 		insert_plugin_versions_one:"plugin_versions",
+		insert_push_subscriptions:"push_subscriptions_mutation_response",
+		insert_push_subscriptions_one:"push_subscriptions",
 		insert_seasons:"seasons_mutation_response",
 		insert_seasons_one:"seasons",
 		insert_server_regions:"server_regions_mutation_response",
@@ -44435,6 +44723,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_news_articles:"news_articles_mutation_response",
 		update_news_articles_by_pk:"news_articles",
 		update_news_articles_many:"news_articles_mutation_response",
+		update_notification_preferences:"notification_preferences_mutation_response",
+		update_notification_preferences_by_pk:"notification_preferences",
+		update_notification_preferences_many:"notification_preferences_mutation_response",
 		update_notifications:"notifications_mutation_response",
 		update_notifications_by_pk:"notifications",
 		update_notifications_many:"notifications_mutation_response",
@@ -44509,6 +44800,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_plugin_versions:"plugin_versions_mutation_response",
 		update_plugin_versions_by_pk:"plugin_versions",
 		update_plugin_versions_many:"plugin_versions_mutation_response",
+		update_push_subscriptions:"push_subscriptions_mutation_response",
+		update_push_subscriptions_by_pk:"push_subscriptions",
+		update_push_subscriptions_many:"push_subscriptions_mutation_response",
 		update_seasons:"seasons_mutation_response",
 		update_seasons_by_pk:"seasons",
 		update_seasons_many:"seasons_mutation_response",
@@ -44912,6 +45206,70 @@ export const ReturnTypes: Record<string,any> = {
 		author_steam_id:"Float",
 		view_count:"Float"
 	},
+	notification_preferences:{
+		channel:"String",
+		enabled:"Boolean",
+		key:"String",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	notification_preferences_aggregate:{
+		aggregate:"notification_preferences_aggregate_fields",
+		nodes:"notification_preferences"
+	},
+	notification_preferences_aggregate_fields:{
+		avg:"notification_preferences_avg_fields",
+		count:"Int",
+		max:"notification_preferences_max_fields",
+		min:"notification_preferences_min_fields",
+		stddev:"notification_preferences_stddev_fields",
+		stddev_pop:"notification_preferences_stddev_pop_fields",
+		stddev_samp:"notification_preferences_stddev_samp_fields",
+		sum:"notification_preferences_sum_fields",
+		var_pop:"notification_preferences_var_pop_fields",
+		var_samp:"notification_preferences_var_samp_fields",
+		variance:"notification_preferences_variance_fields"
+	},
+	notification_preferences_avg_fields:{
+		steam_id:"Float"
+	},
+	notification_preferences_max_fields:{
+		channel:"String",
+		key:"String",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	notification_preferences_min_fields:{
+		channel:"String",
+		key:"String",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	notification_preferences_mutation_response:{
+		affected_rows:"Int",
+		returning:"notification_preferences"
+	},
+	notification_preferences_stddev_fields:{
+		steam_id:"Float"
+	},
+	notification_preferences_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	notification_preferences_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	notification_preferences_sum_fields:{
+		steam_id:"bigint"
+	},
+	notification_preferences_var_pop_fields:{
+		steam_id:"Float"
+	},
+	notification_preferences_var_samp_fields:{
+		steam_id:"Float"
+	},
+	notification_preferences_variance_fields:{
+		steam_id:"Float"
+	},
 	notifications:{
 		actions:"jsonb",
 		created_at:"timestamptz",
@@ -44919,6 +45277,7 @@ export const ReturnTypes: Record<string,any> = {
 		deleted_at:"timestamptz",
 		entity_id:"String",
 		id:"uuid",
+		in_app:"Boolean",
 		is_read:"Boolean",
 		message:"String",
 		player:"players",
@@ -49906,6 +50265,7 @@ export const ReturnTypes: Record<string,any> = {
 		multi_kills_aggregate:"v_player_multi_kills_aggregate",
 		name:"String",
 		name_registered:"Boolean",
+		notification_timezone:"String",
 		notifications:"notifications",
 		notifications_aggregate:"notifications_aggregate",
 		objectives:"player_objectives",
@@ -49924,6 +50284,8 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank_history_aggregate:"player_premier_rank_history_aggregate",
 		premier_rank_updated_at:"timestamptz",
 		profile_url:"String",
+		quiet_hours_end:"time",
+		quiet_hours_start:"time",
 		role:"e_player_roles_enum",
 		roster_image_url:"String",
 		sanctions:"player_sanctions",
@@ -50017,6 +50379,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses_wingman:"Int",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
+		notification_timezone:"String",
 		premier_rank:"Int",
 		premier_rank_updated_at:"timestamptz",
 		profile_url:"String",
@@ -50055,6 +50418,7 @@ export const ReturnTypes: Record<string,any> = {
 		losses_wingman:"Int",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
+		notification_timezone:"String",
 		premier_rank:"Int",
 		premier_rank_updated_at:"timestamptz",
 		profile_url:"String",
@@ -50258,6 +50622,81 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	plugin_versions_variance_fields:{
 		min_game_build_id:"Float"
+	},
+	push_subscriptions:{
+		auth:"String",
+		created_at:"timestamptz",
+		endpoint:"String",
+		id:"uuid",
+		last_used_at:"timestamptz",
+		p256dh:"String",
+		steam_id:"bigint",
+		user_agent:"String"
+	},
+	push_subscriptions_aggregate:{
+		aggregate:"push_subscriptions_aggregate_fields",
+		nodes:"push_subscriptions"
+	},
+	push_subscriptions_aggregate_fields:{
+		avg:"push_subscriptions_avg_fields",
+		count:"Int",
+		max:"push_subscriptions_max_fields",
+		min:"push_subscriptions_min_fields",
+		stddev:"push_subscriptions_stddev_fields",
+		stddev_pop:"push_subscriptions_stddev_pop_fields",
+		stddev_samp:"push_subscriptions_stddev_samp_fields",
+		sum:"push_subscriptions_sum_fields",
+		var_pop:"push_subscriptions_var_pop_fields",
+		var_samp:"push_subscriptions_var_samp_fields",
+		variance:"push_subscriptions_variance_fields"
+	},
+	push_subscriptions_avg_fields:{
+		steam_id:"Float"
+	},
+	push_subscriptions_max_fields:{
+		auth:"String",
+		created_at:"timestamptz",
+		endpoint:"String",
+		id:"uuid",
+		last_used_at:"timestamptz",
+		p256dh:"String",
+		steam_id:"bigint",
+		user_agent:"String"
+	},
+	push_subscriptions_min_fields:{
+		auth:"String",
+		created_at:"timestamptz",
+		endpoint:"String",
+		id:"uuid",
+		last_used_at:"timestamptz",
+		p256dh:"String",
+		steam_id:"bigint",
+		user_agent:"String"
+	},
+	push_subscriptions_mutation_response:{
+		affected_rows:"Int",
+		returning:"push_subscriptions"
+	},
+	push_subscriptions_stddev_fields:{
+		steam_id:"Float"
+	},
+	push_subscriptions_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	push_subscriptions_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	push_subscriptions_sum_fields:{
+		steam_id:"bigint"
+	},
+	push_subscriptions_var_pop_fields:{
+		steam_id:"Float"
+	},
+	push_subscriptions_var_samp_fields:{
+		steam_id:"Float"
+	},
+	push_subscriptions_variance_fields:{
+		steam_id:"Float"
 	},
 	query_root:{
 		_map_pool:"_map_pool",
@@ -50587,6 +51026,9 @@ export const ReturnTypes: Record<string,any> = {
 		news_articles:"news_articles",
 		news_articles_aggregate:"news_articles_aggregate",
 		news_articles_by_pk:"news_articles",
+		notification_preferences:"notification_preferences",
+		notification_preferences_aggregate:"notification_preferences_aggregate",
+		notification_preferences_by_pk:"notification_preferences",
 		notifications:"notifications",
 		notifications_aggregate:"notifications_aggregate",
 		notifications_by_pk:"notifications",
@@ -50671,6 +51113,9 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions:"plugin_versions",
 		plugin_versions_aggregate:"plugin_versions_aggregate",
 		plugin_versions_by_pk:"plugin_versions",
+		push_subscriptions:"push_subscriptions",
+		push_subscriptions_aggregate:"push_subscriptions_aggregate",
+		push_subscriptions_by_pk:"push_subscriptions",
 		readServerFile:"FileContentResponse",
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
@@ -50825,7 +51270,8 @@ export const ReturnTypes: Record<string,any> = {
 		v_team_tournament_results:"v_team_tournament_results",
 		v_team_tournament_results_aggregate:"v_team_tournament_results_aggregate",
 		v_tournament_player_stats:"v_tournament_player_stats",
-		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate"
+		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate",
+		webPushStatus:"WebPushStatusOutput"
 	},
 	seasons:{
 		awards:"award_recipients",
@@ -51687,6 +52133,10 @@ export const ReturnTypes: Record<string,any> = {
 		news_articles_aggregate:"news_articles_aggregate",
 		news_articles_by_pk:"news_articles",
 		news_articles_stream:"news_articles",
+		notification_preferences:"notification_preferences",
+		notification_preferences_aggregate:"notification_preferences_aggregate",
+		notification_preferences_by_pk:"notification_preferences",
+		notification_preferences_stream:"notification_preferences",
 		notifications:"notifications",
 		notifications_aggregate:"notifications_aggregate",
 		notifications_by_pk:"notifications",
@@ -51801,6 +52251,10 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions_aggregate:"plugin_versions_aggregate",
 		plugin_versions_by_pk:"plugin_versions",
 		plugin_versions_stream:"plugin_versions",
+		push_subscriptions:"push_subscriptions",
+		push_subscriptions_aggregate:"push_subscriptions_aggregate",
+		push_subscriptions_by_pk:"push_subscriptions",
+		push_subscriptions_stream:"push_subscriptions",
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
@@ -52791,6 +53245,7 @@ export const ReturnTypes: Record<string,any> = {
 		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
+	time: `scalar.time` as const,
 	timestamp: `scalar.timestamp` as const,
 	timestamptz: `scalar.timestamptz` as const,
 	tournament_awards:{

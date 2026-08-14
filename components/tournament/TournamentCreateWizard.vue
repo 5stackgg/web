@@ -22,6 +22,7 @@ import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import DateTimePicker from "~/components/tournament/DateTimePicker.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
+import { HeightMorph, Fold } from "~/components/ui/transitions";
 </script>
 
 <template>
@@ -46,8 +47,20 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
           :disabled="index > furthestStep"
           @click="goTo(index)"
         >
-          <Check v-if="index < currentStep" class="h-3 w-3" />
-          <span v-else>{{ index + 1 }}</span>
+          <!-- Stacked glyphs crossfade: the check used to hard-cut against
+               the button's own color transition. -->
+          <span class="grid place-items-center">
+            <Check
+              class="col-start-1 row-start-1 h-3 w-3 transition-opacity duration-200"
+              :class="index < currentStep ? '' : 'opacity-0'"
+            />
+            <span
+              class="col-start-1 row-start-1 transition-opacity duration-200"
+              :class="index < currentStep ? 'opacity-0' : ''"
+            >
+              {{ index + 1 }}
+            </span>
+          </span>
           {{ step.label }}
         </button>
         <ChevronRight
@@ -57,7 +70,14 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
       </li>
     </ol>
 
+    <!-- The four steps are wildly different heights (a banner + schedule vs
+         one address field vs the whole MatchOptions tree). The shell eases
+         between them while the leaver fades out of flow, so the navigation
+         bar below glides instead of teleporting out from under the pointer.
+         v-show keeps the panels mounted so their state survives. -->
+    <HeightMorph :state="currentStep">
     <!-- Step 1: Information -->
+    <Transition name="wiz-step">
     <div v-show="currentStep === 0" class="grid gap-4">
       <div class="grid gap-1.5">
         <Label>{{ $t("tournament.banner.label") }}</Label>
@@ -149,8 +169,10 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
         </FormField>
       </div>
     </div>
+    </Transition>
 
     <!-- Step 2: Location -->
+    <Transition name="wiz-step">
     <div v-show="currentStep === 1" class="grid gap-4">
       <FormField name="location">
         <FormItem>
@@ -168,8 +190,10 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
         </FormItem>
       </FormField>
     </div>
+    </Transition>
 
     <!-- Step 3: Match Options -->
+    <Transition name="wiz-step">
     <div v-show="currentStep === 2" class="grid gap-4">
       <MatchOptions
         :form="form"
@@ -206,8 +230,10 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
           </FormItem>
         </FormField>
 
+        <!-- Folds under the switch that controls it instead of popping while
+             the switch thumb is still sliding. -->
+        <Fold :open="!form.values.negotiated_scheduling">
         <FormField
-          v-if="!form.values.negotiated_scheduling"
           v-slot="{ value, handleChange }"
           name="auto_start"
         >
@@ -234,10 +260,13 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
             </div>
           </FormItem>
         </FormField>
+        </Fold>
       </MatchOptions>
     </div>
+    </Transition>
 
     <!-- Step 4: Prizes -->
+    <Transition name="wiz-step">
     <div v-show="currentStep === 3" class="grid gap-4">
       <p class="text-sm text-muted-foreground">
         {{ $t("tournament.prizes.manage_hint") }}
@@ -249,6 +278,8 @@ import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
         @add="addPrizeRow"
       />
     </div>
+    </Transition>
+    </HeightMorph>
 
     <!-- Navigation -->
     <div class="flex items-center justify-between border-t border-border pt-4">
@@ -565,3 +596,34 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* The leaver goes out of flow so two steps never stack; the HeightMorph shell
+   owns the height while they trade. Opacity/transform only, so the fades keep
+   playing even when the entering step is heavy. */
+.wiz-step-enter-active {
+  transition:
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wiz-step-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: opacity 0.11s ease-in;
+}
+.wiz-step-enter-from {
+  opacity: 0;
+  transform: translateX(12px);
+}
+.wiz-step-leave-to {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wiz-step-enter-active,
+  .wiz-step-leave-active {
+    transition-duration: 1ms;
+  }
+}
+</style>

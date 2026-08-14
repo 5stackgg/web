@@ -12,6 +12,9 @@ import {
   VolumeX,
   Clock,
   Infinity as InfinityIcon,
+  ShieldAlert,
+  ShieldCheck,
+  ShieldX,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -58,43 +61,19 @@ import {
 } from "~/components/ui/tooltip";
 import Pagination from "~/components/Pagination.vue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import {
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
+} from "~/utilities/tacticalClasses";
 import { fromDate, toCalendarDate } from "@internationalized/date";
+
+const tabCountClasses =
+  "inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.2)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]";
 </script>
 
 <template>
-  <div
-    v-if="shouldRender"
-    :class="{ 'inline-flex items-center': variant === 'panel' }"
-  >
-    <TooltipProvider v-if="variant === 'panel'">
-      <Tooltip>
-        <TooltipTrigger as-child>
-          <button
-            v-if="sanctionCount > 0"
-            type="button"
-            @click="sheetOpen = true"
-            class="inline-flex h-9 min-w-9 items-center justify-center rounded border px-2 font-mono text-sm font-bold tabular-nums transition-colors duration-150"
-            :class="
-              hasActiveSanctions
-                ? 'border-destructive/55 bg-destructive/10 text-destructive hover:bg-destructive/20'
-                : 'border-border bg-card/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-foreground'
-            "
-          >
-            {{ sanctionCount }}
-          </button>
-          <button
-            v-else-if="canManageSanctions"
-            type="button"
-            @click="sheetOpen = true"
-            class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200"
-          >
-            <Ban class="h-4 w-4" />
-          </button>
-        </TooltipTrigger>
-        <TooltipContent>{{ $t("player.sanctions.title") }}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-
+  <div v-if="shouldRender">
     <Sheet :open="sheetOpen" @update:open="sheetOpen = $event">
       <SheetTrigger v-if="variant === 'default'" as-child>
         <Button
@@ -107,6 +86,14 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
         >
           <AlertTriangle class="h-3.5 w-3.5" />
           <span>{{ $t("player.sanctions.title") }}</span>
+          <ShieldX
+            v-if="vacBanned"
+            class="h-3.5 w-3.5 shrink-0 text-destructive"
+          />
+          <ShieldAlert
+            v-else-if="gameBanCount > 0"
+            class="h-3.5 w-3.5 shrink-0 text-orange-500"
+          />
           <Badge
             v-if="activeSanctions > 0"
             variant="destructive"
@@ -124,53 +111,141 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
         </Button>
       </SheetTrigger>
       <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{{ $t("player.sanctions.title") }}</SheetTitle>
-        </SheetHeader>
-        <div
-          v-if="canManageSanctions && player"
-          class="mt-4 flex items-center justify-between gap-3 rounded-lg border border-border bg-card/40 p-3"
-        >
-          <span class="text-sm font-medium">
-            {{ $t("player.sanction.button") }}
-          </span>
-          <SanctionPlayer :player="player" :server-id="serverId" />
-        </div>
-        <Tabs default-value="sanctions" class="mt-6">
-          <TabsList
-            :class="[
-              'grid w-full',
-              abandonedMatchesCount > 0 ? 'grid-cols-2' : 'grid-cols-1',
-            ]"
+        <SheetHeader class="space-y-3 text-left">
+          <SheetTitle
+            class="inline-flex items-center gap-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground"
           >
-            <TabsTrigger value="sanctions" class="flex items-center gap-2">
-              {{ $t("player.sanctions.sanctions") }}
-              <Badge
-                v-if="sanctions.length > 0"
-                variant="secondary"
-                class="ml-1"
+            <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+            {{ $t("player.sanctions.title") }}
+          </SheetTitle>
+          <PlayerDisplay v-if="player" :player="player" :show-steam-id="true" />
+        </SheetHeader>
+
+        <div
+          v-if="hasSteamBans"
+          class="relative mt-5 overflow-hidden rounded-lg bg-card/40"
+          :class="
+            vacBanned
+              ? 'border border-destructive/40'
+              : 'border border-orange-500/40'
+          "
+        >
+          <span
+            class="absolute inset-y-0 left-0 w-1"
+            :class="vacBanned ? 'bg-destructive' : 'bg-orange-500'"
+          />
+          <div class="space-y-3 p-4 pl-5">
+            <div class="flex items-center justify-between gap-3">
+              <span
+                class="inline-flex items-center gap-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em]"
+                :class="vacBanned ? 'text-destructive' : 'text-orange-400'"
               >
+                <ShieldX v-if="vacBanned" class="h-4 w-4 shrink-0" />
+                <ShieldAlert v-else class="h-4 w-4 shrink-0" />
+                {{ $t("player.sanctions.steam_bans") }}
+              </span>
+              <a
+                :href="steamProfileUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex shrink-0 items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:text-[hsl(var(--tac-amber))]"
+              >
+                {{ $t("player.sanctions.view_steam") }}
+                <ExternalLink class="h-3 w-3" />
+              </a>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                v-if="vacBanned"
+                class="inline-flex items-center gap-1.5 rounded border border-destructive/45 bg-destructive/10 px-2 py-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-destructive"
+              >
+                <span class="tabular-nums">{{ vacBanCount }}</span>
+                {{ $t("player.sanctions.steam_vac_bans") }}
+              </span>
+              <span
+                v-if="gameBanCount > 0"
+                class="inline-flex items-center gap-1.5 rounded border border-orange-500/45 bg-orange-500/10 px-2 py-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-orange-400"
+              >
+                <span class="tabular-nums">{{ gameBanCount }}</span>
+                {{ $t("player.sanctions.steam_game_bans") }}
+              </span>
+              <span
+                v-if="daysSinceLastBan !== null"
+                class="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+              >
+                <Clock class="h-3.5 w-3.5" />
+                {{
+                  $t("player.status.last_ban_days_ago", {
+                    days: daysSinceLastBan,
+                  })
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="canManageSanctions && player" class="mt-4">
+          <SanctionPlayer
+            variant="block"
+            :player="player"
+            :server-id="serverId"
+          />
+        </div>
+
+        <Tabs default-value="sanctions" class="mt-6">
+          <!-- A lone tab reads as a stray button, so the tab bar only appears
+               once there is something to switch between. -->
+          <TabsList
+            v-if="abandonedMatchesCount > 0"
+            :class="[tacticalTabsListClasses, 'grid w-full grid-cols-2']"
+          >
+            <TabsTrigger
+              value="sanctions"
+              :class="[tacticalTabsTriggerClasses, 'flex items-center']"
+            >
+              {{ $t("player.sanctions.sanctions") }}
+              <span v-if="sanctions.length > 0" :class="tabCountClasses">
                 {{ sanctions.length }}
-              </Badge>
+              </span>
             </TabsTrigger>
             <TabsTrigger
-              v-if="abandonedMatchesCount > 0"
               value="abandoned"
-              class="flex items-center gap-2"
+              :class="[tacticalTabsTriggerClasses, 'flex items-center']"
             >
               {{ $t("player.sanctions.abandoned_matches") }}
-              <Badge variant="secondary" class="ml-1">
-                {{ abandonedMatchesCount }}
-              </Badge>
+              <span :class="tabCountClasses">{{ abandonedMatchesCount }}</span>
             </TabsTrigger>
           </TabsList>
+          <div
+            v-else
+            class="inline-flex items-center gap-2 font-sans text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground"
+          >
+            <span
+              class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+            ></span>
+            {{ $t("player.sanctions.record") }}
+            <span v-if="sanctions.length > 0" :class="tabCountClasses">
+              {{ sanctions.length }}
+            </span>
+          </div>
 
           <TabsContent value="sanctions" class="mt-4">
             <div
               v-if="!sanctions || sanctions.length === 0"
-              class="text-center py-8 text-muted-foreground"
+              class="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border/70 bg-card/20 px-6 py-10 text-center"
             >
-              {{ $t("player.sanctions.no_sanctions") }}
+              <ShieldCheck class="h-7 w-7 text-muted-foreground/50" />
+              <div class="space-y-1">
+                <p
+                  class="font-sans text-[0.72rem] uppercase tracking-[0.2em] text-muted-foreground"
+                >
+                  {{ $t("player.sanctions.no_sanctions") }}
+                </p>
+                <p class="text-xs text-muted-foreground/70">
+                  {{ $t("player.sanctions.no_sanctions_description") }}
+                </p>
+              </div>
             </div>
             <div v-else class="flex flex-col gap-3">
               <div
@@ -558,7 +633,7 @@ export default {
       default: undefined,
     },
     variant: {
-      type: String as () => "default" | "panel",
+      type: String as () => "default" | "external",
       required: false,
       default: "default",
     },
@@ -567,7 +642,15 @@ export default {
       required: false,
       default: undefined,
     },
+    // `external` variant only: the host owns the sheet and opens it from its
+    // own control (e.g. a hero overflow menu), so no trigger is rendered here.
+    open: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
+  emits: ["update:open", "summary"],
   data() {
     return {
       sanctions: [] as any[],
@@ -670,15 +753,41 @@ export default {
     hasActiveSanctions(): boolean {
       return this.activeSanctions > 0;
     },
+    vacBanned(): boolean {
+      return Boolean(this.player?.vac_banned);
+    },
+    vacBanCount(): number {
+      return this.player?.vac_ban_count ?? 0;
+    },
+    gameBanCount(): number {
+      return this.player?.game_ban_count ?? 0;
+    },
+    daysSinceLastBan(): number | null {
+      const days = this.player?.days_since_last_ban;
+      return typeof days === "number" ? days : null;
+    },
+    hasSteamBans(): boolean {
+      return this.vacBanned || this.gameBanCount > 0;
+    },
     shouldRender(): boolean {
-      if (this.variant === "panel") {
+      if (this.variant === "external") {
         return (
           this.sanctionCount > 0 ||
           this.abandonedMatchesCount > 0 ||
+          this.hasSteamBans ||
           this.canManageSanctions
         );
       }
-      return this.hasAnyData;
+      return this.hasAnyData || this.hasSteamBans;
+    },
+    summary(): Record<string, any> {
+      return {
+        available: this.shouldRender,
+        count: this.totalCount,
+        hasActive: this.hasActiveSanctions,
+        hasSteamBans: this.hasSteamBans,
+        vacBanned: this.vacBanned,
+      };
     },
     canManageSanctions() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
@@ -717,6 +826,24 @@ export default {
     },
     editDate() {
       this.updateEditDateTime();
+    },
+    open: {
+      immediate: true,
+      handler(value: boolean) {
+        this.sheetOpen = value;
+      },
+    },
+    sheetOpen(value: boolean) {
+      if (value !== this.open) {
+        this.$emit("update:open", value);
+      }
+    },
+    summary: {
+      immediate: true,
+      deep: true,
+      handler(value: Record<string, any>) {
+        this.$emit("summary", value);
+      },
     },
   },
   methods: {

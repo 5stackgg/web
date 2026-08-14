@@ -905,6 +905,7 @@ export type ScalarCoders = {
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
 	smallint?: ScalarResolver;
+	time?: ScalarResolver;
 	timestamp?: ScalarResolver;
 	timestamptz?: ScalarResolver;
 	uuid?: ScalarResolver;
@@ -1744,6 +1745,16 @@ export type ValueTypes = {
 	session_id?:boolean | `@${string}`,
 	stream_url?:boolean | `@${string}`,
 	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["WebPushKeysOutput"]: AliasType<{
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["WebPushStatusOutput"]: AliasType<{
+	configured?:boolean | `@${string}`,
+	managed_by_environment?:boolean | `@${string}`,
+	subscriptions?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "_map_pool" */
@@ -21649,6 +21660,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	auto_cancel_duration?:boolean | `@${string}`,
 	auto_cancellation?:boolean | `@${string}`,
 	best_of?:boolean | `@${string}`,
+	camera_allow_teammates?:boolean | `@${string}`,
+	camera_required?:boolean | `@${string}`,
 	check_in_setting?:boolean | `@${string}`,
 	coaches?:boolean | `@${string}`,
 	default_models?:boolean | `@${string}`,
@@ -21738,6 +21751,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	auto_cancellation?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	best_of?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	camera_required?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	coaches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	default_models?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -21788,6 +21803,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: number | undefined | null | Variable<any, string>,
 	auto_cancellation?: boolean | undefined | null | Variable<any, string>,
 	best_of?: number | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: boolean | undefined | null | Variable<any, string>,
+	camera_required?: boolean | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	default_models?: boolean | undefined | null | Variable<any, string>,
@@ -21875,6 +21892,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	auto_cancellation?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	camera_required?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	coaches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	default_models?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -21917,6 +21936,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: number | undefined | null | Variable<any, string>,
 	auto_cancellation?: boolean | undefined | null | Variable<any, string>,
 	best_of?: number | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: boolean | undefined | null | Variable<any, string>,
+	camera_required?: boolean | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	default_models?: boolean | undefined | null | Variable<any, string>,
@@ -21990,6 +22011,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	auto_cancel_duration?: number | undefined | null | Variable<any, string>,
 	auto_cancellation?: boolean | undefined | null | Variable<any, string>,
 	best_of?: number | undefined | null | Variable<any, string>,
+	camera_allow_teammates?: boolean | undefined | null | Variable<any, string>,
+	camera_required?: boolean | undefined | null | Variable<any, string>,
 	check_in_setting?: ValueTypes["e_check_in_settings_enum"] | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	default_models?: boolean | undefined | null | Variable<any, string>,
@@ -23818,7 +23841,7 @@ count?: [{	columns?: Array<ValueTypes["migration_hashes_hashes_select_column"]> 
 PreviewTournamentMatchReset?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["PreviewTournamentMatchResetOutput"]],
 ResetTournamentMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	reset_status?: string | undefined | null | Variable<any, string>,	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 acceptInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
-addDraftPlayer?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	steamId: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+addDraftPlayer?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	lineup?: number | undefined | null | Variable<any, string>,	steamId: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 addSteamPresenceBotAccount?: [{	bot_secret: string | Variable<any, string>,	friend_capacity?: number | undefined | null | Variable<any, string>,	username: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 approveNameChange?: [{	name: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 approve_league_season_movements?: [{	/** input parameters for function "approve_league_season_movements" */
@@ -24172,6 +24195,9 @@ delete_my_friends?: [{	/** filter the rows which have to be deleted */
 delete_news_articles?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["news_articles_bool_exp"] | Variable<any, string>},ValueTypes["news_articles_mutation_response"]],
 delete_news_articles_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["news_articles"]],
+delete_notification_preferences?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["notification_preferences_bool_exp"] | Variable<any, string>},ValueTypes["notification_preferences_mutation_response"]],
+delete_notification_preferences_by_pk?: [{	channel: string | Variable<any, string>,	key: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["notification_preferences"]],
 delete_notifications?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["notifications_bool_exp"] | Variable<any, string>},ValueTypes["notifications_mutation_response"]],
 delete_notifications_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["notifications"]],
@@ -24246,6 +24272,9 @@ delete_players_by_pk?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>
 delete_plugin_versions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["plugin_versions_bool_exp"] | Variable<any, string>},ValueTypes["plugin_versions_mutation_response"]],
 delete_plugin_versions_by_pk?: [{	runtime: ValueTypes["e_plugin_runtimes_enum"] | Variable<any, string>,	version: string | Variable<any, string>},ValueTypes["plugin_versions"]],
+delete_push_subscriptions?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["push_subscriptions_bool_exp"] | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
+delete_push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["seasons_bool_exp"] | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["seasons"]],
@@ -24344,6 +24373,8 @@ delete_v_team_stage_results_by_pk?: [{	tournament_stage_id: ValueTypes["uuid"] |
 denyInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 denyNameChange?: [{	name: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 forfeitMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
+	generateWebPushKeys?:ValueTypes["WebPushKeysOutput"],
 getLiveStreamSpecState?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ValueTypes["GetTestUploadResponse"],
 grantAward?: [{	award_id: ValueTypes["uuid"] | Variable<any, string>,	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	note?: string | undefined | null | Variable<any, string>,	player_steam_id?: string | undefined | null | Variable<any, string>,	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["AwardRecipient"]],
@@ -24937,6 +24968,12 @@ insert_news_articles?: [{	/** the rows to be inserted */
 insert_news_articles_one?: [{	/** the row to be inserted */
 	object: ValueTypes["news_articles_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["news_articles_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["news_articles"]],
+insert_notification_preferences?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["notification_preferences_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["notification_preferences_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences_mutation_response"]],
+insert_notification_preferences_one?: [{	/** the row to be inserted */
+	object: ValueTypes["notification_preferences_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["notification_preferences_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences"]],
 insert_notifications?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["notifications_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["notifications_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["notifications_mutation_response"]],
@@ -25085,6 +25122,12 @@ insert_plugin_versions?: [{	/** the rows to be inserted */
 insert_plugin_versions_one?: [{	/** the row to be inserted */
 	object: ValueTypes["plugin_versions_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["plugin_versions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["plugin_versions"]],
+insert_push_subscriptions?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["push_subscriptions_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["push_subscriptions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
+insert_push_subscriptions_one?: [{	/** the row to be inserted */
+	object: ValueTypes["push_subscriptions_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["push_subscriptions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
 insert_seasons?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["seasons_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["seasons_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
@@ -26269,6 +26312,15 @@ update_news_articles_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ValueTypes["news_articles_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["news_articles_pk_columns_input"] | Variable<any, string>},ValueTypes["news_articles"]],
 update_news_articles_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["news_articles_updates"]> | Variable<any, string>},ValueTypes["news_articles_mutation_response"]],
+update_notification_preferences?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["notification_preferences_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["notification_preferences_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["notification_preferences_bool_exp"] | Variable<any, string>},ValueTypes["notification_preferences_mutation_response"]],
+update_notification_preferences_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["notification_preferences_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["notification_preferences_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["notification_preferences_pk_columns_input"] | Variable<any, string>},ValueTypes["notification_preferences"]],
+update_notification_preferences_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["notification_preferences_updates"]> | Variable<any, string>},ValueTypes["notification_preferences_mutation_response"]],
 update_notifications?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ValueTypes["notifications_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ValueTypes["notifications_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -26511,6 +26563,15 @@ update_plugin_versions_by_pk?: [{	/** increments the numeric columns with given 
 	_set?: ValueTypes["plugin_versions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["plugin_versions_pk_columns_input"] | Variable<any, string>},ValueTypes["plugin_versions"]],
 update_plugin_versions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["plugin_versions_updates"]> | Variable<any, string>},ValueTypes["plugin_versions_mutation_response"]],
+update_push_subscriptions?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["push_subscriptions_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["push_subscriptions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["push_subscriptions_bool_exp"] | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
+update_push_subscriptions_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["push_subscriptions_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["push_subscriptions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["push_subscriptions_pk_columns_input"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
+update_push_subscriptions_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["push_subscriptions_updates"]> | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
 update_seasons?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["seasons_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["seasons_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -27743,6 +27804,180 @@ count?: [{	columns?: Array<ValueTypes["news_articles_select_column"]> | undefine
 	view_count?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "notification_preferences" */
+["notification_preferences"]: AliasType<{
+	channel?:boolean | `@${string}`,
+	enabled?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "notification_preferences" */
+["notification_preferences_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["notification_preferences_aggregate_fields"],
+	nodes?:ValueTypes["notification_preferences"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "notification_preferences" */
+["notification_preferences_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["notification_preferences_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["notification_preferences_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["notification_preferences_max_fields"],
+	min?:ValueTypes["notification_preferences_min_fields"],
+	stddev?:ValueTypes["notification_preferences_stddev_fields"],
+	stddev_pop?:ValueTypes["notification_preferences_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["notification_preferences_stddev_samp_fields"],
+	sum?:ValueTypes["notification_preferences_sum_fields"],
+	var_pop?:ValueTypes["notification_preferences_var_pop_fields"],
+	var_samp?:ValueTypes["notification_preferences_var_samp_fields"],
+	variance?:ValueTypes["notification_preferences_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["notification_preferences_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "notification_preferences". All fields are combined with a logical 'AND'. */
+["notification_preferences_bool_exp"]: {
+	_and?: Array<ValueTypes["notification_preferences_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["notification_preferences_bool_exp"]> | undefined | null | Variable<any, string>,
+	channel?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	key?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "notification_preferences" */
+["notification_preferences_constraint"]:notification_preferences_constraint;
+	/** input type for incrementing numeric columns in table "notification_preferences" */
+["notification_preferences_inc_input"]: {
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "notification_preferences" */
+["notification_preferences_insert_input"]: {
+	channel?: string | undefined | null | Variable<any, string>,
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	key?: string | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["notification_preferences_max_fields"]: AliasType<{
+	channel?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["notification_preferences_min_fields"]: AliasType<{
+	channel?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "notification_preferences" */
+["notification_preferences_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["notification_preferences"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "notification_preferences" */
+["notification_preferences_on_conflict"]: {
+	constraint: ValueTypes["notification_preferences_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["notification_preferences_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "notification_preferences". */
+["notification_preferences_order_by"]: {
+	channel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	key?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: notification_preferences */
+["notification_preferences_pk_columns_input"]: {
+	channel: string | Variable<any, string>,
+	key: string | Variable<any, string>,
+	steam_id: ValueTypes["bigint"] | Variable<any, string>
+};
+	/** select columns of table "notification_preferences" */
+["notification_preferences_select_column"]:notification_preferences_select_column;
+	/** input type for updating data in table "notification_preferences" */
+["notification_preferences_set_input"]: {
+	channel?: string | undefined | null | Variable<any, string>,
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	key?: string | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["notification_preferences_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["notification_preferences_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["notification_preferences_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "notification_preferences" */
+["notification_preferences_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["notification_preferences_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["notification_preferences_stream_cursor_value_input"]: {
+	channel?: string | undefined | null | Variable<any, string>,
+	enabled?: boolean | undefined | null | Variable<any, string>,
+	key?: string | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["notification_preferences_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "notification_preferences" */
+["notification_preferences_update_column"]:notification_preferences_update_column;
+	["notification_preferences_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["notification_preferences_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["notification_preferences_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["notification_preferences_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["notification_preferences_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["notification_preferences_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["notification_preferences_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "notifications" */
 ["notifications"]: AliasType<{
 actions?: [{	/** JSON select path */
@@ -27752,6 +27987,7 @@ actions?: [{	/** JSON select path */
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	in_app?:boolean | `@${string}`,
 	is_read?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	/** An object relationship */
@@ -27850,6 +28086,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	deleted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	entity_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	in_app?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_read?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
@@ -27884,6 +28121,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	entity_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	in_app?: boolean | undefined | null | Variable<any, string>,
 	is_read?: boolean | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -27956,6 +28194,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	entity_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	in_app?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_read?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
@@ -27986,6 +28225,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	entity_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	in_app?: boolean | undefined | null | Variable<any, string>,
 	is_read?: boolean | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
@@ -28035,6 +28275,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	entity_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	in_app?: boolean | undefined | null | Variable<any, string>,
 	is_read?: boolean | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
@@ -40888,6 +41129,7 @@ multi_kills_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_multi_kills_aggregate"]],
 	name?:boolean | `@${string}`,
 	name_registered?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["notifications_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -40977,6 +41219,8 @@ premier_rank_history_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["player_premier_rank_history_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_premier_rank_history_aggregate"]],
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
+	quiet_hours_end?:boolean | `@${string}`,
+	quiet_hours_start?:boolean | `@${string}`,
 	role?:boolean | `@${string}`,
 	roster_image_url?:boolean | `@${string}`,
 sanctions?: [{	/** distinct select on columns */
@@ -41248,6 +41492,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	name_registered?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	notification_timezone?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	notifications?: ValueTypes["notifications_bool_exp"] | undefined | null | Variable<any, string>,
 	notifications_aggregate?: ValueTypes["notifications_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_bool_exp"] | undefined | null | Variable<any, string>,
@@ -41266,6 +41511,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	premier_rank_history_aggregate?: ValueTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time_comparison_exp"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time_comparison_exp"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	roster_image_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	sanctions?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>,
@@ -41354,6 +41601,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	multi_kills?: ValueTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
+	notification_timezone?: string | undefined | null | Variable<any, string>,
 	notifications?: ValueTypes["notifications_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	owned_teams?: ValueTypes["teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -41364,6 +41612,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	premier_rank_history?: ValueTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	roster_image_url?: string | undefined | null | Variable<any, string>,
 	sanctions?: ValueTypes["player_sanctions_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -41415,6 +41665,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -41467,6 +41718,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -41566,6 +41818,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name_registered?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	notification_timezone?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	notifications_aggregate?: ValueTypes["notifications_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	objectives_aggregate?: ValueTypes["player_objectives_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	owned_teams_aggregate?: ValueTypes["teams_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -41577,6 +41830,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	premier_rank_history_aggregate?: ValueTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	roster_image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	sanctions_aggregate?: ValueTypes["player_sanctions_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -41627,9 +41882,12 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
+	notification_timezone?: string | undefined | null | Variable<any, string>,
 	premier_rank?: number | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	roster_image_url?: string | undefined | null | Variable<any, string>,
 	show_match_ready_modal?: boolean | undefined | null | Variable<any, string>,
@@ -41752,9 +42010,12 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
+	notification_timezone?: string | undefined | null | Variable<any, string>,
 	premier_rank?: number | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	roster_image_url?: string | undefined | null | Variable<any, string>,
 	show_match_ready_modal?: boolean | undefined | null | Variable<any, string>,
@@ -42052,6 +42313,204 @@ count?: [{	columns?: Array<ValueTypes["plugin_versions_select_column"]> | undefi
 	/** aggregate variance on columns */
 ["plugin_versions_variance_fields"]: AliasType<{
 	min_game_build_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** columns and relationships of "push_subscriptions" */
+["push_subscriptions"]: AliasType<{
+	auth?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	endpoint?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	last_used_at?:boolean | `@${string}`,
+	p256dh?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	user_agent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "push_subscriptions" */
+["push_subscriptions_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["push_subscriptions_aggregate_fields"],
+	nodes?:ValueTypes["push_subscriptions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "push_subscriptions" */
+["push_subscriptions_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["push_subscriptions_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["push_subscriptions_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["push_subscriptions_max_fields"],
+	min?:ValueTypes["push_subscriptions_min_fields"],
+	stddev?:ValueTypes["push_subscriptions_stddev_fields"],
+	stddev_pop?:ValueTypes["push_subscriptions_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["push_subscriptions_stddev_samp_fields"],
+	sum?:ValueTypes["push_subscriptions_sum_fields"],
+	var_pop?:ValueTypes["push_subscriptions_var_pop_fields"],
+	var_samp?:ValueTypes["push_subscriptions_var_samp_fields"],
+	variance?:ValueTypes["push_subscriptions_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["push_subscriptions_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "push_subscriptions". All fields are combined with a logical 'AND'. */
+["push_subscriptions_bool_exp"]: {
+	_and?: Array<ValueTypes["push_subscriptions_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["push_subscriptions_bool_exp"]> | undefined | null | Variable<any, string>,
+	auth?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	endpoint?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_used_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	p256dh?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	user_agent?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "push_subscriptions" */
+["push_subscriptions_constraint"]:push_subscriptions_constraint;
+	/** input type for incrementing numeric columns in table "push_subscriptions" */
+["push_subscriptions_inc_input"]: {
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "push_subscriptions" */
+["push_subscriptions_insert_input"]: {
+	auth?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	endpoint?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	last_used_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	p256dh?: string | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	user_agent?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["push_subscriptions_max_fields"]: AliasType<{
+	auth?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	endpoint?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	last_used_at?:boolean | `@${string}`,
+	p256dh?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	user_agent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["push_subscriptions_min_fields"]: AliasType<{
+	auth?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	endpoint?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	last_used_at?:boolean | `@${string}`,
+	p256dh?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	user_agent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "push_subscriptions" */
+["push_subscriptions_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["push_subscriptions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "push_subscriptions" */
+["push_subscriptions_on_conflict"]: {
+	constraint: ValueTypes["push_subscriptions_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["push_subscriptions_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "push_subscriptions". */
+["push_subscriptions_order_by"]: {
+	auth?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	endpoint?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_used_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	p256dh?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	user_agent?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: push_subscriptions */
+["push_subscriptions_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "push_subscriptions" */
+["push_subscriptions_select_column"]:push_subscriptions_select_column;
+	/** input type for updating data in table "push_subscriptions" */
+["push_subscriptions_set_input"]: {
+	auth?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	endpoint?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	last_used_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	p256dh?: string | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	user_agent?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["push_subscriptions_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["push_subscriptions_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["push_subscriptions_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "push_subscriptions" */
+["push_subscriptions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["push_subscriptions_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["push_subscriptions_stream_cursor_value_input"]: {
+	auth?: string | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	endpoint?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	last_used_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	p256dh?: string | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	user_agent?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["push_subscriptions_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "push_subscriptions" */
+["push_subscriptions_update_column"]:push_subscriptions_update_column;
+	["push_subscriptions_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["push_subscriptions_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["push_subscriptions_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["push_subscriptions_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["push_subscriptions_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["push_subscriptions_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["push_subscriptions_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["query_root"]: AliasType<{
@@ -43430,6 +43889,19 @@ news_articles_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["news_articles_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["news_articles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["news_articles_aggregate"]],
 news_articles_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["news_articles"]],
+notification_preferences?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["notification_preferences_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["notification_preferences_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences"]],
+notification_preferences_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["notification_preferences_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["notification_preferences_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences_aggregate"]],
+notification_preferences_by_pk?: [{	channel: string | Variable<any, string>,	key: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["notification_preferences"]],
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["notifications_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -43814,6 +44286,19 @@ plugin_versions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["plugin_versions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["plugin_versions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["plugin_versions_aggregate"]],
 plugin_versions_by_pk?: [{	runtime: ValueTypes["e_plugin_runtimes_enum"] | Variable<any, string>,	version: string | Variable<any, string>},ValueTypes["plugin_versions"]],
+push_subscriptions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["push_subscriptions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["push_subscriptions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
+push_subscriptions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["push_subscriptions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["push_subscriptions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions_aggregate"]],
+push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
 readServerFile?: [{	file_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["FileContentResponse"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["seasons_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -44580,6 +45065,8 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_tournament_player_stats_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_tournament_player_stats_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_tournament_player_stats_aggregate"]],
+	/** Web push setup status for the application settings page; never returns the private key */
+	webPushStatus?:ValueTypes["WebPushStatusOutput"],
 		__typename?: boolean | `@${string}`
 }>;
 	["recalculate_tournament_awards_args"]: {
@@ -47861,6 +48348,23 @@ news_articles_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["news_articles_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["news_articles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["news_articles"]],
+notification_preferences?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["notification_preferences_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["notification_preferences_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences"]],
+notification_preferences_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["notification_preferences_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["notification_preferences_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences_aggregate"]],
+notification_preferences_by_pk?: [{	channel: string | Variable<any, string>,	key: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["notification_preferences"]],
+notification_preferences_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["notification_preferences_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["notification_preferences_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["notification_preferences"]],
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["notifications_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -48365,6 +48869,23 @@ plugin_versions_stream?: [{	/** maximum number of rows returned in a single batc
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["plugin_versions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["plugin_versions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["plugin_versions"]],
+push_subscriptions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["push_subscriptions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["push_subscriptions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
+push_subscriptions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["push_subscriptions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["push_subscriptions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions_aggregate"]],
+push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
+push_subscriptions_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["push_subscriptions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["seasons_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -52150,6 +52671,19 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_variance_order_by"]: {
 	captain_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	["time"]:unknown;
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+	_eq?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_gt?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_gte?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["time"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_lte?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["time"]> | undefined | null | Variable<any, string>
 };
 	["timestamp"]:unknown;
 	["timestamptz"]:unknown;
@@ -66833,6 +67367,16 @@ export type ResolverInputTypes = {
 	session_id?:boolean | `@${string}`,
 	stream_url?:boolean | `@${string}`,
 	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["WebPushKeysOutput"]: AliasType<{
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["WebPushStatusOutput"]: AliasType<{
+	configured?:boolean | `@${string}`,
+	managed_by_environment?:boolean | `@${string}`,
+	subscriptions?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "_map_pool" */
@@ -86738,6 +87282,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	auto_cancel_duration?:boolean | `@${string}`,
 	auto_cancellation?:boolean | `@${string}`,
 	best_of?:boolean | `@${string}`,
+	camera_allow_teammates?:boolean | `@${string}`,
+	camera_required?:boolean | `@${string}`,
 	check_in_setting?:boolean | `@${string}`,
 	coaches?:boolean | `@${string}`,
 	default_models?:boolean | `@${string}`,
@@ -86827,6 +87373,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	auto_cancellation?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	best_of?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	camera_allow_teammates?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	camera_required?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null,
 	coaches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	default_models?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -86877,6 +87425,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -86964,6 +87514,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: ResolverInputTypes["order_by"] | undefined | null,
 	auto_cancellation?: ResolverInputTypes["order_by"] | undefined | null,
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
+	camera_allow_teammates?: ResolverInputTypes["order_by"] | undefined | null,
+	camera_required?: ResolverInputTypes["order_by"] | undefined | null,
 	check_in_setting?: ResolverInputTypes["order_by"] | undefined | null,
 	coaches?: ResolverInputTypes["order_by"] | undefined | null,
 	default_models?: ResolverInputTypes["order_by"] | undefined | null,
@@ -87006,6 +87558,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -87079,6 +87633,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ResolverInputTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -88907,7 +89463,7 @@ count?: [{	columns?: Array<ResolverInputTypes["migration_hashes_hashes_select_co
 PreviewTournamentMatchReset?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["PreviewTournamentMatchResetOutput"]],
 ResetTournamentMatch?: [{	match_id: ResolverInputTypes["uuid"],	reset_status?: string | undefined | null,	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 acceptInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverInputTypes["SuccessOutput"]],
-addDraftPlayer?: [{	draftGameId: ResolverInputTypes["uuid"],	steamId: string},ResolverInputTypes["SuccessOutput"]],
+addDraftPlayer?: [{	draftGameId: ResolverInputTypes["uuid"],	lineup?: number | undefined | null,	steamId: string},ResolverInputTypes["SuccessOutput"]],
 addSteamPresenceBotAccount?: [{	bot_secret: string,	friend_capacity?: number | undefined | null,	username: string},ResolverInputTypes["SuccessOutput"]],
 approveNameChange?: [{	name: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["SuccessOutput"]],
 approve_league_season_movements?: [{	/** input parameters for function "approve_league_season_movements" */
@@ -89261,6 +89817,9 @@ delete_my_friends?: [{	/** filter the rows which have to be deleted */
 delete_news_articles?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["news_articles_bool_exp"]},ResolverInputTypes["news_articles_mutation_response"]],
 delete_news_articles_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["news_articles"]],
+delete_notification_preferences?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["notification_preferences_bool_exp"]},ResolverInputTypes["notification_preferences_mutation_response"]],
+delete_notification_preferences_by_pk?: [{	channel: string,	key: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["notification_preferences"]],
 delete_notifications?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["notifications_bool_exp"]},ResolverInputTypes["notifications_mutation_response"]],
 delete_notifications_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["notifications"]],
@@ -89335,6 +89894,9 @@ delete_players_by_pk?: [{	steam_id: ResolverInputTypes["bigint"]},ResolverInputT
 delete_plugin_versions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["plugin_versions_bool_exp"]},ResolverInputTypes["plugin_versions_mutation_response"]],
 delete_plugin_versions_by_pk?: [{	runtime: ResolverInputTypes["e_plugin_runtimes_enum"],	version: string},ResolverInputTypes["plugin_versions"]],
+delete_push_subscriptions?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["push_subscriptions_bool_exp"]},ResolverInputTypes["push_subscriptions_mutation_response"]],
+delete_push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["seasons_bool_exp"]},ResolverInputTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["seasons"]],
@@ -89433,6 +89995,8 @@ delete_v_team_stage_results_by_pk?: [{	tournament_stage_id: ResolverInputTypes["
 denyInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverInputTypes["SuccessOutput"]],
 denyNameChange?: [{	name: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["SuccessOutput"]],
 forfeitMatch?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
+	generateWebPushKeys?:ResolverInputTypes["WebPushKeysOutput"],
 getLiveStreamSpecState?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ResolverInputTypes["GetTestUploadResponse"],
 grantAward?: [{	award_id: ResolverInputTypes["uuid"],	event_id?: ResolverInputTypes["uuid"] | undefined | null,	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,	note?: string | undefined | null,	player_steam_id?: string | undefined | null,	season_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["AwardRecipient"]],
@@ -90026,6 +90590,12 @@ insert_news_articles?: [{	/** the rows to be inserted */
 insert_news_articles_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["news_articles_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["news_articles_on_conflict"] | undefined | null},ResolverInputTypes["news_articles"]],
+insert_notification_preferences?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["notification_preferences_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["notification_preferences_on_conflict"] | undefined | null},ResolverInputTypes["notification_preferences_mutation_response"]],
+insert_notification_preferences_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["notification_preferences_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["notification_preferences_on_conflict"] | undefined | null},ResolverInputTypes["notification_preferences"]],
 insert_notifications?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["notifications_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["notifications_on_conflict"] | undefined | null},ResolverInputTypes["notifications_mutation_response"]],
@@ -90174,6 +90744,12 @@ insert_plugin_versions?: [{	/** the rows to be inserted */
 insert_plugin_versions_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["plugin_versions_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["plugin_versions_on_conflict"] | undefined | null},ResolverInputTypes["plugin_versions"]],
+insert_push_subscriptions?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["push_subscriptions_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["push_subscriptions_on_conflict"] | undefined | null},ResolverInputTypes["push_subscriptions_mutation_response"]],
+insert_push_subscriptions_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["push_subscriptions_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["push_subscriptions_on_conflict"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
 insert_seasons?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["seasons_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["seasons_on_conflict"] | undefined | null},ResolverInputTypes["seasons_mutation_response"]],
@@ -91358,6 +91934,15 @@ update_news_articles_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ResolverInputTypes["news_articles_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["news_articles_pk_columns_input"]},ResolverInputTypes["news_articles"]],
 update_news_articles_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["news_articles_updates"]>},ResolverInputTypes["news_articles_mutation_response"]],
+update_notification_preferences?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["notification_preferences_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["notification_preferences_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["notification_preferences_bool_exp"]},ResolverInputTypes["notification_preferences_mutation_response"]],
+update_notification_preferences_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["notification_preferences_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["notification_preferences_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["notification_preferences_pk_columns_input"]},ResolverInputTypes["notification_preferences"]],
+update_notification_preferences_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["notification_preferences_updates"]>},ResolverInputTypes["notification_preferences_mutation_response"]],
 update_notifications?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
 	_append?: ResolverInputTypes["notifications_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 	_delete_at_path?: ResolverInputTypes["notifications_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -91600,6 +92185,15 @@ update_plugin_versions_by_pk?: [{	/** increments the numeric columns with given 
 	_set?: ResolverInputTypes["plugin_versions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["plugin_versions_pk_columns_input"]},ResolverInputTypes["plugin_versions"]],
 update_plugin_versions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["plugin_versions_updates"]>},ResolverInputTypes["plugin_versions_mutation_response"]],
+update_push_subscriptions?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["push_subscriptions_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["push_subscriptions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["push_subscriptions_bool_exp"]},ResolverInputTypes["push_subscriptions_mutation_response"]],
+update_push_subscriptions_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["push_subscriptions_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["push_subscriptions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["push_subscriptions_pk_columns_input"]},ResolverInputTypes["push_subscriptions"]],
+update_push_subscriptions_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["push_subscriptions_updates"]>},ResolverInputTypes["push_subscriptions_mutation_response"]],
 update_seasons?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["seasons_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["seasons_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -92832,6 +93426,180 @@ count?: [{	columns?: Array<ResolverInputTypes["news_articles_select_column"]> | 
 	view_count?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** columns and relationships of "notification_preferences" */
+["notification_preferences"]: AliasType<{
+	channel?:boolean | `@${string}`,
+	enabled?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "notification_preferences" */
+["notification_preferences_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["notification_preferences_aggregate_fields"],
+	nodes?:ResolverInputTypes["notification_preferences"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "notification_preferences" */
+["notification_preferences_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["notification_preferences_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["notification_preferences_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["notification_preferences_max_fields"],
+	min?:ResolverInputTypes["notification_preferences_min_fields"],
+	stddev?:ResolverInputTypes["notification_preferences_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["notification_preferences_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["notification_preferences_stddev_samp_fields"],
+	sum?:ResolverInputTypes["notification_preferences_sum_fields"],
+	var_pop?:ResolverInputTypes["notification_preferences_var_pop_fields"],
+	var_samp?:ResolverInputTypes["notification_preferences_var_samp_fields"],
+	variance?:ResolverInputTypes["notification_preferences_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["notification_preferences_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "notification_preferences". All fields are combined with a logical 'AND'. */
+["notification_preferences_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["notification_preferences_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["notification_preferences_bool_exp"]> | undefined | null,
+	channel?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	key?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "notification_preferences" */
+["notification_preferences_constraint"]:notification_preferences_constraint;
+	/** input type for incrementing numeric columns in table "notification_preferences" */
+["notification_preferences_inc_input"]: {
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "notification_preferences" */
+["notification_preferences_insert_input"]: {
+	channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["notification_preferences_max_fields"]: AliasType<{
+	channel?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["notification_preferences_min_fields"]: AliasType<{
+	channel?:boolean | `@${string}`,
+	key?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "notification_preferences" */
+["notification_preferences_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["notification_preferences"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "notification_preferences" */
+["notification_preferences_on_conflict"]: {
+	constraint: ResolverInputTypes["notification_preferences_constraint"],
+	update_columns: Array<ResolverInputTypes["notification_preferences_update_column"]>,
+	where?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "notification_preferences". */
+["notification_preferences_order_by"]: {
+	channel?: ResolverInputTypes["order_by"] | undefined | null,
+	enabled?: ResolverInputTypes["order_by"] | undefined | null,
+	key?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: notification_preferences */
+["notification_preferences_pk_columns_input"]: {
+	channel: string,
+	key: string,
+	steam_id: ResolverInputTypes["bigint"]
+};
+	/** select columns of table "notification_preferences" */
+["notification_preferences_select_column"]:notification_preferences_select_column;
+	/** input type for updating data in table "notification_preferences" */
+["notification_preferences_set_input"]: {
+	channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["notification_preferences_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["notification_preferences_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["notification_preferences_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "notification_preferences" */
+["notification_preferences_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["notification_preferences_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["notification_preferences_stream_cursor_value_input"]: {
+	channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["notification_preferences_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "notification_preferences" */
+["notification_preferences_update_column"]:notification_preferences_update_column;
+	["notification_preferences_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["notification_preferences_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["notification_preferences_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["notification_preferences_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["notification_preferences_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["notification_preferences_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["notification_preferences_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "notifications" */
 ["notifications"]: AliasType<{
 actions?: [{	/** JSON select path */
@@ -92841,6 +93609,7 @@ actions?: [{	/** JSON select path */
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	in_app?:boolean | `@${string}`,
 	is_read?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	/** An object relationship */
@@ -92939,6 +93708,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	deleted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	entity_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	in_app?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_read?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
@@ -92973,6 +93743,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
@@ -93045,6 +93816,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	entity_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	in_app?: ResolverInputTypes["order_by"] | undefined | null,
 	is_read?: ResolverInputTypes["order_by"] | undefined | null,
 	message?: ResolverInputTypes["order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
@@ -93075,6 +93847,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
@@ -93124,6 +93897,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
@@ -105977,6 +106751,7 @@ multi_kills_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_multi_kills_aggregate"]],
 	name?:boolean | `@${string}`,
 	name_registered?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["notifications_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -106066,6 +106841,8 @@ premier_rank_history_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["player_premier_rank_history_bool_exp"] | undefined | null},ResolverInputTypes["player_premier_rank_history_aggregate"]],
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
+	quiet_hours_end?:boolean | `@${string}`,
+	quiet_hours_start?:boolean | `@${string}`,
 	role?:boolean | `@${string}`,
 	roster_image_url?:boolean | `@${string}`,
 sanctions?: [{	/** distinct select on columns */
@@ -106337,6 +107114,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	name_registered?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	notification_timezone?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	notifications?: ResolverInputTypes["notifications_bool_exp"] | undefined | null,
 	notifications_aggregate?: ResolverInputTypes["notifications_aggregate_bool_exp"] | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_bool_exp"] | undefined | null,
@@ -106355,6 +107133,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	premier_rank_history_aggregate?: ResolverInputTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	profile_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time_comparison_exp"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time_comparison_exp"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	roster_image_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	sanctions?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null,
@@ -106443,6 +107223,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	notifications?: ResolverInputTypes["notifications_arr_rel_insert_input"] | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: ResolverInputTypes["teams_arr_rel_insert_input"] | undefined | null,
@@ -106453,6 +107234,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	premier_rank_history?: ResolverInputTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	sanctions?: ResolverInputTypes["player_sanctions_arr_rel_insert_input"] | undefined | null,
@@ -106504,6 +107287,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -106556,6 +107340,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -106655,6 +107440,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	name_registered?: ResolverInputTypes["order_by"] | undefined | null,
+	notification_timezone?: ResolverInputTypes["order_by"] | undefined | null,
 	notifications_aggregate?: ResolverInputTypes["notifications_aggregate_order_by"] | undefined | null,
 	objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: ResolverInputTypes["teams_aggregate_order_by"] | undefined | null,
@@ -106666,6 +107452,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	premier_rank_history_aggregate?: ResolverInputTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["order_by"] | undefined | null,
 	profile_url?: ResolverInputTypes["order_by"] | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["order_by"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["order_by"] | undefined | null,
 	role?: ResolverInputTypes["order_by"] | undefined | null,
 	roster_image_url?: ResolverInputTypes["order_by"] | undefined | null,
 	sanctions_aggregate?: ResolverInputTypes["player_sanctions_aggregate_order_by"] | undefined | null,
@@ -106716,9 +107504,12 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -106841,9 +107632,12 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -107141,6 +107935,204 @@ count?: [{	columns?: Array<ResolverInputTypes["plugin_versions_select_column"]> 
 	/** aggregate variance on columns */
 ["plugin_versions_variance_fields"]: AliasType<{
 	min_game_build_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** columns and relationships of "push_subscriptions" */
+["push_subscriptions"]: AliasType<{
+	auth?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	endpoint?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	last_used_at?:boolean | `@${string}`,
+	p256dh?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	user_agent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "push_subscriptions" */
+["push_subscriptions_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["push_subscriptions_aggregate_fields"],
+	nodes?:ResolverInputTypes["push_subscriptions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "push_subscriptions" */
+["push_subscriptions_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["push_subscriptions_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["push_subscriptions_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["push_subscriptions_max_fields"],
+	min?:ResolverInputTypes["push_subscriptions_min_fields"],
+	stddev?:ResolverInputTypes["push_subscriptions_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["push_subscriptions_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["push_subscriptions_stddev_samp_fields"],
+	sum?:ResolverInputTypes["push_subscriptions_sum_fields"],
+	var_pop?:ResolverInputTypes["push_subscriptions_var_pop_fields"],
+	var_samp?:ResolverInputTypes["push_subscriptions_var_samp_fields"],
+	variance?:ResolverInputTypes["push_subscriptions_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["push_subscriptions_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "push_subscriptions". All fields are combined with a logical 'AND'. */
+["push_subscriptions_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["push_subscriptions_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["push_subscriptions_bool_exp"]> | undefined | null,
+	auth?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	endpoint?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	last_used_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	p256dh?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	user_agent?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "push_subscriptions" */
+["push_subscriptions_constraint"]:push_subscriptions_constraint;
+	/** input type for incrementing numeric columns in table "push_subscriptions" */
+["push_subscriptions_inc_input"]: {
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "push_subscriptions" */
+["push_subscriptions_insert_input"]: {
+	auth?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	last_used_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate max on columns */
+["push_subscriptions_max_fields"]: AliasType<{
+	auth?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	endpoint?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	last_used_at?:boolean | `@${string}`,
+	p256dh?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	user_agent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["push_subscriptions_min_fields"]: AliasType<{
+	auth?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	endpoint?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	last_used_at?:boolean | `@${string}`,
+	p256dh?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	user_agent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "push_subscriptions" */
+["push_subscriptions_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["push_subscriptions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "push_subscriptions" */
+["push_subscriptions_on_conflict"]: {
+	constraint: ResolverInputTypes["push_subscriptions_constraint"],
+	update_columns: Array<ResolverInputTypes["push_subscriptions_update_column"]>,
+	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "push_subscriptions". */
+["push_subscriptions_order_by"]: {
+	auth?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	endpoint?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	last_used_at?: ResolverInputTypes["order_by"] | undefined | null,
+	p256dh?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	user_agent?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: push_subscriptions */
+["push_subscriptions_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "push_subscriptions" */
+["push_subscriptions_select_column"]:push_subscriptions_select_column;
+	/** input type for updating data in table "push_subscriptions" */
+["push_subscriptions_set_input"]: {
+	auth?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	last_used_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate stddev on columns */
+["push_subscriptions_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["push_subscriptions_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["push_subscriptions_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "push_subscriptions" */
+["push_subscriptions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["push_subscriptions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["push_subscriptions_stream_cursor_value_input"]: {
+	auth?: string | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	last_used_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["push_subscriptions_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "push_subscriptions" */
+["push_subscriptions_update_column"]:push_subscriptions_update_column;
+	["push_subscriptions_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["push_subscriptions_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["push_subscriptions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["push_subscriptions_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["push_subscriptions_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["push_subscriptions_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["push_subscriptions_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["query_root"]: AliasType<{
@@ -108519,6 +109511,19 @@ news_articles_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["news_articles_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["news_articles_bool_exp"] | undefined | null},ResolverInputTypes["news_articles_aggregate"]],
 news_articles_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["news_articles"]],
+notification_preferences?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["notification_preferences_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["notification_preferences_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null},ResolverInputTypes["notification_preferences"]],
+notification_preferences_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["notification_preferences_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["notification_preferences_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null},ResolverInputTypes["notification_preferences_aggregate"]],
+notification_preferences_by_pk?: [{	channel: string,	key: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["notification_preferences"]],
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["notifications_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -108903,6 +109908,19 @@ plugin_versions_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["plugin_versions_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["plugin_versions_bool_exp"] | undefined | null},ResolverInputTypes["plugin_versions_aggregate"]],
 plugin_versions_by_pk?: [{	runtime: ResolverInputTypes["e_plugin_runtimes_enum"],	version: string},ResolverInputTypes["plugin_versions"]],
+push_subscriptions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["push_subscriptions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["push_subscriptions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
+push_subscriptions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["push_subscriptions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["push_subscriptions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions_aggregate"]],
+push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
 readServerFile?: [{	file_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["FileContentResponse"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["seasons_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -109669,6 +110687,8 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_tournament_player_stats_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_tournament_player_stats_bool_exp"] | undefined | null},ResolverInputTypes["v_tournament_player_stats_aggregate"]],
+	/** Web push setup status for the application settings page; never returns the private key */
+	webPushStatus?:ResolverInputTypes["WebPushStatusOutput"],
 		__typename?: boolean | `@${string}`
 }>;
 	["recalculate_tournament_awards_args"]: {
@@ -112950,6 +113970,23 @@ news_articles_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["news_articles_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["news_articles_bool_exp"] | undefined | null},ResolverInputTypes["news_articles"]],
+notification_preferences?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["notification_preferences_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["notification_preferences_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null},ResolverInputTypes["notification_preferences"]],
+notification_preferences_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["notification_preferences_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["notification_preferences_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null},ResolverInputTypes["notification_preferences_aggregate"]],
+notification_preferences_by_pk?: [{	channel: string,	key: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["notification_preferences"]],
+notification_preferences_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["notification_preferences_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["notification_preferences_bool_exp"] | undefined | null},ResolverInputTypes["notification_preferences"]],
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["notifications_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -113454,6 +114491,23 @@ plugin_versions_stream?: [{	/** maximum number of rows returned in a single batc
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["plugin_versions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["plugin_versions_bool_exp"] | undefined | null},ResolverInputTypes["plugin_versions"]],
+push_subscriptions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["push_subscriptions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["push_subscriptions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
+push_subscriptions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["push_subscriptions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["push_subscriptions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions_aggregate"]],
+push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
+push_subscriptions_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["push_subscriptions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["seasons_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -117239,6 +118293,19 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_variance_order_by"]: {
 	captain_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	["time"]:unknown;
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+	_eq?: ResolverInputTypes["time"] | undefined | null,
+	_gt?: ResolverInputTypes["time"] | undefined | null,
+	_gte?: ResolverInputTypes["time"] | undefined | null,
+	_in?: Array<ResolverInputTypes["time"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ResolverInputTypes["time"] | undefined | null,
+	_lte?: ResolverInputTypes["time"] | undefined | null,
+	_neq?: ResolverInputTypes["time"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["time"]> | undefined | null
 };
 	["timestamp"]:unknown;
 	["timestamptz"]:unknown;
@@ -131837,6 +132904,14 @@ export type ModelTypes = {
 	session_id: string,
 	stream_url: string,
 	success: boolean
+};
+	["WebPushKeysOutput"]: {
+		success: boolean
+};
+	["WebPushStatusOutput"]: {
+		configured: boolean,
+	managed_by_environment: boolean,
+	subscriptions: number
 };
 	/** columns and relationships of "_map_pool" */
 ["_map_pool"]: {
@@ -150064,6 +151139,8 @@ export type ModelTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation: boolean,
 	best_of: number,
+	camera_allow_teammates: boolean,
+	camera_required: boolean,
 	check_in_setting: ModelTypes["e_check_in_settings_enum"],
 	coaches: boolean,
 	default_models?: boolean | undefined | null,
@@ -150141,6 +151218,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	auto_cancellation?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	best_of?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	camera_allow_teammates?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	camera_required?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null,
 	coaches?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	default_models?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
@@ -150190,6 +151269,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -150274,6 +151355,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: ModelTypes["order_by"] | undefined | null,
 	auto_cancellation?: ModelTypes["order_by"] | undefined | null,
 	best_of?: ModelTypes["order_by"] | undefined | null,
+	camera_allow_teammates?: ModelTypes["order_by"] | undefined | null,
+	camera_required?: ModelTypes["order_by"] | undefined | null,
 	check_in_setting?: ModelTypes["order_by"] | undefined | null,
 	coaches?: ModelTypes["order_by"] | undefined | null,
 	default_models?: ModelTypes["order_by"] | undefined | null,
@@ -150315,6 +151398,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -150385,6 +151470,8 @@ export type ModelTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: ModelTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -152468,6 +153555,10 @@ export type ModelTypes = {
 	delete_news_articles?: ModelTypes["news_articles_mutation_response"] | undefined | null,
 	/** delete single row from the table: "news_articles" */
 	delete_news_articles_by_pk?: ModelTypes["news_articles"] | undefined | null,
+	/** delete data from the table: "notification_preferences" */
+	delete_notification_preferences?: ModelTypes["notification_preferences_mutation_response"] | undefined | null,
+	/** delete single row from the table: "notification_preferences" */
+	delete_notification_preferences_by_pk?: ModelTypes["notification_preferences"] | undefined | null,
 	/** delete data from the table: "notifications" */
 	delete_notifications?: ModelTypes["notifications_mutation_response"] | undefined | null,
 	/** delete single row from the table: "notifications" */
@@ -152566,6 +153657,10 @@ export type ModelTypes = {
 	delete_plugin_versions?: ModelTypes["plugin_versions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "plugin_versions" */
 	delete_plugin_versions_by_pk?: ModelTypes["plugin_versions"] | undefined | null,
+	/** delete data from the table: "push_subscriptions" */
+	delete_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
+	/** delete single row from the table: "push_subscriptions" */
+	delete_push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** delete data from the table: "seasons" */
 	delete_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
@@ -152693,6 +153788,8 @@ export type ModelTypes = {
 	denyInvite?: ModelTypes["SuccessOutput"] | undefined | null,
 	denyNameChange?: ModelTypes["SuccessOutput"] | undefined | null,
 	forfeitMatch?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
+	generateWebPushKeys?: ModelTypes["WebPushKeysOutput"] | undefined | null,
 	/** Live pod GSI snapshot — slots, sides, alive/dead. Drives the stream-deck. */
 	getLiveStreamSpecState?: ModelTypes["LiveStreamSpecState"] | undefined | null,
 	getTestUploadLink: ModelTypes["GetTestUploadResponse"],
@@ -153094,6 +154191,10 @@ export type ModelTypes = {
 	insert_news_articles?: ModelTypes["news_articles_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "news_articles" */
 	insert_news_articles_one?: ModelTypes["news_articles"] | undefined | null,
+	/** insert data into the table: "notification_preferences" */
+	insert_notification_preferences?: ModelTypes["notification_preferences_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "notification_preferences" */
+	insert_notification_preferences_one?: ModelTypes["notification_preferences"] | undefined | null,
 	/** insert data into the table: "notifications" */
 	insert_notifications?: ModelTypes["notifications_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "notifications" */
@@ -153194,6 +154295,10 @@ export type ModelTypes = {
 	insert_plugin_versions?: ModelTypes["plugin_versions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "plugin_versions" */
 	insert_plugin_versions_one?: ModelTypes["plugin_versions"] | undefined | null,
+	/** insert data into the table: "push_subscriptions" */
+	insert_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "push_subscriptions" */
+	insert_push_subscriptions_one?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** insert data into the table: "seasons" */
 	insert_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
@@ -154049,6 +155154,12 @@ export type ModelTypes = {
 	update_news_articles_by_pk?: ModelTypes["news_articles"] | undefined | null,
 	/** update multiples rows of table: "news_articles" */
 	update_news_articles_many?: Array<ModelTypes["news_articles_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "notification_preferences" */
+	update_notification_preferences?: ModelTypes["notification_preferences_mutation_response"] | undefined | null,
+	/** update single row of the table: "notification_preferences" */
+	update_notification_preferences_by_pk?: ModelTypes["notification_preferences"] | undefined | null,
+	/** update multiples rows of table: "notification_preferences" */
+	update_notification_preferences_many?: Array<ModelTypes["notification_preferences_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "notifications" */
 	update_notifications?: ModelTypes["notifications_mutation_response"] | undefined | null,
 	/** update single row of the table: "notifications" */
@@ -154197,6 +155308,12 @@ export type ModelTypes = {
 	update_plugin_versions_by_pk?: ModelTypes["plugin_versions"] | undefined | null,
 	/** update multiples rows of table: "plugin_versions" */
 	update_plugin_versions_many?: Array<ModelTypes["plugin_versions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "push_subscriptions" */
+	update_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
+	/** update single row of the table: "push_subscriptions" */
+	update_push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
+	/** update multiples rows of table: "push_subscriptions" */
+	update_push_subscriptions_many?: Array<ModelTypes["push_subscriptions_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "seasons" */
 	update_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** update single row of the table: "seasons" */
@@ -155303,6 +156420,163 @@ export type ModelTypes = {
 		author_steam_id?: number | undefined | null,
 	view_count?: number | undefined | null
 };
+	/** columns and relationships of "notification_preferences" */
+["notification_preferences"]: {
+		channel: string,
+	enabled: boolean,
+	key: string,
+	steam_id: ModelTypes["bigint"],
+	updated_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "notification_preferences" */
+["notification_preferences_aggregate"]: {
+		aggregate?: ModelTypes["notification_preferences_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["notification_preferences"]>
+};
+	/** aggregate fields of "notification_preferences" */
+["notification_preferences_aggregate_fields"]: {
+		avg?: ModelTypes["notification_preferences_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["notification_preferences_max_fields"] | undefined | null,
+	min?: ModelTypes["notification_preferences_min_fields"] | undefined | null,
+	stddev?: ModelTypes["notification_preferences_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["notification_preferences_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["notification_preferences_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["notification_preferences_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["notification_preferences_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["notification_preferences_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["notification_preferences_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["notification_preferences_avg_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "notification_preferences". All fields are combined with a logical 'AND'. */
+["notification_preferences_bool_exp"]: {
+	_and?: Array<ModelTypes["notification_preferences_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["notification_preferences_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["notification_preferences_bool_exp"]> | undefined | null,
+	channel?: ModelTypes["String_comparison_exp"] | undefined | null,
+	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	key?: ModelTypes["String_comparison_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["notification_preferences_constraint"]:notification_preferences_constraint;
+	/** input type for incrementing numeric columns in table "notification_preferences" */
+["notification_preferences_inc_input"]: {
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "notification_preferences" */
+["notification_preferences_insert_input"]: {
+	channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["notification_preferences_max_fields"]: {
+		channel?: string | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["notification_preferences_min_fields"]: {
+		channel?: string | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "notification_preferences" */
+["notification_preferences_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["notification_preferences"]>
+};
+	/** on_conflict condition type for table "notification_preferences" */
+["notification_preferences_on_conflict"]: {
+	constraint: ModelTypes["notification_preferences_constraint"],
+	update_columns: Array<ModelTypes["notification_preferences_update_column"]>,
+	where?: ModelTypes["notification_preferences_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "notification_preferences". */
+["notification_preferences_order_by"]: {
+	channel?: ModelTypes["order_by"] | undefined | null,
+	enabled?: ModelTypes["order_by"] | undefined | null,
+	key?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: notification_preferences */
+["notification_preferences_pk_columns_input"]: {
+	channel: string,
+	key: string,
+	steam_id: ModelTypes["bigint"]
+};
+	["notification_preferences_select_column"]:notification_preferences_select_column;
+	/** input type for updating data in table "notification_preferences" */
+["notification_preferences_set_input"]: {
+	channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["notification_preferences_stddev_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["notification_preferences_stddev_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["notification_preferences_stddev_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "notification_preferences" */
+["notification_preferences_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["notification_preferences_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["notification_preferences_stream_cursor_value_input"]: {
+	channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["notification_preferences_sum_fields"]: {
+		steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	["notification_preferences_update_column"]:notification_preferences_update_column;
+	["notification_preferences_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["notification_preferences_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["notification_preferences_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["notification_preferences_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["notification_preferences_var_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["notification_preferences_var_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["notification_preferences_variance_fields"]: {
+		steam_id?: number | undefined | null
+};
 	/** columns and relationships of "notifications" */
 ["notifications"]: {
 		actions?: ModelTypes["jsonb"] | undefined | null,
@@ -155311,6 +156585,7 @@ export type ModelTypes = {
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id: ModelTypes["uuid"],
+	in_app: boolean,
 	is_read: boolean,
 	message: string,
 	/** An object relationship */
@@ -155405,6 +156680,7 @@ export type ModelTypes = {
 	deleted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	entity_id?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	in_app?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_read?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	message?: ModelTypes["String_comparison_exp"] | undefined | null,
 	player?: ModelTypes["players_bool_exp"] | undefined | null,
@@ -155438,6 +156714,7 @@ export type ModelTypes = {
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
@@ -155507,6 +156784,7 @@ export type ModelTypes = {
 	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	entity_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
+	in_app?: ModelTypes["order_by"] | undefined | null,
 	is_read?: ModelTypes["order_by"] | undefined | null,
 	message?: ModelTypes["order_by"] | undefined | null,
 	player?: ModelTypes["players_order_by"] | undefined | null,
@@ -155534,6 +156812,7 @@ export type ModelTypes = {
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
@@ -155580,6 +156859,7 @@ export type ModelTypes = {
 	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
@@ -167774,6 +169054,7 @@ export type ModelTypes = {
 	multi_kills_aggregate: ModelTypes["v_player_multi_kills_aggregate"],
 	name: string,
 	name_registered: boolean,
+	notification_timezone?: string | undefined | null,
 	/** An array relationship */
 	notifications: Array<ModelTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -167807,6 +169088,8 @@ export type ModelTypes = {
 	premier_rank_history_aggregate: ModelTypes["player_premier_rank_history_aggregate"],
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role: ModelTypes["e_player_roles_enum"],
 	roster_image_url?: string | undefined | null,
 	/** An array relationship */
@@ -167998,6 +169281,7 @@ export type ModelTypes = {
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	name_registered?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	notification_timezone?: ModelTypes["String_comparison_exp"] | undefined | null,
 	notifications?: ModelTypes["notifications_bool_exp"] | undefined | null,
 	notifications_aggregate?: ModelTypes["notifications_aggregate_bool_exp"] | undefined | null,
 	objectives?: ModelTypes["player_objectives_bool_exp"] | undefined | null,
@@ -168016,6 +169300,8 @@ export type ModelTypes = {
 	premier_rank_history_aggregate?: ModelTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	profile_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	quiet_hours_end?: ModelTypes["time_comparison_exp"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time_comparison_exp"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	roster_image_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	sanctions?: ModelTypes["player_sanctions_bool_exp"] | undefined | null,
@@ -168103,6 +169389,7 @@ export type ModelTypes = {
 	multi_kills?: ModelTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	notifications?: ModelTypes["notifications_arr_rel_insert_input"] | undefined | null,
 	objectives?: ModelTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: ModelTypes["teams_arr_rel_insert_input"] | undefined | null,
@@ -168113,6 +169400,8 @@ export type ModelTypes = {
 	premier_rank_history?: ModelTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	sanctions?: ModelTypes["player_sanctions_arr_rel_insert_input"] | undefined | null,
@@ -168164,6 +169453,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -168215,6 +169505,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -168312,6 +169603,7 @@ export type ModelTypes = {
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	name_registered?: ModelTypes["order_by"] | undefined | null,
+	notification_timezone?: ModelTypes["order_by"] | undefined | null,
 	notifications_aggregate?: ModelTypes["notifications_aggregate_order_by"] | undefined | null,
 	objectives_aggregate?: ModelTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: ModelTypes["teams_aggregate_order_by"] | undefined | null,
@@ -168323,6 +169615,8 @@ export type ModelTypes = {
 	premier_rank_history_aggregate?: ModelTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null,
 	premier_rank_updated_at?: ModelTypes["order_by"] | undefined | null,
 	profile_url?: ModelTypes["order_by"] | undefined | null,
+	quiet_hours_end?: ModelTypes["order_by"] | undefined | null,
+	quiet_hours_start?: ModelTypes["order_by"] | undefined | null,
 	role?: ModelTypes["order_by"] | undefined | null,
 	roster_image_url?: ModelTypes["order_by"] | undefined | null,
 	sanctions_aggregate?: ModelTypes["player_sanctions_aggregate_order_by"] | undefined | null,
@@ -168372,9 +169666,12 @@ export type ModelTypes = {
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -168494,9 +169791,12 @@ export type ModelTypes = {
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -168773,6 +170073,187 @@ export type ModelTypes = {
 	/** aggregate variance on columns */
 ["plugin_versions_variance_fields"]: {
 		min_game_build_id?: number | undefined | null
+};
+	/** columns and relationships of "push_subscriptions" */
+["push_subscriptions"]: {
+		auth: string,
+	created_at: ModelTypes["timestamptz"],
+	endpoint: string,
+	id: ModelTypes["uuid"],
+	last_used_at?: ModelTypes["timestamptz"] | undefined | null,
+	p256dh: string,
+	steam_id: ModelTypes["bigint"],
+	user_agent?: string | undefined | null
+};
+	/** aggregated selection of "push_subscriptions" */
+["push_subscriptions_aggregate"]: {
+		aggregate?: ModelTypes["push_subscriptions_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["push_subscriptions"]>
+};
+	/** aggregate fields of "push_subscriptions" */
+["push_subscriptions_aggregate_fields"]: {
+		avg?: ModelTypes["push_subscriptions_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["push_subscriptions_max_fields"] | undefined | null,
+	min?: ModelTypes["push_subscriptions_min_fields"] | undefined | null,
+	stddev?: ModelTypes["push_subscriptions_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["push_subscriptions_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["push_subscriptions_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["push_subscriptions_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["push_subscriptions_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["push_subscriptions_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["push_subscriptions_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["push_subscriptions_avg_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "push_subscriptions". All fields are combined with a logical 'AND'. */
+["push_subscriptions_bool_exp"]: {
+	_and?: Array<ModelTypes["push_subscriptions_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["push_subscriptions_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["push_subscriptions_bool_exp"]> | undefined | null,
+	auth?: ModelTypes["String_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	endpoint?: ModelTypes["String_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	last_used_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	p256dh?: ModelTypes["String_comparison_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	user_agent?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["push_subscriptions_constraint"]:push_subscriptions_constraint;
+	/** input type for incrementing numeric columns in table "push_subscriptions" */
+["push_subscriptions_inc_input"]: {
+	steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "push_subscriptions" */
+["push_subscriptions_insert_input"]: {
+	auth?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	last_used_at?: ModelTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate max on columns */
+["push_subscriptions_max_fields"]: {
+		auth?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	last_used_at?: ModelTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate min on columns */
+["push_subscriptions_min_fields"]: {
+		auth?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	last_used_at?: ModelTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** response of any mutation on the table "push_subscriptions" */
+["push_subscriptions_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["push_subscriptions"]>
+};
+	/** on_conflict condition type for table "push_subscriptions" */
+["push_subscriptions_on_conflict"]: {
+	constraint: ModelTypes["push_subscriptions_constraint"],
+	update_columns: Array<ModelTypes["push_subscriptions_update_column"]>,
+	where?: ModelTypes["push_subscriptions_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "push_subscriptions". */
+["push_subscriptions_order_by"]: {
+	auth?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	endpoint?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	last_used_at?: ModelTypes["order_by"] | undefined | null,
+	p256dh?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null,
+	user_agent?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: push_subscriptions */
+["push_subscriptions_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["push_subscriptions_select_column"]:push_subscriptions_select_column;
+	/** input type for updating data in table "push_subscriptions" */
+["push_subscriptions_set_input"]: {
+	auth?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	last_used_at?: ModelTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate stddev on columns */
+["push_subscriptions_stddev_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["push_subscriptions_stddev_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["push_subscriptions_stddev_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "push_subscriptions" */
+["push_subscriptions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["push_subscriptions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["push_subscriptions_stream_cursor_value_input"]: {
+	auth?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	last_used_at?: ModelTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["push_subscriptions_sum_fields"]: {
+		steam_id?: ModelTypes["bigint"] | undefined | null
+};
+	["push_subscriptions_update_column"]:push_subscriptions_update_column;
+	["push_subscriptions_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["push_subscriptions_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["push_subscriptions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["push_subscriptions_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["push_subscriptions_var_pop_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["push_subscriptions_var_samp_fields"]: {
+		steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["push_subscriptions_variance_fields"]: {
+		steam_id?: number | undefined | null
 };
 	["query_root"]: {
 		/** fetch data from the table: "_map_pool" */
@@ -169424,6 +170905,12 @@ export type ModelTypes = {
 	news_articles_aggregate: ModelTypes["news_articles_aggregate"],
 	/** fetch data from the table: "news_articles" using primary key columns */
 	news_articles_by_pk?: ModelTypes["news_articles"] | undefined | null,
+	/** fetch data from the table: "notification_preferences" */
+	notification_preferences: Array<ModelTypes["notification_preferences"]>,
+	/** fetch aggregated fields from the table: "notification_preferences" */
+	notification_preferences_aggregate: ModelTypes["notification_preferences_aggregate"],
+	/** fetch data from the table: "notification_preferences" using primary key columns */
+	notification_preferences_by_pk?: ModelTypes["notification_preferences"] | undefined | null,
 	/** An array relationship */
 	notifications: Array<ModelTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -169592,6 +171079,12 @@ export type ModelTypes = {
 	plugin_versions_aggregate: ModelTypes["plugin_versions_aggregate"],
 	/** fetch data from the table: "plugin_versions" using primary key columns */
 	plugin_versions_by_pk?: ModelTypes["plugin_versions"] | undefined | null,
+	/** fetch data from the table: "push_subscriptions" */
+	push_subscriptions: Array<ModelTypes["push_subscriptions"]>,
+	/** fetch aggregated fields from the table: "push_subscriptions" */
+	push_subscriptions_aggregate: ModelTypes["push_subscriptions_aggregate"],
+	/** fetch data from the table: "push_subscriptions" using primary key columns */
+	push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** Read file content from game server */
 	readServerFile: ModelTypes["FileContentResponse"],
 	/** fetch data from the table: "seasons" */
@@ -169900,7 +171393,9 @@ export type ModelTypes = {
 	/** fetch data from the table: "v_tournament_player_stats" */
 	v_tournament_player_stats: Array<ModelTypes["v_tournament_player_stats"]>,
 	/** fetch aggregated fields from the table: "v_tournament_player_stats" */
-	v_tournament_player_stats_aggregate: ModelTypes["v_tournament_player_stats_aggregate"]
+	v_tournament_player_stats_aggregate: ModelTypes["v_tournament_player_stats_aggregate"],
+	/** Web push setup status for the application settings page; never returns the private key */
+	webPushStatus?: ModelTypes["WebPushStatusOutput"] | undefined | null
 };
 	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ModelTypes["uuid"] | undefined | null
@@ -172120,6 +173615,14 @@ export type ModelTypes = {
 	news_articles_by_pk?: ModelTypes["news_articles"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "news_articles" */
 	news_articles_stream: Array<ModelTypes["news_articles"]>,
+	/** fetch data from the table: "notification_preferences" */
+	notification_preferences: Array<ModelTypes["notification_preferences"]>,
+	/** fetch aggregated fields from the table: "notification_preferences" */
+	notification_preferences_aggregate: ModelTypes["notification_preferences_aggregate"],
+	/** fetch data from the table: "notification_preferences" using primary key columns */
+	notification_preferences_by_pk?: ModelTypes["notification_preferences"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "notification_preferences" */
+	notification_preferences_stream: Array<ModelTypes["notification_preferences"]>,
 	/** An array relationship */
 	notifications: Array<ModelTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -172348,6 +173851,14 @@ export type ModelTypes = {
 	plugin_versions_by_pk?: ModelTypes["plugin_versions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "plugin_versions" */
 	plugin_versions_stream: Array<ModelTypes["plugin_versions"]>,
+	/** fetch data from the table: "push_subscriptions" */
+	push_subscriptions: Array<ModelTypes["push_subscriptions"]>,
+	/** fetch aggregated fields from the table: "push_subscriptions" */
+	push_subscriptions_aggregate: ModelTypes["push_subscriptions_aggregate"],
+	/** fetch data from the table: "push_subscriptions" using primary key columns */
+	push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "push_subscriptions" */
+	push_subscriptions_stream: Array<ModelTypes["push_subscriptions"]>,
 	/** fetch data from the table: "seasons" */
 	seasons: Array<ModelTypes["seasons"]>,
 	/** fetch aggregated fields from the table: "seasons" */
@@ -175321,6 +176832,19 @@ export type ModelTypes = {
 ["teams_variance_order_by"]: {
 	captain_steam_id?: ModelTypes["order_by"] | undefined | null,
 	owner_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	["time"]:any;
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+	_eq?: ModelTypes["time"] | undefined | null,
+	_gt?: ModelTypes["time"] | undefined | null,
+	_gte?: ModelTypes["time"] | undefined | null,
+	_in?: Array<ModelTypes["time"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ModelTypes["time"] | undefined | null,
+	_lte?: ModelTypes["time"] | undefined | null,
+	_neq?: ModelTypes["time"] | undefined | null,
+	_nin?: Array<ModelTypes["time"]> | undefined | null
 };
 	["timestamp"]:any;
 	["timestamptz"]:any;
@@ -189145,6 +190669,16 @@ export type GraphQLTypes = {
 	session_id: string,
 	stream_url: string,
 	success: boolean
+};
+	["WebPushKeysOutput"]: {
+	__typename: "WebPushKeysOutput",
+	success: boolean
+};
+	["WebPushStatusOutput"]: {
+	__typename: "WebPushStatusOutput",
+	configured: boolean,
+	managed_by_environment: boolean,
+	subscriptions: number
 };
 	/** columns and relationships of "_map_pool" */
 ["_map_pool"]: {
@@ -208499,6 +210033,8 @@ export type GraphQLTypes = {
 	auto_cancel_duration?: number | undefined | null,
 	auto_cancellation: boolean,
 	best_of: number,
+	camera_allow_teammates: boolean,
+	camera_required: boolean,
 	check_in_setting: GraphQLTypes["e_check_in_settings_enum"],
 	coaches: boolean,
 	default_models?: boolean | undefined | null,
@@ -208579,6 +210115,8 @@ export type GraphQLTypes = {
 	auto_cancel_duration?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	auto_cancellation?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	best_of?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	camera_allow_teammates?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	camera_required?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum_comparison_exp"] | undefined | null,
 	coaches?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	default_models?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
@@ -208629,6 +210167,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -208716,6 +210256,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: GraphQLTypes["order_by"] | undefined | null,
 	auto_cancellation?: GraphQLTypes["order_by"] | undefined | null,
 	best_of?: GraphQLTypes["order_by"] | undefined | null,
+	camera_allow_teammates?: GraphQLTypes["order_by"] | undefined | null,
+	camera_required?: GraphQLTypes["order_by"] | undefined | null,
 	check_in_setting?: GraphQLTypes["order_by"] | undefined | null,
 	coaches?: GraphQLTypes["order_by"] | undefined | null,
 	default_models?: GraphQLTypes["order_by"] | undefined | null,
@@ -208758,6 +210300,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -208831,6 +210375,8 @@ export type GraphQLTypes = {
 		auto_cancel_duration?: number | undefined | null,
 	auto_cancellation?: boolean | undefined | null,
 	best_of?: number | undefined | null,
+	camera_allow_teammates?: boolean | undefined | null,
+	camera_required?: boolean | undefined | null,
 	check_in_setting?: GraphQLTypes["e_check_in_settings_enum"] | undefined | null,
 	coaches?: boolean | undefined | null,
 	default_models?: boolean | undefined | null,
@@ -210985,6 +212531,10 @@ export type GraphQLTypes = {
 	delete_news_articles?: GraphQLTypes["news_articles_mutation_response"] | undefined | null,
 	/** delete single row from the table: "news_articles" */
 	delete_news_articles_by_pk?: GraphQLTypes["news_articles"] | undefined | null,
+	/** delete data from the table: "notification_preferences" */
+	delete_notification_preferences?: GraphQLTypes["notification_preferences_mutation_response"] | undefined | null,
+	/** delete single row from the table: "notification_preferences" */
+	delete_notification_preferences_by_pk?: GraphQLTypes["notification_preferences"] | undefined | null,
 	/** delete data from the table: "notifications" */
 	delete_notifications?: GraphQLTypes["notifications_mutation_response"] | undefined | null,
 	/** delete single row from the table: "notifications" */
@@ -211083,6 +212633,10 @@ export type GraphQLTypes = {
 	delete_plugin_versions?: GraphQLTypes["plugin_versions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "plugin_versions" */
 	delete_plugin_versions_by_pk?: GraphQLTypes["plugin_versions"] | undefined | null,
+	/** delete data from the table: "push_subscriptions" */
+	delete_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
+	/** delete single row from the table: "push_subscriptions" */
+	delete_push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** delete data from the table: "seasons" */
 	delete_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
@@ -211210,6 +212764,8 @@ export type GraphQLTypes = {
 	denyInvite?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	denyNameChange?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	forfeitMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
+	generateWebPushKeys?: GraphQLTypes["WebPushKeysOutput"] | undefined | null,
 	/** Live pod GSI snapshot — slots, sides, alive/dead. Drives the stream-deck. */
 	getLiveStreamSpecState?: GraphQLTypes["LiveStreamSpecState"] | undefined | null,
 	getTestUploadLink: GraphQLTypes["GetTestUploadResponse"],
@@ -211611,6 +213167,10 @@ export type GraphQLTypes = {
 	insert_news_articles?: GraphQLTypes["news_articles_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "news_articles" */
 	insert_news_articles_one?: GraphQLTypes["news_articles"] | undefined | null,
+	/** insert data into the table: "notification_preferences" */
+	insert_notification_preferences?: GraphQLTypes["notification_preferences_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "notification_preferences" */
+	insert_notification_preferences_one?: GraphQLTypes["notification_preferences"] | undefined | null,
 	/** insert data into the table: "notifications" */
 	insert_notifications?: GraphQLTypes["notifications_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "notifications" */
@@ -211711,6 +213271,10 @@ export type GraphQLTypes = {
 	insert_plugin_versions?: GraphQLTypes["plugin_versions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "plugin_versions" */
 	insert_plugin_versions_one?: GraphQLTypes["plugin_versions"] | undefined | null,
+	/** insert data into the table: "push_subscriptions" */
+	insert_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "push_subscriptions" */
+	insert_push_subscriptions_one?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** insert data into the table: "seasons" */
 	insert_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
@@ -212566,6 +214130,12 @@ export type GraphQLTypes = {
 	update_news_articles_by_pk?: GraphQLTypes["news_articles"] | undefined | null,
 	/** update multiples rows of table: "news_articles" */
 	update_news_articles_many?: Array<GraphQLTypes["news_articles_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "notification_preferences" */
+	update_notification_preferences?: GraphQLTypes["notification_preferences_mutation_response"] | undefined | null,
+	/** update single row of the table: "notification_preferences" */
+	update_notification_preferences_by_pk?: GraphQLTypes["notification_preferences"] | undefined | null,
+	/** update multiples rows of table: "notification_preferences" */
+	update_notification_preferences_many?: Array<GraphQLTypes["notification_preferences_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "notifications" */
 	update_notifications?: GraphQLTypes["notifications_mutation_response"] | undefined | null,
 	/** update single row of the table: "notifications" */
@@ -212714,6 +214284,12 @@ export type GraphQLTypes = {
 	update_plugin_versions_by_pk?: GraphQLTypes["plugin_versions"] | undefined | null,
 	/** update multiples rows of table: "plugin_versions" */
 	update_plugin_versions_many?: Array<GraphQLTypes["plugin_versions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "push_subscriptions" */
+	update_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
+	/** update single row of the table: "push_subscriptions" */
+	update_push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
+	/** update multiples rows of table: "push_subscriptions" */
+	update_push_subscriptions_many?: Array<GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "seasons" */
 	update_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** update single row of the table: "seasons" */
@@ -213854,6 +215430,180 @@ export type GraphQLTypes = {
 	author_steam_id?: number | undefined | null,
 	view_count?: number | undefined | null
 };
+	/** columns and relationships of "notification_preferences" */
+["notification_preferences"]: {
+	__typename: "notification_preferences",
+	channel: string,
+	enabled: boolean,
+	key: string,
+	steam_id: GraphQLTypes["bigint"],
+	updated_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "notification_preferences" */
+["notification_preferences_aggregate"]: {
+	__typename: "notification_preferences_aggregate",
+	aggregate?: GraphQLTypes["notification_preferences_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["notification_preferences"]>
+};
+	/** aggregate fields of "notification_preferences" */
+["notification_preferences_aggregate_fields"]: {
+	__typename: "notification_preferences_aggregate_fields",
+	avg?: GraphQLTypes["notification_preferences_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["notification_preferences_max_fields"] | undefined | null,
+	min?: GraphQLTypes["notification_preferences_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["notification_preferences_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["notification_preferences_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["notification_preferences_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["notification_preferences_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["notification_preferences_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["notification_preferences_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["notification_preferences_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["notification_preferences_avg_fields"]: {
+	__typename: "notification_preferences_avg_fields",
+	steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "notification_preferences". All fields are combined with a logical 'AND'. */
+["notification_preferences_bool_exp"]: {
+		_and?: Array<GraphQLTypes["notification_preferences_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["notification_preferences_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["notification_preferences_bool_exp"]> | undefined | null,
+	channel?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	key?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "notification_preferences" */
+["notification_preferences_constraint"]: notification_preferences_constraint;
+	/** input type for incrementing numeric columns in table "notification_preferences" */
+["notification_preferences_inc_input"]: {
+		steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "notification_preferences" */
+["notification_preferences_insert_input"]: {
+		channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["notification_preferences_max_fields"]: {
+	__typename: "notification_preferences_max_fields",
+	channel?: string | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["notification_preferences_min_fields"]: {
+	__typename: "notification_preferences_min_fields",
+	channel?: string | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "notification_preferences" */
+["notification_preferences_mutation_response"]: {
+	__typename: "notification_preferences_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["notification_preferences"]>
+};
+	/** on_conflict condition type for table "notification_preferences" */
+["notification_preferences_on_conflict"]: {
+		constraint: GraphQLTypes["notification_preferences_constraint"],
+	update_columns: Array<GraphQLTypes["notification_preferences_update_column"]>,
+	where?: GraphQLTypes["notification_preferences_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "notification_preferences". */
+["notification_preferences_order_by"]: {
+		channel?: GraphQLTypes["order_by"] | undefined | null,
+	enabled?: GraphQLTypes["order_by"] | undefined | null,
+	key?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: notification_preferences */
+["notification_preferences_pk_columns_input"]: {
+		channel: string,
+	key: string,
+	steam_id: GraphQLTypes["bigint"]
+};
+	/** select columns of table "notification_preferences" */
+["notification_preferences_select_column"]: notification_preferences_select_column;
+	/** input type for updating data in table "notification_preferences" */
+["notification_preferences_set_input"]: {
+		channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["notification_preferences_stddev_fields"]: {
+	__typename: "notification_preferences_stddev_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["notification_preferences_stddev_pop_fields"]: {
+	__typename: "notification_preferences_stddev_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["notification_preferences_stddev_samp_fields"]: {
+	__typename: "notification_preferences_stddev_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "notification_preferences" */
+["notification_preferences_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["notification_preferences_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["notification_preferences_stream_cursor_value_input"]: {
+		channel?: string | undefined | null,
+	enabled?: boolean | undefined | null,
+	key?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate sum on columns */
+["notification_preferences_sum_fields"]: {
+	__typename: "notification_preferences_sum_fields",
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** update columns of table "notification_preferences" */
+["notification_preferences_update_column"]: notification_preferences_update_column;
+	["notification_preferences_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["notification_preferences_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["notification_preferences_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["notification_preferences_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["notification_preferences_var_pop_fields"]: {
+	__typename: "notification_preferences_var_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["notification_preferences_var_samp_fields"]: {
+	__typename: "notification_preferences_var_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["notification_preferences_variance_fields"]: {
+	__typename: "notification_preferences_variance_fields",
+	steam_id?: number | undefined | null
+};
 	/** columns and relationships of "notifications" */
 ["notifications"]: {
 	__typename: "notifications",
@@ -213863,6 +215613,7 @@ export type GraphQLTypes = {
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id: GraphQLTypes["uuid"],
+	in_app: boolean,
 	is_read: boolean,
 	message: string,
 	/** An object relationship */
@@ -213960,6 +215711,7 @@ export type GraphQLTypes = {
 	deleted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	entity_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	in_app?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_read?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	message?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
@@ -213994,6 +215746,7 @@ export type GraphQLTypes = {
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
@@ -214066,6 +215819,7 @@ export type GraphQLTypes = {
 	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
 	entity_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
+	in_app?: GraphQLTypes["order_by"] | undefined | null,
 	is_read?: GraphQLTypes["order_by"] | undefined | null,
 	message?: GraphQLTypes["order_by"] | undefined | null,
 	player?: GraphQLTypes["players_order_by"] | undefined | null,
@@ -214096,6 +215850,7 @@ export type GraphQLTypes = {
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
@@ -214145,6 +215900,7 @@ export type GraphQLTypes = {
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
+	in_app?: boolean | undefined | null,
 	is_read?: boolean | undefined | null,
 	message?: string | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
@@ -226802,6 +228558,7 @@ export type GraphQLTypes = {
 	multi_kills_aggregate: GraphQLTypes["v_player_multi_kills_aggregate"],
 	name: string,
 	name_registered: boolean,
+	notification_timezone?: string | undefined | null,
 	/** An array relationship */
 	notifications: Array<GraphQLTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -226835,6 +228592,8 @@ export type GraphQLTypes = {
 	premier_rank_history_aggregate: GraphQLTypes["player_premier_rank_history_aggregate"],
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role: GraphQLTypes["e_player_roles_enum"],
 	roster_image_url?: string | undefined | null,
 	/** An array relationship */
@@ -227029,6 +228788,7 @@ export type GraphQLTypes = {
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	name_registered?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	notification_timezone?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	notifications?: GraphQLTypes["notifications_bool_exp"] | undefined | null,
 	notifications_aggregate?: GraphQLTypes["notifications_aggregate_bool_exp"] | undefined | null,
 	objectives?: GraphQLTypes["player_objectives_bool_exp"] | undefined | null,
@@ -227047,6 +228807,8 @@ export type GraphQLTypes = {
 	premier_rank_history_aggregate?: GraphQLTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	profile_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time_comparison_exp"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time_comparison_exp"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	roster_image_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	sanctions?: GraphQLTypes["player_sanctions_bool_exp"] | undefined | null,
@@ -227135,6 +228897,7 @@ export type GraphQLTypes = {
 	multi_kills?: GraphQLTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	notifications?: GraphQLTypes["notifications_arr_rel_insert_input"] | undefined | null,
 	objectives?: GraphQLTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: GraphQLTypes["teams_arr_rel_insert_input"] | undefined | null,
@@ -227145,6 +228908,8 @@ export type GraphQLTypes = {
 	premier_rank_history?: GraphQLTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	sanctions?: GraphQLTypes["player_sanctions_arr_rel_insert_input"] | undefined | null,
@@ -227197,6 +228962,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -227249,6 +229015,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -227347,6 +229114,7 @@ export type GraphQLTypes = {
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	name_registered?: GraphQLTypes["order_by"] | undefined | null,
+	notification_timezone?: GraphQLTypes["order_by"] | undefined | null,
 	notifications_aggregate?: GraphQLTypes["notifications_aggregate_order_by"] | undefined | null,
 	objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: GraphQLTypes["teams_aggregate_order_by"] | undefined | null,
@@ -227358,6 +229126,8 @@ export type GraphQLTypes = {
 	premier_rank_history_aggregate?: GraphQLTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["order_by"] | undefined | null,
 	profile_url?: GraphQLTypes["order_by"] | undefined | null,
+	quiet_hours_end?: GraphQLTypes["order_by"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["order_by"] | undefined | null,
 	role?: GraphQLTypes["order_by"] | undefined | null,
 	roster_image_url?: GraphQLTypes["order_by"] | undefined | null,
 	sanctions_aggregate?: GraphQLTypes["player_sanctions_aggregate_order_by"] | undefined | null,
@@ -227408,9 +229178,12 @@ export type GraphQLTypes = {
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -227533,9 +229306,12 @@ export type GraphQLTypes = {
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -227834,6 +229610,204 @@ export type GraphQLTypes = {
 ["plugin_versions_variance_fields"]: {
 	__typename: "plugin_versions_variance_fields",
 	min_game_build_id?: number | undefined | null
+};
+	/** columns and relationships of "push_subscriptions" */
+["push_subscriptions"]: {
+	__typename: "push_subscriptions",
+	auth: string,
+	created_at: GraphQLTypes["timestamptz"],
+	endpoint: string,
+	id: GraphQLTypes["uuid"],
+	last_used_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	p256dh: string,
+	steam_id: GraphQLTypes["bigint"],
+	user_agent?: string | undefined | null
+};
+	/** aggregated selection of "push_subscriptions" */
+["push_subscriptions_aggregate"]: {
+	__typename: "push_subscriptions_aggregate",
+	aggregate?: GraphQLTypes["push_subscriptions_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["push_subscriptions"]>
+};
+	/** aggregate fields of "push_subscriptions" */
+["push_subscriptions_aggregate_fields"]: {
+	__typename: "push_subscriptions_aggregate_fields",
+	avg?: GraphQLTypes["push_subscriptions_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["push_subscriptions_max_fields"] | undefined | null,
+	min?: GraphQLTypes["push_subscriptions_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["push_subscriptions_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["push_subscriptions_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["push_subscriptions_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["push_subscriptions_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["push_subscriptions_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["push_subscriptions_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["push_subscriptions_variance_fields"] | undefined | null
+};
+	/** aggregate avg on columns */
+["push_subscriptions_avg_fields"]: {
+	__typename: "push_subscriptions_avg_fields",
+	steam_id?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "push_subscriptions". All fields are combined with a logical 'AND'. */
+["push_subscriptions_bool_exp"]: {
+		_and?: Array<GraphQLTypes["push_subscriptions_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["push_subscriptions_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["push_subscriptions_bool_exp"]> | undefined | null,
+	auth?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	endpoint?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	last_used_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	p256dh?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	user_agent?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "push_subscriptions" */
+["push_subscriptions_constraint"]: push_subscriptions_constraint;
+	/** input type for incrementing numeric columns in table "push_subscriptions" */
+["push_subscriptions_inc_input"]: {
+		steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "push_subscriptions" */
+["push_subscriptions_insert_input"]: {
+		auth?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	last_used_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate max on columns */
+["push_subscriptions_max_fields"]: {
+	__typename: "push_subscriptions_max_fields",
+	auth?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	last_used_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate min on columns */
+["push_subscriptions_min_fields"]: {
+	__typename: "push_subscriptions_min_fields",
+	auth?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	last_used_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** response of any mutation on the table "push_subscriptions" */
+["push_subscriptions_mutation_response"]: {
+	__typename: "push_subscriptions_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["push_subscriptions"]>
+};
+	/** on_conflict condition type for table "push_subscriptions" */
+["push_subscriptions_on_conflict"]: {
+		constraint: GraphQLTypes["push_subscriptions_constraint"],
+	update_columns: Array<GraphQLTypes["push_subscriptions_update_column"]>,
+	where?: GraphQLTypes["push_subscriptions_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "push_subscriptions". */
+["push_subscriptions_order_by"]: {
+		auth?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
+	endpoint?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	last_used_at?: GraphQLTypes["order_by"] | undefined | null,
+	p256dh?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	user_agent?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: push_subscriptions */
+["push_subscriptions_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "push_subscriptions" */
+["push_subscriptions_select_column"]: push_subscriptions_select_column;
+	/** input type for updating data in table "push_subscriptions" */
+["push_subscriptions_set_input"]: {
+		auth?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	last_used_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate stddev on columns */
+["push_subscriptions_stddev_fields"]: {
+	__typename: "push_subscriptions_stddev_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["push_subscriptions_stddev_pop_fields"]: {
+	__typename: "push_subscriptions_stddev_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["push_subscriptions_stddev_samp_fields"]: {
+	__typename: "push_subscriptions_stddev_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** Streaming cursor of the table "push_subscriptions" */
+["push_subscriptions_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["push_subscriptions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["push_subscriptions_stream_cursor_value_input"]: {
+		auth?: string | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	endpoint?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	last_used_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	p256dh?: string | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	user_agent?: string | undefined | null
+};
+	/** aggregate sum on columns */
+["push_subscriptions_sum_fields"]: {
+	__typename: "push_subscriptions_sum_fields",
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
+};
+	/** update columns of table "push_subscriptions" */
+["push_subscriptions_update_column"]: push_subscriptions_update_column;
+	["push_subscriptions_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["push_subscriptions_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["push_subscriptions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["push_subscriptions_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["push_subscriptions_var_pop_fields"]: {
+	__typename: "push_subscriptions_var_pop_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["push_subscriptions_var_samp_fields"]: {
+	__typename: "push_subscriptions_var_samp_fields",
+	steam_id?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["push_subscriptions_variance_fields"]: {
+	__typename: "push_subscriptions_variance_fields",
+	steam_id?: number | undefined | null
 };
 	["query_root"]: {
 	__typename: "query_root",
@@ -228486,6 +230460,12 @@ export type GraphQLTypes = {
 	news_articles_aggregate: GraphQLTypes["news_articles_aggregate"],
 	/** fetch data from the table: "news_articles" using primary key columns */
 	news_articles_by_pk?: GraphQLTypes["news_articles"] | undefined | null,
+	/** fetch data from the table: "notification_preferences" */
+	notification_preferences: Array<GraphQLTypes["notification_preferences"]>,
+	/** fetch aggregated fields from the table: "notification_preferences" */
+	notification_preferences_aggregate: GraphQLTypes["notification_preferences_aggregate"],
+	/** fetch data from the table: "notification_preferences" using primary key columns */
+	notification_preferences_by_pk?: GraphQLTypes["notification_preferences"] | undefined | null,
 	/** An array relationship */
 	notifications: Array<GraphQLTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -228654,6 +230634,12 @@ export type GraphQLTypes = {
 	plugin_versions_aggregate: GraphQLTypes["plugin_versions_aggregate"],
 	/** fetch data from the table: "plugin_versions" using primary key columns */
 	plugin_versions_by_pk?: GraphQLTypes["plugin_versions"] | undefined | null,
+	/** fetch data from the table: "push_subscriptions" */
+	push_subscriptions: Array<GraphQLTypes["push_subscriptions"]>,
+	/** fetch aggregated fields from the table: "push_subscriptions" */
+	push_subscriptions_aggregate: GraphQLTypes["push_subscriptions_aggregate"],
+	/** fetch data from the table: "push_subscriptions" using primary key columns */
+	push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** Read file content from game server */
 	readServerFile: GraphQLTypes["FileContentResponse"],
 	/** fetch data from the table: "seasons" */
@@ -228962,7 +230948,9 @@ export type GraphQLTypes = {
 	/** fetch data from the table: "v_tournament_player_stats" */
 	v_tournament_player_stats: Array<GraphQLTypes["v_tournament_player_stats"]>,
 	/** fetch aggregated fields from the table: "v_tournament_player_stats" */
-	v_tournament_player_stats_aggregate: GraphQLTypes["v_tournament_player_stats_aggregate"]
+	v_tournament_player_stats_aggregate: GraphQLTypes["v_tournament_player_stats_aggregate"],
+	/** Web push setup status for the application settings page; never returns the private key */
+	webPushStatus?: GraphQLTypes["WebPushStatusOutput"] | undefined | null
 };
 	["recalculate_tournament_awards_args"]: {
 		_tournament_id?: GraphQLTypes["uuid"] | undefined | null
@@ -231271,6 +233259,14 @@ export type GraphQLTypes = {
 	news_articles_by_pk?: GraphQLTypes["news_articles"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "news_articles" */
 	news_articles_stream: Array<GraphQLTypes["news_articles"]>,
+	/** fetch data from the table: "notification_preferences" */
+	notification_preferences: Array<GraphQLTypes["notification_preferences"]>,
+	/** fetch aggregated fields from the table: "notification_preferences" */
+	notification_preferences_aggregate: GraphQLTypes["notification_preferences_aggregate"],
+	/** fetch data from the table: "notification_preferences" using primary key columns */
+	notification_preferences_by_pk?: GraphQLTypes["notification_preferences"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "notification_preferences" */
+	notification_preferences_stream: Array<GraphQLTypes["notification_preferences"]>,
 	/** An array relationship */
 	notifications: Array<GraphQLTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -231499,6 +233495,14 @@ export type GraphQLTypes = {
 	plugin_versions_by_pk?: GraphQLTypes["plugin_versions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "plugin_versions" */
 	plugin_versions_stream: Array<GraphQLTypes["plugin_versions"]>,
+	/** fetch data from the table: "push_subscriptions" */
+	push_subscriptions: Array<GraphQLTypes["push_subscriptions"]>,
+	/** fetch aggregated fields from the table: "push_subscriptions" */
+	push_subscriptions_aggregate: GraphQLTypes["push_subscriptions_aggregate"],
+	/** fetch data from the table: "push_subscriptions" using primary key columns */
+	push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "push_subscriptions" */
+	push_subscriptions_stream: Array<GraphQLTypes["push_subscriptions"]>,
 	/** fetch data from the table: "seasons" */
 	seasons: Array<GraphQLTypes["seasons"]>,
 	/** fetch aggregated fields from the table: "seasons" */
@@ -234642,6 +236646,19 @@ export type GraphQLTypes = {
 ["teams_variance_order_by"]: {
 		captain_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	["time"]: "scalar" & { name: "time" };
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+		_eq?: GraphQLTypes["time"] | undefined | null,
+	_gt?: GraphQLTypes["time"] | undefined | null,
+	_gte?: GraphQLTypes["time"] | undefined | null,
+	_in?: Array<GraphQLTypes["time"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: GraphQLTypes["time"] | undefined | null,
+	_lte?: GraphQLTypes["time"] | undefined | null,
+	_neq?: GraphQLTypes["time"] | undefined | null,
+	_nin?: Array<GraphQLTypes["time"]> | undefined | null
 };
 	["timestamp"]: "scalar" & { name: "timestamp" };
 	["timestamptz"]: "scalar" & { name: "timestamptz" };
@@ -249283,9 +251300,14 @@ export enum e_notification_types_constraint {
 	e_notification_types_pkey = "e_notification_types_pkey"
 }
 export enum e_notification_types_enum {
+	AwardGranted = "AwardGranted",
+	ChatMessage = "ChatMessage",
+	ClipReady = "ClipReady",
 	DedicatedServerRconStatus = "DedicatedServerRconStatus",
 	DedicatedServerStatus = "DedicatedServerStatus",
+	DraftInvite = "DraftInvite",
 	EloRecompute = "EloRecompute",
+	EventReminder = "EventReminder",
 	FormTeamSuggestion = "FormTeamSuggestion",
 	GameNodeStatus = "GameNodeStatus",
 	GameUpdate = "GameUpdate",
@@ -249297,11 +251319,13 @@ export enum e_notification_types_enum {
 	LeagueRosterUndersized = "LeagueRosterUndersized",
 	MatchAbandoned = "MatchAbandoned",
 	MatchImported = "MatchImported",
+	MatchStatsReady = "MatchStatsReady",
 	MatchStatusChange = "MatchStatusChange",
 	MatchSupport = "MatchSupport",
 	NameChangeApproved = "NameChangeApproved",
 	NameChangeDenied = "NameChangeDenied",
 	NameChangeRequest = "NameChangeRequest",
+	NewsPublished = "NewsPublished",
 	PlayerReindex = "PlayerReindex",
 	PlayerSanctioned = "PlayerSanctioned",
 	ScrimAlertMatch = "ScrimAlertMatch",
@@ -249313,7 +251337,12 @@ export enum e_notification_types_enum {
 	ScrimRequestExpired = "ScrimRequestExpired",
 	ScrimRequestReceived = "ScrimRequestReceived",
 	ScrimTimeChanged = "ScrimTimeChanged",
-	StorageScan = "StorageScan"
+	SeasonEnded = "SeasonEnded",
+	StorageScan = "StorageScan",
+	TeamInvite = "TeamInvite",
+	TournamentCreated = "TournamentCreated",
+	TournamentReminder = "TournamentReminder",
+	TournamentTeamInvite = "TournamentTeamInvite"
 }
 /** select columns of table "e_notification_types" */
 export enum e_notification_types_select_column {
@@ -250786,6 +252815,8 @@ export enum match_options_select_column {
 	auto_cancel_duration = "auto_cancel_duration",
 	auto_cancellation = "auto_cancellation",
 	best_of = "best_of",
+	camera_allow_teammates = "camera_allow_teammates",
+	camera_required = "camera_required",
 	check_in_setting = "check_in_setting",
 	coaches = "coaches",
 	default_models = "default_models",
@@ -250816,6 +252847,8 @@ export enum match_options_update_column {
 	auto_cancel_duration = "auto_cancel_duration",
 	auto_cancellation = "auto_cancellation",
 	best_of = "best_of",
+	camera_allow_teammates = "camera_allow_teammates",
+	camera_required = "camera_required",
 	check_in_setting = "check_in_setting",
 	coaches = "coaches",
 	default_models = "default_models",
@@ -251097,6 +253130,26 @@ export enum news_articles_update_column {
 	updated_at = "updated_at",
 	view_count = "view_count"
 }
+/** unique or primary key constraints on table "notification_preferences" */
+export enum notification_preferences_constraint {
+	notification_preferences_pkey = "notification_preferences_pkey"
+}
+/** select columns of table "notification_preferences" */
+export enum notification_preferences_select_column {
+	channel = "channel",
+	enabled = "enabled",
+	key = "key",
+	steam_id = "steam_id",
+	updated_at = "updated_at"
+}
+/** update columns of table "notification_preferences" */
+export enum notification_preferences_update_column {
+	channel = "channel",
+	enabled = "enabled",
+	key = "key",
+	steam_id = "steam_id",
+	updated_at = "updated_at"
+}
 /** unique or primary key constraints on table "notifications" */
 export enum notifications_constraint {
 	notifications_pkey = "notifications_pkey"
@@ -251109,6 +253162,7 @@ export enum notifications_select_column {
 	deleted_at = "deleted_at",
 	entity_id = "entity_id",
 	id = "id",
+	in_app = "in_app",
 	is_read = "is_read",
 	message = "message",
 	role = "role",
@@ -251119,11 +253173,13 @@ export enum notifications_select_column {
 /** select "notifications_aggregate_bool_exp_bool_and_arguments_columns" columns of table "notifications" */
 export enum notifications_select_column_notifications_aggregate_bool_exp_bool_and_arguments_columns {
 	deletable = "deletable",
+	in_app = "in_app",
 	is_read = "is_read"
 }
 /** select "notifications_aggregate_bool_exp_bool_or_arguments_columns" columns of table "notifications" */
 export enum notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns {
 	deletable = "deletable",
+	in_app = "in_app",
 	is_read = "is_read"
 }
 /** update columns of table "notifications" */
@@ -251134,6 +253190,7 @@ export enum notifications_update_column {
 	deleted_at = "deleted_at",
 	entity_id = "entity_id",
 	id = "id",
+	in_app = "in_app",
 	is_read = "is_read",
 	message = "message",
 	role = "role",
@@ -252166,9 +254223,12 @@ export enum players_select_column {
 	last_sign_in_at = "last_sign_in_at",
 	name = "name",
 	name_registered = "name_registered",
+	notification_timezone = "notification_timezone",
 	premier_rank = "premier_rank",
 	premier_rank_updated_at = "premier_rank_updated_at",
 	profile_url = "profile_url",
+	quiet_hours_end = "quiet_hours_end",
+	quiet_hours_start = "quiet_hours_start",
 	role = "role",
 	roster_image_url = "roster_image_url",
 	show_match_ready_modal = "show_match_ready_modal",
@@ -252197,9 +254257,12 @@ export enum players_update_column {
 	last_sign_in_at = "last_sign_in_at",
 	name = "name",
 	name_registered = "name_registered",
+	notification_timezone = "notification_timezone",
 	premier_rank = "premier_rank",
 	premier_rank_updated_at = "premier_rank_updated_at",
 	profile_url = "profile_url",
+	quiet_hours_end = "quiet_hours_end",
+	quiet_hours_start = "quiet_hours_start",
 	role = "role",
 	roster_image_url = "roster_image_url",
 	show_match_ready_modal = "show_match_ready_modal",
@@ -252225,6 +254288,33 @@ export enum plugin_versions_update_column {
 	published_at = "published_at",
 	runtime = "runtime",
 	version = "version"
+}
+/** unique or primary key constraints on table "push_subscriptions" */
+export enum push_subscriptions_constraint {
+	push_subscriptions_endpoint_key = "push_subscriptions_endpoint_key",
+	push_subscriptions_pkey = "push_subscriptions_pkey"
+}
+/** select columns of table "push_subscriptions" */
+export enum push_subscriptions_select_column {
+	auth = "auth",
+	created_at = "created_at",
+	endpoint = "endpoint",
+	id = "id",
+	last_used_at = "last_used_at",
+	p256dh = "p256dh",
+	steam_id = "steam_id",
+	user_agent = "user_agent"
+}
+/** update columns of table "push_subscriptions" */
+export enum push_subscriptions_update_column {
+	auth = "auth",
+	created_at = "created_at",
+	endpoint = "endpoint",
+	id = "id",
+	last_used_at = "last_used_at",
+	p256dh = "p256dh",
+	steam_id = "steam_id",
+	user_agent = "user_agent"
 }
 /** unique or primary key constraints on table "seasons" */
 export enum seasons_constraint {
@@ -255847,6 +257937,19 @@ type ZEUS_VARIABLES = {
 	["news_articles_stream_cursor_value_input"]: ValueTypes["news_articles_stream_cursor_value_input"];
 	["news_articles_update_column"]: ValueTypes["news_articles_update_column"];
 	["news_articles_updates"]: ValueTypes["news_articles_updates"];
+	["notification_preferences_bool_exp"]: ValueTypes["notification_preferences_bool_exp"];
+	["notification_preferences_constraint"]: ValueTypes["notification_preferences_constraint"];
+	["notification_preferences_inc_input"]: ValueTypes["notification_preferences_inc_input"];
+	["notification_preferences_insert_input"]: ValueTypes["notification_preferences_insert_input"];
+	["notification_preferences_on_conflict"]: ValueTypes["notification_preferences_on_conflict"];
+	["notification_preferences_order_by"]: ValueTypes["notification_preferences_order_by"];
+	["notification_preferences_pk_columns_input"]: ValueTypes["notification_preferences_pk_columns_input"];
+	["notification_preferences_select_column"]: ValueTypes["notification_preferences_select_column"];
+	["notification_preferences_set_input"]: ValueTypes["notification_preferences_set_input"];
+	["notification_preferences_stream_cursor_input"]: ValueTypes["notification_preferences_stream_cursor_input"];
+	["notification_preferences_stream_cursor_value_input"]: ValueTypes["notification_preferences_stream_cursor_value_input"];
+	["notification_preferences_update_column"]: ValueTypes["notification_preferences_update_column"];
+	["notification_preferences_updates"]: ValueTypes["notification_preferences_updates"];
 	["notifications_aggregate_bool_exp"]: ValueTypes["notifications_aggregate_bool_exp"];
 	["notifications_aggregate_bool_exp_bool_and"]: ValueTypes["notifications_aggregate_bool_exp_bool_and"];
 	["notifications_aggregate_bool_exp_bool_or"]: ValueTypes["notifications_aggregate_bool_exp_bool_or"];
@@ -256497,6 +258600,19 @@ type ZEUS_VARIABLES = {
 	["plugin_versions_stream_cursor_value_input"]: ValueTypes["plugin_versions_stream_cursor_value_input"];
 	["plugin_versions_update_column"]: ValueTypes["plugin_versions_update_column"];
 	["plugin_versions_updates"]: ValueTypes["plugin_versions_updates"];
+	["push_subscriptions_bool_exp"]: ValueTypes["push_subscriptions_bool_exp"];
+	["push_subscriptions_constraint"]: ValueTypes["push_subscriptions_constraint"];
+	["push_subscriptions_inc_input"]: ValueTypes["push_subscriptions_inc_input"];
+	["push_subscriptions_insert_input"]: ValueTypes["push_subscriptions_insert_input"];
+	["push_subscriptions_on_conflict"]: ValueTypes["push_subscriptions_on_conflict"];
+	["push_subscriptions_order_by"]: ValueTypes["push_subscriptions_order_by"];
+	["push_subscriptions_pk_columns_input"]: ValueTypes["push_subscriptions_pk_columns_input"];
+	["push_subscriptions_select_column"]: ValueTypes["push_subscriptions_select_column"];
+	["push_subscriptions_set_input"]: ValueTypes["push_subscriptions_set_input"];
+	["push_subscriptions_stream_cursor_input"]: ValueTypes["push_subscriptions_stream_cursor_input"];
+	["push_subscriptions_stream_cursor_value_input"]: ValueTypes["push_subscriptions_stream_cursor_value_input"];
+	["push_subscriptions_update_column"]: ValueTypes["push_subscriptions_update_column"];
+	["push_subscriptions_updates"]: ValueTypes["push_subscriptions_updates"];
 	["recalculate_tournament_awards_args"]: ValueTypes["recalculate_tournament_awards_args"];
 	["remove_league_team_from_season_args"]: ValueTypes["remove_league_team_from_season_args"];
 	["reorder_league_divisions_args"]: ValueTypes["reorder_league_divisions_args"];
@@ -256830,6 +258946,8 @@ type ZEUS_VARIABLES = {
 	["teams_var_pop_order_by"]: ValueTypes["teams_var_pop_order_by"];
 	["teams_var_samp_order_by"]: ValueTypes["teams_var_samp_order_by"];
 	["teams_variance_order_by"]: ValueTypes["teams_variance_order_by"];
+	["time"]: ValueTypes["time"];
+	["time_comparison_exp"]: ValueTypes["time_comparison_exp"];
 	["timestamp"]: ValueTypes["timestamp"];
 	["timestamptz"]: ValueTypes["timestamptz"];
 	["timestamptz_comparison_exp"]: ValueTypes["timestamptz_comparison_exp"];

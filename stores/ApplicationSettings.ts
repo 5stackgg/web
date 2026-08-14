@@ -354,6 +354,86 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Platform defaults new matches inherit; each match can still override.
+    const cameraRequiredDefault = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.camera_required_default",
+        )?.value === "true"
+      );
+    });
+
+    const cameraAllowTeammatesDefault = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.camera_allow_teammates_default",
+        )?.value === "true"
+      );
+    });
+
+    // On by default, unlike cameras — only an explicit "false" disables it.
+    const voiceChatEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.voice_chat_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    // Per-surface gates, so an instance can keep party voice without putting a
+    // voice panel on a match. Each folds the master switch in: a surface is
+    // never on while voice itself is off.
+    const voiceChatLobbiesEnabled = computed(() => {
+      return (
+        voiceChatEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.voice_chat_lobbies_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    // Match pages and draft lobbies are the same channel (a match lineup), so
+    // they are the same setting.
+    const voiceChatMatchesEnabled = computed(() => {
+      return (
+        voiceChatEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.voice_chat_matches_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    // On unless explicitly disabled, like voice. Folds voice in, because a
+    // camera rides a voice channel: there is nothing to put video on without it.
+    const videoChatEnabled = computed(() => {
+      return (
+        voiceChatEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.video_chat_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    const videoChatLobbiesEnabled = computed(() => {
+      return (
+        videoChatEnabled.value &&
+        voiceChatLobbiesEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.video_chat_lobbies_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    const videoChatMatchesEnabled = computed(() => {
+      return (
+        videoChatEnabled.value &&
+        voiceChatMatchesEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.video_chat_matches_enabled",
+        )?.value !== "false"
+      );
+    });
+
     const newsLabel = computed(() => {
       return (
         settings.value?.find((setting) => setting.name === "public.news_label")
@@ -609,6 +689,14 @@ export const useApplicationSettingsStore = defineStore(
       teamMaxRosterSize,
       teamMaxSubs,
       requireLoginForLiveStreams,
+      cameraRequiredDefault,
+      cameraAllowTeammatesDefault,
+      voiceChatEnabled,
+      voiceChatLobbiesEnabled,
+      voiceChatMatchesEnabled,
+      videoChatEnabled,
+      videoChatLobbiesEnabled,
+      videoChatMatchesEnabled,
       newsLabel,
       postNewsRole,
       canPostNews,

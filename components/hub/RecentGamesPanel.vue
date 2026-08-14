@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
@@ -28,8 +29,17 @@ import cleanMapName from "~/utilities/cleanMapName";
         </span>
       </div>
 
+      <!-- The stats grid folds open when the query lands rather than pushing
+           the list down ~140px on a frame. -->
+      <Transition
+        enter-active-class="rg-fold"
+        enter-from-class="rg-fold-collapsed"
+        leave-active-class="rg-fold"
+        leave-to-class="rg-fold-collapsed"
+      >
+      <div v-if="summaryStats.total > 0" class="grid grid-rows-[1fr]">
+      <div class="min-h-0">
       <div
-        v-if="summaryStats.total > 0"
         class="mt-3 -mx-3 px-3 pb-3 border-b border-border grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"
       >
         <!-- Performance (Record + Win Rate) -->
@@ -128,17 +138,26 @@ import cleanMapName from "~/utilities/cleanMapName";
           </p>
         </div>
       </div>
+      </div>
+      </div>
+      </Transition>
     </div>
 
-    <div class="flex-1 overflow-y-auto">
-      <div v-if="loading" class="p-3 space-y-2">
+    <!-- Skeleton, empty and list all live in a fixed-height scroller, so
+         a crossfade is the right tool -- no layout outside can move. -->
+    <FadeSwap class="flex-1 overflow-y-auto">
+      <div v-if="loading" key="loading" class="p-3 space-y-2">
         <div
           v-for="i in 5"
           :key="i"
           class="h-14 rounded-lg bg-muted/50 animate-pulse"
         />
       </div>
-      <div v-else-if="!matches.length" class="px-4 py-6 h-full flex flex-col">
+      <div
+        v-else-if="!matches.length"
+        key="empty"
+        class="px-4 py-6 h-full flex flex-col"
+      >
         <Empty>
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
@@ -150,7 +169,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           </div>
         </Empty>
       </div>
-      <div v-else class="p-2">
+      <div v-else key="list" class="p-2">
         <PlayerMatchesTable
           :matches="matches"
           :player="me"
@@ -158,9 +177,29 @@ import cleanMapName from "~/utilities/cleanMapName";
           compact
         />
       </div>
-    </div>
+    </FadeSwap>
   </div>
 </template>
+
+<style scoped>
+.rg-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.rg-fold > * {
+  overflow: hidden;
+}
+.rg-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rg-fold {
+    transition-duration: 1ms;
+  }
+}
+</style>
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";

@@ -6,17 +6,21 @@ import {
   Megaphone,
   Merge,
   Sword,
-  Shield,
   MessageSquare,
   ExternalLink,
+  X,
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
+import socket from "~/web-sockets/Socket";
 
 const props = defineProps<{
   isSidebarOpen: boolean;
@@ -26,20 +30,40 @@ const props = defineProps<{
 const { t } = useI18n();
 const router = useRouter();
 
-const { tabs, unreadCounts, setActiveTab, resetUnread, incrementUnread } =
+const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread, closeTab } =
   useChatTabs();
 
 const matchLobbyStore = useMatchLobbyStore();
 const isMobile = useMediaQuery("(max-width: 768px)");
 
+// A match tab is a room, and one side of that match is a second room the tab
+// never offered -- so team chat used to exist on the match page and vanish the
+// moment you read the same match here. Derived rather than stored on the tab so
+// it follows a lineup change without the tab being rebuilt.
+function teamLobbyIdFor(tab: ChatTab) {
+  if (tab.type !== "match") {
+    return undefined;
+  }
+
+  const match = (matchLobbyStore.myMatches as unknown as any[])?.find(
+    (candidate) => candidate.id === tab.lobbyId,
+  );
+
+  return matchTeamLobbyId(match, useAuthStore().me?.steam_id);
+}
+
 const activeChatId = ref<string | null>(null);
 
 const orderedTabs = computed<ChatTab[]>(() => {
+  // Your own rooms first. Organizer and tournament rooms are broadcast
+  // channels, so landing on one by default put the least personal room in
+  // front of the lobby you are actually in. Conversations are not channels at
+  // all, so they sit below every channel behind a divider.
   const weight = (tab: ChatTab) => {
-    if (tab.type === "organizers" || tab.type === "tournament") return 0;
-    if (tab.id.startsWith("matchmaking:")) return 1;
-    if (tab.type === "match") return 2;
-    return 3;
+    if (tab.id.startsWith("matchmaking:")) return 0;
+    if (tab.type === "match") return 1;
+    if (tab.type === "direct") return 3;
+    return 2;
   };
   return [...tabs.value].sort((a, b) => {
     const wa = weight(a);
@@ -47,6 +71,12 @@ const orderedTabs = computed<ChatTab[]>(() => {
     if (wa !== wb) return wa - wb;
     return a.label.localeCompare(b.label);
   });
+});
+
+// The divider only earns its place when there are channels above it.
+const firstDirectTabId = computed(() => {
+  const index = orderedTabs.value.findIndex((tab) => tab.type === "direct");
+  return index > 0 ? orderedTabs.value[index].id : null;
 });
 
 const activeTab = computed<ChatTab | null>(() => {
@@ -148,34 +178,59 @@ watch(
   { immediate: true },
 );
 
+// Anything else that opens a room -- a Message button, "join match chat" --
+// goes through useChatTabs, so the panel has to follow it. It used to render
+// purely from its own local ref, which is why those buttons opened the hub on
+// whatever room happened to be showing.
+watch(
+  activeTabId,
+  (id) => {
+    if (id && orderedTabs.value.some((tab) => tab.id === id)) {
+      activeChatId.value = id;
+    }
+  },
+  { immediate: true },
+);
+
+// Clears the badge for a room that is genuinely on screen. The auto-select
+// watch above only fires when nothing is selected yet, so a room that was
+// already open kept its badge no matter how long you looked at it.
+watch(
+  [() => props.isTabActive, () => props.isSidebarOpen, activeChatId],
+  ([tabActive, sidebarOpen, id]) => {
+    if (!tabActive || !sidebarOpen || !id) {
+      return;
+    }
+
+    resetUnread(id);
+
+    // Conversations also carry server-side read state, so the badge doesn't
+    // come back on the next device or reload.
+    const tab = orderedTabs.value.find((entry) => entry.id === id);
+    if (tab?.type === "direct") {
+      socket.markLobbyRead(tab.type, tab.lobbyId);
+    }
+  },
+  { immediate: true },
+);
+
 function handleSelectRoom(tab: ChatTab) {
   activeChatId.value = tab.id;
   setActiveTab(tab.id);
   resetUnread(tab.id);
 }
 
-function handleMessageReceived(payload: {
-  tabId?: string;
-  direction: "inbound" | "outbound";
-  message: any;
-}) {
-  if (payload.direction !== "inbound") return;
-  const tabId = payload.tabId ?? activeChatId.value;
-  if (!tabId) return;
-  const isCurrentRoom = tabId === activeChatId.value;
-  const isVisible = props.isSidebarOpen && props.isTabActive && isCurrentRoom;
-  if (!isVisible) {
-    incrementUnread(tabId);
-  } else {
-    resetUnread(tabId);
-  }
+// Only a click counts as choosing a room -- the auto-select watchers above are
+// filling a gap, and must not cancel a pending restore of the stored room.
+function handleRoomClick(tab: ChatTab) {
+  cancelChatTabRestore();
+  handleSelectRoom(tab);
 }
 
 function getRoomIcon(tab: ChatTab) {
   if (tab.type === "organizers" || tab.type === "tournament") return Megaphone;
   if (tab.id.startsWith("matchmaking:")) return Merge;
   if (tab.type === "match") return Sword;
-  if (tab.type === "team") return Shield;
   return MessageSquare;
 }
 
@@ -185,8 +240,25 @@ function getRoomSubtitle(tab: ChatTab) {
   if (tab.id.startsWith("matchmaking:"))
     return t("chat_room_subtitles.matchmaking");
   if (tab.type === "match") return t("chat_room_subtitles.match");
-  if (tab.type === "team") return t("chat_room_subtitles.team");
+  if (tab.type === "direct") return t("chat_room_subtitles.direct");
   return "";
+}
+
+function handleCloseRoom() {
+  const tab = activeTab.value;
+
+  if (!tab || tab.type !== "direct") {
+    return;
+  }
+
+  // Read it server-side on the way out, otherwise hydrate() treats the leftover
+  // unread as "something new" and reopens the conversation on the next load.
+  socket.markLobbyRead(tab.type, tab.lobbyId);
+  closeTab(tab.id);
+
+  // closeTab already picks the neighbouring tab; follow it so the panel isn't
+  // left rendering a room that no longer exists.
+  activeChatId.value = activeTabId.value;
 }
 
 function handlePopOut() {
@@ -254,6 +326,24 @@ function handlePopOut() {
 
         <TooltipProvider>
           <template v-for="tab in orderedTabs" :key="tab.id">
+            <!-- Folds its 9px open instead of teleporting every button below
+                 it while the accent bar is still springing to a position it
+                 measured after the shift. -->
+            <Transition
+              enter-active-class="chat-fold"
+              enter-from-class="chat-fold-collapsed"
+              leave-active-class="chat-fold"
+              leave-to-class="chat-fold-collapsed"
+            >
+              <div
+                v-if="tab.id === firstDirectTabId"
+                class="grid w-full shrink-0 grid-rows-[1fr]"
+              >
+                <div class="min-h-0 flex justify-center">
+                  <div class="my-1 h-px w-8 bg-border" />
+                </div>
+              </div>
+            </Transition>
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
@@ -265,7 +355,7 @@ function handlePopOut() {
                       : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100'
                   "
                   type="button"
-                  @click="handleSelectRoom(tab)"
+                  @click="handleRoomClick(tab)"
                 >
                   <div
                     class="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-inherit transition-colors"
@@ -275,7 +365,19 @@ function handlePopOut() {
                         : 'bg-zinc-900/80 group-hover:bg-zinc-700/70'
                     "
                   >
-                    <component :is="getRoomIcon(tab)" class="w-3.5 h-3.5" />
+                    <!-- A conversation is a person, not a channel. -->
+                    <img
+                      v-if="tab.type === 'direct' && tab.avatarUrl"
+                      :src="tab.avatarUrl"
+                      :alt="tab.label"
+                      draggable="false"
+                      class="h-full w-full select-none rounded-md object-cover"
+                    />
+                    <component
+                      v-else
+                      :is="getRoomIcon(tab)"
+                      class="w-3.5 h-3.5"
+                    />
                   </div>
                   <span
                     v-if="unreadCounts[tab.id]"
@@ -309,9 +411,11 @@ function handlePopOut() {
       <div v-else class="flex-1" />
     </div>
 
-    <!-- Right chat area -->
-    <div class="flex-1 min-w-0 flex flex-col">
-      <template v-if="orderedTabs.length">
+    <!-- Right chat area. Closing the last conversation dissolves to the empty
+         state instead of cutting; both branches fill the column, so a plain
+         crossfade is the right tool. -->
+    <FadeSwap class="flex-1 min-w-0">
+      <div v-if="orderedTabs.length" key="chats" class="h-full flex flex-col">
         <!-- Header with channel title + participants + controls -->
         <div
           class="flex items-center justify-between px-3 py-3 border-b border-border bg-card/30"
@@ -369,30 +473,66 @@ function handlePopOut() {
                   {{ $t("layouts.chat_panel.pop_out_tooltip") }}
                 </TooltipContent>
               </Tooltip>
+
+              <!-- Channels are derived from what you are in, so only a
+                   conversation is yours to close. -->
+              <Tooltip v-if="activeTab?.type === 'direct'">
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card/50 text-muted-foreground hover:bg-destructive/15 hover:text-destructive hover:border-destructive/40 transition-colors"
+                    @click="handleCloseRoom"
+                  >
+                    <X class="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
+                >
+                  {{ $t("layouts.chat_panel.close_tooltip") }}
+                </TooltipContent>
+              </Tooltip>
             </TooltipProvider>
           </div>
         </div>
 
-        <div
-          v-if="isParticipantsOpen && activeParticipants.length"
-          class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200 flex gap-2 overflow-x-auto"
+        <!-- Folds open between the header and the scroller instead of
+             snatching 33px from the chat body on a frame; the strip's own
+             padding and border ride inside the clipped row. -->
+        <Transition
+          enter-active-class="chat-fold"
+          enter-from-class="chat-fold-collapsed"
+          leave-active-class="chat-fold"
+          leave-to-class="chat-fold-collapsed"
         >
           <div
-            v-for="p in activeParticipants"
-            :key="p.steam_id"
-            class="flex items-center gap-1.5 bg-zinc-900/70 rounded-full px-2 py-0.5"
+            v-if="isParticipantsOpen && activeParticipants.length"
+            class="shrink-0 grid grid-rows-[1fr]"
           >
-            <img
-              v-if="p.avatar_url"
-              :src="p.avatar_url"
-              alt=""
-              class="w-4 h-4 rounded-full object-cover"
-            />
-            <span class="truncate max-w-[8rem]">
-              {{ p.name }}
-            </span>
+            <div class="min-h-0">
+              <div
+                class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200 flex gap-2 overflow-x-auto"
+              >
+                <div
+                  v-for="p in activeParticipants"
+                  :key="p.steam_id"
+                  class="flex items-center gap-1.5 bg-zinc-900/70 rounded-full px-2 py-0.5"
+                >
+                  <img
+                    v-if="p.avatar_url"
+                    :src="p.avatar_url"
+                    alt=""
+                    class="w-4 h-4 rounded-full object-cover"
+                  />
+                  <span class="truncate max-w-[8rem]">
+                    {{ p.name }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </Transition>
 
         <div class="flex-1 min-h-0 flex flex-col">
           <ChatLobby
@@ -402,6 +542,7 @@ function handlePopOut() {
             :instance="tab.instance"
             :type="tab.type"
             :lobby-id="tab.lobbyId"
+            :team-lobby-id="teamLobbyIdFor(tab)"
             :tab-id="tab.id"
             :frameless="true"
             :is-global-context="true"
@@ -410,11 +551,10 @@ function handlePopOut() {
             :is-active-tab="
               tab.id === activeChatId && isSidebarOpen && isTabActive
             "
-            @message-received="handleMessageReceived"
           />
         </div>
-      </template>
-      <div v-else class="flex-1 flex flex-col">
+      </div>
+      <div v-else key="empty" class="h-full flex flex-col">
         <Empty>
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
@@ -426,6 +566,28 @@ function handlePopOut() {
           </div>
         </Empty>
       </div>
-    </div>
+    </FadeSwap>
   </div>
 </template>
+
+<style scoped>
+/* Small rail/header inserts fold their height in place; padding and borders
+   ride the clipped cell so the collapsed state floors at zero. */
+.chat-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.15s ease;
+}
+.chat-fold > * {
+  overflow: hidden;
+}
+.chat-fold-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-fold {
+    transition-duration: 1ms;
+  }
+}
+</style>

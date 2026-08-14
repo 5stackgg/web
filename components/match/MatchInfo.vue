@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Card, CardContent } from "~/components/ui/card";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
@@ -12,21 +13,30 @@ import { matchIneligiblePlayers } from "~/utilities/matchIneligiblePlayers";
 
 <template>
   <div v-if="hasContent" class="flex flex-col gap-4">
-    <!-- Action Panel — Check In / Schedule -->
-    <div
-      v-if="match.can_schedule || showCheckInSection"
-      class="rounded-xl border border-white/10 bg-background/80 backdrop-blur-sm p-4 flex flex-col gap-3"
-    >
-      <ScheduleMatch :match="match" v-if="match.can_schedule" />
-      <CheckIntoMatch :match="match" v-if="showCheckInSection" />
-    </div>
+    <!-- Check In / Schedule and Server Connect are alternate states of one
+         slot -- check-in ends, the match goes live, connect takes its place --
+         so they trade through a measured height swap instead of one panel
+         vanishing wholesale and another popping in. The slot is legitimately
+         empty between them (during veto), so it hides itself at rest rather
+         than holding a blank flex gap open above the coaches card. -->
+    <HeightSwap class="empty:hidden">
+      <div
+        v-if="match.can_schedule || showCheckInSection"
+        key="actions"
+        class="rounded-xl border border-white/10 bg-background/80 backdrop-blur-sm p-4 flex flex-col gap-3"
+      >
+        <ScheduleMatch :match="match" v-if="match.can_schedule" />
+        <CheckIntoMatch :match="match" v-if="showCheckInSection" />
+      </div>
 
-    <!-- Server Connect — standalone -->
-    <QuickMatchConnect
-      :match="match"
-      :hide-booting="hideBooting"
-      v-if="showQuickConnectSection"
-    />
+      <div v-else-if="showQuickConnectSection" key="connect">
+        <QuickMatchConnect
+          :match="match"
+          :hide-booting="hideBooting"
+          :camera-ready="cameraReady"
+        />
+      </div>
+    </HeightSwap>
 
     <!-- Coaches -->
     <Card v-if="match.options.coaches">
@@ -68,6 +78,10 @@ export default {
     // In the draft room the booting state is shown by the maps/"Match Starting"
     // panel, so suppress QuickMatchConnect's duplicate booting spinner there.
     hideBooting: {
+      type: Boolean,
+      default: false,
+    },
+    cameraReady: {
       type: Boolean,
       default: false,
     },

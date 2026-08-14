@@ -9,6 +9,7 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
+import CameraRequirementOverlay from "~/components/match/CameraRequirementOverlay.vue";
 import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
@@ -19,8 +20,10 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
 import { useMatchContext } from "~/composables/useMatchContext";
@@ -161,6 +164,75 @@ const vsBaseClasses =
 
 <template>
   <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
+    <!-- Mounted for as long as this match asks the viewer for a camera, not
+         just while one is missing: it owns the status poll, and unmounting it
+         once the camera came up is what stopped anyone noticing it go away
+         again. `open` is what actually shows the modal. -->
+    <CameraRequirementOverlay
+      v-if="cameraRequiredOfMe"
+      :match-id="match.id"
+      :open="cameraGateActive && !cameraOverlayDismissed"
+      :allow-teammates="!!match.options?.camera_allow_teammates"
+      @update:ready="onCameraReadyChanged"
+      @dismiss="cameraOverlayDismissed = true"
+    />
+
+    <!-- Deliberately loud and pinned to the top: the requirement did not go
+         away when the modal was dismissed, and check-in stays blocked until a
+         camera is live. -->
+    <!-- Animating grid rows rather than mounting the bar: a v-if would jump the
+         whole page down a bar-height in one frame. The wrapper only exists while
+         the gate is active, so a normal match never carries its flex gap. The
+         delay lets the modal finish fading before the page starts moving. -->
+    <div
+      v-if="cameraGateActive"
+      class="grid transition-[grid-template-rows] duration-[320ms] ease-out motion-reduce:duration-[1ms]"
+      :class="
+        cameraOverlayDismissed
+          ? 'grid-rows-[1fr] delay-150 motion-reduce:delay-0'
+          : 'grid-rows-[0fr]'
+      "
+    >
+    <div class="overflow-hidden min-h-0">
+    <button
+      type="button"
+      class="camera-nag flex w-full items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-4 py-3 text-left transition-[background-color,opacity] duration-300 hover:bg-[hsl(var(--tac-amber)/0.2)]"
+      :class="cameraOverlayDismissed ? 'opacity-100 delay-200' : 'opacity-0'"
+      :tabindex="cameraOverlayDismissed ? 0 : -1"
+      :aria-hidden="!cameraOverlayDismissed"
+      @click="cameraOverlayDismissed = false"
+    >
+      <span
+        class="relative flex size-2 flex-shrink-0"
+        aria-hidden="true"
+      >
+        <span
+          class="absolute inline-flex size-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+        ></span>
+        <span
+          class="relative inline-flex size-2 rounded-full bg-[hsl(var(--tac-amber))]"
+        ></span>
+      </span>
+
+      <span class="min-w-0 flex-1">
+        <span
+          class="block font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+        >
+          {{ $t("camera.title") }}
+        </span>
+        <span class="block text-xs text-muted-foreground">
+          {{ $t("camera.nag") }}
+        </span>
+      </span>
+
+      <span
+        class="flex-shrink-0 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+      >
+        {{ $t("camera.nag_action") }}
+      </span>
+    </button>
+    </div>
+    </div>
     <template v-if="match">
       <PageTransition>
         <header :class="heroClasses">
@@ -465,16 +537,21 @@ const vsBaseClasses =
           :class="showLiveStreamBlock ? 'order-2 lg:order-none' : ''"
         >
           <PageTransition :delay="100">
-            <MatchInfo :match="match"></MatchInfo>
+            <MatchInfo :match="match" :camera-ready="cameraReady"></MatchInfo>
           </PageTransition>
 
           <PageTransition :delay="200">
+            <!-- Both rooms on one panel. Organizers and anyone not on a lineup
+               get no `myLineupId`, so they get no team destination and this
+               falls back to the match room alone. -->
             <ChatLobby
               class="max-h-96"
               instance="matches/id"
               type="match"
-              :label="$t('chat.everyone')"
               :lobby-id="match.id"
+              :team-lobby-id="
+                myLineupId ? `${match.id}:${myLineupId}` : undefined
+              "
               :play-notification-sound="
                 match.status !== e_match_status_enum.Live
               "
@@ -482,78 +559,113 @@ const vsBaseClasses =
             />
           </PageTransition>
 
-          <PageTransition :delay="200">
-            <!-- Same status gate as the match room above: chat closes with the
-               match, and being on a lineup is not a reason to keep a room open
-               on something that finished. -->
-            <ChatLobby
-              class="max-h-96"
-              instance="matches/id"
-              type="match_team"
-              :label="$t('chat.your_team')"
-              :lobby-id="`${match.id}:${myLineupId}`"
-              :play-notification-sound="
-                match.status !== e_match_status_enum.Live
-              "
-              v-if="myLineupId && canJoinLobby"
-            />
-          </PageTransition>
+          <!-- Team voice, beside the chat rather than inside it: the voice
+               channel and the text channel are the same room but not the same
+               object, and nesting one in the other made the controls read as
+               chat controls.
+               Always present, because it is now the only way in. The strip that
+               used to live on the chat composer existed to start a call before
+               this section appeared -- which left the same three controls on
+               screen twice as soon as it had. -->
+          <VoiceChannelCard
+            v-if="myLineupId"
+            show-empty
+            class="mt-1"
+            kind="match"
+            :channel-id="myLineupId"
+            :label="$t('layouts.voice_panel.team_comms')"
+          />
 
           <PageTransition :delay="200">
             <div
               v-if="match.options.best_of && match.options.best_of > 0"
               class="flex flex-col gap-3"
             >
-              <div v-for="(slot, index) in mapSlots" :key="index">
-                <MatchMaps
-                  v-if="slot"
-                  :match="match"
-                  :match-map="slot"
-                  :is-active="activeStatsMap?.id === slot.id"
-                  @open-stats="activeStatsMap = $event"
-                ></MatchMaps>
-                <div
-                  v-else
-                  class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
-                >
-                  <div
-                    class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
-                  >
-                    <div class="flex flex-col items-center gap-1">
-                      <span
-                        class="text-sm uppercase tracking-wide font-semibold"
-                      >
-                        {{ $t("match.map_number", { count: index + 1 }) }}
-                      </span>
-                      <span class="text-xs">
-                        {{ $t("match.map_tbd") }}
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    class="bg-muted/40 border-t border-border/30 px-3 py-2.5"
-                  >
-                    <div class="flex items-center justify-center">
-                      <span class="text-xs text-muted-foreground">—</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                v-show="showVetoPicks && vetoPickCount !== 0"
-                class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
+              <!-- Each veto pick turns a dashed placeholder into a real map
+                   card in place; the two are different heights, so each slot
+                   trades through its own measured swap instead of jerking the
+                   column on every pick. The group collapses the trailing
+                   placeholders away when the match ends. -->
+              <TransitionGroup
+                tag="div"
+                class="flex flex-col gap-3"
+                leave-active-class="map-slot-collapse"
+                leave-to-class="map-slot-collapse-to"
               >
                 <div
-                  class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
+                  v-for="(slot, index) in mapSlots"
+                  :key="index"
+                  class="grid grid-rows-[1fr]"
                 >
-                  {{ $t("common.map_veto") }}
+                  <div class="min-h-0">
+                    <HeightSwap>
+                      <div v-if="slot" key="map">
+                        <MatchMaps
+                          :match="match"
+                          :match-map="slot"
+                          :is-active="activeStatsMap?.id === slot.id"
+                          @open-stats="activeStatsMap = $event"
+                        ></MatchMaps>
+                      </div>
+                      <div
+                        v-else
+                        key="tbd"
+                        class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
+                      >
+                        <div
+                          class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+                        >
+                          <div class="flex flex-col items-center gap-1">
+                            <span
+                              class="text-sm uppercase tracking-wide font-semibold"
+                            >
+                              {{ $t("match.map_number", { count: index + 1 }) }}
+                            </span>
+                            <span class="text-xs">
+                              {{ $t("match.map_tbd") }}
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="bg-muted/40 border-t border-border/30 px-3 py-2.5"
+                        >
+                          <div class="flex items-center justify-center">
+                            <span class="text-xs text-muted-foreground">—</span>
+                          </div>
+                        </div>
+                      </div>
+                    </HeightSwap>
+                  </div>
                 </div>
-                <MatchPicksDisplay
-                  v-if="showVetoPicks"
-                  :match="match"
-                  @update:count="vetoPickCount = $event"
-                />
-              </div>
+              </TransitionGroup>
+              <Transition
+                enter-active-class="map-slot-collapse"
+                enter-from-class="map-slot-collapse-to"
+                leave-active-class="map-slot-collapse"
+                leave-to-class="map-slot-collapse-to"
+              >
+                <div
+                  v-show="showVetoPicks && vetoPickCount !== 0"
+                  class="grid grid-rows-[1fr]"
+                >
+                  <div class="min-h-0">
+                    <div
+                      class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
+                    >
+                      <div
+                        class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
+                      >
+                        {{ $t("common.map_veto") }}
+                      </div>
+                      <MatchPicksDisplay
+                        v-if="showVetoPicks"
+                        :match="match"
+                        @update:count="vetoPickCount = $event"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Transition>
             </div>
           </PageTransition>
         </div>
@@ -641,6 +753,11 @@ import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { eloFields } from "~/graphql/eloFields";
 import { useMatchContext } from "~/composables/useMatchContext";
+// Aliased deliberately. `<script setup>` and this block compile into one
+// module, so a module-scope import wins over a computed of the same name when
+// the template resolves it -- the template rendered the function's source into
+// the team lobby id, which reached Postgres as a uuid and killed chat.
+import { myLineupId as resolveMyLineupId } from "~/utilities/matchTeamLobby";
 
 export default {
   unmounted() {
@@ -650,6 +767,8 @@ export default {
     return {
       match: undefined,
       vetoPickCount: undefined,
+      cameraReady: false,
+      cameraOverlayDismissed: false,
     };
   },
   apollo: {
@@ -1039,23 +1158,52 @@ export default {
         return region.is_lan === false;
       });
     },
-    // The lineup this viewer plays for, or coaches. Organizers and spectators
-    // get nothing -- team chat is private to the side actually playing. The API
-    // re-checks this on join; this only decides what to render.
+    // Shared with the sidebar and the pop-out, which offer the same team room.
     myLineupId() {
-      if (!this.match) {
-        return null;
+      return resolveMyLineupId(this.match, useAuthStore().me?.steam_id);
+    },
+    // Whether this match asks this viewer for a camera at all. Deliberately
+    // says nothing about whether one is currently live: the overlay stays
+    // mounted either way so its status poll keeps running, which is the only
+    // thing that notices a camera going down again.
+    //
+    // is_on_lineup is only true for a rostered player row, so the coach is
+    // checked separately below.
+    cameraRequiredOfMe() {
+      if (!this.match?.options?.camera_required) {
+        return false;
       }
 
+      if (
+        ![
+          // Check-in is gated on a live camera server-side, so the overlay has
+          // to be up by then or a player has no way to satisfy it.
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.Veto,
+          e_match_status_enum.Live,
+          e_match_status_enum.WaitingForServer,
+        ].includes(this.match.status)
+      ) {
+        return false;
+      }
+
+      // Coaches too. They stand behind the team during a technical timeout and
+      // are the one person on a side who can coach out loud without the server
+      // seeing it, so the API mints them a token like anyone else.
       const mySteamId = useAuthStore().me?.steam_id;
 
-      const mine = [this.match.lineup_1, this.match.lineup_2].find(
-        (lineup) =>
-          lineup?.is_on_lineup ||
-          (mySteamId && lineup?.coach?.steam_id === mySteamId),
+      return !!(
+        this.match.lineup_1?.is_on_lineup ||
+        this.match.lineup_2?.is_on_lineup ||
+        (mySteamId &&
+          (this.match.lineup_1?.coach?.steam_id === mySteamId ||
+            this.match.lineup_2?.coach?.steam_id === mySteamId))
       );
-
-      return mine?.id ?? null;
+    },
+    // The requirement is outstanding: asked of me, and not currently satisfied.
+    // Drives the modal and the banner; the overlay itself stays mounted past it.
+    cameraGateActive() {
+      return this.cameraRequiredOfMe && !this.cameraReady;
     },
     canJoinLobby() {
       if (!this.match) {
@@ -1120,5 +1268,42 @@ export default {
       return true;
     },
   },
+  methods: {
+    // Tracks the camera both ways. It used to be a one-way latch -- the overlay
+    // only ever announced going live -- so a player who closed their camera mid
+    // match was left with no gate, no banner and no way back to the QR code.
+    onCameraReadyChanged(ready: boolean) {
+      // Losing the camera raises the modal again, dismissal or not: dismissing
+      // it meant "this is in my way right now", not "I no longer need one", and
+      // the requirement has just become unmet again.
+      if (this.cameraReady && !ready) {
+        this.cameraOverlayDismissed = false;
+      }
+
+      this.cameraReady = ready;
+    },
+  },
 };
 </script>
+
+<style scoped>
+/* A map slot leaving (trailing placeholders when the match ends) or the veto
+   picks panel toggling folds its height instead of vanishing in one frame. */
+.map-slot-collapse {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.11s ease-in;
+}
+.map-slot-collapse > * {
+  overflow: hidden;
+}
+.map-slot-collapse-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-slot-collapse {
+    transition-duration: 1ms;
+  }
+}
+</style>

@@ -76,7 +76,11 @@ const settingsOpen = ref(false);
       </div>
 
       <div class="relative mt-4">
+        <!-- Joining someone's party dims the panel and drops the leader pill
+             over it -- both movers ease in together instead of flipping on a
+             frame. -->
         <div
+          class="transition-[opacity,filter] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
           :class="{
             'pointer-events-none select-none opacity-40 blur-[1px]':
               inLobbyNotLeader,
@@ -84,19 +88,26 @@ const settingsOpen = ref(false);
         >
           <Matchmaking></Matchmaking>
         </div>
-        <div
-          v-if="inLobbyNotLeader"
-          class="absolute inset-0 z-10 grid place-items-center rounded-lg bg-background/40"
+        <Transition
+          enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+          leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+          enter-from-class="opacity-0 scale-[0.98]"
+          leave-to-class="opacity-0"
         >
           <div
-            class="flex items-center gap-2 rounded-full border border-border bg-card/95 px-4 py-2 shadow-lg"
+            v-if="inLobbyNotLeader"
+            class="absolute inset-0 z-10 grid place-items-center rounded-lg bg-background/40"
           >
-            <Lock class="h-3.5 w-3.5 text-muted-foreground" />
-            <span class="text-xs font-medium text-foreground">
-              {{ $t("pages.play.matchmaking.leader_required") }}
-            </span>
+            <div
+              class="flex items-center gap-2 rounded-full border border-border bg-card/95 px-4 py-2 shadow-lg"
+            >
+              <Lock class="h-3.5 w-3.5 text-muted-foreground" />
+              <span class="text-xs font-medium text-foreground">
+                {{ $t("pages.play.matchmaking.leader_required") }}
+              </span>
+            </div>
           </div>
-        </div>
+        </Transition>
       </div>
     </div>
   </PageTransition>

@@ -1,6 +1,5 @@
 import { ref, computed } from "vue";
-
-type ChatType = "match" | "team" | "matchmaking" | "organizers" | "tournament";
+import type { ChatType } from "~/web-sockets/Socket";
 
 export interface ChatTab {
   id: string;
@@ -9,6 +8,10 @@ export interface ChatTab {
   type: ChatType;
   lobbyId: string;
   pinned: boolean;
+  // Direct-message tabs are a person, not a room, so the rail shows their
+  // avatar instead of a channel icon.
+  avatarUrl?: string;
+  steamId?: string;
 }
 
 const tabsRef = ref<ChatTab[]>([]);
@@ -24,12 +27,22 @@ export function useChatTabs() {
     return tabsRef.value.findIndex((t) => t.id === id);
   }
 
-  function openTab(payload: Omit<ChatTab, "pinned"> & { pinned?: boolean }) {
+  // `activate` exists for incoming direct messages: a tab opened because
+  // someone messaged you must not yank you out of the room you are reading.
+  function openTab(
+    payload: Omit<ChatTab, "pinned"> & {
+      pinned?: boolean;
+      activate?: boolean;
+    },
+  ) {
     const id = payload.id;
+    const activate = payload.activate ?? true;
     const existingIndex = findTabIndex(id);
 
     if (existingIndex !== -1) {
-      activeTabIdRef.value = id;
+      if (activate) {
+        activeTabIdRef.value = id;
+      }
       return tabsRef.value[existingIndex];
     }
 
@@ -39,7 +52,10 @@ export function useChatTabs() {
     };
 
     tabsRef.value.push(tab);
-    activeTabIdRef.value = id;
+
+    if (activate) {
+      activeTabIdRef.value = id;
+    }
 
     return tab;
   }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import { Fold } from "~/components/ui/transitions";
 import {
   FormControl,
   FormDescription,
@@ -106,21 +107,22 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
       </div>
     </FormSection>
 
-    <FormSection
-      v-if="!team && invitedPlayers.length"
-      :title="$t('team.form.inviting')"
-    >
-      <div class="flex flex-col gap-2">
-        <PlayerDisplay
-          v-for="player in invitedPlayers"
-          :key="player.steam_id"
-          :player="player"
-        />
-      </div>
-      <p class="mt-3 text-xs text-muted-foreground">
-        {{ $t("team.form.inviting_hint") }}
-      </p>
-    </FormSection>
+    <!-- Folds in when the first invite lands instead of shoving the submit
+         button down a section in one frame. -->
+    <Fold :open="!team && invitedPlayers.length > 0">
+      <FormSection :title="$t('team.form.inviting')">
+        <div class="flex flex-col gap-2">
+          <PlayerDisplay
+            v-for="player in invitedPlayers"
+            :key="player.steam_id"
+            :player="player"
+          />
+        </div>
+        <p class="mt-3 text-xs text-muted-foreground">
+          {{ $t("team.form.inviting_hint") }}
+        </p>
+      </FormSection>
+    </Fold>
 
     <Button
       v-if="!team"

@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "SECURE CHANNEL"
+    },
+    "voice_panel": {
+      "coach": "コーチ"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "試合チャット",
-    "team": "チームチャット",
     "tournament": "トーナメントチャット",
     "organizers": "主催者チャット",
     "matchmaking": "キューチャット",
@@ -3719,15 +3721,15 @@
     "organizers": "グローバルロビー",
     "tournament": "トーナメントチャット",
     "matchmaking": "キューチャット",
-    "match": "試合チャット",
-    "team": "チームチャット"
+    "match": "試合チャット"
   },
   "latency_status": {
     "measuring": "測定中...",
     "excellent": "優秀",
     "good": "良好",
     "fair": "普通",
-    "poor": "不良"
+    "poor": "不良",
+    "unreachable": "到達不可"
   },
   "chat_page": {
     "fallback_title": "チャット",
@@ -7159,5 +7161,10 @@
     "player": "プレイヤー",
     "award": "アワード",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "コーチ"
+    }
   }
 }

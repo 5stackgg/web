@@ -4,6 +4,9 @@ import { useRoute, useRouter } from "#app";
 import { useI18n } from "vue-i18n";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
+import type { ChatType } from "~/web-sockets/Socket";
 
 definePageMeta({
   layout: "chat",
@@ -35,12 +38,7 @@ const tabFromQuery = computed<ChatTab | null>(() => {
     id: tabId.value,
     label: label || t("chat_page.fallback_title"),
     instance,
-    type: type as
-      | "match"
-      | "team"
-      | "matchmaking"
-      | "organizers"
-      | "tournament",
+    type: type as ChatType,
     lobbyId,
     pinned: false,
   };
@@ -51,6 +49,23 @@ const currentTab = computed<ChatTab | null>(() => {
 });
 
 const hasTab = computed(() => currentTab.value !== null);
+
+// Same second room the sidebar and the match page offer. This window can be
+// opened cold from a bare URL, so the match is looked up in the store rather
+// than expected in the query string.
+const teamLobbyId = computed(() => {
+  const tab = currentTab.value;
+
+  if (tab?.type !== "match") {
+    return undefined;
+  }
+
+  const match = (useMatchLobbyStore().myMatches as unknown as any[])?.find(
+    (candidate) => candidate.id === tab.lobbyId,
+  );
+
+  return matchTeamLobbyId(match, useAuthStore().me?.steam_id);
+});
 
 const windowTitle = computed(
   () => currentTab.value?.label ?? t("chat_page.fallback_title"),
@@ -118,6 +133,7 @@ function handleBackToHub() {
           :instance="currentTab!.instance"
           :type="currentTab!.type"
           :lobby-id="currentTab!.lobbyId"
+          :team-lobby-id="teamLobbyId"
           :tab-id="currentTab!.id"
           :frameless="true"
           :is-global-context="true"

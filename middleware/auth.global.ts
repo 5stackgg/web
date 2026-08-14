@@ -38,7 +38,12 @@ function isPublicRoute(path: string): boolean {
   }
 
   if (path.startsWith("/matches")) {
-    return true;
+    // ...except the camera pages. Your own used to be reachable with a minted
+    // token instead of a login, which is exactly what was retired: the phone
+    // scanning the QR now signs in, and the API takes the player's identity
+    // from the session rather than the URL. The organizer grid never had a
+    // token to begin with.
+    return !/^\/matches\/[^/]+\/camera(-admin)?\/?$/.test(path);
   }
 
   if (path.startsWith("/draft-room/") && !path.endsWith("/edit")) {

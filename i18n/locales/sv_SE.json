@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "SÄKER KANAL"
+    },
+    "voice_panel": {
+      "coach": "Coach"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Matchchatt",
-    "team": "Lagchatt",
     "tournament": "Turneringschatt",
     "organizers": "Arrangörschatt",
     "matchmaking": "Köchatt",
@@ -3719,15 +3721,15 @@
     "organizers": "Global lobby",
     "tournament": "Turneringschatt",
     "matchmaking": "Köchatt",
-    "match": "Matchchatt",
-    "team": "Lagchatt"
+    "match": "Matchchatt"
   },
   "latency_status": {
     "measuring": "Mäter...",
     "excellent": "Utmärkt",
     "good": "Bra",
     "fair": "Okej",
-    "poor": "Dålig"
+    "poor": "Dålig",
+    "unreachable": "Onåbar"
   },
   "chat_page": {
     "fallback_title": "Chatt",
@@ -7159,5 +7161,10 @@
     "player": "Spelare",
     "award": "Utmärkelse",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Coach"
+    }
   }
 }

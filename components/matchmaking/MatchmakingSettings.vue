@@ -3,9 +3,9 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import { RefreshCw } from "lucide-vue-next";
-import { Spinner } from "~/components/ui/spinner";
 import { FormSection } from "~/components/ui/form";
 import SettingHeader from "~/components/match/SettingHeader.vue";
+import RegionLatency from "~/components/matchmaking/RegionLatency.vue";
 </script>
 
 <template>
@@ -53,14 +53,15 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
       v-if="availableRegions.length > 0"
     >
       <template #actions>
+        <!-- Button owns the busy state: it swaps in its own centred spinner,
+             so a second one here would double up. -->
         <Button
           variant="outline"
           size="sm"
+          :loading="isRefreshing"
           @click="refreshLatencies"
-          :disabled="isRefreshing"
         >
-          <Spinner v-if="isRefreshing" class="h-4 w-4 mr-2" />
-          <RefreshCw v-else class="h-4 w-4 mr-2" />
+          <RefreshCw class="h-4 w-4" />
           {{ $t("common.refresh") }}
         </Button>
       </template>
@@ -74,7 +75,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                 {{ $t("common.region") }}
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+                class="px-6 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
                 {{ $t("pages.settings.matchmaking.average_latency") }}
               </th>
@@ -86,44 +87,18 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
-            <tr
-              v-for="region in availableRegions"
-              :key="region.value"
-              :class="{
-                'hover:bg-muted/50 transition-colors': true,
-                'opacity-50':
-                  !availableRegions.includes(region) &&
-                  !isPreferredRegion(region.value),
-              }"
-            >
-              <template
+            <template v-for="region in availableRegions" :key="region.value">
+              <tr
                 v-if="
                   !region.is_lan || getRegionlatencyResult(region.value)?.isLan
                 "
+                class="hover:bg-muted/50 transition-colors"
               >
                 <td class="px-6 py-4 whitespace-nowrap">
                   {{ region.description || region.value }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="px-3 py-1 rounded-full text-xs font-medium"
-                      :class="{
-                        'bg-green-500/20 text-green-400':
-                          getLatencyStatus(region.value) === 'Excellent',
-                        'bg-blue-500/20 text-blue-400':
-                          getLatencyStatus(region.value) === 'Good',
-                        'bg-yellow-500/20 text-yellow-400':
-                          getLatencyStatus(region.value) === 'Fair',
-                        'bg-red-500/20 text-red-400':
-                          getLatencyStatus(region.value) === 'Poor',
-                        'bg-gray-500/20 text-gray-400':
-                          getLatencyStatus(region.value) === 'Measuring',
-                      }"
-                    >
-                      {{ getRegionLatency(region.value) }} ms
-                    </div>
-                  </div>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <RegionLatency :region="region.value" />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <Switch
@@ -132,8 +107,8 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     @click="togglePreferredRegion(region.value)"
                   />
                 </td>
-              </template>
-            </tr>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -192,33 +167,6 @@ export default {
         }
       | undefined {
       return useMatchmakingStore().getRegionlatencyResult(region);
-    },
-    getRegionLatency(region: string): number | undefined {
-      const regionLatency = this.getRegionlatencyResult(region);
-      if (!regionLatency) {
-        return;
-      }
-      return Number(regionLatency.latency);
-    },
-    getLatencyStatus(region: string): string {
-      const regionLatency = this.getRegionLatency(region);
-      if (!regionLatency) {
-        return this.$t("latency_status.measuring");
-      }
-
-      if (regionLatency < 30) {
-        return this.$t("latency_status.excellent");
-      }
-
-      if (regionLatency < 50) {
-        return this.$t("latency_status.good");
-      }
-
-      if (regionLatency < this.maxAcceptableLatency) {
-        return this.$t("latency_status.fair");
-      }
-
-      return this.$t("latency_status.poor");
     },
     isPreferredRegion(region: string): boolean {
       return (

@@ -9,6 +9,9 @@ import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useInvites } from "~/composables/useInvites";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useRightSidebar } from "~/composables/useRightSidebar";
+import { useCallInvites } from "~/composables/useVoiceAnnouncements";
+import { useVoiceSession } from "~/composables/useVoiceSession";
+import VoiceRosterPreview from "~/components/voice/VoiceRosterPreview.vue";
 
 const { rightSidebarOpen } = useRightSidebar();
 
@@ -20,11 +23,18 @@ type ToastItem = {
   detail: string;
   accept: () => Promise<unknown> | void;
   decline: () => Promise<unknown> | void;
+  // Voice channels ask to be joined, not accepted, and want their roster shown
+  // above the buttons -- the decision is made on who is in there.
+  acceptLabel?: string;
+  declineLabel?: string;
+  channelId?: string;
 };
 
 const { t } = useI18n();
 const { pendingFriends, lobbyInvites } = useInvites();
 const notificationStore = useNotificationStore();
+const callInvites = useCallInvites();
+const voiceSession = useVoiceSession();
 const draftStore = useDraftGamesStore();
 const MIN_ACTION_LOADING_MS = 2000;
 
@@ -76,6 +86,32 @@ const friendMutation = (steamId: string, accept: boolean) =>
 
 const items = computed<ToastItem[]>(() => {
   const list: ToastItem[] = [];
+
+  // Somebody started talking. The same shape as an invite, because it is the
+  // same sort of thing: a decision someone is asking you to make now.
+  for (const invite of callInvites.invites.value) {
+    list.push({
+      id: invite.id,
+      kind: t("voice.call.toast_kind"),
+      who: invite.who,
+      action: invite.video
+        ? t("voice.call.toast_started_video")
+        : t("voice.call.toast_joined"),
+      detail: invite.channelLabel,
+      acceptLabel: t("voice.call.join_action"),
+      declineLabel: t("voice.call.dismiss_action"),
+      channelId: invite.channelId,
+      accept: async () => {
+        await voiceSession.join(
+          invite.channelId,
+          invite.channelLabel,
+          invite.channelKind,
+        );
+        callInvites.dismiss(invite.id);
+      },
+      decline: () => callInvites.dismiss(invite.id),
+    });
+  }
 
   for (const invite of notificationStore.draft_invites) {
     const id = `draft:${invite.draft_game_id}`;
@@ -210,8 +246,11 @@ const dismissItem = (item: ToastItem) => {
 
 <template>
   <ClientOnly>
+    <!-- No v-if on this container: it is invisible and pointer-events-none
+         when empty, and gating it on the list emptying in the same tick as the
+         last toast's dismissal used to unmount the group mid-leave -- the
+         single-toast case (the common one) never played its exit. -->
     <div
-      v-if="displayList.length > 0"
       class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] hidden flex-col transition-[right] duration-200 ease-linear md:left-auto md:flex md:w-[340px]"
       :class="
         rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]'
@@ -222,13 +261,22 @@ const dismissItem = (item: ToastItem) => {
         tag="div"
         class="pointer-events-auto flex flex-col gap-3"
       >
+        <!-- Each toast is a grid wrapper so a leaver collapses its height in
+             place -- position:absolute put a dismissed toast at the column's
+             origin (a flex child's static position), fading it out on top of
+             the stack. -->
         <div
           v-for="entry in displayList"
           :key="entry.key"
+          class="grid grid-rows-[1fr]"
+          :class="hoveredGroup === entry.key ? 'z-50' : 'z-0'"
+        >
+        <div class="min-h-0">
+        <div
           class="relative origin-bottom transition-all duration-200"
           :class="[
             { 'pb-2.5': entry.count > 1 },
-            hoveredGroup === entry.key ? 'z-50 scale-[1.04]' : 'z-0',
+            hoveredGroup === entry.key ? 'scale-[1.04]' : '',
             hoveredGroup && hoveredGroup !== entry.key
               ? 'scale-[0.92] opacity-30 blur-[2px]'
               : '',
@@ -246,27 +294,44 @@ const dismissItem = (item: ToastItem) => {
                 :key="extra.id"
                 :item="extra"
                 :pending="pending[extra.id] || null"
+                :accept-label="extra.acceptLabel"
+                :decline-label="extra.declineLabel"
                 elevated
                 @accept="run(extra, true)"
                 @decline="run(extra, false)"
                 @dismiss="dismissItem(extra)"
-              />
+              >
+                <template v-if="extra.channelId" #body>
+                  <VoiceRosterPreview variant="stack" :channel-id="extra.channelId" />
+                </template>
+              </ToastCard>
             </div>
           </Transition>
 
-          <template v-if="hoveredGroup !== entry.key && entry.count > 1">
+          <!-- The stacked-card peeks fade with the fan instead of vanishing
+               the instant the cursor arrives. -->
+          <Transition
+            enter-active-class="transition-opacity duration-200"
+            leave-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
             <div
-              v-if="entry.count >= 3"
-              class="toast-peek toast-peek-2"
+              v-if="hoveredGroup !== entry.key && entry.count > 1"
+              class="absolute inset-0"
               aria-hidden="true"
-            />
-            <div class="toast-peek toast-peek-1" aria-hidden="true" />
-          </template>
+            >
+              <div v-if="entry.count >= 3" class="toast-peek toast-peek-2" />
+              <div class="toast-peek toast-peek-1" />
+            </div>
+          </Transition>
 
           <ToastCard
             :item="entry.item"
             :count="hoveredGroup === entry.key ? 1 : entry.count"
             :pending="pending[entry.item.id] || null"
+            :accept-label="entry.item.acceptLabel"
+            :decline-label="entry.item.declineLabel"
             :elevated="hoveredGroup === entry.key"
             @accept="run(entry.item, true)"
             @decline="run(entry.item, false)"
@@ -275,7 +340,13 @@ const dismissItem = (item: ToastItem) => {
                 ? dismissItem(entry.item)
                 : dismissGroup(entry.group)
             "
-          />
+          >
+            <template v-if="entry.item.channelId" #body>
+              <VoiceRosterPreview variant="stack" :channel-id="entry.item.channelId" />
+            </template>
+          </ToastCard>
+        </div>
+        </div>
         </div>
       </TransitionGroup>
     </div>
@@ -298,22 +369,38 @@ const dismissItem = (item: ToastItem) => {
   transform: translateY(12px) scale(0.94);
   opacity: 0.45;
 }
+/* Toasts fold their row open and shut in place; the stack above rides normal
+   flow instead of snapping when the leaver is finally removed. */
 .toast-enter-active {
   transition:
+    grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.32s ease;
 }
 .toast-leave-active {
   transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.22s ease,
     opacity 0.22s ease;
-  position: absolute;
-  width: 100%;
+}
+.toast-enter-active > *,
+.toast-leave-active > * {
+  overflow: hidden;
 }
 .toast-enter-from,
 .toast-leave-to {
+  grid-template-rows: 0fr;
   transform: translateY(16px) scale(0.92);
   opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-enter-active,
+  .toast-leave-active,
+  .toast-move,
+  .fan-enter-active,
+  .fan-leave-active {
+    transition-duration: 1ms;
+  }
 }
 .toast-move {
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);

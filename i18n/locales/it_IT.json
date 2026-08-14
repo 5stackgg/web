@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "CANALE SICURO"
+    },
+    "voice_panel": {
+      "coach": "Coach"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Chat match",
-    "team": "Chat team",
     "tournament": "Chat torneo",
     "organizers": "Chat organizzatori",
     "matchmaking": "Chat coda",
@@ -3719,15 +3721,15 @@
     "organizers": "Lobby globale",
     "tournament": "Chat torneo",
     "matchmaking": "Chat coda",
-    "match": "Chat match",
-    "team": "Chat team"
+    "match": "Chat match"
   },
   "latency_status": {
     "measuring": "Misurazione...",
     "excellent": "Eccellente",
     "good": "Buona",
     "fair": "Discreta",
-    "poor": "Scarsa"
+    "poor": "Scarsa",
+    "unreachable": "Non raggiungibile"
   },
   "chat_page": {
     "fallback_title": "Chat",
@@ -7159,5 +7161,10 @@
     "player": "Giocatore",
     "award": "Team",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Coach"
+    }
   }
 }

@@ -12,6 +12,12 @@ export function canSetVetoPickTimeout(): boolean {
   return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
 }
 
+// Same reason as veto_pick_timeout above: camera_required is not in the `user`
+// role's match_options column permission, so sending it would be rejected.
+export function canSetCameraRequired(): boolean {
+  return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+}
+
 export const setupOptions = (
   form: FormContext<any>,
   options: any,
@@ -46,6 +52,8 @@ export const setupOptions = (
     veto_pick_timeout: options.veto_pick_timeout ?? 60,
     round_restart_delay: options.round_restart_delay ?? null,
     halftime_pausematch: options.halftime_pausematch ?? false,
+    camera_required: options.camera_required ?? false,
+    camera_allow_teammates: options.camera_allow_teammates ?? false,
     check_in_setting: options.check_in_setting,
     auto_cancellation: options.auto_cancellation,
     auto_cancel_duration: options.auto_cancel_duration ?? null,
@@ -82,6 +90,8 @@ export function setupOptionsVariables(
     veto_pick_timeout: number;
     round_restart_delay?: number | null;
     halftime_pausematch?: boolean;
+    camera_required?: boolean;
+    camera_allow_teammates?: boolean;
     map_pool?: {
       id: string;
     };
@@ -200,6 +210,12 @@ export function setupOptionsVariables(
           veto_pick_timeout: values.veto_pick_timeout,
         }
       : {}),
+    ...(canSetCameraRequired()
+      ? {
+          camera_required: values.camera_required ?? false,
+          camera_allow_teammates: values.camera_allow_teammates ?? false,
+        }
+      : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
@@ -257,6 +273,12 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     ...(canSetVetoPickTimeout()
       ? {
           veto_pick_timeout: $("veto_pick_timeout", "Int!"),
+        }
+      : {}),
+    ...(canSetCameraRequired()
+      ? {
+          camera_required: $("camera_required", "Boolean!"),
+          camera_allow_teammates: $("camera_allow_teammates", "Boolean!"),
         }
       : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)

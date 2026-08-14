@@ -14,6 +14,7 @@ import {
   SheetDescription,
 } from "~/components/ui/sheet";
 import { Spinner } from "~/components/ui/spinner";
+import { HeightSwap } from "~/components/ui/transitions";
 import CreateDraftGame from "~/components/draft-games/CreateDraftGame.vue";
 
 const props = defineProps<{
@@ -123,18 +124,24 @@ const cancelDraft = () => {
       </SheetHeader>
 
       <div class="flex-1 pt-5">
-        <div
-          v-if="loading"
-          class="flex items-center justify-center py-16 text-muted-foreground"
-        >
-          <Spinner />
-        </div>
-        <CreateDraftGame
-          v-else-if="draftGame"
-          :initial="draftGame"
-          :editing="true"
-          @created="onSaved"
-        />
+        <!-- Spinner block and the full form are wildly different heights;
+             measured swap so the sheet doesn't jolt when the query lands. -->
+        <HeightSwap>
+          <div
+            v-if="loading"
+            key="loading"
+            class="flex items-center justify-center py-16 text-muted-foreground"
+          >
+            <Spinner />
+          </div>
+          <div v-else-if="draftGame" key="form">
+            <CreateDraftGame
+              :initial="draftGame"
+              :editing="true"
+              @created="onSaved"
+            />
+          </div>
+        </HeightSwap>
       </div>
     </SheetContent>
   </Sheet>

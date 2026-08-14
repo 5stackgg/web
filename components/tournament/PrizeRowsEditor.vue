@@ -117,16 +117,30 @@ function submitNew() {
 
 <template>
   <div class="flex flex-col gap-2">
-    <ol class="flex flex-col gap-2">
+    <!-- Rows slide to their new order (FLIP move) and fold in/out on
+         add/remove; a drop used to teleport the whole list into place. -->
+    <TransitionGroup
+      tag="ol"
+      class="flex flex-col gap-2"
+      enter-active-class="prize-row-fold"
+      enter-from-class="prize-row-collapsed"
+      leave-active-class="prize-row-fold"
+      leave-to-class="prize-row-collapsed"
+      move-class="prize-row-move"
+    >
       <li
         v-for="(row, index) in rows"
         :key="row.id"
+        class="grid grid-rows-[1fr]"
         draggable="true"
         @dragstart="onDragStart(index, $event)"
         @dragenter="onDragEnter(index)"
         @dragover.prevent
         @drop.prevent="onDrop(index)"
         @dragend="onDragEnd"
+      >
+      <div class="min-h-0">
+      <div
         :class="[
           'flex flex-wrap items-center gap-2 rounded-sm border border-border/60 bg-background/40 p-2 transition-[opacity,border-color,box-shadow]',
           dragIndex === index ? 'opacity-40' : '',
@@ -207,8 +221,10 @@ function submitNew() {
         >
           <Trash2 class="h-4 w-4" />
         </Button>
+      </div>
+      </div>
       </li>
-    </ol>
+    </TransitionGroup>
 
     <div
       class="flex flex-wrap items-center gap-2 rounded-sm border border-dashed border-border/60 bg-background/20 p-2"
@@ -257,3 +273,27 @@ function submitNew() {
     </p>
   </div>
 </template>
+
+<style scoped>
+.prize-row-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.prize-row-fold > * {
+  overflow: hidden;
+}
+.prize-row-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.prize-row-move {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .prize-row-fold,
+  .prize-row-move {
+    transition-duration: 1ms;
+  }
+}
+</style>

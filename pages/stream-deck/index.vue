@@ -35,7 +35,6 @@ import {
   Tv,
   Dot,
   RefreshCw,
-  Lock,
 } from "lucide-vue-next";
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
@@ -771,11 +770,6 @@ function matchStatusLabel(m: LiveMatch): string {
               v-if="!canViewMatch(stream.match_id)"
               class="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-md border border-border/60 bg-black px-6 text-center"
             >
-              <div
-                class="flex size-12 items-center justify-center rounded-full border border-white/15 bg-white/5"
-              >
-                <Lock class="size-5 text-muted-foreground" />
-              </div>
               <p
                 class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
               >
@@ -925,7 +919,6 @@ function matchStatusLabel(m: LiveMatch): string {
                     !!stream.is_live && !cs(stream.match_id).busy
                   "
                   :autodirector-on="isAutodirector(stream)"
-                  :gsi-enabled="!isPopoutOpen(stream.match_id)"
                   compact
                   @press-slot="
                     (slot: number) => specSlot(stream.match_id, slot)
@@ -990,25 +983,14 @@ function matchStatusLabel(m: LiveMatch): string {
             v-for="m in liveMatches"
             :key="m.id"
             :class="[
-              'group relative overflow-hidden rounded-lg border bg-muted/30 transition-all duration-300 flex flex-col',
+              'group relative overflow-hidden rounded-xl border bg-card transition-colors duration-200 flex flex-col',
               activeMatchId === m.id
-                ? 'border-destructive/60 shadow-[0_0_0_1px_hsl(var(--destructive)/0.35),0_0_28px_-4px_hsl(var(--destructive)/0.5)]'
+                ? 'border-destructive/40'
                 : switching === m.id
-                  ? 'border-[hsl(var(--tac-amber)/0.7)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_0_24px_-4px_hsl(var(--tac-amber)/0.55)]'
-                  : 'border-border hover:border-primary/30 hover:bg-muted/20 hover:shadow-lg hover:shadow-primary/10',
+                  ? 'border-[hsl(var(--tac-amber)/0.45)]'
+                  : 'border-border hover:border-primary/30 hover:bg-muted/20',
             ]"
           >
-            <!-- Diagonal hatch background on the active tile — quiet
-                 broadcast-cue, only visible at this size. -->
-            <div
-              v-if="activeMatchId === m.id"
-              aria-hidden="true"
-              class="pointer-events-none absolute inset-0 opacity-[0.07]"
-              :style="{
-                backgroundImage:
-                  'repeating-linear-gradient(135deg, hsl(var(--destructive)) 0 2px, transparent 2px 10px)',
-              }"
-            />
 
             <template v-if="activeMatchId === m.id">
               <div
@@ -1140,7 +1122,7 @@ function matchStatusLabel(m: LiveMatch): string {
               <NuxtLink
                 v-if="isActiveMatch(m.id)"
                 :to="`/stream-deck/${m.id}`"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-destructive/55 bg-destructive/12 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-destructive hover:bg-destructive/18 transition-colors"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background/40 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-foreground/90 transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
               >
                 <Dot class="size-4" />
                 {{ $t("stream_deck.open_broadcast_controls") }}

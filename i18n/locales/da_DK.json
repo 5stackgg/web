@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "SIKKER KANAL"
+    },
+    "voice_panel": {
+      "coach": "Coach"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Kampchat",
-    "team": "Holdchat",
     "tournament": "Turneringschat",
     "organizers": "Arrangørchat",
     "matchmaking": "Køchat",
@@ -3719,15 +3721,15 @@
     "organizers": "Global lobby",
     "tournament": "Turneringschat",
     "matchmaking": "Køchat",
-    "match": "Kampchat",
-    "team": "Holdchat"
+    "match": "Kampchat"
   },
   "latency_status": {
     "measuring": "Måler...",
     "excellent": "Fremragende",
     "good": "God",
     "fair": "Middel",
-    "poor": "Dårlig"
+    "poor": "Dårlig",
+    "unreachable": "Ikke tilgængelig"
   },
   "chat_page": {
     "fallback_title": "Chat",
@@ -7159,5 +7161,10 @@
     "player": "Spiller",
     "award": "Hold",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Coach"
+    }
   }
 }

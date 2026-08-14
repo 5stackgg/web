@@ -172,15 +172,17 @@ const DASH = "—";
                   </div>
                 </NuxtLink>
                 <div class="flex flex-col min-w-0 leading-tight">
-                  <NuxtLink
-                    :to="{
-                      name: 'players-id',
-                      params: { id: member.player.steam_id },
-                    }"
-                    class="truncate text-xs font-medium hover:text-primary"
-                  >
-                    {{ member.player.name }}
-                  </NuxtLink>
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <NuxtLink
+                      :to="{
+                        name: 'players-id',
+                        params: { id: member.player.steam_id },
+                      }"
+                      class="truncate text-xs font-medium hover:text-primary"
+                    >
+                      {{ member.player.name }}
+                    </NuxtLink>
+                  </div>
                   <div
                     class="flex items-center gap-1.5 min-w-0 mt-0.5 text-muted-foreground"
                   >

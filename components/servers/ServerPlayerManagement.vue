@@ -52,6 +52,10 @@ const registeredQuery = gql`
       is_gagged
       elo
       premier_rank
+      vac_banned
+      vac_ban_count
+      game_ban_count
+      days_since_last_ban
     }
   }
 `;
@@ -71,6 +75,10 @@ const players = computed(() =>
       is_gagged: registered?.is_gagged,
       elo: registered?.elo,
       premier_rank: registered?.premier_rank,
+      vac_banned: registered?.vac_banned,
+      vac_ban_count: registered?.vac_ban_count,
+      game_ban_count: registered?.game_ban_count,
+      days_since_last_ban: registered?.days_since_last_ban,
     };
   }),
 );
@@ -214,6 +222,7 @@ onBeforeUnmount(() => {
         <div class="flex items-center gap-2">
           <PlayerSanctions
             :player-id="player.steam_id"
+            :player="player"
             :server-id="serverId"
           />
           <KickPlayer

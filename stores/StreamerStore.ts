@@ -83,7 +83,8 @@ export const useStreamerStore = defineStore("streamer", () => {
             match: {
               id: true,
               status: true,
-              options: { type: true },
+              is_organizer: true,
+              options: { type: true, camera_required: true },
               lineup_1: { name: true },
               lineup_2: { name: true },
             },

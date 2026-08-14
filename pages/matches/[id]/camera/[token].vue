@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from "vue";
 import { Button } from "~/components/ui/button";
-import { Slider } from "~/components/ui/slider";
 import {
   LucideCrop,
   LucideEye,
@@ -32,7 +31,13 @@ definePageMeta({
 const route = useRoute();
 const token = computed(() => String(route.params.token));
 
-const phase = ref<"idle" | "connecting" | "connected" | "error">("idle");
+const phase = ref<"preview" | "connecting" | "connected" | "error">(
+  "preview",
+);
+const mediaErrorKind = ref<"denied" | "missing" | "busy" | "unknown" | null>(
+  null,
+);
+const mediaPending = ref(false);
 const errorMessage = ref<string | null>(null);
 const previewEl = ref<HTMLVideoElement | null>(null);
 const sourceEl = ref<HTMLVideoElement | null>(null);
@@ -136,28 +141,27 @@ function iceServers(): Array<RTCIceServer> {
   return [{ urls: "stun:stun.l.google.com:19302" }];
 }
 
-// Asking for a resolution that matches the device's current orientation is
-// what keeps a phone from publishing a sideways, letterboxed frame.
+const coarsePointer = ref(
+  typeof window !== "undefined" &&
+    window.matchMedia("(pointer: coarse)").matches,
+);
+
+// Only a touch device has a portrait sensor worth asking for. A webcam handed
+// a portrait constraint answers with a cropped or letterboxed frame, which is
+// how a desktop feed ends up as a phone-shaped sliver -- so ask for nothing and
+// publish whatever the camera calls native.
 function videoConstraints(mode: "user" | "environment"): MediaTrackConstraints {
-  const portrait =
-    typeof window !== "undefined" &&
-    window.matchMedia("(orientation: portrait)").matches;
+  const preferred: MediaTrackConstraints = coarsePointer.value
+    ? { width: { ideal: 720 }, height: { ideal: 1280 } }
+    : {};
 
   if (cameraDeviceId.value) {
     // An explicit device wins over facingMode -- asking for both lets the
     // browser satisfy the wrong one.
-    return {
-      deviceId: { exact: cameraDeviceId.value },
-      width: { ideal: portrait ? 720 : 1280 },
-      height: { ideal: portrait ? 1280 : 720 },
-    };
+    return { ...preferred, deviceId: { exact: cameraDeviceId.value } };
   }
 
-  return {
-    facingMode: { ideal: mode },
-    width: { ideal: portrait ? 720 : 1280 },
-    height: { ideal: portrait ? 1280 : 720 },
-  };
+  return { ...preferred, facingMode: { ideal: mode } };
 }
 
 type Reframe = { zoom: number; x: number; y: number };
@@ -427,7 +431,7 @@ function applyReframe(persist = true) {
     persistReframe();
   }
 
-  if (phase.value !== "connected") {
+  if (!stream) {
     return reframeChain;
   }
 
@@ -438,9 +442,29 @@ function applyReframe(persist = true) {
   return reframeChain;
 }
 
-function setZoom(percent: number) {
-  reframe.zoom = clamp(percent / 100, 1, MAX_ZOOM);
-  void applyReframe();
+let persistTimer: ReturnType<typeof setTimeout> | null = null;
+
+function schedulePersist() {
+  if (persistTimer) {
+    clearTimeout(persistTimer);
+  }
+
+  persistTimer = setTimeout(() => {
+    persistTimer = null;
+    persistReframe();
+  }, 500);
+}
+
+function setZoom(next: number) {
+  const clamped = clamp(next, 1, MAX_ZOOM);
+
+  if (clamped === reframe.zoom) {
+    return;
+  }
+
+  reframe.zoom = clamped;
+  void applyReframe(false);
+  schedulePersist();
 }
 
 function resetReframe() {
@@ -450,34 +474,101 @@ function resetReframe() {
   void applyReframe();
 }
 
-let dragPointer: number | null = null;
+const stageEl = ref<HTMLElement | null>(null);
+const pointers = new Map<number, { x: number; y: number }>();
+let pinchDistance = 0;
+let pinchZoom = 1;
 let dragOrigin = { pointerX: 0, pointerY: 0, x: 0.5, y: 0.5 };
 
-function onDragStart(event: PointerEvent) {
-  if (!cropping.value) {
+// Registered by hand because the modifier form leaves the listener passive on
+// some engines, and a passive wheel handler cannot stop the page scrolling.
+function onWheel(event: WheelEvent) {
+  if (!stream || !previewVisible.value) {
     return;
   }
 
-  const target = event.currentTarget as HTMLElement;
-  target.setPointerCapture(event.pointerId);
-  dragPointer = event.pointerId;
-  dragging.value = true;
-  dragOrigin = {
-    pointerX: event.clientX,
-    pointerY: event.clientY,
-    x: reframe.x,
-    y: reframe.y,
-  };
+  event.preventDefault();
+
+  const lines = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 400 : 1;
+  setZoom(reframe.zoom * Math.exp((-event.deltaY * lines) / 700));
 }
 
-function onDragMove(event: PointerEvent) {
-  if (!dragging.value || event.pointerId !== dragPointer) {
+function pointerDistance() {
+  const [first, second] = [...pointers.values()];
+
+  if (!first || !second) {
+    return 0;
+  }
+
+  return Math.hypot(first.x - second.x, first.y - second.y);
+}
+
+// The frame is letterboxed inside the stage, so a drag has to be measured
+// against the picture rather than the box it sits in.
+function pictureSize(rect: DOMRect) {
+  const el = previewEl.value;
+  const ratio =
+    el && el.videoWidth && el.videoHeight ? el.videoWidth / el.videoHeight : 0;
+
+  if (!ratio || !rect.width || !rect.height) {
+    return { width: rect.width, height: rect.height };
+  }
+
+  if (rect.width / rect.height > ratio) {
+    return { width: rect.height * ratio, height: rect.height };
+  }
+
+  return { width: rect.width, height: rect.width / ratio };
+}
+
+function onPointerDown(event: PointerEvent) {
+  const target = event.currentTarget as HTMLElement;
+  target.setPointerCapture(event.pointerId);
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+  if (pointers.size === 2) {
+    pinchDistance = pointerDistance();
+    pinchZoom = reframe.zoom;
+    dragging.value = false;
+    return;
+  }
+
+  if (pointers.size === 1 && cropping.value) {
+    dragging.value = true;
+    dragOrigin = {
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      x: reframe.x,
+      y: reframe.y,
+    };
+  }
+}
+
+function onPointerMove(event: PointerEvent) {
+  if (!pointers.has(event.pointerId)) {
+    return;
+  }
+
+  pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+  if (pointers.size >= 2) {
+    const distance = pointerDistance();
+
+    if (pinchDistance > 0 && distance > 0) {
+      setZoom(pinchZoom * (distance / pinchDistance));
+    }
+
+    return;
+  }
+
+  if (!dragging.value) {
     return;
   }
 
   const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+  const picture = pictureSize(rect);
 
-  if (!rect.width || !rect.height) {
+  if (!picture.width || !picture.height) {
     return;
   }
 
@@ -485,32 +576,55 @@ function onDragMove(event: PointerEvent) {
   // the preview is already magnified by the zoom.
   reframe.x =
     dragOrigin.x -
-    (event.clientX - dragOrigin.pointerX) / (rect.width * reframe.zoom);
+    (event.clientX - dragOrigin.pointerX) / (picture.width * reframe.zoom);
   reframe.y =
     dragOrigin.y -
-    (event.clientY - dragOrigin.pointerY) / (rect.height * reframe.zoom);
+    (event.clientY - dragOrigin.pointerY) / (picture.height * reframe.zoom);
   clampCentre();
 }
 
-function onDragEnd(event: PointerEvent) {
-  if (!dragging.value) {
-    return;
-  }
-
+function onPointerUp(event: PointerEvent) {
   const target = event.currentTarget as HTMLElement;
 
   if (target.hasPointerCapture(event.pointerId)) {
     target.releasePointerCapture(event.pointerId);
   }
 
-  dragging.value = false;
-  dragPointer = null;
-  persistReframe();
+  pointers.delete(event.pointerId);
+
+  if (pointers.size < 2) {
+    pinchDistance = 0;
+  }
+
+  if (pointers.size === 0) {
+    dragging.value = false;
+    persistReframe();
+  }
 }
 
-async function connect() {
-  phase.value = "connecting";
-  errorMessage.value = null;
+function describeMediaError(error: unknown) {
+  const name = (error as DOMException)?.name;
+
+  if (name === "NotAllowedError" || name === "SecurityError") {
+    return "denied" as const;
+  }
+
+  if (name === "NotFoundError" || name === "OverconstrainedError") {
+    return "missing" as const;
+  }
+
+  if (name === "NotReadableError" || name === "AbortError") {
+    return "busy" as const;
+  }
+
+  return "unknown" as const;
+}
+
+// Local only -- nothing is published until they press connect. Framing, device
+// and zoom are all things you want settled before you are on the broadcast.
+async function startPreview() {
+  mediaErrorKind.value = null;
+  mediaPending.value = true;
 
   try {
     stream = await navigator.mediaDevices.getUserMedia({
@@ -518,22 +632,51 @@ async function connect() {
       audio: true,
     });
 
+    // Resolved before the controls render, so the device picker and flip
+    // button are never a second frame that shifts the page.
+    await refreshCameras();
+    loadReframe();
     syncPreview();
+    await applyReframe(false);
+  } catch (error) {
+    mediaErrorKind.value = describeMediaError(error);
+  } finally {
+    mediaPending.value = false;
+  }
+}
 
+async function connect() {
+  if (!stream) {
+    await startPreview();
+  }
+
+  if (!stream) {
+    return;
+  }
+
+  phase.value = "connecting";
+  errorMessage.value = null;
+
+  try {
     const pc = new RTCPeerConnection({ iceServers: iceServers() });
     publishPc = pc;
 
-    for (const track of stream.getTracks()) {
-      pc.addTrack(track, stream);
+    // The already-running preview is what goes live, cropped exactly as they
+    // left it -- captureStream is video only, so the microphone comes off the
+    // camera stream beside it.
+    const published = new MediaStream([
+      ...(cropStream ?? stream).getVideoTracks(),
+      ...stream.getAudioTracks(),
+    ]);
+
+    for (const track of published.getTracks()) {
+      pc.addTrack(track, published);
     }
 
     await negotiateWebRtc(pc, cameraPlayerPublishUrl(token.value));
 
     phase.value = "connected";
-    await refreshCameras();
-    loadReframe();
-    await applyReframe(false);
-    // Only start watching for a call now: getUserMedia above was the user
+    // Only start watching for a call now: the connect click was the user
     // gesture that lets the incoming stream play with audio.
     pollTalk();
   } catch (error) {
@@ -579,7 +722,8 @@ async function setCamera(deviceId: string) {
   cameraDeviceId.value = deviceId;
   writeStored(CAMERA_DEVICE_KEY, deviceId || null);
 
-  if (phase.value !== "connected") {
+  if (!stream) {
+    await startPreview();
     return;
   }
 
@@ -693,7 +837,9 @@ function endTalk() {
 
 onMounted(() => {
   void refreshCameras();
+  void startPreview();
   navigator.mediaDevices?.addEventListener?.("devicechange", onDeviceChange);
+  stageEl.value?.addEventListener("wheel", onWheel, { passive: false });
 });
 
 function onDeviceChange() {
@@ -702,6 +848,11 @@ function onDeviceChange() {
 
 onBeforeUnmount(() => {
   navigator.mediaDevices?.removeEventListener?.("devicechange", onDeviceChange);
+  stageEl.value?.removeEventListener("wheel", onWheel);
+
+  if (persistTimer) {
+    clearTimeout(persistTimer);
+  }
 
   if (talkTimer) {
     clearTimeout(talkTimer);
@@ -743,25 +894,268 @@ onBeforeUnmount(() => {
     ></div>
 
     <main
-      class="relative mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-4 px-4 py-6"
+      class="relative mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-3 px-4 py-6"
     >
-      <section
-        v-if="phase === 'idle'"
-        class="flex flex-col items-center gap-6 text-center"
+      <div
+        class="flex min-h-[3.5rem] items-center gap-3 rounded-xl border px-3 py-2 transition-colors"
+        :class="
+          phase === 'connected'
+            ? 'border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.06)]'
+            : 'border-border bg-card/40'
+        "
       >
-        <div class="space-y-2">
-          <h1 class="text-xl font-semibold tracking-tight">
-            {{ $t("camera.title") }}
-          </h1>
-          <p class="mx-auto max-w-sm text-sm leading-relaxed text-muted-foreground">
-            {{ $t("camera.subtitle") }}
+        <span
+          class="inline-flex shrink-0 items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.22em]"
+          :class="
+            phase === 'connected'
+              ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
+              : phase === 'error'
+                ? 'border-destructive/50 bg-destructive/10 text-destructive'
+                : 'border-border bg-background/40 text-muted-foreground'
+          "
+        >
+          <span class="relative flex h-1.5 w-1.5">
+            <span
+              v-if="phase === 'connected'"
+              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex h-1.5 w-1.5 rounded-full"
+              :class="
+                phase === 'connected'
+                  ? 'bg-emerald-400'
+                  : phase === 'error'
+                    ? 'bg-destructive'
+                    : 'bg-muted-foreground/60'
+              "
+            ></span>
+          </span>
+          {{ $t(`camera.phase.${phase}`) }}
+        </span>
+
+        <p class="min-w-0 flex-1 text-xs font-semibold leading-snug sm:text-sm">
+          <template v-if="phase === 'connected'">
+            {{ $t("camera.keep_open") }}
+          </template>
+          <template v-else-if="phase === 'connecting'">
+            {{ $t("camera.connecting") }}
+          </template>
+          <template v-else-if="phase === 'error'">
+            {{ $t("camera.error") }}
+          </template>
+          <template v-else>
+            {{ $t("camera.headline_preview") }}
+          </template>
+        </p>
+
+        <button
+          type="button"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] transition-colors"
+          :class="
+            previewVisible
+              ? 'border-border bg-background/40 text-muted-foreground hover:text-foreground'
+              : 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+          "
+          :aria-label="
+            previewVisible ? $t('camera.hide_preview') : $t('camera.show_preview')
+          "
+          :title="
+            previewVisible ? $t('camera.hide_preview') : $t('camera.show_preview')
+          "
+          @click="togglePreview"
+        >
+          <component
+            :is="previewVisible ? LucideEye : LucideEyeOff"
+            class="h-2.5 w-2.5"
+          />
+          {{ $t("camera.preview") }}
+        </button>
+      </div>
+
+      <!-- The stage is reserved from the device class, never from the track:
+           dimensions only arrive on loadedmetadata and the page must not move
+           when they do. The frame is contained inside it, so it is letterboxed
+           at its true ratio and never cropped -- cropping here is only ever the
+           deliberate reframe. -->
+      <div
+        ref="stageEl"
+        class="relative w-full overflow-hidden rounded-xl border bg-black"
+        :class="coarsePointer ? 'aspect-[3/4]' : 'aspect-video'"
+      >
+        <video
+          v-show="previewVisible"
+          ref="previewEl"
+          class="absolute inset-0 h-full w-full object-contain"
+          autoplay
+          playsinline
+          muted
+        ></video>
+
+        <div
+          v-show="!previewVisible"
+          class="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center"
+        >
+          <LucideEyeOff class="h-5 w-5 text-muted-foreground/60" />
+          <p
+            class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            {{ $t("camera.preview_hidden") }}
+          </p>
+          <p class="max-w-xs text-[11px] leading-snug text-muted-foreground/80">
+            {{ $t("camera.preview_hidden_hint") }}
           </p>
         </div>
 
+        <div
+          v-show="previewVisible && !mediaErrorKind && !mediaPending"
+          class="absolute inset-0 z-10 touch-none select-none"
+          :class="cropping ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : ''"
+          @pointerdown="onPointerDown"
+          @pointermove="onPointerMove"
+          @pointerup="onPointerUp"
+          @pointercancel="onPointerUp"
+        >
+          <div
+            v-show="cropping"
+            class="absolute inset-3 border border-[hsl(var(--tac-amber)/0.4)]"
+          >
+            <span
+              class="absolute inset-y-0 left-1/3 w-px bg-[hsl(var(--tac-amber)/0.2)]"
+            ></span>
+            <span
+              class="absolute inset-y-0 left-2/3 w-px bg-[hsl(var(--tac-amber)/0.2)]"
+            ></span>
+            <span
+              class="absolute inset-x-0 top-1/3 h-px bg-[hsl(var(--tac-amber)/0.2)]"
+            ></span>
+            <span
+              class="absolute inset-x-0 top-2/3 h-px bg-[hsl(var(--tac-amber)/0.2)]"
+            ></span>
+          </div>
+        </div>
+
+        <span
+          v-if="cropping && previewVisible"
+          class="pointer-events-none absolute bottom-2 left-2 z-20 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-black/70 px-2 py-0.5 font-mono text-[0.55rem] tabular-nums text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+        >
+          {{ zoomPercent }}%
+        </span>
+
+        <button
+          v-if="cropping && previewVisible"
+          type="button"
+          class="absolute bottom-2 right-2 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm transition-colors hover:border-white/40 hover:text-white"
+          @click="resetReframe"
+        >
+          <LucideRotateCcw class="h-2.5 w-2.5" />
+          {{ $t("camera.reframe_reset") }}
+        </button>
+
+        <div
+          v-show="talking"
+          class="absolute right-2 top-2 z-20 w-1/3 overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.5)] bg-black shadow-lg"
+        >
+          <div class="relative aspect-video">
+            <video
+              ref="talkEl"
+              class="absolute inset-0 h-full w-full object-contain"
+              autoplay
+              playsinline
+            ></video>
+          </div>
+
+          <div
+            class="flex items-center justify-between gap-1 border-t border-[hsl(var(--tac-amber)/0.35)] px-1.5 py-1"
+          >
+            <span
+              class="truncate font-mono text-[0.5rem] uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))]"
+            >
+              {{ $t("camera.talk_label") }}
+            </span>
+            <button
+              type="button"
+              class="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
+              :aria-label="
+                talkMuted ? $t('camera.talk_unmute') : $t('camera.talk_mute')
+              "
+              :title="
+                talkMuted ? $t('camera.talk_unmute') : $t('camera.talk_mute')
+              "
+              @click="toggleTalkAudio"
+            >
+              <component
+                :is="talkMuted ? LucideVolumeX : LucideVolume2"
+                class="h-2.5 w-2.5"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-if="mediaPending"
+          class="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-black/80 px-6 text-center"
+        >
+          <LucideLoader2
+            class="h-5 w-5 animate-spin text-[hsl(var(--tac-amber))]"
+          />
+          <p class="max-w-xs text-[11px] leading-snug text-muted-foreground">
+            {{ $t("camera.media_pending") }}
+          </p>
+        </div>
+
+        <div
+          v-else-if="mediaErrorKind"
+          class="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-black/90 px-6 text-center"
+        >
+          <LucideTriangleAlert class="h-6 w-6 text-destructive" />
+          <p
+            class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-destructive"
+          >
+            {{ $t("camera.error") }}
+          </p>
+          <p class="max-w-xs text-[11px] leading-snug text-muted-foreground">
+            {{ $t(`camera.media_error.${mediaErrorKind}`) }}
+          </p>
+          <Button variant="secondary" size="sm" @click="startPreview">
+            <LucideRefreshCw class="h-3.5 w-3.5" />
+            {{ $t("camera.retry") }}
+          </Button>
+        </div>
+      </div>
+
+      <p
+        class="text-center font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground/70"
+      >
+        {{ $t("camera.reframe_gesture") }}
+      </p>
+
+      <DeviceSelect
+        v-if="realCameras.length > 1"
+        :icon="LucideVideo"
+        :devices="cameras"
+        :model-value="cameraDeviceId"
+        :active="true"
+        @update:model-value="setCamera"
+      />
+
+      <Button
+        v-if="canFlip"
+        class="w-full"
+        variant="outline"
+        size="sm"
+        @click="flipCamera"
+      >
+        <LucideSwitchCamera class="h-3.5 w-3.5" />
+        {{ $t("camera.flip") }}
+      </Button>
+
+      <template v-if="phase !== 'connected'">
         <Button
-          class="w-full max-w-sm"
+          class="w-full"
           size="lg"
           variant="tactical"
+          :loading="phase === 'connecting'"
+          :disabled="!!mediaErrorKind || mediaPending"
           @click="connect"
         >
           <LucideVideo class="h-4 w-4" />
@@ -769,256 +1163,25 @@ onBeforeUnmount(() => {
         </Button>
 
         <p
-          class="flex max-w-sm items-start gap-2 text-left text-[11px] leading-snug text-muted-foreground"
+          v-if="phase === 'error' && errorMessage"
+          class="break-words text-center font-mono text-[11px] leading-relaxed text-destructive"
+        >
+          {{ errorMessage }}
+        </p>
+
+        <p
+          class="flex items-start gap-2 text-[11px] leading-snug text-muted-foreground/70"
         >
           <LucideShieldCheck class="mt-px h-3.5 w-3.5 shrink-0" />
           {{ $t("camera.permission_hint") }}
         </p>
-      </section>
+      </template>
 
-      <section
-        v-else-if="phase === 'connecting'"
-        class="flex flex-col items-center gap-4"
+      <p
+        class="border-t pt-3 text-center text-[11px] leading-relaxed text-muted-foreground/70"
       >
-        <LucideLoader2
-          class="h-6 w-6 animate-spin text-[hsl(var(--tac-amber))]"
-        />
-        <p
-          class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
-        >
-          {{ $t("camera.connecting") }}
-        </p>
-      </section>
-
-      <section
-        v-else-if="phase === 'error'"
-        class="flex flex-col items-center gap-5 text-center"
-      >
-        <span
-          class="flex h-14 w-14 items-center justify-center rounded-2xl border border-destructive/40 bg-destructive/10 text-destructive"
-        >
-          <LucideTriangleAlert class="h-5 w-5" />
-        </span>
-
-        <div class="space-y-2">
-          <h1 class="text-base font-semibold tracking-tight">
-            {{ $t("camera.error") }}
-          </h1>
-          <p
-            class="mx-auto max-w-sm break-words font-mono text-[11px] leading-relaxed text-muted-foreground"
-          >
-            {{ errorMessage }}
-          </p>
-        </div>
-
-        <Button class="w-full max-w-sm" variant="secondary" @click="connect">
-          <LucideRefreshCw class="h-4 w-4" />
-          {{ $t("camera.retry") }}
-        </Button>
-      </section>
-
-      <div v-show="phase === 'connected'" class="flex flex-col gap-3">
-        <!-- No object-cover and no forced aspect ratio: either one crops a frame
-             whose real ratio does not match the box. Cropping here is only ever
-             the deliberate reframe below. -->
-        <div class="relative overflow-hidden rounded-xl border bg-black">
-          <video
-            v-show="previewVisible"
-            ref="previewEl"
-            class="block w-full bg-black"
-            autoplay
-            playsinline
-            muted
-          ></video>
-
-          <div
-            v-if="!previewVisible"
-            class="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center"
-          >
-            <LucideEyeOff class="h-5 w-5 text-muted-foreground/60" />
-            <p
-              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >
-              {{ $t("camera.preview_hidden") }}
-            </p>
-            <p class="max-w-xs text-[11px] leading-snug text-muted-foreground/80">
-              {{ $t("camera.preview_hidden_hint") }}
-            </p>
-          </div>
-
-          <span
-            class="pointer-events-none absolute left-2 top-2 z-10 inline-flex items-center gap-2 rounded-full border border-emerald-500/50 bg-black/70 px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-emerald-400 backdrop-blur-sm"
-          >
-            <span class="relative flex h-1.5 w-1.5">
-              <span
-                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
-              ></span>
-            </span>
-            {{ $t("camera.live") }}
-          </span>
-
-          <div
-            v-show="cropping && previewVisible"
-            class="absolute inset-0 touch-none select-none"
-            :class="dragging ? 'cursor-grabbing' : 'cursor-grab'"
-            @pointerdown="onDragStart"
-            @pointermove="onDragMove"
-            @pointerup="onDragEnd"
-            @pointercancel="onDragEnd"
-          >
-            <div
-              class="absolute inset-3 border border-[hsl(var(--tac-amber)/0.4)]"
-            >
-              <span
-                class="absolute inset-y-0 left-1/3 w-px bg-[hsl(var(--tac-amber)/0.2)]"
-              ></span>
-              <span
-                class="absolute inset-y-0 left-2/3 w-px bg-[hsl(var(--tac-amber)/0.2)]"
-              ></span>
-              <span
-                class="absolute inset-x-0 top-1/3 h-px bg-[hsl(var(--tac-amber)/0.2)]"
-              ></span>
-              <span
-                class="absolute inset-x-0 top-2/3 h-px bg-[hsl(var(--tac-amber)/0.2)]"
-              ></span>
-            </div>
-
-            <span
-              v-if="!dragging"
-              class="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-black/70 px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-            >
-              {{ $t("camera.reframe_drag") }}
-            </span>
-          </div>
-        </div>
-
-        <p class="text-center text-[11px] leading-snug text-muted-foreground">
-          {{ $t("camera.keep_open") }}
-        </p>
-
-        <DeviceSelect
-          v-if="realCameras.length > 1"
-          :icon="LucideVideo"
-          :devices="cameras"
-          :model-value="cameraDeviceId"
-          :active="true"
-          @update:model-value="setCamera"
-        />
-
-        <div class="flex flex-wrap gap-2">
-          <Button
-            v-if="canFlip"
-            class="flex-1"
-            variant="outline"
-            size="sm"
-            @click="flipCamera"
-          >
-            <LucideSwitchCamera class="h-3.5 w-3.5" />
-            {{ $t("camera.flip") }}
-          </Button>
-
-          <Button
-            class="flex-1"
-            variant="outline"
-            size="sm"
-            @click="togglePreview"
-          >
-            <component
-              :is="previewVisible ? LucideEyeOff : LucideEye"
-              class="h-3.5 w-3.5"
-            />
-            {{
-              previewVisible
-                ? $t("camera.hide_preview")
-                : $t("camera.show_preview")
-            }}
-          </Button>
-        </div>
-
-        <div
-          v-show="previewVisible"
-          class="space-y-3 rounded-xl border bg-card/40 p-3"
-        >
-          <div class="flex items-center justify-between gap-3">
-            <span
-              class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >
-              <LucideCrop class="h-3 w-3" />
-              {{ $t("camera.reframe") }}
-            </span>
-            <span
-              class="font-mono text-[0.68rem] tabular-nums"
-              :class="
-                cropping
-                  ? 'text-[hsl(var(--tac-amber))]'
-                  : 'text-muted-foreground'
-              "
-            >
-              {{ zoomPercent }}%
-            </span>
-          </div>
-
-          <Slider
-            :model-value="[zoomPercent]"
-            :min="100"
-            :max="300"
-            :step="5"
-            @update:model-value="(value) => setZoom(value?.[0] ?? 100)"
-          />
-
-          <div class="flex items-end justify-between gap-3">
-            <p class="text-[11px] leading-snug text-muted-foreground">
-              {{
-                cropping ? $t("camera.reframe_hint") : $t("camera.reframe_idle")
-              }}
-            </p>
-            <Button
-              class="shrink-0"
-              variant="ghost"
-              size="xs"
-              :disabled="!cropping"
-              @click="resetReframe"
-            >
-              <LucideRotateCcw class="h-3 w-3" />
-              {{ $t("camera.reframe_reset") }}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-show="talking"
-        class="relative overflow-hidden rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-black"
-      >
-        <video
-          ref="talkEl"
-          class="block w-full bg-black"
-          autoplay
-          playsinline
-        ></video>
-
-        <span
-          class="pointer-events-none absolute left-2 top-2 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-black/70 px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-        >
-          {{ $t("camera.talk_label") }}
-        </span>
-
-        <Button
-          class="absolute bottom-2 right-2 h-7 gap-1.5 border-[hsl(var(--tac-amber)/0.5)] bg-black/70 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))] hover:bg-black/90 hover:text-[hsl(var(--tac-amber))]"
-          variant="outline"
-          size="xs"
-          @click="toggleTalkAudio"
-        >
-          <component
-            :is="talkMuted ? LucideVolumeX : LucideVolume2"
-            class="h-3 w-3"
-          />
-          {{ talkMuted ? $t("camera.talk_unmute") : $t("camera.talk_mute") }}
-        </Button>
-      </div>
+        {{ $t("camera.reason") }}
+      </p>
     </main>
 
     <video

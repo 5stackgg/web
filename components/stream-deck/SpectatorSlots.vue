@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { Bot } from "lucide-vue-next";
 import {
   effectivePerSideSize,
   keyForSlot,
 } from "~/utilities/streamerSpecSlots";
+import CameraFeed from "~/components/match/CameraFeed.vue";
+import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
 
 const { t } = useI18n();
 
@@ -62,6 +64,9 @@ const props = withDefaults(
     // streamer pod runs cs2-better-autodirector in either mode and
     // the UI mirrors its on/off state.
     autodirectorOn?: boolean;
+    // Set only by the stream deck: renders each player's camera as the slot
+    // background. Null everywhere else, which keeps this component presentational.
+    cameraMatchId?: string | null;
   }>(),
   {
     teamCtName: null,
@@ -74,8 +79,42 @@ const props = withDefaults(
     compact: false,
     matchType: null,
     autodirectorOn: false,
+    cameraMatchId: null,
   },
 );
+
+const { statusFor } = useMatchCameraStatus(
+  () => props.cameraMatchId ?? "",
+  () => !!props.cameraMatchId,
+);
+
+// A slot without a steam id has no camera to attach yet -- GSI populates them
+// as the server comes up and the tile must not move when it does.
+function cameraState(steamId: string) {
+  if (!props.cameraMatchId || !steamId) {
+    return null;
+  }
+
+  const status = statusFor(steamId);
+
+  if (!status || !status.ready || status.health === "down") {
+    return null;
+  }
+
+  return status.health === "stalled" ? ("stalled" as const) : ("live" as const);
+}
+
+const listening = reactive<Record<string, boolean>>({});
+
+function isListening(steamId: string) {
+  return listening[steamId] === true;
+}
+
+// Every feed starts muted: a deck that unmutes ten microphones at once is
+// unusable mid-broadcast.
+function setListening(steamId: string, value: boolean) {
+  listening[steamId] = value;
+}
 
 const emit = defineEmits<{
   (e: "press-slot", slot: number): void;
@@ -371,6 +410,19 @@ function press(s: PaddedSlot) {
                  anatomy.
                  ============================================ -->
           <template v-else>
+            <CameraFeed
+              v-if="cameraState(s.steam_id)"
+              :match-id="cameraMatchId!"
+              :steam-id="s.steam_id"
+              :state="cameraState(s.steam_id)!"
+              :unmuted="isListening(s.steam_id)"
+              dense
+              scrim
+              click-through
+              class="absolute inset-0 z-0"
+              @update:unmuted="(value) => setListening(s.steam_id, value)"
+            />
+
             <!-- Top-left slot key chip / AUTO badge -->
             <span
               :class="[
@@ -419,7 +471,7 @@ function press(s: PaddedSlot) {
                    inline pill since the tile has the room. -->
             <span
               :class="[
-                'mt-3 truncate max-w-full px-1 text-center font-semibold',
+                'relative z-10 mt-3 truncate max-w-full px-1 text-center font-semibold',
                 compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
                 s.isPlaceholder ? 'italic opacity-60' : '',
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
@@ -599,6 +651,19 @@ function press(s: PaddedSlot) {
                  GRID tile body — full broadcast player card.
                  ============================================ -->
           <template v-else>
+            <CameraFeed
+              v-if="cameraState(s.steam_id)"
+              :match-id="cameraMatchId!"
+              :steam-id="s.steam_id"
+              :state="cameraState(s.steam_id)!"
+              :unmuted="isListening(s.steam_id)"
+              dense
+              scrim
+              click-through
+              class="absolute inset-0 z-0"
+              @update:unmuted="(value) => setListening(s.steam_id, value)"
+            />
+
             <span
               :class="[
                 'absolute top-1 left-1 inline-flex items-center justify-center rounded font-bold tabular-nums leading-none',
@@ -641,7 +706,7 @@ function press(s: PaddedSlot) {
 
             <span
               :class="[
-                'mt-3 truncate max-w-full px-1 text-center font-semibold',
+                'relative z-10 mt-3 truncate max-w-full px-1 text-center font-semibold',
                 compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
                 s.isPlaceholder ? 'italic opacity-60' : '',
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',

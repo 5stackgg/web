@@ -42,8 +42,10 @@ function openGrid() {
   >
     <LucideVideo class="h-3 w-3" />
     {{ $t("camera.cameras") }}
-    <span v-if="loaded && summary.total" class="tabular-nums">
-      {{ summary.live }}/{{ summary.total }}
+    <!-- Reserved rather than conditional: the count lands a poll later and the
+         button must not resize the action row when it does. -->
+    <span class="min-w-[2.5rem] text-right tabular-nums">
+      {{ loaded && summary.total ? `${summary.live}/${summary.total}` : "—" }}
     </span>
   </Button>
 </template>

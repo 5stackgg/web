@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onBeforeUnmount } from "vue";
-import WhepPlayer from "~/components/match/WhepPlayer.vue";
+import CameraFeed from "~/components/match/CameraFeed.vue";
 import { Button } from "~/components/ui/button";
 import {
   LucideLoader2,
@@ -9,11 +9,9 @@ import {
   LucideVideo,
   LucideVideoOff,
   LucideVolume2,
-  LucideVolumeX,
 } from "lucide-vue-next";
 import {
   cameraAdminTalkUrl,
-  cameraAdminWatchUrl,
   hangupAdminTalk,
   negotiateWebRtc,
   type CameraPlayerStatus,
@@ -299,24 +297,13 @@ onBeforeUnmount(() => {
             ]"
           >
             <div class="relative aspect-video bg-black">
-              <WhepPlayer
-                v-if="player.ready"
-                :whep-url="cameraAdminWatchUrl(matchId, player.steamId)"
-                :muted="!isListening(player.steamId)"
-                disable-shortcuts
+              <CameraFeed
+                :match-id="matchId"
+                :steam-id="player.steamId"
+                :state="tileState(player)"
+                :unmuted="isListening(player.steamId)"
+                @update:unmuted="toggleListen(player.steamId)"
               />
-
-              <div
-                v-else
-                class="flex h-full flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(45deg,hsl(var(--muted)/0.25)_0,hsl(var(--muted)/0.25)_1px,transparent_1px,transparent_7px)]"
-              >
-                <LucideVideoOff class="h-5 w-5 text-muted-foreground/50" />
-                <span
-                  class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground/60"
-                >
-                  {{ $t("camera.offline") }}
-                </span>
-              </div>
 
               <span
                 v-if="tileState(player) !== 'offline'"
@@ -391,36 +378,6 @@ onBeforeUnmount(() => {
                   {{ player.steamId }}
                 </span>
               </span>
-
-              <Button
-                size="xs"
-                variant="outline"
-                class="h-7 w-7 shrink-0 p-0"
-                :class="
-                  isListening(player.steamId)
-                    ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] hover:text-[hsl(var(--tac-amber))]'
-                    : ''
-                "
-                :disabled="!player.ready"
-                :aria-label="
-                  isListening(player.steamId)
-                    ? $t('camera.mute')
-                    : $t('camera.listen')
-                "
-                :title="
-                  isListening(player.steamId)
-                    ? $t('camera.mute')
-                    : $t('camera.listen')
-                "
-                @click="toggleListen(player.steamId)"
-              >
-                <component
-                  :is="
-                    isListening(player.steamId) ? LucideVolume2 : LucideVolumeX
-                  "
-                  class="h-3 w-3"
-                />
-              </Button>
 
               <!-- Fixed width: the label swaps between call and hang up, and a
                    tile that resizes under the cursor gets misclicked. -->

@@ -27,37 +27,16 @@ watch(ready, (isReady) => {
        earlier and reloaded never sees a flash of the blocking overlay. -->
   <div
     v-if="checked && !ready"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur-sm"
+    class="gate-backdrop fixed inset-0 z-50 flex items-center justify-center bg-background/95 p-4 backdrop-blur-sm"
   >
     <div
-      class="relative w-full max-w-md overflow-hidden rounded-xl border bg-card p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]"
+      class="gate-panel relative w-full max-w-md overflow-hidden rounded-xl border bg-card p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.9)]"
     >
-      <span
-        class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[hsl(var(--tac-amber)/0.7)] to-transparent"
-      ></span>
-
-      <div class="flex items-center gap-[0.6rem]">
-        <span
-          class="h-[2px] w-[10px] shrink-0 bg-[hsl(var(--tac-amber))]"
-        ></span>
-        <span
-          class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
-        >
-          {{ $t("camera.gate_label") }}
-        </span>
-      </div>
-
-      <h2 class="mt-3 text-lg font-semibold tracking-tight">
+      <h2 class="text-center text-lg font-semibold">
         {{ $t("camera.title") }}
       </h2>
-      <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
-        {{ $t("camera.subtitle") }}
-      </p>
-      <p class="mt-2 text-xs leading-relaxed text-muted-foreground/80">
-        {{ $t("camera.reason") }}
-      </p>
 
-      <div class="mt-5">
+      <div class="mt-6">
         <CameraSetup
           :token="token"
           :qr-data-url="qrDataUrl"
@@ -65,6 +44,50 @@ watch(ready, (isReady) => {
           @open-on-this-computer="openOnThisComputer"
         />
       </div>
+
+      <p
+        class="mt-5 border-t pt-4 text-center text-[11px] leading-relaxed text-muted-foreground/70"
+      >
+        {{ $t("camera.reason") }}
+      </p>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Opacity and transform only: the panel reserves its footprint and must never
+   be animated through a resize. */
+.gate-backdrop {
+  animation: gate-backdrop-in 180ms ease-out both;
+}
+
+.gate-panel {
+  animation: gate-panel-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes gate-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gate-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-panel {
+    animation: gate-backdrop-in 140ms ease-out both;
+  }
+}
+</style>

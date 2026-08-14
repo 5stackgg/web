@@ -7269,23 +7269,19 @@
     "offline": "Not connected",
     "setup_before_check_in": "Set Up Your Camera",
     "permission_hint": "Your browser will ask for camera and microphone permission before the feed starts.",
-    "reframe": "Reframe",
     "reframe_reset": "Reset",
-    "reframe_hint": "Drag the preview to re-centre. Only the cropped area is published.",
-    "reframe_idle": "Zoom in to crop the frame around you.",
-    "reframe_drag": "Drag to re-centre",
     "talk_label": "Organizer call",
     "you": "You",
     "tile": {
       "live": "Live",
       "stalled": "Stalled",
       "offline": "Offline",
-      "talking": "On call"
+      "talking": "On call",
+      "unknown": "Checking…"
     },
-    "admin_subtitle": "Anti-cheat monitoring",
+    "admin_subtitle": "Live player cameras",
     "admin_live_count": "{live} of {total} live",
     "admin_stalled_count": "{count} stalled",
-    "live": "Live",
     "preview_hidden": "Preview hidden",
     "preview_hidden_hint": "Your camera is still on and still being published.",
     "hide_preview": "Hide preview",
@@ -7296,11 +7292,24 @@
     "mute": "Mute mic",
     "audio_on": "Audio",
     "or": "or",
-    "gate_label": "Anti-cheat",
-    "reason": "Your webcam is monitored for the length of this match to keep the game fair for everyone on the server.",
+    "reason": "While you are being spectated your camera can appear on the match stream, and match officials can view it during the match.",
     "cameras": "Cameras",
-    "hide": "Hide",
-    "show": "Show"
+    "preview": "Preview",
+    "reframe_gesture": "Scroll or pinch to zoom · drag to re-centre",
+    "phase": {
+      "preview": "Preview",
+      "connecting": "Connecting",
+      "connected": "Live",
+      "error": "Not live"
+    },
+    "headline_preview": "You are not live yet. Frame yourself, then connect.",
+    "media_error": {
+      "denied": "Your browser blocked access to the camera. Allow it for this site, then try again.",
+      "missing": "No camera was found. Connect one, or pick a different device below.",
+      "busy": "Another app is already using the camera. Close it and try again.",
+      "unknown": "The camera could not be started. Try again."
+    },
+    "media_pending": "Waiting for camera permission…"
   },
   "voice": {
     "errors": {

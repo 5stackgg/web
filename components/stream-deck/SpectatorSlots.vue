@@ -275,7 +275,7 @@ function press(s: PaddedSlot) {
         ? 'flex flex-row items-start justify-between gap-6'
         : 'space-y-2',
       autodirectorOn
-        ? 'rounded-md border-t border-dashed border-[hsl(var(--tac-amber)/0.5)] pt-2 transition-[border-color] duration-300'
+        ? 'rounded-md border-t border-[hsl(var(--tac-amber)/0.35)] pt-2 transition-[border-color] duration-300'
         : '',
     ]"
   >

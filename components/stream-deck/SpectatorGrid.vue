@@ -22,6 +22,12 @@ const props = defineProps<{
   // on non-active slots. Stream-deck index card surfaces it via the
   // `is_game_streamer + autodirector` row state.
   autodirectorOn?: boolean;
+  // Render each player's live camera behind their slot. Off by default -- a
+  // tile is a peer connection and a video decode, so only a surface showing one
+  // match at a time (the focus popout) is worth them. Everywhere else the slots
+  // still carry the player's avatar and the camera health indicator, which is
+  // all an 88px tile could show anyway.
+  cameras?: boolean;
   // When false, skip the GSI poll entirely. Do NOT use this to dedupe against
   // another window polling the same match: without GSI every slot falls back to
   // a placeholder with no steam id, which costs the card its player names and
@@ -77,6 +83,7 @@ const flashSlotNum = computed<number | null>(() => {
     :compact="!!compact"
     :autodirector-on="!!autodirectorOn"
     :camera-match-id="matchId"
+    :camera-video="!!cameras"
     layout="grid"
     @press-slot="(slot: number) => emit('press-slot', slot)"
   />

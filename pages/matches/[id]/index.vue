@@ -549,14 +549,6 @@ const vsBaseClasses =
           </PageTransition>
 
           <PageTransition :delay="200">
-            <MatchVoicePanel
-              v-if="myLineupId && canJoinLobby"
-              :lineup-id="myLineupId"
-              :label="$t('chat.your_team')"
-            />
-          </PageTransition>
-
-          <PageTransition :delay="200">
             <!-- Same status gate as the match room above: chat closes with the
                match, and being on a lineup is not a reason to keep a room open
                on something that finished. -->
@@ -570,7 +562,16 @@ const vsBaseClasses =
                 match.status !== e_match_status_enum.Live
               "
               v-if="myLineupId && canJoinLobby"
-            />
+            >
+              <!-- Text and voice are the same room, so the header owns both. -->
+              <template #header-actions>
+                <MatchVoicePanel
+                  inline
+                  :lineup-id="myLineupId"
+                  :label="$t('chat.your_team')"
+                />
+              </template>
+            </ChatLobby>
           </PageTransition>
 
           <PageTransition :delay="200">

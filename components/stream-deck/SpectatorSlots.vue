@@ -64,9 +64,16 @@ const props = withDefaults(
     // streamer pod runs cs2-better-autodirector in either mode and
     // the UI mirrors its on/off state.
     autodirectorOn?: boolean;
-    // Set only by the stream deck: renders each player's camera as the slot
-    // background. Null everywhere else, which keeps this component presentational.
+    // Set only by the stream deck: gives each slot its player's camera state --
+    // the avatar behind the tile, and the live feed when `cameraVideo` is on.
+    // Null everywhere else, which keeps this component presentational.
     cameraMatchId?: string | null;
+    // Whether to actually decode the feeds. Off by default: every tile is a
+    // peer connection and a video decode, and the deck index renders a full
+    // row per live match at ~88px a tile -- more than a Steam avatar costs and
+    // less than a Steam avatar shows. The focus popout, where the operator is
+    // looking at one match, opts in.
+    cameraVideo?: boolean;
   }>(),
   {
     teamCtName: null,
@@ -80,6 +87,7 @@ const props = withDefaults(
     matchType: null,
     autodirectorOn: false,
     cameraMatchId: null,
+    cameraVideo: false,
   },
 );
 
@@ -90,8 +98,12 @@ const { statusFor, players: cameraPlayers } = useMatchCameraStatus(
 
 // A slot without a steam id has no camera to attach yet -- GSI populates them
 // as the server comes up and the tile must not move when it does.
+//
+// Status is still read when the video is off: that is what puts a player's
+// avatar behind their tile, and it is a shared 10s status poll rather than ten
+// video decodes.
 function cameraState(steamId: string) {
-  if (!props.cameraMatchId || !steamId) {
+  if (!props.cameraVideo || !props.cameraMatchId || !steamId) {
     return null;
   }
 
@@ -102,6 +114,28 @@ function cameraState(steamId: string) {
   }
 
   return status.health === "stalled" ? ("stalled" as const) : ("live" as const);
+}
+
+// A camera that is not working, and only that. Working is the expected state
+// and needs no badge -- a quiet row is what lets a bad tile catch the eye --
+// but with the feeds off there would otherwise be nothing at all to say a
+// player's camera has died.
+function cameraAlert(steamId: string) {
+  if (!props.cameraMatchId || !steamId) {
+    return null;
+  }
+
+  const status = statusFor(steamId);
+
+  if (!status) {
+    return null;
+  }
+
+  if (status.health === "stalled") {
+    return "stalled" as const;
+  }
+
+  return !status.ready || status.health === "down" ? ("down" as const) : null;
 }
 
 // Shown whenever there is no live feed, so a slot always carries a face rather
@@ -326,6 +360,7 @@ function press(s: PaddedSlot) {
             compact,
             layout,
             cameraState(s.steam_id),
+            cameraAlert(s.steam_id),
             isListening(s.steam_id),
           ]"
           :key="`ct-${s.slot}-${s.steam_id || 'empty'}`"
@@ -503,6 +538,24 @@ function press(s: PaddedSlot) {
               {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
             </span>
 
+
+            <!-- Camera trouble marker. Sits above the health rail so it never
+                 collides with the slot key or the health number. -->
+            <span
+              v-if="cameraAlert(s.steam_id)"
+              class="absolute bottom-2 right-1.5 z-10 inline-flex h-1.5 w-1.5 rounded-full"
+              :class="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? 'bg-destructive animate-pulse'
+                  : 'bg-muted-foreground/60'
+              "
+              :title="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? t('camera.tile.stalled')
+                  : t('camera.offline')
+              "
+              aria-hidden="true"
+            ></span>
             <!-- Footer health rail — thicker than inline so the bar
                    reads as a chunk of UI, not a hairline. Shrinks
                    smoothly on damage. -->
@@ -585,6 +638,7 @@ function press(s: PaddedSlot) {
             compact,
             layout,
             cameraState(s.steam_id),
+            cameraAlert(s.steam_id),
             isListening(s.steam_id),
           ]"
           :key="`t-${s.slot}-${s.steam_id || 'empty'}`"
@@ -748,6 +802,24 @@ function press(s: PaddedSlot) {
               {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
             </span>
 
+
+            <!-- Camera trouble marker. Sits above the health rail so it never
+                 collides with the slot key or the health number. -->
+            <span
+              v-if="cameraAlert(s.steam_id)"
+              class="absolute bottom-2 right-1.5 z-10 inline-flex h-1.5 w-1.5 rounded-full"
+              :class="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? 'bg-destructive animate-pulse'
+                  : 'bg-muted-foreground/60'
+              "
+              :title="
+                cameraAlert(s.steam_id) === 'stalled'
+                  ? t('camera.tile.stalled')
+                  : t('camera.offline')
+              "
+              aria-hidden="true"
+            ></span>
             <span
               v-if="s.alive"
               :class="[

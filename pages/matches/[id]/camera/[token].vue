@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import { Button } from "~/components/ui/button";
 import {
   LucideCrop,
   LucideEye,
   LucideEyeOff,
   LucideLoader2,
+  LucideMic,
+  LucideRadioTower,
   LucideRefreshCw,
   LucideRotateCcw,
   LucideShieldCheck,
@@ -16,7 +25,12 @@ import {
   LucideVolumeX,
 } from "lucide-vue-next";
 import DeviceSelect from "~/components/media/DeviceSelect.vue";
+import VoiceSettingsButton from "~/components/voice/VoiceSettingsButton.vue";
+import MatchVoicePanel from "~/components/match/MatchVoicePanel.vue";
 import TopoBackground from "@/layouts/components/TopoBackground.vue";
+import { generateQuery } from "~/graphql/graphqlGen";
+import { useAudioSettings } from "~/composables/useAudioSettings";
+import { useMicPipeline } from "~/composables/useMicPipeline";
 import {
   cameraPlayerPublishUrl,
   cameraPlayerTalkUrl,
@@ -407,6 +421,88 @@ function videoSender() {
   );
 }
 
+function audioSender() {
+  return (
+    publishPc
+      ?.getSenders()
+      .find((candidate) => candidate.track?.kind === "audio") ?? null
+  );
+}
+
+// The microphone goes through exactly the same pipeline as a voice channel:
+// same device choice, same noise suppression, same gate, same mic check. An
+// organizer listening to a camera feed is listening to a player's microphone,
+// so there is no reason for it to behave differently here.
+const audioSettings = useAudioSettings();
+const mic = useMicPipeline({
+  onTrack: (track) => {
+    void audioSender()?.replaceTrack(track).catch(() => {});
+  },
+});
+
+// Metered while they are still setting up, so the indicator moves as they talk
+// and they can tell the microphone works before going live. Once live it costs
+// nothing until they open the settings, which turns it back on for the meter.
+function syncMetering() {
+  mic.setMetering(phase.value !== "connected" && previewVisible.value);
+}
+
+watch([phase, previewVisible], syncMetering);
+
+const micDotOpacity = computed(
+  () => 0.25 + Math.min(1, mic.inputLevel.value * 4) * 0.75,
+);
+
+// Publishing a camera is not joining a call. The feed is for the observer HUD
+// and for organizers watching -- teammates never hear it -- so a player who
+// wants to talk to their team has to join the channel, and this is the last
+// screen they are on before a match, which makes it the place to offer it.
+//
+// The camera's microphone is handed straight to the channel: one capture, one
+// gate, one mute for both destinations, rather than a second open of a device
+// some hardware only grants once.
+const matchId = computed(() => String(route.params.id));
+const myLineupId = ref<string | null>(null);
+const voiceEnabled = computed(
+  () => useApplicationSettingsStore().voiceChatMatchesEnabled,
+);
+
+// The token names a feed, not a team, so the lineup has to be looked up -- and
+// only a signed-in session can. A phone opened from a QR code usually is not
+// one, and voice would refuse it anyway, so this is best effort and the control
+// simply does not appear when it comes back empty.
+async function resolveMyLineup() {
+  if (!useAuthStore().me) {
+    return;
+  }
+
+  try {
+    const { data } = await useNuxtApp().$apollo.defaultClient.query({
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        matches_by_pk: [
+          { id: matchId.value },
+          {
+            id: true,
+            lineup_1: { id: true, is_on_lineup: true },
+            lineup_2: { id: true, is_on_lineup: true },
+          },
+        ],
+      }),
+    });
+
+    const match = (data as any)?.matches_by_pk;
+
+    myLineupId.value =
+      [match?.lineup_1, match?.lineup_2].find(
+        (lineup: any) => lineup?.is_on_lineup,
+      )?.id ?? null;
+  } catch {
+    // Not signed in on this device, or not on this match. Either way there is
+    // no channel to offer.
+  }
+}
+
 // Constraints are a request to the camera; this is a ceiling on the encoder,
 // which is where the CPU actually goes. Without it a machine with headroom
 // happily spends it -- on a player who is trying to run a game at the same
@@ -730,10 +826,20 @@ async function startPreview() {
   mediaPending.value = true;
 
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: videoConstraints(facingMode),
-      audio: true,
-    });
+    const media = await openMedia();
+
+    // Asked for together so the browser prompts once, then split: the camera
+    // stays here and the microphone goes to the pipeline that gates, meters and
+    // owns it -- the same one a voice channel uses.
+    const audioTracks = media.getAudioTracks();
+
+    for (const track of audioTracks) {
+      media.removeTrack(track);
+    }
+
+    stream = media;
+    await mic.start(new MediaStream(audioTracks));
+    syncMetering();
 
     // Resolved before the controls render, so the device picker and flip
     // button are never a second frame that shifts the page.
@@ -745,6 +851,37 @@ async function startPreview() {
     mediaErrorKind.value = describeMediaError(error);
   } finally {
     mediaPending.value = false;
+  }
+}
+
+// A remembered camera or microphone that has since been unplugged fails the
+// whole request with OverconstrainedError, which would leave a player staring
+// at "no device found" on hardware that works. Forget the picks and retry.
+async function openMedia() {
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      video: videoConstraints(facingMode),
+      audio: audioSettings.micConstraints(),
+    });
+  } catch (error) {
+    const remembered =
+      cameraDeviceId.value || audioSettings.micDeviceId.value;
+
+    if (
+      (error as DOMException)?.name !== "OverconstrainedError" ||
+      !remembered
+    ) {
+      throw error;
+    }
+
+    cameraDeviceId.value = "";
+    writeStored(CAMERA_DEVICE_KEY, null);
+    audioSettings.setMicDevice("");
+
+    return navigator.mediaDevices.getUserMedia({
+      video: videoConstraints(facingMode),
+      audio: audioSettings.micConstraints(),
+    });
   }
 }
 
@@ -765,11 +902,14 @@ async function connect() {
     publishPc = pc;
 
     // The already-running preview is what goes live, cropped exactly as they
-    // left it -- captureStream is video only, so the microphone comes off the
-    // camera stream beside it.
+    // left it. The microphone comes off the pipeline rather than the camera
+    // stream, so what the organizer hears is what the mic check played back:
+    // the chosen device, gated and processed the same way voice is.
+    const micTrack = mic.track();
+
     const published = new MediaStream([
       ...(cropStream ?? stream).getVideoTracks(),
-      ...stream.getAudioTracks(),
+      ...(micTrack ? [micTrack] : []),
     ]);
 
     for (const track of published.getTracks()) {
@@ -958,6 +1098,7 @@ function endTalk() {
 onMounted(() => {
   void refreshCameras();
   void startPreview();
+  void resolveMyLineup();
   navigator.mediaDevices?.addEventListener?.("devicechange", onDeviceChange);
   stageEl.value?.addEventListener("wheel", onWheel, { passive: false });
 });
@@ -1272,6 +1413,83 @@ onBeforeUnmount(() => {
         <LucideSwitchCamera class="h-3.5 w-3.5" />
         {{ $t("camera.flip") }}
       </Button>
+
+      <!-- The organizer hears this feed, so the microphone gets the same setup
+           the party hub gives it: device, mic check, sensitivity, output and
+           noise suppression. Reachable before going live rather than after
+           discovering the wrong mic mid-match. -->
+      <div
+        v-if="!mediaErrorKind"
+        class="flex items-center justify-between gap-3 rounded-xl border bg-card/40 px-3 py-2"
+      >
+        <div class="flex min-w-0 items-center gap-2.5">
+          <span
+            class="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition-colors"
+            :class="
+              mic.live.value
+                ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
+                : 'border-border bg-muted/40 text-muted-foreground'
+            "
+          >
+            <LucideMic class="h-3.5 w-3.5" />
+            <span
+              v-if="mic.live.value"
+              class="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-emerald-400 transition-opacity duration-75"
+              :style="{ opacity: micDotOpacity }"
+            ></span>
+          </span>
+
+          <div class="flex min-w-0 flex-col">
+            <span class="truncate text-xs font-medium">
+              {{ $t("camera.mic") }}
+            </span>
+            <span class="truncate text-[10px] text-muted-foreground">
+              {{ $t("camera.mic_hint") }}
+            </span>
+          </div>
+        </div>
+
+        <VoiceSettingsButton
+          :pipeline="mic"
+          keep-alive
+          class="h-8 w-8 shrink-0"
+          @closed="syncMetering"
+        />
+      </div>
+
+      <!-- Sharing a camera is not joining a call: the feed goes to the observer
+           HUD and to organizers, never to teammates. Same microphone, second
+           destination -- so the keys sit next to the mic they belong to. -->
+      <div
+        v-if="myLineupId && !mediaErrorKind && voiceEnabled"
+        class="flex items-center justify-between gap-3 rounded-xl border bg-card/40 px-3 py-2"
+      >
+        <div class="flex min-w-0 items-center gap-2.5">
+          <span
+            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/40 text-muted-foreground"
+          >
+            <LucideRadioTower class="h-3.5 w-3.5" />
+          </span>
+
+          <div class="flex min-w-0 flex-col">
+            <span class="truncate text-xs font-medium">
+              {{ $t("voice.team_voice") }}
+            </span>
+            <span class="truncate text-[10px] text-muted-foreground">
+              {{ $t("camera.voice_hint") }}
+            </span>
+          </div>
+        </div>
+
+        <MatchVoicePanel
+          inline
+          hide-settings
+          class="shrink-0"
+          :pipeline="mic"
+          :lineup-id="myLineupId"
+          :label="$t('chat.your_team')"
+        />
+      </div>
 
       <template v-if="phase !== 'connected'">
         <Button

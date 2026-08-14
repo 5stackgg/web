@@ -1806,8 +1806,12 @@
           "required_default_description": "New matches start with Require Webcam turned on. Each match can still override it.",
           "teammates_default": "Teammates Can Watch by Default",
           "teammates_default_description": "New matches start with teammate viewing turned on. The opposing team is never included.",
-          "voice_section": "Lobby Voice Chat",
-          "voice_description": "Lets players talk to each other in a matchmaking lobby. Uses the same WebRTC path as player cameras.",
+          "voice_section": "Voice Chat",
+          "voice_description": "Lets players talk to each other over WebRTC, using the same path as player cameras. Turning this off removes voice everywhere.",
+          "voice_lobbies": "Party Lobbies",
+          "voice_lobbies_description": "Voice controls in the lobby panel, for the party a player puts together themselves.",
+          "voice_matches": "Matches & Draft Lobbies",
+          "voice_matches_description": "Team voice on the match page and in the draft lobby. Both talk on the same lineup channel, so they share this setting.",
           "updated": "Updated"
         },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
@@ -3672,7 +3676,8 @@
     "hub": {
       "social": "Social",
       "notifications": "Notifications",
-      "lobby": "Lobby"
+      "lobby": "Lobby",
+      "voice": "Voice"
     },
     "lobby_panel": {
       "lobby_invites": "Lobby Invites",
@@ -3698,10 +3703,21 @@
       "muted": "Muted",
       "connect": "Connect"
     },
+    "voice_panel": {
+      "you": "You",
+      "connected": "{count} in channel",
+      "you_are_muted": "Your mic is off",
+      "mute_player": "Silence this player for you only",
+      "unmute_player": "Hear this player again",
+      "player_volume": "Player volume",
+      "empty_title": "Not in a voice channel",
+      "empty_description": "Join from your party lobby, a match page, or a draft room — the channel shows up here with everyone in it."
+    },
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} in chat",
       "pop_out_tooltip": "Pop out to window",
+      "close_tooltip": "Close conversation",
       "no_chats_title": "No chats yet",
       "no_chats_description": "Once you join a chat, it will appear here."
     },
@@ -5875,6 +5891,8 @@
       "search_placeholder": "Search friends...",
       "invite_to_lobby": "Invite to Lobby",
       "remove": "Remove Friend",
+      "remove_confirm_title": "Remove Friend?",
+      "remove_confirm_description": "{name} will be removed from your friends list. You'll have to send a new friend request to add them back.",
       "in_match": "In a match",
       "in_lobby": "In a lobby",
       "in_draft": "In draft lobby",
@@ -7457,6 +7475,8 @@
     "cameras": "Cameras",
     "preview": "Preview",
     "reframe_gesture": "Scroll or pinch to zoom · drag to re-centre",
+    "mic_hint": "Published with your camera — check it before you go live.",
+    "voice_hint": "Your feed is not a call — join to talk to your team.",
     "phase": {
       "preview": "Preview",
       "connecting": "Connecting",
@@ -7473,7 +7493,8 @@
     "media_pending": "Waiting for camera permission…",
     "dismiss": "Dismiss",
     "nag": "You are not connected yet. Check-in stays blocked until your camera is live.",
-    "nag_action": "Set up"
+    "nag_action": "Set up",
+    "mic": "Microphone"
   },
   "voice": {
     "errors": {
@@ -7510,7 +7531,7 @@
       "noise_suppression_hint": "Filters steady background noise like fans and keyboards.",
       "mic_starting": "Starting your microphone…",
       "mic_in_use": "Your microphone is live in {channel}. These settings apply there as you change them.",
-      "applies_everywhere": "These settings apply to every voice channel."
+      "applies_everywhere": "They apply everywhere your microphone is used."
     },
     "team_voice": "Team Voice",
     "join": "Join",
@@ -7519,7 +7540,20 @@
     "unmute": "Unmute",
     "switch_title": "Switch voice channel?",
     "switch_description": "You are currently connected to {channel}. Joining here will disconnect you from it.",
-    "switch_confirm": "Switch"
+    "switch_confirm": "Switch",
+    "speaking_count": "{count} talking",
+    "tooltip": {
+      "join": "Join Team Voice",
+      "join_hint": "Talk to your lineup — the other team never hears this channel.",
+      "connecting": "Connecting…",
+      "leave": "Leave Team Voice",
+      "mute": "Mute Your Mic",
+      "unmute": "Unmute Your Mic",
+      "settings": "Microphone & Audio Settings",
+      "in_voice": "{count} in voice",
+      "alone": "You are the only one in voice",
+      "muted": "Your mic is off — nobody hears you"
+    }
   },
   "media": {
     "device": {

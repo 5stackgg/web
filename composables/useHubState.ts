@@ -5,7 +5,13 @@ import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useChatTabs } from "~/composables/useChatTabs";
 
-type Hub = "recent-games" | "social" | "chat" | "notifications" | "lobby";
+type Hub =
+  | "recent-games"
+  | "social"
+  | "chat"
+  | "notifications"
+  | "lobby"
+  | "voice";
 
 const HUB_STORAGE_KEY = "right-hub-active-tab";
 

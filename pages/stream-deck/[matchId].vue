@@ -1057,6 +1057,9 @@ watch(spectatedSteamId, (sid) => {
           <!-- Same component the /stream-deck index card renders. Both decks
                must stay on one path -- when they diverged, every slot change
                had to be made twice and silently missed one surface. -->
+          <!-- The one surface that decodes the player cameras: it shows a
+               single match, so the feeds are bounded at one roster and the
+               operator is actually looking at them. -->
           <SpectatorGrid
             :match-id="matchId"
             :is-live="isLive()"
@@ -1064,6 +1067,7 @@ watch(spectatedSteamId, (sid) => {
             :controls-active="controlsActive()"
             :flash-slot="flashSlot"
             :autodirector-on="autodirector && isLive()"
+            cameras
             @press-slot="(slot: number) => pressSlot(slot, String(slot))"
           />
         </div>

@@ -9,6 +9,7 @@ import {
   Bell,
   Clock,
   Users,
+  Headphones,
   MessageSquare,
   Tent,
   Pin,
@@ -27,6 +28,8 @@ import RecentGamesPanel from "~/components/hub/RecentGamesPanel.vue";
 import SidebarChatTab from "~/components/hub/ChatPanel.vue";
 import NotificationsPanel from "~/components/hub/NotificationsPanel.vue";
 import LobbyPanel from "~/components/hub/LobbyPanel.vue";
+import VoicePanel from "~/components/hub/VoicePanel.vue";
+import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
 
 const {
   setRightSidebarOpen,
@@ -175,6 +178,25 @@ const lobbyMemberLabel = computed(() =>
 );
 const chatBadgeLabel = computed(() => formatBadgeCount(totalUnread.value));
 
+// The call outlives the page that opened it, so the strip is where "am I still
+// in voice, and who can hear me" is answered from anywhere in the app.
+const { session: voiceSession } = useActiveVoiceChannel();
+const voiceMemberCount = computed(
+  () =>
+    (voiceSession.value?.participants.value ?? []).filter(
+      (participant) => participant.connected,
+    ).length,
+);
+const inVoice = computed(() => !!voiceSession.value);
+const voiceSpeaking = computed(() =>
+  (voiceSession.value?.participants.value ?? []).some(
+    (participant) => participant.speaking,
+  ),
+);
+const voiceBadgeLabel = computed(() =>
+  formatBadgeCount(voiceMemberCount.value),
+);
+
 // Pop-in/out for the count circles (bouncy enter, quick fade-shrink leave)
 const badgePopTransition = {
   enterActiveClass:
@@ -212,6 +234,7 @@ function isHubActive(hub: string) {
 const hubPanels = [
   { name: "notifications", component: NotificationsPanel },
   { name: "lobby", component: LobbyPanel },
+  { name: "voice", component: VoicePanel },
   {
     name: "chat",
     component: SidebarChatTab,
@@ -390,6 +413,38 @@ function onHubTouchEnd(e: TouchEvent) {
                 class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-0.5 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
               >
                 <AnimatedStat :value="lobbyBadgeLabel" />
+              </span>
+            </Transition>
+          </span>
+        </button>
+
+        <!-- Voice — who is in the channel, and the faders for them -->
+        <button
+          :ref="setHubButtonRef('voice')"
+          :class="[hubBtnClass('voice'), 'z-[1]']"
+          @click="selectHub('voice')"
+        >
+          <span class="relative inline-flex">
+            <Headphones
+              class="w-5 h-5 transition-colors"
+              :class="
+                inVoice && !isHubActive('voice') ? 'text-emerald-400' : ''
+              "
+            />
+            <Transition v-bind="badgePopTransition">
+              <!-- Member count, and it goes live green while anyone is talking:
+                   the strip is collapsed most of the time, so the badge is the
+                   only place the call can report itself. -->
+              <span
+                v-if="inVoice"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-0.5 text-[0.55rem] font-bold leading-none tabular-nums shadow-sm ring-1 ring-background origin-center transition-colors"
+                :class="
+                  voiceSpeaking
+                    ? 'bg-emerald-400 text-black'
+                    : 'bg-[hsl(var(--tac-amber))] text-black'
+                "
+              >
+                <AnimatedStat :value="voiceBadgeLabel" />
               </span>
             </Transition>
           </span>

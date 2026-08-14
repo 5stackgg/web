@@ -203,16 +203,22 @@ import Empty from "~/components/ui/empty/Empty.vue";
           class="underline-offset-2 hover:underline"
           @click.stop="showParticipants = !showParticipants"
         >
-          {{ participantsCount }} in chat
+          {{ participantsCount }} {{ $t("chat.in_chat") }}
         </button>
       </div>
-      <NuxtLink
-        v-if="isGlobalContext && matchInfo"
-        :to="`/matches/${(matchInfo as any).id}`"
-        class="flex items-center gap-1.5 text-xs text-primary hover:underline whitespace-nowrap"
-      >
-        {{ matchMetaText }}
-      </NuxtLink>
+      <div class="flex shrink-0 items-center gap-2">
+        <NuxtLink
+          v-if="isGlobalContext && matchInfo"
+          :to="`/matches/${(matchInfo as any).id}`"
+          class="flex items-center gap-1.5 text-xs text-primary hover:underline whitespace-nowrap"
+        >
+          {{ matchMetaText }}
+        </NuxtLink>
+        <!-- Controls that belong to this room rather than to chat -- the team
+             voice channel is the same room, so it rides this header instead of
+             standing as a second panel underneath the messages. -->
+        <slot name="header-actions"></slot>
+      </div>
     </div>
     <div
       v-if="showParticipants"

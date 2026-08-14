@@ -28,6 +28,10 @@ export type VoiceParticipant = {
   steamId: string;
   name: string | null;
   avatarUrl: string | null;
+  // In the call: has a live microphone published. The gate mutes by gain rather
+  // than by dropping the track, so this does not flicker with speech.
+  connected: boolean;
+  // Talking right now, as reported by their own gate over the socket.
   speaking: boolean;
 };
 

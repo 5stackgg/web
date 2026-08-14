@@ -16,11 +16,7 @@ export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
   const { openTab, closeTab, setUnread, tabs } = useChatTabs();
 
-  function ensureTab(
-    roomId: string,
-    peer: DirectMessagePeer,
-    unread = 0,
-  ) {
+  function ensureTab(roomId: string, peer: DirectMessagePeer, unread = 0) {
     openTab({
       id: directTabId(roomId),
       label: peer?.name ?? peer?.steam_id ?? roomId,
@@ -40,9 +36,9 @@ export function useIncomingDirectMessages() {
     }
   }
 
-  // The server is the source of truth for which conversations exist and what is
-  // unread in them -- useChatTabs keeps no storage of its own, so this doubles
-  // as tab persistence across reloads.
+  // The server is the source of truth for what is unread. Which conversations
+  // are *open* is a local preference (useChatTabPersistence), so a closed one
+  // only comes back when it has something new to say.
   async function hydrate() {
     const steamId = authStore.me?.steam_id;
 
@@ -63,6 +59,14 @@ export function useIncomingDirectMessages() {
       );
 
       for (const conversation of conversations) {
+        const isOpen = tabs.value.some(
+          (tab) => tab.id === directTabId(conversation.roomId),
+        );
+
+        if (!isOpen && conversation.unread <= 0) {
+          continue;
+        }
+
         ensureTab(conversation.roomId, conversation.peer, conversation.unread);
       }
     } catch {

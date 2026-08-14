@@ -34,8 +34,9 @@ const props = defineProps<{
   noiseSuppression: boolean;
   transmitting: boolean;
   monitoring: boolean;
-  connected: boolean;
-  previewing: boolean;
+  // The microphone this dialog is metering is open. Whether it is being sent
+  // anywhere is the host surface's business, not this component's.
+  live: boolean;
   unsupported: string | null;
   // Set when the microphone is live in a different channel. The settings still
   // apply -- they are shared -- but this dialog is not the one metering.
@@ -65,7 +66,7 @@ const thresholdPercent = computed(() => Math.round(props.threshold * 100));
 
 // Above the line the bar is the colour of what is actually being sent; below
 // it, muted — so the threshold reads as a decision, not just a marker.
-const live = computed(() => props.connected || props.previewing);
+const live = computed(() => props.live);
 
 const barClass = computed(() => {
   if (!live.value) {

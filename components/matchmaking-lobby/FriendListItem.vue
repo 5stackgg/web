@@ -113,6 +113,15 @@ function onMenuOpenChange(open: boolean) {
   else rightSidebar.resumeHoverClose();
 }
 
+// Removing a friend is one mis-click away from being destructive and there is
+// no undo — confirm before firing the delete.
+const confirmRemove = ref(false);
+watch(confirmRemove, (open) => onMenuOpenChange(open));
+
+onBeforeUnmount(() => {
+  if (confirmRemove.value) useRightSidebar().resumeHoverClose();
+});
+
 // Invite to my draft lobby (right-click) — only when I'm organizing an open
 // draft and this player isn't already in it.
 const myDraftGame = computed(() => useDraftGamesStore().myDraftGame as any);
@@ -306,11 +315,7 @@ const amberHover =
                       <TooltipTrigger as-child>
                         <Button
                           variant="ghost"
-                          :class="[
-                            actionBtn,
-                            amberHover,
-                            'opacity-0 focus-visible:opacity-100 group-hover/row:opacity-100',
-                          ]"
+                          :class="[actionBtn, amberHover]"
                           @click.stop="
                             openConversation({
                               steam_id: player.steam_id,
@@ -339,7 +344,7 @@ const amberHover =
                           ]"
                           :loading="loadingFor('remove')"
                           :disabled="busy"
-                          @click="removeFriend(player.steam_id)"
+                          @click.stop="confirmRemove = true"
                         >
                           <Trash2 class="h-4 w-4" />
                         </Button>
@@ -411,12 +416,38 @@ const amberHover =
         <ContextMenuItem
           v-if="isFriend"
           class="text-destructive"
-          @click="removeFriend(player.steam_id)"
+          @click="confirmRemove = true"
         >
           <Trash2 />
           <span>{{ $t("matchmaking.friends.remove") }}</span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
+
+    <AlertDialog v-model:open="confirmRemove">
+      <AlertDialogContent data-right-hub-interactive>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("matchmaking.friends.remove_confirm_title")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{
+              $t("matchmaking.friends.remove_confirm_description", {
+                name: player.name,
+              })
+            }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction
+            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            @click="removeFriend(player.steam_id)"
+          >
+            {{ $t("matchmaking.friends.remove") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>

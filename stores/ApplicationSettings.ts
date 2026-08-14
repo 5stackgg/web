@@ -354,7 +354,6 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-
     // Platform defaults new matches inherit; each match can still override.
     const cameraRequiredDefault = computed(() => {
       return (
@@ -377,6 +376,29 @@ export const useApplicationSettingsStore = defineStore(
       return (
         settings.value?.find(
           (setting) => setting.name === "public.voice_chat_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    // Per-surface gates, so an instance can keep party voice without putting a
+    // voice panel on a match. Each folds the master switch in: a surface is
+    // never on while voice itself is off.
+    const voiceChatLobbiesEnabled = computed(() => {
+      return (
+        voiceChatEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.voice_chat_lobbies_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    // Match pages and draft lobbies are the same channel (a match lineup), so
+    // they are the same setting.
+    const voiceChatMatchesEnabled = computed(() => {
+      return (
+        voiceChatEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.voice_chat_matches_enabled",
         )?.value !== "false"
       );
     });
@@ -639,6 +661,8 @@ export const useApplicationSettingsStore = defineStore(
       cameraRequiredDefault,
       cameraAllowTeammatesDefault,
       voiceChatEnabled,
+      voiceChatLobbiesEnabled,
+      voiceChatMatchesEnabled,
       newsLabel,
       postNewsRole,
       canPostNews,

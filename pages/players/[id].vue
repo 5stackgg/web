@@ -1922,29 +1922,34 @@ const playerHeroTeamChipDotClasses =
                   aria-hidden="true"
                 ></span>
               </NuxtLink>
-              <button
-                v-else-if="canAddFriend"
-                type="button"
-                :class="playerHeroAddFriendClasses"
-                :disabled="addFriendPending"
-                @click="addAsFriend"
-              >
-                <UserPlus class="h-4 w-4" />
-                <span>{{ $t("player.status.add_friend") }}</span>
-              </button>
-              <span v-else-if="isFriend" :class="playerHeroFriendBadgeClasses">
-                <UserCheck class="h-3.5 w-3.5" />
-                <span>{{ $t("pages.players.detail.friend") }}</span>
-              </span>
-              <button
-                v-if="canMessage"
-                type="button"
-                :class="playerHeroAddFriendClasses"
-                @click="messagePlayer"
-              >
-                <MessageSquare class="h-4 w-4" />
-                <span>{{ $t("chat.direct.message") }}</span>
-              </button>
+              <div v-else class="flex items-stretch gap-2">
+                <button
+                  v-if="canAddFriend"
+                  type="button"
+                  :class="[playerHeroAddFriendClasses, 'flex-1']"
+                  :disabled="addFriendPending"
+                  @click="addAsFriend"
+                >
+                  <UserPlus class="h-4 w-4" />
+                  <span>{{ $t("player.status.add_friend") }}</span>
+                </button>
+                <span
+                  v-else-if="isFriend"
+                  :class="[playerHeroFriendBadgeClasses, 'flex-1']"
+                >
+                  <UserCheck class="h-3.5 w-3.5" />
+                  <span>{{ $t("pages.players.detail.friend") }}</span>
+                </span>
+                <button
+                  v-if="canMessage"
+                  type="button"
+                  :class="[playerHeroAddFriendClasses, 'flex-1']"
+                  @click="messagePlayer"
+                >
+                  <MessageSquare class="h-4 w-4" />
+                  <span>{{ $t("chat.direct.message") }}</span>
+                </button>
+              </div>
             </div>
           </div>
         </header>

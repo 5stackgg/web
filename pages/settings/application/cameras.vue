@@ -11,7 +11,9 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
       <SettingsSection
         id="voice-chat"
         :title="$t('pages.settings.application.cameras.voice_section')"
-        :description="$t('pages.settings.application.cameras.voice_description')"
+        :description="
+          $t('pages.settings.application.cameras.voice_description')
+        "
         clickable-header
         @header-click="save('public.voice_chat_enabled', !voiceEnabled)"
       >
@@ -23,8 +25,51 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
             "
           />
         </template>
+
+        <!-- Where the join controls appear. Nothing left to decide once voice
+             is off, so the whole group goes with it. -->
+        <div v-if="voiceEnabled" class="space-y-4">
+          <div
+            class="flex cursor-pointer items-center justify-between gap-4"
+            @click="save('public.voice_chat_lobbies_enabled', !voiceLobbies)"
+          >
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">
+                {{ $t("pages.settings.application.cameras.voice_lobbies") }}
+              </p>
+              <p class="text-xs text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.cameras.voice_lobbies_description",
+                  )
+                }}
+              </p>
+            </div>
+            <Switch class="pointer-events-none" :model-value="voiceLobbies" />
+          </div>
+
+          <div
+            class="flex cursor-pointer items-center justify-between gap-4"
+            @click="save('public.voice_chat_matches_enabled', !voiceMatches)"
+          >
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">
+                {{ $t("pages.settings.application.cameras.voice_matches") }}
+              </p>
+              <p class="text-xs text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.cameras.voice_matches_description",
+                  )
+                }}
+              </p>
+            </div>
+            <Switch class="pointer-events-none" :model-value="voiceMatches" />
+          </div>
+        </div>
       </SettingsSection>
     </PageTransition>
+
     <!-- Cameras have no on/off of their own: an organizer turns them on per
          match. These only decide what a newly created match starts with. -->
     <PageTransition :delay="120">
@@ -95,7 +140,6 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
         </div>
       </SettingsSection>
     </PageTransition>
-
   </SettingsPage>
 </template>
 
@@ -112,11 +156,29 @@ export default {
     teammatesDefault(): boolean {
       return useApplicationSettingsStore().cameraAllowTeammatesDefault;
     },
+    settings() {
+      return useApplicationSettingsStore().settings;
+    },
     voiceEnabled(): boolean {
       return useApplicationSettingsStore().voiceChatEnabled;
     },
+    // Read raw rather than through the store's gates: a switch has to show what
+    // is stored, not what the master switch is currently forcing.
+    voiceLobbies(): boolean {
+      return this.enabledByDefault("public.voice_chat_lobbies_enabled");
+    },
+    voiceMatches(): boolean {
+      return this.enabledByDefault("public.voice_chat_matches_enabled");
+    },
   },
   methods: {
+    enabledByDefault(name: string) {
+      return (
+        (this.settings as Array<{ name: string; value: any }>).find(
+          (setting) => setting.name === name,
+        )?.value !== "false"
+      );
+    },
     async save(name: string, value: boolean) {
       await (this.$apollo as any).mutate({
         mutation: generateMutation({

@@ -23,8 +23,17 @@ import { useVoiceChat } from "@/composables/useVoiceChat";
 const { t } = useI18n();
 const { hasLobbyInvites } = useInvites();
 
-const voice = useVoiceChat(
-  () => (useMatchmakingStore().currentLobby as any)?.id,
+// Party voice can be turned off platform-wide without touching match voice.
+// Handing the channel a null id (rather than only hiding the controls) means
+// flipping the setting off also drops anyone already in the call.
+const voiceChatEnabled = computed(
+  () => useApplicationSettingsStore().voiceChatLobbiesEnabled,
+);
+
+const voice = useVoiceChat(() =>
+  voiceChatEnabled.value
+    ? (useMatchmakingStore().currentLobby as any)?.id
+    : null,
 );
 
 // Destructured so the template gets auto-unwrapped top-level bindings rather
@@ -71,7 +80,11 @@ const {
         </Transition>
 
         <!-- Squad ↔ create-lobby swap -->
-        <Transition name="lobby-swap" mode="out-in" @after-enter="onSquadEntered">
+        <Transition
+          name="lobby-swap"
+          mode="out-in"
+          @after-enter="onSquadEntered"
+        >
           <!-- Matchmaking lobby -->
           <div v-if="currentLobby" key="squad" class="flex flex-col gap-3">
             <div class="flex items-start justify-between gap-3">
@@ -132,7 +145,7 @@ const {
            it left an orphan line under the controls. -->
       <Transition name="lobby-item">
         <div
-          v-if="currentLobby && squadReady"
+          v-if="currentLobby && squadReady && voiceChatEnabled"
           class="mt-1 flex flex-col gap-2.5 border-t border-zinc-800 pt-3"
         >
           <div class="flex items-center justify-between gap-3">
@@ -172,50 +185,54 @@ const {
             </div>
 
             <div class="flex shrink-0 items-center gap-1.5">
-              <template v-if="voiceChatEnabled">
+              <Button
+                v-if="!voiceConnected"
+                size="xs"
+                variant="outline"
+                class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 px-3 text-[11px] hover:bg-zinc-800/80"
+                :loading="voiceConnecting"
+                :disabled="!!voiceUnsupported"
+                @click="joinVoice()"
+              >
+                <Mic class="h-3 w-3" />
+                {{ $t("layouts.lobby_panel.join_voice") }}
+              </Button>
+
+              <template v-else>
                 <Button
-                  v-if="!voiceConnected"
                   size="xs"
-                  variant="outline"
-                  class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 px-3 text-[11px] hover:bg-zinc-800/80"
-                  :loading="voiceConnecting"
-                  :disabled="!!voiceUnsupported"
-                  @click="joinVoice()"
+                  :variant="voiceMuted ? 'destructive' : 'secondary'"
+                  class="h-7 w-7 rounded-full p-0"
+                  :aria-label="
+                    voiceMuted
+                      ? $t('layouts.lobby_panel.unmute')
+                      : $t('layouts.lobby_panel.mute')
+                  "
+                  @click="toggleVoiceMute()"
                 >
-                  <Mic class="h-3 w-3" />
-                  {{ $t("layouts.lobby_panel.join_voice") }}
+                  <component
+                    :is="voiceMuted ? MicOff : Mic"
+                    class="h-3.5 w-3.5"
+                  />
                 </Button>
-
-                <template v-else>
-                  <Button
-                    size="xs"
-                    :variant="voiceMuted ? 'destructive' : 'secondary'"
-                    class="h-7 w-7 rounded-full p-0"
-                    :aria-label="
-                      voiceMuted
-                        ? $t('layouts.lobby_panel.unmute')
-                        : $t('layouts.lobby_panel.mute')
-                    "
-                    @click="toggleVoiceMute()"
-                  >
-                    <component
-                      :is="voiceMuted ? MicOff : Mic"
-                      class="h-3.5 w-3.5"
-                    />
-                  </Button>
-                  <Button
-                    size="xs"
-                    variant="ghost"
-                    class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-destructive"
-                    :aria-label="$t('layouts.lobby_panel.leave_voice')"
-                    @click="leaveVoice()"
-                  >
-                    <PhoneOff class="h-3.5 w-3.5" />
-                  </Button>
-                </template>
-
-                <VoiceSettingsButton :voice="voice" hub-aware />
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-destructive"
+                  :aria-label="$t('layouts.lobby_panel.leave_voice')"
+                  @click="leaveVoice()"
+                >
+                  <PhoneOff class="h-3.5 w-3.5" />
+                </Button>
               </template>
+
+              <VoiceSettingsButton
+                :pipeline="voice.pipeline"
+                :busy-channel="voice.conflict.value?.label ?? null"
+                hub-aware
+                class="text-zinc-400 hover:text-zinc-100"
+                @closed="voice.stopPreview()"
+              />
             </div>
           </div>
 
@@ -362,9 +379,6 @@ export default {
     },
     isElevatedUser() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
-    },
-    voiceChatEnabled() {
-      return useApplicationSettingsStore().voiceChatEnabled;
     },
     creatingLobby() {
       return useMatchmakingStore().creatingLobby;

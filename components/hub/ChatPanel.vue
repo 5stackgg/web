@@ -8,10 +8,12 @@ import {
   Sword,
   MessageSquare,
   ExternalLink,
+  X,
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
@@ -26,7 +28,7 @@ const props = defineProps<{
 const { t } = useI18n();
 const router = useRouter();
 
-const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread } =
+const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread, closeTab } =
   useChatTabs();
 
 const matchLobbyStore = useMatchLobbyStore();
@@ -37,12 +39,13 @@ const activeChatId = ref<string | null>(null);
 const orderedTabs = computed<ChatTab[]>(() => {
   // Your own rooms first. Organizer and tournament rooms are broadcast
   // channels, so landing on one by default put the least personal room in
-  // front of the lobby you are actually in.
+  // front of the lobby you are actually in. Conversations are not channels at
+  // all, so they sit below every channel behind a divider.
   const weight = (tab: ChatTab) => {
     if (tab.id.startsWith("matchmaking:")) return 0;
     if (tab.type === "match") return 1;
-    if (tab.type === "direct") return 2;
-    return 3;
+    if (tab.type === "direct") return 3;
+    return 2;
   };
   return [...tabs.value].sort((a, b) => {
     const wa = weight(a);
@@ -50,6 +53,12 @@ const orderedTabs = computed<ChatTab[]>(() => {
     if (wa !== wb) return wa - wb;
     return a.label.localeCompare(b.label);
   });
+});
+
+// The divider only earns its place when there are channels above it.
+const firstDirectTabId = computed(() => {
+  const index = orderedTabs.value.findIndex((tab) => tab.type === "direct");
+  return index > 0 ? orderedTabs.value[index].id : null;
 });
 
 const activeTab = computed<ChatTab | null>(() => {
@@ -193,6 +202,13 @@ function handleSelectRoom(tab: ChatTab) {
   resetUnread(tab.id);
 }
 
+// Only a click counts as choosing a room -- the auto-select watchers above are
+// filling a gap, and must not cancel a pending restore of the stored room.
+function handleRoomClick(tab: ChatTab) {
+  cancelChatTabRestore();
+  handleSelectRoom(tab);
+}
+
 function getRoomIcon(tab: ChatTab) {
   if (tab.type === "organizers" || tab.type === "tournament") return Megaphone;
   if (tab.id.startsWith("matchmaking:")) return Merge;
@@ -208,6 +224,23 @@ function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "match") return t("chat_room_subtitles.match");
   if (tab.type === "direct") return t("chat_room_subtitles.direct");
   return "";
+}
+
+function handleCloseRoom() {
+  const tab = activeTab.value;
+
+  if (!tab || tab.type !== "direct") {
+    return;
+  }
+
+  // Read it server-side on the way out, otherwise hydrate() treats the leftover
+  // unread as "something new" and reopens the conversation on the next load.
+  socket.markLobbyRead(tab.type, tab.lobbyId);
+  closeTab(tab.id);
+
+  // closeTab already picks the neighbouring tab; follow it so the panel isn't
+  // left rendering a room that no longer exists.
+  activeChatId.value = activeTabId.value;
 }
 
 function handlePopOut() {
@@ -275,6 +308,10 @@ function handlePopOut() {
 
         <TooltipProvider>
           <template v-for="tab in orderedTabs" :key="tab.id">
+            <div
+              v-if="tab.id === firstDirectTabId"
+              class="my-1 h-px w-8 shrink-0 bg-border"
+            />
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
@@ -286,7 +323,7 @@ function handlePopOut() {
                       : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100'
                   "
                   type="button"
-                  @click="handleSelectRoom(tab)"
+                  @click="handleRoomClick(tab)"
                 >
                   <div
                     class="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-inherit transition-colors"
@@ -400,6 +437,26 @@ function handlePopOut() {
                   class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
                 >
                   {{ $t("layouts.chat_panel.pop_out_tooltip") }}
+                </TooltipContent>
+              </Tooltip>
+
+              <!-- Channels are derived from what you are in, so only a
+                   conversation is yours to close. -->
+              <Tooltip v-if="activeTab?.type === 'direct'">
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card/50 text-muted-foreground hover:bg-destructive/15 hover:text-destructive hover:border-destructive/40 transition-colors"
+                    @click="handleCloseRoom"
+                  >
+                    <X class="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
+                >
+                  {{ $t("layouts.chat_panel.close_tooltip") }}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

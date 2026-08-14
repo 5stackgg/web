@@ -144,7 +144,10 @@ const commitQuietHours = async () => {
     return;
   }
 
-  if (start === (quietHours.value.start ?? "") && end === (quietHours.value.end ?? "")) {
+  if (
+    start === (quietHours.value.start ?? "") &&
+    end === (quietHours.value.end ?? "")
+  ) {
     return;
   }
 
@@ -231,10 +234,10 @@ const handlePreferenceToggle = async (
           :role="canTogglePush ? 'button' : undefined"
           :tabindex="canTogglePush ? 0 : undefined"
           @click="canTogglePush && handlePushToggle(!push.subscribed.value)"
-          @keydown.enter.prevent="
+          @keydown.enter.self.prevent="
             canTogglePush && handlePushToggle(!push.subscribed.value)
           "
-          @keydown.space.prevent="
+          @keydown.space.self.prevent="
             canTogglePush && handlePushToggle(!push.subscribed.value)
           "
         >

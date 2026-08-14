@@ -53,7 +53,6 @@ function asPlayer(participant: (typeof inCall.value)[number]) {
   >
     <div class="flex shrink-0 items-center">
       <TransitionGroup
-      appear
         enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
         leave-active-class="transition-[opacity,transform] [transition-duration:160ms] ease-in motion-reduce:![transition-duration:1ms]"
         move-class="transition-transform [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
@@ -112,7 +111,6 @@ function asPlayer(participant: (typeof inCall.value)[number]) {
   </div>
 
   <TransitionGroup
-      appear
     v-else-if="roster.length"
     tag="div"
     class="space-y-0.5"

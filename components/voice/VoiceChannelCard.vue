@@ -136,6 +136,13 @@ const errorDetail = computed(() =>
     ? session.errorDetail.value
     : null,
 );
+// Connecting is the button's state, not the card's: the layout holds the
+// not-joined shape until the connection is actually up, so a slow join is a
+// spinner on the thing that was clicked rather than an empty call panel.
+const connecting = computed(
+  () => session.targetId.value === props.channelId && session.connecting.value,
+);
+
 const muted = computed(() => held.value?.muted ?? session.muted.value);
 const videoOn = computed(() => session.videoOn.value);
 const speaking = computed(() =>
@@ -165,6 +172,47 @@ const conflict = computed(() => {
 });
 
 const switchPrompt = ref(false);
+
+// The joined/not-joined swap is one shell whose height is measured and
+// tweened: frozen where it was while the leaving side fades, then eased to the
+// entering side's real height as it fades in. Height lives on one element with
+// one clock -- the previous version collapsed a grid on each side at once, so
+// mid-swap the card was briefly the sum of both heights and snapped at the
+// end. At rest the shell is height:auto and unclipped, so mid-call growth
+// stays CallGrid's own animation and a speaking ring is never cut off.
+const swapShell = ref<HTMLElement | null>(null);
+
+function freezeSwapHeight() {
+  const shell = swapShell.value;
+
+  if (!shell) {
+    return;
+  }
+
+  shell.style.height = `${shell.getBoundingClientRect().height}px`;
+  shell.classList.add("voice-swap-animating");
+}
+
+function tweenSwapHeight(entering: Element) {
+  const shell = swapShell.value;
+
+  if (!shell) {
+    return;
+  }
+
+  shell.style.height = `${(entering as HTMLElement).offsetHeight}px`;
+}
+
+function releaseSwapHeight() {
+  const shell = swapShell.value;
+
+  if (!shell) {
+    return;
+  }
+
+  shell.style.height = "";
+  shell.classList.remove("voice-swap-animating");
+}
 
 // Joining is a switch when you are already somewhere else, and the session
 // retargets in place rather than refusing -- so without this, Join silently
@@ -239,7 +287,7 @@ async function toggleVideo() {
           </span>
         </span>
 
-        <div class="flex shrink-0 items-center gap-1.5">
+        <div class="flex shrink-0 items-center">
           <span class="relative inline-flex h-1.5 w-1.5">
             <span
               v-if="speaking"
@@ -256,7 +304,7 @@ async function toggleVideo() {
               "
             ></span>
           </span>
-          <span class="whitespace-nowrap text-[10px] text-zinc-500">
+          <span class="ml-1.5 whitespace-nowrap text-[10px] text-zinc-500">
             {{ $t("layouts.voice_panel.connected", { count: inCall.length }) }}
           </span>
 
@@ -266,71 +314,86 @@ async function toggleVideo() {
                and a menu costs two clicks to reach a one-click toggle. Watching
                yourself back left entirely: it belongs on the picture it
                changes, so it lives on your own tile. -->
-          <template v-if="joined">
-            <FiveStackToolTip
-              v-if="canControlVideo && !videoOn"
-              as-child
-              :delay-duration="120"
-              side="bottom"
-            >
-              <template #trigger>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  class="h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                  :aria-label="$t('voice.call.phone.use_phone')"
-                  @click="qrRef?.toggle()"
+          <!-- Their column animates 0fr -> 1fr with the join, so the member
+               count slides over as the buttons arrive instead of jumping when
+               three of them pop into a settled header. The leading gap lives
+               inside the clipped cell so even that six pixels is animated. -->
+          <Transition
+            enter-active-class="voice-tools-anim"
+            leave-active-class="voice-tools-anim"
+            enter-from-class="voice-tools-collapsed"
+            leave-to-class="voice-tools-collapsed"
+          >
+            <div v-if="joined" class="grid grid-cols-[1fr]">
+              <div
+                class="flex min-w-0 items-center gap-1.5 overflow-hidden pl-1.5"
+              >
+                <FiveStackToolTip
+                  v-if="canControlVideo && !videoOn"
+                  as-child
+                  :delay-duration="120"
+                  side="bottom"
                 >
-                  <Smartphone class="h-3.5 w-3.5" />
-                </Button>
-              </template>
-              {{ $t("voice.call.phone.use_phone") }}
-            </FiveStackToolTip>
-
-            <FiveStackToolTip
-              v-if="videoAllowed"
-              as-child
-              :delay-duration="120"
-              side="bottom"
-            >
-              <template #trigger>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  class="h-6 w-6 shrink-0 rounded-full p-0"
-                  :class="
+                  <template #trigger>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      class="h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                      :aria-label="$t('voice.call.phone.use_phone')"
+                      @click="qrRef?.toggle()"
+                    >
+                      <Smartphone class="h-3.5 w-3.5" />
+                    </Button>
+                  </template>
+                  {{ $t("voice.call.phone.use_phone") }}
+                </FiveStackToolTip>
+    
+                <FiveStackToolTip
+                  v-if="videoAllowed"
+                  as-child
+                  :delay-duration="120"
+                  side="bottom"
+                >
+                  <template #trigger>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      class="h-6 w-6 shrink-0 rounded-full p-0"
+                      :class="
+                        pip.active.value
+                          ? 'text-[hsl(var(--tac-amber))]'
+                          : 'text-muted-foreground hover:text-foreground'
+                      "
+                      :aria-label="$t('voice.call.pop_out')"
+                      @click="pip.toggle()"
+                    >
+                      <PictureInPicture2 class="h-3.5 w-3.5" />
+                    </Button>
+                  </template>
+                  {{
                     pip.active.value
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-muted-foreground hover:text-foreground'
-                  "
-                  :aria-label="$t('voice.call.pop_out')"
-                  @click="pip.toggle()"
-                >
-                  <PictureInPicture2 class="h-3.5 w-3.5" />
-                </Button>
-              </template>
-              {{
-                pip.active.value
-                  ? $t("voice.call.pop_in")
-                  : $t("voice.call.pop_out")
-              }}
-            </FiveStackToolTip>
-
-            <FiveStackToolTip as-child :delay-duration="120" side="bottom">
-              <template #trigger>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  class="-mr-1 h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                  :aria-label="$t('voice.call.device_settings')"
-                  @click="navigateTo('/settings/voice')"
-                >
-                  <Settings2 class="h-3.5 w-3.5" />
-                </Button>
-              </template>
-              {{ $t("voice.call.device_settings") }}
-            </FiveStackToolTip>
-          </template>
+                      ? $t("voice.call.pop_in")
+                      : $t("voice.call.pop_out")
+                  }}
+                </FiveStackToolTip>
+    
+                <FiveStackToolTip as-child :delay-duration="120" side="bottom">
+                  <template #trigger>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      class="-mr-1 h-6 w-6 shrink-0 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                      :aria-label="$t('voice.call.device_settings')"
+                      @click="navigateTo('/settings/voice')"
+                    >
+                      <Settings2 class="h-3.5 w-3.5" />
+                    </Button>
+                  </template>
+                  {{ $t("voice.call.device_settings") }}
+                </FiveStackToolTip>
+              </div>
+            </div>
+          </Transition>
         </div>
       </div>
 
@@ -383,22 +446,28 @@ async function toggleVideo() {
 
         <!-- Faces, or avatars for anyone without a camera. Only ever carries
              video in the tab holding the call: the streams are pulled by that
-             session, and a MediaStream does not cross to another tab. -->
-        <!-- Both halves collapse and expand their own height, at the same time.
-             Sharing one grid cell kept them in place but a leaving half still
-             occupied its full height for the whole fade, so the card stayed
-             tall and then snapped shut the instant it finished. Animating
-             grid-template-rows on each side means the height is simply
-             interpolated between them -- one continuous movement, no step at
-             either end. -->
-        <Transition
-          enter-active-class="voice-swap"
-          leave-active-class="voice-swap voice-swap-leaving"
-          enter-from-class="voice-swap-collapsed"
-          leave-to-class="voice-swap-collapsed"
-        >
-          <div v-if="joined" class="grid grid-rows-[1fr]">
-            <div class="min-h-0">
+             session, and a MediaStream does not cross to another tab. Before
+             joining, who is in there instead -- so the answer to "is this
+             worth joining" is on screen before the decision rather than after
+             it. -->
+        <!-- One motion, out-in: the old side fades where it stands, then the
+             shell's height eases to the new side's measured height while it
+             fades in. The shell itself never leaves the column, so the flex
+             gaps around it hold still for the whole trade. -->
+        <div ref="swapShell">
+          <Transition
+            mode="out-in"
+            enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+            leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+            enter-from-class="opacity-0 translate-y-1"
+            leave-to-class="opacity-0"
+            @before-leave="freezeSwapHeight"
+            @leave-cancelled="releaseSwapHeight"
+            @enter="tweenSwapHeight"
+            @after-enter="releaseSwapHeight"
+            @enter-cancelled="releaseSwapHeight"
+          >
+            <div v-if="joined" key="call">
               <CallGrid
                 :participants="participants"
                 :peer-video="owned ? session.peerVideo.value : new Map()"
@@ -410,23 +479,11 @@ async function toggleVideo() {
                 :on-toggle-self-mute="registry.toggleSessionMute"
               />
             </div>
-          </div>
-        </Transition>
-
-        <!-- Not in it yet: who is, so the answer to "is this worth joining" is
-             on screen before the decision rather than after it. -->
-        <Transition
-          enter-active-class="voice-swap"
-          leave-active-class="voice-swap voice-swap-leaving"
-          enter-from-class="voice-swap-collapsed"
-          leave-to-class="voice-swap-collapsed"
-        >
-          <div v-if="!joined" class="grid grid-rows-[1fr]">
-            <div class="min-h-0">
+            <div v-else key="preview">
               <VoiceRosterPreview :channel-id="channelId" />
             </div>
-          </div>
-        </Transition>
+          </Transition>
+        </div>
 
         <!-- The three things done during a call, sized to be hit without
              looking, in the place every call app puts them.
@@ -446,9 +503,12 @@ async function toggleVideo() {
           class="flex items-center justify-center rounded-lg border border-border/60 bg-background/50 px-2 py-1.5"
         >
           <div class="flex min-h-9 w-full items-center justify-center">
+            <!-- The same clock as the main swap above: both leave in 110ms and
+                 enter in 240ms, so the bar's contents and the panel land
+                 together instead of the bar finishing on its own beat. -->
             <Transition
               mode="out-in"
-              enter-active-class="transition-[opacity,transform] [transition-duration:200ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+              enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
               leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
               enter-from-class="opacity-0 scale-95"
               leave-to-class="opacity-0 scale-95"
@@ -458,6 +518,7 @@ async function toggleVideo() {
                   size="xs"
                   variant="ghost"
                   class="h-9 w-full gap-1.5 rounded-md text-[11px] text-zinc-300 hover:bg-zinc-800/60 hover:text-white"
+                  :loading="connecting"
                   @click="onJoin"
                 >
                   <Mic class="h-3.5 w-3.5" />
@@ -565,31 +626,30 @@ async function toggleVideo() {
 </template>
 
 <style scoped>
-/* The two halves of the join/leave swap. grid-template-rows rather than
-   max-height so nothing has a ceiling to outgrow, and clipped only while
-   animating -- left on, it would cut a speaking ring off the top row. */
-.voice-swap {
-  transition:
-    grid-template-rows 0.26s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.24s ease;
-}
-/* Leaving fades in a third of the time it takes to close, so the half is
-   already invisible while the height finishes -- otherwise you watch an avatar
-   get clipped in half on the way down. */
-.voice-swap.voice-swap-leaving {
-  transition:
-    grid-template-rows 0.26s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.09s ease;
-}
-.voice-swap > * {
+/* On the swap shell only while the two states trade places: the height is
+   frozen, then tweened to the entering side's measured height. Both the tween
+   and the clipping end at rest, so nothing has a ceiling to outgrow mid-call
+   and a speaking ring is never cut off. */
+.voice-swap-animating {
   overflow: hidden;
+  transition: height 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.voice-swap-collapsed {
-  grid-template-rows: 0fr;
+
+/* The header tools collapse their column the way the swap collapses height:
+   0fr <-> 1fr, clipped by the cell while it moves. */
+.voice-tools-anim {
+  transition:
+    grid-template-columns 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease;
+}
+.voice-tools-collapsed {
+  grid-template-columns: 0fr;
   opacity: 0;
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .voice-swap {
+  .voice-swap-animating,
+  .voice-tools-anim {
     transition-duration: 1ms;
   }
 }

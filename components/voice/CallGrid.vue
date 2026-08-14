@@ -142,7 +142,6 @@ const columns = computed(() => {
       <div v-if="shown.length" class="grid grid-rows-[1fr]">
         <div class="call-collapse-clip">
     <TransitionGroup
-      appear
       tag="div"
       :class="['grid gap-2', compact ? '' : 'min-h-0', columns]"
       enter-active-class="transition-[opacity,transform] [transition-duration:320ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
@@ -179,7 +178,6 @@ const columns = computed(() => {
          own height keeps it exactly where it is and closes the gap over the
          same duration, which is what the absolute version was trying to buy. -->
     <TransitionGroup
-      appear
       tag="div"
       class="flex flex-col gap-1.5 empty:hidden"
       enter-active-class="transition-[opacity,transform] [transition-duration:300ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"

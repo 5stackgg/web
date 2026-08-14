@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
@@ -80,6 +80,36 @@ onMounted(async () => {
   await loadQuietHours();
 });
 
+// Typing into a time input fires `change` per segment, so the inputs edit a
+// local draft. Only a complete window (or a full reset) is worth a request --
+// the backend rejects a half-set window with a 400.
+const draftQuietStart = ref("");
+const draftQuietEnd = ref("");
+
+watch(
+  quietHours,
+  (stored) => {
+    draftQuietStart.value = stored.start ?? "";
+    draftQuietEnd.value = stored.end ?? "";
+  },
+  { immediate: true, deep: true },
+);
+
+const quietHoursIncomplete = computed(
+  () => Boolean(draftQuietStart.value) !== Boolean(draftQuietEnd.value),
+);
+
+const quietHoursSet = computed(
+  () => Boolean(quietHours.value.start) || Boolean(quietHours.value.end),
+);
+
+const canResetQuietHours = computed(
+  () =>
+    quietHoursSet.value ||
+    Boolean(draftQuietStart.value) ||
+    Boolean(draftQuietEnd.value),
+);
+
 const saveQuietHours = async (
   start: string | null,
   end: string | null,
@@ -104,6 +134,35 @@ const saveQuietHours = async (
     });
   }
 };
+
+const commitQuietHours = async () => {
+  const start = draftQuietStart.value;
+  const end = draftQuietEnd.value;
+
+  // Half a window isn't a window yet -- wait for the other field.
+  if (!start || !end) {
+    return;
+  }
+
+  if (start === (quietHours.value.start ?? "") && end === (quietHours.value.end ?? "")) {
+    return;
+  }
+
+  await saveQuietHours(start, end);
+};
+
+const resetQuietHours = async () => {
+  draftQuietStart.value = "";
+  draftQuietEnd.value = "";
+
+  if (quietHoursSet.value) {
+    await saveQuietHours(null, null);
+  }
+};
+
+const canTogglePush = computed(
+  () => push.supported.value && !push.isDenied.value && !push.busy.value,
+);
 
 const handlePushToggle = async (enabled: boolean) => {
   if (enabled) {
@@ -163,7 +222,21 @@ const handlePreferenceToggle = async (
            decision on this page that does anything on its own. -->
       <section class="space-y-3">
         <div
-          class="flex items-center justify-between gap-4 rounded-lg border border-border/60 bg-card/40 p-4 [backdrop-filter:blur(6px)]"
+          class="flex items-center justify-between gap-4 rounded-lg border border-border/60 bg-card/40 p-4 [backdrop-filter:blur(6px)] transition-colors duration-150"
+          :class="
+            canTogglePush
+              ? 'cursor-pointer select-none hover:bg-card/60'
+              : 'cursor-not-allowed'
+          "
+          :role="canTogglePush ? 'button' : undefined"
+          :tabindex="canTogglePush ? 0 : undefined"
+          @click="canTogglePush && handlePushToggle(!push.subscribed.value)"
+          @keydown.enter.prevent="
+            canTogglePush && handlePushToggle(!push.subscribed.value)
+          "
+          @keydown.space.prevent="
+            canTogglePush && handlePushToggle(!push.subscribed.value)
+          "
         >
           <div class="flex items-start gap-3">
             <div
@@ -195,9 +268,8 @@ const handlePreferenceToggle = async (
           </div>
           <Switch
             :model-value="push.subscribed.value"
-            :disabled="
-              !push.supported.value || push.isDenied.value || push.busy.value
-            "
+            :disabled="!canTogglePush"
+            @click.stop
             @update:model-value="handlePushToggle"
           />
         </div>
@@ -254,60 +326,69 @@ const handlePreferenceToggle = async (
           }}
         </p>
         <div
-          class="flex flex-wrap items-center gap-4 rounded-lg border border-border/60 bg-card/30 px-4 py-3"
+          class="space-y-2 rounded-lg border border-border/60 bg-card/30 px-4 py-3"
         >
-          <label class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-4">
+            <label class="flex items-center gap-2">
+              <span
+                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                {{
+                  $t("pages.settings.notification_preferences.quiet_hours.from")
+                }}
+              </span>
+              <input
+                v-model="draftQuietStart"
+                type="time"
+                class="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm tabular-nums"
+                @change="commitQuietHours"
+                @blur="commitQuietHours"
+              />
+            </label>
+            <label class="flex items-center gap-2">
+              <span
+                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                {{
+                  $t("pages.settings.notification_preferences.quiet_hours.to")
+                }}
+              </span>
+              <input
+                v-model="draftQuietEnd"
+                type="time"
+                class="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm tabular-nums"
+                @change="commitQuietHours"
+                @blur="commitQuietHours"
+              />
+            </label>
             <span
-              class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+              v-if="quietHours.timezone"
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground/60"
             >
-              {{ $t("pages.settings.notification_preferences.quiet_hours.from") }}
+              {{ quietHours.timezone }}
             </span>
-            <input
-              type="time"
-              :value="quietHours.start ?? ''"
-              class="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm tabular-nums"
-              @change="
-                (event) =>
-                  saveQuietHours(
-                    (event.target as HTMLInputElement).value,
-                    quietHours.end,
-                  )
-              "
-            />
-          </label>
-          <label class="flex items-center gap-2">
-            <span
-              class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+            <button
+              v-if="canResetQuietHours"
+              type="button"
+              class="ml-auto font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              @click="resetQuietHours"
             >
-              {{ $t("pages.settings.notification_preferences.quiet_hours.to") }}
-            </span>
-            <input
-              type="time"
-              :value="quietHours.end ?? ''"
-              class="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm tabular-nums"
-              @change="
-                (event) =>
-                  saveQuietHours(
-                    quietHours.start,
-                    (event.target as HTMLInputElement).value,
-                  )
-              "
-            />
-          </label>
-          <span
-            v-if="quietHours.timezone"
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground/60"
+              {{
+                $t("pages.settings.notification_preferences.quiet_hours.reset")
+              }}
+            </button>
+          </div>
+
+          <!-- Half a window saves nothing, so say so rather than firing a
+               request the backend rejects. -->
+          <p
+            v-if="quietHoursIncomplete"
+            class="text-xs text-[hsl(var(--tac-amber))]"
           >
-            {{ quietHours.timezone }}
-          </span>
-          <button
-            v-if="quietHours.start || quietHours.end"
-            type="button"
-            class="ml-auto font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-            @click="saveQuietHours(null, null)"
-          >
-            {{ $t("pages.settings.notification_preferences.quiet_hours.clear") }}
-          </button>
+            {{
+              $t("pages.settings.notification_preferences.quiet_hours.incomplete")
+            }}
+          </p>
         </div>
       </section>
 

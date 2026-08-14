@@ -1673,7 +1673,8 @@
           "description": "Push notifications stay silent during this window. They still appear in your alert bell.",
           "from": "From",
           "to": "To",
-          "clear": "Clear"
+          "reset": "Reset",
+          "incomplete": "Set both a start and an end time to save quiet hours."
         }
       },
       "notifications": {

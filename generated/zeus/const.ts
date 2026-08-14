@@ -37849,9 +37849,6 @@ export const ReturnTypes: Record<string,any> = {
 		stream_url:"String",
 		success:"Boolean"
 	},
-	WebPushKeysOutput:{
-		success:"Boolean"
-	},
 	WebPushPlatformCount:{
 		devices:"Int",
 		platform:"String"
@@ -44029,7 +44026,6 @@ export const ReturnTypes: Record<string,any> = {
 		denyInvite:"SuccessOutput",
 		denyNameChange:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
-		generateWebPushKeys:"WebPushKeysOutput",
 		getLiveStreamSpecState:"LiveStreamSpecState",
 		getTestUploadLink:"GetTestUploadResponse",
 		grantAward:"AwardRecipient",

@@ -1747,10 +1747,6 @@ export type ValueTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
-	["WebPushKeysOutput"]: AliasType<{
-	success?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	["WebPushPlatformCount"]: AliasType<{
 	devices?:boolean | `@${string}`,
 	platform?:boolean | `@${string}`,
@@ -24384,8 +24380,6 @@ delete_v_team_stage_results_by_pk?: [{	tournament_stage_id: ValueTypes["uuid"] |
 denyInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 denyNameChange?: [{	name: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 forfeitMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
-	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
-	generateWebPushKeys?:ValueTypes["WebPushKeysOutput"],
 getLiveStreamSpecState?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ValueTypes["GetTestUploadResponse"],
 grantAward?: [{	award_id: ValueTypes["uuid"] | Variable<any, string>,	event_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	note?: string | undefined | null | Variable<any, string>,	player_steam_id?: string | undefined | null | Variable<any, string>,	season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["AwardRecipient"]],
@@ -67380,10 +67374,6 @@ export type ResolverInputTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
-	["WebPushKeysOutput"]: AliasType<{
-	success?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	["WebPushPlatformCount"]: AliasType<{
 	devices?:boolean | `@${string}`,
 	platform?:boolean | `@${string}`,
@@ -90017,8 +90007,6 @@ delete_v_team_stage_results_by_pk?: [{	tournament_stage_id: ResolverInputTypes["
 denyInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverInputTypes["SuccessOutput"]],
 denyNameChange?: [{	name: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["SuccessOutput"]],
 forfeitMatch?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
-	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
-	generateWebPushKeys?:ResolverInputTypes["WebPushKeysOutput"],
 getLiveStreamSpecState?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["LiveStreamSpecState"]],
 	getTestUploadLink?:ResolverInputTypes["GetTestUploadResponse"],
 grantAward?: [{	award_id: ResolverInputTypes["uuid"],	event_id?: ResolverInputTypes["uuid"] | undefined | null,	league_season_id?: ResolverInputTypes["uuid"] | undefined | null,	note?: string | undefined | null,	player_steam_id?: string | undefined | null,	season_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null,	tournament_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["AwardRecipient"]],
@@ -132927,9 +132915,6 @@ export type ModelTypes = {
 	stream_url: string,
 	success: boolean
 };
-	["WebPushKeysOutput"]: {
-		success: boolean
-};
 	["WebPushPlatformCount"]: {
 		devices: number,
 	platform: string
@@ -153820,8 +153805,6 @@ export type ModelTypes = {
 	denyInvite?: ModelTypes["SuccessOutput"] | undefined | null,
 	denyNameChange?: ModelTypes["SuccessOutput"] | undefined | null,
 	forfeitMatch?: ModelTypes["SuccessOutput"] | undefined | null,
-	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
-	generateWebPushKeys?: ModelTypes["WebPushKeysOutput"] | undefined | null,
 	/** Live pod GSI snapshot — slots, sides, alive/dead. Drives the stream-deck. */
 	getLiveStreamSpecState?: ModelTypes["LiveStreamSpecState"] | undefined | null,
 	getTestUploadLink: ModelTypes["GetTestUploadResponse"],
@@ -190702,10 +190685,6 @@ export type GraphQLTypes = {
 	stream_url: string,
 	success: boolean
 };
-	["WebPushKeysOutput"]: {
-	__typename: "WebPushKeysOutput",
-	success: boolean
-};
 	["WebPushPlatformCount"]: {
 	__typename: "WebPushPlatformCount",
 	devices: number,
@@ -212807,8 +212786,6 @@ export type GraphQLTypes = {
 	denyInvite?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	denyNameChange?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	forfeitMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
-	/** Generates a fresh self-signed VAPID keypair; invalidates every existing subscription */
-	generateWebPushKeys?: GraphQLTypes["WebPushKeysOutput"] | undefined | null,
 	/** Live pod GSI snapshot — slots, sides, alive/dead. Drives the stream-deck. */
 	getLiveStreamSpecState?: GraphQLTypes["LiveStreamSpecState"] | undefined | null,
 	getTestUploadLink: GraphQLTypes["GetTestUploadResponse"],

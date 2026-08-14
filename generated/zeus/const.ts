@@ -37849,12 +37849,19 @@ export const ReturnTypes: Record<string,any> = {
 		stream_url:"String",
 		success:"Boolean"
 	},
-	WebPushKeysOutput:{
-		success:"Boolean"
+	WebPushPlatformCount:{
+		devices:"Int",
+		platform:"String"
 	},
 	WebPushStatusOutput:{
+		active_7d:"Int",
 		configured:"Boolean",
+		last_delivered_at:"timestamptz",
 		managed_by_environment:"Boolean",
+		never_delivered:"Int",
+		new_7d:"Int",
+		platforms:"WebPushPlatformCount",
+		players:"Int",
 		subscriptions:"Int"
 	},
 	_map_pool:{
@@ -44019,7 +44026,6 @@ export const ReturnTypes: Record<string,any> = {
 		denyInvite:"SuccessOutput",
 		denyNameChange:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
-		generateWebPushKeys:"WebPushKeysOutput",
 		getLiveStreamSpecState:"LiveStreamSpecState",
 		getTestUploadLink:"GetTestUploadResponse",
 		grantAward:"AwardRecipient",

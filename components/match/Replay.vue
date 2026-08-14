@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ExternalLink, Box } from "lucide-vue-next";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 </script>
 
 <template>
@@ -53,7 +53,7 @@ import cleanMapName from "~/utilities/cleanMapName";
               <div
                 class="font-mono text-sm font-bold tracking-[0.18em] uppercase text-white truncate"
               >
-                {{ cleanMapName(m.map.name) }}
+                {{ mapLabel(m.map) }}
               </div>
               <div
                 v-if="typeof m.lineup_1_score === 'number'"

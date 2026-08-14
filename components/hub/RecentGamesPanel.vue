@@ -2,7 +2,6 @@
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
 <template>
@@ -114,7 +113,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           >
             <div
               v-for="map in summaryStats.mostPlayedMaps"
-              :key="map.name"
+              :key="map.key"
               class="relative w-full h-7 rounded-md border border-border bg-muted/30 overflow-hidden flex items-center"
             >
               <div
@@ -125,7 +124,7 @@ import cleanMapName from "~/utilities/cleanMapName";
                 class="relative z-10 flex items-center justify-between px-2 text-[11px]"
               >
                 <span class="first-letter:uppercase truncate mr-2">
-                  {{ cleanMapName(map.name) }}
+                  {{ map.label }}
                 </span>
                 <span class="text-muted-foreground text-[10px]">
                   ×{{ map.count }}
@@ -207,6 +206,7 @@ import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { eloFields } from "~/graphql/eloFields";
 import { playerMatchAggStatsQuery } from "~/graphql/playerMatchAggStatsGraphql";
+import mapLabel from "~/utilities/mapLabel";
 
 export default {
   data() {
@@ -229,7 +229,7 @@ export default {
         losses: 0,
         draws: 0,
         winRate: 0,
-        mostPlayedMaps: [] as { name: string; count: number }[],
+        mostPlayedMaps: [] as { key: string; label: string; count: number }[],
       };
 
       const mySteamId = (this as any).me?.steam_id;
@@ -239,7 +239,7 @@ export default {
         return stats;
       }
 
-      const mapCounts: Record<string, number> = {};
+      const mapCounts = new Map<string, { label: string; count: number }>();
       let countedMatches = 0;
 
       for (const match of matches) {
@@ -279,9 +279,18 @@ export default {
         // Collect map counts
         if (Array.isArray(match.match_maps)) {
           for (const mm of match.match_maps) {
-            const name = mm?.map?.name;
-            if (!name) continue;
-            mapCounts[name] = (mapCounts[name] || 0) + 1;
+            const map = mm?.map;
+            const key = String(map?.id ?? map?.name ?? "");
+            const label = mapLabel(map);
+            if (!key || !label) {
+              continue;
+            }
+            const current = mapCounts.get(key);
+            if (current) {
+              current.count += 1;
+            } else {
+              mapCounts.set(key, { label, count: 1 });
+            }
           }
         }
       }
@@ -291,10 +300,10 @@ export default {
         stats.winRate = Math.round((stats.wins / countedMatches) * 100);
       }
 
-      stats.mostPlayedMaps = Object.entries(mapCounts)
-        .sort((a, b) => b[1] - a[1])
+      stats.mostPlayedMaps = Array.from(mapCounts.entries())
+        .sort((a, b) => b[1].count - a[1].count)
         .slice(0, 3)
-        .map(([name, count]) => ({ name, count }));
+        .map(([key, { label, count }]) => ({ key, label, count }));
 
       return stats;
     },
@@ -326,7 +335,7 @@ export default {
         (this as any).statsByMatch = new Map();
       }
     },
-    barWidth(map: { name: string; count: number }) {
+    barWidth(map: { key: string; label: string; count: number }) {
       const max = (this as any).summaryStats?.mostPlayedMaps?.[0]?.count || 1;
       const clamped = Math.max(0, Math.min(map.count, max));
       const percentage = (clamped / max) * 100;

@@ -91,6 +91,10 @@ const selectedPath = computed({
   },
 });
 
+const contentRow = ref<HTMLElement | null>(null);
+
+useScrollIntoViewOnChange(contentRow, () => route.path);
+
 function linkDiscord() {
   if (hasDiscordLinked.value) return;
   window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(window.location.toString())}`;
@@ -126,8 +130,13 @@ async function unlinkDiscord() {
     }}</template>
   </TacticalPageHeader>
   <Separator v-if="showSeparators" class="my-6" />
-  <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-    <aside class="w-full shrink-0 lg:w-auto">
+  <div
+    ref="contentRow"
+    class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0"
+  >
+    <aside
+      class="w-full shrink-0 lg:sticky lg:top-4 lg:max-h-[calc(var(--sidebar-height,100svh)-2rem)] lg:w-auto lg:self-start lg:overflow-y-auto"
+    >
       <!-- Mobile: single dropdown -->
       <div class="lg:hidden">
         <Select v-model="selectedPath">
@@ -177,7 +186,9 @@ async function unlinkDiscord() {
         </template>
       </SettingsSideTabs>
     </aside>
-    <div class="space-y-6 flex-1 min-w-0">
+    <!-- Every account page is a narrow form, so the measure is applied here
+         rather than asking each one to wrap itself in SettingsPage. -->
+    <div class="settings-measure min-w-0 flex-1 space-y-6">
       <slot />
     </div>
   </div>

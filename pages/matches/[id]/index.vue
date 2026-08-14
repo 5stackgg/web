@@ -592,12 +592,17 @@ const vsBaseClasses =
                 leave-active-class="map-slot-collapse"
                 leave-to-class="map-slot-collapse-to"
               >
+                <!-- minmax(0,1fr) on the column, not just grid-rows: an auto
+                     column track floors at the item's min-content, and a map
+                     card's min-content is its round history at full width. The
+                     card rendered ~730px wide inside a 400px column and drew
+                     over the scoreboard. -->
                 <div
                   v-for="(slot, index) in mapSlots"
                   :key="index"
-                  class="grid grid-rows-[1fr]"
+                  class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
                 >
-                  <div class="min-h-0">
+                  <div class="min-h-0 min-w-0">
                     <HeightSwap>
                       <div v-if="slot" key="map">
                         <MatchMaps
@@ -646,9 +651,9 @@ const vsBaseClasses =
               >
                 <div
                   v-show="showVetoPicks && vetoPickCount !== 0"
-                  class="grid grid-rows-[1fr]"
+                  class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
                 >
-                  <div class="min-h-0">
+                  <div class="min-h-0 min-w-0">
                     <div
                       class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
                     >

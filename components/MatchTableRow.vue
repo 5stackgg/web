@@ -12,7 +12,7 @@ import {
 } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_match_status_enum } from "~/generated/zeus";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eloFields } from "~/graphql/eloFields";
@@ -231,7 +231,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
           <template v-for="(mm, i) in match.match_maps" :key="mm.id || i">
             <span v-if="i > 0" class="text-muted-foreground/40"> · </span>
             <span class="text-muted-foreground">
-              {{ cleanMapName(mm.map?.label || mm.map?.name || "") }}
+              {{ mapLabel(mm.map) }}
             </span>
           </template>
         </span>
@@ -461,7 +461,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             />
             <span
               class="min-w-0 truncate text-xs font-medium first-letter:uppercase"
-              >{{ cleanMapName(match_map.map.name) }}</span
+              >{{ mapLabel(match_map.map) }}</span
             >
             <div
               class="ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums"
@@ -515,7 +515,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                   "
                 />
                 <span class="text-xs font-medium first-letter:uppercase">{{
-                  cleanMapName(match_map.map.name)
+                  mapLabel(match_map.map)
                 }}</span>
                 <div class="flex items-center space-x-1 text-xs">
                   <span
@@ -564,7 +564,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                     "
                   />
                   <span class="text-xs font-medium first-letter:uppercase">{{
-                    cleanMapName(match_map.map.name)
+                    mapLabel(match_map.map)
                   }}</span>
                   <div class="flex items-center space-x-1 text-xs">
                     <span
@@ -614,7 +614,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                   "
                 />
                 <span class="text-xs font-medium first-letter:uppercase">{{
-                  cleanMapName(match_map.map.name)
+                  mapLabel(match_map.map)
                 }}</span>
                 <div class="flex items-center space-x-1 text-xs">
                   <span

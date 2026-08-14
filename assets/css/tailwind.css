@@ -86,6 +86,12 @@
        follows branding (lighter tint -> base -> darker shade). */
     --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
     --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
+
+    /* How wide settings content is allowed to get. One knob for every settings
+       surface -- see .settings-measure and components/settings/SettingsPage.vue.
+       56rem keeps a switch within reach of the label it belongs to and still
+       leaves the widest tile row (steam-presence, 5 up) about 170px a tile. */
+    --settings-measure: 56rem;
   }
 
   .dark {
@@ -307,6 +313,14 @@ mark {
 .tac-section-sep:not(:first-child) {
   border-top: 1px solid hsl(var(--border) / 0.6);
   padding-top: 2rem;
+}
+
+/* Settings content is overwhelmingly label-left / control-right rows and prose.
+   Unbounded on a wide monitor, a row stretches until the switch is half a screen
+   from the label it belongs to, and a paragraph runs past a comfortable measure.
+   Pages whose content is genuinely wide opt out with <SettingsPage width="full">. */
+.settings-measure {
+  max-width: var(--settings-measure);
 }
 
 .tac-amber-cta {

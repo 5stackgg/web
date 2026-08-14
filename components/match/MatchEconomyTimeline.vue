@@ -34,7 +34,7 @@ import {
   tacticalSectionTickClasses,
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { ECO_MAX, FULL_MIN, moneyOf } from "~/utilities/buyType";
 
 ChartJS.register(
@@ -375,7 +375,7 @@ function onMapSelect(value: string) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem v-for="m of statsMaps" :key="m.id" :value="m.id">
-              {{ cleanMapName(m.map.name) }}
+              {{ mapLabel(m.map) }}
             </SelectItem>
           </SelectContent>
         </Select>

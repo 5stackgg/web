@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ExternalLink, Trophy, X } from "lucide-vue-next";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
@@ -122,7 +122,7 @@ import {
                     "
                   />
                   <span class="text-xs font-medium first-letter:uppercase">{{
-                    cleanMapName(match_map.map.name)
+                    mapLabel(match_map.map)
                   }}</span>
                   <div class="flex items-center space-x-1 text-xs tabular-nums">
                     <span
@@ -177,7 +177,7 @@ import {
                     "
                   />
                   <span class="text-xs font-medium first-letter:uppercase">{{
-                    cleanMapName(match_map.map.name)
+                    mapLabel(match_map.map)
                   }}</span>
                   <div class="flex items-center space-x-1 text-xs tabular-nums">
                     <span
@@ -232,7 +232,7 @@ import {
                     "
                   />
                   <span class="text-xs font-medium first-letter:uppercase">{{
-                    cleanMapName(match_map.map.name)
+                    mapLabel(match_map.map)
                   }}</span>
                   <div class="flex items-center space-x-1 text-xs tabular-nums">
                     <span

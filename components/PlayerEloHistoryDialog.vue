@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { csRankIcon } from "~/utilities/csRank";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
@@ -545,7 +545,7 @@ const mapOptions = computed(() => {
     if (r.rank_type !== rt || !r.map_id) continue;
     const entry = counts.get(r.map_id) ?? {
       mapId: r.map_id,
-      name: r.map?.label || r.map?.name || r.map_id,
+      name: mapLabel(r.map) || r.map_id,
       count: 0,
     };
     entry.count++;
@@ -1065,7 +1065,7 @@ function rankIcon(rank: number | null | undefined): string | null {
               :value="m.mapId"
               class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
             >
-              {{ cleanMapName(m.name) }}
+              {{ m.name }}
               <span class="ml-1 tabular-nums opacity-60">×{{ m.count }}</span>
             </SelectItem>
           </SelectContent>

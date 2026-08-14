@@ -61,6 +61,7 @@ export const playerIntroStatsQuery = generateQuery({
                   map: {
                     id: true,
                     name: true,
+                    label: true,
                   },
                 },
               ],

@@ -107,6 +107,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             labelKey: "pages.settings.application.plugins.title",
             order: 3,
           },
+          {
+            path: "/settings/application/web-push",
+            labelKey: "pages.settings.application.web_push.title",
+            order: 4,
+          },
         ],
       },
       {

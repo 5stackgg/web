@@ -68,7 +68,7 @@ const emit = defineEmits<{ (e: "update:unmuted", value: boolean): void }>();
       :tabindex="clickThrough ? undefined : 0"
       :aria-label="unmuted ? $t('camera.mute') : $t('camera.listen')"
       :title="unmuted ? $t('camera.mute') : $t('camera.listen')"
-      class="pointer-events-auto absolute bottom-1 right-1 z-20 inline-flex cursor-pointer items-center justify-center rounded border backdrop-blur-sm transition-colors"
+      class="pointer-events-auto absolute top-1 right-1 z-20 inline-flex cursor-pointer items-center justify-center rounded border backdrop-blur-sm transition-colors"
       :class="[
         dense ? 'h-5 w-5' : 'h-6 w-6',
         unmuted

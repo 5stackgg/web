@@ -371,6 +371,7 @@ export default {
           "organizers",
           "tournament",
           "draft",
+          "direct",
         ].includes(value),
     },
     global: {

@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "#app";
 import { useI18n } from "vue-i18n";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import type { ChatType } from "~/web-sockets/Socket";
 
 definePageMeta({
   layout: "chat",
@@ -35,12 +36,7 @@ const tabFromQuery = computed<ChatTab | null>(() => {
     id: tabId.value,
     label: label || t("chat_page.fallback_title"),
     instance,
-    type: type as
-      | "match"
-      | "team"
-      | "matchmaking"
-      | "organizers"
-      | "tournament",
+    type: type as ChatType,
     lobbyId,
     pinned: false,
   };

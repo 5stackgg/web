@@ -42,6 +42,11 @@ export function useRightSidebar() {
   const setRightSidebarOpen = (value: boolean) => {
     rightSidebarOpen.value = value;
     persistOpen(value);
+    // Deliberately opening promotes a peek to a real open, so moving the
+    // pointer away afterwards no longer closes it.
+    if (value) {
+      isHoverPeeking.value = false;
+    }
     // Explicitly closing also unpins, so hover-to-peek resumes afterwards.
     if (!value && isPinned.value) {
       setPinned(false);
@@ -60,6 +65,14 @@ export function useRightSidebar() {
   }
 
   function endHoverPeek() {
+    // Only a peek closes on mouse-out. Without this, clicking a hub icon on a
+    // narrow-but-not-mobile screen opened the sidebar and then moving the
+    // pointer away immediately closed it again -- the sidebar was closed
+    // because it wasn't pinned, never mind that the user had just asked for it.
+    if (!isHoverPeeking.value) {
+      return;
+    }
+
     isHoverPeeking.value = false;
     if (!isPinned.value) {
       rightSidebarOpen.value = false;

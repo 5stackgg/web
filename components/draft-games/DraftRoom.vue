@@ -29,6 +29,7 @@ import { Spinner } from "~/components/ui/spinner";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import mapLabel from "~/utilities/mapLabel";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import MatchVoicePanel from "~/components/match/MatchVoicePanel.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
@@ -1627,6 +1628,12 @@ const start = () => {
               :frameless="true"
               :can-send="inLineup"
               :readonly-hint="$t('draft_games.room.chat_players_only')"
+            />
+            <MatchVoicePanel
+              v-if="myMatchLineupId && inLineup"
+              class="m-2 shrink-0"
+              :lineup-id="myMatchLineupId"
+              :label="$t('chat.your_team')"
             />
           </div>
           <div

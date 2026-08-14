@@ -6,7 +6,6 @@ import {
   Megaphone,
   Merge,
   Sword,
-  Shield,
   MessageSquare,
   ExternalLink,
 } from "lucide-vue-next";
@@ -17,6 +16,7 @@ import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import socket from "~/web-sockets/Socket";
 
 const props = defineProps<{
   isSidebarOpen: boolean;
@@ -26,7 +26,7 @@ const props = defineProps<{
 const { t } = useI18n();
 const router = useRouter();
 
-const { tabs, unreadCounts, setActiveTab, resetUnread, incrementUnread } =
+const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread } =
   useChatTabs();
 
 const matchLobbyStore = useMatchLobbyStore();
@@ -35,10 +35,13 @@ const isMobile = useMediaQuery("(max-width: 768px)");
 const activeChatId = ref<string | null>(null);
 
 const orderedTabs = computed<ChatTab[]>(() => {
+  // Your own rooms first. Organizer and tournament rooms are broadcast
+  // channels, so landing on one by default put the least personal room in
+  // front of the lobby you are actually in.
   const weight = (tab: ChatTab) => {
-    if (tab.type === "organizers" || tab.type === "tournament") return 0;
-    if (tab.id.startsWith("matchmaking:")) return 1;
-    if (tab.type === "match") return 2;
+    if (tab.id.startsWith("matchmaking:")) return 0;
+    if (tab.type === "match") return 1;
+    if (tab.type === "direct") return 2;
     return 3;
   };
   return [...tabs.value].sort((a, b) => {
@@ -148,34 +151,52 @@ watch(
   { immediate: true },
 );
 
+// Anything else that opens a room -- a Message button, "join match chat" --
+// goes through useChatTabs, so the panel has to follow it. It used to render
+// purely from its own local ref, which is why those buttons opened the hub on
+// whatever room happened to be showing.
+watch(
+  activeTabId,
+  (id) => {
+    if (id && orderedTabs.value.some((tab) => tab.id === id)) {
+      activeChatId.value = id;
+    }
+  },
+  { immediate: true },
+);
+
+// Clears the badge for a room that is genuinely on screen. The auto-select
+// watch above only fires when nothing is selected yet, so a room that was
+// already open kept its badge no matter how long you looked at it.
+watch(
+  [() => props.isTabActive, () => props.isSidebarOpen, activeChatId],
+  ([tabActive, sidebarOpen, id]) => {
+    if (!tabActive || !sidebarOpen || !id) {
+      return;
+    }
+
+    resetUnread(id);
+
+    // Conversations also carry server-side read state, so the badge doesn't
+    // come back on the next device or reload.
+    const tab = orderedTabs.value.find((entry) => entry.id === id);
+    if (tab?.type === "direct") {
+      socket.markLobbyRead(tab.type, tab.lobbyId);
+    }
+  },
+  { immediate: true },
+);
+
 function handleSelectRoom(tab: ChatTab) {
   activeChatId.value = tab.id;
   setActiveTab(tab.id);
   resetUnread(tab.id);
 }
 
-function handleMessageReceived(payload: {
-  tabId?: string;
-  direction: "inbound" | "outbound";
-  message: any;
-}) {
-  if (payload.direction !== "inbound") return;
-  const tabId = payload.tabId ?? activeChatId.value;
-  if (!tabId) return;
-  const isCurrentRoom = tabId === activeChatId.value;
-  const isVisible = props.isSidebarOpen && props.isTabActive && isCurrentRoom;
-  if (!isVisible) {
-    incrementUnread(tabId);
-  } else {
-    resetUnread(tabId);
-  }
-}
-
 function getRoomIcon(tab: ChatTab) {
   if (tab.type === "organizers" || tab.type === "tournament") return Megaphone;
   if (tab.id.startsWith("matchmaking:")) return Merge;
   if (tab.type === "match") return Sword;
-  if (tab.type === "team") return Shield;
   return MessageSquare;
 }
 
@@ -185,7 +206,7 @@ function getRoomSubtitle(tab: ChatTab) {
   if (tab.id.startsWith("matchmaking:"))
     return t("chat_room_subtitles.matchmaking");
   if (tab.type === "match") return t("chat_room_subtitles.match");
-  if (tab.type === "team") return t("chat_room_subtitles.team");
+  if (tab.type === "direct") return t("chat_room_subtitles.direct");
   return "";
 }
 
@@ -275,7 +296,19 @@ function handlePopOut() {
                         : 'bg-zinc-900/80 group-hover:bg-zinc-700/70'
                     "
                   >
-                    <component :is="getRoomIcon(tab)" class="w-3.5 h-3.5" />
+                    <!-- A conversation is a person, not a channel. -->
+                    <img
+                      v-if="tab.type === 'direct' && tab.avatarUrl"
+                      :src="tab.avatarUrl"
+                      :alt="tab.label"
+                      draggable="false"
+                      class="h-full w-full select-none rounded-md object-cover"
+                    />
+                    <component
+                      v-else
+                      :is="getRoomIcon(tab)"
+                      class="w-3.5 h-3.5"
+                    />
                   </div>
                   <span
                     v-if="unreadCounts[tab.id]"
@@ -410,7 +443,6 @@ function handlePopOut() {
             :is-active-tab="
               tab.id === activeChatId && isSidebarOpen && isTabActive
             "
-            @message-received="handleMessageReceived"
           />
         </div>
       </template>

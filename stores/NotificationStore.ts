@@ -70,8 +70,6 @@ export type NotificationStackItem =
   | { kind: "stack"; entityId: string; notifications: Notification[] };
 
 export const useNotificationStore = defineStore("notifaicationStore", () => {
-  const notificationsGranted = ref(false);
-  const notificationsEnabled = ref(false);
 
   const team_invites = ref<any[]>([]);
   const tournament_team_invites = ref<any[]>([]);
@@ -194,6 +192,16 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     ...notifications.value,
   ]);
 
+  // Muted types are filtered here rather than where the subscription assigns
+  // rows, so preferences that load in after the subscription has already
+  // delivered still apply without a refetch.
+  const visibleNotifications = computed<Notification[]>(() => {
+    const { isAlertTypeEnabled } = useNotificationPreferences();
+    return allNotifications.value.filter((notification) =>
+      isAlertTypeEnabled(notification.type),
+    );
+  });
+
   const seasonRebuildCount = computed(
     () => seasonRebuildNotifications.value.length,
   );
@@ -262,12 +270,12 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   // let them pile up.
   const personalUnread = computed(
     () =>
-      allNotifications.value.filter((n) => !n.is_read && n.role === "user")
+      visibleNotifications.value.filter((n) => !n.is_read && n.role === "user")
         .length,
   );
   const adminUnread = computed(
     () =>
-      allNotifications.value.filter((n) => !n.is_read && n.role !== "user")
+      visibleNotifications.value.filter((n) => !n.is_read && n.role !== "user")
         .length,
   );
 
@@ -302,7 +310,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     const groups = new Map<string, Notification[]>();
     const singles: Notification[] = [];
 
-    for (const n of allNotifications.value) {
+    for (const n of visibleNotifications.value) {
       const groupKey =
         n.type === "PlayerSanctioned"
           ? `type:PlayerSanctioned:${n.role}`
@@ -340,40 +348,6 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     items.sort((a, b) => latestAt(b).localeCompare(latestAt(a)));
     return items;
   });
-
-  const sendNotification = async (
-    title: string,
-    tag: string,
-    options: NotificationOptions,
-    force: boolean = false,
-  ) => {
-    if (notificationsEnabled.value) {
-      if (
-        (document.visibilityState !== "hidden" && !force) ||
-        Notification.permission !== "granted"
-      ) {
-        return;
-      }
-      new Notification(title, {
-        ...options,
-        icon: "/favicon/64.png",
-      });
-    }
-  };
-
-  const setupNotifications = async () => {
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        notificationsGranted.value = true;
-        notificationsEnabled.value = true;
-        return;
-      }
-      const permission = await Notification.requestPermission();
-
-      notificationsGranted.value = permission === "granted";
-      notificationsEnabled.value = notificationsGranted.value;
-    }
-  };
 
   function subscribeToAll(steam_id: string) {
     const { subscribe } = useSubscriptionManager();
@@ -617,7 +591,11 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     (steamId) => {
       if (steamId) {
         subscribeToAll(steamId);
+        // Loaded here rather than only on the settings page: the bell filters
+        // on these, and isAlertTypeEnabled shows everything until they arrive.
+        void useNotificationPreferences().load("in_app");
       } else {
+        useNotificationPreferences().reset();
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("notifications:team_invites");
         unsubscribe("notifications:tournament_team_invites");
@@ -635,16 +613,11 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     { immediate: true },
   );
 
-  setupNotifications();
-
   return {
-    notificationsGranted,
-    notificationsEnabled,
-    sendNotification,
     team_invites,
     tournament_team_invites,
     draft_invites,
-    notifications: allNotifications,
+    notifications: visibleNotifications,
     seasonRebuildCount,
     scheduleTasks,
     scheduleTaskCount,

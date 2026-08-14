@@ -35,17 +35,15 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import BootSequence from "~/components/match/BootSequence.vue";
 import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
-import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
+import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { Kbd } from "~/components/ui/kbd";
 import TopoBackground from "~/layouts/components/TopoBackground.vue";
-import { e_player_roles_enum } from "~/generated/zeus";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import { useStreamerStore } from "~/stores/StreamerStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { Lock } from "lucide-vue-next";
-import { canWatchMatchCameras } from "~/composables/useMatchCameraStatus";
 import {
   specSlotsForMatchType,
   resolveKeyToRealSlot,
@@ -115,31 +113,6 @@ function ensureLineupSubscription() {
 }
 
 const canView = computed(() => !isInLineup.value);
-
-// Added rather than moved: the deck is streamer-gated while camera watching
-// allows a plain match organizer, so the match page stays the primary entry.
-const cameraGateOpen = computed(() => {
-  if (
-    !canWatchMatchCameras({
-      is_organizer: stream.value?.match?.is_organizer,
-      options: {
-        camera_required: stream.value?.match?.options?.camera_required,
-      },
-    })
-  ) {
-    return false;
-  }
-
-  if (!isInLineup.value) {
-    return true;
-  }
-
-  // Mirrors CameraService.watchScope: a rostered administrator keeps full
-  // access, but any other competitor is refused outright here rather than
-  // scoped -- the deck renders both sides in one grid, and a live view of the
-  // opposing team is the advantage this whole gate exists to prevent.
-  return authStore.isRoleAbove(e_player_roles_enum.administrator);
-});
 
 // Mirror the persisted DB autodirector flag into our local toggle so
 // the switch starts in the correct state, but suppress the sync
@@ -1051,18 +1024,16 @@ watch(spectatedSteamId, (sid) => {
              surfaces render the identical row design (health bars,
              active caret, autodirector wash). -->
         <div class="rounded-md border border-border/60 bg-card/30 px-4 py-3">
-          <SpectatorSlots
-            layout="grid"
-            :ct-slots="ctSlots"
-            :t-slots="tSlots"
-            :team-ct-name="teamCtName"
-            :team-t-name="teamTName"
-            :active-steam-id="spectatedSteamId"
-            :flash-slot="flashSlot"
-            :controls-active="controlsActive()"
+          <!-- Same component the /stream-deck index card renders. Both decks
+               must stay on one path -- when they diverged, every slot change
+               had to be made twice and silently missed one surface. -->
+          <SpectatorGrid
+            :match-id="matchId"
+            :is-live="isLive()"
             :match-type="stream?.match?.options?.type"
+            :controls-active="controlsActive()"
+            :flash-slot="flashSlot"
             :autodirector-on="autodirector && isLive()"
-            :camera-match-id="cameraGateOpen ? matchId : null"
             @press-slot="(slot: number) => pressSlot(slot, String(slot))"
           />
         </div>

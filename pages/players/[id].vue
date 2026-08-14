@@ -53,6 +53,7 @@ import {
   Maximize2,
   UserPlus,
   UserCheck,
+  MessageSquare,
   Calendar as CalendarIcon,
   ChevronDown,
 } from "lucide-vue-next";
@@ -1935,6 +1936,15 @@ const playerHeroTeamChipDotClasses =
                 <UserCheck class="h-3.5 w-3.5" />
                 <span>{{ $t("pages.players.detail.friend") }}</span>
               </span>
+              <button
+                v-if="canMessage"
+                type="button"
+                :class="playerHeroAddFriendClasses"
+                @click="messagePlayer"
+              >
+                <MessageSquare class="h-4 w-4" />
+                <span>{{ $t("chat.direct.message") }}</span>
+              </button>
             </div>
           </div>
         </header>
@@ -3275,7 +3285,20 @@ export default {
       );
     },
     hasRightColumn() {
-      return this.isSelfProfile || this.canAddFriend || this.isFriend;
+      return (
+        this.isSelfProfile ||
+        this.canAddFriend ||
+        this.isFriend ||
+        this.canMessage
+      );
+    },
+    // Deliberately not `isFriend`, which matches any my_friends row including a
+    // still-pending request. The server only opens a conversation between
+    // accepted friends, so anything looser renders a button that fails.
+    canMessage() {
+      return (
+        !!this.player && useDirectMessages().canMessage(this.player.steam_id)
+      );
     },
     isAdmin() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
@@ -3374,6 +3397,14 @@ export default {
     },
   },
   methods: {
+    messagePlayer() {
+      if (!this.player?.steam_id) return;
+      useDirectMessages().openConversation({
+        steam_id: this.player.steam_id,
+        name: this.player.name,
+        avatar_url: this.player.avatar_url,
+      });
+    },
     async addAsFriend() {
       if (!this.player?.steam_id || this.addFriendPending) return;
       this.addFriendPending = true;

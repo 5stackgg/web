@@ -8,8 +8,16 @@ import socket, { type Lobby } from "~/web-sockets/Socket";
 
 export function useChatTabSetup() {
   const { t } = useI18n();
-  const { tabs, activeTabId, openTab, closeTab, setActiveTab, setPinned } =
-    useChatTabs();
+  const {
+    tabs,
+    activeTabId,
+    openTab,
+    closeTab,
+    setActiveTab,
+    setPinned,
+    incrementUnread,
+  } = useChatTabs();
+  const { rightSidebarOpen } = useRightSidebar();
 
   const matchLobbyStore = useMatchLobbyStore();
   const authStore = useAuthStore();
@@ -19,6 +27,28 @@ export function useChatTabSetup() {
   );
   const persistentLobbies = new Map<string, Lobby>();
 
+  // Unread counting lives here rather than in ChatPanel because RightHub only
+  // mounts a panel once its hub is first opened -- so counting inside the panel
+  // meant no unread badge ever appeared until the user had already gone
+  // looking. This runs from the default layout, so it covers every tab from
+  // login onwards.
+  function trackUnread(tab: (typeof tabs.value)[number], lobby: Lobby) {
+    lobby.on("lobby:chat", (message: any) => {
+      if (String(message?.from?.steam_id) === String(authStore.me?.steam_id)) {
+        return;
+      }
+
+      const isOnScreen =
+        activeTabId.value === tab.id &&
+        rightSidebarOpen.value &&
+        currentHub() === "chat";
+
+      if (!isOnScreen) {
+        incrementUnread(tab.id);
+      }
+    });
+  }
+
   function syncPersistentChatJoins() {
     const activeIds = new Set(tabs.value.map((tab) => tab.id));
 
@@ -27,10 +57,14 @@ export function useChatTabSetup() {
         continue;
       }
 
-      persistentLobbies.set(
-        tab.id,
-        socket.joinLobby(`chat-tab-setup:${tab.id}`, tab.type, tab.lobbyId),
+      const lobby = socket.joinLobby(
+        `chat-tab-setup:${tab.id}`,
+        tab.type,
+        tab.lobbyId,
       );
+
+      trackUnread(tab, lobby);
+      persistentLobbies.set(tab.id, lobby);
     }
 
     for (const [tabId, lobby] of persistentLobbies.entries()) {

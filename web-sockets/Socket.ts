@@ -39,7 +39,10 @@ export type ChatType =
   | "matchmaking"
   | "organizers"
   | "tournament"
-  | "draft";
+  | "draft"
+  // A 1:1 conversation. The lobby id is the two participants' steam ids
+  // sorted ascending and joined with ":" -- see useDirectMessages.
+  | "direct";
 
 // The live `chat` event and the history snapshot sent on every (re)join can
 // carry the same message, so a message needs an identity the client can compare
@@ -262,6 +265,15 @@ class Socket extends EventEmitter {
       id,
       type,
       message,
+    });
+  }
+
+  // Server-side read state, so a conversation's unread count survives a reload
+  // and doesn't come back on another device.
+  public markLobbyRead(type: ChatType, id: string) {
+    this.event(`lobby:read`, {
+      id,
+      type,
     });
   }
 

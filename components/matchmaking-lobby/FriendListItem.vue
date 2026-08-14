@@ -18,6 +18,7 @@ import {
   Clock,
   Swords,
   LogIn,
+  MessageSquare,
 } from "lucide-vue-next";
 import { useFriendActions } from "~/composables/useFriendActions";
 import { useFriendStatus } from "~/composables/useFriendStatus";
@@ -45,6 +46,10 @@ const {
   removeFriend,
   inviteToLobby,
 } = useFriendActions();
+
+// Rendered inside the accepted-friend branch, so the friend-only rule the
+// server enforces is already satisfied by where the button lives.
+const { openConversation } = useDirectMessages();
 
 const rel = computed(() => relationship(props.player.steam_id));
 const busy = computed(() => isBusy(props.player.steam_id));
@@ -297,6 +302,30 @@ const amberHover =
 
                   <!-- FRIEND -->
                   <template v-else>
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button
+                          variant="ghost"
+                          :class="[
+                            actionBtn,
+                            amberHover,
+                            'opacity-0 focus-visible:opacity-100 group-hover/row:opacity-100',
+                          ]"
+                          @click.stop="
+                            openConversation({
+                              steam_id: player.steam_id,
+                              name: player.name,
+                              avatar_url: player.avatar_url,
+                            })
+                          "
+                        >
+                          <MessageSquare class="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{{
+                        $t("chat.direct.message")
+                      }}</TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger as-child>
                         <Button

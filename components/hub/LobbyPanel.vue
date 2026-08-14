@@ -67,6 +67,9 @@ const voiceSettingsOpen = ref(false);
 // rather than showing a list of anonymous device ids.
 function openVoiceSettings() {
   voiceSettingsOpen.value = true;
+  // The dialog is portalled out of the hub, so the pointer leaving the hub to
+  // reach it would otherwise close the hub out from under it.
+  useRightSidebar().suspendHoverClose();
   // Opens the mic so the meter and mic check work before joining; refreshes
   // devices as a side effect, since labels need a granted permission.
   void startVoicePreview();
@@ -76,9 +79,18 @@ function closeVoiceSettings(open: boolean) {
   voiceSettingsOpen.value = open;
 
   if (!open) {
+    useRightSidebar().resumeHoverClose();
     stopVoicePreview();
   }
 }
+
+// A dialog left open when the panel unmounts would leak its lock and pin the
+// hub open forever.
+onUnmounted(() => {
+  if (voiceSettingsOpen.value) {
+    useRightSidebar().resumeHoverClose();
+  }
+});
 </script>
 
 <template>
@@ -316,7 +328,7 @@ function closeVoiceSettings(open: boolean) {
       <Transition name="lobby-item">
         <div
           v-if="currentLobby && squadReady"
-          class="h-[250px] lg:flex-[1] lg:h-auto lg:min-h-[160px] lg:max-h-[40%] shrink-0 border-t border-zinc-800 pt-3 flex flex-col gap-2"
+          class="flex-[1_1_250px] min-h-0 lg:flex-[1] lg:min-h-[160px] lg:max-h-[40%] border-t border-zinc-800 pt-3 flex flex-col gap-2"
         >
           <div
             class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wide"

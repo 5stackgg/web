@@ -22,6 +22,7 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import MatchVoicePanel from "~/components/match/MatchVoicePanel.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
 import { useMatchContext } from "~/composables/useMatchContext";
@@ -485,6 +486,14 @@ const vsBaseClasses =
                 match.status !== e_match_status_enum.Live
               "
               v-if="canJoinLobby"
+            />
+          </PageTransition>
+
+          <PageTransition :delay="200">
+            <MatchVoicePanel
+              v-if="myLineupId && canJoinLobby"
+              :lineup-id="myLineupId"
+              :label="$t('chat.your_team')"
             />
           </PageTransition>
 

@@ -76,7 +76,7 @@ const barClass = computed(() => {
 
 <template>
   <Dialog :open="open" @update:open="(value) => emit('update:open', value)">
-    <DialogContent class="sm:max-w-[30rem]">
+    <DialogContent data-right-hub-interactive class="sm:max-w-[30rem]">
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <Waves class="h-4 w-4 text-[hsl(var(--tac-amber))]" />

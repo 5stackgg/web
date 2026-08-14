@@ -20,7 +20,8 @@ const props = defineProps<{
   disableFullscreenShortcut?: boolean;
   // For hosts that mount several players at once (the camera grid): a window
   // level shortcut would hit every instance, so those surfaces provide their
-  // own per-player controls instead.
+  // own per-player controls instead. Also suppresses the built-in unmute pill,
+  // which would otherwise sit next to the host's own mute button.
   disableShortcuts?: boolean;
   // Opt-in to native Picture-in-Picture. Only enabled for live game
   // streams on mobile — demo playback and highlights stay PIP-locked.
@@ -692,7 +693,13 @@ defineExpose({ connect, teardown });
          control collapses to the slim icon-only treatment that hides
          on mouse-out, matching twitch/youtube convention. -->
     <button
-      v-if="status === 'playing' && !useFallback && isMuted && !muted"
+      v-if="
+        status === 'playing' &&
+        !useFallback &&
+        isMuted &&
+        !muted &&
+        !disableShortcuts
+      "
       type="button"
       :aria-label="$t('ui.unmute')"
       class="whep-unmute group/unmute absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.65)] bg-black/75 pl-2 pr-3 py-1.5 backdrop-blur-md cursor-pointer transition-[transform,box-shadow,border-color] duration-150 hover:scale-[1.03] hover:border-[hsl(var(--tac-amber))] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.15),0_0_22px_-4px_hsl(var(--tac-amber)/0.55)]"

@@ -52,6 +52,10 @@ const navItems = computed(() => {
       label: $t("pages.settings.account.linked_accounts"),
     },
     {
+      path: "/settings/notification-preferences",
+      label: $t("pages.settings.notification_preferences.title"),
+    },
+    {
       path: "/settings/notifications",
       label: $t("pages.settings.notifications.title"),
     },

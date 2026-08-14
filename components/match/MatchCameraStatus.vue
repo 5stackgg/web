@@ -16,8 +16,19 @@ const alerting = computed(
   () => loaded.value && summary.value.total > 0 && missing.value > 0,
 );
 
-function openGrid() {
-  window.open(cameraAdminGridPath(props.matchId), "_blank", "noopener");
+// Same shape as useCameraSetup.openOnThisComputer: naming the window and giving
+// it explicit dimensions is what makes Chrome open a real window instead of a
+// tab. Must stay synchronous inside the click -- anything awaited first loses
+// the user gesture and the window gets blocked.
+function openGrid(event: MouseEvent) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  window.open(
+    cameraAdminGridPath(props.matchId),
+    "camera-admin-grid",
+    "width=1100,height=840",
+  );
 }
 </script>
 

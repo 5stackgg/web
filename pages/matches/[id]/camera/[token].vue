@@ -169,7 +169,15 @@ type Reframe = { zoom: number; x: number; y: number };
 
 const reframe = reactive<Reframe>({ zoom: 1, x: 0.5, y: 0.5 });
 const dragging = ref(false);
-const previewVisible = ref(readStored(CAMERA_PREVIEW_KEY) !== "hidden");
+const previewHidden = ref(readStored(CAMERA_PREVIEW_KEY) === "hidden");
+
+// Hiding is only ever offered as a way to save the player's machine some work
+// once they are already live. During setup the preview is always on -- framing
+// yourself is the whole point of the step, and a stored "hidden" from an
+// earlier match must not leave someone setting up against a blank stage.
+const previewVisible = computed(
+  () => phase.value !== "connected" || !previewHidden.value,
+);
 const cropping = computed(() => reframe.zoom > 1.001);
 const zoomPercent = computed(() => Math.round(reframe.zoom * 100));
 
@@ -191,8 +199,8 @@ function syncPreview() {
 }
 
 function togglePreview() {
-  previewVisible.value = !previewVisible.value;
-  writeStored(CAMERA_PREVIEW_KEY, previewVisible.value ? null : "hidden");
+  previewHidden.value = !previewHidden.value;
+  writeStored(CAMERA_PREVIEW_KEY, previewHidden.value ? "hidden" : null);
   syncPreview();
 }
 
@@ -938,6 +946,7 @@ onBeforeUnmount(() => {
         </p>
 
         <button
+          v-if="phase === 'connected'"
           type="button"
           class="inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.2em] transition-colors"
           :class="

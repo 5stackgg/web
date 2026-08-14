@@ -14,6 +14,9 @@ const props = defineProps<{
   matchType: string | null | undefined;
   controlsActive: boolean;
   flashKey?: string | null;
+  // Already-resolved slot number, for call sites that track the flash as a slot
+  // rather than a keypress. Takes precedence over flashKey.
+  flashSlot?: number | null;
   compact?: boolean;
   // Optional: pass true to render the autodirector "AI piloting" wash
   // on non-active slots. Stream-deck index card surfaces it via the
@@ -47,6 +50,10 @@ const {
 // handlers; SpectatorSlots wants the slot integer. Empty string and
 // non-digit values map to null (no flash).
 const flashSlotNum = computed<number | null>(() => {
+  if (props.flashSlot != null) {
+    return props.flashSlot;
+  }
+
   const k = props.flashKey;
   if (!k) return null;
   if (k === "0") return 10;
@@ -67,6 +74,7 @@ const flashSlotNum = computed<number | null>(() => {
     :match-type="matchType ?? undefined"
     :compact="!!compact"
     :autodirector-on="!!autodirectorOn"
+    :camera-match-id="matchId"
     layout="grid"
     @press-slot="(slot: number) => emit('press-slot', slot)"
   />

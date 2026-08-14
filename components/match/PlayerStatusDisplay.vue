@@ -1,6 +1,11 @@
 <script lang="ts" setup>
+import { computed, getCurrentInstance } from "vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
+import {
+  canWatchMatchCameras,
+  useMatchCameraStatus,
+} from "~/composables/useMatchCameraStatus";
 import {
   e_check_in_settings_enum,
   e_match_status_enum,
@@ -16,6 +21,43 @@ import {
 } from "~/utilities/matchParties";
 
 const { isMobile } = useSidebar();
+
+// Props are declared in the Options block below; re-declaring them with
+// defineProps here would shadow it and break every `this.*` computed. Reading
+// them off the instance is the one way to reach them from this half of the
+// hybrid without touching the other.
+const instance = getCurrentInstance();
+const ownProps = computed(
+  () => (instance?.props ?? {}) as Record<string, any>,
+);
+
+const cameraEnabled = computed(() =>
+  canWatchMatchCameras(ownProps.value.match),
+);
+
+const { statusFor, loaded: cameraLoaded } = useMatchCameraStatus(
+  () => String(ownProps.value.match?.id ?? ""),
+  cameraEnabled,
+);
+
+// Folded into the presence dot rather than shown as a second icon: one dot per
+// player answers "is this person good to go", and a missing camera is one more
+// way the answer is no.
+const cameraMissing = computed(() => {
+  if (!cameraEnabled.value || !cameraLoaded.value) {
+    return false;
+  }
+
+  const steamId = ownProps.value.member?.player?.steam_id;
+
+  if (!steamId) {
+    return false;
+  }
+
+  const status = statusFor(String(steamId));
+
+  return !status || !status.ready || status.health !== "live";
+});
 </script>
 
 <template>
@@ -70,7 +112,7 @@ const { isMobile } = useSidebar();
           <span
             class="absolute h-2 w-2 z-30 cursor-default"
             :class="{
-              'left-0': !flip,
+              '-left-1': !flip,
               '-right-1': flip,
               '-bottom-1': statusAtBottom,
               '-top-1': !statusAtBottom,
@@ -79,41 +121,49 @@ const { isMobile } = useSidebar();
             <span
               class="absolute inset-0 rounded-full animate-ping"
               :class="{
+                ['bg-orange-500']: cameraMissing,
                 ['bg-red-500']:
-                  match &&
+                  !cameraMissing &&
+                  (match &&
                   match.status === e_match_status_enum.WaitingForCheckIn
                     ? !isOnline && !isReady
-                    : !isOnline && !inGame,
+                    : !isOnline && !inGame),
                 ['bg-yellow-500']:
-                  match &&
+                  !cameraMissing &&
+                  (match &&
                   match.status === e_match_status_enum.WaitingForCheckIn
                     ? isOnline && !isReady
-                    : isOnline && !inGame,
+                    : isOnline && !inGame),
                 ['bg-green-500']:
-                  match &&
+                  !cameraMissing &&
+                  (match &&
                   match.status === e_match_status_enum.WaitingForCheckIn
                     ? isReady
-                    : inGame,
+                    : inGame),
               }"
             ></span>
             <span
               class="absolute inset-0 rounded-full"
               :class="{
+                ['bg-orange-500']: cameraMissing,
                 ['bg-red-500']:
-                  match &&
+                  !cameraMissing &&
+                  (match &&
                   match.status === e_match_status_enum.WaitingForCheckIn
                     ? !isOnline && !isReady
-                    : !isOnline && !inGame,
+                    : !isOnline && !inGame),
                 ['bg-yellow-500']:
-                  match &&
+                  !cameraMissing &&
+                  (match &&
                   match.status === e_match_status_enum.WaitingForCheckIn
                     ? isOnline && !isReady
-                    : isOnline && !inGame,
+                    : isOnline && !inGame),
                 ['bg-green-500']:
-                  match &&
+                  !cameraMissing &&
+                  (match &&
                   match.status === e_match_status_enum.WaitingForCheckIn
                     ? isReady
-                    : inGame,
+                    : inGame),
               }"
             ></span>
           </span>
@@ -122,6 +172,10 @@ const { isMobile } = useSidebar();
         <div class="flex flex-col gap-1">
           <div class="text-center" v-if="showName">
             {{ member.player.name }}
+          </div>
+
+          <div v-if="cameraMissing" class="text-orange-400">
+            {{ $t("camera.tile.offline") }}
           </div>
 
           <div v-if="match">

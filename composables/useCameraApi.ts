@@ -49,6 +49,7 @@ export type CameraHealth = "live" | "stalled" | "down";
 export type CameraPlayerStatus = {
   steamId: string;
   name: string | null;
+  avatarUrl: string | null;
   lineupId: string;
   ready: boolean;
   // A "stalled" feed is still connected but has stopped delivering frames — it

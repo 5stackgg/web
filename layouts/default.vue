@@ -41,6 +41,7 @@ const { activeClipId } = useClipModal();
 
 useGtm();
 useChatTabSetup();
+useIncomingDirectMessages();
 
 const route = useRoute();
 const authStore = useAuthStore();

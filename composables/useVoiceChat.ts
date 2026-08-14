@@ -7,6 +7,7 @@ import {
   voiceSubscribeUrl,
   type VoiceParticipant,
 } from "~/composables/useVoiceApi";
+import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
 
 // One party voice session. MediaMTX acts as the SFU: each member publishes
 // their own mic to voice-<lobbyId>-<steamId> and pulls every other member's
@@ -72,7 +73,12 @@ function rememberDevice(key: string, value: string) {
   }
 }
 
-export function useVoiceChat(lobbyId: () => string | null | undefined) {
+export function useVoiceChat(
+  lobbyId: () => string | null | undefined,
+  channelLabel?: () => string,
+) {
+  const registry = useActiveVoiceChannel();
+
   const connected = ref(false);
   const connecting = ref(false);
   const muted = ref(false);
@@ -381,6 +387,8 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
 
       connected.value = true;
       previewing.value = false;
+      registry.register(id, leave);
+      registry.claim({ id, label: channelLabel?.() ?? id });
       void poll();
     } catch (caught) {
       error.value = describeError(caught);
@@ -396,6 +404,8 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     teardown();
 
     if (id) {
+      registry.unregister(id);
+
       // Drops our own publish so the rest of the party stops hearing a dead
       // path; best effort, the session times out on its own regardless.
       await fetch(voiceLeaveUrl(id), {
@@ -406,6 +416,12 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
   }
 
   function teardown() {
+    const id = lobbyId();
+
+    if (id) {
+      registry.release(id);
+    }
+
     connected.value = false;
     teardownGraph();
 
@@ -658,7 +674,31 @@ export function useVoiceChat(lobbyId: () => string | null | undefined) {
     teardown();
   });
 
+  // The voice session currently held somewhere else in the app, if any. Joining
+  // here would take the microphone from it, so the UI warns before it does.
+  const conflict = computed(() => {
+    const id = lobbyId();
+
+    return id ? registry.conflictWith(id) : null;
+  });
+
+  // Returns whatever it disconnected, so the caller can name it in a toast.
+  async function joinSwitching() {
+    const id = lobbyId();
+
+    if (!id) {
+      return null;
+    }
+
+    const displaced = await registry.leaveActiveUnless(id);
+    await join();
+
+    return displaced;
+  }
+
   return {
+    conflict,
+    joinSwitching,
     connected,
     connecting,
     muted,

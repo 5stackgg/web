@@ -23,6 +23,13 @@ if (initialSavedHub) {
   activeHub.value = initialSavedHub;
 }
 
+// Read-only access to the current hub for callers that only need to know what
+// is on screen. Calling useHubState() registers watchers, so it must not be
+// invoked from a hot path like an incoming-message handler.
+export function currentHub() {
+  return activeHub.value;
+}
+
 export function setActiveHub(hub: Hub) {
   activeHub.value = hub;
   if (typeof window !== "undefined") {

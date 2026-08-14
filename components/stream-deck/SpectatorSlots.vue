@@ -83,7 +83,7 @@ const props = withDefaults(
   },
 );
 
-const { statusFor } = useMatchCameraStatus(
+const { statusFor, players: cameraPlayers } = useMatchCameraStatus(
   () => props.cameraMatchId ?? "",
   () => !!props.cameraMatchId,
 );
@@ -102,6 +102,19 @@ function cameraState(steamId: string) {
   }
 
   return status.health === "stalled" ? ("stalled" as const) : ("live" as const);
+}
+
+// Shown whenever there is no live feed, so a slot always carries a face rather
+// than an empty tile. Matched on steam id because GSI carries no avatar.
+function slotAvatar(steamId: string) {
+  if (!steamId) {
+    return null;
+  }
+
+  return (
+    cameraPlayers.value.find((player) => player.steamId === steamId)
+      ?.avatarUrl ?? null
+  );
 }
 
 const listening = reactive<Record<string, boolean>>({});
@@ -423,6 +436,14 @@ function press(s: PaddedSlot) {
               @update:unmuted="(value) => setListening(s.steam_id, value)"
             />
 
+            <img
+              v-else-if="slotAvatar(s.steam_id)"
+              :src="slotAvatar(s.steam_id)!"
+              alt=""
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-35"
+            />
+
             <!-- Top-left slot key chip / AUTO badge -->
             <span
               :class="[
@@ -662,6 +683,14 @@ function press(s: PaddedSlot) {
               click-through
               class="absolute inset-0 z-0"
               @update:unmuted="(value) => setListening(s.steam_id, value)"
+            />
+
+            <img
+              v-else-if="slotAvatar(s.steam_id)"
+              :src="slotAvatar(s.steam_id)!"
+              alt=""
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover opacity-35"
             />
 
             <span

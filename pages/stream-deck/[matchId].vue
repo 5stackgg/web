@@ -42,7 +42,9 @@ import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import { useStreamerStore } from "~/stores/StreamerStore";
 import { useAuthStore } from "~/stores/AuthStore";
-import { Lock } from "lucide-vue-next";
+import { ChevronDown, Lock } from "lucide-vue-next";
+import CameraGrid from "~/components/match/CameraGrid.vue";
+import { canWatchMatchCameras } from "~/composables/useMatchCameraStatus";
 import {
   specSlotsForMatchType,
   resolveKeyToRealSlot,
@@ -112,6 +114,44 @@ function ensureLineupSubscription() {
 }
 
 const canView = computed(() => !isInLineup.value);
+
+const CAMERA_PANEL_KEY = "5stack:stream-deck:cameras";
+
+// Added rather than moved: the deck is streamer-gated while camera watching
+// allows a plain match organizer, so the match page stays the primary entry.
+const cameraGateOpen = computed(
+  () =>
+    canView.value &&
+    canWatchMatchCameras({
+      is_organizer: stream.value?.match?.is_organizer,
+      options: {
+        camera_required: stream.value?.match?.options?.camera_required,
+      },
+    }),
+);
+
+const camerasOpen = ref(false);
+
+function toggleCameras() {
+  camerasOpen.value = !camerasOpen.value;
+  try {
+    if (camerasOpen.value) {
+      localStorage.setItem(CAMERA_PANEL_KEY, "open");
+    } else {
+      localStorage.removeItem(CAMERA_PANEL_KEY);
+    }
+  } catch {
+    // Private browsing — the choice just will not persist.
+  }
+}
+
+onMounted(() => {
+  try {
+    camerasOpen.value = localStorage.getItem(CAMERA_PANEL_KEY) === "open";
+  } catch {
+    camerasOpen.value = false;
+  }
+});
 
 // Mirror the persisted DB autodirector flag into our local toggle so
 // the switch starts in the correct state, but suppress the sync
@@ -1032,6 +1072,39 @@ watch(spectatedSteamId, (sid) => {
             :autodirector-on="autodirector && isLive()"
             @press-slot="(slot: number) => pressSlot(slot, String(slot))"
           />
+        </div>
+
+        <div
+          v-if="cameraGateOpen"
+          class="rounded-md border border-border/60 bg-card/30"
+        >
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-muted/20"
+            @click="toggleCameras"
+          >
+            <span
+              class="h-[2px] w-[10px] shrink-0 bg-[hsl(var(--tac-amber))]"
+            ></span>
+            <span
+              class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
+            >
+              {{ $t("camera.admin_title") }}
+            </span>
+            <span
+              class="ml-auto font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground/70"
+            >
+              {{ camerasOpen ? $t("camera.hide") : $t("camera.show") }}
+            </span>
+            <ChevronDown
+              class="size-3.5 text-muted-foreground transition-transform duration-150"
+              :class="camerasOpen ? 'rotate-180' : ''"
+            />
+          </button>
+
+          <div v-if="camerasOpen" class="border-t border-border/60 p-3">
+            <CameraGrid :match-id="matchId" dense />
+          </div>
         </div>
       </div>
     </PageTransition>

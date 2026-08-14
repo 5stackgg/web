@@ -9,9 +9,9 @@ import {
   Scissors,
   Square,
   Trash2,
-  Video,
   XCircle,
 } from "lucide-vue-next";
+import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
@@ -33,7 +33,9 @@ import {
 </script>
 
 <template>
-  <div class="flex gap-2 items-center" v-if="canAct">
+  <div class="flex gap-2 items-center" v-if="canAct || canWatchCameras">
+    <MatchCameraStatus v-if="canWatchCameras" :match-id="match.id" />
+
     <Button
       v-if="canPauseResume"
       size="sm"
@@ -256,11 +258,6 @@ import {
           "
         />
 
-        <DropdownMenuItem v-if="canWatchCameras" @click="openCameraGrid">
-          <Video class="text-muted-foreground" />
-          <span>{{ $t("match.actions.watch_camera") }}</span>
-        </DropdownMenuItem>
-
         <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
           <RefreshCw />
           {{ $t("match.actions.reparse_demos") }}
@@ -334,7 +331,6 @@ import {
 
 <script lang="ts">
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import { cameraAdminGridPath } from "~/composables/useCameraApi";
 import gql from "graphql-tag";
 import { toast } from "@/components/ui/toast";
 
@@ -405,14 +401,6 @@ export default {
     },
   },
   methods: {
-    // Sized for the two-column grid: a full five-player team lays out 2-2-1.
-    openCameraGrid() {
-      window.open(
-        cameraAdminGridPath(this.match.id),
-        "camera-admin-grid",
-        "width=760,height=780",
-      );
-    },
     async cancelMatch() {
       if (this.cancellingMatch) {
         return;

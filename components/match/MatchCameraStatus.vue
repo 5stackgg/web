@@ -1,0 +1,49 @@
+<script setup lang="ts">
+import { computed } from "vue";
+import { LucideVideo } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import { cameraAdminGridPath } from "~/composables/useCameraApi";
+import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
+
+const props = defineProps<{
+  matchId: string;
+}>();
+
+const { summary, loaded } = useMatchCameraStatus(() => props.matchId);
+
+const missing = computed(() => summary.value.total - summary.value.live);
+const alerting = computed(
+  () => loaded.value && summary.value.total > 0 && missing.value > 0,
+);
+
+// Sized for the grid's two-column layout: a full five-player team lays out
+// 2-2-1.
+function openGrid() {
+  window.open(
+    cameraAdminGridPath(props.matchId),
+    "camera-admin-grid",
+    "width=760,height=780",
+  );
+}
+</script>
+
+<template>
+  <Button
+    size="sm"
+    variant="outline"
+    :title="$t('match.actions.watch_camera')"
+    class="h-9 gap-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em]"
+    :class="
+      alerting
+        ? 'border-[hsl(var(--destructive)/0.55)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)] hover:text-destructive'
+        : 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
+    "
+    @click="openGrid"
+  >
+    <LucideVideo class="h-3 w-3" />
+    {{ $t("camera.cameras") }}
+    <span v-if="loaded && summary.total" class="tabular-nums">
+      {{ summary.live }}/{{ summary.total }}
+    </span>
+  </Button>
+</template>

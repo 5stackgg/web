@@ -6,6 +6,7 @@ import StatLabel from "~/components/common/StatLabel.vue";
 import { KAST_TIER, ADR_TIER, kdColor, hltvColor } from "~/utils/statTiers";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
+import CameraStatusDot from "~/components/match/CameraStatusDot.vue";
 import MultiKillDrilldown from "~/components/match/MultiKillDrilldown.vue";
 import {
   HoverCard,
@@ -120,6 +121,12 @@ const DASH = "—";
               <template v-if="member.player?.steam_id" #avatar-badge>
                 <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
               </template>
+              <template v-if="member.player?.steam_id" #name-postfix>
+                <CameraStatusDot
+                  :match="match"
+                  :steam-id="member.player.steam_id"
+                />
+              </template>
               <template v-if="memberEloChange" #elo-postfix>
                 <EloChangeBadge :elo-change="memberEloChange" size="xs" />
               </template>
@@ -172,15 +179,21 @@ const DASH = "—";
                   </div>
                 </NuxtLink>
                 <div class="flex flex-col min-w-0 leading-tight">
-                  <NuxtLink
-                    :to="{
-                      name: 'players-id',
-                      params: { id: member.player.steam_id },
-                    }"
-                    class="truncate text-xs font-medium hover:text-primary"
-                  >
-                    {{ member.player.name }}
-                  </NuxtLink>
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <NuxtLink
+                      :to="{
+                        name: 'players-id',
+                        params: { id: member.player.steam_id },
+                      }"
+                      class="truncate text-xs font-medium hover:text-primary"
+                    >
+                      {{ member.player.name }}
+                    </NuxtLink>
+                    <CameraStatusDot
+                      :match="match"
+                      :steam-id="member.player.steam_id"
+                    />
+                  </div>
                   <div
                     class="flex items-center gap-1.5 min-w-0 mt-0.5 text-muted-foreground"
                   >

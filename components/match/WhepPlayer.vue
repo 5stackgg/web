@@ -18,6 +18,10 @@ const props = defineProps<{
   // press doesn't fire both handlers and race two requestFullscreen
   // calls against each other.
   disableFullscreenShortcut?: boolean;
+  // For hosts that mount several players at once (the camera grid): a window
+  // level shortcut would hit every instance, so those surfaces provide their
+  // own per-player controls instead.
+  disableShortcuts?: boolean;
   // Opt-in to native Picture-in-Picture. Only enabled for live game
   // streams on mobile — demo playback and highlights stay PIP-locked.
   enablePip?: boolean;
@@ -153,6 +157,9 @@ function onWebkitEndFullscreen() {
 
 // Picture-in-Picture — only surfaced on mobile for live game streams.
 function onKeyDown(e: KeyboardEvent) {
+  if (props.disableShortcuts) {
+    return;
+  }
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const target = e.target;
   if (
@@ -202,6 +209,20 @@ watch(
   (muted) => {
     if (muted === false && status.value === "playing" && isMuted.value) {
       unmute();
+      return;
+    }
+
+    // A parent that owns its own mute control needs the prop to work both
+    // ways; without this, audio can never be turned back off.
+    if (muted === true && !isMuted.value) {
+      const el = videoRef.value;
+
+      if (!el) {
+        return;
+      }
+
+      el.muted = true;
+      isMuted.value = true;
     }
   },
 );

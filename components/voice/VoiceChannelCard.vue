@@ -287,7 +287,10 @@ async function toggleVideo() {
           </span>
         </span>
 
-        <div class="flex shrink-0 items-center">
+        <!-- min-h matches the h-6 header tools, so the row is already tall
+             enough for them before they arrive -- otherwise the whole header
+             grows a few pixels as they animate in and shrinks back on leave. -->
+        <div class="flex min-h-6 shrink-0 items-center">
           <span class="relative inline-flex h-1.5 w-1.5">
             <span
               v-if="speaking"

@@ -403,6 +403,37 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // On unless explicitly disabled, like voice. Folds voice in, because a
+    // camera rides a voice channel: there is nothing to put video on without it.
+    const videoChatEnabled = computed(() => {
+      return (
+        voiceChatEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.video_chat_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    const videoChatLobbiesEnabled = computed(() => {
+      return (
+        videoChatEnabled.value &&
+        voiceChatLobbiesEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.video_chat_lobbies_enabled",
+        )?.value !== "false"
+      );
+    });
+
+    const videoChatMatchesEnabled = computed(() => {
+      return (
+        videoChatEnabled.value &&
+        voiceChatMatchesEnabled.value &&
+        settings.value?.find(
+          (setting) => setting.name === "public.video_chat_matches_enabled",
+        )?.value !== "false"
+      );
+    });
+
     const newsLabel = computed(() => {
       return (
         settings.value?.find((setting) => setting.name === "public.news_label")
@@ -663,6 +694,9 @@ export const useApplicationSettingsStore = defineStore(
       voiceChatEnabled,
       voiceChatLobbiesEnabled,
       voiceChatMatchesEnabled,
+      videoChatEnabled,
+      videoChatLobbiesEnabled,
+      videoChatMatchesEnabled,
       newsLabel,
       postNewsRole,
       canPostNews,

@@ -24,6 +24,22 @@ export function voiceLeaveUrl(lobbyId: string) {
   return apiUrl(`${lobbyId}/leave`);
 }
 
+// A camera rides a path of its own rather than a second track on the microphone
+// above: turning it on or off would otherwise renegotiate the audio publish and
+// force every other member to re-subscribe, which is a drop-out in the middle of
+// a call for a change that has nothing to do with the microphone.
+export function voiceCamPublishUrl(lobbyId: string) {
+  return apiUrl(`${lobbyId}/cam/whip`);
+}
+
+export function voiceCamSubscribeUrl(lobbyId: string, steamId: string) {
+  return apiUrl(`${lobbyId}/${steamId}/cam/whep`);
+}
+
+export function voiceCamStopUrl(lobbyId: string) {
+  return apiUrl(`${lobbyId}/cam/stop`);
+}
+
 export type VoiceParticipant = {
   steamId: string;
   name: string | null;
@@ -33,6 +49,11 @@ export type VoiceParticipant = {
   connected: boolean;
   // Talking right now, as reported by their own gate over the socket.
   speaking: boolean;
+  // Coaching this lineup rather than playing on it.
+  coach: boolean;
+  // Publishing a camera as well. Independent of `connected`: being in the call
+  // and being on camera are separate choices, and either can be true alone.
+  video: boolean;
 };
 
 export async function fetchVoiceParticipants(lobbyId: string) {

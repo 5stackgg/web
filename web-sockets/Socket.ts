@@ -14,6 +14,11 @@ export interface LobbyMessage {
     avatar_url?: string;
     profile_url?: string;
   };
+  // Never sent by the server -- the wire format has no room marker, because a
+  // room is a subscription and not a property of the text. Stamped on the
+  // client where two rooms are merged into one stream and a line has to say
+  // which one it went to. See ChatLobby's merged `messages`.
+  __channel?: "everyone" | "team";
 }
 
 export interface Lobby {
@@ -32,10 +37,10 @@ interface LobbyState {
 
 export type ChatType =
   | "match"
-  // One side of a match, keyed `${matchId}:${lineupId}`. Distinct from
-  // "team", which is a real team's permanent room.
+  // One side of a match, keyed `${matchId}:${lineupId}`. There is no room for
+  // a real team: the API's enum has one, but nothing ever opened it and the
+  // join switch has no case for it, so asking would only be refused.
   | "match_team"
-  | "team"
   | "matchmaking"
   | "organizers"
   | "tournament"
@@ -60,7 +65,7 @@ export function chatMessageKey(message: LobbyMessage) {
   ].join("|");
 }
 
-function chatMessageTime(message: LobbyMessage) {
+export function chatMessageTime(message: LobbyMessage) {
   return new Date(message?.timestamp).getTime() || 0;
 }
 

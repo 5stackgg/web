@@ -1,19 +1,20 @@
 // Indexed across the whole match, not per lineup: a lobby big enough to fill
 // both sides is split across them and must keep one colour.
 
-// Picked in OKLCH at a fixed L 0.75 / C 0.12 so all five read as equally bright
-// on the card — plain HSL at one lightness makes the violet look half-dead next
-// to the cyan. Hues dodge every colour that already carries meaning here:
-// tac-amber (you / captain), the green-yellow-red status ping, and the elo blue.
-// Ordered so the smallest lineups get the furthest-apart hues: parties are
-// numbered by first appearance, so each prefix of this list has to hold up on
-// its own. Cyan sits last because it is the closest pair with teal.
+// One hue, five depths, rather than five hues. A multi-hue set turns a 14px chip
+// into something that looks like a status light, and every hue far enough from
+// the others to be legible at that size lands on a colour that already means
+// something here — tac-amber (you / captain), the green-yellow-red status ping,
+// or the elo blue. A single periwinkle ramp says nothing except "party N", and
+// it stays clear of all four. Parties are numbered by first appearance, so the
+// lightest step carries almost every match; the ramp only deepens when a match
+// actually has several parties in it.
 export const PARTY_COLORS = [
-  { ring: "#e18fc6", text: "#f7acdd" }, // pink
-  { ring: "#4fc6a2", text: "#78debd" }, // teal
-  { ring: "#a6a3f7", text: "#c0beff" }, // violet
-  { ring: "#56baef", text: "#7dd3ff" }, // azure
-  { ring: "#2cc5c5", text: "#65dddd" }, // cyan
+  { ring: "#e2e6ff", text: "#eef1ff" }, // step 1
+  { ring: "#bfc6fb", text: "#d5daff" }, // step 2
+  { ring: "#9ba6f4", text: "#b6bfff" }, // step 3
+  { ring: "#7b88ea", text: "#9aa5f7" }, // step 4
+  { ring: "#5d6bd8", text: "#8391ee" }, // step 5
 ];
 
 export function partyColor(index: number): { ring: string; text: string } {

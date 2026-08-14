@@ -60,6 +60,10 @@ const navItems = computed(() => {
       label: $t("pages.settings.notifications.title"),
     },
     {
+      path: "/settings/voice",
+      label: $t("pages.settings.account.voice"),
+    },
+    {
       path: "/settings/api-keys",
       label: $t("pages.settings.account.api_keys"),
     },

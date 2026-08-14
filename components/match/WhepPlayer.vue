@@ -37,6 +37,10 @@ const props = defineProps<{
   audio?: boolean;
 }>();
 
+// The negotiated stream, for hosts that need to do something with it besides
+// play it. Null when the connection goes away.
+const emit = defineEmits<{ (e: "stream", stream: MediaStream | null): void }>();
+
 const wantsAudio = computed(() => props.audio !== false);
 
 const videoRef = ref<HTMLVideoElement | null>(null);
@@ -292,6 +296,11 @@ async function connect() {
 
   try {
     pc = new RTCPeerConnection({
+      // STUN only by default, deliberately -- do NOT default this to the TURN
+      // relay. This player carries game streams, demo playback and highlight
+      // clips: pushing that through a relay would put every viewer's bitrate
+      // through one box, for media that has no trouble connecting directly.
+      // Camera tiles in a call get their relay from useIceServers.ts instead.
       iceServers: props.iceServers ?? [
         { urls: "stun:stun.l.google.com:19302" },
       ],
@@ -312,6 +321,9 @@ async function connect() {
       el.autoplay = true;
       el.playsInline = true;
       el.srcObject = event.streams[0];
+      // Handed out so a host can read the feed without playing it -- the camera
+      // grid meters who is talking on tiles nobody is listening to.
+      emit("stream", event.streams[0]);
       void tryPlay();
     };
 
@@ -438,6 +450,7 @@ async function teardown() {
   }
   if (videoRef.value) {
     videoRef.value.srcObject = null;
+    emit("stream", null);
   }
 }
 

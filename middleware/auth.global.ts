@@ -38,7 +38,11 @@ function isPublicRoute(path: string): boolean {
   }
 
   if (path.startsWith("/matches")) {
-    return true;
+    // ...except your own camera page. It used to be reachable with a minted
+    // token instead of a login, which is exactly what was retired: the phone
+    // scanning the QR now signs in, and the API takes the player's identity
+    // from the session rather than the URL.
+    return !/^\/matches\/[^/]+\/camera$/.test(path);
   }
 
   if (path.startsWith("/draft-room/") && !path.endsWith("/edit")) {

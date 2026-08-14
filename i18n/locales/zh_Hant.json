@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "安全通道"
+    },
+    "voice_panel": {
+      "coach": "教練"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "比賽聊天",
-    "team": "隊伍聊天",
     "tournament": "賽事聊天",
     "organizers": "主辦者聊天",
     "matchmaking": "佇列聊天",
@@ -3719,8 +3721,7 @@
     "organizers": "全域大廳",
     "tournament": "賽事聊天",
     "matchmaking": "佇列聊天",
-    "match": "比賽聊天",
-    "team": "隊伍聊天"
+    "match": "比賽聊天"
   },
   "latency_status": {
     "measuring": "測量中...",
@@ -7160,5 +7161,10 @@
     "player": "玩家",
     "award": "獎項",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "教練"
+    }
   }
 }

@@ -182,6 +182,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         />
       </form>
     </PageTransition>
+
   </SettingsPage>
 </template>
 

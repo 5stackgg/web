@@ -934,7 +934,11 @@ import {
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
-import { canSetVetoPickTimeout } from "~/utilities/setupOptions";
+// Aliased: this file has both a <script setup> and this block, which compile
+// into one module, so a module-scope import shadows the computed of the same
+// name when the template resolves it. This returns a boolean, so the template
+// was reading a function -- always truthy, and a v-if that never hid anything.
+import { canSetVetoPickTimeout as allowsVetoPickTimeout } from "~/utilities/setupOptions";
 import { toast } from "@/components/ui/toast";
 
 interface Region {
@@ -1139,7 +1143,7 @@ export default {
   },
   computed: {
     canSetVetoPickTimeout() {
-      return canSetVetoPickTimeout();
+      return allowsVetoPickTimeout();
     },
     sortedStageTypes() {
       const order = [
@@ -1525,7 +1529,7 @@ export default {
         variables: {
           id: matchOptionsId,
           tv_delay: form.tv_delay,
-          ...(canSetVetoPickTimeout()
+          ...(allowsVetoPickTimeout()
             ? { veto_pick_timeout: form.veto_pick_timeout }
             : {}),
           region_veto: form.region_veto,
@@ -1554,7 +1558,7 @@ export default {
               },
               _set: {
                 tv_delay: $("tv_delay", "Int!"),
-                ...(canSetVetoPickTimeout()
+                ...(allowsVetoPickTimeout()
                   ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
                   : {}),
                 region_veto: $("region_veto", "Boolean!"),
@@ -1601,7 +1605,7 @@ export default {
       const { data } = await (this as any).$apollo.mutate({
         variables: {
           tv_delay: form.tv_delay,
-          ...(canSetVetoPickTimeout()
+          ...(allowsVetoPickTimeout()
             ? { veto_pick_timeout: form.veto_pick_timeout }
             : {}),
           region_veto: form.region_veto,
@@ -1627,7 +1631,7 @@ export default {
             {
               object: {
                 tv_delay: $("tv_delay", "Int!"),
-                ...(canSetVetoPickTimeout()
+                ...(allowsVetoPickTimeout()
                   ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
                   : {}),
                 region_veto: $("region_veto", "Boolean!"),

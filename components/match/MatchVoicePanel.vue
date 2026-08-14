@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, onBeforeUnmount } from "vue";
-import { Mic, MicOff, PhoneOff, Volume2 } from "lucide-vue-next";
+import { Mic, MicOff, PhoneOff, Video, VideoOff, Volume2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   AlertDialog,
@@ -15,6 +15,8 @@ import {
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import VoiceSettingsButton from "~/components/voice/VoiceSettingsButton.vue";
 import { useVoiceChat } from "~/composables/useVoiceChat";
+import { useVoiceSession } from "~/composables/useVoiceSession";
+import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
 import type { MicPipeline } from "~/composables/useMicPipeline";
 
 const props = defineProps<{
@@ -43,27 +45,114 @@ const enabled = computed(
   () => useApplicationSettingsStore().voiceChatMatchesEnabled,
 );
 
-const voice = useVoiceChat(
-  () => (enabled.value ? props.lineupId : null),
-  () => props.label,
-  { pipeline: props.pipeline },
+// Two ways to be wired, and only one of them is the normal one.
+//
+// Normally this is a control, not a connection: the session is hosted by the
+// app layout so that leaving the match page does not hang up on the team, and
+// everything here drives it. The exception is a surface that hands over its own
+// microphone -- the camera setup page, which renders without the layout and so
+// has no host to drive. That one owns its connection locally, and the page
+// staying open is what keeps it alive.
+const session = useVoiceSession();
+
+const local =
+  props.pipeline &&
+  useVoiceChat(
+    () => (enabled.value ? props.lineupId : null),
+    () => props.label,
+    {
+      pipeline: props.pipeline,
+      kind: () => "match" as const,
+      videoAllowed: () =>
+        useApplicationSettingsStore().videoChatMatchesEnabled,
+    },
+  );
+
+const registry = useActiveVoiceChannel();
+const mySteamId = computed(() => useAuthStore().me?.steam_id ?? null);
+
+// The channel, whoever happens to be holding it: this component's own local
+// session, the app-hosted one, or another tab entirely. All three mean "you are
+// in it", and a control that only knew about its own session showed a Join
+// button to someone already talking -- which is exactly what happened between
+// the camera page and the match page.
+const held = computed(() =>
+  registry.session.value?.id === props.lineupId ? registry.session.value : null,
 );
 
-const {
-  connected,
-  connecting,
-  muted,
-  error,
-  errorDetail,
-  unsupported,
-  participants,
-  transmitting,
-  conflict,
-  join,
-  joinSwitching,
-  leave,
-  toggleMute,
-} = voice;
+// Whether the microphone in this channel is one this component can reach
+// directly, as opposed to one being driven over the tab bridge.
+const ownedHere = computed(() =>
+  local ? local.connected.value : session.isChannel(props.lineupId),
+);
+
+// One shape either way, so the template never asks which it got.
+const connected = computed(() => !!held.value);
+const connecting = computed(() =>
+  local
+    ? local.connecting.value
+    : session.connecting.value && session.targetId.value === props.lineupId,
+);
+const muted = computed(() => held.value?.muted ?? false);
+
+// A camera is offered wherever the microphone is. Resolved the same way as
+// everything else here: this component may own the session, or be driving the
+// one the app layout hosts, and the control has to work either way.
+const videoOffered = computed(
+  () =>
+    connected.value && useApplicationSettingsStore().videoChatMatchesEnabled,
+);
+const videoOn = computed(() =>
+  local ? local.videoEnabled.value : session.videoOn.value,
+);
+const videoStarting = computed(() =>
+  local ? local.videoStarting.value : session.videoStarting.value,
+);
+
+function toggleVideo() {
+  void (local ? local.toggleVideo() : session.toggleVideo());
+}
+const participants = computed(() => held.value?.participants ?? []);
+// The local gate is the truthful answer when we own the mic; otherwise the only
+// thing we know is what the channel was told, which is what everyone else hears.
+const transmitting = computed(() => {
+  if (ownedHere.value) {
+    return local ? local.transmitting.value : session.transmitting.value;
+  }
+
+  return participants.value.some(
+    (participant) =>
+      participant.steamId === mySteamId.value && participant.speaking,
+  );
+});
+// One session serves every channel now, so a failure is only this control's to
+// report when this control is what asked.
+const owns = computed(
+  () => !!local || session.targetId.value === props.lineupId,
+);
+const error = computed(() =>
+  local ? local.error.value : owns.value ? session.error.value : null,
+);
+const errorDetail = computed(() =>
+  local ? local.errorDetail.value : owns.value ? session.errorDetail.value : null,
+);
+const unsupported = computed(() =>
+  local ? local.unsupported.value : session.unsupported.value,
+);
+const pipeline = computed(() =>
+  local ? local.pipeline : session.pipeline.value,
+);
+// Anything holding the microphone on a different channel, wherever it lives --
+// including another tab, which the local registry's `active` never sees.
+const conflict = computed(() => {
+  const current = registry.session.value;
+
+  if (current && current.id !== props.lineupId) {
+    return current;
+  }
+
+  return registry.conflictWith(props.lineupId);
+});
 
 const switchPrompt = ref(false);
 
@@ -78,6 +167,55 @@ const speakers = computed(() =>
   participants.value.filter((participant) => participant.speaking),
 );
 
+async function join() {
+  if (local) {
+    await local.join();
+    return;
+  }
+
+  await session.join(props.lineupId, props.label, "match");
+}
+
+// Routed to whoever actually holds the microphone. When that is another tab the
+// registry relays the command over the bridge, so the control works the same
+// wherever it is rendered.
+async function leave() {
+  if (local && local.connected.value) {
+    await local.leave();
+    return;
+  }
+
+  if (session.isChannel(props.lineupId)) {
+    await session.leave();
+    return;
+  }
+
+  await registry.leaveSession();
+}
+
+function toggleMute() {
+  if (local && local.connected.value) {
+    local.toggleMute();
+    return;
+  }
+
+  if (session.isChannel(props.lineupId)) {
+    session.toggleMute();
+    return;
+  }
+
+  registry.toggleSessionMute();
+}
+
+function stopPreview() {
+  if (local) {
+    local.stopPreview();
+    return;
+  }
+
+  session.stopPreview();
+}
+
 async function onJoin() {
   if (conflict.value) {
     switchPrompt.value = true;
@@ -89,8 +227,33 @@ async function onJoin() {
 
 async function confirmSwitch() {
   switchPrompt.value = false;
-  await joinSwitching();
+
+  if (local) {
+    await local.joinSwitching();
+    return;
+  }
+
+  // Retargeting the hosted session drops the channel it was on, which is the
+  // switch itself -- there is no second connection to take the mic from.
+  await session.join(props.lineupId, props.label, "match");
 }
+
+// What the microphone key does, reachable from outside so a surface can make
+// its whole row the target instead of a 24px icon.
+async function activate() {
+  if (unsupported.value) {
+    return;
+  }
+
+  if (connected.value) {
+    toggleMute();
+    return;
+  }
+
+  await onJoin();
+}
+
+defineExpose({ activate, connected });
 
 // The inline strip is one microphone key: off the channel it joins, on it it
 // mutes. Everything the panel says in words has to fit in the hover copy, so
@@ -194,7 +357,7 @@ onBeforeUnmount(() => {
             :disabled="!!unsupported"
             :loading="connecting"
             :aria-label="inlineAction"
-            @click="connected ? toggleMute() : onJoin()"
+            @click="activate"
           >
             <MicOff v-if="connected && muted" />
             <Mic v-else />
@@ -221,6 +384,41 @@ onBeforeUnmount(() => {
       </span>
 
       <FiveStackToolTip
+        v-if="videoOffered"
+        as-child
+        :delay-duration="120"
+        side="top"
+        align="end"
+      >
+        <template #trigger>
+          <Button
+            size="xs"
+            variant="ghost"
+            class="h-6 w-6 rounded-full p-0 transition-colors [&_svg]:size-3.5"
+            :class="
+              videoOn
+                ? 'text-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground hover:text-foreground'
+            "
+            :loading="videoStarting"
+            :aria-label="
+              videoOn
+                ? $t('voice.call.stop_camera')
+                : $t('voice.call.start_camera')
+            "
+            @click="toggleVideo"
+          >
+            <component :is="videoOn ? Video : VideoOff" />
+          </Button>
+        </template>
+        {{
+          videoOn
+            ? $t("voice.call.stop_camera")
+            : $t("voice.call.start_camera")
+        }}
+      </FiveStackToolTip>
+
+      <FiveStackToolTip
         v-if="connected"
         as-child
         :delay-duration="120"
@@ -241,17 +439,17 @@ onBeforeUnmount(() => {
         {{ $t("voice.tooltip.leave") }}
       </FiveStackToolTip>
 
-      <template v-if="!unsupported && !hideSettings">
+      <template v-if="!unsupported && !hideSettings && pipeline">
         <!-- Channel keys on one side of the hairline, the microphone itself on
              the other: the settings outlive whichever channel is open. -->
         <span class="mx-0.5 h-3 w-px bg-border/70"></span>
 
         <VoiceSettingsButton
-          :pipeline="voice.pipeline"
+          :pipeline="pipeline"
           :busy-channel="conflict?.label ?? null"
           :tooltip="$t('voice.tooltip.settings')"
           class="h-6 w-6 [&_svg]:size-3.5"
-          @closed="voice.stopPreview()"
+          @closed="stopPreview()"
         />
       </template>
     </template>
@@ -325,11 +523,11 @@ onBeforeUnmount(() => {
           <!-- Same device pickers, mic check and sensitivity as the party hub:
              the settings belong to the microphone, not to one surface. -->
           <VoiceSettingsButton
-            v-if="!unsupported"
-            :pipeline="voice.pipeline"
+            v-if="!unsupported && pipeline"
+            :pipeline="pipeline"
             :busy-channel="conflict?.label ?? null"
             class="h-8 w-8"
-            @closed="voice.stopPreview()"
+            @closed="stopPreview()"
           />
         </div>
       </div>

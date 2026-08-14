@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useIceServers } from "~/composables/useIceServers";
 import { ref, reactive, computed, onBeforeUnmount } from "vue";
 import gql from "graphql-tag";
 import { useQuery } from "@vue/apollo-composable";
@@ -19,6 +20,8 @@ import {
   type CameraPlayerStatus,
 } from "~/composables/useCameraApi";
 import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
+
+const ice = useIceServers();
 
 const props = defineProps<{
   matchId: string;
@@ -196,9 +199,7 @@ async function startCall(steamId: string) {
     });
     state.stream = stream;
 
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
+    const pc = new RTCPeerConnection({ iceServers: await ice.load() });
     state.pc = pc;
 
     for (const track of stream.getTracks()) {
@@ -372,11 +373,15 @@ onBeforeUnmount(() => {
             }"
           >
             <div class="relative aspect-video bg-black">
+              <!-- This is the monitoring grid, so it pays for the audio track
+                   on every tile in order to show who is talking without an
+                   official having to unmute each one in turn. -->
               <CameraFeed
                 :match-id="matchId"
                 :steam-id="player.steamId"
                 :state="tileState(player)"
                 :unmuted="isListening(player.steamId)"
+                meter
                 @update:unmuted="toggleListen(player.steamId)"
               />
 
@@ -418,7 +423,7 @@ onBeforeUnmount(() => {
               class="flex items-center gap-2 border-t border-border/60 bg-background/40 px-2.5 py-1.5"
             >
               <PlayerDisplay
-                class="min-w-0 flex-1"
+                class="min-w-0"
                 size="xs"
                 :player="playerFor(player)"
                 :show-flag="false"
@@ -427,6 +432,18 @@ onBeforeUnmount(() => {
                 :show-online="false"
                 :truncate-name="true"
               />
+
+              <!-- The tile an official looks for deliberately: the coach is the
+                   one person on a side who can talk to the team during a
+                   technical timeout without the server ever seeing it. -->
+              <span
+                v-if="player.coach"
+                class="shrink-0 rounded-sm border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-1 py-[1px] font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+              >
+                {{ $t("camera.tile.coach") }}
+              </span>
+
+              <span class="flex-1"></span>
 
               <!-- Reserved width: the label swaps between call and hang up, and
                    a tile that resizes under the cursor gets misclicked. -->

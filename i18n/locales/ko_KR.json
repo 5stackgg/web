@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "SECURE CHANNEL"
+    },
+    "voice_panel": {
+      "coach": "코치"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "매치 채팅",
-    "team": "팀 채팅",
     "tournament": "토너먼트 채팅",
     "organizers": "주최자 채팅",
     "matchmaking": "대기열 채팅",
@@ -3719,8 +3721,7 @@
     "organizers": "글로벌 로비",
     "tournament": "토너먼트 채팅",
     "matchmaking": "대기열 채팅",
-    "match": "매치 채팅",
-    "team": "팀 채팅"
+    "match": "매치 채팅"
   },
   "latency_status": {
     "measuring": "측정 중...",
@@ -7160,5 +7161,10 @@
     "player": "플레이어",
     "award": "어워드",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "코치"
+    }
   }
 }

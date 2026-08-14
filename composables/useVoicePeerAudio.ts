@@ -78,6 +78,20 @@ watch(
   { deep: true },
 );
 
+// A fader moved in the hub has to reach whichever tab actually holds the peer
+// connections -- the call can be running in another one. `storage` only fires
+// in the other tabs, and only when the value really changed, so this settles
+// rather than ping-ponging.
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    if (event.key !== STORAGE_KEY) {
+      return;
+    }
+
+    peers.value = read();
+  });
+}
+
 export function useVoicePeerAudio() {
   function settingsFor(steamId: string): PeerAudio {
     return peers.value[steamId] ?? DEFAULT_PEER;

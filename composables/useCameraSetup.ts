@@ -1,6 +1,4 @@
 import { ref, computed, watch, onScopeDispose } from "vue";
-import gql from "graphql-tag";
-import { useQuery } from "@vue/apollo-composable";
 import QRCode from "qrcode";
 import {
   cameraPlayerJoinUrl,
@@ -8,70 +6,33 @@ import {
   fetchCameraStatus,
 } from "~/composables/useCameraApi";
 
-const MY_CAMERA_TOKEN = gql`
-  query MyCameraToken($matchId: uuid!) {
-    match_camera_tokens(where: { match_id: { _eq: $matchId } }, limit: 1) {
-      token
-    }
-  }
-`;
-
-// Everything needed to get a player's camera publishing: their own token, the
-// QR/popup links built from it, and whether the feed has actually gone live.
-// Shared so the blocking overlay and the check-in prompt behave identically.
-// `enabled` exists because a caller can mount this before it knows whether the
-// match wants cameras at all -- the check-in card builds one per match. Without
-// it, a match with camera_required off polls for a token that will never be
-// minted, every 1.5s, for as long as the page is open.
+// Everything needed to get a player's camera publishing: the QR/popup links,
+// and whether the feed has actually gone live. Shared so the blocking overlay
+// and the check-in prompt behave identically.
+//
+// There is no token to wait for any more -- the link is just the match's camera
+// page, and whoever opens it signs in. `enabled` is still worth having: a
+// caller can mount this before it knows whether the match wants cameras at all
+// (the check-in card builds one per match), and a match with camera_required
+// off should not be polling readiness every 1.5s for as long as the page is
+// open.
 export function useCameraSetup(
   matchId: () => string,
   enabled: () => boolean = () => true,
 ) {
-  const { result, refetch } = useQuery<{
-    match_camera_tokens: Array<{ token: string }>;
-  }>(
-    MY_CAMERA_TOKEN,
-    () => ({ matchId: matchId() }),
-    () => ({
-      fetchPolicy: "network-only",
-      enabled: enabled(),
-    }),
-  );
-
-  const token = computed(
-    () => result.value?.match_camera_tokens?.[0]?.token ?? null,
-  );
-
   const qrDataUrl = ref<string | null>(null);
   const ready = ref(false);
   // Distinguishes "not connected" from "we have not looked yet", so a player
   // who already connected never sees a flash of the blocking state.
   const checked = ref(false);
 
-  const joinUrl = computed(() =>
-    token.value ? cameraPlayerJoinUrl(matchId(), token.value) : null,
-  );
+  const joinUrl = computed(() => cameraPlayerJoinUrl(matchId()));
 
-  // A plain polling loop rather than watch(token): the row is minted
-  // server-side, so this can start before it exists, and a watch does not
-  // re-fire on undefined -> undefined — one miss would wedge it until reload.
-  // Both loops re-arm from inside their own await, so clearing the pending
-  // timer is not enough to stop them -- a poll already in flight when the scope
-  // disposes would schedule the next one and run for the life of the tab.
+  // The poll re-arms from inside its own await, so clearing the pending timer is
+  // not enough to stop it -- a request already in flight when the scope disposes
+  // would schedule the next one and run for the life of the tab.
   let stopped = false;
   let running = false;
-
-  let tokenTimer: ReturnType<typeof setTimeout> | null = null;
-  function pollForToken() {
-    if (stopped || token.value) {
-      return;
-    }
-
-    tokenTimer = setTimeout(async () => {
-      await refetch();
-      pollForToken();
-    }, 1500);
-  }
 
   let statusTimer: ReturnType<typeof setTimeout> | null = null;
   async function pollStatus() {
@@ -79,12 +40,7 @@ export function useCameraSetup(
       return;
     }
 
-    if (!token.value) {
-      statusTimer = setTimeout(pollStatus, 1500);
-      return;
-    }
-
-    ready.value = (await fetchCameraStatus(token.value)).ready;
+    ready.value = (await fetchCameraStatus(matchId())).ready;
     checked.value = true;
 
     if (stopped) {
@@ -112,22 +68,16 @@ export function useCameraSetup(
   // from the window's own orientation, so a narrow popup would ask a landscape
   // webcam for a portrait frame and letterbox it.
   function openOnThisComputer() {
-    if (token.value) {
-      window.open(
-        cameraPlayerPath(matchId(), token.value),
-        "camera-connect",
-        "width=900,height=700",
-      );
-    }
+    window.open(
+      cameraPlayerPath(matchId()),
+      "camera-connect",
+      "width=900,height=700",
+    );
   }
 
   function stop() {
     stopped = true;
     running = false;
-    if (tokenTimer) {
-      clearTimeout(tokenTimer);
-      tokenTimer = null;
-    }
     if (statusTimer) {
       clearTimeout(statusTimer);
       statusTimer = null;
@@ -143,7 +93,6 @@ export function useCameraSetup(
     running = true;
     stopped = false;
 
-    pollForToken();
     void pollStatus();
   }
 
@@ -162,5 +111,5 @@ export function useCameraSetup(
 
   onScopeDispose(stop);
 
-  return { token, joinUrl, qrDataUrl, ready, checked, openOnThisComputer, stop };
+  return { joinUrl, qrDataUrl, ready, checked, openOnThisComputer, stop };
 }

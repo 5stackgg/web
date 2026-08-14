@@ -7,8 +7,10 @@ import {
   LucideVolumeX,
 } from "lucide-vue-next";
 import { cameraAdminWatchUrl } from "~/composables/useCameraApi";
+import VoiceActivityBars from "~/components/voice/VoiceActivityBars.vue";
+import { useStreamAudioLevel } from "~/composables/useStreamAudioLevel";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     matchId: string;
     steamId: string;
@@ -19,16 +21,33 @@ withDefaults(
     // Slot hosts put this inside their own click target, so the feed must not
     // eat the click and must not offer a focusable control of its own.
     clickThrough?: boolean;
+    // Show who is talking, on a tile nobody is listening to. Opt-in because it
+    // is the one thing here that costs continuously: it negotiates the audio
+    // track even while muted, so the feed can be measured. Worth it on the
+    // monitoring grid, wasteful on a stream deck.
+    meter?: boolean;
   }>(),
   {
     unmuted: false,
     dense: false,
     scrim: false,
     clickThrough: false,
+    meter: false,
   },
 );
 
 const emit = defineEmits<{ (e: "update:unmuted", value: boolean): void }>();
+
+const { level: audioLevel, watch: meterStream, stop: stopMeter } =
+  useStreamAudioLevel();
+
+function onStream(stream: MediaStream | null) {
+  if (!props.meter) {
+    return;
+  }
+
+  meterStream(stream);
+}
 
 // Each tile is a peer connection and a video decode, and the surfaces that use
 // them mount a lot at once -- a stream deck showing three live matches is
@@ -86,6 +105,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  stopMeter();
   clearLeaveTimer();
   observer?.disconnect();
   observer = null;
@@ -103,14 +123,26 @@ onBeforeUnmount(() => {
       :key="steamId"
       :whep-url="cameraAdminWatchUrl(matchId, steamId)"
       :muted="!unmuted"
-      :audio="unmuted"
+      :audio="unmuted || meter"
       disable-shortcuts
+      @stream="onStream"
       cover
       :class="[
         'absolute inset-0',
         clickThrough ? 'pointer-events-none' : '',
       ]"
     />
+
+    <!-- Over the feed rather than in the tile footer: the grid is scanned as a
+         wall of pictures, and "who is talking right now" has to be answerable
+         without reading anything. -->
+    <span
+      v-if="meter && state !== 'offline'"
+      class="pointer-events-none absolute bottom-2 left-2 z-10 flex h-4 items-end rounded-full bg-black/55 px-1.5 py-1 backdrop-blur-sm transition-opacity duration-200"
+      :class="audioLevel > 0 ? 'opacity-100' : 'opacity-0'"
+    >
+      <VoiceActivityBars :active="audioLevel > 0" :bars="4" />
+    </span>
 
     <!-- Only a genuinely offline camera gets the hatched panel; a tile that is
          merely scrolled out of view stays black until it comes back. -->

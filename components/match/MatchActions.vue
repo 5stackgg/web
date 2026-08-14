@@ -354,6 +354,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useStreamerStore } from "~/stores/StreamerStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { canWatchMatchCameras } from "~/composables/useMatchCameraStatus";
 import {
   RconAction,
   resolveRconCommand,
@@ -897,15 +898,11 @@ export default {
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
       );
     },
-    // Mirrors CameraService.assertCanWatch: administrators, or an organizer of
-    // this specific match -- not the global tournament_organizer role, which
-    // would reach every tournament's cameras rather than just this one.
+    // One shared rule, mirroring CameraService.watchScope. This used to be a
+    // second hand-rolled copy and it had already drifted from the one in
+    // useMatchCameraStatus.
     canWatchCameras() {
-      return (
-        !!this.match.options?.camera_required &&
-        (this.match.is_organizer ||
-          useAuthStore().isRoleAbove(e_player_roles_enum.administrator))
-      );
+      return canWatchMatchCameras(this.match);
     },
     // Reparse-all is admin-only (matches the Hasura action permission) and
     // only meaningful once at least one demo has been uploaded somewhere in

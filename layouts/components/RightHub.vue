@@ -9,7 +9,7 @@ import {
   Bell,
   Clock,
   Users,
-  Headphones,
+  Mic,
   MessageSquare,
   Tent,
   Pin,
@@ -183,13 +183,13 @@ const chatBadgeLabel = computed(() => formatBadgeCount(totalUnread.value));
 const { session: voiceSession } = useActiveVoiceChannel();
 const voiceMemberCount = computed(
   () =>
-    (voiceSession.value?.participants.value ?? []).filter(
+    (voiceSession.value?.participants ?? []).filter(
       (participant) => participant.connected,
     ).length,
 );
 const inVoice = computed(() => !!voiceSession.value);
 const voiceSpeaking = computed(() =>
-  (voiceSession.value?.participants.value ?? []).some(
+  (voiceSession.value?.participants ?? []).some(
     (participant) => participant.speaking,
   ),
 );
@@ -425,7 +425,7 @@ function onHubTouchEnd(e: TouchEvent) {
           @click="selectHub('voice')"
         >
           <span class="relative inline-flex">
-            <Headphones
+            <Mic
               class="w-5 h-5 transition-colors"
               :class="
                 inVoice && !isHubActive('voice') ? 'text-emerald-400' : ''

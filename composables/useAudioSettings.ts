@@ -16,6 +16,16 @@ const SUPPRESSION_KEY = "5stack:voice:noise-suppression";
 
 export type VoiceInputMode = "voice" | "open";
 
+// What a device that has never been set up sounds like. Kept here rather than
+// inline in the refs so the settings page can put a player back to them.
+export const AUDIO_DEFAULTS = {
+  micDeviceId: "",
+  outputDeviceId: "",
+  inputMode: "voice" as VoiceInputMode,
+  threshold: 0.08,
+  noiseSuppression: true,
+};
+
 function storedNumber(key: string, fallback: number) {
   try {
     const raw = localStorage.getItem(key);
@@ -77,10 +87,12 @@ const outputDevices = ref<Array<MediaDeviceInfo>>([]);
 const micDeviceId = ref(storedText(MIC_DEVICE_KEY));
 const outputDeviceId = ref(storedText(OUTPUT_DEVICE_KEY));
 const inputMode = ref<VoiceInputMode>(
-  (storedText(INPUT_MODE_KEY) as VoiceInputMode) || "voice",
+  (storedText(INPUT_MODE_KEY) as VoiceInputMode) || AUDIO_DEFAULTS.inputMode,
 );
-const threshold = ref(storedNumber(THRESHOLD_KEY, 0.08));
-const noiseSuppression = ref(storedFlag(SUPPRESSION_KEY, true));
+const threshold = ref(storedNumber(THRESHOLD_KEY, AUDIO_DEFAULTS.threshold));
+const noiseSuppression = ref(
+  storedFlag(SUPPRESSION_KEY, AUDIO_DEFAULTS.noiseSuppression),
+);
 
 // Browsers only expose getUserMedia on a secure origin, so a panel served over
 // plain http silently has no `mediaDevices` at all. Checked up front so that
@@ -100,6 +112,33 @@ function unsupportedReason(): string | null {
 }
 
 const unsupported = computed(() => unsupportedReason());
+
+// Every surface that opens a microphone fails the same handful of ways, and a
+// player who is told "could not start voice chat" learns nothing. The detail is
+// only carried for the cases we cannot name.
+export function describeMicError(caught: unknown): {
+  key: string;
+  detail: string | null;
+} {
+  const name = (caught as Error)?.name;
+
+  if (name === "NotAllowedError" || name === "SecurityError") {
+    return { key: "voice.errors.permission_denied", detail: null };
+  }
+
+  if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+    return { key: "voice.errors.no_microphone", detail: null };
+  }
+
+  if (name === "NotReadableError" || name === "TrackStartError") {
+    return { key: "voice.errors.microphone_busy", detail: null };
+  }
+
+  return {
+    key: "voice.errors.unknown",
+    detail: (caught as Error)?.message ?? String(caught),
+  };
+}
 
 async function refreshDevices() {
   if (!navigator.mediaDevices?.enumerateDevices) {
@@ -193,6 +232,23 @@ function setNoiseSuppression(enabled: boolean) {
   remember(SUPPRESSION_KEY, String(enabled));
 }
 
+function resetToDefaults() {
+  setMicDevice(AUDIO_DEFAULTS.micDeviceId);
+  setOutputDevice(AUDIO_DEFAULTS.outputDeviceId);
+  setInputMode(AUDIO_DEFAULTS.inputMode);
+  setThreshold(AUDIO_DEFAULTS.threshold);
+  setNoiseSuppression(AUDIO_DEFAULTS.noiseSuppression);
+}
+
+const isDefault = computed(
+  () =>
+    micDeviceId.value === AUDIO_DEFAULTS.micDeviceId &&
+    outputDeviceId.value === AUDIO_DEFAULTS.outputDeviceId &&
+    inputMode.value === AUDIO_DEFAULTS.inputMode &&
+    threshold.value === AUDIO_DEFAULTS.threshold &&
+    noiseSuppression.value === AUDIO_DEFAULTS.noiseSuppression,
+);
+
 // Chromium-only; Firefox and Safari just keep the system default.
 async function applyOutput(element: HTMLMediaElement) {
   const sinkId = outputDeviceId.value;
@@ -253,6 +309,7 @@ export function useAudioSettings() {
     threshold,
     noiseSuppression,
     unsupported,
+    isDefault,
     refreshDevices,
     micConstraints,
     openMic,
@@ -261,6 +318,7 @@ export function useAudioSettings() {
     setInputMode,
     setThreshold,
     setNoiseSuppression,
+    resetToDefaults,
     applyOutput,
     playTestTone,
   };

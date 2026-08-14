@@ -18,6 +18,7 @@ import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
 import socket from "~/web-sockets/Socket";
 
 const props = defineProps<{
@@ -33,6 +34,22 @@ const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread, closeTab } =
 
 const matchLobbyStore = useMatchLobbyStore();
 const isMobile = useMediaQuery("(max-width: 768px)");
+
+// A match tab is a room, and one side of that match is a second room the tab
+// never offered -- so team chat used to exist on the match page and vanish the
+// moment you read the same match here. Derived rather than stored on the tab so
+// it follows a lineup change without the tab being rebuilt.
+function teamLobbyIdFor(tab: ChatTab) {
+  if (tab.type !== "match") {
+    return undefined;
+  }
+
+  const match = (matchLobbyStore.myMatches as unknown as any[])?.find(
+    (candidate) => candidate.id === tab.lobbyId,
+  );
+
+  return matchTeamLobbyId(match, useAuthStore().me?.steam_id);
+}
 
 const activeChatId = ref<string | null>(null);
 
@@ -492,6 +509,7 @@ function handlePopOut() {
             :instance="tab.instance"
             :type="tab.type"
             :lobby-id="tab.lobbyId"
+            :team-lobby-id="teamLobbyIdFor(tab)"
             :tab-id="tab.id"
             :frameless="true"
             :is-global-context="true"

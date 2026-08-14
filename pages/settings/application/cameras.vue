@@ -70,6 +70,70 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
       </SettingsSection>
     </PageTransition>
 
+    <!-- A camera in a call rides a voice channel, so it lives under voice
+         rather than under the per-match camera requirement, which is a
+         different feature entirely. -->
+    <PageTransition v-if="voiceEnabled" :delay="60">
+      <SettingsSection
+        id="video-chat"
+        :title="$t('pages.settings.application.cameras.video_section')"
+        :description="
+          $t('pages.settings.application.cameras.video_description')
+        "
+        clickable-header
+        @header-click="save('public.video_chat_enabled', !videoEnabled)"
+      >
+        <template #action>
+          <Switch
+            :model-value="videoEnabled"
+            @update:model-value="
+              (value) => save('public.video_chat_enabled', value)
+            "
+          />
+        </template>
+
+        <div v-if="videoEnabled" class="space-y-4">
+          <div
+            class="flex cursor-pointer items-center justify-between gap-4"
+            @click="save('public.video_chat_lobbies_enabled', !videoLobbies)"
+          >
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">
+                {{ $t("pages.settings.application.cameras.video_lobbies") }}
+              </p>
+              <p class="text-xs text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.cameras.video_lobbies_description",
+                  )
+                }}
+              </p>
+            </div>
+            <Switch class="pointer-events-none" :model-value="videoLobbies" />
+          </div>
+
+          <div
+            class="flex cursor-pointer items-center justify-between gap-4"
+            @click="save('public.video_chat_matches_enabled', !videoMatches)"
+          >
+            <div class="space-y-0.5">
+              <p class="text-sm font-medium">
+                {{ $t("pages.settings.application.cameras.video_matches") }}
+              </p>
+              <p class="text-xs text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.cameras.video_matches_description",
+                  )
+                }}
+              </p>
+            </div>
+            <Switch class="pointer-events-none" :model-value="videoMatches" />
+          </div>
+        </div>
+      </SettingsSection>
+    </PageTransition>
+
     <!-- Cameras have no on/off of their own: an organizer turns them on per
          match. These only decide what a newly created match starts with. -->
     <PageTransition :delay="120">
@@ -105,17 +169,13 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
             />
           </div>
 
-          <!-- Meaningless on its own: there is nothing to watch unless a match
-               requires cameras in the first place. -->
+          <!-- Independent of the one above: these are two defaults for two
+               separate per-match options, and an organizer can perfectly well
+               want teammate viewing pre-set on matches where they turn cameras
+               on by hand. Gating it here only made the default unreachable. -->
           <div
-            class="flex items-center justify-between gap-4"
-            :class="
-              cameraRequiredDefault
-                ? 'cursor-pointer'
-                : 'cursor-not-allowed opacity-50'
-            "
+            class="flex cursor-pointer items-center justify-between gap-4"
             @click="
-              cameraRequiredDefault &&
               save('public.camera_allow_teammates_default', !teammatesDefault)
             "
           >
@@ -131,11 +191,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
                 }}
               </p>
             </div>
-            <Switch
-              class="pointer-events-none"
-              :disabled="!cameraRequiredDefault"
-              :model-value="teammatesDefault"
-            />
+            <Switch class="pointer-events-none" :model-value="teammatesDefault" />
           </div>
         </div>
       </SettingsSection>
@@ -169,6 +225,15 @@ export default {
     },
     voiceMatches(): boolean {
       return this.enabledByDefault("public.voice_chat_matches_enabled");
+    },
+    videoEnabled(): boolean {
+      return this.enabledByDefault("public.video_chat_enabled");
+    },
+    videoLobbies(): boolean {
+      return this.enabledByDefault("public.video_chat_lobbies_enabled");
+    },
+    videoMatches(): boolean {
+      return this.enabledByDefault("public.video_chat_matches_enabled");
     },
   },
   methods: {

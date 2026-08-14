@@ -3637,6 +3637,9 @@
     },
     "public_header": {
       "secure_channel": "CANAL SEGURO"
+    },
+    "voice_panel": {
+      "coach": "Técnico"
     }
   },
   "alt_text": {
@@ -3906,7 +3909,6 @@
   },
   "chat_tab_labels": {
     "match": "Chat da partida",
-    "team": "Chat da equipe",
     "tournament": "Chat do Torneio",
     "organizers": "Chat dos Organizadores",
     "matchmaking": "Chat da Fila",
@@ -3917,8 +3919,7 @@
     "organizers": "Lobby Global",
     "tournament": "Chat do Torneio",
     "matchmaking": "Chat da Fila",
-    "match": "Chat da partida",
-    "team": "Chat da equipe"
+    "match": "Chat da partida"
   },
   "latency_status": {
     "measuring": "Medindo...",
@@ -7618,5 +7619,10 @@
     "select_player": "Selecionar jogador…",
     "award": "Equipe",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Técnico"
+    }
   }
 }

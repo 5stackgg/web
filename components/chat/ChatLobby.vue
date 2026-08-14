@@ -116,6 +116,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             v-if="messages.length"
             ref="chatMessagesRef"
             :messages="messages"
+            :group-key="isMerged ? viewFilter : ''"
             variant="global"
             :is-minimized="isMinimized"
             class="flex-1 overflow-y-auto max-h-96"
@@ -162,8 +163,15 @@ import Empty from "~/components/ui/empty/Empty.vue";
           v-if="canSend"
           ref="chatInputRef"
           variant="global"
+          :channels="chatChannels"
+          :destination="sendTo"
+          @update:destination="sendTo = $event as any"
           @send-message="handleSendMessage"
-        />
+        >
+          <template #actions>
+            <slot name="compose-actions"></slot>
+          </template>
+        </ChatInput>
         <div v-else class="px-3 py-2 text-center text-xs text-muted-foreground">
           {{ readonlyHint || $t("chat.readonly") }}
         </div>
@@ -179,12 +187,15 @@ import Empty from "~/components/ui/empty/Empty.vue";
       v-else-if="!hideParticipantsSummary"
       class="mb-2 flex items-center justify-between text-[11px] text-muted-foreground gap-3"
     >
-      <div class="flex items-center gap-1.5">
-        <!-- Two chat panels can sit stacked on the same page (the whole match
-             room and a single lineup's room) and are otherwise identical, so
-             the one you are typing into has to say which it is. -->
+      <!-- min-w-0 so this side is what gives when the row runs out of room.
+           The filter beside it is a control at a fixed width; the count is a
+           readout, and a clipped count beats a filter pushed off the card. -->
+      <div class="flex min-w-0 items-center gap-1.5">
+        <!-- A panel serving one room has to say which one, where more than one
+             is on screen. Merged, the destination pills over the input carry
+             that instead and this would only repeat them. -->
         <span
-          v-if="label"
+          v-if="label && !isMerged"
           class="inline-flex items-center rounded-sm border px-1.5 py-[1px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em]"
           :class="
             isTeamContext
@@ -195,18 +206,50 @@ import Empty from "~/components/ui/empty/Empty.vue";
           {{ label }}
         </span>
         <span
-          class="inline-flex h-2.5 w-2.5 rounded-full"
+          class="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
           :class="participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'"
         ></span>
         <button
           type="button"
-          class="underline-offset-2 hover:underline"
+          class="truncate underline-offset-2 hover:underline"
           @click.stop="showParticipants = !showParticipants"
         >
           {{ participantsCount }} {{ $t("chat.in_chat") }}
         </button>
       </div>
       <div class="flex shrink-0 items-center gap-2">
+        <!-- What is on screen, as opposed to where the next line goes. Both
+             rooms by default; narrowing is for reading one of them while the
+             other is busy. -->
+        <div
+          v-if="isMerged"
+          class="relative grid grid-cols-3 rounded-sm bg-background/60 p-[2px]"
+        >
+          <span
+            class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-[2px] bg-muted/70 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            :style="{ transform: `translateX(${viewFilterIndex * 100}%)` }"
+          ></span>
+          <button
+            v-for="option in viewFilters"
+            :key="option.value"
+            type="button"
+            class="relative z-10 px-1.5 py-[2px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em] transition-colors duration-200"
+            :class="
+              viewFilter === option.value
+                ? 'text-foreground'
+                : 'text-muted-foreground/60 hover:text-muted-foreground'
+            "
+            @click.stop="viewFilter = option.value as any"
+          >
+            {{ option.label }}
+            <!-- Narrowing the view is the one way to miss a message on this
+                 panel, so the way back to it is what carries the mark. -->
+            <span
+              v-if="unseenFor(option.value)"
+              class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+            ></span>
+          </button>
+        </div>
         <NuxtLink
           v-if="isGlobalContext && matchInfo"
           :to="`/matches/${(matchInfo as any).id}`"
@@ -214,9 +257,6 @@ import Empty from "~/components/ui/empty/Empty.vue";
         >
           {{ matchMetaText }}
         </NuxtLink>
-        <!-- Controls that belong to this room rather than to chat -- the team
-             voice channel is the same room, so it rides this header instead of
-             standing as a second panel underneath the messages. -->
         <slot name="header-actions"></slot>
       </div>
     </div>
@@ -253,9 +293,10 @@ import Empty from "~/components/ui/empty/Empty.vue";
         v-if="messages.length"
         ref="chatMessagesRef"
         :messages="messages"
+        :group-key="isMerged ? viewFilter : ''"
         variant="embedded"
         class="flex-1 min-h-0 overflow-y-auto"
-        :last-read-count="isGlobalContext ? lastReadMessageCount : 0"
+        :last-read-count="tracksReadPosition ? lastReadMessageCount : 0"
         @bottom-state-change="handleBottomStateChange"
       />
       <Empty v-else class="flex-1 text-muted-foreground">
@@ -275,7 +316,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
       </Empty>
       <button
         v-if="
-          isGlobalContext &&
+          tracksReadPosition &&
           lastReadMessageCount > 0 &&
           lastReadMessageCount < messages.length &&
           isAtBottom
@@ -288,7 +329,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
       </button>
       <button
         v-if="
-          isGlobalContext &&
+          tracksReadPosition &&
           lastReadMessageCount < messages.length &&
           !isAtBottom
         "
@@ -302,8 +343,18 @@ import Empty from "~/components/ui/empty/Empty.vue";
         v-if="canSend"
         ref="chatInputRef"
         variant="embedded"
+        :channels="chatChannels"
+        :destination="sendTo"
+        @update:destination="sendTo = $event as any"
         @send-message="handleSendMessage"
-      />
+      >
+        <!-- Controls that belong to the destination rather than to chat -- the
+             team voice channel is the same room as the team pill, so it rides
+             the toggle row instead of standing as a second panel. -->
+        <template #actions>
+          <slot name="compose-actions"></slot>
+        </template>
+      </ChatInput>
       <div v-else class="px-3 py-2 text-center text-xs text-muted-foreground">
         {{ readonlyHint || $t("chat.readonly") }}
       </div>
@@ -313,7 +364,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 
 <script lang="ts">
 import { markRaw, type PropType } from "vue";
-import socket, { chatMessageKey } from "~/web-sockets/Socket";
+import socket, { chatMessageKey, chatMessageTime } from "~/web-sockets/Socket";
 import type { ChatType, Lobby, LobbyMessage } from "~/web-sockets/Socket";
 
 import { useRightSidebar } from "~/composables/useRightSidebar";
@@ -363,16 +414,23 @@ export default {
       required: false,
       default: "",
     },
+    // A single lineup's room, keyed `${matchId}:${lineupId}`. Passing it merges
+    // that room into this one: one stream, one input, and a destination toggle,
+    // instead of two identical cards stacked on the same page. Absent for every
+    // surface that only ever has one room.
+    teamLobbyId: {
+      type: String,
+      required: false,
+      default: "",
+    },
     type: {
       type: String,
       required: true,
       validator: (value: string) =>
         [
           "match",
-          // One side of a match, keyed `${matchId}:${lineupId}`. Distinct from
-          // "team", which is a real team's permanent room.
+          // One side of a match, keyed `${matchId}:${lineupId}`.
           "match_team",
-          "team",
           "matchmaking",
           "organizers",
           "tournament",
@@ -430,22 +488,125 @@ export default {
   data() {
     return {
       lobby: undefined as Lobby | undefined,
+      teamLobby: undefined as Lobby | undefined,
       isMinimized: false,
       unreadCount: 0,
       lastReadMessageCount: 0,
       showParticipants: false,
       isAtBottom: true,
+      // Everyone until told otherwise, every time. A remembered destination is
+      // how a team callout ends up in front of the other side.
+      sendTo: "everyone" as "everyone" | "team",
+      viewFilter: "all" as "all" | "everyone" | "team",
+      // Counted per room, but only while the filter is hiding that room --
+      // everything on screen has by definition been offered to the reader.
+      unseen: { everyone: 0, team: 0 } as Record<string, number>,
     };
   },
   computed: {
+    // Two rooms on one panel. Everywhere else this is off and nothing below it
+    // changes shape.
+    isMerged() {
+      return !!this.teamLobbyId;
+    },
+    // Whether "where did I leave off" is a question worth answering here. The
+    // sidebar and the pop-out are surfaces you come back to; so is a panel
+    // carrying two rooms at once, which is why the merged one now counts.
+    tracksReadPosition() {
+      return this.isGlobalContext || this.isMerged;
+    },
     // Read straight off the lobby: the message list belongs to the lobby, and
     // every widget on it renders the same one.
+    //
+    // Merged, the two lists are interleaved and each line is stamped with the
+    // room it came from -- the wire format carries no such marker, so this is
+    // the only place that knowledge exists.
     messages(): LobbyMessage[] {
-      return this.lobby?.messages ?? NO_MESSAGES;
+      const everyone = this.lobby?.messages ?? NO_MESSAGES;
+
+      if (!this.isMerged) {
+        return everyone;
+      }
+
+      const team = this.teamLobby?.messages ?? NO_MESSAGES;
+
+      const tagged: LobbyMessage[] = [];
+      if (this.viewFilter !== "team") {
+        for (const message of everyone) {
+          tagged.push({ ...message, __channel: "everyone" });
+        }
+      }
+      if (this.viewFilter !== "everyone") {
+        for (const message of team) {
+          tagged.push({ ...message, __channel: "team" });
+        }
+      }
+
+      // Both source lists arrive already sorted, so this only has to settle the
+      // interleave. Ties keep everyone ahead of team for a stable order.
+      return tagged.sort((a, b) => {
+        const delta = chatMessageTime(a) - chatMessageTime(b);
+        if (delta !== 0) {
+          return delta;
+        }
+        return (
+          (a.__channel === "team" ? 1 : 0) - (b.__channel === "team" ? 1 : 0)
+        );
+      });
     },
     // Only a single lineup's room is private; the match room admits both sides.
     isTeamContext() {
-      return this.type === "match_team" || this.type === "team";
+      return this.type === "match_team";
+    },
+    everyoneLabel() {
+      return this.label || this.$t("chat.everyone");
+    },
+    teamLabelText() {
+      return this.$t("chat.your_team");
+    },
+    // Handed to the input, which owns the toggle. The hints are the only place
+    // the UI can say that the match room is echoed into the game server and a
+    // lineup room is not -- nothing on screen shows that difference.
+    chatChannels() {
+      if (!this.isMerged) {
+        return [];
+      }
+
+      return [
+        {
+          value: "everyone",
+          label: this.everyoneLabel,
+          hint: this.$t("chat.everyone_hint"),
+          placeholder: this.$t("chat.message_placeholder"),
+          tone: "muted",
+        },
+        {
+          value: "team",
+          label: this.teamLabelText,
+          hint: this.$t("chat.team_hint"),
+          placeholder: this.$t("chat.message_placeholder_team"),
+          tone: "amber",
+        },
+      ];
+    },
+    viewFilters() {
+      if (!this.isMerged) {
+        return [];
+      }
+
+      return [
+        { value: "all", label: this.$t("chat.all") },
+        { value: "everyone", label: this.everyoneLabel },
+        { value: "team", label: this.$t("chat.team_tag") },
+      ];
+    },
+    viewFilterIndex() {
+      return Math.max(
+        0,
+        this.viewFilters.findIndex(
+          (option) => option.value === this.viewFilter,
+        ),
+      );
     },
     rightSidebarOffset() {
       const baseOffset = 96;
@@ -456,8 +617,14 @@ export default {
 
       return baseOffset;
     },
+    // Whose presence the header is reporting. The two rooms admit different
+    // people -- the match room lets organizers and both sides in, a lineup room
+    // does not -- so these counts are never interchangeable and never summed.
     participantsMap() {
-      const key = `${this.type}:${this.lobbyId}`;
+      const key =
+        this.isMerged && this.viewFilter === "team"
+          ? `match_team:${this.teamLobbyId}`
+          : `${this.type}:${this.lobbyId}`;
       return useMatchLobbyStore().lobbyChat[key];
     },
     participants() {
@@ -546,7 +713,33 @@ export default {
     },
   },
   methods: {
-    handleIncomingMessage(message: LobbyMessage) {
+    // The (type, id) pair a destination resolves to. Sending is nothing more
+    // than choosing between them.
+    channelVisible(channel: "everyone" | "team") {
+      return this.viewFilter === "all" || this.viewFilter === channel;
+    },
+    // What the mark on a filter segment means: pick this and you will see
+    // something you have not. "All" carries whatever either room is holding.
+    unseenFor(option: string) {
+      if (!this.isMerged) {
+        return 0;
+      }
+
+      if (option === "all") {
+        return this.unseen.everyone + this.unseen.team;
+      }
+
+      return this.unseen[option] ?? 0;
+    },
+    channelTarget(channel: "everyone" | "team") {
+      return channel === "team" && this.teamLobbyId
+        ? { type: "match_team" as ChatType, id: this.teamLobbyId }
+        : { type: this.type as ChatType, id: this.lobbyId };
+    },
+    handleIncomingMessage(
+      message: LobbyMessage,
+      channel: "everyone" | "team" = "everyone",
+    ) {
       const mySteamId = useAuthStore().me?.steam_id;
       const fromSteamId = message?.from?.steam_id;
       const isOwnMessage =
@@ -557,6 +750,13 @@ export default {
       if (this.isMinimized && this.global && !isOwnMessage) {
         this.unreadCount++;
       }
+
+      // Only what the filter is actively hiding. A message in a room that is
+      // on screen has been shown, whether or not it was read.
+      if (this.isMerged && !isOwnMessage && !this.channelVisible(channel)) {
+        this.unseen[channel]++;
+      }
+
       // Auto-scroll only when already at the bottom.
       this.safeScrollToBottom(false);
 
@@ -571,11 +771,14 @@ export default {
         this.lastReadMessageCount = this.messages.length;
       }
 
+      // Claimed per room, so a merged panel still rings once for each -- one
+      // shared key would let whichever room arrived first mute the other.
+      const target = this.channelTarget(channel);
       if (
         this.playNotificationSound &&
         !isOwnMessage &&
         claimNotification(
-          `${this.type}:${this.lobbyId}:${chatMessageKey(message)}`,
+          `${target.type}:${target.id}:${chatMessageKey(message)}`,
         )
       ) {
         playNotificationSound();
@@ -601,8 +804,17 @@ export default {
         }
       });
     },
-    handleSendMessage(message: string) {
-      socket.chat(this.type as ChatType, this.lobbyId, message);
+    handleSendMessage(message: string, destination?: string) {
+      const channel = (destination ?? this.sendTo) as "everyone" | "team";
+      const target = this.channelTarget(channel);
+
+      socket.chat(target.type, target.id, message);
+      // Sending to the other room from the keyboard is a one-off; the pills do
+      // not move, because the next line is almost always going back where the
+      // conversation was.
+      if (this.viewFilter !== "all" && this.viewFilter !== channel) {
+        this.viewFilter = "all";
+      }
       // Snap to latest after sending.
       this.safeScrollToBottom(true);
       // Sending a message counts as catching up – clear the \"New\" line.
@@ -635,6 +847,17 @@ export default {
     },
   },
   watch: {
+    // Showing a room again is what clears its mark -- the messages it was
+    // holding are on screen the moment the filter widens.
+    viewFilter: {
+      handler() {
+        for (const channel of ["everyone", "team"] as const) {
+          if (this.channelVisible(channel)) {
+            this.unseen[channel] = 0;
+          }
+        }
+      },
+    },
     lobbyId: {
       immediate: true,
       handler() {
@@ -650,12 +873,49 @@ export default {
         // the message list it exposes carries its own reactivity.
         this.lobby = markRaw(lobby);
 
-        // Initialize lastReadMessageCount only the first time we join this lobby.
+        // Initialize lastReadMessageCount only the first time we join this
+        // lobby. Read off the rendered stream rather than this one handle, so a
+        // merged panel counts both rooms.
         if (this.lastReadMessageCount === 0) {
-          this.lastReadMessageCount = lobby.messages.length;
+          this.lastReadMessageCount = this.messages.length;
         }
 
-        lobby.on("lobby:chat", this.handleIncomingMessage);
+        lobby.on("lobby:chat", (message: LobbyMessage) => {
+          this.handleIncomingMessage(message, "everyone");
+        });
+      },
+    },
+    // The second room. joinLobby is refcounted per call and hands back its own
+    // handle, so holding two at once is the same thing the match page and the
+    // sidebar tab already do for the same room.
+    teamLobbyId: {
+      immediate: true,
+      handler(teamLobbyId: string) {
+        this.teamLobby?.leave();
+        this.teamLobby = undefined;
+
+        if (!teamLobbyId) {
+          // Nothing to send to, so nothing to point at either.
+          this.sendTo = "everyone";
+          this.viewFilter = "all";
+          return;
+        }
+
+        const lobby = socket.joinLobby(
+          this.instance,
+          "match_team",
+          teamLobbyId,
+        );
+
+        this.teamLobby = markRaw(lobby);
+
+        if (this.lastReadMessageCount === 0) {
+          this.lastReadMessageCount = this.messages.length;
+        }
+
+        lobby.on("lobby:chat", (message: LobbyMessage) => {
+          this.handleIncomingMessage(message, "team");
+        });
       },
     },
     messages: {
@@ -709,6 +969,7 @@ export default {
   },
   beforeUnmount() {
     this.lobby?.leave();
+    this.teamLobby?.leave();
   },
 };
 </script>

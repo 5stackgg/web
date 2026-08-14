@@ -6,8 +6,10 @@ import {
   LucideMonitor,
 } from "lucide-vue-next";
 
+// No token any more -- the link is just the match's camera page, and whoever
+// opens it signs in. The QR image is the only thing still built asynchronously,
+// so it is what "not ready yet" now means.
 defineProps<{
-  token: string | null;
   qrDataUrl: string | null;
   ready: boolean;
 }>();
@@ -80,7 +82,7 @@ const emit = defineEmits<{ (e: "openOnThisComputer"): void }>();
             <span
               class="font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              {{ token ? $t("camera.waiting") : $t("camera.preparing") }}
+              {{ qrDataUrl ? $t("camera.waiting") : $t("camera.preparing") }}
             </span>
           </div>
         </div>
@@ -99,7 +101,7 @@ const emit = defineEmits<{ (e: "openOnThisComputer"): void }>();
           class="w-full"
           variant="ghost"
           size="sm"
-          :disabled="!token"
+          :disabled="!qrDataUrl"
           @click="emit('openOnThisComputer')"
         >
           <LucideMonitor class="h-3.5 w-3.5" />

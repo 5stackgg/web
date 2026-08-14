@@ -99,6 +99,10 @@ function closeSettings(next: boolean) {
   emit("closed");
 }
 
+// So a surface can make its whole row the target rather than just the gear --
+// a 28px hit area next to a two-line label is the smallest thing on screen.
+defineExpose({ open: openSettings });
+
 // A dialog left open when the panel unmounts would leak its lock and pin the
 // hub open forever.
 onUnmounted(() => {

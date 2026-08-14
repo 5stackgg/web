@@ -12,20 +12,27 @@ const props = withDefaults(
     // would then sit blank for a poll) and would stop noticing the camera going
     // live, leaving the page's banner up forever.
     open?: boolean;
+    // Changes who is being told they can watch. Nobody should point a camera at
+    // themselves on the strength of a sentence that names the wrong audience.
+    allowTeammates?: boolean;
   }>(),
-  { open: true },
+  { open: true, allowTeammates: false },
 );
 
-const emit = defineEmits<{ (e: "ready"): void; (e: "dismiss"): void }>();
+const emit = defineEmits<{
+  (e: "update:ready", value: boolean): void;
+  (e: "dismiss"): void;
+}>();
 
-const { token, qrDataUrl, ready, checked, openOnThisComputer } = useCameraSetup(
+const { qrDataUrl, ready, checked, openOnThisComputer } = useCameraSetup(
   () => props.matchId,
 );
 
+// Reported both ways. It used to fire only on going live, which made the
+// parent's flag a one-way latch: a player who closed their camera mid match
+// kept a page that believed they still had one.
 watch(ready, (isReady) => {
-  if (isReady) {
-    emit("ready");
-  }
+  emit("update:ready", isReady);
 });
 </script>
 
@@ -58,7 +65,6 @@ watch(ready, (isReady) => {
 
       <div class="mt-6">
         <CameraSetup
-          :token="token"
           :qr-data-url="qrDataUrl"
           :ready="ready"
           @open-on-this-computer="openOnThisComputer"
@@ -68,7 +74,9 @@ watch(ready, (isReady) => {
       <p
         class="mt-5 border-t pt-4 text-center text-[11px] leading-relaxed text-muted-foreground/70"
       >
-        {{ $t("camera.reason") }}
+        {{
+          allowTeammates ? $t("camera.reason_teammates") : $t("camera.reason")
+        }}
       </p>
     </div>
   </div>

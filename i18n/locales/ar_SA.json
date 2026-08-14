@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "قناة آمنة"
+    },
+    "voice_panel": {
+      "coach": "مدرب"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "دردشة المباراة",
-    "team": "دردشة الفريق",
     "tournament": "دردشة البطولة",
     "organizers": "دردشة المنظمين",
     "matchmaking": "دردشة الطابور",
@@ -3719,8 +3721,7 @@
     "organizers": "اللوبي العام",
     "tournament": "دردشة البطولة",
     "matchmaking": "دردشة الطابور",
-    "match": "دردشة المباراة",
-    "team": "دردشة الفريق"
+    "match": "دردشة المباراة"
   },
   "latency_status": {
     "measuring": "جاري القياس...",
@@ -7160,5 +7161,10 @@
     "player": "لاعب",
     "award": "فريق",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "مدرب"
+    }
   }
 }

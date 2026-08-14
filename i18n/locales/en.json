@@ -1457,6 +1457,7 @@
         "my_account": "My Account",
         "api_keys": "API Keys",
         "linked_accounts": "Linked Accounts",
+        "voice": "Voice & Audio",
         "api_keys_management": {
           "add_api_key": "Add API Key",
           "description": "Keys authenticate requests to the 5Stack API — treat them like passwords.",
@@ -1511,6 +1512,27 @@
             "confirm": "Unlink"
           },
           "unlinked": "Discord account unlinked successfully"
+        }
+      },
+      "voice": {
+        "description": "Your microphone, your levels, and how loud everyone else is. Every voice channel uses what you set here — your party lobby, a match, a draft room — and so does the microphone on your camera feed.",
+        "this_device": {
+          "title": "Saved on this device",
+          "description": "Voice settings are not part of your 5stack account and never leave this browser. Every computer you play from keeps its own microphone, output, sensitivity and player levels — which is the point, since it is the hardware that changes, not you. Clearing this site's browser data puts them back to default."
+        },
+        "players": {
+          "title": "Player Levels",
+          "description": "Teammates you have turned down or silenced, from every channel you have been in. Kept here so it survives leaving the call — and so you can undo it without waiting to run into them again.",
+          "empty": "You have not turned anyone down. Use the fader beside a teammate during a call and they show up here.",
+          "silenced": "Silenced",
+          "reset": "Reset",
+          "reset_all": "Reset all"
+        },
+        "reset": {
+          "title": "Reset",
+          "description": "Puts the microphone, output, input mode, sensitivity and noise suppression back to how they started. Player levels are left alone.",
+          "action": "Reset to defaults",
+          "done": "Voice settings reset on this device"
         }
       },
       "notification_preferences": {
@@ -1812,7 +1834,13 @@
           "voice_lobbies_description": "Voice controls in the lobby panel, for the party a player puts together themselves.",
           "voice_matches": "Matches & Draft Lobbies",
           "voice_matches_description": "Team voice on the match page and in the draft lobby. Both talk on the same lineup channel, so they share this setting.",
-          "updated": "Updated"
+          "updated": "Updated",
+          "video_section": "Video Calls",
+          "video_description": "Lets players turn a camera on inside a voice channel. Always opt-in for the player, never required — this is a call between teammates, not the per-match camera requirement below.",
+          "video_lobbies": "Party lobbies",
+          "video_lobbies_description": "Offer a camera in the party lobby call.",
+          "video_matches": "Matches and draft rooms",
+          "video_matches_description": "Offer a camera in team voice on a match page. Worth turning off if your players run tight on CPU: a grid of tiles decodes alongside the live stream."
         },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
         "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
@@ -2662,6 +2690,7 @@
         "no_matches_description": "Match history will appear here after playing games.",
         "no_matches_self_description": "Jump into a match — your stats, ELO, and match history will start filling in here.",
         "edit_player": "Edit Player",
+        "more_actions": "More Actions",
         "friend": "Friend",
         "name": "Name",
         "role": "Role",
@@ -3456,6 +3485,29 @@
         "title": "Revoke this award?",
         "description": "{name} will no longer hold this award. This cannot be undone."
       }
+    },
+    "system_media_server": {
+      "title": "Media Server",
+      "description": "Live load on MediaMTX. Game streams, player cameras, voice and video calls all share one instance, so this is everything it is carrying at once. Logs are under System → Logs → mediamtx.",
+      "media_server_section": "Media Server",
+      "media_server_live": "Publishing",
+      "media_server_paths": "Paths",
+      "media_server_sessions": "WebRTC sessions",
+      "media_server_row": "{ready}/{paths} live · {bytes} in",
+      "media_server_idle": "Nothing is publishing right now.",
+      "media_server_unreachable": "Could not reach the media server. This is not the same as it being idle — the numbers above are unknown, not zero.",
+      "media_kind": {
+        "gameStreams": "Game streams",
+        "playerCameras": "Player cameras",
+        "voice": "Voice",
+        "videoCalls": "Video calls",
+        "cameraTalkback": "Camera talk-back"
+      },
+      "resources": "Resource Usage",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "no_resources": "No pod metrics for the media server yet — the cluster's metrics server may not be scraping it.",
+      "legend": "A path is one named stream slot — one person's microphone, or one camera. Publishing counts the ones actually sending media right now; a path can sit idle between someone joining and their feed coming up. Sessions are WebRTC connections, and every viewer of a stream is one of them, so it climbs faster than the others."
     }
   },
   "custom_match": {
@@ -3561,7 +3613,8 @@
         "logs": "Logs",
         "database": "Database",
         "metrics": "Metrics",
-        "render_queue": "Render Queue"
+        "render_queue": "Render Queue",
+        "media_server": "Media Server"
       },
       "profile": {
         "my_account": "My Settings",
@@ -3599,7 +3652,8 @@
         "search_players": "Search Players",
         "leagues": "League",
         "events": "Events",
-        "manage_events": "Manage Events"
+        "manage_events": "Manage Events",
+        "system_media_server": "Media Server"
       },
       "logout_dialog": {
         "title": "Logout",
@@ -3701,17 +3755,39 @@
       "voice": "Voice",
       "live": "Live",
       "muted": "Muted",
-      "connect": "Connect"
+      "connect": "Connect",
+      "comms": "Comms",
+      "live_on_camera": "Live · on camera"
     },
     "voice_panel": {
       "you": "You",
+      "coach": "Coach",
       "connected": "{count} in channel",
       "you_are_muted": "Your mic is off",
+      "other_tab": "Running in another tab — mute and leave still work from here.",
       "mute_player": "Silence this player for you only",
+      "speaking": "Speaking",
+      "team_comms": "Team Comms",
+      "party_comms": "Party Comms",
+      "silenced": "Silenced",
+      "mic_off": "Mic off",
       "unmute_player": "Hear this player again",
       "player_volume": "Player volume",
       "empty_title": "Not in a voice channel",
-      "empty_description": "Join from your party lobby, a match page, or a draft room — the channel shows up here with everyone in it."
+      "empty_description": "Join from your party lobby, a match page, or a draft room — the channel shows up here with everyone in it.",
+      "picker": {
+        "available": "Where you can talk",
+        "party": "Your party",
+        "party_detail": "{count} in the lobby",
+        "team": "Your team",
+        "team_vs": "vs {opponent}",
+        "nothing": "You're not in a party or a match yet. Start one and your squad gets a voice channel with it.",
+        "start_party": "Start a party",
+        "switch": "Switch to",
+        "elsewhere": "Joined",
+        "elsewhere_detail": "Already in this call in another window — join here to move it"
+      },
+      "other_tab_short": "In another tab"
     },
     "chat_panel": {
       "default_title": "Chat",
@@ -5388,7 +5464,10 @@
     "check_in": {
       "checked_in": "Checked In",
       "check_in": "Check In",
-      "checked_in_description": "You have checked in {checked} out of {required} players required to start the match"
+      "checked_in_description": "You have checked in {checked} out of {required} players required to start the match",
+      "deadline": "Check in within",
+      "deadline_checked_in": "Auto-cancels in",
+      "deadline_help": "The match is automatically canceled if everyone required hasn't checked in before the timer runs out."
     },
     "coach": {
       "assign": "Assign Coach"
@@ -5766,10 +5845,14 @@
       "duration_label": "Duration",
       "select_duration": "Select duration",
       "sanctions": "Sanctions",
+      "record": "Record",
       "expires": "Expires",
       "expired_on": "Expired",
       "issued": "Issued",
-      "view_steam": "View ban on Steam",
+      "view_steam": "View on Steam",
+      "steam_bans": "Steam Bans",
+      "steam_vac_bans": "VAC Ban(s)",
+      "steam_game_bans": "Game Ban(s)",
       "permanent": "Permanent",
       "active": "Active",
       "expired": "Expired",
@@ -5790,6 +5873,7 @@
       "abandoned_matches": "Abandoned Matches",
       "match": "Match",
       "no_sanctions": "No sanctions",
+      "no_sanctions_description": "This player has a clean record on this platform.",
       "remove_abandoned": "Remove Abandoned Match",
       "confirm_remove_abandoned": "Remove Abandoned Match",
       "remove_abandoned_description": "Are you sure you want to remove this abandoned match record? This action cannot be undone.",
@@ -5809,7 +5893,9 @@
       "vac_banned": "VAC banned on Steam",
       "vac_banned_count": "{count} VAC ban(s) on Steam",
       "game_banned": "Game banned on Steam",
-      "game_banned_count": "{count} game ban(s) on Steam"
+      "game_banned_count": "{count} game ban(s) on Steam",
+      "last_ban_days_ago": "Last ban {days} day(s) ago",
+      "view_sanctions_hint": "Click to view all sanctions"
     },
     "change_name": {
       "name_label": "Name",
@@ -6084,6 +6170,12 @@
     "in_chat": "in chat",
     "everyone": "Everyone",
     "your_team": "Your team",
+    "all": "All",
+    "team_tag": "Team",
+    "message_placeholder_team": "Message your team...",
+    "send_other_hint": "Ctrl+Enter to send to {channel}",
+    "everyone_hint": "Both teams — also shown in game chat",
+    "team_hint": "Your lineup only — not shown in game chat",
     "direct": {
       "message": "Message",
       "empty": "No messages yet. Say hello."
@@ -7457,7 +7549,8 @@
       "stalled": "Stalled",
       "offline": "Offline",
       "talking": "On call",
-      "unknown": "Checking…"
+      "unknown": "Checking…",
+      "coach": "Coach"
     },
     "admin_subtitle": "Live player cameras",
     "admin_live_count": "{live} of {total} live",
@@ -7472,6 +7565,7 @@
     "mute": "Mute mic",
     "or": "or",
     "reason": "While you are being spectated your camera can appear on the match stream, and match officials can view it during the match.",
+    "reason_teammates": "While you are being spectated your camera can appear on the match stream. Match officials and your own team can view it during the match.",
     "cameras": "Cameras",
     "preview": "Preview",
     "reframe_gesture": "Scroll or pinch to zoom · drag to re-centre",
@@ -7507,7 +7601,11 @@
       "unreachable": "Could not reach the API. This is usually a CORS rule or the API not being reachable from this address — check the detail below and the browser console.",
       "forbidden": "You are not allowed to join voice for this lobby.",
       "not_deployed": "The voice endpoint was not found on the API. It may not be deployed yet.",
-      "signaling": "The voice server rejected the connection."
+      "signaling": "The voice server rejected the connection.",
+      "camera": "Could not start your camera. Check that no other app is using it, then try again.",
+      "camera_denied": "Camera access was blocked. Allow it in your browser's site settings, then try again.",
+      "no_camera": "No camera was found. Connect one and try again.",
+      "camera_busy": "Your camera is in use by another application."
     },
     "settings": {
       "title": "Voice Settings",
@@ -7531,7 +7629,9 @@
       "noise_suppression_hint": "Filters steady background noise like fans and keyboards.",
       "mic_starting": "Starting your microphone…",
       "mic_in_use": "Your microphone is live in {channel}. These settings apply there as you change them.",
-      "applies_everywhere": "They apply everywhere your microphone is used."
+      "applies_everywhere": "They apply everywhere your microphone is used.",
+      "mic_idle": "Your microphone is not open. Run a mic check to hear yourself the way the others will, before anyone does.",
+      "start_mic": "Mic Check"
     },
     "team_voice": "Team Voice",
     "join": "Join",
@@ -7553,6 +7653,41 @@
       "in_voice": "{count} in voice",
       "alone": "You are the only one in voice",
       "muted": "Your mic is off — nobody hears you"
+    },
+    "call": {
+      "start_camera": "Turn on camera",
+      "stop_camera": "Turn off camera",
+      "pop_out": "Pop out video",
+      "pop_in": "Put video back",
+      "join_to_see": "Turn on your camera to see everyone else's.",
+      "more_members": "+{count} more not shown",
+      "phone": {
+        "use_phone": "Use your phone as a camera",
+        "scan": "Scan with your phone to use its camera for this call.",
+        "scan_hint": "You'll sign in on your phone first",
+        "live": "On camera",
+        "idle": "Not sharing",
+        "in_call": "{count} others in the call",
+        "start": "Share this camera",
+        "stop": "Stop sharing",
+        "hint": "Your microphone stays on the device you're playing on — this shares video only.",
+        "not_a_member": "You're not in this call. Join it on the device you're playing on first, then scan the code again."
+      },
+      "nobody_yet": "Nobody's connected yet.",
+      "started_video": "{name} turned their camera on",
+      "hide_video": "Hide their camera",
+      "show_video": "Show their camera",
+      "show_self": "Show my camera to me",
+      "device_settings": "Voice & video settings",
+      "joined_voice": "{name} joined voice",
+      "join_action": "Join",
+      "dismiss_action": "Dismiss",
+      "handoff_taken": "Picked up {channel} from a window you closed",
+      "handoff_failed": "Couldn't pick up {channel} from the window you closed",
+      "toast_kind": "Voice",
+      "toast_joined": "joined",
+      "toast_started_video": "started video in",
+      "floating_title": "Call"
     }
   },
   "media": {

@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "GÜVENLİ KANAL"
+    },
+    "voice_panel": {
+      "coach": "Koç"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Maç sohbeti",
-    "team": "Takım sohbeti",
     "tournament": "Turnuva sohbeti",
     "organizers": "Organizatör sohbeti",
     "matchmaking": "Sıra sohbeti",
@@ -3719,8 +3721,7 @@
     "organizers": "Genel lobi",
     "tournament": "Turnuva sohbeti",
     "matchmaking": "Sıra sohbeti",
-    "match": "Maç sohbeti",
-    "team": "Takım sohbeti"
+    "match": "Maç sohbeti"
   },
   "latency_status": {
     "measuring": "Ölçülüyor...",
@@ -7160,5 +7161,10 @@
     "player": "Oyuncu",
     "award": "Ödül",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Koç"
+    }
   }
 }

@@ -23,7 +23,7 @@ import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import AwardCase from "~/components/award/AwardCase.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import { Button } from "~/components/ui/button";
-import { Plus, Medal } from "lucide-vue-next";
+import { Plus } from "lucide-vue-next";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -39,6 +39,7 @@ import SanctionStatusBadge from "~/components/SanctionStatusBadge.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
+import PlayerVacBadge from "~/components/PlayerVacBadge.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import PlayerChangeCountry from "~/components/PlayerChangeCountry.vue";
 import {
@@ -47,7 +48,6 @@ import {
 } from "~/utilities/tacticalClasses";
 import {
   PlayIcon,
-  Pencil,
   ExternalLink,
   Settings2,
   Maximize2,
@@ -56,7 +56,14 @@ import {
   MessageSquare,
   Calendar as CalendarIcon,
   ChevronDown,
+  MoreVertical,
 } from "lucide-vue-next";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import RadialStat from "~/components/charts/RadialStat.vue";
@@ -1753,31 +1760,51 @@ const playerHeroTeamChipDotClasses =
                   {{ $t("pages.players.detail.player_profile") }}
                 </div>
                 <div :class="playerHeroActionsClasses">
+                  <!-- A menu holding a single entry is just a slower button, so
+                       one available action renders as that action directly. -->
                   <button
-                    v-if="canGrantAwards"
+                    v-if="heroActions.length === 1"
                     type="button"
                     :class="playerHeroNameEditButtonClasses"
-                    :title="$t('awards.composer.grant_here')"
-                    :aria-label="$t('awards.composer.grant_here')"
-                    @click="awardComposerOpen = true"
+                    :title="heroActions[0].label"
+                    :aria-label="heroActions[0].label"
+                    @click="heroActions[0].run()"
                   >
-                    <Medal />
+                    <component :is="heroActions[0].icon" />
                   </button>
-                  <button
-                    v-if="canEditPlayer"
-                    type="button"
-                    :class="playerHeroNameEditButtonClasses"
-                    :title="$t('pages.players.detail.edit_player')"
-                    @click="editPlayerSheet = true"
-                  >
-                    <Pencil />
-                  </button>
-                  <PlayerSanctions
-                    v-if="playerId"
-                    :playerId="playerId"
-                    :player="player"
-                    variant="panel"
-                  />
+                  <DropdownMenu v-else-if="heroActions.length > 1">
+                    <DropdownMenuTrigger as-child>
+                      <button
+                        type="button"
+                        :class="playerHeroNameEditButtonClasses"
+                        :title="$t('pages.players.detail.more_actions')"
+                        :aria-label="$t('pages.players.detail.more_actions')"
+                      >
+                        <MoreVertical />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" class="w-52">
+                      <DropdownMenuItem
+                        v-for="action in heroActions"
+                        :key="action.key"
+                        class="gap-2"
+                        @click="action.run()"
+                      >
+                        <component
+                          :is="action.icon"
+                          class="h-4 w-4"
+                          :class="{ 'text-destructive': action.danger }"
+                        />
+                        {{ action.label }}
+                        <span
+                          v-if="action.count"
+                          class="ml-auto font-mono text-xs tabular-nums text-muted-foreground"
+                        >
+                          {{ action.count }}
+                        </span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
 
@@ -1821,6 +1848,13 @@ const playerHeroTeamChipDotClasses =
                     <SteamIcon class="h-3.5 w-3.5 fill-current" />
                   </a>
                 </template>
+
+                <PlayerVacBadge
+                  v-if="hasSteamBans"
+                  :player="player"
+                  variant="button"
+                  @click="sanctionsSheetOpen = true"
+                />
 
                 <template v-if="canEditRole || player.role">
                   <span
@@ -2206,6 +2240,15 @@ const playerHeroTeamChipDotClasses =
       v-model:open="awardComposerOpen"
       :player="{ steam_id: String(player.steam_id), name: player.name }"
       lock-recipient
+    />
+
+    <PlayerSanctions
+      v-if="playerId"
+      :playerId="playerId"
+      :player="player"
+      variant="external"
+      v-model:open="sanctionsSheetOpen"
+      @summary="sanctionsSummary = $event"
     />
 
     <PageTransition :delay="60" v-if="playerId">
@@ -3034,6 +3077,7 @@ const playerHeroTeamChipDotClasses =
 </template>
 
 <script lang="ts">
+import { Medal, Pencil, ShieldAlert } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
@@ -3196,6 +3240,14 @@ export default {
       player: undefined,
       playerAwards: undefined,
       awardComposerOpen: false,
+      sanctionsSheetOpen: false,
+      sanctionsSummary: {
+        available: false,
+        count: 0,
+        hasActive: false,
+        hasSteamBans: false,
+        vacBanned: false,
+      } as Record<string, any>,
       highlightsResolved: false,
       pageContentTimedOut: false,
       pageContentTimeout: null as number | null,
@@ -3265,6 +3317,51 @@ export default {
       if (this.player?.is_muted) return "mute";
       if (this.player?.is_gagged) return "gag";
       return null;
+    },
+    hasSteamBans(): boolean {
+      return !!(
+        this.player?.vac_banned || (this.player?.game_ban_count ?? 0) > 0
+      );
+    },
+    heroActions(): Array<Record<string, any>> {
+      const actions: Array<Record<string, any>> = [];
+
+      if (this.sanctionsSummary.available) {
+        actions.push({
+          key: "sanctions",
+          label: this.$t("player.sanctions.title"),
+          icon: ShieldAlert,
+          count: this.sanctionsSummary.count,
+          danger: this.sanctionsSummary.hasActive,
+          run: () => {
+            this.sanctionsSheetOpen = true;
+          },
+        });
+      }
+
+      if (this.canEditPlayer) {
+        actions.push({
+          key: "edit",
+          label: this.$t("pages.players.detail.edit_player"),
+          icon: Pencil,
+          run: () => {
+            this.editPlayerSheet = true;
+          },
+        });
+      }
+
+      if (this.canGrantAwards) {
+        actions.push({
+          key: "award",
+          label: this.$t("awards.composer.grant_here"),
+          icon: Medal,
+          run: () => {
+            this.awardComposerOpen = true;
+          },
+        });
+      }
+
+      return actions;
     },
     isSelfProfile() {
       return !!(

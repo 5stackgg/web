@@ -943,6 +943,25 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.tooltips.system_media_server')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.system_media_server')"
+              >
+                <NuxtLink
+                  :to="{ name: 'system-media-server' }"
+                  :class="{
+                    'router-link-active': isRouteActive('system-media-server'),
+                  }"
+                >
+                  <Radio />
+                  {{ $t("layouts.app_nav.system.media_server") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.database')">
               <SidebarMenuButton
                 as-child

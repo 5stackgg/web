@@ -14,6 +14,7 @@ import {
   BellOff,
   Ban,
   TriangleAlert,
+  ChevronDown,
 } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
@@ -27,6 +28,22 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
   <Popover>
     <PopoverTrigger as-child>
       <button
+        v-if="variant === 'block'"
+        type="button"
+        class="group/sanction flex w-full items-center justify-between gap-3 rounded-md border border-red-500/45 bg-red-500/10 px-4 py-3 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        <span
+          class="flex items-center gap-2.5 font-sans text-[0.72rem] font-bold uppercase tracking-[0.16em]"
+        >
+          <Ban class="h-4 w-4 shrink-0" />
+          {{ $t("player.sanction.button") }}
+        </span>
+        <ChevronDown
+          class="h-4 w-4 shrink-0 opacity-60 transition-transform duration-150 group-hover/sanction:translate-y-px"
+        />
+      </button>
+      <button
+        v-else
         type="button"
         :title="$t('player.sanction.button')"
         :aria-label="$t('player.sanction.button')"
@@ -35,7 +52,15 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         <Ban class="h-4 w-4" />
       </button>
     </PopoverTrigger>
-    <PopoverContent class="p-0" align="end">
+    <PopoverContent
+      class="p-0"
+      :align="variant === 'block' ? 'start' : 'end'"
+      :style="
+        variant === 'block'
+          ? 'width: var(--reka-popover-trigger-width)'
+          : undefined
+      "
+    >
       <Command v-model="sanctionType">
         <CommandList>
           <CommandGroup>
@@ -166,6 +191,11 @@ export default {
       required: false,
       type: String,
       default: undefined,
+    },
+    variant: {
+      required: false,
+      type: String as () => "icon" | "block",
+      default: "icon",
     },
   },
   emits: ["sanctioned"],

@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import {
-  Merge,
-  LogOut,
-  Mic,
-  MicOff,
-  PhoneOff,
-  AlertCircle,
-} from "lucide-vue-next";
-import VoiceSettingsButton from "~/components/voice/VoiceSettingsButton.vue";
+import { Merge, LogOut } from "lucide-vue-next";
+import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
+import { currentHub } from "~/composables/useHubState";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { useInvites } from "@/composables/useInvites";
-import { useVoiceChat } from "@/composables/useVoiceChat";
+import { useVoiceSession } from "~/composables/useVoiceSession";
 
 const { t } = useI18n();
 const { hasLobbyInvites } = useInvites();
@@ -30,26 +23,34 @@ const voiceChatEnabled = computed(
   () => useApplicationSettingsStore().voiceChatLobbiesEnabled,
 );
 
-const voice = useVoiceChat(() =>
+// The same session every other voice control drives, hosted by the app layout.
+// This panel used to own a connection of its own, which worked -- it lives in
+// the hub, so it already outlived navigation -- but it meant two microphone
+// pipelines existed and only the registry's conflict prompt kept one of them
+// quiet. One session is one microphone.
+const session = useVoiceSession();
+
+const lobbyId = computed(() =>
   voiceChatEnabled.value
-    ? (useMatchmakingStore().currentLobby as any)?.id
+    ? (((useMatchmakingStore().currentLobby as any)?.id as string) ?? null)
     : null,
 );
 
-// Destructured so the template gets auto-unwrapped top-level bindings rather
-// than reaching through .value on a nested ref. The settings themselves are
-// wired by VoiceSettingsButton, which every voice surface shares.
-const {
-  connected: voiceConnected,
-  connecting: voiceConnecting,
-  muted: voiceMuted,
-  error: voiceError,
-  errorDetail: voiceErrorDetail,
-  unsupported: voiceUnsupported,
-  join: joinVoice,
-  leave: leaveVoice,
-  toggleMute: toggleVoiceMute,
-} = voice;
+// The hub keeps every panel it has ever opened mounted and hides it with
+// v-show, so being mounted proves nothing about being on screen. Handed to the
+// card, which is what Picture-in-Picture follows -- and scoped to this channel,
+// because sitting on this tab during a *match* call this panel shows nothing of
+// it, which is exactly the case Picture-in-Picture exists for.
+function lobbyOnScreen() {
+  return useRightSidebar().rightSidebarOpen.value && currentHub() === "lobby";
+}
+
+// Leaving the party ends the call: the channel it belonged to is gone.
+watch(lobbyId, (next, previous) => {
+  if (previous && next !== previous && session.isChannel(previous)) {
+    void session.leave();
+  }
+});
 </script>
 
 <template>
@@ -143,119 +144,22 @@ const {
       <!-- Voice only. Discord linking used to live here, but it is account
            plumbing for the bot rather than anything to do with the call, and
            it left an orphan line under the controls. -->
+      <!-- The party's voice channel, drawn by the same card the match page and
+           the draft room use. This panel used to arrange its own controls, which
+           is how the hub ended up offering a different set of them to the same
+           call depending on where you opened it. -->
       <Transition name="lobby-item">
-        <div
-          v-if="currentLobby && squadReady && voiceChatEnabled"
-          class="mt-1 flex flex-col gap-2.5 border-t border-zinc-800 pt-3"
-        >
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex min-w-0 items-center gap-2">
-              <span class="relative inline-flex h-2 w-2 shrink-0">
-                <span
-                  v-if="voiceConnected && !voiceMuted"
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/70"
-                ></span>
-                <span
-                  class="relative inline-flex h-2 w-2 rounded-full transition-colors"
-                  :class="
-                    voiceConnected
-                      ? voiceMuted
-                        ? 'bg-[hsl(var(--tac-amber))]'
-                        : 'bg-emerald-400'
-                      : 'bg-zinc-600'
-                  "
-                ></span>
-              </span>
-              <span
-                class="truncate font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em]"
-                :class="voiceConnected ? 'text-zinc-200' : 'text-zinc-500'"
-              >
-                {{ $t("layouts.lobby_panel.voice") }}
-              </span>
-              <span
-                v-if="voiceConnected"
-                class="truncate text-[10px] text-zinc-500"
-              >
-                {{
-                  voiceMuted
-                    ? $t("layouts.lobby_panel.muted")
-                    : $t("layouts.lobby_panel.live")
-                }}
-              </span>
-            </div>
-
-            <div class="flex shrink-0 items-center gap-1.5">
-              <Button
-                v-if="!voiceConnected"
-                size="xs"
-                variant="outline"
-                class="h-7 gap-1 rounded-full border-zinc-700 bg-zinc-900/80 px-3 text-[11px] hover:bg-zinc-800/80"
-                :loading="voiceConnecting"
-                :disabled="!!voiceUnsupported"
-                @click="joinVoice()"
-              >
-                <Mic class="h-3 w-3" />
-                {{ $t("layouts.lobby_panel.join_voice") }}
-              </Button>
-
-              <template v-else>
-                <Button
-                  size="xs"
-                  :variant="voiceMuted ? 'destructive' : 'secondary'"
-                  class="h-7 w-7 rounded-full p-0"
-                  :aria-label="
-                    voiceMuted
-                      ? $t('layouts.lobby_panel.unmute')
-                      : $t('layouts.lobby_panel.mute')
-                  "
-                  @click="toggleVoiceMute()"
-                >
-                  <component
-                    :is="voiceMuted ? MicOff : Mic"
-                    class="h-3.5 w-3.5"
-                  />
-                </Button>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  class="h-7 w-7 rounded-full p-0 text-zinc-400 hover:text-destructive"
-                  :aria-label="$t('layouts.lobby_panel.leave_voice')"
-                  @click="leaveVoice()"
-                >
-                  <PhoneOff class="h-3.5 w-3.5" />
-                </Button>
-              </template>
-
-              <VoiceSettingsButton
-                :pipeline="voice.pipeline"
-                :busy-channel="voice.conflict.value?.label ?? null"
-                hub-aware
-                class="text-zinc-400 hover:text-zinc-100"
-                @closed="voice.stopPreview()"
-              />
-            </div>
-          </div>
-
-          <!-- Full-width so a long message wraps under the controls instead of
-               squeezing them; the technical line is kept but de-emphasised. -->
-          <div
-            v-if="voiceError"
-            class="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-2"
-          >
-            <AlertCircle class="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" />
-            <div class="min-w-0 space-y-0.5">
-              <p class="text-[11px] leading-relaxed text-destructive">
-                {{ $t(voiceError) }}
-              </p>
-              <p
-                v-if="voiceErrorDetail"
-                class="break-all font-mono text-[10px] leading-relaxed text-destructive/60"
-              >
-                {{ voiceErrorDetail }}
-              </p>
-            </div>
-          </div>
-        </div>
+        <VoiceChannelCard
+          v-if="currentLobby && squadReady && voiceChatEnabled && lobbyId"
+          class="mt-1 border-t border-zinc-800 pt-3"
+          dense
+          show-empty
+          :framed="false"
+          kind="lobby"
+          :channel-id="lobbyId"
+          :label="$t('layouts.voice_panel.party_comms')"
+          :visible-when="lobbyOnScreen"
+        />
       </Transition>
 
       <!-- Dedicated bottom lobby chat area (~25% height) -->

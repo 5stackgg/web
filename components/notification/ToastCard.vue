@@ -14,8 +14,18 @@ withDefaults(
     count?: number;
     pending?: "accept" | "decline" | null;
     elevated?: boolean;
+    // "Accept invite" is wrong for anything that is not an invite. A call is
+    // joined, not accepted, and the card is worth reusing for both.
+    acceptLabel?: string;
+    declineLabel?: string;
   }>(),
-  { count: 1, pending: null, elevated: false },
+  {
+    count: 1,
+    pending: null,
+    elevated: false,
+    acceptLabel: undefined,
+    declineLabel: undefined,
+  },
 );
 
 defineEmits<{ accept: []; decline: []; dismiss: [] }>();
@@ -46,6 +56,13 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
     <div class="mt-0.5 text-xs leading-snug text-muted-foreground">
       {{ item.action }}{{ item.detail ? " " + item.detail : "" }}
     </div>
+
+    <!-- Anything the card should show before the buttons -- a voice channel
+         puts its roster here, so the decision is made on who is in there. -->
+    <div v-if="$slots.body" class="mt-2 border-t border-border/50 pt-2">
+      <slot name="body" />
+    </div>
+
     <div class="mt-2.5 flex gap-2">
       <Button
         size="sm"
@@ -56,7 +73,7 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
         @click="$emit('accept')"
       >
         <Check class="h-3.5 w-3.5" />
-        {{ $t("draft_games.room.accept_invite") }}
+        {{ acceptLabel ?? $t("draft_games.room.accept_invite") }}
       </Button>
       <Button
         size="sm"
@@ -67,7 +84,7 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
         @click="$emit('decline')"
       >
         <X class="h-3.5 w-3.5" />
-        {{ $t("draft_games.room.decline_invite") }}
+        {{ declineLabel ?? $t("draft_games.room.decline_invite") }}
       </Button>
     </div>
   </div>

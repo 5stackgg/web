@@ -9,6 +9,9 @@ import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useInvites } from "~/composables/useInvites";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useRightSidebar } from "~/composables/useRightSidebar";
+import { useCallInvites } from "~/composables/useVoiceAnnouncements";
+import { useVoiceSession } from "~/composables/useVoiceSession";
+import VoiceRosterPreview from "~/components/voice/VoiceRosterPreview.vue";
 
 const { rightSidebarOpen } = useRightSidebar();
 
@@ -20,11 +23,18 @@ type ToastItem = {
   detail: string;
   accept: () => Promise<unknown> | void;
   decline: () => Promise<unknown> | void;
+  // Voice channels ask to be joined, not accepted, and want their roster shown
+  // above the buttons -- the decision is made on who is in there.
+  acceptLabel?: string;
+  declineLabel?: string;
+  channelId?: string;
 };
 
 const { t } = useI18n();
 const { pendingFriends, lobbyInvites } = useInvites();
 const notificationStore = useNotificationStore();
+const callInvites = useCallInvites();
+const voiceSession = useVoiceSession();
 const draftStore = useDraftGamesStore();
 const MIN_ACTION_LOADING_MS = 2000;
 
@@ -76,6 +86,32 @@ const friendMutation = (steamId: string, accept: boolean) =>
 
 const items = computed<ToastItem[]>(() => {
   const list: ToastItem[] = [];
+
+  // Somebody started talking. The same shape as an invite, because it is the
+  // same sort of thing: a decision someone is asking you to make now.
+  for (const invite of callInvites.invites.value) {
+    list.push({
+      id: invite.id,
+      kind: t("voice.call.toast_kind"),
+      who: invite.who,
+      action: invite.video
+        ? t("voice.call.toast_started_video")
+        : t("voice.call.toast_joined"),
+      detail: invite.channelLabel,
+      acceptLabel: t("voice.call.join_action"),
+      declineLabel: t("voice.call.dismiss_action"),
+      channelId: invite.channelId,
+      accept: async () => {
+        await voiceSession.join(
+          invite.channelId,
+          invite.channelLabel,
+          invite.channelKind,
+        );
+        callInvites.dismiss(invite.id);
+      },
+      decline: () => callInvites.dismiss(invite.id),
+    });
+  }
 
   for (const invite of notificationStore.draft_invites) {
     const id = `draft:${invite.draft_game_id}`;
@@ -246,11 +282,17 @@ const dismissItem = (item: ToastItem) => {
                 :key="extra.id"
                 :item="extra"
                 :pending="pending[extra.id] || null"
+                :accept-label="extra.acceptLabel"
+                :decline-label="extra.declineLabel"
                 elevated
                 @accept="run(extra, true)"
                 @decline="run(extra, false)"
                 @dismiss="dismissItem(extra)"
-              />
+              >
+                <template v-if="extra.channelId" #body>
+                  <VoiceRosterPreview variant="stack" :channel-id="extra.channelId" />
+                </template>
+              </ToastCard>
             </div>
           </Transition>
 
@@ -267,6 +309,8 @@ const dismissItem = (item: ToastItem) => {
             :item="entry.item"
             :count="hoveredGroup === entry.key ? 1 : entry.count"
             :pending="pending[entry.item.id] || null"
+            :accept-label="entry.item.acceptLabel"
+            :decline-label="entry.item.declineLabel"
             :elevated="hoveredGroup === entry.key"
             @accept="run(entry.item, true)"
             @decline="run(entry.item, false)"
@@ -275,7 +319,11 @@ const dismissItem = (item: ToastItem) => {
                 ? dismissItem(entry.item)
                 : dismissGroup(entry.group)
             "
-          />
+          >
+            <template v-if="entry.item.channelId" #body>
+              <VoiceRosterPreview variant="stack" :channel-id="entry.item.channelId" />
+            </template>
+          </ToastCard>
         </div>
       </TransitionGroup>
     </div>

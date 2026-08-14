@@ -117,6 +117,16 @@ class WebRTCClient {
         trickle: true,
         initiator: true,
         config: {
+          // STUN only, deliberately -- do NOT add the TURN relay here.
+          //
+          // This peer exists to time the round trip to a region: the whole
+          // point of createPeer(region) is that the number it produces is the
+          // region's latency. Given a relay, ICE can gather and select a relay
+          // candidate, and every region would then report the latency of the
+          // hop to the relay instead. Region selection would break silently,
+          // with nothing anywhere to trace it back from.
+          //
+          // The call surfaces opt into TURN separately; see useIceServers.ts.
           iceServers: [
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },

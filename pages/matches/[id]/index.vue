@@ -22,7 +22,7 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
-import MatchVoicePanel from "~/components/match/MatchVoicePanel.vue";
+import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
 import { useMatchContext } from "~/composables/useMatchContext";
@@ -163,11 +163,16 @@ const vsBaseClasses =
 
 <template>
   <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
+    <!-- Mounted for as long as this match asks the viewer for a camera, not
+         just while one is missing: it owns the status poll, and unmounting it
+         once the camera came up is what stopped anyone noticing it go away
+         again. `open` is what actually shows the modal. -->
     <CameraRequirementOverlay
-      v-if="cameraGateActive"
+      v-if="cameraRequiredOfMe"
       :match-id="match.id"
-      :open="!cameraOverlayDismissed"
-      @ready="cameraReady = true"
+      :open="cameraGateActive && !cameraOverlayDismissed"
+      :allow-teammates="!!match.options?.camera_allow_teammates"
+      @update:ready="onCameraReadyChanged"
       @dismiss="cameraOverlayDismissed = true"
     />
 
@@ -535,12 +540,17 @@ const vsBaseClasses =
           </PageTransition>
 
           <PageTransition :delay="200">
+            <!-- Both rooms on one panel. Organizers and anyone not on a lineup
+               get no `myLineupId`, so they get no team destination and this
+               falls back to the match room alone. -->
             <ChatLobby
               class="max-h-96"
               instance="matches/id"
               type="match"
-              :label="$t('chat.everyone')"
               :lobby-id="match.id"
+              :team-lobby-id="
+                myLineupId ? `${match.id}:${myLineupId}` : undefined
+              "
               :play-notification-sound="
                 match.status !== e_match_status_enum.Live
               "
@@ -548,31 +558,22 @@ const vsBaseClasses =
             />
           </PageTransition>
 
-          <PageTransition :delay="200">
-            <!-- Same status gate as the match room above: chat closes with the
-               match, and being on a lineup is not a reason to keep a room open
-               on something that finished. -->
-            <ChatLobby
-              class="max-h-96"
-              instance="matches/id"
-              type="match_team"
-              :label="$t('chat.your_team')"
-              :lobby-id="`${match.id}:${myLineupId}`"
-              :play-notification-sound="
-                match.status !== e_match_status_enum.Live
-              "
-              v-if="myLineupId && canJoinLobby"
-            >
-              <!-- Text and voice are the same room, so the header owns both. -->
-              <template #header-actions>
-                <MatchVoicePanel
-                  inline
-                  :lineup-id="myLineupId"
-                  :label="$t('chat.your_team')"
-                />
-              </template>
-            </ChatLobby>
-          </PageTransition>
+          <!-- Team voice, beside the chat rather than inside it: the voice
+               channel and the text channel are the same room but not the same
+               object, and nesting one in the other made the controls read as
+               chat controls.
+               Always present, because it is now the only way in. The strip that
+               used to live on the chat composer existed to start a call before
+               this section appeared -- which left the same three controls on
+               screen twice as soon as it had. -->
+          <VoiceChannelCard
+            v-if="myLineupId"
+            show-empty
+            class="mt-1"
+            kind="match"
+            :channel-id="myLineupId"
+            :label="$t('layouts.voice_panel.team_comms')"
+          />
 
           <PageTransition :delay="200">
             <div
@@ -716,6 +717,11 @@ import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { eloFields } from "~/graphql/eloFields";
 import { useMatchContext } from "~/composables/useMatchContext";
+// Aliased deliberately. `<script setup>` and this block compile into one
+// module, so a module-scope import wins over a computed of the same name when
+// the template resolves it -- the template rendered the function's source into
+// the team lobby id, which reached Postgres as a uuid and killed chat.
+import { myLineupId as resolveMyLineupId } from "~/utilities/matchTeamLobby";
 
 export default {
   unmounted() {
@@ -1116,30 +1122,19 @@ export default {
         return region.is_lan === false;
       });
     },
-    // The lineup this viewer plays for, or coaches. Organizers and spectators
-    // get nothing -- team chat is private to the side actually playing. The API
-    // re-checks this on join; this only decides what to render.
+    // Shared with the sidebar and the pop-out, which offer the same team room.
     myLineupId() {
-      if (!this.match) {
-        return null;
-      }
-
-      const mySteamId = useAuthStore().me?.steam_id;
-
-      const mine = [this.match.lineup_1, this.match.lineup_2].find(
-        (lineup) =>
-          lineup?.is_on_lineup ||
-          (mySteamId && lineup?.coach?.steam_id === mySteamId),
-      );
-
-      return mine?.id ?? null;
+      return resolveMyLineupId(this.match, useAuthStore().me?.steam_id);
     },
-    // Stricter than myLineupId on purpose: is_on_lineup is only true for a
-    // rostered player row, and a coach never publishes a camera.
-    // Same eligibility the overlay uses, without the dismissal. Dismissing hides
-    // the modal but not the requirement, so the banner keeps the way back.
-    cameraGateActive() {
-      if (!this.match?.options?.camera_required || this.cameraReady) {
+    // Whether this match asks this viewer for a camera at all. Deliberately
+    // says nothing about whether one is currently live: the overlay stays
+    // mounted either way so its status poll keeps running, which is the only
+    // thing that notices a camera going down again.
+    //
+    // is_on_lineup is only true for a rostered player row, so the coach is
+    // checked separately below.
+    cameraRequiredOfMe() {
+      if (!this.match?.options?.camera_required) {
         return false;
       }
 
@@ -1156,9 +1151,23 @@ export default {
         return false;
       }
 
+      // Coaches too. They stand behind the team during a technical timeout and
+      // are the one person on a side who can coach out loud without the server
+      // seeing it, so the API mints them a token like anyone else.
+      const mySteamId = useAuthStore().me?.steam_id;
+
       return !!(
-        this.match.lineup_1?.is_on_lineup || this.match.lineup_2?.is_on_lineup
+        this.match.lineup_1?.is_on_lineup ||
+        this.match.lineup_2?.is_on_lineup ||
+        (mySteamId &&
+          (this.match.lineup_1?.coach?.steam_id === mySteamId ||
+            this.match.lineup_2?.coach?.steam_id === mySteamId))
       );
+    },
+    // The requirement is outstanding: asked of me, and not currently satisfied.
+    // Drives the modal and the banner; the overlay itself stays mounted past it.
+    cameraGateActive() {
+      return this.cameraRequiredOfMe && !this.cameraReady;
     },
     canJoinLobby() {
       if (!this.match) {
@@ -1221,6 +1230,21 @@ export default {
       }
 
       return true;
+    },
+  },
+  methods: {
+    // Tracks the camera both ways. It used to be a one-way latch -- the overlay
+    // only ever announced going live -- so a player who closed their camera mid
+    // match was left with no gate, no banner and no way back to the QR code.
+    onCameraReadyChanged(ready: boolean) {
+      // Losing the camera raises the modal again, dismissal or not: dismissing
+      // it meant "this is in my way right now", not "I no longer need one", and
+      // the requirement has just become unmet again.
+      if (this.cameraReady && !ready) {
+        this.cameraOverlayDismissed = false;
+      }
+
+      this.cameraReady = ready;
     },
   },
 };

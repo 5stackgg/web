@@ -3349,6 +3349,9 @@
     },
     "public_header": {
       "secure_channel": "安全通道"
+    },
+    "voice_panel": {
+      "coach": "教练"
     }
   },
   "alt_text": {
@@ -3609,7 +3612,6 @@
   },
   "chat_tab_labels": {
     "match": "比赛聊天",
-    "team": "队伍聊天",
     "tournament": "赛事聊天",
     "organizers": "组织者聊天",
     "matchmaking": "队列聊天",
@@ -3620,8 +3622,7 @@
     "organizers": "全局大厅",
     "tournament": "赛事聊天",
     "matchmaking": "队列聊天",
-    "match": "比赛聊天",
-    "team": "队伍聊天"
+    "match": "比赛聊天"
   },
   "latency_status": {
     "measuring": "测量中...",
@@ -6947,5 +6948,10 @@
     "player": "玩家",
     "award": "队伍",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "教练"
+    }
   }
 }

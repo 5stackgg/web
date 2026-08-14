@@ -3444,6 +3444,9 @@
     },
     "public_header": {
       "secure_channel": "CANAL SÉCURISÉ"
+    },
+    "voice_panel": {
+      "coach": "Coach"
     }
   },
   "alt_text": {
@@ -3708,7 +3711,6 @@
   },
   "chat_tab_labels": {
     "match": "Chat du match",
-    "team": "Chat d'équipe",
     "tournament": "Chat du tournoi",
     "organizers": "Chat des organisateurs",
     "matchmaking": "Chat de la file",
@@ -3719,8 +3721,7 @@
     "organizers": "Lobby global",
     "tournament": "Chat du tournoi",
     "matchmaking": "Chat de la file",
-    "match": "Chat du match",
-    "team": "Chat d'équipe"
+    "match": "Chat du match"
   },
   "latency_status": {
     "measuring": "Mesure...",
@@ -7160,5 +7161,10 @@
     "player": "Joueur",
     "award": "Récompense",
     "recipient": "Recipient"
+  },
+  "camera": {
+    "tile": {
+      "coach": "Coach"
+    }
   }
 }

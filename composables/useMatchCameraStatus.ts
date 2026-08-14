@@ -141,27 +141,86 @@ function release(matchId: string) {
   shared.delete(matchId);
 }
 
-// Mirrors CameraService.assertCanWatch: administrators, or an organizer of this
-// specific match -- not the global tournament_organizer role, which would reach
-// every tournament's cameras rather than just this one.
-export function canWatchMatchCameras(
-  match:
-    | {
-        is_organizer?: boolean | null;
-        options?: { camera_required?: boolean | null } | null;
-      }
-    | null
-    | undefined,
-) {
-  if (!match?.options?.camera_required) {
-    return false;
-  }
+type CameraLineupShape = {
+  is_on_lineup?: boolean | null;
+  coach?: { steam_id?: string | null } | null;
+} | null;
 
-  if (match.is_organizer) {
+type CameraMatch = {
+  is_organizer?: boolean | null;
+  is_in_lineup?: boolean | null;
+  is_coach?: boolean | null;
+  lineup_1?: CameraLineupShape;
+  lineup_2?: CameraLineupShape;
+  options?: {
+    camera_required?: boolean | null;
+    camera_allow_teammates?: boolean | null;
+  } | null;
+};
+
+// "all" is both lineups; "own-lineup" is a competitor seeing only their side.
+export type CameraWatchScope = "all" | "own-lineup" | "none";
+
+// On a side, which is what the API's watchScope means by `my_lineup_id`: the
+// lineup's roster *or* its coach. Coaches publish a camera of their own, so
+// they are a competitor for the purposes of "nobody playing may watch the other
+// team" -- including when they also happen to organise the match.
+function isPlaying(match: CameraMatch) {
+  if (match.lineup_1?.is_on_lineup || match.lineup_2?.is_on_lineup) {
     return true;
   }
 
-  return useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
+  const mySteamId = useAuthStore().me?.steam_id;
+
+  if (
+    mySteamId &&
+    (match.lineup_1?.coach?.steam_id === mySteamId ||
+      match.lineup_2?.coach?.steam_id === mySteamId)
+  ) {
+    return true;
+  }
+
+  return !!match.is_in_lineup || !!match.is_coach;
+}
+
+// The single copy of this rule on the client, mirroring CameraService.watchScope
+// on the API.
+//
+// Nothing here is load-bearing: the server filters the lineups it returns and
+// re-checks the roster on every WHEP negotiation, talk and status call, so a
+// client that lies about its own scope still gets nothing. This exists so the
+// UI never offers a grid the server will refuse, and never implies a competitor
+// can watch the other team. It had drifted into two copies once already --
+// keep it as one.
+export function matchCameraScope(
+  match: CameraMatch | null | undefined,
+): CameraWatchScope {
+  if (!match?.options?.camera_required) {
+    return "none";
+  }
+
+  const isAdmin = useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
+
+  if (isPlaying(match)) {
+    // Same exception the API makes: an administrator keeps full access so the
+    // feature can be exercised end to end from one account. An organizer who is
+    // playing does not -- they are a competitor, and a live view of the other
+    // team is the advantage this whole feature exists to prevent.
+    if (isAdmin) {
+      return "all";
+    }
+
+    return match.options?.camera_allow_teammates ? "own-lineup" : "none";
+  }
+
+  // Not playing: administrators, or an organizer of this specific match -- not
+  // the global tournament_organizer role, which would reach every tournament's
+  // cameras rather than just this one.
+  return isAdmin || match.is_organizer ? "all" : "none";
+}
+
+export function canWatchMatchCameras(match: CameraMatch | null | undefined) {
+  return matchCameraScope(match) !== "none";
 }
 
 export function useMatchCameraStatus(

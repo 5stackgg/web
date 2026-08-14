@@ -1349,6 +1349,11 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
 </template>
 
 <script lang="ts">
+// Imports below are aliased where an option of the same name exists: this file
+// has both a <script setup> and this block, which compile into one module, so a
+// module-scope import shadows the computed when the template resolves it. These
+// return booleans, so the template was reading a function -- always truthy, and
+// so a v-if that never hid anything.
 import { generateQuery } from "~/graphql/graphqlGen";
 import {
   e_player_roles_enum,
@@ -1363,8 +1368,8 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
-  canSetCameraRequired,
-  canSetVetoPickTimeout,
+  canSetCameraRequired as allowsCameraRequired,
+  canSetVetoPickTimeout as allowsVetoPickTimeout,
 } from "~/utilities/setupOptions";
 
 interface Map {
@@ -1827,10 +1832,10 @@ export default {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
     canSetVetoPickTimeout() {
-      return canSetVetoPickTimeout();
+      return allowsVetoPickTimeout();
     },
     canSetCameraRequired() {
-      return canSetCameraRequired();
+      return allowsCameraRequired();
     },
     // Drives the whole module's lit/dormant treatment, and gates the teammate
     // toggle: allowing teammates to watch feeds nobody publishes is a no-op.

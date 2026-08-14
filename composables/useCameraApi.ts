@@ -1,6 +1,8 @@
 // The camera routes live on the API rather than the MediaMTX ingress: that
-// ingress forward-auths against /streams/authorize, and a phone that scanned
-// the QR code has no session — its only credential is the token in the URL.
+// ingress forward-auths against /streams/authorize, which is a different gate
+// to "are you in this match". Every one of them carries the session — the phone
+// that scanned the QR signs in like any other device, and the code itself is
+// only a way of typing a URL.
 
 function apiUrl(path: string) {
   return `https://${useRuntimeConfig().public.apiDomain}/matches/camera/${path}`;
@@ -10,15 +12,15 @@ function webUrl(path: string) {
   return `https://${useRuntimeConfig().public.webDomain}/${path}`;
 }
 
-export function cameraPlayerPath(matchId: string, token: string) {
-  return `/matches/${matchId}/camera/${token}`;
+export function cameraPlayerPath(matchId: string) {
+  return `/matches/${matchId}/camera`;
 }
 
 // Absolute, because this is what goes into the QR code and a phone cannot
 // resolve wherever the current tab happens to be served from. The popup on
 // this computer uses cameraPlayerPath instead.
-export function cameraPlayerJoinUrl(matchId: string, token: string) {
-  return webUrl(`matches/${matchId}/camera/${token}`);
+export function cameraPlayerJoinUrl(matchId: string) {
+  return webUrl(`matches/${matchId}/camera`);
 }
 
 // Relative, like the setup popup: an organizer opening the grid is already on
@@ -28,12 +30,12 @@ export function cameraAdminGridPath(matchId: string) {
   return `/matches/${matchId}/camera-admin`;
 }
 
-export function cameraPlayerPublishUrl(token: string) {
-  return apiUrl(`player/${token}/whip`);
+export function cameraPlayerPublishUrl(matchId: string) {
+  return apiUrl(`player/${matchId}/whip`);
 }
 
-export function cameraPlayerTalkUrl(token: string) {
-  return apiUrl(`player/${token}/talk/whep`);
+export function cameraPlayerTalkUrl(matchId: string) {
+  return apiUrl(`player/${matchId}/talk/whep`);
 }
 
 export function cameraAdminWatchUrl(matchId: string, steamId: string) {
@@ -55,6 +57,10 @@ export type CameraPlayerStatus = {
   // A "stalled" feed is still connected but has stopped delivering frames — it
   // looks identical to a working camera unless the grid says otherwise.
   health: CameraHealth;
+  // Coaching this side rather than playing on it. Coaches publish a camera too:
+  // during a technical timeout they are the one person who can coach out loud
+  // without the server seeing it.
+  coach: boolean;
 };
 
 export type CameraLineup = {
@@ -77,12 +83,12 @@ async function readiness(url: string, credentials?: RequestCredentials) {
   }
 }
 
-export function fetchCameraStatus(token: string) {
-  return readiness(apiUrl(`player/${token}/status`));
+export function fetchCameraStatus(matchId: string) {
+  return readiness(apiUrl(`player/${matchId}/status`), "include");
 }
 
-export function fetchCameraTalkStatus(token: string) {
-  return readiness(apiUrl(`player/${token}/talk/status`));
+export function fetchCameraTalkStatus(matchId: string) {
+  return readiness(apiUrl(`player/${matchId}/talk/status`), "include");
 }
 
 export function fetchAdminTalkStatus(matchId: string, steamId: string) {
@@ -92,9 +98,10 @@ export function fetchAdminTalkStatus(matchId: string, steamId: string) {
   );
 }
 
-export function hangupPlayerTalk(token: string) {
-  return fetch(apiUrl(`player/${token}/talk/hangup`), {
+export function hangupPlayerTalk(matchId: string) {
+  return fetch(apiUrl(`player/${matchId}/talk/hangup`), {
     method: "POST",
+    credentials: "include",
   }).catch(() => {});
 }
 

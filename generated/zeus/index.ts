@@ -1751,9 +1751,20 @@ export type ValueTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["WebPushPlatformCount"]: AliasType<{
+	devices?:boolean | `@${string}`,
+	platform?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["WebPushStatusOutput"]: AliasType<{
+	active_7d?:boolean | `@${string}`,
 	configured?:boolean | `@${string}`,
+	last_delivered_at?:boolean | `@${string}`,
 	managed_by_environment?:boolean | `@${string}`,
+	never_delivered?:boolean | `@${string}`,
+	new_7d?:boolean | `@${string}`,
+	platforms?:ValueTypes["WebPushPlatformCount"],
+	players?:boolean | `@${string}`,
 	subscriptions?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -67373,9 +67384,20 @@ export type ResolverInputTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["WebPushPlatformCount"]: AliasType<{
+	devices?:boolean | `@${string}`,
+	platform?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["WebPushStatusOutput"]: AliasType<{
+	active_7d?:boolean | `@${string}`,
 	configured?:boolean | `@${string}`,
+	last_delivered_at?:boolean | `@${string}`,
 	managed_by_environment?:boolean | `@${string}`,
+	never_delivered?:boolean | `@${string}`,
+	new_7d?:boolean | `@${string}`,
+	platforms?:ResolverInputTypes["WebPushPlatformCount"],
+	players?:boolean | `@${string}`,
 	subscriptions?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -132908,9 +132930,19 @@ export type ModelTypes = {
 	["WebPushKeysOutput"]: {
 		success: boolean
 };
+	["WebPushPlatformCount"]: {
+		devices: number,
+	platform: string
+};
 	["WebPushStatusOutput"]: {
-		configured: boolean,
+		active_7d: number,
+	configured: boolean,
+	last_delivered_at?: ModelTypes["timestamptz"] | undefined | null,
 	managed_by_environment: boolean,
+	never_delivered: number,
+	new_7d: number,
+	platforms: Array<ModelTypes["WebPushPlatformCount"]>,
+	players: number,
 	subscriptions: number
 };
 	/** columns and relationships of "_map_pool" */
@@ -190674,10 +190706,21 @@ export type GraphQLTypes = {
 	__typename: "WebPushKeysOutput",
 	success: boolean
 };
+	["WebPushPlatformCount"]: {
+	__typename: "WebPushPlatformCount",
+	devices: number,
+	platform: string
+};
 	["WebPushStatusOutput"]: {
 	__typename: "WebPushStatusOutput",
+	active_7d: number,
 	configured: boolean,
+	last_delivered_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	managed_by_environment: boolean,
+	never_delivered: number,
+	new_7d: number,
+	platforms: Array<GraphQLTypes["WebPushPlatformCount"]>,
+	players: number,
 	subscriptions: number
 };
 	/** columns and relationships of "_map_pool" */

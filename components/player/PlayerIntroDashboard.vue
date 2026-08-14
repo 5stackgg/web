@@ -29,7 +29,7 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -367,8 +367,7 @@ function buildPoints(
         ? (match.lineup_2?.name ?? "—")
         : (match.lineup_1?.name ?? "—");
 
-    const firstMap = match.match_maps[0]?.map?.name ?? null;
-    const mapName = firstMap ? cleanMapName(firstMap) : "—";
+    const mapName = mapLabel(match.match_maps[0]?.map) || "—";
 
     const canonical = hltvByMatch?.get(String(match.id));
 

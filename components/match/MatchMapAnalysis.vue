@@ -14,7 +14,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Empty, EmptyTitle, EmptyDescription } from "~/components/ui/empty";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import { useMatchSide } from "~/composables/useMatchSide";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { hasMeshForMap } from "~/utilities/mapAssets";
 import {
   tacticalSectionLabelClasses,
@@ -1128,7 +1128,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
                     :key="mm.id"
                     :value="mm.id"
                   >
-                    {{ cleanMapName(mm.map.name) }}
+                    {{ mapLabel(mm.map) }}
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -1137,7 +1137,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
               v-else-if="activeMatchMap"
               class="font-sans text-sm font-semibold uppercase tracking-[0.1em] text-foreground"
             >
-              {{ cleanMapName(activeMatchMap.map.name) }}
+              {{ mapLabel(activeMatchMap.map) }}
             </span>
           </div>
 

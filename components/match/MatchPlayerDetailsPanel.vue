@@ -7,7 +7,7 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
 import LineupAimStats from "~/components/match/LineupAimStats.vue";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 
 const { t } = useI18n();
 const tabs = computed(() => [
@@ -133,11 +133,11 @@ function toggleMap(mm: any) {
             :title="
               !isMapPlayed(mm)
                 ? t('match.player_details_panel.map_not_played')
-                : cleanMapName(mm.map?.label || mm.map?.name || '')
+                : mapLabel(mm.map)
             "
             @click.stop="toggleMap(mm)"
           >
-            {{ cleanMapName(mm.map?.label || mm.map?.name || "") }}
+            {{ mapLabel(mm.map) }}
             <span class="tabular-nums opacity-70">
               {{ mm.lineup_1_score }}:{{ mm.lineup_2_score }}
             </span>

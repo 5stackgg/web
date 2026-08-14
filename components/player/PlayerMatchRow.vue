@@ -575,7 +575,7 @@ import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
 import { matchClipFields } from "~/graphql/matchClip";
 import { $, order_by } from "~/generated/zeus";
 import { useClipModal } from "~/composables/useClipModal";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { csRankIcon, csRankKind } from "~/utilities/csRank";
 
 export default {
@@ -791,7 +791,7 @@ export default {
         const m = maps[0].map ?? {};
         return {
           name: m.name ?? "",
-          label: cleanMapName(m.label || m.name || ""),
+          label: mapLabel(m),
           patch: m.patch ?? null,
         };
       }

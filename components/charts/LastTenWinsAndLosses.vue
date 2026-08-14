@@ -27,7 +27,7 @@ ChartJS.register(
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 
 export default {
   props: {
@@ -246,7 +246,7 @@ export default {
           rows.push({
             key: r.match_id ?? r.started_at,
             startedAt: r.started_at,
-            mapName: cleanMapName(r.map.label || r.map.name),
+            mapName: mapLabel(r.map),
             result,
           });
         }
@@ -283,7 +283,7 @@ export default {
         }
 
         for (const map of this.maps) {
-          const mapName = cleanMapName(map.name);
+          const mapName = mapLabel(map);
           allMaps.add(mapName);
           if (!wins.has(mapName)) {
             wins.set(mapName, 0);

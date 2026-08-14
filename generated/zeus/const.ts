@@ -37852,9 +37852,19 @@ export const ReturnTypes: Record<string,any> = {
 	WebPushKeysOutput:{
 		success:"Boolean"
 	},
+	WebPushPlatformCount:{
+		devices:"Int",
+		platform:"String"
+	},
 	WebPushStatusOutput:{
+		active_7d:"Int",
 		configured:"Boolean",
+		last_delivered_at:"timestamptz",
 		managed_by_environment:"Boolean",
+		never_delivered:"Int",
+		new_7d:"Int",
+		platforms:"WebPushPlatformCount",
+		players:"Int",
 		subscriptions:"Int"
 	},
 	_map_pool:{

@@ -89,6 +89,14 @@ const hasPlayedOnce = ref(false);
 // everything fades out; any mousemove brings it back.
 const controlsVisible = ref(true);
 const showIntroOverlay = ref(false);
+// Every clip is rendered with the player's name/map card burned into its
+// opening frames, so the bottom HUD is redundant while the viewer is just
+// watching — and in fullscreen it lands right on top of that burned-in
+// card. Gate it on the pointer actually being on the player (hover on
+// mouse, most recent tap on touch) rather than on `controlsVisible`,
+// which stays true the whole time a clip sits paused.
+const pointerActive = ref(false);
+const hudVisible = computed(() => controlsVisible.value && pointerActive.value);
 const CONTROLS_HIDE_DELAY = 1100;
 let controlsHideTimer: ReturnType<typeof setTimeout> | null = null;
 let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
@@ -128,6 +136,15 @@ function hideControls() {
   }
 }
 
+function onPointerActivity() {
+  pointerActive.value = true;
+  bumpControls();
+}
+function onPointerLeave() {
+  pointerActive.value = false;
+  hideControls();
+}
+
 watch(playing, (p) => {
   if (p) bumpControls();
   else {
@@ -157,6 +174,12 @@ watch(
     duration.value = 0;
     scrubFrac.value = null;
     hoverFrac.value = null;
+    // A clip swap is not a reason to show the HUD: the new clip opens on
+    // its own burned-in name card. Dropping `pointerActive` keeps it
+    // hidden through the switch (even with the cursor parked on the
+    // player, e.g. right after clicking next) until the viewer actually
+    // moves the pointer again.
+    pointerActive.value = false;
     // Don't reset `playing` here — the new <video> element is paused
     // naturally on mount and its @play event will flip the ref to true
     // as soon as playback actually starts. Resetting synchronously caused
@@ -706,9 +729,9 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
         ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
         : ''
     "
-    @mousemove="bumpControls"
-    @mouseleave="hideControls"
-    @touchstart="bumpControls"
+    @mousemove="onPointerActivity"
+    @mouseleave="onPointerLeave"
+    @touchstart="onPointerActivity"
     @keydown="onStageKeydown"
   >
     <template #video>
@@ -749,11 +772,11 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       class="pointer-events-none absolute inset-x-0 top-0 h-2/5 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.7)_0%,transparent_100%)] transition-opacity duration-300"
       :class="controlsVisible ? 'opacity-100' : 'opacity-0'"
     ></div>
-    <!-- Bottom fade — kept visible at all times so the persistent
-         player-info HUD in the bottom slot stays legible against bright
-         clips, even when the rest of the chrome auto-hides. -->
+    <!-- Bottom fade — fades with the chrome it backs (HUD + scrubber), so
+         a clip that's just playing shows nothing but the clip. -->
     <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)]"
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)] transition-opacity duration-300"
+      :class="controlsVisible ? 'opacity-100' : 'opacity-0'"
     ></div>
 
     <!-- Top tray — consumer fills left + right via slots. -->
@@ -795,9 +818,15 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     </button>
 
     <!-- Bottom slot — player display in the reel, title in the modal.
-         Stays visible during playback so viewers always see who they're
-         watching, on which map, and when the clip was created. -->
-    <div class="pointer-events-none absolute inset-x-0 bottom-0">
+         Only shown while the pointer is on the player: the clip burns the
+         same name/map card into its opening frames, and in fullscreen this
+         HUD sits right on top of it. `inert` while hidden so the profile
+         link inside can't be clicked through the faded-out layer. -->
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-300"
+      :class="hudVisible ? 'opacity-100' : 'opacity-0'"
+      :inert="hudVisible ? undefined : true"
+    >
       <!-- Bottom padding clears the h-5 seek strip below, so the slot's own
            pointer-events-auto bits (the player profile link) never sit on top
            of the scrubber's grab area. -->

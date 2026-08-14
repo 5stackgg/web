@@ -41,6 +41,12 @@ const selectedPath = computed({
     if (path !== route.path) router.push(path);
   },
 });
+
+// This nav is long enough to run past a viewport, so a section picked from the
+// bottom of it would otherwise render off-screen above the user.
+const contentRow = ref<HTMLElement | null>(null);
+
+useScrollIntoViewOnChange(contentRow, () => route.path);
 </script>
 
 <template>
@@ -53,9 +59,18 @@ const selectedPath = computed({
     </TacticalPageHeader>
   </PageTransition>
   <Separator v-if="showSeparators" class="my-6" />
-  <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0">
+  <div
+    ref="contentRow"
+    class="flex flex-col space-y-8 lg:flex-row lg:space-x-6 lg:space-y-0"
+  >
     <PageTransition :delay="100">
-      <aside class="w-full shrink-0 lg:w-auto">
+      <!-- The nav outruns the viewport, so it pins and scrolls inside itself
+           rather than driving the height of the whole page. `self-start` is
+           what gives sticky room to move: stretched to the row height it has
+           nowhere to travel. -->
+      <aside
+        class="w-full shrink-0 lg:sticky lg:top-4 lg:max-h-[calc(var(--sidebar-height,100svh)-2rem)] lg:w-auto lg:self-start lg:overflow-y-auto"
+      >
         <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
         <div class="lg:hidden">
           <Select v-model="selectedPath">

@@ -58,7 +58,7 @@ import ServiceLogs from "~/components/ServiceLogs.vue";
 import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
-import cleanMapName from "~/utilities/cleanMapName";
+import mapLabel from "~/utilities/mapLabel";
 import { MoreVertical, AlertTriangle, ExternalLink } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -106,7 +106,7 @@ provide("commander", commander);
                   :key="activeMap.id"
                   class="block font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
                 >
-                  {{ cleanMapName(activeMap.map.name) }}
+                  {{ mapLabel(activeMap.map) }}
                   <span
                     v-if="typeof activeMap.lineup_1_score === 'number'"
                     class="text-muted-foreground ml-2"
@@ -153,7 +153,7 @@ provide("commander", commander);
             {{ $t("match.all_maps") }}
           </SelectItem>
           <SelectItem v-for="m in statsEligibleMaps" :key="m.id" :value="m.id">
-            {{ cleanMapName(m.map.name) }}
+            {{ mapLabel(m.map) }}
             <span
               v-if="typeof m.lineup_1_score === 'number'"
               class="text-muted-foreground ml-2"
@@ -923,7 +923,7 @@ export default {
         | undefined
         | { action: RconAction; display: string; confirm?: boolean },
       executePending: undefined as undefined | (() => void),
-      cleanMapName,
+      mapLabel,
     };
   },
   apollo: {

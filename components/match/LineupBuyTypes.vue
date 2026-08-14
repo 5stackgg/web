@@ -17,7 +17,7 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { useMatchSide } from "~/composables/useMatchSide";
 import { hltvColor } from "~/utils/statTiers";
-import cleanMapName from "~/utilities/cleanMapName";
+import resolveMapLabel from "~/utilities/mapLabel";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -363,10 +363,10 @@ const mapLabel = computed(() => {
   const match_map = props.match.match_maps.find(
     (m: any) => m.id === props.selectedMapId,
   );
-  if (!match_map?.map?.name) {
+  if (!match_map?.map) {
     return null;
   }
-  return cleanMapName(match_map.map.name);
+  return resolveMapLabel(match_map.map) || null;
 });
 
 // Vertical grouped bar chart: one group per economic matchup, two bars (your

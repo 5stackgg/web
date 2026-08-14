@@ -15,7 +15,13 @@ WORKDIR /opt/5stack
 COPY --from=deps /opt/5stack/node_modules ./node_modules
 COPY . .
 
-RUN corepack enable && corepack prepare 
+RUN corepack enable && corepack prepare
+
+# Node caps its default old-space at ~4GB, and this build peaks around 5.7GB
+# (measured), so it OOMs with "Ineffective mark-compacts near heap limit".
+# CI runners have 16GB, so give the build room instead of letting it run at
+# the edge of the default ceiling.
+ENV NODE_OPTIONS=--max-old-space-size=8192
 
 RUN yarn build
 

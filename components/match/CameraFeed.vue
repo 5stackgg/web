@@ -38,6 +38,7 @@ const emit = defineEmits<{ (e: "update:unmuted", value: boolean): void }>();
       :whep-url="cameraAdminWatchUrl(matchId, steamId)"
       :muted="!unmuted"
       disable-shortcuts
+      cover
       :class="[
         'absolute inset-0',
         clickThrough ? 'pointer-events-none' : '',

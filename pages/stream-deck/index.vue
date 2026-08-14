@@ -925,7 +925,6 @@ function matchStatusLabel(m: LiveMatch): string {
                     !!stream.is_live && !cs(stream.match_id).busy
                   "
                   :autodirector-on="isAutodirector(stream)"
-                  :gsi-enabled="!isPopoutOpen(stream.match_id)"
                   compact
                   @press-slot="
                     (slot: number) => specSlot(stream.match_id, slot)

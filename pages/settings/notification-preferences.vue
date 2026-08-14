@@ -15,7 +15,14 @@ const { t, te } = useI18n();
 const authStore = useAuthStore();
 
 const push = usePushNotifications();
-const { preferences, load, set } = useNotificationPreferences();
+const {
+  preferences,
+  quietHours,
+  load,
+  set,
+  loadQuietHours,
+  setQuietHours,
+} = useNotificationPreferences();
 
 const isModerator = computed(() =>
   authStore.isRoleAbove(e_player_roles_enum.moderator),
@@ -70,7 +77,33 @@ const pushHint = computed(() => {
 onMounted(async () => {
   await push.refresh();
   await load();
+  await loadQuietHours();
 });
+
+const saveQuietHours = async (
+  start: string | null,
+  end: string | null,
+) => {
+  try {
+    await setQuietHours({
+      start: start || null,
+      end: end || null,
+      // Taken from the browser rather than asked for: the window has to mean
+      // local wall-clock time, and this is the only place that actually knows
+      // which zone that is.
+      timezone:
+        start && end
+          ? Intl.DateTimeFormat().resolvedOptions().timeZone
+          : null,
+    });
+  } catch {
+    toast({
+      variant: "destructive",
+      title: t("common.error"),
+      description: t("pages.settings.notification_preferences.save_failed"),
+    });
+  }
+};
 
 const handlePushToggle = async (enabled: boolean) => {
   if (enabled) {
@@ -205,6 +238,76 @@ const handlePreferenceToggle = async (
               />
             </label>
           </div>
+        </div>
+      </section>
+
+      <!-- Quiet hours. Push only -- the bell keeps collecting, so nothing is
+           lost, the phone just stays silent. -->
+      <section v-if="push.subscribed.value" class="space-y-2">
+        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("pages.settings.notification_preferences.quiet_hours.title") }}
+        </div>
+        <p class="max-w-prose text-xs text-muted-foreground">
+          {{
+            $t("pages.settings.notification_preferences.quiet_hours.description")
+          }}
+        </p>
+        <div
+          class="flex flex-wrap items-center gap-4 rounded-lg border border-border/60 bg-card/30 px-4 py-3"
+        >
+          <label class="flex items-center gap-2">
+            <span
+              class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              {{ $t("pages.settings.notification_preferences.quiet_hours.from") }}
+            </span>
+            <input
+              type="time"
+              :value="quietHours.start ?? ''"
+              class="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm tabular-nums"
+              @change="
+                (event) =>
+                  saveQuietHours(
+                    (event.target as HTMLInputElement).value,
+                    quietHours.end,
+                  )
+              "
+            />
+          </label>
+          <label class="flex items-center gap-2">
+            <span
+              class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              {{ $t("pages.settings.notification_preferences.quiet_hours.to") }}
+            </span>
+            <input
+              type="time"
+              :value="quietHours.end ?? ''"
+              class="rounded-md border border-border bg-background px-2 py-1 font-mono text-sm tabular-nums"
+              @change="
+                (event) =>
+                  saveQuietHours(
+                    quietHours.start,
+                    (event.target as HTMLInputElement).value,
+                  )
+              "
+            />
+          </label>
+          <span
+            v-if="quietHours.timezone"
+            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground/60"
+          >
+            {{ quietHours.timezone }}
+          </span>
+          <button
+            v-if="quietHours.start || quietHours.end"
+            type="button"
+            class="ml-auto font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+            @click="saveQuietHours(null, null)"
+          >
+            {{ $t("pages.settings.notification_preferences.quiet_hours.clear") }}
+          </button>
         </div>
       </section>
 

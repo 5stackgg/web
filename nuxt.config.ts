@@ -299,6 +299,13 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
 
+    // Disables vite-plugin-vue-tracer, which rewrites every vnode in dev to
+    // carry source positions. After an edit it can serve a render function
+    // referencing $setup bindings that the same file's setup() no longer
+    // returns -- the component renders as `undefined` with no error, and only
+    // a dev-server restart clears it. Not worth the click-to-source.
+    componentInspector: false,
+
     timeline: {
       enabled: true,
     },

@@ -4,6 +4,7 @@ import {
   type CameraLineup,
   type CameraPlayerStatus,
 } from "~/composables/useCameraApi";
+import socket from "~/web-sockets/Socket";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
@@ -32,6 +33,34 @@ async function load(matchId: string, entry: Shared) {
   }
 }
 
+// The API pushes a bare {matchId} when a camera changes state — no player data
+// rides the socket, because it reaches every connected client. Everyone re-reads
+// through the authorized endpoint instead, so a push can never leak who is on
+// camera to someone who could not already ask.
+let socketBound = false;
+
+function bindSocket() {
+  if (socketBound) {
+    return;
+  }
+
+  socketBound = true;
+
+  socket.on("camera-status", (data: { matchId?: string } | undefined) => {
+    const matchId = data?.matchId;
+
+    if (!matchId) {
+      return;
+    }
+
+    const entry = shared.get(matchId);
+
+    if (entry) {
+      void load(matchId, entry);
+    }
+  });
+}
+
 function acquire(matchId: string) {
   let entry = shared.get(matchId);
 
@@ -49,7 +78,10 @@ function acquire(matchId: string) {
   entry.subscribers += 1;
 
   if (!entry.timer) {
+    bindSocket();
     void load(matchId, entry);
+    // Kept as a slow backstop rather than the primary signal: the push covers
+    // the moment a camera flips, this catches a missed frame or a reconnect.
     entry.timer = setInterval(() => load(matchId, entry as Shared), POLL_MS);
   }
 

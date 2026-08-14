@@ -26,6 +26,9 @@ const props = defineProps<{
   // Opt-in to native Picture-in-Picture. Only enabled for live game
   // streams on mobile — demo playback and highlights stay PIP-locked.
   enablePip?: boolean;
+  // Fill the container instead of letterboxing. Only for webcam tiles, which
+  // are small and want the height: a game stream must never be cropped.
+  cover?: boolean;
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
@@ -650,7 +653,8 @@ defineExpose({ connect, teardown });
 <template>
   <div
     ref="containerRef"
-    class="group relative aspect-video w-full h-full bg-black rounded overflow-hidden"
+    class="group relative w-full h-full bg-black rounded overflow-hidden"
+    :class="cover ? '' : 'aspect-video'"
   >
     <iframe
       v-if="useFallback && fallbackUrl"
@@ -674,7 +678,8 @@ defineExpose({ connect, teardown });
     <video
       v-show="!useFallback"
       ref="videoRef"
-      class="absolute inset-0 h-full w-full object-contain"
+      class="absolute inset-0 h-full w-full"
+      :class="cover ? 'object-cover' : 'object-contain'"
       autoplay
       muted
       playsinline

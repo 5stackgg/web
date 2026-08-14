@@ -762,7 +762,7 @@ function clearTeamEnterDelay(el: Element) {
                     key="teams"
                     tag="div"
                     class="flex flex-col gap-4"
-                    enter-active-class="transition-[opacity,transform] duration-[420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+                    enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
                     enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
                     leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
                     leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"

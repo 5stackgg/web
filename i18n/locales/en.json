@@ -1600,7 +1600,58 @@
           "LeagueMatchUnscheduled": {
             "title": "Unscheduled league matches",
             "description": "A league matchup has no agreed time yet."
+          },
+          "invites": {
+            "title": "Invites",
+            "description": "Team, tournament and draft invites."
+          },
+          "events": {
+            "title": "Events",
+            "description": "Reminders for events you're attending."
+          },
+          "seasons": {
+            "title": "Seasons",
+            "description": "When a season ends."
+          },
+          "TeamInvite": {
+            "title": "Team invites",
+            "description": "Someone invited you to their team."
+          },
+          "TournamentTeamInvite": {
+            "title": "Tournament invites",
+            "description": "Someone invited you to play in a tournament."
+          },
+          "DraftInvite": {
+            "title": "Draft invites",
+            "description": "Someone invited you to a draft lobby."
+          },
+          "MatchStatsReady": {
+            "title": "Stats ready",
+            "description": "Your match stats have finished processing."
+          },
+          "ClipReady": {
+            "title": "Clips ready",
+            "description": "A clip you requested finished rendering."
+          },
+          "AwardGranted": {
+            "title": "Awards",
+            "description": "You received an award."
+          },
+          "EventReminder": {
+            "title": "Event reminders",
+            "description": "An event you're attending starts soon."
+          },
+          "SeasonEnded": {
+            "title": "Season ended",
+            "description": "A season has ended."
           }
+        },
+        "quiet_hours": {
+          "title": "Quiet Hours",
+          "description": "Push notifications stay silent during this window. They still appear in your alert bell.",
+          "from": "From",
+          "to": "To",
+          "clear": "Clear"
         }
       },
       "notifications": {

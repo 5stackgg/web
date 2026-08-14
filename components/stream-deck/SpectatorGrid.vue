@@ -22,9 +22,11 @@ const props = defineProps<{
   // on non-active slots. Stream-deck index card surfaces it via the
   // `is_game_streamer + autodirector` row state.
   autodirectorOn?: boolean;
-  // When false, skip the GSI poll entirely. The stream-deck index
-  // card passes false while the focus popout is open so we don't
-  // double-poll the same match or re-render a hidden slot grid.
+  // When false, skip the GSI poll entirely. Do NOT use this to dedupe against
+  // another window polling the same match: without GSI every slot falls back to
+  // a placeholder with no steam id, which costs the card its player names and
+  // its cameras. useStreamerGsi already stops polling a backgrounded tab, which
+  // is where the real waste was.
   gsiEnabled?: boolean;
 }>();
 

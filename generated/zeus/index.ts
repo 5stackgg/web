@@ -905,6 +905,7 @@ export type ScalarCoders = {
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
 	smallint?: ScalarResolver;
+	time?: ScalarResolver;
 	timestamp?: ScalarResolver;
 	timestamptz?: ScalarResolver;
 	uuid?: ScalarResolver;
@@ -41319,6 +41320,7 @@ multi_kills_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_multi_kills_aggregate"]],
 	name?:boolean | `@${string}`,
 	name_registered?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["notifications_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -41408,6 +41410,8 @@ premier_rank_history_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["player_premier_rank_history_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_premier_rank_history_aggregate"]],
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
+	quiet_hours_end?:boolean | `@${string}`,
+	quiet_hours_start?:boolean | `@${string}`,
 	role?:boolean | `@${string}`,
 	roster_image_url?:boolean | `@${string}`,
 sanctions?: [{	/** distinct select on columns */
@@ -41679,6 +41683,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	name_registered?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	notification_timezone?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	notifications?: ValueTypes["notifications_bool_exp"] | undefined | null | Variable<any, string>,
 	notifications_aggregate?: ValueTypes["notifications_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_bool_exp"] | undefined | null | Variable<any, string>,
@@ -41697,6 +41702,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	premier_rank_history_aggregate?: ValueTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time_comparison_exp"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time_comparison_exp"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	roster_image_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	sanctions?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>,
@@ -41785,6 +41792,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	multi_kills?: ValueTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
+	notification_timezone?: string | undefined | null | Variable<any, string>,
 	notifications?: ValueTypes["notifications_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	owned_teams?: ValueTypes["teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -41795,6 +41803,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	premier_rank_history?: ValueTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	roster_image_url?: string | undefined | null | Variable<any, string>,
 	sanctions?: ValueTypes["player_sanctions_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -41846,6 +41856,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -41898,6 +41909,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -41997,6 +42009,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name_registered?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	notification_timezone?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	notifications_aggregate?: ValueTypes["notifications_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	objectives_aggregate?: ValueTypes["player_objectives_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	owned_teams_aggregate?: ValueTypes["teams_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -42008,6 +42021,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	premier_rank_history_aggregate?: ValueTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	roster_image_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	sanctions_aggregate?: ValueTypes["player_sanctions_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -42058,9 +42073,12 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
+	notification_timezone?: string | undefined | null | Variable<any, string>,
 	premier_rank?: number | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	roster_image_url?: string | undefined | null | Variable<any, string>,
 	show_match_ready_modal?: boolean | undefined | null | Variable<any, string>,
@@ -42183,9 +42201,12 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	last_sign_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	name_registered?: boolean | undefined | null | Variable<any, string>,
+	notification_timezone?: string | undefined | null | Variable<any, string>,
 	premier_rank?: number | undefined | null | Variable<any, string>,
 	premier_rank_updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	quiet_hours_end?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	quiet_hours_start?: ValueTypes["time"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	roster_image_url?: string | undefined | null | Variable<any, string>,
 	show_match_ready_modal?: boolean | undefined | null | Variable<any, string>,
@@ -52871,6 +52892,19 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_variance_order_by"]: {
 	captain_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	["time"]:unknown;
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+	_eq?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_gt?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_gte?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["time"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_lte?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["time"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["time"]> | undefined | null | Variable<any, string>
 };
 	["timestamp"]:unknown;
 	["timestamptz"]:unknown;
@@ -107129,6 +107163,7 @@ multi_kills_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null},ResolverInputTypes["v_player_multi_kills_aggregate"]],
 	name?:boolean | `@${string}`,
 	name_registered?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 notifications?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["notifications_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -107218,6 +107253,8 @@ premier_rank_history_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["player_premier_rank_history_bool_exp"] | undefined | null},ResolverInputTypes["player_premier_rank_history_aggregate"]],
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
+	quiet_hours_end?:boolean | `@${string}`,
+	quiet_hours_start?:boolean | `@${string}`,
 	role?:boolean | `@${string}`,
 	roster_image_url?:boolean | `@${string}`,
 sanctions?: [{	/** distinct select on columns */
@@ -107489,6 +107526,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	name_registered?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	notification_timezone?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	notifications?: ResolverInputTypes["notifications_bool_exp"] | undefined | null,
 	notifications_aggregate?: ResolverInputTypes["notifications_aggregate_bool_exp"] | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_bool_exp"] | undefined | null,
@@ -107507,6 +107545,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	premier_rank_history_aggregate?: ResolverInputTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	profile_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time_comparison_exp"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time_comparison_exp"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	roster_image_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	sanctions?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null,
@@ -107595,6 +107635,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	notifications?: ResolverInputTypes["notifications_arr_rel_insert_input"] | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: ResolverInputTypes["teams_arr_rel_insert_input"] | undefined | null,
@@ -107605,6 +107646,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	premier_rank_history?: ResolverInputTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	sanctions?: ResolverInputTypes["player_sanctions_arr_rel_insert_input"] | undefined | null,
@@ -107656,6 +107699,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -107708,6 +107752,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+	notification_timezone?:boolean | `@${string}`,
 	premier_rank?:boolean | `@${string}`,
 	premier_rank_updated_at?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
@@ -107807,6 +107852,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	name_registered?: ResolverInputTypes["order_by"] | undefined | null,
+	notification_timezone?: ResolverInputTypes["order_by"] | undefined | null,
 	notifications_aggregate?: ResolverInputTypes["notifications_aggregate_order_by"] | undefined | null,
 	objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: ResolverInputTypes["teams_aggregate_order_by"] | undefined | null,
@@ -107818,6 +107864,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	premier_rank_history_aggregate?: ResolverInputTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["order_by"] | undefined | null,
 	profile_url?: ResolverInputTypes["order_by"] | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["order_by"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["order_by"] | undefined | null,
 	role?: ResolverInputTypes["order_by"] | undefined | null,
 	roster_image_url?: ResolverInputTypes["order_by"] | undefined | null,
 	sanctions_aggregate?: ResolverInputTypes["player_sanctions_aggregate_order_by"] | undefined | null,
@@ -107868,9 +107916,12 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -107993,9 +108044,12 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	last_sign_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ResolverInputTypes["time"] | undefined | null,
+	quiet_hours_start?: ResolverInputTypes["time"] | undefined | null,
 	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -118681,6 +118735,19 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_variance_order_by"]: {
 	captain_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	["time"]:unknown;
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+	_eq?: ResolverInputTypes["time"] | undefined | null,
+	_gt?: ResolverInputTypes["time"] | undefined | null,
+	_gte?: ResolverInputTypes["time"] | undefined | null,
+	_in?: Array<ResolverInputTypes["time"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ResolverInputTypes["time"] | undefined | null,
+	_lte?: ResolverInputTypes["time"] | undefined | null,
+	_neq?: ResolverInputTypes["time"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["time"]> | undefined | null
 };
 	["timestamp"]:unknown;
 	["timestamptz"]:unknown;
@@ -169599,6 +169666,7 @@ export type ModelTypes = {
 	multi_kills_aggregate: ModelTypes["v_player_multi_kills_aggregate"],
 	name: string,
 	name_registered: boolean,
+	notification_timezone?: string | undefined | null,
 	/** An array relationship */
 	notifications: Array<ModelTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -169632,6 +169700,8 @@ export type ModelTypes = {
 	premier_rank_history_aggregate: ModelTypes["player_premier_rank_history_aggregate"],
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role: ModelTypes["e_player_roles_enum"],
 	roster_image_url?: string | undefined | null,
 	/** An array relationship */
@@ -169823,6 +169893,7 @@ export type ModelTypes = {
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	name_registered?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	notification_timezone?: ModelTypes["String_comparison_exp"] | undefined | null,
 	notifications?: ModelTypes["notifications_bool_exp"] | undefined | null,
 	notifications_aggregate?: ModelTypes["notifications_aggregate_bool_exp"] | undefined | null,
 	objectives?: ModelTypes["player_objectives_bool_exp"] | undefined | null,
@@ -169841,6 +169912,8 @@ export type ModelTypes = {
 	premier_rank_history_aggregate?: ModelTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	profile_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	quiet_hours_end?: ModelTypes["time_comparison_exp"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time_comparison_exp"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	roster_image_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	sanctions?: ModelTypes["player_sanctions_bool_exp"] | undefined | null,
@@ -169928,6 +170001,7 @@ export type ModelTypes = {
 	multi_kills?: ModelTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	notifications?: ModelTypes["notifications_arr_rel_insert_input"] | undefined | null,
 	objectives?: ModelTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: ModelTypes["teams_arr_rel_insert_input"] | undefined | null,
@@ -169938,6 +170012,8 @@ export type ModelTypes = {
 	premier_rank_history?: ModelTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	sanctions?: ModelTypes["player_sanctions_arr_rel_insert_input"] | undefined | null,
@@ -169989,6 +170065,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -170040,6 +170117,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -170137,6 +170215,7 @@ export type ModelTypes = {
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	name_registered?: ModelTypes["order_by"] | undefined | null,
+	notification_timezone?: ModelTypes["order_by"] | undefined | null,
 	notifications_aggregate?: ModelTypes["notifications_aggregate_order_by"] | undefined | null,
 	objectives_aggregate?: ModelTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: ModelTypes["teams_aggregate_order_by"] | undefined | null,
@@ -170148,6 +170227,8 @@ export type ModelTypes = {
 	premier_rank_history_aggregate?: ModelTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null,
 	premier_rank_updated_at?: ModelTypes["order_by"] | undefined | null,
 	profile_url?: ModelTypes["order_by"] | undefined | null,
+	quiet_hours_end?: ModelTypes["order_by"] | undefined | null,
+	quiet_hours_start?: ModelTypes["order_by"] | undefined | null,
 	role?: ModelTypes["order_by"] | undefined | null,
 	roster_image_url?: ModelTypes["order_by"] | undefined | null,
 	sanctions_aggregate?: ModelTypes["player_sanctions_aggregate_order_by"] | undefined | null,
@@ -170197,9 +170278,12 @@ export type ModelTypes = {
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -170319,9 +170403,12 @@ export type ModelTypes = {
 	last_sign_in_at?: ModelTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: ModelTypes["time"] | undefined | null,
+	quiet_hours_start?: ModelTypes["time"] | undefined | null,
 	role?: ModelTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -177371,6 +177458,19 @@ export type ModelTypes = {
 ["teams_variance_order_by"]: {
 	captain_steam_id?: ModelTypes["order_by"] | undefined | null,
 	owner_steam_id?: ModelTypes["order_by"] | undefined | null
+};
+	["time"]:any;
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+	_eq?: ModelTypes["time"] | undefined | null,
+	_gt?: ModelTypes["time"] | undefined | null,
+	_gte?: ModelTypes["time"] | undefined | null,
+	_in?: Array<ModelTypes["time"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ModelTypes["time"] | undefined | null,
+	_lte?: ModelTypes["time"] | undefined | null,
+	_neq?: ModelTypes["time"] | undefined | null,
+	_nin?: Array<ModelTypes["time"]> | undefined | null
 };
 	["timestamp"]:any;
 	["timestamptz"]:any;
@@ -229271,6 +229371,7 @@ export type GraphQLTypes = {
 	multi_kills_aggregate: GraphQLTypes["v_player_multi_kills_aggregate"],
 	name: string,
 	name_registered: boolean,
+	notification_timezone?: string | undefined | null,
 	/** An array relationship */
 	notifications: Array<GraphQLTypes["notifications"]>,
 	/** An aggregate relationship */
@@ -229304,6 +229405,8 @@ export type GraphQLTypes = {
 	premier_rank_history_aggregate: GraphQLTypes["player_premier_rank_history_aggregate"],
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role: GraphQLTypes["e_player_roles_enum"],
 	roster_image_url?: string | undefined | null,
 	/** An array relationship */
@@ -229498,6 +229601,7 @@ export type GraphQLTypes = {
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	name_registered?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	notification_timezone?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	notifications?: GraphQLTypes["notifications_bool_exp"] | undefined | null,
 	notifications_aggregate?: GraphQLTypes["notifications_aggregate_bool_exp"] | undefined | null,
 	objectives?: GraphQLTypes["player_objectives_bool_exp"] | undefined | null,
@@ -229516,6 +229620,8 @@ export type GraphQLTypes = {
 	premier_rank_history_aggregate?: GraphQLTypes["player_premier_rank_history_aggregate_bool_exp"] | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	profile_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time_comparison_exp"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time_comparison_exp"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	roster_image_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	sanctions?: GraphQLTypes["player_sanctions_bool_exp"] | undefined | null,
@@ -229604,6 +229710,7 @@ export type GraphQLTypes = {
 	multi_kills?: GraphQLTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	notifications?: GraphQLTypes["notifications_arr_rel_insert_input"] | undefined | null,
 	objectives?: GraphQLTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: GraphQLTypes["teams_arr_rel_insert_input"] | undefined | null,
@@ -229614,6 +229721,8 @@ export type GraphQLTypes = {
 	premier_rank_history?: GraphQLTypes["player_premier_rank_history_arr_rel_insert_input"] | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	sanctions?: GraphQLTypes["player_sanctions_arr_rel_insert_input"] | undefined | null,
@@ -229666,6 +229775,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -229718,6 +229828,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
 	matchmaking_cooldown?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
@@ -229816,6 +229927,7 @@ export type GraphQLTypes = {
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	name_registered?: GraphQLTypes["order_by"] | undefined | null,
+	notification_timezone?: GraphQLTypes["order_by"] | undefined | null,
 	notifications_aggregate?: GraphQLTypes["notifications_aggregate_order_by"] | undefined | null,
 	objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: GraphQLTypes["teams_aggregate_order_by"] | undefined | null,
@@ -229827,6 +229939,8 @@ export type GraphQLTypes = {
 	premier_rank_history_aggregate?: GraphQLTypes["player_premier_rank_history_aggregate_order_by"] | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["order_by"] | undefined | null,
 	profile_url?: GraphQLTypes["order_by"] | undefined | null,
+	quiet_hours_end?: GraphQLTypes["order_by"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["order_by"] | undefined | null,
 	role?: GraphQLTypes["order_by"] | undefined | null,
 	roster_image_url?: GraphQLTypes["order_by"] | undefined | null,
 	sanctions_aggregate?: GraphQLTypes["player_sanctions_aggregate_order_by"] | undefined | null,
@@ -229877,9 +229991,12 @@ export type GraphQLTypes = {
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -230002,9 +230119,12 @@ export type GraphQLTypes = {
 	last_sign_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	name?: string | undefined | null,
 	name_registered?: boolean | undefined | null,
+	notification_timezone?: string | undefined | null,
 	premier_rank?: number | undefined | null,
 	premier_rank_updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	profile_url?: string | undefined | null,
+	quiet_hours_end?: GraphQLTypes["time"] | undefined | null,
+	quiet_hours_start?: GraphQLTypes["time"] | undefined | null,
 	role?: GraphQLTypes["e_player_roles_enum"] | undefined | null,
 	roster_image_url?: string | undefined | null,
 	show_match_ready_modal?: boolean | undefined | null,
@@ -237353,6 +237473,19 @@ export type GraphQLTypes = {
 ["teams_variance_order_by"]: {
 		captain_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	["time"]: "scalar" & { name: "time" };
+	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
+["time_comparison_exp"]: {
+		_eq?: GraphQLTypes["time"] | undefined | null,
+	_gt?: GraphQLTypes["time"] | undefined | null,
+	_gte?: GraphQLTypes["time"] | undefined | null,
+	_in?: Array<GraphQLTypes["time"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: GraphQLTypes["time"] | undefined | null,
+	_lte?: GraphQLTypes["time"] | undefined | null,
+	_neq?: GraphQLTypes["time"] | undefined | null,
+	_nin?: Array<GraphQLTypes["time"]> | undefined | null
 };
 	["timestamp"]: "scalar" & { name: "timestamp" };
 	["timestamptz"]: "scalar" & { name: "timestamptz" };
@@ -251994,10 +252127,14 @@ export enum e_notification_types_constraint {
 	e_notification_types_pkey = "e_notification_types_pkey"
 }
 export enum e_notification_types_enum {
+	AwardGranted = "AwardGranted",
 	ChatMessage = "ChatMessage",
+	ClipReady = "ClipReady",
 	DedicatedServerRconStatus = "DedicatedServerRconStatus",
 	DedicatedServerStatus = "DedicatedServerStatus",
+	DraftInvite = "DraftInvite",
 	EloRecompute = "EloRecompute",
+	EventReminder = "EventReminder",
 	FormTeamSuggestion = "FormTeamSuggestion",
 	GameNodeStatus = "GameNodeStatus",
 	GameUpdate = "GameUpdate",
@@ -252009,6 +252146,7 @@ export enum e_notification_types_enum {
 	LeagueRosterUndersized = "LeagueRosterUndersized",
 	MatchAbandoned = "MatchAbandoned",
 	MatchImported = "MatchImported",
+	MatchStatsReady = "MatchStatsReady",
 	MatchStatusChange = "MatchStatusChange",
 	MatchSupport = "MatchSupport",
 	NameChangeApproved = "NameChangeApproved",
@@ -252026,9 +252164,12 @@ export enum e_notification_types_enum {
 	ScrimRequestExpired = "ScrimRequestExpired",
 	ScrimRequestReceived = "ScrimRequestReceived",
 	ScrimTimeChanged = "ScrimTimeChanged",
+	SeasonEnded = "SeasonEnded",
 	StorageScan = "StorageScan",
+	TeamInvite = "TeamInvite",
 	TournamentCreated = "TournamentCreated",
-	TournamentReminder = "TournamentReminder"
+	TournamentReminder = "TournamentReminder",
+	TournamentTeamInvite = "TournamentTeamInvite"
 }
 /** select columns of table "e_notification_types" */
 export enum e_notification_types_select_column {
@@ -254927,9 +255068,12 @@ export enum players_select_column {
 	last_sign_in_at = "last_sign_in_at",
 	name = "name",
 	name_registered = "name_registered",
+	notification_timezone = "notification_timezone",
 	premier_rank = "premier_rank",
 	premier_rank_updated_at = "premier_rank_updated_at",
 	profile_url = "profile_url",
+	quiet_hours_end = "quiet_hours_end",
+	quiet_hours_start = "quiet_hours_start",
 	role = "role",
 	roster_image_url = "roster_image_url",
 	show_match_ready_modal = "show_match_ready_modal",
@@ -254958,9 +255102,12 @@ export enum players_update_column {
 	last_sign_in_at = "last_sign_in_at",
 	name = "name",
 	name_registered = "name_registered",
+	notification_timezone = "notification_timezone",
 	premier_rank = "premier_rank",
 	premier_rank_updated_at = "premier_rank_updated_at",
 	profile_url = "profile_url",
+	quiet_hours_end = "quiet_hours_end",
+	quiet_hours_start = "quiet_hours_start",
 	role = "role",
 	roster_image_url = "roster_image_url",
 	show_match_ready_modal = "show_match_ready_modal",
@@ -259657,6 +259804,8 @@ type ZEUS_VARIABLES = {
 	["teams_var_pop_order_by"]: ValueTypes["teams_var_pop_order_by"];
 	["teams_var_samp_order_by"]: ValueTypes["teams_var_samp_order_by"];
 	["teams_variance_order_by"]: ValueTypes["teams_variance_order_by"];
+	["time"]: ValueTypes["time"];
+	["time_comparison_exp"]: ValueTypes["time_comparison_exp"];
 	["timestamp"]: ValueTypes["timestamp"];
 	["timestamptz"]: ValueTypes["timestamptz"];
 	["timestamptz_comparison_exp"]: ValueTypes["timestamptz_comparison_exp"];

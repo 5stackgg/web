@@ -26,6 +26,14 @@ const preferences = ref<Record<NotificationChannel, NotificationPreference[]>>({
 const loaded = ref(false);
 const loading = ref(false);
 
+export type QuietHours = {
+  start: string | null;
+  end: string | null;
+  timezone: string | null;
+};
+
+const quietHours = ref<QuietHours>({ start: null, end: null, timezone: null });
+
 function preferencesApiUrl(path: string): string {
   return `https://${useRuntimeConfig().public.apiDomain}/notifications/preferences${path}`;
 }
@@ -96,6 +104,34 @@ export function useNotificationPreferences() {
     return row ? row.enabled : true;
   }
 
+  async function loadQuietHours() {
+    try {
+      const { quietHours: stored } = await $fetch<{ quietHours: QuietHours }>(
+        preferencesApiUrl("/quiet-hours"),
+        { credentials: "include" },
+      );
+      quietHours.value = stored;
+    } catch {
+      // Falls back to "no window", which is the same as the feature being off.
+    }
+  }
+
+  async function setQuietHours(next: QuietHours) {
+    const previous = { ...quietHours.value };
+    quietHours.value = next;
+
+    try {
+      await $fetch(preferencesApiUrl("/quiet-hours"), {
+        method: "PUT",
+        credentials: "include",
+        body: next,
+      });
+    } catch (error) {
+      quietHours.value = previous;
+      throw error;
+    }
+  }
+
   function reset() {
     preferences.value = { push: [], in_app: [] };
     loaded.value = false;
@@ -103,6 +139,9 @@ export function useNotificationPreferences() {
 
   return {
     preferences,
+    quietHours,
+    loadQuietHours,
+    setQuietHours,
     loaded,
     loading,
     load,

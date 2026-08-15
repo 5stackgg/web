@@ -210,7 +210,7 @@ function releaseSwapHeight(el: Element): void {
                 <div
                   class="font-sans text-2xl font-bold uppercase leading-none tracking-[0.08em] text-foreground sm:text-3xl [font-stretch:80%]"
                 >
-                  {{ matchMakingQueueDetails.type }}
+                  {{ getMatchTypeTitle(matchMakingQueueDetails.type) }}
                 </div>
                 <div
                   class="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground/80"
@@ -361,7 +361,7 @@ function releaseSwapHeight(el: Element): void {
                       class="inline-block w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]"
                       aria-hidden="true"
                     ></span>
-                    {{ type.value.toUpperCase() }}
+                    {{ getMatchTypeTitle(type.value) }}
                   </div>
                   <p
                     class="m-0 text-[0.78rem] leading-[1.5] text-muted-foreground"
@@ -516,6 +516,11 @@ export default {
     };
   },
   methods: {
+    getMatchTypeTitle(typeValue: string): string {
+      if (!typeValue) return "";
+      const key = `matchmaking.match_types.${typeValue.toLowerCase()}.title`;
+      return this.$te(key) ? (this.$t(key) as string) : typeValue.toUpperCase();
+    },
     isMatchmakingTypeEnabled(matchType: string): boolean {
       return useApplicationSettingsStore().isMatchmakingTypeEnabled(matchType);
     },

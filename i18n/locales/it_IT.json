@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "Impostazioni chat",
           "description": "Configura per quanto tempo vengono conservati i messaggi di chat.",
-          "chat_message_ttl": "TTL messaggi chat (secondi)",
-          "chat_message_ttl_description": "Per quanto tempo (in secondi) i messaggi di chat vengono conservati prima di essere eliminati definitivamente.",
           "updated": "Impostazioni chat aggiornate"
         },
         "news": {

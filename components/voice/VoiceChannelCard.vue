@@ -27,6 +27,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import CallGrid from "~/components/voice/CallGrid.vue";
 import CallPhoneQr from "~/components/voice/CallPhoneQr.vue";
+import DeviceBadge from "~/components/voice/DeviceBadge.vue";
 import VoiceRosterPreview from "~/components/voice/VoiceRosterPreview.vue";
 import { useCallPip } from "~/composables/useCallPip";
 import { useCallVisibility } from "~/composables/useCallVisibility";
@@ -133,9 +134,7 @@ const error = computed(() =>
   session.targetId.value === props.channelId ? session.error.value : null,
 );
 const errorDetail = computed(() =>
-  session.targetId.value === props.channelId
-    ? session.errorDetail.value
-    : null,
+  session.targetId.value === props.channelId ? session.errorDetail.value : null,
 );
 // Connecting is the button's state, not the card's: the layout holds the
 // not-joined shape until the connection is actually up, so a slow join is a
@@ -198,6 +197,27 @@ async function confirmSwitch() {
 // the browser will reliably grant Picture-in-Picture -- it is a click, which is
 // the gesture it wants -- and the person who just opted in is the only one it is
 // fair to open a window for.
+// Published for this player, but from the phone that scanned the QR rather than
+// from here. Toggling would take the path straight back off it, so the control
+// stops being a toggle and starts being a status.
+const videoElsewhere = computed(() => session.videoElsewhere.value);
+// The microphone half of the same thing. Only meaningful for the tab actually
+// holding the session -- a mirroring tab is not the one that was displaced.
+const micElsewhere = computed(() => owned.value && session.micElsewhere.value);
+
+// Muting a microphone this client is not sending would do nothing anyone could
+// hear. Badged, the key means bring it back here instead.
+function onMicKey() {
+  if (micElsewhere.value) {
+    void session.reclaimMic();
+    return;
+  }
+
+  registry.toggleSessionMute();
+}
+
+// Badged, this is "bring it back here": publishing from this client displaces
+// whatever held the path, which is the same move the phone made to take it.
 async function toggleVideo() {
   const wasOn = videoOn.value;
 
@@ -314,7 +334,7 @@ async function toggleVideo() {
                     </template>
                     {{ $t("voice.call.phone.use_phone") }}
                   </FiveStackToolTip>
-      
+
                   <FiveStackToolTip
                     v-if="videoAllowed"
                     as-child
@@ -343,8 +363,12 @@ async function toggleVideo() {
                         : $t("voice.call.pop_out")
                     }}
                   </FiveStackToolTip>
-      
-                  <FiveStackToolTip as-child :delay-duration="120" side="bottom">
+
+                  <FiveStackToolTip
+                    as-child
+                    :delay-duration="120"
+                    side="bottom"
+                  >
                     <template #trigger>
                       <Button
                         size="xs"
@@ -482,74 +506,90 @@ async function toggleVideo() {
               </div>
 
               <div v-else key="controls" class="flex items-center gap-2">
-            <FiveStackToolTip as-child :delay-duration="120" side="top">
-              <template #trigger>
-                <Button
-                  size="xs"
-                  :variant="muted ? 'destructive' : 'secondary'"
-                  class="h-9 w-9 rounded-full p-0"
-                  :aria-label="
-                    muted ? $t('voice.tooltip.unmute') : $t('voice.tooltip.mute')
-                  "
-                  @click="registry.toggleSessionMute()"
-                >
-                  <component :is="muted ? MicOff : Mic" class="h-4 w-4" />
-                </Button>
-              </template>
-              {{ muted ? $t("voice.tooltip.unmute") : $t("voice.tooltip.mute") }}
-            </FiveStackToolTip>
+                <FiveStackToolTip as-child :delay-duration="120" side="top">
+                  <template #trigger>
+                    <Button
+                      size="xs"
+                      :variant="muted ? 'destructive' : 'secondary'"
+                      class="relative h-9 w-9 rounded-full p-0"
+                      :aria-label="
+                        micElsewhere
+                          ? $t('voice.call.take_mic_back')
+                          : muted
+                            ? $t('voice.tooltip.unmute')
+                            : $t('voice.tooltip.mute')
+                      "
+                      @click="onMicKey"
+                    >
+                      <component :is="muted ? MicOff : Mic" class="h-4 w-4" />
+                      <DeviceBadge :on="micElsewhere" />
+                    </Button>
+                  </template>
+                  {{
+                    micElsewhere
+                      ? $t("voice.call.take_mic_back")
+                      : muted
+                        ? $t("voice.tooltip.unmute")
+                        : $t("voice.tooltip.mute")
+                  }}
+                </FiveStackToolTip>
 
-            <FiveStackToolTip
-              v-if="canControlVideo"
-              as-child
-              :delay-duration="120"
-              side="top"
-            >
-              <template #trigger>
-                <Button
-                  size="xs"
-                  :variant="videoOn ? 'secondary' : 'ghost'"
-                  class="h-9 w-9 rounded-full p-0"
-                  :class="
-                    videoOn
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-muted-foreground hover:text-foreground'
-                  "
-                  :loading="session.videoStarting.value"
-                  :aria-label="
-                    videoOn
-                      ? $t('voice.call.stop_camera')
-                      : $t('voice.call.start_camera')
-                  "
-                  @click="toggleVideo"
+                <FiveStackToolTip
+                  v-if="canControlVideo"
+                  as-child
+                  :delay-duration="120"
+                  side="top"
                 >
-                  <component
-                    :is="videoOn ? Video : VideoOff"
-                    class="h-4 w-4"
-                  />
-                </Button>
-              </template>
-              {{
-                videoOn
-                  ? $t("voice.call.stop_camera")
-                  : $t("voice.call.start_camera")
-              }}
-            </FiveStackToolTip>
+                  <template #trigger>
+                    <Button
+                      size="xs"
+                      :variant="videoOn ? 'secondary' : 'ghost'"
+                      class="h-9 w-9 rounded-full p-0"
+                      :class="
+                        videoOn || videoElsewhere
+                          ? 'relative text-[hsl(var(--tac-amber))]'
+                          : 'relative text-muted-foreground hover:text-foreground'
+                      "
+                      :loading="session.videoStarting.value"
+                      :aria-label="
+                        videoElsewhere
+                          ? $t('voice.call.take_camera_back')
+                          : videoOn
+                            ? $t('voice.call.stop_camera')
+                            : $t('voice.call.start_camera')
+                      "
+                      @click="toggleVideo"
+                    >
+                      <component
+                        :is="videoOn ? Video : VideoOff"
+                        class="h-4 w-4"
+                      />
+                      <DeviceBadge :on="videoElsewhere" />
+                    </Button>
+                  </template>
+                  {{
+                    videoElsewhere
+                      ? $t("voice.call.take_camera_back")
+                      : videoOn
+                        ? $t("voice.call.stop_camera")
+                        : $t("voice.call.start_camera")
+                  }}
+                </FiveStackToolTip>
 
-            <FiveStackToolTip as-child :delay-duration="120" side="top">
-              <template #trigger>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  class="h-9 w-9 rounded-full p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                  :aria-label="$t('voice.tooltip.leave')"
-                  @click="registry.leaveSession()"
-                >
-                  <PhoneOff class="h-4 w-4" />
-                </Button>
-              </template>
-              {{ $t("voice.tooltip.leave") }}
-            </FiveStackToolTip>
+                <FiveStackToolTip as-child :delay-duration="120" side="top">
+                  <template #trigger>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      class="h-9 w-9 rounded-full p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      :aria-label="$t('voice.tooltip.leave')"
+                      @click="registry.leaveSession()"
+                    >
+                      <PhoneOff class="h-4 w-4" />
+                    </Button>
+                  </template>
+                  {{ $t("voice.tooltip.leave") }}
+                </FiveStackToolTip>
               </div>
             </Transition>
           </div>

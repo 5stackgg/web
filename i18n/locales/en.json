@@ -1544,7 +1544,11 @@
           "description": "Get notified on this device even when 5stack isn't open.",
           "categories": "What to push",
           "unsupported": "Push notifications aren't supported in this browser.",
-          "ios_install": "Install 5stack to your home screen to enable push notifications on iOS.",
+          "install_required": "Install the 5stack app to turn these on.",
+          "install": {
+            "description": "Push notifications are delivered by the installed app, so it needs to be on your device before you can turn them on.",
+            "open_app": "Already installed? Open 5stack from your home screen or applications and turn push notifications on there."
+          },
           "denied": "Notifications are blocked for 5stack. Enable them in your browser or device settings to turn this on.",
           "failed": "Couldn't enable push notifications. Try again.",
           "enabled_toast": "Push notifications enabled",
@@ -1561,7 +1565,7 @@
           },
           "chat": {
             "title": "Chat",
-            "description": "New messages in a lobby, match or conversation."
+            "description": "New messages in a conversation, lobby or tournament room."
           },
           "tournaments": {
             "title": "Tournaments",
@@ -1597,7 +1601,7 @@
           },
           "ChatMessage": {
             "title": "Chat messages",
-            "description": "A new message in a lobby, match or conversation."
+            "description": "A new message in a conversation, lobby or tournament room."
           },
           "MatchImported": {
             "title": "Imported matches",
@@ -1666,6 +1670,14 @@
           "SeasonEnded": {
             "title": "Season ended",
             "description": "A season has ended."
+          },
+          "match_chat": {
+            "title": "Match chat",
+            "description": "New messages in a match's room, including chat relayed from in-game. Off by default — it fires on every line typed during a live match."
+          },
+          "MatchChatMessage": {
+            "title": "Match chat messages",
+            "description": "A new message in a match's room."
           }
         },
         "quiet_hours": {
@@ -1740,10 +1752,19 @@
         },
         "chat": {
           "title": "Chat Settings",
-          "description": "Configure how long chat messages are retained.",
-          "chat_message_ttl": "Chat Message TTL (seconds)",
-          "chat_message_ttl_description": "How long (in seconds) chat messages are kept before being permanently deleted.",
-          "updated": "Chat settings updated successfully"
+          "description": "Configure how long chat is kept, per kind of room.",
+          "updated": "Chat settings updated successfully",
+          "lobby_title": "Room Retention",
+          "lobby_description": "How long (in seconds) messages are kept in each kind of room before being permanently deleted. 0 drops them immediately.",
+          "direct_title": "Direct Messages",
+          "direct_description": "Direct messages are stored durably rather than expiring with the rest of chat. Set the number of days to keep them, or 0 to keep them forever.",
+          "ttl_match": "Match chat",
+          "ttl_match_team": "Team chat",
+          "ttl_matchmaking": "Matchmaking lobby chat",
+          "ttl_tournament": "Tournament chat",
+          "ttl_organizers": "Organizer chat",
+          "ttl_draft": "Draft lobby chat",
+          "retention_direct_days": "Keep direct messages for (days)"
         },
         "news": {
           "title": "News",
@@ -3830,6 +3851,14 @@
     "map_poster": "Map poster",
     "map_patch": "Map patch"
   },
+  "push_prompt": {
+    "title": "Turn on notifications",
+    "description": "Get match invites, lobby calls and messages on this device, even when 5stack isn't open.",
+    "enable": "Enable",
+    "dismiss": "Dismiss",
+    "enabled": "Push notifications enabled",
+    "failed": "Couldn't enable push notifications. Try again."
+  },
   "pwa": {
     "install": {
       "title": "Add to Home Screen",
@@ -5910,6 +5939,11 @@
       "last_ban_days_ago": "Last ban {days} day(s) ago",
       "view_sanctions_hint": "Click to view all sanctions"
     },
+    "context_menu": {
+      "view_profile": "View Profile",
+      "copy_steam_id": "Copy Steam ID",
+      "steam_id_copied": "Steam ID copied"
+    },
     "change_name": {
       "name_label": "Name",
       "success": "Changed Players Name",
@@ -7595,6 +7629,7 @@
       "denied": "Your browser blocked access to the camera. Allow it for this site, then try again.",
       "missing": "No camera was found. Connect one, or pick a different device below.",
       "busy": "Another app is already using the camera. Close it and try again.",
+      "insecure": "Your camera needs a secure connection. Open 5stack over HTTPS (or localhost) and try again.",
       "unknown": "The camera could not be started. Try again."
     },
     "media_pending": "Waiting for camera permission…",
@@ -7670,6 +7705,8 @@
     "call": {
       "start_camera": "Turn on camera",
       "stop_camera": "Turn off camera",
+      "take_camera_back": "On your phone — tap to bring it back here",
+      "take_mic_back": "Mic on your phone — tap to bring it back here",
       "pop_out": "Pop out video",
       "pop_in": "Put video back",
       "join_to_see": "Turn on your camera to see everyone else's.",
@@ -7683,8 +7720,18 @@
         "in_call": "{count} others in the call",
         "start": "Share this camera",
         "stop": "Stop sharing",
-        "hint": "Your microphone stays on the device you're playing on — this shares video only.",
-        "not_a_member": "You're not in this call. Join it on the device you're playing on first, then scan the code again."
+        "hint": "Camera and microphone are separate — take either, or both.",
+        "not_a_member": "You're not in this call. Join it on the device you're playing on first, then scan the code again.",
+        "take_mic": "Use this microphone",
+        "release_mic": "Give microphone back",
+        "mic_live": "Mic",
+        "mic_echo_hint": "Your PC needs headphones — on speakers this phone will pick the call back up and echo.",
+        "not_in_call": "Join the call on the device you’re playing on, then this phone can take it over.",
+        "take_mic_short": "Take mic",
+        "start_short": "Camera",
+        "stop_short": "Stop",
+        "flip": "Flip",
+        "hand_back": "Hand back"
       },
       "nobody_yet": "Nobody's connected yet.",
       "started_video": "{name} turned their camera on",
@@ -7711,5 +7758,8 @@
       "device": "Device",
       "camera": "Camera"
     }
+  },
+  "chat_rail": {
+    "remove_conversation": "Remove from bar"
   }
 }

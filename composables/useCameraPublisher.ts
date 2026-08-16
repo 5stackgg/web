@@ -16,6 +16,11 @@ export type CameraPublishPhase =
   | "connected"
   | "error";
 
+// How long to wait for ICE after the answer is applied. Long enough for a relay
+// candidate over a slow mobile network, short enough that a player staring at a
+// spinner finds out it failed rather than assuming they are live.
+const ICE_TIMEOUT = 20_000;
+
 export function useCameraPublisher() {
   const phase = ref<CameraPublishPhase>("preview");
   const errorMessage = ref<string | null>(null);
@@ -23,6 +28,84 @@ export function useCameraPublisher() {
   let publishPc: RTCPeerConnection | null = null;
 
   const ice = useIceServers();
+
+  // Safari only grew RTCPeerConnection.connectionState in 15.4, and the phones
+  // this page is aimed at are exactly where an older engine turns up.
+  function connectionState(pc: RTCPeerConnection) {
+    return pc.connectionState ?? pc.iceConnectionState;
+  }
+
+  // The SDP answer only says MediaMTX accepted the offer. It is not proof that
+  // any media can flow -- with UDP blocked and no TURN relay to fall back on,
+  // ICE fails a moment later and nothing ever arrives. Waiting for it here is
+  // what stops the page reporting a live feed that does not exist.
+  function waitForIce(pc: RTCPeerConnection) {
+    return new Promise<void>((resolve, reject) => {
+      let timer: ReturnType<typeof setTimeout>;
+
+      const stop = () => {
+        clearTimeout(timer);
+        pc.removeEventListener("connectionstatechange", settle);
+        pc.removeEventListener("iceconnectionstatechange", settle);
+      };
+
+      function settle() {
+        const state = connectionState(pc);
+
+        // "completed" is iceConnectionState's version of connected, and the only
+        // state an older Safari settles on once it stops gathering.
+        if (state === "connected" || state === "completed") {
+          stop();
+          resolve();
+          return;
+        }
+
+        if (state === "failed" || state === "closed") {
+          stop();
+          reject(
+            new Error(
+              `the camera connected to the server but no media path could be established (ice ${state})`,
+            ),
+          );
+        }
+      }
+
+      timer = setTimeout(() => {
+        stop();
+        reject(
+          new Error(
+            `the camera connected to the server but no media path could be established (ice timed out after ${ICE_TIMEOUT / 1000}s)`,
+          ),
+        );
+      }, ICE_TIMEOUT);
+
+      pc.addEventListener("connectionstatechange", settle);
+      pc.addEventListener("iceconnectionstatechange", settle);
+      settle();
+    });
+  }
+
+  // A feed that drops mid-match is the case this whole page exists to catch, so
+  // it has to leave the "live" state on its own rather than waiting for someone
+  // to notice the tile went dark. Only terminal states: "disconnected" is
+  // routinely transient and recovers without anything being done about it.
+  function watchForDrop(pc: RTCPeerConnection) {
+    const onChange = () => {
+      if (publishPc !== pc) {
+        return;
+      }
+
+      const state = connectionState(pc);
+
+      if (state === "failed" || state === "closed") {
+        phase.value = "error";
+        errorMessage.value = `the camera feed dropped (ice ${state})`;
+      }
+    };
+
+    pc.addEventListener("connectionstatechange", onChange);
+    pc.addEventListener("iceconnectionstatechange", onChange);
+  }
 
   function senderFor(kind: "video" | "audio") {
     return (
@@ -95,11 +178,18 @@ export function useCameraPublisher() {
 
       await negotiateWebRtc(pc, url, credentials);
       await capVideoEncoder(pc);
+      await waitForIce(pc);
 
+      watchForDrop(pc);
       phase.value = "connected";
 
       return true;
     } catch (error) {
+      // Nothing is publishing, so the peer connection is only holding the
+      // camera's encoder open -- and a stale one left behind is what makes the
+      // retry after a failure fail the same way.
+      close();
+
       phase.value = "error";
       errorMessage.value =
         error instanceof Error ? error.message : String(error);
@@ -120,9 +210,21 @@ export function useCameraPublisher() {
       .catch(() => {});
   }
 
+  // Back to preview, not to nothing: this is what a consumer with a stop button
+  // calls, and leaving the phase on "connected" left the pill still reporting a
+  // live feed after the publish it named had been torn down.
+  //
+  // Cleared before the close so watchForDrop's own handler sees a peer
+  // connection that is no longer the current one and stays quiet -- a
+  // deliberate stop is not a dropped feed.
   function close() {
-    publishPc?.close();
+    const pc = publishPc;
+
     publishPc = null;
+    pc?.close();
+
+    phase.value = "preview";
+    errorMessage.value = null;
   }
 
   onScopeDispose(close);

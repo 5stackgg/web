@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import VoiceSettingsPanel from "~/components/voice/VoiceSettingsPanel.vue";
-import type { VoiceInputMode } from "~/composables/useVoiceChat";
+import type { VoiceInputMode } from "~/composables/useAudioSettings";
 
 defineProps<{
   open: boolean;

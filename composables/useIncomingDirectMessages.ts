@@ -15,8 +15,14 @@ import {
 export function useIncomingDirectMessages() {
   const authStore = useAuthStore();
   const { openTab, closeTab, setUnread, tabs } = useChatTabs();
+  const { topPosition } = useDirectConversationBar();
 
-  function ensureTab(roomId: string, peer: DirectMessagePeer, unread = 0) {
+  function ensureTab(
+    roomId: string,
+    peer: DirectMessagePeer,
+    unread = 0,
+    position?: number,
+  ) {
     openTab({
       id: directTabId(roomId),
       label: peer?.name ?? peer?.steam_id ?? roomId,
@@ -26,6 +32,9 @@ export function useIncomingDirectMessages() {
       pinned: false,
       avatarUrl: peer?.avatar_url,
       steamId: peer?.steam_id ? String(peer.steam_id) : undefined,
+      // A conversation the server has no place for yet goes above everything
+      // the player has arranged, which is where the server will put it too.
+      position: position ?? topPosition(),
       // Never steal focus. Someone messaging you must not yank you out of
       // whatever you were reading.
       activate: false,
@@ -36,9 +45,14 @@ export function useIncomingDirectMessages() {
     }
   }
 
-  // The server is the source of truth for what is unread. Which conversations
-  // are *open* is a local preference (useChatTabPersistence), so a closed one
-  // only comes back when it has something new to say.
+
+  // The server owns both what is unread and what is on the rail, so this is
+  // the whole of it. Both used to be split -- unread from here, the open set
+  // from localStorage -- which is why two devices showed different bars.
+  //
+  // Something unread but off the rail is still surfaced: a conversation only
+  // leaves the bar by being removed or pushed off it, and either way a message
+  // waiting in it is worth seeing.
   async function hydrate() {
     const steamId = authStore.me?.steam_id;
 
@@ -51,6 +65,8 @@ export function useIncomingDirectMessages() {
         conversations: Array<{
           roomId: string;
           unread: number;
+          isOpen: boolean;
+          position: number;
           peer: DirectMessagePeer;
         }>;
       }>(
@@ -59,15 +75,16 @@ export function useIncomingDirectMessages() {
       );
 
       for (const conversation of conversations) {
-        const isOpen = tabs.value.some(
-          (tab) => tab.id === directTabId(conversation.roomId),
-        );
-
-        if (!isOpen && conversation.unread <= 0) {
+        if (!conversation.isOpen && conversation.unread <= 0) {
           continue;
         }
 
-        ensureTab(conversation.roomId, conversation.peer, conversation.unread);
+        ensureTab(
+          conversation.roomId,
+          conversation.peer,
+          conversation.unread,
+          conversation.position,
+        );
       }
     } catch {
       // A conversation list that fails to load is not worth breaking the app

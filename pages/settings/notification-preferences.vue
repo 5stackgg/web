@@ -3,8 +3,9 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
-import { Bell, BellOff } from "lucide-vue-next";
+import { Bell, BellOff, MonitorDown } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import InstallPWA from "~/components/InstallPWA.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -52,21 +53,20 @@ const keyDescription = (key: string) => {
   return te(path) ? t(path) : "";
 };
 
-// Chrome, Edge, Firefox and Safari 16+ all support Web Push on desktop, so this
-// gates on capability rather than on platform. The iOS hint is the exception:
-// there, push only exists once the app is installed to the home screen.
-const isIosBrowser = computed(
-  () =>
-    typeof navigator !== "undefined" &&
-    /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-    !(window.navigator as any).standalone,
-);
+// Push is the installed app's feature, on every platform. iOS enforces that on
+// its own -- there is no PushManager in a Safari tab at all -- and everywhere
+// else it's our own call: a notification that arrives when "5stack isn't open"
+// should come from something the player actually installed.
+const { installed, canInstall } = usePwaInstall();
+
+const needsInstall = computed(() => !installed.value);
 
 const pushHint = computed(() => {
+  if (needsInstall.value) {
+    return t("pages.settings.notification_preferences.push.install_required");
+  }
   if (!push.supported.value) {
-    return isIosBrowser.value
-      ? t("pages.settings.notification_preferences.push.ios_install")
-      : t("pages.settings.notification_preferences.push.unsupported");
+    return t("pages.settings.notification_preferences.push.unsupported");
   }
   if (push.isDenied.value) {
     return t("pages.settings.notification_preferences.push.denied");
@@ -163,9 +163,19 @@ const resetQuietHours = async () => {
   }
 };
 
-const canTogglePush = computed(
-  () => push.supported.value && !push.isDenied.value && !push.busy.value,
-);
+const canTogglePush = computed(() => {
+  if (push.busy.value) {
+    return false;
+  }
+
+  // Turning it *off* always has to work. Someone who subscribed from a browser
+  // tab before this gate existed still needs a way back out of it.
+  if (push.subscribed.value) {
+    return true;
+  }
+
+  return installed.value && push.supported.value && !push.isDenied.value;
+});
 
 const handlePushToggle = async (enabled: boolean) => {
   if (enabled) {
@@ -275,6 +285,41 @@ const handlePreferenceToggle = async (
             @click.stop
             @update:model-value="handlePushToggle"
           />
+        </div>
+
+        <!-- The blocker, hung off the card it blocks. Dashed, and tethered to
+             the card by a dashed stub aligned to the icon column above, so it
+             reads as the thing standing in the way rather than a second
+             setting of its own. The stub is exactly the section's own gap. -->
+        <div
+          v-if="needsInstall"
+          class="relative flex items-start gap-3 rounded-lg border border-dashed border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.03)] p-4 before:absolute before:-top-3 before:left-9 before:h-3 before:border-l before:border-dashed before:border-[hsl(var(--tac-amber)/0.3)] before:content-['']"
+        >
+          <div
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[hsl(var(--tac-amber)/0.1)] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.25)]"
+          >
+            <MonitorDown class="h-5 w-5 text-[hsl(var(--tac-amber))]" />
+          </div>
+          <div class="space-y-3">
+            <p class="max-w-prose text-sm text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.notification_preferences.push.install.description",
+                )
+              }}
+            </p>
+            <InstallPWA v-if="canInstall" :is-menu-item="false" show-label />
+            <!-- Installed already, but being read from a plain browser tab:
+                 there's nothing left to install, only somewhere else to open
+                 it. -->
+            <p v-else class="max-w-prose text-xs text-muted-foreground/80">
+              {{
+                $t(
+                  "pages.settings.notification_preferences.push.install.open_app",
+                )
+              }}
+            </p>
+          </div>
         </div>
 
         <!-- Categories only exist once there is somewhere to send them. One

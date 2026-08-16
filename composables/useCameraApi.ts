@@ -4,12 +4,10 @@
 // that scanned the QR signs in like any other device, and the code itself is
 // only a way of typing a URL.
 
+import { deviceUrl } from "~/composables/useDeviceUrl";
+
 function apiUrl(path: string) {
   return `https://${useRuntimeConfig().public.apiDomain}/matches/camera/${path}`;
-}
-
-function webUrl(path: string) {
-  return `https://${useRuntimeConfig().public.webDomain}/${path}`;
 }
 
 export function cameraPlayerPath(matchId: string) {
@@ -20,7 +18,7 @@ export function cameraPlayerPath(matchId: string) {
 // resolve wherever the current tab happens to be served from. The popup on
 // this computer uses cameraPlayerPath instead.
 export function cameraPlayerJoinUrl(matchId: string) {
-  return webUrl(`matches/${matchId}/camera`);
+  return deviceUrl(`matches/${matchId}/camera`);
 }
 
 // Relative, like the setup popup: an organizer opening the grid is already on

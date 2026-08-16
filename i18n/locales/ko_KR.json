@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "채팅 설정",
           "description": "채팅 메시지 보관 기간을 설정합니다.",
-          "chat_message_ttl": "채팅 메시지 TTL(초)",
-          "chat_message_ttl_description": "채팅 메시지가 영구 삭제되기 전까지 보관되는 시간(초)입니다.",
           "updated": "채팅 설정이 업데이트되었습니다"
         },
         "news": {

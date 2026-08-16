@@ -1,70 +1,66 @@
 import { ref, watch } from "vue";
 import { useChatTabs } from "~/composables/useChatTabs";
-import { directTabId } from "~/composables/useDirectMessages";
 
-// Channels rebuild themselves from server state on every load -- conversations
-// do not. There is no "my open DMs" list on the server, and deliberately so:
-// closing a conversation is a local preference, not something the other party
-// should be told about. So the open set, and the room you were last reading,
-// live in localStorage scoped per account.
+// Which room you were last reading, and only that.
+//
+// The set of conversations on the rail used to live here too, in localStorage,
+// on the reasoning that closing one is a local preference the other party
+// should not be told about. That reasoning still holds -- but the row it now
+// lives in is already per (room, participant), so the server can hold it
+// without telling anyone anything, and two devices finally agree about what is
+// on the bar. See useDirectConversationBar.
+//
+// The last active room stays local on purpose: which conversation you had open
+// on your phone is not the one you want restored on your desktop.
 
-type StoredDirect = {
-  roomId: string;
-  label: string;
-  avatarUrl?: string;
-  steamId?: string;
-};
-
-type StoredChatTabs = {
-  direct: StoredDirect[];
-  activeTabId: string | null;
-};
-
-const EMPTY: StoredChatTabs = { direct: [], activeTabId: null };
+const ACTIVE_TAB_KEY = "5stack:chat-active-tab";
 
 function storageKey(steamId: string | number) {
-  return `5stack:chat-tabs:${steamId}`;
+  return `${ACTIVE_TAB_KEY}:${steamId}`;
 }
 
-export function readStoredChatTabs(
+function readStoredActiveTab(
   steamId: string | number | undefined | null,
-): StoredChatTabs {
+): string | null {
   if (!import.meta.client || !steamId) {
-    return EMPTY;
+    return null;
   }
 
   try {
-    const raw = window.localStorage.getItem(storageKey(steamId));
-
-    if (!raw) {
-      return EMPTY;
-    }
-
-    const parsed = JSON.parse(raw);
-
-    return {
-      direct: Array.isArray(parsed?.direct)
-        ? parsed.direct.filter(
-            (entry: any) => typeof entry?.roomId === "string",
-          )
-        : [],
-      activeTabId:
-        typeof parsed?.activeTabId === "string" ? parsed.activeTabId : null,
-    };
+    return window.localStorage.getItem(storageKey(steamId));
   } catch {
-    return EMPTY;
+    return null;
   }
 }
 
-function writeStoredChatTabs(steamId: string | number, state: StoredChatTabs) {
+// The open set used to live under `5stack:chat-tabs:<steamId>`. It is the
+// server's now, so every browser that ever ran the old build is holding a blob
+// nothing will read again.
+function dropLegacyChatTabs(steamId: string | number) {
   if (!import.meta.client) {
     return;
   }
 
   try {
-    window.localStorage.setItem(storageKey(steamId), JSON.stringify(state));
+    window.localStorage.removeItem(`5stack:chat-tabs:${steamId}`);
   } catch {
-    // A blocked or full localStorage costs the user their tab layout on the
+    // Nothing to do about a blocked localStorage, and nothing lost either.
+  }
+}
+
+function writeStoredActiveTab(steamId: string | number, tabId: string | null) {
+  if (!import.meta.client) {
+    return;
+  }
+
+  try {
+    if (tabId) {
+      window.localStorage.setItem(storageKey(steamId), tabId);
+    } else {
+      window.localStorage.removeItem(storageKey(steamId));
+    }
+  } catch {
+    // A blocked or full localStorage costs the user their last room on the
     // next reload and nothing else.
   }
 }
@@ -81,11 +77,10 @@ export function cancelChatTabRestore() {
   pendingActiveId.value = null;
 }
 
-// Mounted once, from the default layout, before useIncomingDirectMessages so
-// the stored conversations exist by the time the server's unread counts land.
+// Mounted once, from the default layout.
 export function useChatTabPersistence() {
   const authStore = useAuthStore();
-  const { tabs, activeTabId, openTab, setActiveTab } = useChatTabs();
+  const { tabs, activeTabId, setActiveTab } = useChatTabs();
 
   watch(
     () => authStore.me?.steam_id,
@@ -95,25 +90,8 @@ export function useChatTabPersistence() {
         return;
       }
 
-      const stored = readStoredChatTabs(steamId);
-
-      for (const conversation of stored.direct) {
-        openTab({
-          id: directTabId(conversation.roomId),
-          label: conversation.label || conversation.roomId,
-          instance: "direct",
-          type: "direct",
-          lobbyId: conversation.roomId,
-          pinned: false,
-          avatarUrl: conversation.avatarUrl,
-          steamId: conversation.steamId,
-          // Restoring the layout must not decide what you are looking at --
-          // that is what the stored active room is for.
-          activate: false,
-        });
-      }
-
-      pendingActiveId.value = stored.activeTabId;
+      dropLegacyChatTabs(steamId);
+      pendingActiveId.value = readStoredActiveTab(steamId);
     },
     { immediate: true },
   );
@@ -135,29 +113,18 @@ export function useChatTabPersistence() {
     { immediate: true, deep: true },
   );
 
-  watch(
-    [tabs, activeTabId],
-    () => {
-      const steamId = authStore.me?.steam_id;
+  watch([tabs, activeTabId], () => {
+    const steamId = authStore.me?.steam_id;
 
-      if (!steamId) {
-        return;
-      }
+    if (!steamId) {
+      return;
+    }
 
-      writeStoredChatTabs(steamId, {
-        direct: tabs.value
-          .filter((tab) => tab.type === "direct")
-          .map((tab) => ({
-            roomId: tab.lobbyId,
-            label: tab.label,
-            avatarUrl: tab.avatarUrl,
-            steamId: tab.steamId,
-          })),
-        // Hold the stored room until the restore actually lands, otherwise the
-        // first auto-selected channel overwrites it before it can be applied.
-        activeTabId: pendingActiveId.value ?? activeTabId.value,
-      });
-    },
-    { deep: true },
-  );
+    writeStoredActiveTab(
+      steamId,
+      // Hold the stored room until the restore actually lands, otherwise the
+      // first auto-selected channel overwrites it before it can be applied.
+      pendingActiveId.value ?? activeTabId.value,
+    );
+  });
 }

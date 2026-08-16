@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "Chattinställningar",
           "description": "Konfigurera hur länge chattmeddelanden sparas.",
-          "chat_message_ttl": "TTL för chattmeddelanden (sekunder)",
-          "chat_message_ttl_description": "Hur länge (i sekunder) chattmeddelanden sparas innan de tas bort permanent.",
           "updated": "Chattinställningarna har uppdaterats"
         },
         "news": {

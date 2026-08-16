@@ -16,6 +16,10 @@ export type CameraGestureOptions = {
   // False while there is no camera, or while the preview is hidden -- dragging a
   // stage the player cannot see is not a gesture, it is an accident.
   enabled: () => boolean;
+  // The stage fills rather than letterboxes, so the picture is larger than the
+  // box instead of smaller. Measuring a drag against the letterboxed size there
+  // would move the crop further than the finger did.
+  cover?: () => boolean;
 };
 
 export function useCameraGestures(options: CameraGestureOptions) {
@@ -66,7 +70,13 @@ export function useCameraGestures(options: CameraGestureOptions) {
       return { width: rect.width, height: rect.height };
     }
 
-    if (rect.width / rect.height > ratio) {
+    // Contain fits the picture inside the box and covers fills the box with it,
+    // which for these two branches is the same decision made the other way
+    // round: whichever edge binds under one is the one that overflows under the
+    // other.
+    const wider = rect.width / rect.height > ratio;
+
+    if (wider === !options.cover?.()) {
       return { width: rect.height * ratio, height: rect.height };
     }
 

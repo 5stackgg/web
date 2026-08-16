@@ -77,6 +77,20 @@ export function useVoiceSession() {
   const videoAllowed = computed(() => !!host.value?.videoAllowed.value);
   const videoOn = computed(() => !!host.value?.videoEnabled.value);
   const videoStarting = computed(() => !!host.value?.videoStarting.value);
+  // Live for this player, but not published from here -- the phone that scanned
+  // the QR. The control has to say so instead of offering to turn on a camera
+  // that is already on, which would take the path back off the phone.
+  const videoElsewhere = computed(() => !!host.value?.cameraElsewhere.value);
+  // The microphone is being carried by another device. Mute here would be a
+  // control over something this client is not sending, so the surfaces show it
+  // rather than offering one.
+  const micElsewhere = computed(() => !!host.value?.micElsewhere.value);
+
+  // Pull it back to this device. The camera equivalent is just turning the
+  // camera on: publishing displaces whatever held the path.
+  function reclaimMic() {
+    return host.value?.reclaimMic();
+  }
   const peerVideo = computed(
     () => host.value?.peerVideo.value ?? new Map<string, MediaStream>(),
   );
@@ -163,6 +177,9 @@ export function useVoiceSession() {
     videoAllowed,
     videoOn,
     videoStarting,
+    videoElsewhere,
+    micElsewhere,
+    reclaimMic,
     peerVideo,
     localVideo,
     toggleVideo,

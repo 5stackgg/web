@@ -228,7 +228,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           class="relative grid grid-cols-3 rounded-sm bg-background/60 p-[2px]"
         >
           <span
-            class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-[2px] bg-muted/70 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-[2px] bg-muted/70 transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
             :style="{ transform: `translateX(${viewFilterIndex * 100}%)` }"
           ></span>
           <button

@@ -245,6 +245,7 @@ function onPaste(event: ClipboardEvent) {
         <textarea
           ref="textarea"
           :value="modelValue"
+          autocomplete="off"
           class="h-[60vh] min-h-[24rem] w-full resize-y rounded-md border border-input bg-background p-3 font-mono text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
           @paste="onPaste"

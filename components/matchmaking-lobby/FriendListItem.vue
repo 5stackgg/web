@@ -199,6 +199,7 @@ const amberHover =
               :show-online="false"
               :linkable="true"
               :truncate-name="true"
+              :context-menu="false"
             />
             <div class="flex shrink-0 items-center gap-0.5">
               <!-- Invite to lobby — any invitable player except incoming

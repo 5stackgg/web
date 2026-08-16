@@ -12,8 +12,13 @@ function apiUrl(path: string) {
   return `https://${useRuntimeConfig().public.apiDomain}/voice/${path}`;
 }
 
-export function voicePublishUrl(lobbyId: string) {
-  return apiUrl(`${lobbyId}/whip`);
+// `remote` marks a publish coming from the phone rather than the machine the
+// player is at. Nothing about the request could tell them apart on its own --
+// same session, same account, same endpoint -- and it is what lets the panel say
+// which device is carrying the call instead of guessing from a peer connection
+// that is never told it has been displaced.
+export function voicePublishUrl(lobbyId: string, remote = false) {
+  return apiUrl(`${lobbyId}/whip${remote ? "?device=remote" : ""}`);
 }
 
 export function voiceSubscribeUrl(lobbyId: string, steamId: string) {
@@ -28,8 +33,8 @@ export function voiceLeaveUrl(lobbyId: string) {
 // above: turning it on or off would otherwise renegotiate the audio publish and
 // force every other member to re-subscribe, which is a drop-out in the middle of
 // a call for a change that has nothing to do with the microphone.
-export function voiceCamPublishUrl(lobbyId: string) {
-  return apiUrl(`${lobbyId}/cam/whip`);
+export function voiceCamPublishUrl(lobbyId: string, remote = false) {
+  return apiUrl(`${lobbyId}/cam/whip${remote ? "?device=remote" : ""}`);
 }
 
 export function voiceCamSubscribeUrl(lobbyId: string, steamId: string) {
@@ -38,6 +43,15 @@ export function voiceCamSubscribeUrl(lobbyId: string, steamId: string) {
 
 export function voiceCamStopUrl(lobbyId: string) {
   return apiUrl(`${lobbyId}/cam/stop`);
+}
+
+// Drops the microphone publish without leaving the channel -- a phone handing it
+// back to the device it took it from. Not `leave`, which gives up membership
+// too, and not merely closing the peer connection: the monitor would take ten
+// seconds to notice, and the device waiting to take the path back cannot do it
+// until the path is seen to be free.
+export function voiceMicStopUrl(lobbyId: string) {
+  return apiUrl(`${lobbyId}/mic/stop`);
 }
 
 export type VoiceParticipant = {
@@ -54,6 +68,11 @@ export type VoiceParticipant = {
   // Publishing a camera as well. Independent of `connected`: being in the call
   // and being on camera are separate choices, and either can be true alone.
   video: boolean;
+  // Which device is carrying each half. Present only on your own entry -- the
+  // API does not tell the rest of the channel what anyone is holding their call
+  // on. Set by whoever published last, so it is a fact rather than a deduction.
+  micRemote?: boolean;
+  camRemote?: boolean;
 };
 
 export async function fetchVoiceParticipants(lobbyId: string) {

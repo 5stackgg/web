@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onScopeDispose } from "vue";
+import { ref, computed, watch, onScopeDispose } from "vue";
 import { LucideEyeOff, LucideRotateCcw } from "lucide-vue-next";
 import { useCameraReframe } from "~/composables/useCameraReframe";
 import { useCameraGestures } from "~/composables/useCameraGestures";
@@ -16,6 +16,16 @@ const props = defineProps<{
   // False while the camera is still opening or has failed -- there is nothing
   // to reframe, and a drag on the error state is an accident.
   interactive: boolean;
+  // Fill the stage rather than letterbox inside it, and drop the frame around
+  // it. For a surface where the video *is* the screen: a phone held in portrait
+  // gets a landscape track from its own front camera whatever it is asked for,
+  // and contained inside a portrait stage that is more black than picture.
+  //
+  // What is published is unchanged -- the crop keeps the sensor's aspect either
+  // way -- so this trades showing every pixel for filling the screen, which is
+  // the right trade only where the player is framing themselves rather than
+  // being watched.
+  bleed?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -66,7 +76,10 @@ const gestures = useCameraGestures({
   canvasEl,
   reframe,
   enabled: () => !!props.pipeline.stream() && props.previewVisible,
+  cover: () => !!props.bleed,
 });
+
+const fit = computed(() => (props.bleed ? "object-cover" : "object-contain"));
 
 watch([() => props.previewVisible, reframe.cropping], syncPreview);
 
@@ -95,20 +108,24 @@ defineExpose({
 </script>
 
 <template>
-  <!-- The stage is reserved from the device class, never from the track:
-       dimensions only arrive on loadedmetadata and the page must not move
-       when they do. The frame is contained inside it, so it is letterboxed
-       at its true ratio and never cropped -- cropping here is only ever the
-       deliberate reframe. -->
+  <!-- Sized by the parent, never by the track: dimensions only arrive on
+       loadedmetadata and the page must not move when they do. It is also why
+       there is no aspect ratio here -- one reserved from the device class is
+       still a height the stage demands, and on a phone that demand is what
+       pushed the connect button off the bottom of the screen. The frame is
+       contained inside whatever box it gets, so it is letterboxed at its true
+       ratio and never cropped -- cropping here is only ever the deliberate
+       reframe. -->
   <div
     ref="stageEl"
-    class="relative w-full overflow-hidden rounded-xl border bg-black"
-    :class="pipeline.coarsePointer.value ? 'aspect-[3/4]' : 'aspect-video'"
+    class="relative w-full overflow-hidden bg-black"
+    :class="bleed ? '' : 'rounded-xl border'"
   >
     <video
       v-show="previewVisible && !reframe.cropping.value"
       ref="previewEl"
-      class="absolute inset-0 h-full w-full object-contain"
+      class="absolute inset-0 h-full w-full"
+      :class="fit"
       autoplay
       playsinline
       muted
@@ -123,7 +140,7 @@ defineExpose({
       aria-hidden="true"
       :class="
         previewVisible && reframe.cropping.value
-          ? 'absolute inset-0 h-full w-full object-contain'
+          ? `absolute inset-0 h-full w-full ${fit}`
           : 'pointer-events-none absolute left-0 top-0 h-px w-px opacity-0'
       "
     ></canvas>
@@ -193,6 +210,16 @@ defineExpose({
       <LucideRotateCcw class="h-2.5 w-2.5" />
       {{ $t("camera.reframe_reset") }}
     </button>
+
+    <!-- Sits on the frame rather than under it: as a row in the page stack this
+         cost a line of vertical space on the one screen that has none to give,
+         to say something that only means anything while looking at the video. -->
+    <p
+      v-if="!bleed && previewVisible && interactive && !reframe.cropping.value"
+      class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2 pt-6 text-center font-mono text-[0.55rem] uppercase tracking-[0.18em] text-white/60"
+    >
+      {{ $t("camera.reframe_gesture") }}
+    </p>
 
     <slot name="overlay" />
 

@@ -87,6 +87,7 @@ watch(
               <input
                 v-model="search"
                 type="search"
+                autocomplete="off"
                 :placeholder="$t('pages.awards.search_placeholder')"
                 :aria-label="$t('pages.awards.search_placeholder')"
                 class="h-8 w-[11rem] rounded-md border border-border bg-muted/30 pl-7 pr-2 font-mono text-[0.68rem] tracking-[0.06em] text-foreground placeholder:text-muted-foreground focus:border-[hsl(var(--tac-amber)/0.55)] focus:outline-none [&::-webkit-search-cancel-button]:hidden"

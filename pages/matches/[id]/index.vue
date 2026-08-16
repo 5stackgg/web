@@ -186,7 +186,7 @@ const vsBaseClasses =
          delay lets the modal finish fading before the page starts moving. -->
     <div
       v-if="cameraGateActive"
-      class="grid transition-[grid-template-rows] duration-[320ms] ease-out motion-reduce:duration-[1ms]"
+      class="grid transition-[grid-template-rows] [transition-duration:320ms] ease-out motion-reduce:![transition-duration:1ms]"
       :class="
         cameraOverlayDismissed
           ? 'grid-rows-[1fr] delay-150 motion-reduce:delay-0'
@@ -763,10 +763,30 @@ import { useMatchContext } from "~/composables/useMatchContext";
 // the template resolves it -- the template rendered the function's source into
 // the team lobby id, which reached Postgres as a uuid and killed chat.
 import { myLineupId as resolveMyLineupId } from "~/utilities/matchTeamLobby";
+import { setPageChatFocus } from "~/composables/useChatPresence";
+import { chatThreadKey } from "~/utilities/chatThread";
+import socket from "~/web-sockets/Socket";
 
 export default {
   unmounted() {
     useMatchContext().value = null;
+    setPageChatFocus(null);
+  },
+  watch: {
+    // The inline chat on this page is a real room being read, and until now it
+    // told the server nothing -- so reading a match chat here left the badge up
+    // everywhere else and kept the phone buzzing for messages already on
+    // screen.
+    chatThread: {
+      immediate: true,
+      handler(thread, previous) {
+        setPageChatFocus(thread ?? null);
+
+        if (thread && thread !== previous) {
+          socket.markLobbyRead("match", this.match.id);
+        }
+      },
+    },
   },
   data() {
     return {
@@ -1166,6 +1186,13 @@ export default {
     // Shared with the sidebar and the pop-out, which offer the same team room.
     myLineupId() {
       return resolveMyLineupId(this.match, useAuthStore().me?.steam_id);
+    },
+    // Null unless the inline chat is actually rendered, so simply being on the
+    // page is not mistaken for reading it.
+    chatThread() {
+      return this.match && this.canJoinLobby
+        ? chatThreadKey("match", this.match.id)
+        : null;
     },
     // Whether this match asks this viewer for a camera at all. Deliberately
     // says nothing about whether one is currently live: the overlay stays

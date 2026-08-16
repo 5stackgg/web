@@ -67,6 +67,7 @@ const {
   realDevices: realCameras,
   deviceId: cameraDeviceId,
   canFlip,
+  live: cameraLive,
   pending: mediaPending,
   errorKind: mediaErrorKind,
 } = camera;
@@ -258,26 +259,48 @@ onMounted(() => {
        explicitly rather than leaving this page on flat black. -->
   <TopoBackground />
 
+  <!-- A phone screen, not a document: the height is fixed to the viewport and
+       the stage absorbs whatever is left over, so the connect button is pinned
+       in view at every size instead of being pushed past the fold. `dvh` rather
+       than `vh` because mobile Safari's `vh` is the viewport with the browser
+       chrome already retracted -- sizing to it puts the last hundred pixels
+       under the address bar. -->
   <div
-    class="relative z-10 flex min-h-screen flex-col overflow-hidden text-foreground"
+    class="relative z-10 mx-auto flex h-[100dvh] w-full max-w-2xl flex-col text-foreground"
   >
-    <main
-      class="relative mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-3 px-4 py-6"
-    >
+    <header class="shrink-0 px-4 pb-3 pt-[max(1rem,env(safe-area-inset-top))]">
       <CameraStatusBar
         :phase="phase"
         :preview-visible="previewVisible"
         @toggle-preview="togglePreview"
       />
+    </header>
 
+    <main class="flex min-h-0 flex-1 flex-col gap-3 px-4">
       <CameraStage
         ref="stageRef"
+        class="min-h-[9rem] flex-1"
         :pipeline="camera"
         :preview-visible="previewVisible"
         :interactive="!mediaErrorKind && !mediaPending"
         @output-track="publisher.replaceVideo"
       >
         <template #overlay>
+          <!-- On the frame for the same reason the reframe hint is: this is the
+               control you reach for while looking at yourself, and as a row it
+               was a full button's worth of height on a screen that could not
+               afford one. -->
+          <button
+            v-if="canFlip"
+            type="button"
+            class="absolute left-2 top-2 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/80 backdrop-blur-sm transition-colors hover:border-white/40 hover:text-white"
+            :aria-label="$t('camera.flip')"
+            :title="$t('camera.flip')"
+            @click="flipCamera"
+          >
+            <LucideSwitchCamera class="h-4 w-4" />
+          </button>
+
           <CameraTalkback
             :el="talkback.talkEl"
             :talking="talking"
@@ -293,45 +316,46 @@ onMounted(() => {
         </template>
       </CameraStage>
 
-      <p
-        class="text-center font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground/70"
+      <!-- The one part that may scroll. On a short screen with every row
+           present these give way before the video does, and the action bar
+           below never moves. -->
+      <div
+        class="flex min-h-0 flex-col gap-2 overflow-y-auto overscroll-contain"
       >
-        {{ $t("camera.reframe_gesture") }}
-      </p>
+        <DeviceSelect
+          v-if="realCameras.length > 1"
+          :icon="LucideVideo"
+          :devices="cameras"
+          :model-value="cameraDeviceId"
+          :active="true"
+          @update:model-value="setCamera"
+        />
 
-      <DeviceSelect
-        v-if="realCameras.length > 1"
-        :icon="LucideVideo"
-        :devices="cameras"
-        :model-value="cameraDeviceId"
-        :active="true"
-        @update:model-value="setCamera"
-      />
+        <CameraMicRow
+          v-if="!mediaErrorKind"
+          :pipeline="mic"
+          @closed="syncMetering"
+        />
 
-      <Button
-        v-if="canFlip"
-        class="w-full"
-        variant="outline"
-        size="sm"
-        @click="flipCamera"
-      >
-        <LucideSwitchCamera class="h-3.5 w-3.5" />
-        {{ $t("camera.flip") }}
-      </Button>
+        <CameraTeamVoiceRow
+          v-if="myLineupId && !mediaErrorKind && voiceEnabled"
+          :pipeline="mic"
+          :lineup-id="myLineupId"
+        />
+      </div>
+    </main>
 
-      <CameraMicRow
-        v-if="!mediaErrorKind"
-        :pipeline="mic"
-        @closed="syncMetering"
-      />
-
-      <CameraTeamVoiceRow
-        v-if="myLineupId && !mediaErrorKind && voiceEnabled"
-        :pipeline="mic"
-        :lineup-id="myLineupId"
-      />
-
+    <footer
+      class="shrink-0 border-t border-border/60 bg-background/80 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur"
+    >
       <template v-if="phase !== 'connected'">
+        <p
+          v-if="phase === 'error' && errorMessage"
+          class="mb-2 break-words text-center font-mono text-[11px] leading-relaxed text-destructive"
+        >
+          {{ errorMessage }}
+        </p>
+
         <Button
           class="w-full"
           size="lg"
@@ -344,15 +368,13 @@ onMounted(() => {
           {{ $t("camera.connect") }}
         </Button>
 
+        <!-- Only until the browser has actually asked. Afterwards it is three
+             lines of stale instruction on the screen with the least room to
+             spare -- on a 553px phone this block and the one below it were
+             costing more height than the video they sit under. -->
         <p
-          v-if="phase === 'error' && errorMessage"
-          class="break-words text-center font-mono text-[11px] leading-relaxed text-destructive"
-        >
-          {{ errorMessage }}
-        </p>
-
-        <p
-          class="flex items-start gap-2 text-[11px] leading-snug text-muted-foreground/70"
+          v-if="!cameraLive"
+          class="mt-2 flex items-start gap-2 text-[11px] leading-snug text-muted-foreground/70"
         >
           <LucideShieldCheck class="mt-px h-3.5 w-3.5 shrink-0" />
           {{ $t("camera.permission_hint") }}
@@ -360,12 +382,13 @@ onMounted(() => {
       </template>
 
       <p
-        class="border-t pt-3 text-center text-[11px] leading-relaxed text-muted-foreground/70"
+        class="text-center text-[11px] leading-snug text-muted-foreground/70"
+        :class="phase !== 'connected' && 'mt-2 border-t pt-2'"
       >
         {{
           allowTeammates ? $t("camera.reason_teammates") : $t("camera.reason")
         }}
       </p>
-    </main>
+    </footer>
   </div>
 </template>

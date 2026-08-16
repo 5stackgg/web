@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import QRCode from "qrcode";
+import { deviceUrl } from "~/composables/useDeviceUrl";
 
 // A shortcut for typing a URL onto a phone, and nothing more.
 //
@@ -13,10 +14,7 @@ const props = defineProps<{ channelId: string }>();
 const open = ref(false);
 const dataUrl = ref<string | null>(null);
 
-const joinUrl = computed(
-  () =>
-    `https://${useRuntimeConfig().public.webDomain}/call/${props.channelId}`,
-);
+const joinUrl = computed(() => deviceUrl(`call/${props.channelId}`));
 
 watch(
   [open, joinUrl],

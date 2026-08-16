@@ -224,6 +224,7 @@ const { height: viewportHeight } = useVisualViewport();
               type="search"
               inputmode="search"
               enterkeyhint="search"
+              autocomplete="off"
               class="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-[hsl(var(--tac-amber)/0.6)] focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.4)] [&::-webkit-search-cancel-button]:appearance-none"
               @input="
                 (e: Event) =>

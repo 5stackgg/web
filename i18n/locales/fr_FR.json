@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "Paramètres du chat",
           "description": "Configure la durée de conservation des messages de chat.",
-          "chat_message_ttl": "TTL des messages de chat (secondes)",
-          "chat_message_ttl_description": "Durée (en secondes) pendant laquelle les messages de chat sont conservés avant suppression définitive.",
           "updated": "Paramètres du chat mis à jour"
         },
         "news": {

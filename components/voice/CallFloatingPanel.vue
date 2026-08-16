@@ -90,8 +90,8 @@ onScopeDispose(onUp);
 <template>
   <Teleport to="body">
     <Transition
-      enter-active-class="transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:!duration-[1ms]"
-      leave-active-class="transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:!duration-[1ms]"
+      enter-active-class="transition-[opacity,transform] duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      leave-active-class="transition-[opacity,transform] duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
       enter-from-class="opacity-0 translate-y-3 scale-95"
       leave-to-class="opacity-0 translate-y-2 scale-95"
       appear

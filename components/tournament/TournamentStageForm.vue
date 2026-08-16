@@ -470,7 +470,7 @@ import { $ } from "~/generated/zeus";
             </span>
             <Button type="button" variant="ghost" size="icon" class="h-8 w-8">
               <ChevronDown
-                class="h-4 w-4 transition-transform duration-[240ms] motion-reduce:!duration-[1ms]"
+                class="h-4 w-4 transition-transform [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
                 :class="showAdvancedSettings ? 'rotate-180' : ''"
               />
               <span class="sr-only">{{

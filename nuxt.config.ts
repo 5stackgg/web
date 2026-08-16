@@ -16,9 +16,13 @@ export default defineNuxtConfig({
 
   // Pin the shadcn `cn` helper to a real committed module. shadcn-nuxt
   // otherwise aliases @/lib/utils to a virtual template that Vite can drop
-  // during dep re-optimization → runtime "cn is not a function".
+  // during dep re-optimization → runtime "cn is not a function". It lives at
+  // lib/utils/index.ts rather than lib/utils.ts so the module stops warning
+  // that its own generated file can be removed.
   alias: {
-    "@/lib/utils": fileURLToPath(new URL("./lib/utils.ts", import.meta.url)),
+    "@/lib/utils": fileURLToPath(
+      new URL("./lib/utils/index.ts", import.meta.url),
+    ),
   },
 
   app: {
@@ -177,6 +181,12 @@ export default defineNuxtConfig({
       apiDomain: "",
       wsDomain: "",
       webDomain: "",
+      // Where to tell *another device* to open the panel -- the camera QR, the
+      // call QR. The same as webDomain in a real deployment, and only different
+      // behind a dev tunnel, where the app is served somewhere the API's own
+      // web-domain routes (/auth, /discord-invite) are not. Blank falls back to
+      // webDomain; modules/dev-tunnel.ts is the only thing that sets it.
+      deviceDomain: "",
       demosDomain: "",
       relayDomain: "",
       // CDN base for 3D-replay collision meshes (.tri). Pin the awpy build tag so
@@ -207,7 +217,7 @@ export default defineNuxtConfig({
       // Adds `push` / `notificationclick` handlers to the generated service
       // worker without giving up the default generateSW strategy for a custom
       // SW file. Served unhashed from public/, so bump the ?v= on any change.
-      importScripts: ["/sw-push.js?v=2"],
+      importScripts: ["/sw-push.js?v=3"],
       cleanupOutdatedCaches: true,
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
       // Do not precache every Nuxt chunk during service-worker install.

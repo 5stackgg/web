@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, onBeforeUnmount } from "vue";
-import { Mic, MicOff, PhoneOff, Video, VideoOff, Volume2 } from "lucide-vue-next";
+import {
+  Mic,
+  MicOff,
+  PhoneOff,
+  Video,
+  VideoOff,
+  Volume2,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   AlertDialog,
@@ -13,6 +20,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import DeviceBadge from "~/components/voice/DeviceBadge.vue";
 import VoiceSettingsButton from "~/components/voice/VoiceSettingsButton.vue";
 import { useVoiceChat } from "~/composables/useVoiceChat";
 import { useVoiceSession } from "~/composables/useVoiceSession";
@@ -63,8 +71,7 @@ const local =
     {
       pipeline: props.pipeline,
       kind: () => "match" as const,
-      videoAllowed: () =>
-        useApplicationSettingsStore().videoChatMatchesEnabled,
+      videoAllowed: () => useApplicationSettingsStore().videoChatMatchesEnabled,
     },
   );
 
@@ -108,7 +115,21 @@ const videoOn = computed(() =>
 const videoStarting = computed(() =>
   local ? local.videoStarting.value : session.videoStarting.value,
 );
+// Published for this player, but from the phone that scanned the QR rather than
+// from here. Toggling would take the path straight back off it, so the control
+// stops being a toggle and starts being a status.
+const videoElsewhere = computed(() =>
+  local ? local.cameraElsewhere.value : session.videoElsewhere.value,
+);
+// The microphone moved to the phone. Mute here would be a control over audio
+// this client is not sending, so the key reports instead of toggling.
+const micElsewhere = computed(() =>
+  local ? local.micElsewhere.value : session.micElsewhere.value,
+);
 
+// Badged, this is "bring it back here". Publishing from this client displaces
+// whatever held the path, which is the same move the phone made to take it --
+// so turning the camera on is all "take it back" has ever needed to be.
 function toggleVideo() {
   void (local ? local.toggleVideo() : session.toggleVideo());
 }
@@ -134,7 +155,11 @@ const error = computed(() =>
   local ? local.error.value : owns.value ? session.error.value : null,
 );
 const errorDetail = computed(() =>
-  local ? local.errorDetail.value : owns.value ? session.errorDetail.value : null,
+  local
+    ? local.errorDetail.value
+    : owns.value
+      ? session.errorDetail.value
+      : null,
 );
 const unsupported = computed(() =>
   local ? local.unsupported.value : session.unsupported.value,
@@ -194,6 +219,13 @@ async function leave() {
 }
 
 function toggleMute() {
+  // Muting a microphone this client is not sending would do nothing anyone
+  // could hear. Badged, the key means take it back instead.
+  if (micElsewhere.value) {
+    void (local ? local.reclaimMic() : session.reclaimMic());
+    return;
+  }
+
   if (local && local.connected.value) {
     local.toggleMute();
     return;
@@ -275,6 +307,10 @@ const inlineAction = computed(() => {
     return t("voice.tooltip.join");
   }
 
+  if (micElsewhere.value) {
+    return t("voice.call.take_mic_back");
+  }
+
   return muted.value ? t("voice.tooltip.unmute") : t("voice.tooltip.mute");
 });
 
@@ -291,6 +327,10 @@ const inlineStatus = computed(() => {
 
   if (!connected.value) {
     return t("voice.tooltip.join_hint");
+  }
+
+  if (micElsewhere.value) {
+    return t("voice.call.take_mic_back");
   }
 
   if (muted.value) {
@@ -352,7 +392,7 @@ onBeforeUnmount(() => {
           <Button
             size="xs"
             variant="ghost"
-            class="h-6 w-6 rounded-full p-0 transition-colors [&_svg]:size-3.5"
+            class="relative h-6 w-6 rounded-full p-0 transition-colors [&_svg]:size-3.5"
             :class="inlineMicTone"
             :disabled="!!unsupported"
             :loading="connecting"
@@ -361,6 +401,7 @@ onBeforeUnmount(() => {
           >
             <MicOff v-if="connected && muted" />
             <Mic v-else />
+            <DeviceBadge :on="connected && micElsewhere" />
           </Button>
         </template>
         <p class="font-medium">{{ inlineAction }}</p>
@@ -394,27 +435,32 @@ onBeforeUnmount(() => {
           <Button
             size="xs"
             variant="ghost"
-            class="h-6 w-6 rounded-full p-0 transition-colors [&_svg]:size-3.5"
+            class="relative h-6 w-6 rounded-full p-0 transition-colors [&_svg]:size-3.5"
             :class="
-              videoOn
+              videoOn || videoElsewhere
                 ? 'text-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]'
                 : 'text-muted-foreground hover:text-foreground'
             "
             :loading="videoStarting"
             :aria-label="
-              videoOn
-                ? $t('voice.call.stop_camera')
-                : $t('voice.call.start_camera')
+              videoElsewhere
+                ? $t('voice.call.take_camera_back')
+                : videoOn
+                  ? $t('voice.call.stop_camera')
+                  : $t('voice.call.start_camera')
             "
             @click="toggleVideo"
           >
             <component :is="videoOn ? Video : VideoOff" />
+            <DeviceBadge :on="videoElsewhere" />
           </Button>
         </template>
         {{
-          videoOn
-            ? $t("voice.call.stop_camera")
-            : $t("voice.call.start_camera")
+          videoElsewhere
+            ? $t("voice.call.take_camera_back")
+            : videoOn
+              ? $t("voice.call.stop_camera")
+              : $t("voice.call.start_camera")
         }}
       </FiveStackToolTip>
 

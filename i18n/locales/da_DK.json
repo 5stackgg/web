@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "Chatindstillinger",
           "description": "Angiv hvor længe chatbeskeder gemmes.",
-          "chat_message_ttl": "TTL for chatbeskeder (sekunder)",
-          "chat_message_ttl_description": "Hvor længe (i sekunder) chatbeskeder gemmes, før de slettes permanent.",
           "updated": "Chatindstillinger opdateret"
         },
         "news": {

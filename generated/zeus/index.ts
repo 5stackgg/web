@@ -4176,7 +4176,9 @@ count?: [{	columns?: Array<ValueTypes["db_backups_select_column"]> | undefined |
 }>;
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: AliasType<{
+	is_open?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -4204,6 +4206,7 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 }>;
 	/** aggregate avg on columns */
 ["direct_conversations_avg_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -4212,7 +4215,9 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 	_and?: Array<ValueTypes["direct_conversations_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["direct_conversations_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["direct_conversations_bool_exp"]> | undefined | null | Variable<any, string>,
+	is_open?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	position?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	room_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -4220,17 +4225,21 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 ["direct_conversations_constraint"]:direct_conversations_constraint;
 	/** input type for incrementing numeric columns in table "direct_conversations" */
 ["direct_conversations_inc_input"]: {
+	position?: number | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
+	is_open?: boolean | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	position?: number | undefined | null | Variable<any, string>,
 	room_id?: string | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: AliasType<{
 	last_message_at?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -4238,6 +4247,7 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: AliasType<{
 	last_message_at?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -4258,7 +4268,9 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
+	is_open?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	position?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	room_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -4271,22 +4283,27 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 ["direct_conversations_select_column"]:direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
+	is_open?: boolean | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	position?: number | undefined | null | Variable<any, string>,
 	room_id?: string | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["direct_conversations_stddev_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
 ["direct_conversations_stddev_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
 ["direct_conversations_stddev_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -4299,12 +4316,15 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
+	is_open?: boolean | undefined | null | Variable<any, string>,
 	last_message_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	position?: number | undefined | null | Variable<any, string>,
 	room_id?: string | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["direct_conversations_sum_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -4320,16 +4340,19 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 };
 	/** aggregate var_pop on columns */
 ["direct_conversations_var_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
 ["direct_conversations_var_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
 ["direct_conversations_variance_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -4340,6 +4363,7 @@ count?: [{	columns?: Array<ValueTypes["direct_conversations_select_column"]> | u
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "direct_messages" */
@@ -4366,6 +4390,7 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to filter rows from the table "direct_messages". All fields are combined with a logical 'AND'. */
@@ -4377,13 +4402,15 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	from_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	room_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+	room_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	seq?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "direct_messages" */
 ["direct_messages_constraint"]:direct_messages_constraint;
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
-	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	seq?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
@@ -4391,7 +4418,8 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
-	room_id?: string | undefined | null | Variable<any, string>
+	room_id?: string | undefined | null | Variable<any, string>,
+	seq?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["direct_messages_max_fields"]: AliasType<{
@@ -4400,6 +4428,7 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -4409,6 +4438,7 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "direct_messages" */
@@ -4431,7 +4461,8 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	from_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	room_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	room_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seq?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: direct_messages */
 ["direct_messages_pk_columns_input"]: {
@@ -4445,21 +4476,25 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
-	room_id?: string | undefined | null | Variable<any, string>
+	room_id?: string | undefined | null | Variable<any, string>,
+	seq?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["direct_messages_stddev_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
 ["direct_messages_stddev_pop_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
 ["direct_messages_stddev_samp_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Streaming cursor of the table "direct_messages" */
@@ -4475,11 +4510,13 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	from_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	message?: string | undefined | null | Variable<any, string>,
-	room_id?: string | undefined | null | Variable<any, string>
+	room_id?: string | undefined | null | Variable<any, string>,
+	seq?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["direct_messages_sum_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** update columns of table "direct_messages" */
@@ -4495,16 +4532,19 @@ count?: [{	columns?: Array<ValueTypes["direct_messages_select_column"]> | undefi
 	/** aggregate var_pop on columns */
 ["direct_messages_var_pop_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
 ["direct_messages_var_samp_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
 ["direct_messages_variance_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "draft_game_picks" */
@@ -70451,7 +70491,9 @@ count?: [{	columns?: Array<ResolverInputTypes["db_backups_select_column"]> | und
 }>;
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: AliasType<{
+	is_open?:boolean | `@${string}`,
 	last_message_at?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -70479,6 +70521,7 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 }>;
 	/** aggregate avg on columns */
 ["direct_conversations_avg_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -70487,7 +70530,9 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 	_and?: Array<ResolverInputTypes["direct_conversations_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["direct_conversations_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["direct_conversations_bool_exp"]> | undefined | null,
+	is_open?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	position?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	room_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
 };
@@ -70495,17 +70540,21 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 ["direct_conversations_constraint"]:direct_conversations_constraint;
 	/** input type for incrementing numeric columns in table "direct_conversations" */
 ["direct_conversations_inc_input"]: {
+	position?: number | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
+	is_open?: boolean | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: AliasType<{
 	last_message_at?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -70513,6 +70562,7 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: AliasType<{
 	last_message_at?:boolean | `@${string}`,
+	position?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -70533,7 +70583,9 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
+	is_open?: ResolverInputTypes["order_by"] | undefined | null,
 	last_message_at?: ResolverInputTypes["order_by"] | undefined | null,
+	position?: ResolverInputTypes["order_by"] | undefined | null,
 	room_id?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -70546,22 +70598,27 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 ["direct_conversations_select_column"]:direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
+	is_open?: boolean | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["direct_conversations_stddev_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
 ["direct_conversations_stddev_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
 ["direct_conversations_stddev_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -70574,12 +70631,15 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
+	is_open?: boolean | undefined | null,
 	last_message_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["direct_conversations_sum_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -70595,16 +70655,19 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 };
 	/** aggregate var_pop on columns */
 ["direct_conversations_var_pop_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
 ["direct_conversations_var_samp_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
 ["direct_conversations_variance_fields"]: AliasType<{
+	position?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -70615,6 +70678,7 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_conversations_select_colum
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "direct_messages" */
@@ -70641,6 +70705,7 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to filter rows from the table "direct_messages". All fields are combined with a logical 'AND'. */
@@ -70652,13 +70717,15 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	from_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	room_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+	room_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	seq?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "direct_messages" */
 ["direct_messages_constraint"]:direct_messages_constraint;
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
-	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	seq?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
@@ -70666,7 +70733,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate max on columns */
 ["direct_messages_max_fields"]: AliasType<{
@@ -70675,6 +70743,7 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -70684,6 +70753,7 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	id?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
 	room_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "direct_messages" */
@@ -70706,7 +70776,8 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	from_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	message?: ResolverInputTypes["order_by"] | undefined | null,
-	room_id?: ResolverInputTypes["order_by"] | undefined | null
+	room_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seq?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: direct_messages */
 ["direct_messages_pk_columns_input"]: {
@@ -70720,21 +70791,25 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["direct_messages_stddev_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
 ["direct_messages_stddev_pop_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
 ["direct_messages_stddev_samp_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Streaming cursor of the table "direct_messages" */
@@ -70750,11 +70825,13 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	from_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["direct_messages_sum_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** update columns of table "direct_messages" */
@@ -70770,16 +70847,19 @@ count?: [{	columns?: Array<ResolverInputTypes["direct_messages_select_column"]> 
 	/** aggregate var_pop on columns */
 ["direct_messages_var_pop_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
 ["direct_messages_var_samp_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
 ["direct_messages_variance_fields"]: AliasType<{
 	from_steam_id?:boolean | `@${string}`,
+	seq?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "draft_game_picks" */
@@ -136471,7 +136551,9 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: {
-		last_message_at: ModelTypes["timestamptz"],
+		is_open: boolean,
+	last_message_at: ModelTypes["timestamptz"],
+	position: number,
 	room_id: string,
 	steam_id: ModelTypes["bigint"]
 };
@@ -136496,37 +136578,45 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["direct_conversations_avg_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** Boolean expression to filter rows from the table "direct_conversations". All fields are combined with a logical 'AND'. */
 ["direct_conversations_bool_exp"]: {
 	_and?: Array<ModelTypes["direct_conversations_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["direct_conversations_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["direct_conversations_bool_exp"]> | undefined | null,
+	is_open?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	last_message_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	position?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	room_id?: ModelTypes["String_comparison_exp"] | undefined | null,
 	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null
 };
 	["direct_conversations_constraint"]:direct_conversations_constraint;
 	/** input type for incrementing numeric columns in table "direct_conversations" */
 ["direct_conversations_inc_input"]: {
+	position?: number | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
+	is_open?: boolean | undefined | null,
 	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate max on columns */
 ["direct_conversations_max_fields"]: {
 		last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate min on columns */
 ["direct_conversations_min_fields"]: {
 		last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
@@ -136545,7 +136635,9 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
+	is_open?: ModelTypes["order_by"] | undefined | null,
 	last_message_at?: ModelTypes["order_by"] | undefined | null,
+	position?: ModelTypes["order_by"] | undefined | null,
 	room_id?: ModelTypes["order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null
 };
@@ -136557,21 +136649,26 @@ export type ModelTypes = {
 	["direct_conversations_select_column"]:direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
+	is_open?: boolean | undefined | null,
 	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["direct_conversations_stddev_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["direct_conversations_stddev_pop_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["direct_conversations_stddev_samp_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** Streaming cursor of the table "direct_conversations" */
 ["direct_conversations_stream_cursor_input"]: {
@@ -136582,13 +136679,16 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
+	is_open?: boolean | undefined | null,
 	last_message_at?: ModelTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["direct_conversations_sum_fields"]: {
-		steam_id?: ModelTypes["bigint"] | undefined | null
+		position?: number | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	["direct_conversations_update_column"]:direct_conversations_update_column;
 	["direct_conversations_updates"]: {
@@ -136601,15 +136701,18 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["direct_conversations_var_pop_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["direct_conversations_var_samp_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** aggregate variance on columns */
 ["direct_conversations_variance_fields"]: {
-		steam_id?: number | undefined | null
+		position?: number | undefined | null,
+	steam_id?: number | undefined | null
 };
 	/** columns and relationships of "direct_messages" */
 ["direct_messages"]: {
@@ -136617,7 +136720,8 @@ export type ModelTypes = {
 	from_steam_id: ModelTypes["bigint"],
 	id: ModelTypes["uuid"],
 	message: string,
-	room_id: string
+	room_id: string,
+	seq: ModelTypes["bigint"]
 };
 	/** aggregated selection of "direct_messages" */
 ["direct_messages_aggregate"]: {
@@ -136640,7 +136744,8 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** Boolean expression to filter rows from the table "direct_messages". All fields are combined with a logical 'AND'. */
 ["direct_messages_bool_exp"]: {
@@ -136651,12 +136756,14 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	message?: ModelTypes["String_comparison_exp"] | undefined | null,
-	room_id?: ModelTypes["String_comparison_exp"] | undefined | null
+	room_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	seq?: ModelTypes["bigint_comparison_exp"] | undefined | null
 };
 	["direct_messages_constraint"]:direct_messages_constraint;
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
-	from_steam_id?: ModelTypes["bigint"] | undefined | null
+	from_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
@@ -136664,7 +136771,8 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate max on columns */
 ["direct_messages_max_fields"]: {
@@ -136672,7 +136780,8 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate min on columns */
 ["direct_messages_min_fields"]: {
@@ -136680,7 +136789,8 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	/** response of any mutation on the table "direct_messages" */
 ["direct_messages_mutation_response"]: {
@@ -136701,7 +136811,8 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	message?: ModelTypes["order_by"] | undefined | null,
-	room_id?: ModelTypes["order_by"] | undefined | null
+	room_id?: ModelTypes["order_by"] | undefined | null,
+	seq?: ModelTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: direct_messages */
 ["direct_messages_pk_columns_input"]: {
@@ -136714,19 +136825,23 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["direct_messages_stddev_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["direct_messages_stddev_pop_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["direct_messages_stddev_samp_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** Streaming cursor of the table "direct_messages" */
 ["direct_messages_stream_cursor_input"]: {
@@ -136741,11 +136856,13 @@ export type ModelTypes = {
 	from_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["direct_messages_sum_fields"]: {
-		from_steam_id?: ModelTypes["bigint"] | undefined | null
+		from_steam_id?: ModelTypes["bigint"] | undefined | null,
+	seq?: ModelTypes["bigint"] | undefined | null
 };
 	["direct_messages_update_column"]:direct_messages_update_column;
 	["direct_messages_updates"]: {
@@ -136758,15 +136875,18 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["direct_messages_var_pop_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["direct_messages_var_samp_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate variance on columns */
 ["direct_messages_variance_fields"]: {
-		from_steam_id?: number | undefined | null
+		from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** columns and relationships of "draft_game_picks" */
 ["draft_game_picks"]: {
@@ -194928,7 +195048,9 @@ export type GraphQLTypes = {
 	/** columns and relationships of "direct_conversations" */
 ["direct_conversations"]: {
 	__typename: "direct_conversations",
+	is_open: boolean,
 	last_message_at: GraphQLTypes["timestamptz"],
+	position: number,
 	room_id: string,
 	steam_id: GraphQLTypes["bigint"]
 };
@@ -194956,6 +195078,7 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["direct_conversations_avg_fields"]: {
 	__typename: "direct_conversations_avg_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** Boolean expression to filter rows from the table "direct_conversations". All fields are combined with a logical 'AND'. */
@@ -194963,7 +195086,9 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["direct_conversations_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["direct_conversations_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["direct_conversations_bool_exp"]> | undefined | null,
+	is_open?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	last_message_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	position?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	room_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null
 };
@@ -194971,11 +195096,14 @@ export type GraphQLTypes = {
 ["direct_conversations_constraint"]: direct_conversations_constraint;
 	/** input type for incrementing numeric columns in table "direct_conversations" */
 ["direct_conversations_inc_input"]: {
-		steam_id?: GraphQLTypes["bigint"] | undefined | null
+		position?: number | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "direct_conversations" */
 ["direct_conversations_insert_input"]: {
-		last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		is_open?: boolean | undefined | null,
+	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -194983,6 +195111,7 @@ export type GraphQLTypes = {
 ["direct_conversations_max_fields"]: {
 	__typename: "direct_conversations_max_fields",
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -194990,6 +195119,7 @@ export type GraphQLTypes = {
 ["direct_conversations_min_fields"]: {
 	__typename: "direct_conversations_min_fields",
 	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
@@ -195009,7 +195139,9 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "direct_conversations". */
 ["direct_conversations_order_by"]: {
-		last_message_at?: GraphQLTypes["order_by"] | undefined | null,
+		is_open?: GraphQLTypes["order_by"] | undefined | null,
+	last_message_at?: GraphQLTypes["order_by"] | undefined | null,
+	position?: GraphQLTypes["order_by"] | undefined | null,
 	room_id?: GraphQLTypes["order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
@@ -195022,23 +195154,28 @@ export type GraphQLTypes = {
 ["direct_conversations_select_column"]: direct_conversations_select_column;
 	/** input type for updating data in table "direct_conversations" */
 ["direct_conversations_set_input"]: {
-		last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		is_open?: boolean | undefined | null,
+	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["direct_conversations_stddev_fields"]: {
 	__typename: "direct_conversations_stddev_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["direct_conversations_stddev_pop_fields"]: {
 	__typename: "direct_conversations_stddev_pop_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["direct_conversations_stddev_samp_fields"]: {
 	__typename: "direct_conversations_stddev_samp_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** Streaming cursor of the table "direct_conversations" */
@@ -195050,13 +195187,16 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["direct_conversations_stream_cursor_value_input"]: {
-		last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		is_open?: boolean | undefined | null,
+	last_message_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	position?: number | undefined | null,
 	room_id?: string | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["direct_conversations_sum_fields"]: {
 	__typename: "direct_conversations_sum_fields",
+	position?: number | undefined | null,
 	steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** update columns of table "direct_conversations" */
@@ -195072,16 +195212,19 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["direct_conversations_var_pop_fields"]: {
 	__typename: "direct_conversations_var_pop_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["direct_conversations_var_samp_fields"]: {
 	__typename: "direct_conversations_var_samp_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** aggregate variance on columns */
 ["direct_conversations_variance_fields"]: {
 	__typename: "direct_conversations_variance_fields",
+	position?: number | undefined | null,
 	steam_id?: number | undefined | null
 };
 	/** columns and relationships of "direct_messages" */
@@ -195091,7 +195234,8 @@ export type GraphQLTypes = {
 	from_steam_id: GraphQLTypes["bigint"],
 	id: GraphQLTypes["uuid"],
 	message: string,
-	room_id: string
+	room_id: string,
+	seq: GraphQLTypes["bigint"]
 };
 	/** aggregated selection of "direct_messages" */
 ["direct_messages_aggregate"]: {
@@ -195117,7 +195261,8 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["direct_messages_avg_fields"]: {
 	__typename: "direct_messages_avg_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** Boolean expression to filter rows from the table "direct_messages". All fields are combined with a logical 'AND'. */
 ["direct_messages_bool_exp"]: {
@@ -195128,13 +195273,15 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	message?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	room_id?: GraphQLTypes["String_comparison_exp"] | undefined | null
+	room_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	seq?: GraphQLTypes["bigint_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "direct_messages" */
 ["direct_messages_constraint"]: direct_messages_constraint;
 	/** input type for incrementing numeric columns in table "direct_messages" */
 ["direct_messages_inc_input"]: {
-		from_steam_id?: GraphQLTypes["bigint"] | undefined | null
+		from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "direct_messages" */
 ["direct_messages_insert_input"]: {
@@ -195142,7 +195289,8 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** aggregate max on columns */
 ["direct_messages_max_fields"]: {
@@ -195151,7 +195299,8 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** aggregate min on columns */
 ["direct_messages_min_fields"]: {
@@ -195160,7 +195309,8 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** response of any mutation on the table "direct_messages" */
 ["direct_messages_mutation_response"]: {
@@ -195182,7 +195332,8 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	message?: GraphQLTypes["order_by"] | undefined | null,
-	room_id?: GraphQLTypes["order_by"] | undefined | null
+	room_id?: GraphQLTypes["order_by"] | undefined | null,
+	seq?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: direct_messages */
 ["direct_messages_pk_columns_input"]: {
@@ -195196,22 +195347,26 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["direct_messages_stddev_fields"]: {
 	__typename: "direct_messages_stddev_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["direct_messages_stddev_pop_fields"]: {
 	__typename: "direct_messages_stddev_pop_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["direct_messages_stddev_samp_fields"]: {
 	__typename: "direct_messages_stddev_samp_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** Streaming cursor of the table "direct_messages" */
 ["direct_messages_stream_cursor_input"]: {
@@ -195226,12 +195381,14 @@ export type GraphQLTypes = {
 	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	message?: string | undefined | null,
-	room_id?: string | undefined | null
+	room_id?: string | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["direct_messages_sum_fields"]: {
 	__typename: "direct_messages_sum_fields",
-	from_steam_id?: GraphQLTypes["bigint"] | undefined | null
+	from_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	seq?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** update columns of table "direct_messages" */
 ["direct_messages_update_column"]: direct_messages_update_column;
@@ -195246,17 +195403,20 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["direct_messages_var_pop_fields"]: {
 	__typename: "direct_messages_var_pop_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["direct_messages_var_samp_fields"]: {
 	__typename: "direct_messages_var_samp_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** aggregate variance on columns */
 ["direct_messages_variance_fields"]: {
 	__typename: "direct_messages_variance_fields",
-	from_steam_id?: number | undefined | null
+	from_steam_id?: number | undefined | null,
+	seq?: number | undefined | null
 };
 	/** columns and relationships of "draft_game_picks" */
 ["draft_game_picks"]: {
@@ -253080,13 +253240,17 @@ export enum direct_conversations_constraint {
 }
 /** select columns of table "direct_conversations" */
 export enum direct_conversations_select_column {
+	is_open = "is_open",
 	last_message_at = "last_message_at",
+	position = "position",
 	room_id = "room_id",
 	steam_id = "steam_id"
 }
 /** update columns of table "direct_conversations" */
 export enum direct_conversations_update_column {
+	is_open = "is_open",
 	last_message_at = "last_message_at",
+	position = "position",
 	room_id = "room_id",
 	steam_id = "steam_id"
 }
@@ -253100,7 +253264,8 @@ export enum direct_messages_select_column {
 	from_steam_id = "from_steam_id",
 	id = "id",
 	message = "message",
-	room_id = "room_id"
+	room_id = "room_id",
+	seq = "seq"
 }
 /** update columns of table "direct_messages" */
 export enum direct_messages_update_column {
@@ -253108,7 +253273,8 @@ export enum direct_messages_update_column {
 	from_steam_id = "from_steam_id",
 	id = "id",
 	message = "message",
-	room_id = "room_id"
+	room_id = "room_id",
+	seq = "seq"
 }
 /** unique or primary key constraints on table "draft_game_picks" */
 export enum draft_game_picks_constraint {
@@ -253809,6 +253975,7 @@ export enum e_notification_types_enum {
 	LeagueRegistrationDecision = "LeagueRegistrationDecision",
 	LeagueRosterUndersized = "LeagueRosterUndersized",
 	MatchAbandoned = "MatchAbandoned",
+	MatchChatMessage = "MatchChatMessage",
 	MatchImported = "MatchImported",
 	MatchStatsReady = "MatchStatsReady",
 	MatchStatusChange = "MatchStatusChange",

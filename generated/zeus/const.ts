@@ -1192,7 +1192,9 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"direct_conversations_bool_exp",
 		_not:"direct_conversations_bool_exp",
 		_or:"direct_conversations_bool_exp",
+		is_open:"Boolean_comparison_exp",
 		last_message_at:"timestamptz_comparison_exp",
+		position:"Int_comparison_exp",
 		room_id:"String_comparison_exp",
 		steam_id:"bigint_comparison_exp"
 	},
@@ -1210,7 +1212,9 @@ export const AllTypesProps: Record<string,any> = {
 		where:"direct_conversations_bool_exp"
 	},
 	direct_conversations_order_by:{
+		is_open:"order_by",
 		last_message_at:"order_by",
+		position:"order_by",
 		room_id:"order_by",
 		steam_id:"order_by"
 	},
@@ -1249,16 +1253,19 @@ export const AllTypesProps: Record<string,any> = {
 		from_steam_id:"bigint_comparison_exp",
 		id:"uuid_comparison_exp",
 		message:"String_comparison_exp",
-		room_id:"String_comparison_exp"
+		room_id:"String_comparison_exp",
+		seq:"bigint_comparison_exp"
 	},
 	direct_messages_constraint: "enum" as const,
 	direct_messages_inc_input:{
-		from_steam_id:"bigint"
+		from_steam_id:"bigint",
+		seq:"bigint"
 	},
 	direct_messages_insert_input:{
 		created_at:"timestamptz",
 		from_steam_id:"bigint",
-		id:"uuid"
+		id:"uuid",
+		seq:"bigint"
 	},
 	direct_messages_on_conflict:{
 		constraint:"direct_messages_constraint",
@@ -1270,7 +1277,8 @@ export const AllTypesProps: Record<string,any> = {
 		from_steam_id:"order_by",
 		id:"order_by",
 		message:"order_by",
-		room_id:"order_by"
+		room_id:"order_by",
+		seq:"order_by"
 	},
 	direct_messages_pk_columns_input:{
 		id:"uuid"
@@ -1279,7 +1287,8 @@ export const AllTypesProps: Record<string,any> = {
 	direct_messages_set_input:{
 		created_at:"timestamptz",
 		from_steam_id:"bigint",
-		id:"uuid"
+		id:"uuid",
+		seq:"bigint"
 	},
 	direct_messages_stream_cursor_input:{
 		initial_value:"direct_messages_stream_cursor_value_input",
@@ -1288,7 +1297,8 @@ export const AllTypesProps: Record<string,any> = {
 	direct_messages_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		from_steam_id:"bigint",
-		id:"uuid"
+		id:"uuid",
+		seq:"bigint"
 	},
 	direct_messages_update_column: "enum" as const,
 	direct_messages_updates:{
@@ -38933,7 +38943,9 @@ export const ReturnTypes: Record<string,any> = {
 		size:"Float"
 	},
 	direct_conversations:{
+		is_open:"Boolean",
 		last_message_at:"timestamptz",
+		position:"Int",
 		room_id:"String",
 		steam_id:"bigint"
 	},
@@ -38955,15 +38967,18 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"direct_conversations_variance_fields"
 	},
 	direct_conversations_avg_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_conversations_max_fields:{
 		last_message_at:"timestamptz",
+		position:"Int",
 		room_id:"String",
 		steam_id:"bigint"
 	},
 	direct_conversations_min_fields:{
 		last_message_at:"timestamptz",
+		position:"Int",
 		room_id:"String",
 		steam_id:"bigint"
 	},
@@ -38972,24 +38987,31 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"direct_conversations"
 	},
 	direct_conversations_stddev_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_conversations_stddev_pop_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_conversations_stddev_samp_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_conversations_sum_fields:{
+		position:"Int",
 		steam_id:"bigint"
 	},
 	direct_conversations_var_pop_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_conversations_var_samp_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_conversations_variance_fields:{
+		position:"Float",
 		steam_id:"Float"
 	},
 	direct_messages:{
@@ -38997,7 +39019,8 @@ export const ReturnTypes: Record<string,any> = {
 		from_steam_id:"bigint",
 		id:"uuid",
 		message:"String",
-		room_id:"String"
+		room_id:"String",
+		seq:"bigint"
 	},
 	direct_messages_aggregate:{
 		aggregate:"direct_messages_aggregate_fields",
@@ -39017,46 +39040,56 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"direct_messages_variance_fields"
 	},
 	direct_messages_avg_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	direct_messages_max_fields:{
 		created_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		message:"String",
-		room_id:"String"
+		room_id:"String",
+		seq:"bigint"
 	},
 	direct_messages_min_fields:{
 		created_at:"timestamptz",
 		from_steam_id:"bigint",
 		id:"uuid",
 		message:"String",
-		room_id:"String"
+		room_id:"String",
+		seq:"bigint"
 	},
 	direct_messages_mutation_response:{
 		affected_rows:"Int",
 		returning:"direct_messages"
 	},
 	direct_messages_stddev_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	direct_messages_stddev_pop_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	direct_messages_stddev_samp_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	direct_messages_sum_fields:{
-		from_steam_id:"bigint"
+		from_steam_id:"bigint",
+		seq:"bigint"
 	},
 	direct_messages_var_pop_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	direct_messages_var_samp_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	direct_messages_variance_fields:{
-		from_steam_id:"Float"
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	draft_game_picks:{
 		auto_picked:"Boolean",

@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "#app";
 import { useI18n } from "vue-i18n";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import {
+  setPageChatFocus,
+  useChatPresence,
+} from "~/composables/useChatPresence";
+import { chatThreadKey } from "~/utilities/chatThread";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
-import type { ChatType } from "~/web-sockets/Socket";
+import socket, { type ChatType } from "~/web-sockets/Socket";
 
 definePageMeta({
   layout: "chat",
@@ -44,8 +49,35 @@ const tabFromQuery = computed<ChatTab | null>(() => {
   };
 });
 
+// A tapped notification lands here with nothing but the tab id, which is
+// `${type}:${lobbyId}` and so carries everything the room needs. Split on the
+// first colon only: a direct room's id is itself a colon-joined pair.
+const tabFromId = computed<ChatTab | null>(() => {
+  const separator = tabId.value.indexOf(":");
+
+  if (separator === -1) {
+    return null;
+  }
+
+  const type = tabId.value.slice(0, separator) as ChatType;
+  const lobbyId = tabId.value.slice(separator + 1);
+
+  if (!type || !lobbyId) {
+    return null;
+  }
+
+  return {
+    id: tabId.value,
+    label: t("chat_page.fallback_title"),
+    instance: type,
+    type,
+    lobbyId,
+    pinned: false,
+  };
+});
+
 const currentTab = computed<ChatTab | null>(() => {
-  return tabFromSession.value ?? tabFromQuery.value;
+  return tabFromSession.value ?? tabFromQuery.value ?? tabFromId.value;
 });
 
 const hasTab = computed(() => currentTab.value !== null);
@@ -88,6 +120,33 @@ function handleBackToHub() {
     router.push("/");
   }
 }
+
+// This window runs the `chat` layout, so the default layout's presence
+// reporter never mounts here. Without its own the server would keep pushing
+// notifications for the very conversation this window exists to display.
+const thread = computed(() =>
+  currentTab.value
+    ? chatThreadKey(currentTab.value.type, currentTab.value.lobbyId)
+    : null,
+);
+
+useChatPresence();
+
+watch(
+  thread,
+  (value, previous) => {
+    setPageChatFocus(value);
+
+    if (value && value !== previous && currentTab.value) {
+      socket.markLobbyRead(currentTab.value.type, currentTab.value.lobbyId);
+    }
+  },
+  { immediate: true },
+);
+
+onUnmounted(() => {
+  setPageChatFocus(null);
+});
 </script>
 
 <template>

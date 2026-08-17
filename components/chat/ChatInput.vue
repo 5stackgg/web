@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { CornerDownLeft } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+
+// Browsers key saved form history to the field's name, and several of them
+// ignore autocomplete="off". A name that is never the same twice means there is
+// no bucket to remember into, and none of the old ones match.
+const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
 </script>
 
 <template>
@@ -25,7 +30,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         class="relative grid grid-cols-2 rounded-md border border-border/60 bg-background/50 p-[2px]"
       >
         <span
-          class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(50%-2px)] rounded-[3px] ring-1 ring-inset transition-[transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(50%-2px)] rounded-[3px] ring-1 ring-inset transition-[transform,background-color,box-shadow] duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
           :class="[
             activeChannelIndex === 1 ? 'translate-x-full' : 'translate-x-0',
             isAmber
@@ -77,6 +82,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     </div>
 
     <form
+      autocomplete="off"
       :class="
         variant === 'global'
           ? ''
@@ -106,6 +112,13 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 ref="inputRef"
                 :placeholder="activePlaceholder"
                 v-bind="componentField"
+                type="text"
+                autocomplete="off"
+                :name="fieldName"
+                data-1p-ignore="true"
+                data-lpignore="true"
+                data-bwignore="true"
+                data-form-type="other"
                 :class="
                   variant === 'global'
                     ? 'flex-1 transition-all duration-200 focus:scale-[1.02]'

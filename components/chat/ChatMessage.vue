@@ -45,7 +45,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         :show-elo="false"
         :show-steam-id="false"
         :tooltip="false"
-        :linkable="false"
+        :linkable="true"
         :show-name="false"
         :show-flag="false"
         :show-role="false"

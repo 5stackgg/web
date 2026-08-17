@@ -297,6 +297,7 @@ onBeforeUnmount(() => {
             <textarea
               v-model="teaser"
               rows="3"
+              autocomplete="off"
               class="w-full resize-y rounded-md border border-input bg-background p-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               :placeholder="$t('pages.news.form.teaser_placeholder')"
             />

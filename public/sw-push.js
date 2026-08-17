@@ -24,7 +24,16 @@ self.addEventListener("push", (event) => {
       // Lets the OS replace an earlier notification for the same conversation
       // or match instead of stacking one per message.
       tag: payload.tag,
-      data: { url: payload.url || "/" },
+      // ...and makes that replacement alert again. A tagged notification is
+      // silent by default when it lands on top of one already showing, so
+      // without this the summary that closes a burst arrives unannounced.
+      // Ignored unless `tag` is set, and throws in Chrome without one.
+      renotify: payload.renotify !== false && Boolean(payload.tag),
+      data: {
+        url: payload.url || "/",
+        threadKey: payload.threadKey || payload.tag,
+        count: payload.count || 1,
+      },
     }),
   );
 });

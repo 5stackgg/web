@@ -1,6 +1,7 @@
 import { watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useChatTabs } from "~/composables/useChatTabs";
+import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -16,8 +17,10 @@ export function useChatTabSetup() {
     setActiveTab,
     setPinned,
     incrementUnread,
+    setUnread,
   } = useChatTabs();
   const { rightSidebarOpen } = useRightSidebar();
+  const { hydrate: hydrateReadState, unreadSince } = useChatReadState();
 
   const matchLobbyStore = useMatchLobbyStore();
   const authStore = useAuthStore();
@@ -46,6 +49,25 @@ export function useChatTabSetup() {
       if (!isOnScreen) {
         incrementUnread(tab.id);
       }
+    });
+
+    // The room's history, which arrives on join and on every rejoin. Counting
+    // it against the server's cursor is what makes a badge survive a reload
+    // and agree with the other devices -- the live handler above only ever
+    // knew about this session.
+    //
+    // Conversations are left alone: their count comes from
+    // /chat/direct/conversations, which counts the whole thread rather than
+    // the last 200 messages of it.
+    lobby.on("lobby:messages", (messages: any[]) => {
+      if (tab.type === "direct") {
+        return;
+      }
+
+      setUnread(
+        tab.id,
+        unreadSince(tab.type, tab.lobbyId, messages ?? [], authStore.me?.steam_id),
+      );
     });
   }
 
@@ -174,6 +196,18 @@ export function useChatTabSetup() {
       }
     }
   }
+
+  watch(
+    () => authStore.me?.steam_id,
+    (steamId) => {
+      if (steamId) {
+        // Before the rooms are joined, so the first history snapshot is
+        // counted against a real cursor rather than against zero.
+        void hydrateReadState();
+      }
+    },
+    { immediate: true },
+  );
 
   watch(
     () => authStore.me,

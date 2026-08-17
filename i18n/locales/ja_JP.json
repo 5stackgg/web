@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "チャット設定",
           "description": "チャットメッセージの保持期間を設定します。",
-          "chat_message_ttl": "チャットメッセージの TTL（秒）",
-          "chat_message_ttl_description": "チャットメッセージを完全に削除するまでの保持時間（秒）です。",
           "updated": "チャット設定を更新しました"
         },
         "news": {

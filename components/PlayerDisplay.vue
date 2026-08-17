@@ -17,6 +17,7 @@ import {
   Podcast,
 } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
+import PlayerContextMenu from "~/components/player/PlayerContextMenu.vue";
 </script>
 <template>
   <NuxtLink
@@ -28,8 +29,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
     active-class="player-display-active"
     exact-active-class="player-display-active"
     class="grid min-h-12"
+    @contextmenu="onContextMenu"
     :class="{
       'cursor-pointer group/playerlink': linkable,
+      '[-webkit-touch-callout:none]': contextMenu && player?.steam_id,
       'gap-2': !compact,
       'gap-1.5': compact,
       'grid-cols-[52px_1fr]':
@@ -60,9 +63,18 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
     >
       <div class="relative flex">
         <slot name="avatar">
+          <!-- The outline is always painted, just transparent -- an outline
+               that appears on hover would push nothing around, but its color
+               can't ease in from nothing. avatarRing owns box-shadow, so the
+               hover ring has to be a different property. -->
           <Avatar
             shape="square"
-            :class="{ 'h-8 w-8': size === 'xs' || compact }"
+            :class="[
+              { 'h-8 w-8': size === 'xs' || compact },
+              linkable
+                ? 'outline outline-2 outline-offset-2 outline-transparent transition-[transform,outline-color] duration-150 group-hover/playerlink:scale-[1.06] group-hover/playerlink:outline-[hsl(var(--tac-amber))]'
+                : '',
+            ]"
             :style="avatarRing ? { boxShadow: avatarRing } : undefined"
           >
             <AvatarImage
@@ -283,6 +295,17 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       </slot>
     </div>
     <slot name="footer"></slot>
+
+    <!-- Mounted on the first right-click and kept mounted afterwards, so the
+         67 places this component renders in pay nothing for a menu nobody
+         opened -- and so closing still gets its exit animation. -->
+    <PlayerContextMenu
+      v-if="menuMounted"
+      v-model:open="menuOpen"
+      :player="player"
+      :x="menuX"
+      :y="menuY"
+    />
   </NuxtLink>
 </template>
 
@@ -373,11 +396,57 @@ export default {
       type: Boolean,
       default: false,
     },
+    // On by default: right-clicking a player should do the same thing
+    // everywhere. Turn it off where the surface already owns the right click
+    // (see FriendListItem, which has its own row menu).
+    contextMenu: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      menuMounted: false,
+      menuOpen: false,
+      menuX: 0,
+      menuY: 0,
+    };
   },
   inject: {
     matchRanks: { from: "matchRanks", default: null },
   },
   methods: {
+    onContextMenu(event: MouseEvent) {
+      // Shift is the escape hatch back to the browser's own menu -- this is a
+      // link, and "open in new tab" / "copy image" shouldn't become
+      // unreachable just because we took the right click.
+      if (!this.contextMenu || !this.player?.steam_id || event.shiftKey) {
+        return;
+      }
+
+      // Claim the event outright. reka's own ContextMenuTrigger re-checks
+      // defaultPrevented on the next tick, so preventDefault alone already
+      // yields to us -- stopPropagation just makes that explicit for native
+      // handlers too.
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.menuX = event.clientX;
+      this.menuY = event.clientY;
+      this.menuMounted = true;
+
+      // Re-anchoring an open menu: the anchor is a positioned element, and
+      // moving it doesn't retrigger floating-ui, so close and reopen.
+      if (this.menuOpen) {
+        this.menuOpen = false;
+        this.$nextTick(() => {
+          this.menuOpen = true;
+        });
+        return;
+      }
+
+      this.menuOpen = true;
+    },
     async addAsFriend() {
       await this.$apollo.mutate({
         mutation: typedGql("mutation")({

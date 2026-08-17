@@ -229,6 +229,7 @@ import { toast } from "~/components/ui/toast";
                 type="number"
                 min="1"
                 inputmode="numeric"
+                autocomplete="off"
                 placeholder="—"
                 class="seed-input h-full w-9 border-l border-border bg-transparent text-center font-mono text-[0.7rem] font-bold tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 group-focus-within/seed:border-[hsl(var(--tac-amber)/0.6)]"
                 :value="team.seed ?? ''"

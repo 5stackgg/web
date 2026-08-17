@@ -1,51 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { MonitorDown, PlusSquare, Share } from "lucide-vue-next";
 import { useSidebar } from "@/components/ui/sidebar";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { isIosBrowser, usePwaInstall } from "~/composables/usePwaInstall";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 
 withDefaults(
   defineProps<{
     isMenuItem?: boolean;
+    // Nav headers are tight enough that the icon carries it and the label
+    // lives in a tooltip. Anywhere with room -- a settings card, say -- wants
+    // the words, at every width.
+    showLabel?: boolean;
   }>(),
   {
     isMenuItem: true,
+    showLabel: false,
   },
 );
 
 const { state, isMobile } = useSidebar();
-const { $pwa } = useNuxtApp();
+
+// Shared with the notification settings gate and the enable-push prompt, so
+// all three agree on what "installed" means.
+const { canInstall, install } = usePwaInstall();
 
 const installPWADrawer = ref(false);
 
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-const canInstall = computed(() => {
-  if ($pwa?.isPWAInstalled) {
-    return false;
-  }
-
-  // Already running as an installed app — don't offer install.
-  // `$pwa.isPWAInstalled` only checks the display-mode media query, which
-  // is unreliable on iOS, so also check navigator.standalone directly.
-  if (
-    (window.navigator as Navigator & { standalone?: boolean }).standalone ||
-    window.matchMedia("(display-mode: standalone)").matches
-  ) {
-    return false;
-  }
-
-  if (isIOS) {
-    return true;
-  }
-
-  // beforeinstallprompt fires once, shortly after load. On mobile this
-  // component lives in the sidebar Sheet, which isn't mounted until the
-  // drawer opens — a listener added here would miss the event. The vite-pwa
-  // plugin (client.installPrompt) captures it at app init and exposes it
-  // reactively, so read that instead of listening ourselves.
-  return $pwa?.showInstallPrompt === true;
-});
+const isIOS = isIosBrowser();
 
 async function installPWA() {
   if (isIOS) {
@@ -53,7 +36,7 @@ async function installPWA() {
     return;
   }
 
-  await $pwa?.install();
+  await install();
 }
 </script>
 
@@ -75,7 +58,7 @@ async function installPWA() {
       </SidebarMenuItem>
     </template>
     <template v-else>
-      <FiveStackToolTip v-if="!isMobile">
+      <FiveStackToolTip v-if="!isMobile && !showLabel">
         <template #trigger>
           <Button @click="installPWA" size="sm">
             <MonitorDown />
@@ -83,10 +66,11 @@ async function installPWA() {
         </template>
         {{ $t("pwa.install.button") }}
       </FiveStackToolTip>
-      <div class="flex items-center gap-2 uppercase font-bold" v-else>
-        <MonitorDown class="size-5" @click="installPWA" />
+      <!-- Labelled variant is a real call to action rather than a nav affordance
+           — it's the one thing standing between the player and a feature. -->
+      <Button :class="tacticalCtaButtonClasses" @click="installPWA" v-else>
         {{ $t("pwa.install.button") }}
-      </div>
+      </Button>
     </template>
 
     <Drawer

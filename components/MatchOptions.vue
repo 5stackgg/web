@@ -389,7 +389,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                      transition-transform on them never had anything to
                      animate. -->
                 <ChevronDown
-                  class="h-4 w-4 transition-transform duration-[240ms] motion-reduce:!duration-[1ms]"
+                  class="h-4 w-4 transition-transform [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
                   :class="showAdvancedSettings ? 'rotate-180' : ''"
                 />
                 <span class="sr-only">{{

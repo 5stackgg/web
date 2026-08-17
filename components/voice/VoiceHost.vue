@@ -85,6 +85,18 @@ onScopeDispose(
     });
   }),
 );
+
+// The floating panel's mute key reaches the same microphone as every other one,
+// so it has to mean the same thing when the phone is carrying it: muting audio
+// this client is not sending would do nothing anyone could hear.
+function onToggleSelfMute() {
+  if (session.micElsewhere.value) {
+    void session.reclaimMic();
+    return;
+  }
+
+  session.toggleMute();
+}
 </script>
 
 <template>
@@ -95,7 +107,7 @@ onScopeDispose(
     :local-video="session.localVideo()"
     :my-steam-id="useAuthStore().me?.steam_id ?? null"
     :self-muted="session.muted.value"
-    :on-toggle-self-mute="session.toggleMute"
+    :on-toggle-self-mute="onToggleSelfMute"
     @close="pip.toggle()"
   />
 </template>

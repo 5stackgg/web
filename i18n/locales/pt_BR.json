@@ -1528,8 +1528,6 @@
         "chat": {
           "title": "Configurações do Chat",
           "description": "Configure o quão longo deve ser a retenção das mensagens.",
-          "chat_message_ttl": "Chat Mensagem TTL (segundos)",
-          "chat_message_ttl_description": "Quão longo (em segundos) as mensagens permanecerão até serem permanentemente apagadas",
           "updated": "Configurações atualizadas com sucesso"
         },
         "news": {

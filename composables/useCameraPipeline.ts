@@ -19,7 +19,12 @@ export const CAPTURE_FPS = 24;
 // the encode cost of the 720p the browser hands out by default.
 export const CAPTURE_BITRATE = 350_000;
 
-export type CameraErrorKind = "denied" | "missing" | "busy" | "unknown";
+export type CameraErrorKind =
+  | "denied"
+  | "missing"
+  | "busy"
+  | "insecure"
+  | "unknown";
 
 export type CameraStartOptions = {
   // Asked for together with the camera so the browser prompts once. The audio
@@ -179,6 +184,26 @@ export function useCameraPipeline(options: CameraPipelineOptions = {}) {
     detectFlip();
   }
 
+  // Browsers only expose getUserMedia on a secure origin, so a panel served over
+  // plain http has no `mediaDevices` at all. Worth naming rather than letting it
+  // reach getUserMedia: the TypeError that comes back from calling a method on
+  // undefined carries no DOMException name, so it reads as "unknown" -- which is
+  // the one phrasing that does not tell a player on a http:// dev host, or
+  // behind an ingress that lost its TLS, what is actually wrong.
+  function describeUnsupported(): CameraErrorKind | null {
+    if (typeof navigator === "undefined") {
+      return null;
+    }
+
+    if (navigator.mediaDevices?.getUserMedia) {
+      return null;
+    }
+
+    return typeof window !== "undefined" && !window.isSecureContext
+      ? "insecure"
+      : "unknown";
+  }
+
   function describeMediaError(error: unknown): CameraErrorKind {
     const name = (error as DOMException)?.name;
 
@@ -234,6 +259,14 @@ export function useCameraPipeline(options: CameraPipelineOptions = {}) {
   // Local only -- nothing is published until a consumer takes the track.
   async function start(startOptions: CameraStartOptions = {}) {
     errorKind.value = null;
+
+    const unsupported = describeUnsupported();
+
+    if (unsupported) {
+      errorKind.value = unsupported;
+      return false;
+    }
+
     pending.value = true;
 
     try {

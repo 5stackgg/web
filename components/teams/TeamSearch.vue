@@ -231,6 +231,7 @@ const { height: viewportHeight } = useVisualViewport();
             type="search"
             inputmode="search"
             enterkeyhint="search"
+            autocomplete="off"
             class="flex-1 bg-transparent outline-none"
             @input="
               (e: Event) =>

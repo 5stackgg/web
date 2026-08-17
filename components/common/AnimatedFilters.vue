@@ -128,7 +128,7 @@ watch(
         indicatorShape,
         indicator.ready ? 'opacity-100' : 'opacity-0',
         animate
-          ? 'transition-all duration-[240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
+          ? 'transition-all [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
           : '',
       ]"
       :style="{

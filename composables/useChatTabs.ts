@@ -12,6 +12,10 @@ export interface ChatTab {
   // avatar instead of a channel icon.
   avatarUrl?: string;
   steamId?: string;
+  // Where this conversation sits on the rail, lowest first. Server-owned and
+  // rewritten by a drag; channels have no position and sort by their own
+  // rules. See useDirectConversationBar.
+  position?: number;
 }
 
 const tabsRef = ref<ChatTab[]>([]);
@@ -83,6 +87,17 @@ export function useChatTabs() {
     activeTabIdRef.value = id;
   }
 
+  function setTabPosition(id: string, position: number) {
+    const idx = findTabIndex(id);
+    if (idx === -1) {
+      return;
+    }
+    tabsRef.value[idx] = {
+      ...tabsRef.value[idx],
+      position,
+    };
+  }
+
   function setPinned(id: string, pinned: boolean) {
     const idx = findTabIndex(id);
     if (idx === -1) {
@@ -122,6 +137,7 @@ export function useChatTabs() {
     closeTab,
     setActiveTab,
     setPinned,
+    setTabPosition,
     incrementUnread,
     resetUnread,
     setUnread,

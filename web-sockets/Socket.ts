@@ -2,6 +2,7 @@ import EventEmitter from "eventemitter3";
 import { shallowRef, type ShallowRef } from "vue";
 import type { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import { useChatReadState } from "~/composables/useChatReadState";
 
 export interface LobbyMessage {
   id?: string;
@@ -80,6 +81,10 @@ class Socket extends EventEmitter {
     data: Record<string, unknown>;
   }> = [];
   private retryCount = 0;
+  private presence: { visible: boolean; focus: string | null } = {
+    visible: false,
+    focus: null,
+  };
   private static readonly MAX_RETRIES = 50;
   private static readonly BASE_DELAY_MS = 1000;
   private static readonly MAX_DELAY_MS = 30000;
@@ -129,18 +134,10 @@ class Socket extends EventEmitter {
         return;
       }
 
-      this.connection?.send(
-        JSON.stringify({
-          event: "ping",
-        }),
-      );
+      this.heartbeat();
 
       this.heartBeat = setInterval(() => {
-        this.connection?.send(
-          JSON.stringify({
-            event: "ping",
-          }),
-        );
+        this.heartbeat();
       }, 15 * 1000);
 
       console.info("[ws] connected");
@@ -273,13 +270,50 @@ class Socket extends EventEmitter {
     });
   }
 
-  // Server-side read state, so a conversation's unread count survives a reload
-  // and doesn't come back on another device.
+  // Server-side read state, so a room's unread count survives a reload and
+  // doesn't come back on another device -- and so no push is sent for a
+  // message that has already been read here.
+  //
+  // The local cursor moves in the same call rather than at the call sites:
+  // four of them mark rooms read, and one forgetting would leave a badge that
+  // the next history snapshot puts straight back.
   public markLobbyRead(type: ChatType, id: string) {
+    useChatReadState().markRead(type, id);
+
     this.event(`lobby:read`, {
       id,
       type,
     });
+  }
+
+  // What this tab is showing, so the server can decline to buzz a phone about a
+  // conversation that is already on screen.
+  //
+  // A hidden tab reports no focus: it is still a live socket, and counting it
+  // as "reading" is how a notification goes missing for a window nobody is
+  // looking at.
+  public setPresence(presence: { visible: boolean; focus: string | null }) {
+    this.presence = presence;
+
+    if (!this.connected || !this.connection) {
+      return;
+    }
+
+    this.sendPresence();
+  }
+
+  // Ping keeps the connection registered; presence rides along with it because
+  // the server expires a focus after a couple of heartbeats and a tab left open
+  // on a conversation has to keep saying so.
+  private heartbeat() {
+    this.connection?.send(JSON.stringify({ event: "ping" }));
+    this.sendPresence();
+  }
+
+  private sendPresence() {
+    this.connection?.send(
+      JSON.stringify({ event: "presence", data: this.presence }),
+    );
   }
 
   public listen(event: string, callback: (data: any) => void) {
@@ -492,6 +526,17 @@ class Socket extends EventEmitter {
   }
 }
 const socket = new Socket();
+
+// The cursor the database actually wrote, replacing the one markLobbyRead
+// stamped from this browser's clock. Message timestamps come from the API, so
+// a browser running a minute slow would leave every message in the room newer
+// than its own cursor -- and the badge back the moment the next snapshot lands.
+socket.listen(
+  "chat:read",
+  ({ thread, lastReadAt }: { thread: string; lastReadAt: string }) => {
+    useChatReadState().setCursor(thread, lastReadAt);
+  },
+);
 
 socket.listen("matchmaking:region-stats", (data) => {
   useMatchmakingStore().regionStats = data;

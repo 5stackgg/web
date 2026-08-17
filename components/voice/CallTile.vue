@@ -146,8 +146,8 @@ function initials(name: string | null) {
          avatar fade-in was 200ms of black tile. Cover immediately; save the
          long dissolve for the direction that has something to reveal. -->
     <Transition
-      enter-active-class="transition-opacity duration-[1ms]"
-      leave-active-class="transition-[opacity,transform] duration-[420ms] ease-out motion-reduce:!duration-[1ms]"
+      enter-active-class="transition-opacity [transition-duration:1ms]"
+      leave-active-class="transition-[opacity,transform] [transition-duration:420ms] ease-out motion-reduce:![transition-duration:1ms]"
       enter-from-class="opacity-0"
       leave-to-class="opacity-0 scale-105"
     >

@@ -7,6 +7,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useGtm } from "@/layouts/composables/useGtm";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
+import { useChatPresence } from "~/composables/useChatPresence";
 
 const AppSidebar = defineAsyncComponent(
   () => import("@/components/AppSidebar.vue"),
@@ -40,6 +41,9 @@ const VoiceHost = defineAsyncComponent(
 const OrphanedUploadsDialog = defineAsyncComponent(
   () => import("~/components/settings/OrphanedUploadsDialog.vue"),
 );
+const EnablePushPrompt = defineAsyncComponent(
+  () => import("~/components/notification/EnablePushPrompt.vue"),
+);
 import { useClipModal } from "~/composables/useClipModal";
 
 const { activeClipId } = useClipModal();
@@ -48,6 +52,7 @@ useGtm();
 useChatTabSetup();
 useChatTabPersistence();
 useIncomingDirectMessages();
+useChatPresence();
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -122,6 +127,8 @@ provide("containContent", containContent);
   <ClipDetailModal :clip-id="activeClipId" />
 
   <OrphanedUploadsDialog />
+
+  <EnablePushPrompt v-if="authStore.me" />
 
   <ActionToasts />
 </template>

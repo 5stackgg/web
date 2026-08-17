@@ -1470,8 +1470,6 @@
         "chat": {
           "title": "聊天设置",
           "description": "配置聊天消息的保留时长。",
-          "chat_message_ttl": "聊天消息 TTL（秒）",
-          "chat_message_ttl_description": "聊天消息在被永久删除前保留的时长（秒）。",
           "updated": "聊天设置已成功更新"
         },
         "news": {

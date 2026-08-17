@@ -694,6 +694,59 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"bytea",
 		_nin:"bytea"
 	},
+	chat_read_state_aggregate_fields:{
+		count:{
+			columns:"chat_read_state_select_column"
+		}
+	},
+	chat_read_state_bool_exp:{
+		_and:"chat_read_state_bool_exp",
+		_not:"chat_read_state_bool_exp",
+		_or:"chat_read_state_bool_exp",
+		last_read_at:"timestamptz_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		thread:"String_comparison_exp"
+	},
+	chat_read_state_constraint: "enum" as const,
+	chat_read_state_inc_input:{
+		steam_id:"bigint"
+	},
+	chat_read_state_insert_input:{
+		last_read_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	chat_read_state_on_conflict:{
+		constraint:"chat_read_state_constraint",
+		update_columns:"chat_read_state_update_column",
+		where:"chat_read_state_bool_exp"
+	},
+	chat_read_state_order_by:{
+		last_read_at:"order_by",
+		steam_id:"order_by",
+		thread:"order_by"
+	},
+	chat_read_state_pk_columns_input:{
+		steam_id:"bigint"
+	},
+	chat_read_state_select_column: "enum" as const,
+	chat_read_state_set_input:{
+		last_read_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	chat_read_state_stream_cursor_input:{
+		initial_value:"chat_read_state_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	chat_read_state_stream_cursor_value_input:{
+		last_read_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	chat_read_state_update_column: "enum" as const,
+	chat_read_state_updates:{
+		_inc:"chat_read_state_inc_input",
+		_set:"chat_read_state_set_input",
+		where:"chat_read_state_bool_exp"
+	},
 	clip_render_jobs:{
 		spec:{
 
@@ -1129,6 +1182,129 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"db_backups_inc_input",
 		_set:"db_backups_set_input",
 		where:"db_backups_bool_exp"
+	},
+	direct_conversations_aggregate_fields:{
+		count:{
+			columns:"direct_conversations_select_column"
+		}
+	},
+	direct_conversations_bool_exp:{
+		_and:"direct_conversations_bool_exp",
+		_not:"direct_conversations_bool_exp",
+		_or:"direct_conversations_bool_exp",
+		is_open:"Boolean_comparison_exp",
+		last_message_at:"timestamptz_comparison_exp",
+		position:"Int_comparison_exp",
+		room_id:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	direct_conversations_constraint: "enum" as const,
+	direct_conversations_inc_input:{
+		steam_id:"bigint"
+	},
+	direct_conversations_insert_input:{
+		last_message_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	direct_conversations_on_conflict:{
+		constraint:"direct_conversations_constraint",
+		update_columns:"direct_conversations_update_column",
+		where:"direct_conversations_bool_exp"
+	},
+	direct_conversations_order_by:{
+		is_open:"order_by",
+		last_message_at:"order_by",
+		position:"order_by",
+		room_id:"order_by",
+		steam_id:"order_by"
+	},
+	direct_conversations_pk_columns_input:{
+		steam_id:"bigint"
+	},
+	direct_conversations_select_column: "enum" as const,
+	direct_conversations_set_input:{
+		last_message_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	direct_conversations_stream_cursor_input:{
+		initial_value:"direct_conversations_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	direct_conversations_stream_cursor_value_input:{
+		last_message_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	direct_conversations_update_column: "enum" as const,
+	direct_conversations_updates:{
+		_inc:"direct_conversations_inc_input",
+		_set:"direct_conversations_set_input",
+		where:"direct_conversations_bool_exp"
+	},
+	direct_messages_aggregate_fields:{
+		count:{
+			columns:"direct_messages_select_column"
+		}
+	},
+	direct_messages_bool_exp:{
+		_and:"direct_messages_bool_exp",
+		_not:"direct_messages_bool_exp",
+		_or:"direct_messages_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		from_steam_id:"bigint_comparison_exp",
+		id:"uuid_comparison_exp",
+		message:"String_comparison_exp",
+		room_id:"String_comparison_exp",
+		seq:"bigint_comparison_exp"
+	},
+	direct_messages_constraint: "enum" as const,
+	direct_messages_inc_input:{
+		from_steam_id:"bigint",
+		seq:"bigint"
+	},
+	direct_messages_insert_input:{
+		created_at:"timestamptz",
+		from_steam_id:"bigint",
+		id:"uuid",
+		seq:"bigint"
+	},
+	direct_messages_on_conflict:{
+		constraint:"direct_messages_constraint",
+		update_columns:"direct_messages_update_column",
+		where:"direct_messages_bool_exp"
+	},
+	direct_messages_order_by:{
+		created_at:"order_by",
+		from_steam_id:"order_by",
+		id:"order_by",
+		message:"order_by",
+		room_id:"order_by",
+		seq:"order_by"
+	},
+	direct_messages_pk_columns_input:{
+		id:"uuid"
+	},
+	direct_messages_select_column: "enum" as const,
+	direct_messages_set_input:{
+		created_at:"timestamptz",
+		from_steam_id:"bigint",
+		id:"uuid",
+		seq:"bigint"
+	},
+	direct_messages_stream_cursor_input:{
+		initial_value:"direct_messages_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	direct_messages_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		from_steam_id:"bigint",
+		id:"uuid",
+		seq:"bigint"
+	},
+	direct_messages_update_column: "enum" as const,
+	direct_messages_updates:{
+		_inc:"direct_messages_inc_input",
+		_set:"direct_messages_set_input",
+		where:"direct_messages_bool_exp"
 	},
 	draft_game_picks_aggregate_bool_exp:{
 		bool_and:"draft_game_picks_aggregate_bool_exp_bool_and",
@@ -11603,6 +11779,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_awards_by_pk:{
 			id:"uuid"
 		},
+		delete_chat_read_state:{
+			where:"chat_read_state_bool_exp"
+		},
+		delete_chat_read_state_by_pk:{
+			steam_id:"bigint"
+		},
 		delete_clip_render_jobs:{
 			where:"clip_render_jobs_bool_exp"
 		},
@@ -11619,6 +11801,18 @@ export const AllTypesProps: Record<string,any> = {
 			where:"db_backups_bool_exp"
 		},
 		delete_db_backups_by_pk:{
+			id:"uuid"
+		},
+		delete_direct_conversations:{
+			where:"direct_conversations_bool_exp"
+		},
+		delete_direct_conversations_by_pk:{
+			steam_id:"bigint"
+		},
+		delete_direct_messages:{
+			where:"direct_messages_bool_exp"
+		},
+		delete_direct_messages_by_pk:{
 			id:"uuid"
 		},
 		delete_draft_game_picks:{
@@ -12607,6 +12801,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"awards_insert_input",
 			on_conflict:"awards_on_conflict"
 		},
+		insert_chat_read_state:{
+			objects:"chat_read_state_insert_input",
+			on_conflict:"chat_read_state_on_conflict"
+		},
+		insert_chat_read_state_one:{
+			object:"chat_read_state_insert_input",
+			on_conflict:"chat_read_state_on_conflict"
+		},
 		insert_clip_render_jobs:{
 			objects:"clip_render_jobs_insert_input",
 			on_conflict:"clip_render_jobs_on_conflict"
@@ -12630,6 +12832,22 @@ export const AllTypesProps: Record<string,any> = {
 		insert_db_backups_one:{
 			object:"db_backups_insert_input",
 			on_conflict:"db_backups_on_conflict"
+		},
+		insert_direct_conversations:{
+			objects:"direct_conversations_insert_input",
+			on_conflict:"direct_conversations_on_conflict"
+		},
+		insert_direct_conversations_one:{
+			object:"direct_conversations_insert_input",
+			on_conflict:"direct_conversations_on_conflict"
+		},
+		insert_direct_messages:{
+			objects:"direct_messages_insert_input",
+			on_conflict:"direct_messages_on_conflict"
+		},
+		insert_direct_messages_one:{
+			object:"direct_messages_insert_input",
+			on_conflict:"direct_messages_on_conflict"
 		},
 		insert_draft_game_picks:{
 			objects:"draft_game_picks_insert_input",
@@ -14118,6 +14336,19 @@ export const AllTypesProps: Record<string,any> = {
 		update_awards_many:{
 			updates:"awards_updates"
 		},
+		update_chat_read_state:{
+			_inc:"chat_read_state_inc_input",
+			_set:"chat_read_state_set_input",
+			where:"chat_read_state_bool_exp"
+		},
+		update_chat_read_state_by_pk:{
+			_inc:"chat_read_state_inc_input",
+			_set:"chat_read_state_set_input",
+			pk_columns:"chat_read_state_pk_columns_input"
+		},
+		update_chat_read_state_many:{
+			updates:"chat_read_state_updates"
+		},
 		update_clip_render_jobs:{
 			_append:"clip_render_jobs_append_input",
 			_delete_at_path:"clip_render_jobs_delete_at_path_input",
@@ -14176,6 +14407,32 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_db_backups_many:{
 			updates:"db_backups_updates"
+		},
+		update_direct_conversations:{
+			_inc:"direct_conversations_inc_input",
+			_set:"direct_conversations_set_input",
+			where:"direct_conversations_bool_exp"
+		},
+		update_direct_conversations_by_pk:{
+			_inc:"direct_conversations_inc_input",
+			_set:"direct_conversations_set_input",
+			pk_columns:"direct_conversations_pk_columns_input"
+		},
+		update_direct_conversations_many:{
+			updates:"direct_conversations_updates"
+		},
+		update_direct_messages:{
+			_inc:"direct_messages_inc_input",
+			_set:"direct_messages_set_input",
+			where:"direct_messages_bool_exp"
+		},
+		update_direct_messages_by_pk:{
+			_inc:"direct_messages_inc_input",
+			_set:"direct_messages_set_input",
+			pk_columns:"direct_messages_pk_columns_input"
+		},
+		update_direct_messages_many:{
+			updates:"direct_messages_updates"
 		},
 		update_draft_game_picks:{
 			_inc:"draft_game_picks_inc_input",
@@ -16599,6 +16856,9 @@ export const AllTypesProps: Record<string,any> = {
 	notifications:{
 		actions:{
 
+		},
+		data:{
+
 		}
 	},
 	notifications_aggregate_bool_exp:{
@@ -16640,7 +16900,8 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"notifications_variance_order_by"
 	},
 	notifications_append_input:{
-		actions:"jsonb"
+		actions:"jsonb",
+		data:"jsonb"
 	},
 	notifications_arr_rel_insert_input:{
 		data:"notifications_insert_input",
@@ -16655,6 +16916,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"notifications_bool_exp",
 		actions:"jsonb_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		data:"jsonb_comparison_exp",
 		deletable:"Boolean_comparison_exp",
 		deleted_at:"timestamptz_comparison_exp",
 		entity_id:"String_comparison_exp",
@@ -16684,6 +16946,7 @@ export const AllTypesProps: Record<string,any> = {
 	notifications_insert_input:{
 		actions:"jsonb",
 		created_at:"timestamptz",
+		data:"jsonb",
 		deleted_at:"timestamptz",
 		id:"uuid",
 		player:"players_obj_rel_insert_input",
@@ -16717,6 +16980,7 @@ export const AllTypesProps: Record<string,any> = {
 	notifications_order_by:{
 		actions:"order_by",
 		created_at:"order_by",
+		data:"order_by",
 		deletable:"order_by",
 		deleted_at:"order_by",
 		entity_id:"order_by",
@@ -16734,7 +16998,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	notifications_prepend_input:{
-		actions:"jsonb"
+		actions:"jsonb",
+		data:"jsonb"
 	},
 	notifications_select_column: "enum" as const,
 	notifications_select_column_notifications_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -16742,6 +17007,7 @@ export const AllTypesProps: Record<string,any> = {
 	notifications_set_input:{
 		actions:"jsonb",
 		created_at:"timestamptz",
+		data:"jsonb",
 		deleted_at:"timestamptz",
 		id:"uuid",
 		role:"e_player_roles_enum",
@@ -16764,6 +17030,7 @@ export const AllTypesProps: Record<string,any> = {
 	notifications_stream_cursor_value_input:{
 		actions:"jsonb",
 		created_at:"timestamptz",
+		data:"jsonb",
 		deleted_at:"timestamptz",
 		id:"uuid",
 		role:"e_player_roles_enum",
@@ -23238,6 +23505,19 @@ export const AllTypesProps: Record<string,any> = {
 		awards_by_pk:{
 			id:"uuid"
 		},
+		chat_read_state:{
+			distinct_on:"chat_read_state_select_column",
+			order_by:"chat_read_state_order_by",
+			where:"chat_read_state_bool_exp"
+		},
+		chat_read_state_aggregate:{
+			distinct_on:"chat_read_state_select_column",
+			order_by:"chat_read_state_order_by",
+			where:"chat_read_state_bool_exp"
+		},
+		chat_read_state_by_pk:{
+			steam_id:"bigint"
+		},
 		clip_render_jobs:{
 			distinct_on:"clip_render_jobs_select_column",
 			order_by:"clip_render_jobs_order_by",
@@ -23275,6 +23555,32 @@ export const AllTypesProps: Record<string,any> = {
 			where:"db_backups_bool_exp"
 		},
 		db_backups_by_pk:{
+			id:"uuid"
+		},
+		direct_conversations:{
+			distinct_on:"direct_conversations_select_column",
+			order_by:"direct_conversations_order_by",
+			where:"direct_conversations_bool_exp"
+		},
+		direct_conversations_aggregate:{
+			distinct_on:"direct_conversations_select_column",
+			order_by:"direct_conversations_order_by",
+			where:"direct_conversations_bool_exp"
+		},
+		direct_conversations_by_pk:{
+			steam_id:"bigint"
+		},
+		direct_messages:{
+			distinct_on:"direct_messages_select_column",
+			order_by:"direct_messages_order_by",
+			where:"direct_messages_bool_exp"
+		},
+		direct_messages_aggregate:{
+			distinct_on:"direct_messages_select_column",
+			order_by:"direct_messages_order_by",
+			where:"direct_messages_bool_exp"
+		},
+		direct_messages_by_pk:{
 			id:"uuid"
 		},
 		draft_game_picks:{
@@ -26467,6 +26773,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"awards_stream_cursor_input",
 			where:"awards_bool_exp"
 		},
+		chat_read_state:{
+			distinct_on:"chat_read_state_select_column",
+			order_by:"chat_read_state_order_by",
+			where:"chat_read_state_bool_exp"
+		},
+		chat_read_state_aggregate:{
+			distinct_on:"chat_read_state_select_column",
+			order_by:"chat_read_state_order_by",
+			where:"chat_read_state_bool_exp"
+		},
+		chat_read_state_by_pk:{
+			steam_id:"bigint"
+		},
+		chat_read_state_stream:{
+			cursor:"chat_read_state_stream_cursor_input",
+			where:"chat_read_state_bool_exp"
+		},
 		clip_render_jobs:{
 			distinct_on:"clip_render_jobs_select_column",
 			order_by:"clip_render_jobs_order_by",
@@ -26517,6 +26840,40 @@ export const AllTypesProps: Record<string,any> = {
 		db_backups_stream:{
 			cursor:"db_backups_stream_cursor_input",
 			where:"db_backups_bool_exp"
+		},
+		direct_conversations:{
+			distinct_on:"direct_conversations_select_column",
+			order_by:"direct_conversations_order_by",
+			where:"direct_conversations_bool_exp"
+		},
+		direct_conversations_aggregate:{
+			distinct_on:"direct_conversations_select_column",
+			order_by:"direct_conversations_order_by",
+			where:"direct_conversations_bool_exp"
+		},
+		direct_conversations_by_pk:{
+			steam_id:"bigint"
+		},
+		direct_conversations_stream:{
+			cursor:"direct_conversations_stream_cursor_input",
+			where:"direct_conversations_bool_exp"
+		},
+		direct_messages:{
+			distinct_on:"direct_messages_select_column",
+			order_by:"direct_messages_order_by",
+			where:"direct_messages_bool_exp"
+		},
+		direct_messages_aggregate:{
+			distinct_on:"direct_messages_select_column",
+			order_by:"direct_messages_order_by",
+			where:"direct_messages_bool_exp"
+		},
+		direct_messages_by_pk:{
+			id:"uuid"
+		},
+		direct_messages_stream:{
+			cursor:"direct_messages_stream_cursor_input",
+			where:"direct_messages_bool_exp"
 		},
 		draft_game_picks:{
 			distinct_on:"draft_game_picks_select_column",
@@ -38251,6 +38608,66 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
+	chat_read_state:{
+		last_read_at:"timestamptz",
+		steam_id:"bigint",
+		thread:"String"
+	},
+	chat_read_state_aggregate:{
+		aggregate:"chat_read_state_aggregate_fields",
+		nodes:"chat_read_state"
+	},
+	chat_read_state_aggregate_fields:{
+		avg:"chat_read_state_avg_fields",
+		count:"Int",
+		max:"chat_read_state_max_fields",
+		min:"chat_read_state_min_fields",
+		stddev:"chat_read_state_stddev_fields",
+		stddev_pop:"chat_read_state_stddev_pop_fields",
+		stddev_samp:"chat_read_state_stddev_samp_fields",
+		sum:"chat_read_state_sum_fields",
+		var_pop:"chat_read_state_var_pop_fields",
+		var_samp:"chat_read_state_var_samp_fields",
+		variance:"chat_read_state_variance_fields"
+	},
+	chat_read_state_avg_fields:{
+		steam_id:"Float"
+	},
+	chat_read_state_max_fields:{
+		last_read_at:"timestamptz",
+		steam_id:"bigint",
+		thread:"String"
+	},
+	chat_read_state_min_fields:{
+		last_read_at:"timestamptz",
+		steam_id:"bigint",
+		thread:"String"
+	},
+	chat_read_state_mutation_response:{
+		affected_rows:"Int",
+		returning:"chat_read_state"
+	},
+	chat_read_state_stddev_fields:{
+		steam_id:"Float"
+	},
+	chat_read_state_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	chat_read_state_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	chat_read_state_sum_fields:{
+		steam_id:"bigint"
+	},
+	chat_read_state_var_pop_fields:{
+		steam_id:"Float"
+	},
+	chat_read_state_var_samp_fields:{
+		steam_id:"Float"
+	},
+	chat_read_state_variance_fields:{
+		steam_id:"Float"
+	},
 	clip_render_jobs:{
 		clip:"match_clips",
 		clip_id:"uuid",
@@ -38524,6 +38941,155 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	db_backups_variance_fields:{
 		size:"Float"
+	},
+	direct_conversations:{
+		is_open:"Boolean",
+		last_message_at:"timestamptz",
+		position:"Int",
+		room_id:"String",
+		steam_id:"bigint"
+	},
+	direct_conversations_aggregate:{
+		aggregate:"direct_conversations_aggregate_fields",
+		nodes:"direct_conversations"
+	},
+	direct_conversations_aggregate_fields:{
+		avg:"direct_conversations_avg_fields",
+		count:"Int",
+		max:"direct_conversations_max_fields",
+		min:"direct_conversations_min_fields",
+		stddev:"direct_conversations_stddev_fields",
+		stddev_pop:"direct_conversations_stddev_pop_fields",
+		stddev_samp:"direct_conversations_stddev_samp_fields",
+		sum:"direct_conversations_sum_fields",
+		var_pop:"direct_conversations_var_pop_fields",
+		var_samp:"direct_conversations_var_samp_fields",
+		variance:"direct_conversations_variance_fields"
+	},
+	direct_conversations_avg_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_conversations_max_fields:{
+		last_message_at:"timestamptz",
+		position:"Int",
+		room_id:"String",
+		steam_id:"bigint"
+	},
+	direct_conversations_min_fields:{
+		last_message_at:"timestamptz",
+		position:"Int",
+		room_id:"String",
+		steam_id:"bigint"
+	},
+	direct_conversations_mutation_response:{
+		affected_rows:"Int",
+		returning:"direct_conversations"
+	},
+	direct_conversations_stddev_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_conversations_stddev_pop_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_conversations_stddev_samp_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_conversations_sum_fields:{
+		position:"Int",
+		steam_id:"bigint"
+	},
+	direct_conversations_var_pop_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_conversations_var_samp_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_conversations_variance_fields:{
+		position:"Float",
+		steam_id:"Float"
+	},
+	direct_messages:{
+		created_at:"timestamptz",
+		from_steam_id:"bigint",
+		id:"uuid",
+		message:"String",
+		room_id:"String",
+		seq:"bigint"
+	},
+	direct_messages_aggregate:{
+		aggregate:"direct_messages_aggregate_fields",
+		nodes:"direct_messages"
+	},
+	direct_messages_aggregate_fields:{
+		avg:"direct_messages_avg_fields",
+		count:"Int",
+		max:"direct_messages_max_fields",
+		min:"direct_messages_min_fields",
+		stddev:"direct_messages_stddev_fields",
+		stddev_pop:"direct_messages_stddev_pop_fields",
+		stddev_samp:"direct_messages_stddev_samp_fields",
+		sum:"direct_messages_sum_fields",
+		var_pop:"direct_messages_var_pop_fields",
+		var_samp:"direct_messages_var_samp_fields",
+		variance:"direct_messages_variance_fields"
+	},
+	direct_messages_avg_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
+	},
+	direct_messages_max_fields:{
+		created_at:"timestamptz",
+		from_steam_id:"bigint",
+		id:"uuid",
+		message:"String",
+		room_id:"String",
+		seq:"bigint"
+	},
+	direct_messages_min_fields:{
+		created_at:"timestamptz",
+		from_steam_id:"bigint",
+		id:"uuid",
+		message:"String",
+		room_id:"String",
+		seq:"bigint"
+	},
+	direct_messages_mutation_response:{
+		affected_rows:"Int",
+		returning:"direct_messages"
+	},
+	direct_messages_stddev_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
+	},
+	direct_messages_stddev_pop_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
+	},
+	direct_messages_stddev_samp_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
+	},
+	direct_messages_sum_fields:{
+		from_steam_id:"bigint",
+		seq:"bigint"
+	},
+	direct_messages_var_pop_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
+	},
+	direct_messages_var_samp_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
+	},
+	direct_messages_variance_fields:{
+		from_steam_id:"Float",
+		seq:"Float"
 	},
 	draft_game_picks:{
 		auto_picked:"Boolean",
@@ -43722,12 +44288,18 @@ export const ReturnTypes: Record<string,any> = {
 		delete_award_recipients_by_pk:"award_recipients",
 		delete_awards:"awards_mutation_response",
 		delete_awards_by_pk:"awards",
+		delete_chat_read_state:"chat_read_state_mutation_response",
+		delete_chat_read_state_by_pk:"chat_read_state",
 		delete_clip_render_jobs:"clip_render_jobs_mutation_response",
 		delete_clip_render_jobs_by_pk:"clip_render_jobs",
 		delete_custom_pages:"custom_pages_mutation_response",
 		delete_custom_pages_by_pk:"custom_pages",
 		delete_db_backups:"db_backups_mutation_response",
 		delete_db_backups_by_pk:"db_backups",
+		delete_direct_conversations:"direct_conversations_mutation_response",
+		delete_direct_conversations_by_pk:"direct_conversations",
+		delete_direct_messages:"direct_messages_mutation_response",
+		delete_direct_messages_by_pk:"direct_messages",
 		delete_draft_game_picks:"draft_game_picks_mutation_response",
 		delete_draft_game_picks_by_pk:"draft_game_picks",
 		delete_draft_game_players:"draft_game_players_mutation_response",
@@ -44039,12 +44611,18 @@ export const ReturnTypes: Record<string,any> = {
 		insert_award_recipients_one:"award_recipients",
 		insert_awards:"awards_mutation_response",
 		insert_awards_one:"awards",
+		insert_chat_read_state:"chat_read_state_mutation_response",
+		insert_chat_read_state_one:"chat_read_state",
 		insert_clip_render_jobs:"clip_render_jobs_mutation_response",
 		insert_clip_render_jobs_one:"clip_render_jobs",
 		insert_custom_pages:"custom_pages_mutation_response",
 		insert_custom_pages_one:"custom_pages",
 		insert_db_backups:"db_backups_mutation_response",
 		insert_db_backups_one:"db_backups",
+		insert_direct_conversations:"direct_conversations_mutation_response",
+		insert_direct_conversations_one:"direct_conversations",
+		insert_direct_messages:"direct_messages_mutation_response",
+		insert_direct_messages_one:"direct_messages",
 		insert_draft_game_picks:"draft_game_picks_mutation_response",
 		insert_draft_game_picks_one:"draft_game_picks",
 		insert_draft_game_players:"draft_game_players_mutation_response",
@@ -44449,6 +45027,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_awards:"awards_mutation_response",
 		update_awards_by_pk:"awards",
 		update_awards_many:"awards_mutation_response",
+		update_chat_read_state:"chat_read_state_mutation_response",
+		update_chat_read_state_by_pk:"chat_read_state",
+		update_chat_read_state_many:"chat_read_state_mutation_response",
 		update_clip_render_jobs:"clip_render_jobs_mutation_response",
 		update_clip_render_jobs_by_pk:"clip_render_jobs",
 		update_clip_render_jobs_many:"clip_render_jobs_mutation_response",
@@ -44458,6 +45039,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_db_backups:"db_backups_mutation_response",
 		update_db_backups_by_pk:"db_backups",
 		update_db_backups_many:"db_backups_mutation_response",
+		update_direct_conversations:"direct_conversations_mutation_response",
+		update_direct_conversations_by_pk:"direct_conversations",
+		update_direct_conversations_many:"direct_conversations_mutation_response",
+		update_direct_messages:"direct_messages_mutation_response",
+		update_direct_messages_by_pk:"direct_messages",
+		update_direct_messages_many:"direct_messages_mutation_response",
 		update_draft_game_picks:"draft_game_picks_mutation_response",
 		update_draft_game_picks_by_pk:"draft_game_picks",
 		update_draft_game_picks_many:"draft_game_picks_mutation_response",
@@ -45279,6 +45866,7 @@ export const ReturnTypes: Record<string,any> = {
 	notifications:{
 		actions:"jsonb",
 		created_at:"timestamptz",
+		data:"jsonb",
 		deletable:"Boolean",
 		deleted_at:"timestamptz",
 		entity_id:"String",
@@ -50720,6 +51308,9 @@ export const ReturnTypes: Record<string,any> = {
 		awards:"awards",
 		awards_aggregate:"awards_aggregate",
 		awards_by_pk:"awards",
+		chat_read_state:"chat_read_state",
+		chat_read_state_aggregate:"chat_read_state_aggregate",
+		chat_read_state_by_pk:"chat_read_state",
 		clip_render_jobs:"clip_render_jobs",
 		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
 		clip_render_jobs_by_pk:"clip_render_jobs",
@@ -50730,6 +51321,12 @@ export const ReturnTypes: Record<string,any> = {
 		db_backups:"db_backups",
 		db_backups_aggregate:"db_backups_aggregate",
 		db_backups_by_pk:"db_backups",
+		direct_conversations:"direct_conversations",
+		direct_conversations_aggregate:"direct_conversations_aggregate",
+		direct_conversations_by_pk:"direct_conversations",
+		direct_messages:"direct_messages",
+		direct_messages_aggregate:"direct_messages_aggregate",
+		direct_messages_by_pk:"direct_messages",
 		draft_game_picks:"draft_game_picks",
 		draft_game_picks_aggregate:"draft_game_picks_aggregate",
 		draft_game_picks_by_pk:"draft_game_picks",
@@ -51757,6 +52354,10 @@ export const ReturnTypes: Record<string,any> = {
 		awards_aggregate:"awards_aggregate",
 		awards_by_pk:"awards",
 		awards_stream:"awards",
+		chat_read_state:"chat_read_state",
+		chat_read_state_aggregate:"chat_read_state_aggregate",
+		chat_read_state_by_pk:"chat_read_state",
+		chat_read_state_stream:"chat_read_state",
 		clip_render_jobs:"clip_render_jobs",
 		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
 		clip_render_jobs_by_pk:"clip_render_jobs",
@@ -51769,6 +52370,14 @@ export const ReturnTypes: Record<string,any> = {
 		db_backups_aggregate:"db_backups_aggregate",
 		db_backups_by_pk:"db_backups",
 		db_backups_stream:"db_backups",
+		direct_conversations:"direct_conversations",
+		direct_conversations_aggregate:"direct_conversations_aggregate",
+		direct_conversations_by_pk:"direct_conversations",
+		direct_conversations_stream:"direct_conversations",
+		direct_messages:"direct_messages",
+		direct_messages_aggregate:"direct_messages_aggregate",
+		direct_messages_by_pk:"direct_messages",
+		direct_messages_stream:"direct_messages",
 		draft_game_picks:"draft_game_picks",
 		draft_game_picks_aggregate:"draft_game_picks_aggregate",
 		draft_game_picks_by_pk:"draft_game_picks",

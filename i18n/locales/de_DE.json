@@ -1488,8 +1488,6 @@
         "chat": {
           "title": "Chat-Einstellungen",
           "description": "Leg fest, wie lange Chat-Nachrichten aufbewahrt werden.",
-          "chat_message_ttl": "TTL für Chat-Nachrichten (Sekunden)",
-          "chat_message_ttl_description": "Wie lange (in Sekunden) Chat-Nachrichten aufbewahrt werden, bevor sie endgültig gelöscht werden.",
           "updated": "Chat-Einstellungen aktualisiert"
         },
         "news": {

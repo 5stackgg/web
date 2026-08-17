@@ -33,8 +33,6 @@ import socket from "~/web-sockets/Socket";
 // to useMicPipeline, which a camera feed uses just the same. What is left here
 // is the channel: who is in it, who is talking, and the peer connections.
 
-export type { VoiceInputMode } from "~/composables/useAudioSettings";
-
 // Peers are kept for a beat after they stop publishing: one failed poll of
 // MediaMTX reports the whole party as gone, and tearing every peer connection
 // down and renegotiating it a poll later is both audible and expensive.
@@ -54,6 +52,13 @@ const VIDEO_GRACE_MS = 2_000;
 // machine that may also be playing a game and rendering a live stream.
 const CALL_BITRATE = 300_000;
 const CALL_FPS = 20;
+
+// How long to wait before taking the microphone path back after our own publish
+// drops. Long enough that a phone renegotiating -- which closes one session and
+// opens another a moment later -- is not raced for the path it is mid-way
+// through claiming, and long enough that a network blip settles before we spend
+// a renegotiation on it.
+const MIC_RESUME_MS = 4_000;
 
 export type VoiceChatOptions = {
   // Whether a camera may be offered on *this* surface. The hub renders the call
@@ -109,8 +114,7 @@ export function useVoiceChat(
 
   // Borrowed rather than owned when the caller already has a live microphone.
   const borrowedPipeline = !!options.pipeline;
-  const pipeline =
-    options.pipeline ?? useMicPipeline({ onTrack: republish });
+  const pipeline = options.pipeline ?? useMicPipeline({ onTrack: republish });
 
   if (borrowedPipeline) {
     onScopeDispose(pipeline.onTrack(republish));
@@ -155,6 +159,70 @@ export function useVoiceChat(
   const lastVideo = new Map<string, number>();
 
   const mySteamId = computed(() => useAuthStore().me?.steam_id ?? null);
+
+  // What the server reports as published for this steam id, which is not the
+  // same question as what this client is sending. A MediaMTX path is keyed by
+  // the steam id and nothing else, so a phone that scanned the QR simply takes
+  // one over -- and from here that is indistinguishable from the publish having
+  // moved, because that is exactly what it is.
+  //
+  // Worth deriving rather than tracking: without it the panel goes on offering
+  // to turn on a camera that is already live from a device in the player's
+  // hand, and pressing it would take the path straight back off the phone.
+  const me = computed(
+    () =>
+      participants.value.find(
+        (participant) => participant.steamId === mySteamId.value,
+      ) ?? null,
+  );
+
+  // Told to us by the device that took it, over the socket. Inference from our
+  // own peer connection is not enough on its own: MediaMTX kicks the displaced
+  // publisher but the browser it kicked is not informed, and an
+  // RTCPeerConnection whose media nobody is consuming sits in "connected" until
+  // ICE consent freshness gives up -- up to thirty seconds of the panel
+  // insisting the microphone is still here.
+  const claimedElsewhere = ref({ mic: false, cam: false });
+
+  // The server's own answer first: it is set by whichever device published last
+  // and cleared the moment the path goes quiet, so it is a fact rather than a
+  // deduction. The socket claim is kept as the fast path -- it arrives before
+  // the next participants push -- and the local comparison behind it as the
+  // fallback for a build of the API that predates the flag.
+  const cameraElsewhere = computed(
+    () =>
+      me.value?.camRemote === true ||
+      ((claimedElsewhere.value.cam || !!me.value?.video) &&
+        !videoEnabled.value),
+  );
+
+  // The microphone half of the same question, and the one with teeth: a path
+  // takes exactly one publisher, so a phone claiming it does not sit alongside
+  // this client's microphone, it replaces it. MediaMTX closes the session
+  // underneath us and we find out from the peer connection.
+  //
+  // `connected` stays true throughout -- membership of the channel is not what
+  // moved, only which device is carrying it -- so the call keeps rendering and
+  // every subscription to everyone else stays exactly where it was.
+  const micPublishing = ref(false);
+
+  const micElsewhere = computed(() => {
+    if (!connected.value) {
+      return false;
+    }
+
+    if (me.value?.micRemote === true) {
+      return true;
+    }
+
+    return (
+      (claimedElsewhere.value.mic || !micPublishing.value) &&
+      (claimedElsewhere.value.mic || !!me.value?.connected)
+    );
+  });
+
+  let micResumeTimer: ReturnType<typeof setTimeout> | null = null;
+  let micResuming = false;
 
   // Fetched, so a relay can be configured without shipping a web build. Read
   // synchronously here and warmed by `load()` before anything negotiates -- a
@@ -234,6 +302,160 @@ export function useVoiceChat(
   // anyone has joined anything.
   const previewing = computed(() => pipeline.live.value && !connected.value);
 
+  // A publish that MediaMTX closed under us. Distinguished from leaving only by
+  // what happens next: the channel is still ours, so this drops the publish and
+  // nothing else, and the resume below decides whether to take it back.
+  //
+  // Terminal states only. "disconnected" is routinely transient and recovers on
+  // its own, and treating it as a handoff would tear down a working microphone
+  // every time the network hiccupped.
+  function watchMicPublish(pc: RTCPeerConnection) {
+    const onChange = () => {
+      if (publishPc !== pc) {
+        return;
+      }
+
+      const state = pc.connectionState ?? pc.iceConnectionState;
+
+      if (state === "failed" || state === "closed") {
+        micPublishing.value = false;
+        scheduleMicResume();
+      }
+    };
+
+    pc.addEventListener("connectionstatechange", onChange);
+    pc.addEventListener("iceconnectionstatechange", onChange);
+  }
+
+  async function openMicPublish(id: string) {
+    const outgoing = pipeline.track();
+
+    if (!outgoing) {
+      return false;
+    }
+
+    await ice.load();
+
+    const pc = new RTCPeerConnection({ iceServers: iceServers() });
+    publishPc = pc;
+
+    pc.addTrack(outgoing, pipeline.stream() as MediaStream);
+    watchMicPublish(pc);
+
+    await negotiateWebRtc(pc, voicePublishUrl(id), "include");
+
+    micPublishing.value = true;
+
+    return true;
+  }
+
+  function scheduleMicResume() {
+    if (micResumeTimer || !connected.value) {
+      return;
+    }
+
+    micResumeTimer = setTimeout(() => {
+      micResumeTimer = null;
+      void resumeMic();
+    }, MIC_RESUME_MS);
+  }
+
+  // Takes the path back once it is actually free. Never while another device
+  // holds it: publishing there would kick the phone the player just deliberately
+  // handed it to, and the two would trade the path back and forth for as long as
+  // both stayed open.
+  async function resumeMic() {
+    const id = lobbyId();
+
+    if (!id || !connected.value || micPublishing.value || micResuming) {
+      return;
+    }
+
+    if (
+      me.value?.connected ||
+      me.value?.micRemote === true ||
+      claimedElsewhere.value.mic
+    ) {
+      return;
+    }
+
+    micResuming = true;
+
+    try {
+      publishPc?.close();
+      publishPc = null;
+
+      if (!(await openMicPublish(id))) {
+        scheduleMicResume();
+      }
+
+      reportSpeaking(pipeline.transmitting.value);
+    } catch {
+      // Whatever refused it may not refuse it in four seconds -- a relay still
+      // coming up, the path not yet released. Nothing is torn down over this.
+      scheduleMicResume();
+    } finally {
+      micResuming = false;
+    }
+  }
+
+  // Take it back on purpose, rather than waiting to be handed it.
+  //
+  // Deliberately ignores the "never while another device holds it" rule that
+  // resumeMic obeys: that rule exists so an automatic resume cannot fight a
+  // phone for the path, and this is not automatic. Publishing here displaces the
+  // phone exactly the way the phone displaced this client, and the phone finds
+  // out the same way -- MediaMTX kicks it, and the claim it relayed is stale the
+  // moment we publish.
+  async function reclaimMic() {
+    const id = lobbyId();
+
+    if (!id || !connected.value || micResuming) {
+      return;
+    }
+
+    if (micResumeTimer) {
+      clearTimeout(micResumeTimer);
+      micResumeTimer = null;
+    }
+
+    micResuming = true;
+    claimedElsewhere.value = { ...claimedElsewhere.value, mic: false };
+
+    try {
+      publishPc?.close();
+      publishPc = null;
+      // Dropped with the connection it describes. Left standing through a
+      // reclaim that then fails, it blocks resumeMic's own guard for good --
+      // the player is inaudible until the page is reloaded, and still lit up
+      // as talking.
+      micPublishing.value = false;
+
+      if (!(await openMicPublish(id))) {
+        scheduleMicResume();
+        return;
+      }
+
+      reportSpeaking(pipeline.transmitting.value);
+    } catch (caught) {
+      error.value = describeError(caught);
+      scheduleMicResume();
+    } finally {
+      micResuming = false;
+    }
+  }
+
+  // The moment the other device lets go. Polling would find this too, sixty
+  // seconds later; the participants push arrives in about one.
+  watch(
+    () => !!me.value?.connected,
+    (held) => {
+      if (!held && connected.value && !micPublishing.value) {
+        scheduleMicResume();
+      }
+    },
+  );
+
   async function join() {
     const id = lobbyId();
 
@@ -248,24 +470,17 @@ export function useVoiceChat(
         return;
       }
 
-      const outgoing = pipeline.track();
-
-      if (!outgoing) {
+      if (!(await openMicPublish(id))) {
         return;
       }
 
-      await ice.load();
-
-      const pc = new RTCPeerConnection({ iceServers: iceServers() });
-      publishPc = pc;
-
-      pc.addTrack(outgoing, pipeline.stream() as MediaStream);
-
-      await negotiateWebRtc(pc, voicePublishUrl(id), "include");
-
       connected.value = true;
       registry.register(id, leave);
-      registry.claim({ id, label: channelLabel?.() ?? id, kind: options.kind?.() });
+      registry.claim({
+        id,
+        label: channelLabel?.() ?? id,
+        kind: options.kind?.(),
+      });
       // Published only now: a surface reading the registry -- the right hub --
       // renders the call, and there is no call until the publish is up.
       registry.attach({
@@ -337,6 +552,14 @@ export function useVoiceChat(
       clearTimeout(pollTimer);
       pollTimer = null;
     }
+
+    if (micResumeTimer) {
+      clearTimeout(micResumeTimer);
+      micResumeTimer = null;
+    }
+
+    micPublishing.value = false;
+    claimedElsewhere.value = { mic: false, cam: false };
 
     for (const [steamId] of subscriptions) {
       unsubscribe(steamId);
@@ -720,6 +943,14 @@ export function useVoiceChat(
       return;
     }
 
+    // Our gate is only evidence about audio we are actually sending. With the
+    // microphone on the phone this client is still metering a live capture
+    // nobody can hear, and reporting it would light this player up as talking
+    // over whatever silence the phone is really publishing.
+    if (!micPublishing.value && speaking) {
+      return;
+    }
+
     speakingReported = speaking;
 
     socket.event("voice:speaking", { channelId: id, speaking });
@@ -764,6 +995,32 @@ export function useVoiceChat(
 
         participants.value = data.participants ?? [];
         reconcileSubscriptions();
+      },
+    ),
+    socket.listen(
+      "voice:device-claim",
+      (data: { channelId: string; kind: "mic" | "cam"; claimed: boolean }) => {
+        if (data?.channelId !== lobbyId()) {
+          return;
+        }
+
+        claimedElsewhere.value = {
+          ...claimedElsewhere.value,
+          [data.kind]: data.claimed,
+        };
+
+        // Stop holding a publish the other device has already displaced --
+        // waiting for ICE to work it out is the delay this event exists to
+        // avoid -- and let the resume decide when to take it back.
+        if (data.kind === "mic" && data.claimed && micPublishing.value) {
+          micPublishing.value = false;
+          publishPc?.close();
+          publishPc = null;
+        }
+
+        if (data.kind === "mic" && !data.claimed) {
+          scheduleMicResume();
+        }
       },
     ),
     socket.listen(
@@ -847,6 +1104,9 @@ export function useVoiceChat(
     videoAllowed,
     videoEnabled,
     videoStarting,
+    cameraElsewhere,
+    micElsewhere,
+    reclaimMic,
     peerVideo,
     localVideo: () => camera.stream(),
     startVideo,

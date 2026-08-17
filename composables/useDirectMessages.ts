@@ -76,6 +76,10 @@ export function useDirectMessages() {
     const roomId = directRoomId(mySteamId, peer.steam_id);
     const tabId = directTabId(roomId);
 
+    const { add, directRoomIds, topPosition } = useDirectConversationBar();
+    const alreadyOnBar = directRoomIds().includes(roomId);
+    const position = alreadyOnBar ? undefined : topPosition();
+
     openTab({
       id: tabId,
       label: peer.name ?? peer.steam_id,
@@ -85,8 +89,16 @@ export function useDirectMessages() {
       pinned: false,
       avatarUrl: peer.avatar_url,
       steamId: String(peer.steam_id),
+      ...(position === undefined ? {} : { position }),
       activate,
     });
+
+    // Opening a conversation puts it on the rail, on every device. Skipped
+    // when it is already there, so simply clicking through to a conversation
+    // does not shuffle it back to the top.
+    if (!alreadyOnBar) {
+      add(roomId);
+    }
 
     if (activate) {
       setActiveTab(tabId);

@@ -415,12 +415,6 @@ function handlePointerUp() {
   }
 
   cancelPress();
-
-  // The click that follows this release would otherwise select whichever room
-  // the pointer ended up over.
-  setTimeout(() => {
-    suppressClick = false;
-  }, 0);
 }
 
 function cancelPress() {
@@ -434,6 +428,14 @@ function cancelPress() {
   draggingRoomId.value = null;
   dropIndex.value = null;
   dropOutside.value = false;
+
+  // Deferred, or the click that follows a release selects whichever room the
+  // pointer ended up over. Cleared here rather than on release alone: a drag
+  // the browser takes over ends in pointercancel, and a flag left standing
+  // swallows every later click on the rail.
+  setTimeout(() => {
+    suppressClick = false;
+  }, 0);
 }
 
 function moveConversation(roomId: string, index: number) {

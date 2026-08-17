@@ -425,6 +425,11 @@ export function useVoiceChat(
     try {
       publishPc?.close();
       publishPc = null;
+      // Dropped with the connection it describes. Left standing through a
+      // reclaim that then fails, it blocks resumeMic's own guard for good --
+      // the player is inaudible until the page is reloaded, and still lit up
+      // as talking.
+      micPublishing.value = false;
 
       if (!(await openMicPublish(id))) {
         scheduleMicResume();

@@ -527,6 +527,17 @@ class Socket extends EventEmitter {
 }
 const socket = new Socket();
 
+// The cursor the database actually wrote, replacing the one markLobbyRead
+// stamped from this browser's clock. Message timestamps come from the API, so
+// a browser running a minute slow would leave every message in the room newer
+// than its own cursor -- and the badge back the moment the next snapshot lands.
+socket.listen(
+  "chat:read",
+  ({ thread, lastReadAt }: { thread: string; lastReadAt: string }) => {
+    useChatReadState().setCursor(thread, lastReadAt);
+  },
+);
+
 socket.listen("matchmaking:region-stats", (data) => {
   useMatchmakingStore().regionStats = data;
 });

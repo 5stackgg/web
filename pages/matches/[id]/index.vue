@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, provide, ref, watch } from "vue";
+import { computed, markRaw, onUnmounted, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
@@ -543,20 +543,23 @@ const vsBaseClasses =
           <PageTransition :delay="200">
             <!-- Both rooms on one panel. Organizers and anyone not on a lineup
                get no `myLineupId`, so they get no team destination and this
-               falls back to the match room alone. -->
-            <ChatLobby
-              class="max-h-96"
-              instance="matches/id"
-              type="match"
-              :lobby-id="match.id"
-              :team-lobby-id="
-                myLineupId ? `${match.id}:${myLineupId}` : undefined
-              "
-              :play-notification-sound="
-                match.status !== e_match_status_enum.Live
-              "
-              v-if="canJoinLobby"
-            />
+               falls back to the match room alone.
+               Wrapped so the read cursor can follow whether it is on screen,
+               rather than whether it is allowed to be. -->
+            <div ref="inlineChat" v-if="canJoinLobby">
+              <ChatLobby
+                class="max-h-96"
+                instance="matches/id"
+                type="match"
+                :lobby-id="match.id"
+                :team-lobby-id="
+                  myLineupId ? `${match.id}:${myLineupId}` : undefined
+                "
+                :play-notification-sound="
+                  match.status !== e_match_status_enum.Live
+                "
+              />
+            </div>
           </PageTransition>
 
           <!-- Team voice, beside the chat rather than inside it: the voice
@@ -772,6 +775,10 @@ export default {
     useMatchContext().value = null;
     setPageChatFocus(null);
   },
+  beforeUnmount() {
+    this.inlineChatObserver?.disconnect();
+    this.inlineChatObserver = null;
+  },
   watch: {
     // The inline chat on this page is a real room being read, and until now it
     // told the server nothing -- so reading a match chat here left the badge up
@@ -787,6 +794,14 @@ export default {
         }
       },
     },
+    // The chat is only rendered once the match says this viewer may join it,
+    // which is after the subscription's first result.
+    canJoinLobby: {
+      immediate: true,
+      handler() {
+        void this.$nextTick(() => this.watchInlineChat());
+      },
+    },
   },
   data() {
     return {
@@ -794,6 +809,8 @@ export default {
       vetoPickCount: undefined,
       cameraReady: false,
       cameraOverlayDismissed: false,
+      inlineChatVisible: false,
+      inlineChatObserver: null as IntersectionObserver | null,
     };
   },
   apollo: {
@@ -1187,10 +1204,11 @@ export default {
     myLineupId() {
       return resolveMyLineupId(this.match, useAuthStore().me?.steam_id);
     },
-    // Null unless the inline chat is actually rendered, so simply being on the
-    // page is not mistaken for reading it.
+    // Null unless the inline chat is actually on screen, so neither being on
+    // the page nor merely being allowed into the room is mistaken for reading
+    // it.
     chatThread() {
-      return this.match && this.canJoinLobby
+      return this.match && this.canJoinLobby && this.inlineChatVisible
         ? chatThreadKey("match", this.match.id)
         : null;
     },
@@ -1313,6 +1331,32 @@ export default {
       }
 
       this.cameraReady = ready;
+    },
+    // Whether the inline chat is actually on screen. Being allowed into the
+    // room is not reading it: the panel sits partway down a long page, and
+    // stamping the cursor on the permission alone cleared the badge on every
+    // device the moment the page loaded, and dropped the push for messages
+    // nobody had seen.
+    watchInlineChat() {
+      this.inlineChatObserver?.disconnect();
+      this.inlineChatObserver = null;
+
+      const element = this.$refs.inlineChat as HTMLElement | undefined;
+
+      if (!element || typeof IntersectionObserver === "undefined") {
+        this.inlineChatVisible = false;
+        return;
+      }
+
+      this.inlineChatObserver = markRaw(
+        new IntersectionObserver((entries) => {
+          this.inlineChatVisible = entries.some(
+            ({ isIntersecting }) => isIntersecting,
+          );
+        }),
+      );
+
+      this.inlineChatObserver.observe(element);
     },
   },
 };

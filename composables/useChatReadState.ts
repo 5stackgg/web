@@ -33,10 +33,19 @@ export function useChatReadState() {
   // Called alongside socket.markLobbyRead so the badge clears immediately
   // rather than on the next hydrate, and so a room's history snapshot arriving
   // afterwards doesn't put it straight back.
+  //
+  // Optimistic, and from the wrong clock: message timestamps are the API's, and
+  // this is the browser's. The server answers `chat:read` with what it wrote,
+  // and setCursor below corrects it a round trip later.
   function markRead(type: string, lobbyId: string) {
+    setCursor(chatThreadKey(type, lobbyId), new Date().toISOString());
+  }
+
+  // The cursor as the server holds it, keyed by the thread it sent back.
+  function setCursor(thread: string, lastReadAt: string) {
     cursors.value = {
       ...cursors.value,
-      [chatThreadKey(type, lobbyId)]: new Date().toISOString(),
+      [thread]: lastReadAt,
     };
   }
 
@@ -58,5 +67,5 @@ export function useChatReadState() {
     }).length;
   }
 
-  return { cursors, hydrate, markRead, unreadSince };
+  return { cursors, hydrate, markRead, setCursor, unreadSince };
 }

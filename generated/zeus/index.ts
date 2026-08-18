@@ -1664,11 +1664,19 @@ export type ValueTypes = {
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryFleetTotals"]: AliasType<{
+	appearancesReported?:boolean | `@${string}`,
+	competitionReported?:boolean | `@${string}`,
 	dedicatedServers?:boolean | `@${string}`,
+	eventTeams?:boolean | `@${string}`,
+	events?:boolean | `@${string}`,
 	gameServerNodes?:boolean | `@${string}`,
 	gameServerNodesEnabled?:boolean | `@${string}`,
 	gameServerNodesOnline?:boolean | `@${string}`,
 	gpuNodes?:boolean | `@${string}`,
+	leagueRegistrations?:boolean | `@${string}`,
+	leagueSeasons?:boolean | `@${string}`,
+	leagueSeasonsFinished?:boolean | `@${string}`,
+	leagueTeams?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
 	matchesAbandoned?:boolean | `@${string}`,
@@ -1686,6 +1694,7 @@ export type ValueTypes = {
 	matchesYear?:boolean | `@${string}`,
 	outcomesReported?:boolean | `@${string}`,
 	panels?:boolean | `@${string}`,
+	playerAppearances?:boolean | `@${string}`,
 	playersActive30d?:boolean | `@${string}`,
 	playersActive7d?:boolean | `@${string}`,
 	playersKnown?:boolean | `@${string}`,
@@ -1693,9 +1702,13 @@ export type ValueTypes = {
 	playersRegistered?:boolean | `@${string}`,
 	publicServers?:boolean | `@${string}`,
 	regions?:boolean | `@${string}`,
+	scrimRequests?:boolean | `@${string}`,
 	servers?:boolean | `@${string}`,
 	serversEnabled?:boolean | `@${string}`,
 	teams?:boolean | `@${string}`,
+	tournamentTeams?:boolean | `@${string}`,
+	tournaments?:boolean | `@${string}`,
+	tournamentsFinished?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryGrowthPoint"]: AliasType<{
@@ -1745,6 +1758,8 @@ export type ValueTypes = {
 }>;
 	["TelemetryVersionCount"]: AliasType<{
 	installs?:boolean | `@${string}`,
+	rank?:boolean | `@${string}`,
+	since?:boolean | `@${string}`,
 	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -68028,11 +68043,19 @@ export type ResolverInputTypes = {
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryFleetTotals"]: AliasType<{
+	appearancesReported?:boolean | `@${string}`,
+	competitionReported?:boolean | `@${string}`,
 	dedicatedServers?:boolean | `@${string}`,
+	eventTeams?:boolean | `@${string}`,
+	events?:boolean | `@${string}`,
 	gameServerNodes?:boolean | `@${string}`,
 	gameServerNodesEnabled?:boolean | `@${string}`,
 	gameServerNodesOnline?:boolean | `@${string}`,
 	gpuNodes?:boolean | `@${string}`,
+	leagueRegistrations?:boolean | `@${string}`,
+	leagueSeasons?:boolean | `@${string}`,
+	leagueSeasonsFinished?:boolean | `@${string}`,
+	leagueTeams?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
 	matchesAbandoned?:boolean | `@${string}`,
@@ -68050,6 +68073,7 @@ export type ResolverInputTypes = {
 	matchesYear?:boolean | `@${string}`,
 	outcomesReported?:boolean | `@${string}`,
 	panels?:boolean | `@${string}`,
+	playerAppearances?:boolean | `@${string}`,
 	playersActive30d?:boolean | `@${string}`,
 	playersActive7d?:boolean | `@${string}`,
 	playersKnown?:boolean | `@${string}`,
@@ -68057,9 +68081,13 @@ export type ResolverInputTypes = {
 	playersRegistered?:boolean | `@${string}`,
 	publicServers?:boolean | `@${string}`,
 	regions?:boolean | `@${string}`,
+	scrimRequests?:boolean | `@${string}`,
 	servers?:boolean | `@${string}`,
 	serversEnabled?:boolean | `@${string}`,
 	teams?:boolean | `@${string}`,
+	tournamentTeams?:boolean | `@${string}`,
+	tournaments?:boolean | `@${string}`,
+	tournamentsFinished?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryGrowthPoint"]: AliasType<{
@@ -68109,6 +68137,8 @@ export type ResolverInputTypes = {
 }>;
 	["TelemetryVersionCount"]: AliasType<{
 	installs?:boolean | `@${string}`,
+	rank?:boolean | `@${string}`,
+	since?:boolean | `@${string}`,
 	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -134315,11 +134345,19 @@ export type ModelTypes = {
 	total: number
 };
 	["TelemetryFleetTotals"]: {
-		dedicatedServers: number,
+		appearancesReported: number,
+	competitionReported: number,
+	dedicatedServers: number,
+	eventTeams: number,
+	events: number,
 	gameServerNodes: number,
 	gameServerNodesEnabled: number,
 	gameServerNodesOnline: number,
 	gpuNodes: number,
+	leagueRegistrations: number,
+	leagueSeasons: number,
+	leagueSeasonsFinished: number,
+	leagueTeams: number,
 	mapsPlayed: number,
 	matches: number,
 	matchesAbandoned: number,
@@ -134337,6 +134375,7 @@ export type ModelTypes = {
 	matchesYear: number,
 	outcomesReported: number,
 	panels: number,
+	playerAppearances: number,
 	playersActive30d: number,
 	playersActive7d: number,
 	playersKnown: number,
@@ -134344,9 +134383,13 @@ export type ModelTypes = {
 	playersRegistered: number,
 	publicServers: number,
 	regions: number,
+	scrimRequests: number,
 	servers: number,
 	serversEnabled: number,
-	teams: number
+	teams: number,
+	tournamentTeams: number,
+	tournaments: number,
+	tournamentsFinished: number
 };
 	["TelemetryGrowthPoint"]: {
 		installs: number,
@@ -134389,6 +134432,8 @@ export type ModelTypes = {
 };
 	["TelemetryVersionCount"]: {
 		installs: number,
+	rank: number,
+	since: string,
 	version: string
 };
 	["TestUploadResponse"]: {
@@ -192697,11 +192742,19 @@ export type GraphQLTypes = {
 };
 	["TelemetryFleetTotals"]: {
 	__typename: "TelemetryFleetTotals",
+	appearancesReported: number,
+	competitionReported: number,
 	dedicatedServers: number,
+	eventTeams: number,
+	events: number,
 	gameServerNodes: number,
 	gameServerNodesEnabled: number,
 	gameServerNodesOnline: number,
 	gpuNodes: number,
+	leagueRegistrations: number,
+	leagueSeasons: number,
+	leagueSeasonsFinished: number,
+	leagueTeams: number,
 	mapsPlayed: number,
 	matches: number,
 	matchesAbandoned: number,
@@ -192719,6 +192772,7 @@ export type GraphQLTypes = {
 	matchesYear: number,
 	outcomesReported: number,
 	panels: number,
+	playerAppearances: number,
 	playersActive30d: number,
 	playersActive7d: number,
 	playersKnown: number,
@@ -192726,9 +192780,13 @@ export type GraphQLTypes = {
 	playersRegistered: number,
 	publicServers: number,
 	regions: number,
+	scrimRequests: number,
 	servers: number,
 	serversEnabled: number,
-	teams: number
+	teams: number,
+	tournamentTeams: number,
+	tournaments: number,
+	tournamentsFinished: number
 };
 	["TelemetryGrowthPoint"]: {
 	__typename: "TelemetryGrowthPoint",
@@ -192778,6 +192836,8 @@ export type GraphQLTypes = {
 	["TelemetryVersionCount"]: {
 	__typename: "TelemetryVersionCount",
 	installs: number,
+	rank: number,
+	since: string,
 	version: string
 };
 	["TestUploadResponse"]: {

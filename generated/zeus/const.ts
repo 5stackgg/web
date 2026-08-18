@@ -38132,11 +38132,19 @@ export const ReturnTypes: Record<string,any> = {
 		total:"Int"
 	},
 	TelemetryFleetTotals:{
+		appearancesReported:"Int",
+		competitionReported:"Int",
 		dedicatedServers:"Int",
+		eventTeams:"Int",
+		events:"Int",
 		gameServerNodes:"Int",
 		gameServerNodesEnabled:"Int",
 		gameServerNodesOnline:"Int",
 		gpuNodes:"Int",
+		leagueRegistrations:"Int",
+		leagueSeasons:"Int",
+		leagueSeasonsFinished:"Int",
+		leagueTeams:"Int",
 		mapsPlayed:"Int",
 		matches:"Int",
 		matchesAbandoned:"Int",
@@ -38154,6 +38162,7 @@ export const ReturnTypes: Record<string,any> = {
 		matchesYear:"Int",
 		outcomesReported:"Int",
 		panels:"Int",
+		playerAppearances:"Int",
 		playersActive30d:"Int",
 		playersActive7d:"Int",
 		playersKnown:"Int",
@@ -38161,9 +38170,13 @@ export const ReturnTypes: Record<string,any> = {
 		playersRegistered:"Int",
 		publicServers:"Int",
 		regions:"Int",
+		scrimRequests:"Int",
 		servers:"Int",
 		serversEnabled:"Int",
-		teams:"Int"
+		teams:"Int",
+		tournamentTeams:"Int",
+		tournaments:"Int",
+		tournamentsFinished:"Int"
 	},
 	TelemetryGrowthPoint:{
 		installs:"Int",
@@ -38206,6 +38219,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	TelemetryVersionCount:{
 		installs:"Int",
+		rank:"Int",
+		since:"String",
 		version:"String"
 	},
 	TestUploadResponse:{

@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 const props = defineProps<{
   faceitSkillLevel: number | null | undefined;
   faceitElo: number | null | undefined;
@@ -79,7 +82,7 @@ const titleText = computed(() => {
     parts.push(props.faceitNickname);
   }
   if ((props.faceitSkillLevel ?? null) !== null) {
-    parts.push(`Level ${props.faceitSkillLevel}`);
+    parts.push(t("player.faceit_level", { level: props.faceitSkillLevel }));
   }
   if ((props.faceitElo ?? null) !== null) {
     parts.push(`${props.faceitElo!.toLocaleString()} ELO`);

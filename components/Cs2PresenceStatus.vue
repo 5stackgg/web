@@ -32,6 +32,6 @@ const text = computed(() => cs2PresenceText(props.state));
     class="flex items-center gap-2 rounded-md border-l-2 border-muted-foreground/30 bg-gradient-to-r from-muted/40 to-transparent px-2.5 py-1.5 text-xs text-muted-foreground"
   >
     <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground/50" />
-    <span class="min-w-0 truncate">Not in CS2 right now</span>
+    <span class="min-w-0 truncate">{{ $t("player.status.not_in_cs2") }}</span>
   </div>
 </template>

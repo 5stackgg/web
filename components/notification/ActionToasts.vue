@@ -118,7 +118,9 @@ const items = computed<ToastItem[]>(() => {
     list.push({
       id,
       kind: t("layouts.notifications.toast.draft_invite"),
-      who: invite.draft_game?.host?.name || "The host",
+      who:
+        invite.draft_game?.host?.name ||
+        t("layouts.notifications.toast.actor_host"),
       action: t("layouts.notifications.toast.invited_you"),
       detail:
         `${invite.draft_game?.type ?? ""} ${invite.draft_game?.mode ?? ""}`.trim(),
@@ -134,7 +136,9 @@ const items = computed<ToastItem[]>(() => {
     list.push({
       id: `team:${invite.id}`,
       kind: t("layouts.notifications.toast.team_invite"),
-      who: invite.invited_by?.name || "A teammate",
+      who:
+        invite.invited_by?.name ||
+        t("layouts.notifications.toast.actor_teammate"),
       action: t("layouts.notifications.toast.invited_you"),
       detail: invite.team?.name ?? "",
       accept: async () => {
@@ -149,7 +153,9 @@ const items = computed<ToastItem[]>(() => {
     list.push({
       id: `tournament:${invite.id}`,
       kind: t("layouts.notifications.toast.tournament_invite"),
-      who: invite.invited_by?.name || "An organizer",
+      who:
+        invite.invited_by?.name ||
+        t("layouts.notifications.toast.actor_organizer"),
       action: t("layouts.notifications.toast.invited_you"),
       detail: invite.team?.tournament?.name ?? invite.team?.name ?? "",
       accept: () => inviteAction("tournament", invite.id, true),
@@ -162,7 +168,8 @@ const items = computed<ToastItem[]>(() => {
     list.push({
       id: `lobby:${lobby.id}`,
       kind: t("layouts.notifications.toast.lobby_invite"),
-      who: captain?.player?.name || "A player",
+      who:
+        captain?.player?.name || t("layouts.notifications.toast.actor_player"),
       action: t("layouts.notifications.toast.invited_party"),
       detail: "",
       accept: () => lobbyMutation(lobby.id, true),
@@ -174,7 +181,7 @@ const items = computed<ToastItem[]>(() => {
     list.push({
       id: `friend:${friend.steam_id}`,
       kind: t("layouts.notifications.toast.friend_request"),
-      who: friend.name || "A player",
+      who: friend.name || t("layouts.notifications.toast.actor_player"),
       action: t("layouts.notifications.toast.wants_to_be_friends"),
       detail: "",
       accept: () => friendMutation(friend.steam_id, true),

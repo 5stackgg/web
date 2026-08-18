@@ -1,4 +1,5 @@
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
@@ -70,6 +71,7 @@ export type NotificationStackItem =
   | { kind: "stack"; entityId: string; notifications: Notification[] };
 
 export const useNotificationStore = defineStore("notifaicationStore", () => {
+  const { t } = useI18n();
 
   const team_invites = ref<any[]>([]);
   const tournament_team_invites = ref<any[]>([]);
@@ -162,9 +164,10 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     return seasonRebuilds.value.map((season) => ({
       id: `season-rebuild:${season.id}`,
       __synthetic: true,
-      title: `Season ${season.number ?? "?"} ELO rebuild required`,
-      message:
-        "This season's ELO is out of date. Rebuild to recompute its ELO and standings.",
+      title: t("layouts.notifications.season_rebuild.title", {
+        number: season.number ?? "?",
+      }),
+      message: t("layouts.notifications.season_rebuild.message"),
       steam_id: "",
       type: "EloRecompute",
       role: "administrator",
@@ -174,7 +177,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       created_at: new Date().toISOString(),
       actions: [
         {
-          label: "Rebuild Season ELO",
+          label: t("layouts.notifications.season_rebuild.action"),
           graphql: {
             type: "mutation",
             action: "backfillSeasonElo",

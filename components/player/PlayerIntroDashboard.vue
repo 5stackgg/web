@@ -905,7 +905,7 @@ const recentChartData = computed(() => {
     });
     const seriesAvg = avg(def.values.filter((v) => Number.isFinite(v)));
     datasets.push({
-      label: `${def.label} avg`,
+      label: t("charts.series_avg", { label: def.label }),
       data: def.values.map(() => seriesAvg),
       borderColor: "rgba(255,255,255,0.4)",
       borderWidth: 1.25,

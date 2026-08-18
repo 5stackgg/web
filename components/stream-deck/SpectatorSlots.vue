@@ -411,7 +411,12 @@ function press(s: PaddedSlot) {
                   ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                   : 'w-5 bg-foreground/10',
               ]"
-              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+              :title="s.isPlaceholder
+                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                : $t('stream_deck.spectator.slot_key', {
+                    slot: s.uiSlot,
+                    key: keyForSlot(s.slot),
+                  })"
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -431,7 +436,10 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through' : '',
               ]"
             >
-              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+              {{ s.isPlaceholder
+                  ? "—"
+                  : (s.name ??
+                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
             </span>
             <!-- Inline pills get the same health bar as a thin sliver
                    at the bottom edge of the pill. -->
@@ -494,7 +502,12 @@ function press(s: PaddedSlot) {
                     ? 'bg-blue-500/30 text-blue-100'
                     : 'bg-amber-500/30 text-amber-100',
               ]"
-              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+              :title="s.isPlaceholder
+                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                : $t('stream_deck.spectator.slot_key', {
+                    slot: s.uiSlot,
+                    key: keyForSlot(s.slot),
+                  })"
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -535,7 +548,10 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
               ]"
             >
-              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+              {{ s.isPlaceholder
+                  ? "—"
+                  : (s.name ??
+                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
             </span>
 
 
@@ -689,7 +705,12 @@ function press(s: PaddedSlot) {
                   ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                   : 'w-5 bg-foreground/10',
               ]"
-              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+              :title="s.isPlaceholder
+                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                : $t('stream_deck.spectator.slot_key', {
+                    slot: s.uiSlot,
+                    key: keyForSlot(s.slot),
+                  })"
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -709,7 +730,10 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through' : '',
               ]"
             >
-              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+              {{ s.isPlaceholder
+                  ? "—"
+                  : (s.name ??
+                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
             </span>
             <span
               v-if="s.alive"
@@ -763,7 +787,12 @@ function press(s: PaddedSlot) {
                     ? 'bg-blue-500/30 text-blue-100'
                     : 'bg-amber-500/30 text-amber-100',
               ]"
-              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+              :title="s.isPlaceholder
+                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                : $t('stream_deck.spectator.slot_key', {
+                    slot: s.uiSlot,
+                    key: keyForSlot(s.slot),
+                  })"
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -799,7 +828,10 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
               ]"
             >
-              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+              {{ s.isPlaceholder
+                  ? "—"
+                  : (s.name ??
+                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
             </span>
 
 

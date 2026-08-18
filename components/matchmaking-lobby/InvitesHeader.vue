@@ -45,7 +45,9 @@ const handleInviteClick = () => {
         </Button>
       </TooltipTrigger>
       <TooltipContent side="left">
-        New Invites ({{ totalCount }})</TooltipContent
+        {{
+          $t("matchmaking.new_invites_count", { count: totalCount })
+        }}</TooltipContent
       >
     </Tooltip>
   </div>

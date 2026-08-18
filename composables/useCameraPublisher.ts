@@ -21,9 +21,24 @@ export type CameraPublishPhase =
 // spinner finds out it failed rather than assuming they are live.
 const ICE_TIMEOUT = 20_000;
 
+// Carries an i18n key instead of an English sentence, so the failure can cross
+// the reject boundary without becoming untranslatable text.
+class CameraPublishError extends Error {
+  constructor(
+    readonly key: string,
+    readonly detail: string | null = null,
+  ) {
+    super(key);
+  }
+}
+
 export function useCameraPublisher() {
   const phase = ref<CameraPublishPhase>("preview");
+  // `errorMessage` is an i18n key, `errorDetail` the raw technical line -- same
+  // split useVoiceChat/useAudioSettings use, so the UI never renders untranslated
+  // browser text.
   const errorMessage = ref<string | null>(null);
+  const errorDetail = ref<string | null>(null);
 
   let publishPc: RTCPeerConnection | null = null;
 
@@ -63,8 +78,9 @@ export function useCameraPublisher() {
         if (state === "failed" || state === "closed") {
           stop();
           reject(
-            new Error(
-              `the camera connected to the server but no media path could be established (ice ${state})`,
+            new CameraPublishError(
+              "camera.errors.no_media_path",
+              `ice ${state}`,
             ),
           );
         }
@@ -73,8 +89,9 @@ export function useCameraPublisher() {
       timer = setTimeout(() => {
         stop();
         reject(
-          new Error(
-            `the camera connected to the server but no media path could be established (ice timed out after ${ICE_TIMEOUT / 1000}s)`,
+          new CameraPublishError(
+            "camera.errors.ice_timeout",
+            `ice timed out after ${ICE_TIMEOUT / 1000}s`,
           ),
         );
       }, ICE_TIMEOUT);
@@ -99,7 +116,8 @@ export function useCameraPublisher() {
 
       if (state === "failed" || state === "closed") {
         phase.value = "error";
-        errorMessage.value = `the camera feed dropped (ice ${state})`;
+        errorMessage.value = "camera.errors.feed_dropped";
+        errorDetail.value = `ice ${state}`;
       }
     };
 
@@ -161,6 +179,7 @@ export function useCameraPublisher() {
   ) {
     phase.value = "connecting";
     errorMessage.value = null;
+    errorDetail.value = null;
 
     try {
       const pc = new RTCPeerConnection({ iceServers: await ice.load() });
@@ -191,8 +210,14 @@ export function useCameraPublisher() {
       close();
 
       phase.value = "error";
-      errorMessage.value =
-        error instanceof Error ? error.message : String(error);
+      if (error instanceof CameraPublishError) {
+        errorMessage.value = error.key;
+        errorDetail.value = error.detail;
+      } else {
+        errorMessage.value = "camera.errors.unknown";
+        errorDetail.value =
+          error instanceof Error ? error.message : String(error);
+      }
 
       return false;
     }
@@ -225,6 +250,7 @@ export function useCameraPublisher() {
 
     phase.value = "preview";
     errorMessage.value = null;
+    errorDetail.value = null;
   }
 
   onScopeDispose(close);
@@ -232,6 +258,7 @@ export function useCameraPublisher() {
   return {
     phase,
     errorMessage,
+    errorDetail,
     connect,
     replaceVideo,
     replaceAudio,

@@ -976,7 +976,8 @@
     "live": "LIVE",
     "unplayed": "NICHT GESPIELT",
     "upcoming": "ANSTEHEND",
-    "decider": "Decider"
+    "decider": "Decider",
+    "map_number": "KARTE {number}"
   },
   "elo_change_badge": {
     "comp": "COMP",
@@ -1112,11 +1113,7 @@
     "notes_section": "Notizen",
     "notes_placeholder": "Alles, was Gegner wissen sollten — Server-Präferenzen, Anti-Cheat, Voice usw.",
     "settings_saved": "Scrim-Einstellungen gespeichert",
-    "settings_save_error": "Scrim-Einstellungen konnten nicht gespeichert werden",
-    "calendar_link_copied": "Kalender-Link kopiert",
-    "calendar_subscription_help": "Abonniere diese URL in deiner Kalender-App, um geplante Scrims zu sehen.",
-    "calendar_link_error": "Kalender-Link konnte nicht geladen werden",
-    "subscribe_to_matches": "Geplante Matches abonnieren"
+    "settings_save_error": "Scrim-Einstellungen konnten nicht gespeichert werden"
   },
   "elo_chart_bucket": {
     "monthly": "Monatlich",
@@ -1180,24 +1177,14 @@
   },
   "avatar": {
     "upload": "Avatar hochladen",
-    "change": "Avatar ändern",
-    "remove": "Avatar entfernen",
-    "upload_roster": "Roster-Bild hochladen",
-    "change_roster": "Roster-Bild ändern",
-    "remove_roster": "Roster-Bild entfernen",
     "team_avatar": "Team-Avatar",
     "player_avatar": "Spieler-Avatar",
     "player_roster_image": "Roster-Bild des Spielers",
     "upload_success": "Avatar hochgeladen",
     "upload_failed": "Avatar-Upload fehlgeschlagen",
-    "remove_success": "Avatar entfernt",
-    "remove_failed": "Avatar konnte nicht entfernt werden",
     "too_large": "Bild darf höchstens {size} MB groß sein",
     "invalid_type": "Nur PNG-, JPEG- oder WebP-Bilder sind erlaubt",
     "uploading": "Lädt hoch...",
-    "drop_to_upload": "Zum Hochladen ablegen",
-    "hint": "Ziehen & ablegen oder klicken · PNG, JPEG, WebP · bis 5 MB",
-    "roster_hint": "Ziehen & ablegen oder klicken · Kopf & Schultern, 400×420 · wird im Browser skaliert, danach zuschneiden und Hintergrund entfernen",
     "bg_removal_failed": "Hintergrund konnte nicht entfernt werden",
     "roster_editor": {
       "title": "Roster-Bild bearbeiten",
@@ -1236,7 +1223,167 @@
       "follow_logs": "Logs verfolgen",
       "timestamps": "Zeitstempel"
     },
-    "coming_soon": "Kommt bald",
+    "system_telemetry": {
+      "title": "Flotten-Telemetrie",
+      "no_data": "Noch keine Daten gemeldet",
+      "installs": {
+        "title": "Panels",
+        "online": "Jetzt online",
+        "total": "Gesamt",
+        "active_7d": "Aktiv 7 T.",
+        "active_30d": "Aktiv 30 T.",
+        "new_30d": "Neu 30 T.",
+        "retained_180d": "Gehalten 180 T.",
+        "retained_180d_hint": "Panels, die vor über 180 Tagen zum ersten Mal gesehen wurden und diese Woche immer noch melden.",
+        "live": "Meldet innerhalb der letzten Stunde",
+        "recency": "Zuletzt gemeldet",
+        "recency_hint": "Jedes jemals gesehene Panel, aufgeteilt in überschneidungsfreie Zeitfenster danach, wann es sich zuletzt gemeldet hat. Die Fenster überlappen sich nicht und ergeben zusammen den Gesamtwert.",
+        "seen_24h": "Heute",
+        "dormant": "Inaktiv",
+        "reporting": "In Summen",
+        "reporting_hint": "Panels, deren letzte Meldung ausführlich genug ist, um in die Flottensummen unten einzufließen. Panels, die seit über 30 Tagen still sind, bleiben außen vor, damit die Summen keine längst abgebauten Server weiterzählen."
+      },
+      "totals": {
+        "self_reported": "Summiert über die jeweils letzte Meldung aller Panels, die in den letzten 30 Tagen aktiv waren — „In Summen“ oben zeigt, wie viele das sind. Panels werden selbst gehostet und melden diese Zahlen selbst; die Werte werden beim Eingang geprüft, lassen sich aber nicht unabhängig verifizieren. Infrastruktur ist eine Momentaufnahme, keine laufende Summe.",
+        "game_server_nodes": "Gameserver-Nodes",
+        "nodes_online": "Nodes online",
+        "nodes_offline": "Offline",
+        "nodes_hint": "Nur aktivierte Nodes. Ein von einem Betreiber abgeschalteter Node ist keine Kapazität und kann kein Match aufnehmen, daher bleibt er hier überall unberücksichtigt — auch bei den Regionen, in denen er steht, und bei der Frage, ob er eine GPU hat.",
+        "regions": "Regionen",
+        "servers": "Server",
+        "servers_enabled": "Server aktiviert",
+        "dedicated_servers": "Dediziert",
+        "servers_managed": "Panel-verwaltet",
+        "public_servers": "Öffentlich",
+        "matches": "Matches",
+        "maps_played": "Gespielte Karten",
+        "not_reported_hint": "Noch kein Panel hat diesen Wert gesendet. Er wurde dem Telemetriebericht erst nach den aktuell in der Flotte laufenden Builds hinzugefügt und füllt sich, sobald Panels aktualisiert werden — er bedeutet also nicht null.",
+        "hosted_windows": "Gehostet im Zeitverlauf",
+        "completion": "Mit Ergebnis beendet",
+        "completion_hint": "Anteil der von einem Panel gestarteten Matches, die mit einem Ergebnis endeten statt abgebrochen zu werden. Zählt nur Matches, die es bis live geschafft haben.",
+        "player_base": "Spielerbasis",
+        "player_base_hint": "Jede Zeile ist ein Ausschnitt der Steam-IDs, die Panels gesehen haben; der Prozentwert bezieht sich auf die oberste Zeile. Die Zeilen bauen nicht aufeinander auf — weit mehr Steam-IDs haben Statistiken auf einer Karte als sich je angemeldet haben, denn ein Panel legt für jeden Verbindungsaufbau zu einem Server einen Eintrag an.",
+        "matches_live": "Jetzt live",
+        "matches_live_caption": "bei letzter Meldung",
+        "matches_finished": "Mit Ergebnis beendet",
+        "matches_abandoned": "Abgebrochen",
+        "matches_created": "Erstellt",
+        "matches_created_caption": "inkl. nie gestartet",
+        "matches_imported": "Importierte Matches",
+        "players": "Spieler",
+        "players_played": "Match gespielt",
+        "players_known": "Gesehene Steam-IDs",
+        "players_active": "Aktive Spieler 30 T.",
+        "players_active_7d": "Aktive Spieler 7 T.",
+        "players_active_30d": "Aktive Spieler 30 T.",
+        "teams": "Teams",
+        "infrastructure": "Infrastruktur",
+        "match_volume": "Match-Volumen",
+        "competition": "Wettbewerb",
+        "competition_hint": "Die Match-Zahlen hier überschneiden sich: Ein Ligaspiel wird innerhalb einer Turnierphase ausgetragen und zählt daher in beiden. Alles Übrige — wie viele Turniere und Saisons liefen und wer teilgenommen hat — zählt den Wettbewerb selbst, nicht seine Matches.",
+        "tournaments": "Turniere",
+        "league_seasons": "Liga-Saisons",
+        "league_teams": "Liga-Teams",
+        "scrim_requests": "Scrim-Anfragen",
+        "events": "Events",
+        "teams_entered": "Teilnehmende Teams",
+        "registrations": "Anmeldungen",
+        "finished": "Beendet",
+        "ongoing": "Laufend",
+        "played": "Gespielt",
+        "maps_per_player": "{maps} Karten pro Spieler",
+        "maps_per_player_hint": "Karteneinsätze geteilt durch die Zahl der verschiedenen Personen, die eine gespielt haben. Viele Matches bei niedrigem Wert bedeuten eine kleine Gruppe, die viel spielt — keine lebhafte Community.",
+        "community": "Community",
+        "hosted_hint": "„Gehostet“ zählt nur Matches, die ein Panel selbst ausgetragen hat. Importierte Matches stammen aus FACEIT oder dem CS2-Matchverlauf und werden getrennt ausgewiesen.",
+        "community_hint": "„Spieler“ zählt Konten, die sich mindestens einmal mit Steam angemeldet haben. Ein Panel legt außerdem für jede Steam-ID einen Eintrag an, die es nur je in einem Lineup, einer Demo oder einer Sanktion gesehen hat — diese werden getrennt als „Gesehene Steam-IDs“ gezählt.",
+        "gpu_nodes": "GPU-Nodes",
+        "all_time": "gesamt",
+        "last_7d": "letzte 7 Tage",
+        "last_30d": "letzte 30 Tage",
+        "last_1y": "letzte 365 Tage",
+        "signed_in_caption": "mindestens einmal angemeldet",
+        "players_known_caption": "inkl. nie angemeldet"
+      },
+      "meter": {
+        "remainder": "Sonstige"
+      },
+      "composition": {
+        "hint": "„Nach Typ“ schlüsselt die Matches auf, die Panels selbst gehostet haben. „Nach Quelle“ umfasst gehostete und importierte zusammen und ergibt daher mehr als die Summe der gehosteten.",
+        "by_type": "Nach Typ",
+        "by_source": "Nach Quelle"
+      },
+      "distribution": {
+        "title": "Flottenverteilung",
+        "hint": "Panels, die in den letzten 30 Tagen aktiv waren, jeweils die Top 8. Das Land ergibt sich aus dem Netzwerk, über das ein Heartbeat eintrifft, nicht aus Angaben eines Panels über sich selbst.",
+        "versions": "Build-Verbreitung",
+        "versions_hint": "Ein Commit-Hash hat keine eigene Reihenfolge, daher gilt der Build als neuester, der zuerst in einer Meldung auftauchte. Alles Weitere wird als Abstand in Releases dazu gemessen.",
+        "on_current": "der Panels auf dem neuesten Build",
+        "behind": "Zurück",
+        "build_current": "Aktuell",
+        "build_previous": "Eins zurück",
+        "build_older": "Älter",
+        "runtimes": "Plugin-Runtime",
+        "countries": "Land"
+      },
+      "activity": {
+        "matches": "Gehostete Matches pro Tag (90 T.)",
+        "matches_unit": "Matches"
+      },
+      "growth": {
+        "title": "Neue Panels pro Monat",
+        "unit": "Panels"
+      },
+      "features": {
+        "feature": "Funktion",
+        "enabled": "Aktiviert",
+        "keys": {
+          "tournaments": "Turniere",
+          "leagues": "Ligen",
+          "seasons": "Saisons",
+          "events": "Events",
+          "news": "News",
+          "highlights": "Auto-Highlights",
+          "clip_renders": "Clip-Renderings",
+          "system_alerts": "Systemmeldungen",
+          "awards": "Auszeichnungen",
+          "scrims": "Scrim-Finder",
+          "matchmaking": "Matchmaking",
+          "custom_pages": "Plugins",
+          "external_matches": "Externe Matches",
+          "faceit_import": "FACEIT-Import",
+          "draft_games": "Draft-Spiele",
+          "demos": "Demos",
+          "sanctions": "Sanktionen",
+          "api_keys": "API-Schlüssel",
+          "gamedata_validations": "Gamedata-Prüfungen",
+          "steam_presence": "Steam-Präsenz",
+          "discord_bot": "Discord-Bot",
+          "game_server_nodes": "Gameserver-Nodes",
+          "version_pinning": "Versions-Pinning",
+          "stream_login_protection": "Stream-Login-Schutz",
+          "player_name_registration": "Spielernamen-Registrierung",
+          "league_division_requests": "Liga-Divisionsanfragen",
+          "branding": "Eigenes Branding",
+          "demo_playback": "Demo-Wiedergabe",
+          "live_streaming": "Live-Streaming",
+          "highlights_imported": "Auto-Highlights (importiert)",
+          "clip_branding": "Clip-Branding",
+          "push_notifications": "Push-Benachrichtigungen",
+          "voice_chat": "Sprachchat",
+          "video_chat": "Videochat"
+        },
+        "panels_using": "Panels mit Nutzung",
+        "total": "Gesamt",
+        "optional": "Optionale Funktionen",
+        "optional_hint": "Funktionen, die ein Admin in den Anwendungseinstellungen ein- oder ausschalten kann.",
+        "capabilities": "Erkannte Fähigkeiten",
+        "capabilities_hint": "Keine Anwendungseinstellungen — ein Admin kann hier nichts umschalten. Diese Werte werden aus hinterlegten Zugangsdaten (Discord, Tailscale, Steam), aus den GPU-Workload-Schaltern der einzelnen Gameserver-Nodes oder daraus abgeleitet, ob ein Branding hinterlegt wurde.",
+        "configured": "Konfiguriert",
+        "always": "Immer verfügbar",
+        "always_hint": "Sind in jedem Panel enthalten und lassen sich nicht abschalten — aussagekräftig ist daher nur die Nutzung.",
+        "no_metric_hint": "Für diese Funktion wird nichts gezählt, daher gibt es keine Nutzung zu melden — das heißt nicht, dass sie kein Panel nutzt."
+      }
+    },
     "tournaments": {
       "title": "Turniere",
       "description": "Durchstöbere laufende, offene und kommende Turniere oder filtere nach Status und Datum, um ein bestimmtes Bracket zu finden.",
@@ -1365,6 +1512,7 @@
         "my_account": "Mein Konto",
         "api_keys": "API-Keys",
         "linked_accounts": "Verknüpfte Konten",
+        "voice": "Sprache & Audio",
         "api_keys_management": {
           "add_api_key": "API-Key hinzufügen",
           "description": "Keys authentifizieren Anfragen an die 5Stack-API — behandle sie wie Passwörter.",
@@ -1380,7 +1528,6 @@
           "created": "Erstellt",
           "last_used": "Zuletzt genutzt",
           "never": "Nie",
-          "actions": "Aktionen",
           "delete_confirmation_title": "API-Key löschen",
           "delete_confirmation_description": "API-Key „{label}“ wirklich löschen? Das lässt sich nicht rückgängig machen und alle Anwendungen, die diesen Key nutzen, verlieren den Zugriff.",
           "create_api_key": "API-Key erstellen",
@@ -1422,6 +1569,189 @@
           "unlinked": "Discord-Konto getrennt"
         }
       },
+      "voice": {
+        "description": "Dein Mikrofon, deine Pegel und wie laut alle anderen sind. Jeder Sprachkanal verwendet, was du hier einstellst — deine Party-Lobby, ein Match, ein Draft-Raum — und das Mikrofon deines Kamerafeeds ebenso.",
+        "this_device": {
+          "title": "Auf diesem Gerät gespeichert",
+          "description": "Spracheinstellungen gehören nicht zu deinem 5stack-Konto und verlassen diesen Browser nie. Jeder Computer, an dem du spielst, behält sein eigenes Mikrofon, seine Ausgabe, Empfindlichkeit und Spielerpegel — genau darum geht es, denn es ändert sich die Hardware, nicht du. Löschst du die Browserdaten dieser Seite, gelten wieder die Standardwerte."
+        },
+        "players": {
+          "title": "Spielerpegel",
+          "description": "Teamkollegen, die du leiser gestellt oder stummgeschaltet hast, aus allen Kanälen, in denen du warst. Wird hier aufbewahrt, damit es das Verlassen des Anrufs übersteht — und damit du es rückgängig machen kannst, ohne darauf zu warten, ihnen erneut zu begegnen.",
+          "empty": "Du hast niemanden leiser gestellt. Nutze während eines Anrufs den Regler neben einem Teamkollegen, dann erscheint er hier.",
+          "silenced": "Stummgeschaltet",
+          "reset": "Zurücksetzen",
+          "reset_all": "Alle zurücksetzen"
+        },
+        "reset": {
+          "title": "Zurücksetzen",
+          "description": "Setzt Mikrofon, Ausgabe, Eingabemodus, Empfindlichkeit und Rauschunterdrückung auf den Ausgangszustand zurück. Spielerpegel bleiben unverändert.",
+          "action": "Auf Standard zurücksetzen",
+          "done": "Spracheinstellungen auf diesem Gerät zurückgesetzt"
+        }
+      },
+      "notification_preferences": {
+        "title": "Benachrichtigungseinstellungen",
+        "description": "Lege fest, worüber 5stack dich benachrichtigt und wo diese Benachrichtigungen ankommen.",
+        "save_failed": "Diese Einstellung konnte nicht gespeichert werden. Versuche es erneut.",
+        "push": {
+          "title": "Push-Benachrichtigungen",
+          "description": "Werde auf diesem Gerät benachrichtigt, auch wenn 5stack nicht geöffnet ist.",
+          "categories": "Was gepusht wird",
+          "unsupported": "Push-Benachrichtigungen werden in diesem Browser nicht unterstützt.",
+          "install_required": "Installiere die 5stack-App, um diese zu aktivieren.",
+          "install": {
+            "description": "Push-Benachrichtigungen werden von der installierten App zugestellt, sie muss also auf deinem Gerät sein, bevor du sie aktivieren kannst.",
+            "open_app": "Schon installiert? Öffne 5stack über deinen Startbildschirm oder deine Anwendungen und aktiviere Push-Benachrichtigungen dort."
+          },
+          "denied": "Benachrichtigungen sind für 5stack blockiert. Erlaube sie in deinen Browser- oder Geräteeinstellungen, um dies zu aktivieren.",
+          "failed": "Push-Benachrichtigungen konnten nicht aktiviert werden. Versuche es erneut.",
+          "errors": {
+            "permission": "Die Abfrage der Benachrichtigungsberechtigung hat nie geantwortet. Das kann passieren, wenn Google Play Services auf dem Gerät fehlt oder defekt ist.",
+            "vapid": "Zeitüberschreitung beim Abrufen des Push-Schlüssels vom Server.",
+            "service_worker": "Zeitüberschreitung beim Warten darauf, dass der Service Worker dieses Geräts aktiv wird.",
+            "existing": "Zeitüberschreitung beim Prüfen auf ein vorhandenes Push-Abonnement.",
+            "register": "Zeitüberschreitung bei der Registrierung beim Push-Dienst dieses Geräts. Möglicherweise blockieren Hintergrund- oder Akkubeschränkungen den Vorgang.",
+            "save": "Zeitüberschreitung beim Speichern des Push-Abonnements auf dem Server."
+          },
+          "enabled_toast": "Push-Benachrichtigungen aktiviert",
+          "disabled_toast": "Push-Benachrichtigungen deaktiviert"
+        },
+        "alerts": {
+          "title": "Benachrichtigungsglocke",
+          "description": "Blende diese aus der Glocke in der App aus. Alles Übrige erscheint dort weiterhin."
+        },
+        "keys": {
+          "matches": {
+            "title": "Matches",
+            "description": "Änderungen des Matchstatus und importierte Matches."
+          },
+          "chat": {
+            "title": "Chat",
+            "description": "Neue Nachrichten in einer Unterhaltung, Lobby oder einem Turnierraum."
+          },
+          "tournaments": {
+            "title": "Turniere",
+            "description": "Neue Turniere und Startunterrichtungen."
+          },
+          "scrims": {
+            "title": "Scrims",
+            "description": "Scrim-Anfragen, Terminänderungen und Hinweise."
+          },
+          "leagues": {
+            "title": "Ligen",
+            "description": "Liga-Terminvorschläge und Kaderwarnungen."
+          },
+          "teams": {
+            "title": "Teams",
+            "description": "Vorschläge, ein Team mit Spielern zu gründen, mit denen du in der Warteschlange stehst."
+          },
+          "account": {
+            "title": "Konto",
+            "description": "Namensänderungen und Sanktionen."
+          },
+          "news": {
+            "title": "News",
+            "description": "Neue Artikel auf 5stack veröffentlicht."
+          },
+          "staff_moderation": {
+            "title": "Moderation",
+            "description": "Support-Anfragen, Abbrüche und Anträge auf Namensänderung."
+          },
+          "staff_infrastructure": {
+            "title": "Infrastruktur",
+            "description": "Status von Servern, Nodes und Hintergrundaufgaben."
+          },
+          "ChatMessage": {
+            "title": "Chatnachrichten",
+            "description": "Eine neue Nachricht in einer Unterhaltung, Lobby oder einem Turnierraum."
+          },
+          "MatchImported": {
+            "title": "Importierte Matches",
+            "description": "Ein von dir gespieltes Valve-Match wurde importiert."
+          },
+          "NewsPublished": {
+            "title": "News-Artikel",
+            "description": "Ein neuer Artikel wurde veröffentlicht."
+          },
+          "TournamentReminder": {
+            "title": "Turnier-Erinnerungen",
+            "description": "Ein Turnier, für das du angemeldet bist, beginnt bald."
+          },
+          "FormTeamSuggestion": {
+            "title": "Team-Vorschläge",
+            "description": "Du spielst häufig mit diesen Spielern."
+          },
+          "ScrimAlertMatch": {
+            "title": "Scrim-Hinweise",
+            "description": "Ein Team, das zu deinem Scrim-Hinweis passt, ist verfügbar."
+          },
+          "LeagueMatchUnscheduled": {
+            "title": "Unterminierte Ligaspiele",
+            "description": "Für eine Ligapaarung gibt es noch keinen vereinbarten Termin."
+          },
+          "invites": {
+            "title": "Einladungen",
+            "description": "Team-, Turnier- und Draft-Einladungen."
+          },
+          "events": {
+            "title": "Events",
+            "description": "Erinnerungen an Events, an denen du teilnimmst."
+          },
+          "seasons": {
+            "title": "Saisons",
+            "description": "Wenn eine Saison endet."
+          },
+          "TeamInvite": {
+            "title": "Team-Einladungen",
+            "description": "Jemand hat dich in sein Team eingeladen."
+          },
+          "TournamentTeamInvite": {
+            "title": "Turnier-Einladungen",
+            "description": "Jemand hat dich eingeladen, in einem Turnier zu spielen."
+          },
+          "DraftInvite": {
+            "title": "Draft-Einladungen",
+            "description": "Jemand hat dich in eine Draft-Lobby eingeladen."
+          },
+          "MatchStatsReady": {
+            "title": "Statistiken bereit",
+            "description": "Die Auswertung deiner Match-Statistiken ist abgeschlossen."
+          },
+          "ClipReady": {
+            "title": "Clips bereit",
+            "description": "Ein von dir angeforderter Clip wurde fertig gerendert."
+          },
+          "AwardGranted": {
+            "title": "Auszeichnungen",
+            "description": "Du hast eine Auszeichnung erhalten."
+          },
+          "EventReminder": {
+            "title": "Event-Erinnerungen",
+            "description": "Ein Event, an dem du teilnimmst, beginnt bald."
+          },
+          "SeasonEnded": {
+            "title": "Saison beendet",
+            "description": "Eine Saison ist zu Ende gegangen."
+          },
+          "match_chat": {
+            "title": "Match-Chat",
+            "description": "Neue Nachrichten im Raum eines Matches, einschließlich aus dem Spiel weitergeleiteter Chat. Standardmäßig aus — er löst bei jeder während eines laufenden Matches getippten Zeile aus."
+          },
+          "MatchChatMessage": {
+            "title": "Match-Chatnachrichten",
+            "description": "Eine neue Nachricht im Raum eines Matches."
+          }
+        },
+        "quiet_hours": {
+          "title": "Ruhezeiten",
+          "description": "Push-Benachrichtigungen bleiben in diesem Zeitfenster stumm. In deiner Benachrichtigungsglocke erscheinen sie weiterhin.",
+          "from": "Von",
+          "to": "Bis",
+          "reset": "Zurücksetzen",
+          "incomplete": "Lege eine Start- und eine Endzeit fest, um Ruhezeiten zu speichern."
+        }
+      },
       "notifications": {
         "title": "Sound-Einstellungen",
         "description": "Hör dir die Hinweistöne an, die 5Stack für Chat, Matches und mehr abspielt, und pass sie an.",
@@ -1429,12 +1759,10 @@
           "title": "Benachrichtigungstöne",
           "description": "Spielt einen Ton bei Chat-Nachrichten, Match-Events und anderen Hinweisen ab."
         },
-        "test": "Test",
         "volume": {
           "title": "Lautstärke"
         },
         "preview": "Töne anhören",
-        "play": "Abspielen",
         "sounds": {
           "chat": {
             "title": "Chat-Nachricht",
@@ -1488,29 +1816,37 @@
         "chat": {
           "title": "Chat-Einstellungen",
           "description": "Leg fest, wie lange Chat-Nachrichten aufbewahrt werden.",
-          "updated": "Chat-Einstellungen aktualisiert"
+          "updated": "Chat-Einstellungen aktualisiert",
+          "lobby_title": "Aufbewahrung nach Raum",
+          "lobby_description": "Wie lange (in Sekunden) Nachrichten in der jeweiligen Raumart aufbewahrt werden, bevor sie endgültig gelöscht werden. 0 verwirft sie sofort.",
+          "direct_title": "Direktnachrichten",
+          "direct_description": "Direktnachrichten werden dauerhaft gespeichert, statt mit dem übrigen Chat abzulaufen. Lege die Anzahl der Tage fest, die sie aufbewahrt werden, oder 0, um sie dauerhaft zu behalten.",
+          "ttl_match": "Match-Chat",
+          "ttl_match_team": "Team-Chat",
+          "ttl_matchmaking": "Matchmaking-Lobby-Chat",
+          "ttl_tournament": "Turnier-Chat",
+          "ttl_organizers": "Organisatoren-Chat",
+          "ttl_draft": "Draft-Lobby-Chat",
+          "retention_direct_days": "Direktnachrichten aufbewahren für (Tage)"
         },
         "news": {
           "title": "News",
           "section": "News",
           "description": "Veröffentliche eigene Counter-Strike-News auf einer News-Seite deiner Plattform. Berechtigte Autoren schreiben Beiträge mit einem Markdown-Editor und Bildern; Entwürfe bleiben privat, bis du sie veröffentlichst.",
           "manage": "Beiträge verwalten",
-          "manage_description": "News-Beiträge erstellen, bearbeiten und veröffentlichen.",
           "label_section": "Label",
           "label_description": "Benenne den News-Bereich um, wie er in der Navigation und in Seitentiteln erscheint.",
           "label": "Anzeigename",
           "permissions_section": "Berechtigungen",
           "permissions_description": "Wähl die Mindestrolle, die News-Beiträge erstellen und veröffentlichen darf.",
-          "post_news_role": "Wer News posten darf",
-          "about": "Veröffentlichte Beiträge erscheinen auf der öffentlichen News-Seite. Entwürfe bleiben verborgen, bis du sie veröffentlichst."
+          "post_news_role": "Wer News posten darf"
         },
         "seasons": {
           "title": "Seasons",
           "section": "Seasons",
           "description": "Competitive Seasons setzen die ELO aus regulären Matches jede Season auf einen Basiswert von 5000 zurück und begrenzen Statistiken und Filter auf die jeweilige Season; ist die Funktion deaktiviert, gibt es nur eine globale ELO-Rangliste. Turnier-ELO bleibt season-unabhängig.",
           "manage": "Seasons verwalten",
-          "manage_description": "Competitive Seasons erstellen, beenden und nachtragen.",
-          "about": "Wenn aktiviert, erscheint der Season-Filter bei Spielern, in der Rangliste und bei Turnieren, und ELO/Statistiken gelten pro Season. Wenn deaktiviert, gibt es eine einzige globale ELO-Rangliste und keinen Season-Filter."
+          "manage_description": "Competitive Seasons erstellen, beenden und nachtragen."
         },
         "discord": {
           "title": "Discord-Benachrichtigungen",
@@ -1569,6 +1905,28 @@
           "codec_h264": "H.264 (empfohlen)",
           "updated": "Streaming-Einstellungen aktualisiert"
         },
+        "cameras": {
+          "title": "Kameras & Mikrofone",
+          "defaults_section": "Match-Standardwerte",
+          "defaults_description": "Womit ein neu erstelltes Match startet. Organisatoren können beide Einstellungen weiterhin pro Match ändern; bestehende Matches bleiben unberührt.",
+          "required_default": "Webcam standardmäßig erforderlich",
+          "required_default_description": "Neue Matches starten mit aktivierter Webcam-Pflicht. Jedes Match kann das weiterhin überschreiben.",
+          "teammates_default": "Teamkollegen dürfen standardmäßig zusehen",
+          "teammates_default_description": "Neue Matches starten mit aktivierter Ansicht für Teamkollegen. Das gegnerische Team ist nie eingeschlossen.",
+          "voice_section": "Sprachchat",
+          "voice_description": "Ermöglicht Spielern, über WebRTC miteinander zu sprechen — über denselben Weg wie die Spielerkameras. Wird dies deaktiviert, entfällt Sprache überall.",
+          "voice_lobbies": "Party-Lobbys",
+          "voice_lobbies_description": "Sprachsteuerung im Lobby-Panel, für die Party, die ein Spieler selbst zusammenstellt.",
+          "voice_matches": "Matches & Draft-Lobbys",
+          "voice_matches_description": "Team-Sprache auf der Matchseite und in der Draft-Lobby. Beide sprechen über denselben Lineup-Kanal und teilen sich daher diese Einstellung.",
+          "updated": "Aktualisiert",
+          "video_section": "Videoanrufe",
+          "video_description": "Ermöglicht Spielern, in einem Sprachkanal eine Kamera einzuschalten. Immer freiwillig, nie verpflichtend — das ist ein Anruf zwischen Teamkollegen, nicht die Kamerapflicht pro Match weiter unten.",
+          "video_lobbies": "Party-Lobbys",
+          "video_lobbies_description": "Im Party-Lobby-Anruf eine Kamera anbieten.",
+          "video_matches": "Matches und Draft-Räume",
+          "video_matches_description": "In der Team-Sprache auf einer Matchseite eine Kamera anbieten. Sinnvoll abzuschalten, wenn bei deinen Spielern die CPU knapp wird: Ein Raster aus Kacheln wird zusätzlich zum Livestream dekodiert."
+        },
         "create_matches_role": "Mindestrolle zum Erstellen von Matches",
         "create_tournaments_role": "Mindestrolle zum Erstellen von Turnieren",
         "dedicated_servers_min_role_to_connect": "Mindestrolle für die Verbindung zu passwortgeschützten Dedicated Servern",
@@ -1586,6 +1944,8 @@
         "auto_cancel_duration_description": "Bricht ein Match, das nicht live gegangen ist (noch in Picking / Veto / Warten), nach so vielen Minuten ab.",
         "live_match_timeout": "Timeout für Live-Matches",
         "live_match_timeout_description": "Sicherheits-Timeout — ein laufendes Match wird nach so vielen Minuten automatisch abgebrochen, wenn es nie endet.",
+        "veto_pick_timeout": "Veto-Pick-Timer",
+        "veto_pick_timeout_description": "Standardsekunden, die jedes Team pro Veto-Pick bei neu erstellten Matches erhält. Auf 0 setzen, um den Timer standardmäßig zu deaktivieren.",
         "matchmaking_type_description": "Aktiviere Matchmaking für jeden Typ, für den Spieler ins Matchmaking gehen dürfen.",
         "players": {
           "permissions_section": "Rollen-Berechtigungen",
@@ -1596,7 +1956,6 @@
           "refresh_button": "Suchindex neu aufbauen",
           "refreshing": "Wird neu aufgebaut ...",
           "refresh_queued": "Neuaufbau des Suchindex gestartet",
-          "refresh_failed": "Neuaufbau des Suchindex konnte nicht gestartet werden",
           "error_occurred": "Ein Fehler ist aufgetreten",
           "refresh_dialog_title": "Suchindex wirklich neu aufbauen?",
           "refresh_dialog_description": "Damit wird jeder Spieler in Batches neu in den Typesense-Suchindex synchronisiert. Das läuft im Hintergrund und du kannst den Fortschritt hier verfolgen.",
@@ -1605,7 +1964,6 @@
           "recompute_elo_button": "ELO neu berechnen",
           "recomputing_elo": "Wird neu berechnet …",
           "recompute_elo_queued": "ELO-Neuberechnung gestartet",
-          "recompute_elo_failed": "ELO-Neuberechnung konnte nicht gestartet werden",
           "recompute_elo_dialog_title": "ELO aller Spieler neu berechnen?",
           "recompute_elo_dialog_description": "Das löscht die komplette vorhandene ELO und baut sie von Grund auf neu auf, indem jedes beendete Match chronologisch (in Batches) erneut verarbeitet wird. Die Rangliste ist währenddessen vorübergehend unvollständig. Den Fortschritt siehst du hier.",
           "progress_running": "{processed} / {total} ({percent} %)",
@@ -1613,8 +1971,6 @@
           "progress_failed_count": "{failed} fehlgeschlagen",
           "progress_completed": "{total} abgeschlossen",
           "progress_canceled": "Abgebrochen bei {completed} / {total}",
-          "progress_errored": "Fehlgeschlagen — siehe Server-Logs",
-          "already_running": "Läuft bereits",
           "cancel_button": "Abbrechen",
           "cancel_requested": "Abbruch angefordert",
           "recompute_elo_canceled_title": "ELO-Neuberechnung abgebrochen",
@@ -1645,11 +2001,8 @@
           "show_separators_description": "Zeigt horizontale Trennlinien zwischen Abschnitten an.",
           "logo": "Logo",
           "logo_description": "Lade ein quadratisches Bild hoch (empfohlen: 512×512 PNG). Wird app-weit genutzt und für dein PWA-Installationssymbol verwendet. ICO-Dateien werden nicht unterstützt.",
-          "upload_logo": "Logo hochladen",
           "favicon": "Favicon",
           "favicon_description": "Optional. Ein einfacheres Zeichen für den Browser-Tab. PNG, ICO oder WebP.",
-          "upload_favicon": "Favicon hochladen",
-          "remove": "Entfernen",
           "login_page": "Login-Seite",
           "login_page_description": "Passe den Footer-Link der Login-Seite an.",
           "show_login_footer": "Login-Footer anzeigen",
@@ -1658,22 +2011,11 @@
           "footer_url": "Footer-URL",
           "theme_colors": "Theme-Farben",
           "theme_colors_description": "Passe die Theme-Farben an. Änderungen werden live in der Vorschau angezeigt.",
-          "light_mode": "Heller Modus",
-          "dark_mode": "Dunkler Modus",
-          "save_branding": "Branding speichern",
           "reset_to_defaults": "Auf Standard zurücksetzen",
           "reset_confirm_title": "Branding auf Standard zurücksetzen?",
           "reset_confirm_description": "Das löscht deinen Markennamen, die Farben, den Login-Footer sowie hochgeladenes Logo, Favicon und App-Icon und stellt das Standard-5Stack-Theme wieder her. Das lässt sich nicht rückgängig machen.",
           "export_theme": "Theme exportieren",
           "import_theme": "Theme importieren",
-          "upload_failed": "Upload fehlgeschlagen",
-          "delete_failed": "Löschen fehlgeschlagen",
-          "logo_uploaded": "Logo hochgeladen",
-          "favicon_uploaded": "Favicon hochgeladen",
-          "icon_uploaded": "App-Icon hochgeladen",
-          "logo_removed": "Logo entfernt",
-          "favicon_removed": "Favicon entfernt",
-          "icon_removed": "App-Icon entfernt",
           "branding_saved": "Branding gespeichert",
           "save_failed": "Speichern fehlgeschlagen",
           "branding_reset": "Branding auf Standard zurückgesetzt",
@@ -1731,7 +2073,9 @@
             "tactical_amber_foreground": "Tactical-Akzent-Vordergrund"
           },
           "assets_section": "Logo & Favicon",
-          "assets_section_description": "Lade ein Logo hoch (wird app-weit genutzt und für dein PWA-Installationssymbol verwendet) sowie optional ein Favicon."
+          "assets_section_description": "Lade ein Logo hoch (wird app-weit genutzt und für dein PWA-Installationssymbol verwendet) sowie optional ein Favicon.",
+          "upload_failed": "Upload fehlgeschlagen: {status}",
+          "delete_failed": "Löschen fehlgeschlagen: {status}"
         },
         "fixtures": {
           "dev_only_notice": "Fixtures sind nur im Entwicklungsmodus verfügbar.",
@@ -1802,9 +2146,6 @@
           "enabled": "Präsenz aktivieren",
           "enabled_description": "Standardmäßig an. Friend-Bots beobachten die Live-Steam-Präsenz verknüpfter Spieler und importieren deren Matches sofort nach Ende, statt auf die stündliche Abfrage zu warten. Zum Abschalten als Not-Aus nutzen.",
           "updated": "Einstellungen zur Steam-Präsenz aktualisiert",
-          "active": "Aktiv",
-          "disabled": "Deaktiviert",
-          "live": "Live",
           "setup": "So funktioniert es",
           "setup_step1": "Richte einen eigenen Steam-Account für den Bot ein, mit aktiviertem Steam Guard. Nutze nicht deinen STEAM_USER-Account erneut — der wird woanders verwendet und würde kollidieren.",
           "setup_step2": "Füge ihn unten hinzu. Er meldet sich automatisch an; fragt Steam Guard nach, erscheint am Bot ein 2FA-Feld — gib den Code aus der E-Mail oder der Steam-App ein. Nach dem ersten Login bleibt er angemeldet und fragt nicht erneut.",
@@ -1827,7 +2168,6 @@
           "submit_code": "Absenden",
           "code_submitted": "Code abgeschickt — Login läuft…",
           "code_failed": "Steam-Guard-Code konnte nicht abgeschickt werden",
-          "status": "Status",
           "bots": "Bots",
           "bots_description": "Steam-Accounts im Presence-Pool und ihr aktueller Status.",
           "no_bots": "Noch keine Bots",
@@ -2021,7 +2361,6 @@
             "nav_order": "Nav-Reihenfolge",
             "enabled": "Aktiviert",
             "is_default": "Standardseite",
-            "icon_hint": "Ein Lucide-Icon-Name oder eine Bild-URL. Beispiele:",
             "remote_entry_url_hint": "Die Module-Federation-remoteEntry.js, die das Panel lädt (meist .../assets/remoteEntry.js).",
             "remote_scope_hint": "Der Federation-Container-Name des Plugins (sein `name` in der Vite-Federation-Config).",
             "exposed_module_hint": "Der Pfad des exponierten Moduls, z. B. ./App.",
@@ -2039,7 +2378,6 @@
           "detect": "Erkennen",
           "detect_hint": "Füge die Basis-URL des Plugins ein (oder seine 5stack-plugin.json) und wir füllen die Felder unten aus dem Manifest.",
           "detect_failed": "Unter dieser URL war kein 5stack-plugin.json-Manifest lesbar.",
-          "detect_success": "Plugin-Details erkannt",
           "optional": "(optional)",
           "advanced": "Erweiterte Einstellungen",
           "icon_picker": {
@@ -2056,6 +2394,35 @@
           "permissions_description": "Choose who can author awards and who can hand them out.",
           "create_awards_role": "Manage Awards Role",
           "grant_awards_role": "Grant Awards Role"
+        },
+        "web_push": {
+          "title": "Web-Push",
+          "section": "Web-Push-Benachrichtigungen",
+          "description": "Sendet Hinweise direkt auf das Handy oder den Desktop eines Spielers — der Browser stellt sie selbst dann zu, wenn 5stack in keinem Tab geöffnet ist. Spieler melden sich selbst an, pro Gerät, in ihren eigenen Benachrichtigungseinstellungen; unter iOS funktioniert das erst, wenn 5stack auf dem Startbildschirm installiert ist. Nichts einzurichten: Die Zustellung läuft über den Push-Dienst des Browsers, es gibt also kein Drittanbieterkonto und keine Kosten.",
+          "state_live": "Sendet",
+          "state_standby": "Bereitschaft",
+          "state_ready": "Bereit",
+          "state_offline": "Offline",
+          "last_delivery": "Letzte bestätigte Zustellung",
+          "hint_standby": "Geräte sind angemeldet, aber es hat noch keines etwas erreicht.",
+          "hint_ready": "Eingerichtet und wartet auf die Anmeldung des ersten Geräts.",
+          "hint_offline": "Push ist auf dieser Installation nicht verfügbar — es erreicht kein Gerät etwas, bis die API sich einrichten kann.",
+          "devices": "Geräte",
+          "players": "Spieler",
+          "active_7d": "Aktiv 7 T.",
+          "new_7d": "Neu 7 T.",
+          "platform_mix": "Plattform-Mix",
+          "platforms": {
+            "apple": "Apple",
+            "google": "Chrome / Android",
+            "mozilla": "Firefox",
+            "windows": "Windows",
+            "other": "Sonstige"
+          },
+          "never_delivered": "{count} angemeldete(s) Gerät(e) haben noch nie einen Push erhalten. Meist ein Gerät, das inaktiv wurde, bevor etwas gesendet wurde — sie werden automatisch entfernt, sobald der Push-Dienst sie als verschwunden meldet.",
+          "empty_title": "Noch keine Geräte angemeldet",
+          "empty_body": "Push ist startklar, aber niemand hat es aktiviert. Spieler melden sich selbst in ihren eigenen Benachrichtigungseinstellungen an — du kannst es nicht für sie aktivieren.",
+          "empty_link": "Zu den Einstellungen auf Spielerseite"
         }
       },
       "language": {
@@ -2154,7 +2521,6 @@
       "section_recent_matches": "LETZTE.MATCHES",
       "section_recent_tournaments": "LETZTE.TURNIERE",
       "section_recent_highlights": "LETZTE.HIGHLIGHTS",
-      "no_live_matches": "STANDBY · KEINE LIVE-MATCHES",
       "cold_start": {
         "title": "Nichts in Sicht",
         "description": "Keine Live-Matches, keine Turniere, noch nichts in den Büchern. Starte ein Match und diese Seite füllt sich von selbst — Ergebnisse in Echtzeit, dann Highlights und Demos, sobald es vorbei ist.",
@@ -2224,12 +2590,6 @@
       "back": "Zurück zu News",
       "updated": "Aktualisiert {date}",
       "written_by": "Geschrieben von",
-      "cover_editor": {
-        "title": "Titelbild anpassen",
-        "description": "Zuschneiden, damit es zum Artikel passt. Mit Hintergrund entfernen sitzen Logos sauber auf der Seite.",
-        "hint": "Scrollen zum Zoomen · ziehen zum Verschieben · Einpassen zeigt das ganze Bild",
-        "fit": "Einpassen"
-      },
       "new_article": "Neuer Artikel",
       "mark_read": "Als gelesen markieren",
       "empty": "Noch keine News-Artikel — schau bald wieder rein.",
@@ -2260,9 +2620,6 @@
         "teaser_placeholder": "Eine kurze Zusammenfassung für die News-Liste",
         "cover_label": "Titelbild",
         "cover_hint": "Bild anklicken oder hierher ziehen",
-        "cover_formats": "PNG · JPG · WEBP · GIF · bis 10 MB",
-        "cover_replace": "Ersetzen",
-        "cover_remove": "Entfernen",
         "content_label": "Inhalt",
         "save_draft": "Entwurf speichern",
         "save_changes": "Änderungen speichern",
@@ -2274,7 +2631,30 @@
         "back_to_edit": "Zurück zum Editor",
         "upload_image": "Bild hochladen",
         "uploading": "Wird hochgeladen…",
-        "uploading_image": "Bild wird hochgeladen…"
+        "uploading_image": "Bild wird hochgeladen…",
+        "video": {
+          "title": "Video einfügen",
+          "description": "Einen YouTube- oder Twitch-Link einbetten oder eine MP4 hochladen.",
+          "tab_link": "Link",
+          "tab_upload": "Hochladen",
+          "link_hint": "Füge eine YouTube- oder Twitch-URL ein. Andere Links werden als einfacher Link dargestellt. Fügst du eine direkt in den Text ein, wird sie ebenfalls eingebettet.",
+          "will_embed": "Wird als Player eingebettet",
+          "will_link": "Nicht einbettbar — wird als Link dargestellt",
+          "choose_file": "MP4 auswählen",
+          "upload_hint": "MP4 bis 512 MB. Ein Vorschaubild wird automatisch erfasst.",
+          "uploading": "Wird hochgeladen… {percent} %",
+          "replace_poster": "Vorschaubild ersetzen",
+          "insert": "Einfügen",
+          "auto_embedded": "Videolink eingebettet"
+        }
+      },
+      "editor": {
+        "bold_text": "fetter Text",
+        "italic_text": "kursiver Text",
+        "heading": "Überschrift",
+        "list_item": "Listenpunkt",
+        "quote": "Zitat",
+        "code": "Code"
       }
     },
     "seasons": {
@@ -2305,8 +2685,6 @@
       "make_ongoing": "Laufend machen",
       "end_now": "Jetzt beenden",
       "updated": "Season aktualisiert",
-      "upcoming_title": "Kommende Seasons",
-      "past_title": "Vergangene Seasons",
       "rebuild": "Neu aufbauen",
       "rebuild_elo": "ELO neu aufbauen",
       "rebuild_required": "Neuaufbau nötig",
@@ -2372,14 +2750,17 @@
         "headshot_pct": "HS %"
       },
       "played_matches": "Gespielte Matches",
+      "queue_partners": {
+        "title": "Gemeinsam in der Warteschlange",
+        "matches": "{count} Match | {count} Matches",
+        "win_rate": "{pct} % gewonnen"
+      },
       "min_sanctions": "Mindestanzahl Sanktionen",
       "is_banned": "Gebannt",
       "is_gagged": "Gagged",
       "is_muted": "Stumm",
       "table": {
         "elo": "ELO",
-        "elo_track_season": "Season",
-        "elo_track_tournament": "Turnier",
         "last_sign_in_at": "Zuletzt angemeldet",
         "privilege": "Berechtigung",
         "kdr": "KDR",
@@ -2418,6 +2799,7 @@
         "no_matches_description": "Die Match-Historie erscheint hier, sobald Matches gespielt wurden.",
         "no_matches_self_description": "Spring in ein Match — deine Stats, ELO und Match-Historie füllen sich hier nach und nach.",
         "edit_player": "Spieler bearbeiten",
+        "more_actions": "Weitere Aktionen",
         "friend": "Freund",
         "name": "Name",
         "role": "Rolle",
@@ -2433,6 +2815,8 @@
         "custom_window_active": "Eigener Zeitraum aktiv. Ein Preset zu wählen setzt ihn zurück.",
         "exclude_tournaments": "Turniere ausschließen",
         "exclude_tournaments_description": "Turnier-Matches in Stats und Chart überspringen.",
+        "tournaments_section_label": "TURNIERE",
+        "tournaments_description": "Turniere, an denen dieser Spieler teilgenommen hat.",
         "current_elo": "Aktuelle ELO",
         "source": "Quelle",
         "provider": "Anbieter",
@@ -2898,7 +3282,9 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duell",
-        "scrimmage": "Scrim"
+        "scrimmage": "Scrim",
+        "premier": "Premier",
+        "faceit": "Faceit"
       },
       "roles": {
         "all": "Alle Rollen",
@@ -2906,6 +3292,12 @@
         "Entry": "Entry",
         "Support": "Support",
         "Rifler": "Rifler"
+      },
+      "sources": {
+        "overall": "Alle Quellen",
+        "matchmaking": "Matchmaking",
+        "tournament": "Turnier",
+        "league": "Liga"
       },
       "columns": {
         "rank": "#",
@@ -3145,7 +3537,6 @@
       "description": "Author awards and hand them out to players and teams.",
       "catalog_section": "Award Catalog",
       "new_award": "New Award",
-      "edit_award": "Edit Award",
       "no_awards": "No awards yet.",
       "built_in": "Built-in",
       "holders": "holders",
@@ -3165,10 +3556,6 @@
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
       "clear_filters": "Clear filters",
-      "identity": "Identity",
-      "appearance": "Appearance",
-      "rules": "Rules",
-      "artwork_after_save": "Save the award first, then upload its artwork.",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -3185,6 +3572,53 @@
       "group_custom_event_awards": "Eigene Event-Auszeichnungen",
       "group_custom_season_awards": "Eigene Saison-Auszeichnungen",
       "group_custom_league_awards": "Eigene Liga-Auszeichnungen"
+    },
+    "award_detail": {
+      "not_found_title": "Auszeichnung nicht gefunden",
+      "not_found": "Diese Auszeichnung existiert nicht oder wurde gelöscht.",
+      "holders_section": "Inhaber",
+      "no_holders_title": "Noch keine Inhaber",
+      "no_holders": "Diese Auszeichnung wurde noch niemandem verliehen.",
+      "total_holders": "Verleihungen",
+      "unique_players": "Spieler",
+      "unique_teams": "Teams",
+      "first_granted": "Erstmals verliehen",
+      "last_granted": "Zuletzt verliehen",
+      "filter_all": "Alle",
+      "filter_players": "Spieler",
+      "filter_teams": "Teams",
+      "granted_by": "Verliehen von {name}",
+      "source_manual": "Manuell verliehen",
+      "source_tournament": "Turnierplatzierung",
+      "source_season": "Saison-Automatisierung",
+      "revoke": "Entziehen",
+      "confirm_revoke": {
+        "title": "Diese Auszeichnung entziehen?",
+        "description": "{name} wird diese Auszeichnung nicht mehr besitzen. Das kann nicht rückgängig gemacht werden."
+      }
+    },
+    "system_media_server": {
+      "title": "Medienserver",
+      "description": "Aktuelle Last auf MediaMTX. Spielstreams, Spielerkameras, Sprach- und Videoanrufe teilen sich eine Instanz — das hier ist also alles, was sie gleichzeitig trägt. Logs findest du unter System → Logs → mediamtx.",
+      "media_server_section": "Medienserver",
+      "media_server_live": "Sendet",
+      "media_server_paths": "Pfade",
+      "media_server_sessions": "WebRTC-Sitzungen",
+      "media_server_row": "{ready}/{paths} live · {bytes} eingehend",
+      "media_server_idle": "Derzeit sendet nichts.",
+      "media_server_unreachable": "Der Medienserver war nicht erreichbar. Das ist nicht dasselbe wie Leerlauf — die Zahlen oben sind unbekannt, nicht null.",
+      "media_kind": {
+        "gameStreams": "Spielstreams",
+        "playerCameras": "Spielerkameras",
+        "voice": "Sprache",
+        "videoCalls": "Videoanrufe",
+        "cameraTalkback": "Kamera-Rückkanal"
+      },
+      "resources": "Ressourcennutzung",
+      "cpu": "CPU",
+      "memory": "Arbeitsspeicher",
+      "no_resources": "Noch keine Pod-Metriken für den Medienserver — möglicherweise erfasst ihn der Metrics-Server des Clusters nicht.",
+      "legend": "Ein Pfad ist ein benannter Stream-Slot — das Mikrofon einer Person oder eine Kamera. „Sendet“ zählt die, die gerade tatsächlich Medien übertragen; ein Pfad kann zwischen dem Beitritt einer Person und dem Anlaufen ihres Feeds untätig sein. Sitzungen sind WebRTC-Verbindungen, und jeder Zuschauer eines Streams ist eine davon — sie steigen daher schneller als die übrigen Werte."
     }
   },
   "custom_match": {
@@ -3202,9 +3636,7 @@
       "select_section": "Bereich wählen",
       "branding_nav": "Branding",
       "fixtures_nav": "Spielplan",
-      "seasons_nav": "Seasons",
       "groups": {
-        "platform": "Plattform",
         "competition": "Wettbewerb",
         "match_setup": "Match-Setup",
         "content_media": "Inhalte & Medien",
@@ -3212,9 +3644,6 @@
         "infrastructure": "Infrastruktur",
         "theme": "Darstellung",
         "developer": "Entwickler",
-        "general": "Allgemein",
-        "media": "Aufnahme & Medien",
-        "additional_features": "Weitere Funktionen",
         "players_teams": "Plattform"
       }
     },
@@ -3245,7 +3674,16 @@
         "friend_request": "Freundschaftsanfrage",
         "invited_you": "hat dich eingeladen zu",
         "invited_party": "hat dich in seine Party eingeladen",
-        "wants_to_be_friends": "will mit dir befreundet sein"
+        "wants_to_be_friends": "will mit dir befreundet sein",
+        "actor_host": "Der Host",
+        "actor_teammate": "Ein Teamkollege",
+        "actor_organizer": "Ein Organisator",
+        "actor_player": "Ein Spieler"
+      },
+      "season_rebuild": {
+        "title": "ELO-Neuberechnung für Saison {number} erforderlich",
+        "message": "Die ELO dieser Saison ist veraltet. Führe eine Neuberechnung durch, um ELO und Tabelle neu zu ermitteln.",
+        "action": "Saison-ELO neu berechnen"
       }
     },
     "app_nav": {
@@ -3295,9 +3733,11 @@
         "logs": "Logs",
         "database": "Datenbank",
         "metrics": "Metriken",
-        "render_queue": "Render-Queue"
+        "render_queue": "Render-Queue",
+        "media_server": "Medienserver"
       },
       "profile": {
+        "section": "Konto",
         "my_account": "Meine Einstellungen",
         "logout": "Abmelden"
       },
@@ -3333,7 +3773,8 @@
         "search_players": "Spieler suchen",
         "leagues": "Liga",
         "events": "Events",
-        "manage_events": "Events verwalten"
+        "manage_events": "Events verwalten",
+        "system_media_server": "Medienserver"
       },
       "logout_dialog": {
         "title": "Abmelden",
@@ -3354,6 +3795,7 @@
       "home": "Meine Stats",
       "play_menu": "Spielen",
       "community_menu": "Community",
+      "support_menu": "Support",
       "watch_menu": "Zuschauen",
       "login": "Anmelden zum Spielen",
       "login_aria": "Über Steam anmelden",
@@ -3410,7 +3852,8 @@
     "hub": {
       "social": "Social",
       "notifications": "Benachrichtigungen",
-      "lobby": "Lobby"
+      "lobby": "Lobby",
+      "voice": "Sprache"
     },
     "lobby_panel": {
       "lobby_invites": "Lobby-Einladungen",
@@ -3419,14 +3862,58 @@
       "create_lobby_description": "Erstell eine Lobby, um Freunde einzuladen und gemeinsam in die Queue zu gehen.",
       "create_lobby_button": "Lobby erstellen",
       "voice_discord": "Voice & Discord",
+      "join_voice": "Sprache beitreten",
+      "leave_voice": "Verlassen",
+      "mute": "Stummschalten",
+      "unmute": "Stummschaltung aufheben",
+      "voice_settings": "Spracheinstellungen",
+      "microphone": "Mikrofon",
+      "output": "Ausgabe",
+      "system_default": "Systemstandard",
+      "input_level": "Eingangspegel",
       "discord_linked": "Discord verknüpft",
       "link_discord": "Discord verknüpfen",
-      "find_match": "Match finden"
+      "find_match": "Match finden",
+      "voice": "Sprache",
+      "live": "Live",
+      "muted": "Stumm",
+      "connect": "Verbinden",
+      "comms": "Comms",
+      "live_on_camera": "Live · vor der Kamera"
+    },
+    "voice_panel": {
+      "you": "Du",
+      "coach": "Coach",
+      "connected": "{count} im Kanal",
+      "you_are_muted": "Dein Mikrofon ist aus",
+      "other_tab": "Läuft in einem anderen Tab — Stummschalten und Verlassen funktionieren auch von hier.",
+      "mute_player": "Diesen Spieler nur für dich stummschalten",
+      "speaking": "Spricht",
+      "team_comms": "Team-Comms",
+      "party_comms": "Party-Comms",
+      "silenced": "Stummgeschaltet",
+      "mic_off": "Mikrofon aus",
+      "unmute_player": "Diesen Spieler wieder hören",
+      "player_volume": "Spielerlautstärke",
+      "empty_title": "In keinem Sprachkanal",
+      "empty_description": "Tritt über deine Party-Lobby, eine Matchseite oder einen Draft-Raum bei — der Kanal erscheint dann hier mit allen Teilnehmern.",
+      "picker": {
+        "available": "Wo du sprechen kannst",
+        "party": "Deine Party",
+        "party_detail": "{count} in der Lobby",
+        "team": "Dein Team",
+        "team_vs": "vs {opponent}",
+        "switch": "Wechseln zu",
+        "elsewhere": "Beigetreten",
+        "elsewhere_detail": "Bereits in einem anderen Fenster in diesem Anruf — hier beitreten, um ihn hierher zu holen"
+      },
+      "other_tab_short": "In einem anderen Tab"
     },
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} im Chat",
       "pop_out_tooltip": "In eigenem Fenster öffnen",
+      "close_tooltip": "Unterhaltung schließen",
       "no_chats_title": "Noch keine Chats",
       "no_chats_description": "Sobald du einem Chat beitrittst, erscheint er hier."
     },
@@ -3442,9 +3929,6 @@
     },
     "public_header": {
       "secure_channel": "SICHERER KANAL"
-    },
-    "voice_panel": {
-      "coach": "Coach"
     }
   },
   "alt_text": {
@@ -3452,6 +3936,14 @@
     "discord": "Discord",
     "map_poster": "Map-Poster",
     "map_patch": "Map-Patch"
+  },
+  "push_prompt": {
+    "title": "Benachrichtigungen aktivieren",
+    "description": "Erhalte Match-Einladungen, Lobby-Anrufe und Nachrichten auf diesem Gerät, auch wenn 5stack nicht geöffnet ist.",
+    "enable": "Aktivieren",
+    "dismiss": "Ausblenden",
+    "enabled": "Push-Benachrichtigungen aktiviert",
+    "failed": "Push-Benachrichtigungen konnten nicht aktiviert werden. Versuche es erneut."
   },
   "pwa": {
     "install": {
@@ -3592,7 +4084,12 @@
     "address_search": {
       "placeholder": "Nach Adresse oder Location suchen",
       "no_results": "Keine passenden Orte gefunden"
-    }
+    },
+    "slot": "Slot {slot}",
+    "sort": "sortieren",
+    "vs_team": "vs {name}",
+    "default": "Standard",
+    "avg": "Ø"
   },
   "spotlight_search": {
     "placeholder": "Spieler suchen...",
@@ -3658,7 +4155,9 @@
       "uploading": "Dateien werden hochgeladen...",
       "complete": "Upload abgeschlossen",
       "complete_with_errors": "Upload mit Fehlern abgeschlossen",
-      "files_failed": "{count} Datei(en) konnten nicht hochgeladen werden"
+      "files_failed": "{count} Datei(en) konnten nicht hochgeladen werden",
+      "progress_files": "{completed} / {total} Dateien",
+      "current_file": "Aktuell: {name}"
     },
     "toolbar": {
       "new_file": "Neue Datei",
@@ -3693,7 +4192,12 @@
       "unsaved_changes_warning": "Du hast nicht gespeicherte Änderungen in anderen Dateien. Wirklich schließen?",
       "unsaved_changes_right_warning": "Du hast nicht gespeicherte Änderungen in Dateien rechts davon. Wirklich schließen?",
       "unsaved_changes_left_warning": "Du hast nicht gespeicherte Änderungen in Dateien links davon. Wirklich schließen?"
-    }
+    },
+    "delete": {
+      "description": "Dies löscht „{name}“ endgültig. Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "placeholder_folder_name": "Ordnername",
+    "placeholder_file_name": "Dateiname"
   },
   "error": {
     "generic": "Ein Fehler ist aufgetreten. Versuch es erneut."
@@ -3709,17 +4213,21 @@
   },
   "chat_tab_labels": {
     "match": "Match-Chat",
+    "team": "Team-Chat",
     "tournament": "Turnier-Chat",
     "organizers": "Veranstalter-Chat",
     "matchmaking": "Queue-Chat",
     "lobby_default": "Lobby",
-    "organizers_default": "Veranstalter"
+    "organizers_default": "Veranstalter",
+    "direct": "Direktnachricht"
   },
   "chat_room_subtitles": {
     "organizers": "Globale Lobby",
     "tournament": "Turnier-Chat",
     "matchmaking": "Queue-Chat",
-    "match": "Match-Chat"
+    "match": "Match-Chat",
+    "team": "Team-Chat",
+    "direct": "Direktnachricht"
   },
   "latency_status": {
     "measuring": "Wird gemessen...",
@@ -3746,9 +4254,7 @@
     },
     "final_standings_podium": "▚ ENDPLATZIERUNG · PODIUM",
     "page": {
-      "tournament_eyebrow": "Turnier",
       "back_to_league": "Zurück zur Liga",
-      "view_match_options": "Match-Optionen ansehen",
       "match_options_tab": "Match-Optionen",
       "organizers_tab": "Veranstalter",
       "my_team": "Mein Team",
@@ -3762,9 +4268,7 @@
       "read_less": "Weniger anzeigen"
     },
     "feature_card": {
-      "tournament": "Turnier",
       "teams": "Teams",
-      "stages": "Stages",
       "default_label": "Turnier",
       "organized_by": "Von {team}"
     },
@@ -3812,7 +4316,7 @@
         "benched": "Auf der Bank"
       },
       "already_rostered": "In einem anderen Team",
-      "min_lineup_warning": "Wähle mindestens {min} Spieler aus, um dich zu registrieren."
+      "owner_on_a_team": "Bereits im Kader eines Teams in diesem Turnier."
     },
     "tournament_team": {
       "remove": "Team entfernen",
@@ -3842,12 +4346,6 @@
       "negotiated_scheduling": {
         "label": "Abgestimmte Terminierung",
         "description": "Team-Captains schlagen Match-Zeiten vor und einigen sich darauf (optional mit Zeitfenstern pro Stage), statt dass Matches automatisch starten."
-      },
-      "create_bar": {
-        "ready": "Bereit zum Erstellen",
-        "ready_hint": "Sieht gut aus — erstell dein Turnier",
-        "incomplete": "Pflichtfelder fehlen",
-        "incomplete_hint": "Trag Turniername und Startdatum ein, um fortzufahren"
       },
       "logo": {
         "label": "Logo"
@@ -3896,7 +4394,6 @@
       "title": "Voice-Channels",
       "description": "Erstelle automatisch Discord-Voice-Channels für Turnier-Matches. Spieler werden beim Match-Start in ihre Team-Channels verschoben.",
       "guild_id_placeholder": "Discord-Server-ID",
-      "enable_voice": "Voice-Channels aktivieren",
       "guild_id": "Discord-Server-ID"
     },
     "table": {
@@ -3986,7 +4483,13 @@
       "embed_winner_label": "Upper Bracket",
       "embed_loser_label": "Lower Bracket",
       "embed_no_stage": "Keine aktive Stage.",
-      "zoom_fit": "Einpassen"
+      "zoom_fit": "Einpassen",
+      "round_number": "Runde {round}",
+      "default_label": "Bracket",
+      "main_path": "Haupt",
+      "impact_source": "Quelle",
+      "impact_delete": "löschen",
+      "impact_reset": "zurücksetzen"
     },
     "match": {
       "reset_winner": "Sieger zurücksetzen",
@@ -4062,7 +4565,8 @@
       "title": "Tabelle"
     },
     "results": {
-      "title": "Ergebnisse"
+      "title": "Ergebnisse",
+      "stats_heading": "TURNIERSTATISTIK"
     },
     "organizer": {
       "title": "Turnier-Veranstalter",
@@ -4091,7 +4595,17 @@
       "leave_team": "Team verlassen",
       "slot": "Slot {number}",
       "add_player": "Spieler hinzufügen",
+      "ineligible": {
+        "on_this_roster": "Bereits in diesem Kader.",
+        "on_other_team": "In diesem Turnier bereits im Kader von {team}.",
+        "invite_pending": "Du hast ihn bereits eingeladen — die Antwort steht noch aus."
+      },
+      "already_in_tournament": "Dieser Spieler ist in diesem Turnier bereits in einem Team.",
       "pending_invites": "Offene Einladungen",
+      "member_added": "Spieler hinzugefügt",
+      "member_added_description": "{name} wurde deinem Kader hinzugefügt",
+      "invite_sent": "Einladung gesendet",
+      "invite_sent_description": "{name} wurde eingeladen und muss annehmen, bevor er in deinen Kader kommt",
       "new": "Neues Team erstellen",
       "select": "Bestehendes Team wählen",
       "select_role": "Rolle wählen",
@@ -4134,18 +4648,12 @@
       "remove_description": "Damit wird der Server aus dem Turnier entfernt"
     },
     "open_match_actions": "Match-Aktionen öffnen",
-    "location": {
-      "tab": "Ort",
-      "view_on_map": "Auf Karte ansehen"
-    },
     "prizes": {
       "title": "Preise",
-      "manage_title": "Preise",
       "manage_hint": "Preisplätze und Beträge, die auf der Turnierseite angezeigt werden.",
       "organizer_access_required": "Veranstalter-Zugriff erforderlich",
       "add": "Hinzufügen",
       "distribution": "Preisverteilung",
-      "place_placeholder": "#1",
       "prize_placeholder": "1000 $",
       "reorder_hint": "Zum Sortieren ziehen — Plätze werden automatisch neu nummeriert. Tippe ein Label, um es zu überschreiben.",
       "move_up": "Nach oben",
@@ -4167,11 +4675,6 @@
     "banner": {
       "label": "Banner",
       "upload": "Banner hochladen",
-      "replace": "Banner ersetzen",
-      "remove": "Entfernen",
-      "removed": "Banner entfernt",
-      "updated": "Banner aktualisiert",
-      "empty_hint": "Banner hinzufügen",
       "hint": "Wird oben auf der Turnierseite angezeigt. Auf ein breites 3:1-Format zugeschnitten.",
       "upload_failed": "Banner-Upload fehlgeschlagen"
     },
@@ -4190,20 +4693,17 @@
       "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
       "new_award": "New award",
       "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
-      "upload_image": "Upload image",
-      "replace_image": "Replace image",
       "custom_image_hint": "Overrides the award's artwork for this tournament only.",
       "silhouettes": {
-        "auto": "Auto",
         "0": "Chalice",
         "1": "Faceted",
         "2": "Star",
         "3": "Shield",
-        "4": "Laurel"
+        "4": "Laurel",
+        "auto": "Auto"
       },
       "artwork": "Artwork",
       "silhouette_unused": "Silhouette is unused while artwork is set.",
-      "placement": "Placement",
       "unsaved": "Unsaved"
     },
     "awards_manage": {
@@ -4213,8 +4713,17 @@
       "remove": "Entfernen",
       "hint": "Vergib eine Auszeichnung außerhalb der Bracket-Berechnung.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first.",
-      "choose_award": "Choose an award…"
+      "no_awards": "Create an award in the catalog first."
+    },
+    "teams_filter": {
+      "all": "Alle",
+      "ready": "Bereit",
+      "incomplete": "Braucht Spieler",
+      "no_matches": "Keine Teams passen zu diesem Filter",
+      "collapse": "Einklappen",
+      "expand": "Ausklappen",
+      "collapse_all": "Alle einklappen",
+      "expand_all": "Alle ausklappen"
     }
   },
   "team": {
@@ -4321,7 +4830,15 @@
       "ineligible_short": "Gesperrt",
       "tournament_join_requires_owner_or_captain": "Du kannst einem Turnier nur mit Teams beitreten, in denen du Owner oder Captain bist.",
       "not_enough_players": "Braucht mindestens {count} Spieler für eine Herausforderung.",
-      "selected": "Ausgewählt"
+      "selected": "Ausgewählt",
+      "loading_more": "Weitere werden geladen …",
+      "ineligible": {
+        "in_tournament": "Bereits in diesem Turnier gemeldet.",
+        "in_season": "Bereits für diese Saison registriert.",
+        "tournament_organizer": "Bereits Organisator dieses Turniers.",
+        "in_event": "Bereits diesem Event zugeordnet.",
+        "other_side": "Bereits als anderes Team ausgewählt."
+      }
     },
     "member": {
       "coach": "Coach",
@@ -4342,7 +4859,8 @@
       "link_copied": "Kalender-Link kopiert",
       "subscription_help": "Abonniere diese URL in deiner Kalender-App, um jedes Match dieses Teams zu sehen — Scrims, Liga-Spiele und Turniere.",
       "link_error": "Kalender-Link konnte nicht geladen werden"
-    }
+    },
+    "roster_short": "Kader"
   },
   "match": {
     "open_match": "Match öffnen",
@@ -4388,6 +4906,7 @@
     },
     "elo_details": {
       "title": "Details zur ELO-Änderung",
+      "rated_at_hint": "Die Wertung, nach der du beurteilt wurdest — eine Mischung aus deiner eigenen ELO und dem Durchschnitt deines Teams, gemessen am Durchschnitt des gegnerischen Teams. Von Teamkollegen mit abweichender Wertung wird anderes erwartet, dasselbe Ergebnis verschiebt sie daher unterschiedlich stark.",
       "formula": {
         "k_factor_hint": "K-Faktor — Basis-Ausschlag der ELO vor allen Modifikatoren.",
         "delta_hint": "Δ = tatsächlich ({actual}) − erwartet ({expected}). Positiv heißt, du warst besser als die Team-ELO-Prognose.",
@@ -4421,7 +4940,8 @@
         "label": "Best of",
         "description": "Es gewinnt, wer die Mehrheit einer festgelegten Anzahl von Spielen gewinnt",
         "placeholder": "Best-of-Wert wählen",
-        "option": "Best of {count}"
+        "option": "Best of {count}",
+        "short": "BO{count}"
       },
       "map_veto_settings": {
         "short_on": "Teams bannen und picken Maps aus dem Pool.",
@@ -4469,6 +4989,11 @@
         "tv_delay": {
           "label": "TV-Delay",
           "range": "Gib einen Wert zwischen 0 und 120 ein."
+        },
+        "veto_pick_timeout": {
+          "label": "Veto-Pick-Timer",
+          "description": "Wählt automatisch für ein Team, dessen Zeit im Veto-Zug abläuft.",
+          "range": "Sekunden, die jedes Team pro Veto-Pick hat, bevor für es gewählt wird."
         },
         "timeouts": {
           "tactical": {
@@ -4543,6 +5068,8 @@
       },
       "max_rounds": "Max. Runden",
       "tv_delay": "TV-Delay",
+      "veto_pick_timeout": "Veto-Pick-Timer",
+      "veto_pick_timeout_seconds": "{seconds} s",
       "seconds": "Sekunden",
       "coaches": "Coaches",
       "overtime": "Overtime",
@@ -4554,7 +5081,19 @@
       "ready_setting": "Ready-Einstellung",
       "check_in_setting": "Check-in-Einstellung",
       "advanced_settings": "Erweiterte Einstellungen anzeigen",
-      "default_player_models": "Standard-Spielermodelle"
+      "default_player_models": "Standard-Spielermodelle",
+      "cameras": {
+        "title": "Spielerkameras",
+        "required": {
+          "label": "Webcam erforderlich",
+          "description": "Spieler müssen eine Webcam verbinden, bevor die Serverdaten angezeigt werden; fällt ein Feed aus, pausiert das Match automatisch."
+        },
+        "teammates": {
+          "label": "Teamkollegen dürfen zusehen",
+          "description": "Erlaubt Spielern, die Kameras des eigenen Teams zu sehen."
+        },
+        "privacy_note": "Das gegnerische Team kann diese Feeds nie sehen. Organisatoren, die in diesem Match mitspielen, sehen keinen davon."
+      }
     },
     "schedule": {
       "schedule": "Ansetzen",
@@ -4739,7 +5278,6 @@
       "randomize_teams": "Teams zufällig verteilen",
       "swap_lineups": "Lineups tauschen",
       "restore_round": "Runde wiederherstellen",
-      "select_round_to_restore": "Wähle die Runde, die wiederhergestellt werden soll",
       "server_information": "Server-Infos",
       "type": "Typ",
       "region": "Region",
@@ -4755,6 +5293,7 @@
     },
     "winner": {
       "set": "Match-Sieger festlegen",
+      "set_failed": "Match-Sieger konnte nicht festgelegt werden",
       "select_lineup": "Lineup wählen"
     },
     "map_winner": {
@@ -4763,7 +5302,6 @@
     "region_veto": {
       "ban_label": "Ban",
       "banning": "bannt eine Region",
-      "organizer_override": "Override durch Veranstalter",
       "confirm_ban": "Ban bestätigen",
       "server_region": "Server-Region",
       "select_region": "Region wählen",
@@ -4779,8 +5317,15 @@
       "reset_to_knife": "Zurück zur Knife-Runde",
       "reset_to_warmup": "Zurück zum Warmup"
     },
+    "party": {
+      "queued": "Gemeinsam in der Warteschlange",
+      "queued_lobby": "Gemeinsam in einer Lobby in der Warteschlange",
+      "queued_valve": "Gemeinsam in der Warteschlange (Valve-Party)"
+    },
     "picks": {
       "decider": "Decider",
+      "auto_picked": "Auto",
+      "auto_picked_description": "Automatisch gewählt, weil die Zeit des Teams abgelaufen ist.",
       "empty": "Keine Veto-Picks",
       "counter_terrorist": "Counter-Terrorist",
       "terrorist": "Terrorist",
@@ -4794,7 +5339,6 @@
     "decider": "Decider",
     "map_veto": {
       "is_picking": "pickt gerade eine",
-      "organizer_override": "Override durch Veranstalter",
       "pick": "Pick",
       "confirm": "{type} bestätigen"
     },
@@ -4802,6 +5346,7 @@
       "picked": "Gepickt"
     },
     "auto_canceling": "Wird automatisch abgebrochen",
+    "demo_processing": "Demo wird verarbeitet",
     "actions": {
       "call_support": "Support rufen",
       "start_veto": "Veto starten",
@@ -4844,7 +5389,8 @@
       "resume_renders_started": "Highlight-Renders werden fortgesetzt",
       "clips_started": "Spieler-Highlight-Renders eingereiht",
       "reparse_demos": "Match-Demos neu parsen",
-      "reparse_demos_started": "Alle Demos dieses Matches werden neu geparst"
+      "reparse_demos_started": "Alle Demos dieses Matches werden neu geparst",
+      "watch_camera": "Kameras ansehen"
     },
     "delete_confirm": {
       "title": "Match löschen",
@@ -5067,7 +5613,10 @@
     "check_in": {
       "checked_in": "Eingecheckt",
       "check_in": "Check-in",
-      "checked_in_description": "Du hast {checked} von {required} Spielern eingecheckt, die zum Start des Matches nötig sind"
+      "checked_in_description": "Du hast {checked} von {required} Spielern eingecheckt, die zum Start des Matches nötig sind",
+      "deadline": "Einchecken innerhalb von",
+      "deadline_checked_in": "Automatischer Abbruch in",
+      "deadline_help": "Das Match wird automatisch abgebrochen, wenn nicht alle Erforderlichen vor Ablauf des Timers eingecheckt haben."
     },
     "coach": {
       "assign": "Coach zuweisen"
@@ -5219,7 +5768,8 @@
       "kit_dropped_by": "Fallen gelassen von {name}",
       "unknown_player": "unbekannt",
       "kill_filter_by_title": "Zeigt Kills VON diesem Spieler — klicken für Deaths DES Spielers",
-      "kill_filter_of_title": "Zeigt Deaths DES Spielers — klicken für Kills VON diesem Spieler"
+      "kill_filter_of_title": "Zeigt Deaths DES Spielers — klicken für Kills VON diesem Spieler",
+      "utility_none": "{label} (keine)"
     },
     "player_details_panel": {
       "stats_unavailable": "Für dieses Match sind keine Stats verfügbar.",
@@ -5250,7 +5800,29 @@
     },
     "admin_bar": {
       "rcon_unavailable": "RCON nicht verfügbar",
-      "not_controllable": "Match ist in keinem steuerbaren Status."
+      "not_controllable": "Match ist in keinem steuerbaren Status.",
+      "veto_override": "Veto überschreiben"
+    },
+    "demo_processing_hint": "Die Match-Demo wird vom Gameserver hochgeladen. Statistiken, das 2D-Replay und Highlights folgen, sobald das abgeschlossen ist.",
+    "demo_playback": {
+      "xray": "Röntgen",
+      "xray_on": "Röntgen an",
+      "xray_off": "Röntgen aus",
+      "all_players": "Alle Spieler ({count})",
+      "previous_kill": "Vorheriger Kill",
+      "previous_kill_player": "Vorheriger Kill — {name}",
+      "next_kill": "Nächster Kill",
+      "next_kill_player": "Nächster Kill — {name}",
+      "seeking": "Suchlauf — cs2 holt auf",
+      "click_to_jump": "{label} — zum Springen klicken",
+      "kill_nav_follows": "Die Kill-Navigation folgt dem beobachteten Spieler — wähle einen Spieler, um sie festzusetzen"
+    },
+    "maps": {
+      "demos_for_map": "{count} Demos für diese Karte",
+      "heading": "Karten"
+    },
+    "highlights": {
+      "clip_count": "{count} Clips"
     }
   },
   "ui": {
@@ -5297,7 +5869,6 @@
     "show_keyboard_shortcuts": "Tastenkürzel anzeigen",
     "hold_to_show_scoreboard": "Halten, um das Scoreboard zu zeigen",
     "close_popout": "Fenster schließen",
-    "trophy_rack": "Trophäenregal",
     "click_to_view_tournament": "Klicken, um das Turnier anzusehen",
     "auto_clip": "Auto-Clip",
     "create_clip": "Clip erstellen",
@@ -5397,7 +5968,6 @@
     },
     "sanction": {
       "button": "Spieler sanktionieren",
-      "typed_player": "Spieler {type}",
       "reason_label": "Grund",
       "reason_placeholder": "Grund für die Sanktion eingeben...",
       "reason_description": "Gib einen klaren Grund für diese Sanktion an",
@@ -5415,12 +5985,43 @@
         "1_week": "1 Woche",
         "1_month": "1 Monat",
         "permanent": "Permanent"
+      },
+      "heading": {
+        "ban": "Spieler wird gebannt",
+        "mute": "Spieler wird stummgeschaltet",
+        "gag": "Spieler wird geknebelt",
+        "silence": "Spieler wird zum Schweigen gebracht"
+      },
+      "submit": {
+        "ban": "Spieler bannen",
+        "mute": "Spieler stummschalten",
+        "gag": "Spieler knebeln",
+        "silence": "Spieler zum Schweigen bringen"
+      },
+      "applied": {
+        "ban": "{name} gebannt",
+        "mute": "{name} stummgeschaltet",
+        "gag": "{name} geknebelt",
+        "silence": "{name} zum Schweigen gebracht"
       }
     },
     "search": {
       "no_players_found": "Keine Spieler gefunden.",
       "found_players": "Gefundene Spieler",
-      "placeholder": "Spieler suchen..."
+      "placeholder": "Spieler suchen...",
+      "loading_more": "Weitere werden geladen …",
+      "ineligible": {
+        "in_lineup": "Bereits im Lineup dieses Matches.",
+        "coaching": "Coacht bereits in diesem Match.",
+        "on_team": "Bereits in diesem Team.",
+        "team_invite_pending": "Du hast ihn bereits eingeladen — die Antwort steht noch aus.",
+        "in_lobby": "Bereits in deiner Lobby.",
+        "in_draft": "Bereits in diesem Draft.",
+        "in_event": "Bereits diesem Event zugeordnet.",
+        "event_organizer": "Bereits Organisator dieses Events.",
+        "tournament_organizer": "Bereits Organisator dieses Turniers.",
+        "tournament_admin": "Der Turnier-Admin ist immer Organisator."
+      }
     },
     "sanctions": {
       "title": "Sanktionen",
@@ -5431,10 +6032,14 @@
       "duration_label": "Dauer",
       "select_duration": "Dauer wählen",
       "sanctions": "Sanktionen",
+      "record": "Verlauf",
       "expires": "Läuft ab",
       "expired_on": "Abgelaufen",
       "issued": "Erteilt",
       "view_steam": "Ban auf Steam ansehen",
+      "steam_bans": "Steam-Sperren",
+      "steam_vac_bans": "VAC-Sperre(n)",
+      "steam_game_bans": "Spielsperre(n)",
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Abgelaufen",
@@ -5455,6 +6060,7 @@
       "abandoned_matches": "Abgebrochene Matches",
       "match": "Match",
       "no_sanctions": "Keine Sanktionen",
+      "no_sanctions_description": "Dieser Spieler hat auf dieser Plattform eine saubere Weste.",
       "remove_abandoned": "Abgebrochenes Match entfernen",
       "confirm_remove_abandoned": "Abgebrochenes Match entfernen",
       "remove_abandoned_description": "Diesen Eintrag zum abgebrochenen Match wirklich entfernen? Das lässt sich nicht rückgängig machen.",
@@ -5474,7 +6080,15 @@
       "vac_banned": "Auf Steam VAC-gebannt",
       "vac_banned_count": "{count} VAC-Ban(s) auf Steam",
       "game_banned": "Auf Steam Game-gebannt",
-      "game_banned_count": "{count} Game-Ban(s) auf Steam"
+      "game_banned_count": "{count} Game-Ban(s) auf Steam",
+      "last_ban_days_ago": "Letzte Sperre vor {days} Tag(en)",
+      "view_sanctions_hint": "Klicken, um alle Sanktionen zu sehen",
+      "not_in_cs2": "Gerade nicht in CS2"
+    },
+    "context_menu": {
+      "view_profile": "Profil ansehen",
+      "copy_steam_id": "Steam-ID kopieren",
+      "steam_id_copied": "Steam-ID kopiert"
     },
     "change_name": {
       "name_label": "Name",
@@ -5485,10 +6099,13 @@
       "title": "Ausstehende CS2-Importe",
       "importing": "Importiert…"
     },
-    "all_time_peak": "ALLZEIT-BESTWERT"
+    "all_time_peak": "ALLZEIT-BESTWERT",
+    "at_match_start": "BEI MATCHBEGINN",
+    "current_elo": "AKTUELL",
+    "faceit_level": "Level {level}",
+    "elo_aria_label": "ELO, primär {tier} {elo}"
   },
   "maps": {
-    "label": "Maps",
     "veto": {
       "pick": "Map picken"
     },
@@ -5555,6 +6172,8 @@
       "search_placeholder": "Freunde suchen …",
       "invite_to_lobby": "In Lobby einladen",
       "remove": "Freund entfernen",
+      "remove_confirm_title": "Freund entfernen?",
+      "remove_confirm_description": "{name} wird aus deiner Freundesliste entfernt. Du musst eine neue Freundschaftsanfrage senden, um ihn wieder hinzuzufügen.",
       "in_match": "In einem Match",
       "in_lobby": "In einer Lobby",
       "in_draft": "In einer Draft-Lobby",
@@ -5574,6 +6193,7 @@
       "title": "Andere"
     },
     "banned": "Du bist vom Matchmaking gebannt",
+    "banned_until": "Du bist bis {time} vom Matchmaking gesperrt",
     "confirm_selection": "Queue beitreten",
     "in_queue": "in der Queue",
     "temp_banned": "Du bist vorübergehend vom Matchmaking gebannt",
@@ -5585,7 +6205,9 @@
     "party_size": {
       "unavailable": "Party mit {size} Spielern kann für diesen Modus nicht in die Queue",
       "requirement": "Queue mit {half} oder weniger, oder genau {full} Spielern"
-    }
+    },
+    "temp_banned_until": "Du bist vorübergehend bis {time} vom Matchmaking gesperrt",
+    "new_invites_count": "Neue Einladungen ({count})"
   },
   "game_server": {
     "lan_ip": "LAN-IP",
@@ -5741,12 +6363,27 @@
       "no_access": "Du hast keinen Zugriff auf diese Seite.",
       "sidebar_hint": "Der Chat ist in der rechten Seitenleiste unter dem Tab „Chats“ verfügbar."
     },
-    "in_chat": "im Chat"
+    "in_chat": "im Chat",
+    "everyone": "Alle",
+    "your_team": "Dein Team",
+    "all": "Alle",
+    "team_tag": "Team",
+    "message_placeholder_team": "Schreibe deinem Team …",
+    "send_other_hint": "Strg+Enter, um an {channel} zu senden",
+    "everyone_hint": "Beide Teams — wird auch im Spielchat angezeigt",
+    "team_hint": "Nur dein Lineup — wird nicht im Spielchat angezeigt",
+    "direct": {
+      "message": "Nachricht",
+      "empty": "Noch keine Nachrichten. Sag Hallo."
+    }
   },
   "charts": {
     "usage": "Auslastung",
     "mount_os": "OS",
-    "mount_demos": "Demos"
+    "mount_demos": "Demos",
+    "total_series": "{label} gesamt",
+    "gpu_index": "GPU {index}",
+    "series_avg": "{label} Ø"
   },
   "server": {
     "join_server": "Server beitreten",
@@ -5824,6 +6461,7 @@
     "unmute": "Ton an",
     "play": "Abspielen",
     "pause": "Pause",
+    "seek": "Suchen",
     "fullscreen": "Vollbild",
     "exit_fullscreen": "Vollbild beenden",
     "fullscreen_f_key": "Vollbild (F)",
@@ -5938,7 +6576,8 @@
     "spectator": {
       "slot": "Slot {slot}",
       "slot_waiting": "Slot {slot} · warte auf Spieler …",
-      "take_manual_control": "Klicken, um manuell zu steuern"
+      "take_manual_control": "Klicken, um manuell zu steuern",
+      "slot_key": "Slot {slot} · Taste {key}"
     },
     "page_title": "Stream Deck",
     "page_description": "Belege eine GPU, um ein Live-Match zu übertragen, Ziele zu wechseln und den Auto-Director laufen zu lassen.",
@@ -5960,7 +6599,26 @@
     "swap_sides": "Seiten tauschen (manuell)",
     "refresh_hud": "HUD neu laden (Spielerbilder aktualisieren)",
     "autodirector_on": "Auto-Director ist an",
-    "autodirector_hint": "CS2 wählt die Kamera — ein Klick auf ein Ziel oder ein Tastendruck schaltet das ab und gibt dir die manuelle Kontrolle."
+    "autodirector_hint": "CS2 wählt die Kamera — ein Klick auf ein Ziel oder ein Tastendruck schaltet das ab und gibt dir die manuelle Kontrolle.",
+    "actions": {
+      "spec_click": "Zuschauer-Klick {button}",
+      "spec_slot": "Slot {slot} beobachten",
+      "spec_jump": "Zum Zuschauerziel springen",
+      "spec_autodirector": "Auto-Regie",
+      "spec_xray": "Röntgen",
+      "spec_hud": "HUD-Sichtbarkeit",
+      "set_hud_mode": "HUD-Layout",
+      "swap_sides": "Seiten tauschen",
+      "refresh_hud": "HUD neu laden",
+      "start_live": "Stream starten",
+      "stop_live": "Stream stoppen",
+      "reconnect": "Neu verbinden",
+      "skip_shaders": "Shader-Kompilierung überspringen"
+    },
+    "gpu_pool_hint": "GPU-Pool — GPU-Nodes-Seite öffnen",
+    "no_free_gpu": "Keine freie GPU",
+    "start_live_hint": "Einen Livestream starten",
+    "start_tv_hint": "Einen verzögerten TV-Stream starten"
   },
   "system_metrics_extras": {
     "gpu_usage": "GPU-Auslastung",
@@ -5971,7 +6629,8 @@
   },
   "rcon": {
     "console": "RCON-Konsole",
-    "suggestions": "Vorschläge"
+    "suggestions": "Vorschläge",
+    "entry_count": "{count} Einträge"
   },
   "game_server_node": {
     "set_ports": "Ports festlegen"
@@ -6067,7 +6726,9 @@
       "done_only_count": "{count} fertig",
       "cancelled_count": "{count} abgebrochen",
       "retry_failed_count": "Fehlgeschlagene wiederholen ({count})",
-      "retry_all_clips": "Alle {count} Clips wiederholen"
+      "retry_all_clips": "Alle {count} Clips wiederholen",
+      "target_clip": "Clip von {name}",
+      "render_id": "Rendering {id}"
     },
     "create_dialog": {
       "title": "Auto-Clip",
@@ -6139,7 +6800,10 @@
       "no_moments": "Keine highlight-tauglichen Momente für {target} auf dieser Map.",
       "this_player": "diesen Spieler",
       "queue_render": "Rendern einreihen"
-    }
+    },
+    "player": "Spieler",
+    "clip": "Clip",
+    "open_profile": "Profil von {name} öffnen"
   },
   "time_ago": {
     "just_now": "gerade eben",
@@ -6167,7 +6831,8 @@
     "view_short": "Ansehen",
     "premier": "Premier",
     "competitive": "Competitive",
-    "wingman": "Wingman"
+    "wingman": "Wingman",
+    "imported_from": "{type} · importiert aus {source}"
   },
   "breadcrumbs": {
     "dashboard": "Dashboard"
@@ -6186,6 +6851,9 @@
     "updated": "NEU",
     "series_multiplier": "SERIEN-MULTIPLIKATOR",
     "team_elo": "TEAM-ELO",
+    "rated_at": "GEWERTET MIT",
+    "you": "DU",
+    "team": "TEAM",
     "kda": "KDA",
     "kda_breakdown": "K / D / A",
     "perf": "PERF"
@@ -6439,13 +7107,7 @@
     }
   },
   "league": {
-    "created": "Liga erstellt",
     "not_found": "Liga nicht gefunden",
-    "status": {
-      "Setup": "Setup",
-      "Active": "Aktiv",
-      "Archived": "Archiviert"
-    },
     "season_status": {
       "Setup": "Setup",
       "RegistrationOpen": "Anmeldung offen",
@@ -6456,7 +7118,6 @@
       "Canceled": "Abgesagt"
     },
     "list": {
-      "eyebrow": "Wettbewerb",
       "title": "Liga",
       "subtitle": "Seasons mit Divisionen, wöchentliche Matches, Auf- und Abstieg",
       "settings": "Liga-Einstellungen"
@@ -6469,11 +7130,9 @@
       "none": "—"
     },
     "divisions": {
-      "title": "Divisionen",
       "empty": "Noch keine Divisionen eingerichtet",
       "add": "Tier {tier} hinzufügen",
       "name_placeholder": "Name der Division (z. B. Open, Main, Invite)",
-      "tier_hint": "Tier 1 ist die oberste Division. Teams steigen Richtung Tier 1 auf und davon weg ab.",
       "reorder_hint": "Zieh die Divisionen, um die Leiter neu zu sortieren. Tier 1 ist die oberste Division; Teams steigen dorthin auf und davon weg ab.",
       "delete_title": "Division wirklich löschen?",
       "delete_description": "{name} wird aus der Leiter entfernt. Die übrigen Divisionen werden neu nummeriert. Das lässt sich nicht rückgängig machen."
@@ -6481,15 +7140,12 @@
     "seasons": {
       "title": "Seasons",
       "empty": "Noch keine Seasons",
-      "teams_count": "{count} Teams",
       "deleted": "Season gelöscht",
       "delete_title": "Season wirklich löschen?",
       "delete_description": "{name} wird endgültig gelöscht, inklusive Anmeldungen, Spielplan und Ergebnissen. Das lässt sich nicht rückgängig machen."
     },
     "season_form": {
       "title": "Season erstellen",
-      "name": "Name",
-      "name_placeholder": "z. B. Season 1",
       "signup_opens": "Anmeldung öffnet",
       "signup_closes": "Anmeldung schließt",
       "starts_at": "Season startet",
@@ -6498,9 +7154,6 @@
       "auto_format_hint": "Das Format jeder Division ergibt sich automatisch aus ihrer Größe: ein volles Round Robin, wenn es in die Runden der Season passt, sonst eine Gruppe im Schweizer System.",
       "roster_lock_week": "Woche der Roster-Sperre",
       "playoff_seats": "Playoff-Plätze",
-      "min_roster": "Min. Roster",
-      "promote": "Aufstieg",
-      "relegate": "Abstieg",
       "direct_promote": "Direkter Aufstieg",
       "relegation_up": "Relegation hoch",
       "relegation_down": "Relegation runter",
@@ -6529,18 +7182,10 @@
       "min_teams_hint": "Eine Division braucht mindestens 4 bestätigte Teams — kleinere Divisionen werden beim Season-Start übersprungen."
     },
     "overview": {
-      "signup_window": "Anmeldezeitraum",
-      "starts": "Start",
       "weeks": "Match-Wochen",
-      "playoff_seats": "Playoff-Plätze",
       "roster_locked": "Roster gesperrt",
       "roster_locks": "Roster sperrt {date}",
-      "format": "Format",
-      "teams": "Teams",
-      "playoffs": "Playoffs",
-      "weeks_count": "{count} Wochen",
-      "across_divisions": "über {count} Divisionen",
-      "playoff_seats_count": "{count} Plätze"
+      "weeks_count": "{count} Wochen"
     },
     "phases": {
       "registration": "Anmeldung",
@@ -6565,10 +7210,6 @@
     },
     "manage": {
       "title": "Einstellungen",
-      "open": "Verwaltungs-Tab öffnen",
-      "phase_controls": "Season-Phase",
-      "current": "Aktuell",
-      "registrations": "Anmeldungen",
       "danger_zone": "Gefahrenzone"
     },
     "tabs": {
@@ -6576,7 +7217,6 @@
       "teams": "Teams",
       "schedule": "Spielplan",
       "standings": "Tabelle",
-      "playoffs": "Playoffs",
       "bracket": "Bracket",
       "movements": "Auf-/Abstieg",
       "stats": "Stats"
@@ -6597,14 +7237,6 @@
       "requested_division": "Gewünschte Division",
       "assign_division": "Division zuweisen (bestätigt automatisch)",
       "no_preference": "Keine Präferenz",
-      "roster": "Season-Roster ({selected} ausgewählt, mindestens {min})",
-      "roster_range": "Season-Roster ({selected} ausgewählt · {min}–{max} Spieler)",
-      "group": {
-        "starters": "Stammspieler",
-        "substitutes": "Ersatzspieler",
-        "benched": "Auf der Bank"
-      },
-      "available": "Verfügbar",
       "min_roster_warning": "Wähl mindestens {min} Spieler aus, um dich anzumelden.",
       "register": "Anmelden",
       "registered": "Team angemeldet",
@@ -6612,7 +7244,6 @@
       "cta_hint": "Melde ein Team an, das du verwaltest, und leg sein Season-Roster fest."
     },
     "my_team": {
-      "title": "Mein Team — {team}",
       "add_players": "Spieler hinzufügen",
       "make_starter": "Zum Stammspieler machen",
       "make_sub": "Zu den Ersatzspielern",
@@ -6654,7 +7285,6 @@
       "decline_title": "Anmeldung wirklich ablehnen?",
       "decline_reason_hint": "Sag dem Team optional, warum. Solange die Anmeldung offen ist, kann es erneut einreichen.",
       "decline_reason_placeholder": "Grund (optional)",
-      "players": "Spieler",
       "review_summary": "{pending} ausstehend · {waitlisted} auf der Warteliste zur Prüfung",
       "remove": "Entfernen",
       "remove_title": "Team wirklich aus der Season entfernen?",
@@ -6665,20 +7295,9 @@
     "schedule": {
       "week": "Woche {week}",
       "season_number": "Season {number}",
-      "default_time": "Standard",
       "my_matches": "Meine Matches",
-      "no_matches_filter": "Keine Matches für diese Filter",
-      "unscheduled_count": "{count} ohne Termin",
-      "needs_you": "{count} brauchen dich",
-      "filter": {
-        "all": "Alle",
-        "unscheduled": "Ohne Termin",
-        "scheduled": "Terminiert",
-        "finished": "Beendet"
-      },
       "no_matchups": "Diese Woche keine Matchups",
       "bye": "Freilos (Sieg geschenkt)",
-      "unscheduled": "Ohne Termin",
       "view_match": "Match ansehen",
       "propose": "Zeit vorschlagen",
       "propose_new": "Neue Zeit vorschlagen",
@@ -6693,13 +7312,6 @@
       "decline": "Ablehnen",
       "awaiting_opponent": "Warten auf Gegner",
       "winner": "Sieger",
-      "defaults_to": "Ohne Einigung automatisch auf {time} terminiert",
-      "history": "Frühere Vorschläge ({count})",
-      "status_chip": {
-        "needs_scheduling": "Termin nötig",
-        "scheduled": "Terminiert",
-        "finished": "Beendet"
-      },
       "status": {
         "Accepted": "Angenommen",
         "Declined": "Abgelehnt",
@@ -6715,7 +7327,6 @@
     "schedule_task": {
       "schedule_title": "Terminier dein Match",
       "respond_title": "Es wurde eine Match-Zeit vorgeschlagen",
-      "confirm_title": "Bestätige deine Match-Zeit",
       "context": "Season {season} · Woche {week}",
       "more": "{count} weitere"
     },
@@ -6725,11 +7336,9 @@
       "rounds": "Runden",
       "round_diff": "RD",
       "remaining": "Offen",
-      "playoffs": "Playoffs",
       "search": "Team suchen",
       "empty": "Noch keine Ergebnisse",
       "removed": "Entfernt",
-      "open_tournament": "Turnier öffnen",
       "legend": {
         "advances": "Kommt in die Playoffs (Top {n})",
         "cutoff": "Playoff-Grenze",
@@ -6738,9 +7347,6 @@
       }
     },
     "playoffs": {
-      "view_bracket": "Bracket ansehen",
-      "pending": "Das Playoff-Bracket wird geseedet, sobald die Regular Season abgeschlossen ist.",
-      "not_started": "Die Playoffs haben noch nicht begonnen",
       "scheduling": "{division} · Playoff-Terminierung"
     },
     "movements": {
@@ -6793,10 +7399,6 @@
       }
     },
     "stats": {
-      "player": "Spieler",
-      "team": "Team",
-      "maps": "Maps",
-      "kdr": "K/D",
       "empty": "Noch keine Stats — sie erscheinen, sobald Liga-Matches gespielt wurden."
     },
     "rollover": {
@@ -6922,8 +7524,6 @@
     "form": {
       "name": "Event-Name",
       "description": "Beschreibung",
-      "starts_at": "Beginnt am",
-      "ends_at": "Endet am",
       "dates": "Event-Zeitraum",
       "pick_dates": "Zeitraum wählen",
       "start_required": "Ein Startdatum ist nötig, damit das Event nur Matches ab diesem Datum erfasst",
@@ -7055,8 +7655,7 @@
       "link_title_placeholder": "Titel (optional)",
       "link_add": "Hinzufügen",
       "link_invalid": "Gib eine gültige http(s)-URL ein",
-      "link_added": "Link hinzugefügt",
-      "external_open": "Link öffnen"
+      "link_added": "Link hinzugefügt"
     },
     "phase": {
       "upcoming": "Anstehend",
@@ -7067,18 +7666,12 @@
       "for_you": "Für dich",
       "rank": "Event-Rang",
       "rating": "Rating",
-      "kd": "K/D",
-      "matches": "Matches",
-      "no_my_matches": "Noch keines deiner Matches gehört zu diesem Event."
+      "matches": "Matches"
     },
     "matches": {
-      "none": "In den Turnieren dieses Events wurden noch keine Matches gespielt.",
-      "load_more": "Mehr Matches laden"
+      "none": "In den Turnieren dieses Events wurden noch keine Matches gespielt."
     },
     "story": {
-      "only_mine": "Nur meine Momente",
-      "none": "Bei diesem Event ist noch nichts passiert.",
-      "none_mine": "Du hast bei diesem Event noch keine Momente.",
       "highlights": "Highlights"
     },
     "banner": {
@@ -7089,14 +7682,7 @@
       "updated": "Banner aktualisiert",
       "removed": "Banner entfernt",
       "empty_hint": "Noch kein Banner — klick zum Hochladen",
-      "hint": "Wird oben auf der Event-Seite über die volle Breite angezeigt. Optimale Größe: 1920×640 (3:1). Bilder bis 10MB oder MP4-Video bis 512MB.",
-      "editor": {
-        "title": "Banner anpassen",
-        "description": "Zieh zum Positionieren und scroll zum Zoomen innerhalb des 3:1-Banner-Rahmens. Nutz „Ganzes Bild einpassen“, wenn nichts abgeschnitten werden darf — die Seite füllt die Ränder mit einer unscharfen Kopie.",
-        "fit_whole": "Ganzes Bild einpassen",
-        "reset": "Zurücksetzen",
-        "apply": "Als Banner verwenden"
-      }
+      "hint": "Wird oben auf der Event-Seite über die volle Breite angezeigt. Optimale Größe: 1920×640 (3:1). Bilder bis 10MB oder MP4-Video bis 512MB."
     },
     "player": {
       "full_profile": "Vollständiges Profil",
@@ -7127,14 +7713,10 @@
     "tournament": "Turnier",
     "placement": "Platzierung",
     "no_awards": "Noch keine Auszeichnungen",
-    "no_awards_description": "Belege bei einem Turnier einen der Top 3 Plätze oder erhalte eine Auszeichnung, um diese Vitrine zu füllen.",
     "granted": "Vergeben",
     "composer": {
       "title": "Create & assign award",
       "award": "Award",
-      "new": "New",
-      "existing": "Existing",
-      "choose": "Choose an award…",
       "assign": "Assign",
       "artwork_needs_award": "Artwork attaches to the award, so save it first.",
       "create_to_upload": "Create award to add artwork",
@@ -7149,20 +7731,332 @@
       "award_unavailable": "Diese Auszeichnung konnte nicht geladen werden.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
-    }
+    },
+    "badge_alt": "Auszeichnung {label}",
+    "badge_alt_tournament": "Auszeichnung {label} für {tournament}"
   },
   "awards_modal": {
-    "view_tournament": "TURNIER ANSEHEN"
+    "view_tournament": "TURNIER ANSEHEN",
+    "view_award": "Auszeichnung ansehen"
   },
   "awards_manage_form": {
     "team": "Team",
-    "player": "Spieler",
-    "award": "Auszeichnung",
-    "recipient": "Recipient"
+    "player": "Spieler"
+  },
+  "search": {
+    "unregistered": "Nicht registriert",
+    "registered_only": "Nur registrierte",
+    "registered": "Registriert"
   },
   "camera": {
+    "title": "Webcam erforderlich",
+    "subtitle": "Dieses Match erfordert eine Webcam, bevor du die Serverdaten sehen kannst.",
+    "choose_pc": "Diesen Computer verwenden",
+    "scan": "Scanne diesen Code mit deinem Handy",
+    "waiting": "Warte auf deine Kamera …",
+    "preparing": "Kameralink wird vorbereitet …",
+    "connect": "Kamera verbinden",
+    "connecting": "Verbinden …",
+    "connected": "Deine Kamera ist live",
+    "keep_open": "Lass diese Seite für den Rest des Matches geöffnet.",
+    "flip": "Kamera wechseln",
+    "error": "Deine Kamera konnte nicht gestartet werden",
+    "retry": "Erneut versuchen",
+    "admin_title": "Spielerkameras",
+    "admin_empty": "Keine Spieler in diesem Match.",
+    "call": "Videoanruf",
+    "end_call": "Anruf beenden",
+    "offline": "Nicht verbunden",
+    "setup_before_check_in": "Richte deine Kamera ein",
+    "permission_hint": "Dein Browser fragt nach der Kamera- und Mikrofonberechtigung, bevor der Feed startet.",
+    "reframe_reset": "Zurücksetzen",
+    "talk_label": "Organisator-Anruf",
+    "you": "Du",
     "tile": {
+      "live": "Live",
+      "stalled": "Hängt",
+      "offline": "Offline",
+      "talking": "Im Anruf",
+      "unknown": "Wird geprüft …",
       "coach": "Coach"
+    },
+    "admin_subtitle": "Live-Spielerkameras",
+    "admin_live_count": "{live} von {total} live",
+    "admin_stalled_count": "{count} hängen",
+    "preview_hidden": "Vorschau ausgeblendet",
+    "preview_hidden_hint": "Deine Kamera ist weiterhin an und wird weiterhin übertragen.",
+    "hide_preview": "Vorschau ausblenden",
+    "show_preview": "Vorschau einblenden",
+    "talk_mute": "Stummschalten",
+    "talk_unmute": "Stummschaltung aufheben",
+    "listen": "Mikrofon abhören",
+    "mute": "Mikrofon stumm",
+    "or": "oder",
+    "reason": "Während du beobachtet wirst, kann deine Kamera im Match-Stream erscheinen, und Match-Offizielle können sie während des Matches ansehen.",
+    "reason_teammates": "Während du beobachtet wirst, kann deine Kamera im Match-Stream erscheinen. Match-Offizielle und dein eigenes Team können sie während des Matches ansehen.",
+    "cameras": "Kameras",
+    "preview": "Vorschau",
+    "reframe_gesture": "Scrollen oder zusammenziehen zum Zoomen · ziehen zum Neuausrichten",
+    "mic_hint": "Wird mit deiner Kamera übertragen — prüfe es, bevor du live gehst.",
+    "voice_hint": "Dein Feed ist kein Anruf — tritt bei, um mit deinem Team zu sprechen.",
+    "phase": {
+      "preview": "Vorschau",
+      "connecting": "Verbinden",
+      "connected": "Live",
+      "error": "Nicht live"
+    },
+    "headline_preview": "Du bist noch nicht live. Richte dich aus und verbinde dann.",
+    "media_error": {
+      "denied": "Dein Browser hat den Zugriff auf die Kamera blockiert. Erlaube ihn für diese Seite und versuche es erneut.",
+      "missing": "Es wurde keine Kamera gefunden. Schließe eine an oder wähle unten ein anderes Gerät.",
+      "busy": "Eine andere App verwendet die Kamera bereits. Schließe sie und versuche es erneut.",
+      "insecure": "Deine Kamera benötigt eine sichere Verbindung. Öffne 5stack über HTTPS (oder localhost) und versuche es erneut.",
+      "unknown": "Die Kamera konnte nicht gestartet werden. Versuche es erneut."
+    },
+    "media_pending": "Warte auf die Kameraberechtigung …",
+    "dismiss": "Ausblenden",
+    "nag": "Du bist noch nicht verbunden. Das Einchecken bleibt gesperrt, bis deine Kamera live ist.",
+    "nag_action": "Einrichten",
+    "mic": "Mikrofon",
+    "errors": {
+      "no_media_path": "Die Kamera hat den Server erreicht, aber es konnte kein Medienpfad aufgebaut werden.",
+      "ice_timeout": "Die Kamera hat den Server erreicht, aber es konnte nicht rechtzeitig ein Medienpfad aufgebaut werden.",
+      "feed_dropped": "Der Kamerafeed ist abgebrochen.",
+      "unknown": "Deine Kamera konnte nicht gestartet werden.",
+      "load_failed": "Die Spielerkameras konnten nicht geladen werden.",
+      "call_failed": "Der Anruf konnte nicht gestartet werden."
+    }
+  },
+  "voice": {
+    "errors": {
+      "insecure_origin": "Sprachchat benötigt eine sichere Verbindung. Öffne 5stack über HTTPS (oder localhost) und versuche es erneut.",
+      "unsupported": "Dieser Browser unterstützt keinen Sprachchat.",
+      "permission_denied": "Der Mikrofonzugriff wurde blockiert. Erlaube ihn in den Website-Einstellungen deines Browsers und versuche es erneut.",
+      "no_microphone": "Es wurde kein Mikrofon gefunden. Schließe eines an und versuche es erneut.",
+      "microphone_busy": "Dein Mikrofon wird von einer anderen Anwendung verwendet.",
+      "unknown": "Der Sprachchat konnte nicht gestartet werden.",
+      "unreachable": "Die API war nicht erreichbar. Meist liegt das an einer CORS-Regel oder daran, dass die API von dieser Adresse aus nicht erreichbar ist — prüfe die Details unten und die Browserkonsole.",
+      "forbidden": "Du darfst dem Sprachchat dieser Lobby nicht beitreten.",
+      "not_deployed": "Der Sprach-Endpunkt wurde auf der API nicht gefunden. Möglicherweise ist er noch nicht ausgerollt.",
+      "signaling": "Der Sprachserver hat die Verbindung abgelehnt.",
+      "camera": "Deine Kamera konnte nicht gestartet werden. Prüfe, ob keine andere App sie verwendet, und versuche es erneut.",
+      "camera_denied": "Der Kamerazugriff wurde blockiert. Erlaube ihn in den Website-Einstellungen deines Browsers und versuche es erneut.",
+      "no_camera": "Es wurde keine Kamera gefunden. Schließe eine an und versuche es erneut.",
+      "camera_busy": "Deine Kamera wird von einer anderen Anwendung verwendet."
+    },
+    "settings": {
+      "title": "Spracheinstellungen",
+      "description": "Wähle deine Geräte und prüfe, ob man dich hören kann.",
+      "input": "Eingabegerät",
+      "output": "Ausgabegerät",
+      "mic_test": "Mikrofontest",
+      "listen": "Mich selbst hören",
+      "stop_listening": "Stopp",
+      "meter_hint": "Sprich — der Balken zeigt, was die anderen empfangen. Grün heißt, du wirst gesendet.",
+      "monitor_hint": "Du hörst dein eigenes Mikrofon. Nutze Kopfhörer, sonst gibt es ein Echo.",
+      "input_mode": "Eingabemodus",
+      "mode_voice": "Sprachaktivierung",
+      "mode_voice_hint": "Überträgt nur, während du sprichst.",
+      "mode_open": "Immer übertragen",
+      "mode_open_hint": "Sendet alles, was dein Mikrofon aufnimmt.",
+      "sensitivity": "Empfindlichkeit",
+      "test": "Testen",
+      "output_unsupported": "In diesem Browser kann eine Website das Ausgabegerät nicht auswählen; es wird dein Systemstandard verwendet.",
+      "noise_suppression": "Rauschunterdrückung",
+      "noise_suppression_hint": "Filtert gleichmäßige Hintergrundgeräusche wie Lüfter und Tastaturen.",
+      "mic_starting": "Dein Mikrofon wird gestartet …",
+      "mic_in_use": "Dein Mikrofon ist in {channel} live. Diese Einstellungen wirken dort, sobald du sie änderst.",
+      "applies_everywhere": "Sie gelten überall dort, wo dein Mikrofon verwendet wird.",
+      "mic_idle": "Dein Mikrofon ist nicht geöffnet. Mach einen Mikrofontest, um dich so zu hören, wie die anderen dich hören werden — bevor es jemand tut.",
+      "start_mic": "Mikrofontest"
+    },
+    "team_voice": "Team-Sprache",
+    "join": "Beitreten",
+    "leave": "Verlassen",
+    "mute": "Stummschalten",
+    "unmute": "Stummschaltung aufheben",
+    "switch_title": "Sprachkanal wechseln?",
+    "switch_description": "Du bist derzeit mit {channel} verbunden. Wenn du hier beitrittst, wirst du davon getrennt.",
+    "switch_confirm": "Wechseln",
+    "speaking_count": "{count} sprechen",
+    "tooltip": {
+      "join": "Team-Sprache beitreten",
+      "join_hint": "Sprich mit deinem Lineup — das andere Team hört diesen Kanal nie.",
+      "connecting": "Verbinden …",
+      "leave": "Team-Sprache verlassen",
+      "mute": "Eigenes Mikrofon stummschalten",
+      "unmute": "Eigene Stummschaltung aufheben",
+      "settings": "Mikrofon- & Audioeinstellungen",
+      "in_voice": "{count} im Sprachchat",
+      "alone": "Du bist allein im Sprachchat",
+      "muted": "Dein Mikrofon ist aus — niemand hört dich"
+    },
+    "call": {
+      "start_camera": "Kamera einschalten",
+      "stop_camera": "Kamera ausschalten",
+      "take_camera_back": "Auf deinem Handy — tippen, um sie hierher zurückzuholen",
+      "take_mic_back": "Mikrofon auf deinem Handy — tippen, um es hierher zurückzuholen",
+      "pop_out": "Video abdocken",
+      "pop_in": "Video zurückdocken",
+      "more_members": "+{count} weitere nicht angezeigt",
+      "phone": {
+        "use_phone": "Dein Handy als Kamera verwenden",
+        "scan": "Scanne mit deinem Handy, um dessen Kamera für diesen Anruf zu nutzen.",
+        "scan_hint": "Du meldest dich zuerst auf deinem Handy an",
+        "in_call": "{count} weitere im Anruf",
+        "start": "Diese Kamera teilen",
+        "not_a_member": "Du bist nicht in diesem Anruf. Tritt ihm zuerst auf dem Gerät bei, an dem du spielst, und scanne den Code dann erneut.",
+        "mic_echo_hint": "Dein PC braucht Kopfhörer — über Lautsprecher nimmt dieses Handy den Anruf wieder auf und erzeugt ein Echo.",
+        "not_in_call": "Tritt dem Anruf auf dem Gerät bei, an dem du spielst, dann kann dieses Handy ihn übernehmen.",
+        "take_mic_short": "Mikrofon übernehmen",
+        "start_short": "Kamera",
+        "stop_short": "Stopp",
+        "flip": "Wechseln",
+        "hand_back": "Zurückgeben"
+      },
+      "nobody_yet": "Es ist noch niemand verbunden.",
+      "hide_video": "Seine Kamera ausblenden",
+      "show_video": "Seine Kamera einblenden",
+      "show_self": "Meine Kamera mir anzeigen",
+      "device_settings": "Sprach- & Videoeinstellungen",
+      "join_action": "Beitreten",
+      "dismiss_action": "Ausblenden",
+      "handoff_taken": "{channel} aus einem geschlossenen Fenster übernommen",
+      "handoff_failed": "{channel} konnte nicht aus dem geschlossenen Fenster übernommen werden",
+      "toast_kind": "Sprache",
+      "toast_joined": "ist beigetreten",
+      "toast_started_video": "hat Video gestartet in",
+      "floating_title": "Anruf"
+    }
+  },
+  "media": {
+    "device": {
+      "system_default": "Systemstandard",
+      "selected": "Ausgewähltes Gerät",
+      "following_system": "Folgt deiner Systemeinstellung",
+      "device": "Gerät"
+    }
+  },
+  "chat_rail": {
+    "remove_conversation": "Aus der Leiste entfernen"
+  },
+  "faq": {
+    "title": "Hilfe & FAQ",
+    "intro": "Häufige Fragen zur Plattform, zum Spielen hier und zum Betrieb einer eigenen Instanz. Ist etwas nicht abgedeckt, führen die Community-Links unten am schnellsten zu einer Antwort.",
+    "search_placeholder": "Fragen durchsuchen",
+    "no_results": "Keine Frage passt zu „{term}“.",
+    "links": {
+      "features": "Alle Funktionen",
+      "overview": "Was ist 5Stack?",
+      "matchmaking": "Matchmaking-Doku",
+      "tournaments": "Turnier-Doku",
+      "stats_guide": "Statistik-Leitfaden",
+      "performance_rating": "Leistungsbewertung",
+      "match_replay": "Match-Replay",
+      "highlights": "Highlights",
+      "web_push": "Web-Push einrichten",
+      "install": "Installationsanleitung",
+      "hosting_faq": "Hosting-FAQ",
+      "requirements": "Voraussetzungen",
+      "what_is_installed": "Was installiert wird",
+      "server_setup": "Server-Einrichtung",
+      "game_server_nodes": "Gameserver-Nodes",
+      "gpu_nodes": "GPU-Nodes",
+      "branding": "Branding & Theming",
+      "panel_plugins": "Panel-Plugins",
+      "game_plugins": "Game-Plugins"
+    },
+    "about": {
+      "title": "Über 5Stack",
+      "what_is": {
+        "question": "Was ist 5Stack?",
+        "answer": "5Stack ist die Wettbewerbsebene für Counter-Strike 2 — die Software zwischen Gameserver und Liga. Eine Installation betreibt den gesamten Stack: Matchmaking, Draft-Lobbys, Teams, Turniere und Saisons, Statistiken und Elo, Demo-Aufzeichnung, Replays im Browser, Highlights und Live-Übertragung."
+      },
+      "this_site": {
+        "question": "Was ist {brand}?",
+        "answer": "{brand} ist eine 5Stack-Instanz. Die Software ist Open Source und wird selbst gehostet, daher betreibt jede Community, die sie einsetzt, ihre eigene Seite, ihre eigenen Server und ihre eigenen Regeln — dies ist eine davon."
+      },
+      "cost": {
+        "question": "Ist es kostenlos?",
+        "answer": "Ja. 5Stack ist kostenlos und Open Source, und du hostest es selbst — vom Projekt fallen also keine Kosten pro Platz oder pro Match an. Du zahlst nur für die Infrastruktur, auf der du es betreiben willst. Es wird von einem einzelnen Entwickler gebaut und gepflegt; GitHub-Sponsorships halten die Entwicklung am Laufen."
+      },
+      "sign_in": {
+        "question": "Wie melde ich mich an?",
+        "answer": "Über Steam. Es gibt kein separates Konto anzulegen und kein Passwort zu merken — dein Steam-Profil ist hier deine Identität, und genau darüber wissen Matches auch, wer du bist, sobald du dich mit einem Server verbindest."
+      },
+      "games": {
+        "question": "Welche Spiele werden unterstützt?",
+        "answer": "Counter-Strike 2. Statistiken, Replays, Serververwaltung und das Ingame-Plugin sind alle gezielt darauf zugeschnitten und nicht als allgemeines Turnierwerkzeug gebaut."
+      }
+    },
+    "playing": {
+      "title": "Hier spielen",
+      "find_match": {
+        "question": "Wie komme ich in ein Match?",
+        "answer": "Beginne bei „Spielen“. Du kannst dich fürs Matchmaking anstellen, das nach Region und Latenz zusammenstellt und auch als Party möglich ist; einer Draft-Lobby beitreten, in der Kapitäne gegen die Uhr Teams wählen; oder über den Scrim-Finder ein Scrim vereinbaren. Was davon verfügbar ist, hängt davon ab, was diese Instanz aktiviert hat."
+      },
+      "check_in": {
+        "question": "Warum muss ich vor einem Match einchecken?",
+        "answer": "Das Einchecken bestätigt, dass alle tatsächlich am Rechner sitzen, bevor ein Server reserviert wird und die übrige Lobby warten muss. Matches mit automatischem Abbruch zeigen einen Countdown, und das Match wird automatisch abgebrochen, wenn die erforderlichen Spieler bis zum Ablauf nicht eingecheckt haben."
+      },
+      "tournaments": {
+        "question": "Wie nehme ich an einem Turnier teil?",
+        "answer": "Öffne das Turnier, solange die Anmeldung läuft, und melde ein Team an — entweder ein bestehendes oder einen neuen Kader für dieses Event. Turniere können als Single Elimination, Double Elimination, Round Robin oder Schweizer System laufen und sich über mehrere Phasen erstrecken, mit saisonalen Ligen darüber für Auf- und Abstieg."
+      },
+      "stats": {
+        "question": "Woher kommen meine Statistiken?",
+        "answer": "Die Demo jedes Matches wird nach dem Ende ausgewertet, die Zahlen stammen also aus der tatsächlichen Aufzeichnung und nicht aus der Live-Scoreboard-Meldung. Daraus ergeben sich HLTV-Rating, KAST, ADR, Eröffnungsduelle, Clutches, Utility und Trefferquote je Waffe sowie die Elo-Veränderung. Der Statistik-Leitfaden erklärt, was jede Zahl bedeutet und wie sie berechnet wird."
+      },
+      "replays": {
+        "question": "Kann ich ein Match ohne Demo-Download noch einmal ansehen?",
+        "answer": "Ja. Zu jedem Match gibt es ein 2D-Radar-Replay und einen 3D-Rundflug, die im Browser laufen — mit Rundenverlauf, Wirtschaft und Kill-Feed daneben. Die Rohdemo lässt sich weiterhin herunterladen, wenn du sie in CS2 selbst ansehen möchtest."
+      },
+      "highlights": {
+        "question": "Woher kommen die Highlight-Clips?",
+        "answer": "Multikills, Clutches und Messerrunden werden am Matchende automatisch erkannt und zu Clips gerendert. Du kannst im integrierten Editor auch eigene aus jedem Match schneiden. Das Rendering läuft auf einem GPU-Node, Clips erscheinen daher nur auf Instanzen, die einen haben."
+      },
+      "notifications": {
+        "question": "Warum kann ich Push-Benachrichtigungen nicht aktivieren?",
+        "answer": "Push wird von der installierten App zugestellt, nicht von einem Browser-Tab — du musst die App also zuerst auf deinem Gerät installieren; die Schaltfläche „Installieren“ im Menü erledigt das. Danach wird der Schalter unter Einstellungen → Benachrichtigungen verfügbar. Auf iPhone und iPad ist das eine harte Vorgabe des Betriebssystems."
+      }
+    },
+    "hosting": {
+      "title": "Selbst hosten",
+      "self_host": {
+        "question": "Kann ich eine eigene Instanz betreiben?",
+        "answer": "Ja — so ist 5Stack gedacht. Es wird selbst gehostet und lässt sich mit einem einzigen Befehl installieren, der Kubernetes (K3s), die Datenbank, den Speicher und das Panel selbst hochfährt. Die Installationsanleitung in der Doku führt Schritt für Schritt hindurch."
+      },
+      "requirements": {
+        "question": "Was brauche ich zum Hosten?",
+        "answer": "Einen Linux-Server mit mindestens 3 GB Arbeitsspeicher und eine Domain, die du kontrollierst. Die Ports 80 und 443 müssen für das Routing erreichbar sein, dazu Port 8585 für den Gameserver-Node-Connector. Außerdem richtest du mehrere Subdomains auf das Panel — api, ws, demos, search und console — plane also Wildcard- oder Einzel-DNS-Einträge ein."
+      },
+      "game_servers": {
+        "question": "Wo laufen die Matches tatsächlich?",
+        "answer": "Auf Gameserver-Nodes, die du mit dem Panel verbindest. Du kannst Server bei Bedarf hochfahren lassen, bereits vorhandene eigene Hardware registrieren oder auf einen Drittanbieter verweisen. CS2-Updates werden automatisch eingespielt; Regionen, Steam Relay und LAN-Setups werden alle unterstützt."
+      },
+      "gpu": {
+        "question": "Brauche ich eine GPU?",
+        "answer": "Nur für die Videofunktionen. Demo-Wiedergabe im Browser, automatisches Highlight-Rendering und Live-Streaming aus dem Panel rendern alle auf einem NVIDIA-GPU-Node. Alles andere — Matchmaking, Turniere, Statistiken, die 2D- und 3D-Replays, Server, Chat — läuft auch ohne problemlos."
+      },
+      "managed": {
+        "question": "Gibt es eine gehostete oder verwaltete Version zum Kaufen?",
+        "answer": "Nein. 5Stack wird ausschließlich selbst gehostet; es gibt keine SaaS-Stufe und kein verwaltetes Angebot zu kaufen. 5stack.gg ist die eigene öffentliche Instanz des Maintainers — nützlich, um die Software vor der Installation im Betrieb zu sehen."
+      },
+      "branding": {
+        "question": "Kann ich es wie meine Organisation aussehen lassen?",
+        "answer": "Ja. Name, Logo, Favicon, Anmeldeseite und das vollständige Farbschema lassen sich alle in den Admin-Einstellungen konfigurieren, sodass eine Instanz als deine Plattform wirkt und nicht als fremde Software mit deinem Logo darauf."
+      },
+      "extend": {
+        "question": "Kann ich es mit eigenem Code erweitern?",
+        "answer": "An zwei Stellen. Du kannst eigene Web-Apps als native Panel-Seiten einbetten — sie übernehmen die Sitzung und das Designsystem, es ist also kein Fork zu pflegen. Und serverseitig kannst du eigene CS2-Plugins neben denen von 5Stack betreiben, wahlweise auf CounterStrikeSharp oder SwiftlyS2."
+      }
+    },
+    "support": {
+      "title": "Immer noch nicht weiter?",
+      "description": "Discord ist der schnellste Weg zu einem Menschen — die Leute, die 5Stack-Instanzen betreiben, sind dort. Fehler und Funktionswünsche gehören auf GitHub, und die Doku behandelt Installation, Server und jede Funktion im Detail.",
+      "discord": "Discord beitreten",
+      "github": "Problem melden",
+      "docs": "Doku lesen"
     }
   }
 }

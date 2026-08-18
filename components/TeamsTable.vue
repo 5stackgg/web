@@ -68,13 +68,15 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           >
             <Users class="w-3 h-3" />
             <span class="tabular-nums">{{ rosterCount(team) }}</span>
-            <span>roster</span>
+            <span>{{ $t("team.roster_short") }}</span>
             <template v-if="avgElo(team) !== null">
               <span class="mx-1 opacity-40">·</span>
               <span class="tabular-nums text-[hsl(var(--tac-amber))]">
                 {{ avgElo(team) }}
               </span>
-              <span class="text-[hsl(var(--tac-amber))]">avg</span>
+              <span class="text-[hsl(var(--tac-amber))]">{{
+                $t("common.avg")
+              }}</span>
             </template>
             <template v-if="topCountries(team).length">
               <span class="mx-1 opacity-40">·</span>

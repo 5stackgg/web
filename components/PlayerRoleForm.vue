@@ -8,7 +8,9 @@ import { e_player_roles_enum } from "~/generated/zeus";
     <PopoverTrigger as-child>
       <Button variant="outline" size="sm" class="h-7 px-2.5 text-xs">
         <span class="capitalize">{{
-          player.role?.replace("_", " ") || $t("player_roles.user")
+          player.role
+            ? $t(`player_roles.${player.role}`)
+            : $t("player_roles.user")
         }}</span>
         <ChevronDownIcon class="ml-1.5 h-3.5 w-3.5 text-muted-foreground" />
       </Button>

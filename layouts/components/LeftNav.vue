@@ -107,6 +107,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             <NuxtImg
               class="shrink-0 rounded max-w-8 max-h-8"
               :src="customLogoUrl || '/favicon/64.png'"
+              :alt="customBrandName || $t('layouts.app_nav.brand')"
             />
             <Transition
               mode="out-in"

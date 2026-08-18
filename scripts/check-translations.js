@@ -26,6 +26,113 @@ function flattenTranslations(obj, prefix = "") {
 //     Only used to mark keys as "used" — a false positive just means a
 //     shape-matching literal did not correspond to a real translation key.
 //   - Dynamic template keys like $t(`foo.bar.${baz}`) are tracked by prefix.
+
+// Pull every string literal out of a source file, skipping comments.
+//
+// This used to be a single alternating regex -- /'([^']+)'|"([^"]+)"|`([^`]+)`/ --
+// which desynchronised on the first apostrophe in prose. A `// the player's name`
+// comment opened a bogus single-quoted "string" that swallowed everything up to
+// the next apostrophe, so every literal in between went unseen. Real keys then
+// showed up in the "unused" report and looked safe to delete. Walking the file
+// once, tracking comment and string state, is the only way to get this right.
+function extractStringLiterals(content) {
+  const literals = [];
+  const length = content.length;
+  let i = 0;
+
+  // Whether a `/` here starts a regex literal rather than division. Good enough:
+  // a regex can only follow an operator or an opening bracket, never a value.
+  let regexAllowed = true;
+
+  while (i < length) {
+    const char = content[i];
+    const next = content[i + 1];
+
+    if (char === "<" && content.startsWith("<!--", i)) {
+      const end = content.indexOf("-->", i + 4);
+      i = end === -1 ? length : end + 3;
+      continue;
+    }
+
+    // `content[i - 1] !== ":"` keeps a bare https:// URL in template text from
+    // being read as a comment and swallowing the rest of the line.
+    if (char === "/" && next === "/" && content[i - 1] !== ":") {
+      const end = content.indexOf("\n", i);
+      i = end === -1 ? length : end;
+      continue;
+    }
+
+    if (char === "/" && next === "*") {
+      const end = content.indexOf("*/", i + 2);
+      i = end === -1 ? length : end + 2;
+      continue;
+    }
+
+    if (char === "/" && regexAllowed) {
+      let j = i + 1;
+      let closed = false;
+      let inClass = false;
+      while (j < length) {
+        const c = content[j];
+        if (c === "\\") {
+          j += 2;
+          continue;
+        }
+        if (c === "\n") break;
+        if (c === "[") inClass = true;
+        else if (c === "]") inClass = false;
+        else if (c === "/" && !inClass) {
+          closed = true;
+          j += 1;
+          break;
+        }
+        j += 1;
+      }
+      if (closed) {
+        i = j;
+        regexAllowed = false;
+        continue;
+      }
+    }
+
+    if (char === "'" || char === '"' || char === "`") {
+      const quote = char;
+      let j = i + 1;
+      let value = "";
+      while (j < length) {
+        const c = content[j];
+        if (c === "\\") {
+          value += content[j + 1] ?? "";
+          j += 2;
+          continue;
+        }
+        if (c === quote) break;
+        // An unterminated single/double quote is almost always an apostrophe in
+        // prose that the comment skip did not catch -- bail at the newline
+        // instead of swallowing the rest of the file.
+        if (c === "\n" && quote !== "`") break;
+        value += c;
+        j += 1;
+      }
+      if (j < length && content[j] === quote) {
+        literals.push(value);
+        i = j + 1;
+      } else {
+        i += 1;
+      }
+      regexAllowed = false;
+      continue;
+    }
+
+    if (!/\s/.test(char)) {
+      regexAllowed = /[=(,:[!&|?{};+\-*%<>~^]/.test(char);
+    }
+    i += 1;
+  }
+
+  return literals;
+}
+
 function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
   const directKeys = new Set();
   const heuristicKeys = new Set();
@@ -41,6 +148,14 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
       if (prefix && dynamicPrefixes) {
         dynamicPrefixes.add(prefix);
       }
+      return;
+    }
+    // A bare `t("build_current")` is a local prefix helper, not a real lookup --
+    // e.g. `const t = (key) => this.$t(`pages.system_telemetry.foo.${key}`)`.
+    // Every real key is namespaced, so a dotless one can never resolve and
+    // reporting it as missing is pure noise. The composed key is still covered:
+    // the helper's literal prefix is picked up as a dynamic prefix.
+    if (!key.includes(".")) {
       return;
     }
     directKeys.add(key);
@@ -76,12 +191,10 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
   // Additionally, capture string literals that look like translation keys
   // based on known prefixes from the translation files (e.g. pages.*, layouts.*, common.*, etc.)
   if (keyPrefixPattern) {
-    const literalPattern = /'([^']+)'|"([^"]+)"|`([^`]+)`/g;
-    const literalMatches = Array.from(content.matchAll(literalPattern));
+    const literalMatches = extractStringLiterals(content);
     const translationKeyShape = /^[a-z0-9_]+(\.[a-z0-9_]+){2,}$/;
 
-    literalMatches.forEach((match) => {
-      const candidate = match[1] || match[2] || match[3];
+    literalMatches.forEach((candidate) => {
       if (
         translationKeyShape.test(candidate) &&
         keyPrefixPattern.test(candidate)

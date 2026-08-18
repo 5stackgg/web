@@ -2207,10 +2207,7 @@ const playerHeroTeamChipDotClasses =
               >
                 <Maximize2 class="h-3 w-3" />
                 {{
-                  $t(
-                    "pages.players.detail.view_full_elo_history",
-                    "View full history",
-                  )
+                  $t("pages.players.detail.view_full_elo_history")
                 }}
               </button>
             </div>
@@ -2924,16 +2921,18 @@ const playerHeroTeamChipDotClasses =
               <span class="flex items-center gap-1.5">
                 <span class="text-[hsl(var(--tac-amber))]">{{
                   sourceRef === "external"
-                    ? "External"
+                    ? $t("player_match.source.external")
                     : sourceRef === "all"
                       ? $t("pages.players.detail.all_short")
-                      : "5Stack"
+                      : $t("player_match.source.internal")
                 }}</span>
                 <span class="opacity-40">·</span>
                 <span>{{
-                  selectedModeRef === "all"
+                  !selectedModeRef || selectedModeRef === "all"
                     ? $t("pages.players.detail.all_short")
-                    : selectedModeRef
+                    : $t(
+                        `pages.leaderboard.match_types.${selectedModeRef.toLowerCase()}`,
+                      )
                 }}</span>
               </span>
             </div>

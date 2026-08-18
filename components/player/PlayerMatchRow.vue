@@ -77,7 +77,10 @@ const wideGrid =
           class="relative inline-flex max-w-full items-center rounded border border-border/70 bg-muted/40 px-1.5 py-0.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-foreground/80"
           :title="
             isExternal
-              ? `${matchType} · imported from ${sourceLabel}`
+              ? $t('player_match.imported_from', {
+                  type: matchType,
+                  source: sourceLabel,
+                })
               : matchType
           "
         >
@@ -108,11 +111,11 @@ const wideGrid =
         <span
           v-if="opponentTeam"
           class="flex min-w-0 items-center gap-1"
-          :title="`vs ${opponentTeam.name}`"
+          :title="$t('common.vs_team', { name: opponentTeam.name })"
         >
           <span
             class="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-muted-foreground/50"
-            >vs</span
+            >{{ $t("common.vs") }}</span
           >
           <img
             v-if="opponentTeam.avatarSrc"
@@ -356,11 +359,11 @@ const wideGrid =
       <div
         v-if="opponentTeam"
         class="mt-1.5 flex min-w-0 items-center gap-1.5"
-        :title="`vs ${opponentTeam.name}`"
+        :title="$t('common.vs_team', { name: opponentTeam.name })"
       >
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/50"
-          >vs</span
+          >{{ $t("common.vs") }}</span
         >
         <img
           v-if="opponentTeam.avatarSrc"

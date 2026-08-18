@@ -218,7 +218,9 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
                 class="inline-flex items-center gap-1.5 text-[10px] tracking-[0.22em] uppercase text-muted-foreground font-medium"
               >
                 <span class="text-[9px] text-[hsl(var(--tac-amber))]">◢</span>
-                <span>MAP {{ dot.index + 1 }}</span>
+                <span>{{
+                  $t("map_dots.map_number", { number: dot.index + 1 })
+                }}</span>
               </span>
               <span
                 :class="[

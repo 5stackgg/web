@@ -27,9 +27,8 @@ const props = defineProps<{
   matchId: string;
 }>();
 
-const { lineups, players, error, loaded, refresh } = useMatchCameraStatus(
-  () => props.matchId,
-);
+const { lineups, players, error, errorDetail, loaded, refresh } =
+  useMatchCameraStatus(() => props.matchId);
 
 type CallState = {
   talking: boolean;
@@ -44,6 +43,7 @@ const unmuted = reactive<Record<string, boolean>>({});
 // render, and doing that to a ref is a reactive write during render.
 const selfPreviews: Record<string, HTMLVideoElement | null> = {};
 const callError = ref<string | null>(null);
+const callErrorDetail = ref<string | null>(null);
 let unmounted = false;
 
 function callState(steamId: string): CallState {
@@ -230,8 +230,10 @@ async function startCall(steamId: string) {
     }
 
     callError.value = null;
+    callErrorDetail.value = null;
   } catch (caught) {
-    callError.value =
+    callError.value = "camera.errors.call_failed";
+    callErrorDetail.value =
       caught instanceof Error ? caught.message : String(caught);
     teardownCall(steamId);
   } finally {
@@ -312,7 +314,10 @@ onBeforeUnmount(() => {
       <p
         class="break-words font-mono text-[11px] leading-relaxed text-destructive"
       >
-        {{ error }}
+        {{ $t(error) }}
+        <span v-if="errorDetail" class="block opacity-70">{{
+          errorDetail
+        }}</span>
       </p>
       <Button variant="secondary" size="sm" @click="refresh">
         <LucideRefreshCw class="h-3.5 w-3.5" />
@@ -325,7 +330,10 @@ onBeforeUnmount(() => {
         v-if="callError"
         class="break-words rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2 font-mono text-[11px] text-destructive"
       >
-        {{ callError }}
+        {{ $t(callError) }}
+        <span v-if="callErrorDetail" class="block opacity-70">{{
+          callErrorDetail
+        }}</span>
       </p>
 
       <section v-for="lineup in lineups" :key="lineup.id">

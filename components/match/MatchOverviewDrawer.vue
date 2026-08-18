@@ -22,12 +22,17 @@ import {
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0 flex-1">
             <DrawerTitle class="truncate text-base">
-              {{ match.lineup_1?.name }} vs {{ match.lineup_2?.name }}
+              {{ match.lineup_1?.name }} {{ $t("common.vs") }}
+              {{ match.lineup_2?.name }}
             </DrawerTitle>
             <DrawerDescription
               class="mt-0.5 inline-flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[0.62rem] uppercase tracking-[0.16em]"
             >
-              <span>{{ match.options.type }}</span>
+              <span v-if="match.options?.type">{{
+                $t(
+                  `pages.leaderboard.match_types.${match.options.type.toLowerCase()}`,
+                )
+              }}</span>
               <span
                 v-if="isTournamentMatch"
                 class="inline-flex items-center gap-1 text-[hsl(var(--tac-amber))]"
@@ -93,7 +98,7 @@ import {
           <h4
             class="mb-3 font-mono text-[0.7rem] font-bold uppercase tracking-[0.2em] text-muted-foreground"
           >
-            Maps
+            {{ $t("match.maps.heading") }}
           </h4>
           <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3">
             <div class="flex flex-col items-start gap-2">

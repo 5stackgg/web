@@ -22,7 +22,12 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         type="button"
         :class="triggerClasses"
         :style="{ '--tier-rgb': primaryTier.rgb }"
-        :aria-label="`ELO, primary ${primaryTier.label} ${displayElo}`"
+        :aria-label="
+          $t('player.elo_aria_label', {
+            tier: primaryTier.label,
+            elo: displayElo,
+          })
+        "
       >
         <template v-if="bordered">
           <span :class="triggerNotchClasses" aria-hidden="true"></span>

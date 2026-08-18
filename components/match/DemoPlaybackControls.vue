@@ -674,7 +674,7 @@ const killMarkers = computed<Marker[]>(() => {
               ? 'text-[hsl(var(--tac-amber))] animate-pulse'
               : 'text-muted-foreground'
           "
-          :title="store.seeking ? 'Seeking — cs2 is catching up' : undefined"
+          :title="store.seeking ? $t('match.demo_playback.seeking') : undefined"
         >
           {{ formattedCurrent }}
         </span>
@@ -693,7 +693,7 @@ const killMarkers = computed<Marker[]>(() => {
               type="button"
               :style="{ left: m.left }"
               class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
-              :title="`${m.label} — click to jump`"
+              :title="$t('match.demo_playback.click_to_jump', { label: m.label })"
               @click="jumpToKill(m.tick)"
             >
               <Skull
@@ -732,7 +732,11 @@ const killMarkers = computed<Marker[]>(() => {
                     type="button"
                     :style="{ left: m.left }"
                     class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto h-3 w-[2px] bg-[hsl(var(--tac-amber))] cursor-pointer hover:h-4 hover:w-[3px] hover:bg-[hsl(var(--tac-amber))] transition-all duration-150"
-                    :title="`${m.label} — click to jump`"
+                    :title="
+                      $t('match.demo_playback.click_to_jump', {
+                        label: m.label,
+                      })
+                    "
                     @click="seek(m.tick)"
                   />
                 </TooltipTrigger>
@@ -854,7 +858,7 @@ const killMarkers = computed<Marker[]>(() => {
                 store.killFilterSteamId
                   ? undefined
                   : followedKillSteamId
-                    ? 'Kill nav follows the spectated player — pick a player to lock'
+                    ? $t('match.demo_playback.kill_nav_follows')
                     : undefined
               "
             >
@@ -874,7 +878,11 @@ const killMarkers = computed<Marker[]>(() => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="__all__" class="cursor-pointer">
-                All players ({{ store.kills.length }})
+                {{
+                  $t("match.demo_playback.all_players", {
+                    count: store.kills.length,
+                  })
+                }}
               </SelectItem>
               <SelectGroup v-if="ctDemoPlayers.length">
                 <SelectLabel
@@ -939,8 +947,12 @@ const killMarkers = computed<Marker[]>(() => {
               </button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Previous kill{{
-                followedKillName ? ` — ${followedKillName}` : ""
+              {{
+                followedKillName
+                  ? $t("match.demo_playback.previous_kill_player", {
+                      name: followedKillName,
+                    })
+                  : $t("match.demo_playback.previous_kill")
               }}
               <Kbd>P</Kbd>
             </TooltipContent>
@@ -1013,7 +1025,13 @@ const killMarkers = computed<Marker[]>(() => {
               </button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Next kill{{ followedKillName ? ` — ${followedKillName}` : "" }}
+              {{
+                followedKillName
+                  ? $t("match.demo_playback.next_kill_player", {
+                      name: followedKillName,
+                    })
+                  : $t("match.demo_playback.next_kill")
+              }}
               <Kbd>N</Kbd>
             </TooltipContent>
           </Tooltip>
@@ -1142,7 +1160,12 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              X-ray {{ store.xrayEnabled ? "on" : "off" }} <Kbd>X</Kbd>
+              {{
+                store.xrayEnabled
+                  ? $t("match.demo_playback.xray_on")
+                  : $t("match.demo_playback.xray_off")
+              }}
+              <Kbd>X</Kbd>
             </TooltipContent>
           </Tooltip>
 

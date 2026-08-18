@@ -172,25 +172,25 @@ function onPaste(event: ClipboardEvent) {
 <template>
   <div class="space-y-2">
     <div class="flex flex-wrap items-center gap-1 rounded-md border border-border/60 bg-muted/30 p-1">
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="wrap('**', 'bold text')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="wrap('**', $t('pages.news.editor.bold_text'))">
         <Bold class="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="wrap('*', 'italic text')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="wrap('*', $t('pages.news.editor.italic_text'))">
         <Italic class="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('## ', 'Heading')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('## ', $t('pages.news.editor.heading'))">
         <Heading2 class="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('### ', 'Heading')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('### ', $t('pages.news.editor.heading'))">
         <Heading3 class="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('- ', 'List item')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('- ', $t('pages.news.editor.list_item'))">
         <List class="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('> ', 'Quote')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="linePrefix('> ', $t('pages.news.editor.quote'))">
         <Quote class="h-4 w-4" />
       </Button>
-      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="wrap('`', 'code')">
+      <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="wrap('`', $t('pages.news.editor.code'))">
         <Code class="h-4 w-4" />
       </Button>
       <Button type="button" variant="ghost" size="icon" class="h-8 w-8" @click="insertLink">

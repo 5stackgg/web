@@ -55,14 +55,25 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
     >
       <div class="flex sm:hidden items-start justify-between gap-2">
         <div class="flex min-w-0 flex-wrap items-center gap-2">
-          <span v-if="!compact" :class="matchTypePillClasses">
-            {{ match.options.type }}
+          <span
+            v-if="!compact && match.options?.type"
+            :class="matchTypePillClasses"
+          >
+            {{
+              $t(
+                `pages.leaderboard.match_types.${match.options.type.toLowerCase()}`,
+              )
+            }}
           </span>
 
           <MatchSourceBadge :source="match.source" />
 
           <span v-if="match.options?.best_of" :class="matchTypePillClasses">
-            BO{{ match.options.best_of }}
+            {{
+              $t("match.options.best_of.short", {
+                count: match.options.best_of,
+              })
+            }}
           </span>
 
           <span
@@ -116,14 +127,25 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
         class="hidden sm:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
       >
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
-          <span v-if="!compact" :class="matchTypePillClasses">
-            {{ match.options.type }}
+          <span
+            v-if="!compact && match.options?.type"
+            :class="matchTypePillClasses"
+          >
+            {{
+              $t(
+                `pages.leaderboard.match_types.${match.options.type.toLowerCase()}`,
+              )
+            }}
           </span>
 
           <MatchSourceBadge :source="match.source" />
 
           <span v-if="match.options?.best_of" :class="matchTypePillClasses">
-            BO{{ match.options.best_of }}
+            {{
+              $t("match.options.best_of.short", {
+                count: match.options.best_of,
+              })
+            }}
           </span>
 
           <span v-if="clipCount > 0" :class="clipPillClasses">
@@ -795,7 +817,9 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                           :player="{
-                            name: `Slot ${lineup1Players.length + i}`,
+                            name: $t('common.slot', {
+                              slot: lineup1Players.length + i,
+                            }),
                           }"
                         />
                       </td>
@@ -981,7 +1005,9 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                           :player="{
-                            name: `Slot ${lineup2Players.length + i}`,
+                            name: $t('common.slot', {
+                              slot: lineup2Players.length + i,
+                            }),
                           }"
                         />
                       </td>
@@ -1553,7 +1579,7 @@ export default {
       return this.tournamentBracket?.stage?.tournament?.name || "";
     },
     tournamentLabel(): string {
-      return this.tournamentName || "Tournament Match";
+      return this.tournamentName || this.$t("ui.tournament_match");
     },
     tournamentRoundLabel(): string {
       const stage = this.tournamentBracket?.stage;

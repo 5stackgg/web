@@ -1061,7 +1061,9 @@ const shouldShowCrossBracketDestination = (
             >
               <div class="mb-1 flex items-start justify-between gap-2">
                 <div class="font-medium text-foreground">
-                  {{ impact.path || "Main" }} R{{ impact.round }} M{{
+                  {{ impact.path || $t("tournament.bracket.main_path") }} R{{
+                    impact.round
+                  }} M{{
                     impact.match_number
                   }}
                 </div>
@@ -1069,9 +1071,13 @@ const shouldShowCrossBracketDestination = (
                   :variant="getImpactBadgeVariant(impact)"
                   class="h-5 px-1.5 text-[10px] uppercase tracking-wide"
                 >
-                  <span v-if="impact.is_source">source</span>
-                  <span v-else-if="impact.will_delete_match">delete</span>
-                  <span v-else>reset</span>
+                  <span v-if="impact.is_source">{{
+                    $t("tournament.bracket.impact_source")
+                  }}</span>
+                  <span v-else-if="impact.will_delete_match">{{
+                    $t("tournament.bracket.impact_delete")
+                  }}</span>
+                  <span v-else>{{ $t("tournament.bracket.impact_reset") }}</span>
                 </Badge>
               </div>
               <div class="flex items-center justify-between gap-2 text-xs">

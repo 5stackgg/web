@@ -168,20 +168,23 @@ const autodirector = ref(true);
 const busy = ref(false);
 const busyAction = ref<string | undefined>(undefined);
 
+// `action` is a stable id, not copy -- busyAction drives which control shows a
+// spinner. The toast title is translated from it so the two never drift.
 async function runMutation(
-  label: string,
+  action: string,
   build: () => Record<string, unknown>,
+  params?: Record<string, unknown>,
 ) {
   if (busy.value) return;
   busy.value = true;
-  busyAction.value = label;
+  busyAction.value = action;
   try {
     await apolloClient.mutate({ mutation: generateMutation(build()) });
   } catch (error: any) {
     toast({
       variant: "destructive",
-      title: label,
-      description: error?.message ?? "request failed",
+      title: t(`stream_deck.actions.${action}`, params ?? {}),
+      description: error?.message ?? t("toasts.request_failed"),
     });
   } finally {
     busy.value = false;
@@ -223,9 +226,13 @@ async function pressSlot(slot: number, _key?: string) {
   flashForSlot(slot);
   if (!controlsActive()) return;
   await takeManualControl();
-  await runMutation(`spec slot ${slot}`, () => ({
-    specSlot: [{ match_id: matchId.value, slot }, { success: true }],
-  }));
+  await runMutation(
+    "spec_slot",
+    () => ({
+      specSlot: [{ match_id: matchId.value, slot }, { success: true }],
+    }),
+    { slot },
+  );
 }
 
 // Cycle / lock keyboard handlers stay so ←/→/Space still drive cs2,
@@ -234,22 +241,26 @@ async function pressSlot(slot: number, _key?: string) {
 async function pressClick(button: "left" | "right", _key: string) {
   if (!controlsActive()) return;
   await takeManualControl();
-  await runMutation(`spec ${button} click`, () => ({
-    specClick: [{ match_id: matchId.value, button }, { success: true }],
-  }));
+  await runMutation(
+    "spec_click",
+    () => ({
+      specClick: [{ match_id: matchId.value, button }, { success: true }],
+    }),
+    { button },
+  );
 }
 
 async function pressJump(_key: string) {
   if (!controlsActive()) return;
   await takeManualControl();
-  await runMutation("spec jump", () => ({
+  await runMutation("spec_jump", () => ({
     specJump: [{ match_id: matchId.value }, { success: true }],
   }));
 }
 
 async function setAutodirector(enabled: boolean) {
   autodirector.value = enabled;
-  await runMutation("spec autodirector", () => ({
+  await runMutation("spec_autodirector", () => ({
     specAutodirector: [{ match_id: matchId.value, enabled }, { success: true }],
   }));
 }
@@ -260,8 +271,8 @@ async function setAutodirector(enabled: boolean) {
 const HUD_MODES = ["horizontal", "vertical"] as const;
 type HudMode = (typeof HUD_MODES)[number];
 const HUD_MODE_LABELS: Record<HudMode, string> = {
-  horizontal: "Horizontal",
-  vertical: "Vertical",
+  horizontal: "pages.settings.application.demo_settings.hud_mode_horizontal",
+  vertical: "pages.settings.application.demo_settings.hud_mode_vertical",
 };
 const hudMode = ref<HudMode>("horizontal");
 const xrayEnabled = ref(false);
@@ -274,7 +285,7 @@ async function setHudMode(mode: HudMode) {
   const needsShow = !hudVisible.value;
   if (hudMode.value === mode && !needsShow) return;
   hudMode.value = mode;
-  await runMutation("set HUD mode", () => ({
+  await runMutation("set_hud_mode", () => ({
     setHudMode: [{ match_id: matchId.value, mode }, { success: true }],
   }));
   if (needsShow) await setHudVisible(true);
@@ -282,7 +293,7 @@ async function setHudMode(mode: HudMode) {
 
 async function toggleXray() {
   xrayEnabled.value = !xrayEnabled.value;
-  await runMutation("spec xray", () => ({
+  await runMutation("spec_xray", () => ({
     specXray: [
       { match_id: matchId.value, enabled: xrayEnabled.value },
       { success: true },
@@ -293,7 +304,7 @@ async function toggleXray() {
 async function setHudVisible(visible: boolean) {
   if (hudVisible.value === visible) return;
   hudVisible.value = visible;
-  await runMutation("spec hud", () => ({
+  await runMutation("spec_hud", () => ({
     specHud: [{ match_id: matchId.value, visible }, { success: true }],
   }));
 }
@@ -303,7 +314,7 @@ async function toggleHud() {
 }
 
 async function toggleHudSides() {
-  await runMutation("swap sides", () => ({
+  await runMutation("swap_sides", () => ({
     specHudSides: [{ match_id: matchId.value }, { success: true }],
   }));
 }
@@ -312,7 +323,7 @@ async function toggleHudSides() {
 // (a swapped player image, renamed team) repaint without flipping
 // modes. busyAction "refresh hud" drives the button's spinner.
 async function refreshHud() {
-  await runMutation("refresh hud", () => ({
+  await runMutation("refresh_hud", () => ({
     refreshLiveHud: [{ match_id: matchId.value }, { success: true }],
   }));
 }
@@ -349,7 +360,7 @@ async function onSkipShaders() {
   if (skippingShaders.value) return;
   skippingShaders.value = true;
   try {
-    await runMutation("skip-shaders", () => ({
+    await runMutation("skip_shaders", () => ({
       skipShaders: [{ match_id: matchId.value }, { success: true }],
     }));
   } finally {
@@ -455,7 +466,7 @@ async function stopLive() {
     return;
   }
   confirmStop.value = false;
-  await runMutation("stop live", () => ({
+  await runMutation("stop_live", () => ({
     stopLive: [{ match_id: matchId.value }, { success: true }],
   }));
 }
@@ -774,7 +785,7 @@ watch(spectatedSteamId, (sid) => {
             @click="toggleXray"
           >
             <Scan class="size-3" />
-            X-ray
+            {{ $t("match.demo_playback.xray") }}
           </button>
 
           <!-- Scoreboard: press-and-hold for momentary +showscores.
@@ -817,7 +828,7 @@ watch(spectatedSteamId, (sid) => {
               ]"
               @click="setHudMode(m)"
             >
-              {{ HUD_MODE_LABELS[m] }}
+              {{ $t(HUD_MODE_LABELS[m]) }}
             </button>
             <button
               type="button"
@@ -1003,7 +1014,7 @@ watch(spectatedSteamId, (sid) => {
           :stream="stream"
           :is-live="isLiveRef"
           mode="live"
-          header-label="Stream boot"
+          :header-label="$t('live_stages.stream_boot')"
           :disable-fullscreen-shortcut="true"
           :show-boot="true"
           class="group aspect-video w-full overflow-hidden rounded-lg border border-border/70 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
@@ -1016,7 +1027,7 @@ watch(spectatedSteamId, (sid) => {
               :error-message="stream?.error_message ?? null"
               :last-status-at="stream?.last_status_at ?? null"
               :histories="[stream?.status_history ?? []]"
-              header-label="Stream boot"
+              :header-label="$t('live_stages.stream_boot')"
               :can-skip="true"
               :skipping="skippingShaders"
               @skip="onSkipShaders"

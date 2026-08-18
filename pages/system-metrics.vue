@@ -87,7 +87,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             <div
               class="flex h-9 items-center gap-1 border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              <span class="pl-1">sort</span>
+              <span class="pl-1">{{ $t("common.sort") }}</span>
               <Select v-model="nodeSortBy">
                 <SelectTrigger
                   class="h-7 w-20 border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
@@ -395,7 +395,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             <div
               class="flex h-9 items-center gap-1 border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              <span class="pl-1">sort</span>
+              <span class="pl-1">{{ $t("common.sort") }}</span>
               <Select v-model="serviceSortBy">
                 <SelectTrigger
                   class="h-7 w-20 border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
@@ -744,7 +744,8 @@ export default {
       if (!devices.length) return this.$t("game_server.gpu_present");
       return devices
         .map((d: any) => {
-          const name = d?.name || `GPU ${d?.index ?? "?"}`;
+          const name =
+            d?.name || this.$t("charts.gpu_index", { index: d?.index ?? "?" });
           if (d?.memory_mb) {
             const mem =
               d.memory_mb >= 1024

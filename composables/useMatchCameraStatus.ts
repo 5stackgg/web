@@ -14,7 +14,9 @@ const POLL_MS = 10000;
 
 type Shared = {
   lineups: Ref<Array<CameraLineup>>;
+  // `error` is an i18n key; `errorDetail` is the raw technical line.
   error: Ref<string | null>;
+  errorDetail: Ref<string | null>;
   loaded: Ref<boolean>;
   subscribers: number;
   timer: ReturnType<typeof setInterval> | null;
@@ -27,8 +29,10 @@ async function load(matchId: string, entry: Shared) {
   try {
     entry.lineups.value = (await fetchCameraPlayers(matchId)).lineups;
     entry.error.value = null;
+    entry.errorDetail.value = null;
   } catch (caught) {
-    entry.error.value =
+    entry.error.value = "camera.errors.load_failed";
+    entry.errorDetail.value =
       caught instanceof Error ? caught.message : String(caught);
   } finally {
     entry.loaded.value = true;
@@ -93,6 +97,7 @@ function acquire(matchId: string) {
     entry = {
       lineups: ref<Array<CameraLineup>>([]),
       error: ref<string | null>(null),
+      errorDetail: ref<string | null>(null),
       loaded: ref(false),
       subscribers: 0,
       timer: null,
@@ -236,6 +241,7 @@ export function useMatchCameraStatus(
 
   const lineups = ref<Array<CameraLineup>>([]);
   const error = ref<string | null>(null);
+  const errorDetail = ref<string | null>(null);
   const loaded = ref(false);
 
   let bound: string | null = null;
@@ -265,10 +271,11 @@ export function useMatchCameraStatus(
     bound = id.value;
 
     stopMirror = watch(
-      [entry.lineups, entry.error, entry.loaded],
-      ([nextLineups, nextError, nextLoaded]) => {
+      [entry.lineups, entry.error, entry.errorDetail, entry.loaded],
+      ([nextLineups, nextError, nextErrorDetail, nextLoaded]) => {
         lineups.value = nextLineups;
         error.value = nextError;
+        errorDetail.value = nextErrorDetail;
         loaded.value = nextLoaded;
       },
       { immediate: true },
@@ -319,5 +326,14 @@ export function useMatchCameraStatus(
     return Promise.resolve();
   }
 
-  return { lineups, players, error, loaded, summary, statusFor, refresh };
+  return {
+    lineups,
+    players,
+    error,
+    errorDetail,
+    loaded,
+    summary,
+    statusFor,
+    refresh,
+  };
 }

@@ -263,16 +263,16 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     >
                       <template
                         v-for="(maps, type) in {
-                          [$t('maps.official')]: availableMaps.official,
-                          [$t('maps.workshop')]: availableMaps.workshop,
+                          official: availableMaps.official,
+                          workshop: availableMaps.workshop,
                         }"
                         :key="type"
                       >
                         <div v-if="maps && maps.length > 0">
                           <Separator
-                            v-if="type === 'Workshop Maps'"
+                            v-if="type === 'workshop'"
                             class="text-2xl font-bold mb-4 text-center my-8"
-                            :label="type"
+                            :label="$t(`maps.${type}`)"
                           ></Separator>
 
                           <TransitionGroup

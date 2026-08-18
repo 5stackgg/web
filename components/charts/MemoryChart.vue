@@ -57,7 +57,9 @@ export default {
           tooltip: {
             filter: (item: any) => {
               const label = String(item?.dataset?.label || "");
-              const totalLabel = `${this.$t("charts.usage")} Total`;
+              const totalLabel = this.$t("charts.total_series", {
+                label: this.$t("charts.usage"),
+              });
               return label !== totalLabel;
             },
             callbacks: {
@@ -68,7 +70,9 @@ export default {
                 let percent = "";
                 try {
                   const dataIndex = context.dataIndex;
-                  const totalLabel = `${this.$t("charts.usage")} Total`;
+                  const totalLabel = this.$t("charts.total_series", {
+                label: this.$t("charts.usage"),
+              });
                   const datasets = context?.chart?.data?.datasets || [];
                   const totalDs: any = datasets.find(
                     (ds: any) => String(ds?.label || "") === totalLabel,
@@ -162,7 +166,7 @@ export default {
       }
 
       const totalDataset = {
-        label: `${label} Total`,
+        label: this.$t("charts.total_series", { label }),
         fill: false,
         borderColor: this.hex2rgba(color, 0.75),
         backgroundColor: this.hex2rgba("#9ca3af", 0.2),

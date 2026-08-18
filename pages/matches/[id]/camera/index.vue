@@ -34,7 +34,7 @@ const matchId = computed(() => String(route.params.id));
 const stageRef = ref<InstanceType<typeof CameraStage> | null>(null);
 
 const publisher = useCameraPublisher();
-const { phase, errorMessage } = publisher;
+const { phase, errorMessage, errorDetail } = publisher;
 
 const talkback = useCameraTalkback(() => matchId.value);
 const { talking, muted: talkMuted } = talkback;
@@ -353,7 +353,10 @@ onMounted(() => {
           v-if="phase === 'error' && errorMessage"
           class="mb-2 break-words text-center font-mono text-[11px] leading-relaxed text-destructive"
         >
-          {{ errorMessage }}
+          {{ $t(errorMessage) }}
+          <span v-if="errorDetail" class="block opacity-70">{{
+            errorDetail
+          }}</span>
         </p>
 
         <Button

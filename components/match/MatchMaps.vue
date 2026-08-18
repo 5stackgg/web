@@ -180,7 +180,11 @@ import mapLabel from "~/utilities/mapLabel";
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-64">
               <DropdownMenuLabel class="text-xs">
-                {{ matchMap.demos.length }} demos for this map
+                {{
+                  $t("match.maps.demos_for_map", {
+                    count: matchMap.demos.length,
+                  })
+                }}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem

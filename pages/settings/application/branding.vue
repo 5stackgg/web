@@ -762,7 +762,11 @@ export default {
       );
 
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
+        throw new Error(
+          this.$t("pages.settings.application.branding.upload_failed", {
+            status: response.statusText,
+          }),
+        );
       }
 
       const data = (await response.json().catch(() => null)) as {
@@ -787,7 +791,11 @@ export default {
       );
 
       if (!response.ok) {
-        throw new Error(`Delete failed: ${response.statusText}`);
+        throw new Error(
+          this.$t("pages.settings.application.branding.delete_failed", {
+            status: response.statusText,
+          }),
+        );
       }
     },
     onColorChange(key: string, event: Event) {

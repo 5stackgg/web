@@ -191,7 +191,8 @@ function playerAvatarSrc(player: {
               <div
                 class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
-                ▚ TOURNAMENT STATS · {{ placementLabel(entry.placement) }}
+                ▚ {{ $t("tournament.results.stats_heading") }} ·
+                {{ placementLabel(entry.placement) }}
               </div>
               <NuxtLink
                 v-if="entry.realTeamId"

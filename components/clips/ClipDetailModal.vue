@@ -823,7 +823,7 @@ onMounted(() => {
                       <NuxtImg
                         v-if="targetAvatarSrc"
                         :src="targetAvatarSrc"
-                        :alt="clip.target?.name ?? 'Player'"
+                        :alt="clip.target?.name ?? $t('clips.player')"
                         class="h-full w-full object-cover"
                       />
                       <span
@@ -846,7 +846,11 @@ onMounted(() => {
                             v-if="clip.target_steam_id"
                             :to="`/players/${clip.target_steam_id}`"
                             class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
-                            :title="`Open ${clip.target?.name ?? 'player'}'s profile`"
+                            :title="
+                              $t('clips.open_profile', {
+                                name: clip.target?.name ?? $t('clips.player'),
+                              })
+                            "
                             @click.stop="closeClip"
                             >{{
                               clip.target?.name ?? $t("clips.match_highlight")
@@ -863,7 +867,11 @@ onMounted(() => {
                         >
                         <span
                           class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
-                          :title="`${clip.kills_count ?? 1} kill${(clip.kills_count ?? 1) === 1 ? '' : 's'} in clip`"
+                          :title="
+                            $t('clips.kills_in_clip', {
+                              count: clip.kills_count ?? 1,
+                            })
+                          "
                         >
                           <Crosshair class="h-3 w-3" />
                           {{ clip.kills_count ?? 1 }}K
@@ -1015,7 +1023,7 @@ onMounted(() => {
                       ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)]'
                       : 'border-transparent hover:bg-muted/40'
                   "
-                  :title="q.title ?? 'Clip'"
+                  :title="q.title ?? $t('clips.clip')"
                   @click="openClip(q.id)"
                 >
                   <span
@@ -1024,7 +1032,7 @@ onMounted(() => {
                     <NuxtImg
                       v-if="q.thumbnailUrl ?? q.posterUrl"
                       :src="q.thumbnailUrl ?? q.posterUrl ?? ''"
-                      :alt="q.title ?? 'Clip'"
+                      :alt="q.title ?? $t('clips.clip')"
                       class="h-full w-full object-cover opacity-85 transition-transform duration-300 group-hover/q:scale-[1.04]"
                     />
                     <span

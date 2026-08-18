@@ -87,6 +87,23 @@
     --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
     --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
 
+    /* Ordered amber ramp for tiered telemetry meters -- recency bands, node
+       states. One hue, lightness stepping down, so a reader gets the order
+       without needing to tell two colours apart. Stepped separately per theme
+       instead of flipped: on white the lightest step has to stay dark enough to
+       be visible, and on near-black the darkest step has to stay light enough,
+       which no single set of four satisfies. */
+    --tac-step-1: 33 95% 58%;
+    --tac-step-2: 33 92% 48%;
+    --tac-step-3: 33 90% 42%;
+    --tac-step-4: 33 85% 37%;
+
+    /* Subset rails -- a slice that cuts across the bands above it rather than
+       being one of them. Chosen for separation from --tac-step-1 under
+       protanopia, where a light amber and a green of similar lightness are the
+       classic collision; not a status colour, so deliberately not --success. */
+    --tac-subset: 120 45% 30%;
+
     /* How wide settings content is allowed to get. One knob for every settings
        surface -- see .settings-measure and components/settings/SettingsPage.vue.
        56rem keeps a switch within reach of the label it belongs to and still
@@ -166,6 +183,12 @@
 
     --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
     --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
+
+    --tac-step-1: 33 95% 70%;
+    --tac-step-2: 33 92% 58%;
+    --tac-step-3: 33 90% 48%;
+    --tac-step-4: 33 85% 43%;
+    --tac-subset: 120 45% 46%;
   }
 }
 

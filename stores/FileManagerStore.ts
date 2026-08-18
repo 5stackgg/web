@@ -190,6 +190,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     expandedPaths.value.clear();
     selectedItem.value = null;
 
+    // stale requests no longer clear these, so drop them here
+    isLoading.value = false;
+    loadingPaths.value.clear();
+    error.value = null;
+
     // open tabs are keyed by path only, so they must not survive a node/server switch
     openFiles.value.clear();
     activeFilePath.value = null;
@@ -511,9 +516,15 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   async function uploadFiles(files: File[]) {
     if (!nodeId.value) return;
 
+    // pin the destination so a mid-batch server switch cannot redirect
+    // the remaining files at whatever the user navigated to
+    const epoch = contextEpoch;
+    const targetNode = nodeId.value;
+    const targetServer = serverId.value;
+
     for (const file of files) {
       // Check if upload was cancelled
-      if (uploadBatch.value.cancelRequested) {
+      if (uploadBatch.value.cancelRequested || isStale(epoch)) {
         break;
       }
 
@@ -528,7 +539,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         formData.append("userId", useAuthStore().me?.steam_id || "");
 
         const config = useRuntimeConfig();
-        const serverPath = serverId.value ? `/${serverId.value}` : "";
+        const serverPath = targetServer ? `/${targetServer}` : "";
         let apiDomain = config.public.apiDomain;
         // Ensure apiDomain has protocol
         if (
@@ -538,7 +549,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         ) {
           apiDomain = `https://${apiDomain}`;
         }
-        const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
+        const apiUrl = `${apiDomain}/file-manager/upload/${targetNode}${serverPath}`;
 
         const xhr = new XMLHttpRequest();
 
@@ -592,6 +603,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   ) {
     if (!nodeId.value) return;
 
+    // pin the destination for the whole batch (see uploadFiles)
+    const epoch = contextEpoch;
+    const targetNode = nodeId.value;
+    const targetServer = serverId.value;
+
     // Start batch tracking
     startUploadBatch(fileEntries);
     let bytesUploadedSoFar = 0;
@@ -620,8 +636,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
           mutation: generateMutation({
             createServerDirectory: [
               {
-                node_id: nodeId.value,
-                ...(serverId.value && { server_id: serverId.value }),
+                node_id: targetNode,
+                ...(targetServer && { server_id: targetServer }),
                 dir_path: dirPath,
               },
               {
@@ -649,7 +665,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       const fileSize = file.size;
 
       // Check if upload was cancelled before starting
-      if (uploadBatch.value.cancelRequested) {
+      if (uploadBatch.value.cancelRequested || isStale(epoch)) {
         return;
       }
 
@@ -660,7 +676,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         formData.append("userId", useAuthStore().me?.steam_id || "");
 
         const config = useRuntimeConfig();
-        const serverPath = serverId.value ? `/${serverId.value}` : "";
+        const serverPath = targetServer ? `/${targetServer}` : "";
         let apiDomain = config.public.apiDomain;
         if (
           apiDomain &&
@@ -669,7 +685,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         ) {
           apiDomain = `https://${apiDomain}`;
         }
-        const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
+        const apiUrl = `${apiDomain}/file-manager/upload/${targetNode}${serverPath}`;
 
         const xhr = new XMLHttpRequest();
 
@@ -1018,6 +1034,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
     const { parentPath, type } = pendingCreate.value;
     const fullPath = parentPath ? `${parentPath}/${name}` : name;
+    const epoch = contextEpoch;
 
     try {
       let createdItem: FileItem | undefined;
@@ -1027,6 +1044,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         const originalPath = currentPath.value;
         currentPath.value = parentPath;
         await createDirectory(name);
+        if (isStale(epoch)) return false;
         currentPath.value = originalPath;
 
         // Reload the directory to get the new item info
@@ -1038,6 +1056,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         await saveFile(fullPath, "");
         // Open the new file in editor
         const success = await openFile(fullPath);
+        if (isStale(epoch)) return false;
         if (!success && currentDirectoryItems.value.length > 0) {
           createdItem =
             (fileTree.value.get(currentPath.value) || []).find(

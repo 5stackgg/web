@@ -38152,6 +38152,7 @@ export const ReturnTypes: Record<string,any> = {
 		matchesTournament:"Int",
 		matchesWeek:"Int",
 		matchesYear:"Int",
+		outcomesReported:"Int",
 		panels:"Int",
 		playersActive30d:"Int",
 		playersActive7d:"Int",

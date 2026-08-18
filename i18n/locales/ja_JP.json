@@ -4562,11 +4562,13 @@
       "elimination_matches": "敗退決定戦"
     },
     "standings": {
-      "title": "順位表"
+      "title": "順位表",
+      "tied": "同率"
     },
     "results": {
       "title": "結果",
-      "stats_heading": "トーナメント統計"
+      "stats_heading": "トーナメント統計",
+      "live_provisional": "ライブ · 暫定"
     },
     "organizer": {
       "title": "トーナメント主催者",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "次のキル — {name}",
       "seeking": "シーク中 — cs2が追いついています",
       "click_to_jump": "{label} — クリックでジャンプ",
-      "kill_nav_follows": "キル移動は観戦中のプレイヤーに追従します。固定するにはプレイヤーを選択してください"
+      "kill_nav_follows": "キル移動は観戦中のプレイヤーに追従します。固定するにはプレイヤーを選択してください",
+      "demo_ended": "デモが終了しました — cs2 がメニューに戻りました",
+      "reload": "再読み込み",
+      "reload_demo": "デモを再読み込み",
+      "metadata_not_parsed": "デモのメタデータはまだ解析されていません。再生・一時停止、スキップ、速度変更は引き続き使えます。",
+      "previous_round": "前のラウンド",
+      "next_round": "次のラウンド",
+      "skip_back": "{seconds}秒戻る",
+      "hud_layout": "HUDのレイアウトと表示"
     },
     "maps": {
       "demos_for_map": "このマップのデモ {count} 件",
-      "heading": "マップ"
+      "heading": "マップ",
+      "demo_parsing": "デモを解析中…",
+      "demo_parse": "デモのメタデータを解析",
+      "demo_not_parsed": "デモのメタデータは解析されていません",
+      "demo_watch": "デモを見る",
+      "not_parsed": "未解析"
     },
     "highlights": {
       "clip_count": "{count} クリップ"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "このノードのメトリクスはまだありません。ノードがデータの送信を開始すると表示されます。",
     "current": "現在",
     "percent_used": "{percent}% 使用中",
-    "col_name": "名前"
+    "col_name": "名前",
+    "node_telemetry_description": "CPUとメモリを中心に据え、ネットワークとディスクの履歴はより詳しく見るために下にまとめています。",
+    "disk": "ディスク",
+    "cpu_hint": "直近の計測期間におけるプロセッサの負荷です。",
+    "memory_hint": "使用中のメモリを搭載容量と比較したものです。",
+    "network_hint": "全インターフェースの送受信を合わせたスループットです。",
+    "disk_hint": "使用率が最も高いディスクと、その推移です。"
   },
   "chat": {
     "readonly": "チャットは閲覧のみです。",
@@ -6803,7 +6824,8 @@
     },
     "player": "プレイヤー",
     "clip": "クリップ",
-    "open_profile": "{name} のプロフィールを開く"
+    "open_profile": "{name} のプロフィールを開く",
+    "size": "サイズ"
   },
   "time_ago": {
     "just_now": "たった今",

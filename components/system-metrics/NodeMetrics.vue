@@ -37,8 +37,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
               {{ $t("system_metrics.node_telemetry") }}
             </h3>
             <p class="max-w-2xl text-xs text-muted-foreground">
-              CPU and memory stay front and center, with network and disk
-              history grouped underneath for deeper inspection.
+              {{ $t("system_metrics.node_telemetry_description") }}
             </p>
           </div>
 
@@ -94,7 +93,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                 class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
               >
                 <HardDrive class="h-3.5 w-3.5" />
-                Disk
+                {{ $t("system_metrics.disk") }}
               </div>
               <div
                 class="mt-2 text-[13px] font-medium tabular-nums leading-snug"
@@ -133,7 +132,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                     v-if="!compactCharts"
                     class="text-xs text-muted-foreground"
                   >
-                    Processor pressure over the last polling window.
+                    {{ $t("system_metrics.cpu_hint") }}
                   </p>
                 </div>
                 <div class="text-right">
@@ -166,7 +165,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                     v-if="!compactCharts"
                     class="text-xs text-muted-foreground"
                   >
-                    Working set usage compared against installed capacity.
+                    {{ $t("system_metrics.memory_hint") }}
                   </p>
                 </div>
                 <div class="text-right">
@@ -203,7 +202,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                     v-if="!compactCharts"
                     class="text-xs text-muted-foreground"
                   >
-                    Combined receive and transmit throughput across interfaces.
+                    {{ $t("system_metrics.network_hint") }}
                   </p>
                 </div>
                 <div class="text-right">
@@ -236,7 +235,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                     v-if="!compactCharts"
                     class="text-xs text-muted-foreground"
                   >
-                    Highest-utilization disk view with underlying timeline.
+                    {{ $t("system_metrics.disk_hint") }}
                   </p>
                 </div>
                 <div class="text-right">

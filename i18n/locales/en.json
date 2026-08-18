@@ -4562,11 +4562,13 @@
       "elimination_matches": "Elimination Matches"
     },
     "standings": {
-      "title": "Standings"
+      "title": "Standings",
+      "tied": "TIED"
     },
     "results": {
       "title": "Results",
-      "stats_heading": "TOURNAMENT STATS"
+      "stats_heading": "TOURNAMENT STATS",
+      "live_provisional": "LIVE · PROVISIONAL"
     },
     "organizer": {
       "title": "Tournament Organizers",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Next kill — {name}",
       "seeking": "Seeking — cs2 is catching up",
       "click_to_jump": "{label} — click to jump",
-      "kill_nav_follows": "Kill nav follows the spectated player — pick a player to lock"
+      "kill_nav_follows": "Kill nav follows the spectated player — pick a player to lock",
+      "demo_ended": "Demo ended — cs2 dropped to menu",
+      "reload": "Reload",
+      "reload_demo": "Reload demo",
+      "metadata_not_parsed": "Demo metadata not parsed yet — play/pause + skip + speed still work.",
+      "previous_round": "Previous round",
+      "next_round": "Next round",
+      "skip_back": "Skip back {seconds}s",
+      "hud_layout": "HUD layout / visibility"
     },
     "maps": {
       "demos_for_map": "{count} demos for this map",
-      "heading": "Maps"
+      "heading": "Maps",
+      "demo_parsing": "Parsing demo…",
+      "demo_parse": "Parse demo metadata",
+      "demo_not_parsed": "Demo metadata has not been parsed",
+      "demo_watch": "Watch demo",
+      "not_parsed": "not parsed"
     },
     "highlights": {
       "clip_count": "{count} clips"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "No metrics data available for this node yet. Metrics will appear once the node starts reporting data.",
     "current": "current",
     "percent_used": "{percent}% used",
-    "col_name": "NAME"
+    "col_name": "NAME",
+    "node_telemetry_description": "CPU and memory stay front and center, with network and disk history grouped underneath for deeper inspection.",
+    "disk": "Disk",
+    "cpu_hint": "Processor pressure over the last polling window.",
+    "memory_hint": "Working set usage compared against installed capacity.",
+    "network_hint": "Combined receive and transmit throughput across interfaces.",
+    "disk_hint": "Highest-utilization disk view with underlying timeline."
   },
   "chat": {
     "readonly": "Chat is read-only.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Player",
     "clip": "Clip",
-    "open_profile": "Open {name}'s profile"
+    "open_profile": "Open {name}'s profile",
+    "size": "Size"
   },
   "time_ago": {
     "just_now": "just now",

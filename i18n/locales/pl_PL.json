@@ -4562,11 +4562,13 @@
       "elimination_matches": "Mecze eliminacyjne"
     },
     "standings": {
-      "title": "Klasyfikacja"
+      "title": "Klasyfikacja",
+      "tied": "REMIS"
     },
     "results": {
       "title": "Wyniki",
-      "stats_heading": "STATYSTYKI TURNIEJU"
+      "stats_heading": "STATYSTYKI TURNIEJU",
+      "live_provisional": "NA ŻYWO · WSTĘPNE"
     },
     "organizer": {
       "title": "Organizatorzy turnieju",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Następne zabójstwo — {name}",
       "seeking": "Przewijanie — cs2 nadrabia",
       "click_to_jump": "{label} — kliknij, aby przejść",
-      "kill_nav_follows": "Nawigacja po zabójstwach podąża za obserwowanym graczem — wybierz gracza, aby ją zablokować"
+      "kill_nav_follows": "Nawigacja po zabójstwach podąża za obserwowanym graczem — wybierz gracza, aby ją zablokować",
+      "demo_ended": "Demo zakończone — cs2 wrócił do menu",
+      "reload": "Wczytaj ponownie",
+      "reload_demo": "Wczytaj demo ponownie",
+      "metadata_not_parsed": "Metadane dema nie zostały jeszcze przeanalizowane — odtwarzanie/pauza, przeskakiwanie i prędkość nadal działają.",
+      "previous_round": "Poprzednia runda",
+      "next_round": "Następna runda",
+      "skip_back": "Cofnij o {seconds} s",
+      "hud_layout": "Układ / widoczność HUD"
     },
     "maps": {
       "demos_for_map": "{count} dem dla tej mapy",
-      "heading": "Mapy"
+      "heading": "Mapy",
+      "demo_parsing": "Analizowanie dema…",
+      "demo_parse": "Przeanalizuj metadane dema",
+      "demo_not_parsed": "Metadane dema nie zostały przeanalizowane",
+      "demo_watch": "Obejrzyj demo",
+      "not_parsed": "nieprzeanalizowane"
     },
     "highlights": {
       "clip_count": "{count} klipów"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Brak danych metryk dla tego węzła. Metryki pojawią się, gdy węzeł zacznie je raportować",
     "current": "obecne",
     "percent_used": "{percent}% wykorzystania",
-    "col_name": "NAZWA"
+    "col_name": "NAZWA",
+    "node_telemetry_description": "Procesor i pamięć są na pierwszym planie, a historia sieci i dysku została zgrupowana poniżej do dokładniejszej analizy.",
+    "disk": "Dysk",
+    "cpu_hint": "Obciążenie procesora w ostatnim oknie pomiarowym.",
+    "memory_hint": "Zajętość pamięci w odniesieniu do zainstalowanej pojemności.",
+    "network_hint": "Łączna przepustowość odbioru i nadawania na wszystkich interfejsach.",
+    "disk_hint": "Widok najbardziej obciążonego dysku wraz z jego historią."
   },
   "chat": {
     "readonly": "Czat jest tylko do odczytu",
@@ -6803,7 +6824,8 @@
     },
     "player": "Gracz",
     "clip": "Klip",
-    "open_profile": "Otwórz profil gracza {name}"
+    "open_profile": "Otwórz profil gracza {name}",
+    "size": "Rozmiar"
   },
   "time_ago": {
     "just_now": "przed chwilą",

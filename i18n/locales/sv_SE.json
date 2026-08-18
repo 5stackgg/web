@@ -4562,11 +4562,13 @@
       "elimination_matches": "Utslagningsmatcher"
     },
     "standings": {
-      "title": "Tabell"
+      "title": "Tabell",
+      "tied": "OAVGJORT"
     },
     "results": {
       "title": "Resultat",
-      "stats_heading": "TURNERINGSSTATISTIK"
+      "stats_heading": "TURNERINGSSTATISTIK",
+      "live_provisional": "LIVE · PRELIMINÄRT"
     },
     "organizer": {
       "title": "Turneringsarrangörer",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Nästa dödande — {name}",
       "seeking": "Spolar — cs2 kommer ikapp",
       "click_to_jump": "{label} — klicka för att hoppa",
-      "kill_nav_follows": "Dödandenavigeringen följer den spelare som ses — välj en spelare för att låsa den"
+      "kill_nav_follows": "Dödandenavigeringen följer den spelare som ses — välj en spelare för att låsa den",
+      "demo_ended": "Demon tog slut — cs2 gick tillbaka till menyn",
+      "reload": "Läs in igen",
+      "reload_demo": "Läs in demon igen",
+      "metadata_not_parsed": "Demons metadata är inte analyserade än — spela/pausa, hoppa och hastighet fungerar ändå.",
+      "previous_round": "Föregående rond",
+      "next_round": "Nästa rond",
+      "skip_back": "Hoppa tillbaka {seconds} s",
+      "hud_layout": "HUD-layout / synlighet"
     },
     "maps": {
       "demos_for_map": "{count} demos för den här banan",
-      "heading": "Banor"
+      "heading": "Banor",
+      "demo_parsing": "Analyserar demon…",
+      "demo_parse": "Analysera demons metadata",
+      "demo_not_parsed": "Demons metadata har inte analyserats",
+      "demo_watch": "Se demon",
+      "not_parsed": "inte analyserad"
     },
     "highlights": {
       "clip_count": "{count} klipp"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Ingen mätdata tillgänglig för denna nod ännu. Mätdata visas när noden börjar rapportera data.",
     "current": "nuvarande",
     "percent_used": "{percent}% använt",
-    "col_name": "NAMN"
+    "col_name": "NAMN",
+    "node_telemetry_description": "Processor och minne står i förgrunden, medan nätverks- och diskhistorik är samlad under för närmare granskning.",
+    "disk": "Disk",
+    "cpu_hint": "Processorbelastning under det senaste mätfönstret.",
+    "memory_hint": "Använt minne jämfört med installerad kapacitet.",
+    "network_hint": "Sammanlagd genomströmning in och ut över alla nätverkskort.",
+    "disk_hint": "Vy över den mest belastade disken med tillhörande historik."
   },
   "chat": {
     "readonly": "Chatten är skrivskyddad.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Spelare",
     "clip": "Klipp",
-    "open_profile": "Öppna {name}s profil"
+    "open_profile": "Öppna {name}s profil",
+    "size": "Storlek"
   },
   "time_ago": {
     "just_now": "just nu",

@@ -4562,11 +4562,13 @@
       "elimination_matches": "淘汰赛"
     },
     "standings": {
-      "title": "排名"
+      "title": "排名",
+      "tied": "并列"
     },
     "results": {
       "title": "结果",
-      "stats_heading": "锦标赛数据"
+      "stats_heading": "锦标赛数据",
+      "live_provisional": "进行中 · 暂定"
     },
     "organizer": {
       "title": "赛事组织者",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "下一个击杀 — {name}",
       "seeking": "跳转中 — cs2 正在追赶",
       "click_to_jump": "{label} — 点击即可跳转",
-      "kill_nav_follows": "击杀导航会跟随当前观战的玩家，选择一位玩家即可锁定"
+      "kill_nav_follows": "击杀导航会跟随当前观战的玩家，选择一位玩家即可锁定",
+      "demo_ended": "demo 已结束 — cs2 已回到菜单",
+      "reload": "重新加载",
+      "reload_demo": "重新加载 demo",
+      "metadata_not_parsed": "demo 的元数据尚未解析 — 播放/暂停、跳转和倍速仍可使用。",
+      "previous_round": "上一回合",
+      "next_round": "下一回合",
+      "skip_back": "后退 {seconds} 秒",
+      "hud_layout": "HUD 布局 / 显示"
     },
     "maps": {
       "demos_for_map": "这张地图有 {count} 个 demo",
-      "heading": "地图"
+      "heading": "地图",
+      "demo_parsing": "正在解析 demo…",
+      "demo_parse": "解析 demo 元数据",
+      "demo_not_parsed": "demo 元数据尚未解析",
+      "demo_watch": "观看 demo",
+      "not_parsed": "未解析"
     },
     "highlights": {
       "clip_count": "{count} 个片段"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "此节点尚无可用指标数据。节点开始上报数据后，指标将出现。",
     "current": "当前",
     "percent_used": "已使用 {percent}%",
-    "col_name": "名称"
+    "col_name": "名称",
+    "node_telemetry_description": "CPU 和内存放在最前面，网络与磁盘的历史数据归在下方，便于进一步查看。",
+    "disk": "磁盘",
+    "cpu_hint": "最近一个采集周期内的处理器负载。",
+    "memory_hint": "已用内存与已装容量的对比。",
+    "network_hint": "所有网络接口收发合计的吞吐量。",
+    "disk_hint": "使用率最高的磁盘视图及其历史曲线。"
   },
   "chat": {
     "readonly": "聊天为只读模式。",
@@ -6803,7 +6824,8 @@
     },
     "player": "玩家",
     "clip": "片段",
-    "open_profile": "打开 {name} 的个人资料"
+    "open_profile": "打开 {name} 的个人资料",
+    "size": "大小"
   },
   "time_ago": {
     "just_now": "刚刚",

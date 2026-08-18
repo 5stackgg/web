@@ -4562,11 +4562,13 @@
       "elimination_matches": "Matchs d'élimination"
     },
     "standings": {
-      "title": "Classement"
+      "title": "Classement",
+      "tied": "ÉGALITÉ"
     },
     "results": {
       "title": "Résultats",
-      "stats_heading": "STATISTIQUES DU TOURNOI"
+      "stats_heading": "STATISTIQUES DU TOURNOI",
+      "live_provisional": "EN DIRECT · PROVISOIRE"
     },
     "organizer": {
       "title": "Organisateurs du tournoi",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Élimination suivante — {name}",
       "seeking": "Recherche — cs2 rattrape son retard",
       "click_to_jump": "{label} — cliquez pour y aller",
-      "kill_nav_follows": "La navigation entre éliminations suit le joueur observé — choisissez un joueur pour la verrouiller"
+      "kill_nav_follows": "La navigation entre éliminations suit le joueur observé — choisissez un joueur pour la verrouiller",
+      "demo_ended": "Démo terminée — cs2 est revenu au menu",
+      "reload": "Recharger",
+      "reload_demo": "Recharger la démo",
+      "metadata_not_parsed": "Métadonnées de la démo pas encore analysées — lecture/pause, saut et vitesse fonctionnent quand même.",
+      "previous_round": "Round précédent",
+      "next_round": "Round suivant",
+      "skip_back": "Reculer de {seconds} s",
+      "hud_layout": "Disposition / visibilité de l'ATH"
     },
     "maps": {
       "demos_for_map": "{count} démos pour cette carte",
-      "heading": "Cartes"
+      "heading": "Cartes",
+      "demo_parsing": "Analyse de la démo…",
+      "demo_parse": "Analyser les métadonnées de la démo",
+      "demo_not_parsed": "Les métadonnées de la démo n'ont pas été analysées",
+      "demo_watch": "Regarder la démo",
+      "not_parsed": "non analysée"
     },
     "highlights": {
       "clip_count": "{count} clips"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Aucune métrique n'est encore disponible pour ce nœud. Elles apparaîtront dès que le nœud commencera à remonter des données.",
     "current": "actuel",
     "percent_used": "{percent} % utilisés",
-    "col_name": "NOM"
+    "col_name": "NOM",
+    "node_telemetry_description": "Le processeur et la mémoire restent au premier plan, l'historique réseau et disque étant regroupé en dessous pour un examen plus poussé.",
+    "disk": "Disque",
+    "cpu_hint": "Charge du processeur sur la dernière fenêtre de mesure.",
+    "memory_hint": "Mémoire utilisée comparée à la capacité installée.",
+    "network_hint": "Débit combiné en réception et en émission sur toutes les interfaces.",
+    "disk_hint": "Vue du disque le plus sollicité, avec son historique."
   },
   "chat": {
     "readonly": "Le chat est en lecture seule.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Joueur",
     "clip": "Clip",
-    "open_profile": "Ouvrir le profil de {name}"
+    "open_profile": "Ouvrir le profil de {name}",
+    "size": "Taille"
   },
   "time_ago": {
     "just_now": "à l'instant",

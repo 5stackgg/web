@@ -207,7 +207,7 @@ import mapLabel from "~/utilities/mapLabel";
                     v-if="!demo.metadata_parsed_at || !demo.total_ticks"
                     class="text-[10px] uppercase tracking-wider text-muted-foreground"
                   >
-                    not parsed
+                    {{ $t("match.maps.not_parsed") }}
                   </span>
                 </div>
               </DropdownMenuItem>
@@ -464,7 +464,7 @@ export default {
         return {
           icon: "loading",
           disabled: true,
-          tooltip: "Parsing demo…",
+          tooltip: this.$t("match.maps.demo_parsing"),
           onClick: null,
         };
       }
@@ -473,14 +473,14 @@ export default {
           return {
             icon: "parse",
             disabled: false,
-            tooltip: "Parse demo metadata",
+            tooltip: this.$t("match.maps.demo_parse"),
             onClick: () => this.parseDemo(),
           };
         }
         return {
           icon: "play",
           disabled: true,
-          tooltip: "Demo metadata has not been parsed",
+          tooltip: this.$t("match.maps.demo_not_parsed"),
           onClick: null,
         };
       }
@@ -499,7 +499,7 @@ export default {
       return {
         icon: "play",
         disabled: false,
-        tooltip: "Watch demo",
+        tooltip: this.$t("match.maps.demo_watch"),
         onClick: () => this.openDemoWatcher(),
       };
     },

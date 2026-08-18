@@ -1103,7 +1103,7 @@ onMounted(() => {
               <dt
                 class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
               >
-                Size
+                {{ $t("clips.size") }}
               </dt>
               <dd class="text-right font-mono tabular-nums">
                 {{ formatBytes(fileSizeBytes) }}

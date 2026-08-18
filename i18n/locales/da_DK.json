@@ -4562,11 +4562,13 @@
       "elimination_matches": "Eliminationskampe"
     },
     "standings": {
-      "title": "Stilling"
+      "title": "Stilling",
+      "tied": "UAFGJORT"
     },
     "results": {
       "title": "Resultater",
-      "stats_heading": "TURNERINGSSTATISTIK"
+      "stats_heading": "TURNERINGSSTATISTIK",
+      "live_provisional": "LIVE · FORELØBIG"
     },
     "organizer": {
       "title": "Turneringsarrangører",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Næste drab — {name}",
       "seeking": "Spoler — cs2 er ved at indhente",
       "click_to_jump": "{label} — klik for at springe",
-      "kill_nav_follows": "Drabsnavigationen følger den spiller, der ses med — vælg en spiller for at låse den"
+      "kill_nav_follows": "Drabsnavigationen følger den spiller, der ses med — vælg en spiller for at låse den",
+      "demo_ended": "Demoen sluttede — cs2 faldt tilbage til menuen",
+      "reload": "Genindlæs",
+      "reload_demo": "Genindlæs demoen",
+      "metadata_not_parsed": "Demoens metadata er ikke analyseret endnu — afspil/pause, spring og hastighed virker alligevel.",
+      "previous_round": "Forrige runde",
+      "next_round": "Næste runde",
+      "skip_back": "Spring {seconds} s tilbage",
+      "hud_layout": "HUD-layout / synlighed"
     },
     "maps": {
       "demos_for_map": "{count} demoer til denne bane",
-      "heading": "Baner"
+      "heading": "Baner",
+      "demo_parsing": "Analyserer demo…",
+      "demo_parse": "Analysér demoens metadata",
+      "demo_not_parsed": "Demoens metadata er ikke blevet analyseret",
+      "demo_watch": "Se demoen",
+      "not_parsed": "ikke analyseret"
     },
     "highlights": {
       "clip_count": "{count} klip"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Der er endnu ingen metrikker for denne node. Metrikker vises, når noden begynder at rapportere data.",
     "current": "nuværende",
     "percent_used": "{percent}% brugt",
-    "col_name": "NAVN"
+    "col_name": "NAVN",
+    "node_telemetry_description": "CPU og hukommelse står forrest, mens netværks- og diskhistorik er samlet nedenunder til nærmere gennemgang.",
+    "disk": "Disk",
+    "cpu_hint": "Processorbelastning i det seneste måleinterval.",
+    "memory_hint": "Forbrugt hukommelse holdt op mod den installerede kapacitet.",
+    "network_hint": "Samlet gennemstrømning ind og ud på tværs af netværkskort.",
+    "disk_hint": "Visning af den mest belastede disk med tilhørende historik."
   },
   "chat": {
     "readonly": "Chatten er skrivebeskyttet.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Spiller",
     "clip": "Klip",
-    "open_profile": "Åbn {name}s profil"
+    "open_profile": "Åbn {name}s profil",
+    "size": "Størrelse"
   },
   "time_ago": {
     "just_now": "lige nu",

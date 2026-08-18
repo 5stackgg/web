@@ -4562,11 +4562,13 @@
       "elimination_matches": "Match di eliminazione"
     },
     "standings": {
-      "title": "Classifica"
+      "title": "Classifica",
+      "tied": "PARI"
     },
     "results": {
       "title": "Risultati",
-      "stats_heading": "STATISTICHE DEL TORNEO"
+      "stats_heading": "STATISTICHE DEL TORNEO",
+      "live_provisional": "IN DIRETTA · PROVVISORIO"
     },
     "organizer": {
       "title": "Organizzatori del torneo",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Uccisione successiva — {name}",
       "seeking": "Ricerca: cs2 sta recuperando",
       "click_to_jump": "{label} — clicca per saltare",
-      "kill_nav_follows": "La navigazione tra le uccisioni segue il giocatore osservato: scegli un giocatore per bloccarla"
+      "kill_nav_follows": "La navigazione tra le uccisioni segue il giocatore osservato: scegli un giocatore per bloccarla",
+      "demo_ended": "Demo terminata — cs2 è tornato al menu",
+      "reload": "Ricarica",
+      "reload_demo": "Ricarica la demo",
+      "metadata_not_parsed": "Metadati della demo non ancora analizzati — riproduzione/pausa, salto e velocità funzionano comunque.",
+      "previous_round": "Round precedente",
+      "next_round": "Round successivo",
+      "skip_back": "Indietro di {seconds} s",
+      "hud_layout": "Disposizione / visibilità dell'HUD"
     },
     "maps": {
       "demos_for_map": "{count} demo per questa mappa",
-      "heading": "Mappe"
+      "heading": "Mappe",
+      "demo_parsing": "Analisi della demo…",
+      "demo_parse": "Analizza i metadati della demo",
+      "demo_not_parsed": "I metadati della demo non sono stati analizzati",
+      "demo_watch": "Guarda la demo",
+      "not_parsed": "non analizzata"
     },
     "highlights": {
       "clip_count": "{count} clip"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Non ci sono ancora metriche per questo nodo. Compariranno appena il nodo inizierà a inviare dati.",
     "current": "attuale",
     "percent_used": "{percent}% usato",
-    "col_name": "NOME"
+    "col_name": "NOME",
+    "node_telemetry_description": "CPU e memoria restano in primo piano, mentre lo storico di rete e disco è raggruppato sotto per un esame più approfondito.",
+    "disk": "Disco",
+    "cpu_hint": "Carico del processore nell'ultima finestra di rilevamento.",
+    "memory_hint": "Memoria in uso rispetto alla capacità installata.",
+    "network_hint": "Throughput combinato in ricezione e trasmissione su tutte le interfacce.",
+    "disk_hint": "Vista del disco più sollecitato, con il relativo storico."
   },
   "chat": {
     "readonly": "La chat è in sola lettura.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Giocatore",
     "clip": "Clip",
-    "open_profile": "Apri il profilo di {name}"
+    "open_profile": "Apri il profilo di {name}",
+    "size": "Dimensione"
   },
   "time_ago": {
     "just_now": "adesso",

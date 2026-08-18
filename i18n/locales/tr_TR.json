@@ -4562,11 +4562,13 @@
       "elimination_matches": "Eleme Maçları"
     },
     "standings": {
-      "title": "Sıralama"
+      "title": "Sıralama",
+      "tied": "BERABERE"
     },
     "results": {
       "title": "Sonuçlar",
-      "stats_heading": "TURNUVA İSTATİSTİKLERİ"
+      "stats_heading": "TURNUVA İSTATİSTİKLERİ",
+      "live_provisional": "CANLI · GEÇİCİ"
     },
     "organizer": {
       "title": "Turnuva Organizatörleri",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Sonraki öldürme — {name}",
       "seeking": "Sarılıyor — cs2 yetişiyor",
       "click_to_jump": "{label} — atlamak için tıkla",
-      "kill_nav_follows": "Öldürme gezinmesi izlenen oyuncuyu takip eder — sabitlemek için bir oyuncu seç"
+      "kill_nav_follows": "Öldürme gezinmesi izlenen oyuncuyu takip eder — sabitlemek için bir oyuncu seç",
+      "demo_ended": "Demo bitti — cs2 menüye döndü",
+      "reload": "Yeniden yükle",
+      "reload_demo": "Demoyu yeniden yükle",
+      "metadata_not_parsed": "Demo verileri henüz ayrıştırılmadı — oynat/duraklat, atlama ve hız yine de çalışıyor.",
+      "previous_round": "Önceki raunt",
+      "next_round": "Sonraki raunt",
+      "skip_back": "{seconds} sn geri sar",
+      "hud_layout": "HUD düzeni / görünürlüğü"
     },
     "maps": {
       "demos_for_map": "Bu harita için {count} demo",
-      "heading": "Haritalar"
+      "heading": "Haritalar",
+      "demo_parsing": "Demo ayrıştırılıyor…",
+      "demo_parse": "Demo verilerini ayrıştır",
+      "demo_not_parsed": "Demo verileri ayrıştırılmadı",
+      "demo_watch": "Demoyu izle",
+      "not_parsed": "ayrıştırılmadı"
     },
     "highlights": {
       "clip_count": "{count} klip"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Bu düğüm için henüz metrik verisi yok. Düğüm veri göndermeye başlayınca metrikler görünecek.",
     "current": "mevcut",
     "percent_used": "%{percent} kullanılıyor",
-    "col_name": "AD"
+    "col_name": "AD",
+    "node_telemetry_description": "İşlemci ve bellek ön planda kalır; ağ ve disk geçmişi ise daha ayrıntılı inceleme için altta gruplanır.",
+    "disk": "Disk",
+    "cpu_hint": "Son ölçüm aralığındaki işlemci yükü.",
+    "memory_hint": "Kullanılan bellek ile kurulu kapasitenin karşılaştırması.",
+    "network_hint": "Tüm arayüzlerdeki toplam alma ve gönderme hızı.",
+    "disk_hint": "En çok kullanılan diskin görünümü ve buna ait geçmiş."
   },
   "chat": {
     "readonly": "Sohbet salt okunur.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Oyuncu",
     "clip": "Klip",
-    "open_profile": "{name} adlı oyuncunun profilini aç"
+    "open_profile": "{name} adlı oyuncunun profilini aç",
+    "size": "Boyut"
   },
   "time_ago": {
     "just_now": "az önce",

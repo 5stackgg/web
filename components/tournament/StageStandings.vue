@@ -70,7 +70,7 @@ import { kdColor } from "~/utils/statTiers";
                         v-if="entry.tied"
                         class="rounded-sm border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-1 py-[1px] font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--tac-amber))]"
                       >
-                        TIED
+                        {{ $t("tournament.standings.tied") }}
                       </span>
                     </div>
                   </TableCell>

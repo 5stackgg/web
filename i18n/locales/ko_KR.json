@@ -4562,11 +4562,13 @@
       "elimination_matches": "탈락전"
     },
     "standings": {
-      "title": "순위"
+      "title": "순위",
+      "tied": "동률"
     },
     "results": {
       "title": "결과",
-      "stats_heading": "토너먼트 통계"
+      "stats_heading": "토너먼트 통계",
+      "live_provisional": "라이브 · 잠정"
     },
     "organizer": {
       "title": "토너먼트 주최자",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "다음 킬 — {name}",
       "seeking": "탐색 중 — cs2가 따라잡는 중입니다",
       "click_to_jump": "{label} — 클릭하면 이동합니다",
-      "kill_nav_follows": "킬 이동은 관전 중인 플레이어를 따라갑니다. 고정하려면 플레이어를 선택하세요"
+      "kill_nav_follows": "킬 이동은 관전 중인 플레이어를 따라갑니다. 고정하려면 플레이어를 선택하세요",
+      "demo_ended": "데모가 끝났습니다 — cs2가 메뉴로 돌아갔습니다",
+      "reload": "다시 불러오기",
+      "reload_demo": "데모 다시 불러오기",
+      "metadata_not_parsed": "데모 메타데이터가 아직 분석되지 않았습니다. 재생·일시정지, 건너뛰기, 속도 조절은 계속 사용할 수 있습니다.",
+      "previous_round": "이전 라운드",
+      "next_round": "다음 라운드",
+      "skip_back": "{seconds}초 뒤로",
+      "hud_layout": "HUD 배치 / 표시"
     },
     "maps": {
       "demos_for_map": "이 맵의 데모 {count}개",
-      "heading": "맵"
+      "heading": "맵",
+      "demo_parsing": "데모 분석 중…",
+      "demo_parse": "데모 메타데이터 분석",
+      "demo_not_parsed": "데모 메타데이터가 분석되지 않았습니다",
+      "demo_watch": "데모 보기",
+      "not_parsed": "미분석"
     },
     "highlights": {
       "clip_count": "클립 {count}개"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "아직 이 노드의 지표 데이터가 없습니다. 노드가 데이터를 보고하기 시작하면 표시됩니다.",
     "current": "현재",
     "percent_used": "{percent}% 사용",
-    "col_name": "이름"
+    "col_name": "이름",
+    "node_telemetry_description": "CPU와 메모리를 앞에 두고, 네트워크와 디스크 기록은 더 자세히 살펴볼 수 있도록 아래에 묶어 두었습니다.",
+    "disk": "디스크",
+    "cpu_hint": "최근 수집 구간의 프로세서 부하입니다.",
+    "memory_hint": "사용 중인 메모리를 설치된 용량과 비교한 값입니다.",
+    "network_hint": "모든 인터페이스의 수신과 송신을 합친 처리량입니다.",
+    "disk_hint": "사용률이 가장 높은 디스크와 그 추이입니다."
   },
   "chat": {
     "readonly": "이 채팅은 읽기 전용입니다.",
@@ -6803,7 +6824,8 @@
     },
     "player": "플레이어",
     "clip": "클립",
-    "open_profile": "{name}의 프로필 열기"
+    "open_profile": "{name}의 프로필 열기",
+    "size": "크기"
   },
   "time_ago": {
     "just_now": "방금 전",

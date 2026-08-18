@@ -4562,11 +4562,13 @@
       "elimination_matches": "Ausscheidungs-Matches"
     },
     "standings": {
-      "title": "Tabelle"
+      "title": "Tabelle",
+      "tied": "GLEICHSTAND"
     },
     "results": {
       "title": "Ergebnisse",
-      "stats_heading": "TURNIERSTATISTIK"
+      "stats_heading": "TURNIERSTATISTIK",
+      "live_provisional": "LIVE · VORLÄUFIG"
     },
     "organizer": {
       "title": "Turnier-Veranstalter",
@@ -5815,11 +5817,24 @@
       "next_kill_player": "Nächster Kill — {name}",
       "seeking": "Suchlauf — cs2 holt auf",
       "click_to_jump": "{label} — zum Springen klicken",
-      "kill_nav_follows": "Die Kill-Navigation folgt dem beobachteten Spieler — wähle einen Spieler, um sie festzusetzen"
+      "kill_nav_follows": "Die Kill-Navigation folgt dem beobachteten Spieler — wähle einen Spieler, um sie festzusetzen",
+      "demo_ended": "Demo beendet — cs2 ist ins Menü zurückgekehrt",
+      "reload": "Neu laden",
+      "reload_demo": "Demo neu laden",
+      "metadata_not_parsed": "Demo-Metadaten noch nicht ausgewertet — Wiedergabe/Pause, Springen und Geschwindigkeit funktionieren trotzdem.",
+      "previous_round": "Vorherige Runde",
+      "next_round": "Nächste Runde",
+      "skip_back": "{seconds} s zurückspringen",
+      "hud_layout": "HUD-Layout / Sichtbarkeit"
     },
     "maps": {
       "demos_for_map": "{count} Demos für diese Karte",
-      "heading": "Karten"
+      "heading": "Karten",
+      "demo_parsing": "Demo wird ausgewertet …",
+      "demo_parse": "Demo-Metadaten auswerten",
+      "demo_not_parsed": "Demo-Metadaten wurden nicht ausgewertet",
+      "demo_watch": "Demo ansehen",
+      "not_parsed": "nicht ausgewertet"
     },
     "highlights": {
       "clip_count": "{count} Clips"
@@ -6346,7 +6361,13 @@
     "no_metrics_description": "Für diese Node gibt es noch keine Metriken. Sie erscheinen, sobald die Node Daten meldet.",
     "current": "aktuell",
     "percent_used": "{percent} % belegt",
-    "col_name": "NAME"
+    "col_name": "NAME",
+    "node_telemetry_description": "CPU und Arbeitsspeicher stehen im Vordergrund, Netzwerk- und Festplattenverlauf sind für die genauere Betrachtung darunter gruppiert.",
+    "disk": "Festplatte",
+    "cpu_hint": "Prozessorlast im letzten Abfragezeitraum.",
+    "memory_hint": "Belegter Arbeitsspeicher im Verhältnis zur installierten Kapazität.",
+    "network_hint": "Kombinierter Durchsatz von Empfang und Übertragung über alle Schnittstellen.",
+    "disk_hint": "Ansicht der am stärksten ausgelasteten Festplatte samt zugrunde liegendem Verlauf."
   },
   "chat": {
     "readonly": "Chat ist schreibgeschützt.",
@@ -6803,7 +6824,8 @@
     },
     "player": "Spieler",
     "clip": "Clip",
-    "open_profile": "Profil von {name} öffnen"
+    "open_profile": "Profil von {name} öffnen",
+    "size": "Größe"
   },
   "time_ago": {
     "just_now": "gerade eben",

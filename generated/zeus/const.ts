@@ -38117,32 +38117,66 @@ export const ReturnTypes: Record<string,any> = {
 		installs:"Int",
 		matches:"Int"
 	},
+	TelemetryCountryCount:{
+		country:"String",
+		installs:"Int"
+	},
 	TelemetryFeatureAdoption:{
+		counted:"Int",
 		enabled:"Int",
 		flagged:"Int",
 		installsUsing:"Int",
 		key:"String",
+		kind:"String",
 		reporting:"Int",
 		total:"Int"
 	},
 	TelemetryFleetTotals:{
+		appearancesReported:"Int",
+		competitionReported:"Int",
 		dedicatedServers:"Int",
+		eventTeams:"Int",
+		events:"Int",
 		gameServerNodes:"Int",
+		gameServerNodesEnabled:"Int",
+		gameServerNodesOnline:"Int",
 		gpuNodes:"Int",
+		leagueRegistrations:"Int",
+		leagueSeasons:"Int",
+		leagueSeasonsFinished:"Int",
+		leagueTeams:"Int",
 		mapsPlayed:"Int",
 		matches:"Int",
+		matchesAbandoned:"Int",
+		matchesCreated:"Int",
+		matchesFinished:"Int",
 		matchesImported:"Int",
 		matchesImportedMonth:"Int",
+		matchesImportedYear:"Int",
+		matchesLeague:"Int",
+		matchesLive:"Int",
 		matchesMonth:"Int",
+		matchesScrim:"Int",
+		matchesTournament:"Int",
 		matchesWeek:"Int",
 		matchesYear:"Int",
+		outcomesReported:"Int",
+		panels:"Int",
+		playerAppearances:"Int",
 		playersActive30d:"Int",
+		playersActive7d:"Int",
 		playersKnown:"Int",
 		playersPlayed:"Int",
 		playersRegistered:"Int",
 		publicServers:"Int",
+		regions:"Int",
+		scrimRequests:"Int",
 		servers:"Int",
-		teams:"Int"
+		serversEnabled:"Int",
+		teams:"Int",
+		tournamentTeams:"Int",
+		tournaments:"Int",
+		tournamentsFinished:"Int"
 	},
 	TelemetryGrowthPoint:{
 		installs:"Int",
@@ -38156,13 +38190,36 @@ export const ReturnTypes: Record<string,any> = {
 		retained180d:"Int",
 		total:"Int"
 	},
+	TelemetryMatchSourceCount:{
+		matches:"Int",
+		source:"String"
+	},
+	TelemetryMatchTypeCount:{
+		matches:"Int",
+		type:"String"
+	},
+	TelemetryRuntimeCount:{
+		installs:"Int",
+		runtime:"String"
+	},
 	TelemetryStats:{
 		activity:"TelemetryActivityPoint",
+		countries:"TelemetryCountryCount",
 		features:"TelemetryFeatureAdoption",
 		growth:"TelemetryGrowthPoint",
 		installs:"TelemetryInstallCounts",
+		matchSources:"TelemetryMatchSourceCount",
+		matchTypes:"TelemetryMatchTypeCount",
 		online:"Int",
-		totals:"TelemetryFleetTotals"
+		runtimes:"TelemetryRuntimeCount",
+		totals:"TelemetryFleetTotals",
+		versions:"TelemetryVersionCount"
+	},
+	TelemetryVersionCount:{
+		installs:"Int",
+		rank:"Int",
+		since:"String",
+		version:"String"
 	},
 	TestUploadResponse:{
 		error:"String"

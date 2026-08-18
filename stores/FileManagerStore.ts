@@ -74,6 +74,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
   let fileOperationsSubscription: { unsubscribe: () => void } | null = null;
 
+  // Bumped on every reset(). In-flight requests capture it and drop their
+  // results if the node/server changed while they were awaiting.
+  let contextEpoch = 0;
+  const isStale = (epoch: number) => epoch !== contextEpoch;
+
   // Inline create state (VS Code style)
   const pendingCreate = ref<{
     parentPath: string;
@@ -173,6 +178,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   function reset() {
+    contextEpoch++;
+
     fileOperationsSubscription?.unsubscribe();
     fileOperationsSubscription = null;
 
@@ -182,6 +189,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     fileTree.value.clear();
     expandedPaths.value.clear();
     selectedItem.value = null;
+
+    // stale requests no longer clear these, so drop them here
+    isLoading.value = false;
+    loadingPaths.value.clear();
+    error.value = null;
 
     // open tabs are keyed by path only, so they must not survive a node/server switch
     openFiles.value.clear();
@@ -199,6 +211,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   async function loadDirectory(path: string) {
     if (!nodeId.value) return;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     loadingPaths.value.add(path);
     error.value = null;
@@ -228,16 +241,21 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         fetchPolicy: "network-only",
       });
 
+      if (isStale(epoch)) return;
+
       if (response.data.listServerFiles) {
         fileTree.value.set(path, response.data.listServerFiles.items);
       }
     } catch (err: any) {
+      if (isStale(epoch)) return;
       error.value =
         err.message || t("file_manager_store.load_directory_failed");
       console.error("Error loading directory:", err);
     } finally {
-      isLoading.value = false;
-      loadingPaths.value.delete(path);
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+        loadingPaths.value.delete(path);
+      }
     }
   }
 
@@ -246,6 +264,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   ): Promise<FileContentResponse | null> {
     if (!nodeId.value) return null;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     error.value = null;
 
@@ -268,19 +287,25 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         fetchPolicy: "network-only",
       });
 
+      if (isStale(epoch)) return null;
+
       return response.data.readServerFile;
     } catch (err: any) {
+      if (isStale(epoch)) return null;
       error.value = err.message || t("file_manager_store.read_file_failed");
       console.error("Error reading file:", err);
       return null;
     } finally {
-      isLoading.value = false;
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+      }
     }
   }
 
   async function createDirectory(dirName: string) {
     if (!nodeId.value) return;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     error.value = null;
 
@@ -304,20 +329,26 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         }),
       });
 
+      if (isStale(epoch)) return;
+
       await loadDirectory(currentPath.value);
     } catch (err: any) {
+      if (isStale(epoch)) return;
       error.value =
         err.message || t("file_manager_store.create_directory_failed");
       console.error("Error creating directory:", err);
       throw err;
     } finally {
-      isLoading.value = false;
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+      }
     }
   }
 
   async function deleteItem(path: string) {
     if (!nodeId.value) return;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     error.value = null;
 
@@ -336,6 +367,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
           ],
         }),
       });
+
+      if (isStale(epoch)) return;
 
       // Calculate parent directory of the deleted item
       const pathParts = path.split("/");
@@ -385,17 +418,21 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       // Refresh the parent directory
       await loadDirectory(parentPath);
     } catch (err: any) {
+      if (isStale(epoch)) return;
       error.value = err.message || t("file_manager_store.delete_item_failed");
       console.error("Error deleting item:", err);
       throw err;
     } finally {
-      isLoading.value = false;
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+      }
     }
   }
 
   async function renameItem(oldPath: string, newName: string) {
     if (!nodeId.value) return;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     error.value = null;
 
@@ -420,19 +457,25 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         }),
       });
 
+      if (isStale(epoch)) return;
+
       await loadDirectory(currentPath.value);
     } catch (err: any) {
+      if (isStale(epoch)) return;
       error.value = err.message || t("file_manager_store.rename_item_failed");
       console.error("Error renaming item:", err);
       throw err;
     } finally {
-      isLoading.value = false;
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+      }
     }
   }
 
   async function moveItem(sourcePath: string, destPath: string) {
     if (!nodeId.value) return;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     error.value = null;
 
@@ -453,24 +496,35 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         }),
       });
 
+      if (isStale(epoch)) return;
+
       const sourceDir = sourcePath.split("/").slice(0, -1).join("/");
       await loadDirectory(sourceDir);
       await loadDirectory(destPath);
     } catch (err: any) {
+      if (isStale(epoch)) return;
       error.value = err.message || t("file_manager_store.move_item_failed");
       console.error("Error moving item:", err);
       throw err;
     } finally {
-      isLoading.value = false;
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+      }
     }
   }
 
   async function uploadFiles(files: File[]) {
     if (!nodeId.value) return;
 
+    // pin the destination so a mid-batch server switch cannot redirect
+    // the remaining files at whatever the user navigated to
+    const epoch = contextEpoch;
+    const targetNode = nodeId.value;
+    const targetServer = serverId.value;
+
     for (const file of files) {
       // Check if upload was cancelled
-      if (uploadBatch.value.cancelRequested) {
+      if (uploadBatch.value.cancelRequested || isStale(epoch)) {
         break;
       }
 
@@ -485,7 +539,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         formData.append("userId", useAuthStore().me?.steam_id || "");
 
         const config = useRuntimeConfig();
-        const serverPath = serverId.value ? `/${serverId.value}` : "";
+        const serverPath = targetServer ? `/${targetServer}` : "";
         let apiDomain = config.public.apiDomain;
         // Ensure apiDomain has protocol
         if (
@@ -495,7 +549,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         ) {
           apiDomain = `https://${apiDomain}`;
         }
-        const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
+        const apiUrl = `${apiDomain}/file-manager/upload/${targetNode}${serverPath}`;
 
         const xhr = new XMLHttpRequest();
 
@@ -549,6 +603,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   ) {
     if (!nodeId.value) return;
 
+    // pin the destination for the whole batch (see uploadFiles)
+    const epoch = contextEpoch;
+    const targetNode = nodeId.value;
+    const targetServer = serverId.value;
+
     // Start batch tracking
     startUploadBatch(fileEntries);
     let bytesUploadedSoFar = 0;
@@ -577,8 +636,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
           mutation: generateMutation({
             createServerDirectory: [
               {
-                node_id: nodeId.value,
-                ...(serverId.value && { server_id: serverId.value }),
+                node_id: targetNode,
+                ...(targetServer && { server_id: targetServer }),
                 dir_path: dirPath,
               },
               {
@@ -606,7 +665,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       const fileSize = file.size;
 
       // Check if upload was cancelled before starting
-      if (uploadBatch.value.cancelRequested) {
+      if (uploadBatch.value.cancelRequested || isStale(epoch)) {
         return;
       }
 
@@ -617,7 +676,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         formData.append("userId", useAuthStore().me?.steam_id || "");
 
         const config = useRuntimeConfig();
-        const serverPath = serverId.value ? `/${serverId.value}` : "";
+        const serverPath = targetServer ? `/${targetServer}` : "";
         let apiDomain = config.public.apiDomain;
         if (
           apiDomain &&
@@ -626,7 +685,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         ) {
           apiDomain = `https://${apiDomain}`;
         }
-        const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
+        const apiUrl = `${apiDomain}/file-manager/upload/${targetNode}${serverPath}`;
 
         const xhr = new XMLHttpRequest();
 
@@ -748,6 +807,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   async function saveFile(filePath: string, content: string): Promise<boolean> {
     if (!nodeId.value) return false;
 
+    const epoch = contextEpoch;
     isLoading.value = true;
     error.value = null;
 
@@ -768,6 +828,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         }),
       });
 
+      if (isStale(epoch)) return false;
+
       // Reload the directory containing the file
       const pathParts = filePath.split("/");
       pathParts.pop();
@@ -776,11 +838,14 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
       return true;
     } catch (err: any) {
+      if (isStale(epoch)) return false;
       error.value = err.message || t("file_manager_store.save_file_failed");
       console.error("Error saving file:", err);
       return false;
     } finally {
-      isLoading.value = false;
+      if (!isStale(epoch)) {
+        isLoading.value = false;
+      }
     }
   }
 
@@ -969,6 +1034,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
     const { parentPath, type } = pendingCreate.value;
     const fullPath = parentPath ? `${parentPath}/${name}` : name;
+    const epoch = contextEpoch;
 
     try {
       let createdItem: FileItem | undefined;
@@ -978,6 +1044,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         const originalPath = currentPath.value;
         currentPath.value = parentPath;
         await createDirectory(name);
+        if (isStale(epoch)) return false;
         currentPath.value = originalPath;
 
         // Reload the directory to get the new item info
@@ -989,6 +1056,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         await saveFile(fullPath, "");
         // Open the new file in editor
         const success = await openFile(fullPath);
+        if (isStale(epoch)) return false;
         if (!success && currentDirectoryItems.value.length > 0) {
           createdItem =
             (fileTree.value.get(currentPath.value) || []).find(

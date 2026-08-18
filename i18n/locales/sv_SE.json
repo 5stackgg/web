@@ -976,7 +976,8 @@
     "live": "LIVE",
     "unplayed": "OSPELAD",
     "upcoming": "KOMMANDE",
-    "decider": "Avgörande"
+    "decider": "Avgörande",
+    "map_number": "BANA {number}"
   },
   "elo_change_badge": {
     "comp": "COMP",
@@ -1112,11 +1113,7 @@
     "notes_section": "Anteckningar",
     "notes_placeholder": "Sådant motståndare bör känna till — serverpreferenser, anti-cheat, röst, med mera.",
     "settings_saved": "Scriminställningar sparade",
-    "settings_save_error": "Det gick inte att spara scriminställningarna",
-    "calendar_link_copied": "Kalenderlänk kopierad",
-    "calendar_subscription_help": "Prenumerera på denna URL i din kalenderapp för att se schemalagda scrims.",
-    "calendar_link_error": "Kunde inte hämta kalenderlänk",
-    "subscribe_to_matches": "Prenumerera på schemalagda matcher"
+    "settings_save_error": "Det gick inte att spara scriminställningarna"
   },
   "elo_chart_bucket": {
     "monthly": "Månadsvis",
@@ -1180,24 +1177,14 @@
   },
   "avatar": {
     "upload": "Ladda upp avatar",
-    "change": "Byt avatar",
-    "remove": "Ta bort avatar",
-    "upload_roster": "Ladda upp truppbild",
-    "change_roster": "Byt truppbild",
-    "remove_roster": "Ta bort truppbild",
     "team_avatar": "Lagavatar",
     "player_avatar": "Spelaravatar",
     "player_roster_image": "Spelarens truppbild",
     "upload_success": "Avatar uppladdad",
     "upload_failed": "Uppladdning av avatar misslyckades",
-    "remove_success": "Avatar borttagen",
-    "remove_failed": "Det gick inte att ta bort avataren",
     "too_large": "Bilden måste vara {size}MB eller mindre",
     "invalid_type": "Endast PNG-, JPEG- eller WebP-bilder är tillåtna",
     "uploading": "Laddar upp...",
-    "drop_to_upload": "Släpp för att ladda upp",
-    "hint": "Dra & släpp eller klicka · PNG, JPEG, WebP · upp till 5 MB",
-    "roster_hint": "Dra & släpp eller klicka · huvud & axlar, 400×420 · storleksändras i webbläsaren, beskär sedan och ta bort bakgrund",
     "bg_removal_failed": "Det gick inte att ta bort bakgrunden",
     "roster_editor": {
       "title": "Redigera truppbild",
@@ -1236,7 +1223,167 @@
       "follow_logs": "Följ loggar",
       "timestamps": "Tidsstämplar"
     },
-    "coming_soon": "Kommer snart!",
+    "system_telemetry": {
+      "title": "Flottelemetri",
+      "no_data": "Inga data rapporterade än",
+      "installs": {
+        "title": "Paneler",
+        "online": "Online nu",
+        "total": "Totalt",
+        "active_7d": "Aktiva 7 d",
+        "active_30d": "Aktiva 30 d",
+        "new_30d": "Nya 30 d",
+        "retained_180d": "Behållna 180 d",
+        "retained_180d_hint": "Paneler som sågs första gången för över 180 dagar sedan och som fortfarande rapporterar den här veckan.",
+        "live": "Rapporterade inom den senaste timmen",
+        "recency": "Senast hörda",
+        "recency_hint": "Alla paneler som någonsin setts, indelade i separata band efter hur nyligen de senast hörde av sig. Banden överlappar inte, så de summerar till totalen för hela perioden.",
+        "seen_24h": "I dag",
+        "dormant": "Vilande",
+        "reporting": "I summorna",
+        "reporting_hint": "Paneler vars senaste rapport är tillräckligt detaljerad för att räknas in i flottsummorna nedan. Paneler som varit tysta i över 30 dagar utelämnas, så att summorna inte fortsätter räkna servrar som tagits ur drift."
+      },
+      "totals": {
+        "self_reported": "Summerat över den senaste rapporten från varje panel som varit aktiv de senaste 30 dagarna — «I summorna» ovan visar hur många det är. Paneler driftas av ägarna själva och rapporterar dessa siffror på egen hand; värdena valideras vid mottagandet men kan inte verifieras oberoende. Infrastruktur är en ögonblicksbild, inte en löpande summa.",
+        "game_server_nodes": "Spelservernoder",
+        "nodes_online": "Noder online",
+        "nodes_offline": "Offline",
+        "nodes_hint": "Endast aktiverade noder. En nod som en operatör stängt av är inte kapacitet och kan inte ta en match, så den hålls utanför alla siffror här — även regionerna den står i och om den har en GPU.",
+        "regions": "Regioner",
+        "servers": "Servrar",
+        "servers_enabled": "Servrar aktiverade",
+        "dedicated_servers": "Dedikerade",
+        "servers_managed": "Panelhanterade",
+        "public_servers": "Publika",
+        "matches": "Matcher",
+        "maps_played": "Spelade banor",
+        "not_reported_hint": "Ingen panel har skickat den här siffran än. Den lades till i telemetrirapporten efter de byggen som nu finns i flottan, så den fylls i allteftersom panelerna uppdateras — det betyder inte noll.",
+        "hosted_windows": "Körda över tid",
+        "completion": "Nådde ett resultat",
+        "completion_hint": "Andelen av de matcher en panel startat som slutade med ett resultat i stället för att överges halvvägs. Räknar bara matcher som hann gå live.",
+        "player_base": "Spelarbas",
+        "player_base_hint": "Varje rad är ett urval av de Steam-id:n panelerna sett, och procenten är av den översta raden. Raderna är inte steg i varandra — långt fler Steam-id:n har statistik på en bana än det finns konton som någonsin loggat in, eftersom en panel sparar en rad för alla som ansluter till en server.",
+        "matches_live": "Live nu",
+        "matches_live_caption": "vid senaste rapporten",
+        "matches_finished": "Nådde ett resultat",
+        "matches_abandoned": "Övergivna",
+        "matches_created": "Skapade",
+        "matches_created_caption": "inkl. aldrig startade",
+        "matches_imported": "Importerade matcher",
+        "players": "Spelare",
+        "players_played": "Har spelat en match",
+        "players_known": "Sedda Steam-id:n",
+        "players_active": "Aktiva spelare 30 d",
+        "players_active_7d": "Aktiva spelare 7 d",
+        "players_active_30d": "Aktiva spelare 30 d",
+        "teams": "Lag",
+        "infrastructure": "Infrastruktur",
+        "match_volume": "Matchvolym",
+        "competition": "Tävling",
+        "competition_hint": "Matchsiffrorna här överlappar: en ligamatch spelas inuti ett turneringssteg och räknas därför i båda. Allt annat — hur många turneringar och säsonger som hållits och vilka som deltog — räknar själva tävlingen i stället för dess matcher.",
+        "tournaments": "Turneringar",
+        "league_seasons": "Ligasäsonger",
+        "league_teams": "Ligalag",
+        "scrim_requests": "Scrim-förfrågningar",
+        "events": "Evenemang",
+        "teams_entered": "Anmälda lag",
+        "registrations": "Anmälningar",
+        "finished": "Avslutade",
+        "ongoing": "Pågående",
+        "played": "Spelade",
+        "maps_per_player": "{maps} banor per spelare",
+        "maps_per_player_hint": "Banframträdanden delat med antalet olika personer som spelat någon. Många matcher med en låg siffra här är en liten grupp som spelar mycket, inte en livlig gemenskap.",
+        "community": "Gemenskap",
+        "hosted_hint": "«Körda» räknar bara matcher som en panel själv genomfört. Importerade matcher kommer från FACEIT eller CS2:s matchhistorik och listas separat.",
+        "community_hint": "«Spelare» räknar konton som loggat in med Steam minst en gång. En panel sparar också en rad för varje Steam-id den bara sett i en laguppställning, en demo eller en sanktion — de räknas separat som «Sedda Steam-id:n».",
+        "gpu_nodes": "GPU-noder",
+        "all_time": "totalt",
+        "last_7d": "senaste 7 dagarna",
+        "last_30d": "senaste 30 dagarna",
+        "last_1y": "senaste 365 dagarna",
+        "signed_in_caption": "har loggat in minst en gång",
+        "players_known_caption": "inkluderar aldrig inloggade"
+      },
+      "meter": {
+        "remainder": "Övrigt"
+      },
+      "composition": {
+        "hint": "«Per typ» bryter ner de matcher panelerna själva kört. «Per källa» omfattar både körda och importerade och summerar därför till mer än totalen för körda.",
+        "by_type": "Per typ",
+        "by_source": "Per källa"
+      },
+      "distribution": {
+        "title": "Flottfördelning",
+        "hint": "Paneler aktiva de senaste 30 dagarna, topp 8 i varje kategori. Landet kommer från nätverket ett livstecken anländer på, inte från något panelen själv uppger.",
+        "versions": "Spridning av byggen",
+        "versions_hint": "En commit-hash har ingen egen ordning, så det nyaste bygget är det som först dök upp i en rapport. Allt annat mäts som antal släpp bakom det.",
+        "on_current": "av panelerna på det nyaste bygget",
+        "behind": "Efter",
+        "build_current": "Aktuellt",
+        "build_previous": "Ett efter",
+        "build_older": "Äldre",
+        "runtimes": "Plugin-runtime",
+        "countries": "Land"
+      },
+      "activity": {
+        "matches": "Körda matcher per dag (90 d)",
+        "matches_unit": "matcher"
+      },
+      "growth": {
+        "title": "Nya paneler per månad",
+        "unit": "paneler"
+      },
+      "features": {
+        "feature": "Funktion",
+        "enabled": "Aktiverad",
+        "keys": {
+          "tournaments": "Turneringar",
+          "leagues": "Ligor",
+          "seasons": "Säsonger",
+          "events": "Evenemang",
+          "news": "Nyheter",
+          "highlights": "Automatiska höjdpunkter",
+          "clip_renders": "Klipprendering",
+          "system_alerts": "Systemvarningar",
+          "awards": "Utmärkelser",
+          "scrims": "Scrim-sökning",
+          "matchmaking": "Matchmaking",
+          "custom_pages": "Plugins",
+          "external_matches": "Externa matcher",
+          "faceit_import": "FACEIT-import",
+          "draft_games": "Draftmatcher",
+          "demos": "Demos",
+          "sanctions": "Sanktioner",
+          "api_keys": "API-nycklar",
+          "gamedata_validations": "Gamedata-valideringar",
+          "steam_presence": "Steam-närvaro",
+          "discord_bot": "Discord-bot",
+          "game_server_nodes": "Spelservernoder",
+          "version_pinning": "Versionslåsning",
+          "stream_login_protection": "Skydd för stream-inloggning",
+          "player_name_registration": "Registrering av spelarnamn",
+          "league_division_requests": "Förfrågningar om ligadivision",
+          "branding": "Egen profil",
+          "demo_playback": "Demouppspelning",
+          "live_streaming": "Livesändning",
+          "highlights_imported": "Automatiska höjdpunkter (importerade)",
+          "clip_branding": "Profil på klipp",
+          "push_notifications": "Push-aviseringar",
+          "voice_chat": "Röstchatt",
+          "video_chat": "Videochatt"
+        },
+        "panels_using": "Paneler som använder",
+        "total": "Totalt",
+        "optional": "Valfria funktioner",
+        "optional_hint": "Funktioner som en administratör kan slå på eller av i programinställningarna.",
+        "capabilities": "Upptäckta funktioner",
+        "capabilities_hint": "Inte programinställningar, så det finns inget för en administratör att växla. De läses av från konfigurerade uppgifter (Discord, Tailscale, Steam), från GPU-arbetsväxlarna på varje spelservernod, eller från om en profil har fyllts i.",
+        "configured": "Konfigurerade",
+        "always": "Alltid tillgängliga",
+        "always_hint": "Följer med varje panel och kan inte stängas av, så bara användningen säger något.",
+        "no_metric_hint": "Inget räknar den här funktionen, så det finns ingen användning att rapportera — vilket inte är samma sak som att ingen panel använder den."
+      }
+    },
     "tournaments": {
       "title": "Turneringar",
       "description": "Bläddra bland livesända, öppna och kommande turneringar, eller filtrera efter status och datum för att hitta ett specifikt slutspelsträd.",
@@ -1365,6 +1512,7 @@
         "my_account": "Mitt konto",
         "api_keys": "API-nycklar",
         "linked_accounts": "Länkade konton",
+        "voice": "Röst och ljud",
         "api_keys_management": {
           "add_api_key": "Lägg till API-nyckel",
           "description": "Nycklar autentiserar förfrågningar till 5Stack-API:et — behandla dem som lösenord.",
@@ -1380,7 +1528,6 @@
           "created": "Skapad",
           "last_used": "Senast använd",
           "never": "Aldrig",
-          "actions": "Åtgärder",
           "delete_confirmation_title": "Ta bort API-nyckel",
           "delete_confirmation_description": "Ta bort API-nyckeln \"{label}\"? Detta går inte att ångra och alla applikationer som använder nyckeln förlorar åtkomsten.",
           "create_api_key": "Skapa API-nyckel",
@@ -1422,6 +1569,189 @@
           "unlinked": "Discord-kontot har kopplats från"
         }
       },
+      "voice": {
+        "description": "Din mikrofon, dina nivåer och hur högt alla andra låter. Alla röstkanaler använder det du ställer in här — ditt gruppslobby, en match, ett draftrum — och det gör mikrofonen på ditt kameraflöde också.",
+        "this_device": {
+          "title": "Sparat på den här enheten",
+          "description": "Röstinställningar är inte en del av ditt 5stack-konto och lämnar aldrig den här webbläsaren. Varje dator du spelar från har sin egen mikrofon, sitt eget utflöde, sin egen känslighet och sina egna spelarnivåer — vilket är hela poängen, eftersom det är hårdvaran som byts, inte du. Rensar du webbplatsens data återställs de till standard."
+        },
+        "players": {
+          "title": "Spelarnivåer",
+          "description": "Lagkamrater du sänkt volymen på eller tystat, från alla kanaler du varit i. Sparas här så att det överlever att du lämnar samtalet — och så att du kan ångra det utan att vänta på att stöta på dem igen.",
+          "empty": "Du har inte sänkt volymen på någon. Använd reglaget bredvid en lagkamrat under ett samtal, så dyker personen upp här.",
+          "silenced": "Tystad",
+          "reset": "Återställ",
+          "reset_all": "Återställ alla"
+        },
+        "reset": {
+          "title": "Återställ",
+          "description": "Sätter tillbaka mikrofon, utflöde, inmatningsläge, känslighet och brusreducering till utgångsläget. Spelarnivåer lämnas orörda.",
+          "action": "Återställ till standard",
+          "done": "Röstinställningar återställda på den här enheten"
+        }
+      },
+      "notification_preferences": {
+        "title": "Aviseringsinställningar",
+        "description": "Välj vad 5stack ska meddela dig om och var de aviseringarna hamnar.",
+        "save_failed": "Kunde inte spara den inställningen. Försök igen.",
+        "push": {
+          "title": "Push-aviseringar",
+          "description": "Få aviseringar på den här enheten även när 5stack inte är öppet.",
+          "categories": "Vad som ska pushas",
+          "unsupported": "Push-aviseringar stöds inte i den här webbläsaren.",
+          "install_required": "Installera 5stack-appen för att slå på dem.",
+          "install": {
+            "description": "Push-aviseringar levereras av den installerade appen, så den måste finnas på din enhet innan du kan slå på dem.",
+            "open_app": "Redan installerad? Öppna 5stack från din hemskärm eller dina program och slå på push-aviseringar där."
+          },
+          "denied": "Aviseringar är blockerade för 5stack. Tillåt dem i webbläsarens eller enhetens inställningar för att slå på det här.",
+          "failed": "Kunde inte slå på push-aviseringar. Försök igen.",
+          "errors": {
+            "permission": "Förfrågan om aviseringsbehörighet svarade aldrig. Det kan hända när Google Play Services saknas eller är trasigt på enheten.",
+            "vapid": "Tidsgränsen gick ut när push-nyckeln skulle hämtas från servern.",
+            "service_worker": "Tidsgränsen gick ut i väntan på att enhetens service worker skulle bli aktiv.",
+            "existing": "Tidsgränsen gick ut vid kontroll av en befintlig push-prenumeration.",
+            "register": "Tidsgränsen gick ut vid registrering hos enhetens push-tjänst. Bakgrunds- eller batteribegränsningar kan blockera det.",
+            "save": "Tidsgränsen gick ut när push-prenumerationen skulle sparas på servern."
+          },
+          "enabled_toast": "Push-aviseringar påslagna",
+          "disabled_toast": "Push-aviseringar avstängda"
+        },
+        "alerts": {
+          "title": "Aviseringsklocka",
+          "description": "Dölj dessa från klockan i appen. Allt annat fortsätter dyka upp där."
+        },
+        "keys": {
+          "matches": {
+            "title": "Matcher",
+            "description": "Ändringar av matchstatus och importerade matcher."
+          },
+          "chat": {
+            "title": "Chatt",
+            "description": "Nya meddelanden i en konversation, ett lobby eller ett turneringsrum."
+          },
+          "tournaments": {
+            "title": "Turneringar",
+            "description": "Nya turneringar och startpåminnelser."
+          },
+          "scrims": {
+            "title": "Scrims",
+            "description": "Scrim-förfrågningar, tidsändringar och varningar."
+          },
+          "leagues": {
+            "title": "Ligor",
+            "description": "Förslag på ligaspelschema och varningar om truppen."
+          },
+          "teams": {
+            "title": "Lag",
+            "description": "Förslag på att bilda lag med spelare du köar med."
+          },
+          "account": {
+            "title": "Konto",
+            "description": "Namnbyten och sanktioner."
+          },
+          "news": {
+            "title": "Nyheter",
+            "description": "Nya artiklar publicerade på 5stack."
+          },
+          "staff_moderation": {
+            "title": "Moderering",
+            "description": "Supportärenden, övergivna matcher och ansökningar om namnbyte."
+          },
+          "staff_infrastructure": {
+            "title": "Infrastruktur",
+            "description": "Status för servrar, noder och bakgrundsjobb."
+          },
+          "ChatMessage": {
+            "title": "Chattmeddelanden",
+            "description": "Ett nytt meddelande i en konversation, ett lobby eller ett turneringsrum."
+          },
+          "MatchImported": {
+            "title": "Importerade matcher",
+            "description": "En Valve-match du spelade importerades."
+          },
+          "NewsPublished": {
+            "title": "Nyhetsartiklar",
+            "description": "En ny artikel publicerades."
+          },
+          "TournamentReminder": {
+            "title": "Turneringspåminnelser",
+            "description": "En turnering du anmält dig till börjar snart."
+          },
+          "FormTeamSuggestion": {
+            "title": "Lagförslag",
+            "description": "Du spelar ofta med de här spelarna."
+          },
+          "ScrimAlertMatch": {
+            "title": "Scrim-varningar",
+            "description": "Ett lag som matchar din scrim-bevakning är tillgängligt."
+          },
+          "LeagueMatchUnscheduled": {
+            "title": "Oschemalagda ligamatcher",
+            "description": "Ett ligamöte har ännu ingen överenskommen tid."
+          },
+          "invites": {
+            "title": "Inbjudningar",
+            "description": "Lag-, turnerings- och draftinbjudningar."
+          },
+          "events": {
+            "title": "Evenemang",
+            "description": "Påminnelser om evenemang du deltar i."
+          },
+          "seasons": {
+            "title": "Säsonger",
+            "description": "När en säsong tar slut."
+          },
+          "TeamInvite": {
+            "title": "Laginbjudningar",
+            "description": "Någon har bjudit in dig till sitt lag."
+          },
+          "TournamentTeamInvite": {
+            "title": "Turneringsinbjudningar",
+            "description": "Någon har bjudit in dig att spela i en turnering."
+          },
+          "DraftInvite": {
+            "title": "Draftinbjudningar",
+            "description": "Någon har bjudit in dig till ett draftlobby."
+          },
+          "MatchStatsReady": {
+            "title": "Statistik klar",
+            "description": "Bearbetningen av din matchstatistik är klar."
+          },
+          "ClipReady": {
+            "title": "Klipp klara",
+            "description": "Ett klipp du beställde har renderats färdigt."
+          },
+          "AwardGranted": {
+            "title": "Utmärkelser",
+            "description": "Du har fått en utmärkelse."
+          },
+          "EventReminder": {
+            "title": "Evenemangspåminnelser",
+            "description": "Ett evenemang du deltar i börjar snart."
+          },
+          "SeasonEnded": {
+            "title": "Säsongen avslutad",
+            "description": "En säsong har tagit slut."
+          },
+          "match_chat": {
+            "title": "Matchchatt",
+            "description": "Nya meddelanden i en matchs rum, inklusive chatt vidarebefordrad från spelet. Avstängd som standard — den utlöses vid varje rad som skrivs under en pågående match."
+          },
+          "MatchChatMessage": {
+            "title": "Meddelanden i matchchatt",
+            "description": "Ett nytt meddelande i en matchs rum."
+          }
+        },
+        "quiet_hours": {
+          "title": "Tysta timmar",
+          "description": "Push-aviseringar förblir ljudlösa under det här intervallet. De visas fortfarande i din aviseringsklocka.",
+          "from": "Från",
+          "to": "Till",
+          "reset": "Återställ",
+          "incomplete": "Ange både en start- och en sluttid för att spara tysta timmar."
+        }
+      },
       "notifications": {
         "title": "Ljudinställningar",
         "description": "Förhandsgranska och justera larmljuden 5Stack spelar upp för chatt, matcher och mer.",
@@ -1429,12 +1759,10 @@
           "title": "Notisljud",
           "description": "Spela upp ett ljud för chattmeddelanden, matchhändelser och andra notiser."
         },
-        "test": "Testa",
         "volume": {
           "title": "Volym"
         },
         "preview": "Förhandsgranska ljud",
-        "play": "Spela upp",
         "sounds": {
           "chat": {
             "title": "Chattmeddelande",
@@ -1488,29 +1816,37 @@
         "chat": {
           "title": "Chattinställningar",
           "description": "Konfigurera hur länge chattmeddelanden sparas.",
-          "updated": "Chattinställningarna har uppdaterats"
+          "updated": "Chattinställningarna har uppdaterats",
+          "lobby_title": "Lagring per rum",
+          "lobby_description": "Hur länge (i sekunder) meddelanden sparas i varje typ av rum innan de raderas permanent. 0 kastar dem direkt.",
+          "direct_title": "Direktmeddelanden",
+          "direct_description": "Direktmeddelanden lagras varaktigt i stället för att förfalla med resten av chatten. Ange antal dagar de ska sparas, eller 0 för att behålla dem för alltid.",
+          "ttl_match": "Matchchatt",
+          "ttl_match_team": "Lagchatt",
+          "ttl_matchmaking": "Chatt i matchmaking-lobby",
+          "ttl_tournament": "Turneringschatt",
+          "ttl_organizers": "Arrangörschatt",
+          "ttl_draft": "Chatt i draftlobby",
+          "retention_direct_days": "Spara direktmeddelanden i (dagar)"
         },
         "news": {
           "title": "Nyheter",
           "section": "Nyheter",
           "description": "Publicera egna Counter-Strike-nyhetsinlägg på en nyhetssida på din plattform. Auktoriserade författare skriver inlägg med en Markdown-editor och bilder; utkast förblir privata tills du publicerar dem.",
           "manage": "Hantera inlägg",
-          "manage_description": "Skapa, redigera och publicera nyhetsinlägg.",
           "label_section": "Etikett",
           "label_description": "Byt namn på nyhetssektionen som den visas i navigeringen och sidtitlar.",
           "label": "Visningsnamn",
           "permissions_section": "Behörigheter",
           "permissions_description": "Välj lägsta roll som får skapa och publicera nyhetsinlägg.",
-          "post_news_role": "Vem som kan publicera nyheter",
-          "about": "Inlägg du publicerar visas på den publika nyhetssidan. Utkast förblir dolda tills du publicerar dem."
+          "post_news_role": "Vem som kan publicera nyheter"
         },
         "seasons": {
           "title": "Säsonger",
           "section": "Säsonger",
           "description": "Tävlingssäsonger återställer ELO för vanliga matcher till en baslinje på 5000 varje säsong och avgränsar statistik och filtrering per säsong; när detta är avstängt är ELO en enda global rankinglista. Turnerings-ELO förblir oberoende av säsong.",
           "manage": "Hantera säsonger",
-          "manage_description": "Skapa, avsluta och komplettera tävlingssäsonger.",
-          "about": "När det är aktiverat visas säsongsfiltrering för spelare, topplistan och turneringar, och ELO/statistik blir säsongsavgränsad. När det är avstängt är ELO en enda global rankinglista och ingen säsongsfiltrering visas."
+          "manage_description": "Skapa, avsluta och komplettera tävlingssäsonger."
         },
         "discord": {
           "title": "Discord-notiser",
@@ -1569,6 +1905,28 @@
           "codec_h264": "H.264 (rekommenderas)",
           "updated": "Streaminginställningarna har uppdaterats"
         },
+        "cameras": {
+          "title": "Kameror och mikrofoner",
+          "defaults_section": "Standard för matcher",
+          "defaults_description": "Vad en nyskapad match startar med. Arrangörer kan fortfarande ändra båda inställningarna per match, och befintliga matcher påverkas inte.",
+          "required_default": "Kräv webbkamera som standard",
+          "required_default_description": "Nya matcher startar med «Kräv webbkamera» påslaget. Varje match kan fortfarande åsidosätta det.",
+          "teammates_default": "Lagkamrater kan titta som standard",
+          "teammates_default_description": "Nya matcher startar med visning för lagkamrater påslagen. Motståndarlaget ingår aldrig.",
+          "voice_section": "Röstchatt",
+          "voice_description": "Låter spelare prata med varandra över WebRTC, längs samma väg som spelarkamerorna. Stänger du av det här försvinner rösten överallt.",
+          "voice_lobbies": "Grupplobbyn",
+          "voice_lobbies_description": "Röstreglage i lobbypanelen, för den grupp en spelare själv sätter ihop.",
+          "voice_matches": "Matcher och draftlobbyn",
+          "voice_matches_description": "Lagröst på matchsidan och i draftlobbyt. Båda talar på samma laguppställningskanal och delar därför den här inställningen.",
+          "updated": "Uppdaterat",
+          "video_section": "Videosamtal",
+          "video_description": "Låter spelare slå på en kamera inuti en röstkanal. Alltid frivilligt för spelaren, aldrig obligatoriskt — det här är ett samtal mellan lagkamrater, inte kameran matchen kräver nedan.",
+          "video_lobbies": "Grupplobbyn",
+          "video_lobbies_description": "Erbjud en kamera i grupplobbyts samtal.",
+          "video_matches": "Matcher och draftrum",
+          "video_matches_description": "Erbjud en kamera i lagrösten på en matchsida. Värt att stänga av om dina spelare är pressade på processorkraft: ett rutnät av rutor avkodas utöver livesändningen."
+        },
         "create_matches_role": "Lägsta roll för att skapa matcher",
         "create_tournaments_role": "Lägsta roll för att skapa turneringar",
         "dedicated_servers_min_role_to_connect": "Lägsta roll för att ansluta till lösenordsskyddade dedikerade servrar",
@@ -1586,6 +1944,8 @@
         "auto_cancel_duration_description": "Avbryter en match som inte gått live (fortfarande i val/veto/väntan) efter detta antal minuter.",
         "live_match_timeout": "Tidsgräns för live-match",
         "live_match_timeout_description": "Säkerhetstidsgräns — en pågående match avbryts automatiskt efter detta antal minuter om den aldrig avslutas.",
+        "veto_pick_timeout": "Veto-timer",
+        "veto_pick_timeout_description": "Standardantal sekunder varje lag får per veto-val i nyskapade matcher. Sätt till 0 för att stänga av timern som standard.",
         "matchmaking_type_description": "Slå på matchmaking för varje typ för att låta spelare gå med i matchmaking för den matchtypen.",
         "players": {
           "permissions_section": "Rollbehörigheter",
@@ -1596,7 +1956,6 @@
           "refresh_button": "Reindexera sökning",
           "refreshing": "Reindexerar...",
           "refresh_queued": "Sökreindexering har startats",
-          "refresh_failed": "Det gick inte att starta sökreindexeringen",
           "error_occurred": "Ett fel uppstod",
           "refresh_dialog_title": "Reindexera sökindexet?",
           "refresh_dialog_description": "Detta synkar om varje spelare i Typesense-sökindexet i omgångar. Det körs i bakgrunden och du kan följa förloppet här.",
@@ -1605,7 +1964,6 @@
           "recompute_elo_button": "Räkna om ELO",
           "recomputing_elo": "Räknar om...",
           "recompute_elo_queued": "Omräkning av ELO har startat",
-          "recompute_elo_failed": "Kunde inte starta omräkning av ELO",
           "recompute_elo_dialog_title": "Räkna om ELO för alla spelare?",
           "recompute_elo_dialog_description": "Detta rensar all befintlig ELO och bygger upp den från grunden genom att spela igenom varje avslutad match i kronologisk ordning (i omgångar). Topplistan är tillfälligt ofullständig medan det pågår. Du kan följa förloppet här.",
           "progress_running": "{processed} / {total} ({percent}%)",
@@ -1613,8 +1971,6 @@
           "progress_failed_count": "{failed} misslyckades",
           "progress_completed": "{total} slutförda",
           "progress_canceled": "Avbruten vid {completed} / {total}",
-          "progress_errored": "Misslyckades — se serverloggarna",
-          "already_running": "Körs redan",
           "cancel_button": "Avbryt",
           "cancel_requested": "Avbrytning begärd",
           "recompute_elo_canceled_title": "Omräkning av ELO avbruten",
@@ -1645,11 +2001,8 @@
           "show_separators_description": "Visa horisontella avdelarlinjer mellan sektioner.",
           "logo": "Logotyp",
           "logo_description": "Ladda upp en kvadratisk bild (512×512 PNG rekommenderas). Används i hela appen och för att skapa din PWA-installationsikon. ICO-filer stöds inte.",
-          "upload_logo": "Ladda upp logotyp",
           "favicon": "Favicon",
           "favicon_description": "Valfritt. En enklare symbol för webbläsarfliken. PNG, ICO eller WebP.",
-          "upload_favicon": "Ladda upp favicon",
-          "remove": "Ta bort",
           "login_page": "Inloggningssida",
           "login_page_description": "Anpassa fotlänken på inloggningssidan.",
           "show_login_footer": "Visa inloggningsfot",
@@ -1658,22 +2011,11 @@
           "footer_url": "Fot-URL",
           "theme_colors": "Temafärger",
           "theme_colors_description": "Anpassa temafärgerna. Ändringar förhandsvisas direkt.",
-          "light_mode": "Ljust läge",
-          "dark_mode": "Mörkt läge",
-          "save_branding": "Spara varumärke",
           "reset_to_defaults": "Återställ till standard",
           "reset_confirm_title": "Återställa varumärke till standard?",
           "reset_confirm_description": "Detta rensar ditt varumärkesnamn, färger, inloggningsfot och uppladdad logotyp/favicon/appikon, och återställer standardtemat för 5Stack. Detta går inte att ångra.",
           "export_theme": "Exportera tema",
           "import_theme": "Importera tema",
-          "upload_failed": "Uppladdning misslyckades",
-          "delete_failed": "Borttagning misslyckades",
-          "logo_uploaded": "Logotyp uppladdad",
-          "favicon_uploaded": "Favicon uppladdad",
-          "icon_uploaded": "Appikon uppladdad",
-          "logo_removed": "Logotyp borttagen",
-          "favicon_removed": "Favicon borttagen",
-          "icon_removed": "Appikon borttagen",
           "branding_saved": "Varumärke sparat",
           "save_failed": "Sparning misslyckades",
           "branding_reset": "Varumärke återställt till standard",
@@ -1731,7 +2073,9 @@
             "tactical_amber_foreground": "Taktisk accentförgrund"
           },
           "assets_section": "Logotyp och favicon",
-          "assets_section_description": "Ladda upp en logotyp (används i hela appen och för att skapa din PWA-installationsikon) och en valfri favicon."
+          "assets_section_description": "Ladda upp en logotyp (används i hela appen och för att skapa din PWA-installationsikon) och en valfri favicon.",
+          "upload_failed": "Uppladdningen misslyckades: {status}",
+          "delete_failed": "Raderingen misslyckades: {status}"
         },
         "fixtures": {
           "dev_only_notice": "Testdata är endast tillgängligt i utvecklingsläge.",
@@ -1802,9 +2146,6 @@
           "enabled": "Aktivera närvaro",
           "enabled_description": "Påslaget som standard. Vänbottar bevakar länkade spelares Steam-närvaro i realtid och importerar deras matcher direkt när de avslutas, istället för att vänta på den timvisa avstämningen. Stäng av som en nödbrytare.",
           "updated": "Steam-närvaroinställningar uppdaterade",
-          "active": "Aktiv",
-          "disabled": "Inaktiverad",
-          "live": "Live",
           "setup": "Så fungerar det",
           "setup_step1": "Avsätt ett Steam-konto för botten med Steam Guard aktiverat. Återanvänd inte ditt STEAM_USER-konto — det används på annat håll och skulle skapa konflikt.",
           "setup_step2": "Lägg till det nedan. Det loggar in automatiskt; om Steam Guard efterfrågas visas en 2FA-ruta på botten — ange koden från e-post eller Steam-appen. Efter första inloggningen förblir det inloggat och frågar inte igen.",
@@ -1827,7 +2168,6 @@
           "submit_code": "Skicka",
           "code_submitted": "Kod skickad — loggar in…",
           "code_failed": "Kunde inte skicka Steam Guard-koden",
-          "status": "Status",
           "bots": "Bottar",
           "bots_description": "Steam-konton i närvaropoolen och deras status i realtid.",
           "no_bots": "Inga bottar än",
@@ -2021,7 +2361,6 @@
             "nav_order": "Navigationsordning",
             "enabled": "Aktiverad",
             "is_default": "Standardsida",
-            "icon_hint": "Ett lucide-ikonnamn eller en bild-URL. Exempel:",
             "remote_entry_url_hint": "Modulen remoteEntry.js (Module Federation) som panelen laddar (vanligtvis .../assets/remoteEntry.js).",
             "remote_scope_hint": "Pluginets federation-containernamn (dess `name` i vite federation-konfigurationen).",
             "exposed_module_hint": "Sökvägen till den exponerade modulen, t.ex. ./App.",
@@ -2039,7 +2378,6 @@
           "detect": "Identifiera",
           "detect_hint": "Klistra in pluginets bas-URL (eller dess 5stack-plugin.json) så fyller vi i fälten nedan från dess manifest.",
           "detect_failed": "Kunde inte läsa ett 5stack-plugin.json-manifest på den URL:en.",
-          "detect_success": "Plugin-detaljer identifierade.",
           "optional": "(valfritt)",
           "advanced": "Avancerade inställningar",
           "icon_picker": {
@@ -2056,6 +2394,35 @@
           "permissions_description": "Choose who can author awards and who can hand them out.",
           "create_awards_role": "Manage Awards Role",
           "grant_awards_role": "Grant Awards Role"
+        },
+        "web_push": {
+          "title": "Web push",
+          "section": "Web push-aviseringar",
+          "description": "Skickar varningar rakt till en spelares telefon eller dator — webbläsaren levererar dem även när 5stack inte är öppet i någon flik. Spelare anmäler sig själva, per enhet, i sina egna aviseringsinställningar; på iOS fungerar det först när 5stack lagts till på hemskärmen. Inget att sätta upp: leveransen går via webbläsarens egen push-tjänst, så det finns varken tredjepartskonto eller kostnad.",
+          "state_live": "Sänder",
+          "state_standby": "Standby",
+          "state_ready": "Klar",
+          "state_offline": "Offline",
+          "last_delivery": "Senast bekräftade leverans",
+          "hint_standby": "Enheter är anmälda, men inget har nått fram till någon än.",
+          "hint_ready": "Uppsatt och väntar på att den första enheten ska anmäla sig.",
+          "hint_offline": "Push är otillgängligt i den här installationen — inget når fram till en enhet förrän API:et kan sätta upp sig självt.",
+          "devices": "Enheter",
+          "players": "Spelare",
+          "active_7d": "Aktiva 7 d",
+          "new_7d": "Nya 7 d",
+          "platform_mix": "Fördelning per plattform",
+          "platforms": {
+            "apple": "Apple",
+            "google": "Chrome / Android",
+            "mozilla": "Firefox",
+            "windows": "Windows",
+            "other": "Övriga"
+          },
+          "never_delivered": "{count} anmälda enheter har aldrig fått någon push. Oftast en enhet som blev inaktiv innan något skickades — de tas bort automatiskt så snart push-tjänsten rapporterar dem som borta.",
+          "empty_title": "Inga enheter anmälda än",
+          "empty_body": "Push är redo, men ingen har slagit på det. Spelare anmäler sig själva i sina egna aviseringsinställningar — du kan inte slå på det åt dem.",
+          "empty_link": "Se inställningarna på spelarsidan"
         }
       },
       "language": {
@@ -2154,7 +2521,6 @@
       "section_recent_matches": "SENASTE.MATCHER",
       "section_recent_tournaments": "SENASTE.TURNERINGAR",
       "section_recent_highlights": "SENASTE.HÖJDPUNKTER",
-      "no_live_matches": "STANDBY · INGA LIVEMATCHER",
       "cold_start": {
         "title": "Inget på radarn",
         "description": "Inga live-matcher, inga turneringar, inget i böckerna ännu. Starta en match så fylls den här sidan i automatiskt — resultat allt eftersom, sedan höjdpunkter och demos när den är klar.",
@@ -2224,12 +2590,6 @@
       "back": "Tillbaka till nyheter",
       "updated": "Uppdaterad {date}",
       "written_by": "Skriven av",
-      "cover_editor": {
-        "title": "Justera omslagsbild",
-        "description": "Beskär för att passa artikeln. Använd Ta bort bakgrund för att få loggor att sitta rent på sidan.",
-        "hint": "Scrolla för att zooma · dra för att flytta · Anpassa visar hela bilden",
-        "fit": "Anpassa"
-      },
       "new_article": "Ny artikel",
       "mark_read": "Markera som läst",
       "empty": "Inga nyhetsartiklar ännu — kom tillbaka snart.",
@@ -2260,9 +2620,6 @@
         "teaser_placeholder": "En kort sammanfattning som visas i nyhetslistan",
         "cover_label": "Omslagsbild",
         "cover_hint": "Klicka eller släpp en bild",
-        "cover_formats": "PNG · JPG · WEBP · GIF · upp till 10MB",
-        "cover_replace": "Ersätt",
-        "cover_remove": "Ta bort",
         "content_label": "Innehåll",
         "save_draft": "Spara utkast",
         "save_changes": "Spara ändringar",
@@ -2274,7 +2631,30 @@
         "back_to_edit": "Tillbaka till redigering",
         "upload_image": "Ladda upp bild",
         "uploading": "Laddar upp…",
-        "uploading_image": "Laddar upp bild…"
+        "uploading_image": "Laddar upp bild…",
+        "video": {
+          "title": "Infoga video",
+          "description": "Bädda in en YouTube- eller Twitch-länk, eller ladda upp en MP4.",
+          "tab_link": "Länk",
+          "tab_upload": "Ladda upp",
+          "link_hint": "Klistra in en YouTube- eller Twitch-URL. Andra länkar visas som en vanlig länk. Klistrar du in en direkt i brödtexten bäddas den också in.",
+          "will_embed": "Bäddas in som spelare",
+          "will_link": "Går inte att bädda in — visas som en länk",
+          "choose_file": "Välj MP4",
+          "upload_hint": "MP4 upp till 512 MB. En förhandsbild tas automatiskt.",
+          "uploading": "Laddar upp… {percent} %",
+          "replace_poster": "Byt förhandsbild",
+          "insert": "Infoga",
+          "auto_embedded": "Videolänk inbäddad"
+        }
+      },
+      "editor": {
+        "bold_text": "fet text",
+        "italic_text": "kursiv text",
+        "heading": "Rubrik",
+        "list_item": "Listpunkt",
+        "quote": "Citat",
+        "code": "kod"
       }
     },
     "seasons": {
@@ -2305,8 +2685,6 @@
       "make_ongoing": "Gör pågående",
       "end_now": "Avsluta nu",
       "updated": "Säsong uppdaterad",
-      "upcoming_title": "Kommande säsonger",
-      "past_title": "Tidigare säsonger",
       "rebuild": "Bygg om",
       "rebuild_elo": "Bygg om ELO",
       "rebuild_required": "Ombyggnad krävs",
@@ -2372,14 +2750,17 @@
         "headshot_pct": "Headshot %"
       },
       "played_matches": "Spelade matcher",
+      "queue_partners": {
+        "title": "I kö med",
+        "matches": "{count} match | {count} matcher",
+        "win_rate": "{pct} % vunna"
+      },
       "min_sanctions": "Minsta antal sanktioner",
       "is_banned": "Bannad",
       "is_gagged": "Tystad",
       "is_muted": "Mutad",
       "table": {
         "elo": "Elo",
-        "elo_track_season": "Säsong",
-        "elo_track_tournament": "Turnering",
         "last_sign_in_at": "Senaste inloggning",
         "privilege": "Behörighet",
         "kdr": "KDR",
@@ -2418,6 +2799,7 @@
         "no_matches_description": "Matchhistorik visas här efter spelade matcher.",
         "no_matches_self_description": "Hoppa in i en match — din statistik, ELO och matchhistorik börjar fyllas i här.",
         "edit_player": "Redigera spelare",
+        "more_actions": "Fler åtgärder",
         "friend": "Vän",
         "name": "Namn",
         "role": "Roll",
@@ -2433,6 +2815,8 @@
         "custom_window_active": "Anpassat fönster aktivt. Att välja en förinställning rensar det.",
         "exclude_tournaments": "Exkludera turneringar",
         "exclude_tournaments_description": "Hoppa över turneringsmatcher i statistik och diagram.",
+        "tournaments_section_label": "TURNERINGAR",
+        "tournaments_description": "Turneringar den här spelaren har deltagit i.",
         "current_elo": "Nuvarande ELO",
         "source": "Källa",
         "provider": "Leverantör",
@@ -2898,7 +3282,9 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duell",
-        "scrimmage": "Scrim"
+        "scrimmage": "Scrim",
+        "premier": "Premier",
+        "faceit": "Faceit"
       },
       "roles": {
         "all": "Alla roller",
@@ -2906,6 +3292,12 @@
         "Entry": "Entry",
         "Support": "Support",
         "Rifler": "Rifler"
+      },
+      "sources": {
+        "overall": "Alla källor",
+        "matchmaking": "Matchmaking",
+        "tournament": "Turnering",
+        "league": "Liga"
       },
       "columns": {
         "rank": "#",
@@ -3145,7 +3537,6 @@
       "description": "Author awards and hand them out to players and teams.",
       "catalog_section": "Award Catalog",
       "new_award": "New Award",
-      "edit_award": "Edit Award",
       "no_awards": "No awards yet.",
       "built_in": "Built-in",
       "holders": "holders",
@@ -3165,10 +3556,6 @@
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
       "clear_filters": "Clear filters",
-      "identity": "Identity",
-      "appearance": "Appearance",
-      "rules": "Rules",
-      "artwork_after_save": "Save the award first, then upload its artwork.",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -3185,6 +3572,53 @@
       "group_custom_event_awards": "Egna evenemangsutmärkelser",
       "group_custom_season_awards": "Egna säsongsutmärkelser",
       "group_custom_league_awards": "Egna ligautmärkelser"
+    },
+    "award_detail": {
+      "not_found_title": "Utmärkelsen hittades inte",
+      "not_found": "Den här utmärkelsen finns inte, eller så har den tagits bort.",
+      "holders_section": "Innehavare",
+      "no_holders_title": "Inga innehavare än",
+      "no_holders": "Den här utmärkelsen har ännu inte delats ut till någon.",
+      "total_holders": "Utdelningar",
+      "unique_players": "Spelare",
+      "unique_teams": "Lag",
+      "first_granted": "Först utdelad",
+      "last_granted": "Senast utdelad",
+      "filter_all": "Alla",
+      "filter_players": "Spelare",
+      "filter_teams": "Lag",
+      "granted_by": "Utdelad av {name}",
+      "source_manual": "Utdelad för hand",
+      "source_tournament": "Turneringsplacering",
+      "source_season": "Säsongsautomatik",
+      "revoke": "Återkalla",
+      "confirm_revoke": {
+        "title": "Återkalla den här utmärkelsen?",
+        "description": "{name} kommer inte längre att inneha den här utmärkelsen. Det går inte att ångra."
+      }
+    },
+    "system_media_server": {
+      "title": "Medieserver",
+      "description": "Aktuell belastning på MediaMTX. Spelsändningar, spelarkameror, röst och videosamtal delar en och samma instans, så det här är allt den bär samtidigt. Loggar finns under System → Loggar → mediamtx.",
+      "media_server_section": "Medieserver",
+      "media_server_live": "Sänder",
+      "media_server_paths": "Sökvägar",
+      "media_server_sessions": "WebRTC-sessioner",
+      "media_server_row": "{ready}/{paths} live · {bytes} in",
+      "media_server_idle": "Inget sänder just nu.",
+      "media_server_unreachable": "Kunde inte nå medieservern. Det är inte samma sak som att den är overksam — siffrorna ovan är okända, inte noll.",
+      "media_kind": {
+        "gameStreams": "Spelsändningar",
+        "playerCameras": "Spelarkameror",
+        "voice": "Röst",
+        "videoCalls": "Videosamtal",
+        "cameraTalkback": "Kamera-talkback"
+      },
+      "resources": "Resursanvändning",
+      "cpu": "CPU",
+      "memory": "Minne",
+      "no_resources": "Inga poddmätvärden för medieservern än — klustrets metrics-server kanske inte samlar in den.",
+      "legend": "En sökväg är en namngiven strömplats — en persons mikrofon, eller en kamera. «Sänder» räknar dem som faktiskt skickar media just nu; en sökväg kan stå stilla mellan att någon ansluter och att flödet kommer igång. Sessioner är WebRTC-anslutningar, och varje tittare på en sändning är en av dem, så de stiger snabbare än de andra."
     }
   },
   "custom_match": {
@@ -3202,9 +3636,7 @@
       "select_section": "Välj avsnitt",
       "branding_nav": "Varumärke",
       "fixtures_nav": "Matcher",
-      "seasons_nav": "Säsonger",
       "groups": {
-        "platform": "Plattform",
         "competition": "Tävling",
         "match_setup": "Matchinställning",
         "content_media": "Innehåll & media",
@@ -3212,9 +3644,6 @@
         "infrastructure": "Infrastruktur",
         "theme": "Utseende",
         "developer": "Utvecklare",
-        "general": "Allmänt",
-        "media": "Inspelning & media",
-        "additional_features": "Ytterligare funktioner",
         "players_teams": "Plattform"
       }
     },
@@ -3245,7 +3674,16 @@
         "friend_request": "Vänförfrågan",
         "invited_you": "bjöd in dig till",
         "invited_party": "bjöd in dig till sin grupp",
-        "wants_to_be_friends": "vill bli vän"
+        "wants_to_be_friends": "vill bli vän",
+        "actor_host": "Värden",
+        "actor_teammate": "En lagkamrat",
+        "actor_organizer": "En arrangör",
+        "actor_player": "En spelare"
+      },
+      "season_rebuild": {
+        "title": "ELO för säsong {number} behöver räknas om",
+        "message": "Den här säsongens ELO är inaktuell. Räkna om för att göra om dess ELO och tabell.",
+        "action": "Räkna om säsongens ELO"
       }
     },
     "app_nav": {
@@ -3295,9 +3733,11 @@
         "logs": "Loggar",
         "database": "Databas",
         "metrics": "Mätvärden",
-        "render_queue": "Renderingskö"
+        "render_queue": "Renderingskö",
+        "media_server": "Medieserver"
       },
       "profile": {
+        "section": "Konto",
         "my_account": "Mina inställningar",
         "logout": "Logga ut"
       },
@@ -3333,7 +3773,8 @@
         "search_players": "Sök spelare",
         "leagues": "Liga",
         "events": "Event",
-        "manage_events": "Hantera event"
+        "manage_events": "Hantera event",
+        "system_media_server": "Medieserver"
       },
       "logout_dialog": {
         "title": "Logga ut",
@@ -3354,6 +3795,7 @@
       "home": "Min statistik",
       "play_menu": "Spela",
       "community_menu": "Community",
+      "support_menu": "Support",
       "watch_menu": "Titta",
       "login": "Logga in för att spela",
       "login_aria": "Logga in via Steam",
@@ -3410,7 +3852,8 @@
     "hub": {
       "social": "Socialt",
       "notifications": "Notiser",
-      "lobby": "Lobby"
+      "lobby": "Lobby",
+      "voice": "Röst"
     },
     "lobby_panel": {
       "lobby_invites": "Lobbyinbjudningar",
@@ -3419,14 +3862,58 @@
       "create_lobby_description": "Skapa en lobby för att bjuda in vänner och köa tillsammans.",
       "create_lobby_button": "Skapa lobby",
       "voice_discord": "Voice & Discord",
+      "join_voice": "Gå med i rösten",
+      "leave_voice": "Lämna",
+      "mute": "Stäng av mikrofonen",
+      "unmute": "Slå på mikrofonen",
+      "voice_settings": "Röstinställningar",
+      "microphone": "Mikrofon",
+      "output": "Utflöde",
+      "system_default": "Systemstandard",
+      "input_level": "Innivå",
       "discord_linked": "Discord länkad",
       "link_discord": "Länka Discord",
-      "find_match": "Hitta en match"
+      "find_match": "Hitta en match",
+      "voice": "Röst",
+      "live": "Live",
+      "muted": "Mikrofon av",
+      "connect": "Anslut",
+      "comms": "Comms",
+      "live_on_camera": "Live · i kameran"
+    },
+    "voice_panel": {
+      "you": "Du",
+      "coach": "Coach",
+      "connected": "{count} i kanalen",
+      "you_are_muted": "Din mikrofon är avstängd",
+      "other_tab": "Körs i en annan flik — stäng av och lämna fungerar ändå härifrån.",
+      "mute_player": "Tysta den här spelaren bara för dig",
+      "speaking": "Talar",
+      "team_comms": "Lagkommunikation",
+      "party_comms": "Gruppkommunikation",
+      "silenced": "Tystad",
+      "mic_off": "Mikrofon av",
+      "unmute_player": "Hör den här spelaren igen",
+      "player_volume": "Spelarvolym",
+      "empty_title": "Inte i någon röstkanal",
+      "empty_description": "Gå med från ditt gruppslobby, en matchsida eller ett draftrum — kanalen dyker upp här med alla som är i den.",
+      "picker": {
+        "available": "Var du kan prata",
+        "party": "Din grupp",
+        "party_detail": "{count} i lobbyt",
+        "team": "Ditt lag",
+        "team_vs": "mot {opponent}",
+        "switch": "Byt till",
+        "elsewhere": "Ansluten",
+        "elsewhere_detail": "Du är redan i det här samtalet i ett annat fönster — gå med här för att flytta det"
+      },
+      "other_tab_short": "I en annan flik"
     },
     "chat_panel": {
       "default_title": "Chatt",
       "participants_in_chat": "{count} i chatten",
       "pop_out_tooltip": "Öppna i eget fönster",
+      "close_tooltip": "Stäng konversation",
       "no_chats_title": "Inga chattar än",
       "no_chats_description": "När du går med i en chatt visas den här."
     },
@@ -3442,9 +3929,6 @@
     },
     "public_header": {
       "secure_channel": "SÄKER KANAL"
-    },
-    "voice_panel": {
-      "coach": "Coach"
     }
   },
   "alt_text": {
@@ -3452,6 +3936,14 @@
     "discord": "Discord",
     "map_poster": "Kartaffisch",
     "map_patch": "Kartpatch"
+  },
+  "push_prompt": {
+    "title": "Slå på aviseringar",
+    "description": "Få matchinbjudningar, lobbysamtal och meddelanden på den här enheten, även när 5stack inte är öppet.",
+    "enable": "Slå på",
+    "dismiss": "Avfärda",
+    "enabled": "Push-aviseringar påslagna",
+    "failed": "Kunde inte slå på push-aviseringar. Försök igen."
   },
   "pwa": {
     "install": {
@@ -3592,7 +4084,12 @@
     "address_search": {
       "placeholder": "Sök efter en adress eller plats",
       "no_results": "Inga matchande platser hittades"
-    }
+    },
+    "slot": "Plats {slot}",
+    "sort": "sortera",
+    "vs_team": "mot {name}",
+    "default": "Standard",
+    "avg": "snitt"
   },
   "spotlight_search": {
     "placeholder": "Sök spelare...",
@@ -3658,7 +4155,9 @@
       "uploading": "Laddar upp filer...",
       "complete": "Uppladdning klar",
       "complete_with_errors": "Uppladdning klar med fel",
-      "files_failed": "{count} fil(er) kunde inte laddas upp"
+      "files_failed": "{count} fil(er) kunde inte laddas upp",
+      "progress_files": "{completed} / {total} filer",
+      "current_file": "Nu: {name}"
     },
     "toolbar": {
       "new_file": "Ny fil",
@@ -3693,7 +4192,12 @@
       "unsaved_changes_warning": "Du har osparade ändringar i andra filer. Vill du ändå stänga dem?",
       "unsaved_changes_right_warning": "Du har osparade ändringar i filer till höger. Vill du ändå stänga dem?",
       "unsaved_changes_left_warning": "Du har osparade ändringar i filer till vänster. Vill du ändå stänga dem?"
-    }
+    },
+    "delete": {
+      "description": "Det här raderar «{name}» permanent. Åtgärden går inte att ångra."
+    },
+    "placeholder_folder_name": "mappnamn",
+    "placeholder_file_name": "filnamn"
   },
   "error": {
     "generic": "Ett fel uppstod. Försök igen."
@@ -3709,17 +4213,21 @@
   },
   "chat_tab_labels": {
     "match": "Matchchatt",
+    "team": "Lagchatt",
     "tournament": "Turneringschatt",
     "organizers": "Arrangörschatt",
     "matchmaking": "Köchatt",
     "lobby_default": "Lobby",
-    "organizers_default": "Arrangörer"
+    "organizers_default": "Arrangörer",
+    "direct": "Direktmeddelande"
   },
   "chat_room_subtitles": {
     "organizers": "Global lobby",
     "tournament": "Turneringschatt",
     "matchmaking": "Köchatt",
-    "match": "Matchchatt"
+    "match": "Matchchatt",
+    "team": "Lagchatt",
+    "direct": "Direktmeddelande"
   },
   "latency_status": {
     "measuring": "Mäter...",
@@ -3746,9 +4254,7 @@
     },
     "final_standings_podium": "▚ SLUTSTÄLLNING · PALLPLATS",
     "page": {
-      "tournament_eyebrow": "Turnering",
       "back_to_league": "Tillbaka till ligan",
-      "view_match_options": "Visa matchalternativ",
       "match_options_tab": "Matchalternativ",
       "organizers_tab": "Arrangörer",
       "my_team": "Mitt lag",
@@ -3762,9 +4268,7 @@
       "read_less": "Visa mindre"
     },
     "feature_card": {
-      "tournament": "Turnering",
       "teams": "Lag",
-      "stages": "Faser",
       "default_label": "Turnering",
       "organized_by": "Av {team}"
     },
@@ -3812,7 +4316,7 @@
         "benched": "Avbänkade"
       },
       "already_rostered": "I ett annat lag",
-      "min_lineup_warning": "Välj minst {min} spelare för att anmäla dig."
+      "owner_on_a_team": "Redan i ett lags trupp i den här turneringen."
     },
     "tournament_team": {
       "remove": "Ta bort lag",
@@ -3842,12 +4346,6 @@
       "negotiated_scheduling": {
         "label": "Förhandlad schemaläggning",
         "description": "Lagkaptener föreslår och kommer överens om matchtider (med valfria tidsfönster per fas), istället för att matcher startar automatiskt."
-      },
-      "create_bar": {
-        "ready": "Redo att skapa",
-        "ready_hint": "Allt ser bra ut — skapa din turnering",
-        "incomplete": "Obligatoriska fält saknas",
-        "incomplete_hint": "Fyll i turneringsnamn och startdatum för att fortsätta"
       },
       "logo": {
         "label": "Logotyp"
@@ -3896,7 +4394,6 @@
       "title": "Röstkanaler",
       "description": "Skapa Discord-röstkanaler automatiskt för turneringsmatcher. Spelare flyttas till lagkanaler när matcher börjar.",
       "guild_id_placeholder": "Discord-server-ID",
-      "enable_voice": "Aktivera röstkanaler",
       "guild_id": "Discord-serverns ID"
     },
     "table": {
@@ -3986,7 +4483,13 @@
       "embed_winner_label": "Vinnarträd",
       "embed_loser_label": "Förlorarträd",
       "embed_no_stage": "Ingen aktiv fas.",
-      "zoom_fit": "Anpassa"
+      "zoom_fit": "Anpassa",
+      "round_number": "Omgång {round}",
+      "default_label": "Slutspelsträd",
+      "main_path": "Huvud",
+      "impact_source": "källa",
+      "impact_delete": "radera",
+      "impact_reset": "återställ"
     },
     "match": {
       "reset_winner": "Återställ vinnare",
@@ -4062,7 +4565,8 @@
       "title": "Tabell"
     },
     "results": {
-      "title": "Resultat"
+      "title": "Resultat",
+      "stats_heading": "TURNERINGSSTATISTIK"
     },
     "organizer": {
       "title": "Turneringsarrangörer",
@@ -4091,7 +4595,17 @@
       "leave_team": "Lämna laget",
       "slot": "Plats {number}",
       "add_player": "Lägg till spelare",
+      "ineligible": {
+        "on_this_roster": "Redan i den här truppen.",
+        "on_other_team": "Redan i {team}s trupp i den här turneringen.",
+        "invite_pending": "Du har redan bjudit in personen — väntar på svar."
+      },
+      "already_in_tournament": "Den spelaren är redan i ett lag i den här turneringen.",
       "pending_invites": "Väntande inbjudningar",
+      "member_added": "Spelare tillagd",
+      "member_added_description": "{name} lades till i din trupp",
+      "invite_sent": "Inbjudan skickad",
+      "invite_sent_description": "{name} har bjudits in och måste tacka ja innan personen kommer med i din trupp",
       "new": "Skapa nytt lag",
       "select": "Välj befintligt lag",
       "select_role": "Välj roll",
@@ -4134,18 +4648,12 @@
       "remove_description": "Detta tar bort servern från turneringen"
     },
     "open_match_actions": "Öppna matchåtgärder",
-    "location": {
-      "tab": "Plats",
-      "view_on_map": "Visa på karta"
-    },
     "prizes": {
       "title": "Priser",
-      "manage_title": "Priser",
       "manage_hint": "Prisplaceringar och belopp visas på turneringssidan.",
       "organizer_access_required": "Kräver arrangörsbehörighet",
       "add": "Lägg till",
       "distribution": "Prisfördelning",
-      "place_placeholder": "#1",
       "prize_placeholder": "1000 kr",
       "reorder_hint": "Dra för att ändra ordning — placeringar numreras om automatiskt. Skriv en etikett för att skriva över.",
       "move_up": "Flytta upp",
@@ -4167,11 +4675,6 @@
     "banner": {
       "label": "Banner",
       "upload": "Ladda upp banner",
-      "replace": "Byt banner",
-      "remove": "Ta bort",
-      "removed": "Bannern togs bort",
-      "updated": "Bannern uppdaterades",
-      "empty_hint": "Lägg till en banner",
       "hint": "Visas högst upp på turneringssidan. Beskärs till ett brett 3:1-format.",
       "upload_failed": "Uppladdningen av bannern misslyckades"
     },
@@ -4190,20 +4693,17 @@
       "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
       "new_award": "New award",
       "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
-      "upload_image": "Upload image",
-      "replace_image": "Replace image",
       "custom_image_hint": "Overrides the award's artwork for this tournament only.",
       "silhouettes": {
-        "auto": "Auto",
         "0": "Chalice",
         "1": "Faceted",
         "2": "Star",
         "3": "Shield",
-        "4": "Laurel"
+        "4": "Laurel",
+        "auto": "Auto"
       },
       "artwork": "Artwork",
       "silhouette_unused": "Silhouette is unused while artwork is set.",
-      "placement": "Placement",
       "unsaved": "Unsaved"
     },
     "awards_manage": {
@@ -4213,8 +4713,17 @@
       "remove": "Ta bort",
       "hint": "Dela ut en utmärkelse utanför slutspelsberäkningen.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first.",
-      "choose_award": "Choose an award…"
+      "no_awards": "Create an award in the catalog first."
+    },
+    "teams_filter": {
+      "all": "Alla",
+      "ready": "Klara",
+      "incomplete": "Saknar spelare",
+      "no_matches": "Inga lag matchar det här filtret",
+      "collapse": "Fäll ihop",
+      "expand": "Fäll ut",
+      "collapse_all": "Fäll ihop alla",
+      "expand_all": "Fäll ut alla"
     }
   },
   "team": {
@@ -4321,7 +4830,15 @@
       "ineligible_short": "Låst",
       "tournament_join_requires_owner_or_captain": "Du kan bara gå med i en turnering med lag där du är ägare eller lagkapten.",
       "not_enough_players": "Kräver minst {count} spelare för att utmana.",
-      "selected": "Vald"
+      "selected": "Vald",
+      "loading_more": "Läser in fler…",
+      "ineligible": {
+        "in_tournament": "Redan anmält till den här turneringen.",
+        "in_season": "Redan registrerat för den här säsongen.",
+        "tournament_organizer": "Redan arrangör för den här turneringen.",
+        "in_event": "Redan kopplat till det här evenemanget.",
+        "other_side": "Redan valt som det andra laget."
+      }
     },
     "member": {
       "coach": "Coach",
@@ -4342,7 +4859,8 @@
       "link_copied": "Kalenderlänk kopierad",
       "subscription_help": "Prenumerera på den här URL:en i din kalenderapp för att se alla matcher laget spelar — scrims, ligamatcher och turneringar.",
       "link_error": "Kunde inte hämta kalenderlänk"
-    }
+    },
+    "roster_short": "trupp"
   },
   "match": {
     "open_match": "Öppna match",
@@ -4388,6 +4906,7 @@
     },
     "elo_details": {
       "title": "Detaljer om ELO-förändring",
+      "rated_at_hint": "Den värdering du bedömdes mot — en blandning av din egen ELO och ditt lags snitt, mätt mot motståndarlagets snitt. Av lagkamrater som gick in med en annan värdering förväntas något annat, så samma resultat flyttar dem olika mycket.",
       "formula": {
         "k_factor_hint": "K-faktor — grundhastighet för ELO-svängningen innan några modifierare.",
         "delta_hint": "Δ = faktisk ({actual}) − förväntad ({expected}). Positivt betyder att du presterade bättre än lagets ELO-prognos.",
@@ -4421,7 +4940,8 @@
         "label": "Best of",
         "description": "Vinnaren avgörs av vem som vinner flest av ett angivet antal matcher",
         "placeholder": "Välj ett best of-värde",
-        "option": "Best of {count}"
+        "option": "Best of {count}",
+        "short": "BO{count}"
       },
       "map_veto_settings": {
         "short_on": "Lagen bannar och väljer kartor från poolen.",
@@ -4469,6 +4989,11 @@
         "tv_delay": {
           "label": "TV-fördröjning",
           "range": "Ange ett värde mellan 0 och 120."
+        },
+        "veto_pick_timeout": {
+          "label": "Veto-timer",
+          "description": "Väljer automatiskt åt ett lag som får slut på tid under sin veto-tur.",
+          "range": "Sekunder varje lag får per veto-val innan ett görs åt dem."
         },
         "timeouts": {
           "tactical": {
@@ -4543,6 +5068,8 @@
       },
       "max_rounds": "Max antal ronder",
       "tv_delay": "TV-fördröjning",
+      "veto_pick_timeout": "Veto-timer",
+      "veto_pick_timeout_seconds": "{seconds} s",
       "seconds": "sekunder",
       "coaches": "Coacher",
       "overtime": "Overtime",
@@ -4554,7 +5081,19 @@
       "ready_setting": "Redoinställning",
       "check_in_setting": "Incheckningsinställning",
       "advanced_settings": "Visa avancerade inställningar",
-      "default_player_models": "Standardspelarmodeller"
+      "default_player_models": "Standardspelarmodeller",
+      "cameras": {
+        "title": "Spelarkameror",
+        "required": {
+          "label": "Kräv webbkamera",
+          "description": "Spelare måste ansluta en webbkamera innan serveruppgifterna visas, och matchen pausas automatiskt om ett flöde bryts."
+        },
+        "teammates": {
+          "label": "Lagkamrater kan titta",
+          "description": "Låt spelare se sitt eget lags kameror."
+        },
+        "privacy_note": "Motståndarlaget kan aldrig se de här flödena. Arrangörer som själva spelar matchen ser inget av dem."
+      }
     },
     "schedule": {
       "schedule": "Schemalägg",
@@ -4739,7 +5278,6 @@
       "randomize_teams": "Slumpa lag",
       "swap_lineups": "Byt laguppställningar",
       "restore_round": "Återställ rond",
-      "select_round_to_restore": "Välj rond att återställa",
       "server_information": "Serverinformation",
       "type": "Typ",
       "region": "Region",
@@ -4755,6 +5293,7 @@
     },
     "winner": {
       "set": "Sätt matchvinnare",
+      "set_failed": "Kunde inte ange matchens vinnare",
       "select_lineup": "Välj laguppställning"
     },
     "map_winner": {
@@ -4763,7 +5302,6 @@
     "region_veto": {
       "ban_label": "Banna",
       "banning": "bannar en region",
-      "organizer_override": "Arrangörens override",
       "confirm_ban": "Bekräfta bann",
       "server_region": "Serverregion",
       "select_region": "Välj en region",
@@ -4779,8 +5317,15 @@
       "reset_to_knife": "Återställ till knivrond",
       "reset_to_warmup": "Återställ till uppvärmning"
     },
+    "party": {
+      "queued": "Köade tillsammans",
+      "queued_lobby": "Köade tillsammans i ett lobby",
+      "queued_valve": "Köade tillsammans (Valve-grupp)"
+    },
     "picks": {
       "decider": "Avgörare",
+      "auto_picked": "Auto",
+      "auto_picked_description": "Valdes automatiskt eftersom laget fick slut på tid.",
       "empty": "Inga vetoval",
       "counter_terrorist": "Counter-Terrorist",
       "terrorist": "Terrorist",
@@ -4794,7 +5339,6 @@
     "decider": "Avgörare",
     "map_veto": {
       "is_picking": "väljer en",
-      "organizer_override": "Arrangörens override",
       "pick": "Välj",
       "confirm": "Bekräfta {type}"
     },
@@ -4802,6 +5346,7 @@
       "picked": "Vald"
     },
     "auto_canceling": "Avbryter automatiskt",
+    "demo_processing": "Bearbetar demo",
     "actions": {
       "call_support": "Kalla på support",
       "start_veto": "Starta veto",
@@ -4844,7 +5389,8 @@
       "resume_renders_started": "Återupptar rendering av höjdpunkter",
       "clips_started": "Rendering av spelarhöjdpunkter köad",
       "reparse_demos": "Tolka om matchens demos",
-      "reparse_demos_started": "Tolkar om alla demos för den här matchen"
+      "reparse_demos_started": "Tolkar om alla demos för den här matchen",
+      "watch_camera": "Se kameror"
     },
     "delete_confirm": {
       "title": "Ta bort match",
@@ -5067,7 +5613,10 @@
     "check_in": {
       "checked_in": "Incheckad",
       "check_in": "Checka in",
-      "checked_in_description": "Du har checkat in {checked} av {required} spelare som krävs för att starta matchen"
+      "checked_in_description": "Du har checkat in {checked} av {required} spelare som krävs för att starta matchen",
+      "deadline": "Anmäl dig inom",
+      "deadline_checked_in": "Avbryts automatiskt om",
+      "deadline_help": "Matchen avbryts automatiskt om alla som krävs inte har anmält sig innan tiden går ut."
     },
     "coach": {
       "assign": "Tilldela coach"
@@ -5219,7 +5768,8 @@
       "kit_dropped_by": "Tappat av {name}",
       "unknown_player": "okänd",
       "kill_filter_by_title": "Visar kills AV spelare — klicka för att växla till deaths PÅ spelare",
-      "kill_filter_of_title": "Visar deaths PÅ spelare — klicka för att växla till kills AV spelare"
+      "kill_filter_of_title": "Visar deaths PÅ spelare — klicka för att växla till kills AV spelare",
+      "utility_none": "{label} (inga)"
     },
     "player_details_panel": {
       "stats_unavailable": "Statistik saknas för denna match.",
@@ -5250,7 +5800,29 @@
     },
     "admin_bar": {
       "rcon_unavailable": "RCON otillgängligt",
-      "not_controllable": "Matchen kan inte styras i sitt nuvarande läge."
+      "not_controllable": "Matchen kan inte styras i sitt nuvarande läge.",
+      "veto_override": "Åsidosätt veto"
+    },
+    "demo_processing_hint": "Matchens demo laddas upp från spelservern. Statistik, 2D-replay och höjdpunkter kommer när den är klar.",
+    "demo_playback": {
+      "xray": "Röntgen",
+      "xray_on": "Röntgen på",
+      "xray_off": "Röntgen av",
+      "all_players": "Alla spelare ({count})",
+      "previous_kill": "Föregående dödande",
+      "previous_kill_player": "Föregående dödande — {name}",
+      "next_kill": "Nästa dödande",
+      "next_kill_player": "Nästa dödande — {name}",
+      "seeking": "Spolar — cs2 kommer ikapp",
+      "click_to_jump": "{label} — klicka för att hoppa",
+      "kill_nav_follows": "Dödandenavigeringen följer den spelare som ses — välj en spelare för att låsa den"
+    },
+    "maps": {
+      "demos_for_map": "{count} demos för den här banan",
+      "heading": "Banor"
+    },
+    "highlights": {
+      "clip_count": "{count} klipp"
     }
   },
   "ui": {
@@ -5297,7 +5869,6 @@
     "show_keyboard_shortcuts": "Visa tangentbordsgenvägar",
     "hold_to_show_scoreboard": "Håll för att visa resultattavla",
     "close_popout": "Stäng utfällt fönster",
-    "trophy_rack": "Troféhylla",
     "click_to_view_tournament": "Klicka för att visa turnering",
     "auto_clip": "Autoklipp",
     "create_clip": "Skapa klipp",
@@ -5397,7 +5968,6 @@
     },
     "sanction": {
       "button": "Sanktionera spelare",
-      "typed_player": "{type} spelare",
       "reason_label": "Anledning",
       "reason_placeholder": "Ange anledning för sanktionen...",
       "reason_description": "Ange en tydlig anledning för denna sanktion",
@@ -5415,12 +5985,43 @@
         "1_week": "1 vecka",
         "1_month": "1 månad",
         "permanent": "Permanent"
+      },
+      "heading": {
+        "ban": "Stänger av spelare",
+        "mute": "Stänger av spelarens mikrofon",
+        "gag": "Stänger spelarens chatt",
+        "silence": "Tystar spelaren helt"
+      },
+      "submit": {
+        "ban": "Stäng av spelaren",
+        "mute": "Stäng av spelarens mikrofon",
+        "gag": "Stäng spelarens chatt",
+        "silence": "Tysta spelaren helt"
+      },
+      "applied": {
+        "ban": "{name} avstängd",
+        "mute": "{name}s mikrofon avstängd",
+        "gag": "{name}s chatt stängd",
+        "silence": "{name} helt tystad"
       }
     },
     "search": {
       "no_players_found": "Inga spelare hittades",
       "found_players": "Spelare hittades",
-      "placeholder": "Sök spelare..."
+      "placeholder": "Sök spelare...",
+      "loading_more": "Läser in fler…",
+      "ineligible": {
+        "in_lineup": "Redan i den här matchens laguppställning.",
+        "coaching": "Coachar redan i den här matchen.",
+        "on_team": "Redan i det här laget.",
+        "team_invite_pending": "Du har redan bjudit in personen — väntar på svar.",
+        "in_lobby": "Redan i ditt lobby.",
+        "in_draft": "Redan i den här draften.",
+        "in_event": "Redan kopplad till det här evenemanget.",
+        "event_organizer": "Redan arrangör för det här evenemanget.",
+        "tournament_organizer": "Redan arrangör för den här turneringen.",
+        "tournament_admin": "Turneringens administratör är alltid arrangör."
+      }
     },
     "sanctions": {
       "title": "Sanktioner",
@@ -5431,10 +6032,14 @@
       "duration_label": "Varaktighet",
       "select_duration": "Välj varaktighet",
       "sanctions": "Sanktioner",
+      "record": "Historik",
       "expires": "Upphör",
       "expired_on": "Upphörde",
       "issued": "Utfärdad",
       "view_steam": "Visa avstängning på Steam",
+      "steam_bans": "Steam-avstängningar",
+      "steam_vac_bans": "VAC-avstängningar",
+      "steam_game_bans": "Spelavstängningar",
       "permanent": "Permanent",
       "active": "Aktiv",
       "expired": "Upphört",
@@ -5455,6 +6060,7 @@
       "abandoned_matches": "Övergivna matcher",
       "match": "Match",
       "no_sanctions": "Inga sanktioner",
+      "no_sanctions_description": "Den här spelaren har ett rent register på den här plattformen.",
       "remove_abandoned": "Ta bort övergiven match",
       "confirm_remove_abandoned": "Ta bort övergiven match",
       "remove_abandoned_description": "Vill du ta bort denna övergivna matchpost? Detta går inte att ångra.",
@@ -5474,7 +6080,15 @@
       "vac_banned": "VAC-bannad på Steam",
       "vac_banned_count": "{count} VAC-avstängning(ar) på Steam",
       "game_banned": "Spelbannad på Steam",
-      "game_banned_count": "{count} spelavstängning(ar) på Steam"
+      "game_banned_count": "{count} spelavstängning(ar) på Steam",
+      "last_ban_days_ago": "Senaste avstängningen för {days} dagar sedan",
+      "view_sanctions_hint": "Klicka för att se alla sanktioner",
+      "not_in_cs2": "Inte i CS2 just nu"
+    },
+    "context_menu": {
+      "view_profile": "Visa profil",
+      "copy_steam_id": "Kopiera Steam-id",
+      "steam_id_copied": "Steam-id kopierat"
     },
     "change_name": {
       "name_label": "Namn",
@@ -5485,10 +6099,13 @@
       "title": "Väntande CS2-importer",
       "importing": "Importerar…"
     },
-    "all_time_peak": "ALL-TIME PEAK"
+    "all_time_peak": "ALL-TIME PEAK",
+    "at_match_start": "VID MATCHSTART",
+    "current_elo": "NU",
+    "faceit_level": "Nivå {level}",
+    "elo_aria_label": "ELO, primär {tier} {elo}"
   },
   "maps": {
-    "label": "Kartor",
     "veto": {
       "pick": "Välj karta"
     },
@@ -5555,6 +6172,8 @@
       "search_placeholder": "Sök vänner...",
       "invite_to_lobby": "Bjud in till lobby",
       "remove": "Ta bort vän",
+      "remove_confirm_title": "Ta bort vän?",
+      "remove_confirm_description": "{name} tas bort från din vänlista. Du måste skicka en ny vänförfrågan för att lägga till personen igen.",
       "in_match": "I en match",
       "in_lobby": "I en lobby",
       "in_draft": "I draftlobby",
@@ -5574,6 +6193,7 @@
       "title": "Övriga"
     },
     "banned": "Du är avstängd från matchmaking",
+    "banned_until": "Du är avstängd från matchmaking till {time}",
     "confirm_selection": "Gå med i kön",
     "in_queue": "i kö",
     "temp_banned": "Du är tillfälligt avstängd från matchmaking",
@@ -5585,7 +6205,9 @@
     "party_size": {
       "unavailable": "Ett sällskap på {size} kan inte köa för det här läget",
       "requirement": "Köa med {half} eller färre, eller exakt {full} spelare"
-    }
+    },
+    "temp_banned_until": "Du är tillfälligt avstängd från matchmaking till {time}",
+    "new_invites_count": "Nya inbjudningar ({count})"
   },
   "game_server": {
     "lan_ip": "LAN-IP",
@@ -5741,12 +6363,27 @@
       "no_access": "Du har inte åtkomst till den här sidan.",
       "sidebar_hint": "Chatten finns i högersidofältet under fliken Chattar."
     },
-    "in_chat": "i chatten"
+    "in_chat": "i chatten",
+    "everyone": "Alla",
+    "your_team": "Ditt lag",
+    "all": "Alla",
+    "team_tag": "Lag",
+    "message_placeholder_team": "Skriv till ditt lag…",
+    "send_other_hint": "Ctrl+Enter för att skicka till {channel}",
+    "everyone_hint": "Båda lagen — visas även i spelets chatt",
+    "team_hint": "Bara din laguppställning — visas inte i spelets chatt",
+    "direct": {
+      "message": "Meddelande",
+      "empty": "Inga meddelanden än. Säg hej."
+    }
   },
   "charts": {
     "usage": "Användning",
     "mount_os": "OS",
-    "mount_demos": "Demos"
+    "mount_demos": "Demos",
+    "total_series": "{label} totalt",
+    "gpu_index": "GPU {index}",
+    "series_avg": "{label} snitt"
   },
   "server": {
     "join_server": "Gå med i server",
@@ -5824,6 +6461,7 @@
     "unmute": "Ljud på",
     "play": "Spela",
     "pause": "Pausa",
+    "seek": "Spola",
     "fullscreen": "Helskärm",
     "exit_fullscreen": "Avsluta helskärm",
     "fullscreen_f_key": "Helskärm (F)",
@@ -5938,7 +6576,8 @@
     "spectator": {
       "slot": "Plats {slot}",
       "slot_waiting": "Plats {slot} · väntar på spelare…",
-      "take_manual_control": "Klicka för att ta manuell kontroll"
+      "take_manual_control": "Klicka för att ta manuell kontroll",
+      "slot_key": "Plats {slot} · tangent {key}"
     },
     "page_title": "Stream Deck",
     "page_description": "Ta över ett GPU för att sända en liveMatch, byta destination och köra auto-regissören.",
@@ -5960,7 +6599,26 @@
     "swap_sides": "Byt sidor (manuell override)",
     "refresh_hud": "Uppdatera HUD (ladda om spelarbilder)",
     "autodirector_on": "Auto-regissören är på.",
-    "autodirector_hint": "CS2 väljer kameran — att klicka på ett mål eller trycka på en tangent stänger av detta och tar manuell kontroll."
+    "autodirector_hint": "CS2 väljer kameran — att klicka på ett mål eller trycka på en tangent stänger av detta och tar manuell kontroll.",
+    "actions": {
+      "spec_click": "Åskådarklick ({button})",
+      "spec_slot": "Se plats {slot}",
+      "spec_jump": "Hoppa till åskådarens mål",
+      "spec_autodirector": "Autoregissör",
+      "spec_xray": "Röntgen",
+      "spec_hud": "HUD-synlighet",
+      "set_hud_mode": "HUD-layout",
+      "swap_sides": "Byt sida",
+      "refresh_hud": "Läs om HUD",
+      "start_live": "Starta sändning",
+      "stop_live": "Stoppa sändning",
+      "reconnect": "Återanslut",
+      "skip_shaders": "Hoppa över shader-kompilering"
+    },
+    "gpu_pool_hint": "GPU-pool — öppna sidan med GPU-noder",
+    "no_free_gpu": "Ingen ledig GPU",
+    "start_live_hint": "Starta en livesändning",
+    "start_tv_hint": "Starta en fördröjd TV-sändning"
   },
   "system_metrics_extras": {
     "gpu_usage": "GPU-användning",
@@ -5971,7 +6629,8 @@
   },
   "rcon": {
     "console": "RCON-konsol",
-    "suggestions": "Förslag"
+    "suggestions": "Förslag",
+    "entry_count": "{count} poster"
   },
   "game_server_node": {
     "set_ports": "Ange portar"
@@ -6067,7 +6726,9 @@
       "done_only_count": "{count} klara",
       "cancelled_count": "{count} avbrutna",
       "retry_failed_count": "Försök igen ({count})",
-      "retry_all_clips": "Försök igen med alla {count} klipp"
+      "retry_all_clips": "Försök igen med alla {count} klipp",
+      "target_clip": "klipp med {name}",
+      "render_id": "Rendering {id}"
     },
     "create_dialog": {
       "title": "Auto-klipp",
@@ -6139,7 +6800,10 @@
       "no_moments": "Inga höjdpunktsvärda ögonblick för {target} på den här kartan.",
       "this_player": "den här spelaren",
       "queue_render": "Köa rendering"
-    }
+    },
+    "player": "Spelare",
+    "clip": "Klipp",
+    "open_profile": "Öppna {name}s profil"
   },
   "time_ago": {
     "just_now": "just nu",
@@ -6167,7 +6831,8 @@
     "view_short": "Visa",
     "premier": "Premier",
     "competitive": "Competitive",
-    "wingman": "Wingman"
+    "wingman": "Wingman",
+    "imported_from": "{type} · importerad från {source}"
   },
   "breadcrumbs": {
     "dashboard": "översikt"
@@ -6186,6 +6851,9 @@
     "updated": "UPPDATERAD",
     "series_multiplier": "SERIEMULTIPLIKATOR",
     "team_elo": "LAG-ELO",
+    "rated_at": "VÄRDERAD TILL",
+    "you": "DU",
+    "team": "LAG",
     "kda": "KDA",
     "kda_breakdown": "K / D / A",
     "perf": "PERF"
@@ -6439,13 +7107,7 @@
     }
   },
   "league": {
-    "created": "Ligan skapades",
     "not_found": "Ligan hittades inte",
-    "status": {
-      "Setup": "Konfiguration",
-      "Active": "Aktiv",
-      "Archived": "Arkiverad"
-    },
     "season_status": {
       "Setup": "Konfiguration",
       "RegistrationOpen": "Anmälan öppen",
@@ -6456,7 +7118,6 @@
       "Canceled": "Inställd"
     },
     "list": {
-      "eyebrow": "Tävling",
       "title": "Liga",
       "subtitle": "Säsongsdivisioner, veckovis matchspel, uppflyttning och nedflyttning",
       "settings": "Ligainställningar"
@@ -6469,11 +7130,9 @@
       "none": "—"
     },
     "divisions": {
-      "title": "Divisioner",
       "empty": "Inga divisioner konfigurerade ännu.",
       "add": "Lägg till nivå {tier}",
       "name_placeholder": "Divisionsnamn (t.ex. Open, Main, Invite)",
-      "tier_hint": "Nivå 1 är den högsta divisionen. Lag flyttas upp mot nivå 1 och ned från den.",
       "reorder_hint": "Dra divisioner för att ändra ordningen på stegen. Nivå 1 är den högsta divisionen — lag flyttas upp mot den och ned från den.",
       "delete_title": "Ta bort divisionen?",
       "delete_description": "Ta bort {name} från stegen. Kvarvarande divisioner numreras om. Detta går inte att ångra."
@@ -6481,15 +7140,12 @@
     "seasons": {
       "title": "Säsonger",
       "empty": "Inga säsonger ännu.",
-      "teams_count": "{count} lag",
       "deleted": "Säsongen borttagen",
       "delete_title": "Ta bort säsongen?",
       "delete_description": "Ta bort {name} permanent, inklusive dess anmälningar, schema och resultat. Detta går inte att ångra."
     },
     "season_form": {
       "title": "Skapa säsong",
-      "name": "Namn",
-      "name_placeholder": "t.ex. Säsong 1",
       "signup_opens": "Anmälan öppnar",
       "signup_closes": "Anmälan stänger",
       "starts_at": "Säsongen börjar",
@@ -6498,9 +7154,6 @@
       "auto_format_hint": "Varje divisions format väljs automatiskt utifrån dess storlek: en fullständig round robin när den ryms inom säsongens ronder, annars en schweizersystemgrupp.",
       "roster_lock_week": "Vecka för trupplåsning",
       "playoff_seats": "Slutspelsplatser",
-      "min_roster": "Minsta trupp",
-      "promote": "Uppflyttning",
-      "relegate": "Nedflyttning",
       "direct_promote": "Direkt uppflyttning",
       "relegation_up": "Nedflyttningskval upp",
       "relegation_down": "Nedflyttningskval ner",
@@ -6529,18 +7182,10 @@
       "min_teams_hint": "En division behöver minst 4 godkända lag för att köras — mindre divisioner hoppas över vid säsongsstart."
     },
     "overview": {
-      "signup_window": "Anmälningsperiod",
-      "starts": "Börjar",
       "weeks": "Matchveckor",
-      "playoff_seats": "Slutspelsplatser",
       "roster_locked": "Trupp låst",
       "roster_locks": "Truppen låses {date}",
-      "format": "Format",
-      "teams": "Lag",
-      "playoffs": "Slutspel",
-      "weeks_count": "{count} veckor",
-      "across_divisions": "fördelat på {count} divisioner",
-      "playoff_seats_count": "{count} platser"
+      "weeks_count": "{count} veckor"
     },
     "phases": {
       "registration": "Anmälan",
@@ -6565,10 +7210,6 @@
     },
     "manage": {
       "title": "Inställningar",
-      "open": "Öppna hanteringsfliken",
-      "phase_controls": "Säsongsfas",
-      "current": "Aktuell",
-      "registrations": "Anmälningar",
       "danger_zone": "Farozon"
     },
     "tabs": {
@@ -6576,7 +7217,6 @@
       "teams": "Lag",
       "schedule": "Schema",
       "standings": "Tabell",
-      "playoffs": "Slutspel",
       "bracket": "Slutspelsträd",
       "movements": "Förflyttningar",
       "stats": "Statistik"
@@ -6597,14 +7237,6 @@
       "requested_division": "Önskad division",
       "assign_division": "Tilldela division (godkänns automatiskt)",
       "no_preference": "Ingen preferens",
-      "roster": "Säsongstrupp ({selected} valda, minst {min})",
-      "roster_range": "Säsongstrupp ({selected} valda · {min}–{max} spelare)",
-      "group": {
-        "starters": "Startspelare",
-        "substitutes": "Reserver",
-        "benched": "På bänken"
-      },
-      "available": "Tillgänglig",
       "min_roster_warning": "Välj minst {min} spelare för att anmäla laget.",
       "register": "Anmäl",
       "registered": "Laget anmält",
@@ -6612,7 +7244,6 @@
       "cta_hint": "Anmäl ett lag du hanterar och lås dess säsongstrupp."
     },
     "my_team": {
-      "title": "Mitt lag — {team}",
       "add_players": "Lägg till spelare",
       "make_starter": "Gör till startspelare",
       "make_sub": "Flytta till reserver",
@@ -6654,7 +7285,6 @@
       "decline_title": "Avslå anmälan?",
       "decline_reason_hint": "Berätta gärna varför för laget. De kan skicka in på nytt medan anmälan är öppen.",
       "decline_reason_placeholder": "Anledning (valfritt)",
-      "players": "spelare",
       "review_summary": "{pending} väntande · {waitlisted} på väntelista att granska",
       "remove": "Ta bort",
       "remove_title": "Ta bort laget från säsongen?",
@@ -6665,20 +7295,9 @@
     "schedule": {
       "week": "Vecka {week}",
       "season_number": "Säsong {number}",
-      "default_time": "Standard",
       "my_matches": "Mina matcher",
-      "no_matches_filter": "Inga matcher matchar dessa filter.",
-      "unscheduled_count": "{count} obokade",
-      "needs_you": "{count} behöver dig",
-      "filter": {
-        "all": "Alla",
-        "unscheduled": "Obokade",
-        "scheduled": "Bokade",
-        "finished": "Avslutade"
-      },
       "no_matchups": "Inga matcher denna vecka.",
       "bye": "Frilott (automatisk vinst)",
-      "unscheduled": "Obokad",
       "view_match": "Visa match",
       "propose": "Föreslå tid",
       "propose_new": "Föreslå ny tid",
@@ -6693,13 +7312,6 @@
       "decline": "Avslå",
       "awaiting_opponent": "Väntar på motståndaren",
       "winner": "Vinnare",
-      "defaults_to": "Bokas automatiskt till {time} om ingen tid överenskoms",
-      "history": "Tidigare förslag ({count})",
-      "status_chip": {
-        "needs_scheduling": "Behöver bokas",
-        "scheduled": "Bokad",
-        "finished": "Avslutad"
-      },
       "status": {
         "Accepted": "Godkänd",
         "Declined": "Avslagen",
@@ -6715,7 +7327,6 @@
     "schedule_task": {
       "schedule_title": "Boka din match",
       "respond_title": "En matchtid har föreslagits",
-      "confirm_title": "Bekräfta din matchtid",
       "context": "Säsong {season} · Vecka {week}",
       "more": "{count} till"
     },
@@ -6725,11 +7336,9 @@
       "rounds": "Ronder",
       "round_diff": "RD",
       "remaining": "Kvar",
-      "playoffs": "Slutspel",
       "search": "Sök lag",
       "empty": "Inga resultat ännu.",
       "removed": "Borttagen",
-      "open_tournament": "Öppna turnering",
       "legend": {
         "advances": "Går vidare till slutspel (topp {n})",
         "cutoff": "Slutspelsgräns",
@@ -6738,9 +7347,6 @@
       }
     },
     "playoffs": {
-      "view_bracket": "Visa slutspelsträd",
-      "pending": "Slutspelsträdet seedas när grundserien avslutas.",
-      "not_started": "Slutspelet har inte börjat än.",
       "scheduling": "{division} · slutspelsbokning"
     },
     "movements": {
@@ -6793,10 +7399,6 @@
       }
     },
     "stats": {
-      "player": "Spelare",
-      "team": "Lag",
-      "maps": "Kartor",
-      "kdr": "K/D",
       "empty": "Ingen statistik ännu — den visas när ligamatcher har spelats."
     },
     "rollover": {
@@ -6922,8 +7524,6 @@
     "form": {
       "name": "Eventnamn",
       "description": "Beskrivning",
-      "starts_at": "Startar",
-      "ends_at": "Slutar",
       "dates": "Eventdatum",
       "pick_dates": "Välj ett datumintervall",
       "start_required": "Ett startdatum krävs så eventet bara samlar matcher spelade från och med det datumet",
@@ -7055,8 +7655,7 @@
       "link_title_placeholder": "Valfri titel",
       "link_add": "Lägg till",
       "link_invalid": "Ange en giltig http(s)-URL",
-      "link_added": "Länk tillagd",
-      "external_open": "Öppna länk"
+      "link_added": "Länk tillagd"
     },
     "phase": {
       "upcoming": "Kommande",
@@ -7067,18 +7666,12 @@
       "for_you": "För dig",
       "rank": "Eventrank",
       "rating": "Rating",
-      "kd": "K/D",
-      "matches": "Matcher",
-      "no_my_matches": "Inga av dina matcher är del av detta event än."
+      "matches": "Matcher"
     },
     "matches": {
-      "none": "Inga matcher har spelats i detta events turneringar än.",
-      "load_more": "Ladda fler matcher"
+      "none": "Inga matcher har spelats i detta events turneringar än."
     },
     "story": {
-      "only_mine": "Endast mina ögonblick",
-      "none": "Inget har hänt på detta event än.",
-      "none_mine": "Du har inga ögonblick på detta event än.",
       "highlights": "Höjdpunkter"
     },
     "banner": {
@@ -7089,14 +7682,7 @@
       "updated": "Banner uppdaterad",
       "removed": "Banner borttagen",
       "empty_hint": "Ingen banner än — klicka för att ladda upp",
-      "hint": "Visas i full bredd högst upp på eventsidan. Optimal storlek: 1920×640 (3:1). Bilder upp till 10 MB eller MP4-video upp till 512 MB.",
-      "editor": {
-        "title": "Justera banner",
-        "description": "Dra för att positionera och scrolla för att zooma inom 3:1-bannerramen. Använd “Anpassa hela bilden” om motivet inte får beskäras — sidan fyller sidorna med en suddig kopia.",
-        "fit_whole": "Anpassa hela bilden",
-        "reset": "Återställ",
-        "apply": "Använd som banner"
-      }
+      "hint": "Visas i full bredd högst upp på eventsidan. Optimal storlek: 1920×640 (3:1). Bilder upp till 10 MB eller MP4-video upp till 512 MB."
     },
     "player": {
       "full_profile": "Fullständig profil",
@@ -7127,14 +7713,10 @@
     "tournament": "Turnering",
     "placement": "Placering",
     "no_awards": "Inga utmärkelser än",
-    "no_awards_description": "Placera dig topp 3 i en turnering, eller få en utmärkelse tilldelad, för att fylla den här montern.",
     "granted": "Tilldelad",
     "composer": {
       "title": "Create & assign award",
       "award": "Award",
-      "new": "New",
-      "existing": "Existing",
-      "choose": "Choose an award…",
       "assign": "Assign",
       "artwork_needs_award": "Artwork attaches to the award, so save it first.",
       "create_to_upload": "Create award to add artwork",
@@ -7149,20 +7731,332 @@
       "award_unavailable": "Den här utmärkelsen kunde inte laddas.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
-    }
+    },
+    "badge_alt": "{label}-utmärkelse",
+    "badge_alt_tournament": "{label}-utmärkelse för {tournament}"
   },
   "awards_modal": {
-    "view_tournament": "VISA TURNERING"
+    "view_tournament": "VISA TURNERING",
+    "view_award": "Visa utmärkelse"
   },
   "awards_manage_form": {
     "team": "Lag",
-    "player": "Spelare",
-    "award": "Utmärkelse",
-    "recipient": "Recipient"
+    "player": "Spelare"
+  },
+  "search": {
+    "unregistered": "Inte registrerad",
+    "registered_only": "Endast registrerade",
+    "registered": "Registrerad"
   },
   "camera": {
+    "title": "Webbkamera krävs",
+    "subtitle": "Den här matchen kräver en webbkamera innan du kan se serveruppgifterna.",
+    "choose_pc": "Använd den här datorn",
+    "scan": "Skanna den här koden med din telefon",
+    "waiting": "Väntar på din kamera…",
+    "preparing": "Förbereder din kameralänk…",
+    "connect": "Anslut kamera",
+    "connecting": "Ansluter…",
+    "connected": "Din kamera är live",
+    "keep_open": "Låt den här sidan vara öppen resten av matchen.",
+    "flip": "Byt kamera",
+    "error": "Kunde inte starta din kamera",
+    "retry": "Försök igen",
+    "admin_title": "Spelarkameror",
+    "admin_empty": "Inga spelare i den här matchen.",
+    "call": "Videosamtal",
+    "end_call": "Avsluta samtal",
+    "offline": "Inte ansluten",
+    "setup_before_check_in": "Ställ in din kamera",
+    "permission_hint": "Din webbläsare frågar efter behörighet till kamera och mikrofon innan flödet startar.",
+    "reframe_reset": "Återställ",
+    "talk_label": "Arrangörssamtal",
+    "you": "Du",
     "tile": {
+      "live": "Live",
+      "stalled": "Har hakat upp sig",
+      "offline": "Offline",
+      "talking": "I samtal",
+      "unknown": "Kontrollerar…",
       "coach": "Coach"
+    },
+    "admin_subtitle": "Spelarkameror live",
+    "admin_live_count": "{live} av {total} live",
+    "admin_stalled_count": "{count} har hakat upp sig",
+    "preview_hidden": "Förhandsvisning dold",
+    "preview_hidden_hint": "Din kamera är fortfarande på och sänder fortfarande.",
+    "hide_preview": "Dölj förhandsvisning",
+    "show_preview": "Visa förhandsvisning",
+    "talk_mute": "Stäng av mikrofonen",
+    "talk_unmute": "Slå på mikrofonen",
+    "listen": "Lyssna på mikrofonen",
+    "mute": "Stäng av mikrofonen",
+    "or": "eller",
+    "reason": "Medan du ses kan din kamera synas i matchens sändning, och matchfunktionärer kan se den under matchen.",
+    "reason_teammates": "Medan du ses kan din kamera synas i matchens sändning. Matchfunktionärer och ditt eget lag kan se den under matchen.",
+    "cameras": "Kameror",
+    "preview": "Förhandsvisning",
+    "reframe_gesture": "Rulla eller nyp för att zooma · dra för att centrera",
+    "mic_hint": "Sänds tillsammans med din kamera — kolla den innan du går live.",
+    "voice_hint": "Ditt flöde är inte ett samtal — gå med för att prata med ditt lag.",
+    "phase": {
+      "preview": "Förhandsvisning",
+      "connecting": "Ansluter",
+      "connected": "Live",
+      "error": "Inte live"
+    },
+    "headline_preview": "Du är inte live än. Rama in dig, och anslut sedan.",
+    "media_error": {
+      "denied": "Din webbläsare blockerade åtkomsten till kameran. Tillåt den för den här webbplatsen och försök igen.",
+      "missing": "Ingen kamera hittades. Anslut en, eller välj en annan enhet nedan.",
+      "busy": "En annan app använder redan kameran. Stäng den och försök igen.",
+      "insecure": "Din kamera kräver en säker anslutning. Öppna 5stack över HTTPS (eller localhost) och försök igen.",
+      "unknown": "Kameran kunde inte startas. Försök igen."
+    },
+    "media_pending": "Väntar på kamerabehörighet…",
+    "dismiss": "Avfärda",
+    "nag": "Du är inte ansluten än. Anmälan förblir blockerad tills din kamera är live.",
+    "nag_action": "Ställ in",
+    "mic": "Mikrofon",
+    "errors": {
+      "no_media_path": "Kameran nådde servern, men ingen mediaväg kunde upprättas.",
+      "ice_timeout": "Kameran nådde servern, men ingen mediaväg kunde upprättas i tid.",
+      "feed_dropped": "Kameraflödet bröts.",
+      "unknown": "Kunde inte starta din kamera.",
+      "load_failed": "Kunde inte läsa in spelarkamerorna.",
+      "call_failed": "Kunde inte starta samtalet."
+    }
+  },
+  "voice": {
+    "errors": {
+      "insecure_origin": "Röstchatt kräver en säker anslutning. Öppna 5stack över HTTPS (eller localhost) och försök igen.",
+      "unsupported": "Den här webbläsaren stöder inte röstchatt.",
+      "permission_denied": "Åtkomsten till mikrofonen blockerades. Tillåt den i webbläsarens webbplatsinställningar och försök igen.",
+      "no_microphone": "Ingen mikrofon hittades. Anslut en och försök igen.",
+      "microphone_busy": "Din mikrofon används av ett annat program.",
+      "unknown": "Kunde inte starta röstchatten.",
+      "unreachable": "Kunde inte nå API:et. Det beror oftast på en CORS-regel eller på att API:et inte går att nå från den här adressen — se detaljerna nedan och webbläsarkonsolen.",
+      "forbidden": "Du får inte gå med i rösten för det här lobbyt.",
+      "not_deployed": "Röstslutpunkten hittades inte på API:et. Den kanske inte är utrullad än.",
+      "signaling": "Röstservern avvisade anslutningen.",
+      "camera": "Kunde inte starta din kamera. Kontrollera att ingen annan app använder den och försök igen.",
+      "camera_denied": "Åtkomsten till kameran blockerades. Tillåt den i webbläsarens webbplatsinställningar och försök igen.",
+      "no_camera": "Ingen kamera hittades. Anslut en och försök igen.",
+      "camera_busy": "Din kamera används av ett annat program."
+    },
+    "settings": {
+      "title": "Röstinställningar",
+      "description": "Välj dina enheter och kontrollera att folk hör dig.",
+      "input": "Inenhet",
+      "output": "Utenhet",
+      "mic_test": "Mikrofontest",
+      "listen": "Hör mig själv",
+      "stop_listening": "Stoppa",
+      "meter_hint": "Prata — stapeln visar vad de andra tar emot. Grönt betyder att du sänds.",
+      "monitor_hint": "Du hör din egen mikrofon. Använd hörlurar, annars blir det eko.",
+      "input_mode": "Inmatningsläge",
+      "mode_voice": "Röstaktivering",
+      "mode_voice_hint": "Sänd bara medan du pratar.",
+      "mode_open": "Sänd alltid",
+      "mode_open_hint": "Skicka allt din mikrofon fångar upp.",
+      "sensitivity": "Känslighet",
+      "test": "Testa",
+      "output_unsupported": "Den här webbläsaren låter inte en webbplats välja utenhet; den använder systemets standard.",
+      "noise_suppression": "Brusreducering",
+      "noise_suppression_hint": "Filtrerar jämnt bakgrundsljud som fläktar och tangentbord.",
+      "mic_starting": "Startar din mikrofon…",
+      "mic_in_use": "Din mikrofon är live i {channel}. De här inställningarna gäller där allteftersom du ändrar dem.",
+      "applies_everywhere": "De gäller överallt där din mikrofon används.",
+      "mic_idle": "Din mikrofon är inte öppen. Kör ett mikrofontest för att höra dig själv som de andra kommer att höra dig — innan någon gör det.",
+      "start_mic": "Mikrofontest"
+    },
+    "team_voice": "Lagröst",
+    "join": "Gå med",
+    "leave": "Lämna",
+    "mute": "Stäng av mikrofonen",
+    "unmute": "Slå på mikrofonen",
+    "switch_title": "Byta röstkanal?",
+    "switch_description": "Du är just nu ansluten till {channel}. Går du med här kopplas du bort från den.",
+    "switch_confirm": "Byt",
+    "speaking_count": "{count} pratar",
+    "tooltip": {
+      "join": "Gå med i lagrösten",
+      "join_hint": "Prata med din laguppställning — det andra laget hör aldrig den här kanalen.",
+      "connecting": "Ansluter…",
+      "leave": "Lämna lagrösten",
+      "mute": "Stäng av din mikrofon",
+      "unmute": "Slå på din mikrofon",
+      "settings": "Mikrofon- och ljudinställningar",
+      "in_voice": "{count} i rösten",
+      "alone": "Du är ensam i rösten",
+      "muted": "Din mikrofon är avstängd — ingen hör dig"
+    },
+    "call": {
+      "start_camera": "Slå på kameran",
+      "stop_camera": "Stäng av kameran",
+      "take_camera_back": "På din telefon — tryck för att hämta tillbaka den hit",
+      "take_mic_back": "Mikrofon på din telefon — tryck för att hämta tillbaka den hit",
+      "pop_out": "Lossa videon",
+      "pop_in": "Sätt tillbaka videon",
+      "more_members": "+{count} till visas inte",
+      "phone": {
+        "use_phone": "Använd telefonen som kamera",
+        "scan": "Skanna med telefonen för att använda dess kamera i det här samtalet.",
+        "scan_hint": "Du loggar in på telefonen först",
+        "in_call": "{count} andra i samtalet",
+        "start": "Dela den här kameran",
+        "not_a_member": "Du är inte i det här samtalet. Gå med på enheten du spelar på först, och skanna sedan koden igen.",
+        "mic_echo_hint": "Din dator behöver hörlurar — på högtalare fångar den här telefonen upp samtalet igen och skapar eko.",
+        "not_in_call": "Gå med i samtalet på enheten du spelar på, så kan den här telefonen ta över det.",
+        "take_mic_short": "Ta mikrofonen",
+        "start_short": "Kamera",
+        "stop_short": "Stoppa",
+        "flip": "Byt",
+        "hand_back": "Lämna tillbaka"
+      },
+      "nobody_yet": "Ingen har anslutit än.",
+      "hide_video": "Dölj deras kamera",
+      "show_video": "Visa deras kamera",
+      "show_self": "Visa min kamera för mig",
+      "device_settings": "Röst- och videoinställningar",
+      "join_action": "Gå med",
+      "dismiss_action": "Avfärda",
+      "handoff_taken": "Tog över {channel} från ett fönster du stängde",
+      "handoff_failed": "Kunde inte ta över {channel} från fönstret du stängde",
+      "toast_kind": "Röst",
+      "toast_joined": "gick med i",
+      "toast_started_video": "startade video i",
+      "floating_title": "Samtal"
+    }
+  },
+  "media": {
+    "device": {
+      "system_default": "Systemstandard",
+      "selected": "Vald enhet",
+      "following_system": "Följer din systeminställning",
+      "device": "Enhet"
+    }
+  },
+  "chat_rail": {
+    "remove_conversation": "Ta bort från listen"
+  },
+  "faq": {
+    "title": "Hjälp och FAQ",
+    "intro": "Vanliga frågor om plattformen, om att spela här och om att köra en egen instans. Om något inte täcks är community-länkarna längst ned snabbaste vägen till ett svar.",
+    "search_placeholder": "Sök bland frågor",
+    "no_results": "Inga frågor matchar «{term}».",
+    "links": {
+      "features": "Alla funktioner",
+      "overview": "Vad är 5Stack?",
+      "matchmaking": "Dokumentation om matchmaking",
+      "tournaments": "Dokumentation om turneringar",
+      "stats_guide": "Statistikguide",
+      "performance_rating": "Prestationsbetyg",
+      "match_replay": "Matchreplay",
+      "highlights": "Höjdpunkter",
+      "web_push": "Uppsättning av web push",
+      "install": "Installationsguide",
+      "hosting_faq": "FAQ om drift",
+      "requirements": "Krav",
+      "what_is_installed": "Vad som installeras",
+      "server_setup": "Serveruppsättning",
+      "game_server_nodes": "Spelservernoder",
+      "gpu_nodes": "GPU-noder",
+      "branding": "Profil och teman",
+      "panel_plugins": "Panel-plugins",
+      "game_plugins": "Spel-plugins"
+    },
+    "about": {
+      "title": "Om 5Stack",
+      "what_is": {
+        "question": "Vad är 5Stack?",
+        "answer": "5Stack är tävlingslagret för Counter-Strike 2 — mjukvaran som sitter mellan en spelserver och en liga. En installation kör hela stacken: matchmaking, draftlobbyn, lag, turneringar och säsonger, statistik och Elo, demoinspelning, replays i webbläsaren, höjdpunkter och livesändning."
+      },
+      "this_site": {
+        "question": "Vad är {brand}?",
+        "answer": "{brand} är en 5Stack-instans. Mjukvaran är öppen källkod och driftas av ägarna själva, så varje gemenskap som kör den sköter sin egen sida, sina egna servrar och sina egna regler — det här är en av dem."
+      },
+      "cost": {
+        "question": "Är det gratis?",
+        "answer": "Ja. 5Stack är gratis och öppen källkod, och du driftar det själv, så projektet tar inget betalt per användare eller per match. Du betalar bara för den infrastruktur du väljer att köra det på. Det byggs och underhålls av en enda utvecklare, och GitHub-sponsringar är det som håller utvecklingen igång."
+      },
+      "sign_in": {
+        "question": "Hur loggar jag in?",
+        "answer": "Via Steam. Det finns inget separat konto att skapa och inget lösenord att komma ihåg — din Steam-profil är din identitet här, och det är också så matcher vet vem du är när du ansluter till en server."
+      },
+      "games": {
+        "question": "Vilka spel stöds?",
+        "answer": "Counter-Strike 2. Statistiken, replayerna, serverhanteringen och plugin:et i spelet är alla byggda specifikt kring det snarare än att vara ett generellt turneringsverktyg."
+      }
+    },
+    "playing": {
+      "title": "Att spela här",
+      "find_match": {
+        "question": "Hur kommer jag in i en match?",
+        "answer": "Börja från «Spela». Du kan ställa dig i kö för matchmaking, som parar ihop efter region och latens och låter dig köa som grupp; gå med i ett draftlobby, där lagkaptener väljer lag mot klockan; eller ordna en scrim via scrim-sökningen. Vilka av dessa som finns beror på vad den här instansen har slagit på."
+      },
+      "check_in": {
+        "question": "Varför måste jag anmäla mig före en match?",
+        "answer": "Anmälan bekräftar att alla verkligen sitter redo innan en server bokas och resten av lobbyt får vänta. Matcher med automatiskt avbrott visar en nedräkning, och matchen avbryts automatiskt om de spelare som krävs inte har anmält sig i tid."
+      },
+      "tournaments": {
+        "question": "Hur går jag med i en turnering?",
+        "answer": "Öppna turneringen medan anmälan är öppen och anmäl ett lag — antingen ett du redan har, eller en ny trupp skapad för tillfället. Turneringar kan köras som single elimination, double elimination, alla-möter-alla eller schweizersystem, och kan kedjas i flera steg, med säsongsligor ovanpå för upp- och nedflyttning."
+      },
+      "stats": {
+        "question": "Var kommer min statistik ifrån?",
+        "answer": "Varje matchs demo analyseras efter att den är slut, så siffrorna kommer från själva inspelningen och inte från live-rapportering av poängtavlan. Det ger HLTV-betyg, KAST, ADR, öppningsdueller, clutches, granater och träffsäkerhet per vapen, plus Elo-förändring. Statistikguiden förklarar vad varje siffra betyder och hur den räknas fram."
+      },
+      "replays": {
+        "question": "Kan jag se om en match utan att ladda ner demon?",
+        "answer": "Ja. Varje match har ett 2D-radarreplay och en 3D-genomflygning som körs i webbläsaren, med rondtidslinje, ekonomi och dödandelista bredvid. Rådemon går fortfarande att ladda ner om du vill se den i CS2 självt."
+      },
+      "highlights": {
+        "question": "Var kommer höjdpunktsklippen ifrån?",
+        "answer": "Multikills, clutches och knivrundor upptäcks automatiskt när en match tar slut och renderas till klipp. Du kan också klippa egna från vilken match som helst i den inbyggda editorn. Renderingen körs på en GPU-nod, så klipp dyker bara upp på instanser som har en."
+      },
+      "notifications": {
+        "question": "Varför kan jag inte slå på push-aviseringar?",
+        "answer": "Push levereras av den installerade appen snarare än av en webbläsarflik, så du måste installera appen på din enhet först — «Installera»-knappen i menyn gör det. När den är installerad blir reglaget under Inställningar → Aviseringar tillgängligt. På iPhone och iPad är det ett hårt krav från operativsystemet."
+      }
+    },
+    "hosting": {
+      "title": "Att köra en egen",
+      "self_host": {
+        "question": "Kan jag köra en egen instans?",
+        "answer": "Ja — det är så 5Stack är tänkt att användas. Det driftas av ägaren själv och installeras med ett enda kommando, som reser Kubernetes (K3s), databasen, lagringen och själva panelen. Installationsguiden i dokumentationen går igenom det från början till slut."
+      },
+      "requirements": {
+        "question": "Vad behöver jag för att driva det?",
+        "answer": "En Linux-server med minst 3 GB minne och en domän du styr över. Port 80 och 443 måste gå att nå för routning, plus port 8585 för anslutningen till spelservernoder. Du pekar också flera underdomäner mot panelen — api, ws, demos, search och console — så planera för wildcard-DNS eller enskilda poster."
+      },
+      "game_servers": {
+        "question": "Var körs matcherna egentligen?",
+        "answer": "På spelservernoder som du kopplar till panelen. Du kan låta den resa servrar vid behov, registrera dedikerad hårdvara du redan äger, eller peka på en tredjepartsleverantör. CS2-uppdateringar installeras automatiskt, och regioner, Steam Relay och LAN-uppsättningar stöds alla."
+      },
+      "gpu": {
+        "question": "Behöver jag en GPU?",
+        "answer": "Bara för videofunktionerna. Demouppspelning i webbläsaren, automatisk rendering av höjdpunkter och livesändning från panelen renderas alla på en NVIDIA GPU-nod. Allt annat — matchmaking, turneringar, statistik, 2D- och 3D-replays, servrar, chatt — fungerar utmärkt utan."
+      },
+      "managed": {
+        "question": "Finns det en driftad eller hanterad version jag kan betala för?",
+        "answer": "Nej. 5Stack driftas endast av ägaren själv; det finns varken SaaS-nivå eller hanterat erbjudande att köpa. 5stack.gg är underhållarens egen publika instans, användbar för att se mjukvaran köra innan du installerar den."
+      },
+      "branding": {
+        "question": "Kan jag få det att se ut som min organisation?",
+        "answer": "Ja. Namn, logotyp, favicon, inloggningssida och hela färgtemat går att ställa in från administratörsinställningarna, så att en instans känns som din plattform i stället för som någon annans mjukvara med din logotyp påklistrad."
+      },
+      "extend": {
+        "question": "Kan jag utöka det med egen kod?",
+        "answer": "På två ställen. Du kan bädda in egna webbappar som inbyggda panelsidor — de ärver sessionen och designsystemet, så det finns ingen fork att underhålla. Och på serversidan kan du köra egna CS2-plugins vid sidan av 5Stacks, på antingen CounterStrikeSharp eller SwiftlyS2."
+      }
+    },
+    "support": {
+      "title": "Fortfarande fast?",
+      "description": "Discord är snabbaste vägen till en människa — de som driver 5Stack-instanser finns där. Buggar och önskemål hör hemma på GitHub, och dokumentationen täcker installation, servrar och varje funktion på djupet.",
+      "discord": "Gå med på Discord",
+      "github": "Rapportera ett problem",
+      "docs": "Läs dokumentationen"
     }
   }
 }

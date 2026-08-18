@@ -12,6 +12,47 @@ const supported = ref(false);
 const permission = ref<NotificationPermission | "unsupported">("unsupported");
 const subscribed = ref(false);
 const busy = ref(false);
+// i18n key describing why the last subscribe() gave up, or null. Kept as a key
+// rather than a message so callers render it in the player's own locale --
+// subscribe() still just returns false, same contract as before.
+const lastError = ref<string | null>(null);
+
+const ERROR_KEY_BASE = "pages.settings.notification_preferences.push.errors";
+
+// Every step of push registration can hang forever rather than reject:
+// serviceWorker.ready waits on the worker actually reaching "active" with no
+// built-in bound, and pushManager.subscribe() is an FCM token request under the
+// hood. On a device whose push service is unreachable (missing/broken Play
+// Services, OEM background restrictions) that leaves the toggle stuck busy with
+// no error at all -- indistinguishable from "tapping Enable does nothing".
+// Each step gets its own bound so the failure names the component that stuck.
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  errorKey: string,
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      lastError.value = `${ERROR_KEY_BASE}.${errorKey}`;
+      reject(new Error(`push: timed out at ${errorKey}`));
+    }, ms);
+
+    // Promise.resolve() rather than promise.then() directly: legacy Safari
+    // hands back undefined from Notification.requestPermission() (callback
+    // style), which the plain await below tolerated and a bare .then() would
+    // not.
+    Promise.resolve(promise).then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
 
 function pushApiUrl(path: string): string {
   return `https://${useRuntimeConfig().public.apiDomain}/notifications/push${path}`;
@@ -75,36 +116,59 @@ export function usePushNotifications() {
     }
 
     busy.value = true;
+    lastError.value = null;
 
     try {
-      const granted = await Notification.requestPermission();
+      const granted = await withTimeout(
+        Notification.requestPermission(),
+        15_000,
+        "permission",
+      );
       permission.value = granted;
 
       if (granted !== "granted") {
         return false;
       }
 
-      const { publicKey } = await $fetch<{ publicKey: string | null }>(
-        pushApiUrl("/vapid-public-key"),
+      const { publicKey } = await withTimeout(
+        $fetch<{ publicKey: string | null }>(pushApiUrl("/vapid-public-key")),
+        8_000,
+        "vapid",
       );
 
       if (!publicKey) {
         return false;
       }
 
-      const registration = await navigator.serviceWorker.ready;
+      const registration = await withTimeout(
+        navigator.serviceWorker.ready,
+        8_000,
+        "service_worker",
+      );
       const subscription =
-        (await registration.pushManager.getSubscription()) ??
-        (await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicKey),
-        }));
+        (await withTimeout(
+          registration.pushManager.getSubscription(),
+          5_000,
+          "existing",
+        )) ??
+        (await withTimeout(
+          registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicKey),
+          }),
+          15_000,
+          "register",
+        ));
 
-      await $fetch(pushApiUrl("/subscribe"), {
-        method: "POST",
-        credentials: "include",
-        body: { subscription: subscription.toJSON() },
-      });
+      await withTimeout(
+        $fetch(pushApiUrl("/subscribe"), {
+          method: "POST",
+          credentials: "include",
+          body: { subscription: subscription.toJSON() },
+        }),
+        8_000,
+        "save",
+      );
 
       subscribed.value = true;
 
@@ -150,6 +214,7 @@ export function usePushNotifications() {
     subscribed,
     busy,
     isDenied,
+    lastError,
     refresh,
     subscribe,
     unsubscribe,

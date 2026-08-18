@@ -1,30 +1,21 @@
 <script setup lang="ts">
 import RegionStatuses from "~/components/RegionStatuses.vue";
+import { Globe } from "lucide-vue-next";
 </script>
 
 <template>
   <Popover>
     <PopoverTrigger>
       <div class="flex items-center gap-2 text-sm text-muted-foreground">
-        <div class="relative inline-flex">
-          <span
-            class="absolute inline-flex h-2 w-2 rounded-full animate-ping"
-            :class="{
-              'bg-red-500': overalRegionStatus === 'Offline',
-              'bg-yellow-500': overalRegionStatus === 'Degraded',
-            }"
-            v-if="overalRegionStatus !== 'Online'"
-          ></span>
-          <span
-            class="relative inline-flex h-2 w-2 rounded-full"
-            :class="{
-              'bg-green-500': overalRegionStatus === 'Online',
-              'bg-red-500': overalRegionStatus === 'Offline',
-              'bg-yellow-500': overalRegionStatus === 'Degraded',
-            }"
-            :title="statusLabel"
-          ></span>
-        </div>
+        <Globe
+          class="h-4 w-4"
+          :class="{
+            'text-green-500': overalRegionStatus === 'Online',
+            'text-red-500': overalRegionStatus === 'Offline',
+            'text-yellow-500': overalRegionStatus === 'Degraded',
+          }"
+          :title="statusLabel"
+        />
       </div>
     </PopoverTrigger>
     <PopoverContent>

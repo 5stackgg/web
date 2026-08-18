@@ -62,8 +62,12 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  // Cleanup if needed
-  store.fileTree.clear();
-  store.expandedPaths.clear();
+  // a new container may already have initialized if the pages overlap during transition
+  if (
+    store.nodeId === props.nodeId &&
+    store.serverId === (props.serverId || null)
+  ) {
+    store.reset();
+  }
 });
 </script>

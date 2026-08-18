@@ -7,19 +7,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import InstallPWA from "~/components/InstallPWA.vue";
+import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
 import { DiscordLogoIcon } from "@radix-icons/vue";
 import {
-  Settings,
-  LogOut,
   ChevronsUpDown,
   CheckCircle2,
 } from "lucide-vue-next";
@@ -571,6 +562,15 @@ const loginArrowClasses =
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
+
+            <NavigationMenuItem class="hidden md:block">
+              <NavigationMenuLink as-child>
+                <NuxtLink to="/faq" :class="navLinkClasses">
+                  <span :class="navTickClasses"></span>
+                  {{ $t("layouts.top_nav.support_menu") }}
+                </NuxtLink>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
@@ -615,8 +615,13 @@ const loginArrowClasses =
             }}</span>
           </Button>
 
-          <DropdownMenu v-model:open="profileMenuOpen">
-            <DropdownMenuTrigger as-child>
+          <ProfileMenu
+            v-model:open="profileMenuOpen"
+            side="bottom"
+            align="end"
+            @logout="showLogoutModal = true"
+          >
+            <template #trigger>
               <button type="button" :class="profileButtonClasses">
                 <PlayerDisplay
                   :player="me"
@@ -633,50 +638,8 @@ const loginArrowClasses =
                 />
                 <ChevronsUpDown class="h-4 w-4" />
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              class="w-56 rounded-lg border border-topnav-border bg-topnav shadow-lg"
-              align="end"
-              :side-offset="4"
-            >
-              <DropdownMenuItem
-                class="p-3 font-normal transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
-                as-child
-              >
-                <NuxtLink
-                  :to="{
-                    name: 'players-id',
-                    params: { id: me.steam_id },
-                  }"
-                >
-                  <PlayerDisplay :player="me" :show-online="false" />
-                </NuxtLink>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator class="bg-topnav-border" />
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  class="flex gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
-                  as-child
-                >
-                  <NuxtLink
-                    :to="{ name: 'settings' }"
-                    class="flex items-center gap-2"
-                  >
-                    <Settings class="h-4 w-4" />
-                    {{ $t("layouts.app_nav.profile.my_account") }}
-                  </NuxtLink>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator class="bg-topnav-border" />
-              <DropdownMenuItem
-                class="flex gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
-                @click="showLogoutModal = true"
-              >
-                <LogOut />
-                {{ $t("layouts.app_nav.profile.logout") }}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </template>
+          </ProfileMenu>
 
           <div
             id="right-sidebar-trigger"

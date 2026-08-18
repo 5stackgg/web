@@ -11,6 +11,7 @@ function isPublicRoute(path: string): boolean {
     "/watch",
     "/public-servers",
     "/stats-guide",
+    "/faq",
   ];
 
   if (publicRoutes.includes(path)) {

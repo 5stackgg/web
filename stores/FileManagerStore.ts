@@ -72,6 +72,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   >(new Map());
   const activeFilePath = ref<string | null>(null);
 
+  let fileOperationsSubscription: { unsubscribe: () => void } | null = null;
+
   // Inline create state (VS Code style)
   const pendingCreate = ref<{
     parentPath: string;
@@ -160,15 +162,38 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
   // Actions
   async function initialize(nId: string, sId?: string) {
+    reset();
+
     nodeId.value = nId;
     serverId.value = sId || null;
-    currentPath.value = "";
-    fileTree.value.clear();
-    expandedPaths.value.clear();
     expandedPaths.value.add("");
 
     await loadDirectory("");
     subscribeToFileOperations();
+  }
+
+  function reset() {
+    fileOperationsSubscription?.unsubscribe();
+    fileOperationsSubscription = null;
+
+    nodeId.value = null;
+    serverId.value = null;
+    currentPath.value = "";
+    fileTree.value.clear();
+    expandedPaths.value.clear();
+    selectedItem.value = null;
+
+    // open tabs are keyed by path only, so they must not survive a node/server switch
+    openFiles.value.clear();
+    activeFilePath.value = null;
+
+    pendingCreate.value = null;
+    pendingRename.value = null;
+    lastCreatedPath.value = null;
+    for (const timeout of clearLastCreatedPathTimeouts.values()) {
+      clearTimeout(timeout);
+    }
+    clearLastCreatedPathTimeouts.clear();
   }
 
   async function loadDirectory(path: string) {
@@ -804,7 +829,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       }),
     });
 
-    subscription.subscribe({
+    fileOperationsSubscription = subscription.subscribe({
       next: ({ data }) => {
         if (data?.file_operations_log && data.file_operations_log.length > 0) {
           const operation = data.file_operations_log[0];
@@ -1059,6 +1084,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     lastCreatedPath,
     clearLastCreatedPathTimeouts,
     initialize,
+    reset,
     loadDirectory,
     readFile,
     createDirectory,

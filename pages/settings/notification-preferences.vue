@@ -179,9 +179,18 @@ const canTogglePush = computed(() => {
 
 const handlePushToggle = async (enabled: boolean) => {
   if (enabled) {
-    // Called straight from the toggle so the permission prompt stays
-    // attributable to the click -- see usePushNotifications.
-    const granted = await push.subscribe();
+    // subscribe() bounds every step now, so a stuck push service rejects
+    // instead of hanging -- without this catch that rejection went nowhere and
+    // the toggle just sat there, which is exactly what "nothing happens when I
+    // tap enable" was.
+    let granted = false;
+    try {
+      // Called straight from the toggle so the permission prompt stays
+      // attributable to the click -- see usePushNotifications.
+      granted = await push.subscribe();
+    } catch {
+      // Fall through to the toast below; push.lastError names the stuck step.
+    }
 
     if (granted) {
       toast({
@@ -196,7 +205,9 @@ const handlePushToggle = async (enabled: boolean) => {
       title: t("common.error"),
       description: push.isDenied.value
         ? t("pages.settings.notification_preferences.push.denied")
-        : t("pages.settings.notification_preferences.push.failed"),
+        : push.lastError.value
+          ? t(push.lastError.value)
+          : t("pages.settings.notification_preferences.push.failed"),
     });
     return;
   }

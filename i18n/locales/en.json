@@ -1551,6 +1551,14 @@
           },
           "denied": "Notifications are blocked for 5stack. Enable them in your browser or device settings to turn this on.",
           "failed": "Couldn't enable push notifications. Try again.",
+          "errors": {
+            "permission": "The notification permission prompt never responded. This can happen when Google Play Services is missing or broken on the device.",
+            "vapid": "Timed out fetching the push key from the server.",
+            "service_worker": "Timed out waiting for this device's service worker to become active.",
+            "existing": "Timed out checking for an existing push subscription.",
+            "register": "Timed out registering with this device's push service. Background or battery restrictions may be blocking it.",
+            "save": "Timed out saving the push subscription to the server."
+          },
           "enabled_toast": "Push notifications enabled",
           "disabled_toast": "Push notifications disabled"
         },
@@ -3653,6 +3661,7 @@
         "media_server": "Media Server"
       },
       "profile": {
+        "section": "Account",
         "my_account": "My Settings",
         "logout": "Logout"
       },
@@ -3710,6 +3719,7 @@
       "home": "My Stats",
       "play_menu": "Play",
       "community_menu": "Community",
+      "support_menu": "Support",
       "watch_menu": "Watch",
       "login": "Login to Play",
       "login_aria": "Sign in through Steam",
@@ -7761,5 +7771,124 @@
   },
   "chat_rail": {
     "remove_conversation": "Remove from bar"
+  },
+  "faq": {
+    "title": "Help & FAQ",
+    "intro": "Common questions about the platform, how to play here, and how to run your own instance. If something isn't covered, the community links at the bottom are the fastest way to an answer.",
+    "search_placeholder": "Search questions",
+    "no_results": "No questions match \"{term}\".",
+    "links": {
+      "features": "All features",
+      "overview": "What is 5Stack?",
+      "matchmaking": "Matchmaking docs",
+      "tournaments": "Tournament docs",
+      "stats_guide": "Stats guide",
+      "performance_rating": "Performance rating",
+      "match_replay": "Match replay",
+      "highlights": "Highlights",
+      "web_push": "Web push setup",
+      "install": "Install guide",
+      "hosting_faq": "Hosting FAQ",
+      "requirements": "Requirements",
+      "what_is_installed": "What gets installed",
+      "server_setup": "Server setup",
+      "game_server_nodes": "Game server nodes",
+      "gpu_nodes": "GPU nodes",
+      "branding": "Branding & theming",
+      "panel_plugins": "Panel plugins",
+      "game_plugins": "Game plugins"
+    },
+    "about": {
+      "title": "About 5Stack",
+      "what_is": {
+        "question": "What is 5Stack?",
+        "answer": "5Stack is the competition layer for Counter-Strike 2 — the software that sits between a game server and a league. One install runs the whole stack: matchmaking, draft lobbies, teams, tournaments and seasons, stats and Elo, demo capture, in-browser replays, highlights, and live broadcast."
+      },
+      "this_site": {
+        "question": "What is {brand}?",
+        "answer": "{brand} is a 5Stack instance. The software is open source and self-hosted, so every community that runs it operates its own site, its own servers, and its own rules — this is one of them."
+      },
+      "cost": {
+        "question": "Is it free?",
+        "answer": "Yes. 5Stack is free and open source, and you host it yourself, so there is no per-seat or per-match cost from the project. You pay only for whatever infrastructure you choose to run it on. It is built and maintained by a single developer, and GitHub sponsorships are what keep development going."
+      },
+      "sign_in": {
+        "question": "How do I sign in?",
+        "answer": "Through Steam. There is no separate account to create and no password to remember — your Steam profile is your identity here, which is also how matches know who you are once you connect to a server."
+      },
+      "games": {
+        "question": "Which games are supported?",
+        "answer": "Counter-Strike 2. The stats, replays, server management, and in-game plugin are all built specifically around it rather than being a generic tournament tool."
+      }
+    },
+    "playing": {
+      "title": "Playing here",
+      "find_match": {
+        "question": "How do I get into a match?",
+        "answer": "Start from Play. You can queue for matchmaking, which pairs you by region and latency and lets you queue as a party; join a draft lobby, where captains pick teams against a clock; or arrange a scrim through the scrim finder. Which of these are available depends on what this instance has enabled."
+      },
+      "check_in": {
+        "question": "Why do I have to check in before a match?",
+        "answer": "Check-in confirms everyone is actually at their desk before a server gets reserved and the rest of the lobby is made to wait. Matches with auto-cancellation on show a countdown, and the match is cancelled automatically if the required players haven't checked in by the deadline."
+      },
+      "tournaments": {
+        "question": "How do I join a tournament?",
+        "answer": "Open the tournament while registration is open and register a team — either one you already have, or a new roster created for that event. Tournaments can run single elimination, double elimination, round robin, or Swiss, and can be chained into multiple stages, with seasonal leagues on top for promotion and relegation."
+      },
+      "stats": {
+        "question": "Where do my stats come from?",
+        "answer": "Every match's demo is parsed after it finishes, so the numbers come from the actual recording rather than from live scoreboard reporting. That gives HLTV rating, KAST, ADR, opening duels, clutches, utility, and per-weapon accuracy, plus Elo movement. The stats guide explains what each figure means and how it's calculated."
+      },
+      "replays": {
+        "question": "Can I rewatch a match without downloading the demo?",
+        "answer": "Yes. Every match has a 2D radar replay and a 3D fly-through that run in the browser, with the round timeline, economy, and kill feed alongside. The raw demo is still downloadable if you want to watch it in CS2 itself."
+      },
+      "highlights": {
+        "question": "Where do highlight clips come from?",
+        "answer": "Multikills, clutches, and knife rounds are detected automatically when a match ends and rendered into clips. You can also cut your own from any match in the in-app editor. Rendering runs on a GPU node, so clips only appear on instances that have one."
+      },
+      "notifications": {
+        "question": "Why can't I turn on push notifications?",
+        "answer": "Push is delivered by the installed app rather than a browser tab, so you need to install the app on your device first — the Install button in the menu does this. Once it's installed, the toggle in Settings → Notifications becomes available. On iPhone and iPad this is a hard requirement of the operating system."
+      }
+    },
+    "hosting": {
+      "title": "Hosting your own",
+      "self_host": {
+        "question": "Can I run my own instance?",
+        "answer": "Yes — that is the intended way to use 5Stack. It is self-hosted and installs with a single command, which brings up Kubernetes (K3s), the database, storage, and the panel itself. The install guide in the docs walks through it end to end."
+      },
+      "requirements": {
+        "question": "What do I need to host it?",
+        "answer": "A Linux server with at least 3 GB of memory, and a domain you control. Ports 80 and 443 need to be reachable for routing, plus port 8585 for the game server node connector. You'll also point several subdomains at the panel — api, ws, demos, search, and console — so plan for wildcard or per-record DNS."
+      },
+      "game_servers": {
+        "question": "Where do the matches actually run?",
+        "answer": "On game server nodes you connect to the panel. You can have it spin servers up on demand, register dedicated hardware you already own, or point at a third-party host. CS2 updates are applied automatically, and regions, Steam Relay, and LAN setups are all supported."
+      },
+      "gpu": {
+        "question": "Do I need a GPU?",
+        "answer": "Only for the video features. In-browser demo playback, automatic highlight rendering, and live streaming from the panel all render on an NVIDIA GPU node. Everything else — matchmaking, tournaments, stats, the 2D and 3D replays, servers, chat — runs fine without one."
+      },
+      "managed": {
+        "question": "Is there a hosted or managed version I can pay for?",
+        "answer": "No. 5Stack is self-hosted only; there is no SaaS tier or managed offering to buy. 5stack.gg is the maintainer's own public instance, useful for seeing the software running before you install it."
+      },
+      "branding": {
+        "question": "Can I make it look like my organization?",
+        "answer": "Yes. The name, logo, favicon, login page, and the full color theme are all configurable from the admin settings, so an instance reads as your platform rather than as someone else's software with your logo dropped in."
+      },
+      "extend": {
+        "question": "Can I extend it with my own code?",
+        "answer": "In two places. You can embed your own web apps as native panel pages — they inherit the session and design system, so there's no fork to maintain. And on the server side you can run your own CS2 plugins alongside 5Stack's, on either CounterStrikeSharp or SwiftlyS2."
+      }
+    },
+    "support": {
+      "title": "Still stuck?",
+      "description": "Discord is the fastest route to a human — the people running 5Stack instances are in there. Bugs and feature requests belong on GitHub, and the docs cover installation, servers, and every feature in depth.",
+      "discord": "Join Discord",
+      "github": "Report an issue",
+      "docs": "Read the docs"
+    }
   }
 }

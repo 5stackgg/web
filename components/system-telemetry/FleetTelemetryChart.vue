@@ -38,12 +38,6 @@ export default {
       type: String,
       default: "line",
     },
-    // Strips the axes, grid and hover for use behind a headline number. The
-    // full-size chart on the same page carries the readable values.
-    spark: {
-      type: Boolean,
-      default: false,
-    },
     color: {
       type: String,
       required: true,
@@ -66,7 +60,6 @@ export default {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        layout: this.spark ? { padding: 1 } : undefined,
         interaction: {
           mode: "index" as const,
           intersect: false,
@@ -76,7 +69,6 @@ export default {
             display: false,
           },
           tooltip: {
-            enabled: !this.spark,
             mode: "index" as const,
             intersect: false,
             callbacks: {
@@ -88,7 +80,6 @@ export default {
         },
         scales: {
           y: {
-            display: !this.spark,
             position: "right" as const,
             beginAtZero: true,
             border: {
@@ -103,7 +94,6 @@ export default {
             },
           },
           x: {
-            display: !this.spark,
             border: {
               display: false,
             },
@@ -135,7 +125,7 @@ export default {
             label: this.label,
             fill: this.type !== "bar",
             tension: 0.25,
-            borderWidth: this.spark ? 1.5 : 2,
+            borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 4,
             borderRadius: this.type === "bar" ? 4 : 0,

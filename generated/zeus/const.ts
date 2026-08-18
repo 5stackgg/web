@@ -38192,12 +38192,10 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	TelemetryMatchSourceCount:{
 		matches:"Int",
-		panels:"Int",
 		source:"String"
 	},
 	TelemetryMatchTypeCount:{
 		matches:"Int",
-		panels:"Int",
 		type:"String"
 	},
 	TelemetryRuntimeCount:{

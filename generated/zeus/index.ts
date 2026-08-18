@@ -1727,13 +1727,11 @@ export type ValueTypes = {
 }>;
 	["TelemetryMatchSourceCount"]: AliasType<{
 	matches?:boolean | `@${string}`,
-	panels?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryMatchTypeCount"]: AliasType<{
 	matches?:boolean | `@${string}`,
-	panels?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -68106,13 +68104,11 @@ export type ResolverInputTypes = {
 }>;
 	["TelemetryMatchSourceCount"]: AliasType<{
 	matches?:boolean | `@${string}`,
-	panels?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryMatchTypeCount"]: AliasType<{
 	matches?:boolean | `@${string}`,
-	panels?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -134405,12 +134401,10 @@ export type ModelTypes = {
 };
 	["TelemetryMatchSourceCount"]: {
 		matches: number,
-	panels: number,
 	source: string
 };
 	["TelemetryMatchTypeCount"]: {
 		matches: number,
-	panels: number,
 	type: string
 };
 	["TelemetryRuntimeCount"]: {
@@ -192805,13 +192799,11 @@ export type GraphQLTypes = {
 	["TelemetryMatchSourceCount"]: {
 	__typename: "TelemetryMatchSourceCount",
 	matches: number,
-	panels: number,
 	source: string
 };
 	["TelemetryMatchTypeCount"]: {
 	__typename: "TelemetryMatchTypeCount",
 	matches: number,
-	panels: number,
 	type: string
 };
 	["TelemetryRuntimeCount"]: {

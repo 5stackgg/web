@@ -63,7 +63,12 @@ export default {
         return {
           ...row,
           value,
-          width: base ? Math.min(Math.max((value / base) * 100, 1), 100) : 0,
+          // The 1% floor keeps a tiny non-zero slice visible; a zero has to
+          // stay at zero, or the row draws a filled bar next to the text "0".
+          width:
+            base && value > 0
+              ? Math.min(Math.max((value / base) * 100, 1), 100)
+              : 0,
           // The ramp has four steps; anything past them reuses the last.
           tone: Math.min(index + 1, 4),
           share: index === 0 || !base ? null : Math.round((value / base) * 100),

@@ -40,7 +40,7 @@
           <span
             class="shrink-0 rounded-[3px] px-1.5 py-0.5 font-sans text-[0.58rem] uppercase tracking-[0.12em]"
             :class="
-              row.rank === 1
+              row.isCurrent
                 ? 'bg-[hsl(var(--tac-step-1)/0.18)] text-[hsl(var(--tac-step-1))]'
                 : 'bg-muted/50 text-muted-foreground'
             "
@@ -95,8 +95,15 @@ export default {
         0,
       );
     },
+    // Newest first by position, never by reading `rank` as an absolute. Rank is
+    // assigned server-side and is only guaranteed to order the list -- treating
+    // 1 as "the current build" silently blanks the whole panel if the list ever
+    // starts higher than 1.
+    ordered() {
+      return [...this.versions].sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0));
+    },
     current() {
-      return this.versions.find((version) => version.rank === 1);
+      return this.ordered[0];
     },
     currentShare() {
       if (!this.total) {
@@ -113,37 +120,37 @@ export default {
     segments() {
       const t = (key: string) =>
         this.$t(`pages.system_telemetry.distribution.${key}`);
-      const at = (rank: number) =>
-        this.versions.find((version) => version.rank === rank)?.installs ?? 0;
+      const at = (index: number) => this.ordered[index]?.installs ?? 0;
 
       return [
         {
           label: t("build_current"),
-          value: at(1),
+          value: at(0),
           color: "hsl(var(--tac-step-1))",
         },
         {
           label: t("build_previous"),
-          value: at(2),
+          value: at(1),
           color: "hsl(var(--tac-step-3))",
         },
         {
           label: t("build_older"),
-          value: this.versions
-            .filter((version) => version.rank > 2)
+          value: this.ordered
+            .slice(2)
             .reduce((sum, version) => sum + (version.installs ?? 0), 0),
           color: "hsl(var(--muted-foreground) / 0.25)",
         },
       ];
     },
     rows() {
-      return this.versions.slice(0, this.limit).map((version) => ({
+      return this.ordered.slice(0, this.limit).map((version, index) => ({
         ...version,
+        isCurrent: index === 0,
         short: (version.version ?? "").slice(0, 7),
         tag:
-          version.rank === 1
+          index === 0
             ? this.$t("pages.system_telemetry.distribution.build_current")
-            : `-${version.rank - 1}`,
+            : `-${index}`,
       }));
     },
   },

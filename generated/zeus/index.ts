@@ -1647,11 +1647,18 @@ export type ValueTypes = {
 	matches?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TelemetryCountryCount"]: AliasType<{
+	country?:boolean | `@${string}`,
+	installs?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TelemetryFeatureAdoption"]: AliasType<{
+	counted?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
 	flagged?:boolean | `@${string}`,
 	installsUsing?:boolean | `@${string}`,
 	key?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
 	reporting?:boolean | `@${string}`,
 	total?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -1659,20 +1666,34 @@ export type ValueTypes = {
 	["TelemetryFleetTotals"]: AliasType<{
 	dedicatedServers?:boolean | `@${string}`,
 	gameServerNodes?:boolean | `@${string}`,
+	gameServerNodesEnabled?:boolean | `@${string}`,
+	gameServerNodesOnline?:boolean | `@${string}`,
 	gpuNodes?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
+	matchesAbandoned?:boolean | `@${string}`,
+	matchesCreated?:boolean | `@${string}`,
+	matchesFinished?:boolean | `@${string}`,
 	matchesImported?:boolean | `@${string}`,
 	matchesImportedMonth?:boolean | `@${string}`,
+	matchesImportedYear?:boolean | `@${string}`,
+	matchesLeague?:boolean | `@${string}`,
+	matchesLive?:boolean | `@${string}`,
 	matchesMonth?:boolean | `@${string}`,
+	matchesScrim?:boolean | `@${string}`,
+	matchesTournament?:boolean | `@${string}`,
 	matchesWeek?:boolean | `@${string}`,
 	matchesYear?:boolean | `@${string}`,
+	panels?:boolean | `@${string}`,
 	playersActive30d?:boolean | `@${string}`,
+	playersActive7d?:boolean | `@${string}`,
 	playersKnown?:boolean | `@${string}`,
 	playersPlayed?:boolean | `@${string}`,
 	playersRegistered?:boolean | `@${string}`,
 	publicServers?:boolean | `@${string}`,
+	regions?:boolean | `@${string}`,
 	servers?:boolean | `@${string}`,
+	serversEnabled?:boolean | `@${string}`,
 	teams?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -1690,13 +1711,40 @@ export type ValueTypes = {
 	total?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TelemetryMatchSourceCount"]: AliasType<{
+	matches?:boolean | `@${string}`,
+	panels?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryMatchTypeCount"]: AliasType<{
+	matches?:boolean | `@${string}`,
+	panels?:boolean | `@${string}`,
+	type?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryRuntimeCount"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TelemetryStats"]: AliasType<{
 	activity?:ValueTypes["TelemetryActivityPoint"],
+	countries?:ValueTypes["TelemetryCountryCount"],
 	features?:ValueTypes["TelemetryFeatureAdoption"],
 	growth?:ValueTypes["TelemetryGrowthPoint"],
 	installs?:ValueTypes["TelemetryInstallCounts"],
+	matchSources?:ValueTypes["TelemetryMatchSourceCount"],
+	matchTypes?:ValueTypes["TelemetryMatchTypeCount"],
 	online?:boolean | `@${string}`,
+	runtimes?:ValueTypes["TelemetryRuntimeCount"],
 	totals?:ValueTypes["TelemetryFleetTotals"],
+	versions?:ValueTypes["TelemetryVersionCount"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryVersionCount"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TestUploadResponse"]: AliasType<{
@@ -67962,11 +68010,18 @@ export type ResolverInputTypes = {
 	matches?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TelemetryCountryCount"]: AliasType<{
+	country?:boolean | `@${string}`,
+	installs?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TelemetryFeatureAdoption"]: AliasType<{
+	counted?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
 	flagged?:boolean | `@${string}`,
 	installsUsing?:boolean | `@${string}`,
 	key?:boolean | `@${string}`,
+	kind?:boolean | `@${string}`,
 	reporting?:boolean | `@${string}`,
 	total?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -67974,20 +68029,34 @@ export type ResolverInputTypes = {
 	["TelemetryFleetTotals"]: AliasType<{
 	dedicatedServers?:boolean | `@${string}`,
 	gameServerNodes?:boolean | `@${string}`,
+	gameServerNodesEnabled?:boolean | `@${string}`,
+	gameServerNodesOnline?:boolean | `@${string}`,
 	gpuNodes?:boolean | `@${string}`,
 	mapsPlayed?:boolean | `@${string}`,
 	matches?:boolean | `@${string}`,
+	matchesAbandoned?:boolean | `@${string}`,
+	matchesCreated?:boolean | `@${string}`,
+	matchesFinished?:boolean | `@${string}`,
 	matchesImported?:boolean | `@${string}`,
 	matchesImportedMonth?:boolean | `@${string}`,
+	matchesImportedYear?:boolean | `@${string}`,
+	matchesLeague?:boolean | `@${string}`,
+	matchesLive?:boolean | `@${string}`,
 	matchesMonth?:boolean | `@${string}`,
+	matchesScrim?:boolean | `@${string}`,
+	matchesTournament?:boolean | `@${string}`,
 	matchesWeek?:boolean | `@${string}`,
 	matchesYear?:boolean | `@${string}`,
+	panels?:boolean | `@${string}`,
 	playersActive30d?:boolean | `@${string}`,
+	playersActive7d?:boolean | `@${string}`,
 	playersKnown?:boolean | `@${string}`,
 	playersPlayed?:boolean | `@${string}`,
 	playersRegistered?:boolean | `@${string}`,
 	publicServers?:boolean | `@${string}`,
+	regions?:boolean | `@${string}`,
 	servers?:boolean | `@${string}`,
+	serversEnabled?:boolean | `@${string}`,
 	teams?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -68005,13 +68074,40 @@ export type ResolverInputTypes = {
 	total?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["TelemetryMatchSourceCount"]: AliasType<{
+	matches?:boolean | `@${string}`,
+	panels?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryMatchTypeCount"]: AliasType<{
+	matches?:boolean | `@${string}`,
+	panels?:boolean | `@${string}`,
+	type?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryRuntimeCount"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["TelemetryStats"]: AliasType<{
 	activity?:ResolverInputTypes["TelemetryActivityPoint"],
+	countries?:ResolverInputTypes["TelemetryCountryCount"],
 	features?:ResolverInputTypes["TelemetryFeatureAdoption"],
 	growth?:ResolverInputTypes["TelemetryGrowthPoint"],
 	installs?:ResolverInputTypes["TelemetryInstallCounts"],
+	matchSources?:ResolverInputTypes["TelemetryMatchSourceCount"],
+	matchTypes?:ResolverInputTypes["TelemetryMatchTypeCount"],
 	online?:boolean | `@${string}`,
+	runtimes?:ResolverInputTypes["TelemetryRuntimeCount"],
 	totals?:ResolverInputTypes["TelemetryFleetTotals"],
+	versions?:ResolverInputTypes["TelemetryVersionCount"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryVersionCount"]: AliasType<{
+	installs?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TestUploadResponse"]: AliasType<{
@@ -134202,31 +134298,51 @@ export type ModelTypes = {
 	installs: number,
 	matches: number
 };
+	["TelemetryCountryCount"]: {
+		country: string,
+	installs: number
+};
 	["TelemetryFeatureAdoption"]: {
-		enabled: number,
+		counted: number,
+	enabled: number,
 	flagged: number,
 	installsUsing: number,
 	key: string,
+	kind: string,
 	reporting: number,
 	total: number
 };
 	["TelemetryFleetTotals"]: {
 		dedicatedServers: number,
 	gameServerNodes: number,
+	gameServerNodesEnabled: number,
+	gameServerNodesOnline: number,
 	gpuNodes: number,
 	mapsPlayed: number,
 	matches: number,
+	matchesAbandoned: number,
+	matchesCreated: number,
+	matchesFinished: number,
 	matchesImported: number,
 	matchesImportedMonth: number,
+	matchesImportedYear: number,
+	matchesLeague: number,
+	matchesLive: number,
 	matchesMonth: number,
+	matchesScrim: number,
+	matchesTournament: number,
 	matchesWeek: number,
 	matchesYear: number,
+	panels: number,
 	playersActive30d: number,
+	playersActive7d: number,
 	playersKnown: number,
 	playersPlayed: number,
 	playersRegistered: number,
 	publicServers: number,
+	regions: number,
 	servers: number,
+	serversEnabled: number,
 	teams: number
 };
 	["TelemetryGrowthPoint"]: {
@@ -134241,13 +134357,36 @@ export type ModelTypes = {
 	retained180d: number,
 	total: number
 };
+	["TelemetryMatchSourceCount"]: {
+		matches: number,
+	panels: number,
+	source: string
+};
+	["TelemetryMatchTypeCount"]: {
+		matches: number,
+	panels: number,
+	type: string
+};
+	["TelemetryRuntimeCount"]: {
+		installs: number,
+	runtime: string
+};
 	["TelemetryStats"]: {
 		activity: Array<ModelTypes["TelemetryActivityPoint"]>,
+	countries: Array<ModelTypes["TelemetryCountryCount"]>,
 	features: Array<ModelTypes["TelemetryFeatureAdoption"]>,
 	growth: Array<ModelTypes["TelemetryGrowthPoint"]>,
 	installs: ModelTypes["TelemetryInstallCounts"],
+	matchSources: Array<ModelTypes["TelemetryMatchSourceCount"]>,
+	matchTypes: Array<ModelTypes["TelemetryMatchTypeCount"]>,
 	online: number,
-	totals: ModelTypes["TelemetryFleetTotals"]
+	runtimes: Array<ModelTypes["TelemetryRuntimeCount"]>,
+	totals: ModelTypes["TelemetryFleetTotals"],
+	versions: Array<ModelTypes["TelemetryVersionCount"]>
+};
+	["TelemetryVersionCount"]: {
+		installs: number,
+	version: string
 };
 	["TestUploadResponse"]: {
 		error?: string | undefined | null
@@ -192537,12 +192676,19 @@ export type GraphQLTypes = {
 	installs: number,
 	matches: number
 };
+	["TelemetryCountryCount"]: {
+	__typename: "TelemetryCountryCount",
+	country: string,
+	installs: number
+};
 	["TelemetryFeatureAdoption"]: {
 	__typename: "TelemetryFeatureAdoption",
+	counted: number,
 	enabled: number,
 	flagged: number,
 	installsUsing: number,
 	key: string,
+	kind: string,
 	reporting: number,
 	total: number
 };
@@ -192550,20 +192696,34 @@ export type GraphQLTypes = {
 	__typename: "TelemetryFleetTotals",
 	dedicatedServers: number,
 	gameServerNodes: number,
+	gameServerNodesEnabled: number,
+	gameServerNodesOnline: number,
 	gpuNodes: number,
 	mapsPlayed: number,
 	matches: number,
+	matchesAbandoned: number,
+	matchesCreated: number,
+	matchesFinished: number,
 	matchesImported: number,
 	matchesImportedMonth: number,
+	matchesImportedYear: number,
+	matchesLeague: number,
+	matchesLive: number,
 	matchesMonth: number,
+	matchesScrim: number,
+	matchesTournament: number,
 	matchesWeek: number,
 	matchesYear: number,
+	panels: number,
 	playersActive30d: number,
+	playersActive7d: number,
 	playersKnown: number,
 	playersPlayed: number,
 	playersRegistered: number,
 	publicServers: number,
+	regions: number,
 	servers: number,
+	serversEnabled: number,
 	teams: number
 };
 	["TelemetryGrowthPoint"]: {
@@ -192580,14 +192740,41 @@ export type GraphQLTypes = {
 	retained180d: number,
 	total: number
 };
+	["TelemetryMatchSourceCount"]: {
+	__typename: "TelemetryMatchSourceCount",
+	matches: number,
+	panels: number,
+	source: string
+};
+	["TelemetryMatchTypeCount"]: {
+	__typename: "TelemetryMatchTypeCount",
+	matches: number,
+	panels: number,
+	type: string
+};
+	["TelemetryRuntimeCount"]: {
+	__typename: "TelemetryRuntimeCount",
+	installs: number,
+	runtime: string
+};
 	["TelemetryStats"]: {
 	__typename: "TelemetryStats",
 	activity: Array<GraphQLTypes["TelemetryActivityPoint"]>,
+	countries: Array<GraphQLTypes["TelemetryCountryCount"]>,
 	features: Array<GraphQLTypes["TelemetryFeatureAdoption"]>,
 	growth: Array<GraphQLTypes["TelemetryGrowthPoint"]>,
 	installs: GraphQLTypes["TelemetryInstallCounts"],
+	matchSources: Array<GraphQLTypes["TelemetryMatchSourceCount"]>,
+	matchTypes: Array<GraphQLTypes["TelemetryMatchTypeCount"]>,
 	online: number,
-	totals: GraphQLTypes["TelemetryFleetTotals"]
+	runtimes: Array<GraphQLTypes["TelemetryRuntimeCount"]>,
+	totals: GraphQLTypes["TelemetryFleetTotals"],
+	versions: Array<GraphQLTypes["TelemetryVersionCount"]>
+};
+	["TelemetryVersionCount"]: {
+	__typename: "TelemetryVersionCount",
+	installs: number,
+	version: string
 };
 	["TestUploadResponse"]: {
 	__typename: "TestUploadResponse",

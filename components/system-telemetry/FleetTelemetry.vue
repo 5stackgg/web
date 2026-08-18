@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import FleetTelemetryChart from "./FleetTelemetryChart.vue";
+import FleetDistribution from "./FleetDistribution.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import {
   tacticalSectionLabelClasses,
@@ -62,7 +63,7 @@ import {
           {{ $t("pages.system_telemetry.installs.title") }}
         </div>
 
-        <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           <div
             v-for="stat of installStats"
             :key="stat.label"
@@ -104,16 +105,62 @@ import {
             :class="stat.muted ? 'opacity-70' : ''"
           >
             <div
-              class="font-sans text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+              class="flex items-center gap-1 font-sans text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
             >
               {{ stat.label }}
+              <FiveStackToolTip v-if="stat.unavailable">
+                {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
+              </FiveStackToolTip>
             </div>
-            <div class="mt-1 text-xl font-semibold tabular-nums">
-              {{ format(stat.value) }}
+            <div
+              class="mt-1 text-xl font-semibold tabular-nums"
+              :class="stat.unavailable ? 'text-muted-foreground' : ''"
+            >
+              {{ stat.unavailable ? NO_METRIC : format(stat.value) }}
             </div>
             <div class="mt-0.5 text-[0.68rem] text-muted-foreground">
-              {{ stat.caption }}
+              {{
+                stat.unavailable
+                  ? $t("pages.system_telemetry.totals.not_reported")
+                  : stat.caption
+              }}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-3">
+        <div :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses" />
+          {{ $t("pages.system_telemetry.composition.title") }}
+          <FiveStackToolTip>
+            {{ $t("pages.system_telemetry.composition.hint") }}
+          </FiveStackToolTip>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-2">
+          <div class="space-y-2">
+            <div class="text-xs text-muted-foreground">
+              {{ $t("pages.system_telemetry.composition.by_type") }}
+            </div>
+            <FleetDistribution
+              :items="matchTypes"
+              label-field="type"
+              value-field="matches"
+              :color="matchesColor"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <div class="text-xs text-muted-foreground">
+              {{ $t("pages.system_telemetry.composition.by_source") }}
+            </div>
+            <FleetDistribution
+              :items="matchSources"
+              label-field="source"
+              value-field="matches"
+              :color="matchesColor"
+            />
           </div>
         </div>
       </section>
@@ -165,8 +212,36 @@ import {
         </div>
       </section>
 
-      <!-- Split by whether the feature actually has a switch: showing an
-           "enabled" ratio for something nobody can turn off reads as broken. -->
+      <section class="space-y-3">
+        <div :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses" />
+          {{ $t("pages.system_telemetry.distribution.title") }}
+          <FiveStackToolTip>
+            {{ $t("pages.system_telemetry.distribution.hint") }}
+          </FiveStackToolTip>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-3">
+          <div
+            v-for="panel of distributions"
+            :key="panel.key"
+            class="space-y-2"
+          >
+            <div class="text-xs text-muted-foreground">{{ panel.title }}</div>
+            <FleetDistribution
+              :items="panel.items"
+              :label-field="panel.labelField"
+              value-field="installs"
+              :color="installsColor"
+              :flags="panel.flags"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Split by what the flag actually is: an adoption rate for something
+           nobody can switch reads as broken, and so does "0 panels using" for
+           something nothing counts. -->
       <section
         v-for="group of featureGroups"
         :key="group.key"
@@ -225,24 +300,33 @@ import {
                   </span>
                 </td>
                 <td class="py-2.5 pr-4">
-                  <span class="flex items-center gap-2">
+                  <span v-if="!feature.counted" class="text-muted-foreground">
+                    {{ NO_METRIC }}
+                    <FiveStackToolTip>
+                      {{ $t("pages.system_telemetry.features.no_metric_hint") }}
+                    </FiveStackToolTip>
+                  </span>
+                  <span v-else class="flex items-center gap-2">
                     <span
                       class="h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-border/60"
                     >
                       <span
                         class="block h-full rounded-full bg-muted-foreground/60"
                         :style="{
-                          width: `${percent(feature.installsUsing, feature.reporting)}%`,
+                          width: `${percent(feature.installsUsing, feature.counted)}%`,
                         }"
                       />
                     </span>
                     <span class="tabular-nums text-muted-foreground">
-                      {{ feature.installsUsing }} / {{ feature.reporting }}
+                      {{ feature.installsUsing }} / {{ feature.counted }}
                     </span>
                   </span>
                 </td>
                 <td class="py-2.5 text-right tabular-nums">
-                  {{ feature.total ? format(feature.total) : "&mdash;" }}
+                  <span v-if="!feature.counted" class="text-muted-foreground">
+                    {{ NO_METRIC }}
+                  </span>
+                  <template v-else>{{ format(feature.total) }}</template>
                 </td>
               </tr>
             </tbody>
@@ -260,17 +344,9 @@ import {
   FLEET_INSTALLS_CHART_COLORS,
 } from "~/utilities/chartColors";
 
-// Not application settings. The first three are derived from whether the
-// Discord / Tailscale / Steam credentials are configured; the GPU workloads are
-// switched per game server node, so "on" means a node is carrying that work.
-const CAPABILITY_KEYS = [
-  "discord_bot",
-  "game_server_nodes",
-  "version_pinning",
-  "demo_playback",
-  "clip_renders",
-  "live_streaming",
-];
+// A real em dash, not the entity: a mustache renders text, so "&mdash;" here
+// would put those eight characters on the page.
+const NO_METRIC = "—";
 
 export default {
   apollo: {
@@ -287,30 +363,68 @@ export default {
             retained180d: true,
           },
           totals: {
+            panels: true,
             gameServerNodes: true,
+            gameServerNodesEnabled: true,
+            gameServerNodesOnline: true,
+            regions: true,
             gpuNodes: true,
             servers: true,
+            serversEnabled: true,
+            dedicatedServers: true,
             publicServers: true,
             matches: true,
+            matchesCreated: true,
             matchesWeek: true,
             matchesMonth: true,
             matchesYear: true,
+            outcomesReported: true,
+            matchesFinished: true,
+            matchesAbandoned: true,
+            matchesLive: true,
+            matchesTournament: true,
+            matchesLeague: true,
+            matchesScrim: true,
             matchesImported: true,
             matchesImportedMonth: true,
+            matchesImportedYear: true,
             mapsPlayed: true,
             playersKnown: true,
             playersRegistered: true,
             playersPlayed: true,
+            playersActive7d: true,
             playersActive30d: true,
             teams: true,
           },
           features: {
             key: true,
+            kind: true,
             enabled: true,
             flagged: true,
             reporting: true,
+            counted: true,
             installsUsing: true,
             total: true,
+          },
+          matchTypes: {
+            type: true,
+            matches: true,
+          },
+          matchSources: {
+            source: true,
+            matches: true,
+          },
+          versions: {
+            version: true,
+            installs: true,
+          },
+          runtimes: {
+            runtime: true,
+            installs: true,
+          },
+          countries: {
+            country: true,
+            installs: true,
           },
           growth: {
             month: true,
@@ -326,6 +440,11 @@ export default {
       pollInterval: 60 * 1000,
     },
   },
+  data() {
+    return {
+      NO_METRIC,
+    };
+  },
   methods: {
     format(value: number) {
       return (value ?? 0).toLocaleString();
@@ -338,7 +457,10 @@ export default {
       return Math.round((value / total) * 100);
     },
     featureLabel(key: string) {
-      return this.$t(`pages.system_telemetry.features.keys.${key}`);
+      const path = `pages.system_telemetry.features.keys.${key}`;
+
+      // A panel on a newer build can report a feature this one has no name for.
+      return this.$te(path) ? this.$t(path) : key;
     },
   },
   computed: {
@@ -348,6 +470,9 @@ export default {
     installsColor() {
       return FLEET_INSTALLS_CHART_COLORS.at(0);
     },
+    totals() {
+      return this.telemetryStats?.totals;
+    },
     features() {
       return this.telemetryStats?.features ?? [];
     },
@@ -356,6 +481,12 @@ export default {
     },
     activity() {
       return this.telemetryStats?.activity ?? [];
+    },
+    matchTypes() {
+      return this.telemetryStats?.matchTypes ?? [];
+    },
+    matchSources() {
+      return this.telemetryStats?.matchSources ?? [];
     },
     growthLabels() {
       return this.growth.map((point) => point.month);
@@ -369,25 +500,45 @@ export default {
     activityMatches() {
       return this.activity.map((point) => point.matches);
     },
+    distributions() {
+      return [
+        {
+          key: "versions",
+          title: this.$t("pages.system_telemetry.distribution.versions"),
+          items: this.telemetryStats?.versions ?? [],
+          labelField: "version",
+          flags: false,
+        },
+        {
+          key: "runtimes",
+          title: this.$t("pages.system_telemetry.distribution.runtimes"),
+          items: this.telemetryStats?.runtimes ?? [],
+          labelField: "runtime",
+          flags: false,
+        },
+        {
+          key: "countries",
+          title: this.$t("pages.system_telemetry.distribution.countries"),
+          items: this.telemetryStats?.countries ?? [],
+          labelField: "country",
+          flags: true,
+        },
+      ];
+    },
     featureGroups() {
-      const optional = [];
-      const capabilities = [];
-      const always = [];
+      const buckets = {
+        setting: [],
+        detected: [],
+        always: [],
+      };
 
       for (const feature of this.features) {
-        if (CAPABILITY_KEYS.includes(feature.key)) {
-          capabilities.push(feature);
-          continue;
-        }
+        // The server classifies; the fallback only covers a response from
+        // before it did.
+        const kind =
+          feature.kind ?? (feature.flagged > 0 ? "setting" : "always");
 
-        // flagged counts panels that reported a real boolean. Zero means the
-        // feature ships with no switch at all, not that everyone disabled it.
-        if (feature.flagged > 0) {
-          optional.push(feature);
-          continue;
-        }
-
-        always.push(feature);
+        (buckets[kind] ?? buckets.always).push(feature);
       }
 
       return [
@@ -397,7 +548,7 @@ export default {
           hint: this.$t("pages.system_telemetry.features.optional_hint"),
           flagLabel: this.$t("pages.system_telemetry.features.enabled"),
           showFlag: true,
-          features: optional,
+          features: buckets.setting,
         },
         {
           key: "capabilities",
@@ -405,20 +556,19 @@ export default {
           hint: this.$t("pages.system_telemetry.features.capabilities_hint"),
           flagLabel: this.$t("pages.system_telemetry.features.configured"),
           showFlag: true,
-          features: capabilities,
+          features: buckets.detected,
         },
         {
           key: "always",
           title: this.$t("pages.system_telemetry.features.always"),
           hint: this.$t("pages.system_telemetry.features.always_hint"),
           showFlag: false,
-          features: always,
+          features: buckets.always,
         },
       ].filter((group) => group.features.length > 0);
     },
     headlineStats() {
       const installs = this.telemetryStats?.installs;
-      const totals = this.telemetryStats?.totals;
 
       return [
         {
@@ -434,12 +584,12 @@ export default {
         },
         {
           label: this.$t("pages.system_telemetry.totals.matches"),
-          value: totals?.matches ?? 0,
+          value: this.totals?.matches ?? 0,
           caption: this.$t("pages.system_telemetry.totals.matches_caption"),
         },
         {
           label: this.$t("pages.system_telemetry.totals.players_active"),
-          value: totals?.playersActive30d ?? 0,
+          value: this.totals?.playersActive30d ?? 0,
           caption: this.$t("pages.system_telemetry.totals.players_caption"),
         },
       ];
@@ -457,6 +607,10 @@ export default {
           value: installs?.active7d ?? 0,
         },
         {
+          label: this.$t("pages.system_telemetry.installs.active_30d"),
+          value: installs?.active30d ?? 0,
+        },
+        {
           label: this.$t("pages.system_telemetry.installs.new_30d"),
           value: installs?.new30d ?? 0,
         },
@@ -465,110 +619,194 @@ export default {
           value: installs?.retained180d ?? 0,
           hint: this.$t("pages.system_telemetry.installs.retained_180d_hint"),
         },
+        {
+          label: this.$t("pages.system_telemetry.installs.reporting"),
+          value: this.totals?.panels ?? 0,
+          hint: this.$t("pages.system_telemetry.installs.reporting_hint"),
+        },
       ];
     },
     fleetGroups() {
-      const totals = this.telemetryStats?.totals;
+      const totals = this.totals;
+      const t = (key: string) =>
+        this.$t(`pages.system_telemetry.totals.${key}`);
+      // Match outcomes arrived after most panels' builds. Summing a field
+      // nobody sends gives a confident zero, so hide it until somebody does.
+      const outcomes = totals?.outcomesReported ?? 0;
 
       return [
         {
-          title: this.$t("pages.system_telemetry.totals.infrastructure"),
-          hint: this.$t("pages.system_telemetry.totals.self_reported"),
+          title: t("infrastructure"),
+          hint: t("self_reported"),
           stats: [
             {
-              label: this.$t("pages.system_telemetry.totals.game_server_nodes"),
-              caption: this.$t(
-                "pages.system_telemetry.totals.game_server_nodes_caption",
-              ),
+              label: t("game_server_nodes"),
+              caption: t("game_server_nodes_caption"),
               value: totals?.gameServerNodes ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.gpu_nodes"),
-              caption: this.$t(
-                "pages.system_telemetry.totals.gpu_nodes_caption",
-              ),
+              label: t("nodes_enabled"),
+              caption: t("nodes_enabled_caption"),
+              value: totals?.gameServerNodesEnabled ?? 0,
+            },
+            {
+              label: t("nodes_online"),
+              caption: t("nodes_online_caption"),
+              value: totals?.gameServerNodesOnline ?? 0,
+            },
+            {
+              label: t("regions"),
+              caption: t("regions_caption"),
+              value: totals?.regions ?? 0,
+            },
+            {
+              label: t("gpu_nodes"),
+              caption: t("gpu_nodes_caption"),
               value: totals?.gpuNodes ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.servers"),
-              caption: this.$t("pages.system_telemetry.totals.servers_caption"),
+              label: t("servers"),
+              caption: t("servers_caption"),
               value: totals?.servers ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.public_servers"),
-              caption: this.$t(
-                "pages.system_telemetry.totals.public_servers_caption",
-              ),
+              label: t("servers_enabled"),
+              caption: t("servers_enabled_caption"),
+              value: totals?.serversEnabled ?? 0,
+            },
+            {
+              label: t("dedicated_servers"),
+              caption: t("dedicated_servers_caption"),
+              value: totals?.dedicatedServers ?? 0,
+            },
+            {
+              label: t("public_servers"),
+              caption: t("public_servers_caption"),
               value: totals?.publicServers ?? 0,
             },
           ],
         },
         {
-          title: this.$t("pages.system_telemetry.totals.match_volume"),
-          hint: this.$t("pages.system_telemetry.totals.hosted_hint"),
+          title: t("match_volume"),
+          hint: t("hosted_hint"),
           stats: [
             {
-              label: this.$t("pages.system_telemetry.totals.matches_week"),
-              caption: this.$t("pages.system_telemetry.totals.last_7d"),
+              label: t("matches_week"),
+              caption: t("last_7d"),
               value: totals?.matchesWeek ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.matches_month"),
-              caption: this.$t("pages.system_telemetry.totals.last_30d"),
+              label: t("matches_month"),
+              caption: t("last_30d"),
               value: totals?.matchesMonth ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.matches_year"),
-              caption: this.$t("pages.system_telemetry.totals.last_1y"),
+              label: t("matches_year"),
+              caption: t("last_1y"),
               value: totals?.matchesYear ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.maps_played"),
-              caption: this.$t("pages.system_telemetry.totals.all_time"),
+              label: t("maps_played"),
+              caption: t("all_time"),
               value: totals?.mapsPlayed ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.matches_imported"),
-              caption: this.$t("pages.system_telemetry.totals.all_time"),
+              label: t("matches_live"),
+              caption: t("matches_live_caption"),
+              value: totals?.matchesLive ?? 0,
+              unavailable: !outcomes,
+            },
+            {
+              label: t("matches_finished"),
+              caption: t("matches_finished_caption"),
+              value: totals?.matchesFinished ?? 0,
+              unavailable: !outcomes,
+            },
+            {
+              label: t("matches_abandoned"),
+              caption: t("matches_abandoned_caption"),
+              value: totals?.matchesAbandoned ?? 0,
+              unavailable: !outcomes,
+            },
+            {
+              label: t("matches_created"),
+              caption: t("matches_created_caption"),
+              value: totals?.matchesCreated ?? 0,
+              muted: true,
+            },
+          ],
+        },
+        {
+          title: t("competition"),
+          hint: t("competition_hint"),
+          stats: [
+            {
+              label: t("matches_tournament"),
+              caption: t("all_time"),
+              value: totals?.matchesTournament ?? 0,
+            },
+            {
+              label: t("matches_league"),
+              caption: t("all_time"),
+              value: totals?.matchesLeague ?? 0,
+            },
+            {
+              label: t("matches_scrim"),
+              caption: t("all_time"),
+              value: totals?.matchesScrim ?? 0,
+            },
+            {
+              label: t("matches_imported"),
+              caption: t("all_time"),
               value: totals?.matchesImported ?? 0,
               muted: true,
             },
             {
-              label: this.$t(
-                "pages.system_telemetry.totals.matches_imported_month",
-              ),
-              caption: this.$t("pages.system_telemetry.totals.last_30d"),
+              label: t("matches_imported_year"),
+              caption: t("last_1y"),
+              value: totals?.matchesImportedYear ?? 0,
+              muted: true,
+            },
+            {
+              label: t("matches_imported_month"),
+              caption: t("last_30d"),
               value: totals?.matchesImportedMonth ?? 0,
               muted: true,
             },
           ],
         },
         {
-          title: this.$t("pages.system_telemetry.totals.community"),
-          hint: this.$t("pages.system_telemetry.totals.community_hint"),
+          title: t("community"),
+          hint: t("community_hint"),
           stats: [
             {
-              label: this.$t("pages.system_telemetry.totals.players"),
-              caption: this.$t(
-                "pages.system_telemetry.totals.signed_in_caption",
-              ),
+              label: t("players"),
+              caption: t("signed_in_caption"),
               value: totals?.playersRegistered ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.players_played"),
-              caption: this.$t("pages.system_telemetry.totals.all_time"),
+              label: t("players_played"),
+              caption: t("all_time"),
               value: totals?.playersPlayed ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.teams"),
-              caption: this.$t("pages.system_telemetry.totals.all_time"),
+              label: t("players_active_7d"),
+              caption: t("last_7d"),
+              value: totals?.playersActive7d ?? 0,
+            },
+            {
+              label: t("players_active_30d"),
+              caption: t("last_30d"),
+              value: totals?.playersActive30d ?? 0,
+            },
+            {
+              label: t("teams"),
+              caption: t("all_time"),
               value: totals?.teams ?? 0,
             },
             {
-              label: this.$t("pages.system_telemetry.totals.players_known"),
-              caption: this.$t(
-                "pages.system_telemetry.totals.players_known_caption",
-              ),
+              label: t("players_known"),
+              caption: t("players_known_caption"),
               value: totals?.playersKnown ?? 0,
               muted: true,
             },

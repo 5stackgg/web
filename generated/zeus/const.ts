@@ -38117,31 +38117,51 @@ export const ReturnTypes: Record<string,any> = {
 		installs:"Int",
 		matches:"Int"
 	},
+	TelemetryCountryCount:{
+		country:"String",
+		installs:"Int"
+	},
 	TelemetryFeatureAdoption:{
+		counted:"Int",
 		enabled:"Int",
 		flagged:"Int",
 		installsUsing:"Int",
 		key:"String",
+		kind:"String",
 		reporting:"Int",
 		total:"Int"
 	},
 	TelemetryFleetTotals:{
 		dedicatedServers:"Int",
 		gameServerNodes:"Int",
+		gameServerNodesEnabled:"Int",
+		gameServerNodesOnline:"Int",
 		gpuNodes:"Int",
 		mapsPlayed:"Int",
 		matches:"Int",
+		matchesAbandoned:"Int",
+		matchesCreated:"Int",
+		matchesFinished:"Int",
 		matchesImported:"Int",
 		matchesImportedMonth:"Int",
+		matchesImportedYear:"Int",
+		matchesLeague:"Int",
+		matchesLive:"Int",
 		matchesMonth:"Int",
+		matchesScrim:"Int",
+		matchesTournament:"Int",
 		matchesWeek:"Int",
 		matchesYear:"Int",
+		panels:"Int",
 		playersActive30d:"Int",
+		playersActive7d:"Int",
 		playersKnown:"Int",
 		playersPlayed:"Int",
 		playersRegistered:"Int",
 		publicServers:"Int",
+		regions:"Int",
 		servers:"Int",
+		serversEnabled:"Int",
 		teams:"Int"
 	},
 	TelemetryGrowthPoint:{
@@ -38156,13 +38176,36 @@ export const ReturnTypes: Record<string,any> = {
 		retained180d:"Int",
 		total:"Int"
 	},
+	TelemetryMatchSourceCount:{
+		matches:"Int",
+		panels:"Int",
+		source:"String"
+	},
+	TelemetryMatchTypeCount:{
+		matches:"Int",
+		panels:"Int",
+		type:"String"
+	},
+	TelemetryRuntimeCount:{
+		installs:"Int",
+		runtime:"String"
+	},
 	TelemetryStats:{
 		activity:"TelemetryActivityPoint",
+		countries:"TelemetryCountryCount",
 		features:"TelemetryFeatureAdoption",
 		growth:"TelemetryGrowthPoint",
 		installs:"TelemetryInstallCounts",
+		matchSources:"TelemetryMatchSourceCount",
+		matchTypes:"TelemetryMatchTypeCount",
 		online:"Int",
-		totals:"TelemetryFleetTotals"
+		runtimes:"TelemetryRuntimeCount",
+		totals:"TelemetryFleetTotals",
+		versions:"TelemetryVersionCount"
+	},
+	TelemetryVersionCount:{
+		installs:"Int",
+		version:"String"
 	},
 	TestUploadResponse:{
 		error:"String"

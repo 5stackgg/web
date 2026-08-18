@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { computed } from "vue";
 import { Lock } from "lucide-vue-next";
 
@@ -12,7 +13,7 @@ function fmt(value: string | null | undefined): string {
   if (!value) {
     return "";
   }
-  return new Date(value).toLocaleDateString(undefined, {
+  return new Date(value).toLocaleDateString(dateLocale(), {
     month: "short",
     day: "numeric",
   });

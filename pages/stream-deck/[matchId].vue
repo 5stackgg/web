@@ -161,7 +161,7 @@ function statusBadgeLabel(s: any) {
   if (s.is_live) return t("stream_deck_status.live");
   const v = s?.status as string | undefined;
   if (!v) return t("stream_deck_status.booting");
-  return (STATUS_LABELS.value[v] ?? v.replace(/_/g, " ")).toUpperCase();
+  return (STATUS_LABELS.value[v] ?? v).toUpperCase();
 }
 
 const autodirector = ref(true);

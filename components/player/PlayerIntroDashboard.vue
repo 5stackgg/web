@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -1046,7 +1047,7 @@ function xLabel(index: number): string {
   if (!p) {
     return "";
   }
-  return new Date(p.date).toLocaleDateString(undefined, {
+  return new Date(p.date).toLocaleDateString(dateLocale(), {
     month: "short",
     day: "numeric",
   });

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, watch } from "vue";
 import { Input } from "~/components/ui/input";
 import {
@@ -109,7 +110,7 @@ const STATUS_CLASSES: Record<string, string> = {
 };
 
 function formatWhen(fixture: Fixture): string {
-  return fixture.date.toLocaleString(undefined, {
+  return fixture.date.toLocaleString(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",

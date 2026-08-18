@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { Button } from "~/components/ui/button";
@@ -94,7 +95,7 @@ async function onProposeSubmit(proposedTime: string, message: string) {
       </div>
       <div v-if="task.kind === 'respond' && task.proposal" class="mt-1 text-xs">
         <span class="font-medium text-foreground">{{
-          new Date(task.proposal.proposedTime).toLocaleString(undefined, {
+          new Date(task.proposal.proposedTime).toLocaleString(dateLocale(), {
             weekday: "short",
             month: "short",
             day: "numeric",

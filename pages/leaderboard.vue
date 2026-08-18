@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import gql from "graphql-tag";
 import { ref, computed, watch, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
@@ -390,7 +391,7 @@ function seasonScopeLabel(s: Season): string {
 }
 function seasonRangeLabel(s: Season): string {
   const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString(undefined, {
+    new Date(iso).toLocaleDateString(dateLocale(), {
       year: "numeric",
       month: "short",
       day: "numeric",

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MapPin } from "lucide-vue-next";
@@ -21,7 +22,7 @@ const startLabel = computed(() => {
   if (isNaN(date.getTime())) {
     return null;
   }
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return date.toLocaleDateString(dateLocale(), { month: "short", day: "numeric" });
 });
 
 // Only render cells that actually have a value; the grid sizes itself to the

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { computed } from "vue";
 import AwardBadge from "./AwardBadge.vue";
 import { resolveAwardTier } from "~/utilities/awardSeed";
@@ -96,7 +97,7 @@ const formattedDate = computed(() => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
   return d
-    .toLocaleDateString(undefined, {
+    .toLocaleDateString(dateLocale(), {
       year: "numeric",
       month: "short",
       day: "numeric",

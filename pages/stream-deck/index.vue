@@ -472,7 +472,7 @@ function statusBadgeLabel(stream: any) {
   if (stream.is_live) return t("stream_deck_status.live");
   const s = stream?.status as string | undefined;
   if (!s) return t("stream_deck_status.booting");
-  return (STATUS_LABELS.value[s] ?? s.replace(/_/g, " ")).toUpperCase();
+  return (STATUS_LABELS.value[s] ?? s).toUpperCase();
 }
 
 // Resolve the live map for a tile. Prefer current_match_map_id; fall

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dateLocale } from "~/utilities/dateLocale";
 import {
   FormControl,
   FormField,
@@ -229,7 +230,7 @@ export default {
       if (!dateStr) {
         return "";
       }
-      return new Date(dateStr).toLocaleString(undefined, {
+      return new Date(dateStr).toLocaleString(dateLocale(), {
         year: "numeric",
         month: "short",
         day: "numeric",

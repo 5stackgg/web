@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { Badge } from "~/components/ui/badge";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import RoundHistoryBar from "~/components/match/RoundHistoryBar.vue";
@@ -610,7 +611,7 @@ export default {
       const d = new Date(iso);
       if (Number.isNaN(d.getTime()))
         return this.$t("match_extras.unknown_date");
-      return d.toLocaleString(undefined, {
+      return d.toLocaleString(dateLocale(), {
         year: "numeric",
         month: "short",
         day: "numeric",

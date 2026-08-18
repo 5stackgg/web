@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -658,7 +659,7 @@ export default {
       const date = new Date(iso);
       if (Number.isNaN(date.getTime())) return "";
       return date
-        .toLocaleDateString(undefined, {
+        .toLocaleDateString(dateLocale(), {
           month: "short",
           day: "numeric",
           year: "numeric",

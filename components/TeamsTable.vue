@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
@@ -320,7 +321,7 @@ export default {
       const d = new Date(iso);
       if (Number.isNaN(d.getTime())) return "";
       return d
-        .toLocaleDateString(undefined, {
+        .toLocaleDateString(dateLocale(), {
           month: "short",
           day: "numeric",
           year: "numeric",

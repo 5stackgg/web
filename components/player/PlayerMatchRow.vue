@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import {
   ChevronDown,
   ExternalLink,
@@ -914,7 +915,7 @@ export default {
     },
     dateLabel(): string {
       const d = new Date(this.matchDate);
-      return d.toLocaleDateString(undefined, {
+      return d.toLocaleDateString(dateLocale(), {
         weekday: "short",
         day: "numeric",
         month: "short",
@@ -922,7 +923,7 @@ export default {
     },
     timeLabel(): string {
       const d = new Date(this.matchDate);
-      return d.toLocaleTimeString(undefined, {
+      return d.toLocaleTimeString(dateLocale(), {
         hour: "2-digit",
         minute: "2-digit",
       });

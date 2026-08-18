@@ -299,6 +299,19 @@ export default defineNuxtConfig({
           type: "image/png",
           purpose: "any",
         },
+        // Padded, opaque variant of the same art. Android masks launcher icons
+        // into a circle/squircle, and with only `any` icons declared it crops
+        // whatever it's given and fills the rest with a colour of its own
+        // choosing -- the crest's gun barrels reach the edges, so they were the
+        // part that got cut. Content here sits at 80% on a filled field so the
+        // mask lands on background instead. iOS ignores maskable entirely and
+        // keeps using the `any` icon above.
+        {
+          src: "/favicon/512-maskable.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "maskable",
+        },
       ],
       theme_color: "#000000",
       background_color: "#000000",

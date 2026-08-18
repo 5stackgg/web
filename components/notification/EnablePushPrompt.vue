@@ -95,7 +95,15 @@ async function evaluate() {
 
 async function enable() {
   try {
-    const granted = await push.subscribe();
+    // subscribe() bounds every step and rejects rather than hanging on a device
+    // whose push service is stuck -- catch it here so the reason surfaces
+    // instead of vanishing into an unhandled rejection.
+    let granted = false;
+    try {
+      granted = await push.subscribe();
+    } catch {
+      // push.lastError names the step that timed out; toasted below.
+    }
 
     if (granted) {
       toast({
@@ -105,7 +113,9 @@ async function enable() {
       toast({
         variant: "destructive",
         title: t("common.error"),
-        description: t("push_prompt.failed"),
+        description: push.lastError.value
+          ? t(push.lastError.value)
+          : t("push_prompt.failed"),
       });
     }
   } finally {

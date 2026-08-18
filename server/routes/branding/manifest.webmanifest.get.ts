@@ -94,6 +94,11 @@ export default defineEventHandler(async (event) => {
       { src, sizes: "any", type: guessContentType(faviconUrl), purpose: "any" },
     ];
   } else {
+    // Mirrors nuxt.config.ts's static manifest, maskable entry included --
+    // without it Android crops the bundled crest into its adaptive-icon mask
+    // and picks its own background. (The pwaIcon branch above is already safe:
+    // the API renders those at 80% on an opaque field, see branding.service.ts
+    // renderPwaIcon, which is what earns its "any maskable".)
     icons = [
       { src: "/favicon/192.png", sizes: "192x192", type: "image/png" },
       {
@@ -101,6 +106,12 @@ export default defineEventHandler(async (event) => {
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
+      },
+      {
+        src: "/favicon/512-maskable.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ];
   }

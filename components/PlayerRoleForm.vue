@@ -33,6 +33,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -72,8 +73,16 @@ export default {
     },
   },
   computed: {
+    // Gate on a fixed "may I edit roles at all" floor, not on whoever's profile
+    // happens to be open. Comparing against the *viewed* player's role meant a
+    // plain user passed `user >= user` on any other plain user's (public)
+    // profile and got a live dropdown they had no permission to submit --
+    // hasura grants the players.role column to match_organizer and above only
+    // (see api/hasura/metadata .../public_players.yaml update_permissions), so
+    // it failed with a raw Hasura error. The `roles` list below still filters
+    // to roles at or below the viewer's own.
     canChangeRole() {
-      return useAuthStore().isRoleAbove(this.player.role);
+      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
     roles() {
       return [

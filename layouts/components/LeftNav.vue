@@ -2,13 +2,11 @@
 import {
   ChevronsUpDownIcon,
   Cog,
-  LogOut,
   Logs,
   LineChart,
   Server,
   Play,
   Globe,
-  Settings,
   CalendarCog,
   Camera,
   ShieldHalf,
@@ -32,6 +30,7 @@ import {
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
+import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -1073,8 +1072,13 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           <InstallPWA />
 
           <SidebarMenuItem>
-            <DropdownMenu v-model:open="profileOpened">
-              <DropdownMenuTrigger as-child>
+            <ProfileMenu
+              v-model:open="profileOpened"
+              :side="isMobile ? 'top' : 'right'"
+              align="end"
+              @logout="showLogoutModal = true"
+            >
+              <template #trigger>
                 <SidebarMenuButton
                   size="lg"
                   class="hover:!bg-transparent hover:!text-current active:!bg-transparent"
@@ -1096,44 +1100,8 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   />
                   <ChevronsUpDownIcon class="ml-auto size-4" />
                 </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                :side="isMobile ? 'top' : 'right'"
-                align="end"
-                :side-offset="4"
-              >
-                <DropdownMenuGroup v-if="!isMobile && !sideBarOpen">
-                  <DropdownMenuLabel class="font-normal">
-                    <PlayerDisplay :player="me" :show-online="false" />
-                  </DropdownMenuLabel>
-                </DropdownMenuGroup>
-
-                <DropdownMenuGroup>
-                  <DropdownMenuItem class="flex gap-2" as-child>
-                    <NuxtLink
-                      :to="{ name: 'settings' }"
-                      :class="{
-                        'router-link-active': isRouteActive('settings'),
-                      }"
-                    >
-                      <Settings class="size-4" />
-                      {{ $t("layouts.app_nav.profile.my_account") }}
-                    </NuxtLink>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem
-                  class="flex gap-2"
-                  @click="showLogoutModal = true"
-                >
-                  <LogOut />
-                  {{ $t("layouts.app_nav.profile.logout") }}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </template>
+            </ProfileMenu>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

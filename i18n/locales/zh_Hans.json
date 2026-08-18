@@ -5554,7 +5554,7 @@
         }
       },
       "discord_user": "这是一位 Discord 用户，请在官方 Discord 频道中输入以下内容注册您的 Discord ID 以启用数据追踪",
-      "discord_link": ""
+      "discord_link": "在官方 Discord 频道中。"
     },
     "overview": {
       "promote_captain": "提升为队长",

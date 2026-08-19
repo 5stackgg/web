@@ -432,8 +432,10 @@ const selectedModeDescription = computed(() => {
 watch(matchType, () => {
   if (isDuel.value) {
     mode.value = "Pug";
-    if (step.value === 2) {
-      step.value = 1;
+    // Switching to a duel can disable the step being stood on, which would
+    // leave the form showing an empty greyed-out pane.
+    if (stepDisabled(step.value)) {
+      prev();
     }
     return;
   }
@@ -528,7 +530,8 @@ const submit = form.handleSubmit(async (values: any) => {
       title: t("common.error"),
       description: t("draft_games.create.team_1_required_error"),
     });
-    step.value = 2;
+    // Step 3 -- where the team selector the message is about actually lives.
+    step.value = 3;
     return;
   }
 

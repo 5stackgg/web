@@ -3621,7 +3621,6 @@
       "installed_on": "已安裝在 {total} 個節點中的 {installed} 個。",
       "advanced": "分發",
       "advanced_hint": "各節點依自己的節奏安裝；離線的節點會在恢復後自動跟上。",
-      "partial_failure": "{failed} 個節點失敗",
       "live_title": "已安裝",
       "manage": "管理",
       "filter_installed": "已安裝",

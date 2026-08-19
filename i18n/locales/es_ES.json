@@ -3621,7 +3621,6 @@
       "installed_on": "Instalado en {installed} de {total} nodos.",
       "advanced": "Despliegue",
       "advanced_hint": "Cada nodo instala a su propio ritmo; un nodo que esté desconectado se pone al día cuando vuelve.",
-      "partial_failure": "{failed} nodo(s) fallaron",
       "live_title": "Instalado",
       "manage": "Gestionar",
       "filter_installed": "Instalados",

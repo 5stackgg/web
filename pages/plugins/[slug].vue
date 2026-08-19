@@ -37,6 +37,10 @@ import {
   FolderOpen,
   Download,
 } from "lucide-vue-next";
+
+definePageMeta({
+  middleware: "admin",
+});
 </script>
 
 <template>
@@ -62,6 +66,16 @@ import {
             <Badge v-if="plugin.verified" variant="outline" class="gap-1">
               <ShieldCheck class="h-3 w-3" />
               {{ $t("pages.plugins.verified") }}
+            </Badge>
+            <!-- Worth knowing before installing, not only once the toggle is
+                 in front of you. -->
+            <Badge
+              v-if="plugin.requires_server_guidelines_disabled"
+              variant="outline"
+              class="gap-1 border-yellow-500/40 text-yellow-300"
+            >
+              <AlertTriangle class="h-3 w-3" />
+              {{ $t("pages.plugins.guidelines.badge") }}
             </Badge>
           </div>
           <p class="text-sm text-muted-foreground">
@@ -319,6 +333,64 @@ import {
                   >
                     <AlertTriangle class="mt-0.5 h-3 w-3 shrink-0" />
                     {{ $t("pages.plugins.always_load_ranked") }}
+                  </p>
+                </div>
+
+                <!-- Only for a plugin whose catalog entry says it cannot work
+                     otherwise. Everything else stays compliant without the
+                     operator having to think about it. -->
+                <div
+                  v-if="plugin.requires_server_guidelines_disabled && isRequested"
+                  class="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-0.5">
+                      <p class="text-sm font-medium">
+                        {{ $t("pages.plugins.guidelines.toggle") }}
+                      </p>
+                      <p class="text-xs text-muted-foreground">
+                        {{
+                          $t("pages.plugins.guidelines.hint", {
+                            name: plugin.name,
+                          })
+                        }}
+                      </p>
+                    </div>
+                    <Switch
+                      :model-value="disableGuidelines"
+                      :disabled="savingGuidelines"
+                      @update:model-value="setDisableGuidelines"
+                    />
+                  </div>
+
+                  <div
+                    class="flex items-start gap-2 rounded-md border border-yellow-500/40 bg-yellow-500/10 p-2.5 text-xs text-yellow-300"
+                    role="alert"
+                  >
+                    <AlertTriangle class="mt-0.5 h-3 w-3 shrink-0" />
+                    <div>
+                      <p class="font-medium">
+                        {{ $t("pages.plugins.guidelines.warning_title") }}
+                      </p>
+                      <p class="mt-0.5 text-yellow-300/90">
+                        {{ $t("pages.plugins.guidelines.warning_description") }}
+                      </p>
+                      <a
+                        href="https://blog.counter-strike.net/index.php/server_guidelines/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="mt-1 inline-block text-yellow-200 underline hover:text-yellow-100"
+                      >
+                        {{ $t("pages.plugins.guidelines.warning_link_label") }}
+                      </a>
+                    </div>
+                  </div>
+
+                  <p
+                    v-if="!disableGuidelines"
+                    class="text-xs text-muted-foreground"
+                  >
+                    {{ $t("pages.plugins.guidelines.off_hint") }}
                   </p>
                 </div>
 
@@ -599,6 +671,8 @@ export default {
       readmes: {} as Record<string, Record<string, any> | null>,
       alwaysLoad: false,
       savingAlwaysLoad: false,
+      disableGuidelines: false,
+      savingGuidelines: false,
       confirmRemove: false,
       modePlugins: [] as Array<Record<string, any>>,
       installedPages: [] as Array<Record<string, any>>,
@@ -618,6 +692,7 @@ export default {
             {
               plugin_slug: true,
               always_load: true,
+              disable_server_guidelines: true,
               version: true,
               channel: true,
             },
@@ -625,6 +700,9 @@ export default {
         }),
         result: function ({ data }: { data: Record<string, any> }) {
           this.desired = data?.game_plugin_installs ?? [];
+        },
+        skip() {
+          return !this.isAdministrator;
         },
       },
       nodes: {
@@ -701,6 +779,7 @@ export default {
             verified: true,
             hot_swappable: true,
             requires_service: true,
+            requires_server_guidelines_disabled: true,
             panel: true,
             pairs_with: true,
             versions: [
@@ -774,6 +853,7 @@ export default {
           (entry) => entry.plugin_slug === this.$route.params.slug,
         );
         this.alwaysLoad = Boolean(row?.always_load);
+        this.disableGuidelines = Boolean(row?.disable_server_guidelines);
       },
     },
   },
@@ -843,6 +923,29 @@ export default {
         toast({ title: (error as Error).message, variant: "destructive" });
       } finally {
         this.savingAlwaysLoad = false;
+      }
+    },
+    async setDisableGuidelines(value: boolean) {
+      this.savingGuidelines = true;
+      this.disableGuidelines = value;
+
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            update_game_plugin_installs_by_pk: [
+              {
+                pk_columns: { plugin_slug: this.$route.params.slug as string },
+                _set: { disable_server_guidelines: value },
+              },
+              { plugin_slug: true },
+            ],
+          }),
+        });
+      } catch (error) {
+        this.disableGuidelines = !value;
+        toast({ title: (error as Error).message, variant: "destructive" });
+      } finally {
+        this.savingGuidelines = false;
       }
     },
     kindIcon(kind: string) {
@@ -949,24 +1052,12 @@ export default {
       this.busy = nodeId;
 
       try {
-        const { data } = (await action()) as { data?: Record<string, any> };
+        // Recording intent is all this can fail at. Whether each node converged
+        // is not known yet and is not knowable here: it arrives on the installs
+        // subscription, which is what the per-node states below render.
+        await action();
 
-        const result =
-          data?.installGamePlugin ?? data?.uninstallGamePlugin ?? {};
-
-        // A run across every node can half-succeed. Reporting it as done would
-        // leave the operator believing a mode will work on nodes it will not.
-        if (result.failed > 0) {
-          toast({
-            title: this.$t("pages.plugins.partial_failure", {
-              failed: result.failed,
-            }) as string,
-            description: (result.errors ?? []).join("\n"),
-            variant: "destructive",
-          });
-        } else {
-          toast({ title: this.$t("pages.plugins.install_success") as string });
-        }
+        toast({ title: this.$t("pages.plugins.install_success") as string });
       } catch (error) {
         toast({
           title: (error as Error).message,

@@ -3621,7 +3621,6 @@
       "installed_on": "Installeret på {installed} af {total} noder.",
       "advanced": "Udrulning",
       "advanced_hint": "Hver node installerer i sit eget tempo; en node der er offline, indhenter når den kommer tilbage.",
-      "partial_failure": "{failed} node(r) fejlede",
       "live_title": "Installeret",
       "manage": "Administrer",
       "filter_installed": "Installeret",

@@ -123,6 +123,7 @@ definePageMeta({
 </template>
 
 <script lang="ts">
+import { order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 export default {
@@ -148,10 +149,13 @@ export default {
             runtime_conflicts: true,
             cfg: true,
             extra_game_params: true,
-            plugins: {
-              plugin_slug: true,
-              load_order: true,
-            },
+            plugins: [
+              { order_by: [{ load_order: order_by.asc }] },
+              {
+                plugin_slug: true,
+                load_order: true,
+              },
+            ],
           },
         ],
       }),

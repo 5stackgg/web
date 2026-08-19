@@ -3525,7 +3525,6 @@
       "installed_on": "Instalado em {installed} de {total} nós.",
       "advanced": "Implantação",
       "advanced_hint": "Cada nó instala no próprio ritmo; um nó offline se ajusta quando volta.",
-      "partial_failure": "{failed} nó(s) falharam",
       "live_title": "Instalado",
       "manage": "Gerenciar",
       "filter_installed": "Instalados",

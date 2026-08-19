@@ -3621,7 +3621,6 @@
       "installed_on": "Auf {installed} von {total} Nodes installiert.",
       "advanced": "Rollout",
       "advanced_hint": "Jeder Node installiert nach seinem eigenen Zeitplan; ein Node, der offline ist, zieht nach, sobald er zurück ist.",
-      "partial_failure": "{failed} Node(s) fehlgeschlagen",
       "live_title": "Installiert",
       "manage": "Verwalten",
       "filter_installed": "Installiert",

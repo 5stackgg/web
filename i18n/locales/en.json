@@ -3621,7 +3621,6 @@
       "installed_on": "Installed on {installed} of {total} nodes.",
       "advanced": "Rollout",
       "advanced_hint": "Nodes install on their own schedule; a node that is offline converges when it returns.",
-      "partial_failure": "{failed} node(s) failed",
       "live_title": "Installed",
       "manage": "Manage",
       "filter_installed": "Installed",
@@ -3651,7 +3650,16 @@
       },
       "remove_confirm_title": "Remove this plugin?",
       "remove_confirm_description": "It is used by {modes}. Removing it takes it out of those modes as well.",
-      "remove_confirm_action": "Remove anyway"
+      "remove_confirm_action": "Remove anyway",
+      "guidelines": {
+        "badge": "Needs guidelines off",
+        "toggle": "Turn off Valve's server guidelines",
+        "hint": "{name} cannot do what it does while the framework is enforcing Valve's server guidelines. Servers that load it will start with them off.",
+        "off_hint": "Left on, the plugin still installs and loads — the parts that change what a player sees just do nothing.",
+        "warning_title": "Warning: this can get your Steam GSLTs banned",
+        "warning_description": "Per Valve, running outside their official server guidelines can trigger every Game Server Login Token (GSLT) on the server owner's Steam account to be banned. Enable at your own risk.",
+        "warning_link_label": "Valve's server guidelines"
+      }
     },
     "awards": {
       "title": "Awards",

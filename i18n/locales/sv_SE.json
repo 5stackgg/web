@@ -3621,7 +3621,6 @@
       "installed_on": "Installerat på {installed} av {total} noder.",
       "advanced": "Utrullning",
       "advanced_hint": "Varje nod installerar i sin egen takt; en nod som är offline hinner ikapp när den kommer tillbaka.",
-      "partial_failure": "{failed} nod(er) misslyckades",
       "live_title": "Installerat",
       "manage": "Hantera",
       "filter_installed": "Installerade",

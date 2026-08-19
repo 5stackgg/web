@@ -1525,7 +1525,7 @@ export default {
             name: true,
             enabled: true,
             competitive_safe: true,
-            runtime: true,
+            supported_runtimes: [{}, true],
           },
         ],
       }),
@@ -1951,7 +1951,12 @@ export default {
           return false;
         }
 
-        return !mode.runtime || mode.runtime === this.gameServerPluginRuntime;
+        // An empty supported_runtimes is not "runs anywhere": it is a mode
+        // whose plugins exist for different frameworks and can never load
+        // together, so it runs nowhere.
+        return (mode.supported_runtimes ?? []).includes(
+          this.gameServerPluginRuntime,
+        );
       });
     },
     selectedGameMode(): Record<string, any> | null {

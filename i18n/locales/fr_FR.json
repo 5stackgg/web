@@ -3621,7 +3621,6 @@
       "installed_on": "Installé sur {installed} nœuds sur {total}.",
       "advanced": "Déploiement",
       "advanced_hint": "Chaque nœud installe à son propre rythme ; un nœud hors ligne se met à jour à son retour.",
-      "partial_failure": "{failed} nœud(s) en échec",
       "live_title": "Installé",
       "manage": "Gérer",
       "filter_installed": "Installés",

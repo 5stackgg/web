@@ -3621,7 +3621,6 @@
       "installed_on": "مثبّتة على {installed} من {total} عقدة.",
       "advanced": "النشر",
       "advanced_hint": "تُثبّت كل عقدة وفق جدولها الخاص؛ والعقدة غير المتصلة تتوافق عند عودتها.",
-      "partial_failure": "فشل {failed} عقدة",
       "live_title": "مثبّتة",
       "manage": "إدارة",
       "filter_installed": "المثبّتة",

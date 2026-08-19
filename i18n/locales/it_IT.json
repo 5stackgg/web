@@ -3621,7 +3621,6 @@
       "installed_on": "Installato su {installed} nodi su {total}.",
       "advanced": "Distribuzione",
       "advanced_hint": "Ogni nodo installa secondo i propri tempi; un nodo offline si allinea quando torna.",
-      "partial_failure": "{failed} nodo/i falliti",
       "live_title": "Installato",
       "manage": "Gestisci",
       "filter_installed": "Installati",

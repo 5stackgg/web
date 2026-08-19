@@ -3621,7 +3621,6 @@
       "installed_on": "Встановлено на {installed} з {total} нод.",
       "advanced": "Розгортання",
       "advanced_hint": "Кожна нода встановлює у своєму темпі; нода не в мережі підтягнеться, коли повернеться.",
-      "partial_failure": "Помилка на {failed} нодах",
       "live_title": "Встановлено",
       "manage": "Керувати",
       "filter_installed": "Встановлені",

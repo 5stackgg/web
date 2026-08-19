@@ -3621,7 +3621,6 @@
       "installed_on": "{total} 台中 {installed} 台のノードにインストール済み。",
       "advanced": "ロールアウト",
       "advanced_hint": "各ノードはそれぞれのタイミングでインストールします。オフラインのノードは復帰時に追いつきます。",
-      "partial_failure": "{failed} 台のノードで失敗",
       "live_title": "インストール済み",
       "manage": "管理",
       "filter_installed": "インストール済み",

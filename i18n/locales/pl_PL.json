@@ -3621,7 +3621,6 @@
       "installed_on": "Zainstalowana na {installed} z {total} węzłów.",
       "advanced": "Wdrożenie",
       "advanced_hint": "Każdy węzeł instaluje we własnym tempie; węzeł offline nadrobi to po powrocie.",
-      "partial_failure": "Nie powiodło się na {failed} węzłach",
       "live_title": "Zainstalowana",
       "manage": "Zarządzaj",
       "filter_installed": "Zainstalowane",

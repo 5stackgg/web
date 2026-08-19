@@ -3621,7 +3621,6 @@
       "installed_on": "{total} düğümün {installed} tanesine kurulu.",
       "advanced": "Dağıtım",
       "advanced_hint": "Her düğüm kendi planına göre kurar; çevrimdışı bir düğüm geri döndüğünde eşitlenir.",
-      "partial_failure": "{failed} düğümde başarısız",
       "live_title": "Kurulu",
       "manage": "Yönet",
       "filter_installed": "Kurulu",

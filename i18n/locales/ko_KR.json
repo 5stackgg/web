@@ -3621,7 +3621,6 @@
       "installed_on": "노드 {total}개 중 {installed}개에 설치됨.",
       "advanced": "롤아웃",
       "advanced_hint": "각 노드는 자체 일정에 따라 설치합니다. 오프라인 노드는 돌아오면 자동으로 맞춰집니다.",
-      "partial_failure": "노드 {failed}개 실패",
       "live_title": "설치됨",
       "manage": "관리",
       "filter_installed": "설치됨",

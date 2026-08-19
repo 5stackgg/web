@@ -272,9 +272,15 @@ export default {
           extra_game_params: mode.extra_game_params ?? "",
         });
 
-        this.selected = (mode.plugins ?? []).map(
-          (plugin: { plugin_slug: string }) => plugin.plugin_slug,
-        );
+        // Sorted here as well as in the query: save rewrites load_order from
+        // this array's order, so taking the rows as they arrive would let one
+        // no-op save permanently reshuffle how the server links them.
+        this.selected = [...(mode.plugins ?? [])]
+          .sort(
+            (a: { load_order: number }, b: { load_order: number }) =>
+              a.load_order - b.load_order,
+          )
+          .map((plugin: { plugin_slug: string }) => plugin.plugin_slug);
       },
     },
   },
@@ -362,32 +368,32 @@ export default {
     },
     // Replacing the selection wholesale keeps load_order in step with the order
     // the switches were toggled in, which is what the server links them in.
+    //
+    // Delete and insert go in one document: Hasura runs a multi-field mutation
+    // in a single transaction, so an insert that fails -- a slug a concurrent
+    // registry sync dropped, a lost connection -- rolls the delete back rather
+    // than saving the mode with no plugins at all.
     async syncPlugins(gameModeId: string) {
+      const objects = this.selected.map((slug, index) => ({
+        game_mode_id: gameModeId,
+        plugin_slug: slug,
+        load_order: index,
+      }));
+
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
           delete_game_mode_plugins: [
             { where: { game_mode_id: { _eq: gameModeId } } },
             { affected_rows: true },
           ],
-        }),
-      });
-
-      if (this.selected.length === 0) {
-        return;
-      }
-
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          insert_game_mode_plugins: [
-            {
-              objects: this.selected.map((slug, index) => ({
-                game_mode_id: gameModeId,
-                plugin_slug: slug,
-                load_order: index,
-              })),
-            },
-            { affected_rows: true },
-          ],
+          ...(objects.length > 0
+            ? {
+                insert_game_mode_plugins: [
+                  { objects },
+                  { affected_rows: true },
+                ],
+              }
+            : {}),
         }),
       });
     },

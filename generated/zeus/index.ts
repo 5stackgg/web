@@ -14834,6 +14834,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	/** An object relationship */
 	plugin?:ValueTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
@@ -83978,6 +83979,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	/** An object relationship */
 	plugin?:ResolverInputTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
@@ -151872,6 +151874,7 @@ export type ModelTypes = {
 	id: ModelTypes["uuid"],
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	/** An object relationship */
 	plugin?: ModelTypes["game_plugins"] | undefined | null,
 	plugin_slug: string,
@@ -213565,6 +213568,7 @@ export type GraphQLTypes = {
 	id: GraphQLTypes["uuid"],
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	/** An object relationship */
 	plugin?: GraphQLTypes["game_plugins"] | undefined | null,
 	plugin_slug: string,

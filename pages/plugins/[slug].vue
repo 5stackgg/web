@@ -857,6 +857,7 @@ export default {
               status: true,
               detected: true,
               last_error: true,
+              path: true,
               updated_at: true,
             },
           ],
@@ -966,11 +967,19 @@ export default {
     },
   },
   methods: {
+    // The node reports where the files actually landed; the catalog-derived
+    // directory is only for a node that has not said yet.
     openConfigFiles(nodeId: string) {
+      const reported = this.installs.find(
+        (entry: Record<string, any>) =>
+          entry.game_server_node_id === nodeId &&
+          entry.plugin_slug === this.$route.params.slug,
+      )?.path;
+
       useFilePopout().openFiles({
         scope: "node",
         id: nodeId,
-        path: this.pluginDirectory,
+        path: reported || this.pluginDirectory,
       });
     },
     labelForRuntime(runtime: string) {
@@ -1300,11 +1309,11 @@ export default {
         )
         .map((entry: Record<string, any>) => entry.game_mode);
     },
-    // A framework only writes addons/<runtime>/configs/plugins once a plugin has
-    // run and put something in it, so opening that straight after an install
-    // landed the operator on "this directory doesn't exist yet" for a plugin
-    // that is very much installed. Prefer somewhere that does exist: the config
-    // file the catalog names, else where the release unpacks to.
+    // Used until the node has reported where the files landed. A framework only
+    // writes addons/<runtime>/configs/plugins once a plugin has run and put
+    // something in it, and a csgo-layout release has no install_path, so the
+    // last resort is the plugins directory itself rather than a configs one
+    // that may never exist.
     pluginDirectory(): string {
       const runtime = this.runtime;
       const configPath = this.plugin?.config_path;
@@ -1326,7 +1335,7 @@ export default {
         return installPath.replaceAll("{runtime}", runtime);
       }
 
-      return `addons/${runtime}/configs/plugins`;
+      return `addons/${runtime}/plugins`;
     },
     // Derived from what the nodes have reported rather than the catalog's
     // install_state, which is a query field and would sit still while the

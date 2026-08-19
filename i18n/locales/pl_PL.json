@@ -2473,7 +2473,8 @@
           "disabled": "Wyłączony",
           "competitive": "Bezpieczny dla competitive",
           "casual_only": "Tylko casual",
-          "plugin_count": "{count} wtyczek"
+          "plugin_count": "{count} wtyczek",
+          "archived": "Zarchiwizowany"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "Mapa została utworzona",
           "update": "Mapa została zaktualizowana",
           "delete": "Mapa została usunięta",
+          "restore": "Mapa przywrócona",
+          "restore_description": "Usunięta mapa o tej nazwie już istniała, więc została przywrócona wraz z całą historią meczów.",
           "workshop_refresh": "Szczegóły mapy z Workshop zostały odświeżone"
         },
         "error": {
           "create": "Błąd podczas tworzenia mapy",
           "update": "Błąd podczas aktualizacji mapy",
+          "already_exists": "Mapa o tej nazwie już istnieje",
           "invalid_workshop": "Nieprawidłowe ID mapy z Workshop. Sprawdź, czy ID istnieje w Steam Workshop.",
           "workshop_refresh": "Błąd podczas odświeżania szczegółów mapy z Workshop"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active Duty",
       "available_modes": "Dostępne w trybach",
       "workshop_id": "Link do Workshop",
-      "search": "Szukaj map"
+      "search": "Szukaj map",
+      "deleted_maps": "Usunięte mapy",
+      "deleted_maps_description": "Usunięte mapy są ukryte w każdym map poolu i każdym wyborze, ale mecze już na nich rozegrane zachowują swoją historię. Przywrócenie zwraca mapę w takim stanie, w jakim była.",
+      "deleted_on": "Usunięto {date}",
+      "restore_map": "Przywróć"
     },
     "map_pool": {
       "toggle_pool_type": "Zaktualizowano map pool",
@@ -3628,13 +3636,69 @@
       "empty_installed": "Nic jeszcze nie zainstalowano.",
       "readme": "O wtyczce",
       "no_readme": "Ta wtyczka nie ma pliku README w swoim repozytorium.",
+      "readme_loading": "Wczytywanie pliku README…",
       "always_load": "Wczytuj w każdym meczu",
       "always_load_hint": "Wczytuj ją bez wybierania przez tryb gry.",
       "always_load_ranked": "Wczytuje się także w meczach rankingowych i matchmakingu.",
       "configure": "Konfiguracja",
       "configure_hint": "Zapisywana przez wtyczkę przy pierwszym wczytaniu, więc pojawia się po tym, jak serwer raz uruchomi ten tryb.",
       "configure_open": "Otwórz pliki",
-      "pending": "oczekuje"
+      "pending": "oczekuje",
+      "state_installed": "Zainstalowana",
+      "state_failed": "Niepowodzenie",
+      "state_absent": "Niezainstalowana",
+      "checked": "Sprawdzono",
+      "never_checked": "Nigdy nie zgłoszono",
+      "status": {
+        "Pending": "Oczekujące",
+        "Installing": "Instalowanie…",
+        "Installed": "Zainstalowana",
+        "Failed": "Niepowodzenie",
+        "Removing": "Usuwanie…"
+      },
+      "remove_confirm_title": "Usunąć tę wtyczkę?",
+      "remove_confirm_description": "Korzysta z niej {modes}. Usunięcie wyrzuci ją także z tych trybów.",
+      "remove_confirm_action": "Usuń mimo to",
+      "guidelines": {
+        "badge": "Wymaga wyłączonych wytycznych",
+        "toggle": "Wyłącz wytyczne serwerowe Valve",
+        "hint": "{name} nie zrobi tego, do czego służy, dopóki framework egzekwuje wytyczne serwerowe Valve. Serwery, które ją wczytają, wystartują z wyłączonymi wytycznymi.",
+        "off_hint": "Jeśli zostawisz je włączone, wtyczka i tak się zainstaluje i wczyta — te jej części, które zmieniają to, co widzi gracz, po prostu nic nie zrobią.",
+        "warning_title": "Uwaga: to może doprowadzić do bana twoich tokenów GSLT na Steamie",
+        "warning_description": "Według Valve działanie poza ich oficjalnymi wytycznymi serwerowymi może spowodować zbanowanie każdego Game Server Login Token (GSLT) na koncie Steam właściciela serwera. Włączasz na własne ryzyko.",
+        "warning_link_label": "Wytyczne serwerowe Valve",
+        "already_off": "Już wyłączone w tym wdrożeniu: 5stack Ranks wyłącza wytyczne serwerowe Valve, żeby pokazywać rangi w grze, a związane z tym ryzyko dotyczy twojego konta Steam, a nie pojedynczego serwera.",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "Dodaj wtyczkę",
+        "badge": "Własna",
+        "title": "Dodaj wtyczkę, której nie ma w katalogu",
+        "description": "Wskaż 5Stackowi release, a stanie się wpisem jak każdy inny — instalowalnym na każdym węźle, z pobraniem weryfikowanym względem sumy kontrolnej pobranej tutaj.",
+        "url": "URL release'u",
+        "url_hint": "Repozytorium GitHub, release albo link prosto do pliku .zip. Repozytorium zostanie rozwiązane do najnowszego archiwum linuksowego z jego ostatniego release'u.",
+        "runtime": "Framework",
+        "runtime_placeholder": "Dla którego frameworka jest ta kompilacja?",
+        "runtime_hint": "Kompilacja pod CounterStrikeSharp nie wczyta się pod SwiftlyS2, a w archiwum nie ma nic, co mówiłoby, która to z nich.",
+        "advanced": "Szczegóły, których nie udało nam się odczytać z adresu URL",
+        "slug": "Slug",
+        "version": "Wersja",
+        "name": "Nazwa",
+        "summary": "Opis",
+        "layout": "Układ archiwum",
+        "layout_csgo": "Korzeniem archiwum jest game/csgo",
+        "layout_plugin": "Korzeniem archiwum jest folder wtyczki",
+        "layout_hint": "Większość wtyczek do CS2 dostarcza archiwum, które już zawiera addons/…; wybierz drugą opcję, jeśli twoje rozpakowuje się prosto do własnego folderu wtyczki.",
+        "install_path": "Ścieżka instalacji",
+        "warning_title": "Nikt nie sprawdził tej wtyczki",
+        "warning_description": "Wtyczka do gry jest ładowana do procesu cs2 na twoich maszynach i może wszystko to, co może ten proces. Dodając ją tutaj, ręczysz za nią sam — między tobą a nią nie stoi żaden opiekun rejestru.",
+        "submit": "Dodaj do katalogu",
+        "added": "Dodano {name} {version}",
+        "remove": "Usuń z katalogu",
+        "remove_hint": "Odinstaluj ją ze swoich węzłów, zanim usuniesz ją z katalogu.",
+        "removed": "Usunięto z katalogu"
+      },
+      "retry": "Spróbuj ponownie"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "To trwale usunie „{name}”. Tej operacji nie da się cofnąć."
     },
     "placeholder_folder_name": "nazwa folderu",
-    "placeholder_file_name": "nazwa pliku"
+    "placeholder_file_name": "nazwa pliku",
+    "scope_node": "Węzeł",
+    "scope_server": "Serwer",
+    "missing_path": "Ten katalog jeszcze nie istnieje.",
+    "missing_path_create": "Utwórz go",
+    "missing_path_dismiss": "Odrzuć"
   },
   "error": {
     "generic": "Wystąpił błąd. Spróbuj ponownie."
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "Tryb gry",
         "none": "Competitive (bez trybu)",
-        "description": "Wczytuje zestaw wtyczek i zmiennych konsoli na serwerze meczowym."
+        "description": "Wczytuje zestaw wtyczek i zmiennych konsoli na serwerze meczowym.",
+        "unranked_note": "Mecze z własnym trybem gry nigdy nie liczą się do ELO ani do rankingów."
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "Competitive",
         "description": "Klasyczne doświadczenie 5 na 5 z pełną koordynacją drużyny"
       },
       "wingman": {
+        "title": "Wingman",
         "description": "Zbierz się z przyjacielem i rywalizuj w dynamicznych meczach 2v2"
       },
       "duel": {
+        "title": "Duel",
         "description": "Rywalizacyjne doświadczenie 1 na 1, idealne do trenowania indywidualnych umiejętności"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "Wybierz węzeł serwerów gry z zainstalowanym CS",
       "type": "Typ serwera",
       "select_type": "Wybierz typ serwera",
+      "game_mode": "Tryb gry",
+      "select_game_mode": "Wybierz tryb gry",
+      "valve_preset_group": "Presety Valve",
+      "custom_mode_group": "Własne tryby",
+      "custom_mode_group_locked": "wymaga węzła serwerów gry",
+      "custom_modes_need_node_title": "Własne tryby wymagają węzła serwerów gry",
+      "custom_modes_need_node_description": "Własny tryb to zestaw wtyczek, które 5Stack instaluje na serwerze, na którym działa. Na cudzym serwerze dedykowanym nie może niczego zainstalować, więc podepnij ten serwer do węzła serwerów gry w sekcji Połączenie, żeby móc jakiś wybrać.",
       "game": "Gra",
       "csgo_ranked_unavailable_title": "Ranked niedostępny",
       "csgo_ranked_unavailable_description": "Tryb ranked nie jest jeszcze dostępny dla serwerów CS:GO",
@@ -8202,6 +8282,8 @@
       "name": "Nazwa",
       "slug": "Slug",
       "description": "Opis",
+      "enabled": "Włączony",
+      "enabled_description": "Wyłączone tryby są zachowywane, ale nie można ich wybrać do meczu, serwera ani pokoju draftu.",
       "competitive_safe": "Bezpieczny dla gry competitive",
       "competitive_safe_description": "Czy ten tryb może być użyty w meczu rankingowym lub matchmakingowym.",
       "plugins": "Wtyczki",
@@ -8215,8 +8297,16 @@
       "save": "Zapisz tryb",
       "saved": "Tryb gry zapisany",
       "archived": "Tryb gry zarchiwizowany",
+      "restore": "Przywróć",
+      "restored": "Tryb gry przywrócony",
+      "delete": "Usuń",
+      "deleted": "Tryb gry usunięty",
+      "delete_confirm_title": "Usunąć {name}?",
+      "delete_confirm_description": "Trwale usuwa tryb. Jeśli jakiś mecz już go użył, zostanie zamiast tego ukryty — ta historia pozostaje nienaruszona i możesz go później przywrócić.",
       "runtime_none": "Te wtyczki nie mają wspólnego frameworka, więc ten tryb nigdzie nie zadziała. Usuń tę, która celuje w drugi framework.",
-      "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki."
+      "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki.",
+      "open_plugin": "Otwórz stronę tej wtyczki w nowej karcie",
+      "archived_instead": "W tym trybie rozegrano już mecze, więc został ukryty zamiast usunięty. Możesz go przywrócić w dowolnej chwili."
     }
   }
 }

@@ -1394,8 +1394,8 @@
         "manual_caption": "hors catalogue",
         "modes": "Modes de jeu",
         "modes_caption": "définis",
-        "modes_unranked": "Non classé",
-        "modes_unranked_caption": "modes sans ELO"
+        "modes_unranked": "Non compatible draft",
+        "modes_unranked_caption": "modes masqués dans les lobbys de draft"
       }
     },
     "tournaments": {
@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Mode de jeu",
         "none": "Compétitif (aucun mode)",
-        "description": "Charge un ensemble de plugins et de variables de console sur le serveur du match.",
-        "not_competitive_safe": "Ce mode n'est pas marqué comme compatible avec le jeu compétitif. Il compte quand même pour l'ELO — marque-le comme compatible compétitif dans le mode lui-même si c'est voulu."
+        "description": "Charge un ensemble de plugins et de variables de console sur le serveur du match."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Mode",
       "mode_description": "Comment le match se joue. Laisse sur Compétitif pour un match normal, ou choisis un mode pour charger ses plugins sur le serveur.",
       "mode_none": "Compétitif",
-      "mode_none_hint": "Règles standard. Compte pour l'ELO et les classements.",
-      "mode_empty": "Aucun mode de jeu n'est encore configuré. Un administrateur peut en ajouter dans les Paramètres."
+      "mode_none_hint": "Règles standard. Compte pour l'ELO et les classements."
     },
     "host": "L'hôte",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Description",
       "competitive_safe": "Compatible avec le jeu compétitif",
       "competitive_safe_description": "Si ce mode peut être utilisé par un match classé ou de matchmaking.",
-      "competitive_safe_warning": "Ce mode ne sera proposé que sur les matchs casual. Les serveurs classés n'héritent jamais d'un mode, le matchmaking démarre donc toujours avec un jeu de plugins propre.",
       "plugins": "Plugins",
       "plugins_description": "Chargés dans l'ordre affiché, après tout ce qui a été placé à la main dans custom-plugins.",
       "no_plugins": "Aucun plugin de jeu dans le catalogue. Synchronise le registre et installes-en un d'abord.",
@@ -8217,7 +8214,6 @@
       "extra_game_params_description": "Ajoutés à la ligne de commande du serveur à son démarrage.",
       "save": "Enregistrer le mode",
       "saved": "Mode de jeu enregistré",
-      "archive": "Archiver",
       "archived": "Mode de jeu archivé",
       "runtime_none": "Ces plugins n'ont aucun framework en commun, ce mode ne peut donc tourner nulle part. Retire celui qui vise l'autre framework.",
       "runtime_only": "Tourne uniquement sur {runtime}, car c'est le seul framework pour lequel tous ces plugins existent."

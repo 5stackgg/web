@@ -995,10 +995,10 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                 </FormField>
 
                 <p
-                  v-if="selectedGameMode && !selectedGameMode.competitive_safe"
+                  v-if="selectedGameMode"
                   class="text-sm text-muted-foreground"
                 >
-                  {{ $t("match.options.game_mode.not_competitive_safe") }}
+                  {{ $t("match.options.game_mode.unranked_note") }}
                 </p>
               </div>
             </Card>
@@ -1524,7 +1524,6 @@ export default {
             id: true,
             name: true,
             enabled: true,
-            competitive_safe: true,
             supported_runtimes: [{}, true],
           },
         ],
@@ -1555,6 +1554,9 @@ export default {
             where: {
               enabled: {
                 _eq: true,
+              },
+              deleted_at: {
+                _is_null: true,
               },
             },
           },
@@ -1942,9 +1944,9 @@ export default {
       return allowsGameMode();
     },
     // Filtered only by what the server could actually load. competitive_safe is
-    // not a filter here: every match type counts toward ELO, so hiding unsafe
-    // modes by type would hide them everywhere. It drives the warning below
-    // instead, and the hard guarantee lives on servers.type = 'Ranked'.
+    // not a filter here: it curates which modes draft lobbies offer, nothing
+    // more. Any mode makes the match unranked (a DB trigger stamps
+    // counts_toward_ranking at creation), which is what the note below says.
     availableGameModes(): Array<Record<string, any>> {
       return (this.gameModes ?? []).filter((mode: Record<string, any>) => {
         if (!mode.enabled) {

@@ -14834,6 +14834,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	/** An object relationship */
 	plugin?:ValueTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
@@ -14906,6 +14907,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_error?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	path?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -14927,6 +14929,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_error?: string | undefined | null | Variable<any, string>,
+	path?: string | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
@@ -14943,6 +14946,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -14957,6 +14961,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -14970,6 +14975,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -14984,6 +14990,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -15014,6 +15021,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -15042,6 +15050,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_error?: string | undefined | null | Variable<any, string>,
+	path?: string | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
@@ -15066,6 +15075,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	installed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	last_error?: string | undefined | null | Variable<any, string>,
+	path?: string | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
@@ -20465,6 +20475,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 	/** columns and relationships of "maps" */
 ["maps"]: AliasType<{
 	active_pool?:boolean | `@${string}`,
+	deleted_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_type?:ValueTypes["e_match_types"],
 	enabled?:boolean | `@${string}`,
@@ -20555,6 +20566,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	_not?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	active_pool?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -20574,6 +20586,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -20588,6 +20601,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: AliasType<{
+	deleted_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
@@ -20598,6 +20612,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 }>;
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
+	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20607,6 +20622,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: AliasType<{
+	deleted_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
@@ -20617,6 +20633,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 }>;
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
+	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20647,6 +20664,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
 	active_pool?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20672,6 +20690,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
@@ -20691,6 +20710,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
@@ -83968,6 +83988,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	/** An object relationship */
 	plugin?:ResolverInputTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
@@ -84040,6 +84061,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	installed_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_error?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	path?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -84061,6 +84083,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	installed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -84077,6 +84100,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -84091,6 +84115,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	installed_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_error?: ResolverInputTypes["order_by"] | undefined | null,
+	path?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -84104,6 +84129,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?:boolean | `@${string}`,
 	installed_at?:boolean | `@${string}`,
 	last_error?:boolean | `@${string}`,
+	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -84118,6 +84144,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	installed_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_error?: ResolverInputTypes["order_by"] | undefined | null,
+	path?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -84148,6 +84175,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	installed_at?: ResolverInputTypes["order_by"] | undefined | null,
 	last_error?: ResolverInputTypes["order_by"] | undefined | null,
+	path?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
 	runtime?: ResolverInputTypes["order_by"] | undefined | null,
@@ -84176,6 +84204,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	installed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
@@ -84200,6 +84229,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	installed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
@@ -89599,6 +89629,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 	/** columns and relationships of "maps" */
 ["maps"]: AliasType<{
 	active_pool?:boolean | `@${string}`,
+	deleted_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_type?:ResolverInputTypes["e_match_types"],
 	enabled?:boolean | `@${string}`,
@@ -89689,6 +89720,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	_not?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -89708,6 +89740,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -89722,6 +89755,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: AliasType<{
+	deleted_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
@@ -89732,6 +89766,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 }>;
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
+	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
@@ -89741,6 +89776,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: AliasType<{
+	deleted_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
@@ -89751,6 +89787,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 }>;
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
+	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
@@ -89781,6 +89818,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
 	active_pool?: ResolverInputTypes["order_by"] | undefined | null,
+	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -89806,6 +89844,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -89825,6 +89864,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -151852,6 +151892,7 @@ export type ModelTypes = {
 	id: ModelTypes["uuid"],
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	/** An object relationship */
 	plugin?: ModelTypes["game_plugins"] | undefined | null,
 	plugin_slug: string,
@@ -151921,6 +151962,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	installed_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_error?: ModelTypes["String_comparison_exp"] | undefined | null,
+	path?: ModelTypes["String_comparison_exp"] | undefined | null,
 	plugin?: ModelTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -151941,6 +151983,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin?: ModelTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -151957,6 +152000,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -151970,6 +152014,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	installed_at?: ModelTypes["order_by"] | undefined | null,
 	last_error?: ModelTypes["order_by"] | undefined | null,
+	path?: ModelTypes["order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	updated_at?: ModelTypes["order_by"] | undefined | null,
@@ -151983,6 +152028,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -151996,6 +152042,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	installed_at?: ModelTypes["order_by"] | undefined | null,
 	last_error?: ModelTypes["order_by"] | undefined | null,
+	path?: ModelTypes["order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	updated_at?: ModelTypes["order_by"] | undefined | null,
@@ -152025,6 +152072,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	installed_at?: ModelTypes["order_by"] | undefined | null,
 	last_error?: ModelTypes["order_by"] | undefined | null,
+	path?: ModelTypes["order_by"] | undefined | null,
 	plugin?: ModelTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
 	runtime?: ModelTypes["order_by"] | undefined | null,
@@ -152050,6 +152098,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
@@ -152074,6 +152123,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	installed_at?: ModelTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
@@ -157062,6 +157112,7 @@ export type ModelTypes = {
 	/** columns and relationships of "maps" */
 ["maps"]: {
 		active_pool: boolean,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	e_match_type: ModelTypes["e_match_types"],
 	enabled: boolean,
@@ -157133,6 +157184,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["maps_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	deleted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_match_type?: ModelTypes["e_match_types_bool_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -157151,6 +157203,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	e_match_type?: ModelTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -157165,7 +157218,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: {
-		id?: ModelTypes["uuid"] | undefined | null,
+		deleted_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
@@ -157174,6 +157228,7 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
+	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	label?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
@@ -157183,7 +157238,8 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: {
-		id?: ModelTypes["uuid"] | undefined | null,
+		deleted_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
@@ -157192,6 +157248,7 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
+	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
 	label?: ModelTypes["order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
@@ -157221,6 +157278,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
 	active_pool?: ModelTypes["order_by"] | undefined | null,
+	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	e_match_type?: ModelTypes["e_match_types_order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
@@ -157243,6 +157301,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -157262,6 +157321,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -213535,6 +213595,7 @@ export type GraphQLTypes = {
 	id: GraphQLTypes["uuid"],
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	/** An object relationship */
 	plugin?: GraphQLTypes["game_plugins"] | undefined | null,
 	plugin_slug: string,
@@ -213606,6 +213667,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	installed_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	last_error?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	path?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
@@ -213627,6 +213689,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
@@ -213644,6 +213707,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -213657,6 +213721,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	installed_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_error?: GraphQLTypes["order_by"] | undefined | null,
+	path?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	updated_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -213671,6 +213736,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -213684,6 +213750,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	installed_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_error?: GraphQLTypes["order_by"] | undefined | null,
+	path?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	updated_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -213714,6 +213781,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	installed_at?: GraphQLTypes["order_by"] | undefined | null,
 	last_error?: GraphQLTypes["order_by"] | undefined | null,
+	path?: GraphQLTypes["order_by"] | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
 	runtime?: GraphQLTypes["order_by"] | undefined | null,
@@ -213742,6 +213810,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
@@ -213766,6 +213835,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	installed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	last_error?: string | undefined | null,
+	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
@@ -219015,6 +219085,7 @@ export type GraphQLTypes = {
 ["maps"]: {
 	__typename: "maps",
 	active_pool: boolean,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	e_match_type: GraphQLTypes["e_match_types"],
 	enabled: boolean,
@@ -219088,6 +219159,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["maps_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_match_type?: GraphQLTypes["e_match_types_bool_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -219107,6 +219179,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
 		active_pool?: boolean | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	e_match_type?: GraphQLTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -219122,6 +219195,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["maps_max_fields"]: {
 	__typename: "maps_max_fields",
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	name?: string | undefined | null,
@@ -219131,7 +219205,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined | null,
+		deleted_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	patch?: GraphQLTypes["order_by"] | undefined | null,
@@ -219141,6 +219216,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["maps_min_fields"]: {
 	__typename: "maps_min_fields",
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	name?: string | undefined | null,
@@ -219150,7 +219226,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined | null,
+		deleted_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	patch?: GraphQLTypes["order_by"] | undefined | null,
@@ -219180,6 +219257,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
 		active_pool?: GraphQLTypes["order_by"] | undefined | null,
+	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
 	e_match_type?: GraphQLTypes["e_match_types_order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
@@ -219205,6 +219283,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 		active_pool?: boolean | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -219224,6 +219303,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 		active_pool?: boolean | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -265475,6 +265555,7 @@ export enum game_server_node_plugins_select_column {
 	id = "id",
 	installed_at = "installed_at",
 	last_error = "last_error",
+	path = "path",
 	plugin_slug = "plugin_slug",
 	runtime = "runtime",
 	source = "source",
@@ -265500,6 +265581,7 @@ export enum game_server_node_plugins_update_column {
 	id = "id",
 	installed_at = "installed_at",
 	last_error = "last_error",
+	path = "path",
 	plugin_slug = "plugin_slug",
 	runtime = "runtime",
 	source = "source",
@@ -266054,6 +266136,7 @@ export enum maps_constraint {
 /** select columns of table "maps" */
 export enum maps_select_column {
 	active_pool = "active_pool",
+	deleted_at = "deleted_at",
 	enabled = "enabled",
 	id = "id",
 	label = "label",
@@ -266076,6 +266159,7 @@ export enum maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns
 /** update columns of table "maps" */
 export enum maps_update_column {
 	active_pool = "active_pool",
+	deleted_at = "deleted_at",
 	enabled = "enabled",
 	id = "id",
 	label = "label",

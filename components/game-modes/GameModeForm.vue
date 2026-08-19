@@ -12,7 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { AlertTriangle, Trash2 } from "lucide-vue-next";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
+import { ArchiveRestore, Trash2, ExternalLink } from "lucide-vue-next";
 import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 </script>
 
@@ -44,11 +54,30 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
       <FormItem>
         <FormLabel>{{ $t("game_modes.form.description") }}</FormLabel>
         <FormControl>
-          <Input v-bind="componentField" />
+          <Textarea v-bind="componentField" rows="3" class="min-h-[4.5rem]" />
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
+
+    <!-- An archived mode is disabled by definition; Restore re-enables it. -->
+    <div v-if="!gameMode?.archived_at" class="rounded-md border p-4">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="font-medium">{{ $t("game_modes.form.enabled") }}</p>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("game_modes.form.enabled_description") }}
+          </p>
+        </div>
+        <FormField v-slot="{ value, handleChange }" name="enabled">
+          <FormItem>
+            <FormControl>
+              <Switch :model-value="value" @update:model-value="handleChange" />
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </div>
+    </div>
 
     <div class="space-y-3 rounded-md border p-4">
       <div class="flex items-start justify-between gap-4">
@@ -67,13 +96,6 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         </FormField>
       </div>
 
-      <p
-        v-if="!form.values.competitive_safe"
-        class="flex items-start gap-2 text-sm text-muted-foreground"
-      >
-        <AlertTriangle class="mt-0.5 h-4 w-4 shrink-0" />
-        {{ $t("game_modes.form.competitive_safe_warning") }}
-      </p>
     </div>
 
     <!-- Compatibility is derived from the plugins below, not declared here: a
@@ -112,7 +134,19 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
       >
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <span class="font-medium truncate">{{ plugin.name }}</span>
+            <!-- A new tab rather than a route: deciding what belongs in a mode
+                 means reading what each plugin actually does, and leaving the
+                 form to do it would lose an unsaved selection. -->
+            <a
+              :href="`/plugins/${plugin.slug}`"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-w-0 items-center gap-1 font-medium hover:underline"
+              :title="$t('game_modes.form.open_plugin')"
+            >
+              <span class="truncate">{{ plugin.name }}</span>
+              <ExternalLink class="h-3 w-3 shrink-0 text-muted-foreground" />
+            </a>
             <Badge variant="outline" v-if="!plugin.hot_swappable">
               {{ $t("game_modes.form.restart_required") }}
             </Badge>
@@ -161,16 +195,31 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
     </FormField>
 
     <div class="flex items-center justify-between gap-4">
+      <!-- One retire action. Delete removes a mode nothing has used; a mode
+           some match already ran cannot be deleted (the DB keeps that history),
+           so it is archived -- hidden everywhere -- and the toast says so.
+           Restore undoes an archive. -->
       <Button
+        v-if="gameMode?.archived_at"
+        type="button"
+        variant="outline"
+        class="gap-2"
+        :loading="deleting"
+        @click="restore"
+      >
+        <ArchiveRestore class="h-4 w-4" />
+        {{ $t("game_modes.form.restore") }}
+      </Button>
+      <Button
+        v-else-if="gameMode"
         type="button"
         variant="destructive"
         class="gap-2"
-        v-if="gameMode"
-        :loading="archiving"
-        @click="archive"
+        :loading="deleting"
+        @click="confirmDelete = true"
       >
         <Trash2 class="h-4 w-4" />
-        {{ $t("game_modes.form.archive") }}
+        {{ $t("game_modes.form.delete") }}
       </Button>
       <span v-else />
 
@@ -178,6 +227,25 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         {{ $t("game_modes.form.save") }}
       </Button>
     </div>
+
+    <AlertDialog :open="confirmDelete" @update:open="confirmDelete = $event">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {{ $t("game_modes.form.delete_confirm_title", { name: gameMode?.name }) }}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("game_modes.form.delete_confirm_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" @click="remove">
+            {{ $t("game_modes.form.delete") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </form>
 </template>
 
@@ -201,7 +269,8 @@ export default {
   data() {
     return {
       submitting: false,
-      archiving: false,
+      deleting: false,
+      confirmDelete: false,
       selected: [] as Array<string>,
       availablePlugins: [] as Array<Record<string, any>>,
       alwaysLoad: [] as Array<string>,
@@ -216,6 +285,7 @@ export default {
                 "lowercase letters, numbers and dashes only",
               ),
             description: z.string().optional().default(""),
+            enabled: z.boolean().default(true),
             competitive_safe: z.boolean().default(false),
             cfg: z.string().optional().default(""),
             extra_game_params: z.string().optional().default(""),
@@ -267,6 +337,7 @@ export default {
           name: mode.name,
           slug: mode.slug,
           description: mode.description ?? "",
+          enabled: mode.enabled,
           competitive_safe: mode.competitive_safe,
           cfg: mode.cfg ?? "",
           extra_game_params: mode.extra_game_params ?? "",
@@ -285,6 +356,11 @@ export default {
     },
   },
   computed: {
+    // Whether any match has run this mode; the parent's query carries one
+    // referencing match_options row as the answer.
+    usedByMatches(): boolean {
+      return (this.gameMode?.match_options?.length ?? 0) > 0;
+    },
     // A plugin set to load on every match is already on every server. Listing
     // it here reads as a choice, and unticking it would not stop it loading.
     selectablePlugins(): Array<Record<string, any>> {
@@ -323,6 +399,7 @@ export default {
           name: values.name,
           slug: values.slug,
           description: values.description || null,
+          ...(this.gameMode?.archived_at ? {} : { enabled: values.enabled }),
           competitive_safe: values.competitive_safe,
           cfg: values.cfg || null,
           extra_game_params: values.extra_game_params || null,
@@ -397,27 +474,79 @@ export default {
         }),
       });
     },
-    async archive() {
-      if (this.archiving) {
+    // Archived is the one pair of columns both Restore and the used-mode
+    // Delete flip; an archived mode is disabled by definition.
+    async setArchived(archived: boolean) {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          update_game_modes_by_pk: [
+            {
+              pk_columns: { id: this.gameMode.id },
+              _set: archived
+                ? { archived_at: new Date().toISOString(), enabled: false }
+                : { archived_at: null, enabled: true },
+            },
+            { id: true },
+          ],
+        }),
+      });
+    },
+    async restore() {
+      if (this.deleting) {
         return;
       }
 
-      this.archiving = true;
+      this.deleting = true;
 
       try {
-        await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            update_game_modes_by_pk: [
-              {
-                pk_columns: { id: this.gameMode.id },
-                _set: { archived_at: new Date().toISOString(), enabled: false },
-              },
-              { id: true },
-            ],
-          }),
-        });
+        await this.setArchived(false);
 
-        toast({ title: this.$t("game_modes.form.archived") as string });
+        toast({ title: this.$t("game_modes.form.restored") as string });
+        this.$emit("saved", this.gameMode.id);
+      } catch (error) {
+        toast({
+          title: (error as Error).message,
+          variant: "destructive",
+        });
+      } finally {
+        this.deleting = false;
+      }
+    },
+    // tbd_game_modes refuses to delete a mode any match has used, because the
+    // finished match still points at it. Decided here from the match count the
+    // row carries rather than by trying the delete and reading the trigger's
+    // message: the global apollo error hook toasts every rejected mutation, so
+    // the attempt would surface as a red database error before the fallback.
+    // A used mode is archived instead: gone from every picker, history intact,
+    // restorable from here.
+    async remove() {
+      if (this.deleting) {
+        return;
+      }
+
+      this.deleting = true;
+
+      try {
+        if (this.usedByMatches) {
+          await this.setArchived(true);
+          toast({
+            title: this.$t("game_modes.form.archived") as string,
+            description: this.$t(
+              "game_modes.form.archived_instead",
+            ) as string,
+          });
+        } else {
+          await (this as any).$apollo.mutate({
+            mutation: generateMutation({
+              delete_game_modes_by_pk: [
+                { id: this.gameMode.id },
+                { id: true },
+              ],
+            }),
+          });
+          toast({ title: this.$t("game_modes.form.deleted") as string });
+        }
+
         this.$emit("saved", null);
       } catch (error) {
         toast({
@@ -425,7 +554,7 @@ export default {
           variant: "destructive",
         });
       } finally {
-        this.archiving = false;
+        this.deleting = false;
       }
     },
   },

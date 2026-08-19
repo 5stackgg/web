@@ -1394,8 +1394,8 @@
         "manual_caption": "fuori dal catalogo",
         "modes": "Modalità di gioco",
         "modes_caption": "definite",
-        "modes_unranked": "Non classificate",
-        "modes_unranked_caption": "modalità che ignorano l'ELO"
+        "modes_unranked": "Non adatti al draft",
+        "modes_unranked_caption": "modalità nascoste nelle lobby di draft"
       }
     },
     "tournaments": {
@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Modalità di gioco",
         "none": "Competitive (nessuna modalità)",
-        "description": "Carica un insieme di plugin e variabili di console sul server della partita.",
-        "not_competitive_safe": "Questa modalità non è contrassegnata come adatta al gioco competitivo. Conta comunque per l'ELO — contrassegnala come adatta al competitive nella modalità stessa se è voluto."
+        "description": "Carica un insieme di plugin e variabili di console sul server della partita."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Modalità",
       "mode_description": "Come si gioca la partita. Lascia su Competitive per una partita normale, oppure scegli una modalità per caricarne i plugin sul server.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Regole standard. Conta per l'ELO e le classifiche.",
-      "mode_empty": "Non è ancora configurata alcuna modalità di gioco. Un amministratore può aggiungerle nelle Impostazioni."
+      "mode_none_hint": "Regole standard. Conta per l'ELO e le classifiche."
     },
     "host": "L'host",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Descrizione",
       "competitive_safe": "Adatta al gioco competitivo",
       "competitive_safe_description": "Se questa modalità può essere usata da una partita classificata o di matchmaking.",
-      "competitive_safe_warning": "Questa modalità sarà offerta solo nelle partite casual. I server classificati non ereditano mai una modalità, quindi il matchmaking parte sempre con un set di plugin pulito.",
       "plugins": "Plugin",
       "plugins_description": "Caricati nell'ordine mostrato, dopo tutto ciò che è stato messo a mano in custom-plugins.",
       "no_plugins": "Nessun plugin di gioco nel catalogo. Sincronizza il registry e installane uno prima.",
@@ -8217,7 +8214,6 @@
       "extra_game_params_description": "Aggiunti alla riga di comando del server all'avvio.",
       "save": "Salva modalità",
       "saved": "Modalità di gioco salvata",
-      "archive": "Archivia",
       "archived": "Modalità di gioco archiviata",
       "runtime_none": "Questi plugin non hanno alcun framework in comune, quindi questa modalità non può girare da nessuna parte. Rimuovi quello destinato all'altro framework.",
       "runtime_only": "Gira solo su {runtime}, perché è l'unico framework per cui esistono tutti questi plugin."

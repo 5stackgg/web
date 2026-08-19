@@ -17,9 +17,15 @@ import {
   X,
 } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useQuery } from "@vue/apollo-composable";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import matchOptionsValidator from "~/utilities/match-options-validator";
-import { setupOptions, setupOptionsVariables } from "~/utilities/setupOptions";
+import {
+  canSetGameMode,
+  setupOptions,
+  setupOptionsVariables,
+} from "~/utilities/setupOptions";
+import { generateQuery } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { HeightMorph, HeightSwap, Fold } from "~/components/ui/transitions";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
@@ -121,16 +127,62 @@ const team2Selection = computed(() =>
   team2Id.value ? { id: team2Id.value, name: source?.team_2?.name } : null,
 );
 
+// A draft room only offers modes flagged for draft lobbies (competitive_safe
+// curates this list, nothing else -- custom modes never count toward ELO).
+// Otherwise mirrors MatchOptions's "available" rule: enabled, and loadable on
+// the server runtime.
+const applicationSettings = useApplicationSettingsStore();
+const modesQueryEnabled = computed(
+  () => canSetGameMode() && applicationSettings.gamePluginsEnabled,
+);
+const { result: gameModesResult } = useQuery(
+  generateQuery({
+    game_modes: [
+      {},
+      {
+        id: true,
+        name: true,
+        description: true,
+        enabled: true,
+        competitive_safe: true,
+        supported_runtimes: [{}, true],
+      },
+    ],
+  }),
+  null,
+  () => ({ fetchPolicy: "cache-first", enabled: modesQueryEnabled.value }),
+);
+const draftEligibleModes = computed<Array<Record<string, any>>>(() =>
+  ((gameModesResult.value as any)?.game_modes ?? []).filter(
+    (gameMode: Record<string, any>) =>
+      gameMode.enabled &&
+      gameMode.competitive_safe &&
+      (gameMode.supported_runtimes ?? []).includes(
+        applicationSettings.gameServerPluginRuntime,
+      ),
+  ),
+);
+// With nothing but Competitive to pick, the step is a page with one answer --
+// drop it from the flow rather than make the host click through it.
+const hasModeStep = computed(() => draftEligibleModes.value.length > 0);
+
+const STEP_MODE = 2;
+const STEP_FORMAT = 3;
 const step = ref(1);
 const steps = [
-  "draft_games.create.step_settings",
-  "draft_games.create.step_mode",
-  "draft_games.create.step_format",
-  "draft_games.create.step_rules",
+  { id: 1, label: "draft_games.create.step_settings" },
+  { id: STEP_MODE, label: "draft_games.create.step_mode" },
+  { id: STEP_FORMAT, label: "draft_games.create.step_format" },
+  { id: 4, label: "draft_games.create.step_rules" },
 ];
-// Format is the step a 1v1 has nothing to choose in; it moved from 2 to 3 when
-// mode was inserted ahead of it.
-const stepDisabled = (n: number) => n === 3 && isDuel.value;
+const visibleSteps = computed(() =>
+  steps.filter((s) => s.id !== STEP_MODE || hasModeStep.value),
+);
+// Format is the step a 1v1 has nothing to choose in.
+const stepDisabled = (n: number) => n === STEP_FORMAT && isDuel.value;
+const reachableSteps = computed(() =>
+  visibleSteps.value.map((s) => s.id).filter((id) => !stepDisabled(id)),
+);
 
 const goToStep = (n: number) => {
   if (stepDisabled(n)) {
@@ -140,23 +192,25 @@ const goToStep = (n: number) => {
 };
 
 const next = () => {
-  let target = step.value + 1;
-  while (target <= steps.length && stepDisabled(target)) {
-    target++;
-  }
-  if (target <= steps.length) {
+  const target = reachableSteps.value.find((id) => id > step.value);
+  if (target) {
     step.value = target;
   }
 };
 const prev = () => {
-  let target = step.value - 1;
-  while (target >= 1 && stepDisabled(target)) {
-    target--;
-  }
-  if (target >= 1) {
+  const target = [...reachableSteps.value]
+    .reverse()
+    .find((id) => id < step.value);
+  if (target) {
     step.value = target;
   }
 };
+
+watch(hasModeStep, (visible) => {
+  if (!visible && step.value === STEP_MODE) {
+    next();
+  }
+});
 
 const modeOptions = [
   {
@@ -308,6 +362,29 @@ const form = useForm({
   initialValues: {},
 });
 validatorComponent.form = form;
+
+// Once the list has settled, a rehosted/edited room carrying a mode that is no
+// longer offered here (archived, pulled from draft lobbies, role lost) falls
+// back to Competitive instead of silently submitting the stale id. Settled
+// means the settings too: the list is filtered on the plugin runtime, which
+// is a default until the settings subscription delivers.
+const modesSettled = computed(
+  () =>
+    applicationSettings.settingsLoaded &&
+    (!modesQueryEnabled.value || gameModesResult.value !== undefined),
+);
+watch(
+  [modesSettled, draftEligibleModes, () => form.values.game_mode_id],
+  ([settled, modes, selected]) => {
+    if (
+      settled &&
+      selected &&
+      !modes.some((gameMode) => gameMode.id === selected)
+    ) {
+      form.setFieldValue("game_mode_id", "");
+    }
+  },
+);
 
 const editBaseline = ref<string | null>(null);
 const settingsSnapshot = () =>
@@ -530,8 +607,8 @@ const submit = form.handleSubmit(async (values: any) => {
       title: t("common.error"),
       description: t("draft_games.create.team_1_required_error"),
     });
-    // Step 3 -- where the team selector the message is about actually lives.
-    step.value = 3;
+    // Format -- where the team selector the message is about actually lives.
+    step.value = STEP_FORMAT;
     return;
   }
 
@@ -639,29 +716,27 @@ const submit = form.handleSubmit(async (values: any) => {
     @keydown.capture="interacted = true"
   >
     <div class="flex items-center gap-2">
-      <template v-for="(label, index) in steps" :key="label">
+      <template v-for="({ id, label }, index) in visibleSteps" :key="id">
         <button
           type="button"
-          :disabled="stepDisabled(index + 1)"
-          :title="
-            stepDisabled(index + 1) ? $t('draft_games.create.no_formats') : ''
-          "
+          :disabled="stepDisabled(id)"
+          :title="stepDisabled(id) ? $t('draft_games.create.no_formats') : ''"
           class="step-pill flex flex-1 basis-0 items-center justify-center gap-2 rounded-md border px-3 py-2 text-center transition-colors disabled:cursor-not-allowed disabled:opacity-40"
           :class="
-            stepDisabled(index + 1)
+            stepDisabled(id)
               ? 'border-dashed border-border text-muted-foreground/40'
-              : step === index + 1
+              : step === id
                 ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
-                : step > index + 1
+                : step > id
                   ? 'border-[hsl(var(--tac-amber)/0.4)] text-muted-foreground'
                   : 'border-border text-muted-foreground/60'
           "
-          @click="goToStep(index + 1)"
+          @click="goToStep(id)"
         >
           <span
             class="grid h-5 w-5 shrink-0 place-items-center rounded-full border text-[0.6rem] font-bold"
             :class="
-              step >= index + 1 && !stepDisabled(index + 1)
+              step >= id && !stepDisabled(id)
                 ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
                 : 'border-border'
             "
@@ -675,7 +750,7 @@ const submit = form.handleSubmit(async (values: any) => {
           </span>
         </button>
         <div
-          v-if="index < steps.length - 1"
+          v-if="index < visibleSteps.length - 1"
           class="h-px w-4 shrink-0 bg-border sm:w-8"
         ></div>
       </template>
@@ -687,7 +762,7 @@ const submit = form.handleSubmit(async (values: any) => {
          state. -->
     <HeightMorph :state="step" class="step-stack">
     <Transition name="step">
-      <div v-show="step === 3" class="space-y-5">
+      <div v-show="step === STEP_FORMAT" class="space-y-5">
         <section v-if="!isDuel">
           <AnimatedFilters
             v-model="mode"
@@ -897,7 +972,7 @@ const submit = form.handleSubmit(async (values: any) => {
     </Transition>
 
     <Transition name="step">
-      <div v-show="step === 2" class="space-y-5">
+      <div v-show="step === STEP_MODE" class="space-y-5">
         <section>
           <div :class="tacticalSectionLabelClasses">
             <span :class="tacticalSectionTickClasses"></span>
@@ -908,7 +983,7 @@ const submit = form.handleSubmit(async (values: any) => {
             {{ $t("draft_games.create.mode_description") }}
           </p>
 
-          <DraftModePicker :form="form" />
+          <DraftModePicker :form="form" :modes="draftEligibleModes" />
         </section>
       </div>
     </Transition>

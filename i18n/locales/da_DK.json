@@ -1394,8 +1394,8 @@
         "manual_caption": "uden for kataloget",
         "modes": "Spiltilstande",
         "modes_caption": "defineret",
-        "modes_unranked": "Uranglerede",
-        "modes_unranked_caption": "tilstande der springer ELO over"
+        "modes_unranked": "Ikke draft-egnet",
+        "modes_unranked_caption": "tilstande skjult i draft-lobbyer"
       }
     },
     "tournaments": {
@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Spiltilstand",
         "none": "Competitive (ingen tilstand)",
-        "description": "Indlæser et sæt plugins og console-variabler på kampserveren.",
-        "not_competitive_safe": "Denne tilstand er ikke markeret som sikker til competitive. Den tæller stadig med i ELO — markér den som sikker til competitive på selve tilstanden, hvis det er meningen."
+        "description": "Indlæser et sæt plugins og console-variabler på kampserveren."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Tilstand",
       "mode_description": "Hvordan kampen spilles. Lad den stå på Competitive for en normal kamp, eller vælg en tilstand for at indlæse dens plugins på serveren.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standardregler. Tæller med i ELO og ranglister.",
-      "mode_empty": "Der er endnu ingen spiltilstande sat op. En administrator kan tilføje dem under Indstillinger."
+      "mode_none_hint": "Standardregler. Tæller med i ELO og ranglister."
     },
     "host": "Værten",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Beskrivelse",
       "competitive_safe": "Sikker til competitive",
       "competitive_safe_description": "Om denne tilstand må bruges af en ranglet kamp eller en matchmaking-kamp.",
-      "competitive_safe_warning": "Denne tilstand tilbydes kun på casual-kampe. Ranglede servere arver aldrig en tilstand, så matchmaking starter altid med et rent plugin-sæt.",
       "plugins": "Plugins",
       "plugins_description": "Indlæses i den viste rækkefølge, efter alt der er lagt manuelt i custom-plugins.",
       "no_plugins": "Ingen spil-plugins i kataloget endnu. Synkronisér registry og installér et først.",
@@ -8217,7 +8214,6 @@
       "extra_game_params_description": "Tilføjes til serverens kommandolinje når den starter.",
       "save": "Gem tilstand",
       "saved": "Spiltilstand gemt",
-      "archive": "Arkivér",
       "archived": "Spiltilstand arkiveret",
       "runtime_none": "Disse plugins har intet framework til fælles, så denne tilstand kan ikke køre nogen steder. Fjern det plugin, der er bygget til det andet framework.",
       "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til."

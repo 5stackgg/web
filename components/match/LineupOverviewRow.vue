@@ -26,6 +26,8 @@ import {
   UserMinus,
 } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
+import SanctionStatusBadge from "~/components/SanctionStatusBadge.vue";
+import PlayerVacBadge from "~/components/PlayerVacBadge.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import RenderHighlightForPlayerDialog from "~/components/match/RenderHighlightForPlayerDialog.vue";
@@ -182,6 +184,12 @@ const DASH = "—";
                     >
                       {{ member.player.name }}
                     </NuxtLink>
+                    <SanctionStatusBadge
+                      v-if="sanctionType(member)"
+                      :type="sanctionType(member)!"
+                      variant="inline"
+                    />
+                    <PlayerVacBadge :player="member.player" />
                   </div>
                   <div
                     class="flex items-center gap-1.5 min-w-0 mt-0.5 text-muted-foreground"
@@ -422,6 +430,15 @@ export default {
     },
   },
   methods: {
+    // Mobile row is hand-rolled (not LineupMember/PlayerDisplay); mirror
+    // PlayerDisplay's activeSanctionType severity order.
+    sanctionType(member: any): "ban" | "mute" | "gag" | null {
+      const player = member?.player;
+      if (player?.is_banned) return "ban";
+      if (player?.is_muted) return "mute";
+      if (player?.is_gagged) return "gag";
+      return null;
+    },
     faceitSkillLevel(member: any): number | null {
       return (
         member?.player?.faceit_rank_history?.[0]?.skill_level ??

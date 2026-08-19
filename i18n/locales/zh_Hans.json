@@ -1394,8 +1394,8 @@
         "manual_caption": "目录之外",
         "modes": "游戏模式",
         "modes_caption": "已定义",
-        "modes_unranked": "非排位",
-        "modes_unranked_caption": "不计入 ELO 的模式"
+        "modes_unranked": "不适用于选人",
+        "modes_unranked_caption": "在选人大厅中隐藏的模式"
       }
     },
     "tournaments": {
@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "游戏模式",
         "none": "竞技（无模式）",
-        "description": "在比赛服务器上加载一组插件和控制台变量。",
-        "not_competitive_safe": "此模式未标记为可用于竞技。它仍会计入 ELO——如果这是有意为之，请在模式本身中将其标记为可用于竞技。"
+        "description": "在比赛服务器上加载一组插件和控制台变量。"
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "模式",
       "mode_description": "比赛的玩法。普通比赛保持竞技即可，或选择一个模式以在服务器上加载其插件。",
       "mode_none": "竞技",
-      "mode_none_hint": "标准规则。计入 ELO 和排行榜。",
-      "mode_empty": "还没有配置任何游戏模式。管理员可以在设置中添加。"
+      "mode_none_hint": "标准规则。计入 ELO 和排行榜。"
     },
     "host": "房主",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "描述",
       "competitive_safe": "可用于竞技对战",
       "competitive_safe_description": "此模式是否可用于排位或匹配比赛。",
-      "competitive_safe_warning": "此模式只会在休闲比赛中提供。排位服务器不会继承模式，因此匹配始终以干净的插件集启动。",
       "plugins": "插件",
       "plugins_description": "按显示顺序加载，位于手动放入 custom-plugins 的内容之后。",
       "no_plugins": "目录中还没有游戏插件。请先同步插件源并安装一个。",
@@ -8217,7 +8214,6 @@
       "extra_game_params_description": "服务器启动时追加到命令行。",
       "save": "保存模式",
       "saved": "游戏模式已保存",
-      "archive": "归档",
       "archived": "游戏模式已归档",
       "runtime_none": "这些插件没有共同的框架，因此该模式无法在任何地方运行。请移除面向另一种框架的那个插件。",
       "runtime_only": "仅在 {runtime} 上运行，因为这是这里所有插件都发布了版本的唯一框架。"

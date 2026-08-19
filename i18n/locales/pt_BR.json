@@ -1239,40 +1239,40 @@
         "total_caption": "painéis distintos já vistos"
       },
       "totals": {
-          "self_reported": "Os painéis são auto-hospedados e reportam essas contagens por conta própria; os valores são validados na chegada, mas não podem ser verificados de forma independente. A infraestrutura é uma contagem pontual a partir do último relatório de cada painel, não um total contínuo.",
-          "game_server_nodes": "Nós de servidores de jogo",
-          "game_server_nodes_caption": "registrados atualmente",
-          "servers": "Servidores",
-          "servers_caption": "registrados atualmente",
-          "public_servers": "Públicos",
-          "public_servers_caption": "servidores não ranqueados",
-          "matches": "Partidas hospedadas",
-          "matches_week": "Hospedadas 7d",
-          "matches_month": "Hospedadas 30d",
-          "matches_year": "Hospedadas 1y",
-          "maps_played": "Mapas jogados",
-          "matches_imported": "Partidas importadas",
-          "matches_imported_month": "Importadas 30d",
-          "players": "Jogadores",
-          "players_played": "Jogaram uma partida",
-          "players_known": "Steam IDs vistos",
-          "players_active": "Jogadores ativos 30d",
-          "teams": "Equipes",
-          "infrastructure": "Infraestrutura",
-          "match_volume": "Volume de partidas",
-          "community": "Comunidade",
-          "matches_caption": "todo o período, em toda a frota",
-          "players_caption": "em uma lineup, últimos 30 dias",
-          "hosted_hint": "Hospedadas contam apenas partidas que um painel rodou por conta própria. Partidas importadas vêm do FACEIT ou do histórico de partidas do CS2 e são listadas separadamente.",
-          "community_hint": "Jogadores contabiliza contas que fizeram login com a Steam pelo menos uma vez. Um painel também armazena uma linha para cada Steam ID que só foi visto em uma lineup, demo ou sanção — esses são contados separadamente como Steam IDs vistos.",
-          "gpu_nodes": "Nós de GPU",
-          "gpu_nodes_caption": "registrados atualmente",
-          "all_time": "todo o período",
-          "last_7d": "últimos 7 dias",
-          "last_30d": "últimos 30 dias",
-          "last_1y": "últimos 365 dias",
-          "signed_in_caption": "logaram pelo menos uma vez",
-          "players_known_caption": "inclui nunca logados"
+        "self_reported": "Os painéis são auto-hospedados e reportam essas contagens por conta própria; os valores são validados na chegada, mas não podem ser verificados de forma independente. A infraestrutura é uma contagem pontual a partir do último relatório de cada painel, não um total contínuo.",
+        "game_server_nodes": "Nós de servidores de jogo",
+        "game_server_nodes_caption": "registrados atualmente",
+        "servers": "Servidores",
+        "servers_caption": "registrados atualmente",
+        "public_servers": "Públicos",
+        "public_servers_caption": "servidores não ranqueados",
+        "matches": "Partidas hospedadas",
+        "matches_week": "Hospedadas 7d",
+        "matches_month": "Hospedadas 30d",
+        "matches_year": "Hospedadas 1y",
+        "maps_played": "Mapas jogados",
+        "matches_imported": "Partidas importadas",
+        "matches_imported_month": "Importadas 30d",
+        "players": "Jogadores",
+        "players_played": "Jogaram uma partida",
+        "players_known": "Steam IDs vistos",
+        "players_active": "Jogadores ativos 30d",
+        "teams": "Equipes",
+        "infrastructure": "Infraestrutura",
+        "match_volume": "Volume de partidas",
+        "community": "Comunidade",
+        "matches_caption": "todo o período, em toda a frota",
+        "players_caption": "em uma lineup, últimos 30 dias",
+        "hosted_hint": "Hospedadas contam apenas partidas que um painel rodou por conta própria. Partidas importadas vêm do FACEIT ou do histórico de partidas do CS2 e são listadas separadamente.",
+        "community_hint": "Jogadores contabiliza contas que fizeram login com a Steam pelo menos uma vez. Um painel também armazena uma linha para cada Steam ID que só foi visto em uma lineup, demo ou sanção — esses são contados separadamente como Steam IDs vistos.",
+        "gpu_nodes": "Nós de GPU",
+        "gpu_nodes_caption": "registrados atualmente",
+        "all_time": "todo o período",
+        "last_7d": "últimos 7 dias",
+        "last_30d": "últimos 30 dias",
+        "last_1y": "últimos 365 dias",
+        "signed_in_caption": "logaram pelo menos uma vez",
+        "players_known_caption": "inclui nunca logados"
       },
       "activity": {
         "matches": "Partidas hospedadas por dia (90d)",
@@ -1339,8 +1339,8 @@
         "manual_caption": "fora do catálogo",
         "modes": "Modos de jogo",
         "modes_caption": "definidos",
-        "modes_unranked": "Sem ranque",
-        "modes_unranked_caption": "modos que não contam para o ELO"
+        "modes_unranked": "Não aptos para draft",
+        "modes_unranked_caption": "modos ocultos nos lobbies de draft"
       }
     },
     "tournaments": {
@@ -1546,7 +1546,7 @@
           "title": "Redefinir",
           "description": "Retorna o microfone, saída, modo de entrada, sensibilidade e supressão de ruído ao estado inicial. Os níveis de jogadores permanecem inalterados.",
           "action": "Redefinir para padrões",
-          "done": "Configurações de voz redefinidas neste dispositivo"      
+          "done": "Configurações de voz redefinidas neste dispositivo"
         }
       },
       "notification_preferences": {
@@ -3582,27 +3582,27 @@
       "group_custom_league_awards": "Prêmios de liga personalizados"
     },
     "award_detail": {
-        "not_found_title": "Premiação não encontrada",
-        "not_found": "Esta premiação não existe ou foi excluída.",
-        "holders_section": "Detentores",
-        "no_holders_title": "Nenhum detentor ainda",
-        "no_holders": "Ninguém recebeu esta premiação.",
-        "total_holders": "Concessões",
-        "unique_players": "Jogadores",
-        "unique_teams": "Equipes",
-        "first_granted": "Primeira concessão",
-        "last_granted": "Última concessão",
-        "filter_all": "Todos",
-        "filter_players": "Jogadores",
-        "filter_teams": "Equipes",
-        "granted_by": "Concedido por {name}",
-        "source_manual": "Concedido manualmente",
-        "source_tournament": "Colocação em torneio",
-        "source_season": "Automação de temporada",
-        "revoke": "Revogar",
-        "confirm_revoke": {
-          "title": "Revogar esta premiação?",
-          "description": "{name} não terá mais esta premiação. Isso não pode ser desfeito."
+      "not_found_title": "Premiação não encontrada",
+      "not_found": "Esta premiação não existe ou foi excluída.",
+      "holders_section": "Detentores",
+      "no_holders_title": "Nenhum detentor ainda",
+      "no_holders": "Ninguém recebeu esta premiação.",
+      "total_holders": "Concessões",
+      "unique_players": "Jogadores",
+      "unique_teams": "Equipes",
+      "first_granted": "Primeira concessão",
+      "last_granted": "Última concessão",
+      "filter_all": "Todos",
+      "filter_players": "Jogadores",
+      "filter_teams": "Equipes",
+      "granted_by": "Concedido por {name}",
+      "source_manual": "Concedido manualmente",
+      "source_tournament": "Colocação em torneio",
+      "source_season": "Automação de temporada",
+      "revoke": "Revogar",
+      "confirm_revoke": {
+        "title": "Revogar esta premiação?",
+        "description": "{name} não terá mais esta premiação. Isso não pode ser desfeito."
       }
     },
     "system_media_server": {
@@ -4568,8 +4568,8 @@
       "add_player": "Adicionar jogador",
       "ineligible": {
         "on_this_roster": "Já está neste elenco.",
-      "on_other_team": "Já inscrito na equipe {team} neste torneio.",
-      "invite_pending": "Você já convidou — aguardando resposta."
+        "on_other_team": "Já inscrito na equipe {team} neste torneio.",
+        "invite_pending": "Você já convidou — aguardando resposta."
       },
       "already_in_tournament": "Esse jogador já está em um time neste torneio.",
       "pending_invites": "Convites pendentes",
@@ -5066,8 +5066,7 @@
       "game_mode": {
         "title": "Modo de jogo",
         "none": "Competitivo (sem modo)",
-        "description": "Carrega um conjunto de plugins e variáveis de console no servidor da partida.",
-        "not_competitive_safe": "Este modo não está marcado como seguro para o jogo competitivo. Ele ainda conta para o ELO — marque-o como seguro para competitivo no próprio modo se essa for a intenção."
+        "description": "Carrega um conjunto de plugins e variáveis de console no servidor da partida."
       }
     },
     "schedule": {
@@ -6824,8 +6823,7 @@
       "step_mode": "Modo",
       "mode_description": "Como a partida é jogada. Deixe em Competitivo para uma partida normal, ou escolha um modo para carregar seus plugins no servidor.",
       "mode_none": "Competitivo",
-      "mode_none_hint": "Regras padrão. Conta para o ELO e os rankings.",
-      "mode_empty": "Nenhum modo de jogo foi configurado ainda. Um administrador pode adicioná-los nas Configurações."
+      "mode_none_hint": "Regras padrão. Conta para o ELO e os rankings."
     },
     "host": "O host",
     "invite": {
@@ -7821,16 +7819,16 @@
       "toast_kind": "Voz",
       "toast_joined": "entrou",
       "toast_started_video": "iniciou vídeo em",
-      "floating_title": "Chamada" 
-      }
-    },
-    "media": {
-      "device": {
-        "system_default": "Padrão do sistema",
-        "selected": "Dispositivo selecionado",
-        "following_system": "Segue a configuração do sistema",
-        "device": "Dispositivo",
-        "camera": "Câmera"
+      "floating_title": "Chamada"
+    }
+  },
+  "media": {
+    "device": {
+      "system_default": "Padrão do sistema",
+      "selected": "Dispositivo selecionado",
+      "following_system": "Segue a configuração do sistema",
+      "device": "Dispositivo",
+      "camera": "Câmera"
     }
   },
   "game_modes": {
@@ -7840,7 +7838,6 @@
       "description": "Descrição",
       "competitive_safe": "Seguro para jogo competitivo",
       "competitive_safe_description": "Se este modo pode ser usado por uma partida ranqueada ou de matchmaking.",
-      "competitive_safe_warning": "Este modo só será oferecido em partidas casual. Servidores ranqueados nunca herdam um modo, então o matchmaking sempre começa com um conjunto de plugins limpo.",
       "plugins": "Plugins",
       "plugins_description": "Carregados na ordem exibida, depois de tudo que foi colocado à mão em custom-plugins.",
       "no_plugins": "Nenhum plugin de jogo no catálogo ainda. Sincronize o registro e instale um primeiro.",
@@ -7851,7 +7848,6 @@
       "extra_game_params_description": "Anexados à linha de comando do servidor ao iniciar.",
       "save": "Salvar modo",
       "saved": "Modo de jogo salvo",
-      "archive": "Arquivar",
       "archived": "Modo de jogo arquivado",
       "runtime_none": "Estes plugins não têm nenhum framework em comum, então este modo não pode rodar em lugar nenhum. Remova o que for do outro framework.",
       "runtime_only": "Roda apenas em {runtime}, porque é o único framework para o qual todos estes plugins existem."

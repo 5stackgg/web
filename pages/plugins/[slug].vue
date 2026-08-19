@@ -37,6 +37,8 @@ import {
   FolderOpen,
   Download,
   Wrench,
+  Loader2,
+  RefreshCw,
 } from "lucide-vue-next";
 
 definePageMeta({
@@ -285,8 +287,13 @@ definePageMeta({
 
               <template v-else>
                 <div class="space-y-2">
+                  <!-- Install records intent, and the nodes converge to it on
+                       their own. Once that is on record there is nothing left
+                       to press, so the button becomes the state instead: a
+                       plugin part-way through a rollout is not waiting on the
+                       operator. -->
                   <Button
-                    v-if="installedNodeCount < nodes.length"
+                    v-if="!isRequested"
                     variant="tactical"
                     class="w-full gap-2"
                     :loading="busy === ALL_NODES"
@@ -296,15 +303,45 @@ definePageMeta({
                     {{ $t("pages.plugins.install") }}
                   </Button>
 
-                  <template v-if="installedNodeCount > 0">
-                    <p class="text-center text-xs text-muted-foreground">
-                      {{
-                        $t("pages.plugins.installed_on", {
-                          installed: installedNodeCount,
-                          total: nodes.length,
-                        })
-                      }}
-                    </p>
+                  <template v-else>
+                    <div
+                      class="flex items-center justify-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium"
+                      :class="{
+                        'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]':
+                          ['Installed', 'Installing'].includes(rollout.key),
+                        'border-border/60 text-muted-foreground':
+                          rollout.key === 'Pending',
+                        'border-destructive/40 bg-destructive/10 text-destructive':
+                          rollout.key === 'Failed',
+                      }"
+                    >
+                      <Check v-if="rollout.key === 'Installed'" class="h-4 w-4" />
+                      <Loader2
+                        v-else-if="rollout.key === 'Installing'"
+                        class="h-4 w-4 animate-spin"
+                      />
+                      <AlertTriangle
+                        v-else-if="rollout.key === 'Failed'"
+                        class="h-4 w-4"
+                      />
+                      <Download v-else class="h-4 w-4" />
+                      {{ rollout.label }}
+                    </div>
+
+                    <!-- A failed node is the one case where pressing something
+                         again is the right move: it re-seeds the request and
+                         nudges the node to try the download once more. -->
+                    <Button
+                      v-if="rollout.key === 'Failed'"
+                      variant="tactical"
+                      class="w-full gap-2"
+                      :loading="busy === ALL_NODES"
+                      @click="install()"
+                    >
+                      <RefreshCw class="h-4 w-4" />
+                      {{ $t("pages.plugins.retry") }}
+                    </Button>
+
                     <Button
                       variant="outline"
                       class="w-full"
@@ -314,6 +351,18 @@ definePageMeta({
                       {{ $t("pages.plugins.uninstall") }}
                     </Button>
                   </template>
+
+                  <p
+                    v-if="installedNodeCount > 0"
+                    class="text-center text-xs text-muted-foreground"
+                  >
+                    {{
+                      $t("pages.plugins.installed_on", {
+                        installed: installedNodeCount,
+                        total: nodes.length,
+                      })
+                    }}
+                  </p>
 
                   <!-- Only an entry this deployment authored can be taken out of
                        the catalog; a registry one would come back on the next
@@ -370,8 +419,32 @@ definePageMeta({
                 <!-- Only for a plugin whose catalog entry says it cannot work
                      otherwise. Everything else stays compliant without the
                      operator having to think about it. -->
+                <!-- 5stack Ranks turns the same setting off to render ranks
+                     in-game, and the ban it risks is against the Steam account
+                     rather than one server. Once that is on there is nothing
+                     left to decide here, so the switch is replaced by the fact
+                     rather than left sitting there doing nothing. -->
                 <div
-                  v-if="plugin.requires_server_guidelines_disabled && isRequested"
+                  v-if="
+                    plugin.requires_server_guidelines_disabled &&
+                    isRequested &&
+                    guidelinesOffForRanks
+                  "
+                  class="rounded-md border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
+                >
+                  {{ $t("pages.plugins.guidelines.already_off") }}
+                  <NuxtLink
+                    to="/settings/application/matchmaking#ranks"
+                    class="underline underline-offset-2 hover:text-foreground"
+                  >
+                    {{ $t("pages.plugins.guidelines.already_off_link") }}
+                  </NuxtLink>
+                </div>
+
+                <div
+                  v-else-if="
+                    plugin.requires_server_guidelines_disabled && isRequested
+                  "
                   class="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3"
                 >
                   <div class="flex items-start justify-between gap-3">
@@ -784,6 +857,7 @@ export default {
               status: true,
               detected: true,
               last_error: true,
+              path: true,
               updated_at: true,
             },
           ],
@@ -813,6 +887,7 @@ export default {
             hot_swappable: true,
             requires_service: true,
             requires_server_guidelines_disabled: true,
+            config_path: true,
             panel: true,
             pairs_with: true,
             versions: [
@@ -821,6 +896,7 @@ export default {
                 runtime: true,
                 version: true,
                 published_at: true,
+                install_path: true,
               },
             ],
           },
@@ -891,11 +967,19 @@ export default {
     },
   },
   methods: {
+    // The node reports where the files actually landed; the catalog-derived
+    // directory is only for a node that has not said yet.
     openConfigFiles(nodeId: string) {
+      const reported = this.installs.find(
+        (entry: Record<string, any>) =>
+          entry.game_server_node_id === nodeId &&
+          entry.plugin_slug === this.$route.params.slug,
+      )?.path;
+
       useFilePopout().openFiles({
         scope: "node",
         id: nodeId,
-        path: `addons/${this.runtime}/configs/plugins`,
+        path: reported || this.pluginDirectory,
       });
     },
     labelForRuntime(runtime: string) {
@@ -1059,14 +1143,11 @@ export default {
         error: install.last_error ?? null,
       };
     },
+    // By recorded state, not by whether the row names a version: a node
+    // reports the version it is downloading with its Installing progress, so
+    // "has a version" is true for every node the moment a rollout starts.
     installedOn(nodeId: string) {
-      const install = this.installs.find(
-        (entry) =>
-          entry.game_server_node_id === nodeId &&
-          entry.plugin_slug === this.$route.params.slug,
-      );
-
-      return install?.version ?? null;
+      return this.nodeState(nodeId).key === "Installed";
     },
     async install() {
       await this.run(this.ALL_NODES, () =>
@@ -1224,6 +1305,80 @@ export default {
             !entry.game_mode.archived_at,
         )
         .map((entry: Record<string, any>) => entry.game_mode);
+    },
+    // Used until the node has reported where the files landed. A framework only
+    // writes addons/<runtime>/configs/plugins once a plugin has run and put
+    // something in it, and a csgo-layout release has no install_path, so the
+    // last resort is the plugins directory itself rather than a configs one
+    // that may never exist.
+    pluginDirectory(): string {
+      const runtime = this.runtime;
+      const configPath = this.plugin?.config_path;
+
+      if (configPath) {
+        const resolved = configPath.replaceAll("{runtime}", runtime);
+        const directory = resolved.split("/").slice(0, -1).join("/");
+
+        if (directory) {
+          return directory;
+        }
+      }
+
+      const installPath = this.versions.find(
+        (version: Record<string, any>) => version.runtime === runtime,
+      )?.install_path;
+
+      if (installPath) {
+        return installPath.replaceAll("{runtime}", runtime);
+      }
+
+      return `addons/${runtime}/plugins`;
+    },
+    // Derived from what the nodes have reported rather than the catalog's
+    // install_state, which is a query field and would sit still while the
+    // rollout it describes moves underneath it.
+    rollout(): { key: string; label: string } {
+      const failed = this.nodes.filter(
+        (node: Record<string, any>) => this.nodeState(node.id).key === "Failed",
+      ).length;
+
+      if (failed > 0) {
+        return {
+          key: "Failed",
+          label: this.$t("pages.plugins.state_failed") as string,
+        };
+      }
+
+      if (this.installedNodeCount >= this.nodes.length) {
+        return {
+          key: "Installed",
+          label: this.$t("pages.plugins.status.Installed") as string,
+        };
+      }
+
+      if (this.installedNodeCount > 0) {
+        return {
+          key: "Installing",
+          label: this.$t("pages.plugins.status.Installing") as string,
+        };
+      }
+
+      return {
+        key: "Pending",
+        label: this.$t("pages.plugins.status.Pending") as string,
+      };
+    },
+    // Both settings, because either one already flips it for the servers that
+    // match type runs on, and the account-level risk is the same either way.
+    guidelinesOffForRanks(): boolean {
+      const settings = useApplicationSettingsStore().settings ?? [];
+
+      return ["fivestack_ranks_matches", "fivestack_ranks_tournaments"].some(
+        (name) =>
+          settings.find(
+            (setting: Record<string, any>) => setting.name === name,
+          )?.value === "true",
+      );
     },
     canRemoveFromCatalog(): boolean {
       return (

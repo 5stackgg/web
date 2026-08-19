@@ -1394,8 +1394,8 @@
         "manual_caption": "spoza katalogu",
         "modes": "Tryby gry",
         "modes_caption": "zdefiniowane",
-        "modes_unranked": "Nierankingowe",
-        "modes_unranked_caption": "tryby pomijające ELO"
+        "modes_unranked": "Nie do draftu",
+        "modes_unranked_caption": "tryby ukryte w lobby draftu"
       }
     },
     "tournaments": {
@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Tryb gry",
         "none": "Competitive (bez trybu)",
-        "description": "Wczytuje zestaw wtyczek i zmiennych konsoli na serwerze meczowym.",
-        "not_competitive_safe": "Ten tryb nie jest oznaczony jako bezpieczny dla gry competitive. Nadal liczy się do ELO — oznacz go w ustawieniach trybu jako bezpieczny dla competitive, jeśli tak ma być."
+        "description": "Wczytuje zestaw wtyczek i zmiennych konsoli na serwerze meczowym."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Tryb",
       "mode_description": "Jak przebiega mecz. Zostaw Competitive dla zwykłego meczu albo wybierz tryb, aby wczytać jego wtyczki na serwerze.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standardowe zasady. Liczy się do ELO i rankingów.",
-      "mode_empty": "Nie skonfigurowano jeszcze żadnych trybów gry. Administrator może je dodać w Ustawieniach."
+      "mode_none_hint": "Standardowe zasady. Liczy się do ELO i rankingów."
     },
     "host": "Host",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Opis",
       "competitive_safe": "Bezpieczny dla gry competitive",
       "competitive_safe_description": "Czy ten tryb może być użyty w meczu rankingowym lub matchmakingowym.",
-      "competitive_safe_warning": "Ten tryb będzie oferowany tylko w meczach casual. Serwery rankingowe nigdy nie dziedziczą trybu, więc matchmaking zawsze startuje z czystym zestawem wtyczek.",
       "plugins": "Wtyczki",
       "plugins_description": "Wczytywane w pokazanej kolejności, po wszystkim, co ręcznie umieszczono w custom-plugins.",
       "no_plugins": "Brak wtyczek gry w katalogu. Najpierw zsynchronizuj rejestr i zainstaluj jakąś.",
@@ -8217,7 +8214,6 @@
       "extra_game_params_description": "Dopisywane do linii poleceń serwera przy starcie.",
       "save": "Zapisz tryb",
       "saved": "Tryb gry zapisany",
-      "archive": "Archiwizuj",
       "archived": "Tryb gry zarchiwizowany",
       "runtime_none": "Te wtyczki nie mają wspólnego frameworka, więc ten tryb nigdzie nie zadziała. Usuń tę, która celuje w drugi framework.",
       "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki."

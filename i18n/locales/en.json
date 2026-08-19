@@ -1394,8 +1394,8 @@
         "manual_caption": "outside the catalog",
         "modes": "Game modes",
         "modes_caption": "defined",
-        "modes_unranked": "Unranked",
-        "modes_unranked_caption": "modes that skip ELO"
+        "modes_unranked": "Not draft-safe",
+        "modes_unranked_caption": "modes hidden from draft lobbies"
       }
     },
     "tournaments": {
@@ -2463,7 +2463,7 @@
         "game_modes": {
           "title": "Game Modes",
           "section": "Game Modes",
-          "description": "A mode bundles the plugins, cvars and rules that make a match play differently. Matches and community servers pick one.",
+          "description": "A mode bundles the plugins, cvars and rules that make a match play differently. Matches and community servers pick one; matches with a custom mode never count toward ELO.",
           "create": "New Mode",
           "create_title": "New Game Mode",
           "edit_title": "Edit Game Mode",
@@ -2471,9 +2471,10 @@
           "empty": "No game modes yet. Create one to let matches run something other than competitive.",
           "requires_plugins": "Enable Game Plugins first — a mode has nothing to load without them.",
           "disabled": "Disabled",
-          "competitive": "Competitive safe",
-          "casual_only": "Casual only",
-          "plugin_count": "{count} plugins"
+          "competitive": "In draft lobbies",
+          "casual_only": "Hidden from drafts",
+          "plugin_count": "{count} plugins",
+          "archived": "Archived"
         }
       },
       "language": {
@@ -3262,17 +3263,20 @@
         "delete_map": "Delete Map",
         "delete_confirm": {
           "title": "Delete Map",
-          "description": "Are you sure you want to delete this map? This action cannot be undone."
+          "description": "Are you sure you want to delete this map? It is removed from every map pool and picker, but matches already played on it keep their history. You can restore it later, or simply add a map with the same name."
         },
         "success": {
           "create": "Map created successfully",
           "update": "Map updated successfully",
           "delete": "Map deleted successfully",
+          "restore": "Map restored",
+          "restore_description": "A deleted map with this name already existed, so it was restored with its match history intact.",
           "workshop_refresh": "Workshop map details refreshed successfully"
         },
         "error": {
           "create": "Error creating map",
           "update": "Error updating map",
+          "already_exists": "A map with this name already exists",
           "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
           "workshop_refresh": "Error refreshing workshop map details"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active Duty",
       "available_modes": "Available In Modes",
       "workshop_id": "Workshop Link",
-      "search": "Search Maps"
+      "search": "Search Maps",
+      "deleted_maps": "Deleted Maps",
+      "deleted_maps_description": "Deleted maps are hidden from every map pool and picker, but matches already played on them keep their history. Restoring brings a map back as it was.",
+      "deleted_on": "Deleted {date}",
+      "restore_map": "Restore"
     },
     "map_pool": {
       "toggle_pool_type": "Updated Map Pools",
@@ -3658,7 +3666,9 @@
         "off_hint": "Left on, the plugin still installs and loads — the parts that change what a player sees just do nothing.",
         "warning_title": "Warning: this can get your Steam GSLTs banned",
         "warning_description": "Per Valve, running outside their official server guidelines can trigger every Game Server Login Token (GSLT) on the server owner's Steam account to be banned. Enable at your own risk.",
-        "warning_link_label": "Valve's server guidelines"
+        "warning_link_label": "Valve's server guidelines",
+        "already_off": "Already off for this deployment: 5stack Ranks turns Valve's server guidelines off to show ranks in-game, and the risk it carries is against your Steam account rather than one server.",
+        "already_off_link": "5stack Ranks"
       },
       "custom": {
         "add": "Add a plugin",
@@ -3687,7 +3697,8 @@
         "remove": "Remove from catalog",
         "remove_hint": "Uninstall it from your nodes before taking it out of the catalog.",
         "removed": "Removed from the catalog"
-      }
+      },
+      "retry": "Retry"
     },
     "awards": {
       "title": "Awards",
@@ -5263,7 +5274,7 @@
         "title": "Game Mode",
         "none": "Competitive (no mode)",
         "description": "Loads a set of plugins and console variables on the match server.",
-        "not_competitive_safe": "This mode is not marked safe for competitive play. It still counts toward ELO — mark it competitive safe on the mode itself if that is intended."
+        "unranked_note": "Matches with a custom game mode never count toward ELO or the leaderboards."
       }
     },
     "schedule": {
@@ -6595,13 +6606,20 @@
       "game_server_node_description": "Select a game server node with CS installed",
       "type": "Server Type",
       "select_type": "Select Server Type",
+      "game_mode": "Game Mode",
+      "select_game_mode": "Select Game Mode",
+      "valve_preset_group": "Valve presets",
+      "custom_mode_group": "Custom modes",
+      "custom_mode_group_locked": "needs a game server node",
+      "custom_modes_need_node_title": "Custom modes need a game server node",
+      "custom_modes_need_node_description": "A custom mode is a set of plugins 5Stack installs onto the server it runs. It cannot install anything on a third-party dedicated server, so attach this server to a game server node under Connection to pick one.",
       "game": "Game",
       "csgo_ranked_unavailable_title": "Ranked Not Available",
       "csgo_ranked_unavailable_description": "Ranked mode is not yet available for CS:GO servers.",
       "ranked_server": "Ranked Server",
       "ranked_server_description": "Fully managed ranked experience by 5stack.",
-      "valve_presets": "Valve Presets",
-      "valve_presets_description": "Choose from casual/competitive and other Valve-presets.",
+      "valve_presets": "Valve Presets & Custom Modes",
+      "valve_presets_description": "Run a Valve preset like casual or deathmatch, or a custom game mode with its plugins.",
       "connect_password": "Connect Password",
       "connect_password_description": "Password required to connect to the server (optional)",
       "rcon_password": "RCON Password",
@@ -7110,15 +7128,14 @@
       "clear_team": "Clear team",
       "both_teams_private": "With both teams set the lineup is locked, so this lobby stays private.",
       "step_format": "Draft Mode",
-      "step_settings": "Match Settings",
+      "step_settings": "Game Settings",
       "step_rules": "Lobby Rules",
       "back": "Back",
       "next": "Next",
       "step_mode": "Mode",
-      "mode_description": "How the match plays. Leave it on Competitive for a normal match, or pick a mode to load its plugins on the server.",
+      "mode_description": "How the match plays. Leave it on Competitive for a normal match, or pick a mode to load its plugins on the server. Custom modes never count toward ELO.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards.",
-      "mode_empty": "No game modes are set up yet. An administrator can add them under Settings."
+      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards."
     },
     "host": "The host",
     "invite": {
@@ -7252,7 +7269,7 @@
       "kick_confirm_title": "Remove this player?",
       "kick_confirm_description": "They will be removed from the draft room.",
       "load_failed": "Could not load this draft room.",
-      "match_settings": "Match Settings"
+      "match_settings": "Game Settings"
     },
     "bar": {
       "region": "Region",
@@ -8265,9 +8282,10 @@
       "name": "Name",
       "slug": "Slug",
       "description": "Description",
-      "competitive_safe": "Safe for competitive play",
-      "competitive_safe_description": "Whether this mode may be used by a ranked or matchmaking match.",
-      "competitive_safe_warning": "This mode will only be offered on casual matches. Ranked servers never inherit a mode, so matchmaking always comes up on a clean plugin set.",
+      "enabled": "Enabled",
+      "enabled_description": "Disabled modes are kept but cannot be picked for a match, server or draft room.",
+      "competitive_safe": "Offer in draft lobbies",
+      "competitive_safe_description": "Lobby hosts can pick this mode when creating a draft room. Matches with any custom mode never count toward ELO or the leaderboards.",
       "plugins": "Plugins",
       "plugins_description": "Loaded in the order shown, after anything placed in custom-plugins by hand.",
       "no_plugins": "No game plugins in the catalog yet. Sync the registry and install one first.",
@@ -8278,10 +8296,17 @@
       "extra_game_params_description": "Appended to the server's command line when it starts.",
       "save": "Save Mode",
       "saved": "Game mode saved",
-      "archive": "Archive",
-      "archived": "Game mode archived",
+      "archived": "Game mode hidden",
+      "restore": "Restore",
+      "restored": "Game mode restored",
+      "delete": "Delete",
+      "deleted": "Game mode deleted",
+      "delete_confirm_title": "Delete {name}?",
+      "delete_confirm_description": "Removes the mode permanently. If any match has already run it, it is hidden instead — that history stays intact and you can restore it later.",
       "runtime_none": "These plugins have no framework in common, so this mode cannot run anywhere. Remove whichever one targets the other framework.",
-      "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for."
+      "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for.",
+      "open_plugin": "Open this plugin's page in a new tab",
+      "archived_instead": "Matches have already run this mode, so it was hidden instead of deleted. You can restore it any time."
     }
   }
 }

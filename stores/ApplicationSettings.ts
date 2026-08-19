@@ -35,6 +35,10 @@ export const useApplicationSettingsStore = defineStore(
 
     const settings =
       ref<Array<{ name: string; value: string }>>(loadCachedSettings());
+    // Whether `settings` is anything more than the defaults: the cached copy
+    // or a delivery from the subscription. Until then every derived setting
+    // is a guess, and a decision that depends on one should wait.
+    const settingsLoaded = ref(settings.value.length > 0);
 
     const subscribeToSettings = async () => {
       const { subscribe } = useSubscriptionManager();
@@ -55,6 +59,7 @@ export const useApplicationSettingsStore = defineStore(
         subscription.subscribe({
           next: ({ data }) => {
             settings.value = data.settings;
+            settingsLoaded.value = true;
             try {
               localStorage.setItem(
                 SETTINGS_CACHE_KEY,
@@ -724,6 +729,7 @@ export const useApplicationSettingsStore = defineStore(
       canCreateMatch,
       currentPluginVersion,
       gameServerPluginRuntime,
+      settingsLoaded,
       brandName,
       logoUrl,
       faviconUrl,

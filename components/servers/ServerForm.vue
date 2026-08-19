@@ -17,12 +17,20 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import {
+  SelectItem as RekaSelectItem,
+  SelectItemIndicator as RekaSelectItemIndicator,
+  SelectItemText as RekaSelectItemText,
+} from "reka-ui";
+import { CheckIcon } from "@radix-icons/vue";
 import { Switch } from "~/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { Eye, EyeOff } from "lucide-vue-next";
+import { Eye, EyeOff, Lock } from "lucide-vue-next";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
@@ -162,15 +170,28 @@ const showConnectPassword = ref(false);
           name="type"
         >
           <FormItem>
-            <FormLabel>{{ $t("server.form.type") }}</FormLabel>
+            <FormLabel>{{ $t("server.form.game_mode") }}</FormLabel>
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue :placeholder="$t('server.form.select_type')" />
+                  <SelectValue
+                    :placeholder="$t('server.form.select_game_mode')"
+                  />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <!-- Width pinned to the trigger: the popper otherwise grows to
+                   the longest mode description and the text never wraps. -->
+              <SelectContent class="w-[--reka-select-trigger-width]">
                 <SelectGroup>
+                  <!-- Eyebrow headers, not item-styled labels: the groups must
+                       read as section titles or the items under them look
+                       like a second tier of something unselectable. -->
+                  <SelectLabel
+                    v-if="customModes.length"
+                    class="px-2 pb-1 pt-2 font-mono text-[0.62rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
+                  >
+                    {{ $t("server.form.valve_preset_group") }}
+                  </SelectLabel>
                   <SelectItem
                     :value="serverType"
                     v-for="serverType in valveModeTypes"
@@ -179,11 +200,73 @@ const showConnectPassword = ref(false);
                     {{ serverType }}
                   </SelectItem>
                 </SelectGroup>
+                <template v-if="customModes.length">
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel
+                      class="flex items-center gap-2 px-2 pb-1 pt-2 font-mono text-[0.62rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
+                    >
+                      {{ $t("server.form.custom_mode_group") }}
+                      <span
+                        v-if="!hasGameServerNode"
+                        class="inline-flex items-center gap-1 normal-case tracking-normal"
+                      >
+                        <Lock class="h-3 w-3" />
+                        {{ $t("server.form.custom_mode_group_locked") }}
+                      </span>
+                    </SelectLabel>
+                    <!-- Built from the reka primitives rather than ui/SelectItem
+                         so the description sits outside SelectItemText: the
+                         trigger then echoes only the name. -->
+                    <RekaSelectItem
+                      v-for="gameMode in customModes"
+                      :key="gameMode.id"
+                      :value="gameMode.id"
+                      :disabled="!hasGameServerNode"
+                      class="relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                    >
+                      <span
+                        class="absolute right-2 top-2 flex h-3.5 w-3.5 items-center justify-center"
+                      >
+                        <RekaSelectItemIndicator>
+                          <CheckIcon class="h-4 w-4" />
+                        </RekaSelectItemIndicator>
+                      </span>
+                      <RekaSelectItemText>{{ gameMode.name }}</RekaSelectItemText>
+                      <span
+                        v-if="gameMode.description"
+                        class="mt-0.5 block whitespace-normal text-xs leading-snug text-muted-foreground"
+                      >
+                        {{ gameMode.description }}
+                      </span>
+                    </RekaSelectItem>
+                  </SelectGroup>
+                </template>
               </SelectContent>
             </Select>
             <FormMessage />
           </FormItem>
         </FormField>
+        </Fold>
+
+        <!-- A custom mode is plugins the panel installs onto the container it
+             runs; a third-party dedicated server gives it nothing to install
+             into, so the modes stay locked until a node is attached. -->
+        <Fold
+          :open="
+            !!form.values.use_valve_modes &&
+            customModes.length > 0 &&
+            !hasGameServerNode
+          "
+        >
+          <Alert variant="warning">
+            <AlertTitle>{{
+              $t("server.form.custom_modes_need_node_title")
+            }}</AlertTitle>
+            <AlertDescription>{{
+              $t("server.form.custom_modes_need_node_description")
+            }}</AlertDescription>
+          </Alert>
         </Fold>
       </div>
     </FormSection>
@@ -439,6 +522,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { order_by } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   emits: ["updated"],
@@ -459,6 +543,27 @@ export default {
           },
         ],
       }),
+    },
+    gameModes: {
+      fetchPolicy: "cache-first",
+      query: generateQuery({
+        game_modes: [
+          {},
+          {
+            id: true,
+            name: true,
+            description: true,
+            enabled: true,
+            supported_runtimes: [{}, true],
+          },
+        ],
+      }),
+      update(data: { game_modes: Array<Record<string, any>> }) {
+        return data.game_modes;
+      },
+      skip() {
+        return !useApplicationSettingsStore().gamePluginsEnabled;
+      },
     },
     $subscribe: {
       game_server_nodes: {
@@ -504,6 +609,7 @@ export default {
       baseline: null as string | null,
       isDirty: false,
       gameServerNodes: [],
+      gameModes: [] as Array<Record<string, any>>,
       form: useForm({
         validationSchema: toTypedSchema(
           z
@@ -598,6 +704,24 @@ export default {
         }
       },
     },
+    // Detaching the node (or never picking one) leaves a custom mode with
+    // nothing to install into; fall back to a preset rather than save a mode
+    // the server could not boot with.
+    hasGameServerNode(has: boolean) {
+      if (!has && this.holdsModeId) {
+        this.form.setFieldValue("type", this.valveModeTypes[0]);
+      }
+    },
+    // A mode the picker does not offer shows as an empty select; put the
+    // preset that would be saved in its place so the form says what it does.
+    // Covers the game flipping to csgo, a mode archived or disabled since the
+    // server was saved, and game plugins being switched off.
+    customModes() {
+      this.dropStaleMode();
+    },
+    modesKnown() {
+      this.dropStaleMode();
+    },
     "form.values.game_server_node_id": {
       handler(newNodeId) {
         if (newNodeId && newNodeId !== "none" && this.useGameServerNode) {
@@ -631,11 +755,76 @@ export default {
         (t) => t !== e_server_types_enum.Ranked,
       );
     },
+    // Custom game modes share the picker with the Valve presets: both answer
+    // "what does this server play". A preset is stored in servers.type, a mode
+    // in servers.game_mode_id, and the mode's uuid never collides with an enum
+    // value. Modes are CS2 plugin sets, so csgo servers only see presets.
+    customModes(): Array<Record<string, any>> {
+      if (this.form.values.game === "csgo") {
+        return [];
+      }
+      const runtime = useApplicationSettingsStore().gameServerPluginRuntime;
+      return (this.gameModes ?? []).filter(
+        (mode: Record<string, any>) =>
+          mode.enabled && (mode.supported_runtimes ?? []).includes(runtime),
+      );
+    },
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);
     },
+    hasGameServerNode(): boolean {
+      if (this.isEditingGameServerNode) {
+        return true;
+      }
+      const nodeId = this.form.values.game_server_node_id;
+      return (
+        !!this.form.values.use_game_server_node && !!nodeId && nodeId !== "none"
+      );
+    },
+    // Anything in `type` that is not a preset is a mode id. Whether the mode
+    // is still one this server can run (enabled, this runtime, not csgo) is a
+    // separate question -- see isCustomModeSelected.
+    holdsModeId(): boolean {
+      const selected = this.form.values.type;
+      return !!selected && !Object.values(e_server_types_enum).includes(selected);
+    },
+    isCustomModeSelected(): boolean {
+      const selected = this.form.values.type;
+      return this.customModes.some((mode) => mode.id === selected);
+    },
+    // False until the mode list has been fetched (or the query skipped) and
+    // the settings it is filtered on (plugin runtime) have arrived; a saved
+    // mode must not be judged stale against a list that is not there yet.
+    // Read from $apolloData rather than $apollo.queries: the form populates
+    // from an immediate watcher, which runs before vue-apollo has created the
+    // query, and only the data-backed entry is reactive from nothing.
+    modesKnown(): boolean {
+      return (
+        useApplicationSettingsStore().settingsLoaded &&
+        (this as any).$data.$apolloData?.queries?.gameModes?.loading === false
+      );
+    },
   },
   methods: {
+    // The form's `type` field holds either a Valve preset (enum value) or a
+    // custom mode's uuid; this splits it back into the two columns. A mode
+    // the picker no longer offers -- archived, disabled, or the server moved
+    // to csgo -- is not re-saved behind the placeholder it shows as.
+    resolveTypeAndMode(): { type: string; game_mode_id: string | null } {
+      const selected = this.form.values.type;
+      if (this.isCustomModeSelected || (this.holdsModeId && !this.modesKnown)) {
+        return { type: e_server_types_enum.Custom, game_mode_id: selected };
+      }
+      if (this.holdsModeId) {
+        return { type: this.valveModeTypes[0], game_mode_id: null };
+      }
+      return { type: selected || "Ranked", game_mode_id: null };
+    },
+    dropStaleMode() {
+      if (this.modesKnown && this.holdsModeId && !this.isCustomModeSelected) {
+        this.form.setFieldValue("type", this.valveModeTypes[0]);
+      }
+    },
     populateServer(server) {
       const {
         host,
@@ -646,6 +835,7 @@ export default {
         type,
         connect_password,
         game_server_node_id,
+        game_mode_id,
         max_players,
       } = server;
       this.form.setValues({
@@ -660,10 +850,11 @@ export default {
         game_server_node_id: game_server_node_id
           ? game_server_node_id.toString()
           : undefined,
-        type: type || "Ranked",
+        type: game_mode_id || type || "Ranked",
         connect_password: connect_password || "",
         max_players: max_players || 32,
       });
+      this.dropStaleMode();
       this.takeSnapshot();
     },
     takeSnapshot() {
@@ -712,7 +903,7 @@ export default {
                     id: this.server.id,
                   },
                   _set: {
-                    type: formValues.type,
+                    ...this.resolveTypeAndMode(),
                     label: formValues.label,
                     game: formValues.game || "cs2",
                     rcon_password: formValues.rcon_password,
@@ -747,7 +938,7 @@ export default {
               {
                 object: {
                   enabled: true,
-                  type: formValues.type,
+                  ...this.resolveTypeAndMode(),
                   label: formValues.label,
                   game: formValues.game || "cs2",
                   region: formValues.use_game_server_node

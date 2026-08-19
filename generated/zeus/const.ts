@@ -6589,6 +6589,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		installed_at:"timestamptz_comparison_exp",
 		last_error:"String_comparison_exp",
+		path:"String_comparison_exp",
 		plugin:"game_plugins_bool_exp",
 		plugin_slug:"String_comparison_exp",
 		runtime:"e_plugin_runtimes_enum_comparison_exp",
@@ -6616,6 +6617,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		installed_at:"order_by",
 		last_error:"order_by",
+		path:"order_by",
 		plugin_slug:"order_by",
 		source:"order_by",
 		updated_at:"order_by",
@@ -6628,6 +6630,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		installed_at:"order_by",
 		last_error:"order_by",
+		path:"order_by",
 		plugin_slug:"order_by",
 		source:"order_by",
 		updated_at:"order_by",
@@ -6648,6 +6651,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		installed_at:"order_by",
 		last_error:"order_by",
+		path:"order_by",
 		plugin:"game_plugins_order_by",
 		plugin_slug:"order_by",
 		runtime:"order_by",
@@ -9455,6 +9459,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"maps_bool_exp",
 		_or:"maps_bool_exp",
 		active_pool:"Boolean_comparison_exp",
+		deleted_at:"timestamptz_comparison_exp",
 		e_match_type:"e_match_types_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -9471,6 +9476,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	maps_constraint: "enum" as const,
 	maps_insert_input:{
+		deleted_at:"timestamptz",
 		e_match_type:"e_match_types_obj_rel_insert_input",
 		id:"uuid",
 		match_maps:"match_maps_arr_rel_insert_input",
@@ -9478,6 +9484,7 @@ export const AllTypesProps: Record<string,any> = {
 		type:"e_match_types_enum"
 	},
 	maps_max_order_by:{
+		deleted_at:"order_by",
 		id:"order_by",
 		label:"order_by",
 		name:"order_by",
@@ -9486,6 +9493,7 @@ export const AllTypesProps: Record<string,any> = {
 		workshop_map_id:"order_by"
 	},
 	maps_min_order_by:{
+		deleted_at:"order_by",
 		id:"order_by",
 		label:"order_by",
 		name:"order_by",
@@ -9504,6 +9512,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	maps_order_by:{
 		active_pool:"order_by",
+		deleted_at:"order_by",
 		e_match_type:"e_match_types_order_by",
 		enabled:"order_by",
 		id:"order_by",
@@ -9523,6 +9532,7 @@ export const AllTypesProps: Record<string,any> = {
 	maps_select_column_maps_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	maps_set_input:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		type:"e_match_types_enum"
 	},
@@ -9531,6 +9541,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	maps_stream_cursor_value_input:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		type:"e_match_types_enum"
 	},
@@ -43424,6 +43435,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		installed_at:"timestamptz",
 		last_error:"String",
+		path:"String",
 		plugin:"game_plugins",
 		plugin_slug:"String",
 		runtime:"e_plugin_runtimes_enum",
@@ -43448,6 +43460,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		installed_at:"timestamptz",
 		last_error:"String",
+		path:"String",
 		plugin_slug:"String",
 		source:"String",
 		updated_at:"timestamptz",
@@ -43460,6 +43473,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		installed_at:"timestamptz",
 		last_error:"String",
+		path:"String",
 		plugin_slug:"String",
 		source:"String",
 		updated_at:"timestamptz",
@@ -45013,6 +45027,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	maps:{
 		active_pool:"Boolean",
+		deleted_at:"timestamptz",
 		e_match_type:"e_match_types",
 		enabled:"Boolean",
 		id:"uuid",
@@ -45037,6 +45052,7 @@ export const ReturnTypes: Record<string,any> = {
 		min:"maps_min_fields"
 	},
 	maps_max_fields:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		label:"String",
 		name:"String",
@@ -45045,6 +45061,7 @@ export const ReturnTypes: Record<string,any> = {
 		workshop_map_id:"String"
 	},
 	maps_min_fields:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		label:"String",
 		name:"String",

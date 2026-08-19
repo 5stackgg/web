@@ -259,7 +259,9 @@ const leave = async () => {
                  list: players decide whether to join off this line. -->
             <span v-if="gameMode" class="gamemode">
               {{ gameMode.name }}
-              <span v-if="!gameMode.competitive_safe" class="gamemode__unranked">
+              <!-- Every custom mode is unranked; the badge states it rather
+                   than depending on any per-mode flag. -->
+              <span class="gamemode__unranked">
                 {{ $t("draft_games.bar.unranked") }}
               </span>
             </span>

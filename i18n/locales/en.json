@@ -6139,12 +6139,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "Competitive",
         "description": "The classic 5 vs 5 competitive experience with full team coordination"
       },
       "wingman": {
+        "title": "Wingman",
         "description": "Team up with a friend and compete in fast-paced 2v2 matches"
       },
       "duel": {
+        "title": "Duel",
         "description": "A competitive 1 vs 1 experience, perfect for practicing individual skill"
       }
     },

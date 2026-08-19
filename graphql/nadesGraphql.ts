@@ -404,6 +404,9 @@ export const startNadePracticeMutation = generateMutation({
       region: $("region", "String"),
       collection_id: $("collection_id", "uuid"),
       is_open: $("is_open", "Boolean"),
+      // Books one dedicated practice server outright; the region search and
+      // the on-demand headroom reserve are both skipped when it is set.
+      server_id: $("server_id", "uuid"),
     },
     {
       id: true,
@@ -1081,4 +1084,14 @@ export const nadeDriftResultsQuery = generateQuery({
     },
     nadeDriftResultFields,
   ],
+});
+
+export const nadePracticeServersQuery = generateQuery({
+  nadePracticeServers: {
+    servers: {
+      id: true,
+      label: true,
+      region: true,
+    },
+  },
 });

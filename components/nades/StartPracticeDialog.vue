@@ -49,6 +49,7 @@ import {
   loadNadePlaybookIntoSessionMutation,
   nadeCollectionsQuery,
   nadePlaybooksQuery,
+  nadePracticeServersQuery,
   nadePracticeSessionSubscription,
   startNadePracticeMutation,
   stopNadePracticeMutation,
@@ -91,12 +92,16 @@ const { t } = useI18n();
 const ANY_REGION = "any";
 const NO_COLLECTION = "none";
 const NO_PLAYBOOK = "none";
+const SERVER_PREFIX = "server:";
 
 const regions = computed(() => useApplicationSettingsStore().availableRegions);
 const region = ref<string>(ANY_REGION);
 const collectionId = ref<string>(NO_COLLECTION);
 const playbookChoice = ref<string>(NO_PLAYBOOK);
 const isOpen = ref(true);
+const practiceServers = ref<
+  Array<{ id: string; label: string; region: string }>
+>([]);
 const collections = ref<NadeCollection[]>([]);
 const playbooks = ref<NadePlaybook[]>([]);
 const sessionId = ref<string | null>(null);
@@ -151,6 +156,19 @@ async function loadCollections() {
   }
 }
 
+async function loadPracticeServers() {
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: nadePracticeServersQuery,
+      fetchPolicy: "network-only",
+    });
+    practiceServers.value = (data as any)?.nadePracticeServers?.servers ?? [];
+  } catch (error) {
+    console.error("[nades] practice server load error:", error);
+    practiceServers.value = [];
+  }
+}
+
 async function loadPlaybooks() {
   try {
     const { data } = await getGraphqlClient().query({
@@ -178,6 +196,7 @@ watch(open, (isDialogOpen) => {
     return;
   }
   playbookChoice.value = props.playbookId ?? NO_PLAYBOOK;
+  void loadPracticeServers();
   if (collections.value.length === 0) {
     void loadCollections();
   }
@@ -185,6 +204,12 @@ watch(open, (isDialogOpen) => {
     void loadPlaybooks();
   }
 });
+
+const selectedServerId = computed(() =>
+  region.value.startsWith(SERVER_PREFIX)
+    ? region.value.slice(SERVER_PREFIX.length)
+    : null,
+);
 
 const joinTarget = computed(() => {
   if (props.joinInviteCode) {
@@ -249,7 +274,12 @@ async function start() {
       mutation: startNadePracticeMutation,
       variables: {
         map_name: props.mapName,
-        region: region.value === ANY_REGION ? null : region.value,
+        region: selectedServerId.value
+          ? null
+          : region.value === ANY_REGION
+            ? null
+            : region.value,
+        server_id: selectedServerId.value,
         collection_id:
           collectionId.value === NO_COLLECTION ? null : collectionId.value,
         is_open: isOpen.value,
@@ -508,6 +538,19 @@ const connectServer = computed(() => ({
                   {{ $t("pages.nades.practice.any_region") }}
                 </SelectItem>
               </SelectGroup>
+              <SelectGroup v-if="practiceServers.length">
+                <SelectLabel>
+                  {{ $t("pages.nades.practice.dedicated_servers") }}
+                </SelectLabel>
+                <SelectItem
+                  v-for="entry of practiceServers"
+                  :key="entry.id"
+                  :value="`${SERVER_PREFIX}${entry.id}`"
+                >
+                  {{ entry.label }}
+                  <span class="text-muted-foreground">({{ entry.region }})</span>
+                </SelectItem>
+              </SelectGroup>
               <SelectGroup>
                 <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
                 <SelectItem
@@ -520,7 +563,10 @@ const connectServer = computed(() => ({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <p v-if="!regions.length" class="text-xs text-muted-foreground">
+          <p
+            v-if="!regions.length && !practiceServers.length"
+            class="text-xs text-muted-foreground"
+          >
             {{ $t("pages.nades.practice.no_regions") }}
           </p>
 

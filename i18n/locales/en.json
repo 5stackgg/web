@@ -4004,6 +4004,7 @@
         "stop_failed": "Could not stop the practice server",
         "join_failed": "Could not join that practice server",
         "any_region": "Any region",
+        "dedicated_servers": "Practice Servers",
         "collection": "Load a collection",
         "no_collection": "None",
         "open_session": "Open session",

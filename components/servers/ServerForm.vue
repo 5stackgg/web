@@ -17,6 +17,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
@@ -162,21 +163,38 @@ const showConnectPassword = ref(false);
           name="type"
         >
           <FormItem>
-            <FormLabel>{{ $t("server.form.type") }}</FormLabel>
+            <FormLabel>{{ $t("server.form.game_mode") }}</FormLabel>
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue :placeholder="$t('server.form.select_type')" />
+                  <SelectValue
+                    :placeholder="$t('server.form.select_game_mode')"
+                  />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
                 <SelectGroup>
+                  <SelectLabel v-if="customModes.length">
+                    {{ $t("server.form.valve_preset_group") }}
+                  </SelectLabel>
                   <SelectItem
                     :value="serverType"
                     v-for="serverType in valveModeTypes"
                     :key="serverType"
                   >
                     {{ serverType }}
+                  </SelectItem>
+                </SelectGroup>
+                <SelectGroup v-if="customModes.length">
+                  <SelectLabel>
+                    {{ $t("server.form.custom_mode_group") }}
+                  </SelectLabel>
+                  <SelectItem
+                    :value="gameMode.id"
+                    v-for="gameMode in customModes"
+                    :key="gameMode.id"
+                  >
+                    {{ gameMode.name }}
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -439,6 +457,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { order_by } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   emits: ["updated"],
@@ -459,6 +478,26 @@ export default {
           },
         ],
       }),
+    },
+    gameModes: {
+      fetchPolicy: "cache-first",
+      query: generateQuery({
+        game_modes: [
+          {},
+          {
+            id: true,
+            name: true,
+            enabled: true,
+            supported_runtimes: [{}, true],
+          },
+        ],
+      }),
+      update(data: { game_modes: Array<Record<string, any>> }) {
+        return data.game_modes;
+      },
+      skip() {
+        return !useApplicationSettingsStore().gamePluginsEnabled;
+      },
     },
     $subscribe: {
       game_server_nodes: {
@@ -504,6 +543,7 @@ export default {
       baseline: null as string | null,
       isDirty: false,
       gameServerNodes: [],
+      gameModes: [] as Array<Record<string, any>>,
       form: useForm({
         validationSchema: toTypedSchema(
           z
@@ -631,11 +671,37 @@ export default {
         (t) => t !== e_server_types_enum.Ranked,
       );
     },
+    // Custom game modes share the picker with the Valve presets: both answer
+    // "what does this server play". A preset is stored in servers.type, a mode
+    // in servers.game_mode_id, and the mode's uuid never collides with an enum
+    // value. Modes are CS2 plugin sets, so csgo servers only see presets.
+    customModes(): Array<Record<string, any>> {
+      if (this.form.values.game === "csgo") {
+        return [];
+      }
+      const runtime = useApplicationSettingsStore().gameServerPluginRuntime;
+      return (this.gameModes ?? []).filter(
+        (mode: Record<string, any>) =>
+          mode.enabled && (mode.supported_runtimes ?? []).includes(runtime),
+      );
+    },
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);
     },
   },
   methods: {
+    // The form's `type` field holds either a Valve preset (enum value) or a
+    // custom mode's uuid; this splits it back into the two columns.
+    resolveTypeAndMode(): { type: string; game_mode_id: string | null } {
+      const selected = this.form.values.type;
+      if (
+        selected &&
+        !Object.values(e_server_types_enum).includes(selected)
+      ) {
+        return { type: e_server_types_enum.Custom, game_mode_id: selected };
+      }
+      return { type: selected || "Ranked", game_mode_id: null };
+    },
     populateServer(server) {
       const {
         host,
@@ -646,6 +712,7 @@ export default {
         type,
         connect_password,
         game_server_node_id,
+        game_mode_id,
         max_players,
       } = server;
       this.form.setValues({
@@ -660,7 +727,7 @@ export default {
         game_server_node_id: game_server_node_id
           ? game_server_node_id.toString()
           : undefined,
-        type: type || "Ranked",
+        type: game_mode_id || type || "Ranked",
         connect_password: connect_password || "",
         max_players: max_players || 32,
       });
@@ -712,7 +779,7 @@ export default {
                     id: this.server.id,
                   },
                   _set: {
-                    type: formValues.type,
+                    ...this.resolveTypeAndMode(),
                     label: formValues.label,
                     game: formValues.game || "cs2",
                     rcon_password: formValues.rcon_password,
@@ -747,7 +814,7 @@ export default {
               {
                 object: {
                   enabled: true,
-                  type: formValues.type,
+                  ...this.resolveTypeAndMode(),
                   label: formValues.label,
                   game: formValues.game || "cs2",
                   region: formValues.use_game_server_node

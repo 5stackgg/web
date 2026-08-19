@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "遊戲模式",
         "none": "競技（無模式）",
-        "description": "在比賽伺服器上載入一組外掛與主控台變數。",
-        "not_competitive_safe": "此模式未標記為可用於競技。它仍會計入 ELO——如果這是有意為之，請在模式本身中將其標記為可用於競技。"
+        "description": "在比賽伺服器上載入一組外掛與主控台變數。"
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "模式",
       "mode_description": "比賽的玩法。一般比賽保持競技即可，或選擇一個模式以在伺服器上載入其外掛。",
       "mode_none": "競技",
-      "mode_none_hint": "標準規則。計入 ELO 與排行榜。",
-      "mode_empty": "尚未設定任何遊戲模式。管理員可以在設定中新增。"
+      "mode_none_hint": "標準規則。計入 ELO 與排行榜。"
     },
     "host": "房主",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "描述",
       "competitive_safe": "可用於競技對戰",
       "competitive_safe_description": "此模式是否可用於排名或配對比賽。",
-      "competitive_safe_warning": "此模式只會在休閒比賽中提供。排名伺服器不會繼承模式，因此配對永遠以乾淨的外掛組合啟動。",
       "plugins": "外掛",
       "plugins_description": "依顯示順序載入，位於手動放入 custom-plugins 的內容之後。",
       "no_plugins": "目錄中尚無遊戲外掛。請先同步外掛來源並安裝一個。",

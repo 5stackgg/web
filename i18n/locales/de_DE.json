@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Spielmodus",
         "none": "Competitive (kein Modus)",
-        "description": "Lädt eine Reihe von Plugins und Console-Variablen auf dem Match-Server.",
-        "not_competitive_safe": "Dieser Modus ist nicht als Competitive-tauglich markiert. Er zählt trotzdem für ELO — markiere ihn im Modus selbst als Competitive-tauglich, wenn das so gewollt ist."
+        "description": "Lädt eine Reihe von Plugins und Console-Variablen auf dem Match-Server."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Modus",
       "mode_description": "Wie das Match gespielt wird. Für ein normales Match auf Competitive lassen, oder einen Modus wählen, damit dessen Plugins auf dem Server geladen werden.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standardregeln. Zählt für ELO und Bestenlisten.",
-      "mode_empty": "Es sind noch keine Spielmodi eingerichtet. Ein Administrator kann sie unter Einstellungen anlegen."
+      "mode_none_hint": "Standardregeln. Zählt für ELO und Bestenlisten."
     },
     "host": "Der Host",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Beschreibung",
       "competitive_safe": "Für Competitive geeignet",
       "competitive_safe_description": "Ob dieser Modus von Ranked- oder Matchmaking-Matches genutzt werden darf.",
-      "competitive_safe_warning": "Dieser Modus wird nur bei Casual-Matches angeboten. Ranked-Server erben nie einen Modus, Matchmaking startet also immer mit einem sauberen Plugin-Satz.",
       "plugins": "Plugins",
       "plugins_description": "Werden in der gezeigten Reihenfolge geladen, nach allem, was von Hand in custom-plugins liegt.",
       "no_plugins": "Noch keine Spiel-Plugins im Katalog. Synchronisiere die Registry und installiere zuerst eines.",

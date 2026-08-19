@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { AlertTriangle, Trash2, ExternalLink } from "lucide-vue-next";
+import { Trash2, ExternalLink } from "lucide-vue-next";
 import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 </script>
 
@@ -67,13 +67,6 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         </FormField>
       </div>
 
-      <p
-        v-if="!form.values.competitive_safe"
-        class="flex items-start gap-2 text-sm text-muted-foreground"
-      >
-        <AlertTriangle class="mt-0.5 h-4 w-4 shrink-0" />
-        {{ $t("game_modes.form.competitive_safe_warning") }}
-      </p>
     </div>
 
     <!-- Compatibility is derived from the plugins below, not declared here: a

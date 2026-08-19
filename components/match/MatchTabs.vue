@@ -892,6 +892,32 @@ const allMapsStatsQuery = generateQuery({
   ],
 });
 
+// Layers a stats lineup over the shell lineup (matchLineupsGraphql). A plain
+// spread would replace `lineup_players` wholesale and drop every player field
+// only the shell selects (faceit_rank_history, etc.), so players are merged
+// per steam_id instead.
+function mergeLineup(shell: any, stats: any) {
+  if (!shell) return stats;
+  const shellPlayers = new Map<string, any>(
+    (shell.lineup_players ?? [])
+      .filter((lp: any) => lp?.steam_id)
+      .map((lp: any) => [String(lp.steam_id), lp]),
+  );
+  return {
+    ...shell,
+    ...stats,
+    lineup_players: (stats.lineup_players ?? []).map((lp: any) => {
+      const base = lp?.steam_id ? shellPlayers.get(String(lp.steam_id)) : null;
+      if (!base) return lp;
+      return {
+        ...base,
+        ...lp,
+        player: lp.player ? { ...base.player, ...lp.player } : base.player,
+      };
+    }),
+  };
+}
+
 export default {
   emits: ["clear-active-map", "select-map"],
   props: {
@@ -1048,26 +1074,19 @@ export default {
     },
     activeLineup1() {
       if (this.activeMap && this.mapStats?.lineup_1) {
-        return this.mapStats.lineup_1;
+        return mergeLineup(this.match.lineup_1, this.mapStats.lineup_1);
       }
       if (!this.activeMap && this.allMapsStats?.lineup_1) {
-        // Keep shell fields (team, captain flags, is_ready); add stats players.
-        return {
-          ...this.match.lineup_1,
-          ...this.allMapsStats.lineup_1,
-        };
+        return mergeLineup(this.match.lineup_1, this.allMapsStats.lineup_1);
       }
       return this.match.lineup_1;
     },
     activeLineup2() {
       if (this.activeMap && this.mapStats?.lineup_2) {
-        return this.mapStats.lineup_2;
+        return mergeLineup(this.match.lineup_2, this.mapStats.lineup_2);
       }
       if (!this.activeMap && this.allMapsStats?.lineup_2) {
-        return {
-          ...this.match.lineup_2,
-          ...this.allMapsStats.lineup_2,
-        };
+        return mergeLineup(this.match.lineup_2, this.allMapsStats.lineup_2);
       }
       return this.match.lineup_2;
     },

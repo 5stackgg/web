@@ -2463,7 +2463,7 @@
         "game_modes": {
           "title": "Game Modes",
           "section": "Game Modes",
-          "description": "A mode bundles the plugins, cvars and rules that make a match play differently. Matches and community servers pick one.",
+          "description": "A mode bundles the plugins, cvars and rules that make a match play differently. Matches and community servers pick one; matches with a custom mode never count toward ELO.",
           "create": "New Mode",
           "create_title": "New Game Mode",
           "edit_title": "Edit Game Mode",
@@ -2471,8 +2471,8 @@
           "empty": "No game modes yet. Create one to let matches run something other than competitive.",
           "requires_plugins": "Enable Game Plugins first — a mode has nothing to load without them.",
           "disabled": "Disabled",
-          "competitive": "Competitive safe",
-          "casual_only": "Casual only",
+          "competitive": "In draft lobbies",
+          "casual_only": "Hidden from drafts",
           "plugin_count": "{count} plugins"
         }
       },
@@ -5266,7 +5266,7 @@
         "title": "Game Mode",
         "none": "Competitive (no mode)",
         "description": "Loads a set of plugins and console variables on the match server.",
-        "not_competitive_safe": "This mode is not marked safe for competitive play. It still counts toward ELO — mark it competitive safe on the mode itself if that is intended."
+        "unranked_note": "Matches with a custom game mode never count toward ELO or the leaderboards."
       }
     },
     "schedule": {
@@ -6598,13 +6598,17 @@
       "game_server_node_description": "Select a game server node with CS installed",
       "type": "Server Type",
       "select_type": "Select Server Type",
+      "game_mode": "Game Mode",
+      "select_game_mode": "Select Game Mode",
+      "valve_preset_group": "Valve presets",
+      "custom_mode_group": "Custom modes",
       "game": "Game",
       "csgo_ranked_unavailable_title": "Ranked Not Available",
       "csgo_ranked_unavailable_description": "Ranked mode is not yet available for CS:GO servers.",
       "ranked_server": "Ranked Server",
       "ranked_server_description": "Fully managed ranked experience by 5stack.",
-      "valve_presets": "Valve Presets",
-      "valve_presets_description": "Choose from casual/competitive and other Valve-presets.",
+      "valve_presets": "Valve Presets & Custom Modes",
+      "valve_presets_description": "Run a Valve preset like casual or deathmatch, or a custom game mode with its plugins.",
       "connect_password": "Connect Password",
       "connect_password_description": "Password required to connect to the server (optional)",
       "rcon_password": "RCON Password",
@@ -7113,15 +7117,14 @@
       "clear_team": "Clear team",
       "both_teams_private": "With both teams set the lineup is locked, so this lobby stays private.",
       "step_format": "Draft Mode",
-      "step_settings": "Match Settings",
+      "step_settings": "Game Settings",
       "step_rules": "Lobby Rules",
       "back": "Back",
       "next": "Next",
       "step_mode": "Mode",
-      "mode_description": "How the match plays. Leave it on Competitive for a normal match, or pick a mode to load its plugins on the server.",
+      "mode_description": "How the match plays. Leave it on Competitive for a normal match, or pick a mode to load its plugins on the server. Custom modes never count toward ELO.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards.",
-      "mode_empty": "No game modes are set up yet. An administrator can add them under Settings."
+      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards."
     },
     "host": "The host",
     "invite": {
@@ -7255,7 +7258,7 @@
       "kick_confirm_title": "Remove this player?",
       "kick_confirm_description": "They will be removed from the draft room.",
       "load_failed": "Could not load this draft room.",
-      "match_settings": "Match Settings"
+      "match_settings": "Game Settings"
     },
     "bar": {
       "region": "Region",
@@ -8268,9 +8271,8 @@
       "name": "Name",
       "slug": "Slug",
       "description": "Description",
-      "competitive_safe": "Safe for competitive play",
-      "competitive_safe_description": "Whether this mode may be used by a ranked or matchmaking match.",
-      "competitive_safe_warning": "This mode will only be offered on casual matches. Ranked servers never inherit a mode, so matchmaking always comes up on a clean plugin set.",
+      "competitive_safe": "Offer in draft lobbies",
+      "competitive_safe_description": "Lobby hosts can pick this mode when creating a draft room. Matches with any custom mode never count toward ELO or the leaderboards.",
       "plugins": "Plugins",
       "plugins_description": "Loaded in the order shown, after anything placed in custom-plugins by hand.",
       "no_plugins": "No game plugins in the catalog yet. Sync the registry and install one first.",

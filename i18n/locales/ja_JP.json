@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "ゲームモード",
         "none": "Competitive（モードなし）",
-        "description": "試合サーバーにプラグインとコンソール変数のセットを読み込みます。",
-        "not_competitive_safe": "このモードは競技用に安全とは設定されていません。それでも ELO には反映されます。意図的であれば、モード側で競技用に安全と設定してください。"
+        "description": "試合サーバーにプラグインとコンソール変数のセットを読み込みます。"
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "モード",
       "mode_description": "試合の進み方です。通常の試合なら Competitive のままにし、モードを選ぶとそのプラグインがサーバーに読み込まれます。",
       "mode_none": "Competitive",
-      "mode_none_hint": "標準ルール。ELO とリーダーボードに反映されます。",
-      "mode_empty": "ゲームモードがまだ設定されていません。管理者が設定から追加できます。"
+      "mode_none_hint": "標準ルール。ELO とリーダーボードに反映されます。"
     },
     "host": "ホスト",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "説明",
       "competitive_safe": "競技プレイに安全",
       "competitive_safe_description": "このモードをランクマッチやマッチメイキングの試合で使用できるかどうか。",
-      "competitive_safe_warning": "このモードはカジュアル試合でのみ選択できます。ランクサーバーはモードを引き継がないため、マッチメイキングは常にクリーンなプラグイン構成で始まります。",
       "plugins": "プラグイン",
       "plugins_description": "表示順に読み込まれます（custom-plugins に手動で置いたものの後）。",
       "no_plugins": "カタログにゲームプラグインがまだありません。まずレジストリを同期してインストールしてください。",

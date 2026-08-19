@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Modo de juego",
         "none": "Competitivo (sin modo)",
-        "description": "Carga un conjunto de plugins y variables de consola en el servidor de la partida.",
-        "not_competitive_safe": "Este modo no está marcado como apto para competitivo. Aun así cuenta para el ELO: márcalo como apto para competitivo en el propio modo si es lo que quieres."
+        "description": "Carga un conjunto de plugins y variables de consola en el servidor de la partida."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Modo",
       "mode_description": "Cómo se juega la partida. Déjalo en Competitivo para una partida normal, o elige un modo para cargar sus plugins en el servidor.",
       "mode_none": "Competitivo",
-      "mode_none_hint": "Reglas estándar. Cuenta para el ELO y las clasificaciones.",
-      "mode_empty": "Todavía no hay modos de juego configurados. Un administrador puede añadirlos en Ajustes."
+      "mode_none_hint": "Reglas estándar. Cuenta para el ELO y las clasificaciones."
     },
     "host": "El anfitrión",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Descripción",
       "competitive_safe": "Apto para juego competitivo",
       "competitive_safe_description": "Si este modo puede usarse en partidas clasificatorias o de emparejamiento.",
-      "competitive_safe_warning": "Este modo solo se ofrecerá en partidas casual. Los servidores clasificatorios nunca heredan un modo, así que el emparejamiento siempre arranca con un conjunto de plugins limpio.",
       "plugins": "Plugins",
       "plugins_description": "Se cargan en el orden mostrado, después de lo que se haya puesto a mano en custom-plugins.",
       "no_plugins": "Todavía no hay plugins de juego en el catálogo. Sincroniza el registro e instala uno primero.",

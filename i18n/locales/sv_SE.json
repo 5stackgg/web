@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Spelläge",
         "none": "Competitive (inget läge)",
-        "description": "Laddar en uppsättning tillägg och konsolvariabler på matchservern.",
-        "not_competitive_safe": "Det här läget är inte markerat som säkert för competitive. Det räknas ändå mot ELO — markera det som säkert för competitive i själva läget om det är meningen."
+        "description": "Laddar en uppsättning tillägg och konsolvariabler på matchservern."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Läge",
       "mode_description": "Hur matchen spelas. Låt den stå på Competitive för en vanlig match, eller välj ett läge för att ladda dess tillägg på servern.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Standardregler. Räknas mot ELO och topplistor.",
-      "mode_empty": "Inga spellägen är uppsatta än. En administratör kan lägga till dem under Inställningar."
+      "mode_none_hint": "Standardregler. Räknas mot ELO och topplistor."
     },
     "host": "Värden",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Beskrivning",
       "competitive_safe": "Säkert för competitive",
       "competitive_safe_description": "Om det här läget får användas av en rankad match eller matchmaking.",
-      "competitive_safe_warning": "Det här läget erbjuds bara i casual-matcher. Rankade servrar ärver aldrig ett läge, så matchmaking startar alltid med en ren uppsättning tillägg.",
       "plugins": "Tillägg",
       "plugins_description": "Laddas i den ordning som visas, efter allt som lagts för hand i custom-plugins.",
       "no_plugins": "Inga speltillägg i katalogen än. Synka registry och installera ett först.",

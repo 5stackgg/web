@@ -97,7 +97,6 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       game_mode: {
         id: true,
         name: true,
-        competitive_safe: true,
       },
       map_pool: {
         id: true,

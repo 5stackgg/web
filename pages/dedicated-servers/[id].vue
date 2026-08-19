@@ -366,6 +366,7 @@ export default {
               plugin_runtime: true,
               rcon_status: true,
               game_server_node_id: true,
+              game_mode_id: true,
               connection_link: true,
               connection_string: true,
               offline_at: true,

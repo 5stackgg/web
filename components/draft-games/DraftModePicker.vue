@@ -1,6 +1,17 @@
 <script setup lang="ts">
-import { Badge } from "~/components/ui/badge";
-import { Check, Puzzle, ShieldAlert } from "lucide-vue-next";
+import { computed } from "vue";
+import { Check, Puzzle } from "lucide-vue-next";
+
+const props = defineProps<{
+  form: any;
+  modes: Array<Record<string, any>>;
+}>();
+
+const selected = computed<string>(() => props.form.values.game_mode_id ?? "");
+
+const select = (id: string) => {
+  props.form.setFieldValue("game_mode_id", id);
+};
 </script>
 
 <template>
@@ -53,81 +64,11 @@ import { Check, Puzzle, ShieldAlert } from "lucide-vue-next";
       </div>
 
       <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-2">
-          <span class="truncate font-medium">{{ mode.name }}</span>
-          <Badge
-            v-if="!mode.competitive_safe"
-            variant="outline"
-            class="shrink-0 gap-1 text-[0.6rem]"
-          >
-            <ShieldAlert class="h-3 w-3" />
-            {{ $t("draft_games.bar.unranked") }}
-          </Badge>
-        </div>
+        <p class="truncate font-medium">{{ mode.name }}</p>
         <p class="truncate text-xs text-muted-foreground">
           {{ mode.description }}
         </p>
       </div>
     </button>
-
-    <p v-if="modes.length === 0" class="text-sm text-muted-foreground">
-      {{ $t("draft_games.create.mode_empty") }}
-    </p>
   </div>
 </template>
-
-<script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
-
-export default {
-  props: {
-    form: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      gameModes: [] as Array<Record<string, any>>,
-    };
-  },
-  apollo: {
-    gameModes: {
-      fetchPolicy: "cache-first",
-      query: generateQuery({
-        game_modes: [
-          {},
-          {
-            id: true,
-            name: true,
-            description: true,
-            enabled: true,
-            competitive_safe: true,
-          },
-        ],
-      }),
-      update(data: { game_modes: Array<Record<string, any>> }) {
-        return data.game_modes;
-      },
-      skip() {
-        return !useApplicationSettingsStore().gamePluginsEnabled;
-      },
-    },
-  },
-  methods: {
-    select(id: string) {
-      this.form.setFieldValue("game_mode_id", id);
-    },
-  },
-  computed: {
-    selected(): string {
-      return this.form.values.game_mode_id ?? "";
-    },
-    modes(): Array<Record<string, any>> {
-      return (this.gameModes ?? []).filter(
-        (mode: Record<string, any>) => mode.enabled,
-      );
-    },
-  },
-};
-</script>

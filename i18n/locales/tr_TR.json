@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Oyun Modu",
         "none": "Rekabetçi (mod yok)",
-        "description": "Maç sunucusuna bir dizi eklenti ve konsol değişkeni yükler.",
-        "not_competitive_safe": "Bu mod rekabetçi oyuna uygun olarak işaretlenmemiş. Yine de ELO'ya sayılır — böyle olması isteniyorsa modun kendisinde rekabetçiye uygun olarak işaretle."
+        "description": "Maç sunucusuna bir dizi eklenti ve konsol değişkeni yükler."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Mod",
       "mode_description": "Maçın nasıl oynanacağı. Normal bir maç için Rekabetçi'de bırak ya da eklentilerini sunucuya yüklemek için bir mod seç.",
       "mode_none": "Rekabetçi",
-      "mode_none_hint": "Standart kurallar. ELO'ya ve liderlik tablolarına sayılır.",
-      "mode_empty": "Henüz kurulu bir oyun modu yok. Bir yönetici bunları Ayarlar'dan ekleyebilir."
+      "mode_none_hint": "Standart kurallar. ELO'ya ve liderlik tablolarına sayılır."
     },
     "host": "Ev sahibi",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Açıklama",
       "competitive_safe": "Rekabetçi oyuna uygun",
       "competitive_safe_description": "Bu modun dereceli veya eşleştirme maçlarında kullanılıp kullanılamayacağı.",
-      "competitive_safe_warning": "Bu mod yalnızca casual maçlarda sunulur. Dereceli sunucular hiçbir zaman bir modu devralmaz, bu yüzden eşleştirme her zaman temiz bir eklenti setiyle başlar.",
       "plugins": "Eklentiler",
       "plugins_description": "Gösterilen sırayla, custom-plugins içine elle konulanlardan sonra yüklenir.",
       "no_plugins": "Katalogda henüz oyun eklentisi yok. Önce kayıt defterini eşitle ve bir tane kur.",

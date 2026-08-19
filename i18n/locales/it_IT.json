@@ -5204,8 +5204,7 @@
       "game_mode": {
         "title": "Modalità di gioco",
         "none": "Competitive (nessuna modalità)",
-        "description": "Carica un insieme di plugin e variabili di console sul server della partita.",
-        "not_competitive_safe": "Questa modalità non è contrassegnata come adatta al gioco competitivo. Conta comunque per l'ELO — contrassegnala come adatta al competitive nella modalità stessa se è voluto."
+        "description": "Carica un insieme di plugin e variabili di console sul server della partita."
       }
     },
     "schedule": {
@@ -7056,8 +7055,7 @@
       "step_mode": "Modalità",
       "mode_description": "Come si gioca la partita. Lascia su Competitive per una partita normale, oppure scegli una modalità per caricarne i plugin sul server.",
       "mode_none": "Competitive",
-      "mode_none_hint": "Regole standard. Conta per l'ELO e le classifiche.",
-      "mode_empty": "Non è ancora configurata alcuna modalità di gioco. Un amministratore può aggiungerle nelle Impostazioni."
+      "mode_none_hint": "Regole standard. Conta per l'ELO e le classifiche."
     },
     "host": "L'host",
     "invite": {
@@ -8206,7 +8204,6 @@
       "description": "Descrizione",
       "competitive_safe": "Adatta al gioco competitivo",
       "competitive_safe_description": "Se questa modalità può essere usata da una partita classificata o di matchmaking.",
-      "competitive_safe_warning": "Questa modalità sarà offerta solo nelle partite casual. I server classificati non ereditano mai una modalità, quindi il matchmaking parte sempre con un set di plugin pulito.",
       "plugins": "Plugin",
       "plugins_description": "Caricati nell'ordine mostrato, dopo tutto ciò che è stato messo a mano in custom-plugins.",
       "no_plugins": "Nessun plugin di gioco nel catalogo. Sincronizza il registry e installane uno prima.",

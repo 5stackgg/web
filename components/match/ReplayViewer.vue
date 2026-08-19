@@ -663,14 +663,14 @@ const currentTick = computed(() => ticks.value[tickIndex.value] ?? 0);
 const SCRUB_KILL_CT = "rgb(56,189,248)";
 const SCRUB_KILL_T = "rgb(251,191,36)";
 const SCRUB_KILL_NEUTRAL = "rgb(248,113,113)";
-const SCRUB_NADE_COLORS: Record<string, string> = {
+const SCRUB_UTILITY_COLORS: Record<string, string> = {
   HE: "rgb(239,68,68)",
   Molotov: "rgb(249,115,22)",
   Smoke: "rgb(148,163,184)",
   Flash: "rgb(250,204,21)",
   Decoy: "rgb(34,211,238)",
 };
-const NADE_SCRUB_ICON: Record<string, string> = {
+const UTILITY_SCRUB_ICON: Record<string, string> = {
   Smoke: "/img/equipment/smokegrenade.svg",
   Molotov: "/img/equipment/molotov.svg",
   HE: "/img/equipment/hegrenade.svg",
@@ -680,7 +680,7 @@ const NADE_SCRUB_ICON: Record<string, string> = {
 const scrubberMarkers = computed<
   Array<{
     left: number;
-    lane: "kill" | "nade" | "bomb";
+    lane: "kill" | "utility" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -695,7 +695,7 @@ const scrubberMarkers = computed<
   }
   const out: Array<{
     left: number;
-    lane: "kill" | "nade" | "bomb";
+    lane: "kill" | "utility" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -728,10 +728,10 @@ const scrubberMarkers = computed<
     }
     out.push({
       left: Math.max(0, Math.min(100, left)),
-      lane: "nade",
-      color: SCRUB_NADE_COLORS[g.type] ?? "rgb(148,163,184)",
+      lane: "utility",
+      color: SCRUB_UTILITY_COLORS[g.type] ?? "rgb(148,163,184)",
       title: g.type,
-      icon: NADE_SCRUB_ICON[g.type],
+      icon: UTILITY_SCRUB_ICON[g.type],
       gid: g.grenade_id ?? undefined,
     });
   }
@@ -2593,7 +2593,7 @@ onMounted(() => {
   const compact = mobileChrome.value && !isTablet.value;
   chromeScoreboardOpen.value = !compact;
   if (compact) showPbpPanel.value = false;
-  // On touch, start with only smokes shown — the full nade set clutters the
+  // On touch, start with only smokes shown — the full utility set clutters the
   // smaller map; the rest are one tap away in the util filters.
   if (mobileChrome.value) {
     utilTypeFilter.value = {
@@ -3829,7 +3829,7 @@ const utilTypeFilter = ref<Record<string, boolean>>({
 const CT_HEX = "hsl(210, 80%, 60%)";
 const T_HEX = "hsl(33, 94%, 58%)";
 
-function nadeArray(lo: RoundInventoryEntry | undefined): string[] {
+function utilityArray(lo: RoundInventoryEntry | undefined): string[] {
   if (!lo) return [];
   const out: string[] = [];
   for (let i = 0; i < (lo.flash ?? 0); i++) out.push("flash");
@@ -3869,7 +3869,7 @@ function buildChromeRows(rows: RosterEntry[], side: number) {
       a: st.a,
       dmg: st.dmg,
       weapon: lo?.primary || lo?.secondary || null,
-      nades: nadeArray(lo),
+      utility: utilityArray(lo),
       bomb: hasBombFor(r.steamId),
       kit: lo?.kit ?? false,
       avatarUrl: r.avatarUrl,
@@ -3942,7 +3942,7 @@ const chromeUtilMarkers = computed(() => {
   for (const u of roundUtilities.value)
     if (u.gid != null) nameByGid.set(u.gid, u.name);
   return scrubberMarkers.value
-    .filter((m) => m.lane === "nade" && m.icon)
+    .filter((m) => m.lane === "utility" && m.icon)
     .map((m) => ({
       frac: m.left / 100,
       icon: m.icon as string,
@@ -4623,7 +4623,7 @@ watch(overlayMode, (on) => {
                 :cx="project({ x: g.rx, y: g.ry, z: g.rz }).x"
                 :cy="project({ x: g.rx, y: g.ry, z: g.rz }).y"
                 r="16"
-                :fill="SCRUB_NADE_COLORS[g.type] || 'rgb(148,163,184)'"
+                :fill="SCRUB_UTILITY_COLORS[g.type] || 'rgb(148,163,184)'"
                 :fill-opacity="
                   g.gid != null && selectedGi.includes(g.gid) ? 0.85 : 0.4
                 "
@@ -6211,7 +6211,7 @@ watch(overlayMode, (on) => {
           >
             <img
               v-for="(m, i) in scrubberMarkers"
-              v-show="m.lane === 'nade' && m.icon"
+              v-show="m.lane === 'utility' && m.icon"
               :key="'n' + i"
               :src="m.icon"
               class="absolute top-0 h-4 w-4 -translate-x-1/2 object-contain"

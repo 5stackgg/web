@@ -35,7 +35,7 @@ type Row = {
   a: number;
   dmg: number;
   weapon: string | null;
-  nades: string[];
+  utility: string[];
   bomb: boolean;
   kit: boolean;
   avatarUrl: string | null;
@@ -299,7 +299,7 @@ function onCeilScrubUp() {
   window.removeEventListener("pointercancel", onCeilScrubUp);
 }
 const utilClusters = computed(() => {
-  // Respect the util-type filter so toggling a type also drops its nade icons
+  // Respect the util-type filter so toggling a type also drops its utility icons
   // from the seek bar (2D + 3D), not just the map.
   const sorted = [...(props.utilMarkers || [])]
     .filter((m) => props.typeFilter?.[(m as any).type] !== false)
@@ -736,10 +736,10 @@ const utilClusters = computed(() => {
               </Transition>
               <span class="util">
                 <img
-                  v-for="(u, ui) in r.nades"
+                  v-for="(u, ui) in r.utility"
                   :key="ui"
                   :src="UTIL_ICON[u.toLowerCase()]"
-                  class="eq nade"
+                  class="eq utility"
                   :title="u"
                 />
               </span>
@@ -1693,7 +1693,7 @@ const utilClusters = computed(() => {
 .eq.gun {
   height: 20px;
 }
-.eq.nade {
+.eq.utility {
   height: 16px;
 }
 .eq.kit {
@@ -2127,8 +2127,8 @@ const utilClusters = computed(() => {
   gap: 4px;
 }
 /* On touch the seek bar keeps its normal height (so the transport row stays
-   vertically centered), and the nade lane drops into reserved space BELOW it
-   via padding — a finger dragging the bar never lands on a nade. Desktop keeps
+   vertically centered), and the utility lane drops into reserved space BELOW it
+   via padding — a finger dragging the bar never lands on a utility. Desktop keeps
    them overlaid since a mouse can thread between them. */
 .bp-chrome.is-mobile .seek-wrap {
   height: 38px;

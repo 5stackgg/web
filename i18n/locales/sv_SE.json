@@ -1421,7 +1421,7 @@
         "date_7d": "Senaste 7 dagarna",
         "date_30d": "Senaste 30 dagarna",
         "date_90d": "Senaste 90 dagarna",
-        "date_6m": "Senaste 6 månaderna",
+        "date_6m": "Senaste 6 måutilityrna",
         "date_1y": "Senaste året",
         "no_results_title": "Inga turneringar matchar",
         "no_results_description": "Prova att rensa filter eller bredda din sökning."
@@ -7675,7 +7675,7 @@
     "about": {
       "title": "Så fungerar ligan",
       "register": "Anmäl ditt lag medan anmälan är öppen och välj spelarna i din säsongstrupp.",
-      "placement": "Admins granskar anmälningar och placerar lag i skicklighetsdivisioner. Återkommande lag behåller sin intjänade division.",
+      "placement": "Admins granskar anmälningar och placerar lag i skicklighetsdivisioner. Återkommande lag behåller sin intjäutility division.",
       "weekly": "Varje vecka får du en match. Endera lagkaptenen föreslår en tid inom matchveckan och den motsatta lagkaptenen godkänner — ni kan omförhandla tills matchen går live.",
       "default_night": "Om ingen tid överenskoms bokas matchen till ligans standardmatchkväll för den veckan.",
       "roster_lock": "Trupperna låses en bit in i säsongen — bara truppspelare kan spela ligamatcher, och en spelare kan bara vara i ett lag per säsong.",

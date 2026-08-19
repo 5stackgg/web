@@ -78,7 +78,7 @@ let sharedCalibrations: Record<string, RadarMeta> | null = null;
 let sharedLoad: Promise<Record<string, RadarMeta> | null> | null = null;
 
 // One fetch per page load, shared by every caller. The 2D viewer, the analysis
-// board and the nade library all mount against the same file.
+// board and the utility library all mount against the same file.
 export function loadRadarCalibrations(): Promise<Record<
   string,
   RadarMeta

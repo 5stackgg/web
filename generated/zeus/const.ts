@@ -16260,6 +16260,7 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		startNadePractice:{
 			collection_id:"uuid",
+			server_id:"uuid",
 			team_id:"uuid"
 		},
 		stopGpuSession:{
@@ -44637,6 +44638,14 @@ export const ReturnTypes: Record<string,any> = {
 		entries:"NadePracticePlanEntry",
 		message:"String"
 	},
+	NadePracticeServer:{
+		id:"uuid",
+		label:"String",
+		region:"String"
+	},
+	NadePracticeServersOutput:{
+		servers:"NadePracticeServer"
+	},
 	NadePracticeSessionOutput:{
 		id:"uuid",
 		invite_code:"String",
@@ -61547,6 +61556,7 @@ export const ReturnTypes: Record<string,any> = {
 		nadeLineupMissPattern:"NadeMissPatternOutput",
 		nadeMatchUtilityReport:"NadeUtilityReportOutput",
 		nadePracticePlan:"NadePracticePlanOutput",
+		nadePracticeServers:"NadePracticeServersOutput",
 		nadeSolverCalibration:"NadeCalibrationOutput",
 		nadeTeamUtilityReport:"NadeTeamUtilityOutput",
 		nade_collection_items:"nade_collection_items",

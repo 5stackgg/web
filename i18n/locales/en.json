@@ -247,7 +247,7 @@
       },
       "util_efficiency": {
         "num": "DMG (util)",
-        "den": "nades thrown"
+        "den": "utility thrown"
       },
       "enemies_flashed_per": {
         "num": "enemies blinded",
@@ -281,7 +281,7 @@
         "den": "enemy flashes"
       },
       "unused_utility": {
-        "expr": "total nade $ still on you when you die"
+        "expr": "total utility $ still on you when you die"
       },
       "wasted_magazine_pct": {
         "num": "bullets left at reload",
@@ -466,7 +466,7 @@
     },
     "utility": {
       "label": "Utility",
-      "description": "Grenade impact — flash assists, how much you blind enemies, and HE/molotov damage per nade. Scored 0–100 as the average percentile vs all players. Provisional: utility doesn't yet cleanly separate skill on our data."
+      "description": "Grenade impact — flash assists, how much you blind enemies, and HE/molotov damage per utility. Scored 0–100 as the average percentile vs all players. Provisional: utility doesn't yet cleanly separate skill on our data."
     },
     "consistency": {
       "label": "Consistency",
@@ -510,7 +510,7 @@
     },
     "util_efficiency": {
       "label": "Utility Damage",
-      "description": "Damage dealt per HE/molotov you throw — rewards landing nades, not just buying them."
+      "description": "Damage dealt per HE/molotov you throw — rewards landing utility, not just buying them."
     },
     "trade_kills": {
       "label": "Trade Kills",
@@ -2490,9 +2490,9 @@
           "plugin_count": "{count} plugins",
           "archived": "Archived"
         },
-        "nades": {
-          "title": "Nades",
-          "library_section": "Nade Library",
+        "utility": {
+          "title": "Utility",
+          "library_section": "Utility Library",
           "library_description": "The lineup library: saved throws with where to stand, where to aim and where the utility lands. Turned off, the library is not served and nothing new is taken in.",
           "lineup_daily_limit": "Lineups per player per day",
           "lineup_daily_limit_description": "How many lineups one player may add in a day, counting what the in-game plugin records, what demo mining attributes to them and what they author in the browser. A spam ceiling, not a quota anyone should reach.",
@@ -2505,7 +2505,7 @@
           "practice_reserved_servers": "Reserved on-demand slots",
           "practice_reserved_servers_description": "On-demand server slots practice is never allowed to take. This is the safety valve: with it set, a practice session can never take the last slot out from under a scheduled match. Set it to 0 only if losing a match server to a drill is acceptable.",
           "success_radius": "Success radius (units)",
-          "success_radius_description": "How close a throw has to land to the lineup before a drill scores it as a hit. It defaults to 96 source units against a smoke roughly 144 units across, so the default asks the nade to land well inside the smoke rather than merely clipping it. Raise it and mastery comes easier; lower it and only the exact lineup counts.",
+          "success_radius_description": "How close a throw has to land to the lineup before a drill scores it as a hit. It defaults to 96 source units against a smoke roughly 144 units across, so the default asks the utility to land well inside the smoke rather than merely clipping it. Raise it and mastery comes easier; lower it and only the exact lineup counts.",
           "success_radius_default": "96 (default)",
           "import_section": "Lineup Imports",
           "import_description": "Whether lineups may be seeded from a payload rather than recorded in game. An imported lineup is never graded as recorded — nothing here measured it.",
@@ -2547,7 +2547,7 @@
           },
           "server_default": "Server default",
           "invalid_number": "Enter a whole number of 0 or more.",
-          "updated": "Nade settings updated"
+          "updated": "Utility settings updated"
         }
       },
       "language": {
@@ -3881,9 +3881,9 @@
       "no_resources": "No pod metrics for the media server yet — the cluster's metrics server may not be scraping it.",
       "legend": "A path is one named stream slot — one person's microphone, or one camera. Publishing counts the ones actually sending media right now; a path can sit idle between someone joining and their feed coming up. Sessions are WebRTC connections, and every viewer of a stream is one of them, so it climbs faster than the others."
     },
-    "nades": {
+    "utility": {
       "eyebrow": "Utility Library",
-      "title": "Nades",
+      "title": "Utility",
       "subtitle": "Lineups for every map — where to stand, where to aim, where it lands.",
       "lineups": "Lineups",
       "all_maps": "All Maps",
@@ -3891,7 +3891,7 @@
       "map_subtitle": "{count} lineups match your filters.",
       "empty": {
         "no_maps": "No maps available",
-        "no_maps_description": "A nade library needs a map with a radar image. None are enabled yet.",
+        "no_maps_description": "A utility library needs a map with a radar image. None are enabled yet.",
         "no_lineups": "No lineups here yet",
         "no_lineups_description": "Widen the filters, or record one in a practice server to start the library."
       },
@@ -3964,7 +3964,7 @@
       },
       "board": {
         "no_radar": "No radar for this map",
-        "hint": "Squares are throw origins, dots are where the nade lands. Pick one to line it up with the list."
+        "hint": "Squares are throw origins, dots are where the utility lands. Pick one to line it up with the list."
       },
       "card": {
         "open": "Open lineup",
@@ -4215,7 +4215,7 @@
         },
         "state_note": {
           "ready": "The solver has what it needs and is ready to work.",
-          "no_sample": "Throw any nade in the server. The solver calibrates itself from it, and this clears on its own.",
+          "no_sample": "Throw any utility in the server. The solver calibrates itself from it, and this clears on its own.",
           "unsupported": "The runtime on this practice server has no solver in it. Nothing you do in game changes that — start a session on a server that has one.",
           "unknown": "The server answered with a status this page does not know. It is shown below exactly as it came."
         },
@@ -4243,10 +4243,10 @@
       },
       "drift": {
         "eyebrow": "Map Revision Drift",
-        "title": "Nade Drift",
+        "title": "Utility Drift",
         "subtitle": "What a map update did to the lineups already saved on it.",
         "framing_title": "Differential only",
-        "framing": "A result says how far a lineup's simulated end point moved between two map revisions. That simulated position means nothing on its own and is never where the nade lands in game, so only the movement and the severity are shown.",
+        "framing": "A result says how far a lineup's simulated end point moved between two map revisions. That simulated position means nothing on its own and is never where the utility lands in game, so only the movement and the severity are shown.",
         "map": "Map",
         "from_revision": "From revision",
         "to_revision": "To revision",
@@ -4432,7 +4432,7 @@
         },
         "verdict_note": {
           "covered": "The execute puts utility across this line.",
-          "open": "Nothing in the execute covers this angle. Somebody has to hold it, or it needs another nade.",
+          "open": "Nothing in the execute covers this angle. Somebody has to hold it, or it needs another utility.",
           "unknown": "This line was not settled. It is not an open angle and it is not a closed one — nobody has looked at it."
         },
         "by_step": "Closed by step {step}",
@@ -4604,7 +4604,7 @@
         "news": "News",
         "leagues": "League",
         "events": "Events",
-        "nades": "Nades"
+        "utility": "Utility"
       },
       "community": {
         "title": "Community"
@@ -4636,7 +4636,7 @@
         "metrics": "Metrics",
         "render_queue": "Render Queue",
         "media_server": "Media Server",
-        "nade_drift": "Nade Drift"
+        "utility_drift": "Utility Drift"
       },
       "profile": {
         "section": "Account",
@@ -4677,8 +4677,8 @@
         "events": "Events",
         "manage_events": "Manage Events",
         "system_media_server": "Media Server",
-        "nade_drift": "Nade Lineup Drift",
-        "nades": "Nade Lineups"
+        "utility_drift": "Utility Lineup Drift",
+        "utility": "Utility Lineups"
       },
       "logout_dialog": {
         "title": "Logout",
@@ -5773,7 +5773,7 @@
       "link_error": "Could not get calendar link"
     },
     "roster_short": "roster",
-    "nade_utility": {
+    "utility_utility": {
       "title": "Utility Lineups",
       "description": "Which saved lineups this roster's grenades looked like in real matches.",
       "lineup": "Lineup",
@@ -6218,7 +6218,7 @@
       "region": "Region",
       "no_logs_title": "No Logs Available",
       "no_logs_description": "No logs are available and no server is connected.",
-      "nades": "Nades"
+      "utility": "Utility"
     },
     "status": {
       "cancelled": "Cancelled",
@@ -6773,7 +6773,7 @@
     "highlights": {
       "clip_count": "{count} clips"
     },
-    "nades": {
+    "utility": {
       "title": "Utility vs Lineups",
       "description": "Grenades thrown in this match, matched against the lineup library by where they were thrown from and where they landed.",
       "everyone": "Everyone",
@@ -6930,7 +6930,7 @@
         },
         "util_eff_score": {
           "label": "Utility Damage",
-          "coach": "Learn a few HE / molotov line-ups for common spots to get real damage out of each nade."
+          "coach": "Learn a few HE / molotov line-ups for common spots to get real damage out of each utility."
         }
       }
     },

@@ -27,10 +27,10 @@ import {
   Leaf,
   Medal,
   CalendarRange,
-  Bomb,
-  Waypoints,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
+import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
+import UtilityDriftIcon from "~/components/icons/UtilityDriftIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
@@ -244,19 +244,19 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.nades')">
+            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.utility')">
               <SidebarMenuButton
                 as-child
-                :tooltip="$t('layouts.app_nav.tooltips.nades')"
+                :tooltip="$t('layouts.app_nav.tooltips.utility')"
               >
                 <NuxtLink
-                  :to="{ name: 'nades' }"
+                  :to="{ name: 'utility' }"
                   :class="{
-                    'router-link-active': isRouteActive('nades'),
+                    'router-link-active': isRouteActive('utility'),
                   }"
                 >
-                  <Bomb />
-                  {{ $t("layouts.app_nav.navigation.nades") }}
+                  <HeGrenadeIcon class="size-4" />
+                  {{ $t("layouts.app_nav.navigation.utility") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -1019,20 +1019,20 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </SidebarMenuItem>
 
             <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.nade_drift')"
+              :tooltip="$t('layouts.app_nav.tooltips.utility_drift')"
             >
               <SidebarMenuButton
                 as-child
-                :tooltip="$t('layouts.app_nav.tooltips.nade_drift')"
+                :tooltip="$t('layouts.app_nav.tooltips.utility_drift')"
               >
                 <NuxtLink
-                  :to="{ name: 'nades-drift' }"
+                  :to="{ name: 'utility-drift' }"
                   :class="{
-                    'router-link-active': isRouteActive('nades-drift'),
+                    'router-link-active': isRouteActive('utility-drift'),
                   }"
                 >
-                  <Waypoints />
-                  {{ $t("layouts.app_nav.system.nade_drift") }}
+                  <UtilityDriftIcon class="size-4" />
+                  {{ $t("layouts.app_nav.system.utility_drift") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -377,6 +377,23 @@ mark {
   opacity: 0.6;
 }
 
+/* The utility feature is iconed with the in-game HE artwork instead of a lucide
+   glyph, so the nav entry reads as the same thing as the utility markers in 2D
+   and 3D playback. The file is a single white path, so masking it lets the
+   silhouette take currentColor the way a lucide icon does. Plain CSS because
+   Tailwind will not generate the -webkit- half of the mask pair from arbitrary
+   values, and Safari still needs it. */
+.he-grenade-mask {
+  mask-image: url("/img/equipment/hegrenade.svg");
+  -webkit-mask-image: url("/img/equipment/hegrenade.svg");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
 /* Faint HUD scanlines laid over event banner media, so photography/video
    reads as composed into the tactical chrome instead of pasted above it. */
 .tac-scanlines {

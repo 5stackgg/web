@@ -281,7 +281,7 @@
         "den": "적 섬광탄"
       },
       "unused_utility": {
-        "expr": "total nade $ still on you when you die"
+        "expr": "total utility $ still on you when you die"
       },
       "wasted_magazine_pct": {
         "num": "재장전 시 남은 탄환",

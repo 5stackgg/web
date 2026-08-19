@@ -169,8 +169,8 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             order: 5,
           },
           {
-            path: "/settings/application/nades",
-            labelKey: "pages.settings.application.nades.title",
+            path: "/settings/application/utility",
+            labelKey: "pages.settings.application.utility.title",
             order: 6,
           },
         ],

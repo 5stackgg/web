@@ -1421,6 +1421,16 @@ export type ValueTypes = {
 	message?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["NadePracticeServer"]: AliasType<{
+	id?:boolean | `@${string}`,
+	label?:boolean | `@${string}`,
+	region?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["NadePracticeServersOutput"]: AliasType<{
+	servers?:ValueTypes["NadePracticeServer"],
+		__typename?: boolean | `@${string}`
+}>;
 	["NadePracticeSessionOutput"]: AliasType<{
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
@@ -29424,7 +29434,7 @@ specXray?: [{	enabled: boolean | Variable<any, string>,	match_id: ValueTypes["uu
 startLive?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startNadeDriftScan?: [{	from_revision?: string | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	to_revision?: string | undefined | null | Variable<any, string>},ValueTypes["NadeDriftScanOutput"]],
-startNadePractice?: [{	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	is_open?: boolean | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["NadePracticeSessionOutput"]],
+startNadePractice?: [{	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	is_open?: boolean | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["NadePracticeSessionOutput"]],
 stopGpuSession?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 stopLive?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 stopNadePractice?: [{	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -54968,6 +54978,8 @@ my_friends_aggregate?: [{	/** distinct select on columns */
 nadeLineupMissPattern?: [{	nade_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["NadeMissPatternOutput"]],
 nadeMatchUtilityReport?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id?: string | undefined | null | Variable<any, string>},ValueTypes["NadeUtilityReportOutput"]],
 nadePracticePlan?: [{	limit?: number | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	order?: string | undefined | null | Variable<any, string>,	side?: string | undefined | null | Variable<any, string>},ValueTypes["NadePracticePlanOutput"]],
+	/** Dedicated practice servers free to book right now */
+	nadePracticeServers?:ValueTypes["NadePracticeServersOutput"],
 nadeSolverCalibration?: [{	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["NadeCalibrationOutput"]],
 nadeTeamUtilityReport?: [{	limit?: number | undefined | null | Variable<any, string>,	map_name?: string | undefined | null | Variable<any, string>,	team_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["NadeTeamUtilityOutput"]],
 nade_collection_items?: [{	/** distinct select on columns */
@@ -78969,6 +78981,16 @@ export type ResolverInputTypes = {
 	analysed?:boolean | `@${string}`,
 	entries?:ResolverInputTypes["NadePracticePlanEntry"],
 	message?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["NadePracticeServer"]: AliasType<{
+	id?:boolean | `@${string}`,
+	label?:boolean | `@${string}`,
+	region?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["NadePracticeServersOutput"]: AliasType<{
+	servers?:ResolverInputTypes["NadePracticeServer"],
 		__typename?: boolean | `@${string}`
 }>;
 	["NadePracticeSessionOutput"]: AliasType<{
@@ -106974,7 +106996,7 @@ specXray?: [{	enabled: boolean,	match_id: ResolverInputTypes["uuid"]},ResolverIn
 startLive?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInputTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 startNadeDriftScan?: [{	from_revision?: string | undefined | null,	map_name: string,	to_revision?: string | undefined | null},ResolverInputTypes["NadeDriftScanOutput"]],
-startNadePractice?: [{	collection_id?: ResolverInputTypes["uuid"] | undefined | null,	is_open?: boolean | undefined | null,	map_name: string,	region?: string | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["NadePracticeSessionOutput"]],
+startNadePractice?: [{	collection_id?: ResolverInputTypes["uuid"] | undefined | null,	is_open?: boolean | undefined | null,	map_name: string,	region?: string | undefined | null,	server_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["NadePracticeSessionOutput"]],
 stopGpuSession?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 stopLive?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 stopNadePractice?: [{	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
@@ -132518,6 +132540,8 @@ my_friends_aggregate?: [{	/** distinct select on columns */
 nadeLineupMissPattern?: [{	nade_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["NadeMissPatternOutput"]],
 nadeMatchUtilityReport?: [{	match_id: ResolverInputTypes["uuid"],	steam_id?: string | undefined | null},ResolverInputTypes["NadeUtilityReportOutput"]],
 nadePracticePlan?: [{	limit?: number | undefined | null,	map_name: string,	order?: string | undefined | null,	side?: string | undefined | null},ResolverInputTypes["NadePracticePlanOutput"]],
+	/** Dedicated practice servers free to book right now */
+	nadePracticeServers?:ResolverInputTypes["NadePracticeServersOutput"],
 nadeSolverCalibration?: [{	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["NadeCalibrationOutput"]],
 nadeTeamUtilityReport?: [{	limit?: number | undefined | null,	map_name?: string | undefined | null,	team_id: ResolverInputTypes["uuid"]},ResolverInputTypes["NadeTeamUtilityOutput"]],
 nade_collection_items?: [{	/** distinct select on columns */
@@ -156465,6 +156489,14 @@ export type ModelTypes = {
 		analysed: boolean,
 	entries: Array<ModelTypes["NadePracticePlanEntry"]>,
 	message?: string | undefined | null
+};
+	["NadePracticeServer"]: {
+		id: ModelTypes["uuid"],
+	label: string,
+	region: string
+};
+	["NadePracticeServersOutput"]: {
+		servers: Array<ModelTypes["NadePracticeServer"]>
 };
 	["NadePracticeSessionOutput"]: {
 		id: ModelTypes["uuid"],
@@ -204887,6 +204919,8 @@ export type ModelTypes = {
 	nadeMatchUtilityReport?: ModelTypes["NadeUtilityReportOutput"] | undefined | null,
 	/** Rank what to practise next on a map from the mined meta */
 	nadePracticePlan?: ModelTypes["NadePracticePlanOutput"] | undefined | null,
+	/** Dedicated practice servers free to book right now */
+	nadePracticeServers?: ModelTypes["NadePracticeServersOutput"] | undefined | null,
 	/** Read the practice server solver's calibration gate */
 	nadeSolverCalibration?: ModelTypes["NadeCalibrationOutput"] | undefined | null,
 	/** Aggregate a team's mined utility throws against its saved lineups */
@@ -224760,6 +224794,16 @@ export type GraphQLTypes = {
 	analysed: boolean,
 	entries: Array<GraphQLTypes["NadePracticePlanEntry"]>,
 	message?: string | undefined | null
+};
+	["NadePracticeServer"]: {
+	__typename: "NadePracticeServer",
+	id: GraphQLTypes["uuid"],
+	label: string,
+	region: string
+};
+	["NadePracticeServersOutput"]: {
+	__typename: "NadePracticeServersOutput",
+	servers: Array<GraphQLTypes["NadePracticeServer"]>
 };
 	["NadePracticeSessionOutput"]: {
 	__typename: "NadePracticeSessionOutput",
@@ -275558,6 +275602,8 @@ export type GraphQLTypes = {
 	nadeMatchUtilityReport?: GraphQLTypes["NadeUtilityReportOutput"] | undefined | null,
 	/** Rank what to practise next on a map from the mined meta */
 	nadePracticePlan?: GraphQLTypes["NadePracticePlanOutput"] | undefined | null,
+	/** Dedicated practice servers free to book right now */
+	nadePracticeServers?: GraphQLTypes["NadePracticeServersOutput"] | undefined | null,
 	/** Read the practice server solver's calibration gate */
 	nadeSolverCalibration?: GraphQLTypes["NadeCalibrationOutput"] | undefined | null,
 	/** Aggregate a team's mined utility throws against its saved lineups */
@@ -297247,6 +297293,7 @@ export enum e_server_types_enum {
 	Competitive = "Competitive",
 	Custom = "Custom",
 	Deathmatch = "Deathmatch",
+	Practice = "Practice",
 	Ranked = "Ranked",
 	Retake = "Retake",
 	Wingman = "Wingman"

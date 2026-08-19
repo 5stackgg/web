@@ -22,10 +22,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
+      # setup-node runs twice on purpose. Its caching step shells out to yarn
+      # to locate the cache folder, and the runner's global yarn is 1.x, which
+      # refuses to run at all against this repo's `packageManager: yarn@4` --
+      # so Corepack has to be enabled before that step. `corepack enable`
+      # writes its shims next to whichever node is on PATH, and only the
+      # tool-cache node installed by setup-node is writable without sudo, so
+      # this bootstrap pass has to come first and the caching one second.
+      #
+      # package-manager-cache:false is what makes the split work at all: from
+      # v5 setup-node caches automatically whenever package.json has a
+      # `packageManager` field, so without it this pass probes yarn too and
+      # fails in the same place the second one would.
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
+
+      - name: Restore the yarn cache
+        uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: yarn

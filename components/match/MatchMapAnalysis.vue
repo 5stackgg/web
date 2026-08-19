@@ -29,16 +29,10 @@ import {
 import { matchHeatmapQuery } from "~/graphql/matchHeatmapGraphql";
 import { matchMovementMapQuery } from "~/graphql/matchMovementPathsGraphql";
 import RoundSelector from "~/components/match/RoundSelector.vue";
-
-type MapSplit = {
-  bounds: { top: number; bottom: number };
-  offset: { x: number; y: number };
-};
-type RadarMeta = {
-  resolution: number;
-  offset: { x: number; y: number };
-  splits?: MapSplit[];
-};
+import {
+  RADAR_CANVAS,
+  useRadarProjection,
+} from "~/composables/useRadarProjection";
 
 type DotCategory = "kills" | "deaths" | "utility" | "util_damage";
 
@@ -86,8 +80,7 @@ const { t } = useI18n();
 const side = useMatchSide();
 const { client } = useApolloClient();
 
-const CANVAS = 1024;
-const RADAR_PX = 1024;
+const CANVAS = RADAR_CANVAS;
 
 const KILL_COLOR = "#fbbf24";
 const DEATH_COLOR = "rgb(239, 68, 68)";
@@ -117,7 +110,6 @@ const WINDOW_OPTIONS = [10, 20, 30, 45];
 const mode = ref<"heatmap" | "movement">("heatmap");
 const renderStyle = ref<"heat" | "dots">("dots");
 
-const calibrations = ref<Record<string, RadarMeta> | null>(null);
 const radarFailed = ref(false);
 const selectedMapId = ref<string | null>(null);
 
@@ -237,30 +229,13 @@ function open3dPlayback() {
   }
 }
 
-const normalizedMap = computed(() =>
-  (activeMatchMap.value?.map?.name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/_night$/, ""),
-);
-
-const calibration = computed<RadarMeta | null>(() => {
-  if (!calibrations.value || !normalizedMap.value) {
-    return null;
-  }
-  return calibrations.value[normalizedMap.value] ?? null;
-});
-
-const radarSrc = computed(() => {
-  if (!calibration.value || !normalizedMap.value || radarFailed.value) {
-    return null;
-  }
-  return `/radars/${normalizedMap.value}.png`;
-});
-
-const has2dRadar = computed(() =>
-  calibrations.value === null ? true : !!calibration.value,
-);
+const {
+  normalizedMap,
+  calibration,
+  radarSrc,
+  hasCalibration: has2dRadar,
+  projectCalibrated,
+} = useRadarProjection(() => activeMatchMap.value?.map?.name, { radarFailed });
 
 const has3dMesh = ref(true);
 watch(
@@ -280,19 +255,6 @@ watch(
   },
   { immediate: true },
 );
-
-onMounted(async () => {
-  try {
-    const res = await fetch("/radars/metadata.json");
-    if (res.ok) {
-      const data = await res.json();
-      const { _comment, ...rest } = data;
-      calibrations.value = rest as Record<string, RadarMeta>;
-    }
-  } catch {
-    /* */
-  }
-});
 
 async function loadHeatmap() {
   const matchId = props.match?.id;
@@ -403,33 +365,7 @@ function parseCoords(
   return { x: parts[0], y: parts[1], z: parts[2] ?? 0 };
 }
 
-function applySplit(z: number, splits: MapSplit[] | undefined) {
-  if (!splits) {
-    return { dx: 0, dy: 0 };
-  }
-  for (const s of splits) {
-    if (z > s.bounds.bottom && z < s.bounds.top) {
-      return { dx: s.offset.x, dy: s.offset.y };
-    }
-  }
-  return { dx: 0, dy: 0 };
-}
-
-function projectRaw(p: { x: number; y: number; z?: number }) {
-  if (!calibration.value) {
-    return null;
-  }
-  const { resolution, offset, splits } = calibration.value;
-  const split = applySplit(p.z ?? 0, splits);
-  const gameX = p.x + offset.x;
-  const gameY = p.y + offset.y;
-  const pxX = gameX / resolution + (split.dx / 100) * RADAR_PX;
-  const pxYFromBottom = gameY / resolution + (split.dy / 100) * RADAR_PX;
-  return {
-    x: pxX * (CANVAS / RADAR_PX),
-    y: CANVAS - pxYFromBottom * (CANVAS / RADAR_PX),
-  };
-}
+const projectRaw = projectCalibrated;
 
 const lineupBySteamId = computed(() => {
   const out = new Map<string, "lineup_1" | "lineup_2">();

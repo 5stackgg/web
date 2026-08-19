@@ -41,6 +41,7 @@ import AwardCase from "~/components/award/AwardCase.vue";
 import TeamCareerStats from "~/components/team/TeamCareerStats.vue";
 import TeamVetoStats from "~/components/team/TeamVetoStats.vue";
 import TeamVetoSimulator from "~/components/team/TeamVetoSimulator.vue";
+import TeamNadeUtility from "~/components/team/TeamNadeUtility.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import TeamHighlights from "~/components/team/TeamHighlights.vue";
 import TeamLeagueHistory from "~/components/teams/TeamLeagueHistory.vue";
@@ -271,6 +272,7 @@ const teamHeroActionsClasses =
         <TeamCareerStats :team-id="String($route.params.id)" />
         <TeamVetoStats :team-id="String($route.params.id)" />
         <TeamVetoSimulator :team-id="String($route.params.id)" />
+        <TeamNadeUtility :team-id="String($route.params.id)" />
       </div>
 
       <div v-else-if="tab === 'highlights'">

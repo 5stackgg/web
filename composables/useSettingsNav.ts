@@ -168,6 +168,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             labelKey: "pages.settings.application.seasons.title",
             order: 5,
           },
+          {
+            path: "/settings/application/nades",
+            labelKey: "pages.settings.application.nades.title",
+            order: 6,
+          },
         ],
       },
       {

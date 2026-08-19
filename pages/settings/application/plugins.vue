@@ -50,6 +50,7 @@ import {
   BookOpen,
   ExternalLink,
   Puzzle,
+  LibraryBig,
 } from "lucide-vue-next";
 
 const DOCS_URL = "https://docs.5stack.gg/plugins/";
@@ -90,10 +91,18 @@ const DOCS_URL = "https://docs.5stack.gg/plugins/";
                 {{ $t("pages.settings.application.plugins.docs_link") }}
                 <ExternalLink class="h-3.5 w-3.5" />
               </a>
-              <Button variant="tactical" size="sm" @click="openCreate">
-                <Plus class="h-4 w-4" />
-                {{ $t("pages.settings.application.plugins.add") }}
-              </Button>
+              <div class="flex items-center gap-2">
+                <NuxtLink to="/plugins?kind=panel" v-if="gamePluginsEnabled">
+                  <Button variant="outline" size="sm" class="h-9 gap-2">
+                    <LibraryBig class="h-4 w-4" />
+                    {{ $t("pages.settings.application.plugins.browse") }}
+                  </Button>
+                </NuxtLink>
+                <Button variant="tactical" size="sm" class="h-9" @click="openCreate">
+                  <Plus class="h-4 w-4" />
+                  {{ $t("pages.settings.application.plugins.add") }}
+                </Button>
+              </div>
             </div>
 
             <div
@@ -620,6 +629,9 @@ export default {
     },
     plugins() {
       return usePluginsStore().plugins;
+    },
+    gamePluginsEnabled() {
+      return useApplicationSettingsStore().gamePluginsEnabled;
     },
     roles() {
       return Object.values(e_player_roles_enum);

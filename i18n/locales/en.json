@@ -1382,6 +1382,20 @@
         "always": "Always Available",
         "always_hint": "Ship with every panel and cannot be turned off, so only usage is meaningful.",
         "no_metric_hint": "Nothing counts this feature, so there is no usage to report — which is not the same as no panel using it."
+      },
+      "plugins": {
+        "title": "Plugins",
+        "hint": "Reported by {panels} panels. Panels built before this shipped are left out rather than counted as running none.",
+        "most_installed": "Most installed, by number of panels",
+        "none": "No panel has installed a catalog plugin yet.",
+        "requested": "Installs",
+        "requested_caption": "requested across the fleet",
+        "manual": "Hand placed",
+        "manual_caption": "outside the catalog",
+        "modes": "Game modes",
+        "modes_caption": "defined",
+        "modes_unranked": "Unranked",
+        "modes_unranked_caption": "modes that skip ELO"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "Minimum role to create events"
         },
         "plugins": {
-          "title": "Plugins",
-          "section": "Plugins",
-          "description": "Register external micro-frontend apps that render as native pages inside your panel.",
-          "docs_link": "Read the plugin docs",
-          "add": "Add Plugin",
-          "empty_title": "No plugins yet",
-          "empty_description": "Point 5Stack at a plugin's URL and it renders as a native page inside your panel.",
+          "title": "Panel Plugins",
+          "section": "Panel Plugins",
+          "description": "Web apps that render as native pages inside your panel. Not CS2 server plugins — for those, see Game Plugins.",
+          "docs_link": "Read the panel plugin docs",
+          "add": "Add Panel Plugin",
+          "empty_title": "No panel plugins yet",
+          "empty_description": "Point 5Stack at a web app's URL and it renders as a native page inside your panel.",
           "public": "Public",
-          "add_title": "Add Plugin",
-          "edit_title": "Edit Plugin",
-          "delete_title": "Delete Plugin",
+          "add_title": "Add Panel Plugin",
+          "edit_title": "Edit Panel Plugin",
+          "delete_title": "Delete Panel Plugin",
           "delete_description": "This will remove \"{title}\" and its /apps route from the panel. This cannot be undone.",
           "delete_confirm": "Delete",
-          "form_description": "Configure how this plugin is loaded and who can see it.",
+          "form_description": "Configure how this panel plugin is loaded and who can see it.",
           "is_default_hint": "Make this the panel's landing page.",
           "fields": {
             "title": "Title",
@@ -2386,7 +2400,8 @@
             "search": "Search icons…",
             "custom_hint": "Or paste an image URL or inline SVG (e.g. from a plugin).",
             "custom_placeholder": "https://… , <svg…>, or an icon name"
-          }
+          },
+          "browse": "Browse Directory"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "No devices subscribed yet",
           "empty_body": "Push is ready to go, but nobody has turned it on. Players subscribe themselves from their own notification settings — you can't enable it on their behalf.",
           "empty_link": "See the player-side settings"
+        },
+        "game_plugins": {
+          "title": "Plugin Directory",
+          "section": "Plugin Directory",
+          "description": "The catalog of installable plugins, and where it is pulled from. Administrators only.",
+          "disabled_hint": "Turn this on to browse the directory and install plugins onto your game server nodes.",
+          "registry": "Registry",
+          "registry_description": "Where the catalog of installable plugins is pulled from. Leave blank to use the official 5Stack registry.",
+          "registry_url": "Registry URL",
+          "catalog_count": "{count} plugins in the catalog",
+          "sync": "Sync Now",
+          "synced": "Synced {plugins} plugins and {versions} versions",
+          "directory": "Browse",
+          "directory_description": "Open the directory to find and install plugins.",
+          "browse": "Browse Directory",
+          "installed": "Installed",
+          "installed_description": "What is actually on each game server node, including anything placed there by hand.",
+          "none_installed": "No plugins are installed on any node yet.",
+          "hand_placed": "Hand placed",
+          "verified": "Verified",
+          "missing": "not on disk"
+        },
+        "game_modes": {
+          "title": "Game Modes",
+          "section": "Game Modes",
+          "description": "A mode bundles the plugins, cvars and rules that make a match play differently. Matches and community servers pick one.",
+          "create": "New Mode",
+          "create_title": "New Game Mode",
+          "edit_title": "Edit Game Mode",
+          "sheet_description": "Modes are applied when a server starts, so changing one affects the next match on that server.",
+          "empty": "No game modes yet. Create one to let matches run something other than competitive.",
+          "requires_plugins": "Enable Game Plugins first — a mode has nothing to load without them.",
+          "disabled": "Disabled",
+          "competitive": "Competitive safe",
+          "casual_only": "Casual only",
+          "plugin_count": "{count} plugins"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "Set up a public server from the Dedicated Servers page to make it available here.",
       "setup_public_server": "Set Up a Public Server",
       "lan_servers_title": "LAN Servers",
-      "manage": "Manage"
+      "manage": "Manage",
+      "all_modes": "All",
+      "no_mode": "Vanilla"
     },
     "map_pools": {
       "title": "Map Pools",
@@ -3530,7 +3583,111 @@
       "not_found_description": "This plugin does not exist or is no longer available.",
       "forbidden_title": "Access restricted",
       "forbidden_description": "You don't have permission to view this page.",
-      "error_title": "Failed to load page"
+      "error_title": "Failed to load page",
+      "title": "Plugin Directory",
+      "description": "Plugins for your game servers and your panel. Install onto every node, or pick specific ones.",
+      "search": "Search plugins",
+      "empty": "Nothing matches that search.",
+      "verified": "Verified",
+      "by": "by {author}",
+      "back": "All plugins",
+      "source": "Source",
+      "releases": "Latest release",
+      "requires_service": "Needs an external service you provide: {service}",
+      "install_title": "Install on a node",
+      "install": "Install",
+      "uninstall": "Remove",
+      "install_success": "Done",
+      "not_installed": "Not installed",
+      "no_nodes": "No game server nodes are set up yet.",
+      "unavailable_for_runtime": "This plugin has no release for {runtime}, the runtime this deployment runs.",
+      "kinds": {
+        "all": "All",
+        "game": "Game Server",
+        "panel": "Panel",
+        "bundle": "Bundle"
+      },
+      "pairs_with": "Works with",
+      "panel_install_title": "Install this panel plugin",
+      "panel_install_hint": "Deploying it is only the first step — the panel still has to be told where you hosted it.",
+      "panel_install_docs": "Installing panel plugins",
+      "installed": "Installed",
+      "already_installed": "This is already installed on your panel.",
+      "open_plugin": "Open",
+      "panel_step_deploy": "Run this on the machine hosting your panel, from your 5stack-panel checkout.",
+      "panel_step_dns": "Point the domain it prints at the same address as this panel, and wait for the certificate.",
+      "panel_step_register": "Register it under Settings → Application → Panel Plugins → Add, paste that URL, and press Detect.",
+      "installs_everywhere": "Installs on all {count} online nodes.",
+      "installed_on": "Installed on {installed} of {total} nodes.",
+      "advanced": "Rollout",
+      "advanced_hint": "Nodes install on their own schedule; a node that is offline converges when it returns.",
+      "live_title": "Installed",
+      "manage": "Manage",
+      "filter_installed": "Installed",
+      "filter_available": "Available",
+      "empty_installed": "Nothing installed yet.",
+      "readme": "About",
+      "no_readme": "This plugin has no README in its repository.",
+      "readme_loading": "Loading README…",
+      "always_load": "Load on every match",
+      "always_load_hint": "Load this without a game mode selecting it.",
+      "always_load_ranked": "Also loads on ranked and matchmaking matches.",
+      "configure": "Configuration",
+      "configure_hint": "Written by the plugin on first load, so it appears after a server has run this mode once.",
+      "configure_open": "Open files",
+      "pending": "pending",
+      "state_installed": "Installed",
+      "state_failed": "Failed",
+      "state_absent": "Not installed",
+      "checked": "Checked",
+      "never_checked": "Never reported",
+      "status": {
+        "Pending": "Pending",
+        "Installing": "Installing…",
+        "Installed": "Installed",
+        "Failed": "Failed",
+        "Removing": "Removing…"
+      },
+      "remove_confirm_title": "Remove this plugin?",
+      "remove_confirm_description": "It is used by {modes}. Removing it takes it out of those modes as well.",
+      "remove_confirm_action": "Remove anyway",
+      "guidelines": {
+        "badge": "Needs guidelines off",
+        "toggle": "Turn off Valve's server guidelines",
+        "hint": "{name} cannot do what it does while the framework is enforcing Valve's server guidelines. Servers that load it will start with them off.",
+        "off_hint": "Left on, the plugin still installs and loads — the parts that change what a player sees just do nothing.",
+        "warning_title": "Warning: this can get your Steam GSLTs banned",
+        "warning_description": "Per Valve, running outside their official server guidelines can trigger every Game Server Login Token (GSLT) on the server owner's Steam account to be banned. Enable at your own risk.",
+        "warning_link_label": "Valve's server guidelines"
+      },
+      "custom": {
+        "add": "Add a plugin",
+        "badge": "Custom",
+        "title": "Add a plugin the catalog does not carry",
+        "description": "Point 5Stack at a release and it becomes an entry like any other — installable on every node, with the download checked against a digest taken here.",
+        "url": "Release URL",
+        "url_hint": "A GitHub repository, a release, or a link straight to the .zip. A repository resolves to the newest Linux archive of its latest release.",
+        "runtime": "Framework",
+        "runtime_placeholder": "Which framework is this build for?",
+        "runtime_hint": "A CounterStrikeSharp build will not load under SwiftlyS2, and nothing in the archive says which it is.",
+        "advanced": "Details we could not read from the URL",
+        "slug": "Slug",
+        "version": "Version",
+        "name": "Name",
+        "summary": "Description",
+        "layout": "Archive layout",
+        "layout_csgo": "Archive root is game/csgo",
+        "layout_plugin": "Archive root is the plugin folder",
+        "layout_hint": "Most CS2 plugins ship an archive that already contains addons/…; pick the other one if yours unpacks straight into the plugin's own folder.",
+        "install_path": "Install path",
+        "warning_title": "Nobody has reviewed this plugin",
+        "warning_description": "A game plugin is loaded into the cs2 process on your machines and can do anything that process can. Adding one here vouches for it yourself — there is no registry maintainer between you and it.",
+        "submit": "Add to catalog",
+        "added": "{name} {version} added",
+        "remove": "Remove from catalog",
+        "remove_hint": "Uninstall it from your nodes before taking it out of the catalog.",
+        "removed": "Removed from the catalog"
+      }
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3945,8 @@
         "title": "Competition"
       },
       "platform": {
-        "title": "Platform"
+        "title": "Platform",
+        "plugin_directory": "Plugin Directory"
       }
     },
     "top_nav": {
@@ -4197,7 +4355,12 @@
       "description": "This will permanently delete \"{name}\". This action cannot be undone."
     },
     "placeholder_folder_name": "folder name",
-    "placeholder_file_name": "file name"
+    "placeholder_file_name": "file name",
+    "scope_node": "Node",
+    "scope_server": "Server",
+    "missing_path": "This directory doesn't exist yet.",
+    "missing_path_create": "Create it",
+    "missing_path_dismiss": "Dismiss"
   },
   "error": {
     "generic": "An error occurred. Please try again."
@@ -5095,6 +5258,12 @@
           "description": "Let players see the cameras of their own team."
         },
         "privacy_note": "The opposing team can never see these feeds. Organizers playing in this match cannot see any of them."
+      },
+      "game_mode": {
+        "title": "Game Mode",
+        "none": "Competitive (no mode)",
+        "description": "Loads a set of plugins and console variables on the match server.",
+        "not_competitive_safe": "This mode is not marked safe for competitive play. It still counts toward ELO — mark it competitive safe on the mode itself if that is intended."
       }
     },
     "schedule": {
@@ -6944,7 +7113,12 @@
       "step_settings": "Match Settings",
       "step_rules": "Lobby Rules",
       "back": "Back",
-      "next": "Next"
+      "next": "Next",
+      "step_mode": "Mode",
+      "mode_description": "How the match plays. Leave it on Competitive for a normal match, or pick a mode to load its plugins on the server.",
+      "mode_none": "Competitive",
+      "mode_none_hint": "Standard rules. Counts toward ELO and leaderboards.",
+      "mode_empty": "No game modes are set up yet. An administrator can add them under Settings."
     },
     "host": "The host",
     "invite": {
@@ -7094,7 +7268,9 @@
       "best_of": "Best Of",
       "map_veto": "Map Veto",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "game_mode": "Mode",
+      "unranked": "Unranked"
     },
     "mode": {
       "captains": "Captains Draft",
@@ -8082,6 +8258,30 @@
       "discord": "Join Discord",
       "github": "Report an issue",
       "docs": "Read the docs"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "competitive_safe": "Safe for competitive play",
+      "competitive_safe_description": "Whether this mode may be used by a ranked or matchmaking match.",
+      "competitive_safe_warning": "This mode will only be offered on casual matches. Ranked servers never inherit a mode, so matchmaking always comes up on a clean plugin set.",
+      "plugins": "Plugins",
+      "plugins_description": "Loaded in the order shown, after anything placed in custom-plugins by hand.",
+      "no_plugins": "No game plugins in the catalog yet. Sync the registry and install one first.",
+      "restart_required": "Restart required",
+      "cfg": "Console Variables",
+      "cfg_description": "Exec'd after the match type's config, so these values win.",
+      "extra_game_params": "Extra Launch Parameters",
+      "extra_game_params_description": "Appended to the server's command line when it starts.",
+      "save": "Save Mode",
+      "saved": "Game mode saved",
+      "archive": "Archive",
+      "archived": "Game mode archived",
+      "runtime_none": "These plugins have no framework in common, so this mode cannot run anywhere. Remove whichever one targets the other framework.",
+      "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for."
     }
   }
 }

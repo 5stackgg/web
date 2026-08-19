@@ -1382,6 +1382,20 @@
         "always": "Zawsze dostępne",
         "always_hint": "Są w każdym panelu i nie da się ich wyłączyć, więc sensowne jest tylko wykorzystanie.",
         "no_metric_hint": "Nic nie zlicza tej funkcji, więc nie ma wykorzystania do zaraportowania — co nie znaczy, że żaden panel z niej nie korzysta."
+      },
+      "plugins": {
+        "title": "Wtyczki",
+        "hint": "Zgłoszone przez {panels} paneli. Panele zbudowane przed tą funkcją są pomijane zamiast liczone jako panele bez wtyczek.",
+        "most_installed": "Najczęściej instalowane, wg liczby paneli",
+        "none": "Żaden panel nie zainstalował jeszcze wtyczki z katalogu.",
+        "requested": "Instalacje",
+        "requested_caption": "zlecone w całej flocie",
+        "manual": "Wgrane ręcznie",
+        "manual_caption": "spoza katalogu",
+        "modes": "Tryby gry",
+        "modes_caption": "zdefiniowane",
+        "modes_unranked": "Nierankingowe",
+        "modes_unranked_caption": "tryby pomijające ELO"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "Minimalna rola do tworzenia wydarzeń"
         },
         "plugins": {
-          "title": "Wtyczki",
-          "section": "Wtyczki",
-          "description": "Rejestruj zewnętrzne aplikacje micro-frontend, które renderują się jako natywne strony w twoim panelu.",
-          "docs_link": "Przeczytaj dokumentację wtyczek",
-          "add": "Dodaj wtyczkę",
-          "empty_title": "Brak wtyczek",
-          "empty_description": "Wskaż 5Stack na adres URL wtyczki, a wyrenderuje się jako natywna strona w twoim panelu.",
+          "title": "Wtyczki panelu",
+          "section": "Wtyczki panelu",
+          "description": "Aplikacje webowe renderowane jako natywne strony w twoim panelu. To nie są wtyczki serwera CS2 — te znajdziesz w Wtyczkach gry.",
+          "docs_link": "Przeczytaj dokumentację wtyczek panelu",
+          "add": "Dodaj wtyczkę panelu",
+          "empty_title": "Brak wtyczek panelu",
+          "empty_description": "Wskaż 5Stack adres URL aplikacji webowej, a wyrenderuje się jako natywna strona w twoim panelu.",
           "public": "Publiczne",
-          "add_title": "Dodaj wtyczkę",
-          "edit_title": "Edytuj wtyczkę",
-          "delete_title": "Usuń wtyczkę",
+          "add_title": "Dodaj wtyczkę panelu",
+          "edit_title": "Edytuj wtyczkę panelu",
+          "delete_title": "Usuń wtyczkę panelu",
           "delete_description": "Spowoduje to usunięcie „{title}” oraz jego ścieżki /apps z panelu. Tej operacji nie można cofnąć.",
           "delete_confirm": "Usuń",
-          "form_description": "Skonfiguruj sposób ładowania tego pluginu i kto może go widzieć",
+          "form_description": "Skonfiguruj sposób ładowania tej wtyczki panelu i kto może ją widzieć.",
           "is_default_hint": "Ustaw jako stronę startową panelu",
           "fields": {
             "title": "Tytuł",
@@ -2386,7 +2400,8 @@
             "search": "Szukaj ikon…",
             "custom_hint": "Lub wklej URL obrazu albo inline SVG (np. z pluginu)",
             "custom_placeholder": "https://…, <svg…> lub nazwa ikony"
-          }
+          },
+          "browse": "Przeglądaj katalog"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "Brak zapisanych urządzeń",
           "empty_body": "Push jest gotowy, ale nikt go nie włączył. Gracze zapisują się we własnych ustawieniach powiadomień — nie możesz włączyć tego za nich.",
           "empty_link": "Zobacz ustawienia po stronie gracza"
+        },
+        "game_plugins": {
+          "title": "Katalog wtyczek",
+          "section": "Katalog wtyczek",
+          "description": "Katalog wtyczek do zainstalowania i źródło, z którego jest pobierany. Tylko dla administratorów.",
+          "disabled_hint": "Włącz to, aby przeglądać katalog i instalować wtyczki na węzłach serwerów gry.",
+          "registry": "Rejestr",
+          "registry_description": "Skąd pobierany jest katalog wtyczek. Zostaw puste, aby użyć oficjalnego rejestru 5Stack.",
+          "registry_url": "URL rejestru",
+          "catalog_count": "{count} wtyczek w katalogu",
+          "sync": "Synchronizuj teraz",
+          "synced": "Zsynchronizowano {plugins} wtyczek i {versions} wersji",
+          "directory": "Przeglądaj",
+          "directory_description": "Otwórz katalog, aby znaleźć i zainstalować wtyczki.",
+          "browse": "Przeglądaj katalog",
+          "installed": "Zainstalowane",
+          "installed_description": "Co faktycznie znajduje się na każdym węźle serwera gry, łącznie z tym, co wgrano ręcznie.",
+          "none_installed": "Na żadnym węźle nie ma jeszcze zainstalowanych wtyczek.",
+          "hand_placed": "Wgrane ręcznie",
+          "verified": "Zweryfikowana",
+          "missing": "brak na dysku"
+        },
+        "game_modes": {
+          "title": "Tryby gry",
+          "section": "Tryby gry",
+          "description": "Tryb łączy wtyczki, cvary i zasady, które zmieniają przebieg meczu. Mecze i serwery społeczności wybierają jeden.",
+          "create": "Nowy tryb",
+          "create_title": "Nowy tryb gry",
+          "edit_title": "Edytuj tryb gry",
+          "sheet_description": "Tryby są stosowane przy starcie serwera, więc zmiana wpłynie na następny mecz na tym serwerze.",
+          "empty": "Brak trybów gry. Utwórz jeden, aby mecze mogły grać coś innego niż competitive.",
+          "requires_plugins": "Najpierw włącz wtyczki gry — bez nich tryb nie ma czego wczytać.",
+          "disabled": "Wyłączony",
+          "competitive": "Bezpieczny dla competitive",
+          "casual_only": "Tylko casual",
+          "plugin_count": "{count} wtyczek"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "Skonfiguruj serwer publiczny na stronie serwerów dedykowanych, aby udostępnić go tutaj",
       "setup_public_server": "Skonfiguruj serwer publiczny",
       "lan_servers_title": "Serwery LAN",
-      "manage": "Zarządzaj"
+      "manage": "Zarządzaj",
+      "all_modes": "Wszystkie",
+      "no_mode": "Vanilla"
     },
     "map_pools": {
       "title": "Map pool",
@@ -3530,7 +3583,58 @@
       "not_found_description": "Ten plugin nie istnieje lub nie jest już dostępny",
       "forbidden_title": "Dostęp ograniczony",
       "forbidden_description": "Nie masz uprawnień do wyświetlenia tej strony",
-      "error_title": "Nie udało się załadować strony"
+      "error_title": "Nie udało się załadować strony",
+      "title": "Katalog wtyczek",
+      "description": "Wtyczki do twoich serwerów gry i do panelu. Zainstaluj na wszystkich węzłach albo wybierz konkretne.",
+      "search": "Szukaj wtyczek",
+      "empty": "Brak wyników dla tego wyszukiwania.",
+      "verified": "Zweryfikowana",
+      "by": "od {author}",
+      "back": "Wszystkie wtyczki",
+      "source": "Źródło",
+      "releases": "Najnowsze wydanie",
+      "requires_service": "Wymaga zewnętrznej usługi, którą sam zapewniasz: {service}",
+      "install_title": "Zainstaluj na węźle",
+      "install": "Zainstaluj",
+      "uninstall": "Usuń",
+      "install_success": "Gotowe",
+      "not_installed": "Niezainstalowana",
+      "no_nodes": "Nie skonfigurowano jeszcze żadnych węzłów serwerów gry.",
+      "unavailable_for_runtime": "Ta wtyczka nie ma wydania dla {runtime}, czyli środowiska, w którym działa ta instalacja.",
+      "kinds": {
+        "all": "Wszystkie",
+        "game": "Serwer gry",
+        "panel": "Panel",
+        "bundle": "Pakiet"
+      },
+      "pairs_with": "Działa z",
+      "panel_install_title": "Zainstaluj tę wtyczkę panelu",
+      "panel_install_hint": "Wdrożenie to dopiero pierwszy krok — panelowi trzeba jeszcze wskazać, gdzie ją umieściłeś.",
+      "panel_install_docs": "Instalowanie wtyczek panelu",
+      "installed": "Zainstalowana",
+      "already_installed": "To jest już zainstalowane w twoim panelu.",
+      "open_plugin": "Otwórz",
+      "panel_step_deploy": "Uruchom to na maszynie hostującej twój panel, z twojego katalogu 5stack-panel.",
+      "panel_step_dns": "Skieruj wypisaną domenę na ten sam adres co ten panel i poczekaj na certyfikat.",
+      "panel_step_register": "Zarejestruj ją w Ustawienia → Aplikacja → Wtyczki panelu → Dodaj, wklej ten URL i naciśnij Wykryj.",
+      "installs_everywhere": "Instaluje się na wszystkich {count} węzłach online.",
+      "installed_on": "Zainstalowana na {installed} z {total} węzłów.",
+      "advanced": "Wdrożenie",
+      "advanced_hint": "Każdy węzeł instaluje we własnym tempie; węzeł offline nadrobi to po powrocie.",
+      "live_title": "Zainstalowana",
+      "manage": "Zarządzaj",
+      "filter_installed": "Zainstalowane",
+      "filter_available": "Dostępne",
+      "empty_installed": "Nic jeszcze nie zainstalowano.",
+      "readme": "O wtyczce",
+      "no_readme": "Ta wtyczka nie ma pliku README w swoim repozytorium.",
+      "always_load": "Wczytuj w każdym meczu",
+      "always_load_hint": "Wczytuj ją bez wybierania przez tryb gry.",
+      "always_load_ranked": "Wczytuje się także w meczach rankingowych i matchmakingu.",
+      "configure": "Konfiguracja",
+      "configure_hint": "Zapisywana przez wtyczkę przy pierwszym wczytaniu, więc pojawia się po tym, jak serwer raz uruchomi ten tryb.",
+      "configure_open": "Otwórz pliki",
+      "pending": "oczekuje"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3892,8 @@
         "title": "Administracja"
       },
       "platform": {
-        "title": "Administracja"
+        "title": "Administracja",
+        "plugin_directory": "Katalog wtyczek"
       }
     },
     "top_nav": {
@@ -5095,6 +5200,12 @@
           "description": "Pozwala graczom widzieć kamery własnej drużyny."
         },
         "privacy_note": "Drużyna przeciwna nigdy nie widzi tych sygnałów. Organizatorzy grający w tym meczu nie widzą żadnego z nich."
+      },
+      "game_mode": {
+        "title": "Tryb gry",
+        "none": "Competitive (bez trybu)",
+        "description": "Wczytuje zestaw wtyczek i zmiennych konsoli na serwerze meczowym.",
+        "not_competitive_safe": "Ten tryb nie jest oznaczony jako bezpieczny dla gry competitive. Nadal liczy się do ELO — oznacz go w ustawieniach trybu jako bezpieczny dla competitive, jeśli tak ma być."
       }
     },
     "schedule": {
@@ -6941,7 +7052,12 @@
       "step_settings": "Ustawienia meczu",
       "step_rules": "Zasady lobby",
       "back": "Wstecz",
-      "next": "Dalej"
+      "next": "Dalej",
+      "step_mode": "Tryb",
+      "mode_description": "Jak przebiega mecz. Zostaw Competitive dla zwykłego meczu albo wybierz tryb, aby wczytać jego wtyczki na serwerze.",
+      "mode_none": "Competitive",
+      "mode_none_hint": "Standardowe zasady. Liczy się do ELO i rankingów.",
+      "mode_empty": "Nie skonfigurowano jeszcze żadnych trybów gry. Administrator może je dodać w Ustawieniach."
     },
     "host": "Host",
     "invite": {
@@ -7091,7 +7207,9 @@
       "best_of": "Best of",
       "map_veto": "Veto map",
       "on": "Wł.",
-      "off": "Wył."
+      "off": "Wył.",
+      "game_mode": "Tryb",
+      "unranked": "Nierankingowy"
     },
     "mode": {
       "captains": "Draft kapitanów",
@@ -8079,6 +8197,30 @@
       "discord": "Dołącz na Discorda",
       "github": "Zgłoś problem",
       "docs": "Przeczytaj dokumentację"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "Nazwa",
+      "slug": "Slug",
+      "description": "Opis",
+      "competitive_safe": "Bezpieczny dla gry competitive",
+      "competitive_safe_description": "Czy ten tryb może być użyty w meczu rankingowym lub matchmakingowym.",
+      "competitive_safe_warning": "Ten tryb będzie oferowany tylko w meczach casual. Serwery rankingowe nigdy nie dziedziczą trybu, więc matchmaking zawsze startuje z czystym zestawem wtyczek.",
+      "plugins": "Wtyczki",
+      "plugins_description": "Wczytywane w pokazanej kolejności, po wszystkim, co ręcznie umieszczono w custom-plugins.",
+      "no_plugins": "Brak wtyczek gry w katalogu. Najpierw zsynchronizuj rejestr i zainstaluj jakąś.",
+      "restart_required": "Wymaga restartu",
+      "cfg": "Zmienne konsoli",
+      "cfg_description": "Wykonywane po konfiguracji typu meczu, więc te wartości mają pierwszeństwo.",
+      "extra_game_params": "Dodatkowe parametry uruchomienia",
+      "extra_game_params_description": "Dopisywane do linii poleceń serwera przy starcie.",
+      "save": "Zapisz tryb",
+      "saved": "Tryb gry zapisany",
+      "archive": "Archiwizuj",
+      "archived": "Tryb gry zarchiwizowany",
+      "runtime_none": "Te wtyczki nie mają wspólnego frameworka, więc ten tryb nigdzie nie zadziała. Usuń tę, która celuje w drugi framework.",
+      "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki."
     }
   }
 }

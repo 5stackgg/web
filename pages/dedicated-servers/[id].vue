@@ -47,6 +47,8 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
+const { openFiles } = useFilePopout();
+
 definePageMeta({ middleware: "moderator" });
 
 const authStore = useAuthStore();
@@ -117,7 +119,7 @@ const titleClasses =
                     variant="outline"
                     size="icon"
                     @click="
-                      $router.push(`/dedicated-servers/${server.id}/files`)
+                      openFiles({ scope: 'server', id: server.id })
                     "
                   >
                     <FolderOpen class="h-4 w-4" />

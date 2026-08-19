@@ -18,6 +18,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 import RegionStatusDot from "~/components/regions/RegionStatusDot.vue";
 import { Card } from "~/components/ui/card";
 import SettingHeader from "~/components/match/SettingHeader.vue";
+import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 </script>
 
 <template>
@@ -942,6 +943,66 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
               </div>
             </Card>
 
+            <!-- A mode changes which plugins the match server boots with, so
+                 it is only offered where it can actually be honoured: a
+                 competitive-only mode never appears on a ranked type. -->
+            <Card
+              v-if="!hideGameMode && canSetGameMode && availableGameModes.length > 0"
+            >
+              <div
+                class="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-2.5"
+              >
+                <h3
+                  class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  {{ $t("match.options.game_mode.title") }}
+                </h3>
+              </div>
+
+              <div class="space-y-3 p-4">
+                <FormField v-slot="{ componentField }" name="game_mode_id">
+                  <FormItem>
+                    <FormControl>
+                      <Select v-bind="nullableSelectField(componentField)">
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              :placeholder="$t('match.options.game_mode.none')"
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem :value="SELECT_NONE">
+                              {{ $t("match.options.game_mode.none") }}
+                            </SelectItem>
+                            <SelectItem
+                              v-for="mode in availableGameModes"
+                              :key="mode.id"
+                              :value="mode.id"
+                            >
+                              {{ mode.name }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormDescription>
+                      {{ $t("match.options.game_mode.description") }}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <p
+                  v-if="selectedGameMode && !selectedGameMode.competitive_safe"
+                  class="text-sm text-muted-foreground"
+                >
+                  {{ $t("match.options.game_mode.not_competitive_safe") }}
+                </p>
+              </div>
+            </Card>
+
             <!-- Cameras get their own module rather than another row in the
                  advanced list: it is the one setting that changes what players
                  must do before they can play, and an organizer needs to see at
@@ -1383,6 +1444,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import {
   canSetCameraRequired as allowsCameraRequired,
   canSetVetoPickTimeout as allowsVetoPickTimeout,
+  canSetGameMode as allowsGameMode,
 } from "~/utilities/setupOptions";
 
 interface Map {
@@ -1413,6 +1475,10 @@ interface EnumSetting {
 
 export default {
   props: {
+    hideGameMode: {
+      type: Boolean,
+      default: false,
+    },
     form: {
       required: true,
       type: Object,
@@ -1449,6 +1515,27 @@ export default {
     },
   },
   apollo: {
+    gameModes: {
+      fetchPolicy: "cache-first",
+      query: generateQuery({
+        game_modes: [
+          {},
+          {
+            id: true,
+            name: true,
+            enabled: true,
+            competitive_safe: true,
+            supported_runtimes: [{}, true],
+          },
+        ],
+      }),
+      update(data: { game_modes: Array<Record<string, unknown>> }) {
+        return data.game_modes;
+      },
+      skip() {
+        return !useApplicationSettingsStore().gamePluginsEnabled;
+      },
+    },
     e_match_types: {
       fetchPolicy: "cache-first",
       query: generateQuery({
@@ -1504,6 +1591,7 @@ export default {
       showAdvancedSettings: false,
       advHeight: "0px",
       lastVetoPickTimeout: 0,
+      gameModes: [] as Array<Record<string, any>>,
     };
   },
   watch: {
@@ -1849,6 +1937,38 @@ export default {
     },
     canSetCameraRequired() {
       return allowsCameraRequired();
+    },
+    canSetGameMode() {
+      return allowsGameMode();
+    },
+    // Filtered only by what the server could actually load. competitive_safe is
+    // not a filter here: every match type counts toward ELO, so hiding unsafe
+    // modes by type would hide them everywhere. It drives the warning below
+    // instead, and the hard guarantee lives on servers.type = 'Ranked'.
+    availableGameModes(): Array<Record<string, any>> {
+      return (this.gameModes ?? []).filter((mode: Record<string, any>) => {
+        if (!mode.enabled) {
+          return false;
+        }
+
+        // An empty supported_runtimes is not "runs anywhere": it is a mode
+        // whose plugins exist for different frameworks and can never load
+        // together, so it runs nowhere.
+        return (mode.supported_runtimes ?? []).includes(
+          this.gameServerPluginRuntime,
+        );
+      });
+    },
+    selectedGameMode(): Record<string, any> | null {
+      return (
+        this.availableGameModes.find(
+          (mode: Record<string, any>) =>
+            mode.id === this.form.values.game_mode_id,
+        ) ?? null
+      );
+    },
+    gameServerPluginRuntime(): string {
+      return useApplicationSettingsStore().gameServerPluginRuntime;
     },
     // Drives the whole module's lit/dormant treatment, and gates the teammate
     // toggle: allowing teammates to watch feeds nobody publishes is a no-op.

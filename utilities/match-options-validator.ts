@@ -54,6 +54,8 @@ export default function matchOptionsValidator(
     // entry here silently drops the value on every submit regardless of the UI.
     camera_required: z.boolean().default(defaultCameraRequired),
     camera_allow_teammates: z.boolean().default(defaultCameraAllowTeammates),
+    // Empty string means "no mode"; the Select cannot bind null.
+    game_mode_id: z.string().default(""),
     knife_round: z.boolean().default(true),
     default_models: z.boolean().default(defaultPlayerModels),
     overtime: z.boolean().default(true),

@@ -94,6 +94,11 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       coaches: true,
       map_veto: true,
       number_of_substitutes: true,
+      game_mode: {
+        id: true,
+        name: true,
+        competitive_safe: true,
+      },
       map_pool: {
         id: true,
         type: true,

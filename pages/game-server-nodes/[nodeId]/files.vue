@@ -17,7 +17,7 @@
     <PageTransition :delay="100" class="mt-6">
       <div class="flex-1 min-h-0 overflow-hidden">
         <Card class="h-full">
-          <FileManagerContainer :node-id="nodeId" />
+          <FileManagerContainer :node-id="nodeId" :open-path="openPath" />
         </Card>
       </div>
     </PageTransition>
@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
+import { computed } from "vue";
 import { Card } from "@/components/ui/card";
 import PageHeading from "~/components/PageHeading.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -35,6 +36,10 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 
 const route = useRoute();
 const router = useRouter();
+
+// Deep-linked from a plugin so an admin lands on its config directory rather
+// than the root of the node.
+const openPath = computed(() => (useRoute().query.path as string) || undefined);
 
 const nodeId = computed(() => route.params.nodeId as string);
 

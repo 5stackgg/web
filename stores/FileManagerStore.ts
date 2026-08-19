@@ -64,6 +64,9 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   const isLoading = ref<boolean>(false);
   const loadingPaths = ref<Set<string>>(new Set());
   const error = ref<string | null>(null);
+  // A deep link that pointed somewhere not created yet, kept so the UI can
+  // offer to create it instead of silently landing somewhere else.
+  const missingPath = ref<string | null>(null);
   const expandedPaths = ref<Set<string>>(new Set([""]));
 
   // Editor state
@@ -166,7 +169,10 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   // Actions
-  async function initialize(nId: string, sId?: string) {
+  // openPath lets a caller land on a plugin's own directory rather than the
+  // root: every ancestor is expanded and loaded so the tree reads as if the user
+  // had clicked their way down to it.
+  async function initialize(nId: string, sId?: string, openPath?: string) {
     reset();
 
     nodeId.value = nId;
@@ -175,6 +181,62 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
     await loadDirectory("");
     subscribeToFileOperations();
+
+    if (openPath) {
+      await openTo(openPath);
+    }
+  }
+
+  async function openTo(path: string) {
+    const segments = path.split("/").filter(Boolean);
+    let walked = "";
+
+    missingPath.value = null;
+
+    for (const segment of segments) {
+      const next = walked ? `${walked}/${segment}` : segment;
+
+      // Whether the child exists is answered by its parent's listing.
+      // fileTree is keyed by directories we have *loaded*, so asking it
+      // reported every unvisited directory as missing -- and, worse, left
+      // currentPath pointing at one that was never confirmed, which then got
+      // listed and 400d.
+      const exists = (fileTree.value.get(walked) || []).some(
+        (item) => item.path === next && item.isDirectory,
+      );
+
+      // A plugin writes its config on first load, so the directory legitimately
+      // may not exist yet. Remember what was asked for so the UI can offer to
+      // create it rather than reporting a dead end.
+      if (!exists) {
+        missingPath.value = path;
+        break;
+      }
+
+      expandedPaths.value.add(next);
+      await loadDirectory(next);
+      walked = next;
+    }
+
+    currentPath.value = walked;
+  }
+
+  // Creates the whole requested chain at once -- the node's mkdir is recursive,
+  // and creating it a segment at a time would leave half a path behind if one
+  // of them failed.
+  async function createMissingPath() {
+    const path = missingPath.value;
+
+    if (!path || !nodeId.value) {
+      return;
+    }
+
+    await createDirectoryAt(path);
+
+    missingPath.value = null;
+
+    await loadDirectory("");
+    await openTo(path);
   }
 
   function reset() {
@@ -300,6 +362,23 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         isLoading.value = false;
       }
     }
+  }
+
+  async function createDirectoryAt(dirPath: string) {
+    if (!nodeId.value) return;
+
+    await getGraphqlClient().mutate({
+      mutation: generateMutation({
+        createServerDirectory: [
+          {
+            node_id: nodeId.value,
+            ...(serverId.value && { server_id: serverId.value }),
+            dir_path: dirPath,
+          },
+          { success: true },
+        ],
+      }),
+    });
   }
 
   async function createDirectory(dirName: string) {
@@ -1134,6 +1213,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     isLoading,
     loadingPaths,
     error,
+    missingPath,
     expandedPaths,
     openFiles,
     activeFilePath,
@@ -1152,6 +1232,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     lastCreatedPath,
     clearLastCreatedPathTimeouts,
     initialize,
+    openTo,
+    createMissingPath,
     reset,
     loadDirectory,
     readFile,

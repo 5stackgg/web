@@ -1382,6 +1382,20 @@
         "always": "Altid tilgængelige",
         "always_hint": "Følger med hvert panel og kan ikke slås fra, så kun brugen siger noget.",
         "no_metric_hint": "Intet tæller denne funktion, så der er ingen brug at rapportere — hvilket ikke er det samme som, at intet panel bruger den."
+      },
+      "plugins": {
+        "title": "Plugins",
+        "hint": "Rapporteret af {panels} paneler. Paneler bygget før dette udkom er udeladt frem for at blive talt som paneler uden plugins.",
+        "most_installed": "Mest installeret, efter antal paneler",
+        "none": "Intet panel har installeret et katalog-plugin endnu.",
+        "requested": "Installationer",
+        "requested_caption": "anmodet på tværs af flåden",
+        "manual": "Manuelt placeret",
+        "manual_caption": "uden for kataloget",
+        "modes": "Spiltilstande",
+        "modes_caption": "defineret",
+        "modes_unranked": "Uranglerede",
+        "modes_unranked_caption": "tilstande der springer ELO over"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "Mindste rolle til at oprette events"
         },
         "plugins": {
-          "title": "Plugins",
-          "section": "Plugins",
-          "description": "Registrér eksterne mikro-frontend-apps, der vises som native sider inde i dit panel.",
-          "docs_link": "Læs plugin-dokumentationen",
-          "add": "Tilføj plugin",
-          "empty_title": "Ingen plugins endnu",
-          "empty_description": "Peg 5Stack på et plugins URL, så vises det som en native side inde i dit panel.",
+          "title": "Panel-plugins",
+          "section": "Panel-plugins",
+          "description": "Webapps der vises som native sider inde i dit panel. Ikke CS2-serverplugins — dem finder du under Spil-plugins.",
+          "docs_link": "Læs dokumentationen for panel-plugins",
+          "add": "Tilføj panel-plugin",
+          "empty_title": "Ingen panel-plugins endnu",
+          "empty_description": "Peg 5Stack på en webapps URL, så vises den som en native side inde i dit panel.",
           "public": "Offentlig",
-          "add_title": "Tilføj plugin",
-          "edit_title": "Redigér plugin",
-          "delete_title": "Slet plugin",
+          "add_title": "Tilføj panel-plugin",
+          "edit_title": "Redigér panel-plugin",
+          "delete_title": "Slet panel-plugin",
           "delete_description": "Dette fjerner \"{title}\" og dens /apps-rute fra panelet. Det kan ikke fortrydes.",
           "delete_confirm": "Slet",
-          "form_description": "Angiv hvordan dette plugin indlæses, og hvem der kan se det.",
+          "form_description": "Angiv hvordan dette panel-plugin indlæses, og hvem der kan se det.",
           "is_default_hint": "Gør denne til panelets startside.",
           "fields": {
             "title": "Titel",
@@ -2386,7 +2400,8 @@
             "search": "Søg ikoner…",
             "custom_hint": "Eller indsæt en billed-URL eller inline-SVG (f.eks. fra et plugin).",
             "custom_placeholder": "https://… , <svg…> eller et ikonnavn"
-          }
+          },
+          "browse": "Gennemse katalog"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "Ingen enheder tilmeldt endnu",
           "empty_body": "Push er klar, men ingen har slået det til. Spillere tilmelder sig selv i deres egne notifikationsindstillinger — du kan ikke slå det til på deres vegne.",
           "empty_link": "Se indstillingerne på spillersiden"
+        },
+        "game_plugins": {
+          "title": "Plugin-katalog",
+          "section": "Plugin-katalog",
+          "description": "Kataloget over plugins der kan installeres, og hvor det hentes fra. Kun administratorer.",
+          "disabled_hint": "Slå dette til for at gennemse kataloget og installere plugins på dine game server nodes.",
+          "registry": "Registry",
+          "registry_description": "Hvor kataloget over plugins hentes fra. Lad stå tomt for at bruge 5Stacks officielle registry.",
+          "registry_url": "Registry-URL",
+          "catalog_count": "{count} plugins i kataloget",
+          "sync": "Synkronisér nu",
+          "synced": "Synkroniserede {plugins} plugins og {versions} versioner",
+          "directory": "Gennemse",
+          "directory_description": "Åbn kataloget for at finde og installere plugins.",
+          "browse": "Gennemse katalog",
+          "installed": "Installeret",
+          "installed_description": "Hvad der faktisk ligger på hver game server node, inklusive alt der er lagt der manuelt.",
+          "none_installed": "Der er endnu ingen plugins installeret på nogen node.",
+          "hand_placed": "Manuelt placeret",
+          "verified": "Verificeret",
+          "missing": "ikke på disken"
+        },
+        "game_modes": {
+          "title": "Spiltilstande",
+          "section": "Spiltilstande",
+          "description": "En tilstand samler de plugins, cvars og regler der får en kamp til at spille anderledes. Kampe og community-servere vælger én.",
+          "create": "Ny tilstand",
+          "create_title": "Ny spiltilstand",
+          "edit_title": "Redigér spiltilstand",
+          "sheet_description": "Tilstande anvendes når en server starter, så en ændring påvirker næste kamp på den server.",
+          "empty": "Ingen spiltilstande endnu. Opret én, så kampe kan køre noget andet end competitive.",
+          "requires_plugins": "Slå Spil-plugins til først — uden dem har en tilstand intet at indlæse.",
+          "disabled": "Deaktiveret",
+          "competitive": "Sikker til competitive",
+          "casual_only": "Kun casual",
+          "plugin_count": "{count} plugins"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "Sæt en offentlig server op fra siden Dedikerede servere for at gøre den tilgængelig her.",
       "setup_public_server": "Sæt en offentlig server op",
       "lan_servers_title": "LAN-servere",
-      "manage": "Administrer"
+      "manage": "Administrer",
+      "all_modes": "Alle",
+      "no_mode": "Vanilla"
     },
     "map_pools": {
       "title": "Map pools",
@@ -3530,7 +3583,58 @@
       "not_found_description": "Dette plugin findes ikke eller er ikke længere tilgængeligt.",
       "forbidden_title": "Adgang begrænset",
       "forbidden_description": "Du har ikke tilladelse til at se denne side.",
-      "error_title": "Siden kunne ikke indlæses"
+      "error_title": "Siden kunne ikke indlæses",
+      "title": "Plugin-katalog",
+      "description": "Plugins til dine game servere og til dit panel. Installér på alle noder, eller vælg bestemte.",
+      "search": "Søg plugins",
+      "empty": "Intet matcher den søgning.",
+      "verified": "Verificeret",
+      "by": "af {author}",
+      "back": "Alle plugins",
+      "source": "Kilde",
+      "releases": "Seneste release",
+      "requires_service": "Kræver en ekstern tjeneste, du selv leverer: {service}",
+      "install_title": "Installér på en node",
+      "install": "Installér",
+      "uninstall": "Fjern",
+      "install_success": "Færdig",
+      "not_installed": "Ikke installeret",
+      "no_nodes": "Der er endnu ingen game server nodes sat op.",
+      "unavailable_for_runtime": "Dette plugin har ingen release til {runtime}, den runtime denne installation kører.",
+      "kinds": {
+        "all": "Alle",
+        "game": "Game server",
+        "panel": "Panel",
+        "bundle": "Bundle"
+      },
+      "pairs_with": "Fungerer med",
+      "panel_install_title": "Installér dette panel-plugin",
+      "panel_install_hint": "At deploye det er kun første skridt — panelet skal stadig have at vide, hvor du hostede det.",
+      "panel_install_docs": "Installation af panel-plugins",
+      "installed": "Installeret",
+      "already_installed": "Dette er allerede installeret på dit panel.",
+      "open_plugin": "Åbn",
+      "panel_step_deploy": "Kør dette på maskinen der hoster dit panel, fra dit 5stack-panel-checkout.",
+      "panel_step_dns": "Peg det domæne, den udskriver, mod samme adresse som dette panel, og vent på certifikatet.",
+      "panel_step_register": "Registrér det under Indstillinger → Applikation → Panel-plugins → Tilføj, indsæt den URL og tryk Detektér.",
+      "installs_everywhere": "Installeres på alle {count} online noder.",
+      "installed_on": "Installeret på {installed} af {total} noder.",
+      "advanced": "Udrulning",
+      "advanced_hint": "Hver node installerer i sit eget tempo; en node der er offline, indhenter når den kommer tilbage.",
+      "live_title": "Installeret",
+      "manage": "Administrer",
+      "filter_installed": "Installeret",
+      "filter_available": "Tilgængelige",
+      "empty_installed": "Intet installeret endnu.",
+      "readme": "Om",
+      "no_readme": "Dette plugin har ingen README i sit repository.",
+      "always_load": "Indlæs i hver kamp",
+      "always_load_hint": "Indlæs dette uden at en spiltilstand vælger det.",
+      "always_load_ranked": "Indlæses også i ranglede kampe og matchmaking.",
+      "configure": "Konfiguration",
+      "configure_hint": "Skrives af pluginnet ved første indlæsning, så det dukker op efter at en server har kørt denne tilstand én gang.",
+      "configure_open": "Åbn filer",
+      "pending": "afventer"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3892,8 @@
         "title": "Administration"
       },
       "platform": {
-        "title": "Administration"
+        "title": "Administration",
+        "plugin_directory": "Plugin-katalog"
       }
     },
     "top_nav": {
@@ -5095,6 +5200,12 @@
           "description": "Lad spillere se deres eget holds kameraer."
         },
         "privacy_note": "Modstanderholdet kan aldrig se disse feeds. Arrangører, der selv spiller kampen, kan ikke se nogen af dem."
+      },
+      "game_mode": {
+        "title": "Spiltilstand",
+        "none": "Competitive (ingen tilstand)",
+        "description": "Indlæser et sæt plugins og console-variabler på kampserveren.",
+        "not_competitive_safe": "Denne tilstand er ikke markeret som sikker til competitive. Den tæller stadig med i ELO — markér den som sikker til competitive på selve tilstanden, hvis det er meningen."
       }
     },
     "schedule": {
@@ -6941,7 +7052,12 @@
       "step_settings": "Kampindstillinger",
       "step_rules": "Lobbyregler",
       "back": "Tilbage",
-      "next": "Næste"
+      "next": "Næste",
+      "step_mode": "Tilstand",
+      "mode_description": "Hvordan kampen spilles. Lad den stå på Competitive for en normal kamp, eller vælg en tilstand for at indlæse dens plugins på serveren.",
+      "mode_none": "Competitive",
+      "mode_none_hint": "Standardregler. Tæller med i ELO og ranglister.",
+      "mode_empty": "Der er endnu ingen spiltilstande sat op. En administrator kan tilføje dem under Indstillinger."
     },
     "host": "Værten",
     "invite": {
@@ -7091,7 +7207,9 @@
       "best_of": "Bedst af",
       "map_veto": "Mapveto",
       "on": "Til",
-      "off": "Fra"
+      "off": "Fra",
+      "game_mode": "Tilstand",
+      "unranked": "Urangleret"
     },
     "mode": {
       "captains": "Anførerdraft",
@@ -8079,6 +8197,30 @@
       "discord": "Kom med på Discord",
       "github": "Rapportér et problem",
       "docs": "Læs dokumentationen"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "Navn",
+      "slug": "Slug",
+      "description": "Beskrivelse",
+      "competitive_safe": "Sikker til competitive",
+      "competitive_safe_description": "Om denne tilstand må bruges af en ranglet kamp eller en matchmaking-kamp.",
+      "competitive_safe_warning": "Denne tilstand tilbydes kun på casual-kampe. Ranglede servere arver aldrig en tilstand, så matchmaking starter altid med et rent plugin-sæt.",
+      "plugins": "Plugins",
+      "plugins_description": "Indlæses i den viste rækkefølge, efter alt der er lagt manuelt i custom-plugins.",
+      "no_plugins": "Ingen spil-plugins i kataloget endnu. Synkronisér registry og installér et først.",
+      "restart_required": "Genstart påkrævet",
+      "cfg": "Console-variabler",
+      "cfg_description": "Køres efter kamptypens config, så disse værdier vinder.",
+      "extra_game_params": "Ekstra opstartsparametre",
+      "extra_game_params_description": "Tilføjes til serverens kommandolinje når den starter.",
+      "save": "Gem tilstand",
+      "saved": "Spiltilstand gemt",
+      "archive": "Arkivér",
+      "archived": "Spiltilstand arkiveret",
+      "runtime_none": "Disse plugins har intet framework til fælles, så denne tilstand kan ikke køre nogen steder. Fjern det plugin, der er bygget til det andet framework.",
+      "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til."
     }
   }
 }

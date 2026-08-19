@@ -43,11 +43,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
     <template v-else-if="pluginVersionMismatch">
       {{ $t("pages.dedicated_servers.detail.status.plugin_version_mismatch") }}
       <small>
-        <a
-          class="text-blue-500"
-          :href="`https://github.com/5stackgg/game-server/releases/tag/v${currentPluginVersion}`"
-          target="_blank"
-        >
+        <a class="text-blue-500" :href="pluginReleaseLink" target="_blank">
           (v{{ currentPluginVersion }})
         </a>
       </small>
@@ -60,6 +56,13 @@ import TimeAgo from "~/components/TimeAgo.vue";
 
 <script lang="ts">
 import { e_server_types_enum } from "~/generated/zeus";
+import { effectivePluginRuntime } from "~/constants/rconCommands";
+
+// both plugins release out of the one repo, so the tag carries the framework
+const PLUGIN_RELEASE_TAG_PREFIXES: Record<string, string> = {
+  counterstrikesharp: "css",
+  swiftlys2: "sw",
+};
 
 export default {
   props: {
@@ -74,6 +77,17 @@ export default {
     },
     gameServerPluginRuntime() {
       return useApplicationSettingsStore().gameServerPluginRuntime;
+    },
+    pluginReleaseLink() {
+      const prefix =
+        PLUGIN_RELEASE_TAG_PREFIXES[
+          effectivePluginRuntime(
+            this.server.plugin_runtime,
+            this.gameServerPluginRuntime,
+          )
+        ];
+
+      return `https://github.com/5stackgg/game-server/releases/tag/${prefix}-v${this.currentPluginVersion}`;
     },
     pluginVersionMismatch() {
       if (this.server.type !== e_server_types_enum.Ranked) {

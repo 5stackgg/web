@@ -25,6 +25,7 @@ import { HeightMorph, HeightSwap, Fold } from "~/components/ui/transitions";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import MatchOptions from "~/components/MatchOptions.vue";
+import DraftModePicker from "~/components/draft-games/DraftModePicker.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import DraftRosterPicker from "~/components/draft-games/DraftRosterPicker.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -123,10 +124,13 @@ const team2Selection = computed(() =>
 const step = ref(1);
 const steps = [
   "draft_games.create.step_settings",
+  "draft_games.create.step_mode",
   "draft_games.create.step_format",
   "draft_games.create.step_rules",
 ];
-const stepDisabled = (n: number) => n === 2 && isDuel.value;
+// Format is the step a 1v1 has nothing to choose in; it moved from 2 to 3 when
+// mode was inserted ahead of it.
+const stepDisabled = (n: number) => n === 3 && isDuel.value;
 
 const goToStep = (n: number) => {
   if (stepDisabled(n)) {
@@ -428,8 +432,10 @@ const selectedModeDescription = computed(() => {
 watch(matchType, () => {
   if (isDuel.value) {
     mode.value = "Pug";
-    if (step.value === 2) {
-      step.value = 1;
+    // Switching to a duel can disable the step being stood on, which would
+    // leave the form showing an empty greyed-out pane.
+    if (stepDisabled(step.value)) {
+      prev();
     }
     return;
   }
@@ -524,7 +530,8 @@ const submit = form.handleSubmit(async (values: any) => {
       title: t("common.error"),
       description: t("draft_games.create.team_1_required_error"),
     });
-    step.value = 2;
+    // Step 3 -- where the team selector the message is about actually lives.
+    step.value = 3;
     return;
   }
 
@@ -680,7 +687,7 @@ const submit = form.handleSubmit(async (values: any) => {
          state. -->
     <HeightMorph :state="step" class="step-stack">
     <Transition name="step">
-      <div v-show="step === 2" class="space-y-5">
+      <div v-show="step === 3" class="space-y-5">
         <section v-if="!isDuel">
           <AnimatedFilters
             v-model="mode"
@@ -885,12 +892,29 @@ const submit = form.handleSubmit(async (values: any) => {
 
     <Transition name="step">
       <div v-show="step === 1">
-        <MatchOptions :form="form" />
+        <MatchOptions :form="form" hide-game-mode />
       </div>
     </Transition>
 
     <Transition name="step">
-      <div v-show="step === 3" class="space-y-5">
+      <div v-show="step === 2" class="space-y-5">
+        <section>
+          <div :class="tacticalSectionLabelClasses">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("draft_games.create.step_mode") }}
+          </div>
+
+          <p class="mb-3 text-sm text-muted-foreground">
+            {{ $t("draft_games.create.mode_description") }}
+          </p>
+
+          <DraftModePicker :form="form" />
+        </section>
+      </div>
+    </Transition>
+
+    <Transition name="step">
+      <div v-show="step === 4" class="space-y-5">
         <section v-if="!bothTeamsAssigned">
           <div :class="tacticalSectionLabelClasses">
             <span :class="tacticalSectionTickClasses"></span>

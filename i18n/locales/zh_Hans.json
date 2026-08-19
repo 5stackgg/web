@@ -1382,6 +1382,20 @@
         "always": "始终可用",
         "always_hint": "随每个面板一同提供且无法关闭，因此只有使用情况才有意义。",
         "no_metric_hint": "没有任何项在统计这个功能，因此没有可上报的使用数据，但这并不代表没有面板在用。"
+      },
+      "plugins": {
+        "title": "插件",
+        "hint": "由 {panels} 个面板上报。此功能发布之前构建的面板会被排除，而不是记为未安装任何插件。",
+        "most_installed": "按面板数量排序的最常安装插件",
+        "none": "还没有面板安装过目录中的插件。",
+        "requested": "安装",
+        "requested_caption": "全网请求次数",
+        "manual": "手动放置",
+        "manual_caption": "目录之外",
+        "modes": "游戏模式",
+        "modes_caption": "已定义",
+        "modes_unranked": "非排位",
+        "modes_unranked_caption": "不计入 ELO 的模式"
       }
     },
     "tournaments": {
@@ -2334,59 +2348,60 @@
           "create_events_role": "创建活动的最低角色"
         },
         "plugins": {
-          "title": "插件",
-          "section": "插件",
-          "description": "注册外部微前端应用，让它们作为原生页面在你的面板中呈现。",
-          "docs_link": "阅读插件文档",
-          "add": "添加插件",
-          "empty_title": "暂无插件",
-          "empty_description": "把插件的 URL 指给 5Stack，它就会作为原生页面在你的面板中呈现。",
+          "title": "面板插件",
+          "section": "面板插件",
+          "description": "在面板内以原生页面呈现的网页应用。它们不是 CS2 服务器插件——那些请见「游戏插件」。",
+          "docs_link": "阅读面板插件文档",
+          "add": "添加面板插件",
+          "empty_title": "还没有面板插件",
+          "empty_description": "把 5Stack 指向某个网页应用的 URL，它就会在面板内以原生页面呈现。",
           "public": "公开",
-          "add_title": "添加插件",
-          "edit_title": "编辑插件",
-          "delete_title": "删除插件",
-          "delete_description": "这会从面板中移除「{title}」及其 /apps 路由，且无法撤销。",
+          "add_title": "添加面板插件",
+          "edit_title": "编辑面板插件",
+          "delete_title": "删除面板插件",
+          "delete_description": "这会从面板中移除「{title}」及其 /apps 路由。此操作无法撤销。",
           "delete_confirm": "删除",
-          "form_description": "配置这个插件的加载方式以及谁可以看到它。",
-          "is_default_hint": "把它设为面板的首页。",
+          "form_description": "配置此面板插件的加载方式以及谁可以看到它。",
+          "is_default_hint": "将其设为面板的首页。",
           "fields": {
             "title": "标题",
-            "slug": "短名",
+            "slug": "标识符",
             "icon": "图标",
             "remote_entry_url": "远程入口 URL",
             "remote_scope": "远程作用域",
             "exposed_module": "暴露的模块",
             "required_role": "所需角色",
             "nav_group": "导航分组",
-            "nav_order": "导航排序",
+            "nav_order": "导航顺序",
             "enabled": "已启用",
             "is_default": "默认页面",
             "remote_entry_url_hint": "面板加载的 Module Federation remoteEntry.js（通常是 .../assets/remoteEntry.js）。",
-            "remote_scope_hint": "插件的 Federation 容器名称（即 vite federation 配置中的 `name`）。",
+            "remote_scope_hint": "插件的 Federation 容器名称（vite federation 配置中的 `name`）。",
             "exposed_module_hint": "暴露的模块路径，例如 ./App。",
             "nav_group_placeholder": "应用",
-            "nav_group_hint": "可选的分组标题，用于在侧边栏中归类。留空则使用默认的「应用」分组。",
-            "nav_order_hint": "数字越小越靠前。若不在意顺序，保持 0 即可。",
-            "profile_tab_label": "玩家资料标签页",
+            "nav_group_hint": "可选标题，用于在侧边栏中给它分组。留空则使用默认的「应用」分组。",
+            "nav_order_hint": "数字越小越靠前。不在意的话保持 0。",
+            "profile_tab_label": "玩家资料页标签",
             "profile_tab_label_placeholder": "库存",
-            "profile_tab_label_hint": "以此标签名在玩家资料页显示该插件。留空则不显示标签页。插件会收到该资料页的 Steam ID。",
+            "profile_tab_label_hint": "以此标签在玩家资料页显示该插件。留空则不显示标签。插件会收到该资料页的 Steam ID。",
             "deployments": "部署",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "需要监视镜像更新的 Kubernetes 部署名称，用逗号分隔。更新会与 5stack 自身服务一起显示在页头。"
+            "deployments_hint": "要监听镜像更新的 Kubernetes 部署名称，用逗号分隔。更新会与 5stack 自身的服务一起显示在页头。"
           },
-          "detect_label": "从 URL 自动识别",
-          "detect": "识别",
-          "detect_hint": "粘贴插件的基础 URL（或其 5stack-plugin.json），我们会根据它的清单自动填写下面的字段。",
-          "detect_failed": "在该 URL 上读不到 5stack-plugin.json 清单。",
+          "detect_label": "从 URL 自动检测",
+          "detect": "检测",
+          "detect_hint": "粘贴插件的基础 URL（或其 5stack-plugin.json），我们会根据其清单填充下面的字段。",
+          "detect_failed": "无法在该 URL 读取 5stack-plugin.json 清单。",
           "optional": "（可选）",
           "advanced": "高级设置",
           "icon_picker": {
             "choose": "选择图标",
             "custom": "自定义图标",
             "search": "搜索图标…",
-            "custom_hint": "也可以粘贴图片 URL 或内联 SVG（例如来自插件）。",
+            "custom_hint": "或粘贴图片 URL 或内联 SVG（例如来自插件）。",
             "custom_placeholder": "https://… 、<svg…> 或图标名称"
-          }
+          },
+          "browse": "浏览目录"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "尚无设备订阅",
           "empty_body": "推送已就绪，但还没有人开启。玩家会在自己的通知设置中订阅，你无法代为开启。",
           "empty_link": "查看玩家端的设置"
+        },
+        "game_plugins": {
+          "title": "插件目录",
+          "section": "插件目录",
+          "description": "可安装插件的目录，以及它的来源。仅限管理员。",
+          "disabled_hint": "开启后即可浏览目录，并将插件安装到游戏服务器节点上。",
+          "registry": "插件源",
+          "registry_description": "可安装插件目录的来源。留空则使用官方 5Stack 插件源。",
+          "registry_url": "插件源 URL",
+          "catalog_count": "目录中有 {count} 个插件",
+          "sync": "立即同步",
+          "synced": "已同步 {plugins} 个插件和 {versions} 个版本",
+          "directory": "浏览",
+          "directory_description": "打开目录以查找并安装插件。",
+          "browse": "浏览目录",
+          "installed": "已安装",
+          "installed_description": "每个游戏服务器节点上实际存在的内容，包括手动放置的部分。",
+          "none_installed": "还没有任何节点安装插件。",
+          "hand_placed": "手动放置",
+          "verified": "已验证",
+          "missing": "磁盘上不存在"
+        },
+        "game_modes": {
+          "title": "游戏模式",
+          "section": "游戏模式",
+          "description": "模式将改变比赛玩法的插件、cvar 和规则打包在一起。比赛和社区服务器可从中选择一个。",
+          "create": "新建模式",
+          "create_title": "新建游戏模式",
+          "edit_title": "编辑游戏模式",
+          "sheet_description": "模式在服务器启动时应用，因此修改会影响该服务器上的下一场比赛。",
+          "empty": "还没有游戏模式。创建一个，让比赛可以运行竞技之外的玩法。",
+          "requires_plugins": "请先启用游戏插件——没有插件，模式就没有可加载的内容。",
+          "disabled": "已禁用",
+          "competitive": "可用于竞技",
+          "casual_only": "仅休闲",
+          "plugin_count": "{count} 个插件"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "从专用服务器页面设置公共服务器以使其在此可用。",
       "setup_public_server": "设置公共服务器",
       "lan_servers_title": "LAN 服务器",
-      "manage": "管理"
+      "manage": "管理",
+      "all_modes": "全部",
+      "no_mode": "原版"
     },
     "map_pools": {
       "title": "地图池",
@@ -3527,10 +3580,61 @@
     },
     "plugins": {
       "not_found_title": "页面未找到",
-      "not_found_description": "这个插件不存在，或已不再可用。",
+      "not_found_description": "该插件不存在或已不再可用。",
       "forbidden_title": "访问受限",
       "forbidden_description": "你没有权限查看此页面。",
-      "error_title": "页面加载失败"
+      "error_title": "页面加载失败",
+      "title": "插件目录",
+      "description": "面向游戏服务器和面板的插件。可以安装到所有节点，也可以只选特定节点。",
+      "search": "搜索插件",
+      "empty": "没有匹配的搜索结果。",
+      "verified": "已验证",
+      "by": "作者：{author}",
+      "back": "全部插件",
+      "source": "源码",
+      "releases": "最新发布",
+      "requires_service": "需要你自行提供的外部服务：{service}",
+      "install_title": "安装到节点",
+      "install": "安装",
+      "uninstall": "移除",
+      "install_success": "完成",
+      "not_installed": "未安装",
+      "no_nodes": "还没有配置任何游戏服务器节点。",
+      "unavailable_for_runtime": "该插件没有适用于 {runtime} 的版本，而这正是本部署使用的运行时。",
+      "kinds": {
+        "all": "全部",
+        "game": "游戏服务器",
+        "panel": "面板",
+        "bundle": "捆绑包"
+      },
+      "pairs_with": "可搭配",
+      "panel_install_title": "安装此面板插件",
+      "panel_install_hint": "部署只是第一步——还需要告诉面板你把它托管在哪里。",
+      "panel_install_docs": "安装面板插件",
+      "installed": "已安装",
+      "already_installed": "它已安装在你的面板上。",
+      "open_plugin": "打开",
+      "panel_step_deploy": "在托管面板的机器上，从你的 5stack-panel 代码目录运行此命令。",
+      "panel_step_dns": "把它输出的域名指向与本面板相同的地址，然后等待证书签发。",
+      "panel_step_register": "在 设置 → 应用 → 面板插件 → 添加 中注册，粘贴该 URL 并点击「检测」。",
+      "installs_everywhere": "安装到全部 {count} 个在线节点。",
+      "installed_on": "已安装在 {total} 个节点中的 {installed} 个。",
+      "advanced": "分发",
+      "advanced_hint": "各节点按自己的节奏安装；离线的节点会在恢复后自动跟上。",
+      "live_title": "已安装",
+      "manage": "管理",
+      "filter_installed": "已安装",
+      "filter_available": "可安装",
+      "empty_installed": "还没有安装任何内容。",
+      "readme": "关于",
+      "no_readme": "该插件的仓库中没有 README。",
+      "always_load": "每场比赛都加载",
+      "always_load_hint": "无需游戏模式选择即可加载。",
+      "always_load_ranked": "排位和匹配比赛中也会加载。",
+      "configure": "配置",
+      "configure_hint": "由插件在首次加载时写入，因此需要服务器以此模式运行过一次后才会出现。",
+      "configure_open": "打开文件",
+      "pending": "待处理"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3892,8 @@
         "title": "管理"
       },
       "platform": {
-        "title": "管理"
+        "title": "管理",
+        "plugin_directory": "插件目录"
       }
     },
     "top_nav": {
@@ -5095,6 +5200,12 @@
           "description": "让玩家看到自己战队的摄像头画面。"
         },
         "privacy_note": "对手战队永远看不到这些画面。参加这场比赛的主办方也看不到任何画面。"
+      },
+      "game_mode": {
+        "title": "游戏模式",
+        "none": "竞技（无模式）",
+        "description": "在比赛服务器上加载一组插件和控制台变量。",
+        "not_competitive_safe": "此模式未标记为可用于竞技。它仍会计入 ELO——如果这是有意为之，请在模式本身中将其标记为可用于竞技。"
       }
     },
     "schedule": {
@@ -6941,7 +7052,12 @@
       "step_settings": "比赛设置",
       "step_rules": "大厅规则",
       "back": "返回",
-      "next": "下一步"
+      "next": "下一步",
+      "step_mode": "模式",
+      "mode_description": "比赛的玩法。普通比赛保持竞技即可，或选择一个模式以在服务器上加载其插件。",
+      "mode_none": "竞技",
+      "mode_none_hint": "标准规则。计入 ELO 和排行榜。",
+      "mode_empty": "还没有配置任何游戏模式。管理员可以在设置中添加。"
     },
     "host": "房主",
     "invite": {
@@ -7091,7 +7207,9 @@
       "best_of": "最好",
       "map_veto": "地图 BP",
       "on": "开启",
-      "off": "关闭"
+      "off": "关闭",
+      "game_mode": "模式",
+      "unranked": "非排位"
     },
     "mode": {
       "captains": "队长选人",
@@ -8079,6 +8197,30 @@
       "discord": "加入 Discord",
       "github": "反馈问题",
       "docs": "阅读文档"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "名称",
+      "slug": "标识符",
+      "description": "描述",
+      "competitive_safe": "可用于竞技对战",
+      "competitive_safe_description": "此模式是否可用于排位或匹配比赛。",
+      "competitive_safe_warning": "此模式只会在休闲比赛中提供。排位服务器不会继承模式，因此匹配始终以干净的插件集启动。",
+      "plugins": "插件",
+      "plugins_description": "按显示顺序加载，位于手动放入 custom-plugins 的内容之后。",
+      "no_plugins": "目录中还没有游戏插件。请先同步插件源并安装一个。",
+      "restart_required": "需要重启",
+      "cfg": "控制台变量",
+      "cfg_description": "在比赛类型的配置之后执行，因此这些值优先生效。",
+      "extra_game_params": "额外启动参数",
+      "extra_game_params_description": "服务器启动时追加到命令行。",
+      "save": "保存模式",
+      "saved": "游戏模式已保存",
+      "archive": "归档",
+      "archived": "游戏模式已归档",
+      "runtime_none": "这些插件没有共同的框架，因此该模式无法在任何地方运行。请移除面向另一种框架的那个插件。",
+      "runtime_only": "仅在 {runtime} 上运行，因为这是这里所有插件都发布了版本的唯一框架。"
     }
   }
 }

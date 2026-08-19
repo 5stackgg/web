@@ -596,6 +596,69 @@ import {
           </table>
         </div>
       </section>
+
+      <section class="space-y-3" v-if="pluginsReported > 0">
+        <div :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses" />
+          {{ $t("pages.system_telemetry.plugins.title") }}
+          <FiveStackToolTip>
+            {{ $t("pages.system_telemetry.plugins.hint", { panels: pluginsReported }) }}
+          </FiveStackToolTip>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-3">
+          <div
+            class="flex flex-col justify-between gap-4 rounded-lg border border-border/60 bg-card/40 p-4 lg:col-span-2"
+          >
+            <div>
+              <div class="text-sm">
+                {{ $t("pages.system_telemetry.plugins.most_installed") }}
+              </div>
+              <div class="mt-3">
+                <FleetDistribution
+                  bare
+                  scale="max"
+                  :items="topPlugins"
+                  label-field="label"
+                  value-field="value"
+                />
+              </div>
+            </div>
+
+            <p
+              v-if="topPlugins.length === 0"
+              class="text-sm text-muted-foreground"
+            >
+              {{ $t("pages.system_telemetry.plugins.none") }}
+            </p>
+          </div>
+
+          <div
+            class="grid grid-cols-2 gap-3 rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <FleetReadout
+              :label="$t('pages.system_telemetry.plugins.requested')"
+              :value="totals?.pluginsRequested ?? 0"
+              :caption="$t('pages.system_telemetry.plugins.requested_caption')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.plugins.manual')"
+              :value="totals?.pluginsManual ?? 0"
+              :caption="$t('pages.system_telemetry.plugins.manual_caption')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.plugins.modes')"
+              :value="totals?.gameModes ?? 0"
+              :caption="$t('pages.system_telemetry.plugins.modes_caption')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.plugins.modes_unranked')"
+              :value="totals?.gameModesUnranked ?? 0"
+              :caption="$t('pages.system_telemetry.plugins.modes_unranked_caption')"
+            />
+          </div>
+        </div>
+      </section>
     </template>
   </div>
 </template>
@@ -802,6 +865,24 @@ export default {
     },
   },
   computed: {
+    pluginsReported(): number {
+      return (this.totals as Record<string, any>)?.pluginsReported ?? 0;
+    },
+    // Ranked by how many separate panels run it, not how many nodes: one
+    // operator with forty nodes is not forty operators, and the point of this
+    // list is which plugins people chose.
+    topPlugins(): Array<{ label: string; value: number }> {
+      const bySlug = (this.totals as Record<string, any>)?.pluginsBySlug ?? {};
+
+      return Object.entries(bySlug)
+        .map(([slug, counts]) => ({
+          label: slug,
+          value: Number((counts as Record<string, any>)?.panels ?? 0),
+        }))
+        .filter((entry) => entry.value > 0)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10);
+    },
     matchesColor() {
       return FLEET_MATCHES_CHART_COLORS.at(0);
     },

@@ -18,6 +18,13 @@ export function canSetCameraRequired(): boolean {
   return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
 }
 
+// Same again for game_mode_id. A mode decides which third-party plugins the
+// match server loads, so it sits with the other match_organizer-and-above
+// columns rather than being something any lobby leader can set.
+export function canSetGameMode(): boolean {
+  return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+}
+
 export const setupOptions = (
   form: FormContext<any>,
   options: any,
@@ -54,6 +61,7 @@ export const setupOptions = (
     halftime_pausematch: options.halftime_pausematch ?? false,
     camera_required: options.camera_required ?? false,
     camera_allow_teammates: options.camera_allow_teammates ?? false,
+    game_mode_id: options.game_mode_id ?? "",
     check_in_setting: options.check_in_setting,
     auto_cancellation: options.auto_cancellation,
     auto_cancel_duration: options.auto_cancel_duration ?? null,
@@ -216,6 +224,11 @@ export function setupOptionsVariables(
           camera_allow_teammates: values.camera_allow_teammates ?? false,
         }
       : {}),
+    ...(canSetGameMode()
+      ? {
+          game_mode_id: values.game_mode_id || null,
+        }
+      : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
@@ -279,6 +292,11 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
       ? {
           camera_required: $("camera_required", "Boolean!"),
           camera_allow_teammates: $("camera_allow_teammates", "Boolean!"),
+        }
+      : {}),
+    ...(canSetGameMode()
+      ? {
+          game_mode_id: $("game_mode_id", "uuid"),
         }
       : {}),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)

@@ -182,6 +182,8 @@ const metaLine = computed(() => {
   return parts;
 });
 
+const gameMode = computed(() => opts.value.game_mode ?? null);
+
 const pool = computed(() => opts.value.map_pool || props.room.map_pool);
 const maps = computed(() => pool.value?.maps || []);
 const poolName = computed(() => pool.value?.type || t("common.default"));
@@ -193,6 +195,9 @@ const onOff = (value: any) =>
 const settings = computed(() => {
   const o = opts.value;
   return [
+    ...(o.game_mode
+      ? [{ label: t("draft_games.bar.game_mode"), value: o.game_mode.name, on: true }]
+      : []),
     { label: t("draft_games.bar.best_of"), value: String(o.best_of ?? 1) },
     { label: t("draft_games.bar.overtime"), value: onOff(o.overtime), on: !!o.overtime },
     { label: t("draft_games.bar.knife"), value: onOff(o.knife_round), on: !!o.knife_round },
@@ -247,7 +252,18 @@ const leave = async () => {
     <div class="relative z-10 flex flex-col gap-4 py-4 pl-5 pr-4">
       <div class="flex items-start justify-between gap-4">
         <div class="min-w-0">
-          <h2 class="callsign">{{ $t(modeLabel) }}</h2>
+          <h2 class="callsign flex flex-wrap items-center gap-2">
+            {{ $t(modeLabel) }}
+            <!-- A game mode changes what the match actually plays like, so it
+                 belongs beside the callsign rather than buried in the settings
+                 list: players decide whether to join off this line. -->
+            <span v-if="gameMode" class="gamemode">
+              {{ gameMode.name }}
+              <span v-if="!gameMode.competitive_safe" class="gamemode__unranked">
+                {{ $t("draft_games.bar.unranked") }}
+              </span>
+            </span>
+          </h2>
           <div class="meta">
             <template v-for="(part, i) in metaLine" :key="i">
               <span v-if="i > 0" class="sep" aria-hidden="true">·</span>
@@ -460,6 +476,29 @@ const leave = async () => {
 </template>
 
 <style scoped>
+.gamemode {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid hsl(var(--tac-amber) / 0.45);
+  background: hsl(var(--tac-amber) / 0.08);
+  color: hsl(var(--tac-amber));
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.gamemode__unranked {
+  color: hsl(var(--muted-foreground));
+  border-left: 1px solid hsl(var(--tac-amber) / 0.35);
+  padding-left: 0.4rem;
+}
+
 .draft-bar::before {
   content: "";
   position: absolute;

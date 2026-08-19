@@ -1382,6 +1382,20 @@
         "always": "항상 사용 가능",
         "always_hint": "모든 패널에 기본 포함되며 끌 수 없으므로, 의미 있는 것은 사용량뿐입니다.",
         "no_metric_hint": "이 기능을 집계하는 항목이 없어 보고할 사용량이 없습니다. 어떤 패널도 사용하지 않는다는 뜻은 아닙니다."
+      },
+      "plugins": {
+        "title": "플러그인",
+        "hint": "{panels}개 패널에서 보고되었습니다. 이 기능 이전에 빌드된 패널은 플러그인이 없는 것으로 세지 않고 제외합니다.",
+        "most_installed": "패널 수 기준 최다 설치",
+        "none": "아직 카탈로그 플러그인을 설치한 패널이 없습니다.",
+        "requested": "설치",
+        "requested_caption": "전체에서 요청됨",
+        "manual": "수동 배치",
+        "manual_caption": "카탈로그 외부",
+        "modes": "게임 모드",
+        "modes_caption": "정의됨",
+        "modes_unranked": "언랭크",
+        "modes_unranked_caption": "ELO에 반영되지 않는 모드"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "이벤트 생성에 필요한 최소 역할"
         },
         "plugins": {
-          "title": "플러그인",
-          "section": "플러그인",
-          "description": "외부 마이크로 프론트엔드 앱을 등록하면 패널 내부에서 네이티브 페이지로 렌더링됩니다.",
-          "docs_link": "플러그인 문서 보기",
-          "add": "플러그인 추가",
-          "empty_title": "플러그인이 아직 없습니다",
-          "empty_description": "5Stack에 플러그인 URL을 지정하면 패널 내부에서 네이티브 페이지로 렌더링됩니다.",
+          "title": "패널 플러그인",
+          "section": "패널 플러그인",
+          "description": "패널 내부에서 네이티브 페이지로 렌더링되는 웹 앱입니다. CS2 서버 플러그인이 아니며, 그것은 게임 플러그인을 참고하세요.",
+          "docs_link": "패널 플러그인 문서 보기",
+          "add": "패널 플러그인 추가",
+          "empty_title": "패널 플러그인이 아직 없습니다",
+          "empty_description": "5Stack에 웹 앱 URL을 지정하면 패널 내부에서 네이티브 페이지로 렌더링됩니다.",
           "public": "공개",
-          "add_title": "플러그인 추가",
-          "edit_title": "플러그인 편집",
-          "delete_title": "플러그인 삭제",
+          "add_title": "패널 플러그인 추가",
+          "edit_title": "패널 플러그인 편집",
+          "delete_title": "패널 플러그인 삭제",
           "delete_description": "\"{title}\"와(과) 패널의 /apps 경로가 제거됩니다. 이 작업은 되돌릴 수 없습니다.",
           "delete_confirm": "삭제",
-          "form_description": "이 플러그인을 불러오는 방식과 볼 수 있는 대상을 설정합니다.",
+          "form_description": "이 패널 플러그인을 불러오는 방식과 볼 수 있는 대상을 설정합니다.",
           "is_default_hint": "이 페이지를 패널의 랜딩 페이지로 설정합니다.",
           "fields": {
             "title": "제목",
@@ -2386,7 +2400,8 @@
             "search": "아이콘 검색…",
             "custom_hint": "또는 이미지 URL이나 인라인 SVG를 붙여넣습니다(예: 플러그인에서 가져온 것).",
             "custom_placeholder": "https://… , <svg…>, 또는 아이콘 이름"
-          }
+          },
+          "browse": "디렉터리 열기"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "아직 구독한 기기가 없습니다",
           "empty_body": "푸시는 준비되었지만 아무도 켜지 않았습니다. 플레이어가 자신의 알림 설정에서 직접 구독하며, 대신 켜줄 수는 없습니다.",
           "empty_link": "플레이어 쪽 설정 보기"
+        },
+        "game_plugins": {
+          "title": "플러그인 디렉터리",
+          "section": "플러그인 디렉터리",
+          "description": "설치 가능한 플러그인 카탈로그와 그 출처입니다. 관리자 전용.",
+          "disabled_hint": "이 기능을 켜면 디렉터리를 둘러보고 게임 서버 노드에 플러그인을 설치할 수 있습니다.",
+          "registry": "레지스트리",
+          "registry_description": "설치 가능한 플러그인 카탈로그를 가져오는 출처입니다. 비워 두면 공식 5Stack 레지스트리를 사용합니다.",
+          "registry_url": "레지스트리 URL",
+          "catalog_count": "카탈로그에 플러그인 {count}개",
+          "sync": "지금 동기화",
+          "synced": "플러그인 {plugins}개와 버전 {versions}개를 동기화했습니다",
+          "directory": "둘러보기",
+          "directory_description": "디렉터리를 열어 플러그인을 찾아 설치합니다.",
+          "browse": "디렉터리 열기",
+          "installed": "설치됨",
+          "installed_description": "각 게임 서버 노드에 실제로 있는 항목입니다. 수동으로 넣은 것도 포함합니다.",
+          "none_installed": "아직 어떤 노드에도 플러그인이 설치되지 않았습니다.",
+          "hand_placed": "수동 배치",
+          "verified": "검증됨",
+          "missing": "디스크에 없음"
+        },
+        "game_modes": {
+          "title": "게임 모드",
+          "section": "게임 모드",
+          "description": "모드는 경기 진행 방식을 바꾸는 플러그인, cvar, 규칙을 묶은 것입니다. 경기와 커뮤니티 서버가 하나를 선택합니다.",
+          "create": "새 모드",
+          "create_title": "새 게임 모드",
+          "edit_title": "게임 모드 편집",
+          "sheet_description": "모드는 서버가 시작될 때 적용되므로, 변경하면 해당 서버의 다음 경기부터 반영됩니다.",
+          "empty": "게임 모드가 아직 없습니다. 하나 만들면 컴페티티브 외의 방식으로 경기를 진행할 수 있습니다.",
+          "requires_plugins": "먼저 게임 플러그인을 활성화하세요. 플러그인이 없으면 모드가 불러올 것이 없습니다.",
+          "disabled": "비활성화됨",
+          "competitive": "컴페티티브 가능",
+          "casual_only": "캐주얼 전용",
+          "plugin_count": "플러그인 {count}개"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "데디케이티드 서버 페이지에서 퍼블릭 서버를 설정하면 여기에 표시됩니다.",
       "setup_public_server": "퍼블릭 서버 설정",
       "lan_servers_title": "LAN 서버",
-      "manage": "관리"
+      "manage": "관리",
+      "all_modes": "전체",
+      "no_mode": "바닐라"
     },
     "map_pools": {
       "title": "맵 풀",
@@ -3530,7 +3583,58 @@
       "not_found_description": "이 플러그인이 존재하지 않거나 더 이상 사용할 수 없습니다.",
       "forbidden_title": "접근이 제한되었습니다",
       "forbidden_description": "이 페이지를 볼 권한이 없습니다.",
-      "error_title": "페이지를 불러오지 못했습니다"
+      "error_title": "페이지를 불러오지 못했습니다",
+      "title": "플러그인 디렉터리",
+      "description": "게임 서버와 패널을 위한 플러그인입니다. 모든 노드에 설치하거나 특정 노드만 선택할 수 있습니다.",
+      "search": "플러그인 검색",
+      "empty": "검색 결과가 없습니다.",
+      "verified": "검증됨",
+      "by": "{author} 제작",
+      "back": "모든 플러그인",
+      "source": "소스",
+      "releases": "최신 릴리스",
+      "requires_service": "직접 제공해야 하는 외부 서비스가 필요합니다: {service}",
+      "install_title": "노드에 설치",
+      "install": "설치",
+      "uninstall": "제거",
+      "install_success": "완료",
+      "not_installed": "설치되지 않음",
+      "no_nodes": "설정된 게임 서버 노드가 아직 없습니다.",
+      "unavailable_for_runtime": "이 플러그인에는 현재 배포가 사용하는 런타임 {runtime}용 릴리스가 없습니다.",
+      "kinds": {
+        "all": "전체",
+        "game": "게임 서버",
+        "panel": "패널",
+        "bundle": "번들"
+      },
+      "pairs_with": "함께 사용",
+      "panel_install_title": "이 패널 플러그인 설치",
+      "panel_install_hint": "배포는 첫 단계일 뿐입니다. 어디에 호스팅했는지 패널에 알려 줘야 합니다.",
+      "panel_install_docs": "패널 플러그인 설치하기",
+      "installed": "설치됨",
+      "already_installed": "이미 패널에 설치되어 있습니다.",
+      "open_plugin": "열기",
+      "panel_step_deploy": "패널을 호스팅하는 머신에서 5stack-panel 체크아웃으로 이 명령을 실행하세요.",
+      "panel_step_dns": "출력된 도메인을 이 패널과 같은 주소로 향하게 하고 인증서 발급을 기다리세요.",
+      "panel_step_register": "설정 → 애플리케이션 → 패널 플러그인 → 추가에서 등록하고, 해당 URL을 붙여넣은 뒤 감지를 누르세요.",
+      "installs_everywhere": "온라인 노드 {count}개 전체에 설치합니다.",
+      "installed_on": "노드 {total}개 중 {installed}개에 설치됨.",
+      "advanced": "롤아웃",
+      "advanced_hint": "각 노드는 자체 일정에 따라 설치합니다. 오프라인 노드는 돌아오면 자동으로 맞춰집니다.",
+      "live_title": "설치됨",
+      "manage": "관리",
+      "filter_installed": "설치됨",
+      "filter_available": "설치 가능",
+      "empty_installed": "아직 설치된 것이 없습니다.",
+      "readme": "소개",
+      "no_readme": "이 플러그인의 저장소에 README가 없습니다.",
+      "always_load": "모든 경기에서 불러오기",
+      "always_load_hint": "게임 모드가 선택하지 않아도 불러옵니다.",
+      "always_load_ranked": "랭크 및 매치메이킹 경기에서도 불러옵니다.",
+      "configure": "설정 파일",
+      "configure_hint": "플러그인이 처음 불러올 때 작성하므로, 서버가 이 모드로 한 번 실행된 뒤에 나타납니다.",
+      "configure_open": "파일 열기",
+      "pending": "대기 중"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3892,8 @@
         "title": "관리"
       },
       "platform": {
-        "title": "관리"
+        "title": "관리",
+        "plugin_directory": "플러그인 디렉터리"
       }
     },
     "top_nav": {
@@ -5095,6 +5200,12 @@
           "description": "플레이어가 자기 팀의 카메라를 볼 수 있게 합니다."
         },
         "privacy_note": "상대 팀은 이 영상을 절대 볼 수 없습니다. 이 경기에 출전하는 주최자도 어떤 영상도 볼 수 없습니다."
+      },
+      "game_mode": {
+        "title": "게임 모드",
+        "none": "컴페티티브 (모드 없음)",
+        "description": "경기 서버에 플러그인과 콘솔 변수 세트를 불러옵니다.",
+        "not_competitive_safe": "이 모드는 컴페티티브에 안전한 것으로 표시되어 있지 않습니다. 그래도 ELO에는 반영됩니다. 의도한 것이라면 모드 자체에서 컴페티티브 가능으로 표시하세요."
       }
     },
     "schedule": {
@@ -6941,7 +7052,12 @@
       "step_settings": "매치 설정",
       "step_rules": "로비 규칙",
       "back": "이전",
-      "next": "다음"
+      "next": "다음",
+      "step_mode": "모드",
+      "mode_description": "경기 진행 방식입니다. 일반 경기는 컴페티티브로 두고, 모드를 선택하면 해당 플러그인이 서버에 로드됩니다.",
+      "mode_none": "컴페티티브",
+      "mode_none_hint": "표준 규칙. ELO와 리더보드에 반영됩니다.",
+      "mode_empty": "설정된 게임 모드가 아직 없습니다. 관리자가 설정에서 추가할 수 있습니다."
     },
     "host": "호스트",
     "invite": {
@@ -7091,7 +7207,9 @@
       "best_of": "베스트 오브",
       "map_veto": "맵 밴픽",
       "on": "켜짐",
-      "off": "꺼짐"
+      "off": "꺼짐",
+      "game_mode": "모드",
+      "unranked": "언랭크"
     },
     "mode": {
       "captains": "팀장 드래프트",
@@ -8079,6 +8197,30 @@
       "discord": "Discord 참여",
       "github": "문제 신고",
       "docs": "문서 읽기"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "이름",
+      "slug": "슬러그",
+      "description": "설명",
+      "competitive_safe": "컴페티티브 플레이에 안전",
+      "competitive_safe_description": "이 모드를 랭크 또는 매치메이킹 경기에서 사용할 수 있는지 여부입니다.",
+      "competitive_safe_warning": "이 모드는 캐주얼 경기에서만 제공됩니다. 랭크 서버는 모드를 물려받지 않으므로 매치메이킹은 항상 깨끗한 플러그인 구성으로 시작합니다.",
+      "plugins": "플러그인",
+      "plugins_description": "표시된 순서대로, custom-plugins에 수동으로 넣은 것 다음에 로드됩니다.",
+      "no_plugins": "카탈로그에 게임 플러그인이 아직 없습니다. 먼저 레지스트리를 동기화하고 하나 설치하세요.",
+      "restart_required": "재시작 필요",
+      "cfg": "콘솔 변수",
+      "cfg_description": "경기 유형 설정 다음에 실행되므로 여기 값이 우선합니다.",
+      "extra_game_params": "추가 실행 매개변수",
+      "extra_game_params_description": "서버가 시작될 때 명령줄에 덧붙습니다.",
+      "save": "모드 저장",
+      "saved": "게임 모드를 저장했습니다",
+      "archive": "보관",
+      "archived": "게임 모드를 보관했습니다",
+      "runtime_none": "이 플러그인들은 공통 프레임워크가 없어 이 모드를 어디서도 실행할 수 없습니다. 다른 프레임워크용 플러그인을 제거하세요.",
+      "runtime_only": "{runtime}에서만 실행됩니다. 여기 있는 모든 플러그인이 지원하는 유일한 프레임워크이기 때문입니다."
     }
   }
 }

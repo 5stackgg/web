@@ -566,8 +566,17 @@ import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { order_by } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
+
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+
+// Literals rather than the generated enum: a type added by a migration is
+// absent from ~/generated/zeus until codegen runs against a migrated database,
+// and a server holding one must not read as a custom mode id -- dropStaleMode
+// would rewrite it to a preset and save that.
+const SERVER_TYPE_RANKED = "Ranked";
+const SERVER_TYPE_PRACTICE = "Practice";
+const SERVER_TYPE_CUSTOM = "Custom";
 
 export default {
   emits: ["updated"],
@@ -673,7 +682,7 @@ export default {
               region: z.string().optional(),
               use_game_server_node: z.boolean().default(false),
               game_server_node_id: z.string().optional(),
-              type: z.string().default(e_server_types_enum.Ranked),
+              type: z.string().default(SERVER_TYPE_RANKED),
               connect_password: z.string().optional(),
               port: z.number().min(2).max(65535).default(27015).optional(),
               tv_port: z.number().min(2).max(65535).default(27020).optional(),
@@ -742,12 +751,12 @@ export default {
         // Ranked and Practice are the two that run no Valve preset, so they
         // are the two this watcher must leave alone in either direction.
         const runsNoPreset =
-          selected === e_server_types_enum.Ranked ||
-          selected === e_server_types_enum.Practice;
+          selected === SERVER_TYPE_RANKED ||
+          selected === SERVER_TYPE_PRACTICE;
 
         if (!newValue) {
           if (!runsNoPreset) {
-            this.form.setFieldValue("type", e_server_types_enum.Ranked);
+            this.form.setFieldValue("type", SERVER_TYPE_RANKED);
           }
           return;
         }
@@ -798,7 +807,7 @@ export default {
   },
   computed: {
     isManagedRankedServer() {
-      return this.form.values.type === e_server_types_enum.Ranked;
+      return this.form.values.type === SERVER_TYPE_RANKED;
     },
     useGameServerNode() {
       return this.form.values.use_game_server_node;
@@ -806,12 +815,22 @@ export default {
     serverTypes() {
       return Object.values(e_server_types_enum);
     },
+    knownServerTypes(): Array<string> {
+      return Array.from(
+        new Set([
+          ...Object.values(e_server_types_enum),
+          SERVER_TYPE_RANKED,
+          SERVER_TYPE_PRACTICE,
+          SERVER_TYPE_CUSTOM,
+        ]),
+      );
+    },
     valveModeTypes() {
-      return Object.values(e_server_types_enum).filter(
+      return this.knownServerTypes.filter(
         (t) =>
-          t !== e_server_types_enum.Ranked &&
-          t !== e_server_types_enum.Practice &&
-          t !== e_server_types_enum.Custom,
+          t !== SERVER_TYPE_RANKED &&
+          t !== SERVER_TYPE_PRACTICE &&
+          t !== SERVER_TYPE_CUSTOM,
       );
     },
     // Which of the four top-level choices the current `type` represents. The
@@ -819,13 +838,13 @@ export default {
     // only how the radios read it back.
     serverKind(): string {
       const selected = this.form.values.type;
-      if (selected === e_server_types_enum.Ranked) {
+      if (selected === SERVER_TYPE_RANKED) {
         return "ranked";
       }
-      if (selected === e_server_types_enum.Practice) {
+      if (selected === SERVER_TYPE_PRACTICE) {
         return "practice";
       }
-      if (this.holdsModeId || selected === e_server_types_enum.Custom) {
+      if (this.holdsModeId || selected === SERVER_TYPE_CUSTOM) {
         return "presets";
       }
       return "valve";
@@ -861,7 +880,7 @@ export default {
     // separate question -- see isCustomModeSelected.
     holdsModeId(): boolean {
       const selected = this.form.values.type;
-      return !!selected && !Object.values(e_server_types_enum).includes(selected);
+      return !!selected && !this.knownServerTypes.includes(selected);
     },
     isCustomModeSelected(): boolean {
       const selected = this.form.values.type;
@@ -888,7 +907,7 @@ export default {
     resolveTypeAndMode(): { type: string; game_mode_id: string | null } {
       const selected = this.form.values.type;
       if (this.isCustomModeSelected || (this.holdsModeId && !this.modesKnown)) {
-        return { type: e_server_types_enum.Custom, game_mode_id: selected };
+        return { type: SERVER_TYPE_CUSTOM, game_mode_id: selected };
       }
       if (this.holdsModeId) {
         return { type: this.valveModeTypes[0], game_mode_id: null };
@@ -898,13 +917,13 @@ export default {
     setServerKind(kind: string) {
       if (kind === "ranked") {
         this.form.setFieldValue("use_valve_modes", false);
-        this.form.setFieldValue("type", e_server_types_enum.Ranked);
+        this.form.setFieldValue("type", SERVER_TYPE_RANKED);
         return;
       }
 
       if (kind === "practice") {
         this.form.setFieldValue("use_valve_modes", false);
-        this.form.setFieldValue("type", e_server_types_enum.Practice);
+        this.form.setFieldValue("type", SERVER_TYPE_PRACTICE);
         return;
       }
 
@@ -920,7 +939,7 @@ export default {
       if (!this.isCustomModeSelected) {
         this.form.setFieldValue(
           "type",
-          this.customModes[0]?.id ?? e_server_types_enum.Custom,
+          this.customModes[0]?.id ?? SERVER_TYPE_CUSTOM,
         );
       }
     },
@@ -950,8 +969,7 @@ export default {
         tv_port,
         game: server.game || "cs2",
         use_valve_modes:
-          type !== e_server_types_enum.Ranked &&
-          type !== e_server_types_enum.Practice,
+          type !== SERVER_TYPE_RANKED && type !== SERVER_TYPE_PRACTICE,
         use_game_server_node: !!game_server_node_id,
         game_server_node_id: game_server_node_id
           ? game_server_node_id.toString()

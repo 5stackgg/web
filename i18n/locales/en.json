@@ -4005,6 +4005,7 @@
         "join_failed": "Could not join that practice server",
         "any_region": "Any region",
         "dedicated_servers": "Practice Servers",
+        "servers_unavailable": "Could not load practice servers: {error}",
         "collection": "Load a collection",
         "no_collection": "None",
         "open_session": "Open session",

@@ -102,6 +102,7 @@ const isOpen = ref(true);
 const practiceServers = ref<
   Array<{ id: string; label: string; region: string }>
 >([]);
+const practiceServersError = ref<string | null>(null);
 const collections = ref<UtilityCollection[]>([]);
 const playbooks = ref<UtilityPlaybook[]>([]);
 const sessionId = ref<string | null>(null);
@@ -157,13 +158,17 @@ async function loadCollections() {
 }
 
 async function loadPracticeServers() {
+  practiceServersError.value = null;
   try {
     const { data } = await getGraphqlClient().query({
       query: utilityPracticeServersQuery,
       fetchPolicy: "network-only",
     });
     practiceServers.value = (data as any)?.utilityPracticeServers?.servers ?? [];
-  } catch (error) {
+  } catch (error: any) {
+    // Surfaced, not swallowed: an empty picker and a broken lookup look
+    // identical from the outside, and the difference is the whole diagnosis.
+    practiceServersError.value = error?.message ?? "unknown error";
     console.error("[utility] practice server load error:", error);
     practiceServers.value = [];
   }
@@ -564,7 +569,17 @@ const connectServer = computed(() => ({
             </SelectContent>
           </Select>
           <p
-            v-if="!regions.length && !practiceServers.length"
+            v-if="practiceServersError"
+            class="text-xs text-[hsl(var(--tac-amber))]"
+          >
+            {{
+              $t("pages.utility.practice.servers_unavailable", {
+                error: practiceServersError,
+              })
+            }}
+          </p>
+          <p
+            v-else-if="!regions.length && !practiceServers.length"
             class="text-xs text-muted-foreground"
           >
             {{ $t("pages.utility.practice.no_regions") }}

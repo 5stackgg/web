@@ -39,6 +39,183 @@ const showConnectPassword = ref(false);
 
 <template>
   <form @submit.prevent="updateCreateServer" class="grid gap-5">
+    <FormSection :title="$t('server.form.type')">
+      <div class="grid gap-4">
+        <FormField name="type">
+          <FormItem>
+            <FormLabel>
+              {{ $t("server.form.type") }}
+            </FormLabel>
+            <FormControl>
+              <RadioGroup :model-value="serverKind" class="grid gap-3">
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
+                  :class="
+                    form.values.game === 'csgo'
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-muted/50 cursor-pointer'
+                  "
+                  @click="form.values.game === 'csgo' || setServerKind('ranked')"
+                >
+                  <RadioGroupItem
+                    id="kind-ranked"
+                    value="ranked"
+                    :disabled="form.values.game === 'csgo'"
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none"
+                      :class="
+                        form.values.game === 'csgo'
+                          ? 'cursor-not-allowed'
+                          : 'cursor-pointer'
+                      "
+                      for="kind-ranked"
+                    >
+                      {{ $t("server.form.ranked_server") }}
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      {{ $t("server.form.ranked_server_description") }}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
+                  :class="
+                    form.values.game === 'csgo'
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-muted/50 cursor-pointer'
+                  "
+                  @click="form.values.game === 'csgo' || setServerKind('practice')"
+                >
+                  <RadioGroupItem
+                    id="kind-practice"
+                    value="practice"
+                    :disabled="form.values.game === 'csgo'"
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none"
+                      :class="
+                        form.values.game === 'csgo'
+                          ? 'cursor-not-allowed'
+                          : 'cursor-pointer'
+                      "
+                      for="kind-practice"
+                    >
+                      {{ $t("server.form.practice_server") }}
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      {{ $t("server.form.practice_server_description") }}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 cursor-pointer"
+                  @click="setServerKind('valve')"
+                >
+                  <RadioGroupItem
+                    id="kind-valve"
+                    value="valve"
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none"
+                      for="kind-valve"
+                    >
+                      {{ $t("server.form.valve_modes") }}
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      {{ $t("server.form.valve_modes_description") }}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 cursor-pointer"
+                  @click="setServerKind('presets')"
+                >
+                  <RadioGroupItem
+                    id="kind-presets"
+                    value="presets"
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none"
+                      for="kind-presets"
+                    >
+                      {{ $t("server.form.custom_presets") }}
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      {{ $t("server.form.custom_presets_description") }}
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <Fold :open="gameServerNodes.length > 0 && !server">
+          <FormField v-slot="{ componentField }" name="use_game_server_node">
+            <FormItem
+              class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+              @click="
+                componentField['onUpdate:modelValue'](!componentField.modelValue)
+              "
+            >
+              <div class="space-y-0.5">
+                <FormLabel class="cursor-pointer">{{
+                  $t("server.form.server_configuration")
+                }}</FormLabel>
+                <FormDescription class="cursor-pointer">
+                  {{
+                    useGameServerNode
+                      ? $t("server.form.use_game_server_node")
+                      : $t("server.form.use_manual_host_configuration")
+                  }}
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch @click.stop :model-value="componentField.modelValue" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </Fold>
+
+        <Fold :open="!useGameServerNode && !isEditingGameServerNode">
+          <div class="grid gap-4">
+            <FormField v-slot="{ componentField }" name="region">
+              <FormItem>
+                <FormLabel>{{ $t("server.form.region") }}</FormLabel>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        :placeholder="$t('server.form.select_region')"
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="region.value"
+                        v-for="region in server_regions"
+                        :key="region.value"
+                      >
+                        {{ region.description || region.value }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </div>
+        </Fold>
+      </div>
+    </FormSection>
+
     <FormSection :title="$t('server.form.game')">
       <div class="grid gap-4">
         <FormField v-slot="{ componentField }" name="game">
@@ -78,78 +255,6 @@ const showConnectPassword = ref(false);
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="use_valve_modes">
-          <FormItem>
-            <FormLabel>
-              {{ $t("server.form.type") }}
-            </FormLabel>
-            <FormControl>
-              <RadioGroup
-                :model-value="componentField.modelValue ? 'valve' : 'ranked'"
-                class="grid gap-3"
-              >
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
-                  :class="
-                    form.values.game === 'csgo'
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-muted/50 cursor-pointer'
-                  "
-                  @click="
-                    form.values.game !== 'csgo' &&
-                    componentField &&
-                    componentField['onUpdate:modelValue'] &&
-                    componentField['onUpdate:modelValue'](false)
-                  "
-                >
-                  <RadioGroupItem
-                    id="mode-ranked"
-                    value="ranked"
-                    :disabled="form.values.game === 'csgo'"
-                  />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none"
-                      :class="
-                        form.values.game === 'csgo'
-                          ? 'cursor-not-allowed'
-                          : 'cursor-pointer'
-                      "
-                      for="mode-ranked"
-                    >
-                      {{ $t("server.form.ranked_server") }}
-                    </label>
-                    <p class="text-sm text-muted-foreground">
-                      {{ $t("server.form.ranked_server_description") }}
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-                  @click="
-                    componentField &&
-                    componentField['onUpdate:modelValue'] &&
-                    componentField['onUpdate:modelValue'](true)
-                  "
-                >
-                  <RadioGroupItem id="mode-valve" value="valve" />
-                  <div class="grid gap-1.5 leading-none">
-                    <label
-                      class="text-sm font-medium leading-none"
-                      for="mode-valve"
-                    >
-                      {{ $t("server.form.valve_presets") }}
-                    </label>
-                    <p class="text-sm text-muted-foreground">
-                      {{ $t("server.form.valve_presets_description") }}
-                    </p>
-                  </div>
-                </div>
-              </RadioGroup>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
 
         <Fold
           :open="form.values.game === 'csgo' && !form.values.use_valve_modes"
@@ -164,57 +269,51 @@ const showConnectPassword = ref(false);
           </Alert>
         </Fold>
 
-        <Fold :open="!!form.values.use_valve_modes">
-        <FormField
-          v-slot="{ componentField }"
-          name="type"
-        >
-          <FormItem>
-            <FormLabel>{{ $t("server.form.game_mode") }}</FormLabel>
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue
-                    :placeholder="$t('server.form.select_game_mode')"
-                  />
-                </SelectTrigger>
-              </FormControl>
-              <!-- Width pinned to the trigger: the popper otherwise grows to
-                   the longest mode description and the text never wraps. -->
-              <SelectContent class="w-[--reka-select-trigger-width]">
-                <SelectGroup>
-                  <!-- Eyebrow headers, not item-styled labels: the groups must
-                       read as section titles or the items under them look
-                       like a second tier of something unselectable. -->
-                  <SelectLabel
-                    v-if="customModes.length"
-                    class="px-2 pb-1 pt-2 font-mono text-[0.62rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
-                  >
-                    {{ $t("server.form.valve_preset_group") }}
-                  </SelectLabel>
-                  <SelectItem
-                    :value="serverType"
-                    v-for="serverType in valveModeTypes"
-                    :key="serverType"
-                  >
-                    {{ serverType }}
-                  </SelectItem>
-                </SelectGroup>
-                <template v-if="customModes.length">
-                  <SelectSeparator />
+        <Fold :open="serverKind === 'valve'">
+          <FormField v-slot="{ componentField }" name="type">
+            <FormItem>
+              <FormLabel>{{ $t("server.form.game_mode") }}</FormLabel>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      :placeholder="$t('server.form.select_game_mode')"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent class="w-[--reka-select-trigger-width]">
                   <SelectGroup>
-                    <SelectLabel
-                      class="flex items-center gap-2 px-2 pb-1 pt-2 font-mono text-[0.62rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
+                    <SelectItem
+                      :value="serverType"
+                      v-for="serverType in valveModeTypes"
+                      :key="serverType"
                     >
-                      {{ $t("server.form.custom_mode_group") }}
-                      <span
-                        v-if="!hasGameServerNode"
-                        class="inline-flex items-center gap-1 normal-case tracking-normal"
-                      >
-                        <Lock class="h-3 w-3" />
-                        {{ $t("server.form.custom_mode_group_locked") }}
-                      </span>
-                    </SelectLabel>
+                      {{ serverType }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </Fold>
+
+        <Fold :open="serverKind === 'presets'">
+          <FormField v-slot="{ componentField }" name="type">
+            <FormItem>
+              <FormLabel>{{ $t("server.form.custom_mode_group") }}</FormLabel>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      :placeholder="$t('server.form.select_custom_preset')"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <!-- Width pinned to the trigger: the popper otherwise grows to
+                     the longest mode description and the text never wraps. -->
+                <SelectContent class="w-[--reka-select-trigger-width]">
+                  <SelectGroup>
                     <!-- Built from the reka primitives rather than ui/SelectItem
                          so the description sits outside SelectItemText: the
                          trigger then echoes only the name. -->
@@ -241,12 +340,11 @@ const showConnectPassword = ref(false);
                       </span>
                     </RekaSelectItem>
                   </SelectGroup>
-                </template>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </Fold>
 
         <!-- A custom mode is plugins the panel installs onto the container it
@@ -254,7 +352,7 @@ const showConnectPassword = ref(false);
              into, so the modes stay locked until a node is attached. -->
         <Fold
           :open="
-            !!form.values.use_valve_modes &&
+            serverKind === 'presets' &&
             customModes.length > 0 &&
             !hasGameServerNode
           "
@@ -300,62 +398,9 @@ const showConnectPassword = ref(false);
 
     <FormSection :title="$t('server.form.connection')">
       <div class="grid gap-4">
-        <Fold :open="gameServerNodes.length > 0 && !server">
-          <FormField v-slot="{ componentField }" name="use_game_server_node">
-            <FormItem
-              class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-              @click="
-                componentField['onUpdate:modelValue'](!componentField.modelValue)
-              "
-            >
-              <div class="space-y-0.5">
-                <FormLabel class="cursor-pointer">{{
-                  $t("server.form.server_configuration")
-                }}</FormLabel>
-                <FormDescription class="cursor-pointer">
-                  {{
-                    useGameServerNode
-                      ? $t("server.form.use_game_server_node")
-                      : $t("server.form.use_manual_host_configuration")
-                  }}
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch @click.stop :model-value="componentField.modelValue" />
-              </FormControl>
-            </FormItem>
-          </FormField>
-        </Fold>
 
-        <!-- Manual host fields fold with the configuration switch above. -->
         <Fold :open="!useGameServerNode && !isEditingGameServerNode">
         <div class="grid gap-4">
-          <FormField v-slot="{ componentField }" name="region">
-            <FormItem>
-              <FormLabel>{{ $t("server.form.region") }}</FormLabel>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('server.form.select_region')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      :value="region.value"
-                      v-for="region in server_regions"
-                      :key="region.value"
-                    >
-                      {{ region.description || region.value }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField v-slot="{ componentField }" name="host">
@@ -435,13 +480,13 @@ const showConnectPassword = ref(false);
       </div>
     </FormSection>
 
-    <Fold :open="isPublicServerType">
+    <Fold :open="!isManagedRankedServer">
     <FormSection :title="$t('server.form.connect_password')">
       <div class="grid gap-4">
         <FormField
           v-slot="{ componentField }"
           name="connect_password"
-          v-if="isPublicServerType"
+          v-if="!isManagedRankedServer"
         >
           <FormItem>
             <FormLabel>{{ $t("server.form.connect_password") }}</FormLabel>
@@ -475,7 +520,7 @@ const showConnectPassword = ref(false);
         <FormField
           v-slot="{ componentField }"
           name="max_players"
-          v-if="isPublicServerType"
+          v-if="!isManagedRankedServer"
         >
           <FormItem>
             <FormLabel>{{ $t("server.form.max_players") }}</FormLabel>
@@ -685,6 +730,7 @@ export default {
     "form.values.game": {
       handler(newGame) {
         if (newGame === "csgo" && !this.form.values.use_valve_modes) {
+          this.form.setFieldValue("type", this.valveModeTypes[0]);
           this.form.setFieldValue("use_valve_modes", true);
         }
       },
@@ -692,14 +738,24 @@ export default {
     "form.values.use_valve_modes": {
       immediate: true,
       handler(newValue) {
+        const selected = this.form.values.type;
+        // Ranked and Practice are the two that run no Valve preset, so they
+        // are the two this watcher must leave alone in either direction.
+        const runsNoPreset =
+          selected === e_server_types_enum.Ranked ||
+          selected === e_server_types_enum.Practice;
+
         if (!newValue) {
-          this.form.setFieldValue("type", e_server_types_enum.Ranked);
+          if (!runsNoPreset) {
+            this.form.setFieldValue("type", e_server_types_enum.Ranked);
+          }
           return;
         }
-        if (newValue && this.form.values.type === e_server_types_enum.Ranked) {
-          const firstNonRanked = this.valveModeTypes[0];
-          if (firstNonRanked) {
-            this.form.setFieldValue("type", firstNonRanked);
+
+        if (runsNoPreset) {
+          const firstPreset = this.valveModeTypes[0];
+          if (firstPreset) {
+            this.form.setFieldValue("type", firstPreset);
           }
         }
       },
@@ -741,8 +797,8 @@ export default {
     },
   },
   computed: {
-    isPublicServerType() {
-      return this.form.values.type !== "Ranked";
+    isManagedRankedServer() {
+      return this.form.values.type === e_server_types_enum.Ranked;
     },
     useGameServerNode() {
       return this.form.values.use_game_server_node;
@@ -752,8 +808,27 @@ export default {
     },
     valveModeTypes() {
       return Object.values(e_server_types_enum).filter(
-        (t) => t !== e_server_types_enum.Ranked,
+        (t) =>
+          t !== e_server_types_enum.Ranked &&
+          t !== e_server_types_enum.Practice &&
+          t !== e_server_types_enum.Custom,
       );
+    },
+    // Which of the four top-level choices the current `type` represents. The
+    // field itself still holds either an enum value or a mode uuid; this is
+    // only how the radios read it back.
+    serverKind(): string {
+      const selected = this.form.values.type;
+      if (selected === e_server_types_enum.Ranked) {
+        return "ranked";
+      }
+      if (selected === e_server_types_enum.Practice) {
+        return "practice";
+      }
+      if (this.holdsModeId || selected === e_server_types_enum.Custom) {
+        return "presets";
+      }
+      return "valve";
     },
     // Custom game modes share the picker with the Valve presets: both answer
     // "what does this server play". A preset is stored in servers.type, a mode
@@ -820,6 +895,35 @@ export default {
       }
       return { type: selected || "Ranked", game_mode_id: null };
     },
+    setServerKind(kind: string) {
+      if (kind === "ranked") {
+        this.form.setFieldValue("use_valve_modes", false);
+        this.form.setFieldValue("type", e_server_types_enum.Ranked);
+        return;
+      }
+
+      if (kind === "practice") {
+        this.form.setFieldValue("use_valve_modes", false);
+        this.form.setFieldValue("type", e_server_types_enum.Practice);
+        return;
+      }
+
+      this.form.setFieldValue("use_valve_modes", true);
+
+      if (kind === "valve") {
+        if (!this.valveModeTypes.includes(this.form.values.type)) {
+          this.form.setFieldValue("type", this.valveModeTypes[0]);
+        }
+        return;
+      }
+
+      if (!this.isCustomModeSelected) {
+        this.form.setFieldValue(
+          "type",
+          this.customModes[0]?.id ?? e_server_types_enum.Custom,
+        );
+      }
+    },
     dropStaleMode() {
       if (this.modesKnown && this.holdsModeId && !this.isCustomModeSelected) {
         this.form.setFieldValue("type", this.valveModeTypes[0]);
@@ -845,7 +949,9 @@ export default {
         region,
         tv_port,
         game: server.game || "cs2",
-        use_valve_modes: type !== e_server_types_enum.Ranked,
+        use_valve_modes:
+          type !== e_server_types_enum.Ranked &&
+          type !== e_server_types_enum.Practice,
         use_game_server_node: !!game_server_node_id,
         game_server_node_id: game_server_node_id
           ? game_server_node_id.toString()

@@ -4,7 +4,16 @@ import { Badge } from "~/components/ui/badge";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import GamePluginCard from "~/components/game-plugins/GamePluginCard.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import { Search, LibraryBig } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import AddCustomPluginForm from "~/components/game-plugins/AddCustomPluginForm.vue";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "~/components/ui/sheet";
+import { Search, LibraryBig, Plus } from "lucide-vue-next";
 
 definePageMeta({
   middleware: "admin",
@@ -18,14 +27,21 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <div class="space-y-6 p-4 lg:p-6">
-      <div class="flex flex-col gap-2">
-        <h1 class="flex items-center gap-2 text-2xl font-semibold tracking-tight">
-          <LibraryBig class="h-6 w-6" />
-          {{ $t("pages.plugins.title") }}
-        </h1>
-        <p class="text-muted-foreground">
-          {{ $t("pages.plugins.description") }}
-        </p>
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex flex-col gap-2">
+          <h1 class="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+            <LibraryBig class="h-6 w-6" />
+            {{ $t("pages.plugins.title") }}
+          </h1>
+          <p class="text-muted-foreground">
+            {{ $t("pages.plugins.description") }}
+          </p>
+        </div>
+
+        <Button variant="outline" class="gap-2" @click="adding = true">
+          <Plus class="h-4 w-4" />
+          {{ $t("pages.plugins.custom.add") }}
+        </Button>
       </div>
 
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -66,6 +82,21 @@ definePageMeta({
       </div>
     </div>
   </PageTransition>
+
+  <Sheet :open="adding" @update:open="adding = $event">
+    <SheetContent class="w-full overflow-y-auto sm:max-w-xl">
+      <SheetHeader>
+        <SheetTitle>{{ $t("pages.plugins.custom.title") }}</SheetTitle>
+        <SheetDescription>
+          {{ $t("pages.plugins.custom.description") }}
+        </SheetDescription>
+      </SheetHeader>
+
+      <div class="py-6">
+        <AddCustomPluginForm @added="onAdded" />
+      </div>
+    </SheetContent>
+  </Sheet>
 </template>
 
 <script lang="ts">
@@ -77,6 +108,7 @@ export default {
       search: "",
       kind: "all",
       state: "all",
+      adding: false,
       plugins: [] as Array<Record<string, any>>,
       installedPages: [] as Array<Record<string, any>>,
     };
@@ -117,6 +149,7 @@ export default {
             homepage: true,
             tags: true,
             verified: true,
+            source: true,
             requires_service: true,
             panel: true,
             install_state: true,
@@ -139,6 +172,14 @@ export default {
     },
   },
   methods: {
+    async onAdded(slug: string) {
+      this.adding = false;
+      await (this as any).$apollo.queries.plugins.refetch();
+
+      if (slug) {
+        void this.$router.push(`/plugins/${slug}`);
+      }
+    },
     // Two different questions behind one word. A panel plugin is installed when
     // the panel has a page for it; a game plugin when nodes have it on disk.
     isInstalled(plugin: Record<string, any>): boolean {

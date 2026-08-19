@@ -2,7 +2,14 @@
 import { computed } from "vue";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import { ShieldCheck, Puzzle, LayoutDashboard, Package, Check } from "lucide-vue-next";
+import {
+  ShieldCheck,
+  Puzzle,
+  LayoutDashboard,
+  Package,
+  Check,
+  Wrench,
+} from "lucide-vue-next";
 import { pluginAuthorUrl } from "~/utilities/pluginAuthor";
 
 const props = defineProps<{
@@ -84,6 +91,17 @@ const runtimeLabel = (runtime: string) =>
             <Badge v-if="plugin.verified" variant="outline" class="gap-1">
               <ShieldCheck class="h-3 w-3" />
               {{ $t("pages.plugins.verified") }}
+            </Badge>
+            <!-- Nobody reviewed this one and no registry publishes it, which is
+                 exactly what the operator needs to see before installing it on
+                 every node. -->
+            <Badge
+              v-if="plugin.source === 'custom'"
+              variant="outline"
+              class="gap-1"
+            >
+              <Wrench class="h-3 w-3" />
+              {{ $t("pages.plugins.custom.badge") }}
             </Badge>
           </div>
         </div>

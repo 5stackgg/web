@@ -36,6 +36,7 @@ import {
   Settings2,
   FolderOpen,
   Download,
+  Wrench,
 } from "lucide-vue-next";
 
 definePageMeta({
@@ -66,6 +67,14 @@ definePageMeta({
             <Badge v-if="plugin.verified" variant="outline" class="gap-1">
               <ShieldCheck class="h-3 w-3" />
               {{ $t("pages.plugins.verified") }}
+            </Badge>
+            <Badge
+              v-if="plugin.source === 'custom'"
+              variant="outline"
+              class="gap-1"
+            >
+              <Wrench class="h-3 w-3" />
+              {{ $t("pages.plugins.custom.badge") }}
             </Badge>
             <!-- Worth knowing before installing, not only once the toggle is
                  in front of you. -->
@@ -305,6 +314,28 @@ definePageMeta({
                       {{ $t("pages.plugins.uninstall") }}
                     </Button>
                   </template>
+
+                  <!-- Only an entry this deployment authored can be taken out of
+                       the catalog; a registry one would come back on the next
+                       sync. Removal waits until nothing is installed, so the
+                       files are gone from the nodes before the entry that
+                       describes them is. -->
+                  <template v-if="canRemoveFromCatalog">
+                    <Button
+                      variant="ghost"
+                      class="w-full text-destructive hover:text-destructive"
+                      :loading="removingFromCatalog"
+                      @click="removeFromCatalog()"
+                    >
+                      {{ $t("pages.plugins.custom.remove") }}
+                    </Button>
+                  </template>
+                  <p
+                    v-else-if="plugin.source === 'custom'"
+                    class="text-center text-xs text-muted-foreground"
+                  >
+                    {{ $t("pages.plugins.custom.remove_hint") }}
+                  </p>
                 </div>
 
                 <div
@@ -673,6 +704,7 @@ export default {
       savingAlwaysLoad: false,
       disableGuidelines: false,
       savingGuidelines: false,
+      removingFromCatalog: false,
       confirmRemove: false,
       modePlugins: [] as Array<Record<string, any>>,
       installedPages: [] as Array<Record<string, any>>,
@@ -777,6 +809,7 @@ export default {
             homepage: true,
             tags: true,
             verified: true,
+            source: true,
             hot_swappable: true,
             requires_service: true,
             requires_server_guidelines_disabled: true,
@@ -923,6 +956,31 @@ export default {
         toast({ title: (error as Error).message, variant: "destructive" });
       } finally {
         this.savingAlwaysLoad = false;
+      }
+    },
+    async removeFromCatalog() {
+      if (this.removingFromCatalog) {
+        return;
+      }
+
+      this.removingFromCatalog = true;
+
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            delete_game_plugins_by_pk: [
+              { slug: this.$route.params.slug as string },
+              { slug: true },
+            ],
+          }),
+        });
+
+        toast({ title: this.$t("pages.plugins.custom.removed") as string });
+        void this.$router.push("/plugins");
+      } catch (error) {
+        toast({ title: (error as Error).message, variant: "destructive" });
+      } finally {
+        this.removingFromCatalog = false;
       }
     },
     async setDisableGuidelines(value: boolean) {
@@ -1166,6 +1224,13 @@ export default {
             !entry.game_mode.archived_at,
         )
         .map((entry: Record<string, any>) => entry.game_mode);
+    },
+    canRemoveFromCatalog(): boolean {
+      return (
+        this.plugin?.source === "custom" &&
+        !this.isRequested &&
+        this.installedNodeCount === 0
+      );
     },
     isRequested(): boolean {
       return this.desired.some(

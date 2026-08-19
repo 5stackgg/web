@@ -13738,11 +13738,6 @@ count?: [{	columns?: Array<ValueTypes["game_mode_plugins_select_column"]> | unde
 	extra_game_params?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	/** An object relationship */
-	map_pool?:ValueTypes["map_pools"],
-	map_pool_id?:boolean | `@${string}`,
-match_option_defaults?: [{	/** JSON select path */
-	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 match_options?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_options_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -13789,10 +13784,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	min?:ValueTypes["game_modes_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["game_modes_append_input"]: {
-	match_option_defaults?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
-};
 	/** Boolean expression to filter rows from the table "game_modes". All fields are combined with a logical 'AND'. */
 ["game_modes_bool_exp"]: {
 	_and?: Array<ValueTypes["game_modes_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -13807,9 +13798,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	icon?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	map_pool?: ValueTypes["map_pools_bool_exp"] | undefined | null | Variable<any, string>,
-	map_pool_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	match_option_defaults?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_options?: ValueTypes["match_options_bool_exp"] | undefined | null | Variable<any, string>,
 	match_options_aggregate?: ValueTypes["match_options_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -13822,18 +13810,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 };
 	/** unique or primary key constraints on table "game_modes" */
 ["game_modes_constraint"]:game_modes_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["game_modes_delete_at_path_input"]: {
-	match_option_defaults?: Array<string> | undefined | null | Variable<any, string>
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["game_modes_delete_elem_input"]: {
-	match_option_defaults?: number | undefined | null | Variable<any, string>
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["game_modes_delete_key_input"]: {
-	match_option_defaults?: string | undefined | null | Variable<any, string>
-};
 	/** input type for inserting data into table "game_modes" */
 ["game_modes_insert_input"]: {
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -13845,9 +13821,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	map_pool?: ValueTypes["map_pools_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	match_option_defaults?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	match_options?: ValueTypes["match_options_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	plugins?: ValueTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -13863,7 +13836,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map_pool_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -13878,7 +13850,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map_pool_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -13915,9 +13886,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	icon?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map_pool?: ValueTypes["map_pools_order_by"] | undefined | null | Variable<any, string>,
-	map_pool_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	match_option_defaults?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_options_aggregate?: ValueTypes["match_options_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugins_aggregate?: ValueTypes["game_mode_plugins_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -13929,10 +13897,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
 	id: ValueTypes["uuid"] | Variable<any, string>
-};
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["game_modes_prepend_input"]: {
-	match_option_defaults?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
 };
 	/** select columns of table "game_modes" */
 ["game_modes_select_column"]:game_modes_select_column;
@@ -13947,8 +13911,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	match_option_defaults?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
@@ -13971,8 +13933,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	extra_game_params?: string | undefined | null | Variable<any, string>,
 	icon?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	match_option_defaults?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
@@ -13980,16 +13940,6 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	/** update columns of table "game_modes" */
 ["game_modes_update_column"]:game_modes_update_column;
 	["game_modes_updates"]: {
-	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ValueTypes["game_modes_append_input"] | undefined | null | Variable<any, string>,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ValueTypes["game_modes_delete_at_path_input"] | undefined | null | Variable<any, string>,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ValueTypes["game_modes_delete_elem_input"] | undefined | null | Variable<any, string>,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ValueTypes["game_modes_delete_key_input"] | undefined | null | Variable<any, string>,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ValueTypes["game_modes_prepend_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["game_modes_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
@@ -28998,20 +28948,10 @@ update_game_mode_plugins_by_pk?: [{	/** append existing jsonb value of filtered 
 	_set?: ValueTypes["game_mode_plugins_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["game_mode_plugins_pk_columns_input"] | Variable<any, string>},ValueTypes["game_mode_plugins"]],
 update_game_mode_plugins_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["game_mode_plugins_updates"]> | Variable<any, string>},ValueTypes["game_mode_plugins_mutation_response"]],
-update_game_modes?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ValueTypes["game_modes_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ValueTypes["game_modes_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ValueTypes["game_modes_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ValueTypes["game_modes_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ValueTypes["game_modes_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_game_modes?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["game_modes_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["game_modes_bool_exp"] | Variable<any, string>},ValueTypes["game_modes_mutation_response"]],
-update_game_modes_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ValueTypes["game_modes_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ValueTypes["game_modes_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ValueTypes["game_modes_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ValueTypes["game_modes_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ValueTypes["game_modes_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+update_game_modes_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["game_modes_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["game_modes_pk_columns_input"] | Variable<any, string>},ValueTypes["game_modes"]],
 update_game_modes_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["game_modes_updates"]> | Variable<any, string>},ValueTypes["game_modes_mutation_response"]],
@@ -82904,11 +82844,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_mode_plugins_select_column"]
 	extra_game_params?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	/** An object relationship */
-	map_pool?:ResolverInputTypes["map_pools"],
-	map_pool_id?:boolean | `@${string}`,
-match_option_defaults?: [{	/** JSON select path */
-	path?: string | undefined | null},boolean | `@${string}`],
 match_options?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_options_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -82955,10 +82890,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	min?:ResolverInputTypes["game_modes_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["game_modes_append_input"]: {
-	match_option_defaults?: ResolverInputTypes["jsonb"] | undefined | null
-};
 	/** Boolean expression to filter rows from the table "game_modes". All fields are combined with a logical 'AND'. */
 ["game_modes_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["game_modes_bool_exp"]> | undefined | null,
@@ -82973,9 +82904,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	icon?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	map_pool?: ResolverInputTypes["map_pools_bool_exp"] | undefined | null,
-	map_pool_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	match_option_defaults?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	match_options?: ResolverInputTypes["match_options_bool_exp"] | undefined | null,
 	match_options_aggregate?: ResolverInputTypes["match_options_aggregate_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -82988,18 +82916,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 };
 	/** unique or primary key constraints on table "game_modes" */
 ["game_modes_constraint"]:game_modes_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["game_modes_delete_at_path_input"]: {
-	match_option_defaults?: Array<string> | undefined | null
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["game_modes_delete_elem_input"]: {
-	match_option_defaults?: number | undefined | null
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["game_modes_delete_key_input"]: {
-	match_option_defaults?: string | undefined | null
-};
 	/** input type for inserting data into table "game_modes" */
 ["game_modes_insert_input"]: {
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -83011,9 +82927,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	map_pool?: ResolverInputTypes["map_pools_obj_rel_insert_input"] | undefined | null,
-	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
-	match_option_defaults?: ResolverInputTypes["jsonb"] | undefined | null,
 	match_options?: ResolverInputTypes["match_options_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	plugins?: ResolverInputTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
@@ -83029,7 +82942,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map_pool_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -83044,7 +82956,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?:boolean | `@${string}`,
 	icon?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map_pool_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
@@ -83081,9 +82992,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?: ResolverInputTypes["order_by"] | undefined | null,
 	icon?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	map_pool?: ResolverInputTypes["map_pools_order_by"] | undefined | null,
-	map_pool_id?: ResolverInputTypes["order_by"] | undefined | null,
-	match_option_defaults?: ResolverInputTypes["order_by"] | undefined | null,
 	match_options_aggregate?: ResolverInputTypes["match_options_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	plugins_aggregate?: ResolverInputTypes["game_mode_plugins_aggregate_order_by"] | undefined | null,
@@ -83095,10 +83003,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
 	id: ResolverInputTypes["uuid"]
-};
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["game_modes_prepend_input"]: {
-	match_option_defaults?: ResolverInputTypes["jsonb"] | undefined | null
 };
 	/** select columns of table "game_modes" */
 ["game_modes_select_column"]:game_modes_select_column;
@@ -83113,8 +83017,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
-	match_option_defaults?: ResolverInputTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
@@ -83137,8 +83039,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
-	match_option_defaults?: ResolverInputTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
@@ -83146,16 +83046,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	/** update columns of table "game_modes" */
 ["game_modes_update_column"]:game_modes_update_column;
 	["game_modes_updates"]: {
-	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ResolverInputTypes["game_modes_append_input"] | undefined | null,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ResolverInputTypes["game_modes_delete_at_path_input"] | undefined | null,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ResolverInputTypes["game_modes_delete_elem_input"] | undefined | null,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ResolverInputTypes["game_modes_delete_key_input"] | undefined | null,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ResolverInputTypes["game_modes_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["game_modes_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -98164,20 +98054,10 @@ update_game_mode_plugins_by_pk?: [{	/** append existing jsonb value of filtered 
 	_set?: ResolverInputTypes["game_mode_plugins_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["game_mode_plugins_pk_columns_input"]},ResolverInputTypes["game_mode_plugins"]],
 update_game_mode_plugins_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["game_mode_plugins_updates"]>},ResolverInputTypes["game_mode_plugins_mutation_response"]],
-update_game_modes?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ResolverInputTypes["game_modes_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ResolverInputTypes["game_modes_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ResolverInputTypes["game_modes_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ResolverInputTypes["game_modes_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ResolverInputTypes["game_modes_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_game_modes?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["game_modes_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["game_modes_bool_exp"]},ResolverInputTypes["game_modes_mutation_response"]],
-update_game_modes_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ResolverInputTypes["game_modes_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ResolverInputTypes["game_modes_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ResolverInputTypes["game_modes_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ResolverInputTypes["game_modes_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ResolverInputTypes["game_modes_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+update_game_modes_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["game_modes_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["game_modes_pk_columns_input"]},ResolverInputTypes["game_modes"]],
 update_game_modes_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["game_modes_updates"]>},ResolverInputTypes["game_modes_mutation_response"]],
@@ -150918,10 +150798,6 @@ export type ModelTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id: ModelTypes["uuid"],
-	/** An object relationship */
-	map_pool?: ModelTypes["map_pools"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid"] | undefined | null,
-	match_option_defaults: ModelTypes["jsonb"],
 	/** An array relationship */
 	match_options: Array<ModelTypes["match_options"]>,
 	/** An aggregate relationship */
@@ -150949,10 +150825,6 @@ export type ModelTypes = {
 	max?: ModelTypes["game_modes_max_fields"] | undefined | null,
 	min?: ModelTypes["game_modes_min_fields"] | undefined | null
 };
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["game_modes_append_input"]: {
-	match_option_defaults?: ModelTypes["jsonb"] | undefined | null
-};
 	/** Boolean expression to filter rows from the table "game_modes". All fields are combined with a logical 'AND'. */
 ["game_modes_bool_exp"]: {
 	_and?: Array<ModelTypes["game_modes_bool_exp"]> | undefined | null,
@@ -150967,9 +150839,6 @@ export type ModelTypes = {
 	extra_game_params?: ModelTypes["String_comparison_exp"] | undefined | null,
 	icon?: ModelTypes["String_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	map_pool?: ModelTypes["map_pools_bool_exp"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	match_option_defaults?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	match_options?: ModelTypes["match_options_bool_exp"] | undefined | null,
 	match_options_aggregate?: ModelTypes["match_options_aggregate_bool_exp"] | undefined | null,
 	name?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -150981,18 +150850,6 @@ export type ModelTypes = {
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
 };
 	["game_modes_constraint"]:game_modes_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["game_modes_delete_at_path_input"]: {
-	match_option_defaults?: Array<string> | undefined | null
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["game_modes_delete_elem_input"]: {
-	match_option_defaults?: number | undefined | null
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["game_modes_delete_key_input"]: {
-	match_option_defaults?: string | undefined | null
-};
 	/** input type for inserting data into table "game_modes" */
 ["game_modes_insert_input"]: {
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -151004,9 +150861,6 @@ export type ModelTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	map_pool?: ModelTypes["map_pools_obj_rel_insert_input"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid"] | undefined | null,
-	match_option_defaults?: ModelTypes["jsonb"] | undefined | null,
 	match_options?: ModelTypes["match_options_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	plugins?: ModelTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
@@ -151022,7 +150876,6 @@ export type ModelTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -151036,7 +150889,6 @@ export type ModelTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -151071,9 +150923,6 @@ export type ModelTypes = {
 	extra_game_params?: ModelTypes["order_by"] | undefined | null,
 	icon?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
-	map_pool?: ModelTypes["map_pools_order_by"] | undefined | null,
-	map_pool_id?: ModelTypes["order_by"] | undefined | null,
-	match_option_defaults?: ModelTypes["order_by"] | undefined | null,
 	match_options_aggregate?: ModelTypes["match_options_aggregate_order_by"] | undefined | null,
 	name?: ModelTypes["order_by"] | undefined | null,
 	plugins_aggregate?: ModelTypes["game_mode_plugins_aggregate_order_by"] | undefined | null,
@@ -151085,10 +150934,6 @@ export type ModelTypes = {
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
 	id: ModelTypes["uuid"]
-};
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["game_modes_prepend_input"]: {
-	match_option_defaults?: ModelTypes["jsonb"] | undefined | null
 };
 	["game_modes_select_column"]:game_modes_select_column;
 	/** input type for updating data in table "game_modes" */
@@ -151102,8 +150947,6 @@ export type ModelTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid"] | undefined | null,
-	match_option_defaults?: ModelTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
@@ -151126,24 +150969,12 @@ export type ModelTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	map_pool_id?: ModelTypes["uuid"] | undefined | null,
-	match_option_defaults?: ModelTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null
 };
 	["game_modes_update_column"]:game_modes_update_column;
 	["game_modes_updates"]: {
-	/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: ModelTypes["game_modes_append_input"] | undefined | null,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: ModelTypes["game_modes_delete_at_path_input"] | undefined | null,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: ModelTypes["game_modes_delete_elem_input"] | undefined | null,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: ModelTypes["game_modes_delete_key_input"] | undefined | null,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: ModelTypes["game_modes_prepend_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["game_modes_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
@@ -212567,10 +212398,6 @@ export type GraphQLTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id: GraphQLTypes["uuid"],
-	/** An object relationship */
-	map_pool?: GraphQLTypes["map_pools"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid"] | undefined | null,
-	match_option_defaults: GraphQLTypes["jsonb"],
 	/** An array relationship */
 	match_options: Array<GraphQLTypes["match_options"]>,
 	/** An aggregate relationship */
@@ -212600,10 +212427,6 @@ export type GraphQLTypes = {
 	max?: GraphQLTypes["game_modes_max_fields"] | undefined | null,
 	min?: GraphQLTypes["game_modes_min_fields"] | undefined | null
 };
-	/** append existing jsonb value of filtered columns with new jsonb value */
-["game_modes_append_input"]: {
-		match_option_defaults?: GraphQLTypes["jsonb"] | undefined | null
-};
 	/** Boolean expression to filter rows from the table "game_modes". All fields are combined with a logical 'AND'. */
 ["game_modes_bool_exp"]: {
 		_and?: Array<GraphQLTypes["game_modes_bool_exp"]> | undefined | null,
@@ -212618,9 +212441,6 @@ export type GraphQLTypes = {
 	extra_game_params?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	icon?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	map_pool?: GraphQLTypes["map_pools_bool_exp"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	match_option_defaults?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	match_options?: GraphQLTypes["match_options_bool_exp"] | undefined | null,
 	match_options_aggregate?: GraphQLTypes["match_options_aggregate_bool_exp"] | undefined | null,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -212633,18 +212453,6 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "game_modes" */
 ["game_modes_constraint"]: game_modes_constraint;
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-["game_modes_delete_at_path_input"]: {
-		match_option_defaults?: Array<string> | undefined | null
-};
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-["game_modes_delete_elem_input"]: {
-		match_option_defaults?: number | undefined | null
-};
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-["game_modes_delete_key_input"]: {
-		match_option_defaults?: string | undefined | null
-};
 	/** input type for inserting data into table "game_modes" */
 ["game_modes_insert_input"]: {
 		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -212656,9 +212464,6 @@ export type GraphQLTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	map_pool?: GraphQLTypes["map_pools_obj_rel_insert_input"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid"] | undefined | null,
-	match_option_defaults?: GraphQLTypes["jsonb"] | undefined | null,
 	match_options?: GraphQLTypes["match_options_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	plugins?: GraphQLTypes["game_mode_plugins_arr_rel_insert_input"] | undefined | null,
@@ -212675,7 +212480,6 @@ export type GraphQLTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -212690,7 +212494,6 @@ export type GraphQLTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -212726,9 +212529,6 @@ export type GraphQLTypes = {
 	extra_game_params?: GraphQLTypes["order_by"] | undefined | null,
 	icon?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
-	map_pool?: GraphQLTypes["map_pools_order_by"] | undefined | null,
-	map_pool_id?: GraphQLTypes["order_by"] | undefined | null,
-	match_option_defaults?: GraphQLTypes["order_by"] | undefined | null,
 	match_options_aggregate?: GraphQLTypes["match_options_aggregate_order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	plugins_aggregate?: GraphQLTypes["game_mode_plugins_aggregate_order_by"] | undefined | null,
@@ -212740,10 +212540,6 @@ export type GraphQLTypes = {
 	/** primary key columns input for table: game_modes */
 ["game_modes_pk_columns_input"]: {
 		id: GraphQLTypes["uuid"]
-};
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-["game_modes_prepend_input"]: {
-		match_option_defaults?: GraphQLTypes["jsonb"] | undefined | null
 };
 	/** select columns of table "game_modes" */
 ["game_modes_select_column"]: game_modes_select_column;
@@ -212758,8 +212554,6 @@ export type GraphQLTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid"] | undefined | null,
-	match_option_defaults?: GraphQLTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -212782,8 +212576,6 @@ export type GraphQLTypes = {
 	extra_game_params?: string | undefined | null,
 	icon?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	map_pool_id?: GraphQLTypes["uuid"] | undefined | null,
-	match_option_defaults?: GraphQLTypes["jsonb"] | undefined | null,
 	name?: string | undefined | null,
 	slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
@@ -212791,17 +212583,7 @@ export type GraphQLTypes = {
 	/** update columns of table "game_modes" */
 ["game_modes_update_column"]: game_modes_update_column;
 	["game_modes_updates"]: {
-		/** append existing jsonb value of filtered columns with new jsonb value */
-	_append?: GraphQLTypes["game_modes_append_input"] | undefined | null,
-	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-	_delete_at_path?: GraphQLTypes["game_modes_delete_at_path_input"] | undefined | null,
-	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-	_delete_elem?: GraphQLTypes["game_modes_delete_elem_input"] | undefined | null,
-	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-	_delete_key?: GraphQLTypes["game_modes_delete_key_input"] | undefined | null,
-	/** prepend existing jsonb value of filtered columns with new jsonb value */
-	_prepend?: GraphQLTypes["game_modes_prepend_input"] | undefined | null,
-	/** sets the columns of the filtered rows to the given values */
+		/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["game_modes_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["game_modes_bool_exp"]
@@ -265434,8 +265216,6 @@ export enum game_modes_select_column {
 	extra_game_params = "extra_game_params",
 	icon = "icon",
 	id = "id",
-	map_pool_id = "map_pool_id",
-	match_option_defaults = "match_option_defaults",
 	name = "name",
 	slug = "slug",
 	updated_at = "updated_at"
@@ -265451,8 +265231,6 @@ export enum game_modes_update_column {
 	extra_game_params = "extra_game_params",
 	icon = "icon",
 	id = "id",
-	map_pool_id = "map_pool_id",
-	match_option_defaults = "match_option_defaults",
 	name = "name",
 	slug = "slug",
 	updated_at = "updated_at"
@@ -271008,18 +270786,13 @@ type ZEUS_VARIABLES = {
 	["game_mode_plugins_var_pop_order_by"]: ValueTypes["game_mode_plugins_var_pop_order_by"];
 	["game_mode_plugins_var_samp_order_by"]: ValueTypes["game_mode_plugins_var_samp_order_by"];
 	["game_mode_plugins_variance_order_by"]: ValueTypes["game_mode_plugins_variance_order_by"];
-	["game_modes_append_input"]: ValueTypes["game_modes_append_input"];
 	["game_modes_bool_exp"]: ValueTypes["game_modes_bool_exp"];
 	["game_modes_constraint"]: ValueTypes["game_modes_constraint"];
-	["game_modes_delete_at_path_input"]: ValueTypes["game_modes_delete_at_path_input"];
-	["game_modes_delete_elem_input"]: ValueTypes["game_modes_delete_elem_input"];
-	["game_modes_delete_key_input"]: ValueTypes["game_modes_delete_key_input"];
 	["game_modes_insert_input"]: ValueTypes["game_modes_insert_input"];
 	["game_modes_obj_rel_insert_input"]: ValueTypes["game_modes_obj_rel_insert_input"];
 	["game_modes_on_conflict"]: ValueTypes["game_modes_on_conflict"];
 	["game_modes_order_by"]: ValueTypes["game_modes_order_by"];
 	["game_modes_pk_columns_input"]: ValueTypes["game_modes_pk_columns_input"];
-	["game_modes_prepend_input"]: ValueTypes["game_modes_prepend_input"];
 	["game_modes_select_column"]: ValueTypes["game_modes_select_column"];
 	["game_modes_set_input"]: ValueTypes["game_modes_set_input"];
 	["game_modes_stream_cursor_input"]: ValueTypes["game_modes_stream_cursor_input"];

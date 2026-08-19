@@ -6031,9 +6031,6 @@ export const AllTypesProps: Record<string,any> = {
 		load_order:"order_by"
 	},
 	game_modes:{
-		match_option_defaults:{
-
-		},
 		match_options:{
 			distinct_on:"match_options_select_column",
 			order_by:"match_options_order_by",
@@ -6066,9 +6063,6 @@ export const AllTypesProps: Record<string,any> = {
 			columns:"game_modes_select_column"
 		}
 	},
-	game_modes_append_input:{
-		match_option_defaults:"jsonb"
-	},
 	game_modes_bool_exp:{
 		_and:"game_modes_bool_exp",
 		_not:"game_modes_bool_exp",
@@ -6082,9 +6076,6 @@ export const AllTypesProps: Record<string,any> = {
 		extra_game_params:"String_comparison_exp",
 		icon:"String_comparison_exp",
 		id:"uuid_comparison_exp",
-		map_pool:"map_pools_bool_exp",
-		map_pool_id:"uuid_comparison_exp",
-		match_option_defaults:"jsonb_comparison_exp",
 		match_options:"match_options_bool_exp",
 		match_options_aggregate:"match_options_aggregate_bool_exp",
 		name:"String_comparison_exp",
@@ -6096,22 +6087,10 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz_comparison_exp"
 	},
 	game_modes_constraint: "enum" as const,
-	game_modes_delete_at_path_input:{
-
-	},
-	game_modes_delete_elem_input:{
-
-	},
-	game_modes_delete_key_input:{
-
-	},
 	game_modes_insert_input:{
 		archived_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		map_pool:"map_pools_obj_rel_insert_input",
-		map_pool_id:"uuid",
-		match_option_defaults:"jsonb",
 		match_options:"match_options_arr_rel_insert_input",
 		plugins:"game_mode_plugins_arr_rel_insert_input",
 		updated_at:"timestamptz"
@@ -6135,9 +6114,6 @@ export const AllTypesProps: Record<string,any> = {
 		extra_game_params:"order_by",
 		icon:"order_by",
 		id:"order_by",
-		map_pool:"map_pools_order_by",
-		map_pool_id:"order_by",
-		match_option_defaults:"order_by",
 		match_options_aggregate:"match_options_aggregate_order_by",
 		name:"order_by",
 		plugins_aggregate:"game_mode_plugins_aggregate_order_by",
@@ -6149,16 +6125,11 @@ export const AllTypesProps: Record<string,any> = {
 	game_modes_pk_columns_input:{
 		id:"uuid"
 	},
-	game_modes_prepend_input:{
-		match_option_defaults:"jsonb"
-	},
 	game_modes_select_column: "enum" as const,
 	game_modes_set_input:{
 		archived_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		map_pool_id:"uuid",
-		match_option_defaults:"jsonb",
 		updated_at:"timestamptz"
 	},
 	game_modes_stream_cursor_input:{
@@ -6169,17 +6140,10 @@ export const AllTypesProps: Record<string,any> = {
 		archived_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		map_pool_id:"uuid",
-		match_option_defaults:"jsonb",
 		updated_at:"timestamptz"
 	},
 	game_modes_update_column: "enum" as const,
 	game_modes_updates:{
-		_append:"game_modes_append_input",
-		_delete_at_path:"game_modes_delete_at_path_input",
-		_delete_elem:"game_modes_delete_elem_input",
-		_delete_key:"game_modes_delete_key_input",
-		_prepend:"game_modes_prepend_input",
 		_set:"game_modes_set_input",
 		where:"game_modes_bool_exp"
 	},
@@ -16476,20 +16440,10 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"game_mode_plugins_updates"
 		},
 		update_game_modes:{
-			_append:"game_modes_append_input",
-			_delete_at_path:"game_modes_delete_at_path_input",
-			_delete_elem:"game_modes_delete_elem_input",
-			_delete_key:"game_modes_delete_key_input",
-			_prepend:"game_modes_prepend_input",
 			_set:"game_modes_set_input",
 			where:"game_modes_bool_exp"
 		},
 		update_game_modes_by_pk:{
-			_append:"game_modes_append_input",
-			_delete_at_path:"game_modes_delete_at_path_input",
-			_delete_elem:"game_modes_delete_elem_input",
-			_delete_key:"game_modes_delete_key_input",
-			_prepend:"game_modes_prepend_input",
 			_set:"game_modes_set_input",
 			pk_columns:"game_modes_pk_columns_input"
 		},
@@ -43167,9 +43121,6 @@ export const ReturnTypes: Record<string,any> = {
 		extra_game_params:"String",
 		icon:"String",
 		id:"uuid",
-		map_pool:"map_pools",
-		map_pool_id:"uuid",
-		match_option_defaults:"jsonb",
 		match_options:"match_options",
 		match_options_aggregate:"match_options_aggregate",
 		name:"String",
@@ -43197,7 +43148,6 @@ export const ReturnTypes: Record<string,any> = {
 		extra_game_params:"String",
 		icon:"String",
 		id:"uuid",
-		map_pool_id:"uuid",
 		name:"String",
 		slug:"String",
 		updated_at:"timestamptz"
@@ -43210,7 +43160,6 @@ export const ReturnTypes: Record<string,any> = {
 		extra_game_params:"String",
 		icon:"String",
 		id:"uuid",
-		map_pool_id:"uuid",
 		name:"String",
 		slug:"String",
 		updated_at:"timestamptz"

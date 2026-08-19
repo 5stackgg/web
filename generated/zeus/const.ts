@@ -6440,6 +6440,7 @@ export const AllTypesProps: Record<string,any> = {
 		requires_server_guidelines_disabled:"Boolean_comparison_exp",
 		requires_service:"String_comparison_exp",
 		slug:"String_comparison_exp",
+		source:"String_comparison_exp",
 		synced_at:"timestamptz_comparison_exp",
 		tags:"String_array_comparison_exp",
 		target_node_count:"Int_comparison_exp",
@@ -6496,6 +6497,7 @@ export const AllTypesProps: Record<string,any> = {
 		requires_server_guidelines_disabled:"order_by",
 		requires_service:"order_by",
 		slug:"order_by",
+		source:"order_by",
 		synced_at:"order_by",
 		tags:"order_by",
 		target_node_count:"order_by",
@@ -12812,6 +12814,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		acceptInvite:{
 			invite_id:"uuid"
+		},
+		addCustomGamePlugin:{
+
 		},
 		addDraftPlayer:{
 			draftGameId:"uuid"
@@ -39355,6 +39360,12 @@ export const ReturnTypes: Record<string,any> = {
 		wait_event:"String",
 		wait_event_type:"String"
 	},
+	AddCustomGamePluginOutput:{
+		name:"String",
+		runtime:"String",
+		slug:"String",
+		version:"String"
+	},
 	ApiKeyResponse:{
 		key:"String"
 	},
@@ -43307,6 +43318,7 @@ export const ReturnTypes: Record<string,any> = {
 		requires_server_guidelines_disabled:"Boolean",
 		requires_service:"String",
 		slug:"String",
+		source:"String",
 		synced_at:"timestamptz",
 		tags:"String",
 		target_node_count:"Int",
@@ -43348,6 +43360,7 @@ export const ReturnTypes: Record<string,any> = {
 		pairs_with:"String",
 		requires_service:"String",
 		slug:"String",
+		source:"String",
 		synced_at:"timestamptz",
 		tags:"String",
 		target_node_count:"Int"
@@ -43364,6 +43377,7 @@ export const ReturnTypes: Record<string,any> = {
 		pairs_with:"String",
 		requires_service:"String",
 		slug:"String",
+		source:"String",
 		synced_at:"timestamptz",
 		tags:"String",
 		target_node_count:"Int"
@@ -46569,6 +46583,7 @@ export const ReturnTypes: Record<string,any> = {
 		PreviewTournamentMatchReset:"PreviewTournamentMatchResetOutput",
 		ResetTournamentMatch:"SuccessOutput",
 		acceptInvite:"SuccessOutput",
+		addCustomGamePlugin:"AddCustomGamePluginOutput",
 		addDraftPlayer:"SuccessOutput",
 		addSteamPresenceBotAccount:"SuccessOutput",
 		approveNameChange:"SuccessOutput",

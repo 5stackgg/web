@@ -937,6 +937,13 @@ export type ValueTypes = {
 	wait_event_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["AddCustomGamePluginOutput"]: AliasType<{
+	name?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["ApiKeyResponse"]: AliasType<{
 	key?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -14450,6 +14457,7 @@ panel?: [{	/** JSON select path */
 	requires_server_guidelines_disabled?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
 	synced_at?:boolean | `@${string}`,
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -14531,6 +14539,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	requires_server_guidelines_disabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	requires_service?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	synced_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	tags?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
 	target_node_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -14577,6 +14586,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	requires_server_guidelines_disabled?: boolean | undefined | null | Variable<any, string>,
 	requires_service?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
 	synced_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	tags?: Array<string> | undefined | null | Variable<any, string>,
 	verified?: boolean | undefined | null | Variable<any, string>,
@@ -14598,6 +14608,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	pairs_with?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
 	synced_at?:boolean | `@${string}`,
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -14619,6 +14630,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	pairs_with?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
 	synced_at?:boolean | `@${string}`,
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -14665,6 +14677,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	requires_server_guidelines_disabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	requires_service?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	synced_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tags?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	target_node_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -14700,6 +14713,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	requires_server_guidelines_disabled?: boolean | undefined | null | Variable<any, string>,
 	requires_service?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
 	synced_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	tags?: Array<string> | undefined | null | Variable<any, string>,
 	verified?: boolean | undefined | null | Variable<any, string>,
@@ -14752,6 +14766,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	requires_server_guidelines_disabled?: boolean | undefined | null | Variable<any, string>,
 	requires_service?: string | undefined | null | Variable<any, string>,
 	slug?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
 	synced_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	tags?: Array<string> | undefined | null | Variable<any, string>,
 	verified?: boolean | undefined | null | Variable<any, string>,
@@ -26666,6 +26681,7 @@ count?: [{	columns?: Array<ValueTypes["migration_hashes_hashes_select_column"]> 
 PreviewTournamentMatchReset?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["PreviewTournamentMatchResetOutput"]],
 ResetTournamentMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	reset_status?: string | undefined | null | Variable<any, string>,	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 acceptInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+addCustomGamePlugin?: [{	description?: string | undefined | null | Variable<any, string>,	installPath?: string | undefined | null | Variable<any, string>,	layout?: string | undefined | null | Variable<any, string>,	name?: string | undefined | null | Variable<any, string>,	runtime: string | Variable<any, string>,	slug?: string | undefined | null | Variable<any, string>,	url: string | Variable<any, string>,	version?: string | undefined | null | Variable<any, string>},ValueTypes["AddCustomGamePluginOutput"]],
 addDraftPlayer?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	lineup?: number | undefined | null | Variable<any, string>,	steamId: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 addSteamPresenceBotAccount?: [{	bot_secret: string | Variable<any, string>,	friend_capacity?: number | undefined | null | Variable<any, string>,	username: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 approveNameChange?: [{	name: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -70055,6 +70071,13 @@ export type ResolverInputTypes = {
 	wait_event_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["AddCustomGamePluginOutput"]: AliasType<{
+	name?:boolean | `@${string}`,
+	runtime?:boolean | `@${string}`,
+	slug?:boolean | `@${string}`,
+	version?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["ApiKeyResponse"]: AliasType<{
 	key?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -83568,6 +83591,7 @@ panel?: [{	/** JSON select path */
 	requires_server_guidelines_disabled?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
 	synced_at?:boolean | `@${string}`,
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -83649,6 +83673,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	requires_server_guidelines_disabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	requires_service?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	source?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	synced_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	tags?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
 	target_node_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -83695,6 +83720,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -83716,6 +83742,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	pairs_with?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
 	synced_at?:boolean | `@${string}`,
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -83737,6 +83764,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	pairs_with?:boolean | `@${string}`,
 	requires_service?:boolean | `@${string}`,
 	slug?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
 	synced_at?:boolean | `@${string}`,
 	tags?:boolean | `@${string}`,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -83783,6 +83811,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	requires_server_guidelines_disabled?: ResolverInputTypes["order_by"] | undefined | null,
 	requires_service?: ResolverInputTypes["order_by"] | undefined | null,
 	slug?: ResolverInputTypes["order_by"] | undefined | null,
+	source?: ResolverInputTypes["order_by"] | undefined | null,
 	synced_at?: ResolverInputTypes["order_by"] | undefined | null,
 	tags?: ResolverInputTypes["order_by"] | undefined | null,
 	target_node_count?: ResolverInputTypes["order_by"] | undefined | null,
@@ -83818,6 +83847,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -83870,6 +83900,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -95784,6 +95815,7 @@ count?: [{	columns?: Array<ResolverInputTypes["migration_hashes_hashes_select_co
 PreviewTournamentMatchReset?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["PreviewTournamentMatchResetOutput"]],
 ResetTournamentMatch?: [{	match_id: ResolverInputTypes["uuid"],	reset_status?: string | undefined | null,	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 acceptInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverInputTypes["SuccessOutput"]],
+addCustomGamePlugin?: [{	description?: string | undefined | null,	installPath?: string | undefined | null,	layout?: string | undefined | null,	name?: string | undefined | null,	runtime: string,	slug?: string | undefined | null,	url: string,	version?: string | undefined | null},ResolverInputTypes["AddCustomGamePluginOutput"]],
 addDraftPlayer?: [{	draftGameId: ResolverInputTypes["uuid"],	lineup?: number | undefined | null,	steamId: string},ResolverInputTypes["SuccessOutput"]],
 addSteamPresenceBotAccount?: [{	bot_secret: string,	friend_capacity?: number | undefined | null,	username: string},ResolverInputTypes["SuccessOutput"]],
 approveNameChange?: [{	name: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["SuccessOutput"]],
@@ -139170,6 +139202,12 @@ export type ModelTypes = {
 	wait_event?: string | undefined | null,
 	wait_event_type?: string | undefined | null
 };
+	["AddCustomGamePluginOutput"]: {
+		name: string,
+	runtime: string,
+	slug: string,
+	version: string
+};
 	["ApiKeyResponse"]: {
 		key: string
 };
@@ -151463,6 +151501,7 @@ export type ModelTypes = {
 	requires_server_guidelines_disabled: boolean,
 	requires_service?: string | undefined | null,
 	slug: string,
+	source: string,
 	synced_at: ModelTypes["timestamptz"],
 	tags: Array<string>,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -151531,6 +151570,7 @@ export type ModelTypes = {
 	requires_server_guidelines_disabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	requires_service?: ModelTypes["String_comparison_exp"] | undefined | null,
 	slug?: ModelTypes["String_comparison_exp"] | undefined | null,
+	source?: ModelTypes["String_comparison_exp"] | undefined | null,
 	synced_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	tags?: ModelTypes["String_array_comparison_exp"] | undefined | null,
 	target_node_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -151576,6 +151616,7 @@ export type ModelTypes = {
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -151597,6 +151638,7 @@ export type ModelTypes = {
 	pairs_with?: Array<string> | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -151617,6 +151659,7 @@ export type ModelTypes = {
 	pairs_with?: Array<string> | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -151661,6 +151704,7 @@ export type ModelTypes = {
 	requires_server_guidelines_disabled?: ModelTypes["order_by"] | undefined | null,
 	requires_service?: ModelTypes["order_by"] | undefined | null,
 	slug?: ModelTypes["order_by"] | undefined | null,
+	source?: ModelTypes["order_by"] | undefined | null,
 	synced_at?: ModelTypes["order_by"] | undefined | null,
 	tags?: ModelTypes["order_by"] | undefined | null,
 	target_node_count?: ModelTypes["order_by"] | undefined | null,
@@ -151695,6 +151739,7 @@ export type ModelTypes = {
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -151744,6 +151789,7 @@ export type ModelTypes = {
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: ModelTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -162680,6 +162726,8 @@ export type ModelTypes = {
 	ResetTournamentMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** accept team invite */
 	acceptInvite?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Add a game plugin the registry does not carry, from a release URL */
+	addCustomGamePlugin?: ModelTypes["AddCustomGamePluginOutput"] | undefined | null,
 	/** addDraftPlayer */
 	addDraftPlayer?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Add a friends-role presence bot account to the pool */
@@ -199868,6 +199916,13 @@ export type GraphQLTypes = {
 	wait_event?: string | undefined | null,
 	wait_event_type?: string | undefined | null
 };
+	["AddCustomGamePluginOutput"]: {
+	__typename: "AddCustomGamePluginOutput",
+	name: string,
+	runtime: string,
+	slug: string,
+	version: string
+};
 	["ApiKeyResponse"]: {
 	__typename: "ApiKeyResponse",
 	key: string
@@ -213112,6 +213167,7 @@ export type GraphQLTypes = {
 	requires_server_guidelines_disabled: boolean,
 	requires_service?: string | undefined | null,
 	slug: string,
+	source: string,
 	synced_at: GraphQLTypes["timestamptz"],
 	tags: Array<string>,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -213183,6 +213239,7 @@ export type GraphQLTypes = {
 	requires_server_guidelines_disabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	requires_service?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	source?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	synced_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	tags?: GraphQLTypes["String_array_comparison_exp"] | undefined | null,
 	target_node_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -213229,6 +213286,7 @@ export type GraphQLTypes = {
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -213251,6 +213309,7 @@ export type GraphQLTypes = {
 	pairs_with?: Array<string> | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -213272,6 +213331,7 @@ export type GraphQLTypes = {
 	pairs_with?: Array<string> | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	/** A computed field, executes function "game_plugin_target_node_count" */
@@ -213317,6 +213377,7 @@ export type GraphQLTypes = {
 	requires_server_guidelines_disabled?: GraphQLTypes["order_by"] | undefined | null,
 	requires_service?: GraphQLTypes["order_by"] | undefined | null,
 	slug?: GraphQLTypes["order_by"] | undefined | null,
+	source?: GraphQLTypes["order_by"] | undefined | null,
 	synced_at?: GraphQLTypes["order_by"] | undefined | null,
 	tags?: GraphQLTypes["order_by"] | undefined | null,
 	target_node_count?: GraphQLTypes["order_by"] | undefined | null,
@@ -213352,6 +213413,7 @@ export type GraphQLTypes = {
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -213404,6 +213466,7 @@ export type GraphQLTypes = {
 	requires_server_guidelines_disabled?: boolean | undefined | null,
 	requires_service?: string | undefined | null,
 	slug?: string | undefined | null,
+	source?: string | undefined | null,
 	synced_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	tags?: Array<string> | undefined | null,
 	verified?: boolean | undefined | null,
@@ -224847,6 +224910,8 @@ export type GraphQLTypes = {
 	ResetTournamentMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** accept team invite */
 	acceptInvite?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Add a game plugin the registry does not carry, from a release URL */
+	addCustomGamePlugin?: GraphQLTypes["AddCustomGamePluginOutput"] | undefined | null,
 	/** addDraftPlayer */
 	addDraftPlayer?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Add a friends-role presence bot account to the pool */
@@ -265367,6 +265432,7 @@ export enum game_plugins_select_column {
 	requires_server_guidelines_disabled = "requires_server_guidelines_disabled",
 	requires_service = "requires_service",
 	slug = "slug",
+	source = "source",
 	synced_at = "synced_at",
 	tags = "tags",
 	verified = "verified",
@@ -265388,6 +265454,7 @@ export enum game_plugins_update_column {
 	requires_server_guidelines_disabled = "requires_server_guidelines_disabled",
 	requires_service = "requires_service",
 	slug = "slug",
+	source = "source",
 	synced_at = "synced_at",
 	tags = "tags",
 	verified = "verified",

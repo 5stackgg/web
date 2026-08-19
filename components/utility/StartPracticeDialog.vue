@@ -100,7 +100,13 @@ const collectionId = ref<string>(NO_COLLECTION);
 const playbookChoice = ref<string>(NO_PLAYBOOK);
 const isOpen = ref(true);
 const practiceServers = ref<
-  Array<{ id: string; label: string; region: string }>
+  Array<{
+    id: string;
+    label: string;
+    region: string;
+    in_use: boolean;
+    held_by: string | null;
+  }>
 >([]);
 const practiceServersError = ref<string | null>(null);
 const collections = ref<UtilityCollection[]>([]);
@@ -551,9 +557,22 @@ const connectServer = computed(() => ({
                   v-for="entry of practiceServers"
                   :key="entry.id"
                   :value="`${SERVER_PREFIX}${entry.id}`"
+                  :disabled="entry.in_use"
                 >
                   {{ entry.label }}
-                  <span class="text-muted-foreground">({{ entry.region }})</span>
+                  <span class="text-muted-foreground">
+                    ({{ entry.region }})
+                  </span>
+                  <span v-if="entry.in_use" class="text-muted-foreground">
+                    &mdash;
+                    {{
+                      entry.held_by
+                        ? $t("pages.utility.practice.server_held_by", {
+                            name: entry.held_by,
+                          })
+                        : $t("pages.utility.practice.server_in_use")
+                    }}
+                  </span>
                 </SelectItem>
               </SelectGroup>
               <SelectGroup>

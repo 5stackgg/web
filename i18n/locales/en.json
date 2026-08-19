@@ -4006,6 +4006,8 @@
         "any_region": "Any region",
         "dedicated_servers": "Practice Servers",
         "servers_unavailable": "Could not load practice servers: {error}",
+        "server_in_use": "in use",
+        "server_held_by": "in use by {name}",
         "collection": "Load a collection",
         "no_collection": "None",
         "open_session": "Open session",

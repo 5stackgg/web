@@ -1092,6 +1092,8 @@ export const utilityPracticeServersQuery = generateQuery({
       id: true,
       label: true,
       region: true,
+      in_use: true,
+      held_by: true,
     },
   },
 });

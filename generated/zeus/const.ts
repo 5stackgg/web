@@ -9451,11 +9451,11 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"maps_on_conflict"
 	},
 	maps_bool_exp:{
-		deleted_at:"timestamptz_comparison_exp",
 		_and:"maps_bool_exp",
 		_not:"maps_bool_exp",
 		_or:"maps_bool_exp",
 		active_pool:"Boolean_comparison_exp",
+		deleted_at:"timestamptz_comparison_exp",
 		e_match_type:"e_match_types_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -9507,8 +9507,8 @@ export const AllTypesProps: Record<string,any> = {
 		where:"maps_bool_exp"
 	},
 	maps_order_by:{
-		deleted_at:"order_by",
 		active_pool:"order_by",
+		deleted_at:"order_by",
 		e_match_type:"e_match_types_order_by",
 		enabled:"order_by",
 		id:"order_by",
@@ -45019,8 +45019,8 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"map_pools"
 	},
 	maps:{
-		deleted_at:"timestamptz",
 		active_pool:"Boolean",
+		deleted_at:"timestamptz",
 		e_match_type:"e_match_types",
 		enabled:"Boolean",
 		id:"uuid",

@@ -20464,8 +20464,8 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 };
 	/** columns and relationships of "maps" */
 ["maps"]: AliasType<{
-	deleted_at?:boolean | `@${string}`,
 	active_pool?:boolean | `@${string}`,
+	deleted_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_type?:ValueTypes["e_match_types"],
 	enabled?:boolean | `@${string}`,
@@ -20552,11 +20552,11 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 };
 	/** Boolean expression to filter rows from the table "maps". All fields are combined with a logical 'AND'. */
 ["maps_bool_exp"]: {
-	deleted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	_and?: Array<ValueTypes["maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	active_pool?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -20575,8 +20575,8 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 ["maps_constraint"]:maps_constraint;
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
-	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -20653,8 +20653,8 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 };
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
-	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	active_pool?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20679,8 +20679,8 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 ["maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns"]:maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
-	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
@@ -20699,8 +20699,8 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 };
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
-	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
@@ -89608,8 +89608,8 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 };
 	/** columns and relationships of "maps" */
 ["maps"]: AliasType<{
-	deleted_at?:boolean | `@${string}`,
 	active_pool?:boolean | `@${string}`,
+	deleted_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_type?:ResolverInputTypes["e_match_types"],
 	enabled?:boolean | `@${string}`,
@@ -89696,11 +89696,11 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 };
 	/** Boolean expression to filter rows from the table "maps". All fields are combined with a logical 'AND'. */
 ["maps_bool_exp"]: {
-	deleted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	_and?: Array<ResolverInputTypes["maps_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -89719,8 +89719,8 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 ["maps_constraint"]:maps_constraint;
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
-	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -89797,8 +89797,8 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 };
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
-	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	active_pool?: ResolverInputTypes["order_by"] | undefined | null,
+	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -89823,8 +89823,8 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 ["maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns"]:maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
-	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -89843,8 +89843,8 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 };
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
-	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -157081,8 +157081,8 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "maps" */
 ["maps"]: {
-	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 		active_pool: boolean,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	e_match_type: ModelTypes["e_match_types"],
 	enabled: boolean,
@@ -157150,11 +157150,11 @@ export type ModelTypes = {
 };
 	/** Boolean expression to filter rows from the table "maps". All fields are combined with a logical 'AND'. */
 ["maps_bool_exp"]: {
-	deleted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	_and?: Array<ModelTypes["maps_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["maps_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	deleted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_match_type?: ModelTypes["e_match_types_bool_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -157172,8 +157172,8 @@ export type ModelTypes = {
 	["maps_constraint"]:maps_constraint;
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
-	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	e_match_type?: ModelTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -157188,8 +157188,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: {
-	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
-		id?: ModelTypes["uuid"] | undefined | null,
+		deleted_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
@@ -157208,8 +157208,8 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: {
-	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
-		id?: ModelTypes["uuid"] | undefined | null,
+		deleted_at?: ModelTypes["timestamptz"] | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
@@ -157247,8 +157247,8 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
-	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	active_pool?: ModelTypes["order_by"] | undefined | null,
+	deleted_at?: ModelTypes["order_by"] | undefined | null,
 	e_match_type?: ModelTypes["e_match_types_order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
@@ -157270,8 +157270,8 @@ export type ModelTypes = {
 	["maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns"]:maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
-	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -157290,8 +157290,8 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
-	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	active_pool?: boolean | undefined | null,
+	deleted_at?: ModelTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -219044,8 +219044,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "maps" */
 ["maps"]: {
 	__typename: "maps",
-	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	active_pool: boolean,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	e_match_type: GraphQLTypes["e_match_types"],
 	enabled: boolean,
@@ -219115,11 +219115,11 @@ export type GraphQLTypes = {
 };
 	/** Boolean expression to filter rows from the table "maps". All fields are combined with a logical 'AND'. */
 ["maps_bool_exp"]: {
-	deleted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 		_and?: Array<GraphQLTypes["maps_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["maps_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_match_type?: GraphQLTypes["e_match_types_bool_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -219138,8 +219138,8 @@ export type GraphQLTypes = {
 ["maps_constraint"]: maps_constraint;
 	/** input type for inserting data into table "maps" */
 ["maps_insert_input"]: {
-	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 		active_pool?: boolean | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	e_match_type?: GraphQLTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -219165,8 +219165,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
-	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
-		id?: GraphQLTypes["order_by"] | undefined | null,
+		deleted_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	patch?: GraphQLTypes["order_by"] | undefined | null,
@@ -219186,8 +219186,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
-	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
-		id?: GraphQLTypes["order_by"] | undefined | null,
+		deleted_at?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
 	label?: GraphQLTypes["order_by"] | undefined | null,
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	patch?: GraphQLTypes["order_by"] | undefined | null,
@@ -219216,8 +219216,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "maps". */
 ["maps_order_by"]: {
-	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
 		active_pool?: GraphQLTypes["order_by"] | undefined | null,
+	deleted_at?: GraphQLTypes["order_by"] | undefined | null,
 	e_match_type?: GraphQLTypes["e_match_types_order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
@@ -219242,8 +219242,8 @@ export type GraphQLTypes = {
 ["maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns"]: maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
-	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 		active_pool?: boolean | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -219262,8 +219262,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
-	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 		active_pool?: boolean | undefined | null,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
@@ -266093,8 +266093,8 @@ export enum maps_constraint {
 }
 /** select columns of table "maps" */
 export enum maps_select_column {
-	deleted_at = "deleted_at",
 	active_pool = "active_pool",
+	deleted_at = "deleted_at",
 	enabled = "enabled",
 	id = "id",
 	label = "label",
@@ -266116,8 +266116,8 @@ export enum maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns
 }
 /** update columns of table "maps" */
 export enum maps_update_column {
-	deleted_at = "deleted_at",
 	active_pool = "active_pool",
+	deleted_at = "deleted_at",
 	enabled = "enabled",
 	id = "id",
 	label = "label",

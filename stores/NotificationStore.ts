@@ -1,5 +1,4 @@
 import { ref, computed, watch } from "vue";
-import { useI18n } from "vue-i18n";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
@@ -71,7 +70,15 @@ export type NotificationStackItem =
   | { kind: "stack"; entityId: string; notifications: Notification[] };
 
 export const useNotificationStore = defineStore("notifaicationStore", () => {
-  const { t } = useI18n();
+  // AuthStore's setup instantiates this store, and AuthStore itself is first
+  // created outside any component (global auth middleware, before the app has
+  // mounted), so `useI18n()` here throws MUST_BE_CALL_SETUP_TOP and takes the
+  // whole app down with a 500 on first paint. Resolve the translator off the
+  // Nuxt app at call time instead — that works from any context.
+  const t = (key: string, named?: Record<string, unknown>) =>
+    (named
+      ? useNuxtApp().$i18n.t(key, named)
+      : useNuxtApp().$i18n.t(key)) as string;
 
   const team_invites = ref<any[]>([]);
   const tournament_team_invites = ref<any[]>([]);

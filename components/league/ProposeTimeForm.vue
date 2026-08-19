@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed } from "vue";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -85,7 +86,7 @@ function submit() {
 
 function formatDay(value: DateValue | undefined) {
   return value
-    ? value.toDate(getLocalTimeZone()).toLocaleDateString(undefined, {
+    ? value.toDate(getLocalTimeZone()).toLocaleDateString(dateLocale(), {
         weekday: "short",
         month: "short",
         day: "numeric",
@@ -94,7 +95,7 @@ function formatDay(value: DateValue | undefined) {
 }
 
 function formatBound(value: string) {
-  return new Date(value).toLocaleString(undefined, {
+  return new Date(value).toLocaleString(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",

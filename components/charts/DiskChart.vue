@@ -109,7 +109,10 @@ export default {
                 let percent = "";
                 try {
                   const dataIndex = context.dataIndex;
-                  const expectedTotalLabel = `${base} Total`;
+                  const expectedTotalLabel = this.$t(
+                    "charts.total_series",
+                    { label: base },
+                  );
                   const datasets = context?.chart?.data?.datasets || [];
                   const totalDs: any = datasets.find(
                     (ds: any) => String(ds?.label || "") === expectedTotalLabel,
@@ -228,7 +231,7 @@ export default {
           spanGaps: true,
         } as any;
         const total = {
-          label: `${label} Total`,
+          label: this.$t("charts.total_series", { label }),
           fill: false,
           borderColor: this.hex2rgba(color, 0.75),
           backgroundColor: this.hex2rgba("#9ca3af", 0.2),

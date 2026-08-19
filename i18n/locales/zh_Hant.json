@@ -976,7 +976,8 @@
     "live": "進行中",
     "unplayed": "未進行",
     "upcoming": "即將開始",
-    "decider": "決勝圖"
+    "decider": "決勝圖",
+    "map_number": "地圖 {number}"
   },
   "elo_change_badge": {
     "comp": "競技",
@@ -1112,11 +1113,7 @@
     "notes_section": "備註",
     "notes_placeholder": "對手應該知道的資訊——伺服器偏好、反作弊、語音等。",
     "settings_saved": "練習賽設定已儲存",
-    "settings_save_error": "儲存練習賽設定失敗",
-    "calendar_link_copied": "行事曆連結已複製",
-    "calendar_subscription_help": "在您的行事曆應用程式中訂閱此 URL，即可查看已排程的練習賽。",
-    "calendar_link_error": "無法取得行事曆連結",
-    "subscribe_to_matches": "訂閱已排程的比賽"
+    "settings_save_error": "儲存練習賽設定失敗"
   },
   "elo_chart_bucket": {
     "monthly": "每月",
@@ -1180,24 +1177,14 @@
   },
   "avatar": {
     "upload": "上傳頭像",
-    "change": "更換頭像",
-    "remove": "移除頭像",
-    "upload_roster": "上傳名單照",
-    "change_roster": "更換名單照",
-    "remove_roster": "移除名單照",
     "team_avatar": "隊伍頭像",
     "player_avatar": "玩家頭像",
     "player_roster_image": "玩家名單照",
     "upload_success": "頭像已上傳",
     "upload_failed": "頭像上傳失敗",
-    "remove_success": "頭像已移除",
-    "remove_failed": "移除頭像失敗",
     "too_large": "圖片大小不得超過 {size}MB",
     "invalid_type": "僅允許 PNG、JPEG 或 WebP 圖片",
     "uploading": "上傳中...",
-    "drop_to_upload": "拖放以上傳",
-    "hint": "拖放或點擊 · PNG、JPEG、WebP · 最大 5 MB",
-    "roster_hint": "拖放或點擊 · 頭肩照，400×420 · 於瀏覽器中調整大小，再裁切並去除背景",
     "bg_removal_failed": "去除背景失敗",
     "roster_editor": {
       "title": "編輯名單照",
@@ -1236,7 +1223,167 @@
       "follow_logs": "即時追蹤日誌",
       "timestamps": "時間戳記"
     },
-    "coming_soon": "敬請期待！",
+    "system_telemetry": {
+      "title": "機群遙測",
+      "no_data": "尚未回報任何資料",
+      "installs": {
+        "title": "面板",
+        "online": "目前上線",
+        "total": "全期間",
+        "active_7d": "7 天活躍",
+        "active_30d": "30 天活躍",
+        "new_30d": "30 天新增",
+        "retained_180d": "180 天留存",
+        "retained_180d_hint": "180 天前首次出現、本週仍持續回報的面板。",
+        "live": "最近一小時內有回報",
+        "recency": "最後聯絡",
+        "recency_hint": "所有曾出現過的面板，依最後一次聯絡的時間切成互不重疊的區間。區間之間不重疊，因此加總即為全期間總數。",
+        "seen_24h": "今天",
+        "dormant": "休眠",
+        "reporting": "納入統計",
+        "reporting_hint": "最後一次回報夠詳細、足以計入下方機群統計的面板。沉寂超過 30 天的面板會被排除，避免統計持續計入已拆除的伺服器。"
+      },
+      "totals": {
+        "self_reported": "將最近 30 天內活躍的每個面板的最後一次回報加總而得，上方的「納入統計」顯示其數量。面板皆為自行架設，這些數字由面板自行回報；數值在收到時會驗證，但無法獨立查證。基礎設施是某一時間點的計數，而非累計總量。",
+        "game_server_nodes": "遊戲伺服器節點",
+        "nodes_online": "上線節點",
+        "nodes_offline": "離線",
+        "nodes_hint": "僅計入已啟用的節點。營運者關閉的節點不算容量，也無法承接比賽，因此這裡的所有統計都不納入，包括它所在的區域以及是否具備 GPU。",
+        "regions": "區域",
+        "servers": "伺服器",
+        "servers_enabled": "已啟用的伺服器",
+        "dedicated_servers": "專用",
+        "servers_managed": "面板託管",
+        "public_servers": "公開",
+        "matches": "比賽",
+        "maps_played": "已進行的地圖",
+        "not_reported_hint": "目前還沒有面板送出這個數字。它是在機群現行版本之後才加入遙測回報的，會隨著面板更新逐步補齊，並不代表為零。",
+        "hosted_windows": "各期間舉辦數",
+        "completion": "達成結果",
+        "completion_hint": "面板開啟的比賽中，最後以結果收場而非中途放棄的比例。僅計入已開打的比賽。",
+        "player_base": "玩家基數",
+        "player_base_hint": "每一列都是面板看過的 Steam ID 的一部分，百分比以最上面一列為基準。各列並非彼此的階段：面板會為任何連上伺服器的人留下紀錄，因此在地圖上有數據的 Steam ID 遠多於曾登入過的帳號。",
+        "matches_live": "現正進行",
+        "matches_live_caption": "以最後一次回報為準",
+        "matches_finished": "達成結果",
+        "matches_abandoned": "已放棄",
+        "matches_created": "已建立",
+        "matches_created_caption": "含從未開始",
+        "matches_imported": "匯入的比賽",
+        "players": "玩家",
+        "players_played": "曾參與比賽",
+        "players_known": "看過的 Steam ID",
+        "players_active": "30 天活躍玩家",
+        "players_active_7d": "7 天活躍玩家",
+        "players_active_30d": "30 天活躍玩家",
+        "teams": "隊伍",
+        "infrastructure": "基礎設施",
+        "match_volume": "比賽量",
+        "competition": "賽事",
+        "competition_hint": "這裡的比賽數會重疊：聯賽比賽是在錦標賽階段內進行的，因此兩邊都會計入。其餘項目（辦了多少錦標賽與賽季、有誰參加）計算的是賽事本身，而非其比賽。",
+        "tournaments": "錦標賽",
+        "league_seasons": "聯賽賽季",
+        "league_teams": "聯賽隊伍",
+        "scrim_requests": "練習賽邀請",
+        "events": "活動",
+        "teams_entered": "參賽隊伍",
+        "registrations": "報名",
+        "finished": "已結束",
+        "ongoing": "進行中",
+        "played": "已進行",
+        "maps_per_player": "每位玩家 {maps} 張地圖",
+        "maps_per_player_hint": "地圖出場次數除以實際參與過的人數。比賽很多但此值偏低，代表是一小群人玩得很兇，而不是熱絡的社群。",
+        "community": "社群",
+        "hosted_hint": "「舉辦」僅計入面板自行執行的比賽。匯入的比賽來自 FACEIT 或 CS2 比賽紀錄，會分開列出。",
+        "community_hint": "「玩家」計算至少用 Steam 登入過一次的帳號。面板也會為只在名單、demo 或處分中出現過的 Steam ID 留下紀錄，這些會另外計為「看過的 Steam ID」。",
+        "gpu_nodes": "GPU 節點",
+        "all_time": "全期間",
+        "last_7d": "最近 7 天",
+        "last_30d": "最近 30 天",
+        "last_1y": "最近 365 天",
+        "signed_in_caption": "至少登入過一次",
+        "players_known_caption": "包含從未登入者"
+      },
+      "meter": {
+        "remainder": "其他"
+      },
+      "composition": {
+        "hint": "「依類型」拆解的是面板自行舉辦的比賽。「依來源」同時涵蓋自辦與匯入，因此加總會多於自辦的總數。",
+        "by_type": "依類型",
+        "by_source": "依來源"
+      },
+      "distribution": {
+        "title": "機群分布",
+        "hint": "最近 30 天內活躍的面板，各取前 8 名。國家依心跳訊號傳來的網路判定，而非面板自行申報的資料。",
+        "versions": "版本採用率",
+        "versions_hint": "commit 雜湊本身沒有先後順序，因此以最早出現在回報中的版本為最新版。其餘皆以落後該版本幾個發行版來衡量。",
+        "on_current": "的面板使用最新版本",
+        "behind": "落後",
+        "build_current": "最新",
+        "build_previous": "落後一版",
+        "build_older": "更舊",
+        "runtimes": "外掛執行環境",
+        "countries": "國家"
+      },
+      "activity": {
+        "matches": "每日舉辦比賽數（90 天）",
+        "matches_unit": "場比賽"
+      },
+      "growth": {
+        "title": "每月新增面板",
+        "unit": "個面板"
+      },
+      "features": {
+        "feature": "功能",
+        "enabled": "已啟用",
+        "keys": {
+          "tournaments": "錦標賽",
+          "leagues": "聯賽",
+          "seasons": "賽季",
+          "events": "活動",
+          "news": "新聞",
+          "highlights": "自動精華",
+          "clip_renders": "片段算圖",
+          "system_alerts": "系統警示",
+          "awards": "獎項",
+          "scrims": "練習賽搜尋",
+          "matchmaking": "配對",
+          "custom_pages": "外掛",
+          "external_matches": "外部比賽",
+          "faceit_import": "FACEIT 匯入",
+          "draft_games": "選秀比賽",
+          "demos": "Demo",
+          "sanctions": "處分",
+          "api_keys": "API 金鑰",
+          "gamedata_validations": "gamedata 驗證",
+          "steam_presence": "Steam 線上狀態",
+          "discord_bot": "Discord 機器人",
+          "game_server_nodes": "遊戲伺服器節點",
+          "version_pinning": "版本鎖定",
+          "stream_login_protection": "直播登入保護",
+          "player_name_registration": "玩家名稱註冊",
+          "league_division_requests": "聯賽分組申請",
+          "branding": "自訂品牌",
+          "demo_playback": "Demo 播放",
+          "live_streaming": "直播",
+          "highlights_imported": "自動精華（匯入）",
+          "clip_branding": "片段品牌",
+          "push_notifications": "推播通知",
+          "voice_chat": "語音聊天",
+          "video_chat": "視訊聊天"
+        },
+        "panels_using": "使用中的面板",
+        "total": "總計",
+        "optional": "選用功能",
+        "optional_hint": "管理員可在應用程式設定中開啟或關閉的功能。",
+        "capabilities": "偵測到的能力",
+        "capabilities_hint": "這些不是應用程式設定，管理員沒有可切換的項目。它們是從已設定的憑證（Discord、Tailscale、Steam）、各遊戲伺服器節點的 GPU 工作開關，或是否已填寫品牌資訊讀取而來。",
+        "configured": "已設定",
+        "always": "永遠可用",
+        "always_hint": "隨每個面板附帶且無法關閉，因此只有使用情況具有意義。",
+        "no_metric_hint": "沒有任何項目在統計這項功能，因此沒有使用數據可回報，但這不代表沒有面板在用。"
+      }
+    },
     "tournaments": {
       "title": "賽事",
       "description": "瀏覽進行中、開放報名與即將開始的賽事，或依狀態與日期篩選以尋找特定對戰表。",
@@ -1365,6 +1512,7 @@
         "my_account": "我的帳戶",
         "api_keys": "API 金鑰",
         "linked_accounts": "已連結帳戶",
+        "voice": "語音與音訊",
         "api_keys_management": {
           "add_api_key": "新增 API 金鑰",
           "description": "金鑰用於驗證對 5Stack API 的請求——請像對待密碼一樣妥善保管。",
@@ -1380,7 +1528,6 @@
           "created": "建立時間",
           "last_used": "最後使用",
           "never": "從未",
-          "actions": "操作",
           "delete_confirmation_title": "刪除 API 金鑰",
           "delete_confirmation_description": "您確定要刪除 API 金鑰「{label}」嗎？此操作無法復原，使用該金鑰的任何應用程式將失去存取權限。",
           "create_api_key": "建立 API 金鑰",
@@ -1422,6 +1569,189 @@
           "unlinked": "Discord 帳戶已成功取消連結"
         }
       },
+      "voice": {
+        "description": "你的麥克風、音量，以及其他人的音量大小。所有語音頻道都會採用這裡的設定，包括你的隊伍大廳、比賽、選秀房間，你攝影機畫面的麥克風也一樣。",
+        "this_device": {
+          "title": "儲存在這台裝置",
+          "description": "語音設定不屬於你的 5stack 帳號，也不會離開這個瀏覽器。你用來遊玩的每台電腦都各自保留自己的麥克風、輸出、靈敏度與玩家音量，這正是重點所在，因為改變的是硬體而不是你。清除本站的瀏覽器資料會讓設定回到預設值。"
+        },
+        "players": {
+          "title": "玩家音量",
+          "description": "你在所有待過的頻道中調小音量或靜音的隊友。設定保存在此，離開通話後依然有效，也讓你不必等到再次遇到對方才能還原。",
+          "empty": "你尚未調低任何人的音量。通話時使用隊友旁邊的推桿，對方就會出現在這裡。",
+          "silenced": "已靜音",
+          "reset": "重設",
+          "reset_all": "全部重設"
+        },
+        "reset": {
+          "title": "重設",
+          "description": "把麥克風、輸出、輸入模式、靈敏度與降噪還原成初始狀態。玩家音量不會變動。",
+          "action": "重設為預設值",
+          "done": "已重設這台裝置的語音設定"
+        }
+      },
+      "notification_preferences": {
+        "title": "通知偏好設定",
+        "description": "選擇 5stack 要通知你哪些事，以及這些通知會出現在哪裡。",
+        "save_failed": "無法儲存該設定，請再試一次。",
+        "push": {
+          "title": "推播通知",
+          "description": "即使沒有開著 5stack，也能在這台裝置收到通知。",
+          "categories": "要推播的內容",
+          "unsupported": "這個瀏覽器不支援推播通知。",
+          "install_required": "請先安裝 5stack 應用程式才能開啟。",
+          "install": {
+            "description": "推播通知由已安裝的應用程式送出，因此開啟前裝置上必須先有該應用程式。",
+            "open_app": "已經安裝了嗎？請從主畫面或應用程式清單開啟 5stack，並在那裡開啟推播通知。"
+          },
+          "denied": "5stack 的通知已被封鎖。請在瀏覽器或裝置設定中允許，才能開啟這項功能。",
+          "failed": "無法開啟推播通知，請再試一次。",
+          "errors": {
+            "permission": "通知權限請求一直沒有回應。裝置上缺少或損壞 Google Play 服務時可能發生這種情況。",
+            "vapid": "向伺服器取得推播金鑰時逾時。",
+            "service_worker": "等待這台裝置的 service worker 啟用時逾時。",
+            "existing": "檢查既有推播訂閱時逾時。",
+            "register": "向這台裝置的推播服務註冊時逾時。可能是背景執行或電池限制造成的。",
+            "save": "將推播訂閱儲存到伺服器時逾時。"
+          },
+          "enabled_toast": "已開啟推播通知",
+          "disabled_toast": "已關閉推播通知"
+        },
+        "alerts": {
+          "title": "通知鈴鐺",
+          "description": "在應用程式的鈴鐺中隱藏這些項目，其餘內容仍會顯示。"
+        },
+        "keys": {
+          "matches": {
+            "title": "比賽",
+            "description": "比賽狀態變更與匯入的比賽。"
+          },
+          "chat": {
+            "title": "聊天",
+            "description": "對話、大廳或錦標賽房間中的新訊息。"
+          },
+          "tournaments": {
+            "title": "錦標賽",
+            "description": "新的錦標賽與開賽提醒。"
+          },
+          "scrims": {
+            "title": "練習賽",
+            "description": "練習賽邀請、時間變更與提醒。"
+          },
+          "leagues": {
+            "title": "聯賽",
+            "description": "聯賽賽程提議與名單警示。"
+          },
+          "teams": {
+            "title": "隊伍",
+            "description": "建議與經常一起排隊的玩家組隊。"
+          },
+          "account": {
+            "title": "帳號",
+            "description": "名稱變更與處分。"
+          },
+          "news": {
+            "title": "新聞",
+            "description": "5stack 上發布的新文章。"
+          },
+          "staff_moderation": {
+            "title": "管理",
+            "description": "支援請求、比賽放棄與改名申請。"
+          },
+          "staff_infrastructure": {
+            "title": "基礎設施",
+            "description": "伺服器、節點與背景工作的狀態。"
+          },
+          "ChatMessage": {
+            "title": "聊天訊息",
+            "description": "對話、大廳或錦標賽房間中的新訊息。"
+          },
+          "MatchImported": {
+            "title": "匯入的比賽",
+            "description": "你參與過的 Valve 比賽已匯入。"
+          },
+          "NewsPublished": {
+            "title": "新聞文章",
+            "description": "有新文章發布。"
+          },
+          "TournamentReminder": {
+            "title": "錦標賽提醒",
+            "description": "你報名的錦標賽即將開始。"
+          },
+          "FormTeamSuggestion": {
+            "title": "組隊建議",
+            "description": "你經常和這些玩家一起遊玩。"
+          },
+          "ScrimAlertMatch": {
+            "title": "練習賽提醒",
+            "description": "有符合你練習賽提醒條件的隊伍。"
+          },
+          "LeagueMatchUnscheduled": {
+            "title": "未排定的聯賽比賽",
+            "description": "某場聯賽對戰尚未談定時間。"
+          },
+          "invites": {
+            "title": "邀請",
+            "description": "隊伍、錦標賽與選秀邀請。"
+          },
+          "events": {
+            "title": "活動",
+            "description": "你參加的活動提醒。"
+          },
+          "seasons": {
+            "title": "賽季",
+            "description": "賽季結束時。"
+          },
+          "TeamInvite": {
+            "title": "隊伍邀請",
+            "description": "有人邀請你加入他們的隊伍。"
+          },
+          "TournamentTeamInvite": {
+            "title": "錦標賽邀請",
+            "description": "有人邀請你參加錦標賽。"
+          },
+          "DraftInvite": {
+            "title": "選秀邀請",
+            "description": "有人邀請你加入選秀大廳。"
+          },
+          "MatchStatsReady": {
+            "title": "數據已就緒",
+            "description": "你的比賽數據已處理完成。"
+          },
+          "ClipReady": {
+            "title": "片段已就緒",
+            "description": "你要求的片段已算圖完成。"
+          },
+          "AwardGranted": {
+            "title": "獎項",
+            "description": "你獲得了一項獎項。"
+          },
+          "EventReminder": {
+            "title": "活動提醒",
+            "description": "你參加的活動即將開始。"
+          },
+          "SeasonEnded": {
+            "title": "賽季結束",
+            "description": "有一個賽季已經結束。"
+          },
+          "match_chat": {
+            "title": "比賽聊天",
+            "description": "比賽房間中的新訊息，包含從遊戲內轉發的聊天。預設關閉，因為進行中的比賽每打一行字都會觸發。"
+          },
+          "MatchChatMessage": {
+            "title": "比賽聊天訊息",
+            "description": "比賽房間中的新訊息。"
+          }
+        },
+        "quiet_hours": {
+          "title": "勿擾時段",
+          "description": "在這段時間內推播通知不會發出聲音，但仍會出現在你的通知鈴鐺中。",
+          "from": "開始",
+          "to": "結束",
+          "reset": "重設",
+          "incomplete": "請同時設定開始與結束時間才能儲存勿擾時段。"
+        }
+      },
       "notifications": {
         "title": "音效設定",
         "description": "預覽並調整 5Stack 為聊天、比賽等播放的提示音。",
@@ -1429,12 +1759,10 @@
           "title": "通知音效",
           "description": "為聊天訊息、比賽事件和其他提醒播放音效。"
         },
-        "test": "測試",
         "volume": {
           "title": "音量"
         },
         "preview": "預覽音效",
-        "play": "播放",
         "sounds": {
           "chat": {
             "title": "聊天訊息",
@@ -1488,29 +1816,37 @@
         "chat": {
           "title": "聊天設定",
           "description": "設定聊天訊息的保留時長。",
-          "updated": "聊天設定已成功更新"
+          "updated": "聊天設定已成功更新",
+          "lobby_title": "各房間保留時間",
+          "lobby_description": "各類房間的訊息在永久刪除前保留多久（秒）。設為 0 會立即刪除。",
+          "direct_title": "私訊",
+          "direct_description": "私訊會長期保存，不會跟其他聊天一起過期。請輸入要保留的天數，或輸入 0 表示永久保留。",
+          "ttl_match": "比賽聊天",
+          "ttl_match_team": "隊伍聊天",
+          "ttl_matchmaking": "配對大廳聊天",
+          "ttl_tournament": "錦標賽聊天",
+          "ttl_organizers": "主辦方聊天",
+          "ttl_draft": "選秀大廳聊天",
+          "retention_direct_days": "私訊保留天數"
         },
         "news": {
           "title": "新聞",
           "section": "新聞",
           "description": "在您的平台上發佈您自己的 Counter-Strike 新聞文章。授權作者可使用 Markdown 編輯器和圖片撰寫文章；草稿在發佈前維持私密。",
           "manage": "管理文章",
-          "manage_description": "建立、編輯和發佈新聞文章。",
           "label_section": "標籤",
           "label_description": "重新命名新聞區塊在導覽和頁面標題中顯示的名稱。",
           "label": "顯示名稱",
           "permissions_section": "權限",
           "permissions_description": "選擇允許建立和發佈新聞文章的最低角色。",
-          "post_news_role": "誰可以發佈新聞",
-          "about": "您發佈的文章將顯示在公開的新聞頁面上。草稿在發佈前維持隱藏。"
+          "post_news_role": "誰可以發佈新聞"
         },
         "seasons": {
           "title": "賽季",
           "section": "賽季",
           "description": "競技賽季會在每個賽季將一般比賽的 ELO 重設為 5000 基準，並依賽季劃分數據與篩選；停用時，ELO 為單一的全域天梯。賽事 ELO 維持與賽季無關。",
           "manage": "管理賽季",
-          "manage_description": "建立、結束和補錄競技賽季。",
-          "about": "啟用時，賽季篩選會出現在玩家、排行榜和賽事中，ELO/數據將依賽季劃分。停用時，ELO 為單一的全域天梯，且不顯示賽季篩選。"
+          "manage_description": "建立、結束和補錄競技賽季。"
         },
         "discord": {
           "title": "Discord 通知",
@@ -1569,6 +1905,28 @@
           "codec_h264": "H.264（建議）",
           "updated": "直播設定已更新"
         },
+        "cameras": {
+          "title": "攝影機與麥克風",
+          "defaults_section": "比賽預設值",
+          "defaults_description": "新建立的比賽會以什麼設定開始。主辦方仍可逐場調整這兩項設定，既有比賽不受影響。",
+          "required_default": "預設要求網路攝影機",
+          "required_default_description": "新比賽會以「要求網路攝影機」開啟的狀態開始，每場比賽仍可自行覆寫。",
+          "teammates_default": "預設允許隊友觀看",
+          "teammates_default_description": "新比賽會以開啟隊友觀看的狀態開始，對手隊伍永遠不包含在內。",
+          "voice_section": "語音聊天",
+          "voice_description": "讓玩家透過 WebRTC 互相交談，走的是與玩家攝影機相同的路徑。關閉這項功能會讓所有地方都無法使用語音。",
+          "voice_lobbies": "隊伍大廳",
+          "voice_lobbies_description": "大廳面板中的語音控制，適用於玩家自行組成的隊伍。",
+          "voice_matches": "比賽與選秀大廳",
+          "voice_matches_description": "比賽頁面與選秀大廳中的隊伍語音。兩者使用相同的名單頻道，因此共用這項設定。",
+          "updated": "已更新",
+          "video_section": "視訊通話",
+          "video_description": "讓玩家在語音頻道中開啟攝影機。對玩家而言一律是自願的，絕不強制。這是隊友之間的通話，並非下方逐場比賽的攝影機要求。",
+          "video_lobbies": "隊伍大廳",
+          "video_lobbies_description": "在隊伍大廳通話中提供攝影機。",
+          "video_matches": "比賽與選秀房間",
+          "video_matches_description": "在比賽頁面的隊伍語音中提供攝影機。若玩家的 CPU 較吃緊，建議關閉：除了直播之外還要解碼一整排畫面。"
+        },
         "create_matches_role": "允許建立比賽的最低角色",
         "create_tournaments_role": "允許建立賽事的最低角色",
         "dedicated_servers_min_role_to_connect": "允許連接專用密碼保護伺服器的最低角色",
@@ -1586,6 +1944,8 @@
         "auto_cancel_duration_description": "比賽若在此分鐘數後仍未開打（仍在選人／禁用／等待階段），將被取消。",
         "live_match_timeout": "進行中比賽逾時",
         "live_match_timeout_description": "安全逾時——進行中的比賽若在此分鐘數後仍未結束，將自動取消。",
+        "veto_pick_timeout": "否決計時器",
+        "veto_pick_timeout_description": "新建立的比賽中，每隊每次否決可用的預設秒數。設為 0 則預設停用計時器。",
         "matchmaking_type_description": "為每種比賽類型切換配對功能，允許玩家加入該類比賽的配對。",
         "players": {
           "permissions_section": "角色權限",
@@ -1596,7 +1956,6 @@
           "refresh_button": "重建搜尋索引",
           "refreshing": "重建中...",
           "refresh_queued": "搜尋索引重建已啟動",
-          "refresh_failed": "啟動搜尋索引重建失敗",
           "error_occurred": "發生錯誤",
           "refresh_dialog_title": "重建搜尋索引？",
           "refresh_dialog_description": "這會分批將每位玩家重新同步到 Typesense 搜尋索引。它在背景執行，您可以在此查看進度。",
@@ -1605,7 +1964,6 @@
           "recompute_elo_button": "重新計算 ELO",
           "recomputing_elo": "重新計算中...",
           "recompute_elo_queued": "ELO 重新計算已啟動",
-          "recompute_elo_failed": "啟動 ELO 重新計算失敗",
           "recompute_elo_dialog_title": "重新計算所有玩家 ELO？",
           "recompute_elo_dialog_description": "這將清除所有現有 ELO，並依時間順序分批重播每場已完成的比賽以從頭重建。執行期間排行榜會暫時不完整。您可以在此查看進度。",
           "progress_running": "{processed} / {total} ({percent}%)",
@@ -1613,8 +1971,6 @@
           "progress_failed_count": "{failed} 失敗",
           "progress_completed": "已完成 {total}",
           "progress_canceled": "已取消，已完成 {completed} / {total}",
-          "progress_errored": "失敗——請查看伺服器記錄",
-          "already_running": "已在執行中",
           "cancel_button": "取消",
           "cancel_requested": "已請求取消",
           "recompute_elo_canceled_title": "ELO 重新計算已取消",
@@ -1645,11 +2001,8 @@
           "show_separators_description": "在各區塊之間顯示水平分隔線。",
           "logo": "Logo",
           "logo_description": "上傳一張方形圖片（建議 512×512 PNG）。會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示。不支援 ICO 檔案。",
-          "upload_logo": "上傳 Logo",
           "favicon": "網站圖示",
           "favicon_description": "選填。用於瀏覽器分頁的簡化標誌。PNG、ICO 或 WebP 格式。",
-          "upload_favicon": "上傳網站圖示",
-          "remove": "移除",
           "login_page": "登入頁",
           "login_page_description": "自訂登入頁頁尾連結。",
           "show_login_footer": "顯示登入頁頁尾",
@@ -1658,22 +2011,11 @@
           "footer_url": "頁尾 URL",
           "theme_colors": "主題色彩",
           "theme_colors_description": "自訂主題色彩。變更會即時預覽。",
-          "light_mode": "淺色模式",
-          "dark_mode": "深色模式",
-          "save_branding": "儲存品牌設定",
           "reset_to_defaults": "重設為預設值",
           "reset_confirm_title": "將品牌設定重設為預設值？",
           "reset_confirm_description": "這會清除您的品牌名稱、色彩、登入頁尾以及上傳的 Logo/網站圖示/應用程式圖示，並還原為預設的 5Stack 主題。此操作無法復原。",
           "export_theme": "匯出主題",
           "import_theme": "匯入主題",
-          "upload_failed": "上傳失敗",
-          "delete_failed": "刪除失敗",
-          "logo_uploaded": "Logo 已上傳",
-          "favicon_uploaded": "網站圖示已上傳",
-          "icon_uploaded": "應用程式圖示已上傳",
-          "logo_removed": "Logo 已移除",
-          "favicon_removed": "網站圖示已移除",
-          "icon_removed": "應用程式圖示已移除",
           "branding_saved": "品牌設定已儲存",
           "save_failed": "儲存失敗",
           "branding_reset": "品牌設定已重設為預設值",
@@ -1731,7 +2073,9 @@
             "tactical_amber_foreground": "戰術強調色前景"
           },
           "assets_section": "Logo 與網站圖示",
-          "assets_section_description": "上傳 Logo（會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示）以及選填的網站圖示。"
+          "assets_section_description": "上傳 Logo（會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示）以及選填的網站圖示。",
+          "upload_failed": "上傳失敗：{status}",
+          "delete_failed": "刪除失敗：{status}"
         },
         "fixtures": {
           "dev_only_notice": "測試資料僅在開發模式下可用。",
@@ -1802,9 +2146,6 @@
           "enabled": "啟用線上狀態",
           "enabled_description": "預設開啟。好友機器人會監控已連結玩家的即時 Steam 線上狀態，並在其比賽結束後立即匯入，無需等待每小時輪詢。可關閉作為緊急停用開關。",
           "updated": "Steam 線上狀態設定已更新",
-          "active": "已啟用",
-          "disabled": "已停用",
-          "live": "運作中",
           "setup": "運作方式",
           "setup_step1": "為機器人準備一個啟用 Steam 令牌的專用 Steam 帳號。請勿重複使用您的 STEAM_USER 帳號——該帳號用於其他用途，會產生衝突。",
           "setup_step2": "在下方新增。它會自動登入；若 Steam 令牌提示驗證，機器人上會出現 2FA 輸入框——請輸入電子郵件或 Steam 應用程式中的驗證碼。首次登入後便會保持登入狀態，不再詢問。",
@@ -1827,7 +2168,6 @@
           "submit_code": "送出",
           "code_submitted": "驗證碼已送出——登入中……",
           "code_failed": "送出 Steam Guard 驗證碼失敗",
-          "status": "狀態",
           "bots": "機器人",
           "bots_description": "上線狀態池中的 Steam 帳戶及其即時狀態。",
           "no_bots": "尚無機器人",
@@ -2021,7 +2361,6 @@
             "nav_order": "導覽排序",
             "enabled": "已啟用",
             "is_default": "預設頁面",
-            "icon_hint": "lucide 圖示名稱或圖片 URL。例如：",
             "remote_entry_url_hint": "面板載入的 Module Federation remoteEntry.js（通常是 .../assets/remoteEntry.js）。",
             "remote_scope_hint": "外掛的 Federation 容器名稱（vite federation 設定中的 `name`）。",
             "exposed_module_hint": "公開的模組路徑，例如 ./App。",
@@ -2039,7 +2378,6 @@
           "detect": "偵測",
           "detect_hint": "貼上外掛的基礎 URL（或其 5stack-plugin.json），我們會依其資訊清單填入下方欄位。",
           "detect_failed": "無法在該 URL 讀取 5stack-plugin.json 資訊清單。",
-          "detect_success": "已偵測到外掛詳細資料。",
           "optional": "（選填）",
           "advanced": "進階設定",
           "icon_picker": {
@@ -2056,6 +2394,35 @@
           "permissions_description": "Choose who can author awards and who can hand them out.",
           "create_awards_role": "Manage Awards Role",
           "grant_awards_role": "Grant Awards Role"
+        },
+        "web_push": {
+          "title": "網頁推播",
+          "section": "網頁推播通知",
+          "description": "直接把提醒送到玩家的手機或桌面，即使 5stack 沒有開在任何分頁，瀏覽器也會送達。玩家在自己的通知設定中逐台裝置自行訂閱；在 iOS 上必須先把 5stack 加到主畫面才會生效。無需額外設定：傳送透過瀏覽器本身的推播服務，因此沒有第三方帳號也沒有費用。",
+          "state_live": "傳送中",
+          "state_standby": "待命",
+          "state_ready": "就緒",
+          "state_offline": "離線",
+          "last_delivery": "最後一次確認送達",
+          "hint_standby": "已有裝置訂閱，但目前還沒有任何訊息送達。",
+          "hint_ready": "已設定完成，正等待第一台裝置訂閱。",
+          "hint_offline": "此安裝無法使用推播，在 API 完成自我設定前不會有任何訊息送到裝置。",
+          "devices": "裝置",
+          "players": "玩家",
+          "active_7d": "7 天活躍",
+          "new_7d": "7 天新增",
+          "platform_mix": "平台分布",
+          "platforms": {
+            "apple": "Apple",
+            "google": "Chrome / Android",
+            "mozilla": "Firefox",
+            "windows": "Windows",
+            "other": "其他"
+          },
+          "never_delivered": "已訂閱的裝置中有 {count} 台從未收到推播。通常是在有訊息送出前就閒置的裝置，一旦推播服務回報它們已消失就會自動移除。",
+          "empty_title": "尚無裝置訂閱",
+          "empty_body": "推播已就緒，但還沒有人開啟。玩家會在自己的通知設定中訂閱，你無法代為開啟。",
+          "empty_link": "查看玩家端的設定"
         }
       },
       "language": {
@@ -2154,7 +2521,6 @@
       "section_recent_matches": "最近·比賽",
       "section_recent_tournaments": "最近·賽事",
       "section_recent_highlights": "最近·精華",
-      "no_live_matches": "待命 · 無進行中比賽",
       "cold_start": {
         "title": "目前尚無動態",
         "description": "沒有進行中的比賽，也沒有賽事，紀錄還是一片空白。開始一場比賽，此頁面便會自動填滿——即時比分，結束後還有精華片段與完整錄影。",
@@ -2224,12 +2590,6 @@
       "back": "返回新聞",
       "updated": "更新於 {date}",
       "written_by": "作者",
-      "cover_editor": {
-        "title": "調整封面圖片",
-        "description": "裁切以符合文章。使用「移除背景」讓標誌在頁面上更乾淨地呈現。",
-        "hint": "捲動縮放 · 拖曳移動 · 「符合」顯示完整圖片",
-        "fit": "符合"
-      },
       "new_article": "新文章",
       "mark_read": "標記為已讀",
       "empty": "尚無新聞文章——請稍後再查看。",
@@ -2260,9 +2620,6 @@
         "teaser_placeholder": "在新聞列表中顯示的簡短摘要",
         "cover_label": "封面圖片",
         "cover_hint": "點擊或拖放圖片",
-        "cover_formats": "PNG · JPG · WEBP · GIF · 最大 10MB",
-        "cover_replace": "取代",
-        "cover_remove": "移除",
         "content_label": "內容",
         "save_draft": "儲存草稿",
         "save_changes": "儲存變更",
@@ -2274,7 +2631,30 @@
         "back_to_edit": "返回編輯器",
         "upload_image": "上傳圖片",
         "uploading": "上傳中……",
-        "uploading_image": "正在上傳圖片……"
+        "uploading_image": "正在上傳圖片……",
+        "video": {
+          "title": "插入影片",
+          "description": "嵌入 YouTube 或 Twitch 連結，或上傳 MP4。",
+          "tab_link": "連結",
+          "tab_upload": "上傳",
+          "link_hint": "貼上 YouTube 或 Twitch 網址。其他連結會顯示為一般連結。直接貼進內文也會自動嵌入。",
+          "will_embed": "將以播放器形式嵌入",
+          "will_link": "無法嵌入，將顯示為連結",
+          "choose_file": "選擇 MP4",
+          "upload_hint": "MP4 最大 512MB。預覽畫面會自動擷取。",
+          "uploading": "上傳中… {percent}%",
+          "replace_poster": "更換預覽畫面",
+          "insert": "插入",
+          "auto_embedded": "已嵌入影片連結"
+        }
+      },
+      "editor": {
+        "bold_text": "粗體文字",
+        "italic_text": "斜體文字",
+        "heading": "標題",
+        "list_item": "清單項目",
+        "quote": "引用",
+        "code": "程式碼"
       }
     },
     "seasons": {
@@ -2305,8 +2685,6 @@
       "make_ongoing": "設為持續進行",
       "end_now": "立即結束",
       "updated": "賽季已更新",
-      "upcoming_title": "即將開始的賽季",
-      "past_title": "已結束的賽季",
       "rebuild": "重建",
       "rebuild_elo": "重建 ELO",
       "rebuild_required": "需要重建",
@@ -2372,14 +2750,17 @@
         "headshot_pct": "爆頭率 %"
       },
       "played_matches": "已進行比賽",
+      "queue_partners": {
+        "title": "一起排隊的對象",
+        "matches": "{count} 場比賽 | {count} 場比賽",
+        "win_rate": "勝率 {pct}%"
+      },
       "min_sanctions": "最低處罰數",
       "is_banned": "已封鎖",
       "is_gagged": "禁言",
       "is_muted": "靜音",
       "table": {
         "elo": "Elo",
-        "elo_track_season": "賽季",
-        "elo_track_tournament": "賽事",
         "last_sign_in_at": "最後登入時間",
         "privilege": "權限",
         "kdr": "KDR",
@@ -2418,6 +2799,7 @@
         "no_matches_description": "比賽紀錄將在您進行遊戲後顯示於此。",
         "no_matches_self_description": "加入一場比賽——您的數據、ELO 和比賽紀錄將開始在這裡累積。",
         "edit_player": "編輯玩家",
+        "more_actions": "更多操作",
         "friend": "好友",
         "name": "名稱",
         "role": "角色",
@@ -2433,6 +2815,8 @@
         "custom_window_active": "自訂區間已啟用。選擇預設集將清除它。",
         "exclude_tournaments": "排除賽事",
         "exclude_tournaments_description": "在數據和圖表中略過賽事比賽。",
+        "tournaments_section_label": "錦標賽",
+        "tournaments_description": "這位玩家參加過的錦標賽。",
         "current_elo": "目前 ELO",
         "source": "來源",
         "provider": "提供方",
@@ -2898,7 +3282,9 @@
         "competitive": "競技",
         "wingman": "搭檔",
         "duel": "單挑",
-        "scrimmage": "練習賽"
+        "scrimmage": "練習賽",
+        "premier": "Premier",
+        "faceit": "Faceit"
       },
       "roles": {
         "all": "全部角色",
@@ -2906,6 +3292,12 @@
         "Entry": "突破手",
         "Support": "輔助",
         "Rifler": "步槍手"
+      },
+      "sources": {
+        "overall": "所有來源",
+        "matchmaking": "配對",
+        "tournament": "錦標賽",
+        "league": "聯賽"
       },
       "columns": {
         "rank": "#",
@@ -3145,7 +3537,6 @@
       "description": "Author awards and hand them out to players and teams.",
       "catalog_section": "Award Catalog",
       "new_award": "New Award",
-      "edit_award": "Edit Award",
       "no_awards": "No awards yet.",
       "built_in": "Built-in",
       "holders": "holders",
@@ -3165,10 +3556,6 @@
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
       "clear_filters": "Clear filters",
-      "identity": "Identity",
-      "appearance": "Appearance",
-      "rules": "Rules",
-      "artwork_after_save": "Save the award first, then upload its artwork.",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -3185,6 +3572,53 @@
       "group_custom_event_awards": "自訂活動獎項",
       "group_custom_season_awards": "自訂賽季獎項",
       "group_custom_league_awards": "自訂聯賽獎項"
+    },
+    "award_detail": {
+      "not_found_title": "找不到獎項",
+      "not_found": "這個獎項不存在，或已被刪除。",
+      "holders_section": "持有者",
+      "no_holders_title": "尚無持有者",
+      "no_holders": "這個獎項尚未頒發給任何人。",
+      "total_holders": "頒發次數",
+      "unique_players": "玩家",
+      "unique_teams": "隊伍",
+      "first_granted": "首次頒發",
+      "last_granted": "最近頒發",
+      "filter_all": "全部",
+      "filter_players": "玩家",
+      "filter_teams": "隊伍",
+      "granted_by": "由 {name} 頒發",
+      "source_manual": "手動頒發",
+      "source_tournament": "錦標賽名次",
+      "source_season": "賽季自動化",
+      "revoke": "撤銷",
+      "confirm_revoke": {
+        "title": "要撤銷這個獎項嗎？",
+        "description": "{name} 將不再持有這個獎項，此操作無法復原。"
+      }
+    },
+    "system_media_server": {
+      "title": "媒體伺服器",
+      "description": "MediaMTX 的即時負載。遊戲直播、玩家攝影機、語音與視訊通話共用同一個執行個體，因此這裡就是它同時承載的全部內容。日誌位於 系統 → 日誌 → mediamtx。",
+      "media_server_section": "媒體伺服器",
+      "media_server_live": "推流中",
+      "media_server_paths": "路徑",
+      "media_server_sessions": "WebRTC 工作階段",
+      "media_server_row": "{ready}/{paths} 進行中 · 傳入 {bytes}",
+      "media_server_idle": "目前沒有任何內容正在推流。",
+      "media_server_unreachable": "無法連上媒體伺服器。這和閒置不同：上面的數字是未知，而不是零。",
+      "media_kind": {
+        "gameStreams": "遊戲直播",
+        "playerCameras": "玩家攝影機",
+        "voice": "語音",
+        "videoCalls": "視訊通話",
+        "cameraTalkback": "攝影機回話"
+      },
+      "resources": "資源使用量",
+      "cpu": "CPU",
+      "memory": "記憶體",
+      "no_resources": "尚未取得媒體伺服器的 Pod 指標，可能是叢集的 metrics server 沒有在收集它。",
+      "legend": "一個路徑就是一個具名的串流位置，可能是某個人的麥克風，或一台攝影機。「推流中」計算的是此刻實際在傳送媒體的路徑；從有人加入到畫面真正上線之間，路徑可能是閒置的。工作階段是 WebRTC 連線，每一位觀眾都算一個，因此增加得比其他數字快。"
     }
   },
   "custom_match": {
@@ -3202,9 +3636,7 @@
       "select_section": "選擇區段",
       "branding_nav": "品牌",
       "fixtures_nav": "測試資料",
-      "seasons_nav": "賽季",
       "groups": {
-        "platform": "平台",
         "competition": "競技",
         "match_setup": "比賽設定",
         "content_media": "內容與媒體",
@@ -3212,9 +3644,6 @@
         "infrastructure": "基礎架構",
         "theme": "外觀",
         "developer": "開發者",
-        "general": "一般",
-        "media": "錄製與媒體",
-        "additional_features": "附加功能",
         "players_teams": "平台"
       }
     },
@@ -3245,7 +3674,16 @@
         "friend_request": "好友邀請",
         "invited_you": "邀請您加入",
         "invited_party": "邀請您加入他們的隊伍",
-        "wants_to_be_friends": "想成為好友"
+        "wants_to_be_friends": "想成為好友",
+        "actor_host": "房主",
+        "actor_teammate": "一位隊友",
+        "actor_organizer": "一位主辦方",
+        "actor_player": "一位玩家"
+      },
+      "season_rebuild": {
+        "title": "第 {number} 賽季需要重新計算 ELO",
+        "message": "這個賽季的 ELO 已過期，請重新計算以重建其 ELO 與排名。",
+        "action": "重新計算賽季 ELO"
       }
     },
     "app_nav": {
@@ -3295,9 +3733,11 @@
         "logs": "日誌",
         "database": "資料庫",
         "metrics": "指標",
-        "render_queue": "算圖佇列"
+        "render_queue": "算圖佇列",
+        "media_server": "媒體伺服器"
       },
       "profile": {
+        "section": "帳號",
         "my_account": "我的設定",
         "logout": "登出"
       },
@@ -3333,7 +3773,8 @@
         "search_players": "搜尋玩家",
         "leagues": "聯賽",
         "events": "活動",
-        "manage_events": "管理活動"
+        "manage_events": "管理活動",
+        "system_media_server": "媒體伺服器"
       },
       "logout_dialog": {
         "title": "登出",
@@ -3354,6 +3795,7 @@
       "home": "我的數據",
       "play_menu": "遊玩",
       "community_menu": "社群",
+      "support_menu": "支援",
       "watch_menu": "觀戰",
       "login": "登入即可遊玩",
       "login_aria": "透過 Steam 登入",
@@ -3410,7 +3852,8 @@
     "hub": {
       "social": "社交",
       "notifications": "通知",
-      "lobby": "大廳"
+      "lobby": "大廳",
+      "voice": "語音"
     },
     "lobby_panel": {
       "lobby_invites": "大廳邀請",
@@ -3419,14 +3862,58 @@
       "create_lobby_description": "建立大廳以邀請好友並一起排隊。",
       "create_lobby_button": "建立大廳",
       "voice_discord": "語音與 Discord",
+      "join_voice": "加入語音",
+      "leave_voice": "離開",
+      "mute": "關閉麥克風",
+      "unmute": "開啟麥克風",
+      "voice_settings": "語音設定",
+      "microphone": "麥克風",
+      "output": "輸出",
+      "system_default": "系統預設",
+      "input_level": "輸入音量",
       "discord_linked": "Discord 已連結",
       "link_discord": "連結 Discord",
-      "find_match": "尋找比賽"
+      "find_match": "尋找比賽",
+      "voice": "語音",
+      "live": "進行中",
+      "muted": "麥克風已關閉",
+      "connect": "連線",
+      "comms": "通訊",
+      "live_on_camera": "進行中 · 鏡頭開啟"
+    },
+    "voice_panel": {
+      "you": "你",
+      "coach": "教練",
+      "connected": "頻道中有 {count} 人",
+      "you_are_muted": "你的麥克風已關閉",
+      "other_tab": "正在另一個分頁執行，靜音與離開仍可從這裡操作。",
+      "mute_player": "只對你自己靜音這位玩家",
+      "speaking": "發言中",
+      "team_comms": "隊伍通訊",
+      "party_comms": "小隊通訊",
+      "silenced": "已靜音",
+      "mic_off": "麥克風關閉",
+      "unmute_player": "重新聽見這位玩家",
+      "player_volume": "玩家音量",
+      "empty_title": "尚未加入語音頻道",
+      "empty_description": "從你的隊伍大廳、比賽頁面或選秀房間加入，頻道與其中的成員就會顯示在這裡。",
+      "picker": {
+        "available": "你可以發言的地方",
+        "party": "你的小隊",
+        "party_detail": "大廳中有 {count} 人",
+        "team": "你的隊伍",
+        "team_vs": "對戰 {opponent}",
+        "switch": "切換至",
+        "elsewhere": "已加入",
+        "elsewhere_detail": "你已在另一個視窗加入這通話，在此加入即可將它移過來"
+      },
+      "other_tab_short": "在另一個分頁"
     },
     "chat_panel": {
       "default_title": "聊天",
       "participants_in_chat": "{count} 人在聊天",
       "pop_out_tooltip": "彈出至視窗",
+      "close_tooltip": "關閉對話",
       "no_chats_title": "尚無聊天",
       "no_chats_description": "當您加入聊天後，就會顯示在這裡。"
     },
@@ -3442,9 +3929,6 @@
     },
     "public_header": {
       "secure_channel": "安全通道"
-    },
-    "voice_panel": {
-      "coach": "教練"
     }
   },
   "alt_text": {
@@ -3452,6 +3936,14 @@
     "discord": "Discord",
     "map_poster": "地圖海報",
     "map_patch": "地圖徽章"
+  },
+  "push_prompt": {
+    "title": "開啟通知",
+    "description": "即使沒有開著 5stack，也能在這台裝置收到比賽邀請、大廳呼叫與訊息。",
+    "enable": "開啟",
+    "dismiss": "關閉",
+    "enabled": "已開啟推播通知",
+    "failed": "無法開啟推播通知，請再試一次。"
   },
   "pwa": {
     "install": {
@@ -3592,7 +4084,12 @@
     "address_search": {
       "placeholder": "搜尋地址或場館",
       "no_results": "找不到符合的地點"
-    }
+    },
+    "slot": "位置 {slot}",
+    "sort": "排序",
+    "vs_team": "對戰 {name}",
+    "default": "預設",
+    "avg": "平均"
   },
   "spotlight_search": {
     "placeholder": "搜尋玩家...",
@@ -3658,7 +4155,9 @@
       "uploading": "上傳檔案中...",
       "complete": "上傳完成",
       "complete_with_errors": "上傳完成，但有錯誤",
-      "files_failed": "{count} 個檔案上傳失敗"
+      "files_failed": "{count} 個檔案上傳失敗",
+      "progress_files": "{completed} / {total} 個檔案",
+      "current_file": "目前：{name}"
     },
     "toolbar": {
       "new_file": "新增檔案",
@@ -3693,7 +4192,12 @@
       "unsaved_changes_warning": "您在其他檔案中有未儲存的變更。確定要關閉它們嗎？",
       "unsaved_changes_right_warning": "您右側的檔案中有未儲存的變更。確定要關閉它們嗎？",
       "unsaved_changes_left_warning": "您左側的檔案中有未儲存的變更。確定要關閉它們嗎？"
-    }
+    },
+    "delete": {
+      "description": "這會永久刪除「{name}」，此操作無法復原。"
+    },
+    "placeholder_folder_name": "資料夾名稱",
+    "placeholder_file_name": "檔案名稱"
   },
   "error": {
     "generic": "發生錯誤。請重試。"
@@ -3709,17 +4213,21 @@
   },
   "chat_tab_labels": {
     "match": "比賽聊天",
+    "team": "隊伍聊天",
     "tournament": "賽事聊天",
     "organizers": "主辦者聊天",
     "matchmaking": "佇列聊天",
     "lobby_default": "大廳",
-    "organizers_default": "主辦者"
+    "organizers_default": "主辦者",
+    "direct": "私訊"
   },
   "chat_room_subtitles": {
     "organizers": "全域大廳",
     "tournament": "賽事聊天",
     "matchmaking": "佇列聊天",
-    "match": "比賽聊天"
+    "match": "比賽聊天",
+    "team": "隊伍聊天",
+    "direct": "私訊"
   },
   "latency_status": {
     "measuring": "測量中...",
@@ -3746,9 +4254,7 @@
     },
     "final_standings_podium": "▚ 最終排名 · 頒獎台",
     "page": {
-      "tournament_eyebrow": "賽事",
       "back_to_league": "返回聯賽",
-      "view_match_options": "檢視比賽選項",
       "match_options_tab": "比賽選項",
       "organizers_tab": "主辦方",
       "my_team": "我的隊伍",
@@ -3762,9 +4268,7 @@
       "read_less": "顯示較少"
     },
     "feature_card": {
-      "tournament": "賽事",
       "teams": "隊伍",
-      "stages": "階段",
       "default_label": "賽事",
       "organized_by": "由 {team} 主辦"
     },
@@ -3812,7 +4316,7 @@
         "benched": "板凳"
       },
       "already_rostered": "已在其他隊伍",
-      "min_lineup_warning": "至少選擇 {min} 名選手才能報名。"
+      "owner_on_a_team": "已在這場錦標賽的某支隊伍名單中。"
     },
     "tournament_team": {
       "remove": "移除隊伍",
@@ -3842,12 +4346,6 @@
       "negotiated_scheduling": {
         "label": "協商排程",
         "description": "由隊長提議並商定比賽時間（可設定各階段的時間窗），而非比賽自動開始。"
-      },
-      "create_bar": {
-        "ready": "準備建立",
-        "ready_hint": "一切就緒——建立您的賽事",
-        "incomplete": "缺少必填欄位",
-        "incomplete_hint": "填寫賽事名稱與開始日期以繼續"
       },
       "logo": {
         "label": "標誌"
@@ -3896,7 +4394,6 @@
       "title": "語音頻道",
       "description": "自動為賽事比賽建立 Discord 語音頻道。比賽開始時，選手會被移動到隊伍頻道。",
       "guild_id_placeholder": "Discord 伺服器 ID",
-      "enable_voice": "啟用語音頻道",
       "guild_id": "Discord 伺服器 ID"
     },
     "table": {
@@ -3986,7 +4483,13 @@
       "embed_winner_label": "勝者組",
       "embed_loser_label": "敗者組",
       "embed_no_stage": "無進行中的階段。",
-      "zoom_fit": "符合"
+      "zoom_fit": "符合",
+      "round_number": "第 {round} 輪",
+      "default_label": "賽程表",
+      "main_path": "主線",
+      "impact_source": "來源",
+      "impact_delete": "刪除",
+      "impact_reset": "重設"
     },
     "match": {
       "reset_winner": "重設勝者",
@@ -4059,10 +4562,13 @@
       "elimination_matches": "淘汰賽"
     },
     "standings": {
-      "title": "排名"
+      "title": "排名",
+      "tied": "並列"
     },
     "results": {
-      "title": "結果"
+      "title": "結果",
+      "stats_heading": "錦標賽數據",
+      "live_provisional": "進行中 · 暫定"
     },
     "organizer": {
       "title": "賽事主辦方",
@@ -4091,7 +4597,17 @@
       "leave_team": "離開隊伍",
       "slot": "第 {number} 號位",
       "add_player": "新增選手",
+      "ineligible": {
+        "on_this_roster": "已在這份名單中。",
+        "on_other_team": "在這場錦標賽中已列於 {team} 的名單。",
+        "invite_pending": "你已經邀請過了，正在等待回覆。"
+      },
+      "already_in_tournament": "該玩家已在這場錦標賽的某支隊伍中。",
       "pending_invites": "待處理邀請",
+      "member_added": "已加入玩家",
+      "member_added_description": "已將 {name} 加入你的名單",
+      "invite_sent": "已送出邀請",
+      "invite_sent_description": "已邀請 {name}，對方接受後才會加入你的名單",
       "new": "建立新隊伍",
       "select": "選擇現有隊伍",
       "select_role": "選擇角色",
@@ -4134,18 +4650,12 @@
       "remove_description": "這將從賽事中移除此伺服器"
     },
     "open_match_actions": "開啟比賽操作",
-    "location": {
-      "tab": "地點",
-      "view_on_map": "在地圖上檢視"
-    },
     "prizes": {
       "title": "獎金",
-      "manage_title": "獎金",
       "manage_hint": "顯示在賽事頁面上的名次與獎金金額。",
       "organizer_access_required": "需要主辦方權限",
       "add": "新增",
       "distribution": "獎金分配",
-      "place_placeholder": "#1",
       "prize_placeholder": "$1000",
       "reorder_hint": "拖曳以重新排序——名次會自動重新編號。輸入標籤可覆寫。",
       "move_up": "上移",
@@ -4167,11 +4677,6 @@
     "banner": {
       "label": "橫幅",
       "upload": "上傳橫幅",
-      "replace": "更換橫幅",
-      "remove": "移除",
-      "removed": "橫幅已移除",
-      "updated": "橫幅已更新",
-      "empty_hint": "新增橫幅",
       "hint": "顯示於賽事頁面頂部，會裁切為 3:1 寬幅。",
       "upload_failed": "橫幅上傳失敗"
     },
@@ -4190,20 +4695,17 @@
       "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
       "new_award": "New award",
       "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
-      "upload_image": "Upload image",
-      "replace_image": "Replace image",
       "custom_image_hint": "Overrides the award's artwork for this tournament only.",
       "silhouettes": {
-        "auto": "Auto",
         "0": "Chalice",
         "1": "Faceted",
         "2": "Star",
         "3": "Shield",
-        "4": "Laurel"
+        "4": "Laurel",
+        "auto": "Auto"
       },
       "artwork": "Artwork",
       "silhouette_unused": "Silhouette is unused while artwork is set.",
-      "placement": "Placement",
       "unsaved": "Unsaved"
     },
     "awards_manage": {
@@ -4213,8 +4715,17 @@
       "remove": "移除",
       "hint": "在對戰表計算之外頒發獎項。",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first.",
-      "choose_award": "Choose an award…"
+      "no_awards": "Create an award in the catalog first."
+    },
+    "teams_filter": {
+      "all": "全部",
+      "ready": "已就緒",
+      "incomplete": "人數不足",
+      "no_matches": "沒有符合此篩選條件的隊伍",
+      "collapse": "收合",
+      "expand": "展開",
+      "collapse_all": "全部收合",
+      "expand_all": "全部展開"
     }
   },
   "team": {
@@ -4321,7 +4832,15 @@
       "ineligible_short": "已鎖定",
       "tournament_join_requires_owner_or_captain": "您只能以擁有者或隊長身分的隊伍加入賽事。",
       "not_enough_players": "至少需要 {count} 名玩家才能發起挑戰。",
-      "selected": "已選"
+      "selected": "已選",
+      "loading_more": "載入更多…",
+      "ineligible": {
+        "in_tournament": "已報名這場錦標賽。",
+        "in_season": "已註冊這個賽季。",
+        "tournament_organizer": "已是這場錦標賽的主辦方。",
+        "in_event": "已與這個活動連結。",
+        "other_side": "已被選為另一支隊伍。"
+      }
     },
     "member": {
       "coach": "教練",
@@ -4342,7 +4861,8 @@
       "link_copied": "行事曆連結已複製",
       "subscription_help": "在您的行事曆應用程式中訂閱此 URL，即可看到此隊伍的每場比賽——約戰、聯賽賽程與賽事。",
       "link_error": "無法取得行事曆連結"
-    }
+    },
+    "roster_short": "名單"
   },
   "match": {
     "open_match": "開啟比賽",
@@ -4388,6 +4908,7 @@
     },
     "elo_details": {
       "title": "ELO 變化詳情",
+      "rated_at_hint": "評判你表現時所用的評分，由你自己的 ELO 與隊伍平均混合而成，再與對手隊伍的平均比較。評分不同的隊友被期待的表現也不同，因此同樣的結果對每個人的變動幅度並不一樣。",
       "formula": {
         "k_factor_hint": "K 因子——套用任何修正前的基礎 ELO 變化率。",
         "delta_hint": "Δ = 實際 ({actual}) − 預期 ({expected})。正值表示您的表現優於隊伍 ELO 預測。",
@@ -4421,7 +4942,8 @@
         "label": "幾戰幾勝",
         "description": "勝者由贏得指定場次多數的一方決定",
         "placeholder": "選擇賽制局數",
-        "option": "{count} 戰制"
+        "option": "{count} 戰制",
+        "short": "BO{count}"
       },
       "map_veto_settings": {
         "short_on": "隊伍從地圖池中禁用與挑選地圖。",
@@ -4469,6 +4991,11 @@
         "tv_delay": {
           "label": "TV 延遲",
           "range": "輸入 0 到 120 之間的值。"
+        },
+        "veto_pick_timeout": {
+          "label": "否決計時器",
+          "description": "當某隊在否決回合超時，系統會自動替其選擇。",
+          "range": "在系統代為選擇前，每隊每次否決可用的秒數。"
         },
         "timeouts": {
           "tactical": {
@@ -4543,6 +5070,8 @@
       },
       "max_rounds": "最大回合數",
       "tv_delay": "TV 延遲",
+      "veto_pick_timeout": "否決計時器",
+      "veto_pick_timeout_seconds": "{seconds} 秒",
       "seconds": "秒",
       "coaches": "教練",
       "overtime": "延長賽",
@@ -4554,7 +5083,19 @@
       "ready_setting": "準備設定",
       "check_in_setting": "報到設定",
       "advanced_settings": "顯示進階設定",
-      "default_player_models": "預設玩家模型"
+      "default_player_models": "預設玩家模型",
+      "cameras": {
+        "title": "玩家攝影機",
+        "required": {
+          "label": "要求網路攝影機",
+          "description": "玩家必須先連接網路攝影機才會顯示伺服器資訊；若畫面中斷，比賽會自動暫停。"
+        },
+        "teammates": {
+          "label": "隊友可觀看",
+          "description": "讓玩家看見自己隊伍的攝影機畫面。"
+        },
+        "privacy_note": "對手隊伍永遠看不到這些畫面。參加這場比賽的主辦方也看不到任何畫面。"
+      }
     },
     "schedule": {
       "schedule": "排程",
@@ -4739,7 +5280,6 @@
       "randomize_teams": "隨機隊伍",
       "swap_lineups": "交換陣容",
       "restore_round": "還原回合",
-      "select_round_to_restore": "選擇要還原的回合",
       "server_information": "伺服器資訊",
       "type": "類型",
       "region": "地區",
@@ -4755,6 +5295,7 @@
     },
     "winner": {
       "set": "設定比賽勝者",
+      "set_failed": "無法設定比賽勝方",
       "select_lineup": "選擇陣容"
     },
     "map_winner": {
@@ -4763,7 +5304,6 @@
     "region_veto": {
       "ban_label": "禁用",
       "banning": "正在禁用地區",
-      "organizer_override": "比賽主辦方覆寫",
       "confirm_ban": "確認禁用",
       "server_region": "伺服器地區",
       "select_region": "選擇地區",
@@ -4779,8 +5319,15 @@
       "reset_to_knife": "重設至刀戰",
       "reset_to_warmup": "重設至熱身"
     },
+    "party": {
+      "queued": "一起排隊",
+      "queued_lobby": "在大廳中一起排隊",
+      "queued_valve": "一起排隊（Valve 小隊）"
+    },
     "picks": {
       "decider": "決勝圖",
+      "auto_picked": "自動",
+      "auto_picked_description": "因該隊超時，系統自動選擇。",
       "empty": "無 BP 選擇",
       "counter_terrorist": "反恐小組",
       "terrorist": "恐怖分子",
@@ -4794,7 +5341,6 @@
     "decider": "決勝圖",
     "map_veto": {
       "is_picking": "正在選擇",
-      "organizer_override": "比賽主辦方覆寫",
       "pick": "選擇",
       "confirm": "確認 {type}"
     },
@@ -4802,6 +5348,7 @@
       "picked": "已選"
     },
     "auto_canceling": "自動取消中",
+    "demo_processing": "正在處理 demo",
     "actions": {
       "call_support": "請求支援",
       "start_veto": "開始 BP",
@@ -4844,7 +5391,8 @@
       "resume_renders_started": "正在繼續精華算繪",
       "clips_started": "玩家精華算繪已排入佇列",
       "reparse_demos": "重新解析比賽 Demo",
-      "reparse_demos_started": "正在重新解析此比賽的所有 Demo"
+      "reparse_demos_started": "正在重新解析此比賽的所有 Demo",
+      "watch_camera": "觀看攝影機"
     },
     "delete_confirm": {
       "title": "刪除比賽",
@@ -5067,7 +5615,10 @@
     "check_in": {
       "checked_in": "已簽到",
       "check_in": "簽到",
-      "checked_in_description": "您已簽到 {checked}/{required} 名開始比賽所需的玩家"
+      "checked_in_description": "您已簽到 {checked}/{required} 名開始比賽所需的玩家",
+      "deadline": "報到剩餘時間",
+      "deadline_checked_in": "自動取消倒數",
+      "deadline_help": "若所有必要成員未在計時結束前報到，比賽會自動取消。"
     },
     "coach": {
       "assign": "指派教練"
@@ -5219,7 +5770,8 @@
       "kit_dropped_by": "由 {name} 掉落",
       "unknown_player": "未知",
       "kill_filter_by_title": "顯示該玩家的擊殺——點擊切換為該玩家的死亡",
-      "kill_filter_of_title": "顯示該玩家的死亡——點擊切換為該玩家的擊殺"
+      "kill_filter_of_title": "顯示該玩家的死亡——點擊切換為該玩家的擊殺",
+      "utility_none": "{label}（無）"
     },
     "player_details_panel": {
       "stats_unavailable": "此比賽無可用數據。",
@@ -5250,7 +5802,42 @@
     },
     "admin_bar": {
       "rcon_unavailable": "RCON 無法使用",
-      "not_controllable": "比賽處於無法控制的狀態。"
+      "not_controllable": "比賽處於無法控制的狀態。",
+      "veto_override": "覆寫否決"
+    },
+    "demo_processing_hint": "比賽 demo 正從遊戲伺服器上傳。完成後就會出現數據、2D 重播與精華片段。",
+    "demo_playback": {
+      "xray": "透視",
+      "xray_on": "透視開啟",
+      "xray_off": "透視關閉",
+      "all_players": "所有玩家（{count}）",
+      "previous_kill": "上一個擊殺",
+      "previous_kill_player": "上一個擊殺 — {name}",
+      "next_kill": "下一個擊殺",
+      "next_kill_player": "下一個擊殺 — {name}",
+      "seeking": "搜尋中 — cs2 正在跟上",
+      "click_to_jump": "{label} — 點擊即可跳至此處",
+      "kill_nav_follows": "擊殺導覽會跟著目前觀戰的玩家，選擇一位玩家即可鎖定",
+      "demo_ended": "demo 已結束 — cs2 已回到選單",
+      "reload": "重新載入",
+      "reload_demo": "重新載入 demo",
+      "metadata_not_parsed": "demo 的中繼資料尚未解析 — 播放/暫停、跳轉與倍速仍可使用。",
+      "previous_round": "上一回合",
+      "next_round": "下一回合",
+      "skip_back": "倒退 {seconds} 秒",
+      "hud_layout": "HUD 版面 / 顯示"
+    },
+    "maps": {
+      "demos_for_map": "這張地圖有 {count} 個 demo",
+      "heading": "地圖",
+      "demo_parsing": "正在解析 demo…",
+      "demo_parse": "解析 demo 中繼資料",
+      "demo_not_parsed": "demo 中繼資料尚未解析",
+      "demo_watch": "觀看 demo",
+      "not_parsed": "未解析"
+    },
+    "highlights": {
+      "clip_count": "{count} 個片段"
     }
   },
   "ui": {
@@ -5297,7 +5884,6 @@
     "show_keyboard_shortcuts": "顯示鍵盤快速鍵",
     "hold_to_show_scoreboard": "按住以顯示記分板",
     "close_popout": "關閉彈出視窗",
-    "trophy_rack": "獎盃架",
     "click_to_view_tournament": "點擊查看賽事",
     "auto_clip": "自動產生精華片段",
     "create_clip": "建立精華片段",
@@ -5397,7 +5983,6 @@
     },
     "sanction": {
       "button": "處罰玩家",
-      "typed_player": "{type} 玩家",
       "reason_label": "原因",
       "reason_placeholder": "輸入處罰原因...",
       "reason_description": "請為此處罰提供明確的原因",
@@ -5415,12 +6000,43 @@
         "1_week": "1 週",
         "1_month": "1 個月",
         "permanent": "永久"
+      },
+      "heading": {
+        "ban": "封禁玩家",
+        "mute": "關閉玩家麥克風",
+        "gag": "禁止玩家打字",
+        "silence": "完全禁言玩家"
+      },
+      "submit": {
+        "ban": "封禁玩家",
+        "mute": "關閉玩家麥克風",
+        "gag": "禁止玩家打字",
+        "silence": "完全禁言玩家"
+      },
+      "applied": {
+        "ban": "已封禁 {name}",
+        "mute": "已關閉 {name} 的麥克風",
+        "gag": "已禁止 {name} 打字",
+        "silence": "已完全禁言 {name}"
       }
     },
     "search": {
       "no_players_found": "找不到玩家。",
       "found_players": "找到的玩家",
-      "placeholder": "搜尋玩家..."
+      "placeholder": "搜尋玩家...",
+      "loading_more": "載入更多…",
+      "ineligible": {
+        "in_lineup": "已在這場比賽的名單中。",
+        "coaching": "已在這場比賽擔任教練。",
+        "on_team": "已在這支隊伍中。",
+        "team_invite_pending": "你已經邀請過了，正在等待回覆。",
+        "in_lobby": "已在你的大廳中。",
+        "in_draft": "已在這場選秀中。",
+        "in_event": "已與這個活動連結。",
+        "event_organizer": "已是這個活動的主辦方。",
+        "tournament_organizer": "已是這場錦標賽的主辦方。",
+        "tournament_admin": "錦標賽管理員一律是主辦方。"
+      }
     },
     "sanctions": {
       "title": "處罰",
@@ -5431,10 +6047,14 @@
       "duration_label": "期間",
       "select_duration": "選擇期間",
       "sanctions": "處罰",
+      "record": "紀錄",
       "expires": "到期時間",
       "expired_on": "已到期",
       "issued": "發出時間",
       "view_steam": "在 Steam 上查看封鎖",
+      "steam_bans": "Steam 封禁",
+      "steam_vac_bans": "VAC 封禁",
+      "steam_game_bans": "遊戲封禁",
       "permanent": "永久",
       "active": "生效中",
       "expired": "已到期",
@@ -5455,6 +6075,7 @@
       "abandoned_matches": "棄賽紀錄",
       "match": "比賽",
       "no_sanctions": "無處罰",
+      "no_sanctions_description": "這位玩家在本平台沒有任何違規紀錄。",
       "remove_abandoned": "移除棄賽紀錄",
       "confirm_remove_abandoned": "移除棄賽紀錄",
       "remove_abandoned_description": "您確定要移除此棄賽紀錄嗎？此操作無法復原。",
@@ -5474,7 +6095,15 @@
       "vac_banned": "Steam 上有 VAC 封鎖",
       "vac_banned_count": "Steam 上有 {count} 筆 VAC 封鎖",
       "game_banned": "Steam 上有遊戲封鎖",
-      "game_banned_count": "Steam 上有 {count} 筆遊戲封鎖"
+      "game_banned_count": "Steam 上有 {count} 筆遊戲封鎖",
+      "last_ban_days_ago": "最近一次封禁在 {days} 天前",
+      "view_sanctions_hint": "點擊即可查看所有處分",
+      "not_in_cs2": "目前不在 CS2 中"
+    },
+    "context_menu": {
+      "view_profile": "查看個人檔案",
+      "copy_steam_id": "複製 Steam ID",
+      "steam_id_copied": "已複製 Steam ID"
     },
     "change_name": {
       "name_label": "名稱",
@@ -5485,10 +6114,13 @@
       "title": "待匯入的 CS2 比賽",
       "importing": "匯入中…"
     },
-    "all_time_peak": "歷史最高"
+    "all_time_peak": "歷史最高",
+    "at_match_start": "比賽開始時",
+    "current_elo": "目前",
+    "faceit_level": "等級 {level}",
+    "elo_aria_label": "ELO，主要 {tier} {elo}"
   },
   "maps": {
-    "label": "地圖",
     "veto": {
       "pick": "選擇地圖"
     },
@@ -5555,6 +6187,8 @@
       "search_placeholder": "搜尋好友...",
       "invite_to_lobby": "邀請至大廳",
       "remove": "移除好友",
+      "remove_confirm_title": "要移除好友嗎？",
+      "remove_confirm_description": "{name} 將從你的好友清單中移除。若要重新加入，必須再送出一次好友邀請。",
       "in_match": "比賽中",
       "in_lobby": "在大廳中",
       "in_draft": "在選人大廳中",
@@ -5574,6 +6208,7 @@
       "title": "其他"
     },
     "banned": "您已被禁止使用配對系統",
+    "banned_until": "你被禁止使用配對，直到 {time}",
     "confirm_selection": "加入佇列",
     "in_queue": "佇列中",
     "temp_banned": "您暫時被禁止使用配對系統",
@@ -5585,7 +6220,9 @@
     "party_size": {
       "unavailable": "{size} 人隊伍無法配對此模式",
       "requirement": "請以 {half} 人以下，或剛好 {full} 人進行配對"
-    }
+    },
+    "temp_banned_until": "你被暫時禁止使用配對，直到 {time}",
+    "new_invites_count": "新邀請（{count}）"
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -5724,7 +6361,13 @@
     "no_metrics_description": "此節點尚無可用的指標資料。節點開始回報資料後即會顯示指標。",
     "current": "目前",
     "percent_used": "已使用 {percent}%",
-    "col_name": "名稱"
+    "col_name": "名稱",
+    "node_telemetry_description": "CPU 與記憶體擺在最前面，網路與磁碟的歷史資料則歸在下方，方便進一步查看。",
+    "disk": "磁碟",
+    "cpu_hint": "最近一個取樣區間內的處理器負載。",
+    "memory_hint": "已用記憶體與已安裝容量的比較。",
+    "network_hint": "所有網路介面收送合計的傳輸量。",
+    "disk_hint": "使用率最高的磁碟檢視及其歷史曲線。"
   },
   "chat": {
     "readonly": "聊天為唯讀模式。",
@@ -5741,12 +6384,27 @@
       "no_access": "您沒有存取此頁面的權限。",
       "sidebar_hint": "聊天可在右側邊欄的「聊天」分頁中使用。"
     },
-    "in_chat": "聊天中"
+    "in_chat": "聊天中",
+    "everyone": "所有人",
+    "your_team": "你的隊伍",
+    "all": "全部",
+    "team_tag": "隊伍",
+    "message_placeholder_team": "傳訊給你的隊伍…",
+    "send_other_hint": "按 Ctrl+Enter 傳送到 {channel}",
+    "everyone_hint": "兩支隊伍 — 也會顯示在遊戲內聊天",
+    "team_hint": "僅限你的名單 — 不會顯示在遊戲內聊天",
+    "direct": {
+      "message": "訊息",
+      "empty": "還沒有訊息，先打個招呼吧。"
+    }
   },
   "charts": {
     "usage": "使用量",
     "mount_os": "作業系統",
-    "mount_demos": "Demo"
+    "mount_demos": "Demo",
+    "total_series": "{label} 總計",
+    "gpu_index": "GPU {index}",
+    "series_avg": "{label} 平均"
   },
   "server": {
     "join_server": "加入伺服器",
@@ -5824,6 +6482,7 @@
     "unmute": "取消靜音",
     "play": "播放",
     "pause": "暫停",
+    "seek": "搜尋",
     "fullscreen": "全螢幕",
     "exit_fullscreen": "離開全螢幕",
     "fullscreen_f_key": "全螢幕 (F)",
@@ -5938,7 +6597,8 @@
     "spectator": {
       "slot": "第 {slot} 號位",
       "slot_waiting": "第 {slot} 號位 · 等待玩家…",
-      "take_manual_control": "點擊以取得手動控制"
+      "take_manual_control": "點擊以取得手動控制",
+      "slot_key": "位置 {slot} · 按鍵 {key}"
     },
     "page_title": "直播控制台",
     "page_description": "接管 GPU 以播送直播比賽、切換目的地並執行自動導播。",
@@ -5960,7 +6620,26 @@
     "swap_sides": "交換雙方（手動覆寫）",
     "refresh_hud": "重新整理 HUD（重新載入玩家頭像）",
     "autodirector_on": "自動導播已開啟。",
-    "autodirector_hint": "CS2 正在選擇鏡頭——點擊目標或按下按鍵將關閉此功能並進入手動控制。"
+    "autodirector_hint": "CS2 正在選擇鏡頭——點擊目標或按下按鍵將關閉此功能並進入手動控制。",
+    "actions": {
+      "spec_click": "觀戰點擊（{button}）",
+      "spec_slot": "觀戰位置 {slot}",
+      "spec_jump": "跳到觀戰目標",
+      "spec_autodirector": "自動導播",
+      "spec_xray": "透視",
+      "spec_hud": "HUD 顯示",
+      "set_hud_mode": "HUD 版面",
+      "swap_sides": "交換陣營",
+      "refresh_hud": "重新載入 HUD",
+      "start_live": "開始直播",
+      "stop_live": "停止直播",
+      "reconnect": "重新連線",
+      "skip_shaders": "略過著色器編譯"
+    },
+    "gpu_pool_hint": "GPU 資源池 — 開啟 GPU 節點頁面",
+    "no_free_gpu": "沒有可用的 GPU",
+    "start_live_hint": "開始直播",
+    "start_tv_hint": "開始延遲的 TV 直播"
   },
   "system_metrics_extras": {
     "gpu_usage": "GPU 使用率",
@@ -5971,7 +6650,8 @@
   },
   "rcon": {
     "console": "RCON 主控台",
-    "suggestions": "建議"
+    "suggestions": "建議",
+    "entry_count": "{count} 筆"
   },
   "game_server_node": {
     "set_ports": "設定連接埠"
@@ -6067,7 +6747,9 @@
       "done_only_count": "{count} 個已完成",
       "cancelled_count": "{count} 個已取消",
       "retry_failed_count": "重試失敗項目（{count}）",
-      "retry_all_clips": "重試全部 {count} 個片段"
+      "retry_all_clips": "重試全部 {count} 個片段",
+      "target_clip": "{name} 的片段",
+      "render_id": "算圖 {id}"
     },
     "create_dialog": {
       "title": "自動生成精華",
@@ -6139,7 +6821,11 @@
       "no_moments": "此地圖上 {target} 沒有值得製作精華的時刻。",
       "this_player": "此玩家",
       "queue_render": "排入算圖"
-    }
+    },
+    "player": "玩家",
+    "clip": "片段",
+    "open_profile": "開啟 {name} 的個人檔案",
+    "size": "大小"
   },
   "time_ago": {
     "just_now": "剛剛",
@@ -6167,7 +6853,8 @@
     "view_short": "檢視",
     "premier": "菁英",
     "competitive": "競技",
-    "wingman": "雙人"
+    "wingman": "雙人",
+    "imported_from": "{type} · 匯入自 {source}"
   },
   "breadcrumbs": {
     "dashboard": "儀表板"
@@ -6186,6 +6873,9 @@
     "updated": "已更新",
     "series_multiplier": "系列賽係數",
     "team_elo": "隊伍 ELO",
+    "rated_at": "評分基準",
+    "you": "你",
+    "team": "隊伍",
     "kda": "KDA",
     "kda_breakdown": "K / D / A",
     "perf": "表現係數"
@@ -6439,13 +7129,7 @@
     }
   },
   "league": {
-    "created": "聯賽已建立",
     "not_found": "找不到聯賽",
-    "status": {
-      "Setup": "設定中",
-      "Active": "進行中",
-      "Archived": "已封存"
-    },
     "season_status": {
       "Setup": "設定中",
       "RegistrationOpen": "開放報名",
@@ -6456,7 +7140,6 @@
       "Canceled": "已取消"
     },
     "list": {
-      "eyebrow": "競賽",
       "title": "聯賽",
       "subtitle": "賽季分級、每週比賽、升降級",
       "settings": "聯賽設定"
@@ -6469,11 +7152,9 @@
       "none": "—"
     },
     "divisions": {
-      "title": "分級",
       "empty": "尚未設定分級。",
       "add": "新增第 {tier} 級",
       "name_placeholder": "分級名稱（例如：公開、主要、邀請）",
-      "tier_hint": "第 1 級為最高分級。隊伍朝第 1 級晉升，反向則為降級。",
       "reorder_hint": "拖曳分級以重新排序升降級階梯。第 1 級為最高分級；隊伍朝它晉升，反向則為降級。",
       "delete_title": "刪除分級？",
       "delete_description": "從階梯中移除 {name}。其餘分級將重新編號。此操作無法復原。"
@@ -6481,15 +7162,12 @@
     "seasons": {
       "title": "賽季",
       "empty": "尚無賽季。",
-      "teams_count": "{count} 支隊伍",
       "deleted": "賽季已刪除",
       "delete_title": "刪除賽季？",
       "delete_description": "永久刪除 {name}，包含其報名、賽程與成績。此操作無法復原。"
     },
     "season_form": {
       "title": "建立賽季",
-      "name": "名稱",
-      "name_placeholder": "例如：第 1 賽季",
       "signup_opens": "報名開始",
       "signup_closes": "報名結束",
       "starts_at": "賽季開始",
@@ -6498,9 +7176,6 @@
       "auto_format_hint": "每個分級的賽制會依其規模自動選擇：若符合賽季輪數則採用完整循環賽，否則採用瑞士制。",
       "roster_lock_week": "陣容鎖定週",
       "playoff_seats": "季後賽席次",
-      "min_roster": "最少陣容人數",
-      "promote": "晉升",
-      "relegate": "降級",
       "direct_promote": "直接晉升",
       "relegation_up": "升級附加賽",
       "relegation_down": "降級附加賽",
@@ -6529,18 +7204,10 @@
       "min_teams_hint": "一個分級至少需要 4 支已核准隊伍才能進行——規模不足的分級會在賽季開始時略過。"
     },
     "overview": {
-      "signup_window": "報名期間",
-      "starts": "開始",
       "weeks": "比賽週數",
-      "playoff_seats": "季後賽席次",
       "roster_locked": "陣容已鎖定",
       "roster_locks": "陣容於 {date} 鎖定",
-      "format": "賽制",
-      "teams": "隊伍",
-      "playoffs": "季後賽",
-      "weeks_count": "{count} 週",
-      "across_divisions": "橫跨 {count} 個分級",
-      "playoff_seats_count": "{count} 個席次"
+      "weeks_count": "{count} 週"
     },
     "phases": {
       "registration": "報名",
@@ -6565,10 +7232,6 @@
     },
     "manage": {
       "title": "設定",
-      "open": "開啟管理分頁",
-      "phase_controls": "賽季階段",
-      "current": "目前",
-      "registrations": "報名",
       "danger_zone": "危險區域"
     },
     "tabs": {
@@ -6576,7 +7239,6 @@
       "teams": "隊伍",
       "schedule": "賽程",
       "standings": "積分榜",
-      "playoffs": "季後賽",
       "bracket": "對戰表",
       "movements": "升降級",
       "stats": "數據"
@@ -6597,14 +7259,6 @@
       "requested_division": "申請分級",
       "assign_division": "指派分級（自動核准）",
       "no_preference": "無偏好",
-      "roster": "賽季陣容（已選 {selected} 人，最少 {min} 人）",
-      "roster_range": "賽季陣容（已選 {selected} 人 · {min}–{max} 人）",
-      "group": {
-        "starters": "先發",
-        "substitutes": "替補",
-        "benched": "候補席"
-      },
-      "available": "可選",
       "min_roster_warning": "至少選擇 {min} 名玩家才能報名。",
       "register": "報名",
       "registered": "隊伍已報名",
@@ -6612,7 +7266,6 @@
       "cta_hint": "報名您管理的隊伍並鎖定其賽季陣容。"
     },
     "my_team": {
-      "title": "我的隊伍——{team}",
       "add_players": "新增玩家",
       "make_starter": "設為先發",
       "make_sub": "移至替補",
@@ -6654,7 +7307,6 @@
       "decline_title": "拒絕報名？",
       "decline_reason_hint": "可選擇告知隊伍原因。報名開放期間他們可以重新提交。",
       "decline_reason_placeholder": "原因（選填）",
-      "players": "位玩家",
       "review_summary": "{pending} 待審核 · {waitlisted} 候補等待審核",
       "remove": "移除",
       "remove_title": "從賽季中移除隊伍？",
@@ -6665,20 +7317,9 @@
     "schedule": {
       "week": "第 {week} 週",
       "season_number": "第 {number} 賽季",
-      "default_time": "預設",
       "my_matches": "我的比賽",
-      "no_matches_filter": "沒有符合篩選條件的比賽。",
-      "unscheduled_count": "{count} 場未安排",
-      "needs_you": "{count} 場需要您",
-      "filter": {
-        "all": "全部",
-        "unscheduled": "未安排",
-        "scheduled": "已安排",
-        "finished": "已結束"
-      },
       "no_matchups": "本週無對戰。",
       "bye": "輪空（自動獲勝）",
-      "unscheduled": "未安排",
       "view_match": "檢視比賽",
       "propose": "提議時間",
       "propose_new": "提議新時間",
@@ -6693,13 +7334,6 @@
       "decline": "拒絕",
       "awaiting_opponent": "等待對手",
       "winner": "勝方",
-      "defaults_to": "若未達成共識，自動安排於 {time}",
-      "history": "歷史提議（{count}）",
-      "status_chip": {
-        "needs_scheduling": "需要安排",
-        "scheduled": "已安排",
-        "finished": "已結束"
-      },
       "status": {
         "Accepted": "已接受",
         "Declined": "已拒絕",
@@ -6715,7 +7349,6 @@
     "schedule_task": {
       "schedule_title": "安排您的比賽",
       "respond_title": "有人提議了比賽時間",
-      "confirm_title": "確認您的比賽時間",
       "context": "第 {season} 賽季 · 第 {week} 週",
       "more": "還有 {count} 個"
     },
@@ -6725,11 +7358,9 @@
       "rounds": "回合",
       "round_diff": "回合差",
       "remaining": "剩餘",
-      "playoffs": "季後賽",
       "search": "搜尋隊伍",
       "empty": "尚無結果。",
       "removed": "已移除",
-      "open_tournament": "開啟賽事",
       "legend": {
         "advances": "晉級季後賽（前 {n} 名）",
         "cutoff": "季後賽晉級線",
@@ -6738,9 +7369,6 @@
       }
     },
     "playoffs": {
-      "view_bracket": "檢視對戰表",
-      "pending": "季後賽對戰表會在例行賽結束後排定種子。",
-      "not_started": "季後賽尚未開始。",
       "scheduling": "{division} · 季後賽安排"
     },
     "movements": {
@@ -6793,10 +7421,6 @@
       }
     },
     "stats": {
-      "player": "玩家",
-      "team": "隊伍",
-      "maps": "地圖",
-      "kdr": "K/D",
       "empty": "尚無數據——聯賽比賽進行後即會顯示。"
     },
     "rollover": {
@@ -6922,8 +7546,6 @@
     "form": {
       "name": "活動名稱",
       "description": "描述",
-      "starts_at": "開始時間",
-      "ends_at": "結束時間",
       "dates": "活動日期",
       "pick_dates": "選擇日期範圍",
       "start_required": "需要開始日期，以便活動僅收錄從該日期起進行的比賽",
@@ -7055,8 +7677,7 @@
       "link_title_placeholder": "選填標題",
       "link_add": "新增",
       "link_invalid": "請輸入有效的 http(s) URL",
-      "link_added": "連結已新增",
-      "external_open": "開啟連結"
+      "link_added": "連結已新增"
     },
     "phase": {
       "upcoming": "即將開始",
@@ -7067,18 +7688,12 @@
       "for_you": "為您推薦",
       "rank": "活動排名",
       "rating": "評分",
-      "kd": "K/D",
-      "matches": "比賽",
-      "no_my_matches": "您的比賽尚未屬於此活動。"
+      "matches": "比賽"
     },
     "matches": {
-      "none": "此活動的賽事尚未進行任何比賽。",
-      "load_more": "載入更多比賽"
+      "none": "此活動的賽事尚未進行任何比賽。"
     },
     "story": {
-      "only_mine": "僅我的時刻",
-      "none": "此活動尚未發生任何事件。",
-      "none_mine": "您在此活動尚無任何時刻。",
       "highlights": "精華"
     },
     "banner": {
@@ -7089,14 +7704,7 @@
       "updated": "橫幅已更新",
       "removed": "橫幅已移除",
       "empty_hint": "尚無橫幅——點擊上傳",
-      "hint": "在活動頁面頂部全寬顯示。最佳尺寸：1920×640（3:1）。圖片最大 10MB 或 MP4 影片最大 512MB。",
-      "editor": {
-        "title": "調整橫幅",
-        "description": "在 3:1 橫幅框內拖曳定位並捲動縮放。如果圖像不能被裁切，請使用「符合整張圖片」——頁面兩側會填滿模糊副本。",
-        "fit_whole": "符合整張圖片",
-        "reset": "重設",
-        "apply": "設為橫幅"
-      }
+      "hint": "在活動頁面頂部全寬顯示。最佳尺寸：1920×640（3:1）。圖片最大 10MB 或 MP4 影片最大 512MB。"
     },
     "player": {
       "full_profile": "完整檔案",
@@ -7127,14 +7735,10 @@
     "tournament": "賽事",
     "placement": "名次",
     "no_awards": "尚無獎項",
-    "no_awards_description": "在賽事中獲得前三名，或獲頒獎項，即可填滿此展示櫃。",
     "granted": "已頒發",
     "composer": {
       "title": "Create & assign award",
       "award": "Award",
-      "new": "New",
-      "existing": "Existing",
-      "choose": "Choose an award…",
       "assign": "Assign",
       "artwork_needs_award": "Artwork attaches to the award, so save it first.",
       "create_to_upload": "Create award to add artwork",
@@ -7149,20 +7753,332 @@
       "award_unavailable": "無法載入該獎項。",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
-    }
+    },
+    "badge_alt": "{label} 獎項",
+    "badge_alt_tournament": "{tournament} 的 {label} 獎項"
   },
   "awards_modal": {
-    "view_tournament": "檢視賽事"
+    "view_tournament": "檢視賽事",
+    "view_award": "查看獎項"
   },
   "awards_manage_form": {
     "team": "隊伍",
-    "player": "玩家",
-    "award": "獎項",
-    "recipient": "Recipient"
+    "player": "玩家"
+  },
+  "search": {
+    "unregistered": "未註冊",
+    "registered_only": "僅限已註冊",
+    "registered": "已註冊"
   },
   "camera": {
+    "title": "需要網路攝影機",
+    "subtitle": "這場比賽必須先啟用網路攝影機，才能看到伺服器資訊。",
+    "choose_pc": "使用這台電腦",
+    "scan": "用手機掃描這個代碼",
+    "waiting": "正在等待你的攝影機…",
+    "preparing": "正在準備你的攝影機連結…",
+    "connect": "連接攝影機",
+    "connecting": "連線中…",
+    "connected": "你的攝影機已上線",
+    "keep_open": "請在整場比賽期間保持這個頁面開啟。",
+    "flip": "切換攝影機",
+    "error": "無法啟動你的攝影機",
+    "retry": "再試一次",
+    "admin_title": "玩家攝影機",
+    "admin_empty": "這場比賽沒有玩家。",
+    "call": "視訊通話",
+    "end_call": "結束通話",
+    "offline": "未連線",
+    "setup_before_check_in": "設定你的攝影機",
+    "permission_hint": "畫面開始前，瀏覽器會要求攝影機與麥克風權限。",
+    "reframe_reset": "重設",
+    "talk_label": "主辦方通話",
+    "you": "你",
     "tile": {
+      "live": "進行中",
+      "stalled": "停滯",
+      "offline": "離線",
+      "talking": "通話中",
+      "unknown": "檢查中…",
       "coach": "教練"
+    },
+    "admin_subtitle": "即時玩家攝影機",
+    "admin_live_count": "{total} 台中有 {live} 台上線",
+    "admin_stalled_count": "{count} 台停滯",
+    "preview_hidden": "已隱藏預覽",
+    "preview_hidden_hint": "你的攝影機仍然開啟，也持續在傳送畫面。",
+    "hide_preview": "隱藏預覽",
+    "show_preview": "顯示預覽",
+    "talk_mute": "關閉麥克風",
+    "talk_unmute": "開啟麥克風",
+    "listen": "聆聽麥克風",
+    "mute": "關閉麥克風",
+    "or": "或",
+    "reason": "當你被觀戰時，你的攝影機畫面可能出現在比賽直播中，賽事人員也可在比賽期間查看。",
+    "reason_teammates": "當你被觀戰時，你的攝影機畫面可能出現在比賽直播中。賽事人員與你自己的隊伍可在比賽期間查看。",
+    "cameras": "攝影機",
+    "preview": "預覽",
+    "reframe_gesture": "捲動或雙指縮放 · 拖曳可重新置中",
+    "mic_hint": "會與你的攝影機一同傳送，上線前請先確認。",
+    "voice_hint": "你的畫面並不是通話，要和隊伍交談請先加入。",
+    "phase": {
+      "preview": "預覽",
+      "connecting": "連線中",
+      "connected": "進行中",
+      "error": "尚未上線"
+    },
+    "headline_preview": "你還沒有上線。先調好取景，再進行連線。",
+    "media_error": {
+      "denied": "瀏覽器封鎖了攝影機存取。請為本網站允許權限後再試一次。",
+      "missing": "找不到攝影機。請接上一台，或在下方選擇其他裝置。",
+      "busy": "其他應用程式正在使用攝影機。請先關閉再試一次。",
+      "insecure": "攝影機需要安全連線。請以 HTTPS（或 localhost）開啟 5stack 後再試一次。",
+      "unknown": "無法啟動攝影機，請再試一次。"
+    },
+    "media_pending": "正在等待攝影機權限…",
+    "dismiss": "關閉",
+    "nag": "你尚未連線。在攝影機上線前，報到會一直被鎖住。",
+    "nag_action": "前往設定",
+    "mic": "麥克風",
+    "errors": {
+      "no_media_path": "攝影機已連上伺服器，但無法建立媒體通道。",
+      "ice_timeout": "攝影機已連上伺服器，但未能及時建立媒體通道。",
+      "feed_dropped": "攝影機畫面中斷了。",
+      "unknown": "無法啟動你的攝影機。",
+      "load_failed": "無法載入玩家攝影機。",
+      "call_failed": "無法開始通話。"
+    }
+  },
+  "voice": {
+    "errors": {
+      "insecure_origin": "語音聊天需要安全連線。請以 HTTPS（或 localhost）開啟 5stack 後再試一次。",
+      "unsupported": "這個瀏覽器不支援語音聊天。",
+      "permission_denied": "麥克風存取遭到封鎖。請在瀏覽器的網站設定中允許後再試一次。",
+      "no_microphone": "找不到麥克風。請接上一支後再試一次。",
+      "microphone_busy": "你的麥克風正被其他應用程式使用。",
+      "unknown": "無法啟動語音聊天。",
+      "unreachable": "無法連上 API。通常是 CORS 規則所致，或是這個位址連不到 API。請查看下方細節與瀏覽器主控台。",
+      "forbidden": "你沒有權限加入這個大廳的語音。",
+      "not_deployed": "在 API 上找不到語音端點，可能尚未部署。",
+      "signaling": "語音伺服器拒絕了這次連線。",
+      "camera": "無法啟動你的攝影機。請確認沒有其他應用程式正在使用，然後再試一次。",
+      "camera_denied": "攝影機存取遭到封鎖。請在瀏覽器的網站設定中允許後再試一次。",
+      "no_camera": "找不到攝影機。請接上一台後再試一次。",
+      "camera_busy": "你的攝影機正被其他應用程式使用。"
+    },
+    "settings": {
+      "title": "語音設定",
+      "description": "選擇你的裝置，並確認別人聽得到你。",
+      "input": "輸入裝置",
+      "output": "輸出裝置",
+      "mic_test": "麥克風測試",
+      "listen": "聽自己的聲音",
+      "stop_listening": "停止",
+      "meter_hint": "說說看 — 音量條顯示其他人收到的聲音。呈綠色代表你的聲音正在傳送。",
+      "monitor_hint": "你正在聽自己的麥克風。請使用耳機，否則會產生回音。",
+      "input_mode": "輸入模式",
+      "mode_voice": "語音偵測",
+      "mode_voice_hint": "只在你說話時傳送。",
+      "mode_open": "持續傳送",
+      "mode_open_hint": "把麥克風收到的所有聲音都傳送出去。",
+      "sensitivity": "靈敏度",
+      "test": "測試",
+      "output_unsupported": "這個瀏覽器不允許網站選擇輸出裝置，會使用你的系統預設值。",
+      "noise_suppression": "降噪",
+      "noise_suppression_hint": "過濾風扇、鍵盤等穩定的背景噪音。",
+      "mic_starting": "正在啟動你的麥克風…",
+      "mic_in_use": "你的麥克風正在 {channel} 使用中，這些設定會即時套用到該處。",
+      "applies_everywhere": "只要用到你的麥克風，這些設定都會生效。",
+      "mic_idle": "你的麥克風尚未開啟。趁還沒有人聽到之前，先做一次麥克風測試，聽聽別人會聽到的聲音。",
+      "start_mic": "麥克風測試"
+    },
+    "team_voice": "隊伍語音",
+    "join": "加入",
+    "leave": "離開",
+    "mute": "關閉麥克風",
+    "unmute": "開啟麥克風",
+    "switch_title": "要切換語音頻道嗎？",
+    "switch_description": "你目前連線到 {channel}。在此加入會讓你從該頻道斷線。",
+    "switch_confirm": "切換",
+    "speaking_count": "{count} 人正在發言",
+    "tooltip": {
+      "join": "加入隊伍語音",
+      "join_hint": "與你的名單交談，對手隊伍永遠聽不到這個頻道。",
+      "connecting": "連線中…",
+      "leave": "離開隊伍語音",
+      "mute": "關閉你的麥克風",
+      "unmute": "開啟你的麥克風",
+      "settings": "麥克風與音訊設定",
+      "in_voice": "語音中有 {count} 人",
+      "alone": "語音中只有你一個人",
+      "muted": "你的麥克風已關閉 — 沒有人聽得到你"
+    },
+    "call": {
+      "start_camera": "開啟攝影機",
+      "stop_camera": "關閉攝影機",
+      "take_camera_back": "正在你的手機上 — 點一下即可移回這裡",
+      "take_mic_back": "麥克風在你的手機上 — 點一下即可移回這裡",
+      "pop_out": "彈出視訊",
+      "pop_in": "收回視訊",
+      "more_members": "另有 {count} 人未顯示",
+      "phone": {
+        "use_phone": "把手機當成攝影機",
+        "scan": "用手機掃描，即可在這通通話中使用手機的攝影機。",
+        "scan_hint": "你會先在手機上登入",
+        "in_call": "通話中另有 {count} 人",
+        "start": "分享這個攝影機",
+        "not_a_member": "你不在這通通話中。請先在你遊玩的裝置上加入，然後再次掃描代碼。",
+        "mic_echo_hint": "你的電腦需要耳機 — 若用喇叭，這支手機會再次收到通話聲並產生回音。",
+        "not_in_call": "請先在你遊玩的裝置上加入通話，這支手機才能接手。",
+        "take_mic_short": "接手麥克風",
+        "start_short": "攝影機",
+        "stop_short": "停止",
+        "flip": "切換",
+        "hand_back": "交回"
+      },
+      "nobody_yet": "還沒有人連線。",
+      "hide_video": "隱藏對方的攝影機",
+      "show_video": "顯示對方的攝影機",
+      "show_self": "顯示我自己的攝影機",
+      "device_settings": "語音與視訊設定",
+      "join_action": "加入",
+      "dismiss_action": "關閉",
+      "handoff_taken": "已從你關閉的視窗接手 {channel}",
+      "handoff_failed": "無法從你關閉的視窗接手 {channel}",
+      "toast_kind": "語音",
+      "toast_joined": "加入了",
+      "toast_started_video": "開始了視訊，位於",
+      "floating_title": "通話"
+    }
+  },
+  "media": {
+    "device": {
+      "system_default": "系統預設",
+      "selected": "已選裝置",
+      "following_system": "跟隨你的系統設定",
+      "device": "裝置"
+    }
+  },
+  "chat_rail": {
+    "remove_conversation": "從列中移除"
+  },
+  "faq": {
+    "title": "說明與常見問題",
+    "intro": "關於這個平台、在這裡怎麼玩，以及如何自行架設站台的常見問題。若有未涵蓋之處，最下方的社群連結是最快得到答案的途徑。",
+    "search_placeholder": "搜尋問題",
+    "no_results": "沒有符合「{term}」的問題。",
+    "links": {
+      "features": "所有功能",
+      "overview": "什麼是 5Stack？",
+      "matchmaking": "配對文件",
+      "tournaments": "錦標賽文件",
+      "stats_guide": "數據指南",
+      "performance_rating": "表現評分",
+      "match_replay": "比賽重播",
+      "highlights": "精華片段",
+      "web_push": "網頁推播設定",
+      "install": "安裝指南",
+      "hosting_faq": "架站常見問題",
+      "requirements": "系統需求",
+      "what_is_installed": "會安裝哪些東西",
+      "server_setup": "伺服器設定",
+      "game_server_nodes": "遊戲伺服器節點",
+      "gpu_nodes": "GPU 節點",
+      "branding": "品牌與佈景主題",
+      "panel_plugins": "面板外掛",
+      "game_plugins": "遊戲外掛"
+    },
+    "about": {
+      "title": "關於 5Stack",
+      "what_is": {
+        "question": "什麼是 5Stack？",
+        "answer": "5Stack 是 Counter-Strike 2 的賽事層，介於遊戲伺服器與聯賽之間的軟體。一次安裝就能運作整套系統：配對、選秀大廳、隊伍、錦標賽與賽季、數據與 Elo、demo 錄製、瀏覽器內重播、精華片段，以及直播轉播。"
+      },
+      "this_site": {
+        "question": "{brand} 是什麼？",
+        "answer": "{brand} 是一個 5Stack 站台。這套軟體是開源且自行架設的，因此每個採用它的社群都經營自己的網站、自己的伺服器與自己的規則，這裡就是其中之一。"
+      },
+      "cost": {
+        "question": "免費嗎？",
+        "answer": "是的。5Stack 免費且開源，並由你自行架設，因此專案不會依人數或場次收費。你只需支付自己選擇的基礎設施費用。它由一位開發者打造與維護，GitHub 贊助是讓開發得以持續的來源。"
+      },
+      "sign_in": {
+        "question": "要怎麼登入？",
+        "answer": "透過 Steam。不需要另外建立帳號，也不必記密碼 — 你的 Steam 個人檔案就是你在這裡的身分，比賽也是靠它在你連上伺服器時辨識你。"
+      },
+      "games": {
+        "question": "支援哪些遊戲？",
+        "answer": "Counter-Strike 2。數據、重播、伺服器管理與遊戲內外掛都是專為它打造，而不是一套通用的錦標賽工具。"
+      }
+    },
+    "playing": {
+      "title": "在這裡遊玩",
+      "find_match": {
+        "question": "我要怎麼加入比賽？",
+        "answer": "從「遊玩」開始。你可以排入配對，它會依區域與延遲配對，也允許組隊一起排；也可以加入選秀大廳，由隊長在時限內挑選隊伍；或透過練習賽搜尋安排一場練習賽。哪些方式可用，取決於這個站台啟用了什麼功能。"
+      },
+      "check_in": {
+        "question": "為什麼比賽前要先報到？",
+        "answer": "報到是為了在保留伺服器、讓大廳其他人開始等待之前，確認每個人真的都在電腦前。開啟自動取消的比賽會顯示倒數，若必要的玩家未在期限前報到，比賽就會自動取消。"
+      },
+      "tournaments": {
+        "question": "我要怎麼參加錦標賽？",
+        "answer": "在報名開放期間開啟該錦標賽並報名一支隊伍，可以是既有隊伍，也可以是為這場賽事新建的名單。錦標賽可採單淘汰、雙淘汰、循環賽或瑞士制，也能串接成多個階段，並在其上疊加具升降級制度的賽季聯賽。"
+      },
+      "stats": {
+        "question": "我的數據從哪裡來？",
+        "answer": "每場比賽的 demo 會在結束後解析，因此數字來自實際錄影，而非即時計分板回報。由此可得出 HLTV 評分、KAST、ADR、開局對槍、殘局、道具使用與各武器命中率，以及 Elo 變動。數據指南說明每個數字的意義與計算方式。"
+      },
+      "replays": {
+        "question": "不下載 demo 也能重看比賽嗎？",
+        "answer": "可以。每場比賽都有可在瀏覽器中執行的 2D 雷達重播與 3D 環景，旁邊還有回合時間軸、經濟狀況與擊殺紀錄。若你想在 CS2 中觀看，原始 demo 依然可以下載。"
+      },
+      "highlights": {
+        "question": "精華片段從哪裡來？",
+        "answer": "多殺、殘局與刀局會在比賽結束時自動偵測並算圖成片段。你也可以在內建編輯器中，從任何一場比賽自行剪輯。算圖在 GPU 節點上執行，因此只有配有 GPU 的站台才會出現片段。"
+      },
+      "notifications": {
+        "question": "為什麼我無法開啟推播通知？",
+        "answer": "推播是由已安裝的應用程式送出，而不是瀏覽器分頁，因此你必須先把應用程式安裝到裝置上 — 選單中的「安裝」按鈕就是做這件事。安裝完成後，設定 → 通知 中的開關才會可用。在 iPhone 與 iPad 上，這是作業系統的硬性要求。"
+      }
+    },
+    "hosting": {
+      "title": "自行架站",
+      "self_host": {
+        "question": "我可以自己架一個站台嗎？",
+        "answer": "可以，這正是 5Stack 預期的使用方式。它由你自行架設，一道指令即可安裝，會一併建立 Kubernetes（K3s）、資料庫、儲存空間與面板本身。文件中的安裝指南會從頭到尾帶你完成。"
+      },
+      "requirements": {
+        "question": "架站需要什麼？",
+        "answer": "一台至少 3 GB 記憶體的 Linux 伺服器，以及一個你能掌控的網域。路由需要開放 80 與 443 連接埠，遊戲伺服器節點連接器則需要 8585。你還會把數個子網域指向面板 — api、ws、demos、search 與 console — 因此請規劃萬用字元 DNS 或逐筆記錄。"
+      },
+      "game_servers": {
+        "question": "比賽實際上在哪裡執行？",
+        "answer": "在你連接到面板的遊戲伺服器節點上。你可以讓它按需啟動伺服器、註冊你既有的專用硬體，或指向第三方主機商。CS2 更新會自動套用，區域、Steam Relay 與區網架設也都支援。"
+      },
+      "gpu": {
+        "question": "我需要 GPU 嗎？",
+        "answer": "只有影音功能需要。瀏覽器內的 demo 播放、精華片段自動算圖，以及從面板進行直播，全都在 NVIDIA GPU 節點上處理。其餘功能 — 配對、錦標賽、數據、2D 與 3D 重播、伺服器、聊天 — 沒有 GPU 也能順利運作。"
+      },
+      "managed": {
+        "question": "有可以付費使用的託管版本嗎？",
+        "answer": "沒有。5Stack 只支援自行架設，沒有可購買的 SaaS 方案或託管服務。5stack.gg 是維護者自己的公開站台，適合在安裝前先看看軟體實際運作的樣子。"
+      },
+      "branding": {
+        "question": "我可以讓它看起來像我的組織嗎？",
+        "answer": "可以。名稱、標誌、網站圖示、登入頁面與整套配色主題都能在管理設定中調整，讓站台看起來像是你的平台，而不是別人的軟體貼上你的標誌。"
+      },
+      "extend": {
+        "question": "我可以用自己的程式碼擴充嗎？",
+        "answer": "有兩個地方可以。你可以把自己的網頁應用嵌入成面板的原生頁面，它們會沿用工作階段與設計系統，因此不需要維護分支。在伺服器端，你也可以在 CounterStrikeSharp 或 SwiftlyS2 上，把自己的 CS2 外掛與 5Stack 的一起執行。"
+      }
+    },
+    "support": {
+      "title": "還是卡住嗎？",
+      "description": "Discord 是找到真人最快的途徑 — 經營 5Stack 站台的人都在那裡。錯誤回報與功能建議請到 GitHub，文件則深入說明安裝、伺服器與每一項功能。",
+      "discord": "加入 Discord",
+      "github": "回報問題",
+      "docs": "閱讀文件"
     }
   }
 }

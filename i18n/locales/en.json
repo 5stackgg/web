@@ -976,7 +976,8 @@
     "live": "LIVE",
     "unplayed": "UNPLAYED",
     "upcoming": "UPCOMING",
-    "decider": "Decider"
+    "decider": "Decider",
+    "map_number": "MAP {number}"
   },
   "elo_change_badge": {
     "comp": "COMP",
@@ -2072,7 +2073,9 @@
             "tactical_amber_foreground": "Tactical Accent Foreground"
           },
           "assets_section": "Logo & Favicon",
-          "assets_section_description": "Upload a logo (used app-wide and to generate your PWA install icon) and an optional favicon."
+          "assets_section_description": "Upload a logo (used app-wide and to generate your PWA install icon) and an optional favicon.",
+          "upload_failed": "Upload failed: {status}",
+          "delete_failed": "Delete failed: {status}"
         },
         "fixtures": {
           "dev_only_notice": "Fixtures are only available in development mode.",
@@ -2644,6 +2647,14 @@
           "insert": "Insert",
           "auto_embedded": "Video link embedded"
         }
+      },
+      "editor": {
+        "bold_text": "bold text",
+        "italic_text": "italic text",
+        "heading": "Heading",
+        "list_item": "List item",
+        "quote": "Quote",
+        "code": "code"
       }
     },
     "seasons": {
@@ -3271,7 +3282,9 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duel",
-        "scrimmage": "Scrimmage"
+        "scrimmage": "Scrimmage",
+        "premier": "Premier",
+        "faceit": "Faceit"
       },
       "roles": {
         "all": "All Roles",
@@ -3661,7 +3674,16 @@
         "friend_request": "Friend Request",
         "invited_you": "invited you to",
         "invited_party": "invited you to their party",
-        "wants_to_be_friends": "wants to be friends"
+        "wants_to_be_friends": "wants to be friends",
+        "actor_host": "The host",
+        "actor_teammate": "A teammate",
+        "actor_organizer": "An organizer",
+        "actor_player": "A player"
+      },
+      "season_rebuild": {
+        "title": "Season {number} ELO rebuild required",
+        "message": "This season's ELO is out of date. Rebuild to recompute its ELO and standings.",
+        "action": "Rebuild Season ELO"
       }
     },
     "app_nav": {
@@ -4062,7 +4084,12 @@
     "address_search": {
       "placeholder": "Search for an address or venue",
       "no_results": "No matching places found"
-    }
+    },
+    "slot": "Slot {slot}",
+    "sort": "sort",
+    "vs_team": "vs {name}",
+    "default": "Default",
+    "avg": "avg"
   },
   "spotlight_search": {
     "placeholder": "Search players...",
@@ -4128,7 +4155,9 @@
       "uploading": "Uploading files...",
       "complete": "Upload complete",
       "complete_with_errors": "Upload complete with errors",
-      "files_failed": "{count} file(s) failed to upload"
+      "files_failed": "{count} file(s) failed to upload",
+      "progress_files": "{completed} / {total} files",
+      "current_file": "Current: {name}"
     },
     "toolbar": {
       "new_file": "New File",
@@ -4163,7 +4192,12 @@
       "unsaved_changes_warning": "You have unsaved changes in other files. Are you sure you want to close them?",
       "unsaved_changes_right_warning": "You have unsaved changes in files to the right. Are you sure you want to close them?",
       "unsaved_changes_left_warning": "You have unsaved changes in files to the left. Are you sure you want to close them?"
-    }
+    },
+    "delete": {
+      "description": "This will permanently delete \"{name}\". This action cannot be undone."
+    },
+    "placeholder_folder_name": "folder name",
+    "placeholder_file_name": "file name"
   },
   "error": {
     "generic": "An error occurred. Please try again."
@@ -4449,7 +4483,13 @@
       "embed_winner_label": "Upper Bracket",
       "embed_loser_label": "Lower Bracket",
       "embed_no_stage": "No active stage.",
-      "zoom_fit": "Fit"
+      "zoom_fit": "Fit",
+      "round_number": "Round {round}",
+      "default_label": "Bracket",
+      "main_path": "Main",
+      "impact_source": "source",
+      "impact_delete": "delete",
+      "impact_reset": "reset"
     },
     "match": {
       "reset_winner": "Reset winner",
@@ -4522,10 +4562,13 @@
       "elimination_matches": "Elimination Matches"
     },
     "standings": {
-      "title": "Standings"
+      "title": "Standings",
+      "tied": "TIED"
     },
     "results": {
-      "title": "Results"
+      "title": "Results",
+      "stats_heading": "TOURNAMENT STATS",
+      "live_provisional": "LIVE · PROVISIONAL"
     },
     "organizer": {
       "title": "Tournament Organizers",
@@ -4818,7 +4861,8 @@
       "link_copied": "Calendar link copied",
       "subscription_help": "Subscribe to this URL in your calendar app to see every match this team plays — scrims, league fixtures and tournaments.",
       "link_error": "Could not get calendar link"
-    }
+    },
+    "roster_short": "roster"
   },
   "match": {
     "open_match": "Open match",
@@ -4898,7 +4942,8 @@
         "label": "Best Of",
         "description": "The winner is determined by who wins the majority of a specified number of games",
         "placeholder": "Select a best of value",
-        "option": "Best of {count}"
+        "option": "Best of {count}",
+        "short": "BO{count}"
       },
       "map_veto_settings": {
         "short_on": "Teams ban and pick maps from the pool.",
@@ -5725,7 +5770,8 @@
       "kit_dropped_by": "Dropped by {name}",
       "unknown_player": "unknown",
       "kill_filter_by_title": "Showing kills BY player — click to switch to deaths OF player",
-      "kill_filter_of_title": "Showing deaths OF player — click to switch to kills BY player"
+      "kill_filter_of_title": "Showing deaths OF player — click to switch to kills BY player",
+      "utility_none": "{label} (none)"
     },
     "player_details_panel": {
       "stats_unavailable": "Stats unavailable for this match.",
@@ -5759,7 +5805,40 @@
       "not_controllable": "Match is not in a controllable state.",
       "veto_override": "Veto Override"
     },
-    "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes."
+    "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes.",
+    "demo_playback": {
+      "xray": "X-ray",
+      "xray_on": "X-ray on",
+      "xray_off": "X-ray off",
+      "all_players": "All players ({count})",
+      "previous_kill": "Previous kill",
+      "previous_kill_player": "Previous kill — {name}",
+      "next_kill": "Next kill",
+      "next_kill_player": "Next kill — {name}",
+      "seeking": "Seeking — cs2 is catching up",
+      "click_to_jump": "{label} — click to jump",
+      "kill_nav_follows": "Kill nav follows the spectated player — pick a player to lock",
+      "demo_ended": "Demo ended — cs2 dropped to menu",
+      "reload": "Reload",
+      "reload_demo": "Reload demo",
+      "metadata_not_parsed": "Demo metadata not parsed yet — play/pause + skip + speed still work.",
+      "previous_round": "Previous round",
+      "next_round": "Next round",
+      "skip_back": "Skip back {seconds}s",
+      "hud_layout": "HUD layout / visibility"
+    },
+    "maps": {
+      "demos_for_map": "{count} demos for this map",
+      "heading": "Maps",
+      "demo_parsing": "Parsing demo…",
+      "demo_parse": "Parse demo metadata",
+      "demo_not_parsed": "Demo metadata has not been parsed",
+      "demo_watch": "Watch demo",
+      "not_parsed": "not parsed"
+    },
+    "highlights": {
+      "clip_count": "{count} clips"
+    }
   },
   "ui": {
     "tooltips": {
@@ -5904,7 +5983,6 @@
     },
     "sanction": {
       "button": "Sanction Player",
-      "typed_player": "{type} Player",
       "reason_label": "Reason",
       "reason_placeholder": "Enter reason for sanction...",
       "reason_description": "Please provide a clear reason for this sanction",
@@ -5922,6 +6000,24 @@
         "1_week": "1 week",
         "1_month": "1 month",
         "permanent": "Permanent"
+      },
+      "heading": {
+        "ban": "Banning Player",
+        "mute": "Muting Player",
+        "gag": "Gagging Player",
+        "silence": "Silencing Player"
+      },
+      "submit": {
+        "ban": "Ban Player",
+        "mute": "Mute Player",
+        "gag": "Gag Player",
+        "silence": "Silence Player"
+      },
+      "applied": {
+        "ban": "Banned {name}",
+        "mute": "Muted {name}",
+        "gag": "Gagged {name}",
+        "silence": "Silenced {name}"
       }
     },
     "search": {
@@ -6001,7 +6097,8 @@
       "game_banned": "Game banned on Steam",
       "game_banned_count": "{count} game ban(s) on Steam",
       "last_ban_days_ago": "Last ban {days} day(s) ago",
-      "view_sanctions_hint": "Click to view all sanctions"
+      "view_sanctions_hint": "Click to view all sanctions",
+      "not_in_cs2": "Not in CS2 right now"
     },
     "context_menu": {
       "view_profile": "View Profile",
@@ -6019,7 +6116,9 @@
     },
     "all_time_peak": "ALL-TIME PEAK",
     "at_match_start": "AT MATCH START",
-    "current_elo": "CURRENT"
+    "current_elo": "CURRENT",
+    "faceit_level": "Level {level}",
+    "elo_aria_label": "ELO, primary {tier} {elo}"
   },
   "maps": {
     "veto": {
@@ -6122,7 +6221,8 @@
       "unavailable": "Party of {size} can't queue this mode",
       "requirement": "Queue with {half} or fewer, or exactly {full} players"
     },
-    "temp_banned_until": "You are temporarily banned from matchmaking until {time}"
+    "temp_banned_until": "You are temporarily banned from matchmaking until {time}",
+    "new_invites_count": "New Invites ({count})"
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -6261,7 +6361,13 @@
     "no_metrics_description": "No metrics data available for this node yet. Metrics will appear once the node starts reporting data.",
     "current": "current",
     "percent_used": "{percent}% used",
-    "col_name": "NAME"
+    "col_name": "NAME",
+    "node_telemetry_description": "CPU and memory stay front and center, with network and disk history grouped underneath for deeper inspection.",
+    "disk": "Disk",
+    "cpu_hint": "Processor pressure over the last polling window.",
+    "memory_hint": "Working set usage compared against installed capacity.",
+    "network_hint": "Combined receive and transmit throughput across interfaces.",
+    "disk_hint": "Highest-utilization disk view with underlying timeline."
   },
   "chat": {
     "readonly": "Chat is read-only.",
@@ -6295,7 +6401,10 @@
   "charts": {
     "usage": "Usage",
     "mount_os": "OS",
-    "mount_demos": "Demos"
+    "mount_demos": "Demos",
+    "total_series": "{label} Total",
+    "gpu_index": "GPU {index}",
+    "series_avg": "{label} avg"
   },
   "server": {
     "join_server": "Join Server",
@@ -6488,7 +6597,8 @@
     "spectator": {
       "slot": "Slot {slot}",
       "slot_waiting": "Slot {slot} · waiting for player…",
-      "take_manual_control": "Click to take manual control"
+      "take_manual_control": "Click to take manual control",
+      "slot_key": "Slot {slot} · key {key}"
     },
     "page_title": "Stream Deck",
     "page_description": "Take over a GPU to broadcast a live match, switch destinations, and run the auto-director.",
@@ -6510,7 +6620,26 @@
     "swap_sides": "Swap sides (manual override)",
     "refresh_hud": "Refresh HUD (reload player images)",
     "autodirector_on": "Auto-director is on.",
-    "autodirector_hint": "CS2 is choosing the camera — clicking a target or pressing a key will turn this off and take manual control."
+    "autodirector_hint": "CS2 is choosing the camera — clicking a target or pressing a key will turn this off and take manual control.",
+    "actions": {
+      "spec_click": "Spectator {button} click",
+      "spec_slot": "Spectate slot {slot}",
+      "spec_jump": "Jump to spectator target",
+      "spec_autodirector": "Auto-director",
+      "spec_xray": "X-ray",
+      "spec_hud": "HUD visibility",
+      "set_hud_mode": "HUD layout",
+      "swap_sides": "Swap sides",
+      "refresh_hud": "Refresh HUD",
+      "start_live": "Start stream",
+      "stop_live": "Stop stream",
+      "reconnect": "Reconnect",
+      "skip_shaders": "Skip shader compile"
+    },
+    "gpu_pool_hint": "GPU pool — open the GPU Nodes page",
+    "no_free_gpu": "No free GPU",
+    "start_live_hint": "Start a live stream",
+    "start_tv_hint": "Start a delayed TV stream"
   },
   "system_metrics_extras": {
     "gpu_usage": "GPU usage",
@@ -6521,7 +6650,8 @@
   },
   "rcon": {
     "console": "RCON Console",
-    "suggestions": "Suggestions"
+    "suggestions": "Suggestions",
+    "entry_count": "{count} entries"
   },
   "game_server_node": {
     "set_ports": "Set Ports"
@@ -6617,7 +6747,9 @@
       "done_only_count": "{count} done",
       "cancelled_count": "{count} cancelled",
       "retry_failed_count": "Retry failed ({count})",
-      "retry_all_clips": "Retry all {count} clips"
+      "retry_all_clips": "Retry all {count} clips",
+      "target_clip": "{name} clip",
+      "render_id": "Render {id}"
     },
     "create_dialog": {
       "title": "Auto Clip",
@@ -6689,7 +6821,11 @@
       "no_moments": "No highlight-worthy moments for {target} on this map.",
       "this_player": "this player",
       "queue_render": "Queue render"
-    }
+    },
+    "player": "Player",
+    "clip": "Clip",
+    "open_profile": "Open {name}'s profile",
+    "size": "Size"
   },
   "time_ago": {
     "just_now": "just now",
@@ -6717,7 +6853,8 @@
     "view_short": "View",
     "premier": "Premier",
     "competitive": "Competitive",
-    "wingman": "Wingman"
+    "wingman": "Wingman",
+    "imported_from": "{type} · imported from {source}"
   },
   "breadcrumbs": {
     "dashboard": "dashboard"
@@ -7616,7 +7753,9 @@
       "award_unavailable": "This award could not be loaded.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
-    }
+    },
+    "badge_alt": "{label} award",
+    "badge_alt_tournament": "{label} award for {tournament}"
   },
   "awards_modal": {
     "view_tournament": "View Tournament",
@@ -7700,7 +7839,15 @@
     "dismiss": "Dismiss",
     "nag": "You are not connected yet. Check-in stays blocked until your camera is live.",
     "nag_action": "Set up",
-    "mic": "Microphone"
+    "mic": "Microphone",
+    "errors": {
+      "no_media_path": "The camera reached the server but no media path could be established.",
+      "ice_timeout": "The camera reached the server but no media path could be established in time.",
+      "feed_dropped": "The camera feed dropped.",
+      "unknown": "Could not start your camera.",
+      "load_failed": "Could not load player cameras.",
+      "call_failed": "Could not start the call."
+    }
   },
   "voice": {
     "errors": {
@@ -7773,22 +7920,14 @@
       "take_mic_back": "Mic on your phone — tap to bring it back here",
       "pop_out": "Pop out video",
       "pop_in": "Put video back",
-      "join_to_see": "Turn on your camera to see everyone else's.",
       "more_members": "+{count} more not shown",
       "phone": {
         "use_phone": "Use your phone as a camera",
         "scan": "Scan with your phone to use its camera for this call.",
         "scan_hint": "You'll sign in on your phone first",
-        "live": "On camera",
-        "idle": "Not sharing",
         "in_call": "{count} others in the call",
         "start": "Share this camera",
-        "stop": "Stop sharing",
-        "hint": "Camera and microphone are separate — take either, or both.",
         "not_a_member": "You're not in this call. Join it on the device you're playing on first, then scan the code again.",
-        "take_mic": "Use this microphone",
-        "release_mic": "Give microphone back",
-        "mic_live": "Mic",
         "mic_echo_hint": "Your PC needs headphones — on speakers this phone will pick the call back up and echo.",
         "not_in_call": "Join the call on the device you’re playing on, then this phone can take it over.",
         "take_mic_short": "Take mic",
@@ -7798,12 +7937,10 @@
         "hand_back": "Hand back"
       },
       "nobody_yet": "Nobody's connected yet.",
-      "started_video": "{name} turned their camera on",
       "hide_video": "Hide their camera",
       "show_video": "Show their camera",
       "show_self": "Show my camera to me",
       "device_settings": "Voice & video settings",
-      "joined_voice": "{name} joined voice",
       "join_action": "Join",
       "dismiss_action": "Dismiss",
       "handoff_taken": "Picked up {channel} from a window you closed",
@@ -7819,8 +7956,7 @@
       "system_default": "System default",
       "selected": "Selected device",
       "following_system": "Follows your system setting",
-      "device": "Device",
-      "camera": "Camera"
+      "device": "Device"
     }
   },
   "chat_rail": {

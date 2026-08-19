@@ -453,17 +453,22 @@ export default {
     // when the latest status_history entry carries a progress field.
     gameStreamerStatusLabel(stream) {
       const status = stream?.status;
-      const labels = {
-        launching_steam: "Launching Steam…",
-        logging_in: "Logging in…",
-        downloading_cs2: "Installing CS2…",
-        launching_cs2: "Launching CS2…",
-        connecting_to_game: "Connecting to game…",
-        starting_capture: "Starting capture…",
-      };
+      // These stages already have copy under live_stages.*; an unknown status
+      // falls back to its raw value rather than an English-only word split.
+      const known = [
+        "launching_steam",
+        "logging_in",
+        "downloading_cs2",
+        "launching_cs2",
+        "connecting_to_game",
+      ];
       const base = status
-        ? labels[status] || status.replace(/_/g, " ")
-        : this.$t("streams.booting_badge") || "Booting…";
+        ? known.includes(status)
+          ? `${this.$t(`live_stages.${status}`)}…`
+          : status === "starting_capture"
+            ? `${this.$t("stream_deck_status.starting_capture")}…`
+            : status
+        : this.$t("streams.booting_badge");
 
       const history = Array.isArray(stream?.status_history)
         ? stream.status_history

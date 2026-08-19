@@ -90,7 +90,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
       <DrawerHeader>
         <div class="flex justify-between items-center">
           <DrawerTitle class="capitalize flex flex-col gap-4">
-            {{ sanctionType }}ing Player
+            {{ $t(`player.sanction.heading.${sanctionType}`) }}
             <PlayerDisplay :player="player" />
           </DrawerTitle>
           <DrawerClose>
@@ -171,7 +171,7 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
           type="submit"
           :loading="submitting"
         >
-          {{ $t("player.sanction.typed_player", { type: sanctionType }) }}
+          {{ $t(`player.sanction.submit.${sanctionType}`) }}
         </Button>
       </form>
     </DrawerContent>
@@ -311,7 +311,9 @@ export default {
         });
 
         toast({
-          title: `${this.sanctionType}ed ${this.player.name}`,
+          title: this.$t(`player.sanction.applied.${this.sanctionType}`, {
+            name: this.player.name,
+          }),
         });
 
         this.sanctioningPlayer = false;

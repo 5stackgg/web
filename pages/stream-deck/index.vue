@@ -243,15 +243,19 @@ const activeMatchIds = computed(
 );
 const isActiveMatch = (matchId: string) => activeMatchIds.value.has(matchId);
 
+// `action` is a stable id, not copy -- the template compares against it to pick
+// which button shows a spinner. The toast title is translated from it separately
+// so the two never drift.
 async function runMutation(
   matchId: string,
-  label: string,
+  action: string,
   build: () => Record<string, unknown>,
+  params?: Record<string, unknown>,
 ) {
   const state = ensureState(matchId);
   if (state.busy) return;
   state.busy = true;
-  state.action = label;
+  state.action = action;
   try {
     await apolloClient.mutate({
       mutation: generateMutation(build()),
@@ -259,8 +263,8 @@ async function runMutation(
   } catch (error: any) {
     toast({
       variant: "destructive",
-      title: label,
-      description: error?.message ?? "request failed",
+      title: t(`stream_deck.actions.${action}`, params ?? {}),
+      description: error?.message ?? t("toasts.request_failed"),
     });
   } finally {
     state.busy = false;
@@ -269,9 +273,14 @@ async function runMutation(
 }
 
 function specClick(matchId: string, button: "left" | "right") {
-  return runMutation(matchId, `spec ${button} click`, () => ({
-    specClick: [{ match_id: matchId, button }, { success: true }],
-  }));
+  return runMutation(
+    matchId,
+    "spec_click",
+    () => ({
+      specClick: [{ match_id: matchId, button }, { success: true }],
+    }),
+    { button },
+  );
 }
 
 async function specSlot(matchId: string, slot: number) {
@@ -279,9 +288,14 @@ async function specSlot(matchId: string, slot: number) {
   if (stream && isAutodirector(stream)) {
     await setAutodirector(matchId, false);
   }
-  return runMutation(matchId, `spec slot ${slot}`, () => ({
-    specSlot: [{ match_id: matchId, slot }, { success: true }],
-  }));
+  return runMutation(
+    matchId,
+    "spec_slot",
+    () => ({
+      specSlot: [{ match_id: matchId, slot }, { success: true }],
+    }),
+    { slot },
+  );
 }
 
 const confirmStop = reactive<Record<string, boolean>>({});
@@ -294,7 +308,7 @@ function stopLive(matchId: string) {
     return;
   }
   confirmStop[matchId] = false;
-  return runMutation(matchId, "stop live", () => ({
+  return runMutation(matchId, "stop_live", () => ({
     stopLive: [{ match_id: matchId }, { success: true }],
   }));
 }
@@ -303,7 +317,7 @@ async function setAutodirector(matchId: string, enabled: boolean) {
   // No optimistic local state — the API persists the flag on
   // match_streams.autodirector and the Hasura subscription pushes the
   // updated row back, which the template reads via isAutodirector().
-  await runMutation(matchId, "spec autodirector", () => ({
+  await runMutation(matchId, "spec_autodirector", () => ({
     specAutodirector: [{ match_id: matchId, enabled }, { success: true }],
   }));
 }
@@ -315,7 +329,7 @@ async function startLive(matchId: string, mode: "live" | "tv") {
   }
   state.mode = mode;
   try {
-    await runMutation(matchId, "start live", () => ({
+    await runMutation(matchId, "start_live", () => ({
       startLive: [{ match_id: matchId, mode }, { success: true }],
     }));
   } finally {
@@ -339,7 +353,7 @@ async function onSkipShaders(matchId: string) {
   if (skippingShaders.value[matchId]) return;
   skippingShaders.value = { ...skippingShaders.value, [matchId]: true };
   try {
-    await runMutation(matchId, "skip-shaders", () => ({
+    await runMutation(matchId, "skip_shaders", () => ({
       skipShaders: [{ match_id: matchId }, { success: true }],
     }));
   } finally {
@@ -458,7 +472,7 @@ function statusBadgeLabel(stream: any) {
   if (stream.is_live) return t("stream_deck_status.live");
   const s = stream?.status as string | undefined;
   if (!s) return t("stream_deck_status.booting");
-  return (STATUS_LABELS.value[s] ?? s.replace(/_/g, " ")).toUpperCase();
+  return (STATUS_LABELS.value[s] ?? s).toUpperCase();
 }
 
 // Resolve the live map for a tile. Prefer current_match_map_id; fall
@@ -515,7 +529,7 @@ function matchStatusLabel(m: LiveMatch): string {
                 ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)]'
                 : 'border-emerald-700/45 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/15',
           ]"
-          :title="busyReason || 'GPU pool — open the GPU Nodes page'"
+          :title="busyReason || $t('stream_deck.gpu_pool_hint')"
         >
           <Cpu class="size-3.5" />
           <span class="font-semibold">GPU</span>
@@ -732,7 +746,7 @@ function matchStatusLabel(m: LiveMatch): string {
                   <Spinner
                     v-if="
                       cs(stream.match_id).busy &&
-                      cs(stream.match_id).action === 'stop live'
+                      cs(stream.match_id).action === 'stop_live'
                     "
                   />
                   <Square
@@ -787,7 +801,7 @@ function matchStatusLabel(m: LiveMatch): string {
               :stream="stream"
               :is-live="!!stream.is_live"
               mode="live"
-              header-label="Stream boot"
+              :header-label="$t('live_stages.stream_boot')"
               :show-boot="true"
               class="group aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
@@ -799,7 +813,7 @@ function matchStatusLabel(m: LiveMatch): string {
                   :error-message="stream.error_message ?? null"
                   :last-status-at="stream.last_status_at ?? null"
                   :histories="[stream.status_history ?? []]"
-                  header-label="Stream boot"
+                  :header-label="$t('live_stages.stream_boot')"
                   :can-skip="true"
                   :skipping="!!skippingShaders[stream.match_id]"
                   @skip="onSkipShaders(stream.match_id)"
@@ -1141,8 +1155,8 @@ function matchStatusLabel(m: LiveMatch): string {
                   :title="
                     deckReadiness(m).reason ||
                     (!hasFreeGpu
-                      ? busyReason || 'No free GPU'
-                      : 'Start a live stream')
+                      ? busyReason || $t('stream_deck.no_free_gpu')
+                      : $t('stream_deck.start_live_hint'))
                   "
                   @click="startLive(m.id, 'live')"
                 >
@@ -1162,14 +1176,14 @@ function matchStatusLabel(m: LiveMatch): string {
                   :title="
                     deckReadiness(m).reason ||
                     (!hasFreeGpu
-                      ? busyReason || 'No free GPU'
-                      : 'Start a delayed TV stream')
+                      ? busyReason || $t('stream_deck.no_free_gpu')
+                      : $t('stream_deck.start_tv_hint'))
                   "
                   @click="startLive(m.id, 'tv')"
                 >
                   <Spinner v-if="cs(m.id).busy && cs(m.id).mode === 'tv'" />
                   <Tv v-else class="size-3.5" />
-                  TV
+                  {{ $t("streams.mode_tv") }}
                 </button>
               </div>
             </div>

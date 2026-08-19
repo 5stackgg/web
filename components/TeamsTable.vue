@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
@@ -68,13 +69,15 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           >
             <Users class="w-3 h-3" />
             <span class="tabular-nums">{{ rosterCount(team) }}</span>
-            <span>roster</span>
+            <span>{{ $t("team.roster_short") }}</span>
             <template v-if="avgElo(team) !== null">
               <span class="mx-1 opacity-40">·</span>
               <span class="tabular-nums text-[hsl(var(--tac-amber))]">
                 {{ avgElo(team) }}
               </span>
-              <span class="text-[hsl(var(--tac-amber))]">avg</span>
+              <span class="text-[hsl(var(--tac-amber))]">{{
+                $t("common.avg")
+              }}</span>
             </template>
             <template v-if="topCountries(team).length">
               <span class="mx-1 opacity-40">·</span>
@@ -318,7 +321,7 @@ export default {
       const d = new Date(iso);
       if (Number.isNaN(d.getTime())) return "";
       return d
-        .toLocaleDateString(undefined, {
+        .toLocaleDateString(dateLocale(), {
           month: "short",
           day: "numeric",
           year: "numeric",

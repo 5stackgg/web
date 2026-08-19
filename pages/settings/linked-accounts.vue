@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -506,7 +507,7 @@ function togglePendingFilter(status: PendingStatus) {
 }
 
 function formatPendingDate(date: string): string {
-  return new Date(date).toLocaleString(undefined, {
+  return new Date(date).toLocaleString(dateLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric",

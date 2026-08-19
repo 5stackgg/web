@@ -647,11 +647,12 @@ function visibleFinishedJobs(g: BatchGroup): Job[] {
 }
 
 function clipTitle(j: Job): string {
-  const t = j.spec?.title;
-  if (typeof t === "string" && t.length > 0) return t;
+  const title = j.spec?.title;
+  if (typeof title === "string" && title.length > 0) return title;
   const target = j.spec?.target_name;
-  if (typeof target === "string" && target.length > 0) return `${target} clip`;
-  return `Render ${j.id.slice(0, 8)}`;
+  if (typeof target === "string" && target.length > 0)
+    return t("clips.render_queue.target_clip", { name: target });
+  return t("clips.render_queue.render_id", { id: j.id.slice(0, 8) });
 }
 
 function matchupLabel(j: Job): string | null {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, watch } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import { Button } from "~/components/ui/button";
@@ -149,7 +150,7 @@ const canPrev = computed(() => cursor.value > firstMonth.value);
 const canNext = computed(() => cursor.value < lastMonth.value);
 
 const monthLabel = computed(() =>
-  cursorDate.value.toLocaleDateString(undefined, {
+  cursorDate.value.toLocaleDateString(dateLocale(), {
     month: "long",
     year: "numeric",
   }),
@@ -162,7 +163,7 @@ const weekdayNames = computed(() => {
     const day = new Date(base);
     day.setDate(base.getDate() + index);
     return {
-      short: day.toLocaleDateString(undefined, { weekday: "short" }),
+      short: day.toLocaleDateString(dateLocale(), { weekday: "short" }),
       index,
     };
   });
@@ -329,14 +330,14 @@ function statusKey(fixture: Fixture): string {
 }
 
 function formatTime(value: Date): string {
-  return value.toLocaleTimeString(undefined, {
+  return value.toLocaleTimeString(dateLocale(), {
     hour: "numeric",
     minute: "2-digit",
   });
 }
 
 function formatDay(value: Date): string {
-  return value.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return value.toLocaleDateString(dateLocale(), { month: "short", day: "numeric" });
 }
 
 function opponentLabel(fixture: Fixture): string {
@@ -857,7 +858,7 @@ function onPopoverSubmit(proposedTime: string, message: string) {
               <span
                 class="block font-mono text-[0.5rem] uppercase tracking-[0.12em] text-muted-foreground"
               >
-                {{ fixture.date.toLocaleDateString(undefined, { month: "short" }) }}
+                {{ fixture.date.toLocaleDateString(dateLocale(), { month: "short" }) }}
               </span>
               <span class="block font-mono text-base font-bold leading-none">
                 {{ fixture.date.getDate() }}

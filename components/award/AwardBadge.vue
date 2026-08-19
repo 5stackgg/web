@@ -164,7 +164,14 @@ const showOverlay = computed(() => props.size !== "xs");
       :viewBox="`0 0 200 ${showEngraving ? 260 : 220}`"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      :aria-label="`${palette.label} award${tournamentName ? ' for ' + tournamentName : ''}`"
+      :aria-label="
+        tournamentName
+          ? $t('awards.badge_alt_tournament', {
+              label: palette.label,
+              tournament: tournamentName,
+            })
+          : $t('awards.badge_alt', { label: palette.label })
+      "
       class="h-full w-full drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
     >
       <defs>

@@ -110,8 +110,8 @@
             class="h-6 text-sm py-0 px-1"
             :placeholder="
               store.pendingCreate.type === 'directory'
-                ? 'folder name'
-                : 'file name'
+                ? $t('file_manager.placeholder_folder_name')
+                : $t('file_manager.placeholder_file_name')
             "
             @keydown.enter="confirmInlineCreate"
             @keydown.escape="cancelInlineCreate"

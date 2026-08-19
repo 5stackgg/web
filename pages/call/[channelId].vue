@@ -303,7 +303,7 @@ const statusLine = computed(() => {
   }
 
   if (phase.value === "error" && errorMessage.value) {
-    return errorMessage.value;
+    return t(errorMessage.value);
   }
 
   // Echo cancellation runs against the output of the device doing the

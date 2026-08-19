@@ -1,4 +1,5 @@
 <script lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { $ } from "~/generated/zeus";
 import mapLabel from "~/utilities/mapLabel";
 import teamAvatarSrc from "~/utilities/teamAvatar";
@@ -269,14 +270,14 @@ export default {
       }
       const start = new Date(iso);
       const end = new Date(start.getTime() + Number(this.bestOf) * 3600000);
-      const startLabel = start.toLocaleString(undefined, {
+      const startLabel = start.toLocaleString(dateLocale(), {
         weekday: "short",
         month: "short",
         day: "numeric",
         hour: "numeric",
         minute: "2-digit",
       });
-      const endLabel = end.toLocaleString(undefined, {
+      const endLabel = end.toLocaleString(dateLocale(), {
         hour: "numeric",
         minute: "2-digit",
       });

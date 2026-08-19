@@ -184,7 +184,7 @@ const metaLine = computed(() => {
 
 const pool = computed(() => opts.value.map_pool || props.room.map_pool);
 const maps = computed(() => pool.value?.maps || []);
-const poolName = computed(() => pool.value?.type || "Default");
+const poolName = computed(() => pool.value?.type || t("common.default"));
 const mapName = (map: any) => map.label || cleanMapName(map.name);
 
 const onOff = (value: any) =>

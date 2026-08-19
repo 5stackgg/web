@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, onMounted } from "vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -68,7 +69,7 @@ const formatDate = (value: string | null) => {
   if (!value) {
     return "";
   }
-  return new Date(value).toLocaleDateString(undefined, {
+  return new Date(value).toLocaleDateString(dateLocale(), {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -207,7 +208,7 @@ onMounted(() => {
                   v-if="article.author.role"
                   class="font-normal capitalize text-muted-foreground"
                 >
-                  · {{ article.author.role.replace("_", " ") }}
+                  · {{ $t(`player_roles.${article.author.role}`) }}
                 </span>
               </div>
             </div>

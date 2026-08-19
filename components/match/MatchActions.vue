@@ -891,15 +891,19 @@ export default {
       }
       const status = row.status as string | undefined;
       if (!status) return "";
-      const stepLabels: Record<string, string> = {
-        launching_steam: "Launching Steam…",
-        logging_in: "Logging in…",
-        downloading_cs2: "Installing CS2…",
-        launching_cs2: "Launching CS2…",
-        connecting_to_game: "Connecting to game…",
-        starting_capture: "Starting capture…",
-      };
-      return stepLabels[status] || status.replace(/_/g, " ");
+      // Same stages as the live-stream badge — reuse live_stages.* instead of
+      // re-stating them in English here.
+      const known = [
+        "launching_steam",
+        "logging_in",
+        "downloading_cs2",
+        "launching_cs2",
+        "connecting_to_game",
+      ];
+      if (known.includes(status)) return `${this.$t(`live_stages.${status}`)}…`;
+      if (status === "starting_capture")
+        return `${this.$t("stream_deck_status.starting_capture")}…`;
+      return status;
     },
     currentMap() {
       return this.match.match_maps?.find((m: any) => m.is_current_map);

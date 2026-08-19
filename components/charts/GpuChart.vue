@@ -182,7 +182,8 @@ export default {
       const multipleDevices = this.deviceIndexes.length > 1;
 
       this.deviceIndexes.forEach((idx) => {
-        const name = this.deviceNames[idx] ?? `GPU ${idx}`;
+        const name =
+          this.deviceNames[idx] ?? this.$t("charts.gpu_index", { index: idx });
 
         if (usingMemory) {
           datasets.push({
@@ -202,7 +203,7 @@ export default {
           const capacity = this.deviceCapacityMb[idx];
           if (capacity) {
             datasets.push({
-              label: `${name} Total`,
+              label: this.$t("charts.total_series", { label: name }),
               fill: false,
               borderColor: this.hex2rgba(baseColor, 0.75),
               backgroundColor: this.hex2rgba(baseColor, 0.2),

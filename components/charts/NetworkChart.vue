@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dateLocale } from "~/utilities/dateLocale";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -119,7 +120,7 @@ export default {
             beginAtZero: true,
             ticks: {
               callback: (value: any) => {
-                return `${Number(value).toLocaleString(undefined, {
+                return `${Number(value).toLocaleString(dateLocale(), {
                   maximumFractionDigits: 2,
                 })} Mbps`;
               },

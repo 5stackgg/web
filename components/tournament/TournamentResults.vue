@@ -191,7 +191,8 @@ function playerAvatarSrc(player: {
               <div
                 class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
-                ▚ TOURNAMENT STATS · {{ placementLabel(entry.placement) }}
+                ▚ {{ $t("tournament.results.stats_heading") }} ·
+                {{ placementLabel(entry.placement) }}
               </div>
               <NuxtLink
                 v-if="entry.realTeamId"
@@ -421,7 +422,7 @@ function playerAvatarSrc(player: {
               class="inline-flex items-center gap-2 rounded-sm border border-destructive/55 bg-destructive/15 px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
             >
               <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-              LIVE · PROVISIONAL
+              {{ $t("tournament.results.live_provisional") }}
             </span>
           </div>
         </CardHeader>

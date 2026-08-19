@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { Badge } from "~/components/ui/badge";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import RoundHistoryBar from "~/components/match/RoundHistoryBar.vue";
@@ -180,7 +181,11 @@ import mapLabel from "~/utilities/mapLabel";
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-64">
               <DropdownMenuLabel class="text-xs">
-                {{ matchMap.demos.length }} demos for this map
+                {{
+                  $t("match.maps.demos_for_map", {
+                    count: matchMap.demos.length,
+                  })
+                }}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -202,7 +207,7 @@ import mapLabel from "~/utilities/mapLabel";
                     v-if="!demo.metadata_parsed_at || !demo.total_ticks"
                     class="text-[10px] uppercase tracking-wider text-muted-foreground"
                   >
-                    not parsed
+                    {{ $t("match.maps.not_parsed") }}
                   </span>
                 </div>
               </DropdownMenuItem>
@@ -459,7 +464,7 @@ export default {
         return {
           icon: "loading",
           disabled: true,
-          tooltip: "Parsing demo…",
+          tooltip: this.$t("match.maps.demo_parsing"),
           onClick: null,
         };
       }
@@ -468,14 +473,14 @@ export default {
           return {
             icon: "parse",
             disabled: false,
-            tooltip: "Parse demo metadata",
+            tooltip: this.$t("match.maps.demo_parse"),
             onClick: () => this.parseDemo(),
           };
         }
         return {
           icon: "play",
           disabled: true,
-          tooltip: "Demo metadata has not been parsed",
+          tooltip: this.$t("match.maps.demo_not_parsed"),
           onClick: null,
         };
       }
@@ -494,7 +499,7 @@ export default {
       return {
         icon: "play",
         disabled: false,
-        tooltip: "Watch demo",
+        tooltip: this.$t("match.maps.demo_watch"),
         onClick: () => this.openDemoWatcher(),
       };
     },
@@ -606,7 +611,7 @@ export default {
       const d = new Date(iso);
       if (Number.isNaN(d.getTime()))
         return this.$t("match_extras.unknown_date");
-      return d.toLocaleString(undefined, {
+      return d.toLocaleString(dateLocale(), {
         year: "numeric",
         month: "short",
         day: "numeric",

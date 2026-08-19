@@ -642,7 +642,7 @@ const killMarkers = computed<Marker[]>(() => {
           <span
             class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
           >
-            Demo ended — cs2 dropped to menu
+            {{ $t("match.demo_playback.demo_ended") }}
           </span>
           <Button
             variant="outline"
@@ -651,7 +651,8 @@ const killMarkers = computed<Marker[]>(() => {
             @click="reloadDemo"
           >
             <RotateCcw class="h-3.5 w-3.5 mr-1.5" />
-            Reload <Kbd class="ml-2">R</Kbd>
+            {{ $t("match.demo_playback.reload") }}
+            <Kbd class="ml-2">R</Kbd>
           </Button>
         </div>
       </Transition>
@@ -674,7 +675,7 @@ const killMarkers = computed<Marker[]>(() => {
               ? 'text-[hsl(var(--tac-amber))] animate-pulse'
               : 'text-muted-foreground'
           "
-          :title="store.seeking ? 'Seeking — cs2 is catching up' : undefined"
+          :title="store.seeking ? $t('match.demo_playback.seeking') : undefined"
         >
           {{ formattedCurrent }}
         </span>
@@ -693,7 +694,7 @@ const killMarkers = computed<Marker[]>(() => {
               type="button"
               :style="{ left: m.left }"
               class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
-              :title="`${m.label} — click to jump`"
+              :title="$t('match.demo_playback.click_to_jump', { label: m.label })"
               @click="jumpToKill(m.tick)"
             >
               <Skull
@@ -732,7 +733,11 @@ const killMarkers = computed<Marker[]>(() => {
                     type="button"
                     :style="{ left: m.left }"
                     class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto h-3 w-[2px] bg-[hsl(var(--tac-amber))] cursor-pointer hover:h-4 hover:w-[3px] hover:bg-[hsl(var(--tac-amber))] transition-all duration-150"
-                    :title="`${m.label} — click to jump`"
+                    :title="
+                      $t('match.demo_playback.click_to_jump', {
+                        label: m.label,
+                      })
+                    "
                     @click="seek(m.tick)"
                   />
                 </TooltipTrigger>
@@ -759,7 +764,7 @@ const killMarkers = computed<Marker[]>(() => {
         v-else
         class="text-xs uppercase tracking-wider text-muted-foreground/70"
       >
-        Demo metadata not parsed yet — play/pause + skip + speed still work.
+        {{ $t("match.demo_playback.metadata_not_parsed") }}
       </p>
 
       <SpectatorSlots
@@ -794,7 +799,7 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Previous round <Kbd>[</Kbd>
+              {{ $t("match.demo_playback.previous_round") }} <Kbd>[</Kbd>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -810,7 +815,7 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Next round <Kbd>]</Kbd>
+              {{ $t("match.demo_playback.next_round") }} <Kbd>]</Kbd>
             </TooltipContent>
           </Tooltip>
 
@@ -854,7 +859,7 @@ const killMarkers = computed<Marker[]>(() => {
                 store.killFilterSteamId
                   ? undefined
                   : followedKillSteamId
-                    ? 'Kill nav follows the spectated player — pick a player to lock'
+                    ? $t('match.demo_playback.kill_nav_follows')
                     : undefined
               "
             >
@@ -874,7 +879,11 @@ const killMarkers = computed<Marker[]>(() => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="__all__" class="cursor-pointer">
-                All players ({{ store.kills.length }})
+                {{
+                  $t("match.demo_playback.all_players", {
+                    count: store.kills.length,
+                  })
+                }}
               </SelectItem>
               <SelectGroup v-if="ctDemoPlayers.length">
                 <SelectLabel
@@ -939,8 +948,12 @@ const killMarkers = computed<Marker[]>(() => {
               </button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Previous kill{{
-                followedKillName ? ` — ${followedKillName}` : ""
+              {{
+                followedKillName
+                  ? $t("match.demo_playback.previous_kill_player", {
+                      name: followedKillName,
+                    })
+                  : $t("match.demo_playback.previous_kill")
               }}
               <Kbd>P</Kbd>
             </TooltipContent>
@@ -958,7 +971,8 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Skip back 15s <Kbd>←</Kbd>
+              {{ $t("match.demo_playback.skip_back", { seconds: 15 }) }}
+              <Kbd>←</Kbd>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -1013,7 +1027,13 @@ const killMarkers = computed<Marker[]>(() => {
               </button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Next kill{{ followedKillName ? ` — ${followedKillName}` : "" }}
+              {{
+                followedKillName
+                  ? $t("match.demo_playback.next_kill_player", {
+                      name: followedKillName,
+                    })
+                  : $t("match.demo_playback.next_kill")
+              }}
               <Kbd>N</Kbd>
             </TooltipContent>
           </Tooltip>
@@ -1095,7 +1115,7 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Reload demo <Kbd>R</Kbd>
+              {{ $t("match.demo_playback.reload_demo") }} <Kbd>R</Kbd>
             </TooltipContent>
           </Tooltip>
 
@@ -1142,7 +1162,12 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              X-ray {{ store.xrayEnabled ? "on" : "off" }} <Kbd>X</Kbd>
+              {{
+                store.xrayEnabled
+                  ? $t("match.demo_playback.xray_on")
+                  : $t("match.demo_playback.xray_off")
+              }}
+              <Kbd>X</Kbd>
             </TooltipContent>
           </Tooltip>
 
@@ -1210,7 +1235,7 @@ const killMarkers = computed<Marker[]>(() => {
               </div>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              HUD layout / visibility <Kbd>H</Kbd>
+              {{ $t("match.demo_playback.hud_layout") }} <Kbd>H</Kbd>
             </TooltipContent>
           </Tooltip>
 

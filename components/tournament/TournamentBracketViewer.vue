@@ -712,7 +712,8 @@ function startMomentum() {
                   class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md"
                 >
                   <span class="font-semibold text-sm">{{
-                    roundLabels.get(round) || `Round ${round}`
+                    roundLabels.get(round) ||
+                    $t("tournament.bracket.round_number", { round })
                   }}</span>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import TimeAgo from "~/components/TimeAgo.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
@@ -112,7 +113,7 @@ export default {
         return "";
       }
 
-      return time.toLocaleTimeString(undefined, {
+      return time.toLocaleTimeString(dateLocale(), {
         hour: "numeric",
         minute: "2-digit",
       });

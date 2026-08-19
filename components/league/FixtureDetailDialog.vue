@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { computed } from "vue";
 import {
   Dialog,
@@ -71,7 +72,7 @@ function respondable(proposal: Proposal): boolean {
 }
 
 function formatLocal(value: Date | string): string {
-  return new Date(value).toLocaleString(undefined, {
+  return new Date(value).toLocaleString(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -83,7 +84,7 @@ function formatLocal(value: Date | string): string {
 // Neither team's timezone is stored, so rather than guess we anchor every
 // negotiated time to UTC — the one clock both sides can agree on.
 function formatUtc(value: Date | string): string {
-  return `${new Date(value).toLocaleString(undefined, {
+  return `${new Date(value).toLocaleString(dateLocale(), {
     timeZone: "UTC",
     weekday: "short",
     hour: "numeric",

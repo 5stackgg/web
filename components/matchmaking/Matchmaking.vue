@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { useMediaQuery } from "@vueuse/core";
 import { AlertTriangle } from "lucide-vue-next";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
@@ -20,7 +21,7 @@ const formatBanExpiry = (value: unknown) => {
     return "";
   }
 
-  return date.toLocaleString(undefined, {
+  return date.toLocaleString(dateLocale(), {
     dateStyle: "medium",
     timeStyle: "short",
   });

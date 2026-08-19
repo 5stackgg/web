@@ -224,7 +224,7 @@ import PlayerContextMenu from "~/components/player/PlayerContextMenu.vue";
                 </template>
               </template>
               <span class="capitalize">
-                {{ player?.role?.replace("_", " ") }}
+                {{ player?.role ? $t(`player_roles.${player.role}`) : "" }}
               </span>
             </FiveStackToolTip>
             <template v-if="showElo && matchRank">

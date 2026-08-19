@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dateLocale } from "~/utilities/dateLocale";
 import { useI18n } from "vue-i18n";
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import DemoUpload from "~/components/DemoUpload.vue";
@@ -238,7 +239,7 @@ function seasonRange(s: {
   ends_at: string | null;
 }): string {
   const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString(undefined, {
+    new Date(iso).toLocaleDateString(dateLocale(), {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -1643,7 +1644,7 @@ function fmtSignedStat(n: number | null | undefined): string {
 
 function fmtDateShort(iso: string | null | undefined): string {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString(dateLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -1868,7 +1869,7 @@ const playerHeroTeamChipDotClasses =
                     <PlayerRoleForm :player="player" />
                   </div>
                   <span v-else :class="playerHeroInlineRoleChipClasses">
-                    {{ (player.role || "user").replace("_", " ") }}
+                    {{ $t(`player_roles.${player.role || "user"}`) }}
                   </span>
                 </template>
 
@@ -2207,10 +2208,7 @@ const playerHeroTeamChipDotClasses =
               >
                 <Maximize2 class="h-3 w-3" />
                 {{
-                  $t(
-                    "pages.players.detail.view_full_elo_history",
-                    "View full history",
-                  )
+                  $t("pages.players.detail.view_full_elo_history")
                 }}
               </button>
             </div>
@@ -2924,16 +2922,18 @@ const playerHeroTeamChipDotClasses =
               <span class="flex items-center gap-1.5">
                 <span class="text-[hsl(var(--tac-amber))]">{{
                   sourceRef === "external"
-                    ? "External"
+                    ? $t("player_match.source.external")
                     : sourceRef === "all"
                       ? $t("pages.players.detail.all_short")
-                      : "5Stack"
+                      : $t("player_match.source.internal")
                 }}</span>
                 <span class="opacity-40">·</span>
                 <span>{{
-                  selectedModeRef === "all"
+                  !selectedModeRef || selectedModeRef === "all"
                     ? $t("pages.players.detail.all_short")
-                    : selectedModeRef
+                    : $t(
+                        `pages.leaderboard.match_types.${selectedModeRef.toLowerCase()}`,
+                      )
                 }}</span>
               </span>
             </div>

@@ -79,7 +79,9 @@ const primaryStage = computed(() => {
 const stageLabel = computed(() => {
   const stage = primaryStage.value;
   const stageType =
-    stage?.e_tournament_stage_type?.description || stage?.type || "Bracket";
+    stage?.e_tournament_stage_type?.description ||
+    stage?.type ||
+    t("tournament.bracket.default_label");
   const bestOf =
     stage?.options?.best_of ||
     stage?.default_best_of ||

@@ -489,7 +489,7 @@ function onRenderClose() {
             :key="`r-${m.round}`"
             :style="{ left: m.left }"
             class="absolute top-0 bottom-0 w-px bg-[hsl(var(--tac-amber)/0.35)] pointer-events-none"
-            :title="`Round ${m.round}`"
+            :title="$t('common.round', { number: m.round })"
           />
 
           <div

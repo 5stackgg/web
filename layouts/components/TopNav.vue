@@ -155,7 +155,7 @@ const loginArrowClasses =
           <NuxtImg
             class="h-[30px] w-[30px] shrink-0 object-contain"
             :src="logoUrl || '/favicon/64.png'"
-            :alt="brandName || 'brand'"
+            :alt="brandName || $t('layouts.app_nav.brand')"
           />
 
           <span

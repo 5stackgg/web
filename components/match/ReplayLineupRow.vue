@@ -298,7 +298,7 @@ const secondaryIcon = computed(
             :title="
               grenadeCount(slot) > 0
                 ? `${slot.label} ×${grenadeCount(slot)}`
-                : `${slot.label} (none)`
+                : $t('match.replay.utility_none', { label: slot.label })
             "
           >
             <img

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, onMounted, watch } from "vue";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -44,7 +45,7 @@ const formatDate = (value: string | null) => {
   if (!value) {
     return "";
   }
-  return new Date(value).toLocaleDateString(undefined, {
+  return new Date(value).toLocaleDateString(dateLocale(), {
     year: "numeric",
     month: "short",
     day: "numeric",

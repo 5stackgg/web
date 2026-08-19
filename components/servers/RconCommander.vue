@@ -195,9 +195,9 @@ import {
             {{ $t("server.rcon.console_output") }}
           </h5>
           <div class="flex items-center gap-2">
-            <span class="text-xs text-muted-foreground"
-              >{{ logs.length }} entries</span
-            >
+            <span class="text-xs text-muted-foreground">{{
+              $t("rcon.entry_count", { count: logs.length })
+            }}</span>
             <Button
               @click="clearLogs"
               variant="outline"

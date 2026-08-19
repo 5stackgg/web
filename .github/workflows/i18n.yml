@@ -1,0 +1,67 @@
+name: i18n
+
+# Crowdin used to be what kept the 16 locale files in step with en.json. It was
+# removed, so this is the replacement: nothing else notices when a locale drifts,
+# and the failure mode is silent -- a lost {placeholder} drops data out of a
+# sentence, a changed plural-arm count makes vue-i18n pick the wrong form, and a
+# missing key renders the raw dotted path to the player.
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+      - "beta"
+  workflow_dispatch:
+
+concurrency:
+  group: i18n-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  check-translations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      # skip-build avoids the `nuxt prepare` postinstall: the check only needs
+      # `glob`, and preparing a full Nuxt app to run one lint script is a slow
+      # way to fail for reasons that have nothing to do with translations.
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+
+      - name: Check translations
+        id: check
+        run: |
+          set -o pipefail
+          yarn check-translations 2>&1 | tee /tmp/i18n.log
+
+      # Written whatever the result, so a green run still shows the locale table
+      # rather than making someone expand the log to confirm it passed.
+      - name: Report
+        if: always()
+        run: |
+          {
+            if [ "${{ steps.check.outcome }}" = "success" ]; then
+              echo "### ✅ Translations in sync"
+            else
+              echo "### ❌ Translation check failed"
+              echo ""
+              echo "Run \`yarn check-translations\` locally to reproduce."
+            fi
+            echo ""
+            echo '```'
+            # Everything except the unused-key dump, which is ~180 lines of
+            # keys that never fail the run. What's left is the missing-key list
+            # (with its call sites), the totals, and the locale table -- i.e.
+            # exactly the things that can turn this job red.
+            awk '/^Unused Translations:/{skip=1} /^Summary:/{skip=0} !skip' \
+              /tmp/i18n.log | head -c 60000
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

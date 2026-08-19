@@ -976,7 +976,8 @@
     "live": "CANLI",
     "unplayed": "OYNANMADI",
     "upcoming": "YAKINDA",
-    "decider": "Belirleyici"
+    "decider": "Belirleyici",
+    "map_number": "HARİTA {number}"
   },
   "elo_change_badge": {
     "comp": "COMP",
@@ -1112,11 +1113,7 @@
     "notes_section": "Notlar",
     "notes_placeholder": "Rakiplerin bilmesi gerekenler — sunucu tercihi, hile korumaı, ses vb.",
     "settings_saved": "Scrim ayarları kaydedildi",
-    "settings_save_error": "Scrim ayarları kaydedilemedi",
-    "calendar_link_copied": "Takvim bağlantısı kopyalandı",
-    "calendar_subscription_help": "Planlanan scrimleri görmek için takvim uygulamanda bu URL'ye abone ol.",
-    "calendar_link_error": "Takvim bağlantısı alınamadı",
-    "subscribe_to_matches": "Planlanan Maçlara Abone Ol"
+    "settings_save_error": "Scrim ayarları kaydedilemedi"
   },
   "elo_chart_bucket": {
     "monthly": "Aylık",
@@ -1180,24 +1177,14 @@
   },
   "avatar": {
     "upload": "Avatar yükle",
-    "change": "Avatarı değiştir",
-    "remove": "Avatarı kaldır",
-    "upload_roster": "Kadro görseli yükle",
-    "change_roster": "Kadro görselini değiştir",
-    "remove_roster": "Kadro görselini kaldır",
     "team_avatar": "Takım avatarı",
     "player_avatar": "Oyuncu avatarı",
     "player_roster_image": "Oyuncu kadro görseli",
     "upload_success": "Avatar yüklendi",
     "upload_failed": "Avatar yüklenemedi",
-    "remove_success": "Avatar kaldırıldı",
-    "remove_failed": "Avatar kaldırılamadı",
     "too_large": "Görsel {size}MB veya daha küçük olmalı",
     "invalid_type": "Yalnızca PNG, JPEG veya WebP görseller kabul edilir",
     "uploading": "Yükleniyor...",
-    "drop_to_upload": "Yüklemek için bırak",
-    "hint": "Sürükle bırak ya da tıkla · PNG, JPEG, WebP · 5 MB'a kadar",
-    "roster_hint": "Sürükle bırak ya da tıkla · baş ve omuzlar, 400×420 · tarayıcıda yeniden boyutlanır, sonra kırp ve arka planı kaldır",
     "bg_removal_failed": "Arka plan kaldırılamadı",
     "roster_editor": {
       "title": "Kadro görselini düzenle",
@@ -1236,7 +1223,167 @@
       "follow_logs": "Kayıtları Takip Et",
       "timestamps": "Zaman Damgaları"
     },
-    "coming_soon": "Yakında!",
+    "system_telemetry": {
+      "title": "Filo Telemetrisi",
+      "no_data": "Henüz veri bildirilmedi",
+      "installs": {
+        "title": "Paneller",
+        "online": "Şu an çevrimiçi",
+        "total": "Tüm zamanlar",
+        "active_7d": "7 günde aktif",
+        "active_30d": "30 günde aktif",
+        "new_30d": "30 günde yeni",
+        "retained_180d": "180 gün elde tutulan",
+        "retained_180d_hint": "İlk kez 180 günden uzun süre önce görülen ve bu hafta hâlâ bildirim gönderen paneller.",
+        "live": "Son bir saat içinde bildirim gönderdi",
+        "recency": "Son bağlantı",
+        "recency_hint": "Şimdiye dek görülen tüm paneller, en son ne zaman haber verdiklerine göre ayrık aralıklara bölünmüş. Aralıklar çakışmaz, dolayısıyla toplamları tüm zamanların toplamını verir.",
+        "seen_24h": "Bugün",
+        "dormant": "Uykuda",
+        "reporting": "Toplamlarda",
+        "reporting_hint": "Son raporu, aşağıdaki filo toplamlarına girecek kadar ayrıntılı olan paneller. 30 günden uzun süredir sessiz olan paneller dışarıda bırakılır; böylece toplamlar kapatılmış sunucuları saymaya devam etmez."
+      },
+      "totals": {
+        "self_reported": "Son 30 günde aktif olan her panelin en son raporu toplanarak hesaplanır — yukarıdaki «Toplamlarda» bunun kaç panel olduğunu gösterir. Paneller kendi sunucularında çalışır ve bu sayıları kendileri bildirir; değerler geldiklerinde doğrulanır ama bağımsız olarak teyit edilemez. Altyapı, birikimli bir toplam değil, o ana ait bir sayımdır.",
+        "game_server_nodes": "Oyun sunucusu düğümleri",
+        "nodes_online": "Çevrimiçi düğümler",
+        "nodes_offline": "Çevrimdışı",
+        "nodes_hint": "Yalnızca etkin düğümler. Bir operatörün kapattığı düğüm kapasite sayılmaz ve maç alamaz; bu yüzden buradaki hiçbir sayıma dahil edilmez — bulunduğu bölgeler ve GPU'su olup olmadığı da dahil.",
+        "regions": "Bölgeler",
+        "servers": "Sunucular",
+        "servers_enabled": "Etkin sunucular",
+        "dedicated_servers": "Adanmış",
+        "servers_managed": "Panel yönetimli",
+        "public_servers": "Herkese açık",
+        "matches": "Maçlar",
+        "maps_played": "Oynanan haritalar",
+        "not_reported_hint": "Bu sayıyı henüz hiçbir panel göndermedi. Telemetri raporuna, filodaki mevcut sürümlerden sonra eklendi; paneller güncellendikçe dolacak — sıfır anlamına gelmez.",
+        "hosted_windows": "Zaman içinde düzenlenen",
+        "completion": "Sonuca ulaşan",
+        "completion_hint": "Bir panelin başlattığı maçlardan, yarıda bırakılmak yerine bir sonuçla biten maçların oranı. Yalnızca canlıya çıkabilmiş maçları sayar.",
+        "player_base": "Oyuncu tabanı",
+        "player_base_hint": "Her satır, panellerin gördüğü Steam kimliklerinden bir kesit; yüzde ise en üst satıra göre hesaplanır. Satırlar birbirinin aşaması değildir — bir haritada istatistiği olan Steam kimliği sayısı, hiç giriş yapmış hesap sayısından çok daha fazladır, çünkü panel bir sunucuya bağlanan herkes için bir kayıt tutar.",
+        "matches_live": "Şu an canlı",
+        "matches_live_caption": "son rapora göre",
+        "matches_finished": "Sonuca ulaşan",
+        "matches_abandoned": "Terk edilen",
+        "matches_created": "Oluşturulan",
+        "matches_created_caption": "hiç başlamayanlar dahil",
+        "matches_imported": "İçe aktarılan maçlar",
+        "players": "Oyuncular",
+        "players_played": "Maç oynadı",
+        "players_known": "Görülen Steam kimlikleri",
+        "players_active": "30 günde aktif oyuncular",
+        "players_active_7d": "7 günde aktif oyuncular",
+        "players_active_30d": "30 günde aktif oyuncular",
+        "teams": "Takımlar",
+        "infrastructure": "Altyapı",
+        "match_volume": "Maç hacmi",
+        "competition": "Rekabet",
+        "competition_hint": "Buradaki maç sayıları çakışır: bir lig maçı bir turnuva aşamasının içinde oynanır, dolayısıyla ikisinde de sayılır. Geri kalan her şey — kaç turnuva ve sezon düzenlendiği, kimlerin katıldığı — maçları değil, rekabetin kendisini sayar.",
+        "tournaments": "Turnuvalar",
+        "league_seasons": "Lig sezonları",
+        "league_teams": "Lig takımları",
+        "scrim_requests": "Scrim istekleri",
+        "events": "Etkinlikler",
+        "teams_entered": "Katılan takımlar",
+        "registrations": "Kayıtlar",
+        "finished": "Tamamlanan",
+        "ongoing": "Devam eden",
+        "played": "Oynanan",
+        "maps_per_player": "Oyuncu başına {maps} harita",
+        "maps_per_player_hint": "Harita katılımlarının, en az bir harita oynamış farklı kişi sayısına bölümü. Buradaki değer düşükken maç sayısının yüksek olması, canlı bir topluluk değil, çok oynayan küçük bir grup demektir.",
+        "community": "Topluluk",
+        "hosted_hint": "«Düzenlenen», yalnızca bir panelin kendi yürüttüğü maçları sayar. İçe aktarılan maçlar FACEIT'ten veya CS2 maç geçmişinden gelir ve ayrı listelenir.",
+        "community_hint": "«Oyuncular», Steam ile en az bir kez giriş yapmış hesapları sayar. Panel ayrıca yalnızca bir kadroda, demoda veya yaptırımda gördüğü her Steam kimliği için de kayıt tutar — bunlar «Görülen Steam kimlikleri» olarak ayrı sayılır.",
+        "gpu_nodes": "GPU düğümleri",
+        "all_time": "tüm zamanlar",
+        "last_7d": "son 7 gün",
+        "last_30d": "son 30 gün",
+        "last_1y": "son 365 gün",
+        "signed_in_caption": "en az bir kez giriş yaptı",
+        "players_known_caption": "hiç giriş yapmayanlar dahil"
+      },
+      "meter": {
+        "remainder": "Diğer"
+      },
+      "composition": {
+        "hint": "«Türe göre», panellerin kendi düzenlediği maçları ayrıştırır. «Kaynağa göre» ise hem düzenlenen hem içe aktarılan maçları kapsar, bu yüzden toplamı düzenlenen maç sayısını aşar.",
+        "by_type": "Türe göre",
+        "by_source": "Kaynağa göre"
+      },
+      "distribution": {
+        "title": "Filo Dağılımı",
+        "hint": "Son 30 günde aktif olan paneller, her kategoride ilk 8. Ülke, panelin kendisi hakkında bildirdiği bir şeyden değil, sinyalin geldiği ağdan belirlenir.",
+        "versions": "Sürüm yaygınlığı",
+        "versions_hint": "Bir commit hash'inin kendine ait bir sırası yoktur; bu yüzden en yeni sürüm, raporlarda ilk görünen sürümdür. Geri kalan her şey ona göre kaç sürüm geride olduğuyla ölçülür.",
+        "on_current": "panelin en yeni sürümde olduğu oran",
+        "behind": "Geride",
+        "build_current": "Güncel",
+        "build_previous": "Bir geride",
+        "build_older": "Daha eski",
+        "runtimes": "Eklenti çalışma ortamı",
+        "countries": "Ülke"
+      },
+      "activity": {
+        "matches": "Günlük düzenlenen maçlar (90 gün)",
+        "matches_unit": "maç"
+      },
+      "growth": {
+        "title": "Aylık yeni paneller",
+        "unit": "panel"
+      },
+      "features": {
+        "feature": "Özellik",
+        "enabled": "Etkin",
+        "keys": {
+          "tournaments": "Turnuvalar",
+          "leagues": "Ligler",
+          "seasons": "Sezonlar",
+          "events": "Etkinlikler",
+          "news": "Haberler",
+          "highlights": "Otomatik öne çıkanlar",
+          "clip_renders": "Klip işleme",
+          "system_alerts": "Sistem uyarıları",
+          "awards": "Ödüller",
+          "scrims": "Scrim bulucu",
+          "matchmaking": "Eşleştirme",
+          "custom_pages": "Eklentiler",
+          "external_matches": "Harici maçlar",
+          "faceit_import": "FACEIT içe aktarma",
+          "draft_games": "Draft maçları",
+          "demos": "Demolar",
+          "sanctions": "Yaptırımlar",
+          "api_keys": "API anahtarları",
+          "gamedata_validations": "Gamedata doğrulamaları",
+          "steam_presence": "Steam durumu",
+          "discord_bot": "Discord botu",
+          "game_server_nodes": "Oyun sunucusu düğümleri",
+          "version_pinning": "Sürüm sabitleme",
+          "stream_login_protection": "Yayın girişi koruması",
+          "player_name_registration": "Oyuncu adı kaydı",
+          "league_division_requests": "Lig grubu istekleri",
+          "branding": "Özel marka",
+          "demo_playback": "Demo oynatma",
+          "live_streaming": "Canlı yayın",
+          "highlights_imported": "Otomatik öne çıkanlar (içe aktarılan)",
+          "clip_branding": "Klip markası",
+          "push_notifications": "Anlık bildirimler",
+          "voice_chat": "Sesli sohbet",
+          "video_chat": "Görüntülü sohbet"
+        },
+        "panels_using": "Kullanan paneller",
+        "total": "Toplam",
+        "optional": "İsteğe bağlı özellikler",
+        "optional_hint": "Bir yöneticinin uygulama ayarlarından açıp kapatabildiği özellikler.",
+        "capabilities": "Algılanan yetenekler",
+        "capabilities_hint": "Bunlar uygulama ayarı değildir, dolayısıyla yöneticinin açıp kapatacağı bir şey yoktur. Yapılandırılmış kimlik bilgilerinden (Discord, Tailscale, Steam), her oyun sunucusu düğümündeki GPU iş yükü anahtarlarından ya da bir marka bilgisinin doldurulup doldurulmadığından okunur.",
+        "configured": "Yapılandırılmış",
+        "always": "Her zaman kullanılabilir",
+        "always_hint": "Her panelle birlikte gelir ve kapatılamaz; dolayısıyla yalnızca kullanım anlamlıdır.",
+        "no_metric_hint": "Bu özelliği sayan bir şey yok, bu yüzden raporlanacak kullanım da yok — bu, hiçbir panelin kullanmadığı anlamına gelmez."
+      }
+    },
     "tournaments": {
       "title": "Turnuvalar",
       "description": "Canlı, açık ve yaklaşan turnuvalara göz at, ya da belirli bir eşleşme tablosu bulmak için duruma ve tarihe göre filtrele.",
@@ -1365,6 +1512,7 @@
         "my_account": "Hesabım",
         "api_keys": "API anahtarları",
         "linked_accounts": "Bağlı hesaplar",
+        "voice": "Ses ve mikrofon",
         "api_keys_management": {
           "add_api_key": "API anahtarı ekle",
           "description": "Anahtarlar 5Stack API isteklerini doğrular — bunları şifre gibi koru.",
@@ -1380,7 +1528,6 @@
           "created": "Oluşturuldu",
           "last_used": "Son kullanım",
           "never": "Hiç",
-          "actions": "İşlemler",
           "delete_confirmation_title": "API anahtarını sil",
           "delete_confirmation_description": "\"{label}\" API anahtarını silmek istediğine emin misin? Bu işlem geri alınamaz ve bu anahtarı kullanan uygulamalar erişimini kaybeder.",
           "create_api_key": "API anahtarı oluştur",
@@ -1422,6 +1569,189 @@
           "unlinked": "Discord hesabının bağlantısı başarıyla kaldırıldı"
         }
       },
+      "voice": {
+        "description": "Mikrofonun, seviyelerin ve herkesin sesinin ne kadar yüksek olduğu. Tüm ses kanalları burada ayarladıklarını kullanır — parti lobin, bir maç, bir draft odası — kamera yayınındaki mikrofon da öyle.",
+        "this_device": {
+          "title": "Bu cihazda saklanır",
+          "description": "Ses ayarları 5stack hesabının parçası değildir ve bu tarayıcıdan asla çıkmaz. Oynadığın her bilgisayar kendi mikrofonunu, çıkışını, hassasiyetini ve oyuncu seviyelerini tutar — asıl mesele de bu, çünkü değişen sensin değil donanım. Bu sitenin tarayıcı verilerini temizlersen varsayılanlara döner."
+        },
+        "players": {
+          "title": "Oyuncu seviyeleri",
+          "description": "Sesini kıstığın veya susturduğun takım arkadaşların, bulunduğun tüm kanallardan. Görüşmeden çıkınca kaybolmasın diye burada tutulur — ve onlara yeniden denk gelmeyi beklemeden geri alabilmen için.",
+          "empty": "Kimsenin sesini kısmadın. Bir görüşme sırasında takım arkadaşının yanındaki sürgüyü kullan, burada görünsün.",
+          "silenced": "Susturuldu",
+          "reset": "Sıfırla",
+          "reset_all": "Tümünü sıfırla"
+        },
+        "reset": {
+          "title": "Sıfırla",
+          "description": "Mikrofonu, çıkışı, giriş modunu, hassasiyeti ve gürültü engellemeyi başlangıç durumuna döndürür. Oyuncu seviyelerine dokunulmaz.",
+          "action": "Varsayılanlara sıfırla",
+          "done": "Bu cihazdaki ses ayarları sıfırlandı"
+        }
+      },
+      "notification_preferences": {
+        "title": "Bildirim tercihleri",
+        "description": "5stack'in seni neler hakkında bilgilendireceğini ve bu bildirimlerin nereye geleceğini seç.",
+        "save_failed": "Bu tercih kaydedilemedi. Tekrar dene.",
+        "push": {
+          "title": "Anlık bildirimler",
+          "description": "5stack açık olmasa bile bu cihazda bildirim al.",
+          "categories": "Neler gönderilsin",
+          "unsupported": "Bu tarayıcı anlık bildirimleri desteklemiyor.",
+          "install_required": "Bunları açmak için 5stack uygulamasını yükle.",
+          "install": {
+            "description": "Anlık bildirimleri yüklü uygulama teslim eder; bu yüzden açabilmen için uygulamanın cihazında olması gerekir.",
+            "open_app": "Zaten yüklü mü? 5stack'i ana ekranından veya uygulamalarından aç ve anlık bildirimleri oradan aç."
+          },
+          "denied": "5stack için bildirimler engellenmiş. Bunu açabilmek için tarayıcı veya cihaz ayarlarından izin ver.",
+          "failed": "Anlık bildirimler açılamadı. Tekrar dene.",
+          "errors": {
+            "permission": "Bildirim izni isteği hiç yanıt vermedi. Cihazda Google Play Services eksik veya bozuksa bu olabilir.",
+            "vapid": "Sunucudan anlık bildirim anahtarı alınırken süre doldu.",
+            "service_worker": "Bu cihazın service worker'ının etkinleşmesi beklenirken süre doldu.",
+            "existing": "Mevcut bir bildirim aboneliği kontrol edilirken süre doldu.",
+            "register": "Bu cihazın bildirim servisine kaydolurken süre doldu. Arka plan veya pil kısıtlamaları engelliyor olabilir.",
+            "save": "Bildirim aboneliği sunucuya kaydedilirken süre doldu."
+          },
+          "enabled_toast": "Anlık bildirimler açıldı",
+          "disabled_toast": "Anlık bildirimler kapatıldı"
+        },
+        "alerts": {
+          "title": "Bildirim zili",
+          "description": "Bunları uygulamadaki zilden gizle. Geri kalan her şey orada görünmeye devam eder."
+        },
+        "keys": {
+          "matches": {
+            "title": "Maçlar",
+            "description": "Maç durumu değişiklikleri ve içe aktarılan maçlar."
+          },
+          "chat": {
+            "title": "Sohbet",
+            "description": "Bir konuşmada, lobide veya turnuva odasında yeni mesajlar."
+          },
+          "tournaments": {
+            "title": "Turnuvalar",
+            "description": "Yeni turnuvalar ve başlangıç hatırlatmaları."
+          },
+          "scrims": {
+            "title": "Scrimler",
+            "description": "Scrim istekleri, saat değişiklikleri ve uyarılar."
+          },
+          "leagues": {
+            "title": "Ligler",
+            "description": "Lig takvim önerileri ve kadro uyarıları."
+          },
+          "teams": {
+            "title": "Takımlar",
+            "description": "Sık sık birlikte sıraya girdiğin oyuncularla takım kurma önerileri."
+          },
+          "account": {
+            "title": "Hesap",
+            "description": "Ad değişiklikleri ve yaptırımlar."
+          },
+          "news": {
+            "title": "Haberler",
+            "description": "5stack'te yayımlanan yeni yazılar."
+          },
+          "staff_moderation": {
+            "title": "Moderasyon",
+            "description": "Destek talepleri, terk edilen maçlar ve ad değişikliği istekleri."
+          },
+          "staff_infrastructure": {
+            "title": "Altyapı",
+            "description": "Sunucu, düğüm ve arka plan işlerinin durumu."
+          },
+          "ChatMessage": {
+            "title": "Sohbet mesajları",
+            "description": "Bir konuşmada, lobide veya turnuva odasında yeni bir mesaj."
+          },
+          "MatchImported": {
+            "title": "İçe aktarılan maçlar",
+            "description": "Oynadığın bir Valve maçı içe aktarıldı."
+          },
+          "NewsPublished": {
+            "title": "Haber yazıları",
+            "description": "Yeni bir yazı yayımlandı."
+          },
+          "TournamentReminder": {
+            "title": "Turnuva hatırlatmaları",
+            "description": "Kaydolduğun bir turnuva yakında başlıyor."
+          },
+          "FormTeamSuggestion": {
+            "title": "Takım önerileri",
+            "description": "Bu oyuncularla sık sık oynuyorsun."
+          },
+          "ScrimAlertMatch": {
+            "title": "Scrim uyarıları",
+            "description": "Scrim uyarına uyan bir takım müsait."
+          },
+          "LeagueMatchUnscheduled": {
+            "title": "Tarihi belirsiz lig maçları",
+            "description": "Bir lig eşleşmesinin henüz üzerinde anlaşılmış bir saati yok."
+          },
+          "invites": {
+            "title": "Davetler",
+            "description": "Takım, turnuva ve draft davetleri."
+          },
+          "events": {
+            "title": "Etkinlikler",
+            "description": "Katıldığın etkinlikler için hatırlatmalar."
+          },
+          "seasons": {
+            "title": "Sezonlar",
+            "description": "Bir sezon sona erdiğinde."
+          },
+          "TeamInvite": {
+            "title": "Takım davetleri",
+            "description": "Biri seni takımına davet etti."
+          },
+          "TournamentTeamInvite": {
+            "title": "Turnuva davetleri",
+            "description": "Biri seni bir turnuvada oynamaya davet etti."
+          },
+          "DraftInvite": {
+            "title": "Draft davetleri",
+            "description": "Biri seni bir draft lobisine davet etti."
+          },
+          "MatchStatsReady": {
+            "title": "İstatistikler hazır",
+            "description": "Maç istatistiklerinin işlenmesi tamamlandı."
+          },
+          "ClipReady": {
+            "title": "Klipler hazır",
+            "description": "İstediğin bir klibin işlenmesi tamamlandı."
+          },
+          "AwardGranted": {
+            "title": "Ödüller",
+            "description": "Bir ödül aldın."
+          },
+          "EventReminder": {
+            "title": "Etkinlik hatırlatmaları",
+            "description": "Katıldığın bir etkinlik yakında başlıyor."
+          },
+          "SeasonEnded": {
+            "title": "Sezon sona erdi",
+            "description": "Bir sezon sona erdi."
+          },
+          "match_chat": {
+            "title": "Maç sohbeti",
+            "description": "Bir maçın odasındaki yeni mesajlar; oyundan aktarılan sohbet dahil. Varsayılan olarak kapalı — devam eden bir maçta yazılan her satırda tetiklenir."
+          },
+          "MatchChatMessage": {
+            "title": "Maç sohbeti mesajları",
+            "description": "Bir maçın odasında yeni bir mesaj."
+          }
+        },
+        "quiet_hours": {
+          "title": "Sessiz saatler",
+          "description": "Bu aralıkta anlık bildirimler sessiz kalır. Bildirim zilinde yine de görünürler.",
+          "from": "Başlangıç",
+          "to": "Bitiş",
+          "reset": "Sıfırla",
+          "incomplete": "Sessiz saatleri kaydetmek için hem başlangıç hem bitiş saatini gir."
+        }
+      },
       "notifications": {
         "title": "Ses ayarları",
         "description": "5Stack'in sohbet, maç ve diğer olaylar için çaldığı uyarı seslerini önizle ve ayarla.",
@@ -1429,12 +1759,10 @@
           "title": "Bildirim sesleri",
           "description": "Sohbet mesajları, maç olayları ve diğer uyarılar için ses çal."
         },
-        "test": "Test et",
         "volume": {
           "title": "Ses düzeyi"
         },
         "preview": "Sesleri önizle",
-        "play": "Çal",
         "sounds": {
           "chat": {
             "title": "Sohbet mesajı",
@@ -1488,29 +1816,37 @@
         "chat": {
           "title": "Sohbet ayarları",
           "description": "Sohbet mesajlarının ne kadar süre saklanacağını yapılandır.",
-          "updated": "Sohbet ayarları başarıyla güncellendi"
+          "updated": "Sohbet ayarları başarıyla güncellendi",
+          "lobby_title": "Odaya göre saklama",
+          "lobby_description": "Mesajların her oda türünde kalıcı olarak silinmeden önce kaç saniye tutulacağı. 0 hemen siler.",
+          "direct_title": "Doğrudan mesajlar",
+          "direct_description": "Doğrudan mesajlar, sohbetin geri kalanıyla birlikte silinmek yerine kalıcı olarak saklanır. Saklanacak gün sayısını gir veya süresiz saklamak için 0 yaz.",
+          "ttl_match": "Maç sohbeti",
+          "ttl_match_team": "Takım sohbeti",
+          "ttl_matchmaking": "Eşleştirme lobisi sohbeti",
+          "ttl_tournament": "Turnuva sohbeti",
+          "ttl_organizers": "Organizatör sohbeti",
+          "ttl_draft": "Draft lobisi sohbeti",
+          "retention_direct_days": "Doğrudan mesajları saklama süresi (gün)"
         },
         "news": {
           "title": "Haberler",
           "section": "Haberler",
           "description": "Platformundaki Haberler sayfasında kendi Counter-Strike haber yazılarını yayınla. Yetkili yazarlar, Markdown editörüyle ve görsellerle yazı hazırlar; taslaklar sen yayınlayana kadar gizli kalır.",
           "manage": "Yazıları yönet",
-          "manage_description": "Haber yazıları oluştur, düzenle ve yayınla.",
           "label_section": "Etiket",
           "label_description": "Haberler bölümünün gezinmede ve sayfa başlıklarında görünen adını değiştir.",
           "label": "Görünen ad",
           "permissions_section": "İzinler",
           "permissions_description": "Haber yazısı oluşturup yayınlayabilecek minimum rolü seç.",
-          "post_news_role": "Haberi kim yayınlayabilir",
-          "about": "Yayınladığın yazılar herkese açık Haberler sayfasında görünür. Taslaklar sen yayınlayana kadar gizli kalır."
+          "post_news_role": "Haberi kim yayınlayabilir"
         },
         "seasons": {
           "title": "Sezonlar",
           "section": "Sezonlar",
           "description": "Rekabetçi sezonlar her sezon normal maç ELO'sunu 5000 taban değerine sıfırlar ve istatistik/filtrelemeyi sezona göre sınırlar; kapalıyken ELO tek bir global sıralamadır. Turnuva ELO'su sezondan bağımsız kalır.",
           "manage": "Sezonları yönet",
-          "manage_description": "Rekabetçi sezonlar oluştur, bitir ve geriye dönük doldur.",
-          "about": "Etkinken sezon filtresi oyuncularda, sıralamada ve turnuvalarda görünür; ELO/istatistikler sezona göre sınırlanır. Kapalıyken ELO tek bir global sıralamadır ve sezon filtresi gösterilmez."
+          "manage_description": "Rekabetçi sezonlar oluştur, bitir ve geriye dönük doldur."
         },
         "discord": {
           "title": "Discord bildirimleri",
@@ -1569,6 +1905,28 @@
           "codec_h264": "H.264 (önerilen)",
           "updated": "Yayın ayarları güncellendi"
         },
+        "cameras": {
+          "title": "Kameralar ve mikrofonlar",
+          "defaults_section": "Maç varsayılanları",
+          "defaults_description": "Yeni oluşturulan bir maçın neyle başlayacağı. Organizatörler her iki ayarı da maç bazında değiştirebilir ve mevcut maçlar etkilenmez.",
+          "required_default": "Varsayılan olarak web kamerası iste",
+          "required_default_description": "Yeni maçlar «Web kamerası iste» açık olarak başlar. Her maç bunu yine de değiştirebilir.",
+          "teammates_default": "Takım arkadaşları varsayılan olarak izleyebilir",
+          "teammates_default_description": "Yeni maçlar takım arkadaşı görüntüsü açık olarak başlar. Rakip takım asla dahil edilmez.",
+          "voice_section": "Sesli sohbet",
+          "voice_description": "Oyuncuların WebRTC üzerinden, oyuncu kameralarıyla aynı yoldan konuşmasını sağlar. Bunu kapatmak sesi her yerden kaldırır.",
+          "voice_lobbies": "Parti lobileri",
+          "voice_lobbies_description": "Lobi panelindeki ses kontrolleri; oyuncunun kendi kurduğu parti için.",
+          "voice_matches": "Maçlar ve draft lobileri",
+          "voice_matches_description": "Maç sayfasındaki ve draft lobisindeki takım sesi. İkisi de aynı kadro kanalından konuşur, bu yüzden bu ayarı paylaşırlar.",
+          "updated": "Güncellendi",
+          "video_section": "Görüntülü görüşmeler",
+          "video_description": "Oyuncuların bir ses kanalı içinde kamera açmasını sağlar. Oyuncu için her zaman isteğe bağlıdır, asla zorunlu değildir — bu, aşağıdaki maç başına kamera şartı değil, takım arkadaşları arasında bir görüşmedir.",
+          "video_lobbies": "Parti lobileri",
+          "video_lobbies_description": "Parti lobisi görüşmesinde kamera sun.",
+          "video_matches": "Maçlar ve draft odaları",
+          "video_matches_description": "Maç sayfasındaki takım sesinde kamera sun. Oyuncularının işlemcisi sıkışıksa kapatmakta fayda var: canlı yayının yanı sıra bir kutucuk ızgarası da çözülür."
+        },
         "create_matches_role": "Maç oluşturmak için izin verilen minimum rol",
         "create_tournaments_role": "Turnuva oluşturmak için izin verilen minimum rol",
         "dedicated_servers_min_role_to_connect": "Şifre korumalı özel sunuculara bağlanmak için minimum rol",
@@ -1586,6 +1944,8 @@
         "auto_cancel_duration_description": "Canlıya geçmemiş (hâlâ seçim / veto / bekleme aşamasındaki) bir maçı bu kadar dakika sonra iptal eder.",
         "live_match_timeout": "Canlı maç zaman aşımı",
         "live_match_timeout_description": "Güvenlik zaman aşımı — canlı bir maç hiç bitmezse bu kadar dakika sonra otomatik iptal edilir.",
+        "veto_pick_timeout": "Veto süreölçeri",
+        "veto_pick_timeout_description": "Yeni oluşturulan maçlarda her takımın veto seçimi başına aldığı varsayılan saniye. Süreölçeri varsayılan olarak kapatmak için 0 gir.",
         "matchmaking_type_description": "Her tür için eşleştirmeyi aç/kapat; açık olan türlerde oyuncular o maç türü için eşleştirmeye katılabilir.",
         "players": {
           "permissions_section": "Rol izinleri",
@@ -1596,7 +1956,6 @@
           "refresh_button": "Aramayı yeniden indeksle",
           "refreshing": "Yeniden indeksleniyor...",
           "refresh_queued": "Arama yeniden indeksleme başlatıldı",
-          "refresh_failed": "Arama yeniden indeksleme başlatılamadı",
           "error_occurred": "Bir hata oluştu",
           "refresh_dialog_title": "Arama indeksi yeniden oluşturulsun mu?",
           "refresh_dialog_description": "Bu işlem her oyuncuyu parçalar hâlinde Typesense arama indeksiyle yeniden eşitler. Arka planda çalışır ve ilerlemesini buradan izleyebilirsin.",
@@ -1605,7 +1964,6 @@
           "recompute_elo_button": "ELO'yu yeniden hesapla",
           "recomputing_elo": "Yeniden hesaplanıyor...",
           "recompute_elo_queued": "ELO yeniden hesaplama başlatıldı",
-          "recompute_elo_failed": "ELO yeniden hesaplama başlatılamadı",
           "recompute_elo_dialog_title": "Tüm oyuncuların ELO'su yeniden hesaplansın mı?",
           "recompute_elo_dialog_description": "Bu işlem mevcut tüm ELO'yu siler ve tamamlanan her maçı kronolojik sırayla (parti parti) tekrar oynatarak sıfırdan yeniden kurar. İşlem sürerken sıralama geçici olarak eksik görünür. İlerlemeyi buradan izleyebilirsin.",
           "progress_running": "{processed} / {total} (%{percent})",
@@ -1613,8 +1971,6 @@
           "progress_failed_count": "{failed} başarısız",
           "progress_completed": "{total} tamamlandı",
           "progress_canceled": "{completed} / {total} noktasında iptal edildi",
-          "progress_errored": "Başarısız — sunucu loglarına bak",
-          "already_running": "Zaten çalışıyor",
           "cancel_button": "İptal",
           "cancel_requested": "İptal isteği gönderildi",
           "recompute_elo_canceled_title": "ELO yeniden hesaplama iptal edildi",
@@ -1645,11 +2001,8 @@
           "show_separators_description": "Bölümler arasında yatay ayırıcı çizgiler göster.",
           "logo": "Logo",
           "logo_description": "Kare bir görsel yükle (512×512 PNG önerilir). Uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır. ICO dosyaları desteklenmez.",
-          "upload_logo": "Logo yükle",
           "favicon": "Favicon",
           "favicon_description": "İsteğe bağlı. Tarayıcı sekmesi için daha sade bir simge. PNG, ICO veya WebP.",
-          "upload_favicon": "Favicon yükle",
-          "remove": "Kaldır",
           "login_page": "Giriş sayfası",
           "login_page_description": "Giriş sayfası altbilgi bağlantısını özelleştir.",
           "show_login_footer": "Giriş altbilgisini göster",
@@ -1658,22 +2011,11 @@
           "footer_url": "Altbilgi URL'si",
           "theme_colors": "Tema renkleri",
           "theme_colors_description": "Tema renklerini özelleştir. Değişiklikler anlık önizlenir.",
-          "light_mode": "Açık mod",
-          "dark_mode": "Koyu mod",
-          "save_branding": "Markalamayı kaydet",
           "reset_to_defaults": "Varsayılana sıfırla",
           "reset_confirm_title": "Markalama varsayılana sıfırlansın mı?",
           "reset_confirm_description": "Bu işlem marka adını, renkleri, giriş altbilgisini ve yüklenen logo/favicon/uygulama simgesini temizleyip varsayılan 5Stack temasını geri getirir. Geri alınamaz.",
           "export_theme": "Temayı dışa aktar",
           "import_theme": "Temayı içe aktar",
-          "upload_failed": "Yükleme başarısız oldu",
-          "delete_failed": "Silme başarısız oldu",
-          "logo_uploaded": "Logo yüklendi",
-          "favicon_uploaded": "Favicon yüklendi",
-          "icon_uploaded": "Uygulama simgesi yüklendi",
-          "logo_removed": "Logo kaldırıldı",
-          "favicon_removed": "Favicon kaldırıldı",
-          "icon_removed": "Uygulama simgesi kaldırıldı",
           "branding_saved": "Markalama kaydedildi",
           "save_failed": "Kaydetme başarısız oldu",
           "branding_reset": "Markalama varsayılana sıfırlandı",
@@ -1731,7 +2073,9 @@
             "tactical_amber_foreground": "Taktiksel vurgu ön plan"
           },
           "assets_section": "Logo ve favicon",
-          "assets_section_description": "Bir logo (uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır) ve isteğe bağlı bir favicon yükle."
+          "assets_section_description": "Bir logo (uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır) ve isteğe bağlı bir favicon yükle.",
+          "upload_failed": "Yükleme başarısız: {status}",
+          "delete_failed": "Silme başarısız: {status}"
         },
         "fixtures": {
           "dev_only_notice": "Örnek veriler yalnızca geliştirme modunda kullanılabilir.",
@@ -1802,9 +2146,6 @@
           "enabled": "Varlığı etkinleştir",
           "enabled_description": "Varsayılan olarak açık. Arkadaş botları bağlı oyuncuların canlı Steam varlığını izler ve maçlarını saatlik taramayı beklemeden, bitirdikleri an içe aktarır. Acil kapatma anahtarı olarak kapatabilirsin.",
           "updated": "Steam varlığı ayarları güncellendi",
-          "active": "Aktif",
-          "disabled": "Devre dışı",
-          "live": "Canlı",
           "setup": "Nasıl çalışır",
           "setup_step1": "Bot için Steam Guard etkin, ayrı bir Steam hesabı ayır. STEAM_USER hesabını tekrar kullanma — o başka yerde kullanılıyor ve çakışmaya yol açar.",
           "setup_step2": "Aşağıya ekle. Otomatik giriş yapar; Steam Guard sorarsa botta bir 2FA kutusu belirir — kodu e-postadan veya Steam uygulamasından gir. İlk girişten sonra oturum açık kalır ve tekrar sormaz.",
@@ -1827,7 +2168,6 @@
           "submit_code": "Gönder",
           "code_submitted": "Kod gönderildi — giriş yapılıyor…",
           "code_failed": "Steam Guard kodu gönderilemedi",
-          "status": "Durum",
           "bots": "Botlar",
           "bots_description": "Varlık havuzundaki Steam hesapları ve canlı durumları.",
           "no_bots": "Henüz bot yok",
@@ -2021,7 +2361,6 @@
             "nav_order": "Menü Sırası",
             "enabled": "Etkin",
             "is_default": "Varsayılan Sayfa",
-            "icon_hint": "Bir lucide simge adı ya da görsel URL'si. Örnekler:",
             "remote_entry_url_hint": "Panelin yüklediği Module Federation remoteEntry.js dosyası (genelde .../assets/remoteEntry.js).",
             "remote_scope_hint": "Eklentinin Federation container adı (vite federation yapılandırmasındaki `name` değeri).",
             "exposed_module_hint": "Açığa çıkan modül yolu, örn. ./App.",
@@ -2039,7 +2378,6 @@
           "detect": "Algıla",
           "detect_hint": "Eklentinin temel URL'sini (ya da 5stack-plugin.json'ını) yapıştır, aşağıdaki alanları manifestinden dolduralım.",
           "detect_failed": "Bu URL'de 5stack-plugin.json manifesti okunamadı.",
-          "detect_success": "Eklenti bilgileri algılandı.",
           "optional": "(isteğe bağlı)",
           "advanced": "Gelişmiş ayarlar",
           "icon_picker": {
@@ -2056,6 +2394,35 @@
           "permissions_description": "Choose who can author awards and who can hand them out.",
           "create_awards_role": "Manage Awards Role",
           "grant_awards_role": "Grant Awards Role"
+        },
+        "web_push": {
+          "title": "Web push",
+          "section": "Web push bildirimleri",
+          "description": "Uyarıları doğrudan oyuncunun telefonuna veya masaüstüne gönderir — 5stack hiçbir sekmede açık olmasa bile tarayıcı bunları teslim eder. Oyuncular kendi bildirim ayarlarından, cihaz bazında kendileri abone olur; iOS'ta bu ancak 5stack ana ekrana eklendiğinde çalışır. Kurulacak bir şey yok: teslimat tarayıcının kendi push servisinden geçer, yani ne üçüncü taraf hesabı ne de maliyet vardır.",
+          "state_live": "Yayında",
+          "state_standby": "Beklemede",
+          "state_ready": "Hazır",
+          "state_offline": "Çevrimdışı",
+          "last_delivery": "Son onaylanan teslimat",
+          "hint_standby": "Abone cihazlar var ama henüz hiçbirine bir şey ulaşmadı.",
+          "hint_ready": "Kurulu ve ilk cihazın abone olmasını bekliyor.",
+          "hint_offline": "Bu kurulumda push kullanılamıyor — API kendini kuramayana kadar hiçbir cihaza bir şey ulaşmayacak.",
+          "devices": "Cihazlar",
+          "players": "Oyuncular",
+          "active_7d": "7 günde aktif",
+          "new_7d": "7 günde yeni",
+          "platform_mix": "Platform dağılımı",
+          "platforms": {
+            "apple": "Apple",
+            "google": "Chrome / Android",
+            "mozilla": "Firefox",
+            "windows": "Windows",
+            "other": "Diğer"
+          },
+          "never_delivered": "{count} abone cihaz hiç bildirim almadı. Genellikle bir şey gönderilmeden önce boşta kalan bir cihazdır — push servisi onları kayıp olarak bildirdiğinde otomatik olarak çıkarılırlar.",
+          "empty_title": "Henüz abone cihaz yok",
+          "empty_body": "Push hazır ama kimse açmadı. Oyuncular kendi bildirim ayarlarından kendileri abone olur — onların adına açamazsın.",
+          "empty_link": "Oyuncu tarafındaki ayarlara bak"
         }
       },
       "language": {
@@ -2154,7 +2521,6 @@
       "section_recent_matches": "SON.MAÇLAR",
       "section_recent_tournaments": "SON.TURNUVALAR",
       "section_recent_highlights": "SON.ÖNE.ÇIKANLAR",
-      "no_live_matches": "BEKLEMEDE · CANLI MAÇ YOK",
       "cold_start": {
         "title": "Sahada bir şey yok",
         "description": "Canlı maç yok, turnuva yok, kayıtlara geçmiş hiçbir şey yok. Bir maç başlat, bu sayfa kendiliğinden dolsun — anlık skorlardan, maç bitince öne çıkanlara ve demolara kadar.",
@@ -2224,12 +2590,6 @@
       "back": "Haberlere Dön",
       "updated": "Güncellendi: {date}",
       "written_by": "Yazan",
-      "cover_editor": {
-        "title": "Kapak Görselini Ayarla",
-        "description": "Makaleye sığacak şekilde kırp. Logoların sayfaya düzgün oturması için Arka Planı Kaldır'ı kullan.",
-        "hint": "Yakınlaştırmak için kaydır · taşımak için sürükle · Sığdır tüm görseli gösterir",
-        "fit": "Sığdır"
-      },
       "new_article": "Yeni Makale",
       "mark_read": "Okundu olarak işaretle",
       "empty": "Henüz haber makalesi yok — yakında tekrar bak.",
@@ -2260,9 +2620,6 @@
         "teaser_placeholder": "Haber listesinde gösterilen kısa özet",
         "cover_label": "Kapak Görseli",
         "cover_hint": "Bir görsel tıkla veya bırak",
-        "cover_formats": "PNG · JPG · WEBP · GIF · en fazla 10MB",
-        "cover_replace": "Değiştir",
-        "cover_remove": "Kaldır",
         "content_label": "İçerik",
         "save_draft": "Taslağı Kaydet",
         "save_changes": "Değişiklikleri Kaydet",
@@ -2274,7 +2631,30 @@
         "back_to_edit": "Düzenleyiciye Dön",
         "upload_image": "Görsel yükle",
         "uploading": "Yükleniyor…",
-        "uploading_image": "Görsel yükleniyor…"
+        "uploading_image": "Görsel yükleniyor…",
+        "video": {
+          "title": "Video ekle",
+          "description": "Bir YouTube veya Twitch bağlantısı göm ya da bir MP4 yükle.",
+          "tab_link": "Bağlantı",
+          "tab_upload": "Yükle",
+          "link_hint": "Bir YouTube veya Twitch adresi yapıştır. Diğer bağlantılar düz bağlantı olarak görünür. Doğrudan metnin içine yapıştırmak da onu gömer.",
+          "will_embed": "Oynatıcı olarak gömülecek",
+          "will_link": "Gömülemiyor — bağlantı olarak görünecek",
+          "choose_file": "MP4 seç",
+          "upload_hint": "512 MB'a kadar MP4. Kapak karesi otomatik alınır.",
+          "uploading": "Yükleniyor… %{percent}",
+          "replace_poster": "Kapağı değiştir",
+          "insert": "Ekle",
+          "auto_embedded": "Video bağlantısı gömüldü"
+        }
+      },
+      "editor": {
+        "bold_text": "kalın metin",
+        "italic_text": "italik metin",
+        "heading": "Başlık",
+        "list_item": "Liste öğesi",
+        "quote": "Alıntı",
+        "code": "kod"
       }
     },
     "seasons": {
@@ -2305,8 +2685,6 @@
       "make_ongoing": "Devam Eden Yap",
       "end_now": "Şimdi Bitir",
       "updated": "Sezon güncellendi",
-      "upcoming_title": "Yaklaşan Sezonlar",
-      "past_title": "Geçmiş Sezonlar",
       "rebuild": "Yeniden Oluştur",
       "rebuild_elo": "ELO'yu Yeniden Oluştur",
       "rebuild_required": "Yeniden Oluşturma Gerekli",
@@ -2372,14 +2750,17 @@
         "headshot_pct": "Kafa vuruşu %"
       },
       "played_matches": "Oynanan maçlar",
+      "queue_partners": {
+        "title": "Birlikte sıraya girilenler",
+        "matches": "{count} maç | {count} maç",
+        "win_rate": "%{pct} kazanıldı"
+      },
       "min_sanctions": "Minimum yaptırım",
       "is_banned": "Banlı",
       "is_gagged": "Susturulmuş",
       "is_muted": "Sesi kapalı",
       "table": {
         "elo": "ELO",
-        "elo_track_season": "Sezon",
-        "elo_track_tournament": "Turnuva",
         "last_sign_in_at": "Son giriş",
         "privilege": "Yetki",
         "kdr": "KDR",
@@ -2418,6 +2799,7 @@
         "no_matches_description": "Maç oynandıktan sonra maç geçmişi burada görünecek.",
         "no_matches_self_description": "Bir maça katıl — istatistiklerin, ELO'n ve maç geçmişin burada birikmeye başlayacak.",
         "edit_player": "Oyuncuyu düzenle",
+        "more_actions": "Diğer işlemler",
         "friend": "Arkadaş",
         "name": "İsim",
         "role": "Rol",
@@ -2433,6 +2815,8 @@
         "custom_window_active": "Özel aralık aktif. Hazır seçenek seçmek onu temizler.",
         "exclude_tournaments": "Turnuvaları hariç tut",
         "exclude_tournaments_description": "Turnuva maçlarını istatistik ve grafikte atla.",
+        "tournaments_section_label": "TURNUVALAR",
+        "tournaments_description": "Bu oyuncunun katıldığı turnuvalar.",
         "current_elo": "Güncel ELO",
         "source": "Kaynak",
         "provider": "Sağlayıcı",
@@ -2898,7 +3282,9 @@
         "competitive": "Rekabetçi",
         "wingman": "Wingman",
         "duel": "Düello",
-        "scrimmage": "Scrim"
+        "scrimmage": "Scrim",
+        "premier": "Premier",
+        "faceit": "Faceit"
       },
       "roles": {
         "all": "Tüm roller",
@@ -2906,6 +3292,12 @@
         "Entry": "Entry",
         "Support": "Destek",
         "Rifler": "Rifler"
+      },
+      "sources": {
+        "overall": "Tüm kaynaklar",
+        "matchmaking": "Eşleştirme",
+        "tournament": "Turnuva",
+        "league": "Lig"
       },
       "columns": {
         "rank": "#",
@@ -3145,7 +3537,6 @@
       "description": "Author awards and hand them out to players and teams.",
       "catalog_section": "Award Catalog",
       "new_award": "New Award",
-      "edit_award": "Edit Award",
       "no_awards": "No awards yet.",
       "built_in": "Built-in",
       "holders": "holders",
@@ -3165,10 +3556,6 @@
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
       "clear_filters": "Clear filters",
-      "identity": "Identity",
-      "appearance": "Appearance",
-      "rules": "Rules",
-      "artwork_after_save": "Save the award first, then upload its artwork.",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -3185,6 +3572,53 @@
       "group_custom_event_awards": "Özel Etkinlik Ödülleri",
       "group_custom_season_awards": "Özel Sezon Ödülleri",
       "group_custom_league_awards": "Özel Lig Ödülleri"
+    },
+    "award_detail": {
+      "not_found_title": "Ödül bulunamadı",
+      "not_found": "Bu ödül mevcut değil ya da silinmiş.",
+      "holders_section": "Sahipler",
+      "no_holders_title": "Henüz sahibi yok",
+      "no_holders": "Bu ödül henüz kimseye verilmedi.",
+      "total_holders": "Veriliş sayısı",
+      "unique_players": "Oyuncular",
+      "unique_teams": "Takımlar",
+      "first_granted": "İlk veriliş",
+      "last_granted": "Son veriliş",
+      "filter_all": "Tümü",
+      "filter_players": "Oyuncular",
+      "filter_teams": "Takımlar",
+      "granted_by": "{name} tarafından verildi",
+      "source_manual": "Elle verildi",
+      "source_tournament": "Turnuva derecesi",
+      "source_season": "Sezon otomasyonu",
+      "revoke": "Geri al",
+      "confirm_revoke": {
+        "title": "Bu ödül geri alınsın mı?",
+        "description": "{name} artık bu ödüle sahip olmayacak. Bu işlem geri alınamaz."
+      }
+    },
+    "system_media_server": {
+      "title": "Medya sunucusu",
+      "description": "MediaMTX üzerindeki anlık yük. Oyun yayınları, oyuncu kameraları, ses ve görüntülü görüşmeler tek bir örneği paylaşır; yani burada gördüğün, aynı anda taşıdığı her şey. Günlükler Sistem → Günlükler → mediamtx altında.",
+      "media_server_section": "Medya sunucusu",
+      "media_server_live": "Yayınlıyor",
+      "media_server_paths": "Yollar",
+      "media_server_sessions": "WebRTC oturumları",
+      "media_server_row": "{ready}/{paths} canlı · {bytes} gelen",
+      "media_server_idle": "Şu anda hiçbir şey yayınlanmıyor.",
+      "media_server_unreachable": "Medya sunucusuna ulaşılamadı. Bu, boşta olmasıyla aynı şey değil — yukarıdaki sayılar sıfır değil, bilinmiyor.",
+      "media_kind": {
+        "gameStreams": "Oyun yayınları",
+        "playerCameras": "Oyuncu kameraları",
+        "voice": "Ses",
+        "videoCalls": "Görüntülü görüşmeler",
+        "cameraTalkback": "Kamera geri konuşma"
+      },
+      "resources": "Kaynak kullanımı",
+      "cpu": "CPU",
+      "memory": "Bellek",
+      "no_resources": "Medya sunucusu için henüz pod ölçümü yok — kümenin metrics sunucusu onu toplamıyor olabilir.",
+      "legend": "Yol, adlandırılmış tek bir yayın yuvasıdır — bir kişinin mikrofonu ya da bir kamera. «Yayınlıyor», şu anda gerçekten medya gönderenleri sayar; bir yol, biri katıldıktan sonra görüntüsü açılana kadar boşta durabilir. Oturumlar WebRTC bağlantılarıdır ve bir yayının her izleyicisi bunlardan biridir, bu yüzden diğerlerinden daha hızlı artar."
     }
   },
   "custom_match": {
@@ -3202,9 +3636,7 @@
       "select_section": "Bölüm seç",
       "branding_nav": "Marka",
       "fixtures_nav": "Fikstürler",
-      "seasons_nav": "Sezonlar",
       "groups": {
-        "platform": "Platform",
         "competition": "Rekabet",
         "match_setup": "Maç kurulumu",
         "content_media": "İçerik ve medya",
@@ -3212,9 +3644,6 @@
         "infrastructure": "Altyapı",
         "theme": "Görünüm",
         "developer": "Geliştirici",
-        "general": "Genel",
-        "media": "Kayıt ve medya",
-        "additional_features": "Ek özellikler",
         "players_teams": "Platform"
       }
     },
@@ -3245,7 +3674,16 @@
         "friend_request": "Arkadaşlık isteği",
         "invited_you": "seni davet etti:",
         "invited_party": "seni partisine davet etti",
-        "wants_to_be_friends": "arkadaş olmak istiyor"
+        "wants_to_be_friends": "arkadaş olmak istiyor",
+        "actor_host": "Ev sahibi",
+        "actor_teammate": "Bir takım arkadaşı",
+        "actor_organizer": "Bir organizatör",
+        "actor_player": "Bir oyuncu"
+      },
+      "season_rebuild": {
+        "title": "{number}. sezonun ELO'su yeniden hesaplanmalı",
+        "message": "Bu sezonun ELO'su güncel değil. ELO'sunu ve sıralamasını yeniden hesaplamak için yeniden oluştur.",
+        "action": "Sezon ELO'sunu yeniden hesapla"
       }
     },
     "app_nav": {
@@ -3295,9 +3733,11 @@
         "logs": "Günlükler",
         "database": "Veritabanı",
         "metrics": "Metrikler",
-        "render_queue": "İşleme sırası"
+        "render_queue": "İşleme sırası",
+        "media_server": "Medya sunucusu"
       },
       "profile": {
+        "section": "Hesap",
         "my_account": "Ayarlarım",
         "logout": "Çıkış yap"
       },
@@ -3333,7 +3773,8 @@
         "search_players": "Oyuncu ara",
         "leagues": "Lig",
         "events": "Etkinlikler",
-        "manage_events": "Etkinlikleri yönet"
+        "manage_events": "Etkinlikleri yönet",
+        "system_media_server": "Medya sunucusu"
       },
       "logout_dialog": {
         "title": "Çıkış yap",
@@ -3354,6 +3795,7 @@
       "home": "İstatistiklerim",
       "play_menu": "Oyna",
       "community_menu": "Topluluk",
+      "support_menu": "Destek",
       "watch_menu": "İzle",
       "login": "Oynamak için giriş yap",
       "login_aria": "Steam üzerinden giriş yap",
@@ -3410,7 +3852,8 @@
     "hub": {
       "social": "Sosyal",
       "notifications": "Bildirimler",
-      "lobby": "Lobi"
+      "lobby": "Lobi",
+      "voice": "Ses"
     },
     "lobby_panel": {
       "lobby_invites": "Lobi davetleri",
@@ -3419,14 +3862,58 @@
       "create_lobby_description": "Arkadaşlarını davet edip birlikte sıraya girmek için lobi oluştur.",
       "create_lobby_button": "Lobi oluştur",
       "voice_discord": "Sesli ve Discord",
+      "join_voice": "Sese katıl",
+      "leave_voice": "Ayrıl",
+      "mute": "Mikrofonu kapat",
+      "unmute": "Mikrofonu aç",
+      "voice_settings": "Ses ayarları",
+      "microphone": "Mikrofon",
+      "output": "Çıkış",
+      "system_default": "Sistem varsayılanı",
+      "input_level": "Giriş seviyesi",
       "discord_linked": "Discord bağlandı",
       "link_discord": "Discord bağla",
-      "find_match": "Maç bul"
+      "find_match": "Maç bul",
+      "voice": "Ses",
+      "live": "Canlı",
+      "muted": "Mikrofon kapalı",
+      "connect": "Bağlan",
+      "comms": "İletişim",
+      "live_on_camera": "Canlı · kamerada"
+    },
+    "voice_panel": {
+      "you": "Sen",
+      "coach": "Koç",
+      "connected": "kanalda {count} kişi",
+      "you_are_muted": "Mikrofonun kapalı",
+      "other_tab": "Başka bir sekmede çalışıyor — susturma ve ayrılma buradan da çalışır.",
+      "mute_player": "Bu oyuncuyu yalnızca kendin için sustur",
+      "speaking": "Konuşuyor",
+      "team_comms": "Takım iletişimi",
+      "party_comms": "Parti iletişimi",
+      "silenced": "Susturuldu",
+      "mic_off": "Mikrofon kapalı",
+      "unmute_player": "Bu oyuncuyu yeniden duy",
+      "player_volume": "Oyuncu sesi",
+      "empty_title": "Bir ses kanalında değilsin",
+      "empty_description": "Parti lobinden, bir maç sayfasından veya bir draft odasından katıl — kanal, içindeki herkesle birlikte burada görünür.",
+      "picker": {
+        "available": "Nerede konuşabilirsin",
+        "party": "Partin",
+        "party_detail": "lobide {count} kişi",
+        "team": "Takımın",
+        "team_vs": "{opponent} karşısında",
+        "switch": "Şuna geç",
+        "elsewhere": "Katıldın",
+        "elsewhere_detail": "Bu görüşmeye başka bir pencereden zaten katıldın — buraya taşımak için burada katıl"
+      },
+      "other_tab_short": "Başka bir sekmede"
     },
     "chat_panel": {
       "default_title": "Sohbet",
       "participants_in_chat": "Sohbette {count} kişi",
       "pop_out_tooltip": "Ayrı pencerede aç",
+      "close_tooltip": "Konuşmayı kapat",
       "no_chats_title": "Henüz sohbet yok",
       "no_chats_description": "Bir sohbete katıldığında burada görünecek."
     },
@@ -3442,9 +3929,6 @@
     },
     "public_header": {
       "secure_channel": "GÜVENLİ KANAL"
-    },
-    "voice_panel": {
-      "coach": "Koç"
     }
   },
   "alt_text": {
@@ -3452,6 +3936,14 @@
     "discord": "Discord",
     "map_poster": "Harita posteri",
     "map_patch": "Harita rozeti"
+  },
+  "push_prompt": {
+    "title": "Bildirimleri aç",
+    "description": "5stack açık olmasa bile maç davetlerini, lobi çağrılarını ve mesajları bu cihazda al.",
+    "enable": "Aç",
+    "dismiss": "Kapat",
+    "enabled": "Anlık bildirimler açıldı",
+    "failed": "Anlık bildirimler açılamadı. Tekrar dene."
   },
   "pwa": {
     "install": {
@@ -3592,7 +4084,12 @@
     "address_search": {
       "placeholder": "Adres veya mekan ara",
       "no_results": "Eşleşen mekan bulunamadı"
-    }
+    },
+    "slot": "{slot}. yuva",
+    "sort": "sırala",
+    "vs_team": "{name} karşısında",
+    "default": "Varsayılan",
+    "avg": "ort."
   },
   "spotlight_search": {
     "placeholder": "Oyuncu ara...",
@@ -3658,7 +4155,9 @@
       "uploading": "Dosyalar yükleniyor...",
       "complete": "Yükleme tamamlandı",
       "complete_with_errors": "Yükleme hatalarla tamamlandı",
-      "files_failed": "{count} dosya yüklenemedi"
+      "files_failed": "{count} dosya yüklenemedi",
+      "progress_files": "{completed} / {total} dosya",
+      "current_file": "Şu an: {name}"
     },
     "toolbar": {
       "new_file": "Yeni dosya",
@@ -3693,7 +4192,12 @@
       "unsaved_changes_warning": "Diğer dosyalarda kaydedilmemiş değişikliklerin var. Kapatmak istediğine emin misin?",
       "unsaved_changes_right_warning": "Sağdaki dosyalarda kaydedilmemiş değişikliklerin var. Kapatmak istediğine emin misin?",
       "unsaved_changes_left_warning": "Soldaki dosyalarda kaydedilmemiş değişikliklerin var. Kapatmak istediğine emin misin?"
-    }
+    },
+    "delete": {
+      "description": "Bu işlem «{name}» ögesini kalıcı olarak siler. Geri alınamaz."
+    },
+    "placeholder_folder_name": "klasör adı",
+    "placeholder_file_name": "dosya adı"
   },
   "error": {
     "generic": "Bir hata oluştu. Tekrar dene."
@@ -3709,17 +4213,21 @@
   },
   "chat_tab_labels": {
     "match": "Maç sohbeti",
+    "team": "Takım sohbeti",
     "tournament": "Turnuva sohbeti",
     "organizers": "Organizatör sohbeti",
     "matchmaking": "Sıra sohbeti",
     "lobby_default": "Lobi",
-    "organizers_default": "Organizatörler"
+    "organizers_default": "Organizatörler",
+    "direct": "Doğrudan mesaj"
   },
   "chat_room_subtitles": {
     "organizers": "Genel lobi",
     "tournament": "Turnuva sohbeti",
     "matchmaking": "Sıra sohbeti",
-    "match": "Maç sohbeti"
+    "match": "Maç sohbeti",
+    "team": "Takım sohbeti",
+    "direct": "Doğrudan mesaj"
   },
   "latency_status": {
     "measuring": "Ölçülüyor...",
@@ -3746,9 +4254,7 @@
     },
     "final_standings_podium": "▚ FİNAL SIRALAMASI · PODYUM",
     "page": {
-      "tournament_eyebrow": "Turnuva",
       "back_to_league": "Lige dön",
-      "view_match_options": "Maç seçeneklerini görüntüle",
       "match_options_tab": "Maç seçenekleri",
       "organizers_tab": "Organizatörler",
       "my_team": "Takımım",
@@ -3762,9 +4268,7 @@
       "read_less": "Daha az göster"
     },
     "feature_card": {
-      "tournament": "Turnuva",
       "teams": "Takımlar",
-      "stages": "Etaplar",
       "default_label": "Turnuva",
       "organized_by": "{team} tarafından"
     },
@@ -3812,7 +4316,7 @@
         "benched": "Kadro dışı"
       },
       "already_rostered": "Başka bir takımda",
-      "min_lineup_warning": "Kayıt olmak için en az {min} oyuncu seç."
+      "owner_on_a_team": "Bu turnuvada zaten bir takımın kadrosunda."
     },
     "tournament_team": {
       "remove": "Takımı Kaldır",
@@ -3842,12 +4346,6 @@
       "negotiated_scheduling": {
         "label": "Anlaşmalı Planlama",
         "description": "Maçların otomatik başlaması yerine, takım kaptanları maç saatlerini önerip üzerinde anlaşır (etap bazlı isteğe bağlı pencerelerle)."
-      },
-      "create_bar": {
-        "ready": "Oluşturmaya hazır",
-        "ready_hint": "Her şey hazır — turnuvanı oluştur",
-        "incomplete": "Zorunlu alanlar eksik",
-        "incomplete_hint": "Devam etmek için turnuva adını ve başlangıç tarihini doldur"
       },
       "logo": {
         "label": "Logo"
@@ -3896,7 +4394,6 @@
       "title": "Ses Kanalları",
       "description": "Turnuva maçları için otomatik olarak Discord ses kanalları oluştur. Maçlar başladığında oyuncular takım kanallarına taşınır.",
       "guild_id_placeholder": "Discord Sunucu ID",
-      "enable_voice": "Ses Kanallarını Etkinleştir",
       "guild_id": "Discord Sunucu Kimliği"
     },
     "table": {
@@ -3986,7 +4483,13 @@
       "embed_winner_label": "Üst Tablo",
       "embed_loser_label": "Alt Tablo",
       "embed_no_stage": "Aktif etap yok.",
-      "zoom_fit": "Sığdır"
+      "zoom_fit": "Sığdır",
+      "round_number": "{round}. tur",
+      "default_label": "Eşleşme tablosu",
+      "main_path": "Ana",
+      "impact_source": "kaynak",
+      "impact_delete": "sil",
+      "impact_reset": "sıfırla"
     },
     "match": {
       "reset_winner": "Kazananı sıfırla",
@@ -4059,10 +4562,13 @@
       "elimination_matches": "Eleme Maçları"
     },
     "standings": {
-      "title": "Sıralama"
+      "title": "Sıralama",
+      "tied": "BERABERE"
     },
     "results": {
-      "title": "Sonuçlar"
+      "title": "Sonuçlar",
+      "stats_heading": "TURNUVA İSTATİSTİKLERİ",
+      "live_provisional": "CANLI · GEÇİCİ"
     },
     "organizer": {
       "title": "Turnuva Organizatörleri",
@@ -4091,7 +4597,17 @@
       "leave_team": "Takımdan Ayrıl",
       "slot": "Slot {number}",
       "add_player": "Oyuncu Ekle",
+      "ineligible": {
+        "on_this_roster": "Zaten bu kadroda.",
+        "on_other_team": "Bu turnuvada zaten {team} kadrosunda.",
+        "invite_pending": "Onu zaten davet ettin — yanıtı bekleniyor."
+      },
+      "already_in_tournament": "Bu oyuncu bu turnuvada zaten bir takımda.",
       "pending_invites": "Bekleyen Davetler",
+      "member_added": "Oyuncu eklendi",
+      "member_added_description": "{name} kadrona eklendi",
+      "invite_sent": "Davet gönderildi",
+      "invite_sent_description": "{name} davet edildi; kadrona katılmadan önce kabul etmesi gerekiyor",
       "new": "Yeni Takım Oluştur",
       "select": "Mevcut Takımı Seç",
       "select_role": "Rol Seç",
@@ -4134,18 +4650,12 @@
       "remove_description": "Bu, sunucuyu turnuvadan kaldırır."
     },
     "open_match_actions": "Maç işlemlerini aç",
-    "location": {
-      "tab": "Konum",
-      "view_on_map": "Haritada görüntüle"
-    },
     "prizes": {
       "title": "Ödüller",
-      "manage_title": "Ödüller",
       "manage_hint": "Turnuva sayfasında gösterilen ödül sıraları ve tutarları.",
       "organizer_access_required": "Organizatör erişimi gerekli",
       "add": "Ekle",
       "distribution": "Ödül Dağılımı",
-      "place_placeholder": "#1",
       "prize_placeholder": "$1000",
       "reorder_hint": "Sıralamak için sürükle — sıralar otomatik yeniden numaralanır. Değiştirmek için etiket yaz.",
       "move_up": "Yukarı taşı",
@@ -4167,11 +4677,6 @@
     "banner": {
       "label": "Banner",
       "upload": "Banner yükle",
-      "replace": "Banner değiştir",
-      "remove": "Kaldır",
-      "removed": "Banner kaldırıldı",
-      "updated": "Banner güncellendi",
-      "empty_hint": "Banner ekle",
       "hint": "Turnuva sayfasının üstünde gösterilir. Geniş 3:1 çerçeveye kırpılır.",
       "upload_failed": "Banner yüklenemedi."
     },
@@ -4190,20 +4695,17 @@
       "pick_award_hint": "Pick an existing award for this placement, or create a new one.",
       "new_award": "New award",
       "new_award_hint": "This adds a new award to the catalog. Built-in awards are never modified.",
-      "upload_image": "Upload image",
-      "replace_image": "Replace image",
       "custom_image_hint": "Overrides the award's artwork for this tournament only.",
       "silhouettes": {
-        "auto": "Auto",
         "0": "Chalice",
         "1": "Faceted",
         "2": "Star",
         "3": "Shield",
-        "4": "Laurel"
+        "4": "Laurel",
+        "auto": "Auto"
       },
       "artwork": "Artwork",
       "silhouette_unused": "Silhouette is unused while artwork is set.",
-      "placement": "Placement",
       "unsaved": "Unsaved"
     },
     "awards_manage": {
@@ -4213,8 +4715,17 @@
       "remove": "Kaldır",
       "hint": "Eşleşme tablosu hesaplaması dışında bir ödül ver.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first.",
-      "choose_award": "Choose an award…"
+      "no_awards": "Create an award in the catalog first."
+    },
+    "teams_filter": {
+      "all": "Tümü",
+      "ready": "Hazır",
+      "incomplete": "Oyuncu eksik",
+      "no_matches": "Bu filtreye uyan takım yok",
+      "collapse": "Daralt",
+      "expand": "Genişlet",
+      "collapse_all": "Tümünü daralt",
+      "expand_all": "Tümünü genişlet"
     }
   },
   "team": {
@@ -4321,7 +4832,15 @@
       "ineligible_short": "Kilitli",
       "tournament_join_requires_owner_or_captain": "Bir turnuvaya yalnızca sahibi veya kaptanı olduğun takımlarla katılabilirsin.",
       "not_enough_players": "Meydan okumak için en az {count} oyuncu gerekli.",
-      "selected": "Seçildi"
+      "selected": "Seçildi",
+      "loading_more": "Daha fazlası yükleniyor…",
+      "ineligible": {
+        "in_tournament": "Bu turnuvaya zaten kayıtlı.",
+        "in_season": "Bu sezona zaten kayıtlı.",
+        "tournament_organizer": "Zaten bu turnuvanın organizatörü.",
+        "in_event": "Zaten bu etkinliğe bağlı.",
+        "other_side": "Zaten diğer takım olarak seçildi."
+      }
     },
     "member": {
       "coach": "Koç",
@@ -4342,7 +4861,8 @@
       "link_copied": "Takvim bağlantısı kopyalandı",
       "subscription_help": "Bu takımın oynadığı her maçı — scrim, lig maçı ve turnuva — görmek için bu URL'ye takvim uygulamandan abone ol.",
       "link_error": "Takvim bağlantısı alınamadı."
-    }
+    },
+    "roster_short": "kadro"
   },
   "match": {
     "open_match": "Maçı aç",
@@ -4388,6 +4908,7 @@
     },
     "elo_details": {
       "title": "ELO Değişim Detayları",
+      "rated_at_hint": "Değerlendirildiğin puan — kendi ELO'n ile takımının ortalamasının bir karışımı, rakip takımın ortalamasına karşı ölçülür. Farklı puanla giren takım arkadaşlarından farklı şeyler beklenir, bu yüzden aynı sonuç onları farklı miktarlarda hareket ettirir.",
       "formula": {
         "k_factor_hint": "K-faktörü — modifikatörler öncesi temel ELO değişim oranı.",
         "delta_hint": "Δ = gerçekleşen ({actual}) − beklenen ({expected}). Pozitifse takım-ELO tahmininin üzerinde performans gösterdin demektir.",
@@ -4421,7 +4942,8 @@
         "label": "Best Of",
         "description": "Kazanan, belirlenen sayıda oyunun çoğunluğunu kazanan taraftır.",
         "placeholder": "Bir best of değeri seç",
-        "option": "Best of {count}"
+        "option": "Best of {count}",
+        "short": "BO{count}"
       },
       "map_veto_settings": {
         "short_on": "Takımlar havuzdan harita banlar ve pick yapar.",
@@ -4469,6 +4991,11 @@
         "tv_delay": {
           "label": "TV Gecikmesi",
           "range": "0 ile 120 arasında bir değer gir."
+        },
+        "veto_pick_timeout": {
+          "label": "Veto süreölçeri",
+          "description": "Veto sırasında süresi dolan takım için otomatik seçim yapar.",
+          "range": "Her takımın, yerine seçim yapılmadan önce veto seçimi başına aldığı saniye."
         },
         "timeouts": {
           "tactical": {
@@ -4543,6 +5070,8 @@
       },
       "max_rounds": "Maksimum Raunt",
       "tv_delay": "TV Gecikmesi",
+      "veto_pick_timeout": "Veto süreölçeri",
+      "veto_pick_timeout_seconds": "{seconds} sn",
       "seconds": "saniye",
       "coaches": "Koçlar",
       "overtime": "Uzatma",
@@ -4554,7 +5083,19 @@
       "ready_setting": "Hazır Ayarı",
       "check_in_setting": "Katılım Onayı Ayarı",
       "advanced_settings": "Gelişmiş Ayarları Göster",
-      "default_player_models": "Varsayılan Oyuncu Modelleri"
+      "default_player_models": "Varsayılan Oyuncu Modelleri",
+      "cameras": {
+        "title": "Oyuncu kameraları",
+        "required": {
+          "label": "Web kamerası iste",
+          "description": "Sunucu bilgileri gösterilmeden önce oyuncuların bir web kamerası bağlaması gerekir ve bir görüntü kesilirse maç otomatik olarak duraklatılır."
+        },
+        "teammates": {
+          "label": "Takım arkadaşları izleyebilir",
+          "description": "Oyuncuların kendi takımlarının kameralarını görmesine izin ver."
+        },
+        "privacy_note": "Rakip takım bu görüntüleri asla göremez. Bu maçta oynayan organizatörler de hiçbirini göremez."
+      }
     },
     "schedule": {
       "schedule": "Planla",
@@ -4739,7 +5280,6 @@
       "randomize_teams": "Takımları Karıştır",
       "swap_lineups": "Dizilişleri Değiştir",
       "restore_round": "Raundu Geri Yükle",
-      "select_round_to_restore": "Geri yüklenecek raundu seç",
       "server_information": "Sunucu Bilgisi",
       "type": "Tür",
       "region": "Bölge",
@@ -4755,6 +5295,7 @@
     },
     "winner": {
       "set": "Maç Kazananını Belirle",
+      "set_failed": "Maçın galibi belirlenemedi",
       "select_lineup": "Diziliş Seç"
     },
     "map_winner": {
@@ -4763,7 +5304,6 @@
     "region_veto": {
       "ban_label": "Ban",
       "banning": "bölge banlıyor",
-      "organizer_override": "Organizatör Müdahalesi",
       "confirm_ban": "Banı Onayla",
       "server_region": "Sunucu Bölgesi",
       "select_region": "Bölge Seç",
@@ -4779,8 +5319,15 @@
       "reset_to_knife": "Bıçak Raunduna Sıfırla",
       "reset_to_warmup": "Isınmaya Sıfırla"
     },
+    "party": {
+      "queued": "Birlikte sıraya girildi",
+      "queued_lobby": "Bir lobide birlikte sıraya girildi",
+      "queued_valve": "Birlikte sıraya girildi (Valve partisi)"
+    },
     "picks": {
       "decider": "Karar Haritası",
+      "auto_picked": "Otomatik",
+      "auto_picked_description": "Takımın süresi dolduğu için otomatik seçildi.",
       "empty": "Veto Pick Yok",
       "counter_terrorist": "Counter-Terrorist",
       "terrorist": "Terrorist",
@@ -4794,7 +5341,6 @@
     "decider": "Karar Haritası",
     "map_veto": {
       "is_picking": "harita seçiyor",
-      "organizer_override": "Organizatör Müdahalesi",
       "pick": "Pick",
       "confirm": "{type} Onayla"
     },
@@ -4802,6 +5348,7 @@
       "picked": "Seçildi"
     },
     "auto_canceling": "Otomatik İptal Ediliyor",
+    "demo_processing": "Demo işleniyor",
     "actions": {
       "call_support": "Destek Çağır",
       "start_veto": "Vetoyu Başlat",
@@ -4844,7 +5391,8 @@
       "resume_renders_started": "Öne çıkan an renderları devam ediyor",
       "clips_started": "Oyuncu öne çıkan an renderları sıraya alındı",
       "reparse_demos": "Maç Demolarını Yeniden Ayrıştır",
-      "reparse_demos_started": "Bu maçın tüm demoları yeniden ayrıştırılıyor"
+      "reparse_demos_started": "Bu maçın tüm demoları yeniden ayrıştırılıyor",
+      "watch_camera": "Kameraları izle"
     },
     "delete_confirm": {
       "title": "Maçı Sil",
@@ -5067,7 +5615,10 @@
     "check_in": {
       "checked_in": "Katılım Onaylandı",
       "check_in": "Katılımı onayla",
-      "checked_in_description": "Maçı başlatmak için gereken {required} oyuncudan {checked} tanesi katılımını onayladı"
+      "checked_in_description": "Maçı başlatmak için gereken {required} oyuncudan {checked} tanesi katılımını onayladı",
+      "deadline": "Şu süre içinde katılım bildir",
+      "deadline_checked_in": "Otomatik iptale kalan",
+      "deadline_help": "Gerekli herkes süre dolmadan katılım bildirmezse maç otomatik olarak iptal edilir."
     },
     "coach": {
       "assign": "Koç ata"
@@ -5219,7 +5770,8 @@
       "kit_dropped_by": "{name} düşürdü",
       "unknown_player": "bilinmiyor",
       "kill_filter_by_title": "Oyuncunun yaptığı killer gösteriliyor — oyuncunun ölümlerine geçmek için tıkla",
-      "kill_filter_of_title": "Oyuncunun ölümleri gösteriliyor — oyuncunun killerine geçmek için tıkla"
+      "kill_filter_of_title": "Oyuncunun ölümleri gösteriliyor — oyuncunun killerine geçmek için tıkla",
+      "utility_none": "{label} (yok)"
     },
     "player_details_panel": {
       "stats_unavailable": "Bu maç için istatistik yok.",
@@ -5250,7 +5802,42 @@
     },
     "admin_bar": {
       "rcon_unavailable": "RCON kullanılamıyor",
-      "not_controllable": "Maç kontrol edilebilir durumda değil."
+      "not_controllable": "Maç kontrol edilebilir durumda değil.",
+      "veto_override": "Vetoyu geçersiz kıl"
+    },
+    "demo_processing_hint": "Maç demosu oyun sunucusundan yükleniyor. İstatistikler, 2B tekrar ve öne çıkanlar tamamlandığında gelir.",
+    "demo_playback": {
+      "xray": "Röntgen",
+      "xray_on": "Röntgen açık",
+      "xray_off": "Röntgen kapalı",
+      "all_players": "Tüm oyuncular ({count})",
+      "previous_kill": "Önceki öldürme",
+      "previous_kill_player": "Önceki öldürme — {name}",
+      "next_kill": "Sonraki öldürme",
+      "next_kill_player": "Sonraki öldürme — {name}",
+      "seeking": "Sarılıyor — cs2 yetişiyor",
+      "click_to_jump": "{label} — atlamak için tıkla",
+      "kill_nav_follows": "Öldürme gezinmesi izlenen oyuncuyu takip eder — sabitlemek için bir oyuncu seç",
+      "demo_ended": "Demo bitti — cs2 menüye döndü",
+      "reload": "Yeniden yükle",
+      "reload_demo": "Demoyu yeniden yükle",
+      "metadata_not_parsed": "Demo verileri henüz ayrıştırılmadı — oynat/duraklat, atlama ve hız yine de çalışıyor.",
+      "previous_round": "Önceki raunt",
+      "next_round": "Sonraki raunt",
+      "skip_back": "{seconds} sn geri sar",
+      "hud_layout": "HUD düzeni / görünürlüğü"
+    },
+    "maps": {
+      "demos_for_map": "Bu harita için {count} demo",
+      "heading": "Haritalar",
+      "demo_parsing": "Demo ayrıştırılıyor…",
+      "demo_parse": "Demo verilerini ayrıştır",
+      "demo_not_parsed": "Demo verileri ayrıştırılmadı",
+      "demo_watch": "Demoyu izle",
+      "not_parsed": "ayrıştırılmadı"
+    },
+    "highlights": {
+      "clip_count": "{count} klip"
     }
   },
   "ui": {
@@ -5297,7 +5884,6 @@
     "show_keyboard_shortcuts": "Klavye kısayollarını göster",
     "hold_to_show_scoreboard": "Skor tablosunu göstermek için basılı tut",
     "close_popout": "Ayrı pencereyi kapat",
-    "trophy_rack": "Kupa rafı",
     "click_to_view_tournament": "Turnuvayı görüntülemek için tıkla",
     "auto_clip": "Otomatik klip",
     "create_clip": "Klip oluştur",
@@ -5397,7 +5983,6 @@
     },
     "sanction": {
       "button": "Oyuncuya yaptırım uygula",
-      "typed_player": "{type} oyuncu",
       "reason_label": "Sebep",
       "reason_placeholder": "Yaptırım için sebep gir...",
       "reason_description": "Lütfen bu yaptırım için açık bir sebep belirt",
@@ -5415,12 +6000,43 @@
         "1_week": "1 hafta",
         "1_month": "1 ay",
         "permanent": "Kalıcı"
+      },
+      "heading": {
+        "ban": "Oyuncu yasaklanıyor",
+        "mute": "Oyuncunun mikrofonu kapatılıyor",
+        "gag": "Oyuncunun sohbeti kapatılıyor",
+        "silence": "Oyuncu tamamen susturuluyor"
+      },
+      "submit": {
+        "ban": "Oyuncuyu yasakla",
+        "mute": "Oyuncunun mikrofonunu kapat",
+        "gag": "Oyuncunun sohbetini kapat",
+        "silence": "Oyuncuyu tamamen sustur"
+      },
+      "applied": {
+        "ban": "{name} yasaklandı",
+        "mute": "{name} adlı oyuncunun mikrofonu kapatıldı",
+        "gag": "{name} adlı oyuncunun sohbeti kapatıldı",
+        "silence": "{name} tamamen susturuldu"
       }
     },
     "search": {
       "no_players_found": "Oyuncu bulunamadı.",
       "found_players": "Bulunan oyuncular",
-      "placeholder": "Oyuncu ara..."
+      "placeholder": "Oyuncu ara...",
+      "loading_more": "Daha fazlası yükleniyor…",
+      "ineligible": {
+        "in_lineup": "Zaten bu maçın kadrosunda.",
+        "coaching": "Bu maçta zaten koçluk yapıyor.",
+        "on_team": "Zaten bu takımda.",
+        "team_invite_pending": "Onu zaten davet ettin — yanıtı bekleniyor.",
+        "in_lobby": "Zaten lobinde.",
+        "in_draft": "Zaten bu draftta.",
+        "in_event": "Zaten bu etkinliğe bağlı.",
+        "event_organizer": "Zaten bu etkinliğin organizatörü.",
+        "tournament_organizer": "Zaten bu turnuvanın organizatörü.",
+        "tournament_admin": "Turnuva yöneticisi her zaman organizatördür."
+      }
     },
     "sanctions": {
       "title": "Yaptırımlar",
@@ -5431,10 +6047,14 @@
       "duration_label": "Süre",
       "select_duration": "Süre seç",
       "sanctions": "Yaptırımlar",
+      "record": "Geçmiş",
       "expires": "Bitiş",
       "expired_on": "Bitti",
       "issued": "Uygulandı",
       "view_steam": "Steam'de banı görüntüle",
+      "steam_bans": "Steam yasakları",
+      "steam_vac_bans": "VAC yasakları",
+      "steam_game_bans": "Oyun yasakları",
       "permanent": "Kalıcı",
       "active": "Aktif",
       "expired": "Süresi doldu",
@@ -5455,6 +6075,7 @@
       "abandoned_matches": "Terk edilen maçlar",
       "match": "Maç",
       "no_sanctions": "Yaptırım yok",
+      "no_sanctions_description": "Bu oyuncunun bu platformda sicili temiz.",
       "remove_abandoned": "Terk edilen maçı kaldır",
       "confirm_remove_abandoned": "Terk edilen maçı kaldır",
       "remove_abandoned_description": "Bu terk edilmiş maç kaydını kaldırmak istediğine emin misin? Bu işlem geri alınamaz.",
@@ -5474,7 +6095,15 @@
       "vac_banned": "Steam'de VAC banlı",
       "vac_banned_count": "Steam'de {count} VAC ban",
       "game_banned": "Steam'de oyun banlı",
-      "game_banned_count": "Steam'de {count} oyun banı"
+      "game_banned_count": "Steam'de {count} oyun banı",
+      "last_ban_days_ago": "Son yasak {days} gün önce",
+      "view_sanctions_hint": "Tüm yaptırımları görmek için tıkla",
+      "not_in_cs2": "Şu anda CS2'de değil"
+    },
+    "context_menu": {
+      "view_profile": "Profili görüntüle",
+      "copy_steam_id": "Steam kimliğini kopyala",
+      "steam_id_copied": "Steam kimliği kopyalandı"
     },
     "change_name": {
       "name_label": "Ad",
@@ -5485,10 +6114,13 @@
       "title": "Bekleyen CS2 içe aktarmaları",
       "importing": "İçe aktarılıyor…"
     },
-    "all_time_peak": "TÜM ZAMANLARIN ZİRVESİ"
+    "all_time_peak": "TÜM ZAMANLARIN ZİRVESİ",
+    "at_match_start": "MAÇ BAŞINDA",
+    "current_elo": "ŞU AN",
+    "faceit_level": "Seviye {level}",
+    "elo_aria_label": "ELO, birincil {tier} {elo}"
   },
   "maps": {
-    "label": "Haritalar",
     "veto": {
       "pick": "Harita seç"
     },
@@ -5555,6 +6187,8 @@
       "search_placeholder": "Arkadaş ara...",
       "invite_to_lobby": "Lobiye davet et",
       "remove": "Arkadaşı kaldır",
+      "remove_confirm_title": "Arkadaş çıkarılsın mı?",
+      "remove_confirm_description": "{name} arkadaş listenden çıkarılacak. Yeniden eklemek için yeni bir arkadaşlık isteği göndermen gerekir.",
       "in_match": "Maçta",
       "in_lobby": "Lobide",
       "in_draft": "Seçim lobisinde",
@@ -5574,6 +6208,7 @@
       "title": "Diğerleri"
     },
     "banned": "Eşleştirmeden banlandın",
+    "banned_until": "{time} tarihine kadar eşleştirmeden yasaklısın",
     "confirm_selection": "Sıraya katıl",
     "in_queue": "sırada",
     "temp_banned": "Eşleştirmeden geçici olarak banlandın",
@@ -5585,7 +6220,9 @@
     "party_size": {
       "unavailable": "{size} kişilik parti bu modda sıraya giremez",
       "requirement": "{half} veya daha az kişiyle ya da tam olarak {full} kişiyle sıraya girin"
-    }
+    },
+    "temp_banned_until": "{time} tarihine kadar eşleştirmeden geçici olarak yasaklısın",
+    "new_invites_count": "Yeni davetler ({count})"
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -5724,7 +6361,13 @@
     "no_metrics_description": "Bu düğüm için henüz metrik verisi yok. Düğüm veri göndermeye başlayınca metrikler görünecek.",
     "current": "mevcut",
     "percent_used": "%{percent} kullanılıyor",
-    "col_name": "AD"
+    "col_name": "AD",
+    "node_telemetry_description": "İşlemci ve bellek ön planda kalır; ağ ve disk geçmişi ise daha ayrıntılı inceleme için altta gruplanır.",
+    "disk": "Disk",
+    "cpu_hint": "Son ölçüm aralığındaki işlemci yükü.",
+    "memory_hint": "Kullanılan bellek ile kurulu kapasitenin karşılaştırması.",
+    "network_hint": "Tüm arayüzlerdeki toplam alma ve gönderme hızı.",
+    "disk_hint": "En çok kullanılan diskin görünümü ve buna ait geçmiş."
   },
   "chat": {
     "readonly": "Sohbet salt okunur.",
@@ -5741,12 +6384,27 @@
       "no_access": "Bu sayfaya erişimin yok.",
       "sidebar_hint": "Sohbet, sağ kenar çubuğundaki Sohbetler sekmesinde bulunur."
     },
-    "in_chat": "sohbette"
+    "in_chat": "sohbette",
+    "everyone": "Herkes",
+    "your_team": "Takımın",
+    "all": "Tümü",
+    "team_tag": "Takım",
+    "message_placeholder_team": "Takımına yaz…",
+    "send_other_hint": "{channel} kanalına göndermek için Ctrl+Enter",
+    "everyone_hint": "Her iki takım — oyun içi sohbette de görünür",
+    "team_hint": "Yalnızca kendi kadron — oyun içi sohbette görünmez",
+    "direct": {
+      "message": "Mesaj",
+      "empty": "Henüz mesaj yok. Merhaba de."
+    }
   },
   "charts": {
     "usage": "Kullanım",
     "mount_os": "İşletim Sistemi",
-    "mount_demos": "Demolar"
+    "mount_demos": "Demolar",
+    "total_series": "{label} toplam",
+    "gpu_index": "GPU {index}",
+    "series_avg": "{label} ort."
   },
   "server": {
     "join_server": "Sunucuya katıl",
@@ -5824,6 +6482,7 @@
     "unmute": "Sesi aç",
     "play": "Oynat",
     "pause": "Duraklat",
+    "seek": "Sar",
     "fullscreen": "Tam ekran",
     "exit_fullscreen": "Tam ekrandan çık",
     "fullscreen_f_key": "Tam ekran (F)",
@@ -5938,7 +6597,8 @@
     "spectator": {
       "slot": "Slot {slot}",
       "slot_waiting": "Slot {slot} · oyuncu bekleniyor…",
-      "take_manual_control": "Manuel kontrolü almak için tıkla"
+      "take_manual_control": "Manuel kontrolü almak için tıkla",
+      "slot_key": "{slot}. yuva · {key} tuşu"
     },
     "page_title": "Stream Deck",
     "page_description": "Canlı bir maçı yayınlamak, hedef değiştirmek ve otomatik yönetmeni çalıştırmak için bir GPU'yu devral.",
@@ -5960,7 +6620,26 @@
     "swap_sides": "Tarafları değiştir (manuel kontrol)",
     "refresh_hud": "HUD'u yenile (oyuncu görsellerini yeniden yükle)",
     "autodirector_on": "Otomatik yönetmen açık.",
-    "autodirector_hint": "Kamerayı CS2 seçiyor — bir hedefe tıklamak veya tuşa basmak bunu kapatıp manuel kontrolü devralır."
+    "autodirector_hint": "Kamerayı CS2 seçiyor — bir hedefe tıklamak veya tuşa basmak bunu kapatıp manuel kontrolü devralır.",
+    "actions": {
+      "spec_click": "İzleyici tıklaması ({button})",
+      "spec_slot": "{slot}. yuvayı izle",
+      "spec_jump": "İzleyici hedefine atla",
+      "spec_autodirector": "Otomatik yönetmen",
+      "spec_xray": "Röntgen",
+      "spec_hud": "HUD görünürlüğü",
+      "set_hud_mode": "HUD düzeni",
+      "swap_sides": "Tarafları değiştir",
+      "refresh_hud": "HUD'u yenile",
+      "start_live": "Yayını başlat",
+      "stop_live": "Yayını durdur",
+      "reconnect": "Yeniden bağlan",
+      "skip_shaders": "Shader derlemesini atla"
+    },
+    "gpu_pool_hint": "GPU havuzu — GPU düğümleri sayfasını aç",
+    "no_free_gpu": "Boş GPU yok",
+    "start_live_hint": "Canlı yayın başlat",
+    "start_tv_hint": "Gecikmeli TV yayını başlat"
   },
   "system_metrics_extras": {
     "gpu_usage": "GPU kullanımı",
@@ -5971,7 +6650,8 @@
   },
   "rcon": {
     "console": "RCON Konsolu",
-    "suggestions": "Öneriler"
+    "suggestions": "Öneriler",
+    "entry_count": "{count} kayıt"
   },
   "game_server_node": {
     "set_ports": "Portları Ayarla"
@@ -6067,7 +6747,9 @@
       "done_only_count": "{count} tamamlandı",
       "cancelled_count": "{count} iptal edildi",
       "retry_failed_count": "Başarısızları yeniden dene ({count})",
-      "retry_all_clips": "{count} klibin tümünü yeniden dene"
+      "retry_all_clips": "{count} klibin tümünü yeniden dene",
+      "target_clip": "{name} klibi",
+      "render_id": "İşleme {id}"
     },
     "create_dialog": {
       "title": "Otomatik Klip",
@@ -6139,7 +6821,11 @@
       "no_moments": "Bu haritada {target} için öne çıkarmaya değer bir an yok.",
       "this_player": "bu oyuncu",
       "queue_render": "Render'ı sıraya al"
-    }
+    },
+    "player": "Oyuncu",
+    "clip": "Klip",
+    "open_profile": "{name} adlı oyuncunun profilini aç",
+    "size": "Boyut"
   },
   "time_ago": {
     "just_now": "az önce",
@@ -6167,7 +6853,8 @@
     "view_short": "Görüntüle",
     "premier": "Premier",
     "competitive": "Rekabetçi",
-    "wingman": "Wingman"
+    "wingman": "Wingman",
+    "imported_from": "{type} · {source} kaynağından içe aktarıldı"
   },
   "breadcrumbs": {
     "dashboard": "kontrol paneli"
@@ -6186,6 +6873,9 @@
     "updated": "GÜNCELLENDİ",
     "series_multiplier": "SERİ ÇARPANI",
     "team_elo": "TAKIM ELO",
+    "rated_at": "DEĞERLENDİRME",
+    "you": "SEN",
+    "team": "TAKIM",
     "kda": "KDA",
     "kda_breakdown": "K / D / A",
     "perf": "PERF"
@@ -6439,13 +7129,7 @@
     }
   },
   "league": {
-    "created": "Lig oluşturuldu",
     "not_found": "Lig bulunamadı",
-    "status": {
-      "Setup": "Kurulum",
-      "Active": "Aktif",
-      "Archived": "Arşivlendi"
-    },
     "season_status": {
       "Setup": "Kurulum",
       "RegistrationOpen": "Kayıtlar Açık",
@@ -6456,7 +7140,6 @@
       "Canceled": "İptal Edildi"
     },
     "list": {
-      "eyebrow": "Rekabet",
       "title": "Lig",
       "subtitle": "Sezonluk kademeler, haftalık maçlar, terfi ve küme düşme",
       "settings": "Lig ayarları"
@@ -6469,11 +7152,9 @@
       "none": "—"
     },
     "divisions": {
-      "title": "Kademeler",
       "empty": "Henüz kademe ayarlanmadı.",
       "add": "{tier}. kademeyi ekle",
       "name_placeholder": "Kademe adı (örn. Açık, Ana, Davetli)",
-      "tier_hint": "1. kademe en üst kademedir. Takımlar 1. kademeye doğru terfi eder, uzaklaştıkça küme düşer.",
       "reorder_hint": "Sırayı değiştirmek için kademeleri sürükle. 1. kademe en üsttedir; takımlar ona doğru terfi eder, uzaklaştıkça küme düşer.",
       "delete_title": "Kademe silinsin mi?",
       "delete_description": "{name} kademesini sıralamadan kaldırır. Kalan kademeler yeniden numaralandırılır. Bu işlem geri alınamaz."
@@ -6481,15 +7162,12 @@
     "seasons": {
       "title": "Sezonlar",
       "empty": "Henüz sezon yok.",
-      "teams_count": "{count} takım",
       "deleted": "Sezon silindi",
       "delete_title": "Sezon silinsin mi?",
       "delete_description": "{name} sezonunu kayıtları, programı ve sonuçlarıyla birlikte kalıcı olarak siler. Bu işlem geri alınamaz."
     },
     "season_form": {
       "title": "Sezon Oluştur",
-      "name": "İsim",
-      "name_placeholder": "örn. Sezon 1",
       "signup_opens": "Kayıtlar açılıyor",
       "signup_closes": "Kayıtlar kapanıyor",
       "starts_at": "Sezon başlangıcı",
@@ -6498,9 +7176,6 @@
       "auto_format_hint": "Her kademenin formatı boyutuna göre otomatik seçilir: sezonun raunt sayısına sığıyorsa tam lig usulü, sığmıyorsa İsviçre sistemi grubu.",
       "roster_lock_week": "Kadro kilit haftası",
       "playoff_seats": "Playoff kontenjanı",
-      "min_roster": "Min kadro",
-      "promote": "Terfi",
-      "relegate": "Küme düşür",
       "direct_promote": "Doğrudan terfi",
       "relegation_up": "Küme düşme playoff (yukarı)",
       "relegation_down": "Küme düşme playoff (aşağı)",
@@ -6529,18 +7204,10 @@
       "min_teams_hint": "Bir kademenin çalışması için en az 4 onaylı takım gerekir — küçük kademeler sezon başında atlanır."
     },
     "overview": {
-      "signup_window": "Kayıt aralığı",
-      "starts": "Başlangıç",
       "weeks": "Maç haftası",
-      "playoff_seats": "Playoff kontenjanı",
       "roster_locked": "Kadro kilitli",
       "roster_locks": "Kadro {date} tarihinde kilitlenir",
-      "format": "Format",
-      "teams": "Takım",
-      "playoffs": "Playoff",
-      "weeks_count": "{count} hafta",
-      "across_divisions": "{count} kademede",
-      "playoff_seats_count": "{count} kontenjan"
+      "weeks_count": "{count} hafta"
     },
     "phases": {
       "registration": "Kayıt",
@@ -6565,10 +7232,6 @@
     },
     "manage": {
       "title": "Ayarlar",
-      "open": "Yönetim sekmesini aç",
-      "phase_controls": "Sezon aşaması",
-      "current": "Mevcut",
-      "registrations": "Kayıtlar",
       "danger_zone": "Tehlikeli bölge"
     },
     "tabs": {
@@ -6576,7 +7239,6 @@
       "teams": "Takımlar",
       "schedule": "Program",
       "standings": "Puan Durumu",
-      "playoffs": "Playoff",
       "bracket": "Eşleşme Tablosu",
       "movements": "Hareketler",
       "stats": "İstatistik"
@@ -6597,14 +7259,6 @@
       "requested_division": "İstenen kademe",
       "assign_division": "Kademe ata (otomatik onaylanır)",
       "no_preference": "Fark etmez",
-      "roster": "Sezon kadrosu ({selected} seçildi, en az {min})",
-      "roster_range": "Sezon kadrosu ({selected} seçildi · {min}–{max} oyuncu)",
-      "group": {
-        "starters": "İlk 5",
-        "substitutes": "Yedekler",
-        "benched": "Kadro dışı"
-      },
-      "available": "Uygun",
       "min_roster_warning": "Kayıt için en az {min} oyuncu seç.",
       "register": "Kaydol",
       "registered": "Takım kaydedildi",
@@ -6612,7 +7266,6 @@
       "cta_hint": "Yönettiğin bir takımı kaydet ve sezon kadrosunu kilitle."
     },
     "my_team": {
-      "title": "Takımım — {team}",
       "add_players": "Oyuncu ekle",
       "make_starter": "İlk 5'e al",
       "make_sub": "Yedeklere taşı",
@@ -6654,7 +7307,6 @@
       "decline_title": "Kayıt reddedilsin mi?",
       "decline_reason_hint": "İstersen takıma nedenini belirt. Kayıtlar açıkken yeniden başvurabilirler.",
       "decline_reason_placeholder": "Neden (isteğe bağlı)",
-      "players": "oyuncu",
       "review_summary": "{pending} beklemede · {waitlisted} yedek listesinde incelemede",
       "remove": "Kaldır",
       "remove_title": "Takım sezondan kaldırılsın mı?",
@@ -6665,20 +7317,9 @@
     "schedule": {
       "week": "{week}. hafta",
       "season_number": "{number}. sezon",
-      "default_time": "Varsayılan",
       "my_matches": "Maçlarım",
-      "no_matches_filter": "Bu filtrelere uyan maç yok.",
-      "unscheduled_count": "{count} programlanmadı",
-      "needs_you": "{count} tanesi seni bekliyor",
-      "filter": {
-        "all": "Tümü",
-        "unscheduled": "Programlanmadı",
-        "scheduled": "Programlandı",
-        "finished": "Bitti"
-      },
       "no_matchups": "Bu hafta eşleşme yok.",
       "bye": "Bay (bedava galibiyet)",
-      "unscheduled": "Programlanmadı",
       "view_match": "Maçı görüntüle",
       "propose": "Saat öner",
       "propose_new": "Yeni saat öner",
@@ -6693,13 +7334,6 @@
       "decline": "Reddet",
       "awaiting_opponent": "Rakip bekleniyor",
       "winner": "Kazanan",
-      "defaults_to": "Saat üzerinde anlaşılmazsa {time} olarak otomatik programlanır",
-      "history": "Geçmiş öneriler ({count})",
-      "status_chip": {
-        "needs_scheduling": "Programlanmalı",
-        "scheduled": "Programlandı",
-        "finished": "Bitti"
-      },
       "status": {
         "Accepted": "Kabul edildi",
         "Declined": "Reddedildi",
@@ -6715,7 +7349,6 @@
     "schedule_task": {
       "schedule_title": "Maçını programla",
       "respond_title": "Bir maç saati önerildi",
-      "confirm_title": "Maç saatini onayla",
       "context": "{season} sezonu · {week}. hafta",
       "more": "{count} tane daha"
     },
@@ -6725,11 +7358,9 @@
       "rounds": "Raunt",
       "round_diff": "RF",
       "remaining": "Kalan",
-      "playoffs": "Playoff",
       "search": "Takım ara",
       "empty": "Henüz sonuç yok.",
       "removed": "Kaldırıldı",
-      "open_tournament": "Turnuvayı aç",
       "legend": {
         "advances": "Playoffa yükselir (ilk {n})",
         "cutoff": "Playoff sınırı",
@@ -6738,9 +7369,6 @@
       }
     },
     "playoffs": {
-      "view_bracket": "Eşleşme tablosunu gör",
-      "pending": "Playoff eşleşme tablosu normal sezon bitince oluşturulur.",
-      "not_started": "Playoff henüz başlamadı.",
       "scheduling": "{division} · playoff programlaması"
     },
     "movements": {
@@ -6793,10 +7421,6 @@
       }
     },
     "stats": {
-      "player": "Oyuncu",
-      "team": "Takım",
-      "maps": "Harita",
-      "kdr": "K/D",
       "empty": "Henüz istatistik yok — lig maçları oynanınca görünür."
     },
     "rollover": {
@@ -6922,8 +7546,6 @@
     "form": {
       "name": "Etkinlik adı",
       "description": "Açıklama",
-      "starts_at": "Başlangıç",
-      "ends_at": "Bitiş",
       "dates": "Etkinlik tarihleri",
       "pick_dates": "Bir tarih aralığı seç",
       "start_required": "Etkinliğin yalnızca o tarihten sonra oynanan maçları toplaması için bir başlangıç tarihi gerekli",
@@ -7055,8 +7677,7 @@
       "link_title_placeholder": "İsteğe bağlı başlık",
       "link_add": "Ekle",
       "link_invalid": "Geçerli bir http(s) URL'si gir",
-      "link_added": "Bağlantı eklendi",
-      "external_open": "Bağlantıyı aç"
+      "link_added": "Bağlantı eklendi"
     },
     "phase": {
       "upcoming": "Yaklaşan",
@@ -7067,18 +7688,12 @@
       "for_you": "Senin için",
       "rank": "Etkinlik rankı",
       "rating": "Puan",
-      "kd": "K/D",
-      "matches": "Maçlar",
-      "no_my_matches": "Bu etkinlikte henüz senin bir maçın yok."
+      "matches": "Maçlar"
     },
     "matches": {
-      "none": "Bu etkinliğin turnuvalarında henüz maç oynanmadı.",
-      "load_more": "Daha fazla maç yükle"
+      "none": "Bu etkinliğin turnuvalarında henüz maç oynanmadı."
     },
     "story": {
-      "only_mine": "Sadece benim anlarım",
-      "none": "Bu etkinlikte henüz bir şey olmadı.",
-      "none_mine": "Bu etkinlikte henüz bir anın yok.",
       "highlights": "Öne çıkan anlar"
     },
     "banner": {
@@ -7089,14 +7704,7 @@
       "updated": "Banner güncellendi",
       "removed": "Banner kaldırıldı",
       "empty_hint": "Henüz banner yok — yüklemek için tıkla",
-      "hint": "Etkinlik sayfasının üstünde tam genişlikte gösterilir. Optimum boyut: 1920×640 (3:1). 10 MB'a kadar görsel veya 512 MB'a kadar MP4 video.",
-      "editor": {
-        "title": "Banner'ı ayarla",
-        "description": "3:1 banner çerçevesi içinde konumlandırmak için sürükle, yakınlaştırmak için kaydır. Görsel kırpılmamalıysa “Görselin tamamına sığdır” seçeneğini kullan — sayfa kenarları bulanık bir kopyayla doldurur.",
-        "fit_whole": "Görselin tamamına sığdır",
-        "reset": "Sıfırla",
-        "apply": "Banner olarak kullan"
-      }
+      "hint": "Etkinlik sayfasının üstünde tam genişlikte gösterilir. Optimum boyut: 1920×640 (3:1). 10 MB'a kadar görsel veya 512 MB'a kadar MP4 video."
     },
     "player": {
       "full_profile": "Tam profil",
@@ -7127,14 +7735,10 @@
     "tournament": "Turnuva",
     "placement": "Sıralama",
     "no_awards": "Henüz Ödül Yok",
-    "no_awards_description": "Bu vitrini doldurmak için bir turnuvada ilk 3'e gir ya da bir ödül kazan.",
     "granted": "Verildi",
     "composer": {
       "title": "Create & assign award",
       "award": "Award",
-      "new": "New",
-      "existing": "Existing",
-      "choose": "Choose an award…",
       "assign": "Assign",
       "artwork_needs_award": "Artwork attaches to the award, so save it first.",
       "create_to_upload": "Create award to add artwork",
@@ -7149,20 +7753,332 @@
       "award_unavailable": "Bu ödül yüklenemedi.",
       "load_existing": "Load an existing award…",
       "editing": "Editing: {name}"
-    }
+    },
+    "badge_alt": "{label} ödülü",
+    "badge_alt_tournament": "{tournament} için {label} ödülü"
   },
   "awards_modal": {
-    "view_tournament": "TURNUVAYI GÖRÜNTÜLE"
+    "view_tournament": "TURNUVAYI GÖRÜNTÜLE",
+    "view_award": "Ödülü görüntüle"
   },
   "awards_manage_form": {
     "team": "Takım",
-    "player": "Oyuncu",
-    "award": "Ödül",
-    "recipient": "Recipient"
+    "player": "Oyuncu"
+  },
+  "search": {
+    "unregistered": "Kayıtlı değil",
+    "registered_only": "Yalnızca kayıtlılar",
+    "registered": "Kayıtlı"
   },
   "camera": {
+    "title": "Web kamerası gerekli",
+    "subtitle": "Sunucu bilgilerini görebilmen için bu maç bir web kamerası gerektiriyor.",
+    "choose_pc": "Bu bilgisayarı kullan",
+    "scan": "Bu kodu telefonunla tara",
+    "waiting": "Kameran bekleniyor…",
+    "preparing": "Kamera bağlantın hazırlanıyor…",
+    "connect": "Kamerayı bağla",
+    "connecting": "Bağlanıyor…",
+    "connected": "Kameran yayında",
+    "keep_open": "Maçın geri kalanında bu sayfayı açık tut.",
+    "flip": "Kamerayı çevir",
+    "error": "Kameran başlatılamadı",
+    "retry": "Tekrar dene",
+    "admin_title": "Oyuncu kameraları",
+    "admin_empty": "Bu maçta oyuncu yok.",
+    "call": "Görüntülü görüşme",
+    "end_call": "Görüşmeyi bitir",
+    "offline": "Bağlı değil",
+    "setup_before_check_in": "Kameranı ayarla",
+    "permission_hint": "Görüntü başlamadan önce tarayıcın kamera ve mikrofon izni isteyecek.",
+    "reframe_reset": "Sıfırla",
+    "talk_label": "Organizatör görüşmesi",
+    "you": "Sen",
     "tile": {
+      "live": "Canlı",
+      "stalled": "Takıldı",
+      "offline": "Çevrimdışı",
+      "talking": "Görüşmede",
+      "unknown": "Kontrol ediliyor…",
       "coach": "Koç"
+    },
+    "admin_subtitle": "Canlı oyuncu kameraları",
+    "admin_live_count": "{total} kameradan {live} tanesi canlı",
+    "admin_stalled_count": "{count} tanesi takıldı",
+    "preview_hidden": "Önizleme gizli",
+    "preview_hidden_hint": "Kameran hâlâ açık ve yayınlanmaya devam ediyor.",
+    "hide_preview": "Önizlemeyi gizle",
+    "show_preview": "Önizlemeyi göster",
+    "talk_mute": "Mikrofonu kapat",
+    "talk_unmute": "Mikrofonu aç",
+    "listen": "Mikrofonu dinle",
+    "mute": "Mikrofonu kapat",
+    "or": "veya",
+    "reason": "İzlendiğin sürece kameran maç yayınında görünebilir ve maç görevlileri maç boyunca onu izleyebilir.",
+    "reason_teammates": "İzlendiğin sürece kameran maç yayınında görünebilir. Maç görevlileri ve kendi takımın maç boyunca onu izleyebilir.",
+    "cameras": "Kameralar",
+    "preview": "Önizleme",
+    "reframe_gesture": "Yakınlaştırmak için kaydır veya sıkıştır · yeniden ortalamak için sürükle",
+    "mic_hint": "Kameranla birlikte yayınlanır — yayına çıkmadan önce kontrol et.",
+    "voice_hint": "Görüntün bir görüşme değil — takımınla konuşmak için katıl.",
+    "phase": {
+      "preview": "Önizleme",
+      "connecting": "Bağlanıyor",
+      "connected": "Canlı",
+      "error": "Yayında değil"
+    },
+    "headline_preview": "Henüz yayında değilsin. Kadrajını ayarla, sonra bağlan.",
+    "media_error": {
+      "denied": "Tarayıcın kameraya erişimi engelledi. Bu site için izin ver ve tekrar dene.",
+      "missing": "Kamera bulunamadı. Bir tane bağla ya da aşağıdan başka bir cihaz seç.",
+      "busy": "Kamerayı başka bir uygulama kullanıyor. Onu kapat ve tekrar dene.",
+      "insecure": "Kameran güvenli bir bağlantı gerektiriyor. 5stack'i HTTPS (veya localhost) üzerinden aç ve tekrar dene.",
+      "unknown": "Kamera başlatılamadı. Tekrar dene."
+    },
+    "media_pending": "Kamera izni bekleniyor…",
+    "dismiss": "Kapat",
+    "nag": "Henüz bağlı değilsin. Kameran yayına girene kadar katılım bildirimi kapalı kalır.",
+    "nag_action": "Ayarla",
+    "mic": "Mikrofon",
+    "errors": {
+      "no_media_path": "Kamera sunucuya ulaştı ama bir medya yolu kurulamadı.",
+      "ice_timeout": "Kamera sunucuya ulaştı ama zamanında bir medya yolu kurulamadı.",
+      "feed_dropped": "Kamera görüntüsü kesildi.",
+      "unknown": "Kameran başlatılamadı.",
+      "load_failed": "Oyuncu kameraları yüklenemedi.",
+      "call_failed": "Görüşme başlatılamadı."
+    }
+  },
+  "voice": {
+    "errors": {
+      "insecure_origin": "Sesli sohbet güvenli bir bağlantı gerektirir. 5stack'i HTTPS (veya localhost) üzerinden aç ve tekrar dene.",
+      "unsupported": "Bu tarayıcı sesli sohbeti desteklemiyor.",
+      "permission_denied": "Mikrofon erişimi engellendi. Tarayıcının site ayarlarından izin ver ve tekrar dene.",
+      "no_microphone": "Mikrofon bulunamadı. Bir tane bağla ve tekrar dene.",
+      "microphone_busy": "Mikrofonun başka bir uygulama tarafından kullanılıyor.",
+      "unknown": "Sesli sohbet başlatılamadı.",
+      "unreachable": "API'ye ulaşılamadı. Bu genellikle bir CORS kuralından ya da API'nin bu adresten erişilebilir olmamasından kaynaklanır — aşağıdaki ayrıntıya ve tarayıcı konsoluna bak.",
+      "forbidden": "Bu lobinin sesli sohbetine katılma iznin yok.",
+      "not_deployed": "Ses uç noktası API'de bulunamadı. Henüz yayına alınmamış olabilir.",
+      "signaling": "Ses sunucusu bağlantıyı reddetti.",
+      "camera": "Kameran başlatılamadı. Başka bir uygulamanın kullanmadığından emin ol ve tekrar dene.",
+      "camera_denied": "Kamera erişimi engellendi. Tarayıcının site ayarlarından izin ver ve tekrar dene.",
+      "no_camera": "Kamera bulunamadı. Bir tane bağla ve tekrar dene.",
+      "camera_busy": "Kameran başka bir uygulama tarafından kullanılıyor."
+    },
+    "settings": {
+      "title": "Ses ayarları",
+      "description": "Cihazlarını seç ve seni duyabildiklerinden emin ol.",
+      "input": "Giriş cihazı",
+      "output": "Çıkış cihazı",
+      "mic_test": "Mikrofon testi",
+      "listen": "Kendimi duy",
+      "stop_listening": "Durdur",
+      "meter_hint": "Konuş — çubuk, diğerlerinin ne aldığını gösterir. Yeşil, sesinin gönderildiği anlamına gelir.",
+      "monitor_hint": "Kendi mikrofonunu duyuyorsun. Kulaklık kullan, yoksa yankı olur.",
+      "input_mode": "Giriş modu",
+      "mode_voice": "Ses etkinliği",
+      "mode_voice_hint": "Yalnızca konuşurken ilet.",
+      "mode_open": "Her zaman ilet",
+      "mode_open_hint": "Mikrofonunun aldığı her şeyi gönder.",
+      "sensitivity": "Hassasiyet",
+      "test": "Test et",
+      "output_unsupported": "Bu tarayıcı bir sitenin çıkış cihazını seçmesine izin vermiyor; sistem varsayılanını kullanır.",
+      "noise_suppression": "Gürültü engelleme",
+      "noise_suppression_hint": "Fan ve klavye gibi sabit arka plan gürültüsünü süzer.",
+      "mic_starting": "Mikrofonun başlatılıyor…",
+      "mic_in_use": "Mikrofonun {channel} kanalında yayında. Bu ayarlar sen değiştirdikçe orada geçerli olur.",
+      "applies_everywhere": "Mikrofonunun kullanıldığı her yerde geçerlidir.",
+      "mic_idle": "Mikrofonun açık değil. Başkası duymadan önce kendini diğerlerinin duyacağı gibi duymak için bir mikrofon testi yap.",
+      "start_mic": "Mikrofon testi"
+    },
+    "team_voice": "Takım sesi",
+    "join": "Katıl",
+    "leave": "Ayrıl",
+    "mute": "Mikrofonu kapat",
+    "unmute": "Mikrofonu aç",
+    "switch_title": "Ses kanalı değiştirilsin mi?",
+    "switch_description": "Şu anda {channel} kanalına bağlısın. Buraya katılırsan oradan çıkarılacaksın.",
+    "switch_confirm": "Değiştir",
+    "speaking_count": "{count} kişi konuşuyor",
+    "tooltip": {
+      "join": "Takım sesine katıl",
+      "join_hint": "Kendi kadronla konuş — diğer takım bu kanalı asla duymaz.",
+      "connecting": "Bağlanıyor…",
+      "leave": "Takım sesinden ayrıl",
+      "mute": "Mikrofonunu kapat",
+      "unmute": "Mikrofonunu aç",
+      "settings": "Mikrofon ve ses ayarları",
+      "in_voice": "seste {count} kişi",
+      "alone": "Seste tek kişi sensin",
+      "muted": "Mikrofonun kapalı — kimse seni duymuyor"
+    },
+    "call": {
+      "start_camera": "Kamerayı aç",
+      "stop_camera": "Kamerayı kapat",
+      "take_camera_back": "Telefonunda — buraya geri getirmek için dokun",
+      "take_mic_back": "Mikrofon telefonunda — buraya geri getirmek için dokun",
+      "pop_out": "Videoyu ayır",
+      "pop_in": "Videoyu geri koy",
+      "more_members": "+{count} kişi daha gösterilmiyor",
+      "phone": {
+        "use_phone": "Telefonunu kamera olarak kullan",
+        "scan": "Bu görüşmede telefonunun kamerasını kullanmak için telefonunla tara.",
+        "scan_hint": "Önce telefonunda giriş yapacaksın",
+        "in_call": "görüşmede {count} kişi daha",
+        "start": "Bu kamerayı paylaş",
+        "not_a_member": "Bu görüşmede değilsin. Önce oynadığın cihazdan katıl, sonra kodu tekrar tara.",
+        "mic_echo_hint": "Bilgisayarında kulaklık gerekir — hoparlörde bu telefon görüşmeyi yeniden alıp yankı yapar.",
+        "not_in_call": "Görüşmeye oynadığın cihazdan katıl, sonra bu telefon devralabilir.",
+        "take_mic_short": "Mikrofonu al",
+        "start_short": "Kamera",
+        "stop_short": "Durdur",
+        "flip": "Çevir",
+        "hand_back": "Geri ver"
+      },
+      "nobody_yet": "Henüz kimse bağlanmadı.",
+      "hide_video": "Kamerasını gizle",
+      "show_video": "Kamerasını göster",
+      "show_self": "Kendi kameramı bana göster",
+      "device_settings": "Ses ve video ayarları",
+      "join_action": "Katıl",
+      "dismiss_action": "Kapat",
+      "handoff_taken": "Kapattığın bir pencereden {channel} devralındı",
+      "handoff_failed": "Kapattığın pencereden {channel} devralınamadı",
+      "toast_kind": "Ses",
+      "toast_joined": "şuraya katıldı:",
+      "toast_started_video": "şurada video başlattı:",
+      "floating_title": "Görüşme"
+    }
+  },
+  "media": {
+    "device": {
+      "system_default": "Sistem varsayılanı",
+      "selected": "Seçili cihaz",
+      "following_system": "Sistem ayarını izler",
+      "device": "Cihaz"
+    }
+  },
+  "chat_rail": {
+    "remove_conversation": "Çubuktan kaldır"
+  },
+  "faq": {
+    "title": "Yardım ve SSS",
+    "intro": "Platform hakkında, burada nasıl oynanacağı ve kendi kurulumunu nasıl işleteceğin hakkında sık sorulan sorular. Bir konu burada yoksa, en alttaki topluluk bağlantıları cevaba giden en hızlı yoldur.",
+    "search_placeholder": "Sorularda ara",
+    "no_results": "«{term}» ile eşleşen soru yok.",
+    "links": {
+      "features": "Tüm özellikler",
+      "overview": "5Stack nedir?",
+      "matchmaking": "Eşleştirme belgeleri",
+      "tournaments": "Turnuva belgeleri",
+      "stats_guide": "İstatistik rehberi",
+      "performance_rating": "Performans puanı",
+      "match_replay": "Maç tekrarı",
+      "highlights": "Öne çıkanlar",
+      "web_push": "Web push kurulumu",
+      "install": "Kurulum rehberi",
+      "hosting_faq": "Barındırma SSS",
+      "requirements": "Gereksinimler",
+      "what_is_installed": "Neler kurulur",
+      "server_setup": "Sunucu kurulumu",
+      "game_server_nodes": "Oyun sunucusu düğümleri",
+      "gpu_nodes": "GPU düğümleri",
+      "branding": "Marka ve tema",
+      "panel_plugins": "Panel eklentileri",
+      "game_plugins": "Oyun eklentileri"
+    },
+    "about": {
+      "title": "5Stack hakkında",
+      "what_is": {
+        "question": "5Stack nedir?",
+        "answer": "5Stack, Counter-Strike 2 için rekabet katmanıdır — bir oyun sunucusuyla bir lig arasında duran yazılım. Tek bir kurulum tüm yığını çalıştırır: eşleştirme, draft lobileri, takımlar, turnuvalar ve sezonlar, istatistik ve Elo, demo kaydı, tarayıcı içi tekrarlar, öne çıkanlar ve canlı yayın."
+      },
+      "this_site": {
+        "question": "{brand} nedir?",
+        "answer": "{brand}, bir 5Stack kurulumudur. Yazılım açık kaynaklıdır ve herkes kendi sunucusunda barındırır; dolayısıyla onu çalıştıran her topluluk kendi sitesini, kendi sunucularını ve kendi kurallarını işletir — burası da onlardan biri."
+      },
+      "cost": {
+        "question": "Ücretsiz mi?",
+        "answer": "Evet. 5Stack ücretsiz ve açık kaynaklıdır ve onu kendin barındırırsın; bu yüzden projeden kişi başı veya maç başı bir ücret çıkmaz. Yalnızca çalıştırmayı seçtiğin altyapı için ödeme yaparsın. Tek bir geliştirici tarafından yapılıp sürdürülüyor ve geliştirmeyi ayakta tutan şey GitHub sponsorlukları."
+      },
+      "sign_in": {
+        "question": "Nasıl giriş yaparım?",
+        "answer": "Steam üzerinden. Açılacak ayrı bir hesap ya da hatırlanacak bir parola yok — Steam profilin buradaki kimliğindir ve bir sunucuya bağlandığında maçların seni tanıması da bu sayededir."
+      },
+      "games": {
+        "question": "Hangi oyunlar destekleniyor?",
+        "answer": "Counter-Strike 2. İstatistikler, tekrarlar, sunucu yönetimi ve oyun içi eklenti; genel amaçlı bir turnuva aracı olmak yerine özellikle bu oyunun etrafında kurulmuştur."
+      }
+    },
+    "playing": {
+      "title": "Burada oynamak",
+      "find_match": {
+        "question": "Bir maça nasıl girerim?",
+        "answer": "«Oyna» sayfasından başla. Bölgeye ve gecikmeye göre eşleştiren ve parti hâlinde sıraya girmene izin veren eşleştirmeye katılabilirsin; kaptanların süreye karşı takım seçtiği bir draft lobisine girebilirsin; ya da scrim bulucu üzerinden bir scrim ayarlayabilirsin. Bunlardan hangilerinin açık olduğu, bu kurulumun neyi etkinleştirdiğine bağlıdır."
+      },
+      "check_in": {
+        "question": "Maçtan önce neden katılım bildirmem gerekiyor?",
+        "answer": "Katılım bildirimi, bir sunucu ayrılıp lobinin geri kalanı bekletilmeden önce herkesin gerçekten başında olduğunu doğrular. Otomatik iptali açık maçlarda bir geri sayım görünür ve gerekli oyuncular süre dolmadan katılım bildirmezse maç otomatik olarak iptal edilir."
+      },
+      "tournaments": {
+        "question": "Bir turnuvaya nasıl katılırım?",
+        "answer": "Kayıtlar açıkken turnuvayı aç ve bir takım kaydet — ya hâlihazırda sahip olduğun bir takımı ya da o etkinlik için oluşturulmuş yeni bir kadroyu. Turnuvalar tek eleme, çift eleme, lig usulü veya İsviçre sistemiyle oynanabilir; birden çok aşama hâlinde zincirlenebilir ve üstlerinde yükselme ile düşme için sezonluk ligler bulunabilir."
+      },
+      "stats": {
+        "question": "İstatistiklerim nereden geliyor?",
+        "answer": "Her maçın demosu bittikten sonra ayrıştırılır; yani sayılar canlı skor tablosu bildiriminden değil, gerçek kayıttan gelir. Bu da HLTV puanı, KAST, ADR, açılış düelloları, clutch'lar, kullanım ekipmanları ve silah başına isabet oranını, ayrıca Elo değişimini verir. İstatistik rehberi her rakamın ne anlama geldiğini ve nasıl hesaplandığını açıklar."
+      },
+      "replays": {
+        "question": "Demoyu indirmeden bir maçı yeniden izleyebilir miyim?",
+        "answer": "Evet. Her maçın tarayıcıda çalışan bir 2B radar tekrarı ve bir 3B uçuşu vardır; yanında raunt zaman çizelgesi, ekonomi ve öldürme akışı bulunur. Ham demoyu CS2'nin kendisinde izlemek istersen indirmeye devam edebilirsin."
+      },
+      "highlights": {
+        "question": "Öne çıkan klipler nereden geliyor?",
+        "answer": "Çoklu öldürmeler, clutch'lar ve bıçak rauntları maç bittiğinde otomatik olarak algılanıp kliplere dönüştürülür. Ayrıca uygulama içindeki düzenleyicide herhangi bir maçtan kendi kliplerini de kesebilirsin. İşleme bir GPU düğümünde çalışır, bu yüzden klipler yalnızca GPU'su olan kurulumlarda görünür."
+      },
+      "notifications": {
+        "question": "Anlık bildirimleri neden açamıyorum?",
+        "answer": "Anlık bildirimleri bir tarayıcı sekmesi değil, yüklü uygulama teslim eder; bu yüzden önce uygulamayı cihazına kurman gerekir — menüdeki «Yükle» düğmesi bunu yapar. Kurulduktan sonra Ayarlar → Bildirimler altındaki anahtar kullanılabilir hâle gelir. iPhone ve iPad'de bu, işletim sisteminin kesin bir gerekliliğidir."
+      }
+    },
+    "hosting": {
+      "title": "Kendi kurulumunu barındırmak",
+      "self_host": {
+        "question": "Kendi kurulumumu çalıştırabilir miyim?",
+        "answer": "Evet — 5Stack'in kullanılması gereken yol budur. Kendi sunucunda barındırılır ve tek bir komutla kurulur; bu komut Kubernetes'i (K3s), veritabanını, depolamayı ve panelin kendisini ayağa kaldırır. Belgelerdeki kurulum rehberi baştan sona anlatır."
+      },
+      "requirements": {
+        "question": "Barındırmak için neye ihtiyacım var?",
+        "answer": "En az 3 GB belleğe sahip bir Linux sunucusu ve yönettiğin bir alan adı. Yönlendirme için 80 ve 443 portlarının erişilebilir olması, ayrıca oyun sunucusu düğüm bağlayıcısı için 8585 portu gerekir. Ayrıca panele birkaç alt alan adı yönlendireceksin — api, ws, demos, search ve console — bu yüzden joker karakterli ya da tek tek DNS kayıtları planla."
+      },
+      "game_servers": {
+        "question": "Maçlar gerçekte nerede çalışıyor?",
+        "answer": "Panele bağladığın oyun sunucusu düğümlerinde. Sunucuları istek üzerine ayağa kaldırmasını sağlayabilir, halihazırda sahip olduğun adanmış donanımı kaydedebilir ya da üçüncü taraf bir sağlayıcıyı gösterebilirsin. CS2 güncellemeleri otomatik uygulanır; bölgeler, Steam Relay ve LAN kurulumları desteklenir."
+      },
+      "gpu": {
+        "question": "GPU'ya ihtiyacım var mı?",
+        "answer": "Yalnızca video özellikleri için. Tarayıcı içi demo oynatma, otomatik öne çıkan işleme ve panelden canlı yayın bir NVIDIA GPU düğümünde işlenir. Geri kalan her şey — eşleştirme, turnuvalar, istatistikler, 2B ve 3B tekrarlar, sunucular, sohbet — GPU olmadan sorunsuz çalışır."
+      },
+      "managed": {
+        "question": "Ücretini ödeyebileceğim barındırılan veya yönetilen bir sürüm var mı?",
+        "answer": "Hayır. 5Stack yalnızca kendi sunucunda barındırılır; satın alınacak bir SaaS katmanı ya da yönetilen bir hizmet yoktur. 5stack.gg, bakımcının kendi genel kurulumudur; yazılımı kurmadan önce çalışırken görmek için kullanışlıdır."
+      },
+      "branding": {
+        "question": "Kurumumun görünümüne büründürebilir miyim?",
+        "answer": "Evet. Ad, logo, favicon, giriş sayfası ve tüm renk teması yönetici ayarlarından yapılandırılabilir; böylece kurulum, üzerine logon yapıştırılmış başkasının yazılımı gibi değil, senin platformun gibi görünür."
+      },
+      "extend": {
+        "question": "Kendi kodumla genişletebilir miyim?",
+        "answer": "İki yerde. Kendi web uygulamalarını yerel panel sayfaları olarak gömebilirsin — oturumu ve tasarım sistemini devraldıkları için sürdürülecek bir fork olmaz. Sunucu tarafında ise kendi CS2 eklentilerini 5Stack'inkilerle birlikte, CounterStrikeSharp veya SwiftlyS2 üzerinde çalıştırabilirsin."
+      }
+    },
+    "support": {
+      "title": "Hâlâ takıldın mı?",
+      "description": "Bir insana ulaşmanın en hızlı yolu Discord — 5Stack kurulumlarını işletenler orada. Hatalar ve özellik istekleri GitHub'a, belgeler ise kurulumu, sunucuları ve her özelliği ayrıntılı biçimde anlatır.",
+      "discord": "Discord'a katıl",
+      "github": "Sorun bildir",
+      "docs": "Belgeleri oku"
     }
   }
 }

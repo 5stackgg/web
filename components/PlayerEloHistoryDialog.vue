@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -681,20 +682,20 @@ const chartSeries = computed(() => {
     const all = [
       {
         key: "Competitive",
-        label: "Competitive",
+        label: t("pages.leaderboard.match_types.competitive"),
         history: groupBy("Competitive"),
         focus:
           selectedMode.value === "all" || selectedMode.value === "Competitive",
       },
       {
         key: "Wingman",
-        label: "Wingman",
+        label: t("pages.leaderboard.match_types.wingman"),
         history: groupBy("Wingman"),
         focus: selectedMode.value === "Wingman",
       },
       {
         key: "Duel",
-        label: "Duel",
+        label: t("pages.leaderboard.match_types.duel"),
         history: groupBy("Duel"),
         focus: selectedMode.value === "Duel",
       },
@@ -857,7 +858,7 @@ function fmtSigned(n: number | null | undefined): string {
 }
 function fmtDate(iso: string | null | undefined): string {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString(dateLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric",

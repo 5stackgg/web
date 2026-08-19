@@ -498,7 +498,9 @@ function clipTeamName(c: Clip): string | null {
           <span
             class="font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
           >
-            {{ filteredClips.length }} clips
+            {{
+              $t("match.highlights.clip_count", { count: filteredClips.length })
+            }}
           </span>
         </div>
         <div ref="queueScrollEl" class="min-h-0 flex-1 overflow-y-auto p-2">

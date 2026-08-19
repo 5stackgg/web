@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { Input } from "~/components/ui/input";
 import { Calendar } from "~/components/ui/calendar";
 import {
@@ -840,7 +841,7 @@ export default {
     },
     formatDate(date: string | null): string {
       if (!date) return "";
-      return new Date(date).toLocaleDateString(undefined, {
+      return new Date(date).toLocaleDateString(dateLocale(), {
         year: "numeric",
         month: "short",
         day: "numeric",

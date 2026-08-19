@@ -1,5 +1,4 @@
 import { ref, watch, onScopeDispose } from "vue";
-import { useI18n } from "vue-i18n";
 import { useVoiceChannels } from "~/composables/useVoiceChannels";
 import { useVoiceSession } from "~/composables/useVoiceSession";
 import { useActiveVoiceChannel } from "~/composables/useActiveVoiceChannel";
@@ -56,7 +55,6 @@ export function useCallInvites() {
 }
 
 export function useVoiceAnnouncements() {
-  const { t } = useI18n();
   const { channels, find, mySteamId } = useVoiceChannels();
   const session = useVoiceSession();
   const registry = useActiveVoiceChannel();

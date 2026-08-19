@@ -234,10 +234,12 @@
         <div
           class="flex items-center justify-between text-xs text-muted-foreground"
         >
-          <span
-            >{{ store.uploadBatch.completedFiles }} /
-            {{ store.uploadBatch.totalFiles }} files</span
-          >
+          <span>{{
+            $t("file_manager.upload.progress_files", {
+              completed: store.uploadBatch.completedFiles,
+              total: store.uploadBatch.totalFiles,
+            })
+          }}</span>
           <span
             >{{ formatBytes(store.uploadBatch.uploadedBytes) }} /
             {{ formatBytes(store.uploadBatch.totalBytes) }}</span
@@ -249,7 +251,11 @@
           v-if="store.uploadBatch.currentFile"
           class="text-xs text-muted-foreground truncate"
         >
-          Current: {{ store.uploadBatch.currentFile }}
+          {{
+            $t("file_manager.upload.current_file", {
+              name: store.uploadBatch.currentFile,
+            })
+          }}
         </div>
       </div>
 
@@ -314,8 +320,11 @@
             $t("common.are_you_sure_short")
           }}</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete "{{ deletingItem?.name }}". This action
-            cannot be undone.
+            {{
+              $t("file_manager.delete.description", {
+                name: deletingItem?.name,
+              })
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

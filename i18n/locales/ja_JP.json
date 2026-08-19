@@ -2473,7 +2473,8 @@
           "disabled": "無効",
           "competitive": "競技用に安全",
           "casual_only": "カジュアルのみ",
-          "plugin_count": "{count} 件のプラグイン"
+          "plugin_count": "{count} 件のプラグイン",
+          "archived": "アーカイブ済み"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "マップを作成しました",
           "update": "マップを更新しました",
           "delete": "マップを削除しました",
+          "restore": "マップを復元しました",
+          "restore_description": "同じ名前の削除済みマップがすでに存在したため、試合履歴をそのまま残して復元しました。",
           "workshop_refresh": "Workshopマップ情報を更新しました"
         },
         "error": {
           "create": "マップの作成中にエラーが発生しました",
           "update": "マップの更新中にエラーが発生しました",
+          "already_exists": "この名前のマップはすでに存在します",
           "invalid_workshop": "Workshopマップ IDが無効です。Steam WorkshopでIDが存在するか確認してください。",
           "workshop_refresh": "Workshopマップ情報の更新中にエラーが発生しました"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "アクティブデューティ",
       "available_modes": "利用可能なモード",
       "workshop_id": "Workshopリンク",
-      "search": "マップを検索"
+      "search": "マップを検索",
+      "deleted_maps": "削除したマップ",
+      "deleted_maps_description": "削除したマップはすべてのマッププールと選択画面から隠れますが、そのマップで行われた試合の履歴はそのまま残ります。復元すると、マップは元の状態で戻ります。",
+      "deleted_on": "{date} に削除",
+      "restore_map": "復元"
     },
     "map_pool": {
       "toggle_pool_type": "マッププールを更新しました",
@@ -3628,13 +3636,69 @@
       "empty_installed": "まだ何もインストールされていません。",
       "readme": "概要",
       "no_readme": "このプラグインのリポジトリに README はありません。",
+      "readme_loading": "README を読み込み中…",
       "always_load": "毎試合読み込む",
       "always_load_hint": "ゲームモードで選択されていなくても読み込みます。",
       "always_load_ranked": "ランクマッチやマッチメイキングの試合でも読み込まれます。",
       "configure": "設定",
       "configure_hint": "初回読み込み時にプラグインが書き出すため、サーバーがこのモードで一度稼働した後に表示されます。",
       "configure_open": "ファイルを開く",
-      "pending": "保留中"
+      "pending": "保留中",
+      "state_installed": "インストール済み",
+      "state_failed": "失敗",
+      "state_absent": "未インストール",
+      "checked": "最終確認",
+      "never_checked": "報告なし",
+      "status": {
+        "Pending": "保留中",
+        "Installing": "インストール中…",
+        "Installed": "インストール済み",
+        "Failed": "失敗",
+        "Removing": "削除中…"
+      },
+      "remove_confirm_title": "このプラグインを削除しますか？",
+      "remove_confirm_description": "{modes} が使用しています。削除すると、それらのモードからも外れます。",
+      "remove_confirm_action": "それでも削除",
+      "guidelines": {
+        "badge": "ガイドライン無効が必要",
+        "toggle": "Valve のサーバーガイドラインを無効にする",
+        "hint": "フレームワークが Valve のサーバーガイドラインを適用している間、{name} は本来の動作ができません。これを読み込むサーバーは、ガイドラインを無効にした状態で起動します。",
+        "off_hint": "有効のままでもプラグインのインストールと読み込みは行われます。プレイヤーの見え方を変える部分が何もしなくなるだけです。",
+        "warning_title": "警告: Steam の GSLT が BAN される可能性があります",
+        "warning_description": "Valve によると、公式のサーバーガイドラインから外れて運用すると、サーバー所有者の Steam アカウントにあるすべての Game Server Login Token (GSLT) が BAN される可能性があります。有効化は自己責任で行ってください。",
+        "warning_link_label": "Valve のサーバーガイドライン",
+        "already_off": "このデプロイではすでに無効です: 5stack Ranks はゲーム内でランクを表示するために Valve のサーバーガイドラインを無効にしており、そのリスクは 1 台のサーバーではなくあなたの Steam アカウントに及びます。",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "プラグインを追加",
+        "badge": "カスタム",
+        "title": "カタログにないプラグインを追加",
+        "description": "リリースを 5Stack に指定すれば、他と同じエントリになります。すべてのノードにインストールでき、ダウンロードはここで取得したダイジェストと照合されます。",
+        "url": "リリース URL",
+        "url_hint": "GitHub リポジトリ、リリース、または .zip への直接リンク。リポジトリを指定すると、最新リリースの最も新しい Linux 用アーカイブに解決されます。",
+        "runtime": "フレームワーク",
+        "runtime_placeholder": "このビルドはどのフレームワーク向けですか？",
+        "runtime_hint": "CounterStrikeSharp 向けのビルドは SwiftlyS2 では読み込まれませんが、アーカイブにはどちらなのかを示すものがありません。",
+        "advanced": "URL から読み取れなかった項目",
+        "slug": "スラッグ",
+        "version": "バージョン",
+        "name": "名前",
+        "summary": "説明",
+        "layout": "アーカイブ構成",
+        "layout_csgo": "アーカイブのルートは game/csgo",
+        "layout_plugin": "アーカイブのルートはプラグインのフォルダ",
+        "layout_hint": "ほとんどの CS2 プラグインは addons/… をすでに含むアーカイブで配布されます。プラグイン自身のフォルダに直接展開される場合は、もう一方を選んでください。",
+        "install_path": "インストール先パス",
+        "warning_title": "このプラグインは誰も審査していません",
+        "warning_description": "ゲームプラグインはあなたのマシンの cs2 プロセスに読み込まれ、そのプロセスにできることは何でもできます。ここで追加するということは、自分でその安全性を保証するということです。あなたとの間にレジストリの管理者は入りません。",
+        "submit": "カタログに追加",
+        "added": "{name} {version} を追加しました",
+        "remove": "カタログから削除",
+        "remove_hint": "カタログから外す前に、ノードからアンインストールしてください。",
+        "removed": "カタログから削除しました"
+      },
+      "retry": "再試行"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "「{name}」を完全に削除します。この操作は元に戻せません。"
     },
     "placeholder_folder_name": "フォルダー名",
-    "placeholder_file_name": "ファイル名"
+    "placeholder_file_name": "ファイル名",
+    "scope_node": "ノード",
+    "scope_server": "サーバー",
+    "missing_path": "このディレクトリはまだ存在しません。",
+    "missing_path_create": "作成する",
+    "missing_path_dismiss": "閉じる"
   },
   "error": {
     "generic": "エラーが発生しました。もう一度お試しください。"
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "ゲームモード",
         "none": "Competitive（モードなし）",
-        "description": "試合サーバーにプラグインとコンソール変数のセットを読み込みます。"
+        "description": "試合サーバーにプラグインとコンソール変数のセットを読み込みます。",
+        "unranked_note": "カスタムゲームモードの試合は、ELO やリーダーボードには一切反映されません。"
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "コンペティティブ",
         "description": "フルチーム連携によるクラシックな5対5の競技体験"
       },
       "wingman": {
+        "title": "ウィングマン",
         "description": "フレンドとペアを組んでテンポの速い2v2で対戦"
       },
       "duel": {
+        "title": "デュエル",
         "description": "個人スキルの練習に最適な1対1の競技体験"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "CS がインストール済みのゲームサーバーノードを選択してください",
       "type": "サーバータイプ",
       "select_type": "サーバータイプを選択",
+      "game_mode": "ゲームモード",
+      "select_game_mode": "ゲームモードを選択",
+      "valve_preset_group": "Valve プリセット",
+      "custom_mode_group": "カスタムモード",
+      "custom_mode_group_locked": "ゲームサーバーノードが必要",
+      "custom_modes_need_node_title": "カスタムモードにはゲームサーバーノードが必要です",
+      "custom_modes_need_node_description": "カスタムモードは、5Stack が実行先のサーバーにインストールするプラグインのセットです。サードパーティの専用サーバーには何もインストールできないため、選べるようにするには「接続」でこのサーバーをゲームサーバーノードに紐付けてください。",
       "game": "ゲーム",
       "csgo_ranked_unavailable_title": "ランクは利用不可",
       "csgo_ranked_unavailable_description": "CS:GO サーバーではランクモードをまだ利用できません。",
@@ -8202,6 +8282,8 @@
       "name": "名前",
       "slug": "スラッグ",
       "description": "説明",
+      "enabled": "有効",
+      "enabled_description": "無効にしたモードは残りますが、試合・サーバー・ドラフトルームには選べなくなります。",
       "competitive_safe": "競技プレイに安全",
       "competitive_safe_description": "このモードをランクマッチやマッチメイキングの試合で使用できるかどうか。",
       "plugins": "プラグイン",
@@ -8215,8 +8297,16 @@
       "save": "モードを保存",
       "saved": "ゲームモードを保存しました",
       "archived": "ゲームモードをアーカイブしました",
+      "restore": "復元",
+      "restored": "ゲームモードを復元しました",
+      "delete": "削除",
+      "deleted": "ゲームモードを削除しました",
+      "delete_confirm_title": "{name} を削除しますか？",
+      "delete_confirm_description": "モードを完全に削除します。すでにそのモードで行われた試合がある場合は、削除ではなく非表示になります。その履歴はそのまま残り、後から復元できます。",
       "runtime_none": "これらのプラグインには共通するフレームワークがないため、このモードはどこでも動作しません。別のフレームワーク向けのプラグインを削除してください。",
-      "runtime_only": "{runtime} でのみ動作します。ここにあるすべてのプラグインが対応している唯一のフレームワークだからです。"
+      "runtime_only": "{runtime} でのみ動作します。ここにあるすべてのプラグインが対応している唯一のフレームワークだからです。",
+      "open_plugin": "このプラグインのページを新しいタブで開く",
+      "archived_instead": "このモードではすでに試合が行われているため、削除ではなく非表示になりました。いつでも復元できます。"
     }
   }
 }

@@ -2473,7 +2473,8 @@
           "disabled": "Désactivé",
           "competitive": "Compatible compétitif",
           "casual_only": "Casual uniquement",
-          "plugin_count": "{count} plugins"
+          "plugin_count": "{count} plugins",
+          "archived": "Archivé"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "Map créée",
           "update": "Map mise à jour",
           "delete": "Map supprimée",
+          "restore": "Map restaurée",
+          "restore_description": "Une map supprimée portant ce nom existait déjà : elle a été restaurée avec tout son historique de matchs.",
           "workshop_refresh": "Détails de la map Workshop actualisés"
         },
         "error": {
           "create": "Erreur lors de la création de la map",
           "update": "Erreur lors de la mise à jour de la map",
+          "already_exists": "Une map portant ce nom existe déjà",
           "invalid_workshop": "ID de map Workshop invalide. Vérifie que l'ID existe bien sur le Steam Workshop.",
           "workshop_refresh": "Erreur lors de l'actualisation des détails de la map Workshop"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active duty",
       "available_modes": "Disponible dans les modes",
       "workshop_id": "Lien Workshop",
-      "search": "Rechercher des maps"
+      "search": "Rechercher des maps",
+      "deleted_maps": "Maps supprimées",
+      "deleted_maps_description": "Les maps supprimées sont masquées de tous les map pools et sélecteurs, mais les matchs déjà joués dessus conservent leur historique. La restauration remet une map telle qu'elle était.",
+      "deleted_on": "Supprimée le {date}",
+      "restore_map": "Restaurer"
     },
     "map_pool": {
       "toggle_pool_type": "Map pools mis à jour",
@@ -3628,13 +3636,69 @@
       "empty_installed": "Rien d'installé pour l'instant.",
       "readme": "À propos",
       "no_readme": "Ce plugin n'a pas de README dans son dépôt.",
+      "readme_loading": "Chargement du README…",
       "always_load": "Charger à chaque match",
       "always_load_hint": "Le charger sans qu'un mode de jeu le sélectionne.",
       "always_load_ranked": "Se charge aussi sur les matchs classés et de matchmaking.",
       "configure": "Configuration",
       "configure_hint": "Écrite par le plugin au premier chargement : elle apparaît donc après qu'un serveur a joué ce mode une fois.",
       "configure_open": "Ouvrir les fichiers",
-      "pending": "en attente"
+      "pending": "en attente",
+      "state_installed": "Installé",
+      "state_failed": "Échec",
+      "state_absent": "Non installé",
+      "checked": "Vérifié",
+      "never_checked": "Jamais remonté",
+      "status": {
+        "Pending": "En attente",
+        "Installing": "Installation…",
+        "Installed": "Installé",
+        "Failed": "Échec",
+        "Removing": "Suppression…"
+      },
+      "remove_confirm_title": "Retirer ce plugin ?",
+      "remove_confirm_description": "Il est utilisé par {modes}. Le retirer le sort aussi de ces modes.",
+      "remove_confirm_action": "Retirer quand même",
+      "guidelines": {
+        "badge": "Nécessite les guidelines désactivées",
+        "toggle": "Désactiver les guidelines serveur de Valve",
+        "hint": "{name} ne peut pas faire ce qu'il fait tant que le framework applique les guidelines serveur de Valve. Les serveurs qui le chargent démarreront avec ces guidelines désactivées.",
+        "off_hint": "Si tu les laisses actives, le plugin s'installe et se charge quand même — les parties qui changent ce que voit un joueur ne font simplement rien.",
+        "warning_title": "Attention : cela peut faire bannir tes GSLT Steam",
+        "warning_description": "D'après Valve, fonctionner en dehors de ses guidelines serveur officielles peut entraîner le bannissement de tous les Game Server Login Tokens (GSLT) du compte Steam du propriétaire du serveur. À activer à tes risques et périls.",
+        "warning_link_label": "Guidelines serveur de Valve",
+        "already_off": "Déjà désactivées sur ce déploiement : 5stack Ranks désactive les guidelines serveur de Valve pour afficher les rangs en jeu, et le risque encouru porte sur ton compte Steam plutôt que sur un seul serveur.",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "Ajouter un plugin",
+        "badge": "Personnalisé",
+        "title": "Ajouter un plugin absent du catalogue",
+        "description": "Indique une release à 5Stack et elle devient une entrée comme une autre — installable sur chaque nœud, avec le téléchargement vérifié contre une empreinte relevée ici.",
+        "url": "URL de la release",
+        "url_hint": "Un dépôt GitHub, une release, ou un lien direct vers le .zip. Un dépôt est résolu vers la dernière archive Linux de sa release la plus récente.",
+        "runtime": "Framework",
+        "runtime_placeholder": "Pour quel framework ce build est-il prévu ?",
+        "runtime_hint": "Un build CounterStrikeSharp ne se chargera pas sous SwiftlyS2, et rien dans l'archive n'indique lequel des deux c'est.",
+        "advanced": "Détails que nous n'avons pas pu lire depuis l'URL",
+        "slug": "Slug",
+        "version": "Version",
+        "name": "Nom",
+        "summary": "Description",
+        "layout": "Structure de l'archive",
+        "layout_csgo": "La racine de l'archive est game/csgo",
+        "layout_plugin": "La racine de l'archive est le dossier du plugin",
+        "layout_hint": "La plupart des plugins CS2 livrent une archive qui contient déjà addons/… ; choisis l'autre option si la tienne se décompresse directement dans le dossier du plugin.",
+        "install_path": "Chemin d'installation",
+        "warning_title": "Personne n'a examiné ce plugin",
+        "warning_description": "Un plugin de jeu est chargé dans le processus cs2 sur tes machines et peut tout ce que ce processus peut faire. En en ajoutant un ici, tu t'en portes garant toi-même — il n'y a aucun mainteneur de registre entre lui et toi.",
+        "submit": "Ajouter au catalogue",
+        "added": "{name} {version} ajouté",
+        "remove": "Retirer du catalogue",
+        "remove_hint": "Désinstalle-le de tes nœuds avant de le sortir du catalogue.",
+        "removed": "Retiré du catalogue"
+      },
+      "retry": "Réessayer"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "Ceci supprimera définitivement « {name} ». Cette action est irréversible."
     },
     "placeholder_folder_name": "nom du dossier",
-    "placeholder_file_name": "nom du fichier"
+    "placeholder_file_name": "nom du fichier",
+    "scope_node": "Nœud",
+    "scope_server": "Serveur",
+    "missing_path": "Ce répertoire n'existe pas encore.",
+    "missing_path_create": "Le créer",
+    "missing_path_dismiss": "Ignorer"
   },
   "error": {
     "generic": "Une erreur est survenue. Réessaie."
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "Mode de jeu",
         "none": "Compétitif (aucun mode)",
-        "description": "Charge un ensemble de plugins et de variables de console sur le serveur du match."
+        "description": "Charge un ensemble de plugins et de variables de console sur le serveur du match.",
+        "unranked_note": "Les matchs avec un mode de jeu personnalisé ne comptent jamais pour l'ELO ni pour les classements."
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "Compétitif",
         "description": "L'expérience compétitive classique en 5 contre 5, avec coordination d'équipe complète"
       },
       "wingman": {
+        "title": "Wingman",
         "description": "Fais équipe avec un ami et affronte les autres dans des matchs 2v2 nerveux"
       },
       "duel": {
+        "title": "Duel",
         "description": "Une expérience compétitive en 1 contre 1, parfaite pour travailler ton skill individuel"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "Sélectionne un nœud de serveurs de jeu avec CS installé",
       "type": "Type de serveur",
       "select_type": "Sélectionner le type de serveur",
+      "game_mode": "Mode de jeu",
+      "select_game_mode": "Sélectionner un mode de jeu",
+      "valve_preset_group": "Préréglages Valve",
+      "custom_mode_group": "Modes personnalisés",
+      "custom_mode_group_locked": "nécessite un nœud de serveurs de jeu",
+      "custom_modes_need_node_title": "Les modes personnalisés nécessitent un nœud de serveurs de jeu",
+      "custom_modes_need_node_description": "Un mode personnalisé est un ensemble de plugins que 5Stack installe sur le serveur où il tourne. Il ne peut rien installer sur un serveur dédié tiers : rattache donc ce serveur à un nœud de serveurs de jeu dans Connexion pour pouvoir en choisir un.",
       "game": "Jeu",
       "csgo_ranked_unavailable_title": "Classé indisponible",
       "csgo_ranked_unavailable_description": "Le mode classé n'est pas encore disponible pour les serveurs CS:GO.",
@@ -8202,6 +8282,8 @@
       "name": "Nom",
       "slug": "Slug",
       "description": "Description",
+      "enabled": "Activé",
+      "enabled_description": "Les modes désactivés sont conservés mais ne peuvent être choisis ni pour un match, ni pour un serveur, ni pour un salon de draft.",
       "competitive_safe": "Compatible avec le jeu compétitif",
       "competitive_safe_description": "Si ce mode peut être utilisé par un match classé ou de matchmaking.",
       "plugins": "Plugins",
@@ -8215,8 +8297,16 @@
       "save": "Enregistrer le mode",
       "saved": "Mode de jeu enregistré",
       "archived": "Mode de jeu archivé",
+      "restore": "Restaurer",
+      "restored": "Mode de jeu restauré",
+      "delete": "Supprimer",
+      "deleted": "Mode de jeu supprimé",
+      "delete_confirm_title": "Supprimer {name} ?",
+      "delete_confirm_description": "Supprime définitivement le mode. Si un match l'a déjà utilisé, il est masqué à la place — cet historique reste intact et tu pourras le restaurer plus tard.",
       "runtime_none": "Ces plugins n'ont aucun framework en commun, ce mode ne peut donc tourner nulle part. Retire celui qui vise l'autre framework.",
-      "runtime_only": "Tourne uniquement sur {runtime}, car c'est le seul framework pour lequel tous ces plugins existent."
+      "runtime_only": "Tourne uniquement sur {runtime}, car c'est le seul framework pour lequel tous ces plugins existent.",
+      "open_plugin": "Ouvrir la page de ce plugin dans un nouvel onglet",
+      "archived_instead": "Des matchs ont déjà utilisé ce mode : il a donc été masqué au lieu d'être supprimé. Tu peux le restaurer à tout moment."
     }
   }
 }

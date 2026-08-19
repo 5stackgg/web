@@ -2473,7 +2473,8 @@
           "disabled": "已停用",
           "competitive": "可用於競技",
           "casual_only": "僅休閒",
-          "plugin_count": "{count} 個外掛"
+          "plugin_count": "{count} 個外掛",
+          "archived": "已封存"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "地圖建立成功",
           "update": "地圖更新成功",
           "delete": "地圖刪除成功",
+          "restore": "地圖已還原",
+          "restore_description": "已存在同名的已刪除地圖，因此將其還原，比賽紀錄完整保留。",
           "workshop_refresh": "創意工坊地圖詳情重新整理成功"
         },
         "error": {
           "create": "建立地圖時發生錯誤",
           "update": "更新地圖時發生錯誤",
+          "already_exists": "已存在同名的地圖",
           "invalid_workshop": "無效的創意工坊地圖 ID。請確認該 ID 存在於 Steam 創意工坊。",
           "workshop_refresh": "重新整理創意工坊地圖詳情時發生錯誤"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "現役圖池",
       "available_modes": "可用模式",
       "workshop_id": "創意工坊連結",
-      "search": "搜尋地圖"
+      "search": "搜尋地圖",
+      "deleted_maps": "已刪除的地圖",
+      "deleted_maps_description": "已刪除的地圖會在所有地圖池與選擇清單中隱藏，但已經在這些地圖上打過的比賽會保留紀錄。還原後地圖會回到原本的狀態。",
+      "deleted_on": "刪除於 {date}",
+      "restore_map": "還原"
     },
     "map_pool": {
       "toggle_pool_type": "地圖池已更新",
@@ -3628,13 +3636,69 @@
       "empty_installed": "尚未安裝任何內容。",
       "readme": "關於",
       "no_readme": "此外掛的儲存庫中沒有 README。",
+      "readme_loading": "正在載入 README…",
       "always_load": "每場比賽都載入",
       "always_load_hint": "不需遊戲模式選擇即可載入。",
       "always_load_ranked": "排名與配對比賽中也會載入。",
       "configure": "設定檔",
       "configure_hint": "由外掛在首次載入時寫入，因此需要伺服器以此模式執行過一次後才會出現。",
       "configure_open": "開啟檔案",
-      "pending": "待處理"
+      "pending": "待處理",
+      "state_installed": "已安裝",
+      "state_failed": "失敗",
+      "state_absent": "未安裝",
+      "checked": "上次檢查",
+      "never_checked": "從未回報",
+      "status": {
+        "Pending": "待處理",
+        "Installing": "正在安裝…",
+        "Installed": "已安裝",
+        "Failed": "失敗",
+        "Removing": "正在移除…"
+      },
+      "remove_confirm_title": "移除這個外掛？",
+      "remove_confirm_description": "{modes} 正在使用它。移除後它也會從這些模式中被拿掉。",
+      "remove_confirm_action": "仍要移除",
+      "guidelines": {
+        "badge": "需要關閉準則",
+        "toggle": "關閉 Valve 的伺服器準則",
+        "hint": "只要框架仍在執行 Valve 的伺服器準則，{name} 就無法發揮作用。載入它的伺服器會在準則關閉的狀態下啟動。",
+        "off_hint": "保持開啟時，外掛仍會安裝並載入——只是那些改變玩家所見內容的部分不會起任何作用。",
+        "warning_title": "警告：這可能導致您的 Steam GSLT 被封禁",
+        "warning_description": "根據 Valve 的說明，在其官方伺服器準則之外運行，可能導致伺服器擁有者 Steam 帳號下的所有 Game Server Login Token（GSLT）被封禁。請自行承擔啟用風險。",
+        "warning_link_label": "Valve 的伺服器準則",
+        "already_off": "本部署已經關閉：5stack Ranks 會關閉 Valve 的伺服器準則以在遊戲內顯示段位，而它帶來的風險針對的是您的 Steam 帳號，而不是某一台伺服器。",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "新增外掛",
+        "badge": "自訂",
+        "title": "新增目錄中沒有的外掛",
+        "description": "把某個發行版指給 5Stack，它就會變成和其他項目一樣的記錄——可以安裝到每個節點上，下載內容會與這裡取得的摘要進行校驗。",
+        "url": "發行版 URL",
+        "url_hint": "GitHub 儲存庫、某個 release，或直接指向 .zip 的連結。填儲存庫時會解析為其最新 release 中最新的 Linux 壓縮檔。",
+        "runtime": "框架",
+        "runtime_placeholder": "這個組建是給哪個框架用的？",
+        "runtime_hint": "CounterStrikeSharp 的組建無法在 SwiftlyS2 下載入，而壓縮檔裡沒有任何內容能說明它屬於哪一種。",
+        "advanced": "我們無法從該 URL 讀取到的資訊",
+        "slug": "Slug",
+        "version": "版本",
+        "name": "名稱",
+        "summary": "描述",
+        "layout": "壓縮檔結構",
+        "layout_csgo": "壓縮檔根目錄是 game/csgo",
+        "layout_plugin": "壓縮檔根目錄是外掛資料夾",
+        "layout_hint": "大多數 CS2 外掛提供的壓縮檔裡已經包含 addons/…；如果您的壓縮檔會直接解壓到外掛自己的資料夾，請選另一個。",
+        "install_path": "安裝路徑",
+        "warning_title": "沒有人審核過這個外掛",
+        "warning_description": "遊戲外掛會被載入您機器上的 cs2 程序，能做該程序能做的一切。在這裡新增外掛代表由您自己為它背書——您和它之間沒有任何登錄檔維護者。",
+        "submit": "加入目錄",
+        "added": "已新增 {name} {version}",
+        "remove": "從目錄中移除",
+        "remove_hint": "從目錄中移除之前，請先在各節點上解除安裝它。",
+        "removed": "已從目錄中移除"
+      },
+      "retry": "重試"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "這會永久刪除「{name}」，此操作無法復原。"
     },
     "placeholder_folder_name": "資料夾名稱",
-    "placeholder_file_name": "檔案名稱"
+    "placeholder_file_name": "檔案名稱",
+    "scope_node": "節點",
+    "scope_server": "伺服器",
+    "missing_path": "這個目錄尚不存在。",
+    "missing_path_create": "建立它",
+    "missing_path_dismiss": "忽略"
   },
   "error": {
     "generic": "發生錯誤。請重試。"
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "遊戲模式",
         "none": "競技（無模式）",
-        "description": "在比賽伺服器上載入一組外掛與主控台變數。"
+        "description": "在比賽伺服器上載入一組外掛與主控台變數。",
+        "unranked_note": "使用自訂遊戲模式的比賽永遠不計入 ELO 或排行榜。"
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "競技",
         "description": "經典的 5 vs 5 競技體驗，需要完整的團隊配合"
       },
       "wingman": {
+        "title": "搭檔",
         "description": "與好友組隊，在快節奏的 2v2 比賽中一較高下"
       },
       "duel": {
+        "title": "單挑",
         "description": "1 vs 1 競技體驗，非常適合練習個人技術"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "選擇已安裝 CS 的遊戲伺服器節點",
       "type": "伺服器類型",
       "select_type": "選擇伺服器類型",
+      "game_mode": "遊戲模式",
+      "select_game_mode": "選擇遊戲模式",
+      "valve_preset_group": "Valve 預設",
+      "custom_mode_group": "自訂模式",
+      "custom_mode_group_locked": "需要遊戲伺服器節點",
+      "custom_modes_need_node_title": "自訂模式需要遊戲伺服器節點",
+      "custom_modes_need_node_description": "自訂模式是一組外掛，5Stack 會把它們安裝到執行該模式的伺服器上。它無法在第三方獨立伺服器上安裝任何東西，所以請在「連線」中把這台伺服器掛到某個遊戲伺服器節點上，才能選擇自訂模式。",
       "game": "遊戲",
       "csgo_ranked_unavailable_title": "排名模式不可用",
       "csgo_ranked_unavailable_description": "CS:GO 伺服器尚未支援排名模式。",
@@ -8202,6 +8282,8 @@
       "name": "名稱",
       "slug": "識別碼",
       "description": "描述",
+      "enabled": "已啟用",
+      "enabled_description": "已停用的模式會保留，但不能用於比賽、伺服器或選秀房間。",
       "competitive_safe": "可用於競技對戰",
       "competitive_safe_description": "此模式是否可用於排名或配對比賽。",
       "plugins": "外掛",
@@ -8215,8 +8297,16 @@
       "save": "儲存模式",
       "saved": "已儲存遊戲模式",
       "archived": "已封存遊戲模式",
+      "restore": "還原",
+      "restored": "遊戲模式已還原",
+      "delete": "刪除",
+      "deleted": "遊戲模式已刪除",
+      "delete_confirm_title": "刪除 {name}？",
+      "delete_confirm_description": "永久移除該模式。如果已有比賽使用過它，則會改為隱藏——那些紀錄保持完整，您之後可以還原它。",
       "runtime_none": "這些外掛沒有共同的框架，因此此模式無法在任何地方執行。請移除面向另一種框架的那個外掛。",
-      "runtime_only": "僅在 {runtime} 上執行，因為這是這裡所有外掛都有推出版本的唯一框架。"
+      "runtime_only": "僅在 {runtime} 上執行，因為這是這裡所有外掛都有推出版本的唯一框架。",
+      "open_plugin": "在新分頁中開啟該外掛的頁面",
+      "archived_instead": "已經有比賽使用過這個模式，因此它被隱藏而不是刪除。您可以隨時還原它。"
     }
   }
 }

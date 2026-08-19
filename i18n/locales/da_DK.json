@@ -2473,7 +2473,8 @@
           "disabled": "Deaktiveret",
           "competitive": "Sikker til competitive",
           "casual_only": "Kun casual",
-          "plugin_count": "{count} plugins"
+          "plugin_count": "{count} plugins",
+          "archived": "Arkiveret"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "Map oprettet",
           "update": "Map opdateret",
           "delete": "Map slettet",
+          "restore": "Map gendannet",
+          "restore_description": "Der fandtes allerede en slettet map med dette navn, så den blev gendannet med sin kamphistorik intakt.",
           "workshop_refresh": "Workshop map-detaljer opdateret"
         },
         "error": {
           "create": "Mappet kunne ikke oprettes",
           "update": "Mappet kunne ikke opdateres",
+          "already_exists": "Der findes allerede en map med dette navn",
           "invalid_workshop": "Ugyldigt workshop map-ID. Kontrollér at ID'et findes på Steam Workshop.",
           "workshop_refresh": "Workshop map-detaljerne kunne ikke opdateres"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active duty",
       "available_modes": "Tilgængelig i modes",
       "workshop_id": "Workshop-link",
-      "search": "Søg maps"
+      "search": "Søg maps",
+      "deleted_maps": "Slettede maps",
+      "deleted_maps_description": "Slettede maps er skjult fra alle map pools og vælgere, men kampe, der allerede er spillet på dem, beholder deres historik. En gendannelse bringer en map tilbage, som den var.",
+      "deleted_on": "Slettet {date}",
+      "restore_map": "Gendan"
     },
     "map_pool": {
       "toggle_pool_type": "Map pools opdateret",
@@ -3628,13 +3636,69 @@
       "empty_installed": "Intet installeret endnu.",
       "readme": "Om",
       "no_readme": "Dette plugin har ingen README i sit repository.",
+      "readme_loading": "Indlæser README…",
       "always_load": "Indlæs i hver kamp",
       "always_load_hint": "Indlæs dette uden at en spiltilstand vælger det.",
       "always_load_ranked": "Indlæses også i ranglede kampe og matchmaking.",
       "configure": "Konfiguration",
       "configure_hint": "Skrives af pluginnet ved første indlæsning, så det dukker op efter at en server har kørt denne tilstand én gang.",
       "configure_open": "Åbn filer",
-      "pending": "afventer"
+      "pending": "afventer",
+      "state_installed": "Installeret",
+      "state_failed": "Mislykket",
+      "state_absent": "Ikke installeret",
+      "checked": "Tjekket",
+      "never_checked": "Har aldrig meldt ind",
+      "status": {
+        "Pending": "Afventer",
+        "Installing": "Installerer…",
+        "Installed": "Installeret",
+        "Failed": "Mislykket",
+        "Removing": "Fjerner…"
+      },
+      "remove_confirm_title": "Fjern dette plugin?",
+      "remove_confirm_description": "Det bruges af {modes}. Fjerner du det, ryger det også ud af de tilstande.",
+      "remove_confirm_action": "Fjern alligevel",
+      "guidelines": {
+        "badge": "Kræver guidelines slået fra",
+        "toggle": "Slå Valves server guidelines fra",
+        "hint": "{name} kan ikke gøre det, den er til, mens frameworket håndhæver Valves server guidelines. Servere, der indlæser den, starter med dem slået fra.",
+        "off_hint": "Lader du dem være slået til, bliver plugin'et stadig installeret og indlæst — de dele, der ændrer, hvad en spiller ser, gør bare ingenting.",
+        "warning_title": "Advarsel: dette kan få dine Steam-GSLT'er bannet",
+        "warning_description": "Ifølge Valve kan drift uden for deres officielle server guidelines udløse et ban af alle Game Server Login Tokens (GSLT) på serverejerens Steam-konto. Slå det til på eget ansvar.",
+        "warning_link_label": "Valves server guidelines",
+        "already_off": "Allerede slået fra på denne deployment: 5stack Ranks slår Valves server guidelines fra for at vise ranks i spillet, og risikoen ved det rammer din Steam-konto frem for en enkelt server.",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "Tilføj et plugin",
+        "badge": "Tilpasset",
+        "title": "Tilføj et plugin, som kataloget ikke har",
+        "description": "Peg 5Stack på en release, så bliver den til et opslag som alle andre — installerbar på alle noder, med downloadet tjekket mod et digest taget her.",
+        "url": "Release-URL",
+        "url_hint": "Et GitHub-repository, en release eller et link direkte til .zip-filen. Et repository slår op i det nyeste Linux-arkiv fra dets seneste release.",
+        "runtime": "Framework",
+        "runtime_placeholder": "Hvilket framework er dette build til?",
+        "runtime_hint": "Et CounterStrikeSharp-build indlæses ikke under SwiftlyS2, og intet i arkivet fortæller, hvilket af dem det er.",
+        "advanced": "Detaljer, vi ikke kunne læse ud af URL'en",
+        "slug": "Slug",
+        "version": "Version",
+        "name": "Navn",
+        "summary": "Beskrivelse",
+        "layout": "Arkivets opbygning",
+        "layout_csgo": "Arkivets rod er game/csgo",
+        "layout_plugin": "Arkivets rod er plugin-mappen",
+        "layout_hint": "De fleste CS2-plugins leveres i et arkiv, der allerede indeholder addons/…; vælg den anden, hvis dit pakkes direkte ud i plugin'ets egen mappe.",
+        "install_path": "Installationssti",
+        "warning_title": "Ingen har gennemgået dette plugin",
+        "warning_description": "Et game-plugin indlæses i cs2-processen på dine maskiner og kan alt det, den proces kan. Tilføjer du et her, går du selv god for det — der står ingen registry-vedligeholder mellem dig og det.",
+        "submit": "Tilføj til kataloget",
+        "added": "{name} {version} tilføjet",
+        "remove": "Fjern fra kataloget",
+        "remove_hint": "Afinstallér det fra dine noder, før du tager det ud af kataloget.",
+        "removed": "Fjernet fra kataloget"
+      },
+      "retry": "Prøv igen"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "Dette sletter «{name}» permanent. Handlingen kan ikke fortrydes."
     },
     "placeholder_folder_name": "mappenavn",
-    "placeholder_file_name": "filnavn"
+    "placeholder_file_name": "filnavn",
+    "scope_node": "Node",
+    "scope_server": "Server",
+    "missing_path": "Denne mappe findes ikke endnu.",
+    "missing_path_create": "Opret den",
+    "missing_path_dismiss": "Afvis"
   },
   "error": {
     "generic": "Der opstod en fejl. Prøv igen."
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "Spiltilstand",
         "none": "Competitive (ingen tilstand)",
-        "description": "Indlæser et sæt plugins og console-variabler på kampserveren."
+        "description": "Indlæser et sæt plugins og console-variabler på kampserveren.",
+        "unranked_note": "Kampe med en tilpasset spiltilstand tæller aldrig med i ELO eller på ranglisterne."
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "Competitive",
         "description": "Den klassiske 5 mod 5-oplevelse med fuld holdkoordinering"
       },
       "wingman": {
+        "title": "Wingman",
         "description": "Gå sammen med en ven og spil hurtige 2v2-kampe"
       },
       "duel": {
+        "title": "Duel",
         "description": "En konkurrencepræget 1 mod 1-oplevelse, perfekt til at træne individuelle skills"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "Vælg en game server node med CS installeret",
       "type": "Servertype",
       "select_type": "Vælg servertype",
+      "game_mode": "Spiltilstand",
+      "select_game_mode": "Vælg spiltilstand",
+      "valve_preset_group": "Valve-presets",
+      "custom_mode_group": "Tilpassede tilstande",
+      "custom_mode_group_locked": "kræver en game server node",
+      "custom_modes_need_node_title": "Tilpassede tilstande kræver en game server node",
+      "custom_modes_need_node_description": "En tilpasset tilstand er et sæt plugins, som 5Stack installerer på den server, den kører på. Den kan ikke installere noget på en tredjeparts dedikeret server, så knyt denne server til en game server node under Forbindelse for at kunne vælge en.",
       "game": "Spil",
       "csgo_ranked_unavailable_title": "Ranked ikke tilgængelig",
       "csgo_ranked_unavailable_description": "Ranked-tilstand er endnu ikke tilgængelig for CS:GO-servere.",
@@ -8202,6 +8282,8 @@
       "name": "Navn",
       "slug": "Slug",
       "description": "Beskrivelse",
+      "enabled": "Aktiveret",
+      "enabled_description": "Deaktiverede tilstande bevares, men kan ikke vælges til en kamp, en server eller et draft-rum.",
       "competitive_safe": "Sikker til competitive",
       "competitive_safe_description": "Om denne tilstand må bruges af en ranglet kamp eller en matchmaking-kamp.",
       "plugins": "Plugins",
@@ -8215,8 +8297,16 @@
       "save": "Gem tilstand",
       "saved": "Spiltilstand gemt",
       "archived": "Spiltilstand arkiveret",
+      "restore": "Gendan",
+      "restored": "Spiltilstand gendannet",
+      "delete": "Slet",
+      "deleted": "Spiltilstand slettet",
+      "delete_confirm_title": "Slet {name}?",
+      "delete_confirm_description": "Fjerner tilstanden permanent. Har en kamp allerede kørt den, bliver den i stedet skjult — den historik forbliver intakt, og du kan gendanne den senere.",
       "runtime_none": "Disse plugins har intet framework til fælles, så denne tilstand kan ikke køre nogen steder. Fjern det plugin, der er bygget til det andet framework.",
-      "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til."
+      "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til.",
+      "open_plugin": "Åbn dette plugins side i en ny fane",
+      "archived_instead": "Der er allerede spillet kampe i denne tilstand, så den blev skjult i stedet for slettet. Du kan gendanne den når som helst."
     }
   }
 }

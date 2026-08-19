@@ -2473,7 +2473,8 @@
           "disabled": "Inaktiverat",
           "competitive": "Säkert för competitive",
           "casual_only": "Endast casual",
-          "plugin_count": "{count} tillägg"
+          "plugin_count": "{count} tillägg",
+          "archived": "Arkiverat"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "Kartan skapades",
           "update": "Kartan uppdaterades",
           "delete": "Kartan togs bort",
+          "restore": "Kartan återställd",
+          "restore_description": "Det fanns redan en borttagen karta med det här namnet, så den återställdes med sin matchhistorik intakt.",
           "workshop_refresh": "Workshop-kartdetaljer uppdaterades"
         },
         "error": {
           "create": "Fel vid skapande av karta",
           "update": "Fel vid uppdatering av karta",
+          "already_exists": "Det finns redan en karta med det här namnet",
           "invalid_workshop": "Ogiltigt workshop-karta-ID. Kontrollera att ID:t finns på Steam Workshop.",
           "workshop_refresh": "Fel vid uppdatering av workshop-kartdetaljer"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active duty",
       "available_modes": "Tillgänglig i lägen",
       "workshop_id": "Workshop-länk",
-      "search": "Sök kartor"
+      "search": "Sök kartor",
+      "deleted_maps": "Borttagna kartor",
+      "deleted_maps_description": "Borttagna kartor är dolda i alla kartpooler och väljare, men matcher som redan spelats på dem behåller sin historik. En återställning tar tillbaka kartan precis som den var.",
+      "deleted_on": "Borttagen {date}",
+      "restore_map": "Återställ"
     },
     "map_pool": {
       "toggle_pool_type": "Kartpooler uppdaterade",
@@ -3628,13 +3636,69 @@
       "empty_installed": "Inget installerat än.",
       "readme": "Om",
       "no_readme": "Det här tillägget har ingen README i sitt repository.",
+      "readme_loading": "Laddar README…",
       "always_load": "Ladda i varje match",
       "always_load_hint": "Ladda det utan att ett spelläge väljer det.",
       "always_load_ranked": "Laddas även i rankade matcher och matchmaking.",
       "configure": "Konfiguration",
       "configure_hint": "Skrivs av tillägget vid första laddningen, så den dyker upp efter att en server kört det här läget en gång.",
       "configure_open": "Öppna filer",
-      "pending": "väntar"
+      "pending": "väntar",
+      "state_installed": "Installerat",
+      "state_failed": "Misslyckades",
+      "state_absent": "Inte installerat",
+      "checked": "Kontrollerat",
+      "never_checked": "Har aldrig rapporterat",
+      "status": {
+        "Pending": "Väntande",
+        "Installing": "Installerar…",
+        "Installed": "Installerat",
+        "Failed": "Misslyckades",
+        "Removing": "Tar bort…"
+      },
+      "remove_confirm_title": "Ta bort det här tillägget?",
+      "remove_confirm_description": "Det används av {modes}. Tar du bort det försvinner det även från de lägena.",
+      "remove_confirm_action": "Ta bort ändå",
+      "guidelines": {
+        "badge": "Kräver att riktlinjerna är av",
+        "toggle": "Stäng av Valves serverriktlinjer",
+        "hint": "{name} kan inte göra det den är till för så länge ramverket upprätthåller Valves serverriktlinjer. Servrar som laddar den startar med dem avstängda.",
+        "off_hint": "Låter du dem vara på installeras och laddas tillägget ändå — de delar som ändrar vad en spelare ser gör helt enkelt ingenting.",
+        "warning_title": "Varning: det här kan få dina Steam-GSLT:er bannade",
+        "warning_description": "Enligt Valve kan drift utanför deras officiella serverriktlinjer leda till att varje Game Server Login Token (GSLT) på serverägarens Steam-konto bannas. Aktivera på egen risk.",
+        "warning_link_label": "Valves serverriktlinjer",
+        "already_off": "Redan avstängda för den här deployen: 5stack Ranks stänger av Valves serverriktlinjer för att visa ranker i spelet, och risken det innebär gäller ditt Steam-konto snarare än en enskild server.",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "Lägg till ett tillägg",
+        "badge": "Anpassat",
+        "title": "Lägg till ett tillägg som katalogen inte har",
+        "description": "Peka 5Stack mot en release så blir den en post som alla andra — installerbar på varje nod, med nedladdningen kontrollerad mot en kontrollsumma tagen här.",
+        "url": "Release-URL",
+        "url_hint": "Ett GitHub-repo, en release eller en länk direkt till .zip-filen. Ett repo slås upp till det senaste Linux-arkivet i dess nyaste release.",
+        "runtime": "Ramverk",
+        "runtime_placeholder": "Vilket ramverk är det här bygget för?",
+        "runtime_hint": "Ett CounterStrikeSharp-bygge laddas inte under SwiftlyS2, och inget i arkivet säger vilket av dem det är.",
+        "advanced": "Detaljer vi inte kunde läsa ut ur URL:en",
+        "slug": "Slug",
+        "version": "Version",
+        "name": "Namn",
+        "summary": "Beskrivning",
+        "layout": "Arkivets struktur",
+        "layout_csgo": "Arkivets rot är game/csgo",
+        "layout_plugin": "Arkivets rot är tilläggets mapp",
+        "layout_hint": "De flesta CS2-tillägg levereras i ett arkiv som redan innehåller addons/…; välj det andra alternativet om ditt packas upp direkt i tilläggets egen mapp.",
+        "install_path": "Installationssökväg",
+        "warning_title": "Ingen har granskat det här tillägget",
+        "warning_description": "Ett speltillägg laddas in i cs2-processen på dina maskiner och kan allt den processen kan. Lägger du till ett här går du själv i god för det — det finns ingen registeransvarig mellan dig och det.",
+        "submit": "Lägg till i katalogen",
+        "added": "{name} {version} tillagt",
+        "remove": "Ta bort från katalogen",
+        "remove_hint": "Avinstallera det från dina noder innan du tar ut det ur katalogen.",
+        "removed": "Borttaget från katalogen"
+      },
+      "retry": "Försök igen"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "Det här raderar «{name}» permanent. Åtgärden går inte att ångra."
     },
     "placeholder_folder_name": "mappnamn",
-    "placeholder_file_name": "filnamn"
+    "placeholder_file_name": "filnamn",
+    "scope_node": "Nod",
+    "scope_server": "Server",
+    "missing_path": "Den här mappen finns inte än.",
+    "missing_path_create": "Skapa den",
+    "missing_path_dismiss": "Avfärda"
   },
   "error": {
     "generic": "Ett fel uppstod. Försök igen."
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "Spelläge",
         "none": "Competitive (inget läge)",
-        "description": "Laddar en uppsättning tillägg och konsolvariabler på matchservern."
+        "description": "Laddar en uppsättning tillägg och konsolvariabler på matchservern.",
+        "unranked_note": "Matcher med ett anpassat spelläge räknas aldrig mot ELO eller topplistorna."
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "Competitive",
         "description": "Den klassiska 5 mot 5-tävlingsupplevelsen med full lagkoordinering"
       },
       "wingman": {
+        "title": "Wingman",
         "description": "Gå ihop med en vän och tävla i snabba 2v2-matcher"
       },
       "duel": {
+        "title": "Duell",
         "description": "En tävlingsupplevelse 1 mot 1, perfekt för att öva individuell skicklighet"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "Välj en spelservernod med CS installerat",
       "type": "Servertyp",
       "select_type": "Välj servertyp",
+      "game_mode": "Spelläge",
+      "select_game_mode": "Välj spelläge",
+      "valve_preset_group": "Valve-förval",
+      "custom_mode_group": "Anpassade lägen",
+      "custom_mode_group_locked": "kräver en spelservernod",
+      "custom_modes_need_node_title": "Anpassade lägen kräver en spelservernod",
+      "custom_modes_need_node_description": "Ett anpassat läge är en uppsättning tillägg som 5Stack installerar på servern det körs på. Det kan inte installera något på en dedikerad server från tredje part, så koppla den här servern till en spelservernod under Anslutning för att kunna välja ett.",
       "game": "Spel",
       "csgo_ranked_unavailable_title": "Rankad inte tillgängligt",
       "csgo_ranked_unavailable_description": "Rankat läge är ännu inte tillgängligt för CS:GO-servrar.",
@@ -8202,6 +8282,8 @@
       "name": "Namn",
       "slug": "Slug",
       "description": "Beskrivning",
+      "enabled": "Aktiverat",
+      "enabled_description": "Inaktiverade lägen behålls men går inte att välja till en match, en server eller ett draftrum.",
       "competitive_safe": "Säkert för competitive",
       "competitive_safe_description": "Om det här läget får användas av en rankad match eller matchmaking.",
       "plugins": "Tillägg",
@@ -8215,8 +8297,16 @@
       "save": "Spara läge",
       "saved": "Spelläge sparat",
       "archived": "Spelläge arkiverat",
+      "restore": "Återställ",
+      "restored": "Spelläget återställt",
+      "delete": "Ta bort",
+      "deleted": "Spelläget borttaget",
+      "delete_confirm_title": "Ta bort {name}?",
+      "delete_confirm_description": "Tar bort läget permanent. Har någon match redan kört det döljs det i stället — den historiken förblir intakt och du kan återställa det senare.",
       "runtime_none": "De här tilläggen har inget gemensamt ramverk, så det här läget kan inte köras någonstans. Ta bort det som riktar sig mot det andra ramverket.",
-      "runtime_only": "Körs bara på {runtime}, eftersom det är det enda ramverk som alla tillägg här finns för."
+      "runtime_only": "Körs bara på {runtime}, eftersom det är det enda ramverk som alla tillägg här finns för.",
+      "open_plugin": "Öppna det här tilläggets sida i en ny flik",
+      "archived_instead": "Matcher har redan kört det här läget, så det doldes i stället för att tas bort. Du kan återställa det när som helst."
     }
   }
 }

@@ -2473,7 +2473,8 @@
           "disabled": "已禁用",
           "competitive": "可用于竞技",
           "casual_only": "仅休闲",
-          "plugin_count": "{count} 个插件"
+          "plugin_count": "{count} 个插件",
+          "archived": "已归档"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "地图创建成功",
           "update": "地图更新成功",
           "delete": "地图删除成功",
+          "restore": "地图已恢复",
+          "restore_description": "已存在同名的已删除地图，因此将其恢复，比赛历史完整保留。",
           "workshop_refresh": "创意工坊地图详情刷新成功"
         },
         "error": {
           "create": "创建地图时出错",
           "update": "更新地图时出错",
+          "already_exists": "已存在同名的地图",
           "invalid_workshop": "无效的创意工坊地图 ID。请确认该 ID 在 Steam 创意工坊中存在。",
           "workshop_refresh": "刷新创意工坊地图详情时出错"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "现役图池",
       "available_modes": "可用模式",
       "workshop_id": "创意工坊链接",
-      "search": "搜索地图"
+      "search": "搜索地图",
+      "deleted_maps": "已删除的地图",
+      "deleted_maps_description": "已删除的地图会在所有地图池和选择列表中隐藏，但已经在这些地图上打过的比赛会保留历史记录。恢复后地图会回到原来的状态。",
+      "deleted_on": "删除于 {date}",
+      "restore_map": "恢复"
     },
     "map_pool": {
       "toggle_pool_type": "地图池已更新",
@@ -3628,13 +3636,69 @@
       "empty_installed": "还没有安装任何内容。",
       "readme": "关于",
       "no_readme": "该插件的仓库中没有 README。",
+      "readme_loading": "正在加载 README…",
       "always_load": "每场比赛都加载",
       "always_load_hint": "无需游戏模式选择即可加载。",
       "always_load_ranked": "排位和匹配比赛中也会加载。",
       "configure": "配置",
       "configure_hint": "由插件在首次加载时写入，因此需要服务器以此模式运行过一次后才会出现。",
       "configure_open": "打开文件",
-      "pending": "待处理"
+      "pending": "待处理",
+      "state_installed": "已安装",
+      "state_failed": "失败",
+      "state_absent": "未安装",
+      "checked": "上次检查",
+      "never_checked": "从未上报",
+      "status": {
+        "Pending": "待处理",
+        "Installing": "正在安装…",
+        "Installed": "已安装",
+        "Failed": "失败",
+        "Removing": "正在移除…"
+      },
+      "remove_confirm_title": "移除此插件？",
+      "remove_confirm_description": "{modes} 正在使用它。移除后它也会从这些模式中被去掉。",
+      "remove_confirm_action": "仍然移除",
+      "guidelines": {
+        "badge": "需要关闭准则",
+        "toggle": "关闭 Valve 的服务器准则",
+        "hint": "只要框架仍在执行 Valve 的服务器准则，{name} 就无法发挥作用。加载它的服务器将在准则关闭的状态下启动。",
+        "off_hint": "保持开启时，插件仍会安装并加载——只是那些改变玩家所见内容的部分不会起任何作用。",
+        "warning_title": "警告：这可能导致您的 Steam GSLT 被封禁",
+        "warning_description": "据 Valve 所述，在其官方服务器准则之外运行，可能导致服务器所有者 Steam 账号下的所有 Game Server Login Token（GSLT）被封禁。请自行承担启用风险。",
+        "warning_link_label": "Valve 的服务器准则",
+        "already_off": "本部署已经关闭：5stack Ranks 会关闭 Valve 的服务器准则以在游戏内显示段位，而它带来的风险针对的是您的 Steam 账号，而不是某一台服务器。",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "添加插件",
+        "badge": "自定义",
+        "title": "添加目录中没有的插件",
+        "description": "把某个发行版指给 5Stack，它就会变成和其他条目一样的记录——可以安装到每个节点上，下载内容会与这里获取的摘要进行校验。",
+        "url": "发行版 URL",
+        "url_hint": "GitHub 仓库、某个 release，或直接指向 .zip 的链接。填仓库时会解析为其最新 release 中最新的 Linux 压缩包。",
+        "runtime": "框架",
+        "runtime_placeholder": "这个构建是给哪个框架用的？",
+        "runtime_hint": "CounterStrikeSharp 的构建无法在 SwiftlyS2 下加载，而压缩包里没有任何内容能说明它属于哪一种。",
+        "advanced": "我们无法从该 URL 读取到的信息",
+        "slug": "Slug",
+        "version": "版本",
+        "name": "名称",
+        "summary": "描述",
+        "layout": "压缩包结构",
+        "layout_csgo": "压缩包根目录是 game/csgo",
+        "layout_plugin": "压缩包根目录是插件文件夹",
+        "layout_hint": "大多数 CS2 插件提供的压缩包里已经包含 addons/…；如果您的压缩包会直接解压到插件自己的文件夹，请选另一个。",
+        "install_path": "安装路径",
+        "warning_title": "没有人审核过这个插件",
+        "warning_description": "游戏插件会被加载进您机器上的 cs2 进程，能做该进程能做的一切。在这里添加插件意味着由您自己为它背书——您和它之间没有任何注册表维护者。",
+        "submit": "添加到目录",
+        "added": "已添加 {name} {version}",
+        "remove": "从目录中移除",
+        "remove_hint": "从目录中移除之前，请先在各节点上卸载它。",
+        "removed": "已从目录中移除"
+      },
+      "retry": "重试"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "这将永久删除「{name}」，此操作无法撤销。"
     },
     "placeholder_folder_name": "文件夹名称",
-    "placeholder_file_name": "文件名称"
+    "placeholder_file_name": "文件名称",
+    "scope_node": "节点",
+    "scope_server": "服务器",
+    "missing_path": "该目录尚不存在。",
+    "missing_path_create": "创建它",
+    "missing_path_dismiss": "忽略"
   },
   "error": {
     "generic": "发生错误。请重试。"
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "游戏模式",
         "none": "竞技（无模式）",
-        "description": "在比赛服务器上加载一组插件和控制台变量。"
+        "description": "在比赛服务器上加载一组插件和控制台变量。",
+        "unranked_note": "使用自定义游戏模式的比赛永远不计入 ELO 或排行榜。"
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "竞技",
         "description": "经典的 5 vs 5 竞技体验，需要完整的团队配合"
       },
       "wingman": {
+        "title": "搭档",
         "description": "与好友组队，在快节奏的 2v2 比赛中竞技"
       },
       "duel": {
+        "title": "单挑",
         "description": "1 vs 1 竞技体验，非常适合练习个人技术"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "选择已安装 CS 的游戏服务器节点",
       "type": "服务器类型",
       "select_type": "选择服务器类型",
+      "game_mode": "游戏模式",
+      "select_game_mode": "选择游戏模式",
+      "valve_preset_group": "Valve 预设",
+      "custom_mode_group": "自定义模式",
+      "custom_mode_group_locked": "需要游戏服务器节点",
+      "custom_modes_need_node_title": "自定义模式需要游戏服务器节点",
+      "custom_modes_need_node_description": "自定义模式是一组插件，5Stack 会把它们安装到运行该模式的服务器上。它无法在第三方独立服务器上安装任何东西，所以请在「连接」中把这台服务器挂到某个游戏服务器节点上，才能选择自定义模式。",
       "game": "游戏",
       "csgo_ranked_unavailable_title": "排位模式不可用",
       "csgo_ranked_unavailable_description": "CS:GO 服务器的排位模式尚未可用。",
@@ -8202,6 +8282,8 @@
       "name": "名称",
       "slug": "标识符",
       "description": "描述",
+      "enabled": "已启用",
+      "enabled_description": "已停用的模式会保留，但不能用于比赛、服务器或选人房间。",
       "competitive_safe": "可用于竞技对战",
       "competitive_safe_description": "此模式是否可用于排位或匹配比赛。",
       "plugins": "插件",
@@ -8215,8 +8297,16 @@
       "save": "保存模式",
       "saved": "游戏模式已保存",
       "archived": "游戏模式已归档",
+      "restore": "恢复",
+      "restored": "游戏模式已恢复",
+      "delete": "删除",
+      "deleted": "游戏模式已删除",
+      "delete_confirm_title": "删除 {name}？",
+      "delete_confirm_description": "永久移除该模式。如果已有比赛使用过它，则会改为隐藏——那些历史记录保持完整，您之后可以恢复它。",
       "runtime_none": "这些插件没有共同的框架，因此该模式无法在任何地方运行。请移除面向另一种框架的那个插件。",
-      "runtime_only": "仅在 {runtime} 上运行，因为这是这里所有插件都发布了版本的唯一框架。"
+      "runtime_only": "仅在 {runtime} 上运行，因为这是这里所有插件都发布了版本的唯一框架。",
+      "open_plugin": "在新标签页中打开该插件的页面",
+      "archived_instead": "已经有比赛使用过这个模式，因此它被隐藏而不是删除。您可以随时恢复它。"
     }
   }
 }

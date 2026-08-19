@@ -2473,7 +2473,8 @@
           "disabled": "Devre dışı",
           "competitive": "Rekabetçiye uygun",
           "casual_only": "Yalnızca casual",
-          "plugin_count": "{count} eklenti"
+          "plugin_count": "{count} eklenti",
+          "archived": "Arşivlendi"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "Harita başarıyla oluşturuldu",
           "update": "Harita başarıyla güncellendi",
           "delete": "Harita başarıyla silindi",
+          "restore": "Harita geri getirildi",
+          "restore_description": "Bu adı taşıyan silinmiş bir harita zaten vardı, bu yüzden maç geçmişi bozulmadan geri getirildi.",
           "workshop_refresh": "Workshop harita bilgileri başarıyla yenilendi"
         },
         "error": {
           "create": "Harita oluşturulurken hata oluştu",
           "update": "Harita güncellenirken hata oluştu",
+          "already_exists": "Bu adı taşıyan bir harita zaten var",
           "invalid_workshop": "Geçersiz workshop harita ID'si. ID'nin Steam Workshop'ta var olduğunu doğrula.",
           "workshop_refresh": "Workshop harita bilgileri yenilenirken hata oluştu"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active Duty",
       "available_modes": "Kullanılabildiği modlar",
       "workshop_id": "Workshop bağlantısı",
-      "search": "Harita ara"
+      "search": "Harita ara",
+      "deleted_maps": "Silinen haritalar",
+      "deleted_maps_description": "Silinen haritalar tüm harita havuzlarında ve seçim listelerinde gizlenir, ancak üzerinde oynanmış maçlar geçmişlerini korur. Geri getirme, haritayı olduğu gibi geri koyar.",
+      "deleted_on": "{date} tarihinde silindi",
+      "restore_map": "Geri getir"
     },
     "map_pool": {
       "toggle_pool_type": "Harita havuzları güncellendi",
@@ -3628,13 +3636,69 @@
       "empty_installed": "Henüz hiçbir şey kurulu değil.",
       "readme": "Hakkında",
       "no_readme": "Bu eklentinin deposunda README yok.",
+      "readme_loading": "README yükleniyor…",
       "always_load": "Her maçta yükle",
       "always_load_hint": "Bir oyun modu seçmeden de yüklensin.",
       "always_load_ranked": "Dereceli ve eşleştirme maçlarında da yüklenir.",
       "configure": "Yapılandırma",
       "configure_hint": "İlk yüklemede eklenti tarafından yazılır, bu yüzden bir sunucu bu modu bir kez çalıştırdıktan sonra görünür.",
       "configure_open": "Dosyaları aç",
-      "pending": "beklemede"
+      "pending": "beklemede",
+      "state_installed": "Kurulu",
+      "state_failed": "Başarısız",
+      "state_absent": "Kurulu değil",
+      "checked": "Kontrol edildi",
+      "never_checked": "Hiç bildirmedi",
+      "status": {
+        "Pending": "Bekliyor",
+        "Installing": "Kuruluyor…",
+        "Installed": "Kurulu",
+        "Failed": "Başarısız",
+        "Removing": "Kaldırılıyor…"
+      },
+      "remove_confirm_title": "Bu eklenti kaldırılsın mı?",
+      "remove_confirm_description": "Şu modlar kullanıyor: {modes}. Kaldırmak onu bu modlardan da çıkarır.",
+      "remove_confirm_action": "Yine de kaldır",
+      "guidelines": {
+        "badge": "Kuralların kapalı olmasını gerektirir",
+        "toggle": "Valve'ın sunucu kurallarını kapat",
+        "hint": "{name}, framework Valve'ın sunucu kurallarını uygularken yapması gerekeni yapamaz. Onu yükleyen sunucular bu kurallar kapalı şekilde başlar.",
+        "off_hint": "Açık bırakırsan eklenti yine de kurulur ve yüklenir — sadece oyuncunun gördüğünü değiştiren kısımları hiçbir şey yapmaz.",
+        "warning_title": "Uyarı: bu, Steam GSLT'lerinin banlanmasına yol açabilir",
+        "warning_description": "Valve'a göre, resmî sunucu kurallarının dışında çalışmak sunucu sahibinin Steam hesabındaki tüm Game Server Login Token'ların (GSLT) banlanmasını tetikleyebilir. Riski sana ait olmak üzere etkinleştir.",
+        "warning_link_label": "Valve'ın sunucu kuralları",
+        "already_off": "Bu kurulumda zaten kapalı: 5stack Ranks, rütbeleri oyun içinde göstermek için Valve'ın sunucu kurallarını kapatır ve taşıdığı risk tek bir sunucu yerine Steam hesabını ilgilendirir.",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "Eklenti ekle",
+        "badge": "Özel",
+        "title": "Dizinde bulunmayan bir eklenti ekle",
+        "description": "5Stack'e bir sürüm göster, gerisi diğerleri gibi bir kayda dönüşür — her düğüme kurulabilir ve indirilen dosya burada alınan bir özet değerine karşı doğrulanır.",
+        "url": "Sürüm URL'si",
+        "url_hint": "Bir GitHub deposu, bir sürüm ya da doğrudan .zip bağlantısı. Bir depo, en son sürümünün en yeni Linux arşivine çözümlenir.",
+        "runtime": "Framework",
+        "runtime_placeholder": "Bu derleme hangi framework için?",
+        "runtime_hint": "CounterStrikeSharp derlemesi SwiftlyS2 altında yüklenmez ve arşivde hangisi olduğunu söyleyen hiçbir şey yok.",
+        "advanced": "URL'den okuyamadığımız ayrıntılar",
+        "slug": "Slug",
+        "version": "Sürüm",
+        "name": "Ad",
+        "summary": "Açıklama",
+        "layout": "Arşiv yapısı",
+        "layout_csgo": "Arşivin kökü game/csgo",
+        "layout_plugin": "Arşivin kökü eklenti klasörü",
+        "layout_hint": "Çoğu CS2 eklentisi, içinde zaten addons/… bulunan bir arşivle gelir; seninki doğrudan eklentinin kendi klasörüne açılıyorsa diğerini seç.",
+        "install_path": "Kurulum yolu",
+        "warning_title": "Bu eklentiyi kimse incelemedi",
+        "warning_description": "Bir oyun eklentisi makinelerindeki cs2 sürecine yüklenir ve o sürecin yapabildiği her şeyi yapabilir. Buraya bir tane eklemek, ona kendin kefil olmak demektir — seninle onun arasında bir kayıt sorumlusu yok.",
+        "submit": "Dizine ekle",
+        "added": "{name} {version} eklendi",
+        "remove": "Dizinden kaldır",
+        "remove_hint": "Dizinden çıkarmadan önce düğümlerinden kaldır.",
+        "removed": "Dizinden kaldırıldı"
+      },
+      "retry": "Yeniden dene"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "Bu işlem «{name}» ögesini kalıcı olarak siler. Geri alınamaz."
     },
     "placeholder_folder_name": "klasör adı",
-    "placeholder_file_name": "dosya adı"
+    "placeholder_file_name": "dosya adı",
+    "scope_node": "Düğüm",
+    "scope_server": "Sunucu",
+    "missing_path": "Bu dizin henüz yok.",
+    "missing_path_create": "Oluştur",
+    "missing_path_dismiss": "Kapat"
   },
   "error": {
     "generic": "Bir hata oluştu. Tekrar dene."
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "Oyun Modu",
         "none": "Rekabetçi (mod yok)",
-        "description": "Maç sunucusuna bir dizi eklenti ve konsol değişkeni yükler."
+        "description": "Maç sunucusuna bir dizi eklenti ve konsol değişkeni yükler.",
+        "unranked_note": "Özel oyun modu kullanan maçlar ELO'ya ve sıralamalara asla sayılmaz."
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "Rekabetçi",
         "description": "Tam takım koordinasyonuyla klasik 5'e 5 rekabetçi deneyim"
       },
       "wingman": {
+        "title": "Wingman",
         "description": "Bir arkadaşınla eşleş ve hızlı tempolu 2v2 maçlarda yarış"
       },
       "duel": {
+        "title": "Düello",
         "description": "Bireysel becerini geliştirmek için ideal, rekabetçi 1v1 deneyim"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "CS yüklü bir sunucu düğümü seç",
       "type": "Sunucu Türü",
       "select_type": "Sunucu türü seç",
+      "game_mode": "Oyun Modu",
+      "select_game_mode": "Oyun modu seç",
+      "valve_preset_group": "Valve ön ayarları",
+      "custom_mode_group": "Özel modlar",
+      "custom_mode_group_locked": "sunucu düğümü gerekir",
+      "custom_modes_need_node_title": "Özel modlar için sunucu düğümü gerekir",
+      "custom_modes_need_node_description": "Özel bir mod, 5Stack'in çalıştığı sunucuya kurduğu bir eklenti setidir. Üçüncü taraf bir adanmış sunucuya hiçbir şey kuramaz; bu yüzden bir tane seçebilmek için bu sunucuyu Bağlantı altında bir sunucu düğümüne bağla.",
       "game": "Oyun",
       "csgo_ranked_unavailable_title": "Ranked kullanılamıyor",
       "csgo_ranked_unavailable_description": "Ranked mod CS:GO sunucuları için henüz kullanılabilir değil.",
@@ -8202,6 +8282,8 @@
       "name": "Ad",
       "slug": "Slug",
       "description": "Açıklama",
+      "enabled": "Etkin",
+      "enabled_description": "Devre dışı modlar korunur ama bir maç, sunucu ya da draft odası için seçilemez.",
       "competitive_safe": "Rekabetçi oyuna uygun",
       "competitive_safe_description": "Bu modun dereceli veya eşleştirme maçlarında kullanılıp kullanılamayacağı.",
       "plugins": "Eklentiler",
@@ -8215,8 +8297,16 @@
       "save": "Modu Kaydet",
       "saved": "Oyun modu kaydedildi",
       "archived": "Oyun modu arşivlendi",
+      "restore": "Geri getir",
+      "restored": "Oyun modu geri getirildi",
+      "delete": "Sil",
+      "deleted": "Oyun modu silindi",
+      "delete_confirm_title": "{name} silinsin mi?",
+      "delete_confirm_description": "Modu kalıcı olarak kaldırır. Herhangi bir maç onu çalıştırdıysa silmek yerine gizlenir — o geçmiş olduğu gibi kalır ve modu sonra geri getirebilirsin.",
       "runtime_none": "Bu eklentilerin ortak bir framework'ü yok, bu yüzden bu mod hiçbir yerde çalışamaz. Diğer framework'ü hedefleyen eklentiyi kaldır.",
-      "runtime_only": "Yalnızca {runtime} üzerinde çalışır, çünkü buradaki tüm eklentilerin çıktığı tek framework o."
+      "runtime_only": "Yalnızca {runtime} üzerinde çalışır, çünkü buradaki tüm eklentilerin çıktığı tek framework o.",
+      "open_plugin": "Bu eklentinin sayfasını yeni sekmede aç",
+      "archived_instead": "Bu modda daha önce maç oynandığı için silinmek yerine gizlendi. İstediğin zaman geri getirebilirsin."
     }
   }
 }

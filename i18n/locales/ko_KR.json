@@ -2473,7 +2473,8 @@
           "disabled": "비활성화됨",
           "competitive": "컴페티티브 가능",
           "casual_only": "캐주얼 전용",
-          "plugin_count": "플러그인 {count}개"
+          "plugin_count": "플러그인 {count}개",
+          "archived": "보관됨"
         }
       },
       "language": {
@@ -3268,11 +3269,14 @@
           "create": "맵이 생성되었습니다",
           "update": "맵이 업데이트되었습니다",
           "delete": "맵이 삭제되었습니다",
+          "restore": "맵을 복원했습니다",
+          "restore_description": "같은 이름의 삭제된 맵이 이미 있어서 매치 기록을 그대로 유지한 채 복원했습니다.",
           "workshop_refresh": "워크숍 맵 정보가 갱신되었습니다"
         },
         "error": {
           "create": "맵 생성 중 오류가 발생했습니다",
           "update": "맵 업데이트 중 오류가 발생했습니다",
+          "already_exists": "이 이름의 맵이 이미 있습니다",
           "invalid_workshop": "워크숍 맵 ID가 올바르지 않습니다. Steam 워크숍에 해당 ID가 있는지 확인해 주세요.",
           "workshop_refresh": "워크숍 맵 정보 갱신 중 오류가 발생했습니다"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "액티브 듀티",
       "available_modes": "사용 가능한 모드",
       "workshop_id": "워크숍 링크",
-      "search": "맵 검색"
+      "search": "맵 검색",
+      "deleted_maps": "삭제된 맵",
+      "deleted_maps_description": "삭제된 맵은 모든 맵 풀과 선택 목록에서 숨겨지지만, 이미 그 맵에서 진행된 매치의 기록은 그대로 남습니다. 복원하면 맵이 원래 상태로 돌아옵니다.",
+      "deleted_on": "{date}에 삭제됨",
+      "restore_map": "복원"
     },
     "map_pool": {
       "toggle_pool_type": "맵 풀이 업데이트되었습니다",
@@ -3628,13 +3636,69 @@
       "empty_installed": "아직 설치된 것이 없습니다.",
       "readme": "소개",
       "no_readme": "이 플러그인의 저장소에 README가 없습니다.",
+      "readme_loading": "README 불러오는 중…",
       "always_load": "모든 경기에서 불러오기",
       "always_load_hint": "게임 모드가 선택하지 않아도 불러옵니다.",
       "always_load_ranked": "랭크 및 매치메이킹 경기에서도 불러옵니다.",
       "configure": "설정 파일",
       "configure_hint": "플러그인이 처음 불러올 때 작성하므로, 서버가 이 모드로 한 번 실행된 뒤에 나타납니다.",
       "configure_open": "파일 열기",
-      "pending": "대기 중"
+      "pending": "대기 중",
+      "state_installed": "설치됨",
+      "state_failed": "실패",
+      "state_absent": "설치되지 않음",
+      "checked": "마지막 확인",
+      "never_checked": "보고한 적 없음",
+      "status": {
+        "Pending": "대기 중",
+        "Installing": "설치 중…",
+        "Installed": "설치됨",
+        "Failed": "실패",
+        "Removing": "제거 중…"
+      },
+      "remove_confirm_title": "이 플러그인을 제거할까요?",
+      "remove_confirm_description": "{modes}에서 사용 중입니다. 제거하면 해당 모드에서도 빠집니다.",
+      "remove_confirm_action": "그래도 제거",
+      "guidelines": {
+        "badge": "가이드라인 해제 필요",
+        "toggle": "Valve 서버 가이드라인 끄기",
+        "hint": "프레임워크가 Valve 서버 가이드라인을 적용하는 동안에는 {name}이(가) 제 역할을 할 수 없습니다. 이 플러그인을 불러오는 서버는 가이드라인이 꺼진 상태로 시작합니다.",
+        "off_hint": "켜 둔 채로도 플러그인은 설치되고 불러와집니다. 플레이어에게 보이는 것을 바꾸는 부분만 아무 동작도 하지 않을 뿐입니다.",
+        "warning_title": "경고: 이 설정 때문에 Steam GSLT가 차단될 수 있습니다",
+        "warning_description": "Valve에 따르면 공식 서버 가이드라인을 벗어나 운영할 경우 서버 소유자의 Steam 계정에 있는 모든 Game Server Login Token(GSLT)이 차단될 수 있습니다. 활성화는 본인 책임입니다.",
+        "warning_link_label": "Valve 서버 가이드라인",
+        "already_off": "이 배포에서는 이미 꺼져 있습니다: 5stack Ranks가 게임 내 랭크를 표시하기 위해 Valve 서버 가이드라인을 끄며, 그에 따르는 위험은 서버 한 대가 아니라 여러분의 Steam 계정에 미칩니다.",
+        "already_off_link": "5stack Ranks"
+      },
+      "custom": {
+        "add": "플러그인 추가",
+        "badge": "커스텀",
+        "title": "카탈로그에 없는 플러그인 추가",
+        "description": "5Stack에 릴리스를 알려주면 다른 항목과 똑같이 등록됩니다. 모든 노드에 설치할 수 있고, 다운로드는 여기서 받은 다이제스트와 대조해 검증합니다.",
+        "url": "릴리스 URL",
+        "url_hint": "GitHub 저장소, 릴리스, 또는 .zip 파일로 바로 가는 링크. 저장소를 넣으면 최신 릴리스의 가장 새로운 Linux 아카이브로 연결됩니다.",
+        "runtime": "프레임워크",
+        "runtime_placeholder": "이 빌드는 어떤 프레임워크용인가요?",
+        "runtime_hint": "CounterStrikeSharp 빌드는 SwiftlyS2에서 로드되지 않지만, 아카이브 안에는 둘 중 무엇인지 알려주는 정보가 없습니다.",
+        "advanced": "URL에서 읽어내지 못한 정보",
+        "slug": "슬러그",
+        "version": "버전",
+        "name": "이름",
+        "summary": "설명",
+        "layout": "아카이브 구조",
+        "layout_csgo": "아카이브 루트가 game/csgo",
+        "layout_plugin": "아카이브 루트가 플러그인 폴더",
+        "layout_hint": "대부분의 CS2 플러그인은 이미 addons/…를 포함한 아카이브로 배포됩니다. 플러그인 자체 폴더로 바로 풀린다면 다른 쪽을 선택하세요.",
+        "install_path": "설치 경로",
+        "warning_title": "이 플러그인은 아무도 검토하지 않았습니다",
+        "warning_description": "게임 플러그인은 여러분의 머신에서 cs2 프로세스에 로드되며, 그 프로세스가 할 수 있는 모든 일을 할 수 있습니다. 여기에 추가한다는 것은 직접 보증한다는 뜻입니다. 여러분과 플러그인 사이에 레지스트리 관리자는 없습니다.",
+        "submit": "카탈로그에 추가",
+        "added": "{name} {version} 추가됨",
+        "remove": "카탈로그에서 제거",
+        "remove_hint": "카탈로그에서 빼기 전에 노드에서 먼저 제거하세요.",
+        "removed": "카탈로그에서 제거됨"
+      },
+      "retry": "다시 시도"
     },
     "awards": {
       "title": "Awards",
@@ -4302,7 +4366,12 @@
       "description": "「{name}」을(를) 영구적으로 삭제합니다. 이 작업은 되돌릴 수 없습니다."
     },
     "placeholder_folder_name": "폴더 이름",
-    "placeholder_file_name": "파일 이름"
+    "placeholder_file_name": "파일 이름",
+    "scope_node": "노드",
+    "scope_server": "서버",
+    "missing_path": "이 디렉터리는 아직 없습니다.",
+    "missing_path_create": "만들기",
+    "missing_path_dismiss": "닫기"
   },
   "error": {
     "generic": "오류가 발생했습니다. 다시 시도해 주세요."
@@ -5204,7 +5273,8 @@
       "game_mode": {
         "title": "게임 모드",
         "none": "컴페티티브 (모드 없음)",
-        "description": "경기 서버에 플러그인과 콘솔 변수 세트를 불러옵니다."
+        "description": "경기 서버에 플러그인과 콘솔 변수 세트를 불러옵니다.",
+        "unranked_note": "커스텀 게임 모드로 진행한 매치는 ELO나 리더보드에 절대 반영되지 않습니다."
       }
     },
     "schedule": {
@@ -6249,12 +6319,15 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
+        "title": "경쟁전",
         "description": "완전한 팀 협력이 요구되는 클래식 5 대 5 경쟁전"
       },
       "wingman": {
+        "title": "윙맨",
         "description": "친구와 팀을 이뤄 빠른 템포의 2v2 매치를 즐기세요"
       },
       "duel": {
+        "title": "듀얼",
         "description": "개인 기량을 연습하기 좋은 1 대 1 경쟁전"
       }
     },
@@ -6533,6 +6606,13 @@
       "game_server_node_description": "CS가 설치된 게임 서버 노드를 선택하세요",
       "type": "서버 유형",
       "select_type": "서버 유형 선택",
+      "game_mode": "게임 모드",
+      "select_game_mode": "게임 모드 선택",
+      "valve_preset_group": "Valve 프리셋",
+      "custom_mode_group": "커스텀 모드",
+      "custom_mode_group_locked": "게임 서버 노드 필요",
+      "custom_modes_need_node_title": "커스텀 모드에는 게임 서버 노드가 필요합니다",
+      "custom_modes_need_node_description": "커스텀 모드는 5Stack이 실행 대상 서버에 설치하는 플러그인 모음입니다. 외부 전용 서버에는 아무것도 설치할 수 없으니, 하나를 고르려면 연결에서 이 서버를 게임 서버 노드에 연결하세요.",
       "game": "게임",
       "csgo_ranked_unavailable_title": "랭크 이용 불가",
       "csgo_ranked_unavailable_description": "CS:GO 서버에서는 아직 랭크 모드를 이용할 수 없습니다.",
@@ -8202,6 +8282,8 @@
       "name": "이름",
       "slug": "슬러그",
       "description": "설명",
+      "enabled": "활성화됨",
+      "enabled_description": "비활성화된 모드는 남아 있지만 매치, 서버, 드래프트 방에 선택할 수 없습니다.",
       "competitive_safe": "컴페티티브 플레이에 안전",
       "competitive_safe_description": "이 모드를 랭크 또는 매치메이킹 경기에서 사용할 수 있는지 여부입니다.",
       "plugins": "플러그인",
@@ -8215,8 +8297,16 @@
       "save": "모드 저장",
       "saved": "게임 모드를 저장했습니다",
       "archived": "게임 모드를 보관했습니다",
+      "restore": "복원",
+      "restored": "게임 모드를 복원했습니다",
+      "delete": "삭제",
+      "deleted": "게임 모드를 삭제했습니다",
+      "delete_confirm_title": "{name}을(를) 삭제할까요?",
+      "delete_confirm_description": "모드를 영구적으로 제거합니다. 이미 이 모드로 진행된 매치가 있으면 삭제 대신 숨겨집니다. 그 기록은 그대로 남고 나중에 복원할 수 있습니다.",
       "runtime_none": "이 플러그인들은 공통 프레임워크가 없어 이 모드를 어디서도 실행할 수 없습니다. 다른 프레임워크용 플러그인을 제거하세요.",
-      "runtime_only": "{runtime}에서만 실행됩니다. 여기 있는 모든 플러그인이 지원하는 유일한 프레임워크이기 때문입니다."
+      "runtime_only": "{runtime}에서만 실행됩니다. 여기 있는 모든 플러그인이 지원하는 유일한 프레임워크이기 때문입니다.",
+      "open_plugin": "이 플러그인의 페이지를 새 탭에서 열기",
+      "archived_instead": "이미 이 모드로 진행된 매치가 있어 삭제 대신 숨겨졌습니다. 언제든지 복원할 수 있습니다."
     }
   }
 }

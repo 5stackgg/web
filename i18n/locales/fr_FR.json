@@ -1382,6 +1382,20 @@
         "always": "Toujours disponibles",
         "always_hint": "Livrées avec chaque panneau et impossibles à désactiver : seule l'utilisation est parlante.",
         "no_metric_hint": "Rien ne comptabilise cette fonctionnalité, il n'y a donc pas d'utilisation à signaler — ce qui ne veut pas dire qu'aucun panneau ne l'utilise."
+      },
+      "plugins": {
+        "title": "Plugins",
+        "hint": "Remontés par {panels} panels. Les panels antérieurs à cette fonctionnalité sont exclus plutôt que comptés comme n'en exécutant aucun.",
+        "most_installed": "Les plus installés, par nombre de panels",
+        "none": "Aucun panel n'a encore installé de plugin du catalogue.",
+        "requested": "Installations",
+        "requested_caption": "demandées sur l'ensemble du parc",
+        "manual": "Placés à la main",
+        "manual_caption": "hors catalogue",
+        "modes": "Modes de jeu",
+        "modes_caption": "définis",
+        "modes_unranked": "Non classé",
+        "modes_unranked_caption": "modes sans ELO"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "Rôle minimum pour créer un événement"
         },
         "plugins": {
-          "title": "Plugins",
-          "section": "Plugins",
-          "description": "Enregistre des micro-frontends externes qui s'affichent comme des pages natives dans ton panel.",
-          "docs_link": "Lire la doc des plugins",
-          "add": "Ajouter un plugin",
-          "empty_title": "Aucun plugin",
-          "empty_description": "Indique à 5Stack l'URL d'un plugin et il s'affiche comme une page native dans ton panel.",
+          "title": "Plugins du panel",
+          "section": "Plugins du panel",
+          "description": "Des applis web qui s'affichent comme des pages natives dans ton panel. Pas des plugins serveur CS2 — pour ceux-là, vois Plugins de jeu.",
+          "docs_link": "Lire la doc des plugins du panel",
+          "add": "Ajouter un plugin du panel",
+          "empty_title": "Aucun plugin du panel",
+          "empty_description": "Indique à 5Stack l'URL d'une appli web et elle s'affiche comme une page native dans ton panel.",
           "public": "Public",
-          "add_title": "Ajouter un plugin",
-          "edit_title": "Modifier le plugin",
-          "delete_title": "Supprimer le plugin",
+          "add_title": "Ajouter un plugin du panel",
+          "edit_title": "Modifier le plugin du panel",
+          "delete_title": "Supprimer le plugin du panel",
           "delete_description": "Cela supprimera « {title} » et sa route /apps du panel. Cette action est irréversible.",
           "delete_confirm": "Supprimer",
-          "form_description": "Configure le chargement de ce plugin et qui peut le voir.",
+          "form_description": "Configure le chargement de ce plugin du panel et qui peut le voir.",
           "is_default_hint": "Faire de cette page la page d'accueil du panel.",
           "fields": {
             "title": "Titre",
@@ -2386,7 +2400,8 @@
             "search": "Rechercher des icônes…",
             "custom_hint": "Ou colle une URL d'image ou un SVG inline (par ex. depuis un plugin).",
             "custom_placeholder": "https://… , <svg…>, ou un nom d'icône"
-          }
+          },
+          "browse": "Parcourir le catalogue"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "Aucun appareil abonné pour l'instant",
           "empty_body": "Le push est prêt, mais personne ne l'a activé. Les joueurs s'abonnent depuis leurs propres paramètres de notification — vous ne pouvez pas l'activer à leur place.",
           "empty_link": "Voir les paramètres côté joueur"
+        },
+        "game_plugins": {
+          "title": "Catalogue de plugins",
+          "section": "Catalogue de plugins",
+          "description": "Le catalogue des plugins installables et sa source. Administrateurs uniquement.",
+          "disabled_hint": "Active ceci pour parcourir le catalogue et installer des plugins sur tes nœuds de serveurs de jeu.",
+          "registry": "Registre",
+          "registry_description": "D'où provient le catalogue des plugins installables. Laisse vide pour utiliser le registre officiel 5Stack.",
+          "registry_url": "URL du registre",
+          "catalog_count": "{count} plugins dans le catalogue",
+          "sync": "Synchroniser",
+          "synced": "{plugins} plugins et {versions} versions synchronisés",
+          "directory": "Parcourir",
+          "directory_description": "Ouvre le catalogue pour trouver et installer des plugins.",
+          "browse": "Parcourir le catalogue",
+          "installed": "Installés",
+          "installed_description": "Ce qui se trouve réellement sur chaque nœud de serveur de jeu, y compris ce qui y a été placé à la main.",
+          "none_installed": "Aucun plugin n'est encore installé sur un nœud.",
+          "hand_placed": "Placé à la main",
+          "verified": "Vérifié",
+          "missing": "absent du disque"
+        },
+        "game_modes": {
+          "title": "Modes de jeu",
+          "section": "Modes de jeu",
+          "description": "Un mode regroupe les plugins, cvars et règles qui font qu'un match se joue différemment. Les matchs et les serveurs communautaires en choisissent un.",
+          "create": "Nouveau mode",
+          "create_title": "Nouveau mode de jeu",
+          "edit_title": "Modifier le mode de jeu",
+          "sheet_description": "Les modes sont appliqués au démarrage du serveur : une modification affecte donc le prochain match sur ce serveur.",
+          "empty": "Aucun mode de jeu. Crées-en un pour que les matchs puissent jouer autre chose que du competitive.",
+          "requires_plugins": "Active d'abord les plugins de jeu — sans eux, un mode n'a rien à charger.",
+          "disabled": "Désactivé",
+          "competitive": "Compatible compétitif",
+          "casual_only": "Casual uniquement",
+          "plugin_count": "{count} plugins"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "Configure un serveur public depuis la page Serveurs dédiés pour le rendre disponible ici.",
       "setup_public_server": "Configurer un serveur public",
       "lan_servers_title": "Serveurs LAN",
-      "manage": "Gérer"
+      "manage": "Gérer",
+      "all_modes": "Tout",
+      "no_mode": "Vanilla"
     },
     "map_pools": {
       "title": "Map pools",
@@ -3530,7 +3583,59 @@
       "not_found_description": "Ce plugin n'existe pas ou n'est plus disponible.",
       "forbidden_title": "Accès restreint",
       "forbidden_description": "Tu n'as pas la permission de voir cette page.",
-      "error_title": "Échec du chargement de la page"
+      "error_title": "Échec du chargement de la page",
+      "title": "Catalogue de plugins",
+      "description": "Des plugins pour tes serveurs de jeu et pour ton panel. Installe-les sur tous les nœuds, ou choisis-en certains.",
+      "search": "Rechercher des plugins",
+      "empty": "Aucun résultat pour cette recherche.",
+      "verified": "Vérifié",
+      "by": "par {author}",
+      "back": "Tous les plugins",
+      "source": "Source",
+      "releases": "Dernière version",
+      "requires_service": "Nécessite un service externe que tu fournis : {service}",
+      "install_title": "Installer sur un nœud",
+      "install": "Installer",
+      "uninstall": "Retirer",
+      "install_success": "Terminé",
+      "not_installed": "Non installé",
+      "no_nodes": "Aucun nœud de serveur de jeu n'est encore configuré.",
+      "unavailable_for_runtime": "Ce plugin n'a aucune version pour {runtime}, le runtime utilisé par ce déploiement.",
+      "kinds": {
+        "all": "Tout",
+        "game": "Serveur de jeu",
+        "panel": "Panel",
+        "bundle": "Pack"
+      },
+      "pairs_with": "Fonctionne avec",
+      "panel_install_title": "Installer ce plugin de panel",
+      "panel_install_hint": "Le déployer n'est que la première étape — il faut encore indiquer au panel où tu l'as hébergé.",
+      "panel_install_docs": "Installer des plugins de panel",
+      "installed": "Installé",
+      "already_installed": "C'est déjà installé sur ton panel.",
+      "open_plugin": "Ouvrir",
+      "panel_step_deploy": "Lance ceci sur la machine qui héberge ton panel, depuis ton dépôt 5stack-panel.",
+      "panel_step_dns": "Fais pointer le domaine affiché vers la même adresse que ce panel, puis attends le certificat.",
+      "panel_step_register": "Enregistre-le dans Paramètres → Application → Plugins du panel → Ajouter, colle cette URL et appuie sur Détecter.",
+      "installs_everywhere": "S'installe sur les {count} nœuds en ligne.",
+      "installed_on": "Installé sur {installed} nœuds sur {total}.",
+      "advanced": "Déploiement",
+      "advanced_hint": "Chaque nœud installe à son propre rythme ; un nœud hors ligne se met à jour à son retour.",
+      "partial_failure": "{failed} nœud(s) en échec",
+      "live_title": "Installé",
+      "manage": "Gérer",
+      "filter_installed": "Installés",
+      "filter_available": "Disponibles",
+      "empty_installed": "Rien d'installé pour l'instant.",
+      "readme": "À propos",
+      "no_readme": "Ce plugin n'a pas de README dans son dépôt.",
+      "always_load": "Charger à chaque match",
+      "always_load_hint": "Le charger sans qu'un mode de jeu le sélectionne.",
+      "always_load_ranked": "Se charge aussi sur les matchs classés et de matchmaking.",
+      "configure": "Configuration",
+      "configure_hint": "Écrite par le plugin au premier chargement : elle apparaît donc après qu'un serveur a joué ce mode une fois.",
+      "configure_open": "Ouvrir les fichiers",
+      "pending": "en attente"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3893,8 @@
         "title": "Administration"
       },
       "platform": {
-        "title": "Administration"
+        "title": "Administration",
+        "plugin_directory": "Catalogue de plugins"
       }
     },
     "top_nav": {
@@ -5095,6 +5201,12 @@
           "description": "Permet aux joueurs de voir les caméras de leur propre équipe."
         },
         "privacy_note": "L'équipe adverse ne peut jamais voir ces flux. Les organisateurs qui jouent ce match n'en voient aucun."
+      },
+      "game_mode": {
+        "title": "Mode de jeu",
+        "none": "Compétitif (aucun mode)",
+        "description": "Charge un ensemble de plugins et de variables de console sur le serveur du match.",
+        "not_competitive_safe": "Ce mode n'est pas marqué comme compatible avec le jeu compétitif. Il compte quand même pour l'ELO — marque-le comme compatible compétitif dans le mode lui-même si c'est voulu."
       }
     },
     "schedule": {
@@ -6941,7 +7053,12 @@
       "step_settings": "Paramètres du match",
       "step_rules": "Règles du lobby",
       "back": "Retour",
-      "next": "Suivant"
+      "next": "Suivant",
+      "step_mode": "Mode",
+      "mode_description": "Comment le match se joue. Laisse sur Compétitif pour un match normal, ou choisis un mode pour charger ses plugins sur le serveur.",
+      "mode_none": "Compétitif",
+      "mode_none_hint": "Règles standard. Compte pour l'ELO et les classements.",
+      "mode_empty": "Aucun mode de jeu n'est encore configuré. Un administrateur peut en ajouter dans les Paramètres."
     },
     "host": "L'hôte",
     "invite": {
@@ -7091,7 +7208,9 @@
       "best_of": "Best of",
       "map_veto": "Veto de map",
       "on": "Activé",
-      "off": "Désactivé"
+      "off": "Désactivé",
+      "game_mode": "Mode",
+      "unranked": "Non classé"
     },
     "mode": {
       "captains": "Draft des capitaines",
@@ -8079,6 +8198,30 @@
       "discord": "Rejoindre Discord",
       "github": "Signaler un problème",
       "docs": "Lire la documentation"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "Nom",
+      "slug": "Slug",
+      "description": "Description",
+      "competitive_safe": "Compatible avec le jeu compétitif",
+      "competitive_safe_description": "Si ce mode peut être utilisé par un match classé ou de matchmaking.",
+      "competitive_safe_warning": "Ce mode ne sera proposé que sur les matchs casual. Les serveurs classés n'héritent jamais d'un mode, le matchmaking démarre donc toujours avec un jeu de plugins propre.",
+      "plugins": "Plugins",
+      "plugins_description": "Chargés dans l'ordre affiché, après tout ce qui a été placé à la main dans custom-plugins.",
+      "no_plugins": "Aucun plugin de jeu dans le catalogue. Synchronise le registre et installes-en un d'abord.",
+      "restart_required": "Redémarrage requis",
+      "cfg": "Variables de console",
+      "cfg_description": "Exécutées après la config du type de match : ces valeurs l'emportent.",
+      "extra_game_params": "Paramètres de lancement supplémentaires",
+      "extra_game_params_description": "Ajoutés à la ligne de commande du serveur à son démarrage.",
+      "save": "Enregistrer le mode",
+      "saved": "Mode de jeu enregistré",
+      "archive": "Archiver",
+      "archived": "Mode de jeu archivé",
+      "runtime_none": "Ces plugins n'ont aucun framework en commun, ce mode ne peut donc tourner nulle part. Retire celui qui vise l'autre framework.",
+      "runtime_only": "Tourne uniquement sur {runtime}, car c'est le seul framework pour lequel tous ces plugins existent."
     }
   }
 }

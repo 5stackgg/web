@@ -1382,6 +1382,20 @@
         "always": "永遠可用",
         "always_hint": "隨每個面板附帶且無法關閉，因此只有使用情況具有意義。",
         "no_metric_hint": "沒有任何項目在統計這項功能，因此沒有使用數據可回報，但這不代表沒有面板在用。"
+      },
+      "plugins": {
+        "title": "外掛",
+        "hint": "由 {panels} 個面板回報。此功能發布前建置的面板會被排除，而不是計為未執行任何外掛。",
+        "most_installed": "依面板數量排序的最常安裝外掛",
+        "none": "尚無面板安裝過目錄中的外掛。",
+        "requested": "安裝",
+        "requested_caption": "全網請求次數",
+        "manual": "手動放置",
+        "manual_caption": "目錄之外",
+        "modes": "遊戲模式",
+        "modes_caption": "已定義",
+        "modes_unranked": "非排名",
+        "modes_unranked_caption": "不計入 ELO 的模式"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "建立活動的最低角色"
         },
         "plugins": {
-          "title": "外掛",
-          "section": "外掛",
-          "description": "註冊外部微前端應用程式，讓它們以原生頁面的方式顯示在你的面板中。",
-          "docs_link": "閱讀外掛文件",
-          "add": "新增外掛",
-          "empty_title": "尚無外掛",
-          "empty_description": "將 5Stack 指向某個外掛的 URL，它就會以原生頁面的方式顯示在你的面板中。",
+          "title": "面板外掛",
+          "section": "面板外掛",
+          "description": "在面板內以原生頁面呈現的網頁應用程式。它們不是 CS2 伺服器外掛——那些請見「遊戲外掛」。",
+          "docs_link": "閱讀面板外掛文件",
+          "add": "新增面板外掛",
+          "empty_title": "尚無面板外掛",
+          "empty_description": "將 5Stack 指向某個網頁應用程式的 URL，它就會在面板內以原生頁面呈現。",
           "public": "公開",
-          "add_title": "新增外掛",
-          "edit_title": "編輯外掛",
-          "delete_title": "刪除外掛",
+          "add_title": "新增面板外掛",
+          "edit_title": "編輯面板外掛",
+          "delete_title": "刪除面板外掛",
           "delete_description": "這將從面板中移除「{title}」及其 /apps 路由。此操作無法復原。",
           "delete_confirm": "刪除",
-          "form_description": "設定此外掛的載入方式以及誰可以看到它。",
+          "form_description": "設定此面板外掛的載入方式以及誰可以看到它。",
           "is_default_hint": "將此設為面板的首頁。",
           "fields": {
             "title": "標題",
@@ -2386,7 +2400,8 @@
             "search": "搜尋圖示…",
             "custom_hint": "或貼上圖片 URL 或內嵌 SVG（例如來自外掛）。",
             "custom_placeholder": "https://… 、<svg…> 或圖示名稱"
-          }
+          },
+          "browse": "瀏覽目錄"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "尚無裝置訂閱",
           "empty_body": "推播已就緒，但還沒有人開啟。玩家會在自己的通知設定中訂閱，你無法代為開啟。",
           "empty_link": "查看玩家端的設定"
+        },
+        "game_plugins": {
+          "title": "外掛目錄",
+          "section": "外掛目錄",
+          "description": "可安裝外掛的目錄，以及它的來源。僅限管理員。",
+          "disabled_hint": "開啟後即可瀏覽目錄，並將外掛安裝到遊戲伺服器節點上。",
+          "registry": "外掛來源",
+          "registry_description": "可安裝外掛目錄的來源。留空則使用官方 5Stack 外掛來源。",
+          "registry_url": "外掛來源 URL",
+          "catalog_count": "目錄中有 {count} 個外掛",
+          "sync": "立即同步",
+          "synced": "已同步 {plugins} 個外掛和 {versions} 個版本",
+          "directory": "瀏覽",
+          "directory_description": "開啟目錄以尋找並安裝外掛。",
+          "browse": "瀏覽目錄",
+          "installed": "已安裝",
+          "installed_description": "每個遊戲伺服器節點上實際存在的內容，包含手動放置的部分。",
+          "none_installed": "尚未有任何節點安裝外掛。",
+          "hand_placed": "手動放置",
+          "verified": "已驗證",
+          "missing": "磁碟上不存在"
+        },
+        "game_modes": {
+          "title": "遊戲模式",
+          "section": "遊戲模式",
+          "description": "模式將改變比賽玩法的外掛、cvar 與規則打包在一起。比賽與社群伺服器可從中選擇一個。",
+          "create": "新增模式",
+          "create_title": "新增遊戲模式",
+          "edit_title": "編輯遊戲模式",
+          "sheet_description": "模式在伺服器啟動時套用，因此修改會影響該伺服器上的下一場比賽。",
+          "empty": "尚無遊戲模式。建立一個，讓比賽可以執行競技以外的玩法。",
+          "requires_plugins": "請先啟用遊戲外掛——沒有外掛，模式就沒有可載入的內容。",
+          "disabled": "已停用",
+          "competitive": "可用於競技",
+          "casual_only": "僅休閒",
+          "plugin_count": "{count} 個外掛"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "從專用伺服器頁面設定公開伺服器，即可在此顯示。",
       "setup_public_server": "設定公開伺服器",
       "lan_servers_title": "LAN 伺服器",
-      "manage": "管理"
+      "manage": "管理",
+      "all_modes": "全部",
+      "no_mode": "原版"
     },
     "map_pools": {
       "title": "地圖池",
@@ -3530,7 +3583,59 @@
       "not_found_description": "此外掛不存在或已不再提供。",
       "forbidden_title": "存取受限",
       "forbidden_description": "您沒有權限檢視此頁面。",
-      "error_title": "頁面載入失敗"
+      "error_title": "頁面載入失敗",
+      "title": "外掛目錄",
+      "description": "適用於遊戲伺服器與面板的外掛。可以安裝到所有節點，也可以只選特定節點。",
+      "search": "搜尋外掛",
+      "empty": "沒有符合的搜尋結果。",
+      "verified": "已驗證",
+      "by": "作者：{author}",
+      "back": "全部外掛",
+      "source": "原始碼",
+      "releases": "最新版本",
+      "requires_service": "需要你自行提供的外部服務：{service}",
+      "install_title": "安裝到節點",
+      "install": "安裝",
+      "uninstall": "移除",
+      "install_success": "完成",
+      "not_installed": "未安裝",
+      "no_nodes": "尚未設定任何遊戲伺服器節點。",
+      "unavailable_for_runtime": "此外掛沒有適用於 {runtime} 的版本，而這正是本部署使用的執行環境。",
+      "kinds": {
+        "all": "全部",
+        "game": "遊戲伺服器",
+        "panel": "面板",
+        "bundle": "組合包"
+      },
+      "pairs_with": "可搭配",
+      "panel_install_title": "安裝此面板外掛",
+      "panel_install_hint": "部署只是第一步——還需要告訴面板你把它託管在哪裡。",
+      "panel_install_docs": "安裝面板外掛",
+      "installed": "已安裝",
+      "already_installed": "它已安裝在你的面板上。",
+      "open_plugin": "開啟",
+      "panel_step_deploy": "在託管面板的機器上，從你的 5stack-panel 程式碼目錄執行此命令。",
+      "panel_step_dns": "把它輸出的網域指向與本面板相同的位址，然後等待憑證簽發。",
+      "panel_step_register": "在 設定 → 應用程式 → 面板外掛 → 新增 中註冊，貼上該 URL 並按「偵測」。",
+      "installs_everywhere": "安裝到全部 {count} 個線上節點。",
+      "installed_on": "已安裝在 {total} 個節點中的 {installed} 個。",
+      "advanced": "分發",
+      "advanced_hint": "各節點依自己的節奏安裝；離線的節點會在恢復後自動跟上。",
+      "partial_failure": "{failed} 個節點失敗",
+      "live_title": "已安裝",
+      "manage": "管理",
+      "filter_installed": "已安裝",
+      "filter_available": "可安裝",
+      "empty_installed": "尚未安裝任何內容。",
+      "readme": "關於",
+      "no_readme": "此外掛的儲存庫中沒有 README。",
+      "always_load": "每場比賽都載入",
+      "always_load_hint": "不需遊戲模式選擇即可載入。",
+      "always_load_ranked": "排名與配對比賽中也會載入。",
+      "configure": "設定檔",
+      "configure_hint": "由外掛在首次載入時寫入，因此需要伺服器以此模式執行過一次後才會出現。",
+      "configure_open": "開啟檔案",
+      "pending": "待處理"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3893,8 @@
         "title": "管理"
       },
       "platform": {
-        "title": "管理"
+        "title": "管理",
+        "plugin_directory": "外掛目錄"
       }
     },
     "top_nav": {
@@ -5095,6 +5201,12 @@
           "description": "讓玩家看見自己隊伍的攝影機畫面。"
         },
         "privacy_note": "對手隊伍永遠看不到這些畫面。參加這場比賽的主辦方也看不到任何畫面。"
+      },
+      "game_mode": {
+        "title": "遊戲模式",
+        "none": "競技（無模式）",
+        "description": "在比賽伺服器上載入一組外掛與主控台變數。",
+        "not_competitive_safe": "此模式未標記為可用於競技。它仍會計入 ELO——如果這是有意為之，請在模式本身中將其標記為可用於競技。"
       }
     },
     "schedule": {
@@ -6941,7 +7053,12 @@
       "step_settings": "比賽設定",
       "step_rules": "大廳規則",
       "back": "返回",
-      "next": "下一步"
+      "next": "下一步",
+      "step_mode": "模式",
+      "mode_description": "比賽的玩法。一般比賽保持競技即可，或選擇一個模式以在伺服器上載入其外掛。",
+      "mode_none": "競技",
+      "mode_none_hint": "標準規則。計入 ELO 與排行榜。",
+      "mode_empty": "尚未設定任何遊戲模式。管理員可以在設定中新增。"
     },
     "host": "房主",
     "invite": {
@@ -7091,7 +7208,9 @@
       "best_of": "最多",
       "map_veto": "地圖 BP",
       "on": "開啟",
-      "off": "關閉"
+      "off": "關閉",
+      "game_mode": "模式",
+      "unranked": "非排名"
     },
     "mode": {
       "captains": "隊長選人",
@@ -8079,6 +8198,30 @@
       "discord": "加入 Discord",
       "github": "回報問題",
       "docs": "閱讀文件"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "名稱",
+      "slug": "識別碼",
+      "description": "描述",
+      "competitive_safe": "可用於競技對戰",
+      "competitive_safe_description": "此模式是否可用於排名或配對比賽。",
+      "competitive_safe_warning": "此模式只會在休閒比賽中提供。排名伺服器不會繼承模式，因此配對永遠以乾淨的外掛組合啟動。",
+      "plugins": "外掛",
+      "plugins_description": "依顯示順序載入，位於手動放入 custom-plugins 的內容之後。",
+      "no_plugins": "目錄中尚無遊戲外掛。請先同步外掛來源並安裝一個。",
+      "restart_required": "需要重新啟動",
+      "cfg": "主控台變數",
+      "cfg_description": "在比賽類型的設定之後執行，因此這些值優先生效。",
+      "extra_game_params": "額外啟動參數",
+      "extra_game_params_description": "伺服器啟動時附加到命令列。",
+      "save": "儲存模式",
+      "saved": "已儲存遊戲模式",
+      "archive": "封存",
+      "archived": "已封存遊戲模式",
+      "runtime_none": "這些外掛沒有共同的框架，因此此模式無法在任何地方執行。請移除面向另一種框架的那個外掛。",
+      "runtime_only": "僅在 {runtime} 上執行，因為這是這裡所有外掛都有推出版本的唯一框架。"
     }
   }
 }

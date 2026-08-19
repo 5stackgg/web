@@ -1382,6 +1382,20 @@
         "always": "Her zaman kullanılabilir",
         "always_hint": "Her panelle birlikte gelir ve kapatılamaz; dolayısıyla yalnızca kullanım anlamlıdır.",
         "no_metric_hint": "Bu özelliği sayan bir şey yok, bu yüzden raporlanacak kullanım da yok — bu, hiçbir panelin kullanmadığı anlamına gelmez."
+      },
+      "plugins": {
+        "title": "Eklentiler",
+        "hint": "{panels} panelden bildirildi. Bu özellikten önce derlenen paneller, hiç eklenti çalıştırmıyor sayılmak yerine hariç tutuluyor.",
+        "most_installed": "Panel sayısına göre en çok kurulanlar",
+        "none": "Henüz hiçbir panel dizinden eklenti kurmadı.",
+        "requested": "Kurulumlar",
+        "requested_caption": "tüm filo genelinde istendi",
+        "manual": "Elle yerleştirilen",
+        "manual_caption": "dizin dışı",
+        "modes": "Oyun modları",
+        "modes_caption": "tanımlı",
+        "modes_unranked": "Dereceli değil",
+        "modes_unranked_caption": "ELO'yu atlayan modlar"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "Etkinlik oluşturmak için minimum rol"
         },
         "plugins": {
-          "title": "Eklentiler",
-          "section": "Eklentiler",
-          "description": "Panelinde yerel sayfalar olarak render edilen harici mikro-frontend uygulamalarını kaydet.",
-          "docs_link": "Eklenti belgelerini oku",
-          "add": "Eklenti Ekle",
-          "empty_title": "Henüz eklenti yok",
-          "empty_description": "5Stack'i bir eklentinin URL'sine yönlendir, panelinde yerel bir sayfa olarak render edilsin.",
+          "title": "Panel Eklentileri",
+          "section": "Panel Eklentileri",
+          "description": "Panelinin içinde yerel sayfalar olarak render edilen web uygulamaları. CS2 sunucu eklentisi değildir — onlar için Oyun Eklentileri'ne bak.",
+          "docs_link": "Panel eklentisi belgelerini oku",
+          "add": "Panel Eklentisi Ekle",
+          "empty_title": "Henüz panel eklentisi yok",
+          "empty_description": "5Stack'i bir web uygulamasının URL'sine yönlendir, panelinde yerel bir sayfa olarak render edilsin.",
           "public": "Herkese açık",
-          "add_title": "Eklenti Ekle",
-          "edit_title": "Eklentiyi Düzenle",
-          "delete_title": "Eklentiyi Sil",
+          "add_title": "Panel Eklentisi Ekle",
+          "edit_title": "Panel Eklentisini Düzenle",
+          "delete_title": "Panel Eklentisini Sil",
           "delete_description": "Bu işlem \"{title}\" eklentisini ve /apps yolunu panelden kaldırır. Geri alınamaz.",
           "delete_confirm": "Sil",
-          "form_description": "Bu eklentinin nasıl yükleneceğini ve kimlerin göreceğini yapılandır.",
+          "form_description": "Bu panel eklentisinin nasıl yükleneceğini ve kimlerin göreceğini yapılandır.",
           "is_default_hint": "Bunu panelin açılış sayfası yap.",
           "fields": {
             "title": "Başlık",
@@ -2386,7 +2400,8 @@
             "search": "Simge ara…",
             "custom_hint": "Ya da bir görsel URL'si veya satır içi SVG yapıştır (örn. bir eklentiden).",
             "custom_placeholder": "https://… , <svg…> veya bir simge adı"
-          }
+          },
+          "browse": "Dizini Aç"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "Henüz abone cihaz yok",
           "empty_body": "Push hazır ama kimse açmadı. Oyuncular kendi bildirim ayarlarından kendileri abone olur — onların adına açamazsın.",
           "empty_link": "Oyuncu tarafındaki ayarlara bak"
+        },
+        "game_plugins": {
+          "title": "Eklenti Dizini",
+          "section": "Eklenti Dizini",
+          "description": "Kurulabilir eklentilerin kataloğu ve nereden çekildiği. Yalnızca yöneticiler.",
+          "disabled_hint": "Dizini gezmek ve oyun sunucusu düğümlerine eklenti kurmak için bunu aç.",
+          "registry": "Kayıt defteri",
+          "registry_description": "Kurulabilir eklenti kataloğunun çekildiği yer. Resmî 5Stack kayıt defterini kullanmak için boş bırak.",
+          "registry_url": "Kayıt defteri URL'si",
+          "catalog_count": "Katalogda {count} eklenti",
+          "sync": "Şimdi Eşitle",
+          "synced": "{plugins} eklenti ve {versions} sürüm eşitlendi",
+          "directory": "Gez",
+          "directory_description": "Eklenti bulup kurmak için dizini aç.",
+          "browse": "Dizini Aç",
+          "installed": "Kurulu",
+          "installed_description": "Her oyun sunucusu düğümünde gerçekten ne var — elle konulanlar dahil.",
+          "none_installed": "Henüz hiçbir düğümde kurulu eklenti yok.",
+          "hand_placed": "Elle yerleştirildi",
+          "verified": "Doğrulanmış",
+          "missing": "diskte yok"
+        },
+        "game_modes": {
+          "title": "Oyun Modları",
+          "section": "Oyun Modları",
+          "description": "Bir mod, bir maçın farklı oynanmasını sağlayan eklentileri, cvar'ları ve kuralları bir araya getirir. Maçlar ve topluluk sunucuları birini seçer.",
+          "create": "Yeni Mod",
+          "create_title": "Yeni Oyun Modu",
+          "edit_title": "Oyun Modunu Düzenle",
+          "sheet_description": "Modlar sunucu başlarken uygulanır, bu yüzden bir değişiklik o sunucudaki sonraki maçı etkiler.",
+          "empty": "Henüz oyun modu yok. Maçların rekabetçi dışında bir şey oynayabilmesi için bir tane oluştur.",
+          "requires_plugins": "Önce Oyun Eklentilerini aç — onlar olmadan bir modun yükleyecek bir şeyi olmaz.",
+          "disabled": "Devre dışı",
+          "competitive": "Rekabetçiye uygun",
+          "casual_only": "Yalnızca casual",
+          "plugin_count": "{count} eklenti"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "Burada görünmesi için Özel sunucular sayfasından herkese açık bir sunucu kur.",
       "setup_public_server": "Herkese açık sunucu kur",
       "lan_servers_title": "LAN sunucuları",
-      "manage": "Yönet"
+      "manage": "Yönet",
+      "all_modes": "Tümü",
+      "no_mode": "Vanilla"
     },
     "map_pools": {
       "title": "Harita havuzları",
@@ -3530,7 +3583,59 @@
       "not_found_description": "Bu eklenti mevcut değil veya artık kullanılamıyor.",
       "forbidden_title": "Erişim kısıtlı",
       "forbidden_description": "Bu sayfayı görüntüleme iznin yok.",
-      "error_title": "Sayfa yüklenemedi"
+      "error_title": "Sayfa yüklenemedi",
+      "title": "Eklenti Dizini",
+      "description": "Oyun sunucuların ve panelin için eklentiler. Tüm düğümlere kur ya da belirli olanları seç.",
+      "search": "Eklenti ara",
+      "empty": "Bu aramayla eşleşen bir şey yok.",
+      "verified": "Doğrulanmış",
+      "by": "{author} tarafından",
+      "back": "Tüm eklentiler",
+      "source": "Kaynak",
+      "releases": "Son sürüm",
+      "requires_service": "Senin sağlayacağın harici bir servis gerekiyor: {service}",
+      "install_title": "Bir düğüme kur",
+      "install": "Kur",
+      "uninstall": "Kaldır",
+      "install_success": "Tamam",
+      "not_installed": "Kurulu değil",
+      "no_nodes": "Henüz kurulu bir oyun sunucusu düğümü yok.",
+      "unavailable_for_runtime": "Bu eklentinin, bu kurulumun çalıştığı {runtime} çalışma ortamı için sürümü yok.",
+      "kinds": {
+        "all": "Tümü",
+        "game": "Oyun sunucusu",
+        "panel": "Panel",
+        "bundle": "Paket"
+      },
+      "pairs_with": "Şununla çalışır",
+      "panel_install_title": "Bu panel eklentisini kur",
+      "panel_install_hint": "Dağıtmak yalnızca ilk adım — panele hâlâ nerede barındırdığını söylemen gerekiyor.",
+      "panel_install_docs": "Panel eklentilerini kurma",
+      "installed": "Kurulu",
+      "already_installed": "Bu, panelinde zaten kurulu.",
+      "open_plugin": "Aç",
+      "panel_step_deploy": "Bunu panelini barındıran makinede, 5stack-panel kopyandan çalıştır.",
+      "panel_step_dns": "Yazdırdığı alan adını bu panelle aynı adrese yönlendir ve sertifikayı bekle.",
+      "panel_step_register": "Ayarlar → Uygulama → Panel Eklentileri → Ekle altında kaydet, o URL'yi yapıştır ve Algıla'ya bas.",
+      "installs_everywhere": "Çevrimiçi {count} düğümün tamamına kurulur.",
+      "installed_on": "{total} düğümün {installed} tanesine kurulu.",
+      "advanced": "Dağıtım",
+      "advanced_hint": "Her düğüm kendi planına göre kurar; çevrimdışı bir düğüm geri döndüğünde eşitlenir.",
+      "partial_failure": "{failed} düğümde başarısız",
+      "live_title": "Kurulu",
+      "manage": "Yönet",
+      "filter_installed": "Kurulu",
+      "filter_available": "Mevcut",
+      "empty_installed": "Henüz hiçbir şey kurulu değil.",
+      "readme": "Hakkında",
+      "no_readme": "Bu eklentinin deposunda README yok.",
+      "always_load": "Her maçta yükle",
+      "always_load_hint": "Bir oyun modu seçmeden de yüklensin.",
+      "always_load_ranked": "Dereceli ve eşleştirme maçlarında da yüklenir.",
+      "configure": "Yapılandırma",
+      "configure_hint": "İlk yüklemede eklenti tarafından yazılır, bu yüzden bir sunucu bu modu bir kez çalıştırdıktan sonra görünür.",
+      "configure_open": "Dosyaları aç",
+      "pending": "beklemede"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3893,8 @@
         "title": "Yönetim"
       },
       "platform": {
-        "title": "Yönetim"
+        "title": "Yönetim",
+        "plugin_directory": "Eklenti Dizini"
       }
     },
     "top_nav": {
@@ -5095,6 +5201,12 @@
           "description": "Oyuncuların kendi takımlarının kameralarını görmesine izin ver."
         },
         "privacy_note": "Rakip takım bu görüntüleri asla göremez. Bu maçta oynayan organizatörler de hiçbirini göremez."
+      },
+      "game_mode": {
+        "title": "Oyun Modu",
+        "none": "Rekabetçi (mod yok)",
+        "description": "Maç sunucusuna bir dizi eklenti ve konsol değişkeni yükler.",
+        "not_competitive_safe": "Bu mod rekabetçi oyuna uygun olarak işaretlenmemiş. Yine de ELO'ya sayılır — böyle olması isteniyorsa modun kendisinde rekabetçiye uygun olarak işaretle."
       }
     },
     "schedule": {
@@ -6941,7 +7053,12 @@
       "step_settings": "Maç Ayarları",
       "step_rules": "Lobi Kuralları",
       "back": "Geri",
-      "next": "İleri"
+      "next": "İleri",
+      "step_mode": "Mod",
+      "mode_description": "Maçın nasıl oynanacağı. Normal bir maç için Rekabetçi'de bırak ya da eklentilerini sunucuya yüklemek için bir mod seç.",
+      "mode_none": "Rekabetçi",
+      "mode_none_hint": "Standart kurallar. ELO'ya ve liderlik tablolarına sayılır.",
+      "mode_empty": "Henüz kurulu bir oyun modu yok. Bir yönetici bunları Ayarlar'dan ekleyebilir."
     },
     "host": "Ev sahibi",
     "invite": {
@@ -7091,7 +7208,9 @@
       "best_of": "Best Of",
       "map_veto": "Harita Vetosu",
       "on": "Açık",
-      "off": "Kapalı"
+      "off": "Kapalı",
+      "game_mode": "Mod",
+      "unranked": "Dereceli değil"
     },
     "mode": {
       "captains": "Kaptan Seçimi",
@@ -8079,6 +8198,30 @@
       "discord": "Discord'a katıl",
       "github": "Sorun bildir",
       "docs": "Belgeleri oku"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "Ad",
+      "slug": "Slug",
+      "description": "Açıklama",
+      "competitive_safe": "Rekabetçi oyuna uygun",
+      "competitive_safe_description": "Bu modun dereceli veya eşleştirme maçlarında kullanılıp kullanılamayacağı.",
+      "competitive_safe_warning": "Bu mod yalnızca casual maçlarda sunulur. Dereceli sunucular hiçbir zaman bir modu devralmaz, bu yüzden eşleştirme her zaman temiz bir eklenti setiyle başlar.",
+      "plugins": "Eklentiler",
+      "plugins_description": "Gösterilen sırayla, custom-plugins içine elle konulanlardan sonra yüklenir.",
+      "no_plugins": "Katalogda henüz oyun eklentisi yok. Önce kayıt defterini eşitle ve bir tane kur.",
+      "restart_required": "Yeniden başlatma gerekli",
+      "cfg": "Konsol Değişkenleri",
+      "cfg_description": "Maç türünün yapılandırmasından sonra çalıştırılır, bu yüzden bu değerler geçerli olur.",
+      "extra_game_params": "Ek Başlatma Parametreleri",
+      "extra_game_params_description": "Sunucu başlarken komut satırına eklenir.",
+      "save": "Modu Kaydet",
+      "saved": "Oyun modu kaydedildi",
+      "archive": "Arşivle",
+      "archived": "Oyun modu arşivlendi",
+      "runtime_none": "Bu eklentilerin ortak bir framework'ü yok, bu yüzden bu mod hiçbir yerde çalışamaz. Diğer framework'ü hedefleyen eklentiyi kaldır.",
+      "runtime_only": "Yalnızca {runtime} üzerinde çalışır, çünkü buradaki tüm eklentilerin çıktığı tek framework o."
     }
   }
 }

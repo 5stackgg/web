@@ -108,9 +108,14 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             order: 3,
           },
           {
+            path: "/settings/application/game-plugins",
+            labelKey: "pages.settings.application.game_plugins.title",
+            order: 4,
+          },
+          {
             path: "/settings/application/web-push",
             labelKey: "pages.settings.application.web_push.title",
-            order: 4,
+            order: 5,
           },
         ],
       },
@@ -189,6 +194,10 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
           {
             path: "/settings/application/servers",
             labelKey: "pages.settings.application.servers.title",
+          },
+          {
+            path: "/settings/application/game-modes",
+            labelKey: "pages.settings.application.game_modes.title",
           },
           {
             path: "/settings/application/telemetry",

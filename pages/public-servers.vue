@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Settings2 } from "lucide-vue-next";
 import { AnimatedCard } from "@/components/ui/animated-card";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
@@ -105,6 +106,15 @@ const canManage = computed(() =>
 
         <!-- Server cards -->
         <div v-else key="servers" class="space-y-8">
+          <!-- Only shown once modes are actually in use: on a deployment that
+               runs none, a filter with a single option is noise. -->
+          <AnimatedFilters
+            v-if="modeFilters.length > 2"
+            v-model="modeFilter"
+            square
+            :options="modeFilters"
+          />
+
           <div v-for="(gameServers, game) in serversByGame" :key="game">
             <div class="flex items-center gap-3 mb-5">
               <div class="w-0.5 h-4 rounded-full bg-primary shrink-0" />
@@ -117,7 +127,7 @@ const canManage = computed(() =>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <AnimatedCard
-                v-for="server of flattenGame(gameServers)"
+                v-for="server of matchingMode(flattenGame(gameServers))"
                 :key="server.id"
                 variant="elevated"
                 class="overflow-hidden group cursor-pointer p-0"
@@ -169,7 +179,19 @@ const canManage = computed(() =>
 
                 <!-- Zone B: Card Body -->
                 <div class="px-4 pt-3 pb-2">
-                  <p class="font-semibold truncate mb-2">{{ server.label }}</p>
+                  <div class="mb-2 flex items-center gap-2">
+                    <p class="min-w-0 flex-1 truncate font-semibold">
+                      {{ server.label }}
+                    </p>
+                    <!-- What the server is actually running. A name alone does
+                         not tell anyone whether this is retakes or vanilla. -->
+                    <span
+                      v-if="server.game_mode"
+                      class="shrink-0 rounded border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--tac-amber))]"
+                    >
+                      {{ server.game_mode.name }}
+                    </span>
+                  </div>
                   <div class="flex items-center justify-between text-sm mb-1.5">
                     <span class="text-muted-foreground">{{
                       $t("pages.public_servers.players")
@@ -341,6 +363,7 @@ export default {
     return {
       servers: undefined as any[] | undefined,
       serversByGame: {} as Record<string, Record<string, any[]>>,
+      modeFilter: "all",
       lanServers: undefined as any[] | undefined,
       getDedicatedServerInfo: undefined as any[] | undefined,
       maps: undefined as any[] | undefined,
@@ -416,6 +439,11 @@ export default {
               connection_link: true,
               connection_string: true,
               max_players: true,
+              game_mode: {
+                slug: true,
+                name: true,
+                description: true,
+              },
               server_region: {
                 is_lan: true,
               },
@@ -448,7 +476,50 @@ export default {
       },
     },
   },
+  computed: {
+    // Built from the servers actually online, so the list never offers a mode
+    // nobody is running.
+    modeFilters(): Array<{ key: string; label: string; count: number }> {
+      const counts = new Map<string, { label: string; count: number }>();
+
+      for (const server of this.servers as Array<Record<string, any>>) {
+        const mode = server.game_mode;
+        const key = mode?.slug ?? "vanilla";
+        const label = mode?.name ?? this.$t("pages.public_servers.no_mode");
+        const entry = counts.get(key) ?? { label: String(label), count: 0 };
+
+        entry.count++;
+        counts.set(key, entry);
+      }
+
+      if (counts.size === 0) {
+        return [];
+      }
+
+      return [
+        {
+          key: "all",
+          label: String(this.$t("pages.public_servers.all_modes")),
+          count: (this.servers as Array<unknown>).length,
+        },
+        ...[...counts.entries()].map(([key, entry]) => ({
+          key,
+          label: entry.label,
+          count: entry.count,
+        })),
+      ];
+    },
+  },
   methods: {
+    matchingMode(servers: Array<Record<string, any>>) {
+      if (this.modeFilter === "all") {
+        return servers;
+      }
+
+      return servers.filter(
+        (server) => (server.game_mode?.slug ?? "vanilla") === this.modeFilter,
+      );
+    },
     gameLabel(game: string): string {
       const labels: Record<string, string> = {
         cs2: "Counter-Strike 2",

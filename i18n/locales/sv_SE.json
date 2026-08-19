@@ -1382,6 +1382,20 @@
         "always": "Alltid tillgängliga",
         "always_hint": "Följer med varje panel och kan inte stängas av, så bara användningen säger något.",
         "no_metric_hint": "Inget räknar den här funktionen, så det finns ingen användning att rapportera — vilket inte är samma sak som att ingen panel använder den."
+      },
+      "plugins": {
+        "title": "Tillägg",
+        "hint": "Rapporterat av {panels} paneler. Paneler byggda innan detta släpptes utelämnas i stället för att räknas som att de kör inga.",
+        "most_installed": "Mest installerade, efter antal paneler",
+        "none": "Ingen panel har installerat ett tillägg från katalogen än.",
+        "requested": "Installationer",
+        "requested_caption": "begärda i hela flottan",
+        "manual": "Manuellt placerade",
+        "manual_caption": "utanför katalogen",
+        "modes": "Spellägen",
+        "modes_caption": "definierade",
+        "modes_unranked": "Orankade",
+        "modes_unranked_caption": "lägen som hoppar över ELO"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "Lägsta roll för att skapa evenemang"
         },
         "plugins": {
-          "title": "Tillägg",
-          "section": "Tillägg",
-          "description": "Registrera externa mikrofrontend-appar som renderas som inbyggda sidor i din panel.",
-          "docs_link": "Läs dokumentationen för tillägg",
-          "add": "Lägg till tillägg",
-          "empty_title": "Inga tillägg än",
-          "empty_description": "Peka 5Stack mot ett tilläggs URL så renderas det som en inbyggd sida i din panel.",
+          "title": "Paneltillägg",
+          "section": "Paneltillägg",
+          "description": "Webbappar som renderas som inbyggda sidor i din panel. Inte CS2-serverplugins — dem hittar du under Speltillägg.",
+          "docs_link": "Läs dokumentationen för paneltillägg",
+          "add": "Lägg till paneltillägg",
+          "empty_title": "Inga paneltillägg än",
+          "empty_description": "Peka 5Stack mot en webbapps URL så renderas den som en inbyggd sida i din panel.",
           "public": "Publik",
-          "add_title": "Lägg till tillägg",
-          "edit_title": "Redigera tillägg",
-          "delete_title": "Ta bort tillägg",
+          "add_title": "Lägg till paneltillägg",
+          "edit_title": "Redigera paneltillägg",
+          "delete_title": "Ta bort paneltillägg",
           "delete_description": "Detta tar bort \"{title}\" och dess /apps-rutt från panelen. Detta går inte att ångra.",
           "delete_confirm": "Ta bort",
-          "form_description": "Konfigurera hur plugin-programmet laddas och vem som kan se det.",
+          "form_description": "Konfigurera hur det här paneltillägget laddas och vem som kan se det.",
           "is_default_hint": "Gör detta till panelens startsida.",
           "fields": {
             "title": "Titel",
@@ -2386,7 +2400,8 @@
             "search": "Sök ikoner…",
             "custom_hint": "Eller klistra in en bild-URL eller inline-SVG (t.ex. från ett plugin).",
             "custom_placeholder": "https://… , <svg…>, eller ett ikonnamn"
-          }
+          },
+          "browse": "Bläddra i katalogen"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "Inga enheter anmälda än",
           "empty_body": "Push är redo, men ingen har slagit på det. Spelare anmäler sig själva i sina egna aviseringsinställningar — du kan inte slå på det åt dem.",
           "empty_link": "Se inställningarna på spelarsidan"
+        },
+        "game_plugins": {
+          "title": "Tilläggskatalog",
+          "section": "Tilläggskatalog",
+          "description": "Katalogen över installerbara tillägg och var den hämtas ifrån. Endast administratörer.",
+          "disabled_hint": "Slå på detta för att bläddra i katalogen och installera tillägg på dina spelservernoder.",
+          "registry": "Registry",
+          "registry_description": "Var katalogen över installerbara tillägg hämtas ifrån. Lämna tomt för att använda 5Stacks officiella registry.",
+          "registry_url": "Registry-URL",
+          "catalog_count": "{count} tillägg i katalogen",
+          "sync": "Synka nu",
+          "synced": "Synkade {plugins} tillägg och {versions} versioner",
+          "directory": "Bläddra",
+          "directory_description": "Öppna katalogen för att hitta och installera tillägg.",
+          "browse": "Bläddra i katalogen",
+          "installed": "Installerade",
+          "installed_description": "Vad som faktiskt ligger på varje spelservernod, inklusive allt som lagts dit för hand.",
+          "none_installed": "Inga tillägg är installerade på någon nod än.",
+          "hand_placed": "Manuellt placerat",
+          "verified": "Verifierat",
+          "missing": "finns inte på disk"
+        },
+        "game_modes": {
+          "title": "Spellägen",
+          "section": "Spellägen",
+          "description": "Ett läge samlar de tillägg, cvars och regler som får en match att spelas annorlunda. Matcher och community-servrar väljer ett.",
+          "create": "Nytt läge",
+          "create_title": "Nytt spelläge",
+          "edit_title": "Redigera spelläge",
+          "sheet_description": "Lägen tillämpas när en server startar, så en ändring påverkar nästa match på den servern.",
+          "empty": "Inga spellägen än. Skapa ett så att matcher kan köra något annat än competitive.",
+          "requires_plugins": "Slå på Speltillägg först — utan dem har ett läge inget att ladda.",
+          "disabled": "Inaktiverat",
+          "competitive": "Säkert för competitive",
+          "casual_only": "Endast casual",
+          "plugin_count": "{count} tillägg"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "Sätt upp en publik server från sidan Dedikerade servrar för att göra den tillgänglig här.",
       "setup_public_server": "Sätt upp en publik server",
       "lan_servers_title": "LAN-servrar",
-      "manage": "Hantera"
+      "manage": "Hantera",
+      "all_modes": "Alla",
+      "no_mode": "Vanilla"
     },
     "map_pools": {
       "title": "Kartpooler",
@@ -3530,7 +3583,59 @@
       "not_found_description": "Den här pluginen finns inte eller är inte längre tillgänglig.",
       "forbidden_title": "Åtkomst begränsad",
       "forbidden_description": "Du har inte behörighet att visa den här sidan.",
-      "error_title": "Kunde inte läsa in sidan"
+      "error_title": "Kunde inte läsa in sidan",
+      "title": "Tilläggskatalog",
+      "description": "Tillägg för dina spelservrar och din panel. Installera på alla noder, eller välj specifika.",
+      "search": "Sök tillägg",
+      "empty": "Inget matchar den sökningen.",
+      "verified": "Verifierat",
+      "by": "av {author}",
+      "back": "Alla tillägg",
+      "source": "Källkod",
+      "releases": "Senaste släpp",
+      "requires_service": "Kräver en extern tjänst som du själv tillhandahåller: {service}",
+      "install_title": "Installera på en nod",
+      "install": "Installera",
+      "uninstall": "Ta bort",
+      "install_success": "Klart",
+      "not_installed": "Inte installerat",
+      "no_nodes": "Inga spelservernoder är uppsatta än.",
+      "unavailable_for_runtime": "Det här tillägget har inget släpp för {runtime}, den runtime som den här installationen kör.",
+      "kinds": {
+        "all": "Alla",
+        "game": "Spelserver",
+        "panel": "Panel",
+        "bundle": "Paket"
+      },
+      "pairs_with": "Fungerar med",
+      "panel_install_title": "Installera det här paneltillägget",
+      "panel_install_hint": "Att deploya det är bara första steget — panelen måste fortfarande få veta var du hostade det.",
+      "panel_install_docs": "Installera paneltillägg",
+      "installed": "Installerat",
+      "already_installed": "Det här är redan installerat på din panel.",
+      "open_plugin": "Öppna",
+      "panel_step_deploy": "Kör det här på maskinen som hostar din panel, från din 5stack-panel-utcheckning.",
+      "panel_step_dns": "Peka domänen som skrivs ut mot samma adress som den här panelen och vänta på certifikatet.",
+      "panel_step_register": "Registrera det under Inställningar → Applikation → Paneltillägg → Lägg till, klistra in den URL:en och tryck på Identifiera.",
+      "installs_everywhere": "Installeras på alla {count} noder som är online.",
+      "installed_on": "Installerat på {installed} av {total} noder.",
+      "advanced": "Utrullning",
+      "advanced_hint": "Varje nod installerar i sin egen takt; en nod som är offline hinner ikapp när den kommer tillbaka.",
+      "partial_failure": "{failed} nod(er) misslyckades",
+      "live_title": "Installerat",
+      "manage": "Hantera",
+      "filter_installed": "Installerade",
+      "filter_available": "Tillgängliga",
+      "empty_installed": "Inget installerat än.",
+      "readme": "Om",
+      "no_readme": "Det här tillägget har ingen README i sitt repository.",
+      "always_load": "Ladda i varje match",
+      "always_load_hint": "Ladda det utan att ett spelläge väljer det.",
+      "always_load_ranked": "Laddas även i rankade matcher och matchmaking.",
+      "configure": "Konfiguration",
+      "configure_hint": "Skrivs av tillägget vid första laddningen, så den dyker upp efter att en server kört det här läget en gång.",
+      "configure_open": "Öppna filer",
+      "pending": "väntar"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3893,8 @@
         "title": "Administration"
       },
       "platform": {
-        "title": "Administration"
+        "title": "Administration",
+        "plugin_directory": "Tilläggskatalog"
       }
     },
     "top_nav": {
@@ -5095,6 +5201,12 @@
           "description": "Låt spelare se sitt eget lags kameror."
         },
         "privacy_note": "Motståndarlaget kan aldrig se de här flödena. Arrangörer som själva spelar matchen ser inget av dem."
+      },
+      "game_mode": {
+        "title": "Spelläge",
+        "none": "Competitive (inget läge)",
+        "description": "Laddar en uppsättning tillägg och konsolvariabler på matchservern.",
+        "not_competitive_safe": "Det här läget är inte markerat som säkert för competitive. Det räknas ändå mot ELO — markera det som säkert för competitive i själva läget om det är meningen."
       }
     },
     "schedule": {
@@ -6941,7 +7053,12 @@
       "step_settings": "Matchinställningar",
       "step_rules": "Lobbyregler",
       "back": "Tillbaka",
-      "next": "Nästa"
+      "next": "Nästa",
+      "step_mode": "Läge",
+      "mode_description": "Hur matchen spelas. Låt den stå på Competitive för en vanlig match, eller välj ett läge för att ladda dess tillägg på servern.",
+      "mode_none": "Competitive",
+      "mode_none_hint": "Standardregler. Räknas mot ELO och topplistor.",
+      "mode_empty": "Inga spellägen är uppsatta än. En administratör kan lägga till dem under Inställningar."
     },
     "host": "Värden",
     "invite": {
@@ -7091,7 +7208,9 @@
       "best_of": "Best of",
       "map_veto": "Kartveto",
       "on": "På",
-      "off": "Av"
+      "off": "Av",
+      "game_mode": "Läge",
+      "unranked": "Orankad"
     },
     "mode": {
       "captains": "Kaptensdraft",
@@ -8079,6 +8198,30 @@
       "discord": "Gå med på Discord",
       "github": "Rapportera ett problem",
       "docs": "Läs dokumentationen"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "Namn",
+      "slug": "Slug",
+      "description": "Beskrivning",
+      "competitive_safe": "Säkert för competitive",
+      "competitive_safe_description": "Om det här läget får användas av en rankad match eller matchmaking.",
+      "competitive_safe_warning": "Det här läget erbjuds bara i casual-matcher. Rankade servrar ärver aldrig ett läge, så matchmaking startar alltid med en ren uppsättning tillägg.",
+      "plugins": "Tillägg",
+      "plugins_description": "Laddas i den ordning som visas, efter allt som lagts för hand i custom-plugins.",
+      "no_plugins": "Inga speltillägg i katalogen än. Synka registry och installera ett först.",
+      "restart_required": "Omstart krävs",
+      "cfg": "Konsolvariabler",
+      "cfg_description": "Körs efter matchtypens config, så dessa värden vinner.",
+      "extra_game_params": "Extra startparametrar",
+      "extra_game_params_description": "Läggs till på serverns kommandorad när den startar.",
+      "save": "Spara läge",
+      "saved": "Spelläge sparat",
+      "archive": "Arkivera",
+      "archived": "Spelläge arkiverat",
+      "runtime_none": "De här tilläggen har inget gemensamt ramverk, så det här läget kan inte köras någonstans. Ta bort det som riktar sig mot det andra ramverket.",
+      "runtime_only": "Körs bara på {runtime}, eftersom det är det enda ramverk som alla tillägg här finns för."
     }
   }
 }

@@ -523,6 +523,17 @@ export const useApplicationSettingsStore = defineStore(
 
     // Plugins (micro-frontend framework): off by default (absent row =
     // disabled). Master switch gating the nav section + /apps/[slug] routes.
+    // The plugin directory and the modes built from it. On by default -- it is
+    // administrator-only and installs nothing on its own, so there is nothing to
+    // consent to until an admin actually installs something.
+    const gamePluginsEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.game_plugins_enabled",
+        )?.value !== "false"
+      );
+    });
+
     const pluginsEnabled = computed(() => {
       return (
         settings.value?.find(
@@ -708,6 +719,7 @@ export const useApplicationSettingsStore = defineStore(
       faceitEnabled,
       scrimFinderEnabled,
       pluginsEnabled,
+      gamePluginsEnabled,
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,

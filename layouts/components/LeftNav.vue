@@ -23,6 +23,7 @@ import {
   ListVideo,
   AlertTriangle,
   Megaphone,
+  LibraryBig,
   Leaf,
   Medal,
   CalendarRange,
@@ -691,6 +692,25 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem
+              v-if="isAdmin && gamePluginsEnabled"
+              :tooltip="$t('layouts.app_nav.platform.plugin_directory')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.platform.plugin_directory')"
+              >
+                <NuxtLink
+                  :to="{ name: 'plugins' }"
+                  :class="{
+                    'router-link-active': isRouteActive('plugins'),
+                  }"
+                >
+                  <LibraryBig />
+                  {{ $t("layouts.app_nav.platform.plugin_directory") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             <template v-if="isAdmin">
               <SidebarMenuItem
                 :tooltip="$t('layouts.app_nav.tooltips.regions')"
@@ -1232,6 +1252,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    gamePluginsEnabled() {
+      return useApplicationSettingsStore().gamePluginsEnabled;
     },
     eventsEnabled() {
       return useApplicationSettingsStore().eventsEnabled;

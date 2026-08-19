@@ -69,6 +69,8 @@ import NodeMetrics from "@/components/system-metrics/NodeMetrics.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { ref } from "vue";
 
+const { openFiles } = useFilePopout();
+
 // Mobile accordion state
 const expandedSections = ref<Set<string>>(new Set());
 
@@ -918,7 +920,7 @@ const isSectionExpanded = (section: string) => {
 
             <DropdownMenuItem
               @click="
-                $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
+                openFiles({ scope: 'node', id: gameServerNode.id })
               "
             >
               <FolderOpen />
@@ -1162,7 +1164,7 @@ const isSectionExpanded = (section: string) => {
 
               <DropdownMenuItem
                 @click="
-                  $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
+                  openFiles({ scope: 'node', id: gameServerNode.id })
                 "
               >
                 <FolderOpen />

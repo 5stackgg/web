@@ -19,7 +19,7 @@ fuller one with a backend + database.
 
 Serve this file at your app's root (put it in `public/` so Vite copies it to
 `dist/5stack-plugin.json`). An admin pastes your URL into **Settings →
-Application → Plugins → Detect**, and the panel auto-fills everything from
+Application → Panel Plugins → Detect**, and the panel auto-fills everything from
 it.
 
 ```json
@@ -186,7 +186,7 @@ to it. See [Styling](/plugins/styling) for why.
 
 1. Build (`vite build`) and host the `dist/` output somewhere the panel can
    reach (its own subdomain is simplest — the session cookie is same-site).
-2. In the panel: **Settings → Application → Plugins → Add**, paste your
+2. In the panel: **Settings → Application → Panel Plugins → Add**, paste your
    base URL, hit **Detect**, toggle **Enabled**, save. Enable the **Plugins** master switch.
 
 That's it — your app appears in the sidebar at `/apps/<slug>`, rendered

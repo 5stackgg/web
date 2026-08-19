@@ -1382,6 +1382,20 @@
         "always": "常時利用可能",
         "always_hint": "すべてのパネルに同梱されており無効化できないため、意味があるのは利用状況だけです。",
         "no_metric_hint": "この機能を計測するものがないため、報告できる利用状況はありません。どのパネルも使っていないという意味ではありません。"
+      },
+      "plugins": {
+        "title": "プラグイン",
+        "hint": "{panels} 件のパネルから報告されています。この機能より前にビルドされたパネルは、プラグインなしとして数えるのではなく除外しています。",
+        "most_installed": "インストール数の多い順（パネル数）",
+        "none": "カタログのプラグインをインストールしたパネルはまだありません。",
+        "requested": "インストール",
+        "requested_caption": "全体でのリクエスト数",
+        "manual": "手動配置",
+        "manual_caption": "カタログ外",
+        "modes": "ゲームモード",
+        "modes_caption": "定義済み",
+        "modes_unranked": "アンランク",
+        "modes_unranked_caption": "ELO に影響しないモード"
       }
     },
     "tournaments": {
@@ -2334,20 +2348,20 @@
           "create_events_role": "イベント作成に必要な最小ロール"
         },
         "plugins": {
-          "title": "プラグイン",
-          "section": "プラグイン",
-          "description": "外部のマイクロフロントエンドアプリを登録し、パネル内にネイティブページとして表示します。",
-          "docs_link": "プラグインのドキュメントを読む",
-          "add": "プラグインを追加",
-          "empty_title": "プラグインがまだありません",
-          "empty_description": "5Stackにプラグインの URLを指定すると、パネル内にネイティブページとして表示されます。",
+          "title": "パネルプラグイン",
+          "section": "パネルプラグイン",
+          "description": "パネル内にネイティブページとして表示されるウェブアプリです。CS2 のサーバープラグインではありません。そちらはゲームプラグインをご覧ください。",
+          "docs_link": "パネルプラグインのドキュメントを読む",
+          "add": "パネルプラグインを追加",
+          "empty_title": "パネルプラグインがまだありません",
+          "empty_description": "5Stack にウェブアプリの URL を指定すると、パネル内にネイティブページとして表示されます。",
           "public": "公開",
-          "add_title": "プラグインを追加",
-          "edit_title": "プラグインを編集",
-          "delete_title": "プラグインを削除",
+          "add_title": "パネルプラグインを追加",
+          "edit_title": "パネルプラグインを編集",
+          "delete_title": "パネルプラグインを削除",
           "delete_description": "「{title}」とパネル内の/appsルートを削除します。この操作は取り消せません。",
           "delete_confirm": "削除する",
-          "form_description": "このプラグインの読み込み方法と公開範囲を設定します。",
+          "form_description": "このパネルプラグインの読み込み方法と公開範囲を設定します。",
           "is_default_hint": "パネルのランディングページに設定します。",
           "fields": {
             "title": "タイトル",
@@ -2386,7 +2400,8 @@
             "search": "アイコンを検索…",
             "custom_hint": "または画像URLかインラインSVGを貼り付けてください（プラグイン由来のものなど）。",
             "custom_placeholder": "https://… 、<svg…>、またはアイコン名"
-          }
+          },
+          "browse": "ディレクトリを開く"
         },
         "awards": {
           "title": "Awards",
@@ -2423,6 +2438,42 @@
           "empty_title": "登録済みの端末はまだありません",
           "empty_body": "プッシュの準備はできていますが、まだ誰も有効にしていません。プレイヤーは自分の通知設定から自分で登録します。代わりに有効にすることはできません。",
           "empty_link": "プレイヤー側の設定を見る"
+        },
+        "game_plugins": {
+          "title": "プラグインディレクトリ",
+          "section": "プラグインディレクトリ",
+          "description": "インストール可能なプラグインのカタログと、その取得元です。管理者のみ。",
+          "disabled_hint": "オンにすると、ディレクトリを閲覧してゲームサーバーノードにプラグインをインストールできます。",
+          "registry": "レジストリ",
+          "registry_description": "インストール可能なプラグインのカタログの取得元です。空欄にすると公式の 5Stack レジストリを使用します。",
+          "registry_url": "レジストリ URL",
+          "catalog_count": "カタログに {count} 件のプラグイン",
+          "sync": "今すぐ同期",
+          "synced": "{plugins} 件のプラグインと {versions} 件のバージョンを同期しました",
+          "directory": "閲覧",
+          "directory_description": "ディレクトリを開いてプラグインを探し、インストールします。",
+          "browse": "ディレクトリを開く",
+          "installed": "インストール済み",
+          "installed_description": "各ゲームサーバーノードに実際に置かれているもの（手動で置いたものを含む）。",
+          "none_installed": "どのノードにもまだプラグインがインストールされていません。",
+          "hand_placed": "手動配置",
+          "verified": "検証済み",
+          "missing": "ディスク上にありません"
+        },
+        "game_modes": {
+          "title": "ゲームモード",
+          "section": "ゲームモード",
+          "description": "モードは、試合の進み方を変えるプラグイン・cvar・ルールをまとめたものです。試合やコミュニティサーバーはここから 1 つ選びます。",
+          "create": "新しいモード",
+          "create_title": "新しいゲームモード",
+          "edit_title": "ゲームモードを編集",
+          "sheet_description": "モードはサーバー起動時に適用されるため、変更はそのサーバーの次の試合から反映されます。",
+          "empty": "ゲームモードがまだありません。作成すると、Competitive 以外での試合が可能になります。",
+          "requires_plugins": "先にゲームプラグインを有効にしてください。プラグインがないとモードは何も読み込めません。",
+          "disabled": "無効",
+          "competitive": "競技用に安全",
+          "casual_only": "カジュアルのみ",
+          "plugin_count": "{count} 件のプラグイン"
         }
       },
       "language": {
@@ -3192,7 +3243,9 @@
       "no_public_servers_admin": "専用サーバーページからパブリックサーバーを設定すると、ここに表示されます。",
       "setup_public_server": "パブリックサーバーを設定",
       "lan_servers_title": "LANサーバー",
-      "manage": "管理"
+      "manage": "管理",
+      "all_modes": "すべて",
+      "no_mode": "バニラ"
     },
     "map_pools": {
       "title": "マッププール",
@@ -3530,7 +3583,59 @@
       "not_found_description": "このプラグインは存在しないか、利用できなくなっています。",
       "forbidden_title": "アクセス制限中",
       "forbidden_description": "このページを閲覧する権限がありません。",
-      "error_title": "ページの読み込みに失敗しました"
+      "error_title": "ページの読み込みに失敗しました",
+      "title": "プラグインディレクトリ",
+      "description": "ゲームサーバーとパネル向けのプラグインです。全ノードにインストールすることも、特定のノードを選ぶこともできます。",
+      "search": "プラグインを検索",
+      "empty": "該当するものはありません。",
+      "verified": "検証済み",
+      "by": "作者: {author}",
+      "back": "すべてのプラグイン",
+      "source": "ソース",
+      "releases": "最新リリース",
+      "requires_service": "自分で用意する外部サービスが必要です: {service}",
+      "install_title": "ノードにインストール",
+      "install": "インストール",
+      "uninstall": "削除",
+      "install_success": "完了",
+      "not_installed": "未インストール",
+      "no_nodes": "ゲームサーバーノードがまだ設定されていません。",
+      "unavailable_for_runtime": "このプラグインには、この環境が使用するランタイム {runtime} 向けのリリースがありません。",
+      "kinds": {
+        "all": "すべて",
+        "game": "ゲームサーバー",
+        "panel": "パネル",
+        "bundle": "バンドル"
+      },
+      "pairs_with": "併用できるもの",
+      "panel_install_title": "このパネルプラグインをインストール",
+      "panel_install_hint": "デプロイは最初のステップにすぎません。どこにホストしたかをパネルに伝える必要があります。",
+      "panel_install_docs": "パネルプラグインのインストール",
+      "installed": "インストール済み",
+      "already_installed": "これはすでにパネルにインストールされています。",
+      "open_plugin": "開く",
+      "panel_step_deploy": "パネルをホストしているマシン上で、5stack-panel のチェックアウトからこれを実行します。",
+      "panel_step_dns": "表示されたドメインをこのパネルと同じアドレスに向け、証明書の発行を待ちます。",
+      "panel_step_register": "設定 → アプリケーション → パネルプラグイン → 追加 で登録し、その URL を貼り付けて「検出」を押します。",
+      "installs_everywhere": "オンラインの {count} 台すべてのノードにインストールします。",
+      "installed_on": "{total} 台中 {installed} 台のノードにインストール済み。",
+      "advanced": "ロールアウト",
+      "advanced_hint": "各ノードはそれぞれのタイミングでインストールします。オフラインのノードは復帰時に追いつきます。",
+      "partial_failure": "{failed} 台のノードで失敗",
+      "live_title": "インストール済み",
+      "manage": "管理",
+      "filter_installed": "インストール済み",
+      "filter_available": "利用可能",
+      "empty_installed": "まだ何もインストールされていません。",
+      "readme": "概要",
+      "no_readme": "このプラグインのリポジトリに README はありません。",
+      "always_load": "毎試合読み込む",
+      "always_load_hint": "ゲームモードで選択されていなくても読み込みます。",
+      "always_load_ranked": "ランクマッチやマッチメイキングの試合でも読み込まれます。",
+      "configure": "設定",
+      "configure_hint": "初回読み込み時にプラグインが書き出すため、サーバーがこのモードで一度稼働した後に表示されます。",
+      "configure_open": "ファイルを開く",
+      "pending": "保留中"
     },
     "awards": {
       "title": "Awards",
@@ -3788,7 +3893,8 @@
         "title": "管理"
       },
       "platform": {
-        "title": "管理"
+        "title": "管理",
+        "plugin_directory": "プラグインディレクトリ"
       }
     },
     "top_nav": {
@@ -5095,6 +5201,12 @@
           "description": "自チームのカメラをプレイヤーが見られるようにします。"
         },
         "privacy_note": "相手チームがこの映像を見ることはありません。この試合に出場する主催者もいずれの映像も見られません。"
+      },
+      "game_mode": {
+        "title": "ゲームモード",
+        "none": "Competitive（モードなし）",
+        "description": "試合サーバーにプラグインとコンソール変数のセットを読み込みます。",
+        "not_competitive_safe": "このモードは競技用に安全とは設定されていません。それでも ELO には反映されます。意図的であれば、モード側で競技用に安全と設定してください。"
       }
     },
     "schedule": {
@@ -6941,7 +7053,12 @@
       "step_settings": "試合設定",
       "step_rules": "ロビールール",
       "back": "戻る",
-      "next": "次へ"
+      "next": "次へ",
+      "step_mode": "モード",
+      "mode_description": "試合の進み方です。通常の試合なら Competitive のままにし、モードを選ぶとそのプラグインがサーバーに読み込まれます。",
+      "mode_none": "Competitive",
+      "mode_none_hint": "標準ルール。ELO とリーダーボードに反映されます。",
+      "mode_empty": "ゲームモードがまだ設定されていません。管理者が設定から追加できます。"
     },
     "host": "ホスト",
     "invite": {
@@ -7091,7 +7208,9 @@
       "best_of": "Best Of",
       "map_veto": "マップ Veto",
       "on": "オン",
-      "off": "オフ"
+      "off": "オフ",
+      "game_mode": "モード",
+      "unranked": "アンランク"
     },
     "mode": {
       "captains": "キャプテンドラフト",
@@ -8079,6 +8198,30 @@
       "discord": "Discordに参加",
       "github": "問題を報告",
       "docs": "ドキュメントを読む"
+    }
+  },
+  "game_modes": {
+    "form": {
+      "name": "名前",
+      "slug": "スラッグ",
+      "description": "説明",
+      "competitive_safe": "競技プレイに安全",
+      "competitive_safe_description": "このモードをランクマッチやマッチメイキングの試合で使用できるかどうか。",
+      "competitive_safe_warning": "このモードはカジュアル試合でのみ選択できます。ランクサーバーはモードを引き継がないため、マッチメイキングは常にクリーンなプラグイン構成で始まります。",
+      "plugins": "プラグイン",
+      "plugins_description": "表示順に読み込まれます（custom-plugins に手動で置いたものの後）。",
+      "no_plugins": "カタログにゲームプラグインがまだありません。まずレジストリを同期してインストールしてください。",
+      "restart_required": "再起動が必要",
+      "cfg": "コンソール変数",
+      "cfg_description": "試合タイプの設定の後に実行されるため、ここの値が優先されます。",
+      "extra_game_params": "追加の起動パラメーター",
+      "extra_game_params_description": "サーバー起動時にコマンドラインへ追加されます。",
+      "save": "モードを保存",
+      "saved": "ゲームモードを保存しました",
+      "archive": "アーカイブ",
+      "archived": "ゲームモードをアーカイブしました",
+      "runtime_none": "これらのプラグインには共通するフレームワークがないため、このモードはどこでも動作しません。別のフレームワーク向けのプラグインを削除してください。",
+      "runtime_only": "{runtime} でのみ動作します。ここにあるすべてのプラグインが対応している唯一のフレームワークだからです。"
     }
   }
 }

@@ -284,6 +284,118 @@ async function findAllTranslationFiles() {
     }));
 }
 
+// Compare every other locale against en.json.
+//
+// Crowdin used to keep these in step and was removed, so nothing else notices
+// when a locale drifts: the checks above only ever load `en`, and will happily
+// report "0 missing" while all 16 locale files are short. Everything flagged
+// here is something that breaks at runtime rather than merely reading oddly --
+// a lost {placeholder} drops data out of a sentence, a changed plural-arm count
+// makes vue-i18n pick the wrong form, and an empty string renders as nothing at
+// all.
+function checkLocaleParity(enFlat) {
+  const enKeys = Object.keys(enFlat);
+  const placeholders = (value) =>
+    [...String(value).matchAll(/\{(\w+)\}/g)]
+      .map((match) => match[1])
+      .sort()
+      .join(",");
+  // vue-i18n splits plural forms on "|", so the arm count has to match or the
+  // wrong form is selected at runtime.
+  const pluralArms = (value) => String(value).split("|").length;
+
+  const localeFiles = fs
+    .readdirSync("i18n/locales")
+    .filter((file) => file.endsWith(".json") && file !== "en.json")
+    .sort();
+
+  const results = localeFiles.map((file) => {
+    let parsed;
+    try {
+      parsed = JSON.parse(fs.readFileSync(path.join("i18n/locales", file), "utf8"));
+    } catch (error) {
+      // Named explicitly -- the bare parse error reports a character offset and
+      // no filename, which is useless when 16 files are being read.
+      throw new Error(`i18n/locales/${file} is not valid JSON: ${error.message}`);
+    }
+
+    const flat = flattenTranslations(parsed);
+    const shared = enKeys.filter((key) => key in flat);
+
+    return {
+      locale: path.basename(file, ".json"),
+      total: Object.keys(flat).length,
+      missing: enKeys.filter((key) => !(key in flat)),
+      stale: Object.keys(flat).filter((key) => !(key in enFlat)),
+      placeholderMismatch: shared.filter(
+        (key) => placeholders(flat[key]) !== placeholders(enFlat[key]),
+      ),
+      pluralMismatch: shared.filter(
+        (key) =>
+          pluralArms(enFlat[key]) > 1 &&
+          pluralArms(flat[key]) !== pluralArms(enFlat[key]),
+      ),
+      empty: Object.keys(flat).filter(
+        (key) => typeof flat[key] !== "string" || flat[key].trim() === "",
+      ),
+    };
+  });
+
+  const problemCount = (result) =>
+    result.missing.length +
+    result.stale.length +
+    result.placeholderMismatch.length +
+    result.pluralMismatch.length +
+    result.empty.length;
+
+  console.log(`\n=== Locale Parity (vs en.json, ${enKeys.length} keys) ===\n`);
+  console.log(
+    "locale     keys  missing  stale  placeholder  plural  empty".toUpperCase(),
+  );
+
+  for (const result of results) {
+    console.log(
+      [
+        result.locale.padEnd(9),
+        String(result.total).padStart(5),
+        String(result.missing.length).padStart(8),
+        String(result.stale.length).padStart(6),
+        String(result.placeholderMismatch.length).padStart(12),
+        String(result.pluralMismatch.length).padStart(7),
+        String(result.empty.length).padStart(6),
+        problemCount(result) === 0 ? "  ok" : "  FAIL",
+      ].join(""),
+    );
+  }
+
+  // Details only for what is broken -- a full list of missing keys for a locale
+  // nobody has started yet would bury everything else.
+  const SHOW = 10;
+  for (const result of results.filter((r) => problemCount(r) > 0)) {
+    console.log(`\n${result.locale}:`);
+    const detail = (label, keys, format = (key) => key) => {
+      if (!keys.length) return;
+      console.log(`  ${label} (${keys.length})`);
+      keys.slice(0, SHOW).forEach((key) => console.log(`    ${format(key)}`));
+      if (keys.length > SHOW) {
+        console.log(`    … and ${keys.length - SHOW} more`);
+      }
+    };
+    detail("missing", result.missing);
+    detail("stale (not in en.json)", result.stale);
+    detail("placeholder mismatch", result.placeholderMismatch);
+    detail("plural arm mismatch", result.pluralMismatch);
+    detail("empty value", result.empty);
+  }
+
+  const broken = results.filter((r) => problemCount(r) > 0);
+  console.log(
+    `\n${results.length - broken.length}/${results.length} locales match en.json`,
+  );
+
+  return broken.length === 0;
+}
+
 // Main function
 async function main() {
   // Find all translation files
@@ -407,9 +519,24 @@ async function main() {
       console.log(`Total used translations: ${usedKeys.length}`);
       console.log(`Missing translations: ${missingTranslations.length}`);
       console.log(`Unused translations: ${unusedTranslations.length}`);
+
+      if (missingTranslations.length > 0) {
+        process.exitCode = 1;
+      }
     },
   );
+
+  // Unused keys are noise, not breakage, so they never fail the run. Missing
+  // keys and locale drift do.
+  const enTranslations = translationData.find((entry) => entry.locale === "en");
+  if (enTranslations && !checkLocaleParity(enTranslations.flattenedTranslations)) {
+    process.exitCode = 1;
+  }
 }
 
-// Run the script
-main().catch(console.error);
+// A crash here used to print a stack trace and still exit 0, which meant a
+// malformed locale file passed CI green. Anything that throws is a failure.
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

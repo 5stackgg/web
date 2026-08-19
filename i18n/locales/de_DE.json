@@ -1394,8 +1394,8 @@
         "manual_caption": "außerhalb des Katalogs",
         "modes": "Spielmodi",
         "modes_caption": "definiert",
-        "modes_unranked": "Unranked",
-        "modes_unranked_caption": "Modi ohne ELO"
+        "modes_unranked": "Nicht draft-tauglich",
+        "modes_unranked_caption": "Modi, die in Draft-Lobbys ausgeblendet sind"
       }
     },
     "tournaments": {

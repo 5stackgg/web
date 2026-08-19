@@ -708,9 +708,19 @@ export default {
     // nothing to install into; fall back to a preset rather than save a mode
     // the server could not boot with.
     hasGameServerNode(has: boolean) {
-      if (!has && this.isCustomModeSelected) {
+      if (!has && this.holdsModeId) {
         this.form.setFieldValue("type", this.valveModeTypes[0]);
       }
+    },
+    // A mode the picker does not offer shows as an empty select; put the
+    // preset that would be saved in its place so the form says what it does.
+    // Covers the game flipping to csgo, a mode archived or disabled since the
+    // server was saved, and game plugins being switched off.
+    customModes() {
+      this.dropStaleMode();
+    },
+    modesKnown() {
+      this.dropStaleMode();
     },
     "form.values.game_server_node_id": {
       handler(newNodeId) {
@@ -771,23 +781,49 @@ export default {
         !!this.form.values.use_game_server_node && !!nodeId && nodeId !== "none"
       );
     },
-    isCustomModeSelected(): boolean {
+    // Anything in `type` that is not a preset is a mode id. Whether the mode
+    // is still one this server can run (enabled, this runtime, not csgo) is a
+    // separate question -- see isCustomModeSelected.
+    holdsModeId(): boolean {
       const selected = this.form.values.type;
       return !!selected && !Object.values(e_server_types_enum).includes(selected);
+    },
+    isCustomModeSelected(): boolean {
+      const selected = this.form.values.type;
+      return this.customModes.some((mode) => mode.id === selected);
+    },
+    // False until the mode list has been fetched (or the query skipped) and
+    // the settings it is filtered on (plugin runtime) have arrived; a saved
+    // mode must not be judged stale against a list that is not there yet.
+    // Read from $apolloData rather than $apollo.queries: the form populates
+    // from an immediate watcher, which runs before vue-apollo has created the
+    // query, and only the data-backed entry is reactive from nothing.
+    modesKnown(): boolean {
+      return (
+        useApplicationSettingsStore().settingsLoaded &&
+        (this as any).$data.$apolloData?.queries?.gameModes?.loading === false
+      );
     },
   },
   methods: {
     // The form's `type` field holds either a Valve preset (enum value) or a
-    // custom mode's uuid; this splits it back into the two columns.
+    // custom mode's uuid; this splits it back into the two columns. A mode
+    // the picker no longer offers -- archived, disabled, or the server moved
+    // to csgo -- is not re-saved behind the placeholder it shows as.
     resolveTypeAndMode(): { type: string; game_mode_id: string | null } {
       const selected = this.form.values.type;
-      if (
-        selected &&
-        !Object.values(e_server_types_enum).includes(selected)
-      ) {
+      if (this.isCustomModeSelected || (this.holdsModeId && !this.modesKnown)) {
         return { type: e_server_types_enum.Custom, game_mode_id: selected };
       }
+      if (this.holdsModeId) {
+        return { type: this.valveModeTypes[0], game_mode_id: null };
+      }
       return { type: selected || "Ranked", game_mode_id: null };
+    },
+    dropStaleMode() {
+      if (this.modesKnown && this.holdsModeId && !this.isCustomModeSelected) {
+        this.form.setFieldValue("type", this.valveModeTypes[0]);
+      }
     },
     populateServer(server) {
       const {
@@ -818,6 +854,7 @@ export default {
         connect_password: connect_password || "",
         max_players: max_players || 32,
       });
+      this.dropStaleMode();
       this.takeSnapshot();
     },
     takeSnapshot() {

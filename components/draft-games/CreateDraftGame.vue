@@ -365,9 +365,13 @@ validatorComponent.form = form;
 
 // Once the list has settled, a rehosted/edited room carrying a mode that is no
 // longer offered here (archived, pulled from draft lobbies, role lost) falls
-// back to Competitive instead of silently submitting the stale id.
+// back to Competitive instead of silently submitting the stale id. Settled
+// means the settings too: the list is filtered on the plugin runtime, which
+// is a default until the settings subscription delivers.
 const modesSettled = computed(
-  () => !modesQueryEnabled.value || gameModesResult.value !== undefined,
+  () =>
+    applicationSettings.settingsLoaded &&
+    (!modesQueryEnabled.value || gameModesResult.value !== undefined),
 );
 watch(
   [modesSettled, draftEligibleModes, () => form.values.game_mode_id],

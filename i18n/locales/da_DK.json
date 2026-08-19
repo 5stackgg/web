@@ -1394,8 +1394,8 @@
         "manual_caption": "uden for kataloget",
         "modes": "Spiltilstande",
         "modes_caption": "defineret",
-        "modes_unranked": "Uranglerede",
-        "modes_unranked_caption": "tilstande der springer ELO over"
+        "modes_unranked": "Ikke draft-egnet",
+        "modes_unranked_caption": "tilstande skjult i draft-lobbyer"
       }
     },
     "tournaments": {

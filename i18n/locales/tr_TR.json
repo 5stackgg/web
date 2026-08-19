@@ -1394,8 +1394,8 @@
         "manual_caption": "dizin dışı",
         "modes": "Oyun modları",
         "modes_caption": "tanımlı",
-        "modes_unranked": "Dereceli değil",
-        "modes_unranked_caption": "ELO'yu atlayan modlar"
+        "modes_unranked": "Draft'a uygun değil",
+        "modes_unranked_caption": "draft lobilerinde gizlenen modlar"
       }
     },
     "tournaments": {

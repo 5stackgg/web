@@ -1394,8 +1394,8 @@
         "manual_caption": "вне каталога",
         "modes": "Режимы игры",
         "modes_caption": "создано",
-        "modes_unranked": "Без рейтинга",
-        "modes_unranked_caption": "режимы без ELO"
+        "modes_unranked": "Не для драфта",
+        "modes_unranked_caption": "режимы, скрытые в драфт-лобби"
       }
     },
     "tournaments": {

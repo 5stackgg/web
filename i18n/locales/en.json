@@ -1394,8 +1394,8 @@
         "manual_caption": "outside the catalog",
         "modes": "Game modes",
         "modes_caption": "defined",
-        "modes_unranked": "Unranked",
-        "modes_unranked_caption": "modes that skip ELO"
+        "modes_unranked": "Not draft-safe",
+        "modes_unranked_caption": "modes hidden from draft lobbies"
       }
     },
     "tournaments": {

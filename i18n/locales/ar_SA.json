@@ -1394,8 +1394,8 @@
         "manual_caption": "خارج الدليل",
         "modes": "أنماط اللعب",
         "modes_caption": "مُعرّفة",
-        "modes_unranked": "غير مصنّفة",
-        "modes_unranked_caption": "أنماط لا تؤثر في ELO"
+        "modes_unranked": "غير مناسب للدرافت",
+        "modes_unranked_caption": "أوضاع مخفية في ردهات الدرافت"
       }
     },
     "tournaments": {

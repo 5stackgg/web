@@ -1394,8 +1394,8 @@
         "manual_caption": "카탈로그 외부",
         "modes": "게임 모드",
         "modes_caption": "정의됨",
-        "modes_unranked": "언랭크",
-        "modes_unranked_caption": "ELO에 반영되지 않는 모드"
+        "modes_unranked": "드래프트 비대응",
+        "modes_unranked_caption": "드래프트 로비에서 숨겨진 모드"
       }
     },
     "tournaments": {

@@ -155,6 +155,7 @@ export default {
             runtime_conflicts: true,
             cfg: true,
             extra_game_params: true,
+            match_options: [{ limit: 1 }, { id: true }],
             plugins: [
               { order_by: [{ load_order: order_by.asc }] },
               {

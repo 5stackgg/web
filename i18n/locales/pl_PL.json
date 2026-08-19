@@ -1394,8 +1394,8 @@
         "manual_caption": "spoza katalogu",
         "modes": "Tryby gry",
         "modes_caption": "zdefiniowane",
-        "modes_unranked": "Nierankingowe",
-        "modes_unranked_caption": "tryby pomijające ELO"
+        "modes_unranked": "Nie do draftu",
+        "modes_unranked_caption": "tryby ukryte w lobby draftu"
       }
     },
     "tournaments": {

@@ -356,6 +356,11 @@ export default {
     },
   },
   computed: {
+    // Whether any match has run this mode; the parent's query carries one
+    // referencing match_options row as the answer.
+    usedByMatches(): boolean {
+      return (this.gameMode?.match_options?.length ?? 0) > 0;
+    },
     // A plugin set to load on every match is already on every server. Listing
     // it here reads as a choice, and unticking it would not stop it loading.
     selectablePlugins(): Array<Record<string, any>> {
@@ -469,6 +474,23 @@ export default {
         }),
       });
     },
+    // Archived is the one pair of columns both Restore and the used-mode
+    // Delete flip; an archived mode is disabled by definition.
+    async setArchived(archived: boolean) {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          update_game_modes_by_pk: [
+            {
+              pk_columns: { id: this.gameMode.id },
+              _set: archived
+                ? { archived_at: new Date().toISOString(), enabled: false }
+                : { archived_at: null, enabled: true },
+            },
+            { id: true },
+          ],
+        }),
+      });
+    },
     async restore() {
       if (this.deleting) {
         return;
@@ -477,17 +499,7 @@ export default {
       this.deleting = true;
 
       try {
-        await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            update_game_modes_by_pk: [
-              {
-                pk_columns: { id: this.gameMode.id },
-                _set: { archived_at: null, enabled: true },
-              },
-              { id: true },
-            ],
-          }),
-        });
+        await this.setArchived(false);
 
         toast({ title: this.$t("game_modes.form.restored") as string });
         this.$emit("saved", this.gameMode.id);
@@ -501,8 +513,12 @@ export default {
       }
     },
     // tbd_game_modes refuses to delete a mode any match has used, because the
-    // finished match still points at it. In that case the mode is archived
-    // instead: gone from every picker, history intact, restorable from here.
+    // finished match still points at it. Decided here from the match count the
+    // row carries rather than by trying the delete and reading the trigger's
+    // message: the global apollo error hook toasts every rejected mutation, so
+    // the attempt would surface as a red database error before the fallback.
+    // A used mode is archived instead: gone from every picker, history intact,
+    // restorable from here.
     async remove() {
       if (this.deleting) {
         return;
@@ -511,7 +527,15 @@ export default {
       this.deleting = true;
 
       try {
-        try {
+        if (this.usedByMatches) {
+          await this.setArchived(true);
+          toast({
+            title: this.$t("game_modes.form.archived") as string,
+            description: this.$t(
+              "game_modes.form.archived_instead",
+            ) as string,
+          });
+        } else {
           await (this as any).$apollo.mutate({
             mutation: generateMutation({
               delete_game_modes_by_pk: [
@@ -521,30 +545,6 @@ export default {
             }),
           });
           toast({ title: this.$t("game_modes.form.deleted") as string });
-        } catch (error) {
-          if (!/archive it instead/.test((error as Error).message)) {
-            throw error;
-          }
-          await (this as any).$apollo.mutate({
-            mutation: generateMutation({
-              update_game_modes_by_pk: [
-                {
-                  pk_columns: { id: this.gameMode.id },
-                  _set: {
-                    archived_at: new Date().toISOString(),
-                    enabled: false,
-                  },
-                },
-                { id: true },
-              ],
-            }),
-          });
-          toast({
-            title: this.$t("game_modes.form.archived") as string,
-            description: this.$t(
-              "game_modes.form.archived_instead",
-            ) as string,
-          });
         }
 
         this.$emit("saved", null);

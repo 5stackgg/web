@@ -1394,8 +1394,8 @@
         "manual_caption": "カタログ外",
         "modes": "ゲームモード",
         "modes_caption": "定義済み",
-        "modes_unranked": "アンランク",
-        "modes_unranked_caption": "ELO に影響しないモード"
+        "modes_unranked": "ドラフト非対応",
+        "modes_unranked_caption": "ドラフトロビーに表示されないモード"
       }
     },
     "tournaments": {

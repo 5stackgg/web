@@ -1143,14 +1143,11 @@ export default {
         error: install.last_error ?? null,
       };
     },
+    // By recorded state, not by whether the row names a version: a node
+    // reports the version it is downloading with its Installing progress, so
+    // "has a version" is true for every node the moment a rollout starts.
     installedOn(nodeId: string) {
-      const install = this.installs.find(
-        (entry) =>
-          entry.game_server_node_id === nodeId &&
-          entry.plugin_slug === this.$route.params.slug,
-      );
-
-      return install?.version ?? null;
+      return this.nodeState(nodeId).key === "Installed";
     },
     async install() {
       await this.run(this.ALL_NODES, () =>

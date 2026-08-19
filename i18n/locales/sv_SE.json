@@ -1394,8 +1394,8 @@
         "manual_caption": "utanför katalogen",
         "modes": "Spellägen",
         "modes_caption": "definierade",
-        "modes_unranked": "Orankade",
-        "modes_unranked_caption": "lägen som hoppar över ELO"
+        "modes_unranked": "Inte draft-säkra",
+        "modes_unranked_caption": "lägen dolda i draft-lobbyer"
       }
     },
     "tournaments": {

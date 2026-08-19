@@ -1394,8 +1394,8 @@
         "manual_caption": "fuera del catálogo",
         "modes": "Modos de juego",
         "modes_caption": "definidos",
-        "modes_unranked": "Sin clasificar",
-        "modes_unranked_caption": "modos que no afectan al ELO"
+        "modes_unranked": "No aptos para draft",
+        "modes_unranked_caption": "modos ocultos en las salas de draft"
       }
     },
     "tournaments": {

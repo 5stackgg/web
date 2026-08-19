@@ -1394,8 +1394,8 @@
         "manual_caption": "目录之外",
         "modes": "游戏模式",
         "modes_caption": "已定义",
-        "modes_unranked": "非排位",
-        "modes_unranked_caption": "不计入 ELO 的模式"
+        "modes_unranked": "不适用于选人",
+        "modes_unranked_caption": "在选人大厅中隐藏的模式"
       }
     },
     "tournaments": {

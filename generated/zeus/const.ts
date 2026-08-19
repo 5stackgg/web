@@ -9451,6 +9451,7 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"maps_on_conflict"
 	},
 	maps_bool_exp:{
+		deleted_at:"timestamptz_comparison_exp",
 		_and:"maps_bool_exp",
 		_not:"maps_bool_exp",
 		_or:"maps_bool_exp",
@@ -9471,6 +9472,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	maps_constraint: "enum" as const,
 	maps_insert_input:{
+		deleted_at:"timestamptz",
 		e_match_type:"e_match_types_obj_rel_insert_input",
 		id:"uuid",
 		match_maps:"match_maps_arr_rel_insert_input",
@@ -9478,6 +9480,7 @@ export const AllTypesProps: Record<string,any> = {
 		type:"e_match_types_enum"
 	},
 	maps_max_order_by:{
+		deleted_at:"order_by",
 		id:"order_by",
 		label:"order_by",
 		name:"order_by",
@@ -9486,6 +9489,7 @@ export const AllTypesProps: Record<string,any> = {
 		workshop_map_id:"order_by"
 	},
 	maps_min_order_by:{
+		deleted_at:"order_by",
 		id:"order_by",
 		label:"order_by",
 		name:"order_by",
@@ -9503,6 +9507,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"maps_bool_exp"
 	},
 	maps_order_by:{
+		deleted_at:"order_by",
 		active_pool:"order_by",
 		e_match_type:"e_match_types_order_by",
 		enabled:"order_by",
@@ -9523,6 +9528,7 @@ export const AllTypesProps: Record<string,any> = {
 	maps_select_column_maps_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	maps_set_input:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		type:"e_match_types_enum"
 	},
@@ -9531,6 +9537,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	maps_stream_cursor_value_input:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		type:"e_match_types_enum"
 	},
@@ -45012,6 +45019,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"map_pools"
 	},
 	maps:{
+		deleted_at:"timestamptz",
 		active_pool:"Boolean",
 		e_match_type:"e_match_types",
 		enabled:"Boolean",
@@ -45037,6 +45045,7 @@ export const ReturnTypes: Record<string,any> = {
 		min:"maps_min_fields"
 	},
 	maps_max_fields:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		label:"String",
 		name:"String",
@@ -45045,6 +45054,7 @@ export const ReturnTypes: Record<string,any> = {
 		workshop_map_id:"String"
 	},
 	maps_min_fields:{
+		deleted_at:"timestamptz",
 		id:"uuid",
 		label:"String",
 		name:"String",

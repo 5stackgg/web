@@ -2473,7 +2473,8 @@
           "disabled": "Disabled",
           "competitive": "In draft lobbies",
           "casual_only": "Hidden from drafts",
-          "plugin_count": "{count} plugins"
+          "plugin_count": "{count} plugins",
+          "archived": "Archived"
         }
       },
       "language": {
@@ -3262,17 +3263,20 @@
         "delete_map": "Delete Map",
         "delete_confirm": {
           "title": "Delete Map",
-          "description": "Are you sure you want to delete this map? This action cannot be undone."
+          "description": "Are you sure you want to delete this map? It is removed from every map pool and picker, but matches already played on it keep their history. You can restore it later, or simply add a map with the same name."
         },
         "success": {
           "create": "Map created successfully",
           "update": "Map updated successfully",
           "delete": "Map deleted successfully",
+          "restore": "Map restored",
+          "restore_description": "A deleted map with this name already existed, so it was restored with its match history intact.",
           "workshop_refresh": "Workshop map details refreshed successfully"
         },
         "error": {
           "create": "Error creating map",
           "update": "Error updating map",
+          "already_exists": "A map with this name already exists",
           "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
           "workshop_refresh": "Error refreshing workshop map details"
         },
@@ -3287,7 +3291,11 @@
       "active_duty": "Active Duty",
       "available_modes": "Available In Modes",
       "workshop_id": "Workshop Link",
-      "search": "Search Maps"
+      "search": "Search Maps",
+      "deleted_maps": "Deleted Maps",
+      "deleted_maps_description": "Deleted maps are hidden from every map pool and picker, but matches already played on them keep their history. Restoring brings a map back as it was.",
+      "deleted_on": "Deleted {date}",
+      "restore_map": "Restore"
     },
     "map_pool": {
       "toggle_pool_type": "Updated Map Pools",
@@ -6602,6 +6610,9 @@
       "select_game_mode": "Select Game Mode",
       "valve_preset_group": "Valve presets",
       "custom_mode_group": "Custom modes",
+      "custom_mode_group_locked": "needs a game server node",
+      "custom_modes_need_node_title": "Custom modes need a game server node",
+      "custom_modes_need_node_description": "A custom mode is a set of plugins 5Stack installs onto the server it runs. It cannot install anything on a third-party dedicated server, so attach this server to a game server node under Connection to pick one.",
       "game": "Game",
       "csgo_ranked_unavailable_title": "Ranked Not Available",
       "csgo_ranked_unavailable_description": "Ranked mode is not yet available for CS:GO servers.",
@@ -8271,6 +8282,8 @@
       "name": "Name",
       "slug": "Slug",
       "description": "Description",
+      "enabled": "Enabled",
+      "enabled_description": "Disabled modes are kept but cannot be picked for a match, server or draft room.",
       "competitive_safe": "Offer in draft lobbies",
       "competitive_safe_description": "Lobby hosts can pick this mode when creating a draft room. Matches with any custom mode never count toward ELO or the leaderboards.",
       "plugins": "Plugins",
@@ -8283,11 +8296,17 @@
       "extra_game_params_description": "Appended to the server's command line when it starts.",
       "save": "Save Mode",
       "saved": "Game mode saved",
-      "archive": "Archive",
-      "archived": "Game mode archived",
+      "archived": "Game mode hidden",
+      "restore": "Restore",
+      "restored": "Game mode restored",
+      "delete": "Delete",
+      "deleted": "Game mode deleted",
+      "delete_confirm_title": "Delete {name}?",
+      "delete_confirm_description": "Removes the mode permanently. If any match has already run it, it is hidden instead — that history stays intact and you can restore it later.",
       "runtime_none": "These plugins have no framework in common, so this mode cannot run anywhere. Remove whichever one targets the other framework.",
       "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for.",
-      "open_plugin": "Open this plugin's page in a new tab"
+      "open_plugin": "Open this plugin's page in a new tab",
+      "archived_instead": "Matches have already run this mode, so it was hidden instead of deleted. You can restore it any time."
     }
   }
 }

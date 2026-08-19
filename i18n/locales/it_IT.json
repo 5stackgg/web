@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Aggiunti alla riga di comando del server all'avvio.",
       "save": "Salva modalità",
       "saved": "Modalità di gioco salvata",
-      "archive": "Archivia",
       "archived": "Modalità di gioco archiviata",
       "runtime_none": "Questi plugin non hanno alcun framework in comune, quindi questa modalità non può girare da nessuna parte. Rimuovi quello destinato all'altro framework.",
       "runtime_only": "Gira solo su {runtime}, perché è l'unico framework per cui esistono tutti questi plugin."

@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "服务器启动时追加到命令行。",
       "save": "保存模式",
       "saved": "游戏模式已保存",
-      "archive": "归档",
       "archived": "游戏模式已归档",
       "runtime_none": "这些插件没有共同的框架，因此该模式无法在任何地方运行。请移除面向另一种框架的那个插件。",
       "runtime_only": "仅在 {runtime} 上运行，因为这是这里所有插件都发布了版本的唯一框架。"

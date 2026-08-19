@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Tilføjes til serverens kommandolinje når den starter.",
       "save": "Gem tilstand",
       "saved": "Spiltilstand gemt",
-      "archive": "Arkivér",
       "archived": "Spiltilstand arkiveret",
       "runtime_none": "Disse plugins har intet framework til fælles, så denne tilstand kan ikke køre nogen steder. Fjern det plugin, der er bygget til det andet framework.",
       "runtime_only": "Kører kun på {runtime}, fordi det er det eneste framework alle plugins her findes til."

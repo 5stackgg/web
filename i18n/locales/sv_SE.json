@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Läggs till på serverns kommandorad när den startar.",
       "save": "Spara läge",
       "saved": "Spelläge sparat",
-      "archive": "Arkivera",
       "archived": "Spelläge arkiverat",
       "runtime_none": "De här tilläggen har inget gemensamt ramverk, så det här läget kan inte köras någonstans. Ta bort det som riktar sig mot det andra ramverket.",
       "runtime_only": "Körs bara på {runtime}, eftersom det är det enda ramverk som alla tillägg här finns för."

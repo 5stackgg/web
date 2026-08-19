@@ -12,7 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
-import { Plus, ShieldCheck, ShieldAlert } from "lucide-vue-next";
+import { Plus, ShieldCheck, ShieldAlert, Archive } from "lucide-vue-next";
 
 definePageMeta({
   middleware: "admin",
@@ -51,16 +51,21 @@ definePageMeta({
 
           <div class="space-y-2" v-else>
             <button
-              v-for="mode in gameModes"
+              v-for="mode in sortedModes"
               :key="mode.id"
               type="button"
               class="flex w-full items-center justify-between gap-4 rounded-md border p-3 text-left transition-colors hover:bg-accent"
+              :class="mode.archived_at ? 'opacity-60' : ''"
               @click="edit(mode)"
             >
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
                   <span class="font-medium truncate">{{ mode.name }}</span>
-                  <Badge variant="outline" v-if="!mode.enabled">
+                  <Badge variant="outline" class="gap-1" v-if="mode.archived_at">
+                    <Archive class="h-3 w-3" />
+                    {{ $t("pages.settings.application.game_modes.archived") }}
+                  </Badge>
+                  <Badge variant="outline" v-else-if="!mode.enabled">
                     {{ $t("pages.settings.application.game_modes.disabled") }}
                   </Badge>
                   <Badge
@@ -144,6 +149,7 @@ export default {
             name: true,
             description: true,
             enabled: true,
+            archived_at: true,
             competitive_safe: true,
             supported_runtimes: true,
             runtime_conflicts: true,
@@ -182,6 +188,13 @@ export default {
   computed: {
     gamePluginsEnabled() {
       return useApplicationSettingsStore().gamePluginsEnabled;
+    },
+    // Archived modes stay listed (so they can be restored or deleted) but sink
+    // below the live ones.
+    sortedModes(): Array<Record<string, any>> {
+      return [...this.gameModes].sort(
+        (a, b) => Number(!!a.archived_at) - Number(!!b.archived_at),
+      );
     },
   },
 };

@@ -200,7 +200,10 @@ export default {
         query: typedGql("query")({
           maps: [
             {
-              where: { type: { _eq: "Competitive" } },
+              where: {
+                type: { _eq: "Competitive" },
+                deleted_at: { _is_null: true },
+              },
               order_by: [{ name: order_by.asc }],
             },
             mapFields,

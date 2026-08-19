@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Info, PlusCircle } from "lucide-vue-next";
+import { Info, PlusCircle, ArchiveRestore, Trash2 } from "lucide-vue-next";
 import { Separator } from "~/components/ui/separator";
 import {
   Sheet,
@@ -13,6 +13,7 @@ import { Input } from "~/components/ui/input";
 import { Search } from "lucide-vue-next";
 import MapForm from "~/components/map-pools/MapForm.vue";
 import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
+import MapDisplay from "~/components/MapDisplay.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -20,11 +21,11 @@ import { Card } from "~/components/ui/card";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-
 
 const { isMobile } = useSidebar();
 </script>
@@ -138,6 +139,48 @@ const { isMobile } = useSidebar();
     </Card>
   </PageTransition>
 
+  <PageTransition v-if="deletedMaps.length > 0" :delay="400" class="mt-6">
+    <Card variant="gradient" class="p-4">
+      <div class="flex items-center gap-2 mb-2">
+        <Trash2 class="h-4 w-4 text-muted-foreground" />
+        <h3 class="text-lg font-semibold">
+          {{ $t("pages.map_pools.deleted_maps") }}
+        </h3>
+      </div>
+      <p class="text-sm text-muted-foreground mb-4">
+        {{ $t("pages.map_pools.deleted_maps_description") }}
+      </p>
+      <div class="relative w-full overflow-auto">
+        <Table>
+          <TableBody>
+            <TableRow
+              v-for="map in deletedMaps"
+              :key="map.id"
+              class="border-t opacity-70"
+            >
+              <TableCell class="px-4 py-2 text-sm">
+                <MapDisplay :map="map" style="max-width: 350px" />
+              </TableCell>
+              <TableCell class="px-4 py-2 text-sm text-muted-foreground">
+                {{
+                  $t("pages.map_pools.deleted_on", {
+                    date: formatDeletedAt(map.deleted_at),
+                  })
+                }}
+              </TableCell>
+              <TableCell class="px-4 py-2 text-right">
+                <Button variant="outline" size="sm" @click="restoreMap(map)">
+                  <ArchiveRestore class="h-4 w-4 mr-2" />
+                  {{ $t("pages.map_pools.restore_map") }}
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
+  </PageTransition>
+
   <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
     <SheetContent>
       <SheetHeader>
@@ -158,6 +201,7 @@ import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { order_by } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import { dateLocale } from "~/utilities/dateLocale";
 interface Map {
   id: string;
   name: string;
@@ -169,6 +213,7 @@ interface Map {
   workshop_map_id?: string;
   poolTypes: string[];
   enabled: boolean;
+  deleted_at?: string | null;
 }
 
 interface MapPool {
@@ -212,6 +257,7 @@ export default {
             {
               ...mapFields,
               enabled: true,
+              deleted_at: true,
             },
           ],
         }),
@@ -249,6 +295,36 @@ export default {
     },
   },
   methods: {
+    formatDeletedAt(deletedAt: string) {
+      return new Date(deletedAt).toLocaleDateString(dateLocale(), {
+        dateStyle: "medium",
+      });
+    },
+    async restoreMap(map: Map) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_maps: [
+            {
+              _set: {
+                deleted_at: null,
+              },
+              where: {
+                name: {
+                  _eq: map.name,
+                },
+              },
+            },
+            {
+              affected_rows: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.map_pools.form.success.restore") as string,
+      });
+    },
     async toggleUpdateMapPools() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -279,10 +355,28 @@ export default {
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
     },
+    deletedMaps(): Map[] {
+      const uniqueMapsMap = new Map<string, Map>();
+
+      for (const map of this.maps) {
+        if (!map.deleted_at || uniqueMapsMap.has(map.name)) {
+          continue;
+        }
+        uniqueMapsMap.set(map.name, map);
+      }
+
+      return Array.from(uniqueMapsMap.values()).sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    },
     availableMaps(): Map[] {
       const uniqueMapsMap = new Map<string, Map>();
 
       for (const map of this.maps) {
+        if (map.deleted_at) {
+          continue;
+        }
+
         if (!uniqueMapsMap.has(map.name)) {
           uniqueMapsMap.set(map.name, {
             ...map,

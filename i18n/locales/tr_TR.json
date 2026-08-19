@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Sunucu başlarken komut satırına eklenir.",
       "save": "Modu Kaydet",
       "saved": "Oyun modu kaydedildi",
-      "archive": "Arşivle",
       "archived": "Oyun modu arşivlendi",
       "runtime_none": "Bu eklentilerin ortak bir framework'ü yok, bu yüzden bu mod hiçbir yerde çalışamaz. Diğer framework'ü hedefleyen eklentiyi kaldır.",
       "runtime_only": "Yalnızca {runtime} üzerinde çalışır, çünkü buradaki tüm eklentilerin çıktığı tek framework o."

@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Dopisywane do linii poleceń serwera przy starcie.",
       "save": "Zapisz tryb",
       "saved": "Tryb gry zapisany",
-      "archive": "Archiwizuj",
       "archived": "Tryb gry zarchiwizowany",
       "runtime_none": "Te wtyczki nie mają wspólnego frameworka, więc ten tryb nigdzie nie zadziała. Usuń tę, która celuje w drugi framework.",
       "runtime_only": "Działa tylko na {runtime}, bo to jedyny framework, dla którego istnieją wszystkie te wtyczki."

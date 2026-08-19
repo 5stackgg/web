@@ -64,8 +64,10 @@ const select = (id: string) => {
       </div>
 
       <div class="min-w-0 flex-1">
-        <p class="truncate font-medium">{{ mode.name }}</p>
-        <p class="truncate text-xs text-muted-foreground">
+        <p class="font-medium">{{ mode.name }}</p>
+        <!-- The description is the whole pitch for picking a mode; it wraps
+             rather than truncating so a long one is still readable. -->
+        <p class="text-xs leading-snug text-muted-foreground">
           {{ mode.description }}
         </p>
       </div>

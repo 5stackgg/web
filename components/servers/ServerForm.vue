@@ -18,12 +18,19 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import {
+  SelectItem as RekaSelectItem,
+  SelectItemIndicator as RekaSelectItemIndicator,
+  SelectItemText as RekaSelectItemText,
+} from "reka-ui";
+import { CheckIcon } from "@radix-icons/vue";
 import { Switch } from "~/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { Eye, EyeOff } from "lucide-vue-next";
+import { Eye, EyeOff, Lock } from "lucide-vue-next";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
@@ -172,9 +179,17 @@ const showConnectPassword = ref(false);
                   />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <!-- Width pinned to the trigger: the popper otherwise grows to
+                   the longest mode description and the text never wraps. -->
+              <SelectContent class="w-[--reka-select-trigger-width]">
                 <SelectGroup>
-                  <SelectLabel v-if="customModes.length">
+                  <!-- Eyebrow headers, not item-styled labels: the groups must
+                       read as section titles or the items under them look
+                       like a second tier of something unselectable. -->
+                  <SelectLabel
+                    v-if="customModes.length"
+                    class="px-2 pb-1 pt-2 font-mono text-[0.62rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
+                  >
                     {{ $t("server.form.valve_preset_group") }}
                   </SelectLabel>
                   <SelectItem
@@ -185,23 +200,73 @@ const showConnectPassword = ref(false);
                     {{ serverType }}
                   </SelectItem>
                 </SelectGroup>
-                <SelectGroup v-if="customModes.length">
-                  <SelectLabel>
-                    {{ $t("server.form.custom_mode_group") }}
-                  </SelectLabel>
-                  <SelectItem
-                    :value="gameMode.id"
-                    v-for="gameMode in customModes"
-                    :key="gameMode.id"
-                  >
-                    {{ gameMode.name }}
-                  </SelectItem>
-                </SelectGroup>
+                <template v-if="customModes.length">
+                  <SelectSeparator />
+                  <SelectGroup>
+                    <SelectLabel
+                      class="flex items-center gap-2 px-2 pb-1 pt-2 font-mono text-[0.62rem] font-normal uppercase tracking-[0.16em] text-muted-foreground"
+                    >
+                      {{ $t("server.form.custom_mode_group") }}
+                      <span
+                        v-if="!hasGameServerNode"
+                        class="inline-flex items-center gap-1 normal-case tracking-normal"
+                      >
+                        <Lock class="h-3 w-3" />
+                        {{ $t("server.form.custom_mode_group_locked") }}
+                      </span>
+                    </SelectLabel>
+                    <!-- Built from the reka primitives rather than ui/SelectItem
+                         so the description sits outside SelectItemText: the
+                         trigger then echoes only the name. -->
+                    <RekaSelectItem
+                      v-for="gameMode in customModes"
+                      :key="gameMode.id"
+                      :value="gameMode.id"
+                      :disabled="!hasGameServerNode"
+                      class="relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                    >
+                      <span
+                        class="absolute right-2 top-2 flex h-3.5 w-3.5 items-center justify-center"
+                      >
+                        <RekaSelectItemIndicator>
+                          <CheckIcon class="h-4 w-4" />
+                        </RekaSelectItemIndicator>
+                      </span>
+                      <RekaSelectItemText>{{ gameMode.name }}</RekaSelectItemText>
+                      <span
+                        v-if="gameMode.description"
+                        class="mt-0.5 block whitespace-normal text-xs leading-snug text-muted-foreground"
+                      >
+                        {{ gameMode.description }}
+                      </span>
+                    </RekaSelectItem>
+                  </SelectGroup>
+                </template>
               </SelectContent>
             </Select>
             <FormMessage />
           </FormItem>
         </FormField>
+        </Fold>
+
+        <!-- A custom mode is plugins the panel installs onto the container it
+             runs; a third-party dedicated server gives it nothing to install
+             into, so the modes stay locked until a node is attached. -->
+        <Fold
+          :open="
+            !!form.values.use_valve_modes &&
+            customModes.length > 0 &&
+            !hasGameServerNode
+          "
+        >
+          <Alert variant="warning">
+            <AlertTitle>{{
+              $t("server.form.custom_modes_need_node_title")
+            }}</AlertTitle>
+            <AlertDescription>{{
+              $t("server.form.custom_modes_need_node_description")
+            }}</AlertDescription>
+          </Alert>
         </Fold>
       </div>
     </FormSection>
@@ -487,6 +552,7 @@ export default {
           {
             id: true,
             name: true,
+            description: true,
             enabled: true,
             supported_runtimes: [{}, true],
           },
@@ -638,6 +704,14 @@ export default {
         }
       },
     },
+    // Detaching the node (or never picking one) leaves a custom mode with
+    // nothing to install into; fall back to a preset rather than save a mode
+    // the server could not boot with.
+    hasGameServerNode(has: boolean) {
+      if (!has && this.isCustomModeSelected) {
+        this.form.setFieldValue("type", this.valveModeTypes[0]);
+      }
+    },
     "form.values.game_server_node_id": {
       handler(newNodeId) {
         if (newNodeId && newNodeId !== "none" && this.useGameServerNode) {
@@ -687,6 +761,19 @@ export default {
     },
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);
+    },
+    hasGameServerNode(): boolean {
+      if (this.isEditingGameServerNode) {
+        return true;
+      }
+      const nodeId = this.form.values.game_server_node_id;
+      return (
+        !!this.form.values.use_game_server_node && !!nodeId && nodeId !== "none"
+      );
+    },
+    isCustomModeSelected(): boolean {
+      const selected = this.form.values.type;
+      return !!selected && !Object.values(e_server_types_enum).includes(selected);
     },
   },
   methods: {

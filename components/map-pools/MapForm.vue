@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
@@ -334,6 +334,73 @@ export default {
             return;
           }
 
+          const { data } = await this.$apollo.query({
+            fetchPolicy: "network-only",
+            query: generateQuery({
+              maps: [
+                {
+                  where: {
+                    name: {
+                      _eq: values.name,
+                    },
+                  },
+                },
+                {
+                  id: true,
+                  deleted_at: true,
+                },
+              ],
+            }),
+          });
+
+          const existing = data.maps as Array<{
+            id: string;
+            deleted_at: string | null;
+          }>;
+
+          if (existing.some((map) => !map.deleted_at)) {
+            toast({
+              title: this.$t("pages.map_pools.form.error.already_exists"),
+              variant: "destructive",
+            });
+            return;
+          }
+
+          if (existing.length > 0) {
+            await this.$apollo.mutate({
+              mutation: generateMutation({
+                update_maps: [
+                  {
+                    _set: {
+                      deleted_at: null,
+                      label: values.label,
+                      workshop_map_id: values.workshop_map_id,
+                      poster: values.poster,
+                      patch: values.patch,
+                    },
+                    where: {
+                      name: {
+                        _eq: values.name,
+                      },
+                    },
+                  },
+                  {
+                    affected_rows: true,
+                  },
+                ],
+              }),
+            });
+
+            toast({
+              title: this.$t("pages.map_pools.form.success.restore"),
+              description: this.$t(
+                "pages.map_pools.form.success.restore_description",
+              ),
+            });
+            this.$emit("created");
+            return;
+          }
+
           await this.$apollo.mutate({
             mutation: generateMutation({
               insert_maps: [
@@ -361,6 +428,7 @@ export default {
           toast({
             title: this.$t("pages.map_pools.form.success.create"),
           });
+          this.$emit("created");
         } catch (error) {
           toast({
             title: this.map
@@ -377,8 +445,11 @@ export default {
     async deleteMap() {
       await this.$apollo.mutate({
         mutation: generateMutation({
-          delete_maps: [
+          update_maps: [
             {
+              _set: {
+                deleted_at: new Date().toISOString(),
+              },
               where: {
                 name: {
                   _eq: this.map.name,
@@ -386,7 +457,7 @@ export default {
               },
             },
             {
-              __typename: true,
+              affected_rows: true,
             },
           ],
         }),

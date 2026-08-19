@@ -7848,7 +7848,6 @@
       "extra_game_params_description": "Anexados à linha de comando do servidor ao iniciar.",
       "save": "Salvar modo",
       "saved": "Modo de jogo salvo",
-      "archive": "Arquivar",
       "archived": "Modo de jogo arquivado",
       "runtime_none": "Estes plugins não têm nenhum framework em comum, então este modo não pode rodar em lugar nenhum. Remova o que for do outro framework.",
       "runtime_only": "Roda apenas em {runtime}, porque é o único framework para o qual todos estes plugins existem."

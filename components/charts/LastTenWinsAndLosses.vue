@@ -106,6 +106,9 @@ export default {
               type: {
                 _eq: e_map_pool_types_enum.Competitive,
               },
+              deleted_at: {
+                _is_null: true,
+              },
             },
             order_by: [
               {

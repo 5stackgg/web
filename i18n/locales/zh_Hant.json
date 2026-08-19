@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "伺服器啟動時附加到命令列。",
       "save": "儲存模式",
       "saved": "已儲存遊戲模式",
-      "archive": "封存",
       "archived": "已封存遊戲模式",
       "runtime_none": "這些外掛沒有共同的框架，因此此模式無法在任何地方執行。請移除面向另一種框架的那個外掛。",
       "runtime_only": "僅在 {runtime} 上執行，因為這是這裡所有外掛都有推出版本的唯一框架。"

@@ -75,6 +75,9 @@ export default {
               enabled: {
                 _eq: true,
               },
+              deleted_at: {
+                _is_null: true,
+              },
             },
           },
           mapFields,

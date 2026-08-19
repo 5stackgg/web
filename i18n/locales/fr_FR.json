@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Ajoutés à la ligne de commande du serveur à son démarrage.",
       "save": "Enregistrer le mode",
       "saved": "Mode de jeu enregistré",
-      "archive": "Archiver",
       "archived": "Mode de jeu archivé",
       "runtime_none": "Ces plugins n'ont aucun framework en commun, ce mode ne peut donc tourner nulle part. Retire celui qui vise l'autre framework.",
       "runtime_only": "Tourne uniquement sur {runtime}, car c'est le seul framework pour lequel tous ces plugins existent."

@@ -8214,7 +8214,6 @@
       "extra_game_params_description": "Wird beim Start an die Kommandozeile des Servers angehängt.",
       "save": "Modus speichern",
       "saved": "Spielmodus gespeichert",
-      "archive": "Archivieren",
       "archived": "Spielmodus archiviert",
       "runtime_none": "Diese Plugins haben kein gemeinsames Framework, dieser Modus kann also nirgends laufen. Entferne das Plugin, das auf das andere Framework zielt.",
       "runtime_only": "Läuft nur auf {runtime}, weil das das einzige Framework ist, für das es hier jedes Plugin gibt."

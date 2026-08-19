@@ -3658,7 +3658,9 @@
         "off_hint": "Left on, the plugin still installs and loads — the parts that change what a player sees just do nothing.",
         "warning_title": "Warning: this can get your Steam GSLTs banned",
         "warning_description": "Per Valve, running outside their official server guidelines can trigger every Game Server Login Token (GSLT) on the server owner's Steam account to be banned. Enable at your own risk.",
-        "warning_link_label": "Valve's server guidelines"
+        "warning_link_label": "Valve's server guidelines",
+        "already_off": "Already off for this deployment: 5stack Ranks turns Valve's server guidelines off to show ranks in-game, and the risk it carries is against your Steam account rather than one server.",
+        "already_off_link": "5stack Ranks"
       },
       "custom": {
         "add": "Add a plugin",
@@ -3687,7 +3689,8 @@
         "remove": "Remove from catalog",
         "remove_hint": "Uninstall it from your nodes before taking it out of the catalog.",
         "removed": "Removed from the catalog"
-      }
+      },
+      "retry": "Retry"
     },
     "awards": {
       "title": "Awards",
@@ -8281,7 +8284,8 @@
       "archive": "Archive",
       "archived": "Game mode archived",
       "runtime_none": "These plugins have no framework in common, so this mode cannot run anywhere. Remove whichever one targets the other framework.",
-      "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for."
+      "runtime_only": "Runs on {runtime} only, because that is the one framework every plugin here ships for.",
+      "open_plugin": "Open this plugin's page in a new tab"
     }
   }
 }

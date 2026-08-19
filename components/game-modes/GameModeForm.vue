@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { AlertTriangle, Trash2 } from "lucide-vue-next";
+import { AlertTriangle, Trash2, ExternalLink } from "lucide-vue-next";
 import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 </script>
 
@@ -112,7 +112,19 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
       >
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <span class="font-medium truncate">{{ plugin.name }}</span>
+            <!-- A new tab rather than a route: deciding what belongs in a mode
+                 means reading what each plugin actually does, and leaving the
+                 form to do it would lose an unsaved selection. -->
+            <a
+              :href="`/plugins/${plugin.slug}`"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex min-w-0 items-center gap-1 font-medium hover:underline"
+              :title="$t('game_modes.form.open_plugin')"
+            >
+              <span class="truncate">{{ plugin.name }}</span>
+              <ExternalLink class="h-3 w-3 shrink-0 text-muted-foreground" />
+            </a>
             <Badge variant="outline" v-if="!plugin.hot_swappable">
               {{ $t("game_modes.form.restart_required") }}
             </Badge>

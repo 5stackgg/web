@@ -2512,7 +2512,7 @@
           "import": {
             "payload": "Lineup payload",
             "payload_description": "Paste the payload, or load it from a file. Run it as a dry run first — the counts and the per-entry errors come back the same either way, and nothing is written until you apply it.",
-            "payload_placeholder": "[ { ... } ]",
+            "payload_placeholder": "Paste the lineup payload (a JSON array of lineup entries)",
             "choose_file": "Load a file",
             "entries": "{count} top-level entries",
             "too_many_entries": "One call carries at most {max} entries. Split the payload and import it in batches.",

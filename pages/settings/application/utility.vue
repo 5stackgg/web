@@ -169,8 +169,18 @@ const NUMBER_SETTINGS = [
     fallbackLabel: null,
   },
   {
+    name: "public.utility_practice_connect_minutes",
+    label: "practice_connect_minutes",
+    fallbackLabel: null,
+  },
+  {
     name: "public.utility_practice_idle_minutes",
     label: "practice_idle_minutes",
+    fallbackLabel: null,
+  },
+  {
+    name: "public.utility_practice_max_minutes",
+    label: "practice_max_minutes",
     fallbackLabel: null,
   },
   {

@@ -1,4 +1,4 @@
-import { $ } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import {
   generateMutation,
   generateQuery,
@@ -476,6 +476,23 @@ export const leaveUtilityPracticeMutation = generateMutation({
     {
       success: true,
     },
+  ],
+});
+
+// The session a refresh has to find again. Scoped to the caller: can_view also
+// covers other people's open sessions, and rejoining a stranger's server on
+// page load is not what "my session" means.
+export const myUtilityPracticeSessionQuery = generateQuery({
+  utility_practice_sessions: [
+    {
+      where: {
+        host_steam_id: { _eq: $("steam_id", "bigint!") },
+        status: { _in: $("statuses", "[String!]") },
+      },
+      order_by: [{ created_at: order_by.desc }],
+      limit: 1,
+    },
+    utilityPracticeSessionFields,
   ],
 });
 

@@ -49,6 +49,7 @@ import {
   loadUtilityPlaybookIntoSessionMutation,
   utilityCollectionsQuery,
   utilityPlaybooksQuery,
+  myUtilityPracticeSessionQuery,
   utilityPracticeServersQuery,
   utilityPracticeSessionSubscription,
   startUtilityPracticeMutation,
@@ -56,6 +57,7 @@ import {
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useAuthStore } from "~/stores/AuthStore";
 import { readUtilityPracticeSession } from "~/types/utility";
 import type {
   UtilityCollection,
@@ -163,6 +165,37 @@ async function loadCollections() {
   }
 }
 
+// A session outlives the page that started it. Without this the host refreshes,
+// the dialog forgets, and a server they are still holding looks like one they
+// never booked -- with no way back to its connect string or its stop button.
+async function restoreLiveSession() {
+  if (sessionId.value || props.joinInviteCode || props.joinSessionId) {
+    return;
+  }
+
+  const steamId = useAuthStore().me?.steam_id;
+
+  if (!steamId) {
+    return;
+  }
+
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: myUtilityPracticeSessionQuery,
+      variables: { steam_id: steamId, statuses: ["Starting", "Ready"] },
+      fetchPolicy: "network-only",
+    });
+    const live = ((data as any)?.utility_practice_sessions ?? [])[0];
+
+    if (live?.id) {
+      session.value = live;
+      subscribeSession(live.id);
+    }
+  } catch (error) {
+    console.error("[utility] live session restore error:", error);
+  }
+}
+
 async function loadPracticeServers() {
   practiceServersError.value = null;
   try {
@@ -207,6 +240,7 @@ watch(open, (isDialogOpen) => {
     return;
   }
   playbookChoice.value = props.playbookId ?? NO_PLAYBOOK;
+  void restoreLiveSession();
   void loadPracticeServers();
   if (collections.value.length === 0) {
     void loadCollections();

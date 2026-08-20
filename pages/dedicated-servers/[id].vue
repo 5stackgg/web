@@ -190,7 +190,7 @@ const titleClasses =
   </PageTransition>
 
   <PageTransition
-    v-if="server && server.type === 'Ranked' && isAdmin"
+    v-if="server && showsPluginConfig && isAdmin"
     :delay="100"
     class="mt-6"
   >
@@ -318,6 +318,11 @@ import {
   generateSubscription,
 } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
+
+// Literals, not the generated enum: a type added by a migration is absent
+// from ~/generated/zeus until codegen has run against a migrated database.
+const SERVER_TYPE_RANKED = "Ranked";
+const SERVER_TYPE_PRACTICE = "Practice";
 
 export default {
   apollo: {
@@ -457,13 +462,47 @@ export default {
         this.selectedConfigRuntime = runtime;
       },
     },
+    // A practice server runs the utility practice plugin instead of the match
+    // plugin, so it needs its credentials too -- and they go somewhere else.
+    showsPluginConfig() {
+      return (
+        this.server?.type === SERVER_TYPE_RANKED ||
+        this.server?.type === SERVER_TYPE_PRACTICE
+      );
+    },
+    isPracticeServer() {
+      return this.server?.type === SERVER_TYPE_PRACTICE;
+    },
     configPath() {
-      if (this.configRuntime === "counterstrikesharp") {
+      const runtime =
+        this.configRuntime === "counterstrikesharp"
+          ? "counterstrikesharp"
+          : "swiftlys2";
+
+      if (this.isPracticeServer) {
+        return `addons/${runtime}/configs/utility-practice.json`;
+      }
+
+      if (runtime === "counterstrikesharp") {
         return "addons/counterstrikesharp/configs/plugins/FiveStack/FiveStack.json";
       }
       return "addons/swiftlys2/configs/plugins/FiveStack/config.jsonc";
     },
     config() {
+      if (this.isPracticeServer) {
+        // Flat, and the same file for both runtimes -- the practice plugin
+        // reads one shape. Env vars of the same names win over it.
+        return JSON.stringify(
+          {
+            utility_url: `https://${useRuntimeConfig().public.apiDomain}`,
+            server_id: this.server.id,
+            server_api_password: this.apiPassword,
+          },
+          null,
+          2,
+        );
+      }
+
       const settings = {
         WS_DOMAIN: `wss://${useRuntimeConfig().public.wsDomain}`,
         API_DOMAIN: `https://${useRuntimeConfig().public.apiDomain}`,

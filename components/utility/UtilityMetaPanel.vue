@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import { Crosshair, Users } from "lucide-vue-next";
+import { Crosshair, PencilLine, Users } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { Badge } from "~/components/ui/badge";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -24,6 +25,7 @@ const props = defineProps<{
   lineups: UtilityLineup[];
   selectedKey: string | null;
   hoveredKey: string | null;
+  canAuthor: boolean;
   threshold: string;
   thresholdOptions: Array<{ key: string; label: string }>;
   types: UtilityType[];
@@ -35,6 +37,7 @@ const emit = defineEmits<{
   (event: "update:hoveredKey", value: string | null): void;
   (event: "update:threshold", value: string): void;
   (event: "open", id: string): void;
+  (event: "write-up", spot: UtilityMetaSpot): void;
 }>();
 
 const thresholdModel = computed<string>({
@@ -277,9 +280,21 @@ watch(visibleSpots, (list) => {
             <TimeAgo :date="row.spot.lastSeenAt" hide-icon />
           </div>
 
-          <p v-if="!row.matched.length" class="text-[0.65rem] text-muted-foreground">
-            {{ $t("pages.utility.meta.no_lineups_description") }}
-          </p>
+          <template v-if="!row.matched.length">
+            <p class="text-[0.65rem] text-muted-foreground">
+              {{ $t("pages.utility.meta.no_lineups_description") }}
+            </p>
+            <Button
+              v-if="canAuthor"
+              size="sm"
+              variant="outline"
+              class="w-full"
+              @click="emit('write-up', row.spot)"
+            >
+              <PencilLine class="mr-1 h-3.5 w-3.5" />
+              {{ $t("pages.utility.meta.write_up") }}
+            </Button>
+          </template>
           <div v-else class="flex flex-col gap-2">
             <UtilityLineupCard
               v-for="lineup of row.matched"

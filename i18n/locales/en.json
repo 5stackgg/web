@@ -4093,7 +4093,8 @@
         "refreshed": "Aggregated",
         "match_gap": "Showing {shown} of {count} saved lineups in this cluster — the rest are outside the lineups loaded here.",
         "summary": "{spots} spots · {throws} throws",
-        "min_throwers": "Min players"
+        "min_throwers": "Min players",
+        "write_up": "Write this up"
       },
       "playbooks": {
         "title": "Playbooks",

@@ -33,6 +33,7 @@ import {
 import type {
   UtilityBoardMarker,
   UtilityBoardSegment,
+  UtilityMetaSpot,
 } from "~/utilities/utilityDisplay";
 import type {
   UtilityLineup,
@@ -44,7 +45,13 @@ import type {
   UtilityVisibility,
 } from "~/types/utility";
 
-const props = defineProps<{ mapName: string }>();
+const props = defineProps<{
+  mapName: string;
+  // A mined cluster the author is writing up. Its aim is a median of what
+  // people actually threw, which is a far better starting point than the
+  // straight eye-to-target line the editor derives from two picks.
+  seed?: UtilityMetaSpot | null;
+}>();
 
 const emit = defineEmits<{
   (event: "created", id: string): void;
@@ -348,6 +355,38 @@ async function save() {
 function coordinate(point: UtilitySightlinePoint) {
   return `${Math.round(point.x)}, ${Math.round(point.y)}, ${Math.round(point.z)}`;
 }
+
+// Applied as a starting point, not a lock: every field stays editable, and the
+// aim is the cluster's own median rather than the two-pick derivation.
+function applySeed(spot: UtilityMetaSpot | null | undefined) {
+  if (!spot) {
+    return;
+  }
+  origin.value = { ...spot.origin };
+  landing.value = spot.landing ? { ...spot.landing } : null;
+  pickMode.value = spot.landing ? "landing" : "origin";
+  originHeightInput.value = String(Math.round(Number(spot.origin.z)));
+  if (spot.landing) {
+    landingHeightInput.value = String(Math.round(Number(spot.landing.z)));
+  }
+  types.value = [spot.utilityType];
+  if (spot.side) {
+    side.value = spot.side;
+  }
+  if (spot.technique) {
+    technique.value = spot.technique;
+  }
+  if (spot.throwStrength) {
+    throwStrength.value = spot.throwStrength;
+  }
+  if (spot.viewYaw !== null || spot.viewPitch !== null) {
+    yawInput.value = Number(spot.viewYaw ?? 0).toFixed(1);
+    pitchInput.value = Number(spot.viewPitch ?? 0).toFixed(1);
+    anglesTouched.value = true;
+  }
+}
+
+watch(() => props.seed, applySeed, { immediate: true });
 
 function reset() {
   clearPoints();

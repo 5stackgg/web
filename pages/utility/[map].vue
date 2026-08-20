@@ -149,6 +149,7 @@ const PLAN_TAB = "plan";
 const listTab = ref<string>(LIST_TAB);
 const selectedMetaKey = ref<string | null>(null);
 const hoveredMetaKey = ref<string | null>(null);
+const createSeed = ref<UtilityMetaSpot | null>(null);
 
 // The board belongs to the page and outlives every tab. A panel that needs to
 // draw on it publishes what it wants drawn instead of mounting a second board.
@@ -262,7 +263,16 @@ watch(listTab, () => {
 
 // Straight into the lineup it just wrote: the author's next question is always
 // whether it looks right on the board.
+// Straight into the author with the cluster's own numbers already in the form:
+// the point of a mined spot nobody has written up is that the hard part --
+// where to stand and where to look -- is already known.
+function writeUpMetaSpot(spot: UtilityMetaSpot) {
+  createSeed.value = spot;
+  listTab.value = CREATE_TAB;
+}
+
 function onLineupCreated(id: string) {
+  createSeed.value = null;
   listTab.value = LIST_TAB;
   void fetchLineups();
   openLineup(id);
@@ -783,6 +793,7 @@ function selectLineup(id: string | null) {
         <UtilityCreatePanel
           v-else-if="showCreatePanel"
           :map-name="mapName"
+          :seed="createSeed"
           @board="(state) => (panelBoard = state)"
           @created="onLineupCreated"
         />
@@ -797,7 +808,9 @@ function selectLineup(id: string | null) {
           :lineups="lineups"
           :types="filters.types"
           :sides="filters.sides"
+          :can-author="!!mySteamId"
           @open="openLineup"
+          @write-up="writeUpMetaSpot"
         />
 
         <!-- Shaped like the cards they stand in for. A short placeholder that

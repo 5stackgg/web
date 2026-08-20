@@ -3,35 +3,93 @@
     <div
       class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
     >
-      <TabsList class="grid w-full grid-cols-4 lg:inline-flex lg:w-auto">
-        <TabsTrigger
-          v-for="config in gameTypeConfigs"
-          :key="config.type"
-          :value="config.type"
+      <div class="flex items-center gap-2">
+        <TabsList class="grid w-full grid-cols-5 lg:inline-flex lg:w-auto">
+          <template v-for="config in gameTypeConfigs" :key="config.type">
+            <!-- The three match types, then a rule, then the two layers that sit
+               on top of whichever one a match got. -->
+            <span
+              v-if="config.type === 'Lan'"
+              aria-hidden="true"
+              class="mx-1 hidden h-4 w-px self-center bg-border lg:block"
+            />
+            <TabsTrigger :value="config.type">
+              {{ formatTypeName(config.type) }}
+            </TabsTrigger>
+          </template>
+        </TabsList>
+
+        <FiveStackToolTip
+          :size="16"
+          side="bottom"
+          align="end"
+          class="mr-1 text-muted-foreground hover:text-foreground"
         >
-          {{ formatTypeName(config.type) }}
-        </TabsTrigger>
-      </TabsList>
+          <div class="max-w-xs space-y-2">
+            <div>
+              <p class="text-sm font-medium">
+                {{ $t("pages.settings.application.game_type_configs.order") }}
+              </p>
+              <p class="text-xs text-muted-foreground">
+                {{
+                  $t("pages.settings.application.game_type_configs.order_hint")
+                }}
+              </p>
+            </div>
+
+            <ol class="space-y-1">
+              <li
+                v-for="(layer, index) in execOrder"
+                :key="layer.key"
+                class="flex items-baseline gap-2 text-xs"
+                :class="
+                  layer.key === activeLayerKey
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground'
+                "
+              >
+                <span class="w-3 shrink-0 tabular-nums opacity-60">
+                  {{ index + 1 }}
+                </span>
+                <span class="font-medium">{{ layer.label }}</span>
+                <span class="ml-auto pl-3 text-right opacity-70">
+                  {{ layer.note }}
+                </span>
+              </li>
+            </ol>
+          </div>
+        </FiveStackToolTip>
+      </div>
 
       <div v-if="activeConfig" class="flex items-center justify-end gap-2">
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              class="text-muted-foreground hover:border-destructive/50 hover:text-destructive"
-            >
-              <Trash2 class="mr-2 h-4 w-4" />
-              {{ $t("game_type_configs.form.revert_to_defaults") }}
-            </Button>
-          </AlertDialogTrigger>
+          <FiveStackToolTip as-child side="bottom" align="end">
+            <template #trigger>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  class="text-muted-foreground hover:border-destructive/50 hover:text-destructive"
+                  :aria-label="resetLabel"
+                >
+                  <RotateCcw class="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+            </template>
+            {{ resetLabel }}
+          </FiveStackToolTip>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>{{
                 $t("game_type_configs.form.revert_confirm.title")
               }}</AlertDialogTitle>
               <AlertDialogDescription>
-                {{ $t("game_type_configs.form.revert_confirm.description") }}
+                {{
+                  isLayer
+                    ? $t("game_type_configs.form.clear_confirm.description")
+                    : $t("game_type_configs.form.revert_confirm.description")
+                }}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -61,14 +119,23 @@
       class="w-full"
     >
       <div
-        class="w-full overflow-hidden rounded-lg border border-border/60"
+        class="relative w-full overflow-hidden rounded-lg border border-border/60"
         style="height: 500px"
       >
         <div
           :ref="setEditorRef"
           :data-type="config.type"
-          class="w-full h-full"
+          class="h-full w-full"
         />
+
+        <!-- Monaco has no placeholder, and Global ships empty, so without this
+             the tab is an unexplained void. -->
+        <p
+          v-if="emptyTypes.has(config.type) && config.type === 'Global'"
+          class="pointer-events-none absolute left-[4.5rem] top-2.5 select-none text-sm text-muted-foreground/60"
+        >
+          {{ $t("pages.settings.application.game_type_configs.placeholder") }}
+        </p>
       </div>
     </TabsContent>
   </Tabs>
@@ -81,8 +148,9 @@ import { e_game_cfg_types_enum } from "~/generated/zeus";
 import type * as Monaco from "monaco-editor";
 import { computed, markRaw } from "vue";
 import { loadMonaco } from "~/utilities/loadMonaco";
-import { Trash2 } from "lucide-vue-next";
+import { RotateCcw } from "lucide-vue-next";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 interface GameTypeConfig {
   type: string;
@@ -98,8 +166,9 @@ const baselineMap = new Map<string, string>();
 
 export default {
   components: {
-    Trash2,
+    RotateCcw,
     SettingsSaveBar,
+    FiveStackToolTip,
   },
   props: {
     gameTypeConfigs: {
@@ -113,11 +182,14 @@ export default {
       const availableTabs = props.gameTypeConfigs
         .map((config) => config.type)
         .filter((type): type is string => Boolean(type));
+      // The match types first, most-used first, then the two layers that are
+      // exec'd on top of whichever one a match got.
       const preferredOrder = [
-        e_game_cfg_types_enum.Lan,
         e_game_cfg_types_enum.Competitive,
         e_game_cfg_types_enum.Wingman,
         e_game_cfg_types_enum.Duel,
+        e_game_cfg_types_enum.Lan,
+        e_game_cfg_types_enum.Global,
       ];
 
       const preferredTabs = preferredOrder.filter((type) =>
@@ -131,8 +203,8 @@ export default {
     });
 
     const defaultTab = computed(() => {
-      if (orderedTabs.value.includes(e_game_cfg_types_enum.Lan)) {
-        return e_game_cfg_types_enum.Lan;
+      if (orderedTabs.value.includes(e_game_cfg_types_enum.Competitive)) {
+        return e_game_cfg_types_enum.Competitive;
       }
 
       return orderedTabs.value[0] ?? "";
@@ -150,6 +222,7 @@ export default {
     return {
       pendingContainers: new Map<string, HTMLElement>(),
       dirtyTypes: new Set<string>(),
+      emptyTypes: new Set<string>(),
     };
   },
   watch: {
@@ -189,6 +262,74 @@ export default {
     isActiveDirty(): boolean {
       return !!this.activeTab && this.dirtyTypes.has(this.activeTab);
     },
+    // Global is the operator's own layer, not a match type, so there is no
+    // shipped file to revert to -- the action empties it instead.
+    isLayer(): boolean {
+      return this.activeTab === e_game_cfg_types_enum.Global;
+    },
+    // Which row of the stack the open tab is, so the order reads as "you are
+    // here" rather than a static list.
+    activeLayerKey(): string {
+      if (this.activeTab === e_game_cfg_types_enum.Global) {
+        return "global";
+      }
+
+      if (this.activeTab === e_game_cfg_types_enum.Lan) {
+        return "lan";
+      }
+
+      return "type";
+    },
+    resetLabel(): string {
+      return this.isLayer
+        ? this.$t("game_type_configs.form.clear_tooltip")
+        : this.$t("game_type_configs.form.reset_tooltip");
+    },
+    execOrder(): Array<{ key: string; label: string; note: string }> {
+      return [
+        {
+          key: "type",
+          label: this.$t(
+            "pages.settings.application.game_type_configs.layers.type",
+          ),
+          note: this.$t(
+            "pages.settings.application.game_type_configs.layers.type_note",
+          ),
+        },
+        {
+          key: "lan",
+          label: "LAN",
+          note: this.$t(
+            "pages.settings.application.game_type_configs.layers.lan_note",
+          ),
+        },
+        {
+          key: "global",
+          label: this.$t("pages.settings.application.game_type_configs.global"),
+          note: this.$t(
+            "pages.settings.application.game_type_configs.layers.global_note",
+          ),
+        },
+        {
+          key: "plugin",
+          label: this.$t(
+            "pages.settings.application.game_type_configs.layers.plugin",
+          ),
+          note: this.$t(
+            "pages.settings.application.game_type_configs.layers.plugin_note",
+          ),
+        },
+        {
+          key: "mode",
+          label: this.$t(
+            "pages.settings.application.game_type_configs.layers.mode",
+          ),
+          note: this.$t(
+            "pages.settings.application.game_type_configs.layers.mode_note",
+          ),
+        },
+      ];
+    },
   },
   beforeUnmount() {
     editorsMap.forEach((editor) => {
@@ -200,6 +341,9 @@ export default {
   methods: {
     formatTypeName(type: string): string {
       const names: Record<string, string> = {
+        [e_game_cfg_types_enum.Global]: this.$t(
+          "pages.settings.application.game_type_configs.global",
+        ),
         [e_game_cfg_types_enum.Lan]: "LAN",
         [e_game_cfg_types_enum.Competitive]: this.$t(
           "pages.leaderboard.match_types.competitive",
@@ -269,16 +413,29 @@ export default {
 
         editorsMap.set(type, editor);
         baselineMap.set(type, config.cfg);
+        this.trackEmpty(type, config.cfg);
         editor.onDidChangeModelContent(() => {
-          if (editor.getValue() !== baselineMap.get(type)) {
+          const value = editor.getValue();
+
+          if (value !== baselineMap.get(type)) {
             this.dirtyTypes.add(type);
           } else {
             this.dirtyTypes.delete(type);
           }
+
+          this.trackEmpty(type, value);
         });
       } finally {
         pendingEditorCreates.delete(type);
       }
+    },
+    trackEmpty(type: string, value: string) {
+      if (value.trim()) {
+        this.emptyTypes.delete(type);
+        return;
+      }
+
+      this.emptyTypes.add(type);
     },
     getEditorValue(type: string): string {
       return editorsMap.get(type)?.getValue() || "";
@@ -359,7 +516,14 @@ export default {
       }
     },
     async getDefaultConfig(type: string): Promise<string> {
-      return await $fetch<string>(`/api/get-default-config?type=${type}`);
+      // Global has no shipped default, so reverting it clears it.
+      if (type === e_game_cfg_types_enum.Global) {
+        return "";
+      }
+
+      return (
+        (await $fetch<string>(`/api/get-default-config?type=${type}`)) ?? ""
+      );
     },
   },
 };

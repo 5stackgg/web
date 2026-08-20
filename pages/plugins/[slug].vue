@@ -39,7 +39,16 @@ import {
   Wrench,
   Loader2,
   RefreshCw,
+  Pencil,
 } from "lucide-vue-next";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 
 definePageMeta({
   middleware: "admin",
@@ -235,7 +244,9 @@ definePageMeta({
                     >1</span
                   >
                   <div class="min-w-0 flex-1 space-y-2">
-                    <p class="text-sm">{{ $t("pages.plugins.panel_step_deploy") }}</p>
+                    <p class="text-sm">
+                      {{ $t("pages.plugins.panel_step_deploy") }}
+                    </p>
                     <pre
                       class="overflow-x-auto rounded-md border bg-muted/40 p-3 font-mono text-sm"
                     ><code>{{ panelInstallCommand }}</code></pre>
@@ -246,7 +257,9 @@ definePageMeta({
                     class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
                     >2</span
                   >
-                  <p class="flex-1 text-sm">{{ $t("pages.plugins.panel_step_dns") }}</p>
+                  <p class="flex-1 text-sm">
+                    {{ $t("pages.plugins.panel_step_dns") }}
+                  </p>
                 </li>
                 <li class="flex gap-3">
                   <span
@@ -273,7 +286,10 @@ definePageMeta({
 
           <Card v-if="isAdministrator && plugin.kind !== 'panel'">
             <CardContent class="space-y-3 p-5 sm:p-5">
-              <p v-if="!availableForRuntime" class="text-sm text-muted-foreground">
+              <p
+                v-if="!availableForRuntime"
+                class="text-sm text-muted-foreground"
+              >
                 {{
                   $t("pages.plugins.unavailable_for_runtime", {
                     runtime: runtimeLabel,
@@ -281,7 +297,10 @@ definePageMeta({
                 }}
               </p>
 
-              <p v-else-if="nodes.length === 0" class="text-sm text-muted-foreground">
+              <p
+                v-else-if="nodes.length === 0"
+                class="text-sm text-muted-foreground"
+              >
                 {{ $t("pages.plugins.no_nodes") }}
               </p>
 
@@ -315,7 +334,10 @@ definePageMeta({
                           rollout.key === 'Failed',
                       }"
                     >
-                      <Check v-if="rollout.key === 'Installed'" class="h-4 w-4" />
+                      <Check
+                        v-if="rollout.key === 'Installed'"
+                        class="h-4 w-4"
+                      />
                       <Loader2
                         v-else-if="rollout.key === 'Installing'"
                         class="h-4 w-4 animate-spin"
@@ -387,33 +409,52 @@ definePageMeta({
                   </p>
                 </div>
 
+                <PluginLoadTargets
+                  v-if="isRequested"
+                  :targets="loadTargets"
+                  :disabled="savingLoadTargets"
+                  @update="setLoadTarget"
+                />
+
+                <!-- The plugin's own cvars. Exec'd after the type and global
+                     configs on servers that load this plugin, and nowhere
+                     else, so a cosmetics plugin's settings never reach a
+                     server that is not running it. -->
                 <div
-                  v-if="installedNodeCount > 0"
-                  class="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3"
+                  v-if="isRequested"
+                  class="space-y-3 rounded-md border border-border/60 bg-muted/20 p-3"
                 >
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="space-y-0.5">
-                      <p class="text-sm font-medium">
-                        {{ $t("pages.plugins.always_load") }}
-                      </p>
-                      <p class="text-xs text-muted-foreground">
-                        {{ $t("pages.plugins.always_load_hint") }}
-                      </p>
-                    </div>
-                    <Switch
-                      :model-value="alwaysLoad"
-                      :disabled="savingAlwaysLoad"
-                      @update:model-value="setAlwaysLoad"
-                    />
+                  <div class="space-y-0.5">
+                    <p class="text-sm font-medium">
+                      {{ $t("pages.plugins.config.title") }}
+                    </p>
+                    <p class="text-xs text-muted-foreground">
+                      {{ $t("pages.plugins.config.hint") }}
+                    </p>
                   </div>
 
-                  <p
-                    v-if="alwaysLoad"
-                    class="flex items-start gap-1.5 text-xs text-[hsl(var(--tac-amber))]"
-                  >
-                    <AlertTriangle class="mt-0.5 h-3 w-3 shrink-0" />
-                    {{ $t("pages.plugins.always_load_ranked") }}
+                  <!-- A preview rather than the editor itself: the rail is
+                       ~20rem wide, which wraps a cvar line three times and
+                       makes the real thing unusable. Editing happens in a
+                       dialog with room for it. -->
+                  <pre
+                    v-if="cfgPreview"
+                    class="max-h-28 overflow-hidden rounded-md border border-border/60 bg-background/60 px-2.5 py-2 font-mono text-[0.7rem] leading-relaxed text-muted-foreground"
+                    >{{ cfgPreview }}</pre>
+                  <p v-else class="text-xs text-muted-foreground">
+                    {{ $t("pages.plugins.config.empty") }}
                   </p>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    class="w-full gap-2"
+                    @click="showCfgDialog = true"
+                  >
+                    <Pencil class="h-3.5 w-3.5" />
+                    {{ $t("pages.plugins.config.edit") }}
+                  </Button>
                 </div>
 
                 <!-- Only for a plugin whose catalog entry says it cannot work
@@ -498,7 +539,6 @@ definePageMeta({
                   </p>
                 </div>
 
-
                 <Collapsible v-model:open="showNodes">
                   <!-- A plain button, not the Button component: that centres its
                        content, which is why the chevron used to sit against the
@@ -539,7 +579,9 @@ definePageMeta({
                     <!-- Per-node rollout, not per-node control: installing states
                          intent for the deployment and each node converges on its own
                          schedule, so this reports where that has got to. -->
-                    <div class="divide-y divide-border/60 rounded-md border border-border/60">
+                    <div
+                      class="divide-y divide-border/60 rounded-md border border-border/60"
+                    >
                       <div
                         v-for="node in nodes"
                         :key="node.id"
@@ -551,10 +593,10 @@ definePageMeta({
                             :class="{
                               'bg-[hsl(var(--tac-amber))]':
                                 nodeState(node.id).key === 'Installed',
-                              'animate-pulse bg-[hsl(var(--tac-amber)/0.6)]':
-                                ['Installing', 'Removing'].includes(
-                                  nodeState(node.id).key,
-                                ),
+                              'animate-pulse bg-[hsl(var(--tac-amber)/0.6)]': [
+                                'Installing',
+                                'Removing',
+                              ].includes(nodeState(node.id).key),
                               'bg-muted-foreground/60':
                                 nodeState(node.id).key === 'Pending',
                               'bg-destructive':
@@ -573,10 +615,10 @@ definePageMeta({
                             :class="{
                               'text-muted-foreground':
                                 nodeState(node.id).key === 'Installed',
-                              'text-[hsl(var(--tac-amber))]':
-                                ['Installing', 'Removing'].includes(
-                                  nodeState(node.id).key,
-                                ),
+                              'text-[hsl(var(--tac-amber))]': [
+                                'Installing',
+                                'Removing',
+                              ].includes(nodeState(node.id).key),
                               'text-destructive':
                                 nodeState(node.id).key === 'Failed',
                               'text-muted-foreground/50': [
@@ -663,7 +705,9 @@ definePageMeta({
 
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2">
-                  <span class="truncate text-sm font-medium">{{ paired.name }}</span>
+                  <span class="truncate text-sm font-medium">{{
+                    paired.name
+                  }}</span>
                 </div>
                 <p class="line-clamp-2 text-xs text-muted-foreground">
                   {{ paired.description }}
@@ -690,13 +734,13 @@ definePageMeta({
             </span>
           </div>
 
-              <Card v-if="versions.length > 0">
-                <CardHeader>
-                  <CardTitle class="text-base">
+          <Card v-if="versions.length > 0">
+            <CardHeader>
+              <CardTitle class="text-base">
                 {{ $t("pages.plugins.releases") }}
               </CardTitle>
             </CardHeader>
-                <CardContent>
+            <CardContent>
               <div
                 v-for="version in latestVersions"
                 :key="`${version.runtime}-${version.version}`"
@@ -717,34 +761,86 @@ definePageMeta({
                 </span>
               </div>
             </CardContent>
-              </Card>
+          </Card>
         </aside>
       </div>
-    <AlertDialog v-model:open="confirmRemove">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {{ $t("pages.plugins.remove_confirm_title") }}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {{
-              $t("pages.plugins.remove_confirm_description", {
-                modes: modesUsing.map((mode) => mode.name).join(", "),
-              })
-            }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            @click="removePlugin(true)"
+      <Dialog v-model:open="showCfgDialog">
+        <DialogContent class="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              {{ $t("pages.plugins.config.title") }} &mdash; {{ plugin.name }}
+            </DialogTitle>
+            <DialogDescription>
+              {{ $t("pages.plugins.config.hint") }}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div
+            class="w-full overflow-hidden rounded-md border border-border/60"
+            style="height: 420px"
           >
-            {{ $t("pages.plugins.remove_confirm_action") }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            <div ref="cfgEditor" class="h-full w-full" />
+          </div>
+
+          <DialogFooter class="gap-2 sm:justify-between">
+            <Button
+              v-if="(plugin.cvars ?? []).length > 0"
+              type="button"
+              variant="ghost"
+              size="sm"
+              class="sm:mr-auto"
+              @click="insertCvarTemplate"
+            >
+              {{ $t("pages.plugins.config.insert_template") }}
+            </Button>
+
+            <div class="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                @click="cancelCfg"
+              >
+                {{ $t("common.cancel") }}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                :disabled="!cfgDirty || savingCfg"
+                @click="saveCfg"
+              >
+                {{ $t("common.save") }}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog v-model:open="confirmRemove">
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {{ $t("pages.plugins.remove_confirm_title") }}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {{
+                $t("pages.plugins.remove_confirm_description", {
+                  modes: modesUsing.map((mode) => mode.name).join(", "),
+                })
+              }}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+            <AlertDialogAction
+              class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              @click="removePlugin(true)"
+            >
+              {{ $t("pages.plugins.remove_confirm_action") }}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   </PageTransition>
 </template>
@@ -756,12 +852,23 @@ import { pluginAuthorUrl } from "~/utilities/pluginAuthor";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import { markRaw } from "vue";
+import type * as Monaco from "monaco-editor";
+import { loadMonaco } from "~/utilities/loadMonaco";
+import PluginLoadTargets from "~/components/game-plugins/PluginLoadTargets.vue";
+import type { PluginLoadTargets as LoadTargets } from "~/components/game-plugins/PluginLoadTargets.vue";
 
 const ALL_NODES = "__all__";
 
+let monaco: typeof Monaco | null = null;
+
 export default {
+  components: {
+    PluginLoadTargets,
+  },
   data() {
     return {
+      cfgEditor: null as Monaco.editor.IStandaloneCodeEditor | null,
       busy: null as string | null,
       showNodes: false,
       ALL_NODES,
@@ -773,8 +880,17 @@ export default {
       // Keyed by runtime so flipping back to a tab already read is instant
       // rather than a second round trip to GitHub.
       readmes: {} as Record<string, Record<string, any> | null>,
-      alwaysLoad: false,
-      savingAlwaysLoad: false,
+      loadTargets: {
+        load_ranked: false,
+        load_tournaments: false,
+        load_custom: false,
+      } as LoadTargets,
+      savingLoadTargets: false,
+      showCfgDialog: false,
+      pluginCfg: "",
+      cfgBaseline: "",
+      cfgDirty: false,
+      savingCfg: false,
       disableGuidelines: false,
       savingGuidelines: false,
       removingFromCatalog: false,
@@ -796,8 +912,11 @@ export default {
             {},
             {
               plugin_slug: true,
-              always_load: true,
               disable_server_guidelines: true,
+              cfg: true,
+              load_ranked: true,
+              load_tournaments: true,
+              load_custom: true,
               version: true,
               channel: true,
             },
@@ -888,6 +1007,7 @@ export default {
             requires_service: true,
             requires_server_guidelines_disabled: true,
             config_path: true,
+            cvars: true,
             panel: true,
             pairs_with: true,
             versions: [
@@ -955,16 +1075,50 @@ export default {
         void this.loadReadme();
       },
     },
+    showCfgDialog(open: boolean) {
+      if (open) {
+        void this.$nextTick(() => this.mountCfgEditor());
+        return;
+      }
+
+      // Disposed on close rather than reused: the dialog unmounts its content,
+      // so the container the editor was attached to is gone.
+      this.cfgEditor?.dispose();
+      this.cfgEditor = null;
+
+      // Escape, the X and an overlay click all close without going through
+      // cancelCfg. Leaving cfgDirty set there strands the subscription watcher
+      // off for the life of the page and shows the draft as if it were saved.
+      if (this.cfgDirty) {
+        this.pluginCfg = this.cfgBaseline;
+        this.cfgDirty = false;
+      }
+    },
     desired: {
       immediate: true,
       handler(rows: Array<Record<string, any>>) {
         const row = (rows ?? []).find(
           (entry) => entry.plugin_slug === this.$route.params.slug,
         );
-        this.alwaysLoad = Boolean(row?.always_load);
         this.disableGuidelines = Boolean(row?.disable_server_guidelines);
+        this.loadTargets = {
+          load_ranked: Boolean(row?.load_ranked),
+          load_tournaments: Boolean(row?.load_tournaments),
+          load_custom: Boolean(row?.load_custom),
+        };
+
+        // Only adopt the stored text while there is nothing unsaved, or a live
+        // subscription tick would wipe what is being typed.
+        if (!this.cfgDirty) {
+          this.cfgBaseline = row?.cfg ?? "";
+          this.setCfgValue(this.cfgBaseline);
+        }
       },
     },
+  },
+  beforeUnmount() {
+    this.cfgEditor?.dispose();
+    this.cfgEditor = null;
   },
   methods: {
     // The node reports where the files actually landed; the catalog-derived
@@ -1019,9 +1173,86 @@ export default {
         this.readmeLoading = false;
       }
     },
-    async setAlwaysLoad(value: boolean) {
-      this.savingAlwaysLoad = true;
-      this.alwaysLoad = value;
+    setCfgValue(value: string) {
+      this.pluginCfg = value;
+
+      if (this.cfgEditor && this.cfgEditor.getValue() !== value) {
+        this.cfgEditor.setValue(value);
+      }
+    },
+    cancelCfg() {
+      this.setCfgValue(this.cfgBaseline);
+      this.cfgDirty = false;
+      this.showCfgDialog = false;
+    },
+    async mountCfgEditor() {
+      const el = this.$refs.cfgEditor as HTMLElement | undefined;
+
+      if (!el || this.cfgEditor) {
+        return;
+      }
+
+      monaco ??= await loadMonaco();
+
+      // The ref can go away, or be replaced by a reopen, while monaco loads.
+      // Identity rather than truthiness: a second call that captured a newer
+      // element would otherwise let this one build an editor on a detached node
+      // that nothing ever disposes.
+      if (this.cfgEditor || this.$refs.cfgEditor !== el) {
+        return;
+      }
+
+      const editor = monaco.editor.create(el, {
+        value: this.pluginCfg,
+        language: "plaintext",
+        theme: "vs-dark",
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        fontSize: 13,
+        tabSize: 2,
+        wordWrap: "on",
+      });
+
+      editor.onDidChangeModelContent(() => {
+        this.pluginCfg = editor.getValue();
+        this.cfgDirty = this.pluginCfg !== this.cfgBaseline;
+      });
+
+      this.cfgEditor = markRaw(editor);
+    },
+    insertCvarTemplate() {
+      const cvars: Array<string> = this.plugin?.cvars ?? [];
+
+      if (cvars.length === 0) {
+        return;
+      }
+
+      const existing = new Set(
+        this.pluginCfg
+          .split("\n")
+          .map((line: string) => line.trim().split(/\s+/)[0])
+          .filter(Boolean),
+      );
+
+      const missing = cvars.filter((cvar) => !existing.has(cvar));
+
+      if (missing.length === 0) {
+        return;
+      }
+
+      const block = missing.map((cvar) => `${cvar} `).join("\n");
+      const next = this.pluginCfg.trim()
+        ? `${this.pluginCfg.replace(/\s+$/, "")}\n${block}\n`
+        : `${block}\n`;
+
+      this.setCfgValue(next);
+      this.cfgDirty = next !== this.cfgBaseline;
+    },
+    async saveCfg() {
+      this.savingCfg = true;
+
+      const value = this.pluginCfg;
 
       try {
         await (this as any).$apollo.mutate({
@@ -1029,17 +1260,47 @@ export default {
             update_game_plugin_installs_by_pk: [
               {
                 pk_columns: { plugin_slug: this.$route.params.slug as string },
-                _set: { always_load: value },
+                _set: { cfg: value },
+              },
+              { plugin_slug: true },
+            ],
+          }),
+        });
+
+        this.cfgBaseline = value;
+        this.cfgDirty = false;
+        this.showCfgDialog = false;
+
+        toast({ title: this.$t("pages.plugins.config.saved") });
+      } catch (error) {
+        toast({ title: (error as Error).message, variant: "destructive" });
+      } finally {
+        this.savingCfg = false;
+      }
+    },
+    async setLoadTarget(field: keyof LoadTargets, value: boolean) {
+      const previous = this.loadTargets[field];
+
+      this.loadTargets = { ...this.loadTargets, [field]: value };
+      this.savingLoadTargets = true;
+
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            update_game_plugin_installs_by_pk: [
+              {
+                pk_columns: { plugin_slug: this.$route.params.slug as string },
+                _set: { [field]: value },
               },
               { plugin_slug: true },
             ],
           }),
         });
       } catch (error) {
-        this.alwaysLoad = !value;
+        this.loadTargets = { ...this.loadTargets, [field]: previous };
         toast({ title: (error as Error).message, variant: "destructive" });
       } finally {
-        this.savingAlwaysLoad = false;
+        this.savingLoadTargets = false;
       }
     },
     async removeFromCatalog() {
@@ -1211,6 +1472,16 @@ export default {
     isAdministrator() {
       return useAuthStore().isRoleAbove("administrator");
     },
+    // Comment lines are dropped from the preview: the rail has room for about
+    // four, and the cvars are what an operator is checking for at a glance.
+    cfgPreview(): string {
+      return this.pluginCfg
+        .split("\n")
+        .map((line: string) => line.trim())
+        .filter((line: string) => line && !line.startsWith("//"))
+        .slice(0, 4)
+        .join("\n");
+    },
     // Matched on the /apps/<slug> route the plugin's own manifest claims: the
     // URL an operator registered is their own hosting and matches nothing here.
     installedPage(): Record<string, any> | null {
@@ -1375,9 +1646,8 @@ export default {
 
       return ["fivestack_ranks_matches", "fivestack_ranks_tournaments"].some(
         (name) =>
-          settings.find(
-            (setting: Record<string, any>) => setting.name === name,
-          )?.value === "true",
+          settings.find((setting: Record<string, any>) => setting.name === name)
+            ?.value === "true",
       );
     },
     canRemoveFromCatalog(): boolean {
@@ -1399,9 +1669,7 @@ export default {
     // A plugin with no release for the runtime this deployment runs cannot be
     // installed here at all, so the node list is replaced with the reason.
     availableForRuntime() {
-      return this.versions.some(
-        (version) => version.runtime === this.runtime,
-      );
+      return this.versions.some((version) => version.runtime === this.runtime);
     },
   },
 };

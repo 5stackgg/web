@@ -82,7 +82,9 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
     <div class="space-y-3 rounded-md border p-4">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <p class="font-medium">{{ $t("game_modes.form.competitive_safe") }}</p>
+          <p class="font-medium">
+            {{ $t("game_modes.form.competitive_safe") }}
+          </p>
           <p class="text-sm text-muted-foreground">
             {{ $t("game_modes.form.competitive_safe_description") }}
           </p>
@@ -95,7 +97,6 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
           </FormItem>
         </FormField>
       </div>
-
     </div>
 
     <!-- Compatibility is derived from the plugins below, not declared here: a
@@ -123,7 +124,10 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         </div>
       </div>
 
-      <p v-if="selectablePlugins.length === 0" class="text-sm text-muted-foreground">
+      <p
+        v-if="selectablePlugins.length === 0"
+        class="text-sm text-muted-foreground"
+      >
         {{ $t("game_modes.form.no_plugins") }}
       </p>
 
@@ -232,7 +236,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {{ $t("game_modes.form.delete_confirm_title", { name: gameMode?.name }) }}
+            {{
+              $t("game_modes.form.delete_confirm_title", {
+                name: gameMode?.name,
+              })
+            }}
           </AlertDialogTitle>
           <AlertDialogDescription>
             {{ $t("game_modes.form.delete_confirm_description") }}
@@ -273,7 +281,7 @@ export default {
       confirmDelete: false,
       selected: [] as Array<string>,
       availablePlugins: [] as Array<Record<string, any>>,
-      alwaysLoad: [] as Array<string>,
+      loadsEverywhere: [] as Array<string>,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -295,14 +303,32 @@ export default {
     };
   },
   apollo: {
-    alwaysLoad: {
+    loadsEverywhere: {
       query: typedGql("query")({
-        game_plugin_installs: [{}, { plugin_slug: true, always_load: true }],
+        game_plugin_installs: [
+          {},
+          {
+            plugin_slug: true,
+            load_ranked: true,
+            load_tournaments: true,
+            load_custom: true,
+          },
+        ],
       }),
       update(data: { game_plugin_installs: Array<Record<string, any>> }) {
-        return data.game_plugin_installs
-          .filter((entry) => entry.always_load)
-          .map((entry) => entry.plugin_slug);
+        return (
+          data.game_plugin_installs
+            // Only a plugin that loads on all three is already everywhere. One
+            // set to load on customs alone is still a real choice for a mode a
+            // tournament might run.
+            .filter(
+              (entry) =>
+                entry.load_ranked &&
+                entry.load_tournaments &&
+                entry.load_custom,
+            )
+            .map((entry) => entry.plugin_slug)
+        );
       },
     },
     availablePlugins: {
@@ -361,11 +387,13 @@ export default {
     usedByMatches(): boolean {
       return (this.gameMode?.match_options?.length ?? 0) > 0;
     },
-    // A plugin set to load on every match is already on every server. Listing
-    // it here reads as a choice, and unticking it would not stop it loading.
+    // A plugin set to load on all three kinds of match is already on every
+    // server. Listing it here reads as a choice, and unticking it would not
+    // stop it loading.
     selectablePlugins(): Array<Record<string, any>> {
       return this.availablePlugins.filter(
-        (plugin: Record<string, any>) => !this.alwaysLoad.includes(plugin.slug),
+        (plugin: Record<string, any>) =>
+          !this.loadsEverywhere.includes(plugin.slug),
       );
     },
     supportedRuntimes(): Array<string> {
@@ -531,17 +559,12 @@ export default {
           await this.setArchived(true);
           toast({
             title: this.$t("game_modes.form.archived") as string,
-            description: this.$t(
-              "game_modes.form.archived_instead",
-            ) as string,
+            description: this.$t("game_modes.form.archived_instead") as string,
           });
         } else {
           await (this as any).$apollo.mutate({
             mutation: generateMutation({
-              delete_game_modes_by_pk: [
-                { id: this.gameMode.id },
-                { id: true },
-              ],
+              delete_game_modes_by_pk: [{ id: this.gameMode.id }, { id: true }],
             }),
           });
           toast({ title: this.$t("game_modes.form.deleted") as string });

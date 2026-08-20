@@ -47,10 +47,11 @@ export default defineComponent<ComponentData>({
           data: { match_type_cfgs: GameTypeConfig[] };
         }) {
           const gameConfigTypes = [
-            e_game_cfg_types_enum.Lan,
             e_game_cfg_types_enum.Competitive,
             e_game_cfg_types_enum.Wingman,
             e_game_cfg_types_enum.Duel,
+            e_game_cfg_types_enum.Lan,
+            e_game_cfg_types_enum.Global,
           ];
 
           for (const type of gameConfigTypes) {
@@ -80,8 +81,16 @@ export default defineComponent<ComponentData>({
     };
   },
   methods: {
-    async getDefaultConfigs(type: e_match_types_enum) {
-      return await $fetch(`/api/get-default-config?type=${type}`);
+    async getDefaultConfigs(type: e_game_cfg_types_enum) {
+      // Global is the operator's own layer -- there is no shipped file to
+      // fetch, and an empty body would come back as null and reach Monaco.
+      if (type === e_game_cfg_types_enum.Global) {
+        return "";
+      }
+
+      return (
+        (await $fetch<string>(`/api/get-default-config?type=${type}`)) ?? ""
+      );
     },
     handleUpdated() {
       // Refresh the data - apollo subscription will handle this automatically

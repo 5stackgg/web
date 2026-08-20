@@ -92,7 +92,7 @@ const navBadgeDotClasses =
 const navContentClasses =
   "relative mt-0 min-w-[360px] max-w-[95vw] overflow-hidden border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
 const playContentClasses = `${navContentClasses} min-w-[500px]`;
-const communityContentClasses = `${navContentClasses} min-w-[560px]`;
+const communityContentClasses = `${navContentClasses} min-w-[780px]`;
 
 const navGroupLabelClasses =
   "mb-2 inline-flex list-none items-center gap-2 px-[0.2rem] font-sans text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-[hsl(var(--topnav-foreground)/0.45)]";
@@ -480,26 +480,6 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li>
-                        <NavigationMenuLink as-child>
-                          <NuxtLink
-                            to="/utility"
-                            :class="[navItemClasses, navItemStackedClasses]"
-                          >
-                            <span :class="navItemChevronClasses">◢</span>
-                            <span :class="navItemContentClasses">
-                              <span :class="navItemLabelClasses">
-                                {{ $t("layouts.top_nav.community.utility.title") }}
-                              </span>
-                              <span :class="navItemSubClasses">
-                                {{
-                                  $t("layouts.top_nav.community.utility.subtitle")
-                                }}
-                              </span>
-                            </span>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                      </li>
                       <li v-if="eventsEnabled">
                         <NavigationMenuLink as-child>
                           <NuxtLink
@@ -514,32 +494,6 @@ const loginArrowClasses =
                               <span :class="navItemSubClasses">
                                 {{
                                   $t("layouts.top_nav.community.events.subtitle")
-                                }}
-                              </span>
-                            </span>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink as-child>
-                          <NuxtLink
-                            to="/highlights"
-                            :class="[navItemClasses, navItemStackedClasses]"
-                          >
-                            <span :class="navItemChevronClasses">◢</span>
-                            <span :class="navItemContentClasses">
-                              <span :class="navItemLabelClasses">
-                                {{
-                                  $t(
-                                    "layouts.top_nav.community.highlights.title",
-                                  )
-                                }}
-                              </span>
-                              <span :class="navItemSubClasses">
-                                {{
-                                  $t(
-                                    "layouts.top_nav.community.highlights.subtitle",
-                                  )
                                 }}
                               </span>
                             </span>
@@ -596,6 +550,61 @@ const loginArrowClasses =
                               </span>
                             </span>
                           </a>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="min-w-[160px] flex-1">
+                    <div :class="navGroupLabelClasses">
+                      <span :class="navGroupLabelTickClasses"></span>
+                      {{ $t("layouts.top_nav.community.library.title") }}
+                    </div>
+                    <ul class="flex flex-col gap-1">
+                      <li>
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/utility"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.community.utility.title") }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t("layouts.top_nav.community.utility.subtitle")
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/highlights"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{
+                                  $t(
+                                    "layouts.top_nav.community.highlights.title",
+                                  )
+                                }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t(
+                                    "layouts.top_nav.community.highlights.subtitle",
+                                  )
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
                         </NavigationMenuLink>
                       </li>
                     </ul>

@@ -4796,6 +4796,9 @@
           "title": "News",
           "subtitle": "{brand} news"
         },
+        "library": {
+          "title": "LIBRARY"
+        },
         "utility": {
           "title": "Utility Library",
           "subtitle": "Smokes, flashes and molotovs by map"

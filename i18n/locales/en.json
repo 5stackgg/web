@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Game Type Configs"
+          "title": "Game Type Configs",
+          "global": "Global",
+          "placeholder": "Empty. Console variables added here apply to every match.",
+          "order": "Exec order",
+          "order_hint": "Each layer beats the one above it.",
+          "layers": {
+            "type": "Match type",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "LAN regions only",
+            "global_note": "every match",
+            "plugin": "Plugin cvars",
+            "plugin_note": "per loaded plugin",
+            "mode": "Game mode",
+            "mode_note": "wins"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "About",
       "no_readme": "This plugin has no README in its repository.",
       "readme_loading": "Loading README…",
-      "always_load": "Load on every match",
-      "always_load_hint": "Load this without a game mode selecting it.",
-      "always_load_ranked": "Also loads on ranked and matchmaking matches.",
       "configure": "Configuration",
       "configure_hint": "Written by the plugin on first load, so it appears after a server has run this mode once.",
       "configure_open": "Open files",
@@ -3698,7 +3709,25 @@
         "remove_hint": "Uninstall it from your nodes before taking it out of the catalog.",
         "removed": "Removed from the catalog"
       },
-      "retry": "Retry"
+      "retry": "Retry",
+      "config": {
+        "title": "Configuration",
+        "hint": "Console variables for this plugin. Applied after the type and global configs, on servers that load it.",
+        "insert_template": "Insert the plugin's cvars",
+        "saved": "Configuration saved",
+        "edit": "Edit configuration",
+        "empty": "No console variables set."
+      },
+      "load": {
+        "title": "Load without a game mode",
+        "description": "Pick which matches load this plugin on their own. A game mode that selects it loads it either way.",
+        "ranked": "Ranked Matches",
+        "ranked_hint": "Anything that counts toward ranking — the queue or a draft lobby alike.",
+        "tournaments": "Tournament Matches",
+        "tournaments_hint": "Matches played as part of a tournament bracket, ranked or not.",
+        "custom": "Custom Matches",
+        "custom_hint": "Everything else: matches that count toward nothing."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6757,12 @@
         "create": "Error creating config",
         "update": "Error updating config",
         "revert": "Error reverting config to defaults"
-      }
+      },
+      "clear_confirm": {
+        "description": "This empties the Global config. Nothing is restored — it ships empty."
+      },
+      "reset_tooltip": "Reset this config to the shipped defaults",
+      "clear_tooltip": "Clear this config"
     }
   },
   "streams": {

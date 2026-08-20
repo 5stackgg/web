@@ -6156,7 +6156,10 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"game_plugin_installs_bool_exp",
 		_not:"game_plugin_installs_bool_exp",
 		_or:"game_plugin_installs_bool_exp",
-		always_load:"Boolean_comparison_exp",
+		cfg:"String_comparison_exp",
+		load_custom:"Boolean_comparison_exp",
+		load_ranked:"Boolean_comparison_exp",
+		load_tournaments:"Boolean_comparison_exp",
 		channel:"e_game_plugin_channels_enum_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		disable_server_guidelines:"Boolean_comparison_exp",
@@ -6179,7 +6182,10 @@ export const AllTypesProps: Record<string,any> = {
 		where:"game_plugin_installs_bool_exp"
 	},
 	game_plugin_installs_order_by:{
-		always_load:"order_by",
+		cfg:"order_by",
+		load_custom:"order_by",
+		load_ranked:"order_by",
+		load_tournaments:"order_by",
 		channel:"order_by",
 		created_at:"order_by",
 		disable_server_guidelines:"order_by",
@@ -43195,7 +43201,10 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"game_modes"
 	},
 	game_plugin_installs:{
-		always_load:"Boolean",
+		cfg:"String",
+		load_custom:"Boolean",
+		load_ranked:"Boolean",
+		load_tournaments:"Boolean",
 		channel:"e_game_plugin_channels_enum",
 		created_at:"timestamptz",
 		disable_server_guidelines:"Boolean",
@@ -43215,12 +43224,14 @@ export const ReturnTypes: Record<string,any> = {
 		min:"game_plugin_installs_min_fields"
 	},
 	game_plugin_installs_max_fields:{
+		cfg:"String",
 		created_at:"timestamptz",
 		plugin_slug:"String",
 		updated_at:"timestamptz",
 		version:"String"
 	},
 	game_plugin_installs_min_fields:{
+		cfg:"String",
 		created_at:"timestamptz",
 		plugin_slug:"String",
 		updated_at:"timestamptz",

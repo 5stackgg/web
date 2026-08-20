@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Config per tipo di gioco"
+          "title": "Config per tipo di gioco",
+          "global": "Globale",
+          "placeholder": "Vuoto. Le variabili di console aggiunte qui si applicano a ogni partita.",
+          "order": "Ordine di esecuzione",
+          "order_hint": "Ogni livello prevale su quello sopra.",
+          "layers": {
+            "type": "Tipo di partita",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "solo regioni LAN",
+            "global_note": "ogni partita",
+            "plugin": "Cvar del plugin",
+            "plugin_note": "per plugin caricato",
+            "mode": "Modalità di gioco",
+            "mode_note": "prevale"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "Info",
       "no_readme": "Questo plugin non ha un README nel suo repository.",
       "readme_loading": "Caricamento del README…",
-      "always_load": "Carica in ogni partita",
-      "always_load_hint": "Caricalo senza che una modalità di gioco lo selezioni.",
-      "always_load_ranked": "Si carica anche nelle partite classificate e di matchmaking.",
       "configure": "Configurazione",
       "configure_hint": "Scritta dal plugin al primo caricamento, quindi compare dopo che un server ha girato una volta con questa modalità.",
       "configure_open": "Apri i file",
@@ -3670,6 +3681,11 @@
         "already_off": "Già disattivate su questo deployment: 5stack Ranks disattiva le server guidelines di Valve per mostrare i rank in gioco, e il rischio che comporta ricade sul tuo account Steam anziché su un singolo server.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Aggiorna automaticamente",
+        "hint": "Installa le nuove release non appena vengono pubblicate. Disattivalo per restare sulla versione che i tuoi nodi eseguono ora.",
+        "pinned": "Bloccato su {version}. Le nuove release genereranno una notifica invece di essere installate."
+      },
       "custom": {
         "add": "Aggiungi un plugin",
         "badge": "Personalizzato",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Disinstallalo dai tuoi nodi prima di toglierlo dal catalogo.",
         "removed": "Rimosso dal catalogo"
       },
-      "retry": "Riprova"
+      "retry": "Riprova",
+      "config": {
+        "title": "Configurazione",
+        "hint": "Variabili di console per questo plugin. Applicate dopo le configurazioni di tipo e globale, sui server che lo caricano.",
+        "insert_template": "Inserisci le cvar del plugin",
+        "saved": "Configurazione salvata",
+        "edit": "Modifica configurazione",
+        "empty": "Nessuna variabile di console impostata."
+      },
+      "load": {
+        "title": "Carica senza una modalità di gioco",
+        "description": "Scegli quali partite caricano questo plugin da sole. Una modalità di gioco che lo seleziona lo carica comunque.",
+        "ranked": "Partite competitive",
+        "ranked_hint": "Tutto ciò che conta per la classifica: la coda come una lobby di draft.",
+        "tournaments": "Partite di torneo",
+        "tournaments_hint": "Partite giocate all'interno di un tabellone di torneo, competitive o meno.",
+        "custom": "Partite personalizzate",
+        "custom_hint": "Tutto il resto: partite che non contano per nulla."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Errore durante la creazione della config",
         "update": "Errore durante l'aggiornamento della config",
         "revert": "Errore durante il ripristino della config"
-      }
+      },
+      "clear_confirm": {
+        "description": "Questo svuota la configurazione globale. Non viene ripristinato nulla: è vuota di serie."
+      },
+      "reset_tooltip": "Ripristina questa configurazione ai valori predefiniti di serie",
+      "clear_tooltip": "Svuota questa configurazione"
     }
   },
   "streams": {

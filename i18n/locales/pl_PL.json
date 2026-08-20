@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Konfiguracje typów gry"
+          "title": "Konfiguracje typów gry",
+          "global": "Globalna",
+          "placeholder": "Pusto. Zmienne konsoli dodane tutaj obowiązują w każdym meczu.",
+          "order": "Kolejność wykonania",
+          "order_hint": "Każda warstwa ma pierwszeństwo przed poprzednią.",
+          "layers": {
+            "type": "Typ meczu",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "tylko regiony LAN",
+            "global_note": "każdy mecz",
+            "plugin": "Cvary wtyczki",
+            "plugin_note": "na wczytaną wtyczkę",
+            "mode": "Tryb gry",
+            "mode_note": "decyduje"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "O wtyczce",
       "no_readme": "Ta wtyczka nie ma pliku README w swoim repozytorium.",
       "readme_loading": "Wczytywanie pliku README…",
-      "always_load": "Wczytuj w każdym meczu",
-      "always_load_hint": "Wczytuj ją bez wybierania przez tryb gry.",
-      "always_load_ranked": "Wczytuje się także w meczach rankingowych i matchmakingu.",
       "configure": "Konfiguracja",
       "configure_hint": "Zapisywana przez wtyczkę przy pierwszym wczytaniu, więc pojawia się po tym, jak serwer raz uruchomi ten tryb.",
       "configure_open": "Otwórz pliki",
@@ -3670,6 +3681,11 @@
         "already_off": "Już wyłączone w tym wdrożeniu: 5stack Ranks wyłącza wytyczne serwerowe Valve, żeby pokazywać rangi w grze, a związane z tym ryzyko dotyczy twojego konta Steam, a nie pojedynczego serwera.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Aktualizuj automatycznie",
+        "hint": "Instaluje nowe wydania zaraz po ich opublikowaniu. Wyłącz, aby pozostać przy wersji, którą twoje węzły uruchamiają teraz.",
+        "pinned": "Przypięto do {version}. Nowe wydania będą zgłaszane powiadomieniem zamiast instalowane."
+      },
       "custom": {
         "add": "Dodaj wtyczkę",
         "badge": "Własna",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Odinstaluj ją ze swoich węzłów, zanim usuniesz ją z katalogu.",
         "removed": "Usunięto z katalogu"
       },
-      "retry": "Spróbuj ponownie"
+      "retry": "Spróbuj ponownie",
+      "config": {
+        "title": "Konfiguracja",
+        "hint": "Zmienne konsoli dla tej wtyczki. Stosowane po konfiguracji typu i globalnej, na serwerach, które ją wczytują.",
+        "insert_template": "Wstaw cvary wtyczki",
+        "saved": "Zapisano konfigurację",
+        "edit": "Edytuj konfigurację",
+        "empty": "Nie ustawiono żadnych zmiennych konsoli."
+      },
+      "load": {
+        "title": "Wczytuj bez trybu gry",
+        "description": "Wybierz, które mecze wczytują tę wtyczkę samodzielnie. Tryb gry, który ją wybiera, wczytuje ją i tak.",
+        "ranked": "Mecze rankingowe",
+        "ranked_hint": "Wszystko, co liczy się do rankingu — zarówno kolejka, jak i lobby draftu.",
+        "tournaments": "Mecze turniejowe",
+        "tournaments_hint": "Mecze rozgrywane w drabince turniejowej, rankingowe lub nie.",
+        "custom": "Mecze niestandardowe",
+        "custom_hint": "Cała reszta: mecze, które nie liczą się do niczego."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Błąd podczas tworzenia configu",
         "update": "Błąd podczas aktualizacji configu",
         "revert": "Błąd podczas przywracania configu do wartości domyślnych"
-      }
+      },
+      "clear_confirm": {
+        "description": "To opróżni konfigurację globalną. Nic nie zostanie przywrócone — jest dostarczana pusta."
+      },
+      "reset_tooltip": "Przywróć tę konfigurację do domyślnych ustawień fabrycznych",
+      "clear_tooltip": "Wyczyść tę konfigurację"
     }
   },
   "streams": {

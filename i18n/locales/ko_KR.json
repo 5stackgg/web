@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "게임 타입 설정"
+          "title": "게임 타입 설정",
+          "global": "전역",
+          "placeholder": "비어 있습니다. 여기에 추가한 콘솔 변수는 모든 경기에 적용됩니다.",
+          "order": "실행 순서",
+          "order_hint": "아래 계층이 위 계층보다 우선합니다.",
+          "layers": {
+            "type": "경기 유형",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "LAN 지역만",
+            "global_note": "모든 경기",
+            "plugin": "플러그인 cvar",
+            "plugin_note": "불러온 플러그인마다",
+            "mode": "게임 모드",
+            "mode_note": "최우선"
+          }
         },
         "streaming": {
           "title": "스트리밍",
@@ -3637,9 +3651,6 @@
       "readme": "소개",
       "no_readme": "이 플러그인의 저장소에 README가 없습니다.",
       "readme_loading": "README 불러오는 중…",
-      "always_load": "모든 경기에서 불러오기",
-      "always_load_hint": "게임 모드가 선택하지 않아도 불러옵니다.",
-      "always_load_ranked": "랭크 및 매치메이킹 경기에서도 불러옵니다.",
       "configure": "설정 파일",
       "configure_hint": "플러그인이 처음 불러올 때 작성하므로, 서버가 이 모드로 한 번 실행된 뒤에 나타납니다.",
       "configure_open": "파일 열기",
@@ -3670,6 +3681,11 @@
         "already_off": "이 배포에서는 이미 꺼져 있습니다: 5stack Ranks가 게임 내 랭크를 표시하기 위해 Valve 서버 가이드라인을 끄며, 그에 따르는 위험은 서버 한 대가 아니라 여러분의 Steam 계정에 미칩니다.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "자동으로 업데이트",
+        "hint": "새 릴리스가 게시되는 즉시 설치합니다. 끄면 노드가 현재 실행 중인 버전에 머무릅니다.",
+        "pinned": "{version}에 고정되었습니다. 새 릴리스는 설치되지 않고 알림으로 표시됩니다."
+      },
       "custom": {
         "add": "플러그인 추가",
         "badge": "커스텀",
@@ -3698,7 +3714,25 @@
         "remove_hint": "카탈로그에서 빼기 전에 노드에서 먼저 제거하세요.",
         "removed": "카탈로그에서 제거됨"
       },
-      "retry": "다시 시도"
+      "retry": "다시 시도",
+      "config": {
+        "title": "구성",
+        "hint": "이 플러그인의 콘솔 변수입니다. 유형 및 전역 구성 다음에, 이 플러그인을 불러오는 서버에서 적용됩니다.",
+        "insert_template": "플러그인의 cvar 삽입",
+        "saved": "구성을 저장했습니다",
+        "edit": "구성 편집",
+        "empty": "설정된 콘솔 변수가 없습니다."
+      },
+      "load": {
+        "title": "게임 모드 없이 불러오기",
+        "description": "어떤 경기가 이 플러그인을 자체적으로 불러올지 선택하세요. 이 플러그인을 선택한 게임 모드는 어차피 불러옵니다.",
+        "ranked": "랭크 경기",
+        "ranked_hint": "랭킹에 반영되는 모든 것 — 대기열이든 드래프트 로비든 마찬가지입니다.",
+        "tournaments": "토너먼트 경기",
+        "tournaments_hint": "토너먼트 대진의 일부로 치르는 경기로, 랭크 여부는 상관없습니다.",
+        "custom": "커스텀 경기",
+        "custom_hint": "그 밖의 모든 것: 어디에도 반영되지 않는 경기입니다."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "설정 생성 중 오류가 발생했습니다",
         "update": "설정 업데이트 중 오류가 발생했습니다",
         "revert": "설정을 기본값으로 되돌리는 중 오류가 발생했습니다"
-      }
+      },
+      "clear_confirm": {
+        "description": "전역 구성을 비웁니다. 복원되는 것은 없습니다 — 기본 상태가 비어 있습니다."
+      },
+      "reset_tooltip": "이 구성을 기본 제공값으로 되돌리기",
+      "clear_tooltip": "이 구성 비우기"
     }
   },
   "streams": {

@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Configs par type de partie"
+          "title": "Configs par type de partie",
+          "global": "Global",
+          "placeholder": "Vide. Les variables de console ajoutées ici s'appliquent à tous les matchs.",
+          "order": "Ordre d'exécution",
+          "order_hint": "Chaque couche l'emporte sur celle du dessus.",
+          "layers": {
+            "type": "Type de match",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "régions LAN uniquement",
+            "global_note": "tous les matchs",
+            "plugin": "Cvars du plugin",
+            "plugin_note": "par plugin chargé",
+            "mode": "Mode de jeu",
+            "mode_note": "l'emporte"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "À propos",
       "no_readme": "Ce plugin n'a pas de README dans son dépôt.",
       "readme_loading": "Chargement du README…",
-      "always_load": "Charger à chaque match",
-      "always_load_hint": "Le charger sans qu'un mode de jeu le sélectionne.",
-      "always_load_ranked": "Se charge aussi sur les matchs classés et de matchmaking.",
       "configure": "Configuration",
       "configure_hint": "Écrite par le plugin au premier chargement : elle apparaît donc après qu'un serveur a joué ce mode une fois.",
       "configure_open": "Ouvrir les fichiers",
@@ -3670,6 +3681,11 @@
         "already_off": "Déjà désactivées sur ce déploiement : 5stack Ranks désactive les guidelines serveur de Valve pour afficher les rangs en jeu, et le risque encouru porte sur ton compte Steam plutôt que sur un seul serveur.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Mettre à jour automatiquement",
+        "hint": "Installe les nouvelles versions dès leur publication. Désactivez pour rester sur la version que vos nœuds exécutent actuellement.",
+        "pinned": "Épinglé sur {version}. Les nouvelles versions déclencheront une notification au lieu d'être installées."
+      },
       "custom": {
         "add": "Ajouter un plugin",
         "badge": "Personnalisé",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Désinstalle-le de tes nœuds avant de le sortir du catalogue.",
         "removed": "Retiré du catalogue"
       },
-      "retry": "Réessayer"
+      "retry": "Réessayer",
+      "config": {
+        "title": "Configuration",
+        "hint": "Variables de console pour ce plugin. Appliquées après les configurations de type et globale, sur les serveurs qui le chargent.",
+        "insert_template": "Insérer les cvars du plugin",
+        "saved": "Configuration enregistrée",
+        "edit": "Modifier la configuration",
+        "empty": "Aucune variable de console définie."
+      },
+      "load": {
+        "title": "Charger sans mode de jeu",
+        "description": "Choisissez quels matchs chargent ce plugin d'eux-mêmes. Un mode de jeu qui le sélectionne le charge de toute façon.",
+        "ranked": "Matchs classés",
+        "ranked_hint": "Tout ce qui compte pour le classement — la file d'attente comme un salon de draft.",
+        "tournaments": "Matchs de tournoi",
+        "tournaments_hint": "Matchs joués dans un arbre de tournoi, classés ou non.",
+        "custom": "Matchs personnalisés",
+        "custom_hint": "Tout le reste : les matchs qui ne comptent pour rien."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Erreur lors de la création de la config",
         "update": "Erreur lors de la mise à jour de la config",
         "revert": "Erreur lors du rétablissement des valeurs par défaut"
-      }
+      },
+      "clear_confirm": {
+        "description": "Cela vide la configuration globale. Rien n'est restauré — elle est livrée vide."
+      },
+      "reset_tooltip": "Réinitialiser cette configuration aux valeurs par défaut livrées",
+      "clear_tooltip": "Vider cette configuration"
     }
   },
   "streams": {

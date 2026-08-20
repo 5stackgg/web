@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Configuração do Tipo de Jogo"
+          "title": "Configuração do Tipo de Jogo",
+          "global": "Global",
+          "placeholder": "Vazio. As variáveis de console adicionadas aqui se aplicam a todas as partidas.",
+          "order": "Ordem de execução",
+          "order_hint": "Cada camada prevalece sobre a anterior.",
+          "layers": {
+            "type": "Tipo de partida",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "apenas regiões LAN",
+            "global_note": "todas as partidas",
+            "plugin": "Cvars do plugin",
+            "plugin_note": "por plugin carregado",
+            "mode": "Modo de jogo",
+            "mode_note": "prevalece"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "Sobre",
       "no_readme": "Este plugin não tem README no repositório.",
       "readme_loading": "Carregando README…",
-      "always_load": "Carregar em toda partida",
-      "always_load_hint": "Carrega mesmo sem um modo de jogo selecioná-lo.",
-      "always_load_ranked": "Também carrega em partidas ranqueadas e de matchmaking.",
       "configure": "Configuração",
       "configure_hint": "Escrita pelo plugin no primeiro carregamento, então aparece depois que um servidor rodar este modo uma vez.",
       "configure_open": "Abrir arquivos",
@@ -3670,6 +3681,11 @@
         "already_off": "Já estão desativadas nesta instalação: o 5stack Ranks desativa as diretrizes de servidor da Valve para mostrar as ranks dentro do jogo, e o risco disso recai sobre a sua conta Steam, e não sobre um servidor só.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Atualizar automaticamente",
+        "hint": "Instala novas versões assim que são publicadas. Desative para permanecer na versão que seus nodes estão executando agora.",
+        "pinned": "Fixado em {version}. Novas versões gerarão uma notificação em vez de serem instaladas."
+      },
       "custom": {
         "add": "Adicionar um plugin",
         "badge": "Personalizado",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Desinstale-o dos seus nós antes de tirá-lo do catálogo.",
         "removed": "Removido do catálogo"
       },
-      "retry": "Tentar de novo"
+      "retry": "Tentar de novo",
+      "config": {
+        "title": "Configuração",
+        "hint": "Variáveis de console para este plugin. Aplicadas após as configurações de tipo e global, nos servidores que o carregam.",
+        "insert_template": "Inserir as cvars do plugin",
+        "saved": "Configuração salva",
+        "edit": "Editar configuração",
+        "empty": "Nenhuma variável de console definida."
+      },
+      "load": {
+        "title": "Carregar sem um modo de jogo",
+        "description": "Escolha quais partidas carregam este plugin por conta própria. Um modo de jogo que o seleciona o carrega de qualquer forma.",
+        "ranked": "Partidas ranqueadas",
+        "ranked_hint": "Tudo que conta para o ranking — a fila tanto quanto um lobby de draft.",
+        "tournaments": "Partidas de torneio",
+        "tournaments_hint": "Partidas jogadas como parte de uma chave de torneio, ranqueadas ou não.",
+        "custom": "Partidas personalizadas",
+        "custom_hint": "Todo o resto: partidas que não contam para nada."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Erro ao criar a configuração",
         "update": "Erro ao atualizar a configuração",
         "revert": "Erro ao reverter a configuração para os padrões"
-      }
+      },
+      "clear_confirm": {
+        "description": "Isso esvazia a configuração global. Nada é restaurado — ela vem vazia de fábrica."
+      },
+      "reset_tooltip": "Redefinir esta configuração para os padrões de fábrica",
+      "clear_tooltip": "Limpar esta configuração"
     }
   },
   "streams": {

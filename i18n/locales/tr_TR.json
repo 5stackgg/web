@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Oyun türü ayarları"
+          "title": "Oyun türü ayarları",
+          "global": "Genel",
+          "placeholder": "Boş. Buraya eklenen konsol değişkenleri her maça uygulanır.",
+          "order": "Çalıştırma sırası",
+          "order_hint": "Her katman bir üstündekini geçersiz kılar.",
+          "layers": {
+            "type": "Maç türü",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "yalnızca LAN bölgeleri",
+            "global_note": "her maç",
+            "plugin": "Eklenti cvar'ları",
+            "plugin_note": "yüklenen eklenti başına",
+            "mode": "Oyun modu",
+            "mode_note": "önceliklidir"
+          }
         },
         "streaming": {
           "title": "Yayın",
@@ -3637,9 +3651,6 @@
       "readme": "Hakkında",
       "no_readme": "Bu eklentinin deposunda README yok.",
       "readme_loading": "README yükleniyor…",
-      "always_load": "Her maçta yükle",
-      "always_load_hint": "Bir oyun modu seçmeden de yüklensin.",
-      "always_load_ranked": "Dereceli ve eşleştirme maçlarında da yüklenir.",
       "configure": "Yapılandırma",
       "configure_hint": "İlk yüklemede eklenti tarafından yazılır, bu yüzden bir sunucu bu modu bir kez çalıştırdıktan sonra görünür.",
       "configure_open": "Dosyaları aç",
@@ -3670,6 +3681,11 @@
         "already_off": "Bu kurulumda zaten kapalı: 5stack Ranks, rütbeleri oyun içinde göstermek için Valve'ın sunucu kurallarını kapatır ve taşıdığı risk tek bir sunucu yerine Steam hesabını ilgilendirir.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Otomatik güncelle",
+        "hint": "Yeni sürümleri yayımlandıkları anda kurar. Düğümlerinizin şu an çalıştırdığı sürümde kalmak için kapatın.",
+        "pinned": "{version} sürümüne sabitlendi. Yeni sürümler kurulmak yerine bir bildirim oluşturacak."
+      },
       "custom": {
         "add": "Eklenti ekle",
         "badge": "Özel",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Dizinden çıkarmadan önce düğümlerinden kaldır.",
         "removed": "Dizinden kaldırıldı"
       },
-      "retry": "Yeniden dene"
+      "retry": "Yeniden dene",
+      "config": {
+        "title": "Yapılandırma",
+        "hint": "Bu eklentinin konsol değişkenleri. Tür ve genel yapılandırmalardan sonra, eklentiyi yükleyen sunucularda uygulanır.",
+        "insert_template": "Eklentinin cvar'larını ekle",
+        "saved": "Yapılandırma kaydedildi",
+        "edit": "Yapılandırmayı düzenle",
+        "empty": "Ayarlanmış konsol değişkeni yok."
+      },
+      "load": {
+        "title": "Oyun modu olmadan yükle",
+        "description": "Bu eklentiyi kendiliğinden hangi maçların yükleyeceğini seçin. Eklentiyi seçen bir oyun modu onu zaten yükler.",
+        "ranked": "Dereceli maçlar",
+        "ranked_hint": "Sıralamaya sayılan her şey — kuyruk da draft lobisi de dahil.",
+        "tournaments": "Turnuva maçları",
+        "tournaments_hint": "Bir turnuva eşleşme tablosunda oynanan maçlar, dereceli olsun ya da olmasın.",
+        "custom": "Özel maçlar",
+        "custom_hint": "Geri kalan her şey: hiçbir şeye sayılmayan maçlar."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Yapılandırma oluşturulurken hata oluştu",
         "update": "Yapılandırma güncellenirken hata oluştu",
         "revert": "Yapılandırma varsayılanlara döndürülürken hata oluştu"
-      }
+      },
+      "clear_confirm": {
+        "description": "Bu, genel yapılandırmayı boşaltır. Hiçbir şey geri getirilmez — zaten boş gelir."
+      },
+      "reset_tooltip": "Bu yapılandırmayı gelen varsayılanlara sıfırla",
+      "clear_tooltip": "Bu yapılandırmayı boşalt"
     }
   },
   "streams": {

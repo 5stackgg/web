@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Konfigurationer för speltyper"
+          "title": "Konfigurationer för speltyper",
+          "global": "Global",
+          "placeholder": "Tomt. Konsolvariabler som läggs till här gäller alla matcher.",
+          "order": "Körordning",
+          "order_hint": "Varje lager går före det ovanför.",
+          "layers": {
+            "type": "Matchtyp",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "endast LAN-regioner",
+            "global_note": "alla matcher",
+            "plugin": "Plugin-cvars",
+            "plugin_note": "per laddat plugin",
+            "mode": "Spelläge",
+            "mode_note": "vinner"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "Om",
       "no_readme": "Det här tillägget har ingen README i sitt repository.",
       "readme_loading": "Laddar README…",
-      "always_load": "Ladda i varje match",
-      "always_load_hint": "Ladda det utan att ett spelläge väljer det.",
-      "always_load_ranked": "Laddas även i rankade matcher och matchmaking.",
       "configure": "Konfiguration",
       "configure_hint": "Skrivs av tillägget vid första laddningen, så den dyker upp efter att en server kört det här läget en gång.",
       "configure_open": "Öppna filer",
@@ -3670,6 +3681,11 @@
         "already_off": "Redan avstängda för den här deployen: 5stack Ranks stänger av Valves serverriktlinjer för att visa ranker i spelet, och risken det innebär gäller ditt Steam-konto snarare än en enskild server.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Uppdatera automatiskt",
+        "hint": "Installerar nya versioner så snart de publiceras. Stäng av för att stanna kvar på den version dina noder kör nu.",
+        "pinned": "Låst till {version}. Nya versioner ger en avisering i stället för att installeras."
+      },
       "custom": {
         "add": "Lägg till ett tillägg",
         "badge": "Anpassat",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Avinstallera det från dina noder innan du tar ut det ur katalogen.",
         "removed": "Borttaget från katalogen"
       },
-      "retry": "Försök igen"
+      "retry": "Försök igen",
+      "config": {
+        "title": "Konfiguration",
+        "hint": "Konsolvariabler för detta plugin. Tillämpas efter typ- och den globala konfigurationen, på servrar som laddar det.",
+        "insert_template": "Infoga pluginets cvars",
+        "saved": "Konfigurationen sparad",
+        "edit": "Redigera konfiguration",
+        "empty": "Inga konsolvariabler angivna."
+      },
+      "load": {
+        "title": "Ladda utan ett spelläge",
+        "description": "Välj vilka matcher som laddar detta plugin på egen hand. Ett spelläge som väljer det laddar det ändå.",
+        "ranked": "Rankade matcher",
+        "ranked_hint": "Allt som räknas mot rankningen — kön såväl som en draftlobby.",
+        "tournaments": "Turneringsmatcher",
+        "tournaments_hint": "Matcher som spelas i ett turneringsträd, rankade eller inte.",
+        "custom": "Egna matcher",
+        "custom_hint": "Allt annat: matcher som inte räknas mot något."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Fel vid skapande av konfiguration",
         "update": "Fel vid uppdatering av konfiguration",
         "revert": "Fel vid återställning av konfiguration till standard"
-      }
+      },
+      "clear_confirm": {
+        "description": "Detta tömmer den globala konfigurationen. Inget återställs — den levereras tom."
+      },
+      "reset_tooltip": "Återställ denna konfiguration till de levererade standardvärdena",
+      "clear_tooltip": "Töm denna konfiguration"
     }
   },
   "streams": {

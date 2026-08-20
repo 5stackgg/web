@@ -9,6 +9,8 @@ import {
   Rocket,
   ShieldHalf,
   Users,
+  Layers,
+  ChevronDown,
 } from "lucide-vue-next";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -19,6 +21,13 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import UtilityFilters from "~/components/utility/UtilityFilters.vue";
 import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPanel.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
@@ -430,31 +439,77 @@ function selectLineup(id: string | null) {
       </template>
       <template #actions>
         <NuxtLink :to="{ name: 'utility' }">
-          <Button variant="outline">
+          <Button variant="ghost" class="text-muted-foreground">
             <ArrowLeft class="mr-1 h-4 w-4" />
             {{ $t("pages.utility.all_maps") }}
           </Button>
         </NuxtLink>
-        <NuxtLink :to="{ name: 'utility-block-map', params: { map: mapName } }">
-          <Button variant="outline">
-            <ShieldHalf class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.block.title") }}
-          </Button>
-        </NuxtLink>
-        <NuxtLink
-          :to="{ name: 'utility-playbooks-map', params: { map: mapName } }"
-        >
-          <Button variant="outline">
-            <ListOrdered class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.playbooks.title") }}
-          </Button>
-        </NuxtLink>
-        <NuxtLink :to="{ name: 'utility-meta-map', params: { map: mapName } }">
-          <Button variant="outline">
-            <Users class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.meta.title") }}
-          </Button>
-        </NuxtLink>
+        <!-- Three other ways to look at this same map, behind one control.
+             Six buttons at equal weight is six decisions; the two that are
+             actually actions stay out here on their own. -->
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline">
+              <Layers class="mr-1 h-4 w-4" />
+              {{ $t("pages.utility.views.label") }}
+              <ChevronDown class="ml-1 h-3.5 w-3.5 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-60">
+            <DropdownMenuLabel
+              class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.utility.views.label") }}
+            </DropdownMenuLabel>
+            <DropdownMenuItem as-child>
+              <NuxtLink
+                :to="{ name: 'utility-meta-map', params: { map: mapName } }"
+                class="flex cursor-pointer items-start gap-2"
+              >
+                <Users class="mt-0.5 h-4 w-4 shrink-0" />
+                <span class="min-w-0">
+                  <span class="block">{{ $t("pages.utility.meta.title") }}</span>
+                  <span class="block text-xs text-muted-foreground">
+                    {{ $t("pages.utility.views.meta_hint") }}
+                  </span>
+                </span>
+              </NuxtLink>
+            </DropdownMenuItem>
+            <DropdownMenuItem as-child>
+              <NuxtLink
+                :to="{ name: 'utility-playbooks-map', params: { map: mapName } }"
+                class="flex cursor-pointer items-start gap-2"
+              >
+                <ListOrdered class="mt-0.5 h-4 w-4 shrink-0" />
+                <span class="min-w-0">
+                  <span class="block">
+                    {{ $t("pages.utility.playbooks.title") }}
+                  </span>
+                  <span class="block text-xs text-muted-foreground">
+                    {{ $t("pages.utility.views.playbooks_hint") }}
+                  </span>
+                </span>
+              </NuxtLink>
+            </DropdownMenuItem>
+            <DropdownMenuItem as-child>
+              <NuxtLink
+                :to="{ name: 'utility-block-map', params: { map: mapName } }"
+                class="flex cursor-pointer items-start gap-2"
+              >
+                <ShieldHalf class="mt-0.5 h-4 w-4 shrink-0" />
+                <span class="min-w-0">
+                  <span class="block">
+                    {{ $t("pages.utility.block.title") }}
+                  </span>
+                  <span class="block text-xs text-muted-foreground">
+                    {{ $t("pages.utility.views.block_hint") }}
+                  </span>
+                </span>
+              </NuxtLink>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <NuxtLink :to="{ name: 'utility-new-map', params: { map: mapName } }">
           <Button variant="outline">
             <Plus class="mr-1 h-4 w-4" />
@@ -525,8 +580,35 @@ function selectLineup(id: string | null) {
           @hover="(id) => (hoveredId = id)"
         />
 
+        <!-- Shaped like the cards they stand in for. A short placeholder that
+             is replaced by a tall card makes the whole list jump, which reads
+             as jank even though nothing moved twice. The stagger keeps them
+             from strobing as one block. -->
         <template v-else-if="loading">
-          <Skeleton v-for="i in 6" :key="i" class="h-28 w-full rounded-md" />
+          <div
+            v-for="i in 4"
+            :key="`skeleton-${i}`"
+            class="animate-in fade-in rounded-md border border-border bg-card/40 p-3 [animation-duration:240ms] [animation-fill-mode:backwards]"
+            :style="{ animationDelay: `${(i - 1) * 60}ms` }"
+          >
+            <div class="flex items-start gap-2">
+              <Skeleton class="mt-1 h-3 w-3 shrink-0 rounded-[2px]" />
+              <div class="min-w-0 flex-1 space-y-1.5">
+                <Skeleton class="h-4 w-2/5" />
+                <Skeleton class="h-2.5 w-1/4" />
+              </div>
+            </div>
+            <div class="mt-2.5 flex flex-wrap gap-1.5">
+              <Skeleton class="h-5 w-20 rounded-full" />
+              <Skeleton class="h-5 w-12 rounded-full" />
+              <Skeleton class="h-5 w-24 rounded-full" />
+            </div>
+            <Skeleton class="mt-2.5 h-9 w-full rounded-md" />
+            <div class="mt-2.5 flex items-center justify-between">
+              <Skeleton class="h-6 w-28 rounded-full" />
+              <Skeleton class="h-4 w-14" />
+            </div>
+          </div>
         </template>
 
         <Empty v-else-if="!lineups.length">

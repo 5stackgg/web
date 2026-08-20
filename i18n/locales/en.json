@@ -3888,6 +3888,12 @@
       "title": "Utility",
       "subtitle": "Lineups for every map — where to stand, where to aim, where it lands.",
       "lineups": "Lineups",
+      "views": {
+        "label": "Map views",
+        "meta_hint": "What players actually throw here",
+        "playbooks_hint": "Timed executes built from lineups",
+        "block_hint": "Find a smoke that cuts a given angle"
+      },
       "all_maps": "All Maps",
       "back_to_map": "Back to Map",
       "map_subtitle": "{count} lineups match your filters.",

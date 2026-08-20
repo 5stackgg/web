@@ -256,13 +256,13 @@ async function toggleFavorite() {
 </script>
 
 <template>
-  <PageTransition v-if="loading">
-    <Skeleton class="h-24 w-full rounded-lg" />
-    <Skeleton class="mt-4 aspect-video w-full rounded-md" />
-  </PageTransition>
+  <PageTransition v-if="loading || !lineup" swap>
+    <div v-if="loading" key="loading">
+      <Skeleton class="h-24 w-full rounded-lg" />
+      <Skeleton class="mt-4 aspect-video w-full rounded-md" />
+    </div>
 
-  <PageTransition v-else-if="!lineup">
-    <Empty>
+    <Empty v-else key="missing">
       <EmptyTitle>{{ $t("pages.utility.detail.not_found") }}</EmptyTitle>
       <EmptyDescription>
         {{ $t("pages.utility.detail.not_found_description") }}

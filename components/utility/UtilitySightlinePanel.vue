@@ -72,7 +72,12 @@ let pairCounter = 0;
 const heightInput = ref(
   String(
     Math.round(
-      props.lineup.eye_z ?? props.lineup.origin_z + UTILITY_EYE_HEIGHT_UNITS,
+      // Number() first: double precision arrives as a string, so the fallback
+      // would concatenate the eye height instead of adding it and then quietly
+      // round the 64 units away again.
+      props.lineup.eye_z != null
+        ? Number(props.lineup.eye_z)
+        : Number(props.lineup.origin_z) + UTILITY_EYE_HEIGHT_UNITS,
     ),
   ),
 );

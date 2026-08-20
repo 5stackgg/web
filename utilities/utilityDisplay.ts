@@ -132,7 +132,11 @@ export function utilityLanding(
   >,
 ): UtilityTrajectoryPoint | null {
   if (lineup.land_x != null && lineup.land_y != null) {
-    return { x: lineup.land_x, y: lineup.land_y, z: lineup.land_z ?? 0 };
+    return {
+      x: Number(lineup.land_x),
+      y: Number(lineup.land_y),
+      z: Number(lineup.land_z ?? 0),
+    };
   }
   const preview = normalizeTrajectory(lineup.trajectory_preview);
   return preview.length > 0 ? preview[preview.length - 1] : null;
@@ -142,9 +146,12 @@ export function utilityOrigin(
   lineup: Pick<UtilityLineup, "origin_x" | "origin_y" | "origin_z" | "eye_z">,
 ): UtilityTrajectoryPoint {
   return {
-    x: lineup.origin_x,
-    y: lineup.origin_y,
-    z: lineup.eye_z ?? lineup.origin_z,
+    // Coerced here, at the one helper everything reads an origin through:
+    // Hasura sends double precision as a string, and a string that reaches
+    // arithmetic concatenates instead of adding.
+    x: Number(lineup.origin_x),
+    y: Number(lineup.origin_y),
+    z: Number(lineup.eye_z ?? lineup.origin_z),
   };
 }
 

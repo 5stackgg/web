@@ -383,8 +383,8 @@ async function toggleFavorite() {
                 {{ $t("pages.utility.detail.view_angles") }}
               </dt>
               <dd class="font-mono tabular-nums">
-                {{ (lineup.view_yaw ?? 0).toFixed(1) }} /
-                {{ (lineup.view_pitch ?? 0).toFixed(1) }}
+                {{ Number(lineup.view_yaw ?? 0).toFixed(1) }} /
+                {{ Number(lineup.view_pitch ?? 0).toFixed(1) }}
               </dd>
             </div>
             <div>
@@ -413,8 +413,8 @@ async function toggleFavorite() {
                 {{ $t("pages.utility.detail.aim_delta") }}
               </dt>
               <dd class="font-mono tabular-nums">
-                {{ (lineup.view_yaw_delta ?? 0).toFixed(2) }} /
-                {{ (lineup.view_pitch_delta ?? 0).toFixed(2) }}
+                {{ Number(lineup.view_yaw_delta ?? 0).toFixed(2) }} /
+                {{ Number(lineup.view_pitch_delta ?? 0).toFixed(2) }}
               </dd>
             </div>
           </dl>

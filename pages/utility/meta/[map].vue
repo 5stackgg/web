@@ -382,8 +382,8 @@ function selectSpot(key: string | null) {
                 selectedRow.spot.viewPitch !== null
               "
             >
-              {{ (selectedRow.spot.viewYaw ?? 0).toFixed(1) }} /
-              {{ (selectedRow.spot.viewPitch ?? 0).toFixed(1) }}
+              {{ Number(selectedRow.spot.viewYaw ?? 0).toFixed(1) }} /
+              {{ Number(selectedRow.spot.viewPitch ?? 0).toFixed(1) }}
             </template>
             <template v-else>{{ $t("common.na") }}</template>
           </div>

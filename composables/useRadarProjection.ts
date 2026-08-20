@@ -43,9 +43,14 @@ export function projectWithCalibration(
   meta: RadarMeta,
 ): { x: number; y: number } {
   const { resolution, offset, splits } = meta;
-  const split = applyRadarSplit(p.z ?? 0, splits);
-  const gameX = p.x + offset.x;
-  const gameY = p.y + offset.y;
+  // Hasura serialises double precision as a string so it cannot lose digits,
+  // which turns `p.x + offset.x` into string concatenation and throws the point
+  // off the map entirely. Coerce here rather than trusting every caller.
+  const px = Number(p.x);
+  const py = Number(p.y);
+  const split = applyRadarSplit(Number(p.z ?? 0), splits);
+  const gameX = px + offset.x;
+  const gameY = py + offset.y;
   const pxX = gameX / resolution + (split.dx / 100) * RADAR_PX;
   const pxYFromBottom = gameY / resolution + (split.dy / 100) * RADAR_PX;
   return {

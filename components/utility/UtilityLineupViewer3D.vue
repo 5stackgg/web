@@ -60,9 +60,10 @@ const trajectory = computed<UtilityTrajectoryPoint[]>(() => {
   }
   return [
     {
-      x: props.lineup.origin_x,
-      y: props.lineup.origin_y,
-      z: props.lineup.eye_z ?? props.lineup.origin_z,
+      // double precision arrives as a string; three.js wants numbers.
+      x: Number(props.lineup.origin_x),
+      y: Number(props.lineup.origin_y),
+      z: Number(props.lineup.eye_z ?? props.lineup.origin_z),
     },
     landing,
   ];
@@ -160,7 +161,11 @@ const bloom = computed(() =>
 function pointAtProgress(fraction: number): UtilityTrajectoryPoint {
   const points = trajectory.value;
   if (points.length === 0) {
-    return { x: props.lineup.origin_x, y: props.lineup.origin_y, z: 0 };
+    return {
+      x: Number(props.lineup.origin_x),
+      y: Number(props.lineup.origin_y),
+      z: 0,
+    };
   }
   const index = Math.min(
     points.length - 1,
@@ -174,11 +179,11 @@ const players = computed(() => [
     steamId: props.lineup.id,
     team: throwerTeam.value,
     alive: true,
-    x: props.lineup.origin_x,
-    y: props.lineup.origin_y,
-    z: props.lineup.origin_z,
-    yaw: props.lineup.view_yaw ?? 0,
-    pitch: props.lineup.view_pitch ?? 0,
+    x: Number(props.lineup.origin_x),
+    y: Number(props.lineup.origin_y),
+    z: Number(props.lineup.origin_z),
+    yaw: Number(props.lineup.view_yaw ?? 0),
+    pitch: Number(props.lineup.view_pitch ?? 0),
     health: 100,
     armor: 0,
   },
@@ -271,9 +276,9 @@ const smokeVolumes = computed(() =>
 // never slices through the arc it is meant to show.
 const autoCeilingZ = computed(() => {
   let highest = Math.max(
-    props.lineup.origin_z,
-    props.lineup.eye_z ?? props.lineup.origin_z,
-    props.lineup.land_z ?? props.lineup.origin_z,
+    Number(props.lineup.origin_z),
+    Number(props.lineup.eye_z ?? props.lineup.origin_z),
+    Number(props.lineup.land_z ?? props.lineup.origin_z),
   );
   for (const point of trajectory.value) {
     if (point.z > highest) {

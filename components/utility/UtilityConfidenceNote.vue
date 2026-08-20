@@ -95,7 +95,7 @@ const tone = computed(() => {
       >
         {{
           $t("pages.utility.confidence.delta_short", {
-            degrees: delta?.toFixed(1),
+            degrees: delta == null ? null : Number(delta).toFixed(1),
           })
         }}
       </span>

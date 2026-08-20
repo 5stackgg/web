@@ -409,6 +409,41 @@ definePageMeta({
                   </p>
                 </div>
 
+                <!-- Installing tracks the newest release, so the version
+                     running on every node can change with nobody asking for
+                     it. Turning this off freezes the fleet where it is. -->
+                <div
+                  v-if="isRequested"
+                  class="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="space-y-0.5">
+                      <p class="text-sm font-medium">
+                        {{ $t("pages.plugins.auto_update.toggle") }}
+                      </p>
+                      <p class="text-xs text-muted-foreground">
+                        {{ $t("pages.plugins.auto_update.hint") }}
+                      </p>
+                    </div>
+                    <Switch
+                      :model-value="autoUpdate"
+                      :disabled="savingAutoUpdate"
+                      @update:model-value="setAutoUpdate"
+                    />
+                  </div>
+
+                  <p
+                    v-if="!autoUpdate && pinnedVersion"
+                    class="text-xs text-muted-foreground"
+                  >
+                    {{
+                      $t("pages.plugins.auto_update.pinned", {
+                        version: pinnedVersion,
+                      })
+                    }}
+                  </p>
+                </div>
+
                 <PluginLoadTargets
                   v-if="isRequested"
                   :targets="loadTargets"
@@ -893,6 +928,9 @@ export default {
       savingCfg: false,
       disableGuidelines: false,
       savingGuidelines: false,
+      autoUpdate: false,
+      savingAutoUpdate: false,
+      pinnedVersion: null as string | null,
       removingFromCatalog: false,
       confirmRemove: false,
       modePlugins: [] as Array<Record<string, any>>,
@@ -1101,6 +1139,8 @@ export default {
           (entry) => entry.plugin_slug === this.$route.params.slug,
         );
         this.disableGuidelines = Boolean(row?.disable_server_guidelines);
+        this.autoUpdate = row?.channel === "Auto";
+        this.pinnedVersion = row?.version ?? null;
         this.loadTargets = {
           load_ranked: Boolean(row?.load_ranked),
           load_tournaments: Boolean(row?.load_tournaments),
@@ -1326,6 +1366,30 @@ export default {
         toast({ title: (error as Error).message, variant: "destructive" });
       } finally {
         this.removingFromCatalog = false;
+      }
+    },
+    // Not an update_by_pk like the switches beside it: the channel and the
+    // version it pins to have to move together or the row fails its check
+    // constraint, and which version to freeze at is only knowable from what
+    // the nodes report.
+    async setAutoUpdate(value: boolean) {
+      this.savingAutoUpdate = true;
+      this.autoUpdate = value;
+
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            setGamePluginAutoUpdate: [
+              { slug: this.$route.params.slug as string, enabled: value },
+              { success: true },
+            ],
+          }),
+        });
+      } catch (error) {
+        this.autoUpdate = !value;
+        toast({ title: (error as Error).message, variant: "destructive" });
+      } finally {
+        this.savingAutoUpdate = false;
       }
     },
     async setDisableGuidelines(value: boolean) {

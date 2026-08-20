@@ -3969,6 +3969,10 @@
         "hint": "Squares are throw origins, dots are where the utility lands. Pick one to line it up with the list."
       },
       "card": {
+        "upvote": "Mark this as a good lineup",
+        "unvote": "Take your vote back",
+        "favorite": "Save to your list",
+        "unfavorite": "Remove from your saved list",
         "open": "Open lineup",
         "jump_bind": "Jump bind",
         "flight_time": "{seconds}s",

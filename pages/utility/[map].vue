@@ -35,6 +35,7 @@ import {
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useUtilityReactions } from "~/composables/useUtilityReactions";
 import { normalizeMapName } from "~/utilities/mapAssets";
 import cleanMapName from "~/utilities/cleanMapName";
 import {
@@ -342,6 +343,51 @@ function startFork(id: string) {
   forkOpen.value = !!forkLineup.value;
 }
 
+const reactions = useUtilityReactions();
+
+// Patched in place rather than refetched: the whole list would flicker to move
+// one number, and the row you clicked is the one thing you are looking at.
+function patchLineup(id: string, patch: Partial<UtilityLineup>) {
+  lineups.value = lineups.value.map((entry) =>
+    entry.id === id ? { ...entry, ...patch } : entry,
+  );
+}
+
+async function onVote(id: string, value: 1 | -1) {
+  const steamId = mySteamId.value;
+  const lineup = lineups.value.find((entry) => entry.id === id);
+
+  if (!steamId || !lineup) {
+    return;
+  }
+
+  const before = { ...lineup };
+  patchLineup(id, reactions.afterVote(lineup, value));
+
+  if (!(await reactions.vote(lineup, steamId, value))) {
+    patchLineup(id, before);
+  }
+}
+
+async function onFavorite(id: string) {
+  const steamId = mySteamId.value;
+  const lineup = lineups.value.find((entry) => entry.id === id);
+
+  if (!steamId || !lineup) {
+    return;
+  }
+
+  const before = { ...lineup };
+  patchLineup(id, reactions.afterFavorite(lineup));
+
+  if (await reactions.toggleFavorite(lineup, steamId)) {
+    // SAVED is a scope, so favouriting changes what one of the tabs holds.
+    void fetchScopeCounts();
+  } else {
+    patchLineup(id, before);
+  }
+}
+
 function startArchive(id: string) {
   archiveLineup.value = lineups.value.find((entry) => entry.id === id) ?? null;
   archiveOpen.value = !!archiveLineup.value;
@@ -518,8 +564,11 @@ function selectLineup(id: string | null) {
               :show-archive="!!mySteamId"
               @select="selectLineup"
               @hover="(id) => (hoveredId = id)"
+              :can-react="!!mySteamId"
               @fork="startFork"
               @archive="startArchive"
+              @vote="onVote"
+              @favorite="onFavorite"
             />
           </div>
         </TransitionGroup>

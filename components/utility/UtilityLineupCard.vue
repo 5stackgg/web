@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   ArrowUpRight,
   Archive,
@@ -32,6 +33,8 @@ const props = withDefaults(
     // Only where a lineup can actually be managed -- the pickers show cards for
     // choosing, and an archive button there is a way to lose work by accident.
     showArchive?: boolean;
+    // Signed out, the counts still read fine -- they just stop being buttons.
+    canReact?: boolean;
   }>(),
   {
     selected: false,
@@ -39,6 +42,7 @@ const props = withDefaults(
     showOpenLink: true,
     showFork: false,
     showArchive: false,
+    canReact: false,
   },
 );
 
@@ -47,6 +51,8 @@ const emit = defineEmits<{
   (e: "hover", id: string | null): void;
   (e: "fork", id: string): void;
   (e: "archive", id: string): void;
+  (e: "vote", id: string, value: 1 | -1): void;
+  (e: "favorite", id: string): void;
 }>();
 
 const color = computed(
@@ -66,6 +72,20 @@ const score = computed(
 );
 
 const jumpBind = computed(() => jumpThrowBindState(props.lineup));
+
+const { t } = useI18n();
+
+const voteTitle = computed(() =>
+  props.lineup.my_vote === 1
+    ? t("pages.utility.card.unvote")
+    : t("pages.utility.card.upvote"),
+);
+
+const favoriteTitle = computed(() =>
+  props.lineup.is_favorited
+    ? t("pages.utility.card.unfavorite")
+    : t("pages.utility.card.favorite"),
+);
 </script>
 
 <template>
@@ -204,21 +224,48 @@ const jumpBind = computed(() => jumpThrowBindState(props.lineup));
         {{ $t("pages.utility.card.unknown_author") }}
       </span>
 
+      <!-- Real controls, not a readout. These were counts you could not change,
+           which reads as a broken button rather than a statistic. -->
       <div
-        class="flex shrink-0 items-center gap-2 font-mono text-[0.65rem] tabular-nums text-muted-foreground"
+        class="flex shrink-0 items-center gap-0.5 font-mono text-[0.65rem] tabular-nums"
       >
-        <span class="inline-flex items-center gap-1">
-          <ThumbsUp v-if="score >= 0" class="h-3 w-3" />
-          <ThumbsDown v-else class="h-3 w-3" />
+        <button
+          type="button"
+          :disabled="!canReact"
+          class="inline-flex items-center gap-1 rounded px-1.5 py-1 transition-colors disabled:cursor-default disabled:opacity-60"
+          :class="
+            lineup.my_vote === 1
+              ? 'text-[hsl(var(--tac-amber))]'
+              : 'text-muted-foreground enabled:hover:bg-muted/50 enabled:hover:text-foreground'
+          "
+          :title="voteTitle"
+          @click.stop="emit('vote', lineup.id, 1)"
+        >
+          <ThumbsUp
+            class="h-3 w-3 transition-transform"
+            :class="lineup.my_vote === 1 ? 'fill-current scale-110' : ''"
+          />
           {{ score }}
-        </span>
-        <span class="inline-flex items-center gap-1">
+        </button>
+
+        <button
+          type="button"
+          :disabled="!canReact"
+          class="inline-flex items-center gap-1 rounded px-1.5 py-1 transition-colors disabled:cursor-default disabled:opacity-60"
+          :class="
+            lineup.is_favorited
+              ? 'text-destructive'
+              : 'text-muted-foreground enabled:hover:bg-muted/50 enabled:hover:text-foreground'
+          "
+          :title="favoriteTitle"
+          @click.stop="emit('favorite', lineup.id)"
+        >
           <Heart
-            class="h-3 w-3"
-            :class="lineup.is_favorited ? 'fill-current text-destructive' : ''"
+            class="h-3 w-3 transition-transform"
+            :class="lineup.is_favorited ? 'fill-current scale-110' : ''"
           />
           {{ lineup.favorites ?? 0 }}
-        </span>
+        </button>
       </div>
     </div>
   </div>

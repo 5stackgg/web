@@ -29,6 +29,7 @@ import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
   utilityLineupsCountQuery,
+  utilityScopeCountsQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
 } from "~/graphql/utilityGraphql";
@@ -171,6 +172,55 @@ const where = computed<Record<string, unknown>>(() =>
   }),
 );
 
+// One count per scope tab, so "MINE" says how many are yours before you click
+// it. Every other filter still applies -- the tabs count what you would get,
+// not what exists.
+const SCOPES = ["public", "mine", "team", "favorites"] as const;
+
+const scopeCounts = ref<Record<string, number>>({});
+
+const scopeWheres = computed(() =>
+  Object.fromEntries(
+    SCOPES.map((scope) => [
+      scope,
+      utilityLineupWhere(
+        { ...filters.value, scope },
+        {
+          mapName: mapName.value,
+          mySteamId: mySteamId.value,
+          myTeamIds: myTeamIds.value,
+        },
+      ),
+    ]),
+  ),
+);
+
+async function fetchScopeCounts() {
+  // A signed-out visitor only ever sees Public, so three of the four counts
+  // would be a round trip spent on tabs they cannot press.
+  const scopes = mySteamId.value ? [...SCOPES] : ["public"];
+
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: utilityScopeCountsQuery(scopes),
+      variables: Object.fromEntries(
+        scopes.map((scope) => [`where_${scope}`, scopeWheres.value[scope]]),
+      ),
+      fetchPolicy: "network-only",
+    });
+
+    scopeCounts.value = Object.fromEntries(
+      scopes.map((scope) => [
+        scope,
+        (data as any)?.[`scope_${scope}`]?.aggregate?.count ?? 0,
+      ]),
+    );
+  } catch (error) {
+    console.error("[utility] scope count error:", error);
+    scopeCounts.value = {};
+  }
+}
+
 const orderBy = computed(() =>
   filters.value.sort === "new"
     ? [{ created_at: order_by.desc }]
@@ -220,9 +270,11 @@ async function fetchLineups() {
 }
 
 fetchLineups();
+fetchScopeCounts();
 
 watch([where, orderBy], () => {
   selectedId.value = null;
+  void fetchScopeCounts();
   if (page.value !== 1) {
     page.value = 1;
     return;
@@ -305,6 +357,8 @@ function onArchived(id: string) {
   if (selectedId.value === id) {
     selectedId.value = null;
   }
+
+  void fetchScopeCounts();
 }
 
 function selectLineup(id: string | null) {
@@ -375,6 +429,7 @@ function selectLineup(id: string | null) {
       :available-tags="availableTags"
       :signed-in="!!mySteamId"
       :has-team="myTeamIds.length > 0"
+      :scope-counts="scopeCounts"
     />
   </PageTransition>
 

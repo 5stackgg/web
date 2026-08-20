@@ -26,11 +26,15 @@ const props = withDefaults(
     availableTags?: string[];
     hasTeam?: boolean;
     signedIn?: boolean;
+    // How many lineups each tab would show, so the choice is informed
+    // before it is made rather than after.
+    scopeCounts?: Record<string, number>;
   }>(),
   {
     availableTags: () => [],
     hasTeam: false,
     signedIn: false,
+    scopeCounts: () => ({}),
   },
 );
 
@@ -43,21 +47,25 @@ const scopeOptions = computed(() => [
   {
     key: "public",
     label: t("pages.utility.scope.public"),
+    count: props.scopeCounts.public,
   },
   {
     key: "mine",
     label: t("pages.utility.scope.mine"),
     disabled: !props.signedIn,
+    count: props.scopeCounts.mine,
   },
   {
     key: "team",
     label: t("pages.utility.scope.team"),
     disabled: !props.hasTeam,
+    count: props.scopeCounts.team,
   },
   {
     key: "favorites",
     label: t("pages.utility.scope.favorites"),
     disabled: !props.signedIn,
+    count: props.scopeCounts.favorites,
   },
 ]);
 

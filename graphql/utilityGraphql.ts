@@ -160,6 +160,32 @@ export const utilityLineupQuery = generateQuery({
 });
 
 /**
+ * The four scope tabs, counted together. Same reasoning as the map counts: one
+ * round trip with aliases, rather than four queries fired on every filter
+ * change just to put a number on a tab.
+ */
+export function utilityScopeCountsQuery(scopes: string[]) {
+  const aliases: Record<string, unknown> = {};
+  for (const scope of scopes) {
+    aliases[`scope_${scope}`] = {
+      utility_lineups_aggregate: [
+        {
+          where: $(`where_${scope}`, "utility_lineups_bool_exp!"),
+        },
+        {
+          aggregate: {
+            count: true,
+          },
+        },
+      ],
+    };
+  }
+  return generateQuery({
+    __alias: aliases,
+  } as any);
+}
+
+/**
  * One aggregate per map in a single round trip. Hasura has no GROUP BY, and
  * ten aliased counts beat ten queries or pulling every row down to tally them
  * in the browser.

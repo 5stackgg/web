@@ -133,6 +133,54 @@ onMounted(fetchLineup);
 
 watch(lineupId, fetchLineup);
 
+function coords(x: unknown, y: unknown, z: unknown): string {
+  return `${Math.round(Number(x))}, ${Math.round(Number(y))}, ${Math.round(Number(z))}`;
+}
+
+const standAt = computed(() =>
+  lineup.value
+    ? coords(lineup.value.origin_x, lineup.value.origin_y, lineup.value.origin_z)
+    : "",
+);
+
+const landsAt = computed(() =>
+  lineup.value
+    ? coords(lineup.value.land_x, lineup.value.land_y, lineup.value.land_z)
+    : "",
+);
+
+// How far the utility actually travels, which is the number that says whether a
+// lineup is a long-range setup or a step-and-throw.
+const throwDistance = computed(() => {
+  const value = lineup.value;
+
+  if (!value) {
+    return null;
+  }
+
+  const dx = Number(value.land_x) - Number(value.origin_x);
+  const dy = Number(value.land_y) - Number(value.origin_y);
+
+  return Number.isFinite(dx) && Number.isFinite(dy)
+    ? `${Math.round(Math.hypot(dx, dy))}u`
+    : null;
+});
+
+// Stored eye minus stored feet. Not a constant: the feet are the standstill a
+// throw was set up from and the eye is the release, so a jump throw reads
+// higher than a standing 64.
+const eyeOverFeet = computed(() => {
+  const value = lineup.value;
+
+  if (!value || value.eye_z == null) {
+    return null;
+  }
+
+  const over = Number(value.eye_z) - Number(value.origin_z);
+
+  return Number.isFinite(over) ? Math.round(over * 10) / 10 : null;
+});
+
 const flightSeconds = computed(() => {
   const ms = lineup.value?.flight_time_ms;
   return ms ? (ms / 1000).toFixed(2) : null;
@@ -401,6 +449,44 @@ async function toggleFavorite() {
               </dt>
               <dd class="font-mono uppercase">
                 {{ lineup.verified_at ? $t("common.yes") : $t("common.no") }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-muted-foreground">
+                {{ $t("pages.utility.detail.stand") }}
+              </dt>
+              <dd class="font-mono tabular-nums">{{ standAt }}</dd>
+            </div>
+            <div>
+              <dt class="text-muted-foreground">
+                {{ $t("pages.utility.detail.lands") }}
+              </dt>
+              <dd class="font-mono tabular-nums">{{ landsAt }}</dd>
+            </div>
+            <div>
+              <dt class="text-muted-foreground">
+                {{ $t("pages.utility.detail.distance") }}
+              </dt>
+              <dd class="font-mono tabular-nums">
+                {{ throwDistance ?? $t("common.na") }}
+              </dd>
+            </div>
+            <!-- A standing eye sits 64 units over the feet. Anything else means
+                 the release was airborne, which is the whole story of a jump
+                 throw and was invisible here until now. -->
+            <div>
+              <dt class="text-muted-foreground">
+                {{ $t("pages.utility.detail.eye_height") }}
+              </dt>
+              <dd
+                class="font-mono tabular-nums"
+                :class="
+                  eyeOverFeet !== null && Math.abs(eyeOverFeet - 64) > 2
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : ''
+                "
+              >
+                {{ eyeOverFeet === null ? $t("common.na") : eyeOverFeet }}
               </dd>
             </div>
             <div

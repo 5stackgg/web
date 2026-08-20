@@ -4,13 +4,9 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   ArrowLeft,
-  ListOrdered,
   Plus,
   Rocket,
-  ShieldHalf,
   Users,
-  Layers,
-  ChevronDown,
 } from "lucide-vue-next";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -21,14 +17,9 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import UtilityFilters from "~/components/utility/UtilityFilters.vue";
+import UtilityBlockPanel from "~/components/utility/UtilityBlockPanel.vue";
+import UtilityPlaybooksPanel from "~/components/utility/UtilityPlaybooksPanel.vue";
 import UtilityCreatePanel from "~/components/utility/UtilityCreatePanel.vue";
 import UtilityMetaPanel from "~/components/utility/UtilityMetaPanel.vue";
 import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPanel.vue";
@@ -147,18 +138,28 @@ const archiveLineup = ref<UtilityLineup | null>(null);
 const LIST_TAB = "lineups";
 const META_TAB = "meta";
 const CREATE_TAB = "create";
+const BLOCK_TAB = "block";
+const PLAYBOOKS_TAB = "playbooks";
 const PLAN_TAB = "plan";
 const listTab = ref<string>(LIST_TAB);
 const selectedMetaKey = ref<string | null>(null);
 
-const createPanel = ref<{
-  applyPick: (point: { x: number; y: number; z: number }) => void;
-} | null>(null);
-const createBoard = ref<{
-  pickZ: number;
-  markers: UtilityBoardMarker[];
-  segments: UtilityBoardSegment[];
-}>({ pickZ: 0, markers: [], segments: [] });
+// The board belongs to the page and outlives every tab. A panel that needs to
+// draw on it publishes what it wants drawn instead of mounting a second board.
+type PanelBoard = {
+  picking?: boolean;
+  pickZ?: number;
+  markers?: UtilityBoardMarker[];
+  segments?: UtilityBoardSegment[];
+  lineups?: UtilityLineup[];
+  selectedId?: string | null;
+  hoveredId?: string | null;
+  onPick?: (point: { x: number; y: number; z: number }) => void;
+  onSelect?: (id: string | null) => void;
+  onHover?: (id: string | null) => void;
+};
+
+const panelBoard = ref<PanelBoard | null>(null);
 
 // The plan is ranked against the caller's own drill record, so there is nothing
 // to show a signed-out visitor. Meta is only a tab once the map has mined data.
@@ -173,8 +174,17 @@ const listTabs = computed(() => {
       count: metaSpots.value.length,
     });
   }
+  tabs.push({
+    key: PLAYBOOKS_TAB,
+    label: t("pages.utility.views.playbooks_tab"),
+  });
+  tabs.push({ key: BLOCK_TAB, label: t("pages.utility.views.block_tab") });
   if (mySteamId.value) {
     tabs.push({ key: PLAN_TAB, label: t("pages.utility.plan.tab") });
+  }
+  // Authoring is reached from the header, so it is not a standing tab — but it
+  // joins the strip while it is open, or the indicator has nothing to sit on.
+  if (listTab.value === CREATE_TAB) {
     tabs.push({ key: CREATE_TAB, label: t("pages.utility.views.create_tab") });
   }
   return tabs;
@@ -189,10 +199,17 @@ const showMetaPanel = computed(
 const showCreatePanel = computed(
   () => listTab.value === CREATE_TAB && !!mySteamId.value,
 );
+const showBlockPanel = computed(() => listTab.value === BLOCK_TAB);
 
-function onBoardPick(point: { x: number; y: number; z: number }) {
-  createPanel.value?.applyPick(point);
-}
+// Executes are a card grid and a step editor, neither of which reads in a
+// 380px column, so this view takes the board's width instead of its surface.
+const showPlaybooks = computed(() => listTab.value === PLAYBOOKS_TAB);
+
+// A tab that stops driving the board must hand it back, or its markers outlive
+// the panel that drew them.
+watch(listTab, () => {
+  panelBoard.value = null;
+});
 
 // Straight into the lineup it just wrote: the author's next question is always
 // whether it looks right on the board.
@@ -211,7 +228,10 @@ const metaOnBoard = computed(() =>
 // A tab that disappears (meta drains, sign-out) must not strand the panel on a
 // key nothing renders.
 watch(listTabs, (tabs) => {
-  if (!tabs.some((tab) => tab.key === listTab.value)) {
+  if (
+    listTab.value !== CREATE_TAB &&
+    !tabs.some((tab) => tab.key === listTab.value)
+  ) {
     listTab.value = LIST_TAB;
   }
 });
@@ -520,54 +540,6 @@ function selectLineup(id: string | null) {
         <!-- Three other ways to look at this same map, behind one control.
              Six buttons at equal weight is six decisions; the two that are
              actually actions stay out here on their own. -->
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline">
-              <Layers class="mr-1 h-4 w-4" />
-              {{ $t("pages.utility.views.label") }}
-              <ChevronDown class="ml-1 h-3.5 w-3.5 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-60">
-            <DropdownMenuLabel
-              class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t("pages.utility.views.label") }}
-            </DropdownMenuLabel>
-            <DropdownMenuItem as-child>
-              <NuxtLink
-                :to="{ name: 'utility-playbooks-map', params: { map: mapName } }"
-                class="flex cursor-pointer items-start gap-2"
-              >
-                <ListOrdered class="mt-0.5 h-4 w-4 shrink-0" />
-                <span class="min-w-0">
-                  <span class="block">
-                    {{ $t("pages.utility.playbooks.title") }}
-                  </span>
-                  <span class="block text-xs text-muted-foreground">
-                    {{ $t("pages.utility.views.playbooks_hint") }}
-                  </span>
-                </span>
-              </NuxtLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem as-child>
-              <NuxtLink
-                :to="{ name: 'utility-block-map', params: { map: mapName } }"
-                class="flex cursor-pointer items-start gap-2"
-              >
-                <ShieldHalf class="mt-0.5 h-4 w-4 shrink-0" />
-                <span class="min-w-0">
-                  <span class="block">
-                    {{ $t("pages.utility.block.title") }}
-                  </span>
-                  <span class="block text-xs text-muted-foreground">
-                    {{ $t("pages.utility.views.block_hint") }}
-                  </span>
-                </span>
-              </NuxtLink>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         <Button
           v-if="mySteamId"
@@ -586,7 +558,9 @@ function selectLineup(id: string | null) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="60" class="mt-4">
+  <!-- Scope, tags and sort only mean anything to the library list; the other
+       views carry their own controls. -->
+  <PageTransition v-if="listTab === LIST_TAB" :delay="60" class="mt-4">
     <UtilityFilters
       v-model="filters"
       :available-tags="availableTags"
@@ -597,24 +571,33 @@ function selectLineup(id: string | null) {
   </PageTransition>
 
   <PageTransition :delay="80" class="mt-4">
-    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <div class="lg:sticky lg:top-4 lg:self-start">
+    <div
+      class="grid gap-4"
+      :class="showPlaybooks ? '' : 'lg:grid-cols-[minmax(0,1fr)_380px]'"
+    >
+      <div v-if="!showPlaybooks" class="lg:sticky lg:top-4 lg:self-start">
         <UtilityRadarBoard
           :map-name="mapName"
-          :lineups="lineups"
-          :selected-id="selectedId"
-          :hovered-id="hoveredId"
+          :lineups="panelBoard?.lineups ?? lineups"
+          :selected-id="panelBoard ? (panelBoard.selectedId ?? null) : selectedId"
+          :hovered-id="panelBoard ? (panelBoard.hoveredId ?? null) : hoveredId"
           :meta-spots="metaOnBoard"
           :selected-meta-key="selectedMetaKey"
           :meta-interactive="showMetaPanel"
-          :picking="showCreatePanel"
-          :pick-z="createBoard.pickZ"
-          :markers="showCreatePanel ? createBoard.markers : []"
-          :segments="showCreatePanel ? createBoard.segments : []"
-          @select="selectLineup"
-          @hover="(id) => (hoveredId = id)"
+          :picking="!!panelBoard?.picking"
+          :pick-z="panelBoard?.pickZ ?? 0"
+          :markers="panelBoard?.markers ?? []"
+          :segments="panelBoard?.segments ?? []"
+          @select="
+            (id) =>
+              panelBoard?.onSelect ? panelBoard.onSelect(id) : selectLineup(id)
+          "
+          @hover="
+            (id) =>
+              panelBoard?.onHover ? panelBoard.onHover(id) : (hoveredId = id)
+          "
           @select-meta="(key) => (selectedMetaKey = key)"
-          @pick="onBoardPick"
+          @pick="(point) => panelBoard?.onPick?.(point)"
         />
         <div class="mt-2 flex items-start justify-between gap-2">
           <p class="text-xs text-muted-foreground">
@@ -650,11 +633,22 @@ function selectLineup(id: string | null) {
           @hover="(id) => (hoveredId = id)"
         />
 
+        <UtilityPlaybooksPanel
+          v-else-if="showPlaybooks"
+          :map-name="mapName"
+        />
+
+        <UtilityBlockPanel
+          v-else-if="showBlockPanel"
+          :map-name="mapName"
+          @board="(state) => (panelBoard = state)"
+          @open="openLineup"
+        />
+
         <UtilityCreatePanel
           v-else-if="showCreatePanel"
-          ref="createPanel"
           :map-name="mapName"
-          @board="(state) => (createBoard = state)"
+          @board="(state) => (panelBoard = state)"
           @created="onLineupCreated"
         />
 

@@ -3894,7 +3894,7 @@
         "playbooks_hint": "Timed executes built from lineups",
         "block_hint": "Find a smoke that cuts a given angle",
         "meta_tab": "Meta",
-        "playbooks_tab": "Playbooks",
+        "playbooks_tab": "Executes",
         "block_tab": "Block",
         "create_tab": "Add"
       },

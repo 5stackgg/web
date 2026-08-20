@@ -25,7 +25,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: "update:selectedKey", value: string | null): void;
-  (event: "open", lineup: UtilityLineup): void;
+  (event: "open", id: string): void;
 }>();
 
 const { t } = useI18n();
@@ -244,7 +244,7 @@ watch(visibleSpots, (list) => {
               :lineup="lineup"
               :meta-throwers="row.spot.throwers"
               open-in-place
-              @open="emit('open', lineup)"
+              @open="(id: string) => emit('open', id)"
             />
           </div>
         </div>

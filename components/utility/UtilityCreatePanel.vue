@@ -49,9 +49,11 @@ const props = defineProps<{ mapName: string }>();
 const emit = defineEmits<{
   (event: "created", id: string): void;
   (event: "board", state: {
+    picking: boolean;
     pickZ: number;
     markers: UtilityBoardMarker[];
     segments: UtilityBoardSegment[];
+    onPick: (point: UtilitySightlinePoint) => void;
   }): void;
 }>();
 
@@ -360,15 +362,16 @@ watch(
   [pickHeight, markers, segments],
   () => {
     emit("board", {
+      picking: true,
       pickZ: pickHeight.value,
       markers: markers.value,
       segments: segments.value,
+      onPick,
     });
   },
   { immediate: true, deep: true },
 );
 
-defineExpose({ applyPick: onPick });
 </script>
 
 <template>

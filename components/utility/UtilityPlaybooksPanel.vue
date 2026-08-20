@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
-import { ArrowLeft, ListOrdered, Pencil, Plus, Rocket } from "lucide-vue-next";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { ListOrdered, Pencil, Plus, Rocket } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -19,8 +17,6 @@ import {
   utilityPlaybooksQuery,
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
-import { normalizeMapName } from "~/utilities/mapAssets";
-import cleanMapName from "~/utilities/cleanMapName";
 import { UTILITY_TYPE_COLORS, formatUtilityOffset } from "~/utilities/utilityDisplay";
 import type {
   UtilityLineup,
@@ -28,10 +24,7 @@ import type {
   UtilityPlaybookStep,
 } from "~/types/utility";
 
-const route = useRoute();
-
-const mapName = computed(() => normalizeMapName(String(route.params.map)));
-const mapTitle = computed(() => cleanMapName(mapName.value));
+const props = defineProps<{ mapName: string }>();
 
 const playbooks = ref<UtilityPlaybook[]>([]);
 const steps = ref<UtilityPlaybookStep[]>([]);
@@ -75,7 +68,7 @@ async function load() {
       query: utilityPlaybooksQuery,
       variables: {
         where: {
-          map_name: { _eq: mapName.value },
+          map_name: { _eq: props.mapName },
           can_view: { _eq: true },
         },
         order_by: [{ updated_at: order_by.desc }],
@@ -136,7 +129,7 @@ async function load() {
   }
 }
 
-watch(mapName, load, { immediate: true });
+watch(() => props.mapName, load, { immediate: true });
 
 const cards = computed(() =>
   playbooks.value.map((playbook) => {
@@ -190,145 +183,132 @@ function practice(id: string) {
 </script>
 
 <template>
-  <PageTransition>
-    <TacticalPageHeader>
-      <template #description>{{ $t("pages.utility.playbooks.eyebrow") }}</template>
-      <template #title>{{ mapTitle }}</template>
-      <template #subtitle>
-        {{ $t("pages.utility.playbooks.subtitle") }}
-      </template>
-      <template #actions>
-        <NuxtLink :to="{ name: 'utility-map', params: { map: mapName } }">
-          <Button variant="outline">
-            <ArrowLeft class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.back_to_map") }}
-          </Button>
-        </NuxtLink>
-        <Button v-if="!editorOpen" class="tac-amber-cta" @click="startCreate()">
-          <Plus class="mr-1 h-4 w-4" />
-          {{ $t("pages.utility.playbooks.new") }}
-        </Button>
-      </template>
-    </TacticalPageHeader>
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-end">
+      <Button v-if="!editorOpen" class="tac-amber-cta" @click="startCreate()">
+        <Plus class="mr-1 h-4 w-4" />
+        {{ $t("pages.utility.playbooks.new") }}
+      </Button>
+    </div>
+
+<PageTransition v-if="editorOpen" :delay="60" class="mt-4">
+  <UtilityPlaybookEditor
+    :key="editing?.id ?? 'new'"
+    :map-name="mapName"
+    :playbook="editing"
+    :steps="editingSteps"
+    @saved="onSaved"
+    @deleted="onDeleted"
+    @cancel="closeEditor"
+  />
+</PageTransition>
+
+<template v-else>
+  <PageTransition v-if="loading" :delay="60" class="mt-4">
+    <div class="flex flex-col gap-2">
+      <Skeleton v-for="i in 4" :key="i" class="h-24 w-full rounded-md" />
+    </div>
   </PageTransition>
 
-  <PageTransition v-if="editorOpen" :delay="60" class="mt-4">
-    <UtilityPlaybookEditor
-      :key="editing?.id ?? 'new'"
-      :map-name="mapName"
-      :playbook="editing"
-      :steps="editingSteps"
-      @saved="onSaved"
-      @deleted="onDeleted"
-      @cancel="closeEditor"
-    />
+  <PageTransition v-else-if="!cards.length" :delay="60" class="mt-4">
+    <Empty>
+      <EmptyTitle>{{ $t("pages.utility.playbooks.empty") }}</EmptyTitle>
+      <EmptyDescription>
+        {{ $t("pages.utility.playbooks.empty_description") }}
+      </EmptyDescription>
+    </Empty>
   </PageTransition>
 
-  <template v-else>
-    <PageTransition v-if="loading" :delay="60" class="mt-4">
-      <div class="flex flex-col gap-2">
-        <Skeleton v-for="i in 4" :key="i" class="h-24 w-full rounded-md" />
-      </div>
-    </PageTransition>
-
-    <PageTransition v-else-if="!cards.length" :delay="60" class="mt-4">
-      <Empty>
-        <EmptyTitle>{{ $t("pages.utility.playbooks.empty") }}</EmptyTitle>
-        <EmptyDescription>
-          {{ $t("pages.utility.playbooks.empty_description") }}
-        </EmptyDescription>
-      </Empty>
-    </PageTransition>
-
-    <PageTransition v-else :delay="60" class="mt-4">
+  <PageTransition v-else :delay="60" class="mt-4">
+    <div
+      class="grid gap-3"
+      style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))"
+    >
       <div
-        class="grid gap-3"
-        style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))"
+        v-for="card of cards"
+        :key="card.playbook.id"
+        class="flex flex-col gap-2 rounded-md border border-border bg-card/40 p-3 [backdrop-filter:blur(6px)]"
       >
-        <div
-          v-for="card of cards"
-          :key="card.playbook.id"
-          class="flex flex-col gap-2 rounded-md border border-border bg-card/40 p-3 [backdrop-filter:blur(6px)]"
-        >
-          <div class="flex items-start justify-between gap-2">
-            <div class="min-w-0">
-              <div class="truncate text-sm font-semibold">
-                {{ card.playbook.name }}
-              </div>
-              <div
-                class="mt-0.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                {{ $t(`pages.utility.sides.${card.playbook.side}`) }}
-                ·
-                {{ $t(`pages.utility.visibility.${card.playbook.visibility}`) }}
-              </div>
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0">
+            <div class="truncate text-sm font-semibold">
+              {{ card.playbook.name }}
             </div>
-            <Badge
-              variant="outline"
-              class="shrink-0 font-mono text-[0.6rem] tabular-nums uppercase"
+            <div
+              class="mt-0.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
             >
-              <ListOrdered class="mr-1 h-3 w-3" />
-              {{ card.steps.length }}
-            </Badge>
+              {{ $t(`pages.utility.sides.${card.playbook.side}`) }}
+              ·
+              {{ $t(`pages.utility.visibility.${card.playbook.visibility}`) }}
+            </div>
           </div>
-
-          <p
-            v-if="card.playbook.description"
-            class="line-clamp-2 text-xs text-muted-foreground"
+          <Badge
+            variant="outline"
+            class="shrink-0 font-mono text-[0.6rem] tabular-nums uppercase"
           >
-            {{ card.playbook.description }}
-          </p>
+            <ListOrdered class="mr-1 h-3 w-3" />
+            {{ card.steps.length }}
+          </Badge>
+        </div>
 
-          <div v-if="card.swatches.length" class="flex flex-wrap gap-1">
+        <p
+          v-if="card.playbook.description"
+          class="line-clamp-2 text-xs text-muted-foreground"
+        >
+          {{ card.playbook.description }}
+        </p>
+
+        <div v-if="card.swatches.length" class="flex flex-wrap gap-1">
+          <span
+            v-for="swatch of card.swatches"
+            :key="swatch.key"
+            class="inline-flex items-center gap-1 rounded-sm border border-border/60 px-1 py-0.5 font-mono text-[0.55rem] tabular-nums text-muted-foreground"
+          >
             <span
-              v-for="swatch of card.swatches"
-              :key="swatch.key"
-              class="inline-flex items-center gap-1 rounded-sm border border-border/60 px-1 py-0.5 font-mono text-[0.55rem] tabular-nums text-muted-foreground"
-            >
-              <span
-                aria-hidden="true"
-                class="h-2 w-2 rounded-[1px]"
-                :style="{ backgroundColor: swatch.color }"
-              />
-              {{ swatch.offset }}s
-            </span>
-          </div>
+              aria-hidden="true"
+              class="h-2 w-2 rounded-[1px]"
+              :style="{ backgroundColor: swatch.color }"
+            />
+            {{ swatch.offset }}s
+          </span>
+        </div>
 
-          <div class="mt-auto flex items-center gap-2 pt-1">
-            <Button
-              v-if="card.playbook.can_edit"
-              size="sm"
-              variant="outline"
-              @click="startEdit(card.playbook.id)"
-            >
-              <Pencil class="mr-1 h-4 w-4" />
-              {{ $t("common.edit") }}
-            </Button>
-            <Button
-              v-else
-              size="sm"
-              variant="outline"
-              @click="startEdit(card.playbook.id)"
-            >
-              {{ $t("common.view") }}
-            </Button>
-            <Button
-              size="sm"
-              class="tac-amber-cta ml-auto"
-              @click="practice(card.playbook.id)"
-            >
-              <Rocket class="mr-1 h-4 w-4" />
-              {{ $t("pages.utility.practice.start") }}
-            </Button>
-          </div>
+        <div class="mt-auto flex items-center gap-2 pt-1">
+          <Button
+            v-if="card.playbook.can_edit"
+            size="sm"
+            variant="outline"
+            @click="startEdit(card.playbook.id)"
+          >
+            <Pencil class="mr-1 h-4 w-4" />
+            {{ $t("common.edit") }}
+          </Button>
+          <Button
+            v-else
+            size="sm"
+            variant="outline"
+            @click="startEdit(card.playbook.id)"
+          >
+            {{ $t("common.view") }}
+          </Button>
+          <Button
+            size="sm"
+            class="tac-amber-cta ml-auto"
+            @click="practice(card.playbook.id)"
+          >
+            <Rocket class="mr-1 h-4 w-4" />
+            {{ $t("pages.utility.practice.start") }}
+          </Button>
         </div>
       </div>
-    </PageTransition>
-  </template>
+    </div>
+  </PageTransition>
+</template>
 
-  <StartPracticeDialog
-    v-model:open="practiceOpen"
-    :map-name="mapName"
-    :playbook-id="practicePlaybookId"
-  />
+<StartPracticeDialog
+  v-model:open="practiceOpen"
+  :map-name="mapName"
+  :playbook-id="practicePlaybookId"
+/>
+  </div>
 </template>

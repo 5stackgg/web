@@ -4,8 +4,12 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   ArrowLeft,
+  ClipboardCheck,
+  ListOrdered,
   Plus,
   Rocket,
+  Rows3,
+  ShieldHalf,
   Users,
 } from "lucide-vue-next";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -169,28 +173,52 @@ const showMeta = ref(false);
 // The plan is ranked against the caller's own drill record, so there is nothing
 // to show a signed-out visitor. Meta is only a tab once the map has mined data.
 const listTabs = computed(() => {
-  const tabs: Array<{ key: string; label: string; count?: number }> = [
-    { key: LIST_TAB, label: t("pages.utility.lineups"), count: totalCount.value },
+  const tabs: Array<{
+    key: string;
+    label: string;
+    count?: number;
+    icon?: unknown;
+  }> = [
+    {
+      key: LIST_TAB,
+      label: t("pages.utility.lineups"),
+      count: totalCount.value,
+      icon: Rows3,
+    },
   ];
   if (metaSpots.value.length) {
     tabs.push({
       key: META_TAB,
       label: t("pages.utility.views.meta_tab"),
       count: metaSpots.value.length,
+      icon: Users,
     });
   }
   tabs.push({
     key: PLAYBOOKS_TAB,
     label: t("pages.utility.views.playbooks_tab"),
+    icon: ListOrdered,
   });
-  tabs.push({ key: BLOCK_TAB, label: t("pages.utility.views.block_tab") });
+  tabs.push({
+    key: BLOCK_TAB,
+    label: t("pages.utility.views.block_tab"),
+    icon: ShieldHalf,
+  });
   if (mySteamId.value) {
-    tabs.push({ key: PLAN_TAB, label: t("pages.utility.plan.tab") });
+    tabs.push({
+      key: PLAN_TAB,
+      label: t("pages.utility.plan.tab"),
+      icon: ClipboardCheck,
+    });
   }
   // Authoring is reached from the header, so it is not a standing tab — but it
   // joins the strip while it is open, or the indicator has nothing to sit on.
   if (listTab.value === CREATE_TAB) {
-    tabs.push({ key: CREATE_TAB, label: t("pages.utility.views.create_tab") });
+    tabs.push({
+      key: CREATE_TAB,
+      label: t("pages.utility.views.create_tab"),
+      icon: Plus,
+    });
   }
   return tabs;
 });
@@ -520,7 +548,9 @@ async function restoreLineup(id: string) {
 const populatedElsewhere = computed(() =>
   SCOPES.filter(
     (scope) =>
-      scope !== filters.value.scope && (scopeCounts.value[scope] ?? 0) > 0,
+      scope !== filters.value.scope &&
+      (!!mySteamId.value || scope === "public") &&
+      (scopeCounts.value[scope] ?? 0) > 0,
   ).map((scope) => ({ scope, count: scopeCounts.value[scope] ?? 0 })),
 );
 
@@ -557,6 +587,47 @@ function selectLineup(id: string | null) {
 </script>
 
 <template>
+  <div class="flex gap-4">
+    <!-- Views live on their own edge so they can never be mistaken for the
+         scope tabs inside the panel: different question, different surface. -->
+    <PageTransition class="hidden lg:block">
+      <nav
+        class="sticky top-4 flex w-[84px] shrink-0 flex-col gap-1 rounded-lg border border-border bg-card/30 p-2 [backdrop-filter:blur(6px)]"
+      >
+        <span
+          class="pb-1 text-center font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground/70"
+        >
+          {{ $t("pages.utility.views.label") }}
+        </span>
+        <button
+          v-for="tab of listTabs"
+          :key="tab.key"
+          type="button"
+          class="flex flex-col items-center gap-1 rounded-sm border-l-2 px-1 py-2.5 transition-colors"
+          :class="
+            listTab === tab.key
+              ? 'border-[hsl(var(--tac-amber))] bg-[linear-gradient(90deg,hsl(var(--tac-amber)/0.14),transparent)] text-[hsl(var(--tac-amber))]'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          "
+          @click="listTab = tab.key"
+        >
+          <component :is="tab.icon" v-if="tab.icon" class="h-[18px] w-[18px]" />
+          <span
+            class="font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.1em]"
+          >
+            {{ tab.label }}
+          </span>
+          <span
+            v-if="tab.count !== undefined"
+            class="font-mono text-[0.55rem] leading-none opacity-60"
+          >
+            {{ tab.count }}
+          </span>
+        </button>
+      </nav>
+    </PageTransition>
+
+    <div class="min-w-0 flex-1">
   <PageTransition>
     <TacticalPageHeader>
       <template #description>{{ $t("pages.utility.eyebrow") }}</template>
@@ -584,7 +655,11 @@ function selectLineup(id: string | null) {
           <Plus class="mr-1 h-4 w-4" />
           {{ $t("pages.utility.create.action") }}
         </Button>
-        <Button class="tac-amber-cta" @click="practiceOpen = true">
+        <Button
+          v-if="mySteamId"
+          class="tac-amber-cta"
+          @click="practiceOpen = true"
+        >
           <Rocket class="mr-1 h-4 w-4" />
           {{ $t("pages.utility.practice.start") }}
         </Button>
@@ -592,10 +667,7 @@ function selectLineup(id: string | null) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <!-- The one navigation on this page. It used to sit in the panel looking
-       exactly like the scope tabs, which made two different questions read as
-       one control. -->
-  <PageTransition :delay="60" class="mt-4">
+  <PageTransition :delay="60" class="mt-4 lg:hidden">
     <AnimatedFilters
       v-model="listTab"
       :options="listTabs"
@@ -832,6 +904,8 @@ function selectLineup(id: string | null) {
     :per-page="perPage"
     @page="(value) => (page = value)"
   />
+    </div>
+  </div>
 
   <UtilityForkDialog
     v-model:open="forkOpen"

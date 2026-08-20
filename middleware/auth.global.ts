@@ -38,6 +38,13 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  // The library is public: a signed-out visitor gets Public lineups and the
+  // read-only views. Everything that needs an identity (Mine/Team/Saved,
+  // practice, voting, authoring) is hidden by the page, not by the route.
+  if (path === "/utility" || path.startsWith("/utility/")) {
+    return true;
+  }
+
   if (path.startsWith("/matches")) {
     // ...except the camera pages. Your own used to be reachable with a minted
     // token instead of a login, which is exactly what was retired: the phone

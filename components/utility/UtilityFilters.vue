@@ -58,24 +58,29 @@ const scopeOptions = computed(() => [
     label: t("pages.utility.scope.public"),
     count: props.scopeCounts.public,
   },
-  {
-    key: "mine",
-    label: t("pages.utility.scope.mine"),
-    disabled: !props.signedIn,
-    count: props.scopeCounts.mine,
-  },
-  {
-    key: "team",
-    label: t("pages.utility.scope.team"),
-    disabled: !props.hasTeam,
-    count: props.scopeCounts.team,
-  },
-  {
-    key: "favorites",
-    label: t("pages.utility.scope.favorites"),
-    disabled: !props.signedIn,
-    count: props.scopeCounts.favorites,
-  },
+  // Every scope below Public is "whose lineups", which a signed-out visitor
+  // has no answer to. Offering them greyed out is a login wall wearing a
+  // filter's clothes, so they are simply not there.
+  ...(props.signedIn
+    ? [
+        {
+          key: "mine",
+          label: t("pages.utility.scope.mine"),
+          count: props.scopeCounts.mine,
+        },
+        {
+          key: "team",
+          label: t("pages.utility.scope.team"),
+          disabled: !props.hasTeam,
+          count: props.scopeCounts.team,
+        },
+        {
+          key: "favorites",
+          label: t("pages.utility.scope.favorites"),
+          count: props.scopeCounts.favorites,
+        },
+      ]
+    : []),
   // Only worth a tab when there is something in it: an always-on Archived
   // scope reads as a feature, an empty one reads as a dead end.
   ...(props.signedIn && props.scopeCounts.archived

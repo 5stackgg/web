@@ -661,12 +661,6 @@ function selectLineup(id: string | null) {
           @select-meta="(key) => (selectedMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
         />
-        <span
-          class="pointer-events-none absolute left-3 top-3 z-10 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-white/40"
-        >
-          {{ $t("pages.utility.board.key") }}
-        </span>
-
         <!-- The view switcher rides the board rather than sitting above the
              list, where it read as a second scope control. -->
         <div
@@ -686,13 +680,11 @@ function selectLineup(id: string | null) {
         <div
           class="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-end justify-between gap-2"
         >
-          <div
-            class="pointer-events-auto max-w-full rounded-lg border border-white/10 bg-background/80 p-2 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
-          >
+          <div class="pointer-events-auto flex max-w-full flex-col gap-1.5">
             <span
-              class="mb-1.5 block font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+              class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-white/45 [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
             >
-              {{ $t("pages.utility.layers") }}
+              {{ $t("pages.utility.board.key") }}
             </span>
             <UtilityFilters
               v-model="filters"

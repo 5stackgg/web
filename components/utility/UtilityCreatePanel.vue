@@ -326,7 +326,10 @@ async function save() {
       land_z: end.z,
       name: name.value.trim(),
       description: description.value.trim() || null,
-      tags: tags.value.length ? tags.value : null,
+      // tags is text[] NOT NULL DEFAULT '{}'. Sending null coerces to [null]
+      // against [String!] and the insert is rejected before it reaches the
+      // column, so an empty tag box has to send an empty list.
+      tags: tags.value,
       visibility: visibility.value,
       team_id: teamId.value === NO_TEAM ? null : teamId.value,
     };
@@ -342,9 +345,16 @@ async function save() {
     emit("created", id);
     reset();
   } catch (error: any) {
+    // Hasura names the offending type but not the field, which is useless on
+    // an insert with twenty of them. The path is in the GraphQL error.
+    const detail = error?.graphQLErrors?.[0];
+    const where = detail?.extensions?.path ?? detail?.path?.join(".");
+
+    console.error("[utility] save error:", detail ?? error);
+
     toast({
       title: t("pages.utility.create.save_failed"),
-      description: error?.message,
+      description: where ? `${error?.message} (${where})` : error?.message,
       variant: "destructive",
     });
   } finally {

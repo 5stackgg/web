@@ -161,6 +161,9 @@ type PanelBoard = {
 
 const panelBoard = ref<PanelBoard | null>(null);
 
+const metaSpots = ref<UtilityMetaSpot[]>([]);
+const showMeta = ref(false);
+
 // The plan is ranked against the caller's own drill record, so there is nothing
 // to show a signed-out visitor. Meta is only a tab once the map has mined data.
 const listTabs = computed(() => {
@@ -373,8 +376,6 @@ watch(page, () => {
   void fetchLineups();
 });
 
-const metaSpots = ref<UtilityMetaSpot[]>([]);
-const showMeta = ref(false);
 
 // Best effort by design: the mined meta is a nice-to-have overlay, and a page
 // full of lineups must still render if the aggregate is unavailable.

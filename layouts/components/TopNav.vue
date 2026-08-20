@@ -483,6 +483,46 @@ const loginArrowClasses =
                       <li>
                         <NavigationMenuLink as-child>
                           <NuxtLink
+                            to="/utility"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.community.utility.title") }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t("layouts.top_nav.community.utility.subtitle")
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
+                      <li v-if="eventsEnabled">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/events"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.community.events.title") }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t("layouts.top_nav.community.events.subtitle")
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
                             to="/highlights"
                             :class="[navItemClasses, navItemStackedClasses]"
                           >
@@ -759,6 +799,9 @@ export default {
     },
     newsLabel() {
       return useApplicationSettingsStore().newsLabel;
+    },
+    eventsEnabled() {
+      return useApplicationSettingsStore().eventsEnabled;
     },
     scrimFinderEnabled() {
       return useApplicationSettingsStore().scrimFinderEnabled;

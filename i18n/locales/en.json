@@ -4795,6 +4795,14 @@
         "news": {
           "title": "News",
           "subtitle": "{brand} news"
+        },
+        "utility": {
+          "title": "Utility Library",
+          "subtitle": "Smokes, flashes and molotovs by map"
+        },
+        "events": {
+          "title": "Events",
+          "subtitle": "Community nights and one-off games"
         }
       }
     },

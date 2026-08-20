@@ -671,6 +671,19 @@ export const reviewUtilityLineupPublicMutation = generateMutation({
   ],
 });
 
+// One batch per call, by design: the whole point is that a caller can watch it
+// progress instead of holding a request open across every demo on the install.
+export const remineUtilityMetaMutation = generateMutation({
+  remineUtilityMeta: [
+    {},
+    {
+      demos: true,
+      throws: true,
+      done: true,
+    },
+  ],
+});
+
 export const archiveUtilityLineupMutation = generateMutation({
   update_utility_lineups_by_pk: [
     {

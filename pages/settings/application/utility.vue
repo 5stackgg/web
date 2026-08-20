@@ -6,6 +6,7 @@ import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import UtilityImportPanel from "~/components/utility/UtilityImportPanel.vue";
+import UtilityRescanPanel from "~/components/utility/UtilityRescanPanel.vue";
 </script>
 
 <template>
@@ -138,6 +139,18 @@ import UtilityImportPanel from "~/components/utility/UtilityImportPanel.vue";
         </template>
 
         <UtilityImportPanel v-if="importEnabled" />
+      </SettingsSection>
+    </PageTransition>
+
+    <PageTransition :delay="120">
+      <SettingsSection
+        id="rescan"
+        :title="$t('pages.settings.application.utility.rescan_section')"
+        :description="
+          $t('pages.settings.application.utility.rescan_section_description')
+        "
+      >
+        <UtilityRescanPanel />
       </SettingsSection>
     </PageTransition>
 

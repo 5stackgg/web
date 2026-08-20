@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "遊戲類型設定"
+          "title": "遊戲類型設定",
+          "global": "全域",
+          "placeholder": "目前為空。在此加入的主控台變數會套用到所有比賽。",
+          "order": "執行順序",
+          "order_hint": "每一層都會覆蓋上一層。",
+          "layers": {
+            "type": "比賽類型",
+            "type_note": "Competitive、Wingman、Duel",
+            "lan_note": "僅限 LAN 區域",
+            "global_note": "所有比賽",
+            "plugin": "外掛 cvar",
+            "plugin_note": "依已載入的外掛",
+            "mode": "遊戲模式",
+            "mode_note": "優先權最高"
+          }
         },
         "streaming": {
           "title": "直播",
@@ -3637,9 +3651,6 @@
       "readme": "關於",
       "no_readme": "此外掛的儲存庫中沒有 README。",
       "readme_loading": "正在載入 README…",
-      "always_load": "每場比賽都載入",
-      "always_load_hint": "不需遊戲模式選擇即可載入。",
-      "always_load_ranked": "排名與配對比賽中也會載入。",
       "configure": "設定檔",
       "configure_hint": "由外掛在首次載入時寫入，因此需要伺服器以此模式執行過一次後才會出現。",
       "configure_open": "開啟檔案",
@@ -3670,6 +3681,11 @@
         "already_off": "本部署已經關閉：5stack Ranks 會關閉 Valve 的伺服器準則以在遊戲內顯示段位，而它帶來的風險針對的是您的 Steam 帳號，而不是某一台伺服器。",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "自動更新",
+        "hint": "新版本一經發布即安裝。關閉後將維持節點目前執行的版本。",
+        "pinned": "已固定於 {version}。新版本會發出通知，而不會自動安裝。"
+      },
       "custom": {
         "add": "新增外掛",
         "badge": "自訂",
@@ -3698,7 +3714,25 @@
         "remove_hint": "從目錄中移除之前，請先在各節點上解除安裝它。",
         "removed": "已從目錄中移除"
       },
-      "retry": "重試"
+      "retry": "重試",
+      "config": {
+        "title": "設定",
+        "hint": "此外掛的主控台變數。會在類型設定與全域設定之後，於載入該外掛的伺服器上套用。",
+        "insert_template": "插入該外掛的 cvar",
+        "saved": "設定已儲存",
+        "edit": "編輯設定",
+        "empty": "尚未設定任何主控台變數。"
+      },
+      "load": {
+        "title": "不依賴遊戲模式載入",
+        "description": "選擇哪些比賽會自行載入此外掛。選用了該外掛的遊戲模式無論如何都會載入它。",
+        "ranked": "排名比賽",
+        "ranked_hint": "所有計入排名的比賽 — 配對佇列與徵召房間皆是。",
+        "tournaments": "錦標賽比賽",
+        "tournaments_hint": "在錦標賽對戰表中進行的比賽，無論是否計入排名。",
+        "custom": "自訂比賽",
+        "custom_hint": "其餘所有：不計入任何紀錄的比賽。"
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "建立設定檔時發生錯誤",
         "update": "更新設定檔時發生錯誤",
         "revert": "將設定檔還原為預設值時發生錯誤"
-      }
+      },
+      "clear_confirm": {
+        "description": "這會清空全域設定。不會還原任何內容 — 它出廠即為空。"
+      },
+      "reset_tooltip": "將此設定重設為出廠預設值",
+      "clear_tooltip": "清空此設定"
     }
   },
   "streams": {

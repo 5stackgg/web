@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "游戏类型配置"
+          "title": "游戏类型配置",
+          "global": "全局",
+          "placeholder": "为空。在此添加的控制台变量将应用于所有比赛。",
+          "order": "执行顺序",
+          "order_hint": "每一层都会覆盖上一层。",
+          "layers": {
+            "type": "比赛类型",
+            "type_note": "Competitive、Wingman、Duel",
+            "lan_note": "仅限 LAN 区域",
+            "global_note": "所有比赛",
+            "plugin": "插件 cvar",
+            "plugin_note": "按已加载的插件",
+            "mode": "游戏模式",
+            "mode_note": "优先级最高"
+          }
         },
         "streaming": {
           "title": "直播",
@@ -3637,9 +3651,6 @@
       "readme": "关于",
       "no_readme": "该插件的仓库中没有 README。",
       "readme_loading": "正在加载 README…",
-      "always_load": "每场比赛都加载",
-      "always_load_hint": "无需游戏模式选择即可加载。",
-      "always_load_ranked": "排位和匹配比赛中也会加载。",
       "configure": "配置",
       "configure_hint": "由插件在首次加载时写入，因此需要服务器以此模式运行过一次后才会出现。",
       "configure_open": "打开文件",
@@ -3670,6 +3681,11 @@
         "already_off": "本部署已经关闭：5stack Ranks 会关闭 Valve 的服务器准则以在游戏内显示段位，而它带来的风险针对的是您的 Steam 账号，而不是某一台服务器。",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "自动更新",
+        "hint": "新版本一经发布即安装。关闭后将保持节点当前运行的版本。",
+        "pinned": "已固定到 {version}。新版本将发出通知，而不会自动安装。"
+      },
       "custom": {
         "add": "添加插件",
         "badge": "自定义",
@@ -3698,7 +3714,25 @@
         "remove_hint": "从目录中移除之前，请先在各节点上卸载它。",
         "removed": "已从目录中移除"
       },
-      "retry": "重试"
+      "retry": "重试",
+      "config": {
+        "title": "配置",
+        "hint": "此插件的控制台变量。在类型配置和全局配置之后，于加载该插件的服务器上生效。",
+        "insert_template": "插入该插件的 cvar",
+        "saved": "配置已保存",
+        "edit": "编辑配置",
+        "empty": "未设置任何控制台变量。"
+      },
+      "load": {
+        "title": "不依赖游戏模式加载",
+        "description": "选择哪些比赛会自行加载此插件。选用了该插件的游戏模式无论如何都会加载它。",
+        "ranked": "排位比赛",
+        "ranked_hint": "所有计入排位的比赛 — 匹配队列和征召房间都算。",
+        "tournaments": "锦标赛比赛",
+        "tournaments_hint": "作为锦标赛对阵一部分进行的比赛，无论是否计入排位。",
+        "custom": "自定义比赛",
+        "custom_hint": "其余所有：不计入任何统计的比赛。"
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "创建配置时出错",
         "update": "更新配置时出错",
         "revert": "恢复配置为默认值时出错"
-      }
+      },
+      "clear_confirm": {
+        "description": "这会清空全局配置。不会恢复任何内容 — 它出厂即为空。"
+      },
+      "reset_tooltip": "将此配置重置为出厂默认值",
+      "clear_tooltip": "清空此配置"
     }
   },
   "streams": {

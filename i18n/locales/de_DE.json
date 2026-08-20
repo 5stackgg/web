@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Spieltyp-Konfigurationen"
+          "title": "Spieltyp-Konfigurationen",
+          "global": "Global",
+          "placeholder": "Leer. Hier hinzugefügte Konsolenvariablen gelten für jedes Match.",
+          "order": "Ausführungsreihenfolge",
+          "order_hint": "Jede Ebene überschreibt die darüber.",
+          "layers": {
+            "type": "Match-Typ",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "nur LAN-Regionen",
+            "global_note": "jedes Match",
+            "plugin": "Plugin-Cvars",
+            "plugin_note": "pro geladenem Plugin",
+            "mode": "Spielmodus",
+            "mode_note": "setzt sich durch"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "Info",
       "no_readme": "Dieses Plugin hat keine README in seinem Repository.",
       "readme_loading": "README wird geladen…",
-      "always_load": "Bei jedem Match laden",
-      "always_load_hint": "Lädt auch, ohne dass ein Spielmodus es auswählt.",
-      "always_load_ranked": "Wird auch bei Ranked- und Matchmaking-Matches geladen.",
       "configure": "Konfiguration",
       "configure_hint": "Wird beim ersten Laden vom Plugin geschrieben und erscheint daher, nachdem ein Server diesen Modus einmal gefahren hat.",
       "configure_open": "Dateien öffnen",
@@ -3670,6 +3681,11 @@
         "already_off": "Für dieses Deployment bereits aus: 5stack Ranks deaktiviert Valves Server-Guidelines, um Ränge im Spiel anzuzeigen, und das Risiko dabei trifft dein Steam-Konto, nicht einen einzelnen Server.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Automatisch aktualisieren",
+        "hint": "Installiert neue Releases, sobald sie veröffentlicht werden. Deaktiviere die Option, um auf der Version zu bleiben, die deine Nodes derzeit ausführen.",
+        "pinned": "Auf {version} festgelegt. Neue Releases lösen eine Benachrichtigung aus, statt installiert zu werden."
+      },
       "custom": {
         "add": "Plugin hinzufügen",
         "badge": "Eigenes",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Deinstalliere es von deinen Nodes, bevor du es aus dem Katalog nimmst.",
         "removed": "Aus dem Katalog entfernt"
       },
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "config": {
+        "title": "Konfiguration",
+        "hint": "Konsolenvariablen für dieses Plugin. Werden nach der Typ- und der globalen Konfiguration angewendet, auf Servern, die es laden.",
+        "insert_template": "Cvars des Plugins einfügen",
+        "saved": "Konfiguration gespeichert",
+        "edit": "Konfiguration bearbeiten",
+        "empty": "Keine Konsolenvariablen gesetzt."
+      },
+      "load": {
+        "title": "Ohne Spielmodus laden",
+        "description": "Lege fest, welche Matches dieses Plugin von sich aus laden. Ein Spielmodus, der es auswählt, lädt es ohnehin.",
+        "ranked": "Ranked-Matches",
+        "ranked_hint": "Alles, was für das Ranking zählt — die Queue ebenso wie eine Draft-Lobby.",
+        "tournaments": "Turnier-Matches",
+        "tournaments_hint": "Matches, die Teil eines Turnierbaums sind, ob ranked oder nicht.",
+        "custom": "Custom-Matches",
+        "custom_hint": "Alles andere: Matches, die für nichts zählen."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Fehler beim Erstellen der Config",
         "update": "Fehler beim Aktualisieren der Config",
         "revert": "Fehler beim Zurücksetzen der Config auf Standard"
-      }
+      },
+      "clear_confirm": {
+        "description": "Damit wird die globale Konfiguration geleert. Nichts wird wiederhergestellt — sie wird leer ausgeliefert."
+      },
+      "reset_tooltip": "Diese Konfiguration auf die Auslieferungsstandards zurücksetzen",
+      "clear_tooltip": "Diese Konfiguration leeren"
     }
   },
   "streams": {

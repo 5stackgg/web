@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Configuraciones por tipo de partida"
+          "title": "Configuraciones por tipo de partida",
+          "global": "Global",
+          "placeholder": "Vacío. Las variables de consola añadidas aquí se aplican a todas las partidas.",
+          "order": "Orden de ejecución",
+          "order_hint": "Cada capa prevalece sobre la anterior.",
+          "layers": {
+            "type": "Tipo de partida",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "solo regiones LAN",
+            "global_note": "todas las partidas",
+            "plugin": "Cvars del plugin",
+            "plugin_note": "por plugin cargado",
+            "mode": "Modo de juego",
+            "mode_note": "prevalece"
+          }
         },
         "streaming": {
           "title": "Retransmisión",
@@ -3637,9 +3651,6 @@
       "readme": "Acerca de",
       "no_readme": "Este plugin no tiene README en su repositorio.",
       "readme_loading": "Cargando el README…",
-      "always_load": "Cargar en cada partida",
-      "always_load_hint": "Cárgalo sin que ningún modo de juego lo seleccione.",
-      "always_load_ranked": "También se carga en partidas clasificatorias y de emparejamiento.",
       "configure": "Configuración",
       "configure_hint": "El plugin la escribe en su primera carga, así que aparece después de que un servidor haya usado este modo una vez.",
       "configure_open": "Abrir archivos",
@@ -3670,6 +3681,11 @@
         "already_off": "Ya están desactivadas en este despliegue: 5stack Ranks desactiva las guidelines de servidor de Valve para mostrar los rangos dentro del juego, y el riesgo que conlleva recae sobre tu cuenta de Steam, no sobre un solo servidor.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Actualizar automáticamente",
+        "hint": "Instala las nuevas versiones en cuanto se publican. Desactívalo para permanecer en la versión que tus nodos ejecutan ahora.",
+        "pinned": "Fijado en {version}. Las nuevas versiones generarán una notificación en lugar de instalarse."
+      },
       "custom": {
         "add": "Añadir un plugin",
         "badge": "Personalizado",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Desinstálalo de tus nodos antes de sacarlo del catálogo.",
         "removed": "Quitado del catálogo"
       },
-      "retry": "Reintentar"
+      "retry": "Reintentar",
+      "config": {
+        "title": "Configuración",
+        "hint": "Variables de consola para este plugin. Se aplican después de las configuraciones de tipo y global, en los servidores que lo cargan.",
+        "insert_template": "Insertar las cvars del plugin",
+        "saved": "Configuración guardada",
+        "edit": "Editar configuración",
+        "empty": "No hay variables de consola definidas."
+      },
+      "load": {
+        "title": "Cargar sin un modo de juego",
+        "description": "Elige qué partidas cargan este plugin por sí solas. Un modo de juego que lo seleccione lo carga igualmente.",
+        "ranked": "Partidas clasificatorias",
+        "ranked_hint": "Todo lo que cuenta para la clasificación: tanto la cola como una sala de draft.",
+        "tournaments": "Partidas de torneo",
+        "tournaments_hint": "Partidas jugadas dentro de un cuadro de torneo, clasificatorias o no.",
+        "custom": "Partidas personalizadas",
+        "custom_hint": "Todo lo demás: partidas que no cuentan para nada."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Error al crear la config",
         "update": "Error al actualizar la config",
         "revert": "Error al restaurar la config a los valores por defecto"
-      }
+      },
+      "clear_confirm": {
+        "description": "Esto vacía la configuración global. No se restaura nada: viene vacía de fábrica."
+      },
+      "reset_tooltip": "Restablecer esta configuración a los valores predeterminados de fábrica",
+      "clear_tooltip": "Vaciar esta configuración"
     }
   },
   "streams": {

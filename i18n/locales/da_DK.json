@@ -1898,7 +1898,21 @@
           }
         },
         "game_type_configs": {
-          "title": "Konfigurationer af spiltyper"
+          "title": "Konfigurationer af spiltyper",
+          "global": "Global",
+          "placeholder": "Tom. Konsolvariabler tilføjet her gælder for alle kampe.",
+          "order": "Udførelsesrækkefølge",
+          "order_hint": "Hvert lag går forud for det ovenfor.",
+          "layers": {
+            "type": "Kamptype",
+            "type_note": "Competitive, Wingman, Duel",
+            "lan_note": "kun LAN-regioner",
+            "global_note": "alle kampe",
+            "plugin": "Plugin-cvars",
+            "plugin_note": "pr. indlæst plugin",
+            "mode": "Spiltilstand",
+            "mode_note": "vinder"
+          }
         },
         "streaming": {
           "title": "Streaming",
@@ -3637,9 +3651,6 @@
       "readme": "Om",
       "no_readme": "Dette plugin har ingen README i sit repository.",
       "readme_loading": "Indlæser README…",
-      "always_load": "Indlæs i hver kamp",
-      "always_load_hint": "Indlæs dette uden at en spiltilstand vælger det.",
-      "always_load_ranked": "Indlæses også i ranglede kampe og matchmaking.",
       "configure": "Konfiguration",
       "configure_hint": "Skrives af pluginnet ved første indlæsning, så det dukker op efter at en server har kørt denne tilstand én gang.",
       "configure_open": "Åbn filer",
@@ -3670,6 +3681,11 @@
         "already_off": "Allerede slået fra på denne deployment: 5stack Ranks slår Valves server guidelines fra for at vise ranks i spillet, og risikoen ved det rammer din Steam-konto frem for en enkelt server.",
         "already_off_link": "5stack Ranks"
       },
+      "auto_update": {
+        "toggle": "Opdatér automatisk",
+        "hint": "Installerer nye udgivelser, så snart de offentliggøres. Slå fra for at blive på den version, dine noder kører nu.",
+        "pinned": "Fastlåst til {version}. Nye udgivelser udløser en notifikation i stedet for at blive installeret."
+      },
       "custom": {
         "add": "Tilføj et plugin",
         "badge": "Tilpasset",
@@ -3698,7 +3714,25 @@
         "remove_hint": "Afinstallér det fra dine noder, før du tager det ud af kataloget.",
         "removed": "Fjernet fra kataloget"
       },
-      "retry": "Prøv igen"
+      "retry": "Prøv igen",
+      "config": {
+        "title": "Konfiguration",
+        "hint": "Konsolvariabler for dette plugin. Anvendes efter type- og den globale konfiguration, på servere der indlæser det.",
+        "insert_template": "Indsæt pluginets cvars",
+        "saved": "Konfiguration gemt",
+        "edit": "Redigér konfiguration",
+        "empty": "Ingen konsolvariabler angivet."
+      },
+      "load": {
+        "title": "Indlæs uden en spiltilstand",
+        "description": "Vælg hvilke kampe der indlæser dette plugin af sig selv. En spiltilstand, der vælger det, indlæser det alligevel.",
+        "ranked": "Rangerede kampe",
+        "ranked_hint": "Alt der tæller med i rangeringen — både køen og en draft-lobby.",
+        "tournaments": "Turneringskampe",
+        "tournaments_hint": "Kampe spillet som en del af en turneringsplan, rangerede eller ej.",
+        "custom": "Brugerdefinerede kampe",
+        "custom_hint": "Alt andet: kampe der ikke tæller med nogen steder."
+      }
     },
     "awards": {
       "title": "Awards",
@@ -6728,7 +6762,12 @@
         "create": "Config kunne ikke oprettes",
         "update": "Config kunne ikke opdateres",
         "revert": "Config kunne ikke nulstilles til standard"
-      }
+      },
+      "clear_confirm": {
+        "description": "Dette tømmer den globale konfiguration. Intet gendannes — den leveres tom."
+      },
+      "reset_tooltip": "Nulstil denne konfiguration til de leverede standardværdier",
+      "clear_tooltip": "Tøm denne konfiguration"
     }
   },
   "streams": {

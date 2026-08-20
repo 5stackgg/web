@@ -87,6 +87,7 @@ export const utilityLineupFields = {
   description: true,
   trajectory_size: true,
   updated_at: true,
+  archived_at: true,
 } as const;
 
 // Deliberately narrow: only the columns the picker renders plus the two

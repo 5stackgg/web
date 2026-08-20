@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import {
   ArrowUpRight,
   Archive,
+  ArchiveRestore,
   GitFork,
   Heart,
   ThumbsDown,
@@ -53,6 +54,7 @@ const emit = defineEmits<{
   (e: "hover", id: string | null): void;
   (e: "fork", id: string): void;
   (e: "archive", id: string): void;
+  (e: "restore", id: string): void;
   (e: "vote", id: string, value: 1 | -1): void;
   (e: "favorite", id: string): void;
   (e: "open", id: string): void;
@@ -144,13 +146,23 @@ const favoriteTitle = computed(() =>
       </button>
 
       <button
-        v-if="showArchive && lineup.can_edit"
+        v-if="showArchive && lineup.can_edit && !lineup.archived_at"
         type="button"
         class="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
         :title="$t('pages.utility.archive.action')"
         @click.stop="emit('archive', lineup.id)"
       >
         <Archive class="h-4 w-4" />
+      </button>
+
+      <button
+        v-if="lineup.can_edit && lineup.archived_at"
+        type="button"
+        class="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-[hsl(var(--tac-amber))]/15 hover:text-[hsl(var(--tac-amber))]"
+        :title="$t('pages.utility.archive.restore')"
+        @click.stop="emit('restore', lineup.id)"
+      >
+        <ArchiveRestore class="h-4 w-4" />
       </button>
 
       <!-- Opens in place when the page can host it: flipping between lineups is

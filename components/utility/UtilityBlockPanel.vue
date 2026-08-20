@@ -8,10 +8,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
-import FilterBar from "~/components/common/FilterBar.vue";
-import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { toast } from "~/components/ui/toast";
-import UtilityTypeChips from "~/components/utility/UtilityTypeChips.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -21,7 +18,6 @@ import {
 import { order_by } from "~/generated/zeus";
 import {
   UTILITY_EYE_HEIGHT_UNITS,
-  UTILITY_SIDES,
   UTILITY_SIGHTLINE_TONES,
   UTILITY_SIGHTLINE_UNCHECKED_COLOR,
   readUtilitySightlineResult,
@@ -37,11 +33,16 @@ import type {
   UtilityBlockingOutput,
   UtilityBlockingResult,
   UtilityLineup,
+  UtilitySide,
   UtilitySightlinePoint,
   UtilityType,
 } from "~/types/utility";
 
-const props = defineProps<{ mapName: string }>();
+const props = defineProps<{
+  mapName: string;
+  types: UtilityType[];
+  sides: UtilitySide[];
+}>();
 
 const emit = defineEmits<{
   (event: "board", state: {
@@ -61,13 +62,10 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const ANY_SIDE = "any";
 const RESULT_LIMIT = 30;
 
 const from = ref<UtilitySightlinePoint | null>(null);
 const to = ref<UtilitySightlinePoint | null>(null);
-const side = ref<string>(ANY_SIDE);
-const types = ref<UtilityType[]>([]);
 const heightInput = ref(String(UTILITY_EYE_HEIGHT_UNITS));
 const searching = ref(false);
 const searched = ref(false);
@@ -76,14 +74,6 @@ const notice = ref<UtilityAnalysisNotice | null>(null);
 const lineupsById = ref<Record<string, UtilityLineup>>({});
 const selectedId = ref<string | null>(null);
 const hoveredId = ref<string | null>(null);
-
-const sideOptions = computed(() => [
-  { key: ANY_SIDE, label: t("common.any") },
-  ...UTILITY_SIDES.map((entry) => ({
-    key: entry,
-    label: t(`pages.utility.sides.${entry}`),
-  })),
-]);
 
 const pickHeight = computed(() => {
   const value = Number(heightInput.value);
@@ -158,7 +148,7 @@ const rankedLineups = computed<
     if (!lineup) {
       continue;
     }
-    if (types.value.length && !types.value.includes(lineup.utility_type)) {
+    if (props.types.length && !props.types.includes(lineup.utility_type)) {
       continue;
     }
     out.push({
@@ -228,7 +218,7 @@ async function search() {
         to_x: end.x,
         to_y: end.y,
         to_z: end.z,
-        side: side.value === ANY_SIDE ? null : side.value,
+        side: props.sides.length === 1 ? props.sides[0] : null,
         limit: RESULT_LIMIT,
       },
       fetchPolicy: "no-cache",
@@ -315,16 +305,6 @@ watch(
 
 <template>
   <div class="flex flex-col gap-2">
-<FilterBar>
-  <UtilityTypeChips v-model="types" />
-  <AnimatedFilters
-    v-model="side"
-    :options="sideOptions"
-    square
-    class="ml-auto"
-  />
-</FilterBar>
-
 
 <p class="mt-2 flex items-start gap-1.5 text-xs text-muted-foreground">
   <Crosshair class="mt-0.5 h-3.5 w-3.5 shrink-0" />

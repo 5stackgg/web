@@ -67,6 +67,17 @@ const scopeOptions = computed(() => [
     disabled: !props.signedIn,
     count: props.scopeCounts.favorites,
   },
+  // Only worth a tab when there is something in it: an always-on Archived
+  // scope reads as a feature, an empty one reads as a dead end.
+  ...(props.signedIn && props.scopeCounts.archived
+    ? [
+        {
+          key: "archived",
+          label: t("pages.utility.scope.archived"),
+          count: props.scopeCounts.archived,
+        },
+      ]
+    : []),
 ]);
 
 const scopeModel = computed<string>({

@@ -101,6 +101,7 @@ export type UtilityLineup = {
   verified_at: string | null;
   created_at?: string | null;
   updated_at?: string | null;
+  archived_at?: string | null;
   can_view: boolean;
   can_edit: boolean;
   my_vote: number | null;

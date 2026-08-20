@@ -12,7 +12,12 @@ import type {
   UtilityType,
 } from "~/types/utility";
 
-export type UtilityScope = "public" | "mine" | "team" | "favorites";
+export type UtilityScope =
+  | "public"
+  | "mine"
+  | "team"
+  | "favorites"
+  | "archived";
 
 export type UtilitySort = "top" | "new";
 
@@ -379,6 +384,10 @@ export function utilityLineupWhere(
   const clause: Record<string, any> = {
     map_name: { _eq: context.mapName },
     can_view: { _eq: true },
+    // Archived lineups are hidden everywhere except the scope that exists to
+    // get them back. Without this an archive looks like it failed on reload.
+    archived_at:
+      state.scope === "archived" ? { _is_null: false } : { _is_null: true },
   };
   if (state.types.length) {
     clause.utility_type = { _in: state.types };
@@ -409,6 +418,8 @@ export function utilityLineupWhere(
     clause.team_id = { _in: context.myTeamIds };
   } else if (state.scope === "favorites") {
     clause.is_favorited = { _eq: true };
+  } else if (state.scope === "archived" && context.mySteamId) {
+    clause.author_steam_id = { _eq: context.mySteamId };
   } else if (state.scope === "public") {
     clause.visibility = { _eq: "Public" };
   }

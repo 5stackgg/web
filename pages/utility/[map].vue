@@ -30,7 +30,9 @@ import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue"
 import UtilityLineupDialog from "~/components/utility/UtilityLineupDialog.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { toast } from "~/components/ui/toast";
 import {
+  archiveUtilityLineupMutation,
   utilityLineupsCountQuery,
   utilityScopeCountsQuery,
   utilityLineupsQuery,
@@ -265,7 +267,7 @@ const where = computed<Record<string, unknown>>(() =>
 // One count per scope tab, so "MINE" says how many are yours before you click
 // it. Every other filter still applies -- the tabs count what you would get,
 // not what exists.
-const SCOPES = ["public", "mine", "team", "favorites"] as const;
+const SCOPES = ["public", "mine", "team", "favorites", "archived"] as const;
 
 const scopeCounts = ref<Record<string, number>>({});
 
@@ -491,6 +493,28 @@ async function onFavorite(id: string) {
   }
 }
 
+// Restoring from the Archived scope drops the row for the same reason
+// archiving drops it from the library: it no longer belongs to the list you
+// are looking at.
+async function restoreLineup(id: string) {
+  try {
+    await getGraphqlClient().mutate({
+      mutation: archiveUtilityLineupMutation,
+      variables: { id, archived_at: null },
+    });
+    lineups.value = lineups.value.filter((entry) => entry.id !== id);
+    totalCount.value = Math.max(0, totalCount.value - 1);
+    toast({ title: t("pages.utility.archive.restored") });
+    void fetchScopeCounts();
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.archive.restore_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
+}
+
 function startArchive(id: string) {
   archiveLineup.value = lineups.value.find((entry) => entry.id === id) ?? null;
   archiveOpen.value = !!archiveLineup.value;
@@ -559,9 +583,7 @@ function selectLineup(id: string | null) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <!-- Scope, tags and sort only mean anything to the library list; the other
-       views carry their own controls. -->
-  <PageTransition v-if="listTab === LIST_TAB" :delay="60" class="mt-4">
+  <PageTransition :delay="60" class="mt-4">
     <UtilityFilters
       v-model="filters"
       :available-tags="availableTags"
@@ -642,6 +664,8 @@ function selectLineup(id: string | null) {
         <UtilityBlockPanel
           v-else-if="showBlockPanel"
           :map-name="mapName"
+          :types="filters.types"
+          :sides="filters.sides"
           @board="(state) => (panelBoard = state)"
           @open="openLineup"
         />
@@ -658,6 +682,8 @@ function selectLineup(id: string | null) {
           v-model:selected-key="selectedMetaKey"
           :spots="metaSpots"
           :lineups="lineups"
+          :types="filters.types"
+          :sides="filters.sides"
           @open="openLineup"
         />
 
@@ -732,6 +758,7 @@ function selectLineup(id: string | null) {
               @open="openLineup"
               @fork="startFork"
               @archive="startArchive"
+              @restore="restoreLineup"
               @vote="onVote"
               @favorite="onFavorite"
             />

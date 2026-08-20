@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { computed, watch } from "vue";
 import { Crosshair, Users } from "lucide-vue-next";
-import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { Badge } from "~/components/ui/badge";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -10,17 +8,22 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import {
-  UTILITY_SIDES,
   UTILITY_TYPE_COLORS,
   matchUtilityMetaSpot,
 } from "~/utilities/utilityDisplay";
 import type { UtilityMetaSpot } from "~/utilities/utilityDisplay";
-import type { UtilityLineup } from "~/types/utility";
+import type {
+  UtilityLineup,
+  UtilitySide,
+  UtilityType,
+} from "~/types/utility";
 
 const props = defineProps<{
   spots: UtilityMetaSpot[];
   lineups: UtilityLineup[];
   selectedKey: string | null;
+  types: UtilityType[];
+  sides: UtilitySide[];
 }>();
 
 const emit = defineEmits<{
@@ -28,23 +31,19 @@ const emit = defineEmits<{
   (event: "open", id: string): void;
 }>();
 
-const { t } = useI18n();
-
-const ANY_SIDE = "any";
-const sideFilter = ref<string>(ANY_SIDE);
-
-const sideOptions = computed(() => [
-  { key: ANY_SIDE, label: t("common.any") },
-  ...UTILITY_SIDES.map((entry) => ({
-    key: entry,
-    label: t(`pages.utility.sides.${entry}`),
-  })),
-]);
-
 const visibleSpots = computed(() =>
-  props.spots.filter(
-    (spot) => sideFilter.value === ANY_SIDE || spot.side === sideFilter.value,
-  ),
+  props.spots.filter((spot) => {
+    if (props.types.length && !props.types.includes(spot.utilityType)) {
+      return false;
+    }
+    if (
+      props.sides.length &&
+      (!spot.side || !props.sides.includes(spot.side as UtilitySide))
+    ) {
+      return false;
+    }
+    return true;
+  }),
 );
 
 // Which saved lineups sit in a cluster. The count comes from the row's own
@@ -111,8 +110,6 @@ watch(visibleSpots, (list) => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <AnimatedFilters v-model="sideFilter" :options="sideOptions" square block />
-
     <div
       class="flex items-center justify-between gap-2 px-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
     >
@@ -136,7 +133,7 @@ watch(visibleSpots, (list) => {
       </EmptyDescription>
     </Empty>
 
-    <div v-else class="flex max-h-[70vh] flex-col gap-1 overflow-y-auto pr-1">
+    <div v-else class="flex flex-col gap-1">
       <div
         v-for="row of rows"
         :key="row.spot.key"

@@ -28,11 +28,16 @@ export function useUtilityReactions() {
   const { t } = useI18n();
 
   function snapshot(lineup: UtilityLineup): UtilityReactionPatch {
+    // Normalised, not passed through. A row fetched without the viewer's own
+    // columns yields undefined, and undefined through this arithmetic is NaN
+    // on the screen a click later.
+    const mine = Number(lineup.my_vote ?? 0);
+
     return {
-      my_vote: lineup.my_vote ?? null,
+      my_vote: mine === 1 || mine === -1 ? mine : null,
       upvotes: Number(lineup.upvotes ?? 0),
       downvotes: Number(lineup.downvotes ?? 0),
-      is_favorited: !!lineup.is_favorited,
+      is_favorited: lineup.is_favorited === true,
     };
   }
 
@@ -74,7 +79,7 @@ export function useUtilityReactions() {
     steamId: string,
     value: 1 | -1,
   ): Promise<boolean> {
-    const clearing = lineup.my_vote === value;
+    const clearing = Number(lineup.my_vote ?? 0) === value;
     const where = {
       utility_lineup_id: { _eq: lineup.id },
       steam_id: { _eq: steamId },
@@ -116,7 +121,7 @@ export function useUtilityReactions() {
     try {
       const client = getGraphqlClient();
 
-      if (lineup.is_favorited) {
+      if (lineup.is_favorited === true) {
         await client.mutate({
           mutation: unfavoriteUtilityLineupMutation,
           variables: {

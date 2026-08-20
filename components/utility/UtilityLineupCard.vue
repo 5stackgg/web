@@ -68,21 +68,28 @@ const flightSeconds = computed(() => {
 });
 
 const score = computed(
-  () => (props.lineup.upvotes ?? 0) - (props.lineup.downvotes ?? 0),
+  () => Number(props.lineup.upvotes ?? 0) - Number(props.lineup.downvotes ?? 0),
 );
 
 const jumpBind = computed(() => jumpThrowBindState(props.lineup));
 
 const { t } = useI18n();
 
+// Read through normalisers, never off the row. A card rendered somewhere that
+// does not select the viewer's own columns would otherwise show undefined as
+// "not voted" and then compute NaN the moment you click it.
+const myVote = computed(() => Number(props.lineup.my_vote ?? 0));
+const isFavorited = computed(() => props.lineup.is_favorited === true);
+const favoriteCount = computed(() => Number(props.lineup.favorites ?? 0));
+
 const voteTitle = computed(() =>
-  props.lineup.my_vote === 1
+  myVote.value === 1
     ? t("pages.utility.card.unvote")
     : t("pages.utility.card.upvote"),
 );
 
 const favoriteTitle = computed(() =>
-  props.lineup.is_favorited
+  isFavorited.value
     ? t("pages.utility.card.unfavorite")
     : t("pages.utility.card.favorite"),
 );
@@ -136,7 +143,7 @@ const favoriteTitle = computed(() =>
       <button
         v-if="showArchive && lineup.can_edit"
         type="button"
-        class="shrink-0 rounded p-1 text-muted-foreground opacity-0 transition-all duration-150 hover:bg-destructive/15 hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100"
+        class="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
         :title="$t('pages.utility.archive.action')"
         @click.stop="emit('archive', lineup.id)"
       >
@@ -234,7 +241,7 @@ const favoriteTitle = computed(() =>
           :disabled="!canReact"
           class="inline-flex items-center gap-1 rounded px-1.5 py-1 transition-colors disabled:cursor-default disabled:opacity-60"
           :class="
-            lineup.my_vote === 1
+            myVote === 1
               ? 'text-[hsl(var(--tac-amber))]'
               : 'text-muted-foreground enabled:hover:bg-muted/50 enabled:hover:text-foreground'
           "
@@ -243,7 +250,7 @@ const favoriteTitle = computed(() =>
         >
           <ThumbsUp
             class="h-3 w-3 transition-transform"
-            :class="lineup.my_vote === 1 ? 'fill-current scale-110' : ''"
+            :class="myVote === 1 ? 'fill-current scale-110' : ''"
           />
           {{ score }}
         </button>
@@ -253,7 +260,7 @@ const favoriteTitle = computed(() =>
           :disabled="!canReact"
           class="inline-flex items-center gap-1 rounded px-1.5 py-1 transition-colors disabled:cursor-default disabled:opacity-60"
           :class="
-            lineup.is_favorited
+            isFavorited
               ? 'text-destructive'
               : 'text-muted-foreground enabled:hover:bg-muted/50 enabled:hover:text-foreground'
           "
@@ -262,9 +269,9 @@ const favoriteTitle = computed(() =>
         >
           <Heart
             class="h-3 w-3 transition-transform"
-            :class="lineup.is_favorited ? 'fill-current scale-110' : ''"
+            :class="isFavorited ? 'fill-current scale-110' : ''"
           />
-          {{ lineup.favorites ?? 0 }}
+          {{ favoriteCount }}
         </button>
       </div>
     </div>

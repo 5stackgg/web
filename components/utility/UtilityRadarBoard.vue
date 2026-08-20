@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { MapPinOff } from "lucide-vue-next";
+import { computed, ref, watch } from "vue";
+import { MapPinOff, Maximize2, Minus, Plus } from "lucide-vue-next";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import {
   UTILITY_TYPE_COLORS,
@@ -202,8 +202,124 @@ const drawnMarkers = computed<DrawnMarker[]>(() => {
 
 // preserveAspectRatio="none" over a square container makes the viewBox a plain
 // linear scale of the rendered box, so the click maps back without any letterbox
+// Zoom rides a CSS transform on a wrapper ABOVE the svg, which is what keeps
+// picking honest: getBoundingClientRect reports the transformed box, so the
+// click handler's normalised fraction stays correct at any zoom without
+// knowing a thing about it.
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 6;
+
+const zoom = ref(1);
+const panX = ref(0);
+const panY = ref(0);
+const viewportRef = ref<HTMLElement | null>(null);
+const panning = ref(false);
+
+let dragged = false;
+let lastX = 0;
+let lastY = 0;
+
+const boardTransform = computed(
+  () =>
+    `translate(${panX.value}px, ${panY.value}px) scale(${zoom.value})`,
+);
+
+// Panning past the edge would reveal the background behind the map, so the
+// offset is clamped to whatever the current zoom actually overflows by.
+function clampPan() {
+  const rect = viewportRef.value?.getBoundingClientRect();
+  if (!rect) {
+    return;
+  }
+  const slackX = (rect.width * (zoom.value - 1)) / 2;
+  const slackY = (rect.height * (zoom.value - 1)) / 2;
+  panX.value = Math.min(slackX, Math.max(-slackX, panX.value));
+  panY.value = Math.min(slackY, Math.max(-slackY, panY.value));
+}
+
+// Zooming toward the pointer rather than the centre: the thing under the
+// cursor is the thing being looked at, so it should stay put.
+function zoomAt(next: number, clientX?: number, clientY?: number) {
+  const rect = viewportRef.value?.getBoundingClientRect();
+  const target = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next));
+  if (rect && clientX !== undefined && clientY !== undefined) {
+    const originX = clientX - rect.left - rect.width / 2;
+    const originY = clientY - rect.top - rect.height / 2;
+    const ratio = target / zoom.value;
+    panX.value = originX - (originX - panX.value) * ratio;
+    panY.value = originY - (originY - panY.value) * ratio;
+  }
+  zoom.value = target;
+  if (target === MIN_ZOOM) {
+    panX.value = 0;
+    panY.value = 0;
+  }
+  clampPan();
+}
+
+function onWheel(event: WheelEvent) {
+  event.preventDefault();
+  zoomAt(
+    zoom.value * (event.deltaY < 0 ? 1.15 : 1 / 1.15),
+    event.clientX,
+    event.clientY,
+  );
+}
+
+function onPointerDown(event: PointerEvent) {
+  if (zoom.value <= MIN_ZOOM || event.button !== 0) {
+    return;
+  }
+  panning.value = true;
+  dragged = false;
+  lastX = event.clientX;
+  lastY = event.clientY;
+  (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+}
+
+function onPointerMove(event: PointerEvent) {
+  if (!panning.value) {
+    return;
+  }
+  const dx = event.clientX - lastX;
+  const dy = event.clientY - lastY;
+  if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+    dragged = true;
+  }
+  panX.value += dx;
+  panY.value += dy;
+  lastX = event.clientX;
+  lastY = event.clientY;
+  clampPan();
+}
+
+function onPointerUp(event: PointerEvent) {
+  if (!panning.value) {
+    return;
+  }
+  panning.value = false;
+  (event.currentTarget as HTMLElement).releasePointerCapture?.(event.pointerId);
+}
+
+function resetView() {
+  zoom.value = 1;
+  panX.value = 0;
+  panY.value = 0;
+}
+
+// A new map is a new view; keeping the old pan would open it somewhere random.
+watch(
+  () => props.mapName,
+  () => resetView(),
+);
+
 // correction.
 function onBoardClick(event: MouseEvent) {
+  // A drag that ended on the map is a pan, not a pick.
+  if (dragged) {
+    dragged = false;
+    return;
+  }
   if (!props.picking) {
     emit("select", null);
     return;
@@ -253,8 +369,23 @@ const orderedMarkers = computed(() => {
 
 <template>
   <div
+    ref="viewportRef"
     class="relative w-full aspect-square overflow-hidden rounded-md border border-border bg-card/40"
+    :class="zoom > 1 ? (panning ? 'cursor-grabbing' : 'cursor-grab') : ''"
+    @wheel="onWheel"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
   >
+    <div
+      class="absolute inset-0"
+      :style="{
+        transform: boardTransform,
+        transformOrigin: 'center center',
+        willChange: zoom > 1 ? 'transform' : 'auto',
+      }"
+    >
     <img
       v-if="radarSrc"
       :src="radarSrc"
@@ -493,5 +624,41 @@ const orderedMarkers = computed(() => {
         </g>
       </g>
     </svg>
+    </div>
+
+    <div
+      v-if="radarSrc"
+      class="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col overflow-hidden rounded-md border border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
+      @pointerdown.stop
+      @wheel.stop
+    >
+      <button
+        type="button"
+        class="flex h-7 w-7 items-center justify-center text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground disabled:opacity-30"
+        :disabled="zoom >= 6"
+        :title="$t('pages.utility.board.zoom_in')"
+        @click.stop="zoomAt(zoom * 1.4)"
+      >
+        <Plus class="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        class="flex h-7 w-7 items-center justify-center border-t border-white/10 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground disabled:opacity-30"
+        :disabled="zoom <= 1"
+        :title="$t('pages.utility.board.zoom_out')"
+        @click.stop="zoomAt(zoom / 1.4)"
+      >
+        <Minus class="h-3.5 w-3.5" />
+      </button>
+      <button
+        v-if="zoom > 1"
+        type="button"
+        class="flex h-7 w-7 items-center justify-center border-t border-white/10 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+        :title="$t('pages.utility.board.zoom_reset')"
+        @click.stop="resetView()"
+      >
+        <Maximize2 class="h-3.5 w-3.5" />
+      </button>
+    </div>
   </div>
 </template>

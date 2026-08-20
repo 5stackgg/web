@@ -169,6 +169,40 @@ const panelBoard = ref<PanelBoard | null>(null);
 const metaSpots = ref<UtilityMetaSpot[]>([]);
 const showMeta = ref(false);
 
+// A raw "seen 30+ times" floor ages badly: as more demos are parsed every
+// count inflates and the same floor lets more of the tail back in. A share of
+// the busiest spot on the map is stable no matter how big the corpus gets.
+const metaMinShare = ref(0.15);
+
+// Two distinct players is the floor whatever the share says. One player's
+// habit thrown fifty times is one player's habit, not meta.
+const META_MIN_THROWERS = 2;
+
+const metaMaxThrowers = computed(() =>
+  metaSpots.value.reduce((max, spot) => Math.max(max, spot.throwers), 0),
+);
+
+const metaShareOptions = computed(() => [
+  { key: "0.3", label: "30%" },
+  { key: "0.15", label: "15%" },
+  { key: "0.05", label: "5%" },
+  { key: "0", label: t("common.all") },
+]);
+
+const metaShareModel = computed<string>({
+  get: () => String(metaMinShare.value),
+  set: (value) => {
+    metaMinShare.value = Number(value) || 0;
+  },
+});
+
+const visibleMetaSpots = computed(() => {
+  const floor = metaMaxThrowers.value * metaMinShare.value;
+  return metaSpots.value.filter(
+    (spot) => spot.throwers >= META_MIN_THROWERS && spot.throwers >= floor,
+  );
+});
+
 // The plan is ranked against the caller's own drill record, so there is nothing
 // to show a signed-out visitor. Meta is only a tab once the map has mined data.
 const listTabs = computed(() => {
@@ -252,7 +286,7 @@ function onLineupCreated(id: string) {
 // The overlay toggle is for reading the meta *against* the library; the Meta
 // tab is the meta itself, so it draws the clusters whatever the toggle says.
 const metaOnBoard = computed(() =>
-  showMetaPanel.value || showMeta.value ? metaSpots.value : [],
+  showMetaPanel.value || showMeta.value ? visibleMetaSpots.value : [],
 );
 
 // A tab that disappears (meta drains, sign-out) must not strand the panel on a
@@ -663,17 +697,37 @@ function selectLineup(id: string | null) {
               bare
             />
           </div>
-          <Button
-            v-if="metaSpots.length"
-            size="sm"
-            variant="outline"
-            class="pointer-events-auto shrink-0 border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
-            :class="showMeta ? 'text-[hsl(var(--tac-amber))]' : ''"
-            @click="showMeta = !showMeta"
-          >
-            <Users class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.meta.overlay") }}
-          </Button>
+          <div class="pointer-events-auto flex shrink-0 items-center gap-2">
+            <!-- Only worth offering once the overlay is on: it is the knob that
+                 decides how much of the mined tail lands on the board. -->
+            <div
+              v-if="showMeta && metaSpots.length"
+              class="rounded-md border border-white/10 bg-background/80 p-0.5 [backdrop-filter:blur(10px)]"
+            >
+              <AnimatedFilters
+                v-model="metaShareModel"
+                :options="metaShareOptions"
+                square
+              />
+            </div>
+            <Button
+              v-if="metaSpots.length"
+              size="sm"
+              variant="outline"
+              class="shrink-0 border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
+              :class="showMeta ? 'text-[hsl(var(--tac-amber))]' : ''"
+              @click="showMeta = !showMeta"
+            >
+              <Users class="mr-1 h-4 w-4" />
+              {{ $t("pages.utility.meta.overlay") }}
+              <span
+                v-if="showMeta"
+                class="ml-1 font-mono text-[0.6rem] opacity-70"
+              >
+                {{ visibleMetaSpots.length }}/{{ metaSpots.length }}
+              </span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -749,7 +803,7 @@ function selectLineup(id: string | null) {
         <UtilityMetaPanel
           v-else-if="showMetaPanel"
           v-model:selected-key="selectedMetaKey"
-          :spots="metaSpots"
+          :spots="visibleMetaSpots"
           :lineups="lineups"
           :types="filters.types"
           :sides="filters.sides"

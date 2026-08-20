@@ -3977,7 +3977,10 @@
       "board": {
         "no_radar": "No radar for this map",
         "hint": "Squares are throw origins, dots are where the utility lands. Pick one to line it up with the list.",
-        "key": "Squares = origin · Dots = landing"
+        "key": "Squares = origin · Dots = landing",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
+        "zoom_reset": "Fit map"
       },
       "card": {
         "upvote": "Mark this as a good lineup",

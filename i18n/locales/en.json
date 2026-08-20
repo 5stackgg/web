@@ -4403,6 +4403,19 @@
         "saved": "Lineup saved",
         "save_failed": "Could not save the lineup"
       },
+      "archive": {
+        "action": "Archive lineup",
+        "title": "Archive this lineup?",
+        "this_lineup": "this lineup",
+        "description": "{name} will disappear from every library, board and search on this map.",
+        "keeps_history": "Nothing is destroyed. Drill progress, votes and any playbook using it are kept, and you can put it back from the toast.",
+        "confirm": "Archive it",
+        "done": "Archived {name}",
+        "undo": "Undo",
+        "restored": "Put it back",
+        "failed": "Could not archive that lineup",
+        "restore_failed": "Could not put it back"
+      },
       "fork": {
         "action": "Fork",
         "title": "Fork this lineup",

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
+  Archive,
   ArrowLeft,
   Boxes,
   Crosshair,
@@ -34,6 +36,7 @@ import UtilitySightlinePanel from "~/components/utility/UtilitySightlinePanel.vu
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
 import {
   clearUtilityVoteMutation,
   favoriteUtilityLineupMutation,
@@ -116,6 +119,15 @@ watch(mapName, async (name) => {
   }
   hasMesh.value = await hasMeshForMap(meshCdn, name);
 });
+
+const router = useRouter();
+const archiveOpen = ref(false);
+
+// Straight back to the map: the page it was on now describes something that is
+// no longer in any library, and leaving it up invites a reload into "not found".
+function onArchived() {
+  void router.push({ name: "utility-map", params: { map: mapName.value } });
+}
 
 onMounted(fetchLineup);
 
@@ -273,6 +285,15 @@ async function toggleFavorite() {
               {{ $t("pages.utility.back_to_map") }}
             </Button>
           </NuxtLink>
+          <Button
+            v-if="lineup.can_edit"
+            variant="outline"
+            class="text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
+            @click="archiveOpen = true"
+          >
+            <Archive class="mr-1 h-4 w-4" />
+            {{ $t("pages.utility.archive.action") }}
+          </Button>
           <Button class="tac-amber-cta" @click="practiceOpen = true">
             <Rocket class="mr-1 h-4 w-4" />
             {{ $t("pages.utility.detail.practice_this") }}
@@ -552,6 +573,13 @@ async function toggleFavorite() {
       v-model:open="forkOpen"
       :lineup-id="lineup.id"
       :source-name="lineup.name"
+    />
+
+    <UtilityArchiveDialog
+      v-model:open="archiveOpen"
+      :lineup-id="lineup.id"
+      :lineup-name="lineup.name"
+      @archived="onArchived"
     />
 
     <StartPracticeDialog

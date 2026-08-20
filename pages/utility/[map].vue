@@ -24,6 +24,7 @@ import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPa
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
+import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -124,6 +125,8 @@ const hoveredId = ref<string | null>(null);
 const practiceOpen = ref(false);
 const forkOpen = ref(false);
 const forkLineup = ref<UtilityLineup | null>(null);
+const archiveOpen = ref(false);
+const archiveLineup = ref<UtilityLineup | null>(null);
 
 const LIST_TAB = "lineups";
 const PLAN_TAB = "plan";
@@ -287,6 +290,23 @@ function startFork(id: string) {
   forkOpen.value = !!forkLineup.value;
 }
 
+function startArchive(id: string) {
+  archiveLineup.value = lineups.value.find((entry) => entry.id === id) ?? null;
+  archiveOpen.value = !!archiveLineup.value;
+}
+
+// Dropped from the list on the spot rather than after a refetch: the row is
+// gone either way, and waiting a round trip to admit it makes the click feel
+// like it missed. The undo in the toast puts it back.
+function onArchived(id: string) {
+  lineups.value = lineups.value.filter((entry) => entry.id !== id);
+  totalCount.value = Math.max(0, totalCount.value - 1);
+
+  if (selectedId.value === id) {
+    selectedId.value = null;
+  }
+}
+
 function selectLineup(id: string | null) {
   selectedId.value = selectedId.value === id ? null : id;
   if (!selectedId.value || typeof document === "undefined") {
@@ -415,7 +435,21 @@ function selectLineup(id: string | null) {
           </EmptyDescription>
         </Empty>
 
-        <template v-else>
+        <!-- A list that changes under you without moving is a list you have to
+             re-read. Filtering, archiving and paging all reorder this, so the
+             rows carry themselves to their new positions instead. -->
+        <TransitionGroup
+          v-else
+          tag="div"
+          class="contents"
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0 -translate-x-1"
+          enter-to-class="opacity-100 translate-x-0"
+          leave-active-class="absolute w-full transition duration-150 ease-in"
+          leave-from-class="opacity-100 translate-x-0"
+          leave-to-class="opacity-0 translate-x-3"
+          move-class="transition-transform duration-200 ease-out"
+        >
           <div
             v-for="lineup of lineups"
             :id="`utility-card-${lineup.id}`"
@@ -426,12 +460,14 @@ function selectLineup(id: string | null) {
               :selected="selectedId === lineup.id"
               :meta-throwers="metaThrowersByLineup[lineup.id] ?? null"
               :show-fork="!!mySteamId"
+              :show-archive="!!mySteamId"
               @select="selectLineup"
               @hover="(id) => (hoveredId = id)"
               @fork="startFork"
+              @archive="startArchive"
             />
           </div>
-        </template>
+        </TransitionGroup>
       </div>
     </div>
   </PageTransition>
@@ -448,6 +484,13 @@ function selectLineup(id: string | null) {
     v-model:open="forkOpen"
     :lineup-id="forkLineup?.id ?? null"
     :source-name="forkLineup?.name ?? null"
+  />
+
+  <UtilityArchiveDialog
+    v-model:open="archiveOpen"
+    :lineup-id="archiveLineup?.id ?? null"
+    :lineup-name="archiveLineup?.name ?? null"
+    @archived="onArchived"
   />
 
   <StartPracticeDialog

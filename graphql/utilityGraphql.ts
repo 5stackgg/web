@@ -603,6 +603,23 @@ export const saveUtilityPlaybookMutation = generateMutation({
   ],
 });
 
+// Archive, not delete. A lineup is referenced by other people's collections,
+// playbooks, votes and drill progress, all of which cascade on a real DELETE --
+// so removing yours would quietly wipe their history. Archiving takes it out of
+// every library view and is reversible.
+export const archiveUtilityLineupMutation = generateMutation({
+  update_utility_lineups_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: { archived_at: $("archived_at", "timestamptz") },
+    },
+    {
+      id: true,
+      archived_at: true,
+    },
+  ],
+});
+
 export const deleteUtilityPlaybookMutation = generateMutation({
   deleteUtilityPlaybook: [
     {

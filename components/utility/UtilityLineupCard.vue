@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import {
   ArrowUpRight,
+  Archive,
   GitFork,
   Heart,
   ThumbsDown,
@@ -28,12 +29,16 @@ const props = withDefaults(
     // Off by default: the pickers and the solve panel show cards for choosing,
     // not for copying, and a second icon there is only noise.
     showFork?: boolean;
+    // Only where a lineup can actually be managed -- the pickers show cards for
+    // choosing, and an archive button there is a way to lose work by accident.
+    showArchive?: boolean;
   }>(),
   {
     selected: false,
     metaThrowers: null,
     showOpenLink: true,
     showFork: false,
+    showArchive: false,
   },
 );
 
@@ -41,6 +46,7 @@ const emit = defineEmits<{
   (e: "select", id: string): void;
   (e: "hover", id: string | null): void;
   (e: "fork", id: string): void;
+  (e: "archive", id: string): void;
 }>();
 
 const color = computed(
@@ -105,6 +111,16 @@ const jumpBind = computed(() => jumpThrowBindState(props.lineup));
         @click.stop="emit('fork', lineup.id)"
       >
         <GitFork class="h-4 w-4" />
+      </button>
+
+      <button
+        v-if="showArchive && lineup.can_edit"
+        type="button"
+        class="shrink-0 rounded p-1 text-muted-foreground opacity-0 transition-all duration-150 hover:bg-destructive/15 hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100"
+        :title="$t('pages.utility.archive.action')"
+        @click.stop="emit('archive', lineup.id)"
+      >
+        <Archive class="h-4 w-4" />
       </button>
 
       <NuxtLink

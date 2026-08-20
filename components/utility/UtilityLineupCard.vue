@@ -35,6 +35,7 @@ const props = withDefaults(
     showArchive?: boolean;
     // Signed out, the counts still read fine -- they just stop being buttons.
     canReact?: boolean;
+    openInPlace?: boolean;
   }>(),
   {
     selected: false,
@@ -43,6 +44,7 @@ const props = withDefaults(
     showFork: false,
     showArchive: false,
     canReact: false,
+    openInPlace: false,
   },
 );
 
@@ -53,6 +55,7 @@ const emit = defineEmits<{
   (e: "archive", id: string): void;
   (e: "vote", id: string, value: 1 | -1): void;
   (e: "favorite", id: string): void;
+  (e: "open", id: string): void;
 }>();
 
 const color = computed(
@@ -150,8 +153,21 @@ const favoriteTitle = computed(() =>
         <Archive class="h-4 w-4" />
       </button>
 
+      <!-- Opens in place when the page can host it: flipping between lineups is
+           the job, and a full navigation throws away the list you were reading.
+           Falls back to the page wherever nothing is listening. -->
+      <button
+        v-if="showOpenLink && openInPlace"
+        type="button"
+        class="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+        :title="$t('pages.utility.card.open')"
+        @click.stop="emit('open', lineup.id)"
+      >
+        <ArrowUpRight class="h-4 w-4" />
+      </button>
+
       <NuxtLink
-        v-if="showOpenLink"
+        v-else-if="showOpenLink"
         :to="{ name: 'utility-lineup-id', params: { id: lineup.id } }"
         class="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
         :title="$t('pages.utility.card.open')"

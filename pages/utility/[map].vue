@@ -34,6 +34,7 @@ import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
 import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
+import UtilityLineupDialog from "~/components/utility/UtilityLineupDialog.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -354,6 +355,22 @@ function startFork(id: string) {
 
 const reactions = useUtilityReactions();
 
+const detailOpen = ref(false);
+const detailId = ref<string | null>(null);
+
+function openLineup(id: string) {
+  detailId.value = id;
+  detailOpen.value = true;
+}
+
+// Practising from the dialog hands off to the practice dialog rather than
+// stacking one modal on another.
+function practiceFromDetail(id: string) {
+  detailOpen.value = false;
+  selectedId.value = id;
+  practiceOpen.value = true;
+}
+
 // Patched in place rather than refetched: the whole list would flicker to move
 // one number, and the row you clicked is the one thing you are looking at.
 function patchLineup(id: string, patch: Partial<UtilityLineup>) {
@@ -647,6 +664,8 @@ function selectLineup(id: string | null) {
               @select="selectLineup"
               @hover="(id) => (hoveredId = id)"
               :can-react="!!mySteamId"
+              open-in-place
+              @open="openLineup"
               @fork="startFork"
               @archive="startArchive"
               @vote="onVote"
@@ -670,6 +689,16 @@ function selectLineup(id: string | null) {
     v-model:open="forkOpen"
     :lineup-id="forkLineup?.id ?? null"
     :source-name="forkLineup?.name ?? null"
+  />
+
+  <UtilityLineupDialog
+    v-model:open="detailOpen"
+    v-model:lineup-id="detailId"
+    :lineups="lineups"
+    :can-react="!!mySteamId"
+    @practice="practiceFromDetail"
+    @vote="onVote"
+    @favorite="onFavorite"
   />
 
   <UtilityArchiveDialog

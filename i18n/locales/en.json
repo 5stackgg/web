@@ -3990,6 +3990,9 @@
         "roof": "Roof"
       },
       "detail": {
+        "previous": "Previous lineup",
+        "next": "Next lineup",
+        "open_full": "Open the full page",
         "practice_this": "Practice This",
         "not_found": "Lineup not found",
         "not_found_description": "It may have been deleted, or it is not shared with you.",

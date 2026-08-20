@@ -14767,13 +14767,13 @@ count?: [{	columns?: Array<ValueTypes["game_modes_select_column"]> | undefined |
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: AliasType<{
 	cfg?:boolean | `@${string}`,
-	load_custom?:boolean | `@${string}`,
-	load_ranked?:boolean | `@${string}`,
-	load_tournaments?:boolean | `@${string}`,
 	channel?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	disable_server_guidelines?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
+	load_custom?:boolean | `@${string}`,
+	load_ranked?:boolean | `@${string}`,
+	load_tournaments?:boolean | `@${string}`,
 	/** An object relationship */
 	plugin?:ValueTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
@@ -14800,13 +14800,13 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	_not?: ValueTypes["game_plugin_installs_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["game_plugin_installs_bool_exp"]> | undefined | null | Variable<any, string>,
 	cfg?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	load_custom?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	load_ranked?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	load_tournaments?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	load_custom?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	load_ranked?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	load_tournaments?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -14817,13 +14817,13 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 	cfg?: string | undefined | null | Variable<any, string>,
-	load_custom?: boolean | undefined | null | Variable<any, string>,
-	load_ranked?: boolean | undefined | null | Variable<any, string>,
-	load_tournaments?: boolean | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
+	load_custom?: boolean | undefined | null | Variable<any, string>,
+	load_ranked?: boolean | undefined | null | Variable<any, string>,
+	load_tournaments?: boolean | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -14864,13 +14864,13 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	/** Ordering options when selecting data from "game_plugin_installs". */
 ["game_plugin_installs_order_by"]: {
 	cfg?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	load_custom?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	load_ranked?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	load_tournaments?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	load_custom?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	load_ranked?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	load_tournaments?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -14885,13 +14885,13 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 	cfg?: string | undefined | null | Variable<any, string>,
-	load_custom?: boolean | undefined | null | Variable<any, string>,
-	load_ranked?: boolean | undefined | null | Variable<any, string>,
-	load_tournaments?: boolean | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
+	load_custom?: boolean | undefined | null | Variable<any, string>,
+	load_ranked?: boolean | undefined | null | Variable<any, string>,
+	load_tournaments?: boolean | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	version?: string | undefined | null | Variable<any, string>
@@ -14906,13 +14906,13 @@ count?: [{	columns?: Array<ValueTypes["game_plugin_installs_select_column"]> | u
 	/** Initial value of the column from where the streaming should start */
 ["game_plugin_installs_stream_cursor_value_input"]: {
 	cfg?: string | undefined | null | Variable<any, string>,
-	load_custom?: boolean | undefined | null | Variable<any, string>,
-	load_ranked?: boolean | undefined | null | Variable<any, string>,
-	load_tournaments?: boolean | undefined | null | Variable<any, string>,
 	channel?: ValueTypes["e_game_plugin_channels_enum"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	disable_server_guidelines?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
+	load_custom?: boolean | undefined | null | Variable<any, string>,
+	load_ranked?: boolean | undefined | null | Variable<any, string>,
+	load_tournaments?: boolean | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	version?: string | undefined | null | Variable<any, string>
@@ -92363,13 +92363,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_modes_select_column"]> | und
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: AliasType<{
 	cfg?:boolean | `@${string}`,
-	load_custom?:boolean | `@${string}`,
-	load_ranked?:boolean | `@${string}`,
-	load_tournaments?:boolean | `@${string}`,
 	channel?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	disable_server_guidelines?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
+	load_custom?:boolean | `@${string}`,
+	load_ranked?:boolean | `@${string}`,
+	load_tournaments?:boolean | `@${string}`,
 	/** An object relationship */
 	plugin?:ResolverInputTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
@@ -92396,13 +92396,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	_not?: ResolverInputTypes["game_plugin_installs_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["game_plugin_installs_bool_exp"]> | undefined | null,
 	cfg?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	load_custom?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	load_ranked?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	load_tournaments?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	disable_server_guidelines?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	load_custom?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	load_ranked?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	load_tournaments?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -92413,13 +92413,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 	cfg?: string | undefined | null,
-	load_custom?: boolean | undefined | null,
-	load_ranked?: boolean | undefined | null,
-	load_tournaments?: boolean | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -92460,13 +92460,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	/** Ordering options when selecting data from "game_plugin_installs". */
 ["game_plugin_installs_order_by"]: {
 	cfg?: ResolverInputTypes["order_by"] | undefined | null,
-	load_custom?: ResolverInputTypes["order_by"] | undefined | null,
-	load_ranked?: ResolverInputTypes["order_by"] | undefined | null,
-	load_tournaments?: ResolverInputTypes["order_by"] | undefined | null,
 	channel?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	disable_server_guidelines?: ResolverInputTypes["order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
+	load_custom?: ResolverInputTypes["order_by"] | undefined | null,
+	load_ranked?: ResolverInputTypes["order_by"] | undefined | null,
+	load_tournaments?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -92481,13 +92481,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 	cfg?: string | undefined | null,
-	load_custom?: boolean | undefined | null,
-	load_ranked?: boolean | undefined | null,
-	load_tournaments?: boolean | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -92502,13 +92502,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugin_installs_select_colum
 	/** Initial value of the column from where the streaming should start */
 ["game_plugin_installs_stream_cursor_value_input"]: {
 	cfg?: string | undefined | null,
-	load_custom?: boolean | undefined | null,
-	load_ranked?: boolean | undefined | null,
-	load_tournaments?: boolean | undefined | null,
 	channel?: ResolverInputTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -168670,13 +168670,13 @@ export type ModelTypes = {
 	/** columns and relationships of "game_plugin_installs" */
 ["game_plugin_installs"]: {
 		cfg?: string | undefined | null,
-		load_custom: boolean,
-		load_ranked: boolean,
-		load_tournaments: boolean,
 	channel: ModelTypes["e_game_plugin_channels_enum"],
 	created_at: ModelTypes["timestamptz"],
 	disable_server_guidelines: boolean,
 	enabled: boolean,
+	load_custom: boolean,
+	load_ranked: boolean,
+	load_tournaments: boolean,
 	/** An object relationship */
 	plugin: ModelTypes["game_plugins"],
 	plugin_slug: string,
@@ -168700,13 +168700,13 @@ export type ModelTypes = {
 	_not?: ModelTypes["game_plugin_installs_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["game_plugin_installs_bool_exp"]> | undefined | null,
 	cfg?: ModelTypes["String_comparison_exp"] | undefined | null,
-	load_custom?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
-	load_ranked?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
-	load_tournaments?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	disable_server_guidelines?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	load_custom?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	load_ranked?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	load_tournaments?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	plugin?: ModelTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -168716,13 +168716,13 @@ export type ModelTypes = {
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 	cfg?: string | undefined | null,
-	load_custom?: boolean | undefined | null,
-	load_ranked?: boolean | undefined | null,
-	load_tournaments?: boolean | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin?: ModelTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -168730,14 +168730,16 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["game_plugin_installs_max_fields"]: {
-		created_at?: ModelTypes["timestamptz"] | undefined | null,
+		cfg?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
 };
 	/** aggregate min on columns */
 ["game_plugin_installs_min_fields"]: {
-		created_at?: ModelTypes["timestamptz"] | undefined | null,
+		cfg?: string | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -168758,13 +168760,13 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "game_plugin_installs". */
 ["game_plugin_installs_order_by"]: {
 	cfg?: ModelTypes["order_by"] | undefined | null,
-	load_custom?: ModelTypes["order_by"] | undefined | null,
-	load_ranked?: ModelTypes["order_by"] | undefined | null,
-	load_tournaments?: ModelTypes["order_by"] | undefined | null,
 	channel?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	disable_server_guidelines?: ModelTypes["order_by"] | undefined | null,
 	enabled?: ModelTypes["order_by"] | undefined | null,
+	load_custom?: ModelTypes["order_by"] | undefined | null,
+	load_ranked?: ModelTypes["order_by"] | undefined | null,
+	load_tournaments?: ModelTypes["order_by"] | undefined | null,
 	plugin?: ModelTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
 	updated_at?: ModelTypes["order_by"] | undefined | null,
@@ -168778,13 +168780,13 @@ export type ModelTypes = {
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 	cfg?: string | undefined | null,
-	load_custom?: boolean | undefined | null,
-	load_ranked?: boolean | undefined | null,
-	load_tournaments?: boolean | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -168799,13 +168801,13 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["game_plugin_installs_stream_cursor_value_input"]: {
 	cfg?: string | undefined | null,
-	load_custom?: boolean | undefined | null,
-	load_ranked?: boolean | undefined | null,
-	load_tournaments?: boolean | undefined | null,
 	channel?: ModelTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -237952,13 +237954,13 @@ export type GraphQLTypes = {
 ["game_plugin_installs"]: {
 	__typename: "game_plugin_installs",
 	cfg?: string | undefined | null,
-	load_custom: boolean,
-	load_ranked: boolean,
-	load_tournaments: boolean,
 	channel: GraphQLTypes["e_game_plugin_channels_enum"],
 	created_at: GraphQLTypes["timestamptz"],
 	disable_server_guidelines: boolean,
 	enabled: boolean,
+	load_custom: boolean,
+	load_ranked: boolean,
+	load_tournaments: boolean,
 	/** An object relationship */
 	plugin: GraphQLTypes["game_plugins"],
 	plugin_slug: string,
@@ -237984,13 +237986,13 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["game_plugin_installs_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["game_plugin_installs_bool_exp"]> | undefined | null,
 	cfg?: GraphQLTypes["String_comparison_exp"] | undefined | null,
-	load_custom?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
-	load_ranked?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
-	load_tournaments?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	disable_server_guidelines?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	load_custom?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	load_ranked?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	load_tournaments?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -238001,13 +238003,13 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "game_plugin_installs" */
 ["game_plugin_installs_insert_input"]: {
 		cfg?: string | undefined | null,
-		load_custom?: boolean | undefined | null,
-		load_ranked?: boolean | undefined | null,
-		load_tournaments?: boolean | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -238048,13 +238050,13 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "game_plugin_installs". */
 ["game_plugin_installs_order_by"]: {
 		cfg?: GraphQLTypes["order_by"] | undefined | null,
-		load_custom?: GraphQLTypes["order_by"] | undefined | null,
-		load_ranked?: GraphQLTypes["order_by"] | undefined | null,
-		load_tournaments?: GraphQLTypes["order_by"] | undefined | null,
 	channel?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	disable_server_guidelines?: GraphQLTypes["order_by"] | undefined | null,
 	enabled?: GraphQLTypes["order_by"] | undefined | null,
+	load_custom?: GraphQLTypes["order_by"] | undefined | null,
+	load_ranked?: GraphQLTypes["order_by"] | undefined | null,
+	load_tournaments?: GraphQLTypes["order_by"] | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
 	updated_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -238069,13 +238071,13 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "game_plugin_installs" */
 ["game_plugin_installs_set_input"]: {
 		cfg?: string | undefined | null,
-		load_custom?: boolean | undefined | null,
-		load_ranked?: boolean | undefined | null,
-		load_tournaments?: boolean | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -238090,13 +238092,13 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["game_plugin_installs_stream_cursor_value_input"]: {
 		cfg?: string | undefined | null,
-		load_custom?: boolean | undefined | null,
-		load_ranked?: boolean | undefined | null,
-		load_tournaments?: boolean | undefined | null,
 	channel?: GraphQLTypes["e_game_plugin_channels_enum"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	disable_server_guidelines?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
+	load_custom?: boolean | undefined | null,
+	load_ranked?: boolean | undefined | null,
+	load_tournaments?: boolean | undefined | null,
 	plugin_slug?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -297917,13 +297919,13 @@ export enum game_plugin_installs_constraint {
 /** select columns of table "game_plugin_installs" */
 export enum game_plugin_installs_select_column {
 	cfg = "cfg",
-	load_custom = "load_custom",
-	load_ranked = "load_ranked",
-	load_tournaments = "load_tournaments",
 	channel = "channel",
 	created_at = "created_at",
 	disable_server_guidelines = "disable_server_guidelines",
 	enabled = "enabled",
+	load_custom = "load_custom",
+	load_ranked = "load_ranked",
+	load_tournaments = "load_tournaments",
 	plugin_slug = "plugin_slug",
 	updated_at = "updated_at",
 	version = "version"
@@ -297931,13 +297933,13 @@ export enum game_plugin_installs_select_column {
 /** update columns of table "game_plugin_installs" */
 export enum game_plugin_installs_update_column {
 	cfg = "cfg",
-	load_custom = "load_custom",
-	load_ranked = "load_ranked",
-	load_tournaments = "load_tournaments",
 	channel = "channel",
 	created_at = "created_at",
 	disable_server_guidelines = "disable_server_guidelines",
 	enabled = "enabled",
+	load_custom = "load_custom",
+	load_ranked = "load_ranked",
+	load_tournaments = "load_tournaments",
 	plugin_slug = "plugin_slug",
 	updated_at = "updated_at",
 	version = "version"

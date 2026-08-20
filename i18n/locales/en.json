@@ -3900,7 +3900,6 @@
       },
       "all_maps": "All Maps",
       "back_to_map": "Back to Map",
-      "map_subtitle": "{count} lineups match your filters.",
       "empty": {
         "no_maps": "No maps available",
         "no_maps_description": "A utility library needs a map with a radar image. None are enabled yet.",

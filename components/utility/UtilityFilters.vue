@@ -206,12 +206,46 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
 
     <UtilityTypeChips v-if="has('types')" v-model="typeModel" />
 
+    <!-- In a narrow column five scopes cannot share a row of pills, and
+         wrapping leaves one stranded on a line of its own. Stacking the count
+         over the label makes the number the primary read and costs each cell
+         only the width of its own word, so the row holds at any width. -->
+    <div
+      v-if="has('scope') && bare"
+      class="grid w-full auto-cols-fr grid-flow-col gap-1 rounded-md border border-border bg-muted/30 p-1"
+    >
+      <button
+        v-for="option of scopeOptions"
+        :key="option.key"
+        type="button"
+        :disabled="option.disabled"
+        class="flex flex-col items-center gap-1 rounded-sm border-t-2 px-1 py-1.5 transition-colors"
+        :class="
+          scopeModel === option.key
+            ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+            : option.disabled
+              ? 'cursor-not-allowed border-transparent text-muted-foreground/40'
+              : 'border-transparent text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+        "
+        @click="!option.disabled && (scopeModel = option.key)"
+      >
+        <span class="font-mono text-[0.8rem] font-bold leading-none tabular-nums">
+          {{ option.count ?? 0 }}
+        </span>
+        <span
+          class="font-mono text-[0.5rem] uppercase leading-none tracking-[0.08em]"
+        >
+          {{ option.label }}
+        </span>
+      </button>
+    </div>
+
     <AnimatedFilters
-      v-if="has('scope')"
+      v-else-if="has('scope')"
       v-model="scopeModel"
       :options="scopeOptions"
       square
-      :class="bare ? 'max-w-full' : 'ml-auto'"
+      class="ml-auto"
     />
 
     <FilterMenu

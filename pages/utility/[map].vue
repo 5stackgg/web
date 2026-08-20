@@ -12,7 +12,6 @@ import {
   ShieldHalf,
   Users,
 } from "lucide-vue-next";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -234,8 +233,6 @@ const showCreatePanel = computed(
 );
 const showBlockPanel = computed(() => listTab.value === BLOCK_TAB);
 
-// Executes are a card grid and a step editor, neither of which reads in a
-// 380px column, so this view takes the board's width instead of its surface.
 const showPlaybooks = computed(() => listTab.value === PLAYBOOKS_TAB);
 
 // A tab that stops driving the board must hand it back, or its markers outlive
@@ -588,55 +585,12 @@ function selectLineup(id: string | null) {
 
 <template>
   <PageTransition>
-    <TacticalPageHeader inline-actions>
-      <template #description>{{ $t("pages.utility.eyebrow") }}</template>
-      <template #title>{{ mapTitle }}</template>
-      <template #subtitle>
-        {{ $t("pages.utility.map_subtitle", { count: totalCount }) }}
-      </template>
-      <template #actions>
-        <NuxtLink :to="{ name: 'utility' }">
-          <Button variant="ghost" class="text-muted-foreground">
-            <ArrowLeft class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.all_maps") }}
-          </Button>
-        </NuxtLink>
-        <!-- Three other ways to look at this same map, behind one control.
-             Six buttons at equal weight is six decisions; the two that are
-             actually actions stay out here on their own. -->
-
-        <Button
-          v-if="mySteamId"
-          variant="outline"
-          :class="listTab === CREATE_TAB ? 'text-[hsl(var(--tac-amber))]' : ''"
-          @click="listTab = CREATE_TAB"
-        >
-          <Plus class="mr-1 h-4 w-4" />
-          {{ $t("pages.utility.create.action") }}
-        </Button>
-        <Button
-          v-if="mySteamId"
-          class="tac-amber-cta"
-          @click="practiceOpen = true"
-        >
-          <Rocket class="mr-1 h-4 w-4" />
-          {{ $t("pages.utility.practice.start") }}
-        </Button>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition :delay="80" class="mt-4">
-    <div
-      class="grid gap-4"
-      :class="showPlaybooks ? '' : 'lg:grid-cols-[minmax(0,1fr)_380px]'"
-    >
+    <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
       <!-- The map is the page. Everything that used to sit in a band above it
            now floats on it, so the board gets the room and the chrome stops
            competing with the list's own controls. -->
       <div
-        v-if="!showPlaybooks"
-        class="relative mx-auto w-full max-w-[calc(100vh-11rem)] lg:sticky lg:top-4 lg:self-start"
+        class="relative mx-auto w-full max-w-[calc(100vh-7rem)] lg:sticky lg:top-4 lg:self-start"
       >
         <UtilityRadarBoard
           :map-name="mapName"
@@ -661,13 +615,28 @@ function selectLineup(id: string | null) {
           @select-meta="(key) => (selectedMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
         />
-        <!-- The view switcher rides the board rather than sitting above the
-             list, where it read as a second scope control. -->
+        <!-- The map names itself, the way a map does everywhere else in the
+             app. A separate header band above it was mostly empty height. -->
         <div
-          class="pointer-events-none absolute inset-x-3 top-3 flex justify-center"
+          class="pointer-events-none absolute inset-x-3 top-3 flex items-start justify-between gap-3"
         >
+          <div class="pointer-events-auto flex min-w-0 flex-col gap-1">
+            <h1
+              class="m-0 font-sans text-3xl font-bold uppercase leading-none tracking-[0.02em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.95)]"
+            >
+              {{ mapTitle }}
+            </h1>
+            <NuxtLink
+              :to="{ name: 'utility' }"
+              class="inline-flex w-fit items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.18em] text-white/55 transition-colors hover:text-[hsl(var(--tac-amber))] [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
+            >
+              <ArrowLeft class="h-3 w-3" />
+              {{ $t("pages.utility.all_maps") }}
+            </NuxtLink>
+          </div>
+
           <div
-            class="pointer-events-auto max-w-full overflow-x-auto rounded-lg border border-white/10 bg-background/80 p-1 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
+            class="pointer-events-auto max-w-full shrink-0 overflow-x-auto rounded-lg border border-white/10 bg-background/80 p-1 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
           >
             <AnimatedFilters v-model="listTab" :options="listTabs" square />
           </div>
@@ -709,6 +678,24 @@ function selectLineup(id: string | null) {
       </div>
 
       <div class="flex flex-col gap-2">
+        <!-- The two things you actually do on this page, at the head of the
+             column you do them from. -->
+        <div v-if="mySteamId" class="flex gap-2">
+          <Button class="tac-amber-cta flex-1" @click="practiceOpen = true">
+            <Rocket class="mr-1 h-4 w-4" />
+            {{ $t("pages.utility.practice.start") }}
+          </Button>
+          <Button
+            variant="outline"
+            class="shrink-0"
+            :class="listTab === CREATE_TAB ? 'text-[hsl(var(--tac-amber))]' : ''"
+            @click="listTab = CREATE_TAB"
+          >
+            <Plus class="mr-1 h-4 w-4" />
+            {{ $t("pages.utility.create.action") }}
+          </Button>
+        </div>
+
         <!-- Whose lineups, and which of them -- a property of the list, not of
              the page, so it lives with the list. -->
         <template v-if="listTab === LIST_TAB">
@@ -861,17 +848,18 @@ function selectLineup(id: string | null) {
             />
           </div>
         </TransitionGroup>
+
+        <!-- Pages the list, so it belongs to the column the list is in -->
+        <Pagination
+          v-if="listTab === LIST_TAB && totalCount > perPage"
+          :total="totalCount"
+          :page="page"
+          :per-page="perPage"
+          @page="(value) => (page = value)"
+        />
       </div>
     </div>
   </PageTransition>
-
-  <Pagination
-    v-if="!showPlan && totalCount > perPage"
-    :total="totalCount"
-    :page="page"
-    :per-page="perPage"
-    @page="(value) => (page = value)"
-  />
 
   <UtilityForkDialog
     v-model:open="forkOpen"

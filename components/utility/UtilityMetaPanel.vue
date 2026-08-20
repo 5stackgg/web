@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import { Crosshair, Users } from "lucide-vue-next";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { Badge } from "~/components/ui/badge";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -23,6 +24,8 @@ const props = defineProps<{
   lineups: UtilityLineup[];
   selectedKey: string | null;
   hoveredKey: string | null;
+  threshold: string;
+  thresholdOptions: Array<{ key: string; label: string }>;
   types: UtilityType[];
   sides: UtilitySide[];
 }>();
@@ -30,8 +33,14 @@ const props = defineProps<{
 const emit = defineEmits<{
   (event: "update:selectedKey", value: string | null): void;
   (event: "update:hoveredKey", value: string | null): void;
+  (event: "update:threshold", value: string): void;
   (event: "open", id: string): void;
 }>();
+
+const thresholdModel = computed<string>({
+  get: () => props.threshold,
+  set: (value) => emit("update:threshold", value),
+});
 
 const visibleSpots = computed(() =>
   props.spots.filter((spot) => {
@@ -126,6 +135,22 @@ watch(visibleSpots, (list) => {
 
 <template>
   <div class="flex flex-col gap-2">
+    <!-- Distinct players, so the floor cannot be met by one person throwing
+         the same spot over and over. -->
+    <div class="flex items-center gap-2">
+      <span
+        class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
+      >
+        {{ $t("pages.utility.meta.min_throwers") }}
+      </span>
+      <AnimatedFilters
+        v-model="thresholdModel"
+        :options="thresholdOptions"
+        square
+        class="ml-auto"
+      />
+    </div>
+
     <div
       class="flex items-center justify-between gap-2 px-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
     >

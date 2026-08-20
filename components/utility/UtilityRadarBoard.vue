@@ -117,6 +117,7 @@ type MetaMarker = {
   point: { x: number; y: number };
   origin: { x: number; y: number } | null;
   radius: number;
+  weight: number;
 };
 
 const metaMarkers = computed<MetaMarker[]>(() => {
@@ -142,6 +143,10 @@ const metaMarkers = computed<MetaMarker[]>(() => {
       point,
       origin: landing ? origin : null,
       radius: 10 + 20 * Math.sqrt(spot.throwers / busiest),
+      // Size alone does not separate a 45-thrower spot from a 12-thrower one
+      // once both are rings on a busy map. Weight drives ink as well, so the
+      // popular spot reads as the solid one.
+      weight: Math.sqrt(spot.throwers / busiest),
     });
   }
   return out;
@@ -460,10 +465,10 @@ const orderedMarkers = computed(() => {
             :cy="meta.point.y"
             :r="meta.radius"
             :fill="meta.color"
-            :fill-opacity="metaLit(meta.key) ? 0.12 : 0"
+            :fill-opacity="metaLit(meta.key) ? 0.12 : 0.04 + meta.weight * 0.08"
             :stroke="meta.color"
-            :stroke-opacity="metaLit(meta.key) ? 0.95 : 0.35"
-            :stroke-width="metaLit(meta.key) ? 4 : 2"
+            :stroke-opacity="metaLit(meta.key) ? 0.95 : 0.16 + meta.weight * 0.54"
+            :stroke-width="metaLit(meta.key) ? 4 : 1.2 + meta.weight * 2.2"
             stroke-dasharray="5 6"
           />
           <text
@@ -472,8 +477,9 @@ const orderedMarkers = computed(() => {
             :y="meta.point.y + 6"
             text-anchor="middle"
             :fill="meta.color"
-            :fill-opacity="metaLit(meta.key) ? 1 : 0.7"
-            font-size="18"
+            :fill-opacity="metaLit(meta.key) ? 1 : 0.35 + meta.weight * 0.6"
+            :font-size="14 + meta.weight * 10"
+            font-weight="bold"
             font-family="monospace"
           >
             {{ meta.throwers }}

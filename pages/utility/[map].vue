@@ -170,39 +170,28 @@ const panelBoard = ref<PanelBoard | null>(null);
 const metaSpots = ref<UtilityMetaSpot[]>([]);
 const showMeta = ref(false);
 
-// A raw "seen 30+ times" floor ages badly: as more demos are parsed every
-// count inflates and the same floor lets more of the tail back in. A share of
-// the busiest spot on the map is stable no matter how big the corpus gets.
-const metaMinShare = ref(0.15);
+// Distinct players, not throws, so the floor cannot be met by one person
+// repeating a spot. Ten is enough to mean "people do this here" while cutting
+// the long tail of one- and two-player habits that made the overlay unreadable.
+const metaMinThrowers = ref(10);
 
-// Two distinct players is the floor whatever the share says. One player's
-// habit thrown fifty times is one player's habit, not meta.
-const META_MIN_THROWERS = 2;
-
-const metaMaxThrowers = computed(() =>
-  metaSpots.value.reduce((max, spot) => Math.max(max, spot.throwers), 0),
-);
-
-const metaShareOptions = computed(() => [
-  { key: "0.3", label: "30%" },
-  { key: "0.15", label: "15%" },
-  { key: "0.05", label: "5%" },
-  { key: "0", label: t("common.all") },
+const metaThresholdOptions = computed(() => [
+  { key: "10", label: "10+" },
+  { key: "25", label: "25+" },
+  { key: "50", label: "50+" },
+  { key: "100", label: "100+" },
 ]);
 
-const metaShareModel = computed<string>({
-  get: () => String(metaMinShare.value),
+const metaThresholdModel = computed<string>({
+  get: () => String(metaMinThrowers.value),
   set: (value) => {
-    metaMinShare.value = Number(value) || 0;
+    metaMinThrowers.value = Number(value) || 0;
   },
 });
 
-const visibleMetaSpots = computed(() => {
-  const floor = metaMaxThrowers.value * metaMinShare.value;
-  return metaSpots.value.filter(
-    (spot) => spot.throwers >= META_MIN_THROWERS && spot.throwers >= floor,
-  );
-});
+const visibleMetaSpots = computed(() =>
+  metaSpots.value.filter((spot) => spot.throwers >= metaMinThrowers.value),
+);
 
 // The plan is ranked against the caller's own drill record, so there is nothing
 // to show a signed-out visitor. Meta is only a tab once the map has mined data.
@@ -245,15 +234,10 @@ const listTabs = computed(() => {
       icon: ClipboardCheck,
     });
   }
-  // Authoring is reached from the header, so it is not a standing tab — but it
-  // joins the strip while it is open, or the indicator has nothing to sit on.
-  if (listTab.value === CREATE_TAB) {
-    tabs.push({
-      key: CREATE_TAB,
-      label: t("pages.utility.views.create_tab"),
-      icon: Plus,
-    });
-  }
+  // Authoring is an action, not a view. It never joins the strip — a tab that
+  // appears on click makes the whole bar jump. AnimatedFilters drops its
+  // indicator when nothing matches, which is the honest state: you are not in
+  // any of these views.
   return tabs;
 });
 
@@ -704,12 +688,12 @@ function selectLineup(id: string | null) {
             <!-- Only worth offering once the overlay is on: it is the knob that
                  decides how much of the mined tail lands on the board. -->
             <div
-              v-if="showMeta && metaSpots.length"
+              v-if="showMeta && !showMetaPanel && metaSpots.length"
               class="rounded-md border border-white/10 bg-background/80 p-0.5 [backdrop-filter:blur(10px)]"
             >
               <AnimatedFilters
-                v-model="metaShareModel"
-                :options="metaShareOptions"
+                v-model="metaThresholdModel"
+                :options="metaThresholdOptions"
                 square
               />
             </div>
@@ -807,6 +791,8 @@ function selectLineup(id: string | null) {
           v-else-if="showMetaPanel"
           v-model:selected-key="selectedMetaKey"
           v-model:hovered-key="hoveredMetaKey"
+          v-model:threshold="metaThresholdModel"
+          :threshold-options="metaThresholdOptions"
           :spots="visibleMetaSpots"
           :lineups="lineups"
           :types="filters.types"

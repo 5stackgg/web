@@ -184,11 +184,6 @@ const NUMBER_SETTINGS = [
     fallbackLabel: null,
   },
   {
-    name: "public.utility_practice_daily_limit",
-    label: "practice_daily_limit",
-    fallbackLabel: null,
-  },
-  {
     name: "public.utility_practice_reserved_servers",
     label: "practice_reserved_servers",
     fallbackLabel: null,

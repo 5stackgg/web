@@ -157,7 +157,11 @@ export function utilityOrigin(
     // arithmetic concatenates instead of adding.
     x: Number(lineup.origin_x),
     y: Number(lineup.origin_y),
-    z: Number(lineup.eye_z ?? lineup.origin_z),
+    // The FEET, not the eye. This is where a player stands, and for a jump
+    // throw the two are not even the same moment: origin_z is the standstill
+    // the throw was set up from while eye_z is the release, which happens in
+    // the air. Anything that genuinely wants an eye adds the height itself.
+    z: Number(lineup.origin_z),
   };
 }
 

@@ -369,7 +369,7 @@ watch(
       onPick,
     });
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 );
 
 </script>

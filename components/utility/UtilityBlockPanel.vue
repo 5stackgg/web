@@ -309,7 +309,7 @@ watch(
       onHover: (id: string | null) => (hoveredId.value = id),
     });
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 );
 </script>
 

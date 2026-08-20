@@ -148,6 +148,7 @@ const PLAYBOOKS_TAB = "playbooks";
 const PLAN_TAB = "plan";
 const listTab = ref<string>(LIST_TAB);
 const selectedMetaKey = ref<string | null>(null);
+const hoveredMetaKey = ref<string | null>(null);
 
 // The board belongs to the page and outlives every tab. A panel that needs to
 // draw on it publishes what it wants drawn instead of mounting a second board.
@@ -633,6 +634,7 @@ function selectLineup(id: string | null) {
           :hovered-id="panelBoard ? (panelBoard.hoveredId ?? null) : hoveredId"
           :meta-spots="metaOnBoard"
           :selected-meta-key="selectedMetaKey"
+          :hovered-meta-key="hoveredMetaKey"
           :meta-interactive="showMetaPanel"
           :picking="!!panelBoard?.picking"
           :pick-z="panelBoard?.pickZ ?? 0"
@@ -647,6 +649,7 @@ function selectLineup(id: string | null) {
               panelBoard?.onHover ? panelBoard.onHover(id) : (hoveredId = id)
           "
           @select-meta="(key) => (selectedMetaKey = key)"
+          @hover-meta="(key) => (hoveredMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
         />
         <!-- The map names itself, the way a map does everywhere else in the
@@ -803,6 +806,7 @@ function selectLineup(id: string | null) {
         <UtilityMetaPanel
           v-else-if="showMetaPanel"
           v-model:selected-key="selectedMetaKey"
+          v-model:hovered-key="hoveredMetaKey"
           :spots="visibleMetaSpots"
           :lineups="lineups"
           :types="filters.types"

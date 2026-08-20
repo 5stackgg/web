@@ -25,6 +25,7 @@ const props = withDefaults(
     // Mined clusters, drawn under the library's own markers.
     metaSpots?: UtilityMetaSpot[];
     selectedMetaKey?: string | null;
+    hoveredMetaKey?: string | null;
     metaInteractive?: boolean;
     // Point-picking mode: the whole board becomes one target and every marker
     // stops taking clicks, so a pick never lands on a lineup instead.
@@ -55,6 +56,7 @@ const emit = defineEmits<{
   (e: "select", id: string | null): void;
   (e: "hover", id: string | null): void;
   (e: "select-meta", key: string | null): void;
+  (e: "hover-meta", key: string | null): void;
   (e: "pick", point: { x: number; y: number; z: number }): void;
   (e: "select-segment", key: string): void;
 }>();
@@ -347,6 +349,12 @@ function onBoardClick(event: MouseEvent) {
 
 const activeId = computed(() => props.hoveredId ?? props.selectedId ?? null);
 
+// A mined cluster reads the same whether you picked it or are only pointing at
+// it: the question both answer is "which one is this".
+function metaLit(key: string) {
+  return props.selectedMetaKey === key || props.hoveredMetaKey === key;
+}
+
 function isLit(id: string) {
   return props.showAllLines || activeId.value === id;
 }
@@ -424,9 +432,19 @@ const orderedMarkers = computed(() => {
           v-for="meta of metaMarkers"
           :key="`meta-${meta.key}`"
           @click.stop="emit('select-meta', meta.key)"
+          @mouseenter="emit('hover-meta', meta.key)"
+          @mouseleave="emit('hover-meta', null)"
         >
+          <!-- The ring is a 2px dashed stroke, which is nearly impossible to
+               point at. The disc inside it is the real hit target. -->
+          <circle
+            :cx="meta.point.x"
+            :cy="meta.point.y"
+            :r="meta.radius"
+            fill="transparent"
+          />
           <line
-            v-if="meta.origin && selectedMetaKey === meta.key"
+            v-if="meta.origin && metaLit(meta.key)"
             :x1="meta.origin.x"
             :y1="meta.origin.y"
             :x2="meta.point.x"
@@ -441,19 +459,20 @@ const orderedMarkers = computed(() => {
             :cx="meta.point.x"
             :cy="meta.point.y"
             :r="meta.radius"
-            fill="none"
+            :fill="meta.color"
+            :fill-opacity="metaLit(meta.key) ? 0.12 : 0"
             :stroke="meta.color"
-            :stroke-opacity="selectedMetaKey === meta.key ? 0.95 : 0.35"
-            :stroke-width="selectedMetaKey === meta.key ? 4 : 2"
+            :stroke-opacity="metaLit(meta.key) ? 0.95 : 0.35"
+            :stroke-width="metaLit(meta.key) ? 4 : 2"
             stroke-dasharray="5 6"
           />
           <text
-            v-if="selectedMetaKey === meta.key || meta.radius > 20"
+            v-if="metaLit(meta.key) || meta.radius > 20"
             :x="meta.point.x"
             :y="meta.point.y + 6"
             text-anchor="middle"
             :fill="meta.color"
-            :fill-opacity="selectedMetaKey === meta.key ? 1 : 0.7"
+            :fill-opacity="metaLit(meta.key) ? 1 : 0.7"
             font-size="18"
             font-family="monospace"
           >

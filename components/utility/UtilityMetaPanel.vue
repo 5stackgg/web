@@ -22,12 +22,14 @@ const props = defineProps<{
   spots: UtilityMetaSpot[];
   lineups: UtilityLineup[];
   selectedKey: string | null;
+  hoveredKey: string | null;
   types: UtilityType[];
   sides: UtilitySide[];
 }>();
 
 const emit = defineEmits<{
   (event: "update:selectedKey", value: string | null): void;
+  (event: "update:hoveredKey", value: string | null): void;
   (event: "open", id: string): void;
 }>();
 
@@ -92,6 +94,20 @@ const refreshedAt = computed(() => {
   return newest;
 });
 
+// Picking a ring on the board has to bring its row over, or the panel is just
+// a list you have to hunt through for the thing you already pointed at.
+watch(
+  () => props.selectedKey,
+  (key) => {
+    if (!key || typeof document === "undefined") {
+      return;
+    }
+    document
+      .getElementById(`utility-meta-${key}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  },
+);
+
 function toggle(key: string) {
   emit("update:selectedKey", props.selectedKey === key ? null : key);
 }
@@ -136,13 +152,18 @@ watch(visibleSpots, (list) => {
     <div v-else class="flex flex-col gap-1">
       <div
         v-for="row of rows"
+        :id="`utility-meta-${row.spot.key}`"
         :key="row.spot.key"
         class="rounded-md border transition-colors"
         :class="
           selectedKey === row.spot.key
             ? 'border-[hsl(var(--tac-amber))]/60 bg-card/70'
-            : 'border-border/60 bg-card/30 hover:border-border'
+            : hoveredKey === row.spot.key
+              ? 'border-border bg-card/60'
+              : 'border-border/60 bg-card/30'
         "
+        @mouseenter="emit('update:hoveredKey', row.spot.key)"
+        @mouseleave="emit('update:hoveredKey', null)"
       >
         <button
           type="button"

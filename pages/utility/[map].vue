@@ -515,6 +515,15 @@ async function restoreLineup(id: string) {
   }
 }
 
+// Telling someone the library is empty while three lineups sit one tab away is
+// how the counts stop being believed. Offer the tabs that do have something.
+const populatedElsewhere = computed(() =>
+  SCOPES.filter(
+    (scope) =>
+      scope !== filters.value.scope && (scopeCounts.value[scope] ?? 0) > 0,
+  ).map((scope) => ({ scope, count: scopeCounts.value[scope] ?? 0 })),
+);
+
 function startArchive(id: string) {
   archiveLineup.value = lineups.value.find((entry) => entry.id === id) ?? null;
   archiveOpen.value = !!archiveLineup.value;
@@ -583,13 +592,16 @@ function selectLineup(id: string | null) {
     </TacticalPageHeader>
   </PageTransition>
 
+  <!-- The one navigation on this page. It used to sit in the panel looking
+       exactly like the scope tabs, which made two different questions read as
+       one control. -->
   <PageTransition :delay="60" class="mt-4">
-    <UtilityFilters
-      v-model="filters"
-      :available-tags="availableTags"
-      :signed-in="!!mySteamId"
-      :has-team="myTeamIds.length > 0"
-      :scope-counts="scopeCounts"
+    <AnimatedFilters
+      v-model="listTab"
+      :options="listTabs"
+      size="lg"
+      square
+      block
     />
   </PageTransition>
 
@@ -598,7 +610,13 @@ function selectLineup(id: string | null) {
       class="grid gap-4"
       :class="showPlaybooks ? '' : 'lg:grid-cols-[minmax(0,1fr)_380px]'"
     >
-      <div v-if="!showPlaybooks" class="lg:sticky lg:top-4 lg:self-start">
+      <!-- The board is aspect-square, so an unbounded column turns it into a
+           750px tall image with an empty panel beside it. Capping the width by
+           viewport height keeps the whole board on screen. -->
+      <div
+        v-if="!showPlaybooks"
+        class="mx-auto w-full max-w-[calc(100vh-14rem)] lg:sticky lg:top-4 lg:self-start"
+      >
         <UtilityRadarBoard
           :map-name="mapName"
           :lineups="panelBoard?.lineups ?? lineups"
@@ -622,15 +640,22 @@ function selectLineup(id: string | null) {
           @select-meta="(key) => (selectedMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
         />
-        <div class="mt-2 flex items-start justify-between gap-2">
-          <p class="text-xs text-muted-foreground">
-            {{ $t("pages.utility.board.hint") }}
-          </p>
+        <!-- Legend and filter in one: the chips carry the same colours the
+             board draws with, so the thing that explains the markers is the
+             thing that hides them. -->
+        <div class="mt-2 flex flex-wrap items-center gap-2">
+          <UtilityFilters
+            v-model="filters"
+            :signed-in="!!mySteamId"
+            :has-team="myTeamIds.length > 0"
+            :parts="['types']"
+            bare
+          />
           <Button
             v-if="metaSpots.length"
             size="sm"
             variant="outline"
-            class="shrink-0"
+            class="ml-auto shrink-0"
             :class="showMeta ? 'text-[hsl(var(--tac-amber))]' : ''"
             @click="showMeta = !showMeta"
           >
@@ -638,16 +663,33 @@ function selectLineup(id: string | null) {
             {{ $t("pages.utility.meta.overlay") }}
           </Button>
         </div>
+        <p class="mt-2 text-xs text-muted-foreground">
+          {{ $t("pages.utility.board.hint") }}
+        </p>
       </div>
 
       <div class="flex flex-col gap-2">
-        <AnimatedFilters
-          v-if="listTabs.length > 1"
-          v-model="listTab"
-          :options="listTabs"
-          square
-          block
-        />
+        <!-- Whose lineups, and which of them -- a property of the list, not of
+             the page, so it lives with the list. -->
+        <template v-if="listTab === LIST_TAB">
+          <UtilityFilters
+            v-model="filters"
+            :signed-in="!!mySteamId"
+            :has-team="myTeamIds.length > 0"
+            :scope-counts="scopeCounts"
+            :parts="['scope']"
+            bare
+          />
+          <UtilityFilters
+            v-model="filters"
+            :available-tags="availableTags"
+            :signed-in="!!mySteamId"
+            :has-team="myTeamIds.length > 0"
+            :parts="['search', 'menu']"
+            bare
+            class="w-full flex-nowrap [&>div:first-child]:max-w-none [&>div:first-child]:flex-1"
+          />
+        </template>
 
         <UtilityPracticePlanPanel
           v-if="showPlan"
@@ -723,6 +765,21 @@ function selectLineup(id: string | null) {
           <EmptyDescription>
             {{ $t("pages.utility.empty.no_lineups_description") }}
           </EmptyDescription>
+          <div
+            v-if="populatedElsewhere.length"
+            class="mt-3 flex flex-wrap justify-center gap-1.5"
+          >
+            <Button
+              v-for="entry of populatedElsewhere"
+              :key="entry.scope"
+              size="sm"
+              variant="outline"
+              @click="filters = { ...filters, scope: entry.scope }"
+            >
+              {{ $t(`pages.utility.scope.${entry.scope}`) }}
+              <span class="ml-1 opacity-60">{{ entry.count }}</span>
+            </Button>
+          </div>
         </Empty>
 
         <!-- A list that changes under you without moving is a list you have to

@@ -29,14 +29,23 @@ const props = withDefaults(
     // How many lineups each tab would show, so the choice is informed
     // before it is made rather than after.
     scopeCounts?: Record<string, number>;
+    // Which controls to render. The map page splits them across the board and
+    // the panel so one flat mega-bar does not front the whole page.
+    parts?: Array<"search" | "types" | "scope" | "menu">;
+    bare?: boolean;
   }>(),
   {
     availableTags: () => [],
     hasTeam: false,
     signedIn: false,
     scopeCounts: () => ({}),
+    parts: () => ["search", "types", "scope", "menu"],
+    bare: false,
   },
 );
+
+const has = (part: "search" | "types" | "scope" | "menu") =>
+  props.parts.includes(part);
 
 const filters = defineModel<UtilityFilterState>({ required: true });
 
@@ -175,8 +184,11 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
 </script>
 
 <template>
-  <FilterBar>
-    <div class="relative w-full max-w-[14rem] shrink-0">
+  <component
+    :is="bare ? 'div' : FilterBar"
+    :class="bare ? 'flex flex-wrap items-center gap-2' : undefined"
+  >
+    <div v-if="has('search')" class="relative w-full max-w-[14rem] shrink-0">
       <Search
         class="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
       />
@@ -187,16 +199,19 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
       />
     </div>
 
-    <UtilityTypeChips v-model="typeModel" />
+    <UtilityTypeChips v-if="has('types')" v-model="typeModel" />
 
     <AnimatedFilters
+      v-if="has('scope')"
       v-model="scopeModel"
       :options="scopeOptions"
       square
-      class="ml-auto"
+      :class="bare ? 'w-full' : 'ml-auto'"
+      :block="bare"
     />
 
     <FilterMenu
+      v-if="has('menu')"
       v-model:open="menuOpen"
       :count="activeCount"
       :active="activeCount > 0"
@@ -288,5 +303,5 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
         </button>
       </div>
     </FilterMenu>
-  </FilterBar>
+  </component>
 </template>

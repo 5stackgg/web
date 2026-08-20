@@ -487,7 +487,7 @@ export const myUtilityPracticeSessionQuery = generateQuery({
     {
       where: {
         host_steam_id: { _eq: $("steam_id", "bigint!") },
-        status: { _in: $("statuses", "[String!]") },
+        status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
       },
       order_by: [{ created_at: order_by.desc }],
       limit: 1,

@@ -2493,13 +2493,13 @@
         "utility": {
           "title": "Utility",
           "rescan_section": "Re-scan the library",
-        "rescan_section_description": "Rebuild what the library knows from demos that have already been parsed.",
-        "rescan": "Re-scan demos",
-        "rescan_description": "Reads every parsed demo again and rebuilds the mined spots from it. Needed after a parser or miner change — a throw's standing position, for one, is derived differently now. This does not re-parse demos; run that first if they are on an older parser.",
-        "rescan_progress": "{demos} demo(s) · {throws} throw(s)",
-        "rescan_done": "Re-scanned {demos} demo(s) and {throws} throw(s)",
-        "rescan_failed": "Could not finish the re-scan",
-        "library_section": "Utility Library",
+          "rescan_section_description": "Rebuild what the library knows from demos that have already been parsed.",
+          "rescan": "Re-scan demos",
+          "rescan_description": "Reads every parsed demo again and rebuilds the mined spots from it. Needed after a parser or miner change — a throw's standing position, for one, is derived differently now. This does not re-parse demos; run that first if they are on an older parser.",
+          "rescan_progress": "{demos} demo(s) · {throws} throw(s)",
+          "rescan_done": "Re-scanned {demos} demo(s) and {throws} throw(s)",
+          "rescan_failed": "Could not finish the re-scan",
+          "library_section": "Utility Library",
           "library_description": "The lineup library: saved throws with where to stand, where to aim and where the utility lands. Turned off, the library is not served and nothing new is taken in.",
           "lineup_daily_limit": "Lineups per player per day",
           "lineup_daily_limit_description": "How many lineups one player may add in a day, counting what the in-game plugin records, what demo mining attributes to them and what they author in the browser. A spam ceiling, not a quota anyone should reach.",
@@ -3942,6 +3942,12 @@
         "Half": "Half",
         "Drop": "Drop"
       },
+      "precisions": {
+        "exact": "Exact",
+        "tight": "Tight",
+        "normal": "Normal",
+        "loose": "Loose"
+      },
       "visibility": {
         "Private": "Private",
         "Team": "Team",
@@ -4022,9 +4028,11 @@
         "distance": "Throw distance",
         "eye_height": "Eye over feet",
         "view_angles": "Yaw / Pitch",
+        "precision": "Aim precision",
         "origin_source": "Source",
         "verified": "Verified",
         "vote_failed": "Could not save your vote",
+        "precision_failed": "Could not change the aim precision",
         "favorite_failed": "Could not update your saved lineups",
         "aim_delta": "Inferred vs Recorded Aim"
       },
@@ -4425,6 +4433,8 @@
         "not_placed": "Not placed",
         "origin_height": "Stand Z",
         "landing_height": "Land Z",
+        "precision": "Aim precision",
+        "precision_hint": "How close the crosshair must be before the in-game marker turns green.",
         "height_hint": "A radar pixel carries no height, so each end is read at the Z above it — and on Nuke and Vertigo that Z also picks the level. Set it before you click: a point already placed has to be re-picked, because its world position was read through the old level.",
         "clear_points": "Clear both points",
         "confidence_caption": "Nothing here was measured in a server, so the panel decides how this lineup is graded — and an authored one is never graded as recorded. Treat it as a spot to walk in: the aim below is a starting point, and it cannot be replayed in game shot-for-shot the way a captured lineup can.",
@@ -6298,8 +6308,7 @@
       "type": "Type",
       "region": "Region",
       "no_logs_title": "No Logs Available",
-      "no_logs_description": "No logs are available and no server is connected.",
-      "utility": "Utility"
+      "no_logs_description": "No logs are available and no server is connected."
     },
     "status": {
       "cancelled": "Cancelled",

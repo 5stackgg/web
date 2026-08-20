@@ -61,6 +61,11 @@ export type UtilityLineup = {
   technique: UtilityTechnique;
   throw_strength: UtilityThrowStrength;
   jump_throw_bind: boolean | null;
+  /**
+   * Degrees. How close the crosshair has to be in game before the lineup's
+   * marker turns green. Hasura sends double precision as a STRING.
+   */
+  aim_tolerance?: number | string | null;
   origin_x: number;
   origin_y: number;
   origin_z: number;

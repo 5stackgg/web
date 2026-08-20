@@ -73,6 +73,51 @@ export const UTILITY_THROW_STRENGTHS: UtilityThrowStrength[] = [
   "Drop",
 ];
 
+/**
+ * How close the crosshair has to be, in degrees, before the in-game marker
+ * turns green and the throw reads as lined up. Named rather than typed in: a
+ * degree figure means nothing to somebody saving a lineup, but "this one has
+ * to be exact" does.
+ */
+export const UTILITY_AIM_PRECISIONS = [
+  { key: "exact", degrees: 0.15 },
+  { key: "tight", degrees: 0.35 },
+  { key: "normal", degrees: 0.75 },
+  { key: "loose", degrees: 1.5 },
+] as const;
+
+export type UtilityAimPrecision = (typeof UTILITY_AIM_PRECISIONS)[number]["key"];
+
+export const UTILITY_DEFAULT_AIM_TOLERANCE = 0.35;
+
+/** Hasura sends double precision as a string, so never trust the raw value. */
+export function aimTolerance(value: number | string | null | undefined): number {
+  const degrees = Number(value);
+
+  return Number.isFinite(degrees) && degrees > 0
+    ? degrees
+    : UTILITY_DEFAULT_AIM_TOLERANCE;
+}
+
+export function aimPrecisionFor(
+  value: number | string | null | undefined,
+): UtilityAimPrecision {
+  const degrees = aimTolerance(value);
+
+  return UTILITY_AIM_PRECISIONS.reduce((closest, entry) =>
+    Math.abs(entry.degrees - degrees) < Math.abs(closest.degrees - degrees)
+      ? entry
+      : closest,
+  ).key;
+}
+
+export function aimPrecisionDegrees(precision: UtilityAimPrecision): number {
+  return (
+    UTILITY_AIM_PRECISIONS.find((entry) => entry.key === precision)?.degrees ??
+    UTILITY_DEFAULT_AIM_TOLERANCE
+  );
+}
+
 // Same hexes Replay3DLite paints utility with, so a lineup reads identically on
 // the board, in the list and in the 3D scene.
 export const UTILITY_TYPE_COLORS: Record<UtilityType, string> = {
@@ -179,19 +224,66 @@ export const UTILITY_PLAYBOOK_MAX_OFFSET_MS = 600000;
  */
 export const UTILITY_AIM_DELTA_WARN_DEGREES = 3;
 
-export type UtilityJumpBindState = "yes" | "no" | "unknown";
+/**
+ * Which mouse buttons throw it. CS2 has no jump-throw bind any more -- a jump
+ * throw is just a jump, which the technique already says -- so the only thing
+ * left to tell a player about the throw itself is what to press:
+ *
+ *   Full  left click        maximum distance
+ *   Half  left + right      about half of it
+ *   Drop  right click       drops at your feet
+ */
+export type UtilityThrowButtons = { left: boolean; right: boolean };
+
+export const UTILITY_THROW_BUTTONS: Record<
+  UtilityThrowStrength,
+  UtilityThrowButtons
+> = {
+  Full: { left: true, right: false },
+  Half: { left: true, right: true },
+  Drop: { left: false, right: true },
+};
+
+export function utilityThrowButtons(
+  strength: UtilityThrowStrength | null | undefined,
+): UtilityThrowButtons {
+  return UTILITY_THROW_BUTTONS[strength as UtilityThrowStrength] ?? UTILITY_THROW_BUTTONS.Full;
+}
+
+/** `left`, `right` or `both` -- the i18n key under `pages.utility.throw_buttons`. */
+export function utilityThrowButtonsKey(
+  strength: UtilityThrowStrength | null | undefined,
+): "left" | "right" | "both" {
+  const buttons = utilityThrowButtons(strength);
+  if (buttons.left && buttons.right) {
+    return "both";
+  }
+  return buttons.right ? "right" : "left";
+}
 
 /**
- * A demo never records whether a bind was used, so a mined lineup's `false` is
- * an absence of evidence. Rendering it as "no" would be inventing a fact.
+ * The video to show instead of the 3D reconstruction, when there is one.
+ *
+ * There is no clip attached to a lineup yet: `utility_lineups` has no relation
+ * to `match_clips`, so the only URL a lineup carries is `source_url`, which the
+ * import path fills in with wherever the lineup came from. That is a clip only
+ * when it points straight at a video file.
+ *
+ * This is the one place that answers "is there a clip", so wiring a real one up
+ * later is a single extra line here rather than a change in every surface that
+ * previews a lineup.
  */
-export function jumpThrowBindState(
-  lineup: Pick<UtilityLineup, "jump_throw_bind" | "origin_source">,
-): UtilityJumpBindState {
-  if (lineup.jump_throw_bind) {
-    return "yes";
+export function utilityClipSource(
+  lineup: Pick<UtilityLineup, "source_url">,
+): string | null {
+  const url = (lineup.source_url ?? "").trim();
+  if (!url) {
+    return null;
   }
-  return lineup.origin_source === "demo" ? "unknown" : "no";
+  // Deliberately narrow. A page that happens to be *about* the lineup is not a
+  // clip of it, and dropping an arbitrary imported link into a <video> element
+  // just renders a broken player.
+  return /\.(mp4|webm|mov)(\?|#|$)/i.test(url) ? url : null;
 }
 
 /** The worse of the two axes, which is what decides whether we warn. */

@@ -39,6 +39,7 @@ export const utilityLineupListFields = {
   technique: true,
   throw_strength: true,
   jump_throw_bind: true,
+  aim_tolerance: true,
   origin_x: true,
   origin_y: true,
   origin_z: true,
@@ -657,7 +658,7 @@ export const reviewUtilityLineupPublicMutation = generateMutation({
     {
       pk_columns: { id: $("id", "uuid!") },
       _set: {
-        visibility: $("visibility", "String"),
+        visibility: $("visibility", "e_utility_visibility_enum"),
         public_requested_at: $("public_requested_at", "timestamptz"),
         public_review_note: $("public_review_note", "String"),
       },
@@ -680,6 +681,22 @@ export const remineUtilityMetaMutation = generateMutation({
       demos: true,
       throws: true,
       done: true,
+    },
+  ],
+});
+
+// How precise the throw has to be before its in-game marker turns green. Set
+// after the fact rather than at .save: the plugin records a throw, it cannot
+// know whether landing it depends on the exact pixel or roughly the right wall.
+export const setUtilityLineupPrecisionMutation = generateMutation({
+  update_utility_lineups_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: { aim_tolerance: $("aim_tolerance", "float8") },
+    },
+    {
+      id: true,
+      aim_tolerance: true,
     },
   ],
 });

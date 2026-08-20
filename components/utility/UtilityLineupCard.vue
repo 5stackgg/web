@@ -5,14 +5,19 @@ import {
   ArrowUpRight,
   Archive,
   ArchiveRestore,
+  Check,
+  Clock,
   GitFork,
+  Globe,
   Heart,
   ThumbsDown,
   ThumbsUp,
   Timer,
   Users,
+  X,
 } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import UtilityConfidenceNote from "~/components/utility/UtilityConfidenceNote.vue";
 import UtilityDifficultyChip from "~/components/utility/UtilityDifficultyChip.vue";
@@ -34,6 +39,7 @@ const props = withDefaults(
     // Only where a lineup can actually be managed -- the pickers show cards for
     // choosing, and an archive button there is a way to lose work by accident.
     showArchive?: boolean;
+    canReview?: boolean;
     // Signed out, the counts still read fine -- they just stop being buttons.
     canReact?: boolean;
     openInPlace?: boolean;
@@ -44,6 +50,7 @@ const props = withDefaults(
     showOpenLink: true,
     showFork: false,
     showArchive: false,
+    canReview: false,
     canReact: false,
     openInPlace: false,
   },
@@ -55,10 +62,22 @@ const emit = defineEmits<{
   (e: "fork", id: string): void;
   (e: "archive", id: string): void;
   (e: "restore", id: string): void;
+  (e: "request-public", id: string): void;
+  (e: "review-public", id: string, approve: boolean): void;
   (e: "vote", id: string, value: 1 | -1): void;
   (e: "favorite", id: string): void;
   (e: "open", id: string): void;
 }>();
+
+// Only the author, only while it is neither public nor already asked, and
+// never for something archived: the queue is for lineups meant to be seen.
+const canSubmitPublic = computed(
+  () =>
+    props.lineup.can_edit &&
+    props.lineup.visibility !== "Public" &&
+    !props.lineup.public_requested_at &&
+    !props.lineup.archived_at,
+);
 
 const color = computed(
   () => UTILITY_TYPE_COLORS[props.lineup.utility_type] ?? "#ffffff",
@@ -303,5 +322,54 @@ const favoriteTitle = computed(() =>
         </button>
       </div>
     </div>
+
+    <!-- Publishing is a review, so the author's control asks and the
+         reviewer's answers. Neither is shown to the other. -->
+    <div
+      v-if="canReview && lineup.public_requested_at"
+      class="mt-2.5 flex items-center gap-1.5 border-t border-border/60 pt-2.5"
+      @click.stop
+    >
+      <Button
+        size="sm"
+        class="tac-amber-cta flex-1"
+        @click.stop="emit('review-public', lineup.id, true)"
+      >
+        <Check class="mr-1 h-3.5 w-3.5" />
+        {{ $t("pages.utility.publish.approve") }}
+      </Button>
+      <Button
+        size="sm"
+        variant="outline"
+        class="flex-1"
+        @click.stop="emit('review-public', lineup.id, false)"
+      >
+        <X class="mr-1 h-3.5 w-3.5" />
+        {{ $t("pages.utility.publish.reject") }}
+      </Button>
+    </div>
+
+    <div
+      v-else-if="canSubmitPublic"
+      class="mt-2.5 border-t border-border/60 pt-2.5"
+    >
+      <Button
+        size="sm"
+        variant="outline"
+        class="w-full"
+        @click.stop="emit('request-public', lineup.id)"
+      >
+        <Globe class="mr-1 h-3.5 w-3.5" />
+        {{ $t("pages.utility.publish.submit") }}
+      </Button>
+    </div>
+
+    <p
+      v-else-if="lineup.can_edit && lineup.public_requested_at"
+      class="mt-2.5 flex items-center gap-1.5 border-t border-border/60 pt-2.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+    >
+      <Clock class="h-3 w-3" />
+      {{ $t("pages.utility.publish.pending") }}
+    </p>
   </div>
 </template>

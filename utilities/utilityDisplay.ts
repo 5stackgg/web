@@ -17,7 +17,8 @@ export type UtilityScope =
   | "mine"
   | "team"
   | "favorites"
-  | "archived";
+  | "archived"
+  | "pending";
 
 export type UtilitySort = "top" | "new";
 
@@ -388,6 +389,14 @@ export function utilityLineupWhere(
     // get them back. Without this an archive looks like it failed on reload.
     archived_at:
       state.scope === "archived" ? { _is_null: false } : { _is_null: true },
+    // The review queue is "asked, not yet answered". Everywhere else a pending
+    // lineup is just a private lineup and needs no clause of its own.
+    ...(state.scope === "pending"
+      ? {
+          public_requested_at: { _is_null: false },
+          visibility: { _neq: "Public" },
+        }
+      : {}),
   };
   if (state.types.length) {
     clause.utility_type = { _in: state.types };
@@ -420,6 +429,9 @@ export function utilityLineupWhere(
     clause.is_favorited = { _eq: true };
   } else if (state.scope === "archived" && context.mySteamId) {
     clause.author_steam_id = { _eq: context.mySteamId };
+  } else if (state.scope === "pending") {
+    // Deliberately not narrowed to the caller: the point of the queue is other
+    // people's submissions, and only a reviewer can see it at all.
   } else if (state.scope === "public") {
     clause.visibility = { _eq: "Public" };
   }

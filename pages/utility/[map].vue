@@ -36,12 +36,14 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { toast } from "~/components/ui/toast";
 import {
   archiveUtilityLineupMutation,
+  requestUtilityLineupPublicMutation,
+  reviewUtilityLineupPublicMutation,
   utilityLineupsCountQuery,
   utilityScopeCountsQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
 } from "~/graphql/utilityGraphql";
-import { order_by } from "~/generated/zeus";
+import { e_player_roles_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityReactions } from "~/composables/useUtilityReactions";
 import { normalizeMapName } from "~/utilities/mapAssets";
@@ -321,7 +323,14 @@ const where = computed<Record<string, unknown>>(() =>
 // One count per scope tab, so "MINE" says how many are yours before you click
 // it. Every other filter still applies -- the tabs count what you would get,
 // not what exists.
-const SCOPES = ["public", "mine", "team", "favorites", "archived"] as const;
+const SCOPES = [
+  "public",
+  "mine",
+  "team",
+  "favorites",
+  "archived",
+  "pending",
+] as const;
 
 const scopeCounts = ref<Record<string, number>>({});
 
@@ -344,7 +353,9 @@ const scopeWheres = computed(() =>
 async function fetchScopeCounts() {
   // A signed-out visitor only ever sees Public, so three of the four counts
   // would be a round trip spent on tabs they cannot press.
-  const scopes = mySteamId.value ? [...SCOPES] : ["public"];
+  const scopes = mySteamId.value
+    ? SCOPES.filter((scope) => scope !== "pending" || canReview.value)
+    : ["public"];
 
   try {
     const { data } = await getGraphqlClient().query({
@@ -580,6 +591,59 @@ const populatedElsewhere = computed(() =>
   ).map((scope) => ({ scope, count: scopeCounts.value[scope] ?? 0 })),
 );
 
+const canReview = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
+);
+
+// Asking, not publishing. The table's trigger is what refuses a self-promotion,
+// so this cannot be talked into more than a request.
+async function requestPublic(id: string) {
+  try {
+    await getGraphqlClient().mutate({
+      mutation: requestUtilityLineupPublicMutation,
+      variables: { id, public_requested_at: new Date().toISOString() },
+    });
+    patchLineup(id, { public_requested_at: new Date().toISOString() });
+    toast({ title: t("pages.utility.publish.requested") });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.publish.request_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
+}
+
+async function reviewPublic(id: string, approve: boolean) {
+  try {
+    await getGraphqlClient().mutate({
+      mutation: reviewUtilityLineupPublicMutation,
+      variables: {
+        id,
+        visibility: approve ? "Public" : undefined,
+        // Approving clears the request through the trigger; rejecting has to
+        // clear it here, or the queue never empties.
+        public_requested_at: approve ? undefined : null,
+        public_review_note: null,
+      },
+    });
+    lineups.value = lineups.value.filter((entry) => entry.id !== id);
+    totalCount.value = Math.max(0, totalCount.value - 1);
+    toast({
+      title: approve
+        ? t("pages.utility.publish.approved")
+        : t("pages.utility.publish.rejected"),
+    });
+    void fetchScopeCounts();
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.publish.review_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
+}
+
 function startArchive(id: string) {
   archiveLineup.value = lineups.value.find((entry) => entry.id === id) ?? null;
   archiveOpen.value = !!archiveLineup.value;
@@ -755,6 +819,7 @@ function selectLineup(id: string | null) {
             :signed-in="!!mySteamId"
             :has-team="myTeamIds.length > 0"
             :scope-counts="scopeCounts"
+            :can-review="canReview"
             :parts="['scope']"
             bare
           />
@@ -892,6 +957,7 @@ function selectLineup(id: string | null) {
               :meta-throwers="metaThrowersByLineup[lineup.id] ?? null"
               :show-fork="!!mySteamId"
               :show-archive="!!mySteamId"
+              :can-review="canReview"
               @select="selectLineup"
               @hover="(id) => (hoveredId = id)"
               :can-react="!!mySteamId"
@@ -900,6 +966,8 @@ function selectLineup(id: string | null) {
               @fork="startFork"
               @archive="startArchive"
               @restore="restoreLineup"
+              @request-public="requestPublic"
+              @review-public="reviewPublic"
               @vote="onVote"
               @favorite="onFavorite"
             />

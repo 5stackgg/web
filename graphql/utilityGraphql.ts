@@ -88,6 +88,9 @@ export const utilityLineupFields = {
   trajectory_size: true,
   updated_at: true,
   archived_at: true,
+  public_requested_at: true,
+  public_reviewed_at: true,
+  public_review_note: true,
 } as const;
 
 // Deliberately narrow: only the columns the picker renders plus the two
@@ -634,6 +637,40 @@ export const saveUtilityPlaybookMutation = generateMutation({
 // playbooks, votes and drill progress, all of which cascade on a real DELETE --
 // so removing yours would quietly wipe their history. Archiving takes it out of
 // every library view and is reversible.
+// Asking is an update the author is allowed to make; answering is not. The
+// trigger on the table is what actually decides who may turn a lineup public.
+export const requestUtilityLineupPublicMutation = generateMutation({
+  update_utility_lineups_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: { public_requested_at: $("public_requested_at", "timestamptz") },
+    },
+    {
+      id: true,
+      public_requested_at: true,
+    },
+  ],
+});
+
+export const reviewUtilityLineupPublicMutation = generateMutation({
+  update_utility_lineups_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: {
+        visibility: $("visibility", "String"),
+        public_requested_at: $("public_requested_at", "timestamptz"),
+        public_review_note: $("public_review_note", "String"),
+      },
+    },
+    {
+      id: true,
+      visibility: true,
+      public_requested_at: true,
+      public_reviewed_at: true,
+    },
+  ],
+});
+
 export const archiveUtilityLineupMutation = generateMutation({
   update_utility_lineups_by_pk: [
     {

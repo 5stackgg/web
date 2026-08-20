@@ -26,6 +26,7 @@ const props = withDefaults(
     availableTags?: string[];
     hasTeam?: boolean;
     signedIn?: boolean;
+    canReview?: boolean;
     // How many lineups each tab would show, so the choice is informed
     // before it is made rather than after.
     scopeCounts?: Record<string, number>;
@@ -38,6 +39,7 @@ const props = withDefaults(
     availableTags: () => [],
     hasTeam: false,
     signedIn: false,
+    canReview: false,
     scopeCounts: () => ({}),
     parts: () => ["search", "types", "scope", "menu"],
     bare: false,
@@ -78,6 +80,18 @@ const scopeOptions = computed(() => [
           key: "favorites",
           label: t("pages.utility.scope.favorites"),
           count: props.scopeCounts.favorites,
+        },
+      ]
+    : []),
+  // The submission queue, for the people who answer it. It stays visible at
+  // zero so a reviewer can see the queue is clear rather than wonder where it
+  // went.
+  ...(props.canReview
+    ? [
+        {
+          key: "pending",
+          label: t("pages.utility.scope.pending"),
+          count: props.scopeCounts.pending,
         },
       ]
     : []),

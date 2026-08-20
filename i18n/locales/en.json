@@ -3960,7 +3960,8 @@
         "mine": "Mine",
         "team": "Team",
         "favorites": "Saved",
-        "archived": "Archived"
+        "archived": "Archived",
+        "pending": "Review"
       },
       "sort": {
         "top": "Top rated",
@@ -4426,6 +4427,17 @@
         "save_requirements": "Place both points and give it a name.",
         "saved": "Lineup saved",
         "save_failed": "Could not save the lineup"
+      },
+      "publish": {
+        "submit": "Submit for public",
+        "pending": "Awaiting review",
+        "requested": "Sent for review",
+        "request_failed": "Could not send that for review",
+        "approve": "Make public",
+        "reject": "Decline",
+        "approved": "Published to the library",
+        "rejected": "Left out of the library",
+        "review_failed": "Could not review that lineup"
       },
       "archive": {
         "action": "Archive lineup",

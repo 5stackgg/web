@@ -23,6 +23,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import DraftRoomNav from "./DraftRoomNav.vue";
+import UtilityPracticeNav from "~/components/utility/UtilityPracticeNav.vue";
 import SystemStatus from "./SystemStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
@@ -601,6 +602,7 @@ const loginArrowClasses =
               {{ pendingCheckIn.confirmed }}/{{ pendingCheckIn.players }}
             </span>
           </button>
+          <UtilityPracticeNav />
           <DraftRoomNav v-if="!isMobile" />
           <MatchLobbies v-if="!isMobile" />
           <Button

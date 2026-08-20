@@ -211,8 +211,7 @@ const sortOptions = computed<Array<{ value: UtilitySort; label: string }>>(() =>
       v-model="scopeModel"
       :options="scopeOptions"
       square
-      :class="bare ? 'w-full' : 'ml-auto'"
-      :block="bare"
+      :class="bare ? 'max-w-full' : 'ml-auto'"
     />
 
     <FilterMenu

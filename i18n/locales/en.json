@@ -3898,6 +3898,7 @@
         "block_tab": "Block",
         "create_tab": "Add"
       },
+      "layers": "Layers",
       "all_maps": "All Maps",
       "back_to_map": "Back to Map",
       "map_subtitle": "{count} lineups match your filters.",
@@ -3977,7 +3978,8 @@
       },
       "board": {
         "no_radar": "No radar for this map",
-        "hint": "Squares are throw origins, dots are where the utility lands. Pick one to line it up with the list."
+        "hint": "Squares are throw origins, dots are where the utility lands. Pick one to line it up with the list.",
+        "key": "Squares = origin · Dots = landing"
       },
       "card": {
         "upvote": "Mark this as a good lineup",

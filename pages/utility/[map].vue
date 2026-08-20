@@ -587,49 +587,8 @@ function selectLineup(id: string | null) {
 </script>
 
 <template>
-  <div class="flex gap-4">
-    <!-- Views live on their own edge so they can never be mistaken for the
-         scope tabs inside the panel: different question, different surface. -->
-    <PageTransition class="hidden lg:block">
-      <nav
-        class="sticky top-4 flex w-[84px] shrink-0 flex-col gap-1 rounded-lg border border-border bg-card/30 p-2 [backdrop-filter:blur(6px)]"
-      >
-        <span
-          class="pb-1 text-center font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground/70"
-        >
-          {{ $t("pages.utility.views.label") }}
-        </span>
-        <button
-          v-for="tab of listTabs"
-          :key="tab.key"
-          type="button"
-          class="flex flex-col items-center gap-1 rounded-sm border-l-2 px-1 py-2.5 transition-colors"
-          :class="
-            listTab === tab.key
-              ? 'border-[hsl(var(--tac-amber))] bg-[linear-gradient(90deg,hsl(var(--tac-amber)/0.14),transparent)] text-[hsl(var(--tac-amber))]'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          "
-          @click="listTab = tab.key"
-        >
-          <component :is="tab.icon" v-if="tab.icon" class="h-[18px] w-[18px]" />
-          <span
-            class="font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.1em]"
-          >
-            {{ tab.label }}
-          </span>
-          <span
-            v-if="tab.count !== undefined"
-            class="font-mono text-[0.55rem] leading-none opacity-60"
-          >
-            {{ tab.count }}
-          </span>
-        </button>
-      </nav>
-    </PageTransition>
-
-    <div class="min-w-0 flex-1">
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #description>{{ $t("pages.utility.eyebrow") }}</template>
       <template #title>{{ mapTitle }}</template>
       <template #subtitle>
@@ -667,27 +626,17 @@ function selectLineup(id: string | null) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="60" class="mt-4 lg:hidden">
-    <AnimatedFilters
-      v-model="listTab"
-      :options="listTabs"
-      size="lg"
-      square
-      block
-    />
-  </PageTransition>
-
   <PageTransition :delay="80" class="mt-4">
     <div
       class="grid gap-4"
       :class="showPlaybooks ? '' : 'lg:grid-cols-[minmax(0,1fr)_380px]'"
     >
-      <!-- The board is aspect-square, so an unbounded column turns it into a
-           750px tall image with an empty panel beside it. Capping the width by
-           viewport height keeps the whole board on screen. -->
+      <!-- The map is the page. Everything that used to sit in a band above it
+           now floats on it, so the board gets the room and the chrome stops
+           competing with the list's own controls. -->
       <div
         v-if="!showPlaybooks"
-        class="mx-auto w-full max-w-[calc(100vh-14rem)] lg:sticky lg:top-4 lg:self-start"
+        class="relative mx-auto w-full max-w-[calc(100vh-11rem)] lg:sticky lg:top-4 lg:self-start"
       >
         <UtilityRadarBoard
           :map-name="mapName"
@@ -712,22 +661,52 @@ function selectLineup(id: string | null) {
           @select-meta="(key) => (selectedMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
         />
+        <span
+          class="pointer-events-none absolute left-3 top-3 z-10 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-white/40"
+        >
+          {{ $t("pages.utility.board.key") }}
+        </span>
+
+        <!-- The view switcher rides the board rather than sitting above the
+             list, where it read as a second scope control. -->
+        <div
+          class="pointer-events-none absolute inset-x-3 top-3 flex justify-center"
+        >
+          <div
+            class="pointer-events-auto max-w-full overflow-x-auto rounded-lg border border-white/10 bg-background/80 p-1 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
+          >
+            <AnimatedFilters v-model="listTab" :options="listTabs" square />
+          </div>
+        </div>
+
         <!-- Legend and filter in one: the chips carry the same colours the
              board draws with, so the thing that explains the markers is the
-             thing that hides them. -->
-        <div class="mt-2 flex flex-wrap items-center gap-2">
-          <UtilityFilters
-            v-model="filters"
-            :signed-in="!!mySteamId"
-            :has-team="myTeamIds.length > 0"
-            :parts="['types']"
-            bare
-          />
+             thing that hides them. On the board they read as map layers,
+             which is what they are. -->
+        <div
+          class="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-end justify-between gap-2"
+        >
+          <div
+            class="pointer-events-auto max-w-full rounded-lg border border-white/10 bg-background/80 p-2 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
+          >
+            <span
+              class="mb-1.5 block font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              {{ $t("pages.utility.layers") }}
+            </span>
+            <UtilityFilters
+              v-model="filters"
+              :signed-in="!!mySteamId"
+              :has-team="myTeamIds.length > 0"
+              :parts="['types']"
+              bare
+            />
+          </div>
           <Button
             v-if="metaSpots.length"
             size="sm"
             variant="outline"
-            class="ml-auto shrink-0"
+            class="pointer-events-auto shrink-0 border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
             :class="showMeta ? 'text-[hsl(var(--tac-amber))]' : ''"
             @click="showMeta = !showMeta"
           >
@@ -735,9 +714,6 @@ function selectLineup(id: string | null) {
             {{ $t("pages.utility.meta.overlay") }}
           </Button>
         </div>
-        <p class="mt-2 text-xs text-muted-foreground">
-          {{ $t("pages.utility.board.hint") }}
-        </p>
       </div>
 
       <div class="flex flex-col gap-2">
@@ -904,8 +880,6 @@ function selectLineup(id: string | null) {
     :per-page="perPage"
     @page="(value) => (page = value)"
   />
-    </div>
-  </div>
 
   <UtilityForkDialog
     v-model:open="forkOpen"

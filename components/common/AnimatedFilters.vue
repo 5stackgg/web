@@ -36,7 +36,7 @@ const indicatorShape = computed(() =>
   props.square ? "rounded" : "rounded-full",
 );
 const buttonShape = computed(() => {
-  const base = props.block ? "flex-1" : "";
+  const base = props.block ? "min-w-0 flex-1" : "";
   if (props.size === "lg") {
     return `inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2.5 font-mono text-[0.72rem] font-bold uppercase leading-tight tracking-[0.08em] ${base}`;
   }

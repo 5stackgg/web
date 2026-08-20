@@ -29,6 +29,8 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import UtilityFilters from "~/components/utility/UtilityFilters.vue";
+import UtilityCreatePanel from "~/components/utility/UtilityCreatePanel.vue";
+import UtilityMetaPanel from "~/components/utility/UtilityMetaPanel.vue";
 import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPanel.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
@@ -54,6 +56,8 @@ import {
   toUtilityMetaSpots,
 } from "~/utilities/utilityDisplay";
 import type {
+  UtilityBoardMarker,
+  UtilityBoardSegment,
   UtilityFilterState,
   UtilityMetaSpot,
   UtilityScope,
@@ -141,17 +145,37 @@ const archiveOpen = ref(false);
 const archiveLineup = ref<UtilityLineup | null>(null);
 
 const LIST_TAB = "lineups";
+const META_TAB = "meta";
+const CREATE_TAB = "create";
 const PLAN_TAB = "plan";
 const listTab = ref<string>(LIST_TAB);
+const selectedMetaKey = ref<string | null>(null);
+
+const createPanel = ref<{
+  applyPick: (point: { x: number; y: number; z: number }) => void;
+} | null>(null);
+const createBoard = ref<{
+  pickZ: number;
+  markers: UtilityBoardMarker[];
+  segments: UtilityBoardSegment[];
+}>({ pickZ: 0, markers: [], segments: [] });
 
 // The plan is ranked against the caller's own drill record, so there is nothing
-// to show a signed-out visitor.
+// to show a signed-out visitor. Meta is only a tab once the map has mined data.
 const listTabs = computed(() => {
   const tabs: Array<{ key: string; label: string; count?: number }> = [
     { key: LIST_TAB, label: t("pages.utility.lineups"), count: totalCount.value },
   ];
+  if (metaSpots.value.length) {
+    tabs.push({
+      key: META_TAB,
+      label: t("pages.utility.views.meta_tab"),
+      count: metaSpots.value.length,
+    });
+  }
   if (mySteamId.value) {
     tabs.push({ key: PLAN_TAB, label: t("pages.utility.plan.tab") });
+    tabs.push({ key: CREATE_TAB, label: t("pages.utility.views.create_tab") });
   }
   return tabs;
 });
@@ -159,6 +183,38 @@ const listTabs = computed(() => {
 const showPlan = computed(
   () => listTab.value === PLAN_TAB && !!mySteamId.value,
 );
+const showMetaPanel = computed(
+  () => listTab.value === META_TAB && metaSpots.value.length > 0,
+);
+const showCreatePanel = computed(
+  () => listTab.value === CREATE_TAB && !!mySteamId.value,
+);
+
+function onBoardPick(point: { x: number; y: number; z: number }) {
+  createPanel.value?.applyPick(point);
+}
+
+// Straight into the lineup it just wrote: the author's next question is always
+// whether it looks right on the board.
+function onLineupCreated(id: string) {
+  listTab.value = LIST_TAB;
+  void fetchLineups();
+  openLineup(id);
+}
+
+// The overlay toggle is for reading the meta *against* the library; the Meta
+// tab is the meta itself, so it draws the clusters whatever the toggle says.
+const metaOnBoard = computed(() =>
+  showMetaPanel.value || showMeta.value ? metaSpots.value : [],
+);
+
+// A tab that disappears (meta drains, sign-out) must not strand the panel on a
+// key nothing renders.
+watch(listTabs, (tabs) => {
+  if (!tabs.some((tab) => tab.key === listTab.value)) {
+    listTab.value = LIST_TAB;
+  }
+});
 
 // ?practice= carries an invite code, not a session id.
 const joinInviteCode = computed(() =>
@@ -480,20 +536,6 @@ function selectLineup(id: string | null) {
             </DropdownMenuLabel>
             <DropdownMenuItem as-child>
               <NuxtLink
-                :to="{ name: 'utility-meta-map', params: { map: mapName } }"
-                class="flex cursor-pointer items-start gap-2"
-              >
-                <Users class="mt-0.5 h-4 w-4 shrink-0" />
-                <span class="min-w-0">
-                  <span class="block">{{ $t("pages.utility.meta.title") }}</span>
-                  <span class="block text-xs text-muted-foreground">
-                    {{ $t("pages.utility.views.meta_hint") }}
-                  </span>
-                </span>
-              </NuxtLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem as-child>
-              <NuxtLink
                 :to="{ name: 'utility-playbooks-map', params: { map: mapName } }"
                 class="flex cursor-pointer items-start gap-2"
               >
@@ -527,12 +569,15 @@ function selectLineup(id: string | null) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <NuxtLink :to="{ name: 'utility-new-map', params: { map: mapName } }">
-          <Button variant="outline">
-            <Plus class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.create.action") }}
-          </Button>
-        </NuxtLink>
+        <Button
+          v-if="mySteamId"
+          variant="outline"
+          :class="listTab === CREATE_TAB ? 'text-[hsl(var(--tac-amber))]' : ''"
+          @click="listTab = CREATE_TAB"
+        >
+          <Plus class="mr-1 h-4 w-4" />
+          {{ $t("pages.utility.create.action") }}
+        </Button>
         <Button class="tac-amber-cta" @click="practiceOpen = true">
           <Rocket class="mr-1 h-4 w-4" />
           {{ $t("pages.utility.practice.start") }}
@@ -559,9 +604,17 @@ function selectLineup(id: string | null) {
           :lineups="lineups"
           :selected-id="selectedId"
           :hovered-id="hoveredId"
-          :meta-spots="showMeta ? metaSpots : []"
+          :meta-spots="metaOnBoard"
+          :selected-meta-key="selectedMetaKey"
+          :meta-interactive="showMetaPanel"
+          :picking="showCreatePanel"
+          :pick-z="createBoard.pickZ"
+          :markers="showCreatePanel ? createBoard.markers : []"
+          :segments="showCreatePanel ? createBoard.segments : []"
           @select="selectLineup"
           @hover="(id) => (hoveredId = id)"
+          @select-meta="(key) => (selectedMetaKey = key)"
+          @pick="onBoardPick"
         />
         <div class="mt-2 flex items-start justify-between gap-2">
           <p class="text-xs text-muted-foreground">
@@ -595,6 +648,22 @@ function selectLineup(id: string | null) {
           :map-name="mapName"
           @select="selectLineup"
           @hover="(id) => (hoveredId = id)"
+        />
+
+        <UtilityCreatePanel
+          v-else-if="showCreatePanel"
+          ref="createPanel"
+          :map-name="mapName"
+          @board="(state) => (createBoard = state)"
+          @created="onLineupCreated"
+        />
+
+        <UtilityMetaPanel
+          v-else-if="showMetaPanel"
+          v-model:selected-key="selectedMetaKey"
+          :spots="metaSpots"
+          :lineups="lineups"
+          @open="openLineup"
         />
 
         <!-- Shaped like the cards they stand in for. A short placeholder that

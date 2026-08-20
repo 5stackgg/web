@@ -3892,7 +3892,11 @@
         "label": "Map views",
         "meta_hint": "What players actually throw here",
         "playbooks_hint": "Timed executes built from lineups",
-        "block_hint": "Find a smoke that cuts a given angle"
+        "block_hint": "Find a smoke that cuts a given angle",
+        "meta_tab": "Meta",
+        "playbooks_tab": "Playbooks",
+        "block_tab": "Block",
+        "create_tab": "Add"
       },
       "all_maps": "All Maps",
       "back_to_map": "Back to Map",
@@ -4083,7 +4087,8 @@
         "first_seen": "first",
         "last_seen": "last",
         "refreshed": "Aggregated",
-        "match_gap": "Showing {shown} of {count} saved lineups in this cluster — the rest are outside the lineups loaded here."
+        "match_gap": "Showing {shown} of {count} saved lineups in this cluster — the rest are outside the lineups loaded here.",
+        "summary": "{spots} spots · {throws} throws"
       },
       "playbooks": {
         "title": "Playbooks",

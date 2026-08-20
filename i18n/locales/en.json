@@ -3898,7 +3898,10 @@
         "block_tab": "Block",
         "create_tab": "Add"
       },
-      "all_maps": "All Maps",
+      "picker": {
+        "search": "Find a map",
+        "none": "No maps with radars"
+      },
       "back_to_map": "Back to Map",
       "empty": {
         "no_maps": "No maps available",

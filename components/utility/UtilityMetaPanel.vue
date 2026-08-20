@@ -187,7 +187,7 @@ watch(visibleSpots, (list) => {
           selectedKey === row.spot.key
             ? 'border-[hsl(var(--tac-amber))]/60 bg-card/70'
             : hoveredKey === row.spot.key
-              ? 'border-border bg-card/60'
+              ? 'border-[hsl(var(--tac-amber))]/40 bg-[hsl(var(--tac-amber))]/[0.07]'
               : 'border-border/60 bg-card/30'
         "
         @mouseenter="emit('update:hoveredKey', row.spot.key)"

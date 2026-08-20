@@ -1,36 +1,20 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import { Skeleton } from "~/components/ui/skeleton";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { order_by } from "~/generated/zeus";
-import {
-  mapCountAlias,
-  mapCountVariable,
-  utilityMapCountsQuery,
-} from "~/graphql/utilityGraphql";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
-import mapLabel from "~/utilities/mapLabel";
 
-type MapTile = {
-  name: string;
-  label: string;
-  radar: string;
-  count: number;
-};
-
+// There is no map grid any more: the map name on the library page is itself the
+// switcher, so this route exists only to pick a map and get out of the way.
+const router = useRouter();
 const loading = ref(true);
-const tiles = ref<MapTile[]>([]);
-
-const totalLineups = computed(() =>
-  tiles.value.reduce((sum, tile) => sum + tile.count, 0),
-);
 
 const mapsQuery = generateQuery({
   maps: [
@@ -41,155 +25,48 @@ const mapsQuery = generateQuery({
       },
       order_by: [{ name: order_by.asc }],
     },
-    {
-      id: true,
-      name: true,
-      label: true,
-    },
+    { id: true, name: true },
   ],
 });
 
-async function load() {
-  loading.value = true;
+onMounted(async () => {
   try {
-    const client = getGraphqlClient();
     const [{ data }, radarMaps] = await Promise.all([
-      client.query({ query: mapsQuery, fetchPolicy: "cache-first" }),
+      getGraphqlClient().query({ query: mapsQuery, fetchPolicy: "cache-first" }),
       loadRadarMaps(),
     ]);
 
-    const seen = new Set<string>();
-    const candidates: Array<{ name: string; label: string }> = [];
-    for (const map of ((data as any)?.maps ?? []) as Array<{
-      name: string;
-      label: string | null;
-    }>) {
+    // A map without a radar has nothing to draw a lineup on, so it can never be
+    // the one this route lands on.
+    for (const map of ((data as any)?.maps ?? []) as Array<{ name: string }>) {
       const radar = normalizeMapName(map.name);
-      if (!radarMaps.has(radar) || seen.has(radar)) {
-        continue;
+      if (radarMaps.has(radar)) {
+        await router.replace({
+          name: "utility-map",
+          params: { map: radar },
+        });
+        return;
       }
-      seen.add(radar);
-      candidates.push({ name: radar, label: mapLabel(map) });
     }
-
-    if (candidates.length === 0) {
-      tiles.value = [];
-      return;
-    }
-
-    const variables: Record<string, unknown> = {};
-    for (const candidate of candidates) {
-      variables[mapCountVariable(candidate.name)] = {
-        map_name: { _eq: candidate.name },
-      };
-    }
-
-    const counts = await client.query({
-      query: utilityMapCountsQuery(candidates.map((entry) => entry.name)),
-      variables,
-      fetchPolicy: "network-only",
-    });
-
-    tiles.value = candidates.map((candidate) => ({
-      name: candidate.name,
-      label: candidate.label,
-      radar: `/radars/${candidate.name}.png`,
-      count:
-        (counts.data as any)?.[mapCountAlias(candidate.name)]?.aggregate
-          ?.count ?? 0,
-    }));
   } catch (error) {
-    console.error("[utility] map grid load error:", error);
-    tiles.value = [];
+    console.error("[utility] map redirect error:", error);
   } finally {
     loading.value = false;
   }
-}
-
-onMounted(load);
+});
 </script>
 
 <template>
-  <PageTransition>
-    <TacticalPageHeader>
-      <template #description>{{ $t("pages.utility.eyebrow") }}</template>
-      <template #title>{{ $t("pages.utility.title") }}</template>
-      <template #subtitle>{{ $t("pages.utility.subtitle") }}</template>
-      <template #actions>
-        <div
-          class="flex items-center gap-2 rounded-md border border-border bg-card/50 px-3 py-2 [backdrop-filter:blur(6px)]"
-        >
-          <HeGrenadeIcon class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-          <span class="font-mono text-sm font-bold tabular-nums">
-            {{ totalLineups }}
-          </span>
-          <span
-            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            {{ $t("pages.utility.lineups") }}
-          </span>
-        </div>
-      </template>
-    </TacticalPageHeader>
+  <PageTransition v-if="loading">
+    <Skeleton class="h-[60vh] w-full rounded-md" />
   </PageTransition>
 
-  <PageTransition v-if="loading" :delay="60" class="mt-6">
-    <div
-      class="grid gap-3"
-      style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))"
-    >
-      <Skeleton v-for="i in 8" :key="i" class="aspect-[4/3] w-full rounded-md" />
-    </div>
-  </PageTransition>
-
-  <PageTransition v-else-if="!tiles.length" :delay="60" class="mt-6">
+  <PageTransition v-else :delay="60">
     <Empty>
       <EmptyTitle>{{ $t("pages.utility.empty.no_maps") }}</EmptyTitle>
       <EmptyDescription>
         {{ $t("pages.utility.empty.no_maps_description") }}
       </EmptyDescription>
     </Empty>
-  </PageTransition>
-
-  <PageTransition v-else :delay="60" class="mt-6">
-    <div
-      class="grid gap-3"
-      style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))"
-    >
-      <NuxtLink
-        v-for="tile of tiles"
-        :key="tile.name"
-        :to="{ name: 'utility-map', params: { map: tile.name } }"
-        class="group relative block overflow-hidden border-2 border-border/60 text-left transition-all hover:-translate-y-0.5 hover:border-[hsl(var(--tac-amber)/0.7)]"
-      >
-        <img
-          :src="tile.radar"
-          :alt="tile.label"
-          class="aspect-[4/3] w-full object-cover opacity-60 transition-opacity group-hover:opacity-90"
-          @error="
-            ($event.target as HTMLImageElement).style.visibility = 'hidden'
-          "
-        />
-        <div
-          class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-2"
-        >
-          <div
-            class="truncate font-mono text-sm font-bold uppercase tracking-[0.18em] text-white"
-          >
-            {{ tile.label }}
-          </div>
-          <span
-            class="shrink-0 border px-1.5 py-0.5 font-mono text-[0.6rem] tabular-nums uppercase tracking-[0.16em]"
-            :class="
-              tile.count > 0
-                ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
-                : 'border-white/40 text-white/60'
-            "
-          >
-            {{ tile.count }}
-          </span>
-        </div>
-      </NuxtLink>
-    </div>
   </PageTransition>
 </template>

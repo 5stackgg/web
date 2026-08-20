@@ -3,7 +3,6 @@ import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
-  ArrowLeft,
   ClipboardCheck,
   ListOrdered,
   Plus,
@@ -24,6 +23,7 @@ import UtilityFilters from "~/components/utility/UtilityFilters.vue";
 import UtilityBlockPanel from "~/components/utility/UtilityBlockPanel.vue";
 import UtilityPlaybooksPanel from "~/components/utility/UtilityPlaybooksPanel.vue";
 import UtilityCreatePanel from "~/components/utility/UtilityCreatePanel.vue";
+import UtilityMapPicker from "~/components/utility/UtilityMapPicker.vue";
 import UtilityMetaPanel from "~/components/utility/UtilityMetaPanel.vue";
 import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPanel.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
@@ -47,7 +47,6 @@ import { e_player_roles_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityReactions } from "~/composables/useUtilityReactions";
 import { normalizeMapName } from "~/utilities/mapAssets";
-import cleanMapName from "~/utilities/cleanMapName";
 import {
   matchUtilityMetaSpot,
   utilityLineupWhere,
@@ -81,7 +80,6 @@ const router = useRouter();
 const { t } = useI18n();
 
 const mapName = computed(() => normalizeMapName(String(route.params.map)));
-const mapTitle = computed(() => cleanMapName(mapName.value));
 
 const auth = useAuthStore();
 const mySteamId = computed(() => auth.me?.steam_id ?? null);
@@ -715,19 +713,10 @@ function selectLineup(id: string | null) {
         <div
           class="pointer-events-none absolute inset-x-3 top-3 flex items-start justify-between gap-3"
         >
-          <div class="pointer-events-auto flex min-w-0 flex-col gap-1">
-            <h1
-              class="m-0 font-sans text-3xl font-bold uppercase leading-none tracking-[0.02em] text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.95)]"
-            >
-              {{ mapTitle }}
-            </h1>
-            <NuxtLink
-              :to="{ name: 'utility' }"
-              class="inline-flex w-fit items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.18em] text-white/55 transition-colors hover:text-[hsl(var(--tac-amber))] [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
-            >
-              <ArrowLeft class="h-3 w-3" />
-              {{ $t("pages.utility.all_maps") }}
-            </NuxtLink>
+          <!-- The name IS the switcher, so there is no index page to go back
+               to and no "All Maps" link taking up a line under it. -->
+          <div class="pointer-events-auto min-w-0">
+            <UtilityMapPicker :map-name="mapName" />
           </div>
 
           <div

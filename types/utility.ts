@@ -81,7 +81,6 @@ export type UtilityLineup = {
   confidence: UtilityConfidence;
   /** Up to 32 quantized points — enough to draw the line on a list/board. */
   trajectory_preview: Array<[number, number, number]> | null;
-  trajectory_file?: string | null;
   trajectory_size?: number | null;
   /**
    * Signed disagreement between the aim the trajectory implies and the view

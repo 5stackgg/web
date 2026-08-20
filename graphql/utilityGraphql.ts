@@ -85,7 +85,6 @@ export const utilityLineupListFields = {
 export const utilityLineupFields = {
   ...utilityLineupListFields,
   description: true,
-  trajectory_file: true,
   trajectory_size: true,
   updated_at: true,
 } as const;

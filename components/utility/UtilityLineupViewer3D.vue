@@ -71,7 +71,9 @@ const trajectory = computed<UtilityTrajectoryPoint[]>(() => {
 async function loadTrajectory() {
   fullTrajectory.value = null;
   smokeVolume.value = null;
-  if (!props.lineup.trajectory_file) {
+  // The size is written with the file and is safe to select; the S3 key is
+  // not something the browser needs to know.
+  if (!props.lineup.trajectory_size) {
     return;
   }
   try {

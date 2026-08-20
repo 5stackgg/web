@@ -1,43 +1,52 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { Rocket } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { myUtilityPracticeSessionQuery } from "~/graphql/utilityGraphql";
+import { myUtilityPracticeSessionSubscription } from "~/graphql/utilityGraphql";
 import { useAuthStore } from "~/stores/AuthStore";
 import type { UtilityPracticeSession } from "~/types/utility";
 
 const session = ref<UtilityPracticeSession | null>(null);
+let sub: { unsubscribe: () => void } | null = null;
 
 const me = computed(() => useAuthStore().me);
+
+function unsubscribe() {
+  sub?.unsubscribe();
+  sub = null;
+}
+
 // A reservation the player is still holding, on whatever page they wander to.
-// Without this the only trace of a booked server is the modal that booked it.
-async function refresh() {
-  const steamId = me.value?.steam_id;
+// Subscribed rather than fetched: booking one happens in a dialog this has no
+// way of hearing about, and the chip has to appear anyway.
+function subscribe(steamId?: string | null) {
+  unsubscribe();
+  session.value = null;
 
   if (!steamId) {
-    session.value = null;
     return;
   }
 
-  try {
-    const { data } = await getGraphqlClient().query({
-      query: myUtilityPracticeSessionQuery,
+  sub = getGraphqlClient()
+    .subscribe({
+      query: myUtilityPracticeSessionSubscription,
       variables: { steam_id: steamId, statuses: ["Starting", "Ready"] },
-      fetchPolicy: "network-only",
+    })
+    .subscribe({
+      next: ({ data }: { data: any }) => {
+        session.value = (data?.utility_practice_sessions ?? [])[0] ?? null;
+      },
+      error: (error: unknown) => {
+        console.error("[utility] practice nav subscription error:", error);
+        session.value = null;
+      },
     });
-    session.value = ((data as any)?.utility_practice_sessions ?? [])[0] ?? null;
-  } catch (error) {
-    console.error("[utility] practice nav lookup failed:", error);
-    session.value = null;
-  }
 }
 
-onMounted(refresh);
-watch(() => me.value?.steam_id, refresh);
+watch(() => me.value?.steam_id, subscribe, { immediate: true });
+onBeforeUnmount(unsubscribe);
 
-const label = computed(() =>
-  session.value?.status === "Ready" ? "ready" : "booting",
-);
+const booting = computed(() => session.value?.status !== "Ready");
 </script>
 
 <template>
@@ -47,11 +56,7 @@ const label = computed(() =>
     class="relative inline-flex h-7 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
     :aria-label="$t('pages.utility.practice.nav_label')"
   >
-    <span
-      v-if="label === 'booting'"
-      class="relative flex h-1.5 w-1.5"
-      aria-hidden="true"
-    >
+    <span v-if="booting" class="relative flex h-1.5 w-1.5" aria-hidden="true">
       <span
         class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
       ></span>

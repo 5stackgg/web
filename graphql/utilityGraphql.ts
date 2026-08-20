@@ -496,6 +496,23 @@ export const myUtilityPracticeSessionQuery = generateQuery({
   ],
 });
 
+// The nav chip tracks this rather than polling: a reservation appears the
+// moment it is booked and disappears the moment it is handed back, on whatever
+// page the player happens to be on.
+export const myUtilityPracticeSessionSubscription = generateSubscription({
+  utility_practice_sessions: [
+    {
+      where: {
+        host_steam_id: { _eq: $("steam_id", "bigint!") },
+        status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
+      },
+      order_by: [{ created_at: order_by.desc }],
+      limit: 1,
+    },
+    utilityPracticeSessionFields,
+  ],
+});
+
 export const utilityPracticeSessionSubscription = generateSubscription({
   utility_practice_sessions_by_pk: [
     {

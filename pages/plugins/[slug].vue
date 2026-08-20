@@ -1139,7 +1139,12 @@ export default {
           (entry) => entry.plugin_slug === this.$route.params.slug,
         );
         this.disableGuidelines = Boolean(row?.disable_server_guidelines);
-        this.autoUpdate = row?.channel === "Auto";
+        // Not while the mutation is in flight: the tick that arrives mid-save
+        // still carries the old channel, and adopting it visibly throws the
+        // switch back to where it was before settling again.
+        if (!this.savingAutoUpdate) {
+          this.autoUpdate = row?.channel === "Auto";
+        }
         this.pinnedVersion = row?.version ?? null;
         this.loadTargets = {
           load_ranked: Boolean(row?.load_ranked),

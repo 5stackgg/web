@@ -121,7 +121,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             :group-key="isMerged ? viewFilter : ''"
             variant="global"
             :is-minimized="isMinimized"
-            class="flex-1 overflow-y-auto max-h-96"
+            class="min-h-0 flex-1 overflow-y-auto"
             :last-read-count="lastReadMessageCount"
             @bottom-state-change="handleBottomStateChange"
           />
@@ -294,7 +294,12 @@ import Empty from "~/components/ui/empty/Empty.vue";
       <!-- First message in an empty room dissolves the empty copy under the
            arriving list instead of trading them on a frame. Both branches
            fill the same column slot, so a plain crossfade is right. -->
-      <FadeSwap class="flex-1 min-h-0">
+      <!-- A flex column, and the list below is a flex item rather than
+           h-full: the card sizes itself from min-height/max-height, so its
+           height is never definite and a percentage height would fall back to
+           the content's own -- which is how the messages used to run out the
+           bottom of the card. -->
+      <FadeSwap class="flex min-h-0 flex-1 flex-col">
         <ChatMessages
           v-if="messages.length"
           key="messages"
@@ -302,11 +307,11 @@ import Empty from "~/components/ui/empty/Empty.vue";
           :messages="messages"
           :group-key="isMerged ? viewFilter : ''"
           variant="embedded"
-          class="h-full overflow-y-auto"
+          class="min-h-0 flex-1 overflow-y-auto"
           :last-read-count="tracksReadPosition ? lastReadMessageCount : 0"
           @bottom-state-change="handleBottomStateChange"
         />
-        <Empty v-else key="empty" class="h-full text-muted-foreground">
+        <Empty v-else key="empty" class="min-h-0 flex-1 text-muted-foreground">
           <div class="space-y-1">
             <p class="text-sm font-medium">
               {{ $t("chat.no_messages_yet", "No messages yet") }}

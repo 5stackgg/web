@@ -4,8 +4,8 @@
     ref="chatMessages"
     :class="
       variant === 'global'
-        ? 'flex-1 overflow-y-auto p-3'
-        : 'flex-1 overflow-y-auto max-h-screen'
+        ? 'min-h-0 flex-1 overflow-y-auto p-3'
+        : 'min-h-0 flex-1 overflow-y-auto'
     "
   >
     <!-- Changing the filter rewrites nearly every row, and animating those in

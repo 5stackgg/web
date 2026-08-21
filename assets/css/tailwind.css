@@ -764,3 +764,37 @@ mark {
   color: hsl(var(--tac-amber));
   background: hsl(var(--tac-amber) / 0.12);
 }
+
+/* The utility board's overlays are bounded by the board, not by the viewport:
+   collapsing the left nav or opening the right hub narrows it on a desktop, so
+   a viewport breakpoint fires at the wrong times. Written here rather than as a
+   Tailwind arbitrary variant because no container-query plugin is installed --
+   same reason .tac-chip and .tac-amber-cta live here. */
+.utility-board {
+  container-type: inline-size;
+  container-name: utility-board;
+}
+
+/* The view strip collapses to its icons before it can start eating the map's
+   name. Each tab keeps its icon, its count and its tooltip, and the strip still
+   scrolls -- so nothing is lost, it just stops competing for the same row. */
+@container utility-board (max-width: 44rem) {
+  .utility-board-tabs .af-label {
+    display: none;
+  }
+}
+
+/* The caption explaining the markers is the next thing worth losing: the chips
+   under it carry the same colours and say the same thing in less room. */
+@container utility-board (max-width: 34rem) {
+  .utility-board-key {
+    display: none;
+  }
+}
+
+/* Then the overlay button drops its label and keeps its icon and its count. */
+@container utility-board (max-width: 26rem) {
+  .utility-board-overlay-label {
+    display: none;
+  }
+}

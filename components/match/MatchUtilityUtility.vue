@@ -36,6 +36,7 @@ import {
   UTILITY_TYPE_COLORS,
   canonicalUtilityType,
   humanizeUtilityToken,
+  utilityLineupRoute,
 } from "~/utilities/utilityDisplay";
 import {
   tacticalSectionLabelClasses,
@@ -629,10 +630,12 @@ const canSaveLineups = computed(() => !!mySteamId.value);
                         <TableCell class="text-right">
                           <NuxtLink
                             v-if="savedLineupIds[row.key]"
-                            :to="{
-                              name: 'utility-lineup-id',
-                              params: { id: savedLineupIds[row.key] },
-                            }"
+                            :to="
+                              utilityLineupRoute(
+                                activeMatchMap?.map?.name,
+                                savedLineupIds[row.key],
+                              )
+                            "
                             class="inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
                           >
                             <ArrowUpRight class="h-3.5 w-3.5" />

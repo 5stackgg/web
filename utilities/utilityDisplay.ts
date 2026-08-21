@@ -11,6 +11,7 @@ import type {
   UtilityTrajectoryPoint,
   UtilityType,
 } from "~/types/utility";
+import { normalizeMapName } from "~/utilities/mapAssets";
 
 export type UtilityScope =
   | "public"
@@ -262,6 +263,28 @@ export function utilityThrowButtonsKey(
 }
 
 /**
+ * Where a lineup lives now that it has no page of its own: an address on the map
+ * it belongs to, which opens the detail over the board and the list instead of
+ * replacing them.
+ *
+ * Without a map name it falls back to the old `/utility/lineup/<id>` route,
+ * which still exists purely to look the map up and redirect here.
+ */
+export function utilityLineupRoute(
+  mapName: string | null | undefined,
+  id: string,
+) {
+  if (!mapName) {
+    return { name: "utility-lineup-id", params: { id } };
+  }
+  return {
+    name: "utility-map",
+    params: { map: normalizeMapName(mapName) },
+    query: { lineup: id },
+  };
+}
+
+/**
  * The video to show instead of the 3D reconstruction, when there is one.
  *
  * There is no clip attached to a lineup yet: `utility_lineups` has no relation
@@ -274,8 +297,14 @@ export function utilityThrowButtonsKey(
  * previews a lineup.
  */
 export function utilityClipSource(
-  lineup: Pick<UtilityLineup, "source_url">,
+  lineup: Pick<UtilityLineup, "source_url" | "preview_url">,
 ): string | null {
+  // A preview we filmed ourselves beats a link somebody pasted: it is this
+  // lineup's throw, at this lineup's angles, on the map as it ships today.
+  const rendered = (lineup.preview_url ?? "").trim();
+  if (rendered) {
+    return rendered;
+  }
   const url = (lineup.source_url ?? "").trim();
   if (!url) {
     return null;

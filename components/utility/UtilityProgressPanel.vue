@@ -10,10 +10,15 @@ const props = withDefaults(
   defineProps<{
     progress?: UtilityLineupProgress[] | null;
     compact?: boolean;
+    // "track" is the list form: a hit-rate bar with the numbers riding on one
+    // line under it, instead of a bordered tile with its own heading. A card
+    // in a 400px column cannot afford a second framed box inside it.
+    variant?: "panel" | "track";
   }>(),
   {
     progress: null,
     compact: false,
+    variant: "panel",
   },
 );
 
@@ -45,8 +50,55 @@ const pips = computed(() =>
 </script>
 
 <template>
+  <!-- The list form. Same numbers, no frame: the bar is the record and the
+       line under it is the detail, so nothing needs a heading to say so. -->
+  <div v-if="mine && variant === 'track'" class="flex flex-col gap-1">
+    <div class="h-[3px] overflow-hidden rounded-sm bg-border">
+      <div
+        class="h-full rounded-sm transition-[width] duration-300"
+        :class="mastered ? 'bg-success' : 'bg-[hsl(var(--tac-amber))]'"
+        :style="{ width: `${mastered ? 100 : (hitRate ?? 0)}%` }"
+      />
+    </div>
+    <div
+      class="flex items-center justify-between gap-2 font-mono text-[0.6rem] tabular-nums text-muted-foreground"
+    >
+      <span class="min-w-0 truncate">
+        <span :class="mastered ? 'text-success' : 'text-[hsl(var(--tac-amber))]'">
+          {{
+            mastered
+              ? $t("pages.utility.progress.mastered")
+              : $t("pages.utility.progress.drilled")
+          }}
+        </span>
+        {{ $t("pages.utility.progress.record", { successes, attempts }) }}
+        <template v-if="hitRate !== null">
+          · {{ $t("pages.utility.progress.hit_rate", { percent: hitRate }) }}
+        </template>
+      </span>
+      <span
+        class="flex shrink-0 items-center gap-[3px]"
+        :title="$t('pages.utility.progress.streak_hint')"
+      >
+        <span
+          v-for="pip of pips"
+          :key="pip.index"
+          aria-hidden="true"
+          class="h-[5px] w-[5px] rounded-[1px]"
+          :class="
+            pip.lit
+              ? mastered
+                ? 'bg-success'
+                : 'bg-[hsl(var(--tac-amber))]'
+              : 'bg-border'
+          "
+        />
+      </span>
+    </div>
+  </div>
+
   <div
-    v-if="mine"
+    v-else-if="mine"
     class="rounded-md border px-2.5 py-1.5"
     :class="
       mastered

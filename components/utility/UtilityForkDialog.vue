@@ -17,14 +17,20 @@ import { toast } from "~/components/ui/toast";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { forkUtilityLineupMutation } from "~/graphql/utilityGraphql";
+import { utilityLineupRoute } from "~/utilities/utilityDisplay";
 
 const props = withDefaults(
   defineProps<{
     lineupId: string | null;
     sourceName?: string | null;
+    // A fork lands on the same map as its source. Without this the copy still
+    // opens, via the legacy route that looks the map up and redirects -- one
+    // extra round trip for something the caller already knew.
+    mapName?: string | null;
   }>(),
   {
     sourceName: null,
+    mapName: null,
   },
 );
 
@@ -70,7 +76,7 @@ async function fork() {
     }
     open.value = false;
     toast({ title: t("pages.utility.fork.forked") });
-    await router.push({ name: "utility-lineup-id", params: { id: forkedId } });
+    await router.push(utilityLineupRoute(props.mapName, forkedId));
   } catch (error: any) {
     toast({
       title: t("pages.utility.fork.failed"),

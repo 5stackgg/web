@@ -5,9 +5,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import UtilityPlaybookEditor from "~/components/utility/UtilityPlaybookEditor.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -24,7 +21,15 @@ import type {
   UtilityPlaybookStep,
 } from "~/types/utility";
 
-const props = defineProps<{ mapName: string }>();
+const props = withDefaults(
+  defineProps<{
+    mapName: string;
+    // The page offers "New Playbook" as the tab's own action, so the panel
+    // must not offer a second one beside it.
+    hideCreate?: boolean;
+  }>(),
+  { hideCreate: false },
+);
 
 const playbooks = ref<UtilityPlaybook[]>([]);
 const steps = ref<UtilityPlaybookStep[]>([]);
@@ -161,6 +166,8 @@ function startEdit(id: string) {
   editingId.value = id;
 }
 
+defineExpose({ startCreate });
+
 function closeEditor() {
   creating.value = false;
   editingId.value = null;
@@ -184,7 +191,7 @@ function practice(id: string) {
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex justify-end">
+    <div v-if="!hideCreate" class="flex justify-end">
       <Button v-if="!editorOpen" class="tac-amber-cta" @click="startCreate()">
         <Plus class="mr-1 h-4 w-4" />
         {{ $t("pages.utility.playbooks.new") }}
@@ -210,13 +217,30 @@ function practice(id: string) {
     </div>
   </PageTransition>
 
-  <PageTransition v-else-if="!cards.length" :delay="60" class="mt-4">
-    <Empty>
-      <EmptyTitle>{{ $t("pages.utility.playbooks.empty") }}</EmptyTitle>
-      <EmptyDescription>
+  <!-- Anchored to the top of the column rather than floating in the middle of
+       700px of nothing, and carrying the one action that resolves it. -->
+  <PageTransition v-else-if="!cards.length" :delay="60" class="mt-2">
+    <div
+      class="rounded-md border border-dashed border-border px-4 py-6 text-center"
+    >
+      <p class="text-sm font-semibold">
+        {{ $t("pages.utility.playbooks.empty") }}
+      </p>
+      <p
+        class="mx-auto mt-1 max-w-[36ch] text-xs leading-relaxed text-muted-foreground"
+      >
         {{ $t("pages.utility.playbooks.empty_description") }}
-      </EmptyDescription>
-    </Empty>
+      </p>
+      <Button
+        size="sm"
+        variant="outline"
+        class="mt-3 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+        @click="startCreate()"
+      >
+        <Plus class="mr-1 h-4 w-4" />
+        {{ $t("pages.utility.playbooks.new") }}
+      </Button>
+    </div>
   </PageTransition>
 
   <PageTransition v-else :delay="60" class="mt-4">

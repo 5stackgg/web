@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import { Crosshair, PencilLine, Users } from "lucide-vue-next";
+import { Copy, PencilLine, Users } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { Badge } from "~/components/ui/badge";
+import { toast } from "~/components/ui/toast";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
+import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
 import {
   UTILITY_TYPE_COLORS,
   matchUtilityMetaSpot,
@@ -21,6 +23,7 @@ import type {
 } from "~/types/utility";
 
 const props = defineProps<{
+  mapName: string;
   spots: UtilityMetaSpot[];
   lineups: UtilityLineup[];
   selectedKey: string | null;
@@ -39,6 +42,8 @@ const emit = defineEmits<{
   (event: "open", id: string): void;
   (event: "write-up", spot: UtilityMetaSpot): void;
 }>();
+
+const { t } = useI18n();
 
 const thresholdModel = computed<string>({
   get: () => props.threshold,
@@ -73,27 +78,54 @@ const lineupsBySpot = computed(() => {
   return grouped;
 });
 
+// Printing "SMOKE" on all eight rows of a list filtered to smokes is not a
+// label, it is wallpaper. The pills come back the moment the set is mixed.
+const mixedTypes = computed(
+  () => new Set(visibleSpots.value.map((spot) => spot.utilityType)).size > 1,
+);
+const mixedSides = computed(
+  () => new Set(visibleSpots.value.map((spot) => spot.side)).size > 1,
+);
+
+// Every bar is read against the busiest spot on the map, so the column shows
+// the shape of the distribution rather than eight bars all pinned full.
+const busiest = computed(() =>
+  Math.max(1, ...visibleSpots.value.map((spot) => spot.throwers)),
+);
+
 const rows = computed(() =>
-  visibleSpots.value.map((spot, index) => ({
-    spot,
-    rank: index + 1,
-    color: UTILITY_TYPE_COLORS[spot.utilityType] ?? "#ffffff",
-    typeKey: `pages.utility.types.${spot.utilityType}`,
-    sideKey: spot.side ? `pages.utility.sides.${spot.side}` : "",
-    techniqueKey: spot.technique
-      ? `pages.utility.techniques.${spot.technique}`
-      : "",
-    strengthKey: spot.throwStrength
-      ? `pages.utility.strengths.${spot.throwStrength}`
-      : "",
-    matched: lineupsBySpot.value[spot.key] ?? [],
-  })),
+  visibleSpots.value.map((spot) => {
+    const matched = lineupsBySpot.value[spot.key] ?? [];
+    return {
+      spot,
+      color: UTILITY_TYPE_COLORS[spot.utilityType] ?? "#ffffff",
+      typeKey: `pages.utility.types.${spot.utilityType}`,
+      sideKey: spot.side ? `pages.utility.sides.${spot.side}` : "",
+      matched,
+      // The server's count wins; the page can only see the lineups it fetched.
+      saved: spot.lineups || matched.length,
+      // A cluster people throw and nobody has written down is the one thing
+      // this panel exists to surface, so it is the one thing it colours.
+      unwritten: (spot.lineups || matched.length) === 0,
+      // The name can only come from a lineup the page has actually loaded, and
+      // the list is scoped -- a spot with three public write-ups has none of
+      // them in hand while you are looking at "Mine". Saying "nobody has
+      // written this up" there would be a flat lie, so the count answers
+      // instead until one of them is on the page to name it.
+      name: matched[0]?.name ?? null,
+      share: Math.round((spot.throwers / busiest.value) * 100),
+    };
+  }),
 );
 
 // Throws add up across clusters; throwers do not — the same player shows up in
 // every spot they throw, so summing `throwers` would invent a player count.
 const totalThrows = computed(() =>
   visibleSpots.value.reduce((sum, spot) => sum + spot.throws, 0),
+);
+
+const unwrittenCount = computed(
+  () => rows.value.filter((row) => row.unwritten).length,
 );
 
 const refreshedAt = computed(() => {
@@ -105,6 +137,28 @@ const refreshedAt = computed(() => {
   }
   return newest;
 });
+
+function aimText(spot: UtilityMetaSpot) {
+  if (spot.viewYaw === null && spot.viewPitch === null) {
+    return null;
+  }
+  return `${Number(spot.viewYaw ?? 0).toFixed(1)} / ${Number(spot.viewPitch ?? 0).toFixed(1)}`;
+}
+
+// `setang` takes pitch first. Copying the console form rather than the two bare
+// numbers is the difference between a readout and something you can use.
+async function copyAim(spot: UtilityMetaSpot) {
+  const command = `setang ${Number(spot.viewPitch ?? 0).toFixed(1)} ${Number(spot.viewYaw ?? 0).toFixed(1)} 0`;
+  try {
+    await navigator.clipboard.writeText(command);
+    toast({ title: t("pages.utility.meta.aim_copied"), description: command });
+  } catch {
+    toast({
+      title: t("pages.utility.meta.aim_copy_failed"),
+      variant: "destructive",
+    });
+  }
+}
 
 // Picking a ring on the board has to bring its row over, or the panel is just
 // a list you have to hunt through for the thing you already pointed at.
@@ -164,6 +218,12 @@ watch(visibleSpots, (list) => {
             throws: totalThrows,
           })
         }}
+        <span
+          v-if="unwrittenCount"
+          class="ml-1 text-[hsl(var(--tac-amber))]"
+        >
+          · {{ $t("pages.utility.meta.unwritten_count", { count: unwrittenCount }) }}
+        </span>
       </span>
       <span v-if="refreshedAt" class="flex shrink-0 items-center gap-1">
         <TimeAgo :date="refreshedAt" hide-icon />
@@ -177,125 +237,180 @@ watch(visibleSpots, (list) => {
       </EmptyDescription>
     </Empty>
 
-    <div v-else class="flex flex-col gap-1">
+    <div v-else class="flex flex-col">
       <div
         v-for="row of rows"
         :id="`utility-meta-${row.spot.key}`"
         :key="row.spot.key"
-        class="rounded-md border transition-colors"
+        class="border-b border-border/50 transition-colors last:border-b-0"
         :class="
           selectedKey === row.spot.key
-            ? 'border-[hsl(var(--tac-amber))]/60 bg-card/70'
+            ? 'bg-[hsl(var(--tac-amber))]/[0.06] shadow-[inset_2px_0_0_hsl(var(--tac-amber))]'
             : hoveredKey === row.spot.key
-              ? 'border-[hsl(var(--tac-amber))]/40 bg-[hsl(var(--tac-amber))]/[0.07]'
-              : 'border-border/60 bg-card/30'
+              ? 'bg-[hsl(var(--tac-amber))]/[0.035]'
+              : ''
         "
         @mouseenter="emit('update:hoveredKey', row.spot.key)"
         @mouseleave="emit('update:hoveredKey', null)"
       >
         <button
           type="button"
-          class="flex w-full items-center gap-2 p-2 text-left"
+          class="grid w-full grid-cols-[auto_minmax(0,1fr)_5.5rem] items-center gap-2.5 px-2 py-2 text-left"
           @click="toggle(row.spot.key)"
         >
-          <span
-            class="w-5 shrink-0 text-center font-mono text-[0.6rem] tabular-nums text-muted-foreground"
-          >
-            {{ row.rank }}
-          </span>
-          <span
-            class="h-2.5 w-2.5 shrink-0 rounded-full"
-            :style="{ backgroundColor: row.color }"
+          <!-- The tile is what makes one row distinguishable from the next.
+               Eight rows of the same three words never were. -->
+          <UtilityRadarThumb
+            :map-name="mapName"
+            :origin="row.spot.origin"
+            :landing="row.spot.landing"
+            :color="row.color"
           />
-          <span class="flex min-w-0 flex-1 flex-wrap items-center gap-1">
-            <Badge variant="outline" class="font-mono text-[0.55rem] uppercase">
-              {{ $t(row.typeKey) }}
-            </Badge>
-            <Badge
-              v-if="row.sideKey"
-              variant="outline"
-              class="font-mono text-[0.55rem] uppercase"
+
+          <span class="min-w-0">
+            <span class="flex items-center gap-1.5">
+              <span
+                v-if="row.name"
+                class="truncate text-[0.8rem] font-semibold leading-tight"
+              >
+                {{ row.name }}
+              </span>
+              <span
+                v-else-if="row.unwritten"
+                class="truncate text-[0.8rem] font-medium leading-tight text-muted-foreground"
+              >
+                {{ $t("pages.utility.meta.unwritten") }}
+              </span>
+              <span
+                v-else
+                class="truncate text-[0.8rem] font-medium leading-tight text-muted-foreground"
+              >
+                {{ $t("pages.utility.meta.saved_lineups", { count: row.saved }) }}
+              </span>
+              <!-- A plain span, not <Badge>: this sits inside the row's own
+                   <button>, and Badge's root is a div. -->
+              <span
+                v-if="mixedTypes"
+                class="shrink-0 rounded-full border border-border px-1.5 py-px font-mono text-[0.55rem] uppercase tracking-[0.1em] text-muted-foreground"
+              >
+                {{ $t(row.typeKey) }}
+              </span>
+            </span>
+            <span
+              class="mt-0.5 flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground"
             >
-              {{ $t(row.sideKey) }}
-            </Badge>
-            <Badge
-              v-if="row.matched.length"
-              variant="secondary"
-              class="font-mono text-[0.55rem]"
-            >
-              {{ row.matched.length }}
-            </Badge>
+              <span v-if="mixedSides && row.sideKey">{{ $t(row.sideKey) }}</span>
+              <span v-if="row.spot.technique">
+                {{ $t(`pages.utility.techniques.${row.spot.technique}`) }}
+              </span>
+              <span v-if="row.spot.throwStrength">
+                {{ $t(`pages.utility.strengths.${row.spot.throwStrength}`) }}
+              </span>
+              <span v-if="row.saved && row.name" class="text-success">
+                {{ $t("pages.utility.meta.saved_count", { count: row.saved }) }}
+              </span>
+            </span>
           </span>
-          <span
-            class="flex shrink-0 items-center gap-1 font-mono text-[0.6rem] tabular-nums text-muted-foreground"
-          >
-            <Users class="h-3 w-3" />
-            {{ row.spot.throwers }}
+
+          <!-- Rank was the sort order printed twice. The bar is the thing the
+               digit never said: how far ahead the top of the list actually is. -->
+          <span class="flex flex-col items-end gap-1">
+            <span
+              class="flex items-center gap-1 font-mono text-[0.7rem] font-semibold tabular-nums"
+            >
+              <Users class="h-3 w-3 text-muted-foreground" />
+              {{ row.spot.throwers }}
+            </span>
+            <span class="h-[3px] w-full overflow-hidden rounded-sm bg-border">
+              <span
+                class="block h-full rounded-sm"
+                :class="row.unwritten ? 'bg-[hsl(var(--tac-amber))]' : ''"
+                :style="{
+                  width: `${row.share}%`,
+                  backgroundColor: row.unwritten ? undefined : row.color,
+                }"
+              />
+            </span>
           </span>
         </button>
 
         <div
           v-if="selectedKey === row.spot.key"
-          class="flex flex-col gap-2 border-t border-border/60 p-2"
+          class="flex flex-col gap-2.5 px-2 pb-2.5 pl-[3.25rem]"
         >
-          <div class="grid grid-cols-2 gap-2 text-[0.65rem]">
-            <div>
-              <div class="flex items-center gap-1 text-muted-foreground">
-                <Crosshair class="h-3 w-3" />
-                {{ $t("pages.utility.meta.aim") }}
-              </div>
-              <div class="mt-0.5 font-mono tabular-nums">
-                <template
-                  v-if="
-                    row.spot.viewYaw !== null || row.spot.viewPitch !== null
-                  "
-                >
-                  {{ Number(row.spot.viewYaw ?? 0).toFixed(1) }} /
-                  {{ Number(row.spot.viewPitch ?? 0).toFixed(1) }}
-                </template>
-                <template v-else>{{ $t("common.na") }}</template>
-              </div>
-            </div>
-            <div>
-              <div class="text-muted-foreground">
-                {{ $t("pages.utility.meta.usage") }}
-              </div>
-              <div class="mt-0.5 font-mono tabular-nums">
-                {{
-                  $t("pages.utility.meta.usage_detail", {
-                    throwers: row.spot.throwers,
-                    throws: row.spot.throws,
-                    matches: row.spot.matches,
-                  })
-                }}
-              </div>
-            </div>
+          <!-- People first. The angles are what you take away; the usage is
+               what tells you whether to bother. -->
+          <div
+            class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.62rem] tabular-nums text-muted-foreground"
+          >
+            <span>
+              <span class="font-semibold text-foreground">
+                {{ row.spot.throwers }}
+              </span>
+              {{ $t("pages.utility.meta.players") }}
+            </span>
+            <span>
+              <span class="font-semibold text-foreground">
+                {{ row.spot.throws }}
+              </span>
+              {{ $t("pages.utility.meta.throws") }}
+            </span>
+            <span>
+              <span class="font-semibold text-foreground">
+                {{ row.spot.matches }}
+              </span>
+              {{ $t("pages.utility.meta.matches") }}
+            </span>
+            <span v-if="row.spot.lastSeenAt" class="flex items-center gap-1">
+              {{ $t("pages.utility.meta.last_seen") }}
+              <TimeAgo :date="row.spot.lastSeenAt" hide-icon />
+            </span>
           </div>
 
           <div
-            v-if="row.spot.lastSeenAt"
-            class="flex gap-1 text-[0.6rem] text-muted-foreground"
+            v-if="aimText(row.spot)"
+            class="flex items-center gap-2 font-mono text-[0.62rem] tabular-nums"
           >
-            {{ $t("pages.utility.meta.last_seen") }}
-            <TimeAgo :date="row.spot.lastSeenAt" hide-icon />
+            <span
+              class="uppercase tracking-[0.14em] text-muted-foreground"
+              :title="$t('pages.utility.meta.aim_hint')"
+            >
+              {{ $t("pages.utility.meta.aim") }}
+            </span>
+            <span>{{ aimText(row.spot) }}</span>
+            <Button
+              size="sm"
+              variant="ghost"
+              class="ml-auto h-6 px-2 text-[0.6rem]"
+              @click.stop="copyAim(row.spot)"
+            >
+              <Copy class="mr-1 h-3 w-3" />
+              {{ $t("pages.utility.meta.copy_aim") }}
+            </Button>
           </div>
 
-          <template v-if="!row.matched.length">
-            <p class="text-[0.65rem] text-muted-foreground">
-              {{ $t("pages.utility.meta.no_lineups_description") }}
-            </p>
-            <Button
-              v-if="canAuthor"
-              size="sm"
-              variant="outline"
-              class="w-full"
-              @click="emit('write-up', row.spot)"
-            >
-              <PencilLine class="mr-1 h-3.5 w-3.5" />
-              {{ $t("pages.utility.meta.write_up") }}
-            </Button>
-          </template>
-          <div v-else class="flex flex-col gap-2">
+          <Button
+            v-if="row.unwritten && canAuthor"
+            size="sm"
+            variant="outline"
+            class="w-full justify-start border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+            @click.stop="emit('write-up', row.spot)"
+          >
+            <PencilLine class="mr-1.5 h-3.5 w-3.5" />
+            {{ $t("pages.utility.meta.write_up") }}
+            <span class="ml-auto text-[0.55rem] uppercase tracking-[0.12em] opacity-70">
+              {{ $t("pages.utility.meta.write_up_hint") }}
+            </span>
+          </Button>
+
+          <p
+            v-else-if="row.unwritten"
+            class="text-[0.68rem] text-muted-foreground"
+          >
+            {{ $t("pages.utility.meta.no_lineups_description") }}
+          </p>
+
+          <div v-if="row.matched.length" class="flex flex-col gap-2">
             <UtilityLineupCard
               v-for="lineup of row.matched"
               :key="lineup.id"

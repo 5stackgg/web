@@ -32,6 +32,7 @@ import {
   aimPrecisionDegrees,
   type UtilityAimPrecision,
   UTILITY_TYPE_COLORS,
+  utilityThrowButtonsKey,
 } from "~/utilities/utilityDisplay";
 import type {
   UtilityBoardMarker,

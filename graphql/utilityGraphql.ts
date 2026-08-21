@@ -67,6 +67,12 @@ export const utilityLineupListFields = {
   upvotes: true,
   downvotes: true,
   favorites: true,
+  // Computed fields: the raw preview_file/preview_thumbnail are S3 keys, and
+  // only the Cloudflare worker knows how to serve one.
+  preview_url: true,
+  preview_thumbnail_url: true,
+  preview_duration_ms: true,
+  preview_rendered_at: true,
   verified_at: true,
   created_at: true,
   can_view: true,

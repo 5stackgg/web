@@ -42,6 +42,7 @@ import {
   utilityDriftSeverityTone,
   utilityDriftVerdictKey,
   utilityDriftVerdictTone,
+  utilityLineupRoute,
   sortUtilityDriftResults,
 } from "~/utilities/utilityDisplay";
 import { readUtilityDriftResult, readUtilityDriftScan } from "~/types/utility";
@@ -716,7 +717,7 @@ function startRepair(row: UtilityDriftResultView) {
               </Button>
 
               <NuxtLink
-                :to="{ name: 'utility-lineup-id', params: { id: row.lineupId } }"
+                :to="utilityLineupRoute(selectedScan?.mapName, row.lineupId)"
                 class="inline-flex shrink-0 items-center gap-1 rounded p-1 text-xs text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                 :class="
                   canRepair(row) || repairQueued[row.lineupId] ? '' : 'ml-auto'

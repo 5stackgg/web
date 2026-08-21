@@ -1976,6 +1976,23 @@ export type ValueTypes = {
 	origin_source?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityRemineOutput"]: AliasType<{
+	demos?:boolean | `@${string}`,
+	done?:boolean | `@${string}`,
+	throws?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityRenderClearOutput"]: AliasType<{
+	cleared?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityRenderQueueOutput"]: AliasType<{
+	reason?:boolean | `@${string}`,
+	render_id?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilitySightlineOutput"]: AliasType<{
 	degraded?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
@@ -15670,6 +15687,7 @@ count?: [{	columns?: Array<ValueTypes["game_plugins_select_column"]> | undefined
 	/** An object relationship */
 	plugin?:ValueTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
+	previous_version?:boolean | `@${string}`,
 	runtime?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
@@ -15742,6 +15760,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	path?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_bool_exp"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	previous_version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_game_plugin_install_statuses_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -15764,6 +15783,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	path?: string | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
+	previous_version?: string | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_game_plugin_install_statuses_enum"] | undefined | null | Variable<any, string>,
@@ -15780,6 +15800,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	last_error?:boolean | `@${string}`,
 	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
+	previous_version?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 	version?:boolean | `@${string}`,
@@ -15795,6 +15816,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	last_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	previous_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -15809,6 +15831,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	last_error?:boolean | `@${string}`,
 	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
+	previous_version?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 	version?:boolean | `@${string}`,
@@ -15824,6 +15847,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	last_error?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	previous_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -15856,6 +15880,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	plugin?: ValueTypes["game_plugins_order_by"] | undefined | null | Variable<any, string>,
 	plugin_slug?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	previous_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -15884,6 +15909,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	last_error?: string | undefined | null | Variable<any, string>,
 	path?: string | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
+	previous_version?: string | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_game_plugin_install_statuses_enum"] | undefined | null | Variable<any, string>,
@@ -15909,6 +15935,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_node_plugins_select_column"]>
 	last_error?: string | undefined | null | Variable<any, string>,
 	path?: string | undefined | null | Variable<any, string>,
 	plugin_slug?: string | undefined | null | Variable<any, string>,
+	previous_version?: string | undefined | null | Variable<any, string>,
 	runtime?: ValueTypes["e_plugin_runtimes_enum"] | undefined | null | Variable<any, string>,
 	source?: string | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_game_plugin_install_statuses_enum"] | undefined | null | Variable<any, string>,
@@ -23176,10 +23203,12 @@ match_clips_aggregate?: [{	/** distinct select on columns */
 	match_map?:ValueTypes["match_maps"],
 	match_map_id?:boolean | `@${string}`,
 	metadata_parsed_at?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_file?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 players?: [{	/** JSON select path */
 	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 round_ticks?: [{	/** JSON select path */
@@ -23264,7 +23293,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate avg on columns */
 ["match_map_demos_avg_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23273,7 +23304,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by avg() on columns of table "match_map_demos" */
 ["match_map_demos_avg_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23304,9 +23337,11 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_map?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	playback_file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	playback_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	players?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	round_ticks?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -23339,7 +23374,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 };
 	/** input type for incrementing numeric columns in table "match_map_demos" */
 ["match_map_demos_inc_input"]: {
+	parser_version?: number | undefined | null | Variable<any, string>,
 	playback_size?: number | undefined | null | Variable<any, string>,
+	playback_version?: number | undefined | null | Variable<any, string>,
 	size?: number | undefined | null | Variable<any, string>,
 	tick_rate?: number | undefined | null | Variable<any, string>,
 	total_ticks?: number | undefined | null | Variable<any, string>
@@ -23362,8 +23399,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_map?: ValueTypes["match_maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	parser_version?: number | undefined | null | Variable<any, string>,
 	playback_file?: string | undefined | null | Variable<any, string>,
 	playback_size?: number | undefined | null | Variable<any, string>,
+	playback_version?: number | undefined | null | Variable<any, string>,
 	players?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	round_ticks?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	size?: number | undefined | null | Variable<any, string>,
@@ -23384,10 +23423,12 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	metadata_parsed_at?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_file?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23405,8 +23446,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -23425,10 +23468,12 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	metadata_parsed_at?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_file?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23446,8 +23491,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -23493,9 +23540,11 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_map?: ValueTypes["match_maps_order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -23533,8 +23582,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	parser_version?: number | undefined | null | Variable<any, string>,
 	playback_file?: string | undefined | null | Variable<any, string>,
 	playback_size?: number | undefined | null | Variable<any, string>,
+	playback_version?: number | undefined | null | Variable<any, string>,
 	players?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	round_ticks?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	size?: number | undefined | null | Variable<any, string>,
@@ -23545,7 +23596,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate stddev on columns */
 ["match_map_demos_stddev_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23554,7 +23607,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by stddev() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23562,7 +23617,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate stddev_pop on columns */
 ["match_map_demos_stddev_pop_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23571,7 +23628,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by stddev_pop() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_pop_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23579,7 +23638,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate stddev_samp on columns */
 ["match_map_demos_stddev_samp_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23588,7 +23649,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by stddev_samp() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_samp_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23614,8 +23677,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	metadata_parsed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	parser_version?: number | undefined | null | Variable<any, string>,
 	playback_file?: string | undefined | null | Variable<any, string>,
 	playback_size?: number | undefined | null | Variable<any, string>,
+	playback_version?: number | undefined | null | Variable<any, string>,
 	players?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	round_ticks?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
 	size?: number | undefined | null | Variable<any, string>,
@@ -23626,7 +23691,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate sum on columns */
 ["match_map_demos_sum_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23635,7 +23702,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by sum() on columns of table "match_map_demos" */
 ["match_map_demos_sum_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23663,7 +23732,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate var_pop on columns */
 ["match_map_demos_var_pop_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23672,7 +23743,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by var_pop() on columns of table "match_map_demos" */
 ["match_map_demos_var_pop_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23680,7 +23753,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate var_samp on columns */
 ["match_map_demos_var_samp_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23689,7 +23764,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by var_samp() on columns of table "match_map_demos" */
 ["match_map_demos_var_samp_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -23697,7 +23774,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** aggregate variance on columns */
 ["match_map_demos_variance_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -23706,7 +23785,9 @@ count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefi
 	/** order by variance() on columns of table "match_map_demos" */
 ["match_map_demos_variance_order_by"]: {
 	duration_seconds?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	parser_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playback_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	playback_version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tick_rate?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_ticks?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -27566,10 +27647,13 @@ cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueType
 	/** Request cancellation of the in-progress reparse-all-demos run (admin only). Stops after the current demo finishes. */
 	cancelReparseAllDemos?:ValueTypes["SuccessOutput"],
 cancelScrimRequest?: [{	request_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+cancelUtilityLineupRender?: [{	render_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 checkIntoMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 clearClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Delete all terminal-state clip_render_jobs rows platform-wide. */
 	clearFinishedClipRenders?:ValueTypes["SuccessOutput"],
+	/** Drop every finished row from the lineup preview queue */
+	clearFinishedUtilityLineupRenders?:ValueTypes["UtilityRenderClearOutput"],
 clearPendingMatchImport?: [{	valve_match_id: string | Variable<any, string>},ValueTypes["PendingMatchImportActionOutput"]],
 clone_league_season?: [{	/** input parameters for function "clone_league_season" */
 	args: ValueTypes["clone_league_season_args"] | Variable<any, string>,	/** distinct select on columns */
@@ -28128,6 +28212,9 @@ delete_utility_lineup_favorites_by_pk?: [{	steam_id: ValueTypes["bigint"] | Vari
 delete_utility_lineup_progress?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["utility_lineup_progress_bool_exp"] | Variable<any, string>},ValueTypes["utility_lineup_progress_mutation_response"]],
 delete_utility_lineup_progress_by_pk?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>,	utility_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["utility_lineup_progress"]],
+delete_utility_lineup_renders?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["utility_lineup_renders_bool_exp"] | Variable<any, string>},ValueTypes["utility_lineup_renders_mutation_response"]],
+delete_utility_lineup_renders_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
 delete_utility_lineup_repairs?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["utility_lineup_repairs_bool_exp"] | Variable<any, string>},ValueTypes["utility_lineup_repairs_mutation_response"]],
 delete_utility_lineup_repairs_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["utility_lineup_repairs"]],
@@ -29240,6 +29327,12 @@ insert_utility_lineup_progress?: [{	/** the rows to be inserted */
 insert_utility_lineup_progress_one?: [{	/** the row to be inserted */
 	object: ValueTypes["utility_lineup_progress_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["utility_lineup_progress_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_progress"]],
+insert_utility_lineup_renders?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["utility_lineup_renders_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["utility_lineup_renders_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders_mutation_response"]],
+insert_utility_lineup_renders_one?: [{	/** the row to be inserted */
+	object: ValueTypes["utility_lineup_renders_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["utility_lineup_renders_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
 insert_utility_lineup_repairs?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["utility_lineup_repairs_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["utility_lineup_repairs_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_repairs_mutation_response"]],
@@ -29362,6 +29455,8 @@ reconnectLive?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTy
 refreshFaceitRank?: [{	steam_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 refreshLiveHud?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 registerName?: [{	name: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+	/** Re-mine one batch of demos after a miner change */
+	remineUtilityMeta?:ValueTypes["UtilityRemineOutput"],
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?:ValueTypes["SuccessOutput"],
 removeSteamPresenceBotAccount?: [{	account_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -29373,6 +29468,7 @@ remove_league_team_from_season?: [{	/** input parameters for function "remove_le
 	order_by?: Array<ValueTypes["league_team_seasons_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["league_team_seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["league_team_seasons"]],
 renameServerItem?: [{	new_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	old_path: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+renderUtilityLineupPreview?: [{	utility_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityRenderQueueOutput"]],
 reorder_league_divisions?: [{	/** input parameters for function "reorder_league_divisions" */
 	args: ValueTypes["reorder_league_divisions_args"] | Variable<any, string>,	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["league_divisions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -29416,6 +29512,7 @@ saveUtilityPlaybook?: [{	description?: string | undefined | null | Variable<any,
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 sendScrimRequest?: [{	best_of?: number | undefined | null | Variable<any, string>,	from_team_id: ValueTypes["uuid"] | Variable<any, string>,	proposed_scheduled_at: ValueTypes["timestamptz"] | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	to_team_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setGameNodeSchedulingState?: [{	enabled: boolean | Variable<any, string>,	game_server_node_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+setGamePluginAutoUpdate?: [{	enabled: boolean | Variable<any, string>,	slug: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setHudMode?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMapWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -31064,6 +31161,25 @@ update_utility_lineup_progress_by_pk?: [{	/** increments the numeric columns wit
 	_set?: ValueTypes["utility_lineup_progress_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["utility_lineup_progress_pk_columns_input"] | Variable<any, string>},ValueTypes["utility_lineup_progress"]],
 update_utility_lineup_progress_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["utility_lineup_progress_updates"]> | Variable<any, string>},ValueTypes["utility_lineup_progress_mutation_response"]],
+update_utility_lineup_renders?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["utility_lineup_renders_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["utility_lineup_renders_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["utility_lineup_renders_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["utility_lineup_renders_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["utility_lineup_renders_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["utility_lineup_renders_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["utility_lineup_renders_bool_exp"] | Variable<any, string>},ValueTypes["utility_lineup_renders_mutation_response"]],
+update_utility_lineup_renders_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["utility_lineup_renders_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["utility_lineup_renders_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["utility_lineup_renders_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["utility_lineup_renders_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["utility_lineup_renders_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["utility_lineup_renders_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["utility_lineup_renders_pk_columns_input"] | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
+update_utility_lineup_renders_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["utility_lineup_renders_updates"]> | Variable<any, string>},ValueTypes["utility_lineup_renders_mutation_response"]],
 update_utility_lineup_repairs?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["utility_lineup_repairs_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["utility_lineup_repairs_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -49362,6 +49478,19 @@ utility_lineup_progress_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["utility_lineup_progress_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["utility_lineup_progress_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_progress_aggregate"]],
 utility_lineup_progress_by_pk?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>,	utility_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["utility_lineup_progress"]],
+utility_lineup_renders?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_lineup_renders_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
+utility_lineup_renders_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_lineup_renders_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders_aggregate"]],
+utility_lineup_renders_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
 utility_lineup_repairs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["utility_lineup_repairs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -54647,6 +54776,23 @@ utility_lineup_progress_stream?: [{	/** maximum number of rows returned in a sin
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["utility_lineup_progress_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["utility_lineup_progress_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_progress"]],
+utility_lineup_renders?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_lineup_renders_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
+utility_lineup_renders_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_lineup_renders_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders_aggregate"]],
+utility_lineup_renders_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
+utility_lineup_renders_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["utility_lineup_renders_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
 utility_lineup_repairs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["utility_lineup_repairs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -65167,6 +65313,511 @@ count?: [{	columns?: Array<ValueTypes["utility_lineup_progress_select_column"]> 
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "utility_lineup_renders" */
+["utility_lineup_renders"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	duration_ms?:boolean | `@${string}`,
+	error_message?:boolean | `@${string}`,
+	/** An object relationship */
+	game_server_node?:ValueTypes["game_server_nodes"],
+	game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	k8s_job_name?:boolean | `@${string}`,
+	last_status_at?:boolean | `@${string}`,
+	/** An object relationship */
+	lineup?:ValueTypes["utility_lineups"],
+	map_name?:boolean | `@${string}`,
+	paused?:boolean | `@${string}`,
+	/** An object relationship */
+	practice_session?:ValueTypes["utility_practice_sessions"],
+	progress?:boolean | `@${string}`,
+	/** An object relationship */
+	requested_by?:ValueTypes["players"],
+	requested_by_steam_id?:boolean | `@${string}`,
+	session_token?:boolean | `@${string}`,
+	skip_reason?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+spec?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	status?:boolean | `@${string}`,
+status_history?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	utility_lineup_id?:boolean | `@${string}`,
+	utility_practice_session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["utility_lineup_renders_aggregate_fields"],
+	nodes?:ValueTypes["utility_lineup_renders"],
+		__typename?: boolean | `@${string}`
+}>;
+	["utility_lineup_renders_aggregate_bool_exp"]: {
+	bool_and?: ValueTypes["utility_lineup_renders_aggregate_bool_exp_bool_and"] | undefined | null | Variable<any, string>,
+	bool_or?: ValueTypes["utility_lineup_renders_aggregate_bool_exp_bool_or"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["utility_lineup_renders_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_and"]: {
+	arguments: ValueTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"] | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_or"]: {
+	arguments: ValueTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"] | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Boolean_comparison_exp"] | Variable<any, string>
+};
+	["utility_lineup_renders_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["utility_lineup_renders_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["utility_lineup_renders_max_fields"],
+	min?:ValueTypes["utility_lineup_renders_min_fields"],
+	stddev?:ValueTypes["utility_lineup_renders_stddev_fields"],
+	stddev_pop?:ValueTypes["utility_lineup_renders_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["utility_lineup_renders_stddev_samp_fields"],
+	sum?:ValueTypes["utility_lineup_renders_sum_fields"],
+	var_pop?:ValueTypes["utility_lineup_renders_var_pop_fields"],
+	var_samp?:ValueTypes["utility_lineup_renders_var_samp_fields"],
+	variance?:ValueTypes["utility_lineup_renders_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_order_by"]: {
+	avg?: ValueTypes["utility_lineup_renders_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["utility_lineup_renders_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["utility_lineup_renders_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["utility_lineup_renders_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["utility_lineup_renders_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["utility_lineup_renders_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["utility_lineup_renders_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["utility_lineup_renders_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["utility_lineup_renders_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["utility_lineup_renders_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_append_input"]: {
+	spec?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "utility_lineup_renders" */
+["utility_lineup_renders_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["utility_lineup_renders_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["utility_lineup_renders_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["utility_lineup_renders_avg_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_avg_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "utility_lineup_renders". All fields are combined with a logical 'AND'. */
+["utility_lineup_renders_bool_exp"]: {
+	_and?: Array<ValueTypes["utility_lineup_renders_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["utility_lineup_renders_bool_exp"]> | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	duration_ms?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	error_message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	game_server_node?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
+	game_server_node_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup?: ValueTypes["utility_lineups_bool_exp"] | undefined | null | Variable<any, string>,
+	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	paused?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	practice_session?: ValueTypes["utility_practice_sessions_bool_exp"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["numeric_comparison_exp"] | undefined | null | Variable<any, string>,
+	requested_by?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	session_token?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	skip_reason?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	spec?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "utility_lineup_renders" */
+["utility_lineup_renders_constraint"]:utility_lineup_renders_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_lineup_renders_delete_at_path_input"]: {
+	spec?: Array<string> | undefined | null | Variable<any, string>,
+	status_history?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_lineup_renders_delete_elem_input"]: {
+	spec?: number | undefined | null | Variable<any, string>,
+	status_history?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_lineup_renders_delete_key_input"]: {
+	spec?: string | undefined | null | Variable<any, string>,
+	status_history?: string | undefined | null | Variable<any, string>
+};
+	/** input type for incrementing numeric columns in table "utility_lineup_renders" */
+["utility_lineup_renders_inc_input"]: {
+	duration_ms?: number | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	sort_index?: number | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "utility_lineup_renders" */
+["utility_lineup_renders_insert_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	duration_ms?: number | undefined | null | Variable<any, string>,
+	error_message?: string | undefined | null | Variable<any, string>,
+	game_server_node?: ValueTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	game_server_node_id?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: string | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	lineup?: ValueTypes["utility_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_name?: string | undefined | null | Variable<any, string>,
+	paused?: boolean | undefined | null | Variable<any, string>,
+	practice_session?: ValueTypes["utility_practice_sessions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	requested_by?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	session_token?: string | undefined | null | Variable<any, string>,
+	skip_reason?: string | undefined | null | Variable<any, string>,
+	sort_index?: number | undefined | null | Variable<any, string>,
+	spec?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	status?: string | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["utility_lineup_renders_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	duration_ms?:boolean | `@${string}`,
+	error_message?:boolean | `@${string}`,
+	game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	k8s_job_name?:boolean | `@${string}`,
+	last_status_at?:boolean | `@${string}`,
+	map_name?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	session_token?:boolean | `@${string}`,
+	skip_reason?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	utility_lineup_id?:boolean | `@${string}`,
+	utility_practice_session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_max_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	session_token?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	skip_reason?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["utility_lineup_renders_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	duration_ms?:boolean | `@${string}`,
+	error_message?:boolean | `@${string}`,
+	game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	k8s_job_name?:boolean | `@${string}`,
+	last_status_at?:boolean | `@${string}`,
+	map_name?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	session_token?:boolean | `@${string}`,
+	skip_reason?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	utility_lineup_id?:boolean | `@${string}`,
+	utility_practice_session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_min_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	session_token?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	skip_reason?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "utility_lineup_renders" */
+["utility_lineup_renders_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["utility_lineup_renders"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "utility_lineup_renders" */
+["utility_lineup_renders_on_conflict"]: {
+	constraint: ValueTypes["utility_lineup_renders_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["utility_lineup_renders_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "utility_lineup_renders". */
+["utility_lineup_renders_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	error_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	game_server_node?: ValueTypes["game_server_nodes_order_by"] | undefined | null | Variable<any, string>,
+	game_server_node_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup?: ValueTypes["utility_lineups_order_by"] | undefined | null | Variable<any, string>,
+	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	paused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	practice_session?: ValueTypes["utility_practice_sessions_order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	session_token?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	skip_reason?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	spec?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: utility_lineup_renders */
+["utility_lineup_renders_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_prepend_input"]: {
+	spec?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column"]:utility_lineup_renders_select_column;
+	/** select "utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns" columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"]:utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns" columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"]:utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "utility_lineup_renders" */
+["utility_lineup_renders_set_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	duration_ms?: number | undefined | null | Variable<any, string>,
+	error_message?: string | undefined | null | Variable<any, string>,
+	game_server_node_id?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: string | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	map_name?: string | undefined | null | Variable<any, string>,
+	paused?: boolean | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	session_token?: string | undefined | null | Variable<any, string>,
+	skip_reason?: string | undefined | null | Variable<any, string>,
+	sort_index?: number | undefined | null | Variable<any, string>,
+	spec?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	status?: string | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["utility_lineup_renders_stddev_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["utility_lineup_renders_stddev_pop_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_pop_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["utility_lineup_renders_stddev_samp_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_samp_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "utility_lineup_renders" */
+["utility_lineup_renders_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["utility_lineup_renders_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["utility_lineup_renders_stream_cursor_value_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	duration_ms?: number | undefined | null | Variable<any, string>,
+	error_message?: string | undefined | null | Variable<any, string>,
+	game_server_node_id?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	k8s_job_name?: string | undefined | null | Variable<any, string>,
+	last_status_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	map_name?: string | undefined | null | Variable<any, string>,
+	paused?: boolean | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	session_token?: string | undefined | null | Variable<any, string>,
+	skip_reason?: string | undefined | null | Variable<any, string>,
+	sort_index?: number | undefined | null | Variable<any, string>,
+	spec?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	status?: string | undefined | null | Variable<any, string>,
+	status_history?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	utility_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	utility_practice_session_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["utility_lineup_renders_sum_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_sum_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "utility_lineup_renders" */
+["utility_lineup_renders_update_column"]:utility_lineup_renders_update_column;
+	["utility_lineup_renders_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["utility_lineup_renders_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["utility_lineup_renders_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["utility_lineup_renders_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["utility_lineup_renders_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["utility_lineup_renders_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["utility_lineup_renders_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["utility_lineup_renders_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["utility_lineup_renders_var_pop_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_pop_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["utility_lineup_renders_var_samp_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_samp_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["utility_lineup_renders_variance_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_variance_order_by"]: {
+	duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	progress?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	requested_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sort_index?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** columns and relationships of "utility_lineup_repairs" */
 ["utility_lineup_repairs"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -65871,6 +66522,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineup_votes_select_column"]> | u
 };
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	archived_at?:boolean | `@${string}`,
 	/** An object relationship */
 	author?:ValueTypes["players"],
@@ -65941,6 +66593,14 @@ favorited_by_aggregate?: [{	/** distinct select on columns */
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
+	preview_file?:boolean | `@${string}`,
+	preview_rendered_at?:boolean | `@${string}`,
+	preview_thumbnail?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?:boolean | `@${string}`,
 progress?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["utility_lineup_progress_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -65957,6 +66617,18 @@ progress_aggregate?: [{	/** distinct select on columns */
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
+renders?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_lineup_renders_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders"]],
+renders_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_lineup_renders_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_lineup_renders_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_renders_aggregate"]],
 repairs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["utility_lineup_repairs_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -66146,6 +66818,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate avg on columns */
 ["utility_lineups_avg_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -66168,6 +66841,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -66180,6 +66854,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by avg() on columns of table "utility_lineups" */
 ["utility_lineups_avg_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66200,6 +66875,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66214,6 +66890,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	_and?: Array<ValueTypes["utility_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["utility_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["utility_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
+	aim_tolerance?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -66257,12 +66934,20 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_thumbnail_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	preview_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	progress?: ValueTypes["utility_lineup_progress_bool_exp"] | undefined | null | Variable<any, string>,
 	progress_aggregate?: ValueTypes["utility_lineup_progress_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	public_review_note?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	renders?: ValueTypes["utility_lineup_renders_bool_exp"] | undefined | null | Variable<any, string>,
+	renders_aggregate?: ValueTypes["utility_lineup_renders_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	repairs?: ValueTypes["utility_lineup_repairs_bool_exp"] | undefined | null | Variable<any, string>,
 	repairs_aggregate?: ValueTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -66309,6 +66994,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
 ["utility_lineups_inc_input"]: {
+	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	downvotes?: number | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
@@ -66329,6 +67015,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: number | undefined | null | Variable<any, string>,
 	practice_players?: number | undefined | null | Variable<any, string>,
 	practice_successes?: number | undefined | null | Variable<any, string>,
+	preview_duration_ms?: number | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: number | undefined | null | Variable<any, string>,
 	trajectory_size?: number | undefined | null | Variable<any, string>,
@@ -66340,6 +67027,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
+	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -66375,11 +67063,16 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: number | undefined | null | Variable<any, string>,
 	practice_players?: number | undefined | null | Variable<any, string>,
 	practice_successes?: number | undefined | null | Variable<any, string>,
+	preview_duration_ms?: number | undefined | null | Variable<any, string>,
+	preview_file?: string | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	progress?: ValueTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	renders?: ValueTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	repairs?: ValueTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: number | undefined | null | Variable<any, string>,
@@ -66410,6 +67103,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate max on columns */
 ["utility_lineups_max_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	archived_at?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	confidence?:boolean | `@${string}`,
@@ -66444,6 +67138,14 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
+	preview_file?:boolean | `@${string}`,
+	preview_rendered_at?:boolean | `@${string}`,
+	preview_thumbnail?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?:boolean | `@${string}`,
 	public_requested_at?:boolean | `@${string}`,
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
@@ -66468,6 +67170,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by max() on columns of table "utility_lineups" */
 ["utility_lineups_max_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	confidence?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66498,6 +67201,10 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_review_note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66521,6 +67228,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate min on columns */
 ["utility_lineups_min_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	archived_at?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	confidence?:boolean | `@${string}`,
@@ -66555,6 +67263,14 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
+	preview_file?:boolean | `@${string}`,
+	preview_rendered_at?:boolean | `@${string}`,
+	preview_thumbnail?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?:boolean | `@${string}`,
 	public_requested_at?:boolean | `@${string}`,
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
@@ -66579,6 +67295,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by min() on columns of table "utility_lineups" */
 ["utility_lineups_min_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	confidence?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66609,6 +67326,10 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_review_note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66652,6 +67373,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66693,11 +67415,18 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_thumbnail_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	progress_aggregate?: ValueTypes["utility_lineup_progress_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_review_note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	renders_aggregate?: ValueTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	repairs_aggregate?: ValueTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66758,6 +67487,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 ["utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns"]:utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns;
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
+	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	confidence?: string | undefined | null | Variable<any, string>,
@@ -66789,6 +67519,10 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: number | undefined | null | Variable<any, string>,
 	practice_players?: number | undefined | null | Variable<any, string>,
 	practice_successes?: number | undefined | null | Variable<any, string>,
+	preview_duration_ms?: number | undefined | null | Variable<any, string>,
+	preview_file?: string | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -66818,6 +67552,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate stddev on columns */
 ["utility_lineups_stddev_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -66840,6 +67575,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -66852,6 +67588,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by stddev() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66872,6 +67609,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66883,6 +67621,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate stddev_pop on columns */
 ["utility_lineups_stddev_pop_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -66905,6 +67644,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -66917,6 +67657,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by stddev_pop() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_pop_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66937,6 +67678,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -66948,6 +67690,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate stddev_samp on columns */
 ["utility_lineups_stddev_samp_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -66970,6 +67713,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -66982,6 +67726,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by stddev_samp() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_samp_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67002,6 +67747,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67020,6 +67766,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
+	aim_tolerance?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	archived_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	confidence?: string | undefined | null | Variable<any, string>,
@@ -67052,6 +67799,10 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: number | undefined | null | Variable<any, string>,
 	practice_players?: number | undefined | null | Variable<any, string>,
 	practice_successes?: number | undefined | null | Variable<any, string>,
+	preview_duration_ms?: number | undefined | null | Variable<any, string>,
+	preview_file?: string | undefined | null | Variable<any, string>,
+	preview_rendered_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	preview_thumbnail?: string | undefined | null | Variable<any, string>,
 	public_requested_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_review_note?: string | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -67081,6 +67832,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate sum on columns */
 ["utility_lineups_sum_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -67103,6 +67855,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -67115,6 +67868,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by sum() on columns of table "utility_lineups" */
 ["utility_lineups_sum_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67135,6 +67889,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67166,6 +67921,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate var_pop on columns */
 ["utility_lineups_var_pop_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -67188,6 +67944,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -67200,6 +67957,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by var_pop() on columns of table "utility_lineups" */
 ["utility_lineups_var_pop_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67220,6 +67978,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67231,6 +67990,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate var_samp on columns */
 ["utility_lineups_var_samp_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -67253,6 +68013,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -67265,6 +68026,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by var_samp() on columns of table "utility_lineups" */
 ["utility_lineups_var_samp_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67285,6 +68047,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67296,6 +68059,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 };
 	/** aggregate variance on columns */
 ["utility_lineups_variance_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -67318,6 +68082,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -67330,6 +68095,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 }>;
 	/** order by variance() on columns of table "utility_lineups" */
 ["utility_lineups_variance_order_by"]: {
+	aim_tolerance?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	author_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	downvotes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	eye_z?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67350,6 +68116,7 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	practice_attempts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_players?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	practice_successes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	preview_duration_ms?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	trajectory_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -68648,6 +69415,7 @@ invites_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "is_utility_practice_member" */
 	is_member?:boolean | `@${string}`,
 	is_open?:boolean | `@${string}`,
+	is_render?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	/** An object relationship */
@@ -68762,6 +69530,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	invites_aggregate?: ValueTypes["utility_practice_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	is_member?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_open?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_render?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
@@ -68796,6 +69565,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	invite_code?: string | undefined | null | Variable<any, string>,
 	invites?: ValueTypes["utility_practice_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	is_open?: boolean | undefined | null | Variable<any, string>,
+	is_render?: boolean | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -68935,6 +69705,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	invites_aggregate?: ValueTypes["utility_practice_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	is_member?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_open?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_render?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
@@ -68969,6 +69740,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_code?: string | undefined | null | Variable<any, string>,
 	is_open?: boolean | undefined | null | Variable<any, string>,
+	is_render?: boolean | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -69024,6 +69796,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_code?: string | undefined | null | Variable<any, string>,
 	is_open?: boolean | undefined | null | Variable<any, string>,
+	is_render?: boolean | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -79627,6 +80400,23 @@ export type ResolverInputTypes = {
 	dry_run?:boolean | `@${string}`,
 	lineups?:boolean | `@${string}`,
 	origin_source?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityRemineOutput"]: AliasType<{
+	demos?:boolean | `@${string}`,
+	done?:boolean | `@${string}`,
+	throws?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityRenderClearOutput"]: AliasType<{
+	cleared?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityRenderQueueOutput"]: AliasType<{
+	reason?:boolean | `@${string}`,
+	render_id?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["UtilitySightlineOutput"]: AliasType<{
@@ -93323,6 +94113,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_plugins_select_column"]> | u
 	/** An object relationship */
 	plugin?:ResolverInputTypes["game_plugins"],
 	plugin_slug?:boolean | `@${string}`,
+	previous_version?:boolean | `@${string}`,
 	runtime?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
@@ -93395,6 +94186,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	path?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	previous_version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
 	source?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_game_plugin_install_statuses_enum_comparison_exp"] | undefined | null,
@@ -93417,6 +94209,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	path?: string | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: ResolverInputTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -93433,6 +94226,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	last_error?:boolean | `@${string}`,
 	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
+	previous_version?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 	version?:boolean | `@${string}`,
@@ -93448,6 +94242,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	last_error?: ResolverInputTypes["order_by"] | undefined | null,
 	path?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	previous_version?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
 	version?: ResolverInputTypes["order_by"] | undefined | null
@@ -93462,6 +94257,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	last_error?:boolean | `@${string}`,
 	path?:boolean | `@${string}`,
 	plugin_slug?:boolean | `@${string}`,
+	previous_version?:boolean | `@${string}`,
 	source?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 	version?:boolean | `@${string}`,
@@ -93477,6 +94273,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	last_error?: ResolverInputTypes["order_by"] | undefined | null,
 	path?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	previous_version?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
 	version?: ResolverInputTypes["order_by"] | undefined | null
@@ -93509,6 +94306,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	path?: ResolverInputTypes["order_by"] | undefined | null,
 	plugin?: ResolverInputTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: ResolverInputTypes["order_by"] | undefined | null,
+	previous_version?: ResolverInputTypes["order_by"] | undefined | null,
 	runtime?: ResolverInputTypes["order_by"] | undefined | null,
 	source?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
@@ -93537,6 +94335,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: ResolverInputTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -93562,6 +94361,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_node_plugins_select_c
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: ResolverInputTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: ResolverInputTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -100829,10 +101629,12 @@ match_clips_aggregate?: [{	/** distinct select on columns */
 	match_map?:ResolverInputTypes["match_maps"],
 	match_map_id?:boolean | `@${string}`,
 	metadata_parsed_at?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_file?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 players?: [{	/** JSON select path */
 	path?: string | undefined | null},boolean | `@${string}`],
 round_ticks?: [{	/** JSON select path */
@@ -100917,7 +101719,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate avg on columns */
 ["match_map_demos_avg_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -100926,7 +101730,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by avg() on columns of table "match_map_demos" */
 ["match_map_demos_avg_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -100957,9 +101763,11 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_map?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	parser_version?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	playback_file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	playback_size?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	playback_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	playback_version?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	players?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	round_ticks?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
 	size?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -100992,7 +101800,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 };
 	/** input type for incrementing numeric columns in table "match_map_demos" */
 ["match_map_demos_inc_input"]: {
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -101015,8 +101825,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_map?: ResolverInputTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ResolverInputTypes["jsonb"] | undefined | null,
 	round_ticks?: ResolverInputTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -101037,10 +101849,12 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	metadata_parsed_at?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_file?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101058,8 +101872,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_file?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null,
@@ -101078,10 +101894,12 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_id?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	metadata_parsed_at?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_file?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101099,8 +101917,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_file?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null,
@@ -101146,9 +101966,11 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_map?: ResolverInputTypes["match_maps_order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_file?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_url?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	players?: ResolverInputTypes["order_by"] | undefined | null,
 	round_ticks?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -101186,8 +102008,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ResolverInputTypes["jsonb"] | undefined | null,
 	round_ticks?: ResolverInputTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -101198,7 +102022,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate stddev on columns */
 ["match_map_demos_stddev_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101207,7 +102033,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by stddev() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -101215,7 +102043,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate stddev_pop on columns */
 ["match_map_demos_stddev_pop_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101224,7 +102054,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by stddev_pop() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_pop_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -101232,7 +102064,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate stddev_samp on columns */
 ["match_map_demos_stddev_samp_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101241,7 +102075,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by stddev_samp() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_samp_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -101267,8 +102103,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ResolverInputTypes["jsonb"] | undefined | null,
 	round_ticks?: ResolverInputTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -101279,7 +102117,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate sum on columns */
 ["match_map_demos_sum_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101288,7 +102128,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by sum() on columns of table "match_map_demos" */
 ["match_map_demos_sum_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -101316,7 +102158,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate var_pop on columns */
 ["match_map_demos_var_pop_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101325,7 +102169,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by var_pop() on columns of table "match_map_demos" */
 ["match_map_demos_var_pop_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -101333,7 +102179,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate var_samp on columns */
 ["match_map_demos_var_samp_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101342,7 +102190,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by var_samp() on columns of table "match_map_demos" */
 ["match_map_demos_var_samp_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -101350,7 +102200,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** aggregate variance on columns */
 ["match_map_demos_variance_fields"]: AliasType<{
 	duration_seconds?:boolean | `@${string}`,
+	parser_version?:boolean | `@${string}`,
 	playback_size?:boolean | `@${string}`,
+	playback_version?:boolean | `@${string}`,
 	size?:boolean | `@${string}`,
 	tick_rate?:boolean | `@${string}`,
 	total_ticks?:boolean | `@${string}`,
@@ -101359,7 +102211,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> 
 	/** order by variance() on columns of table "match_map_demos" */
 ["match_map_demos_variance_order_by"]: {
 	duration_seconds?: ResolverInputTypes["order_by"] | undefined | null,
+	parser_version?: ResolverInputTypes["order_by"] | undefined | null,
 	playback_size?: ResolverInputTypes["order_by"] | undefined | null,
+	playback_version?: ResolverInputTypes["order_by"] | undefined | null,
 	size?: ResolverInputTypes["order_by"] | undefined | null,
 	tick_rate?: ResolverInputTypes["order_by"] | undefined | null,
 	total_ticks?: ResolverInputTypes["order_by"] | undefined | null
@@ -105219,10 +106073,13 @@ cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Succe
 	/** Request cancellation of the in-progress reparse-all-demos run (admin only). Stops after the current demo finishes. */
 	cancelReparseAllDemos?:ResolverInputTypes["SuccessOutput"],
 cancelScrimRequest?: [{	request_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+cancelUtilityLineupRender?: [{	render_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 checkIntoMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 clearClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	/** Delete all terminal-state clip_render_jobs rows platform-wide. */
 	clearFinishedClipRenders?:ResolverInputTypes["SuccessOutput"],
+	/** Drop every finished row from the lineup preview queue */
+	clearFinishedUtilityLineupRenders?:ResolverInputTypes["UtilityRenderClearOutput"],
 clearPendingMatchImport?: [{	valve_match_id: string},ResolverInputTypes["PendingMatchImportActionOutput"]],
 clone_league_season?: [{	/** input parameters for function "clone_league_season" */
 	args: ResolverInputTypes["clone_league_season_args"],	/** distinct select on columns */
@@ -105781,6 +106638,9 @@ delete_utility_lineup_favorites_by_pk?: [{	steam_id: ResolverInputTypes["bigint"
 delete_utility_lineup_progress?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["utility_lineup_progress_bool_exp"]},ResolverInputTypes["utility_lineup_progress_mutation_response"]],
 delete_utility_lineup_progress_by_pk?: [{	steam_id: ResolverInputTypes["bigint"],	utility_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["utility_lineup_progress"]],
+delete_utility_lineup_renders?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["utility_lineup_renders_bool_exp"]},ResolverInputTypes["utility_lineup_renders_mutation_response"]],
+delete_utility_lineup_renders_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["utility_lineup_renders"]],
 delete_utility_lineup_repairs?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["utility_lineup_repairs_bool_exp"]},ResolverInputTypes["utility_lineup_repairs_mutation_response"]],
 delete_utility_lineup_repairs_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["utility_lineup_repairs"]],
@@ -106893,6 +107753,12 @@ insert_utility_lineup_progress?: [{	/** the rows to be inserted */
 insert_utility_lineup_progress_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["utility_lineup_progress_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["utility_lineup_progress_on_conflict"] | undefined | null},ResolverInputTypes["utility_lineup_progress"]],
+insert_utility_lineup_renders?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["utility_lineup_renders_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["utility_lineup_renders_on_conflict"] | undefined | null},ResolverInputTypes["utility_lineup_renders_mutation_response"]],
+insert_utility_lineup_renders_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["utility_lineup_renders_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["utility_lineup_renders_on_conflict"] | undefined | null},ResolverInputTypes["utility_lineup_renders"]],
 insert_utility_lineup_repairs?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["utility_lineup_repairs_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["utility_lineup_repairs_on_conflict"] | undefined | null},ResolverInputTypes["utility_lineup_repairs_mutation_response"]],
@@ -107015,6 +107881,8 @@ reconnectLive?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Suc
 refreshFaceitRank?: [{	steam_id: string},ResolverInputTypes["SuccessOutput"]],
 refreshLiveHud?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 registerName?: [{	name: string},ResolverInputTypes["SuccessOutput"]],
+	/** Re-mine one batch of demos after a miner change */
+	remineUtilityMeta?:ResolverInputTypes["UtilityRemineOutput"],
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?:ResolverInputTypes["SuccessOutput"],
 removeSteamPresenceBotAccount?: [{	account_id: string},ResolverInputTypes["SuccessOutput"]],
@@ -107026,6 +107894,7 @@ remove_league_team_from_season?: [{	/** input parameters for function "remove_le
 	order_by?: Array<ResolverInputTypes["league_team_seasons_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["league_team_seasons_bool_exp"] | undefined | null},ResolverInputTypes["league_team_seasons"]],
 renameServerItem?: [{	new_path: string,	node_id: string,	old_path: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
+renderUtilityLineupPreview?: [{	utility_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityRenderQueueOutput"]],
 reorder_league_divisions?: [{	/** input parameters for function "reorder_league_divisions" */
 	args: ResolverInputTypes["reorder_league_divisions_args"],	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["league_divisions_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -107069,6 +107938,7 @@ saveUtilityPlaybook?: [{	description?: string | undefined | null,	map_name: stri
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 sendScrimRequest?: [{	best_of?: number | undefined | null,	from_team_id: ResolverInputTypes["uuid"],	proposed_scheduled_at: ResolverInputTypes["timestamptz"],	region?: string | undefined | null,	to_team_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setGameNodeSchedulingState?: [{	enabled: boolean,	game_server_node_id: string},ResolverInputTypes["SuccessOutput"]],
+setGamePluginAutoUpdate?: [{	enabled: boolean,	slug: string},ResolverInputTypes["SuccessOutput"]],
 setHudMode?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInputTypes["SuccessOutput"]],
 setMapWinner?: [{	match_id: ResolverInputTypes["uuid"],	match_map_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
@@ -108717,6 +109587,25 @@ update_utility_lineup_progress_by_pk?: [{	/** increments the numeric columns wit
 	_set?: ResolverInputTypes["utility_lineup_progress_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["utility_lineup_progress_pk_columns_input"]},ResolverInputTypes["utility_lineup_progress"]],
 update_utility_lineup_progress_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["utility_lineup_progress_updates"]>},ResolverInputTypes["utility_lineup_progress_mutation_response"]],
+update_utility_lineup_renders?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["utility_lineup_renders_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["utility_lineup_renders_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["utility_lineup_renders_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["utility_lineup_renders_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["utility_lineup_renders_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["utility_lineup_renders_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["utility_lineup_renders_bool_exp"]},ResolverInputTypes["utility_lineup_renders_mutation_response"]],
+update_utility_lineup_renders_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["utility_lineup_renders_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["utility_lineup_renders_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["utility_lineup_renders_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["utility_lineup_renders_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["utility_lineup_renders_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["utility_lineup_renders_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["utility_lineup_renders_pk_columns_input"]},ResolverInputTypes["utility_lineup_renders"]],
+update_utility_lineup_renders_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["utility_lineup_renders_updates"]>},ResolverInputTypes["utility_lineup_renders_mutation_response"]],
 update_utility_lineup_repairs?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["utility_lineup_repairs_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["utility_lineup_repairs_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -127015,6 +127904,19 @@ utility_lineup_progress_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["utility_lineup_progress_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["utility_lineup_progress_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_progress_aggregate"]],
 utility_lineup_progress_by_pk?: [{	steam_id: ResolverInputTypes["bigint"],	utility_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["utility_lineup_progress"]],
+utility_lineup_renders?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_lineup_renders_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders"]],
+utility_lineup_renders_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_lineup_renders_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders_aggregate"]],
+utility_lineup_renders_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["utility_lineup_renders"]],
 utility_lineup_repairs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["utility_lineup_repairs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -132300,6 +133202,23 @@ utility_lineup_progress_stream?: [{	/** maximum number of rows returned in a sin
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["utility_lineup_progress_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["utility_lineup_progress_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_progress"]],
+utility_lineup_renders?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_lineup_renders_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders"]],
+utility_lineup_renders_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_lineup_renders_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders_aggregate"]],
+utility_lineup_renders_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["utility_lineup_renders"]],
+utility_lineup_renders_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["utility_lineup_renders_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders"]],
 utility_lineup_repairs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["utility_lineup_repairs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -142820,6 +143739,511 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineup_progress_select_co
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	successes?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "utility_lineup_renders" */
+["utility_lineup_renders"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	duration_ms?:boolean | `@${string}`,
+	error_message?:boolean | `@${string}`,
+	/** An object relationship */
+	game_server_node?:ResolverInputTypes["game_server_nodes"],
+	game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	k8s_job_name?:boolean | `@${string}`,
+	last_status_at?:boolean | `@${string}`,
+	/** An object relationship */
+	lineup?:ResolverInputTypes["utility_lineups"],
+	map_name?:boolean | `@${string}`,
+	paused?:boolean | `@${string}`,
+	/** An object relationship */
+	practice_session?:ResolverInputTypes["utility_practice_sessions"],
+	progress?:boolean | `@${string}`,
+	/** An object relationship */
+	requested_by?:ResolverInputTypes["players"],
+	requested_by_steam_id?:boolean | `@${string}`,
+	session_token?:boolean | `@${string}`,
+	skip_reason?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+spec?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	status?:boolean | `@${string}`,
+status_history?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	utility_lineup_id?:boolean | `@${string}`,
+	utility_practice_session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["utility_lineup_renders_aggregate_fields"],
+	nodes?:ResolverInputTypes["utility_lineup_renders"],
+		__typename?: boolean | `@${string}`
+}>;
+	["utility_lineup_renders_aggregate_bool_exp"]: {
+	bool_and?: ResolverInputTypes["utility_lineup_renders_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: ResolverInputTypes["utility_lineup_renders_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: ResolverInputTypes["utility_lineup_renders_aggregate_bool_exp_count"] | undefined | null
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_and"]: {
+	arguments: ResolverInputTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Boolean_comparison_exp"]
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_or"]: {
+	arguments: ResolverInputTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Boolean_comparison_exp"]
+};
+	["utility_lineup_renders_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["utility_lineup_renders_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["utility_lineup_renders_max_fields"],
+	min?:ResolverInputTypes["utility_lineup_renders_min_fields"],
+	stddev?:ResolverInputTypes["utility_lineup_renders_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["utility_lineup_renders_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["utility_lineup_renders_stddev_samp_fields"],
+	sum?:ResolverInputTypes["utility_lineup_renders_sum_fields"],
+	var_pop?:ResolverInputTypes["utility_lineup_renders_var_pop_fields"],
+	var_samp?:ResolverInputTypes["utility_lineup_renders_var_samp_fields"],
+	variance?:ResolverInputTypes["utility_lineup_renders_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["utility_lineup_renders_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["utility_lineup_renders_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["utility_lineup_renders_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["utility_lineup_renders_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["utility_lineup_renders_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["utility_lineup_renders_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["utility_lineup_renders_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["utility_lineup_renders_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["utility_lineup_renders_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["utility_lineup_renders_variance_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_append_input"]: {
+	spec?: ResolverInputTypes["jsonb"] | undefined | null,
+	status_history?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "utility_lineup_renders" */
+["utility_lineup_renders_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["utility_lineup_renders_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["utility_lineup_renders_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["utility_lineup_renders_avg_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_avg_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "utility_lineup_renders". All fields are combined with a logical 'AND'. */
+["utility_lineup_renders_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["utility_lineup_renders_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["utility_lineup_renders_bool_exp"]> | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	duration_ms?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	error_message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	game_server_node?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
+	game_server_node_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	k8s_job_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	last_status_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	lineup?: ResolverInputTypes["utility_lineups_bool_exp"] | undefined | null,
+	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	paused?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	practice_session?: ResolverInputTypes["utility_practice_sessions_bool_exp"] | undefined | null,
+	progress?: ResolverInputTypes["numeric_comparison_exp"] | undefined | null,
+	requested_by?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	session_token?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	skip_reason?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	sort_index?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	spec?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	status?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	status_history?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "utility_lineup_renders" */
+["utility_lineup_renders_constraint"]:utility_lineup_renders_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_lineup_renders_delete_at_path_input"]: {
+	spec?: Array<string> | undefined | null,
+	status_history?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_lineup_renders_delete_elem_input"]: {
+	spec?: number | undefined | null,
+	status_history?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_lineup_renders_delete_key_input"]: {
+	spec?: string | undefined | null,
+	status_history?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "utility_lineup_renders" */
+["utility_lineup_renders_inc_input"]: {
+	duration_ms?: number | undefined | null,
+	progress?: ResolverInputTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** input type for inserting data into table "utility_lineup_renders" */
+["utility_lineup_renders_insert_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node?: ResolverInputTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	lineup?: ResolverInputTypes["utility_lineups_obj_rel_insert_input"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	practice_session?: ResolverInputTypes["utility_practice_sessions_obj_rel_insert_input"] | undefined | null,
+	progress?: ResolverInputTypes["numeric"] | undefined | null,
+	requested_by?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: ResolverInputTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: ResolverInputTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["utility_lineup_renders_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	duration_ms?:boolean | `@${string}`,
+	error_message?:boolean | `@${string}`,
+	game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	k8s_job_name?:boolean | `@${string}`,
+	last_status_at?:boolean | `@${string}`,
+	map_name?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	session_token?:boolean | `@${string}`,
+	skip_reason?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	utility_lineup_id?:boolean | `@${string}`,
+	utility_practice_session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_max_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	error_message?: ResolverInputTypes["order_by"] | undefined | null,
+	game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	k8s_job_name?: ResolverInputTypes["order_by"] | undefined | null,
+	last_status_at?: ResolverInputTypes["order_by"] | undefined | null,
+	map_name?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	session_token?: ResolverInputTypes["order_by"] | undefined | null,
+	skip_reason?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["utility_lineup_renders_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
+	duration_ms?:boolean | `@${string}`,
+	error_message?:boolean | `@${string}`,
+	game_server_node_id?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	k8s_job_name?:boolean | `@${string}`,
+	last_status_at?:boolean | `@${string}`,
+	map_name?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	session_token?:boolean | `@${string}`,
+	skip_reason?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+	status?:boolean | `@${string}`,
+	utility_lineup_id?:boolean | `@${string}`,
+	utility_practice_session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_min_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	error_message?: ResolverInputTypes["order_by"] | undefined | null,
+	game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	k8s_job_name?: ResolverInputTypes["order_by"] | undefined | null,
+	last_status_at?: ResolverInputTypes["order_by"] | undefined | null,
+	map_name?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	session_token?: ResolverInputTypes["order_by"] | undefined | null,
+	skip_reason?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "utility_lineup_renders" */
+["utility_lineup_renders_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["utility_lineup_renders"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "utility_lineup_renders" */
+["utility_lineup_renders_on_conflict"]: {
+	constraint: ResolverInputTypes["utility_lineup_renders_constraint"],
+	update_columns: Array<ResolverInputTypes["utility_lineup_renders_update_column"]>,
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "utility_lineup_renders". */
+["utility_lineup_renders_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	error_message?: ResolverInputTypes["order_by"] | undefined | null,
+	game_server_node?: ResolverInputTypes["game_server_nodes_order_by"] | undefined | null,
+	game_server_node_id?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	k8s_job_name?: ResolverInputTypes["order_by"] | undefined | null,
+	last_status_at?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup?: ResolverInputTypes["utility_lineups_order_by"] | undefined | null,
+	map_name?: ResolverInputTypes["order_by"] | undefined | null,
+	paused?: ResolverInputTypes["order_by"] | undefined | null,
+	practice_session?: ResolverInputTypes["utility_practice_sessions_order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by?: ResolverInputTypes["players_order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	session_token?: ResolverInputTypes["order_by"] | undefined | null,
+	skip_reason?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null,
+	spec?: ResolverInputTypes["order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null,
+	status_history?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: utility_lineup_renders */
+["utility_lineup_renders_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_prepend_input"]: {
+	spec?: ResolverInputTypes["jsonb"] | undefined | null,
+	status_history?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column"]:utility_lineup_renders_select_column;
+	/** select "utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns" columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"]:utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns" columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"]:utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "utility_lineup_renders" */
+["utility_lineup_renders_set_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	progress?: ResolverInputTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: ResolverInputTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: ResolverInputTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["utility_lineup_renders_stddev_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["utility_lineup_renders_stddev_pop_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_pop_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["utility_lineup_renders_stddev_samp_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_samp_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "utility_lineup_renders" */
+["utility_lineup_renders_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["utility_lineup_renders_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["utility_lineup_renders_stream_cursor_value_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	progress?: ResolverInputTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: ResolverInputTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: ResolverInputTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["utility_lineup_renders_sum_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_sum_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** update columns of table "utility_lineup_renders" */
+["utility_lineup_renders_update_column"]:utility_lineup_renders_update_column;
+	["utility_lineup_renders_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["utility_lineup_renders_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["utility_lineup_renders_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["utility_lineup_renders_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["utility_lineup_renders_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["utility_lineup_renders_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["utility_lineup_renders_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["utility_lineup_renders_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["utility_lineup_renders_var_pop_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_pop_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["utility_lineup_renders_var_samp_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_samp_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["utility_lineup_renders_variance_fields"]: AliasType<{
+	duration_ms?:boolean | `@${string}`,
+	progress?:boolean | `@${string}`,
+	requested_by_steam_id?:boolean | `@${string}`,
+	sort_index?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_variance_order_by"]: {
+	duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	progress?: ResolverInputTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sort_index?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "utility_lineup_repairs" */
 ["utility_lineup_repairs"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -143524,6 +144948,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineup_votes_select_colum
 };
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	archived_at?:boolean | `@${string}`,
 	/** An object relationship */
 	author?:ResolverInputTypes["players"],
@@ -143594,6 +145019,14 @@ favorited_by_aggregate?: [{	/** distinct select on columns */
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
+	preview_file?:boolean | `@${string}`,
+	preview_rendered_at?:boolean | `@${string}`,
+	preview_thumbnail?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?:boolean | `@${string}`,
 progress?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["utility_lineup_progress_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143610,6 +145043,18 @@ progress_aggregate?: [{	/** distinct select on columns */
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
+renders?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_lineup_renders_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders"]],
+renders_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_lineup_renders_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_lineup_renders_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_renders_aggregate"]],
 repairs?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["utility_lineup_repairs_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -143799,6 +145244,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate avg on columns */
 ["utility_lineups_avg_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -143821,6 +145267,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -143833,6 +145280,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by avg() on columns of table "utility_lineups" */
 ["utility_lineups_avg_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -143853,6 +145301,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -143867,6 +145316,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	_and?: Array<ResolverInputTypes["utility_lineups_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["utility_lineups_bool_exp"]> | undefined | null,
+	aim_tolerance?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -143910,12 +145360,20 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	practice_players?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	practice_successes?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	preview_file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_thumbnail?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	preview_thumbnail_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	preview_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	progress?: ResolverInputTypes["utility_lineup_progress_bool_exp"] | undefined | null,
 	progress_aggregate?: ResolverInputTypes["utility_lineup_progress_aggregate_bool_exp"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	public_review_note?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	renders?: ResolverInputTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	renders_aggregate?: ResolverInputTypes["utility_lineup_renders_aggregate_bool_exp"] | undefined | null,
 	repairs?: ResolverInputTypes["utility_lineup_repairs_bool_exp"] | undefined | null,
 	repairs_aggregate?: ResolverInputTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
@@ -143962,6 +145420,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
 ["utility_lineups_inc_input"]: {
+	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: ResolverInputTypes["float8"] | undefined | null,
@@ -143982,6 +145441,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["bigint"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -143993,6 +145453,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
+	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -144028,11 +145489,16 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	progress?: ResolverInputTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["bigint"] | undefined | null,
+	renders?: ResolverInputTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null,
 	repairs?: ResolverInputTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
@@ -144063,6 +145529,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate max on columns */
 ["utility_lineups_max_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	archived_at?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	confidence?:boolean | `@${string}`,
@@ -144097,6 +145564,14 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
+	preview_file?:boolean | `@${string}`,
+	preview_rendered_at?:boolean | `@${string}`,
+	preview_thumbnail?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?:boolean | `@${string}`,
 	public_requested_at?:boolean | `@${string}`,
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
@@ -144121,6 +145596,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by max() on columns of table "utility_lineups" */
 ["utility_lineups_max_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	archived_at?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	confidence?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144151,6 +145627,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_file?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_thumbnail?: ResolverInputTypes["order_by"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["order_by"] | undefined | null,
 	public_review_note?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144174,6 +145654,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate min on columns */
 ["utility_lineups_min_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	archived_at?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	confidence?:boolean | `@${string}`,
@@ -144208,6 +145689,14 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
+	preview_file?:boolean | `@${string}`,
+	preview_rendered_at?:boolean | `@${string}`,
+	preview_thumbnail?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?:boolean | `@${string}`,
 	public_requested_at?:boolean | `@${string}`,
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
@@ -144232,6 +145721,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by min() on columns of table "utility_lineups" */
 ["utility_lineups_min_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	archived_at?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	confidence?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144262,6 +145752,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_file?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_thumbnail?: ResolverInputTypes["order_by"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["order_by"] | undefined | null,
 	public_review_note?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144305,6 +145799,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	archived_at?: ResolverInputTypes["order_by"] | undefined | null,
 	author?: ResolverInputTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144346,11 +145841,18 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_file?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_thumbnail?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_thumbnail_url?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_url?: ResolverInputTypes["order_by"] | undefined | null,
 	progress_aggregate?: ResolverInputTypes["utility_lineup_progress_aggregate_order_by"] | undefined | null,
 	public_requested_at?: ResolverInputTypes["order_by"] | undefined | null,
 	public_review_note?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
+	renders_aggregate?: ResolverInputTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null,
 	repairs_aggregate?: ResolverInputTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null,
 	side?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144411,6 +145913,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 ["utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns"]:utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns;
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
+	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -144442,6 +145945,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -144471,6 +145978,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate stddev on columns */
 ["utility_lineups_stddev_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144493,6 +146001,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144505,6 +146014,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by stddev() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144525,6 +146035,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144536,6 +146047,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate stddev_pop on columns */
 ["utility_lineups_stddev_pop_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144558,6 +146070,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144570,6 +146083,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by stddev_pop() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_pop_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144590,6 +146104,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144601,6 +146116,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate stddev_samp on columns */
 ["utility_lineups_stddev_samp_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144623,6 +146139,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144635,6 +146152,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by stddev_samp() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_samp_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144655,6 +146173,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144673,6 +146192,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
+	aim_tolerance?: ResolverInputTypes["float8"] | undefined | null,
 	archived_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -144705,6 +146225,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -144734,6 +146258,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate sum on columns */
 ["utility_lineups_sum_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144756,6 +146281,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144768,6 +146294,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by sum() on columns of table "utility_lineups" */
 ["utility_lineups_sum_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144788,6 +146315,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144819,6 +146347,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate var_pop on columns */
 ["utility_lineups_var_pop_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144841,6 +146370,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144853,6 +146383,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by var_pop() on columns of table "utility_lineups" */
 ["utility_lineups_var_pop_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144873,6 +146404,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144884,6 +146416,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate var_samp on columns */
 ["utility_lineups_var_samp_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144906,6 +146439,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144918,6 +146452,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by var_samp() on columns of table "utility_lineups" */
 ["utility_lineups_var_samp_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144938,6 +146473,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -144949,6 +146485,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 };
 	/** aggregate variance on columns */
 ["utility_lineups_variance_fields"]: AliasType<{
+	aim_tolerance?:boolean | `@${string}`,
 	author_steam_id?:boolean | `@${string}`,
 	downvotes?:boolean | `@${string}`,
 	eye_z?:boolean | `@${string}`,
@@ -144971,6 +146508,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?:boolean | `@${string}`,
 	practice_players?:boolean | `@${string}`,
 	practice_successes?:boolean | `@${string}`,
+	preview_duration_ms?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	trajectory_size?:boolean | `@${string}`,
@@ -144983,6 +146521,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 }>;
 	/** order by variance() on columns of table "utility_lineups" */
 ["utility_lineups_variance_order_by"]: {
+	aim_tolerance?: ResolverInputTypes["order_by"] | undefined | null,
 	author_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	downvotes?: ResolverInputTypes["order_by"] | undefined | null,
 	eye_z?: ResolverInputTypes["order_by"] | undefined | null,
@@ -145003,6 +146542,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	practice_attempts?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_players?: ResolverInputTypes["order_by"] | undefined | null,
 	practice_successes?: ResolverInputTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	trajectory_size?: ResolverInputTypes["order_by"] | undefined | null,
@@ -146301,6 +147841,7 @@ invites_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "is_utility_practice_member" */
 	is_member?:boolean | `@${string}`,
 	is_open?:boolean | `@${string}`,
+	is_render?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	/** An object relationship */
@@ -146415,6 +147956,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	invites_aggregate?: ResolverInputTypes["utility_practice_invites_aggregate_bool_exp"] | undefined | null,
 	is_member?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_open?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_render?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
@@ -146449,6 +147991,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	invite_code?: string | undefined | null,
 	invites?: ResolverInputTypes["utility_practice_invites_arr_rel_insert_input"] | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
@@ -146588,6 +148131,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	invites_aggregate?: ResolverInputTypes["utility_practice_invites_aggregate_order_by"] | undefined | null,
 	is_member?: ResolverInputTypes["order_by"] | undefined | null,
 	is_open?: ResolverInputTypes["order_by"] | undefined | null,
+	is_render?: ResolverInputTypes["order_by"] | undefined | null,
 	last_occupied_at?: ResolverInputTypes["order_by"] | undefined | null,
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
@@ -146622,6 +148166,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -146677,6 +148222,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -157167,6 +158713,20 @@ export type ModelTypes = {
 		dry_run: boolean,
 	lineups: number,
 	origin_source: string
+};
+	["UtilityRemineOutput"]: {
+		demos: number,
+	done: boolean,
+	throws: number
+};
+	["UtilityRenderClearOutput"]: {
+		cleared: number
+};
+	["UtilityRenderQueueOutput"]: {
+		reason?: string | undefined | null,
+	render_id?: ModelTypes["uuid"] | undefined | null,
+	status: string,
+	success: boolean
 };
 	["UtilitySightlineOutput"]: {
 		degraded?: boolean | undefined | null,
@@ -169615,6 +171175,7 @@ export type ModelTypes = {
 	/** An object relationship */
 	plugin?: ModelTypes["game_plugins"] | undefined | null,
 	plugin_slug: string,
+	previous_version?: string | undefined | null,
 	runtime: ModelTypes["e_plugin_runtimes_enum"],
 	source: string,
 	status: ModelTypes["e_game_plugin_install_statuses_enum"],
@@ -169684,6 +171245,7 @@ export type ModelTypes = {
 	path?: ModelTypes["String_comparison_exp"] | undefined | null,
 	plugin?: ModelTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: ModelTypes["String_comparison_exp"] | undefined | null,
+	previous_version?: ModelTypes["String_comparison_exp"] | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
 	source?: ModelTypes["String_comparison_exp"] | undefined | null,
 	status?: ModelTypes["e_game_plugin_install_statuses_enum_comparison_exp"] | undefined | null,
@@ -169705,6 +171267,7 @@ export type ModelTypes = {
 	path?: string | undefined | null,
 	plugin?: ModelTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: ModelTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -169721,6 +171284,7 @@ export type ModelTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -169735,6 +171299,7 @@ export type ModelTypes = {
 	last_error?: ModelTypes["order_by"] | undefined | null,
 	path?: ModelTypes["order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	previous_version?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	updated_at?: ModelTypes["order_by"] | undefined | null,
 	version?: ModelTypes["order_by"] | undefined | null
@@ -169749,6 +171314,7 @@ export type ModelTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: ModelTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -169763,6 +171329,7 @@ export type ModelTypes = {
 	last_error?: ModelTypes["order_by"] | undefined | null,
 	path?: ModelTypes["order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	previous_version?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	updated_at?: ModelTypes["order_by"] | undefined | null,
 	version?: ModelTypes["order_by"] | undefined | null
@@ -169794,6 +171361,7 @@ export type ModelTypes = {
 	path?: ModelTypes["order_by"] | undefined | null,
 	plugin?: ModelTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: ModelTypes["order_by"] | undefined | null,
+	previous_version?: ModelTypes["order_by"] | undefined | null,
 	runtime?: ModelTypes["order_by"] | undefined | null,
 	source?: ModelTypes["order_by"] | undefined | null,
 	status?: ModelTypes["order_by"] | undefined | null,
@@ -169819,6 +171387,7 @@ export type ModelTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: ModelTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -169844,6 +171413,7 @@ export type ModelTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: ModelTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: ModelTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -176552,10 +178122,12 @@ export type ModelTypes = {
 	match_map: ModelTypes["match_maps"],
 	match_map_id: ModelTypes["uuid"],
 	metadata_parsed_at?: ModelTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?: string | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ModelTypes["jsonb"] | undefined | null,
 	round_ticks?: ModelTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -176635,7 +178207,9 @@ export type ModelTypes = {
 	/** aggregate avg on columns */
 ["match_map_demos_avg_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -176643,7 +178217,9 @@ export type ModelTypes = {
 	/** order by avg() on columns of table "match_map_demos" */
 ["match_map_demos_avg_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -176674,9 +178250,11 @@ export type ModelTypes = {
 	match_map?: ModelTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	parser_version?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	playback_file?: ModelTypes["String_comparison_exp"] | undefined | null,
 	playback_size?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	playback_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	playback_version?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	players?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	round_ticks?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
 	size?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -176708,7 +178286,9 @@ export type ModelTypes = {
 };
 	/** input type for incrementing numeric columns in table "match_map_demos" */
 ["match_map_demos_inc_input"]: {
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -176731,8 +178311,10 @@ export type ModelTypes = {
 	match_map?: ModelTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ModelTypes["jsonb"] | undefined | null,
 	round_ticks?: ModelTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -176753,10 +178335,12 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?: string | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null,
@@ -176773,8 +178357,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["order_by"] | undefined | null,
 	match_map_id?: ModelTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_file?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null,
@@ -176793,10 +178379,12 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?: string | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null,
@@ -176813,8 +178401,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["order_by"] | undefined | null,
 	match_map_id?: ModelTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_file?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null,
@@ -176859,9 +178449,11 @@ export type ModelTypes = {
 	match_map?: ModelTypes["match_maps_order_by"] | undefined | null,
 	match_map_id?: ModelTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_file?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
 	playback_url?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	players?: ModelTypes["order_by"] | undefined | null,
 	round_ticks?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
@@ -176896,8 +178488,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ModelTypes["jsonb"] | undefined | null,
 	round_ticks?: ModelTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -176908,7 +178502,9 @@ export type ModelTypes = {
 	/** aggregate stddev on columns */
 ["match_map_demos_stddev_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -176916,7 +178512,9 @@ export type ModelTypes = {
 	/** order by stddev() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -176924,7 +178522,9 @@ export type ModelTypes = {
 	/** aggregate stddev_pop on columns */
 ["match_map_demos_stddev_pop_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -176932,7 +178532,9 @@ export type ModelTypes = {
 	/** order by stddev_pop() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_pop_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -176940,7 +178542,9 @@ export type ModelTypes = {
 	/** aggregate stddev_samp on columns */
 ["match_map_demos_stddev_samp_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -176948,7 +178552,9 @@ export type ModelTypes = {
 	/** order by stddev_samp() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_samp_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -176974,8 +178580,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	match_map_id?: ModelTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: ModelTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: ModelTypes["jsonb"] | undefined | null,
 	round_ticks?: ModelTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -176986,7 +178594,9 @@ export type ModelTypes = {
 	/** aggregate sum on columns */
 ["match_map_demos_sum_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -176994,7 +178604,9 @@ export type ModelTypes = {
 	/** order by sum() on columns of table "match_map_demos" */
 ["match_map_demos_sum_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -177021,7 +178633,9 @@ export type ModelTypes = {
 	/** aggregate var_pop on columns */
 ["match_map_demos_var_pop_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -177029,7 +178643,9 @@ export type ModelTypes = {
 	/** order by var_pop() on columns of table "match_map_demos" */
 ["match_map_demos_var_pop_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -177037,7 +178653,9 @@ export type ModelTypes = {
 	/** aggregate var_samp on columns */
 ["match_map_demos_var_samp_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -177045,7 +178663,9 @@ export type ModelTypes = {
 	/** order by var_samp() on columns of table "match_map_demos" */
 ["match_map_demos_var_samp_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -177053,7 +178673,9 @@ export type ModelTypes = {
 	/** aggregate variance on columns */
 ["match_map_demos_variance_fields"]: {
 		duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -177061,7 +178683,9 @@ export type ModelTypes = {
 	/** order by variance() on columns of table "match_map_demos" */
 ["match_map_demos_variance_order_by"]: {
 	duration_seconds?: ModelTypes["order_by"] | undefined | null,
+	parser_version?: ModelTypes["order_by"] | undefined | null,
 	playback_size?: ModelTypes["order_by"] | undefined | null,
+	playback_version?: ModelTypes["order_by"] | undefined | null,
 	size?: ModelTypes["order_by"] | undefined | null,
 	tick_rate?: ModelTypes["order_by"] | undefined | null,
 	total_ticks?: ModelTypes["order_by"] | undefined | null
@@ -180544,12 +182168,16 @@ export type ModelTypes = {
 	cancelReparseAllDemos?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** cancelScrimRequest */
 	cancelScrimRequest?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Cancel an in-flight lineup preview render */
+	cancelUtilityLineupRender?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** checkIntoMatch */
 	checkIntoMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete terminal-state clip_render_jobs rows for a single match_map batch. */
 	clearClipRenderBatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete all terminal-state clip_render_jobs rows platform-wide. */
 	clearFinishedClipRenders?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Drop every finished row from the lineup preview queue */
+	clearFinishedUtilityLineupRenders?: ModelTypes["UtilityRenderClearOutput"] | undefined | null,
 	clearPendingMatchImport?: ModelTypes["PendingMatchImportActionOutput"] | undefined | null,
 	/** execute VOLATILE function "clone_league_season" which returns "league_seasons" */
 	clone_league_season: Array<ModelTypes["league_seasons"]>,
@@ -181292,6 +182920,10 @@ export type ModelTypes = {
 	delete_utility_lineup_progress?: ModelTypes["utility_lineup_progress_mutation_response"] | undefined | null,
 	/** delete single row from the table: "utility_lineup_progress" */
 	delete_utility_lineup_progress_by_pk?: ModelTypes["utility_lineup_progress"] | undefined | null,
+	/** delete data from the table: "utility_lineup_renders" */
+	delete_utility_lineup_renders?: ModelTypes["utility_lineup_renders_mutation_response"] | undefined | null,
+	/** delete single row from the table: "utility_lineup_renders" */
+	delete_utility_lineup_renders_by_pk?: ModelTypes["utility_lineup_renders"] | undefined | null,
 	/** delete data from the table: "utility_lineup_repairs" */
 	delete_utility_lineup_repairs?: ModelTypes["utility_lineup_repairs_mutation_response"] | undefined | null,
 	/** delete single row from the table: "utility_lineup_repairs" */
@@ -182066,6 +183698,10 @@ export type ModelTypes = {
 	insert_utility_lineup_progress?: ModelTypes["utility_lineup_progress_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "utility_lineup_progress" */
 	insert_utility_lineup_progress_one?: ModelTypes["utility_lineup_progress"] | undefined | null,
+	/** insert data into the table: "utility_lineup_renders" */
+	insert_utility_lineup_renders?: ModelTypes["utility_lineup_renders_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "utility_lineup_renders" */
+	insert_utility_lineup_renders_one?: ModelTypes["utility_lineup_renders"] | undefined | null,
 	/** insert data into the table: "utility_lineup_repairs" */
 	insert_utility_lineup_repairs?: ModelTypes["utility_lineup_repairs_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "utility_lineup_repairs" */
@@ -182174,6 +183810,8 @@ export type ModelTypes = {
 	refreshFaceitRank?: ModelTypes["SuccessOutput"] | undefined | null,
 	refreshLiveHud?: ModelTypes["SuccessOutput"] | undefined | null,
 	registerName?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Re-mine one batch of demos after a miner change */
+	remineUtilityMeta?: ModelTypes["UtilityRemineOutput"] | undefined | null,
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Remove a friends-role presence bot account */
@@ -182182,6 +183820,8 @@ export type ModelTypes = {
 	remove_league_team_from_season: Array<ModelTypes["league_team_seasons"]>,
 	/** Rename file or directory on game server */
 	renameServerItem?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Re-film a public lineup's preview clip */
+	renderUtilityLineupPreview?: ModelTypes["UtilityRenderQueueOutput"] | undefined | null,
 	/** execute VOLATILE function "reorder_league_divisions" which returns "league_divisions" */
 	reorder_league_divisions: Array<ModelTypes["league_divisions"]>,
 	/** Re-solve a lineup a drift scan says the map moved */
@@ -182231,6 +183871,8 @@ export type ModelTypes = {
 	/** sendScrimRequest */
 	sendScrimRequest?: ModelTypes["SuccessOutput"] | undefined | null,
 	setGameNodeSchedulingState?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Track new releases of a game plugin, or pin it where it is */
+	setGamePluginAutoUpdate?: ModelTypes["SuccessOutput"] | undefined | null,
 	setHudMode?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** setMapWinner */
 	setMapWinner?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -183355,6 +184997,12 @@ export type ModelTypes = {
 	update_utility_lineup_progress_by_pk?: ModelTypes["utility_lineup_progress"] | undefined | null,
 	/** update multiples rows of table: "utility_lineup_progress" */
 	update_utility_lineup_progress_many?: Array<ModelTypes["utility_lineup_progress_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "utility_lineup_renders" */
+	update_utility_lineup_renders?: ModelTypes["utility_lineup_renders_mutation_response"] | undefined | null,
+	/** update single row of the table: "utility_lineup_renders" */
+	update_utility_lineup_renders_by_pk?: ModelTypes["utility_lineup_renders"] | undefined | null,
+	/** update multiples rows of table: "utility_lineup_renders" */
+	update_utility_lineup_renders_many?: Array<ModelTypes["utility_lineup_renders_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "utility_lineup_repairs" */
 	update_utility_lineup_repairs?: ModelTypes["utility_lineup_repairs_mutation_response"] | undefined | null,
 	/** update single row of the table: "utility_lineup_repairs" */
@@ -199384,6 +201032,12 @@ export type ModelTypes = {
 	utility_lineup_progress_aggregate: ModelTypes["utility_lineup_progress_aggregate"],
 	/** fetch data from the table: "utility_lineup_progress" using primary key columns */
 	utility_lineup_progress_by_pk?: ModelTypes["utility_lineup_progress"] | undefined | null,
+	/** fetch data from the table: "utility_lineup_renders" */
+	utility_lineup_renders: Array<ModelTypes["utility_lineup_renders"]>,
+	/** fetch aggregated fields from the table: "utility_lineup_renders" */
+	utility_lineup_renders_aggregate: ModelTypes["utility_lineup_renders_aggregate"],
+	/** fetch data from the table: "utility_lineup_renders" using primary key columns */
+	utility_lineup_renders_by_pk?: ModelTypes["utility_lineup_renders"] | undefined | null,
 	/** fetch data from the table: "utility_lineup_repairs" */
 	utility_lineup_repairs: Array<ModelTypes["utility_lineup_repairs"]>,
 	/** fetch aggregated fields from the table: "utility_lineup_repairs" */
@@ -202516,6 +204170,14 @@ export type ModelTypes = {
 	utility_lineup_progress_by_pk?: ModelTypes["utility_lineup_progress"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "utility_lineup_progress" */
 	utility_lineup_progress_stream: Array<ModelTypes["utility_lineup_progress"]>,
+	/** fetch data from the table: "utility_lineup_renders" */
+	utility_lineup_renders: Array<ModelTypes["utility_lineup_renders"]>,
+	/** fetch aggregated fields from the table: "utility_lineup_renders" */
+	utility_lineup_renders_aggregate: ModelTypes["utility_lineup_renders_aggregate"],
+	/** fetch data from the table: "utility_lineup_renders" using primary key columns */
+	utility_lineup_renders_by_pk?: ModelTypes["utility_lineup_renders"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "utility_lineup_renders" */
+	utility_lineup_renders_stream: Array<ModelTypes["utility_lineup_renders"]>,
 	/** fetch data from the table: "utility_lineup_repairs" */
 	utility_lineup_repairs: Array<ModelTypes["utility_lineup_repairs"]>,
 	/** fetch aggregated fields from the table: "utility_lineup_repairs" */
@@ -211893,6 +213555,490 @@ export type ModelTypes = {
 	steam_id?: ModelTypes["order_by"] | undefined | null,
 	successes?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "utility_lineup_renders" */
+["utility_lineup_renders"]: {
+		created_at: ModelTypes["timestamptz"],
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	/** An object relationship */
+	game_server_node?: ModelTypes["game_server_nodes"] | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id: ModelTypes["uuid"],
+	k8s_job_name?: string | undefined | null,
+	last_status_at: ModelTypes["timestamptz"],
+	/** An object relationship */
+	lineup: ModelTypes["utility_lineups"],
+	map_name: string,
+	paused: boolean,
+	/** An object relationship */
+	practice_session?: ModelTypes["utility_practice_sessions"] | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	/** An object relationship */
+	requested_by?: ModelTypes["players"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	session_token: string,
+	skip_reason?: string | undefined | null,
+	sort_index: number,
+	spec: ModelTypes["jsonb"],
+	status: string,
+	status_history: ModelTypes["jsonb"],
+	utility_lineup_id: ModelTypes["uuid"],
+	utility_practice_session_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregated selection of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate"]: {
+		aggregate?: ModelTypes["utility_lineup_renders_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["utility_lineup_renders"]>
+};
+	["utility_lineup_renders_aggregate_bool_exp"]: {
+	bool_and?: ModelTypes["utility_lineup_renders_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: ModelTypes["utility_lineup_renders_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: ModelTypes["utility_lineup_renders_aggregate_bool_exp_count"] | undefined | null
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_and"]: {
+	arguments: ModelTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Boolean_comparison_exp"]
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_or"]: {
+	arguments: ModelTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Boolean_comparison_exp"]
+};
+	["utility_lineup_renders_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["utility_lineup_renders_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ModelTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_fields"]: {
+		avg?: ModelTypes["utility_lineup_renders_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["utility_lineup_renders_max_fields"] | undefined | null,
+	min?: ModelTypes["utility_lineup_renders_min_fields"] | undefined | null,
+	stddev?: ModelTypes["utility_lineup_renders_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["utility_lineup_renders_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["utility_lineup_renders_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["utility_lineup_renders_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["utility_lineup_renders_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["utility_lineup_renders_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["utility_lineup_renders_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_order_by"]: {
+	avg?: ModelTypes["utility_lineup_renders_avg_order_by"] | undefined | null,
+	count?: ModelTypes["order_by"] | undefined | null,
+	max?: ModelTypes["utility_lineup_renders_max_order_by"] | undefined | null,
+	min?: ModelTypes["utility_lineup_renders_min_order_by"] | undefined | null,
+	stddev?: ModelTypes["utility_lineup_renders_stddev_order_by"] | undefined | null,
+	stddev_pop?: ModelTypes["utility_lineup_renders_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ModelTypes["utility_lineup_renders_stddev_samp_order_by"] | undefined | null,
+	sum?: ModelTypes["utility_lineup_renders_sum_order_by"] | undefined | null,
+	var_pop?: ModelTypes["utility_lineup_renders_var_pop_order_by"] | undefined | null,
+	var_samp?: ModelTypes["utility_lineup_renders_var_samp_order_by"] | undefined | null,
+	variance?: ModelTypes["utility_lineup_renders_variance_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_append_input"]: {
+	spec?: ModelTypes["jsonb"] | undefined | null,
+	status_history?: ModelTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "utility_lineup_renders" */
+["utility_lineup_renders_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["utility_lineup_renders_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["utility_lineup_renders_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["utility_lineup_renders_avg_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by avg() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_avg_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "utility_lineup_renders". All fields are combined with a logical 'AND'. */
+["utility_lineup_renders_bool_exp"]: {
+	_and?: Array<ModelTypes["utility_lineup_renders_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["utility_lineup_renders_bool_exp"]> | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	duration_ms?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	error_message?: ModelTypes["String_comparison_exp"] | undefined | null,
+	game_server_node?: ModelTypes["game_server_nodes_bool_exp"] | undefined | null,
+	game_server_node_id?: ModelTypes["String_comparison_exp"] | undefined | null,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	k8s_job_name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	last_status_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	lineup?: ModelTypes["utility_lineups_bool_exp"] | undefined | null,
+	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	paused?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	practice_session?: ModelTypes["utility_practice_sessions_bool_exp"] | undefined | null,
+	progress?: ModelTypes["numeric_comparison_exp"] | undefined | null,
+	requested_by?: ModelTypes["players_bool_exp"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	session_token?: ModelTypes["String_comparison_exp"] | undefined | null,
+	skip_reason?: ModelTypes["String_comparison_exp"] | undefined | null,
+	sort_index?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	spec?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	status?: ModelTypes["String_comparison_exp"] | undefined | null,
+	status_history?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	utility_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["uuid_comparison_exp"] | undefined | null
+};
+	["utility_lineup_renders_constraint"]:utility_lineup_renders_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_lineup_renders_delete_at_path_input"]: {
+	spec?: Array<string> | undefined | null,
+	status_history?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_lineup_renders_delete_elem_input"]: {
+	spec?: number | undefined | null,
+	status_history?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_lineup_renders_delete_key_input"]: {
+	spec?: string | undefined | null,
+	status_history?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "utility_lineup_renders" */
+["utility_lineup_renders_inc_input"]: {
+	duration_ms?: number | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** input type for inserting data into table "utility_lineup_renders" */
+["utility_lineup_renders_insert_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node?: ModelTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ModelTypes["timestamptz"] | undefined | null,
+	lineup?: ModelTypes["utility_lineups_obj_rel_insert_input"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	practice_session?: ModelTypes["utility_practice_sessions_obj_rel_insert_input"] | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: ModelTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: ModelTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["utility_lineup_renders_max_fields"]: {
+		created_at?: ModelTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	status?: string | undefined | null,
+	utility_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_max_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	error_message?: ModelTypes["order_by"] | undefined | null,
+	game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	k8s_job_name?: ModelTypes["order_by"] | undefined | null,
+	last_status_at?: ModelTypes["order_by"] | undefined | null,
+	map_name?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	session_token?: ModelTypes["order_by"] | undefined | null,
+	skip_reason?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null,
+	status?: ModelTypes["order_by"] | undefined | null,
+	utility_lineup_id?: ModelTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["utility_lineup_renders_min_fields"]: {
+		created_at?: ModelTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	status?: string | undefined | null,
+	utility_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_min_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	error_message?: ModelTypes["order_by"] | undefined | null,
+	game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	k8s_job_name?: ModelTypes["order_by"] | undefined | null,
+	last_status_at?: ModelTypes["order_by"] | undefined | null,
+	map_name?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	session_token?: ModelTypes["order_by"] | undefined | null,
+	skip_reason?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null,
+	status?: ModelTypes["order_by"] | undefined | null,
+	utility_lineup_id?: ModelTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "utility_lineup_renders" */
+["utility_lineup_renders_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["utility_lineup_renders"]>
+};
+	/** on_conflict condition type for table "utility_lineup_renders" */
+["utility_lineup_renders_on_conflict"]: {
+	constraint: ModelTypes["utility_lineup_renders_constraint"],
+	update_columns: Array<ModelTypes["utility_lineup_renders_update_column"]>,
+	where?: ModelTypes["utility_lineup_renders_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "utility_lineup_renders". */
+["utility_lineup_renders_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined | null,
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	error_message?: ModelTypes["order_by"] | undefined | null,
+	game_server_node?: ModelTypes["game_server_nodes_order_by"] | undefined | null,
+	game_server_node_id?: ModelTypes["order_by"] | undefined | null,
+	id?: ModelTypes["order_by"] | undefined | null,
+	k8s_job_name?: ModelTypes["order_by"] | undefined | null,
+	last_status_at?: ModelTypes["order_by"] | undefined | null,
+	lineup?: ModelTypes["utility_lineups_order_by"] | undefined | null,
+	map_name?: ModelTypes["order_by"] | undefined | null,
+	paused?: ModelTypes["order_by"] | undefined | null,
+	practice_session?: ModelTypes["utility_practice_sessions_order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by?: ModelTypes["players_order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	session_token?: ModelTypes["order_by"] | undefined | null,
+	skip_reason?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null,
+	spec?: ModelTypes["order_by"] | undefined | null,
+	status?: ModelTypes["order_by"] | undefined | null,
+	status_history?: ModelTypes["order_by"] | undefined | null,
+	utility_lineup_id?: ModelTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: utility_lineup_renders */
+["utility_lineup_renders_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_prepend_input"]: {
+	spec?: ModelTypes["jsonb"] | undefined | null,
+	status_history?: ModelTypes["jsonb"] | undefined | null
+};
+	["utility_lineup_renders_select_column"]:utility_lineup_renders_select_column;
+	["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"]:utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns;
+	["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"]:utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "utility_lineup_renders" */
+["utility_lineup_renders_set_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: ModelTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: ModelTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["utility_lineup_renders_stddev_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by stddev() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["utility_lineup_renders_stddev_pop_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_pop_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["utility_lineup_renders_stddev_samp_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_samp_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "utility_lineup_renders" */
+["utility_lineup_renders_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["utility_lineup_renders_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["utility_lineup_renders_stream_cursor_value_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: ModelTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: ModelTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: ModelTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: ModelTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["utility_lineup_renders_sum_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: ModelTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by sum() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_sum_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	["utility_lineup_renders_update_column"]:utility_lineup_renders_update_column;
+	["utility_lineup_renders_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["utility_lineup_renders_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["utility_lineup_renders_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["utility_lineup_renders_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["utility_lineup_renders_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["utility_lineup_renders_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["utility_lineup_renders_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["utility_lineup_renders_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["utility_lineup_renders_var_pop_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_pop_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["utility_lineup_renders_var_samp_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_samp_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["utility_lineup_renders_variance_fields"]: {
+		duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by variance() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_variance_order_by"]: {
+	duration_ms?: ModelTypes["order_by"] | undefined | null,
+	progress?: ModelTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: ModelTypes["order_by"] | undefined | null,
+	sort_index?: ModelTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "utility_lineup_repairs" */
 ["utility_lineup_repairs"]: {
 		created_at: ModelTypes["timestamptz"],
@@ -212555,7 +214701,8 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: {
-		archived_at?: ModelTypes["timestamptz"] | undefined | null,
+		aim_tolerance: ModelTypes["float8"],
+	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	author: ModelTypes["players"],
 	author_steam_id: ModelTypes["bigint"],
@@ -212609,6 +214756,14 @@ export type ModelTypes = {
 	practice_attempts: number,
 	practice_players: number,
 	practice_successes: number,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?: string | undefined | null,
 	/** An array relationship */
 	progress: Array<ModelTypes["utility_lineup_progress"]>,
 	/** An aggregate relationship */
@@ -212617,6 +214772,10 @@ export type ModelTypes = {
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
+	/** An array relationship */
+	renders: Array<ModelTypes["utility_lineup_renders"]>,
+	/** An aggregate relationship */
+	renders_aggregate: ModelTypes["utility_lineup_renders_aggregate"],
 	/** An array relationship */
 	repairs: Array<ModelTypes["utility_lineup_repairs"]>,
 	/** An aggregate relationship */
@@ -212786,7 +214945,8 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["utility_lineups_avg_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -212808,6 +214968,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -212819,6 +214980,7 @@ export type ModelTypes = {
 };
 	/** order by avg() on columns of table "utility_lineups" */
 ["utility_lineups_avg_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -212839,6 +215001,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -212853,6 +215016,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["utility_lineups_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["utility_lineups_bool_exp"]> | undefined | null,
+	aim_tolerance?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: ModelTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
@@ -212896,12 +215060,20 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	practice_players?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	practice_successes?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	preview_duration_ms?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	preview_file?: ModelTypes["String_comparison_exp"] | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_thumbnail?: ModelTypes["String_comparison_exp"] | undefined | null,
+	preview_thumbnail_url?: ModelTypes["String_comparison_exp"] | undefined | null,
+	preview_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	progress?: ModelTypes["utility_lineup_progress_bool_exp"] | undefined | null,
 	progress_aggregate?: ModelTypes["utility_lineup_progress_aggregate_bool_exp"] | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	public_review_note?: ModelTypes["String_comparison_exp"] | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	renders?: ModelTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	renders_aggregate?: ModelTypes["utility_lineup_renders_aggregate_bool_exp"] | undefined | null,
 	repairs?: ModelTypes["utility_lineup_repairs_bool_exp"] | undefined | null,
 	repairs_aggregate?: ModelTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null,
 	side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined | null,
@@ -212947,6 +215119,7 @@ export type ModelTypes = {
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
 ["utility_lineups_inc_input"]: {
+	aim_tolerance?: ModelTypes["float8"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: ModelTypes["float8"] | undefined | null,
@@ -212967,6 +215140,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -212978,6 +215152,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
+	aim_tolerance?: ModelTypes["float8"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -213013,11 +215188,16 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	progress?: ModelTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
+	renders?: ModelTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null,
 	repairs?: ModelTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null,
 	side?: ModelTypes["e_sides_enum"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
@@ -213048,7 +215228,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["utility_lineups_max_fields"]: {
-		archived_at?: ModelTypes["timestamptz"] | undefined | null,
+		aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -213082,6 +215263,14 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -213105,6 +215294,7 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "utility_lineups" */
 ["utility_lineups_max_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	archived_at?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	confidence?: ModelTypes["order_by"] | undefined | null,
@@ -213135,6 +215325,10 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
+	preview_file?: ModelTypes["order_by"] | undefined | null,
+	preview_rendered_at?: ModelTypes["order_by"] | undefined | null,
+	preview_thumbnail?: ModelTypes["order_by"] | undefined | null,
 	public_requested_at?: ModelTypes["order_by"] | undefined | null,
 	public_review_note?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ModelTypes["order_by"] | undefined | null,
@@ -213158,7 +215352,8 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["utility_lineups_min_fields"]: {
-		archived_at?: ModelTypes["timestamptz"] | undefined | null,
+		aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -213192,6 +215387,14 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -213215,6 +215418,7 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "utility_lineups" */
 ["utility_lineups_min_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	archived_at?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	confidence?: ModelTypes["order_by"] | undefined | null,
@@ -213245,6 +215449,10 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
+	preview_file?: ModelTypes["order_by"] | undefined | null,
+	preview_rendered_at?: ModelTypes["order_by"] | undefined | null,
+	preview_thumbnail?: ModelTypes["order_by"] | undefined | null,
 	public_requested_at?: ModelTypes["order_by"] | undefined | null,
 	public_review_note?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ModelTypes["order_by"] | undefined | null,
@@ -213287,6 +215495,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	archived_at?: ModelTypes["order_by"] | undefined | null,
 	author?: ModelTypes["players_order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -213328,11 +215537,18 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
+	preview_file?: ModelTypes["order_by"] | undefined | null,
+	preview_rendered_at?: ModelTypes["order_by"] | undefined | null,
+	preview_thumbnail?: ModelTypes["order_by"] | undefined | null,
+	preview_thumbnail_url?: ModelTypes["order_by"] | undefined | null,
+	preview_url?: ModelTypes["order_by"] | undefined | null,
 	progress_aggregate?: ModelTypes["utility_lineup_progress_aggregate_order_by"] | undefined | null,
 	public_requested_at?: ModelTypes["order_by"] | undefined | null,
 	public_review_note?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
+	renders_aggregate?: ModelTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null,
 	repairs_aggregate?: ModelTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null,
 	side?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
@@ -213382,6 +215598,7 @@ export type ModelTypes = {
 	["utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns"]:utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns;
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
+	aim_tolerance?: ModelTypes["float8"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -213413,6 +215630,10 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -213442,7 +215663,8 @@ export type ModelTypes = {
 };
 	/** aggregate stddev on columns */
 ["utility_lineups_stddev_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -213464,6 +215686,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213475,6 +215698,7 @@ export type ModelTypes = {
 };
 	/** order by stddev() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213495,6 +215719,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -213506,7 +215731,8 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_pop on columns */
 ["utility_lineups_stddev_pop_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -213528,6 +215754,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213539,6 +215766,7 @@ export type ModelTypes = {
 };
 	/** order by stddev_pop() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_pop_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213559,6 +215787,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -213570,7 +215799,8 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_samp on columns */
 ["utility_lineups_stddev_samp_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -213592,6 +215822,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213603,6 +215834,7 @@ export type ModelTypes = {
 };
 	/** order by stddev_samp() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_samp_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213623,6 +215855,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -213641,6 +215874,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
+	aim_tolerance?: ModelTypes["float8"] | undefined | null,
 	archived_at?: ModelTypes["timestamptz"] | undefined | null,
 	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -213673,6 +215907,10 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: ModelTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -213702,7 +215940,8 @@ export type ModelTypes = {
 };
 	/** aggregate sum on columns */
 ["utility_lineups_sum_fields"]: {
-		author_steam_id?: ModelTypes["bigint"] | undefined | null,
+		aim_tolerance?: ModelTypes["float8"] | undefined | null,
+	author_steam_id?: ModelTypes["bigint"] | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: ModelTypes["float8"] | undefined | null,
 	favorites?: number | undefined | null,
@@ -213724,6 +215963,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213735,6 +215975,7 @@ export type ModelTypes = {
 };
 	/** order by sum() on columns of table "utility_lineups" */
 ["utility_lineups_sum_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213755,6 +215996,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -213785,7 +216027,8 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["utility_lineups_var_pop_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -213807,6 +216050,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213818,6 +216062,7 @@ export type ModelTypes = {
 };
 	/** order by var_pop() on columns of table "utility_lineups" */
 ["utility_lineups_var_pop_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213838,6 +216083,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -213849,7 +216095,8 @@ export type ModelTypes = {
 };
 	/** aggregate var_samp on columns */
 ["utility_lineups_var_samp_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -213871,6 +216118,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213882,6 +216130,7 @@ export type ModelTypes = {
 };
 	/** order by var_samp() on columns of table "utility_lineups" */
 ["utility_lineups_var_samp_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213902,6 +216151,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -213913,7 +216163,8 @@ export type ModelTypes = {
 };
 	/** aggregate variance on columns */
 ["utility_lineups_variance_fields"]: {
-		author_steam_id?: number | undefined | null,
+		aim_tolerance?: number | undefined | null,
+	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
 	favorites?: number | undefined | null,
@@ -213935,6 +216186,7 @@ export type ModelTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -213946,6 +216198,7 @@ export type ModelTypes = {
 };
 	/** order by variance() on columns of table "utility_lineups" */
 ["utility_lineups_variance_order_by"]: {
+	aim_tolerance?: ModelTypes["order_by"] | undefined | null,
 	author_steam_id?: ModelTypes["order_by"] | undefined | null,
 	downvotes?: ModelTypes["order_by"] | undefined | null,
 	eye_z?: ModelTypes["order_by"] | undefined | null,
@@ -213966,6 +216219,7 @@ export type ModelTypes = {
 	practice_attempts?: ModelTypes["order_by"] | undefined | null,
 	practice_players?: ModelTypes["order_by"] | undefined | null,
 	practice_successes?: ModelTypes["order_by"] | undefined | null,
+	preview_duration_ms?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	trajectory_size?: ModelTypes["order_by"] | undefined | null,
@@ -215180,6 +217434,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "is_utility_practice_member" */
 	is_member?: boolean | undefined | null,
 	is_open: boolean,
+	is_render: boolean,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name: string,
 	/** An object relationship */
@@ -215290,6 +217545,7 @@ export type ModelTypes = {
 	invites_aggregate?: ModelTypes["utility_practice_invites_aggregate_bool_exp"] | undefined | null,
 	is_member?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_open?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	is_render?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	match?: ModelTypes["matches_bool_exp"] | undefined | null,
@@ -215323,6 +217579,7 @@ export type ModelTypes = {
 	invite_code?: string | undefined | null,
 	invites?: ModelTypes["utility_practice_invites_arr_rel_insert_input"] | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined | null,
@@ -215459,6 +217716,7 @@ export type ModelTypes = {
 	invites_aggregate?: ModelTypes["utility_practice_invites_aggregate_order_by"] | undefined | null,
 	is_member?: ModelTypes["order_by"] | undefined | null,
 	is_open?: ModelTypes["order_by"] | undefined | null,
+	is_render?: ModelTypes["order_by"] | undefined | null,
 	last_occupied_at?: ModelTypes["order_by"] | undefined | null,
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match?: ModelTypes["matches_order_by"] | undefined | null,
@@ -215490,6 +217748,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
@@ -215542,6 +217801,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
@@ -225624,6 +227884,23 @@ export type GraphQLTypes = {
 	dry_run: boolean,
 	lineups: number,
 	origin_source: string
+};
+	["UtilityRemineOutput"]: {
+	__typename: "UtilityRemineOutput",
+	demos: number,
+	done: boolean,
+	throws: number
+};
+	["UtilityRenderClearOutput"]: {
+	__typename: "UtilityRenderClearOutput",
+	cleared: number
+};
+	["UtilityRenderQueueOutput"]: {
+	__typename: "UtilityRenderQueueOutput",
+	reason?: string | undefined | null,
+	render_id?: GraphQLTypes["uuid"] | undefined | null,
+	status: string,
+	success: boolean
 };
 	["UtilitySightlineOutput"]: {
 	__typename: "UtilitySightlineOutput",
@@ -239001,6 +241278,7 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	plugin?: GraphQLTypes["game_plugins"] | undefined | null,
 	plugin_slug: string,
+	previous_version?: string | undefined | null,
 	runtime: GraphQLTypes["e_plugin_runtimes_enum"],
 	source: string,
 	status: GraphQLTypes["e_game_plugin_install_statuses_enum"],
@@ -239072,6 +241350,7 @@ export type GraphQLTypes = {
 	path?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_bool_exp"] | undefined | null,
 	plugin_slug?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	previous_version?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum_comparison_exp"] | undefined | null,
 	source?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	status?: GraphQLTypes["e_game_plugin_install_statuses_enum_comparison_exp"] | undefined | null,
@@ -239094,6 +241373,7 @@ export type GraphQLTypes = {
 	path?: string | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_obj_rel_insert_input"] | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: GraphQLTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -239111,6 +241391,7 @@ export type GraphQLTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -239125,6 +241406,7 @@ export type GraphQLTypes = {
 	last_error?: GraphQLTypes["order_by"] | undefined | null,
 	path?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	previous_version?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	updated_at?: GraphQLTypes["order_by"] | undefined | null,
 	version?: GraphQLTypes["order_by"] | undefined | null
@@ -239140,6 +241422,7 @@ export type GraphQLTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	source?: string | undefined | null,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	version?: string | undefined | null
@@ -239154,6 +241437,7 @@ export type GraphQLTypes = {
 	last_error?: GraphQLTypes["order_by"] | undefined | null,
 	path?: GraphQLTypes["order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	previous_version?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	updated_at?: GraphQLTypes["order_by"] | undefined | null,
 	version?: GraphQLTypes["order_by"] | undefined | null
@@ -239186,6 +241470,7 @@ export type GraphQLTypes = {
 	path?: GraphQLTypes["order_by"] | undefined | null,
 	plugin?: GraphQLTypes["game_plugins_order_by"] | undefined | null,
 	plugin_slug?: GraphQLTypes["order_by"] | undefined | null,
+	previous_version?: GraphQLTypes["order_by"] | undefined | null,
 	runtime?: GraphQLTypes["order_by"] | undefined | null,
 	source?: GraphQLTypes["order_by"] | undefined | null,
 	status?: GraphQLTypes["order_by"] | undefined | null,
@@ -239214,6 +241499,7 @@ export type GraphQLTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: GraphQLTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -239239,6 +241525,7 @@ export type GraphQLTypes = {
 	last_error?: string | undefined | null,
 	path?: string | undefined | null,
 	plugin_slug?: string | undefined | null,
+	previous_version?: string | undefined | null,
 	runtime?: GraphQLTypes["e_plugin_runtimes_enum"] | undefined | null,
 	source?: string | undefined | null,
 	status?: GraphQLTypes["e_game_plugin_install_statuses_enum"] | undefined | null,
@@ -246289,10 +248576,12 @@ export type GraphQLTypes = {
 	match_map: GraphQLTypes["match_maps"],
 	match_map_id: GraphQLTypes["uuid"],
 	metadata_parsed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?: string | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: GraphQLTypes["jsonb"] | undefined | null,
 	round_ticks?: GraphQLTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -246375,7 +248664,9 @@ export type GraphQLTypes = {
 ["match_map_demos_avg_fields"]: {
 	__typename: "match_map_demos_avg_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246383,7 +248674,9 @@ export type GraphQLTypes = {
 	/** order by avg() on columns of table "match_map_demos" */
 ["match_map_demos_avg_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246414,9 +248707,11 @@ export type GraphQLTypes = {
 	match_map?: GraphQLTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	parser_version?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	playback_file?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	playback_size?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	playback_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	playback_version?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	players?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	round_ticks?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
 	size?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -246449,7 +248744,9 @@ export type GraphQLTypes = {
 };
 	/** input type for incrementing numeric columns in table "match_map_demos" */
 ["match_map_demos_inc_input"]: {
-		playback_size?: number | undefined | null,
+		parser_version?: number | undefined | null,
+	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246472,8 +248769,10 @@ export type GraphQLTypes = {
 	match_map?: GraphQLTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: GraphQLTypes["jsonb"] | undefined | null,
 	round_ticks?: GraphQLTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -246495,10 +248794,12 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?: string | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null,
@@ -246515,8 +248816,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_id?: GraphQLTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_file?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null,
@@ -246536,10 +248839,12 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
 	/** A computed field, executes function "demo_playback_url" */
 	playback_url?: string | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null,
@@ -246556,8 +248861,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
 	match_map_id?: GraphQLTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_file?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null,
@@ -246603,9 +248910,11 @@ export type GraphQLTypes = {
 	match_map?: GraphQLTypes["match_maps_order_by"] | undefined | null,
 	match_map_id?: GraphQLTypes["order_by"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_file?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
 	playback_url?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	players?: GraphQLTypes["order_by"] | undefined | null,
 	round_ticks?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
@@ -246643,8 +248952,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: GraphQLTypes["jsonb"] | undefined | null,
 	round_ticks?: GraphQLTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -246656,7 +248967,9 @@ export type GraphQLTypes = {
 ["match_map_demos_stddev_fields"]: {
 	__typename: "match_map_demos_stddev_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246664,7 +248977,9 @@ export type GraphQLTypes = {
 	/** order by stddev() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246673,7 +248988,9 @@ export type GraphQLTypes = {
 ["match_map_demos_stddev_pop_fields"]: {
 	__typename: "match_map_demos_stddev_pop_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246681,7 +248998,9 @@ export type GraphQLTypes = {
 	/** order by stddev_pop() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_pop_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246690,7 +249009,9 @@ export type GraphQLTypes = {
 ["match_map_demos_stddev_samp_fields"]: {
 	__typename: "match_map_demos_stddev_samp_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246698,7 +249019,9 @@ export type GraphQLTypes = {
 	/** order by stddev_samp() on columns of table "match_map_demos" */
 ["match_map_demos_stddev_samp_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246724,8 +249047,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	metadata_parsed_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_file?: string | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	players?: GraphQLTypes["jsonb"] | undefined | null,
 	round_ticks?: GraphQLTypes["jsonb"] | undefined | null,
 	size?: number | undefined | null,
@@ -246737,7 +249062,9 @@ export type GraphQLTypes = {
 ["match_map_demos_sum_fields"]: {
 	__typename: "match_map_demos_sum_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246745,7 +249072,9 @@ export type GraphQLTypes = {
 	/** order by sum() on columns of table "match_map_demos" */
 ["match_map_demos_sum_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246774,7 +249103,9 @@ export type GraphQLTypes = {
 ["match_map_demos_var_pop_fields"]: {
 	__typename: "match_map_demos_var_pop_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246782,7 +249113,9 @@ export type GraphQLTypes = {
 	/** order by var_pop() on columns of table "match_map_demos" */
 ["match_map_demos_var_pop_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246791,7 +249124,9 @@ export type GraphQLTypes = {
 ["match_map_demos_var_samp_fields"]: {
 	__typename: "match_map_demos_var_samp_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246799,7 +249134,9 @@ export type GraphQLTypes = {
 	/** order by var_samp() on columns of table "match_map_demos" */
 ["match_map_demos_var_samp_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -246808,7 +249145,9 @@ export type GraphQLTypes = {
 ["match_map_demos_variance_fields"]: {
 	__typename: "match_map_demos_variance_fields",
 	duration_seconds?: number | undefined | null,
+	parser_version?: number | undefined | null,
 	playback_size?: number | undefined | null,
+	playback_version?: number | undefined | null,
 	size?: number | undefined | null,
 	tick_rate?: number | undefined | null,
 	total_ticks?: number | undefined | null
@@ -246816,7 +249155,9 @@ export type GraphQLTypes = {
 	/** order by variance() on columns of table "match_map_demos" */
 ["match_map_demos_variance_order_by"]: {
 		duration_seconds?: GraphQLTypes["order_by"] | undefined | null,
+	parser_version?: GraphQLTypes["order_by"] | undefined | null,
 	playback_size?: GraphQLTypes["order_by"] | undefined | null,
+	playback_version?: GraphQLTypes["order_by"] | undefined | null,
 	size?: GraphQLTypes["order_by"] | undefined | null,
 	tick_rate?: GraphQLTypes["order_by"] | undefined | null,
 	total_ticks?: GraphQLTypes["order_by"] | undefined | null
@@ -250431,12 +252772,16 @@ export type GraphQLTypes = {
 	cancelReparseAllDemos?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** cancelScrimRequest */
 	cancelScrimRequest?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Cancel an in-flight lineup preview render */
+	cancelUtilityLineupRender?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** checkIntoMatch */
 	checkIntoMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete terminal-state clip_render_jobs rows for a single match_map batch. */
 	clearClipRenderBatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete all terminal-state clip_render_jobs rows platform-wide. */
 	clearFinishedClipRenders?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Drop every finished row from the lineup preview queue */
+	clearFinishedUtilityLineupRenders?: GraphQLTypes["UtilityRenderClearOutput"] | undefined | null,
 	clearPendingMatchImport?: GraphQLTypes["PendingMatchImportActionOutput"] | undefined | null,
 	/** execute VOLATILE function "clone_league_season" which returns "league_seasons" */
 	clone_league_season: Array<GraphQLTypes["league_seasons"]>,
@@ -251179,6 +253524,10 @@ export type GraphQLTypes = {
 	delete_utility_lineup_progress?: GraphQLTypes["utility_lineup_progress_mutation_response"] | undefined | null,
 	/** delete single row from the table: "utility_lineup_progress" */
 	delete_utility_lineup_progress_by_pk?: GraphQLTypes["utility_lineup_progress"] | undefined | null,
+	/** delete data from the table: "utility_lineup_renders" */
+	delete_utility_lineup_renders?: GraphQLTypes["utility_lineup_renders_mutation_response"] | undefined | null,
+	/** delete single row from the table: "utility_lineup_renders" */
+	delete_utility_lineup_renders_by_pk?: GraphQLTypes["utility_lineup_renders"] | undefined | null,
 	/** delete data from the table: "utility_lineup_repairs" */
 	delete_utility_lineup_repairs?: GraphQLTypes["utility_lineup_repairs_mutation_response"] | undefined | null,
 	/** delete single row from the table: "utility_lineup_repairs" */
@@ -251953,6 +254302,10 @@ export type GraphQLTypes = {
 	insert_utility_lineup_progress?: GraphQLTypes["utility_lineup_progress_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "utility_lineup_progress" */
 	insert_utility_lineup_progress_one?: GraphQLTypes["utility_lineup_progress"] | undefined | null,
+	/** insert data into the table: "utility_lineup_renders" */
+	insert_utility_lineup_renders?: GraphQLTypes["utility_lineup_renders_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "utility_lineup_renders" */
+	insert_utility_lineup_renders_one?: GraphQLTypes["utility_lineup_renders"] | undefined | null,
 	/** insert data into the table: "utility_lineup_repairs" */
 	insert_utility_lineup_repairs?: GraphQLTypes["utility_lineup_repairs_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "utility_lineup_repairs" */
@@ -252061,6 +254414,8 @@ export type GraphQLTypes = {
 	refreshFaceitRank?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	refreshLiveHud?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	registerName?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Re-mine one batch of demos after a miner change */
+	remineUtilityMeta?: GraphQLTypes["UtilityRemineOutput"] | undefined | null,
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Remove a friends-role presence bot account */
@@ -252069,6 +254424,8 @@ export type GraphQLTypes = {
 	remove_league_team_from_season: Array<GraphQLTypes["league_team_seasons"]>,
 	/** Rename file or directory on game server */
 	renameServerItem?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Re-film a public lineup's preview clip */
+	renderUtilityLineupPreview?: GraphQLTypes["UtilityRenderQueueOutput"] | undefined | null,
 	/** execute VOLATILE function "reorder_league_divisions" which returns "league_divisions" */
 	reorder_league_divisions: Array<GraphQLTypes["league_divisions"]>,
 	/** Re-solve a lineup a drift scan says the map moved */
@@ -252118,6 +254475,8 @@ export type GraphQLTypes = {
 	/** sendScrimRequest */
 	sendScrimRequest?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	setGameNodeSchedulingState?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Track new releases of a game plugin, or pin it where it is */
+	setGamePluginAutoUpdate?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	setHudMode?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** setMapWinner */
 	setMapWinner?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -253242,6 +255601,12 @@ export type GraphQLTypes = {
 	update_utility_lineup_progress_by_pk?: GraphQLTypes["utility_lineup_progress"] | undefined | null,
 	/** update multiples rows of table: "utility_lineup_progress" */
 	update_utility_lineup_progress_many?: Array<GraphQLTypes["utility_lineup_progress_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "utility_lineup_renders" */
+	update_utility_lineup_renders?: GraphQLTypes["utility_lineup_renders_mutation_response"] | undefined | null,
+	/** update single row of the table: "utility_lineup_renders" */
+	update_utility_lineup_renders_by_pk?: GraphQLTypes["utility_lineup_renders"] | undefined | null,
+	/** update multiples rows of table: "utility_lineup_renders" */
+	update_utility_lineup_renders_many?: Array<GraphQLTypes["utility_lineup_renders_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "utility_lineup_repairs" */
 	update_utility_lineup_repairs?: GraphQLTypes["utility_lineup_repairs_mutation_response"] | undefined | null,
 	/** update single row of the table: "utility_lineup_repairs" */
@@ -269850,6 +272215,12 @@ export type GraphQLTypes = {
 	utility_lineup_progress_aggregate: GraphQLTypes["utility_lineup_progress_aggregate"],
 	/** fetch data from the table: "utility_lineup_progress" using primary key columns */
 	utility_lineup_progress_by_pk?: GraphQLTypes["utility_lineup_progress"] | undefined | null,
+	/** fetch data from the table: "utility_lineup_renders" */
+	utility_lineup_renders: Array<GraphQLTypes["utility_lineup_renders"]>,
+	/** fetch aggregated fields from the table: "utility_lineup_renders" */
+	utility_lineup_renders_aggregate: GraphQLTypes["utility_lineup_renders_aggregate"],
+	/** fetch data from the table: "utility_lineup_renders" using primary key columns */
+	utility_lineup_renders_by_pk?: GraphQLTypes["utility_lineup_renders"] | undefined | null,
 	/** fetch data from the table: "utility_lineup_repairs" */
 	utility_lineup_repairs: Array<GraphQLTypes["utility_lineup_repairs"]>,
 	/** fetch aggregated fields from the table: "utility_lineup_repairs" */
@@ -273071,6 +275442,14 @@ export type GraphQLTypes = {
 	utility_lineup_progress_by_pk?: GraphQLTypes["utility_lineup_progress"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "utility_lineup_progress" */
 	utility_lineup_progress_stream: Array<GraphQLTypes["utility_lineup_progress"]>,
+	/** fetch data from the table: "utility_lineup_renders" */
+	utility_lineup_renders: Array<GraphQLTypes["utility_lineup_renders"]>,
+	/** fetch aggregated fields from the table: "utility_lineup_renders" */
+	utility_lineup_renders_aggregate: GraphQLTypes["utility_lineup_renders_aggregate"],
+	/** fetch data from the table: "utility_lineup_renders" using primary key columns */
+	utility_lineup_renders_by_pk?: GraphQLTypes["utility_lineup_renders"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "utility_lineup_renders" */
+	utility_lineup_renders_stream: Array<GraphQLTypes["utility_lineup_renders"]>,
 	/** fetch data from the table: "utility_lineup_repairs" */
 	utility_lineup_repairs: Array<GraphQLTypes["utility_lineup_repairs"]>,
 	/** fetch aggregated fields from the table: "utility_lineup_repairs" */
@@ -282972,6 +285351,509 @@ export type GraphQLTypes = {
 	steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	successes?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "utility_lineup_renders" */
+["utility_lineup_renders"]: {
+	__typename: "utility_lineup_renders",
+	created_at: GraphQLTypes["timestamptz"],
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	/** An object relationship */
+	game_server_node?: GraphQLTypes["game_server_nodes"] | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id: GraphQLTypes["uuid"],
+	k8s_job_name?: string | undefined | null,
+	last_status_at: GraphQLTypes["timestamptz"],
+	/** An object relationship */
+	lineup: GraphQLTypes["utility_lineups"],
+	map_name: string,
+	paused: boolean,
+	/** An object relationship */
+	practice_session?: GraphQLTypes["utility_practice_sessions"] | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	/** An object relationship */
+	requested_by?: GraphQLTypes["players"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	session_token: string,
+	skip_reason?: string | undefined | null,
+	sort_index: number,
+	spec: GraphQLTypes["jsonb"],
+	status: string,
+	status_history: GraphQLTypes["jsonb"],
+	utility_lineup_id: GraphQLTypes["uuid"],
+	utility_practice_session_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregated selection of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate"]: {
+	__typename: "utility_lineup_renders_aggregate",
+	aggregate?: GraphQLTypes["utility_lineup_renders_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["utility_lineup_renders"]>
+};
+	["utility_lineup_renders_aggregate_bool_exp"]: {
+		bool_and?: GraphQLTypes["utility_lineup_renders_aggregate_bool_exp_bool_and"] | undefined | null,
+	bool_or?: GraphQLTypes["utility_lineup_renders_aggregate_bool_exp_bool_or"] | undefined | null,
+	count?: GraphQLTypes["utility_lineup_renders_aggregate_bool_exp_count"] | undefined | null
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_and"]: {
+		arguments: GraphQLTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Boolean_comparison_exp"]
+};
+	["utility_lineup_renders_aggregate_bool_exp_bool_or"]: {
+		arguments: GraphQLTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"],
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Boolean_comparison_exp"]
+};
+	["utility_lineup_renders_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["utility_lineup_renders_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: GraphQLTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_fields"]: {
+	__typename: "utility_lineup_renders_aggregate_fields",
+	avg?: GraphQLTypes["utility_lineup_renders_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["utility_lineup_renders_max_fields"] | undefined | null,
+	min?: GraphQLTypes["utility_lineup_renders_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["utility_lineup_renders_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["utility_lineup_renders_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["utility_lineup_renders_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["utility_lineup_renders_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["utility_lineup_renders_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["utility_lineup_renders_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["utility_lineup_renders_variance_fields"] | undefined | null
+};
+	/** order by aggregate values of table "utility_lineup_renders" */
+["utility_lineup_renders_aggregate_order_by"]: {
+		avg?: GraphQLTypes["utility_lineup_renders_avg_order_by"] | undefined | null,
+	count?: GraphQLTypes["order_by"] | undefined | null,
+	max?: GraphQLTypes["utility_lineup_renders_max_order_by"] | undefined | null,
+	min?: GraphQLTypes["utility_lineup_renders_min_order_by"] | undefined | null,
+	stddev?: GraphQLTypes["utility_lineup_renders_stddev_order_by"] | undefined | null,
+	stddev_pop?: GraphQLTypes["utility_lineup_renders_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: GraphQLTypes["utility_lineup_renders_stddev_samp_order_by"] | undefined | null,
+	sum?: GraphQLTypes["utility_lineup_renders_sum_order_by"] | undefined | null,
+	var_pop?: GraphQLTypes["utility_lineup_renders_var_pop_order_by"] | undefined | null,
+	var_samp?: GraphQLTypes["utility_lineup_renders_var_samp_order_by"] | undefined | null,
+	variance?: GraphQLTypes["utility_lineup_renders_variance_order_by"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_append_input"]: {
+		spec?: GraphQLTypes["jsonb"] | undefined | null,
+	status_history?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "utility_lineup_renders" */
+["utility_lineup_renders_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["utility_lineup_renders_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["utility_lineup_renders_on_conflict"] | undefined | null
+};
+	/** aggregate avg on columns */
+["utility_lineup_renders_avg_fields"]: {
+	__typename: "utility_lineup_renders_avg_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by avg() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_avg_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "utility_lineup_renders". All fields are combined with a logical 'AND'. */
+["utility_lineup_renders_bool_exp"]: {
+		_and?: Array<GraphQLTypes["utility_lineup_renders_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["utility_lineup_renders_bool_exp"]> | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	duration_ms?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	error_message?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	game_server_node?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined | null,
+	game_server_node_id?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	k8s_job_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	last_status_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	lineup?: GraphQLTypes["utility_lineups_bool_exp"] | undefined | null,
+	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	paused?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	practice_session?: GraphQLTypes["utility_practice_sessions_bool_exp"] | undefined | null,
+	progress?: GraphQLTypes["numeric_comparison_exp"] | undefined | null,
+	requested_by?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	session_token?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	skip_reason?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	sort_index?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	spec?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	status?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	status_history?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "utility_lineup_renders" */
+["utility_lineup_renders_constraint"]: utility_lineup_renders_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["utility_lineup_renders_delete_at_path_input"]: {
+		spec?: Array<string> | undefined | null,
+	status_history?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["utility_lineup_renders_delete_elem_input"]: {
+		spec?: number | undefined | null,
+	status_history?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["utility_lineup_renders_delete_key_input"]: {
+		spec?: string | undefined | null,
+	status_history?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "utility_lineup_renders" */
+["utility_lineup_renders_inc_input"]: {
+		duration_ms?: number | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** input type for inserting data into table "utility_lineup_renders" */
+["utility_lineup_renders_insert_input"]: {
+		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node?: GraphQLTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	lineup?: GraphQLTypes["utility_lineups_obj_rel_insert_input"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	practice_session?: GraphQLTypes["utility_practice_sessions_obj_rel_insert_input"] | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: GraphQLTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: GraphQLTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["utility_lineup_renders_max_fields"]: {
+	__typename: "utility_lineup_renders_max_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	status?: string | undefined | null,
+	utility_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by max() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_max_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	error_message?: GraphQLTypes["order_by"] | undefined | null,
+	game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	k8s_job_name?: GraphQLTypes["order_by"] | undefined | null,
+	last_status_at?: GraphQLTypes["order_by"] | undefined | null,
+	map_name?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	session_token?: GraphQLTypes["order_by"] | undefined | null,
+	skip_reason?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null,
+	status?: GraphQLTypes["order_by"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["utility_lineup_renders_min_fields"]: {
+	__typename: "utility_lineup_renders_min_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	status?: string | undefined | null,
+	utility_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** order by min() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_min_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	error_message?: GraphQLTypes["order_by"] | undefined | null,
+	game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	k8s_job_name?: GraphQLTypes["order_by"] | undefined | null,
+	last_status_at?: GraphQLTypes["order_by"] | undefined | null,
+	map_name?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	session_token?: GraphQLTypes["order_by"] | undefined | null,
+	skip_reason?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null,
+	status?: GraphQLTypes["order_by"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "utility_lineup_renders" */
+["utility_lineup_renders_mutation_response"]: {
+	__typename: "utility_lineup_renders_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["utility_lineup_renders"]>
+};
+	/** on_conflict condition type for table "utility_lineup_renders" */
+["utility_lineup_renders_on_conflict"]: {
+		constraint: GraphQLTypes["utility_lineup_renders_constraint"],
+	update_columns: Array<GraphQLTypes["utility_lineup_renders_update_column"]>,
+	where?: GraphQLTypes["utility_lineup_renders_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "utility_lineup_renders". */
+["utility_lineup_renders_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined | null,
+	duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	error_message?: GraphQLTypes["order_by"] | undefined | null,
+	game_server_node?: GraphQLTypes["game_server_nodes_order_by"] | undefined | null,
+	game_server_node_id?: GraphQLTypes["order_by"] | undefined | null,
+	id?: GraphQLTypes["order_by"] | undefined | null,
+	k8s_job_name?: GraphQLTypes["order_by"] | undefined | null,
+	last_status_at?: GraphQLTypes["order_by"] | undefined | null,
+	lineup?: GraphQLTypes["utility_lineups_order_by"] | undefined | null,
+	map_name?: GraphQLTypes["order_by"] | undefined | null,
+	paused?: GraphQLTypes["order_by"] | undefined | null,
+	practice_session?: GraphQLTypes["utility_practice_sessions_order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by?: GraphQLTypes["players_order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	session_token?: GraphQLTypes["order_by"] | undefined | null,
+	skip_reason?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null,
+	spec?: GraphQLTypes["order_by"] | undefined | null,
+	status?: GraphQLTypes["order_by"] | undefined | null,
+	status_history?: GraphQLTypes["order_by"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["order_by"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: utility_lineup_renders */
+["utility_lineup_renders_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["utility_lineup_renders_prepend_input"]: {
+		spec?: GraphQLTypes["jsonb"] | undefined | null,
+	status_history?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column"]: utility_lineup_renders_select_column;
+	/** select "utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns" columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"]: utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns;
+	/** select "utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns" columns of table "utility_lineup_renders" */
+["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"]: utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns;
+	/** input type for updating data in table "utility_lineup_renders" */
+["utility_lineup_renders_set_input"]: {
+		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: GraphQLTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: GraphQLTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["utility_lineup_renders_stddev_fields"]: {
+	__typename: "utility_lineup_renders_stddev_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by stddev() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["utility_lineup_renders_stddev_pop_fields"]: {
+	__typename: "utility_lineup_renders_stddev_pop_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by stddev_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_pop_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["utility_lineup_renders_stddev_samp_fields"]: {
+	__typename: "utility_lineup_renders_stddev_samp_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by stddev_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_stddev_samp_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** Streaming cursor of the table "utility_lineup_renders" */
+["utility_lineup_renders_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["utility_lineup_renders_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["utility_lineup_renders_stream_cursor_value_input"]: {
+		created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	duration_ms?: number | undefined | null,
+	error_message?: string | undefined | null,
+	game_server_node_id?: string | undefined | null,
+	id?: GraphQLTypes["uuid"] | undefined | null,
+	k8s_job_name?: string | undefined | null,
+	last_status_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_name?: string | undefined | null,
+	paused?: boolean | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	session_token?: string | undefined | null,
+	skip_reason?: string | undefined | null,
+	sort_index?: number | undefined | null,
+	spec?: GraphQLTypes["jsonb"] | undefined | null,
+	status?: string | undefined | null,
+	status_history?: GraphQLTypes["jsonb"] | undefined | null,
+	utility_lineup_id?: GraphQLTypes["uuid"] | undefined | null,
+	utility_practice_session_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** aggregate sum on columns */
+["utility_lineup_renders_sum_fields"]: {
+	__typename: "utility_lineup_renders_sum_fields",
+	duration_ms?: number | undefined | null,
+	progress?: GraphQLTypes["numeric"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by sum() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_sum_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** update columns of table "utility_lineup_renders" */
+["utility_lineup_renders_update_column"]: utility_lineup_renders_update_column;
+	["utility_lineup_renders_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["utility_lineup_renders_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["utility_lineup_renders_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["utility_lineup_renders_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["utility_lineup_renders_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["utility_lineup_renders_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["utility_lineup_renders_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["utility_lineup_renders_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["utility_lineup_renders_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["utility_lineup_renders_var_pop_fields"]: {
+	__typename: "utility_lineup_renders_var_pop_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by var_pop() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_pop_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["utility_lineup_renders_var_samp_fields"]: {
+	__typename: "utility_lineup_renders_var_samp_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by var_samp() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_var_samp_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["utility_lineup_renders_variance_fields"]: {
+	__typename: "utility_lineup_renders_variance_fields",
+	duration_ms?: number | undefined | null,
+	progress?: number | undefined | null,
+	requested_by_steam_id?: number | undefined | null,
+	sort_index?: number | undefined | null
+};
+	/** order by variance() on columns of table "utility_lineup_renders" */
+["utility_lineup_renders_variance_order_by"]: {
+		duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	progress?: GraphQLTypes["order_by"] | undefined | null,
+	requested_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	sort_index?: GraphQLTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "utility_lineup_repairs" */
 ["utility_lineup_repairs"]: {
 	__typename: "utility_lineup_repairs",
@@ -283677,6 +286559,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "utility_lineups" */
 ["utility_lineups"]: {
 	__typename: "utility_lineups",
+	aim_tolerance: GraphQLTypes["float8"],
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
 	author: GraphQLTypes["players"],
@@ -283731,6 +286614,14 @@ export type GraphQLTypes = {
 	practice_attempts: number,
 	practice_players: number,
 	practice_successes: number,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?: string | undefined | null,
 	/** An array relationship */
 	progress: Array<GraphQLTypes["utility_lineup_progress"]>,
 	/** An aggregate relationship */
@@ -283739,6 +286630,10 @@ export type GraphQLTypes = {
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
+	/** An array relationship */
+	renders: Array<GraphQLTypes["utility_lineup_renders"]>,
+	/** An aggregate relationship */
+	renders_aggregate: GraphQLTypes["utility_lineup_renders_aggregate"],
 	/** An array relationship */
 	repairs: Array<GraphQLTypes["utility_lineup_repairs"]>,
 	/** An aggregate relationship */
@@ -283911,6 +286806,7 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["utility_lineups_avg_fields"]: {
 	__typename: "utility_lineups_avg_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -283933,6 +286829,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -283944,7 +286841,8 @@ export type GraphQLTypes = {
 };
 	/** order by avg() on columns of table "utility_lineups" */
 ["utility_lineups_avg_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -283964,6 +286862,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -283978,6 +286877,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["utility_lineups_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["utility_lineups_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["utility_lineups_bool_exp"]> | undefined | null,
+	aim_tolerance?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	author?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
@@ -284021,12 +286921,20 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	practice_players?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	practice_successes?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	preview_file?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	preview_thumbnail?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	preview_thumbnail_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	preview_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	progress?: GraphQLTypes["utility_lineup_progress_bool_exp"] | undefined | null,
 	progress_aggregate?: GraphQLTypes["utility_lineup_progress_aggregate_bool_exp"] | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	public_review_note?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	renders?: GraphQLTypes["utility_lineup_renders_bool_exp"] | undefined | null,
+	renders_aggregate?: GraphQLTypes["utility_lineup_renders_aggregate_bool_exp"] | undefined | null,
 	repairs?: GraphQLTypes["utility_lineup_repairs_bool_exp"] | undefined | null,
 	repairs_aggregate?: GraphQLTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null,
 	side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined | null,
@@ -284073,7 +286981,8 @@ export type GraphQLTypes = {
 };
 	/** input type for incrementing numeric columns in table "utility_lineups" */
 ["utility_lineups_inc_input"]: {
-		author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: GraphQLTypes["float8"] | undefined | null,
 	favorites?: number | undefined | null,
@@ -284093,6 +287002,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -284104,7 +287014,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "utility_lineups" */
 ["utility_lineups_insert_input"]: {
-		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	collection_items?: GraphQLTypes["utility_collection_items_arr_rel_insert_input"] | undefined | null,
@@ -284139,11 +287050,16 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	progress?: GraphQLTypes["utility_lineup_progress_arr_rel_insert_input"] | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
+	renders?: GraphQLTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null,
 	repairs?: GraphQLTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null,
 	side?: GraphQLTypes["e_sides_enum"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
@@ -284175,6 +287091,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["utility_lineups_max_fields"]: {
 	__typename: "utility_lineups_max_fields",
+	aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -284209,6 +287126,14 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -284232,7 +287157,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "utility_lineups" */
 ["utility_lineups_max_order_by"]: {
-		archived_at?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	archived_at?: GraphQLTypes["order_by"] | undefined | null,
 	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	confidence?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -284262,6 +287188,10 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	preview_file?: GraphQLTypes["order_by"] | undefined | null,
+	preview_rendered_at?: GraphQLTypes["order_by"] | undefined | null,
+	preview_thumbnail?: GraphQLTypes["order_by"] | undefined | null,
 	public_requested_at?: GraphQLTypes["order_by"] | undefined | null,
 	public_review_note?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -284286,6 +287216,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["utility_lineups_min_fields"]: {
 	__typename: "utility_lineups_min_fields",
+	aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
 	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
@@ -284320,6 +287251,14 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_thumbnail_url" */
+	preview_thumbnail_url?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_preview_url" */
+	preview_url?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -284343,7 +287282,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "utility_lineups" */
 ["utility_lineups_min_order_by"]: {
-		archived_at?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	archived_at?: GraphQLTypes["order_by"] | undefined | null,
 	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	confidence?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -284373,6 +287313,10 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	preview_file?: GraphQLTypes["order_by"] | undefined | null,
+	preview_rendered_at?: GraphQLTypes["order_by"] | undefined | null,
+	preview_thumbnail?: GraphQLTypes["order_by"] | undefined | null,
 	public_requested_at?: GraphQLTypes["order_by"] | undefined | null,
 	public_review_note?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -284416,7 +287360,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "utility_lineups". */
 ["utility_lineups_order_by"]: {
-		archived_at?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	archived_at?: GraphQLTypes["order_by"] | undefined | null,
 	author?: GraphQLTypes["players_order_by"] | undefined | null,
 	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	can_edit?: GraphQLTypes["order_by"] | undefined | null,
@@ -284457,11 +287402,18 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
+	preview_file?: GraphQLTypes["order_by"] | undefined | null,
+	preview_rendered_at?: GraphQLTypes["order_by"] | undefined | null,
+	preview_thumbnail?: GraphQLTypes["order_by"] | undefined | null,
+	preview_thumbnail_url?: GraphQLTypes["order_by"] | undefined | null,
+	preview_url?: GraphQLTypes["order_by"] | undefined | null,
 	progress_aggregate?: GraphQLTypes["utility_lineup_progress_aggregate_order_by"] | undefined | null,
 	public_requested_at?: GraphQLTypes["order_by"] | undefined | null,
 	public_review_note?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_at?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
+	renders_aggregate?: GraphQLTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null,
 	repairs_aggregate?: GraphQLTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null,
 	side?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -284522,7 +287474,8 @@ export type GraphQLTypes = {
 ["utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns"]: utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns;
 	/** input type for updating data in table "utility_lineups" */
 ["utility_lineups_set_input"]: {
-		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -284553,6 +287506,10 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -284583,6 +287540,7 @@ export type GraphQLTypes = {
 	/** aggregate stddev on columns */
 ["utility_lineups_stddev_fields"]: {
 	__typename: "utility_lineups_stddev_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -284605,6 +287563,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -284616,7 +287575,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -284636,6 +287596,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -284648,6 +287609,7 @@ export type GraphQLTypes = {
 	/** aggregate stddev_pop on columns */
 ["utility_lineups_stddev_pop_fields"]: {
 	__typename: "utility_lineups_stddev_pop_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -284670,6 +287632,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -284681,7 +287644,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev_pop() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_pop_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -284701,6 +287665,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -284713,6 +287678,7 @@ export type GraphQLTypes = {
 	/** aggregate stddev_samp on columns */
 ["utility_lineups_stddev_samp_fields"]: {
 	__typename: "utility_lineups_stddev_samp_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -284735,6 +287701,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -284746,7 +287713,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev_samp() on columns of table "utility_lineups" */
 ["utility_lineups_stddev_samp_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -284766,6 +287734,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -284784,7 +287753,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_lineups_stream_cursor_value_input"]: {
-		archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
+	archived_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	confidence?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -284816,6 +287786,10 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
+	preview_file?: string | undefined | null,
+	preview_rendered_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	preview_thumbnail?: string | undefined | null,
 	public_requested_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -284846,6 +287820,7 @@ export type GraphQLTypes = {
 	/** aggregate sum on columns */
 ["utility_lineups_sum_fields"]: {
 	__typename: "utility_lineups_sum_fields",
+	aim_tolerance?: GraphQLTypes["float8"] | undefined | null,
 	author_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: GraphQLTypes["float8"] | undefined | null,
@@ -284868,6 +287843,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -284879,7 +287855,8 @@ export type GraphQLTypes = {
 };
 	/** order by sum() on columns of table "utility_lineups" */
 ["utility_lineups_sum_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -284899,6 +287876,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -284931,6 +287909,7 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["utility_lineups_var_pop_fields"]: {
 	__typename: "utility_lineups_var_pop_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -284953,6 +287932,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -284964,7 +287944,8 @@ export type GraphQLTypes = {
 };
 	/** order by var_pop() on columns of table "utility_lineups" */
 ["utility_lineups_var_pop_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -284984,6 +287965,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -284996,6 +287978,7 @@ export type GraphQLTypes = {
 	/** aggregate var_samp on columns */
 ["utility_lineups_var_samp_fields"]: {
 	__typename: "utility_lineups_var_samp_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -285018,6 +288001,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -285029,7 +288013,8 @@ export type GraphQLTypes = {
 };
 	/** order by var_samp() on columns of table "utility_lineups" */
 ["utility_lineups_var_samp_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -285049,6 +288034,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -285061,6 +288047,7 @@ export type GraphQLTypes = {
 	/** aggregate variance on columns */
 ["utility_lineups_variance_fields"]: {
 	__typename: "utility_lineups_variance_fields",
+	aim_tolerance?: number | undefined | null,
 	author_steam_id?: number | undefined | null,
 	downvotes?: number | undefined | null,
 	eye_z?: number | undefined | null,
@@ -285083,6 +288070,7 @@ export type GraphQLTypes = {
 	practice_attempts?: number | undefined | null,
 	practice_players?: number | undefined | null,
 	practice_successes?: number | undefined | null,
+	preview_duration_ms?: number | undefined | null,
 	public_reviewed_by?: number | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	trajectory_size?: number | undefined | null,
@@ -285094,7 +288082,8 @@ export type GraphQLTypes = {
 };
 	/** order by variance() on columns of table "utility_lineups" */
 ["utility_lineups_variance_order_by"]: {
-		author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+		aim_tolerance?: GraphQLTypes["order_by"] | undefined | null,
+	author_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	downvotes?: GraphQLTypes["order_by"] | undefined | null,
 	eye_z?: GraphQLTypes["order_by"] | undefined | null,
 	favorites?: GraphQLTypes["order_by"] | undefined | null,
@@ -285114,6 +288103,7 @@ export type GraphQLTypes = {
 	practice_attempts?: GraphQLTypes["order_by"] | undefined | null,
 	practice_players?: GraphQLTypes["order_by"] | undefined | null,
 	practice_successes?: GraphQLTypes["order_by"] | undefined | null,
+	preview_duration_ms?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	trajectory_size?: GraphQLTypes["order_by"] | undefined | null,
@@ -286397,6 +289387,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "is_utility_practice_member" */
 	is_member?: boolean | undefined | null,
 	is_open: boolean,
+	is_render: boolean,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name: string,
 	/** An object relationship */
@@ -286510,6 +289501,7 @@ export type GraphQLTypes = {
 	invites_aggregate?: GraphQLTypes["utility_practice_invites_aggregate_bool_exp"] | undefined | null,
 	is_member?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_open?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	is_render?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
@@ -286544,6 +289536,7 @@ export type GraphQLTypes = {
 	invite_code?: string | undefined | null,
 	invites?: GraphQLTypes["utility_practice_invites_arr_rel_insert_input"] | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined | null,
@@ -286683,6 +289676,7 @@ export type GraphQLTypes = {
 	invites_aggregate?: GraphQLTypes["utility_practice_invites_aggregate_order_by"] | undefined | null,
 	is_member?: GraphQLTypes["order_by"] | undefined | null,
 	is_open?: GraphQLTypes["order_by"] | undefined | null,
+	is_render?: GraphQLTypes["order_by"] | undefined | null,
 	last_occupied_at?: GraphQLTypes["order_by"] | undefined | null,
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match?: GraphQLTypes["matches_order_by"] | undefined | null,
@@ -286717,6 +289711,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -286772,6 +289767,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	is_open?: boolean | undefined | null,
+	is_render?: boolean | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -298275,6 +301271,7 @@ export enum game_server_node_plugins_select_column {
 	last_error = "last_error",
 	path = "path",
 	plugin_slug = "plugin_slug",
+	previous_version = "previous_version",
 	runtime = "runtime",
 	source = "source",
 	status = "status",
@@ -298301,6 +301298,7 @@ export enum game_server_node_plugins_update_column {
 	last_error = "last_error",
 	path = "path",
 	plugin_slug = "plugin_slug",
+	previous_version = "previous_version",
 	runtime = "runtime",
 	source = "source",
 	status = "status",
@@ -299049,8 +302047,10 @@ export enum match_map_demos_select_column {
 	match_id = "match_id",
 	match_map_id = "match_map_id",
 	metadata_parsed_at = "metadata_parsed_at",
+	parser_version = "parser_version",
 	playback_file = "playback_file",
 	playback_size = "playback_size",
+	playback_version = "playback_version",
 	players = "players",
 	round_ticks = "round_ticks",
 	size = "size",
@@ -299079,8 +302079,10 @@ export enum match_map_demos_update_column {
 	match_id = "match_id",
 	match_map_id = "match_map_id",
 	metadata_parsed_at = "metadata_parsed_at",
+	parser_version = "parser_version",
 	playback_file = "playback_file",
 	playback_size = "playback_size",
+	playback_version = "playback_version",
 	players = "players",
 	round_ticks = "round_ticks",
 	size = "size",
@@ -302086,6 +305088,63 @@ export enum utility_lineup_progress_update_column {
 	successes = "successes",
 	utility_lineup_id = "utility_lineup_id"
 }
+/** unique or primary key constraints on table "utility_lineup_renders" */
+export enum utility_lineup_renders_constraint {
+	utility_lineup_renders_one_in_flight_idx = "utility_lineup_renders_one_in_flight_idx",
+	utility_lineup_renders_pkey = "utility_lineup_renders_pkey"
+}
+/** select columns of table "utility_lineup_renders" */
+export enum utility_lineup_renders_select_column {
+	created_at = "created_at",
+	duration_ms = "duration_ms",
+	error_message = "error_message",
+	game_server_node_id = "game_server_node_id",
+	id = "id",
+	k8s_job_name = "k8s_job_name",
+	last_status_at = "last_status_at",
+	map_name = "map_name",
+	paused = "paused",
+	progress = "progress",
+	requested_by_steam_id = "requested_by_steam_id",
+	session_token = "session_token",
+	skip_reason = "skip_reason",
+	sort_index = "sort_index",
+	spec = "spec",
+	status = "status",
+	status_history = "status_history",
+	utility_lineup_id = "utility_lineup_id",
+	utility_practice_session_id = "utility_practice_session_id"
+}
+/** select "utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns" columns of table "utility_lineup_renders" */
+export enum utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns {
+	paused = "paused"
+}
+/** select "utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns" columns of table "utility_lineup_renders" */
+export enum utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns {
+	paused = "paused"
+}
+/** update columns of table "utility_lineup_renders" */
+export enum utility_lineup_renders_update_column {
+	created_at = "created_at",
+	duration_ms = "duration_ms",
+	error_message = "error_message",
+	game_server_node_id = "game_server_node_id",
+	id = "id",
+	k8s_job_name = "k8s_job_name",
+	last_status_at = "last_status_at",
+	map_name = "map_name",
+	paused = "paused",
+	progress = "progress",
+	requested_by_steam_id = "requested_by_steam_id",
+	session_token = "session_token",
+	skip_reason = "skip_reason",
+	sort_index = "sort_index",
+	spec = "spec",
+	status = "status",
+	status_history = "status_history",
+	utility_lineup_id = "utility_lineup_id",
+	utility_practice_session_id = "utility_practice_session_id"
+}
 /** unique or primary key constraints on table "utility_lineup_repairs" */
 export enum utility_lineup_repairs_constraint {
 	utility_lineup_repairs_open_idx = "utility_lineup_repairs_open_idx",
@@ -302176,6 +305235,7 @@ export enum utility_lineups_constraint {
 }
 /** select columns of table "utility_lineups" */
 export enum utility_lineups_select_column {
+	aim_tolerance = "aim_tolerance",
 	archived_at = "archived_at",
 	author_steam_id = "author_steam_id",
 	confidence = "confidence",
@@ -302208,6 +305268,10 @@ export enum utility_lineups_select_column {
 	practice_attempts = "practice_attempts",
 	practice_players = "practice_players",
 	practice_successes = "practice_successes",
+	preview_duration_ms = "preview_duration_ms",
+	preview_file = "preview_file",
+	preview_rendered_at = "preview_rendered_at",
+	preview_thumbnail = "preview_thumbnail",
 	public_requested_at = "public_requested_at",
 	public_review_note = "public_review_note",
 	public_reviewed_at = "public_reviewed_at",
@@ -302237,6 +305301,7 @@ export enum utility_lineups_select_column {
 }
 /** select "utility_lineups_aggregate_bool_exp_avg_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_avg_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302265,6 +305330,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_boo
 }
 /** select "utility_lineups_aggregate_bool_exp_corr_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_corr_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302285,6 +305351,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_cor
 }
 /** select "utility_lineups_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_covar_samp_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302305,6 +305372,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_cov
 }
 /** select "utility_lineups_aggregate_bool_exp_max_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_max_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302325,6 +305393,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_max
 }
 /** select "utility_lineups_aggregate_bool_exp_min_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_min_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302345,6 +305414,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_min
 }
 /** select "utility_lineups_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_stddev_samp_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302365,6 +305435,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_std
 }
 /** select "utility_lineups_aggregate_bool_exp_sum_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_sum_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302385,6 +305456,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_sum
 }
 /** select "utility_lineups_aggregate_bool_exp_var_samp_arguments_columns" columns of table "utility_lineups" */
 export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var_samp_arguments_columns {
+	aim_tolerance = "aim_tolerance",
 	eye_z = "eye_z",
 	initial_pos_x = "initial_pos_x",
 	initial_pos_y = "initial_pos_y",
@@ -302405,6 +305477,7 @@ export enum utility_lineups_select_column_utility_lineups_aggregate_bool_exp_var
 }
 /** update columns of table "utility_lineups" */
 export enum utility_lineups_update_column {
+	aim_tolerance = "aim_tolerance",
 	archived_at = "archived_at",
 	author_steam_id = "author_steam_id",
 	confidence = "confidence",
@@ -302436,6 +305509,10 @@ export enum utility_lineups_update_column {
 	practice_attempts = "practice_attempts",
 	practice_players = "practice_players",
 	practice_successes = "practice_successes",
+	preview_duration_ms = "preview_duration_ms",
+	preview_file = "preview_file",
+	preview_rendered_at = "preview_rendered_at",
+	preview_thumbnail = "preview_thumbnail",
 	public_requested_at = "public_requested_at",
 	public_review_note = "public_review_note",
 	public_reviewed_at = "public_reviewed_at",
@@ -302609,6 +305686,7 @@ export enum utility_practice_sessions_select_column {
 	id = "id",
 	invite_code = "invite_code",
 	is_open = "is_open",
+	is_render = "is_render",
 	last_occupied_at = "last_occupied_at",
 	map_name = "map_name",
 	match_id = "match_id",
@@ -302620,11 +305698,13 @@ export enum utility_practice_sessions_select_column {
 }
 /** select "utility_practice_sessions_aggregate_bool_exp_bool_and_arguments_columns" columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_and_arguments_columns {
-	is_open = "is_open"
+	is_open = "is_open",
+	is_render = "is_render"
 }
 /** select "utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns" columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns {
-	is_open = "is_open"
+	is_open = "is_open",
+	is_render = "is_render"
 }
 /** update columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_update_column {
@@ -302638,6 +305718,7 @@ export enum utility_practice_sessions_update_column {
 	id = "id",
 	invite_code = "invite_code",
 	is_open = "is_open",
+	is_render = "is_render",
 	last_occupied_at = "last_occupied_at",
 	map_name = "map_name",
 	match_id = "match_id",
@@ -307175,6 +310256,42 @@ type ZEUS_VARIABLES = {
 	["utility_lineup_progress_var_pop_order_by"]: ValueTypes["utility_lineup_progress_var_pop_order_by"];
 	["utility_lineup_progress_var_samp_order_by"]: ValueTypes["utility_lineup_progress_var_samp_order_by"];
 	["utility_lineup_progress_variance_order_by"]: ValueTypes["utility_lineup_progress_variance_order_by"];
+	["utility_lineup_renders_aggregate_bool_exp"]: ValueTypes["utility_lineup_renders_aggregate_bool_exp"];
+	["utility_lineup_renders_aggregate_bool_exp_bool_and"]: ValueTypes["utility_lineup_renders_aggregate_bool_exp_bool_and"];
+	["utility_lineup_renders_aggregate_bool_exp_bool_or"]: ValueTypes["utility_lineup_renders_aggregate_bool_exp_bool_or"];
+	["utility_lineup_renders_aggregate_bool_exp_count"]: ValueTypes["utility_lineup_renders_aggregate_bool_exp_count"];
+	["utility_lineup_renders_aggregate_order_by"]: ValueTypes["utility_lineup_renders_aggregate_order_by"];
+	["utility_lineup_renders_append_input"]: ValueTypes["utility_lineup_renders_append_input"];
+	["utility_lineup_renders_arr_rel_insert_input"]: ValueTypes["utility_lineup_renders_arr_rel_insert_input"];
+	["utility_lineup_renders_avg_order_by"]: ValueTypes["utility_lineup_renders_avg_order_by"];
+	["utility_lineup_renders_bool_exp"]: ValueTypes["utility_lineup_renders_bool_exp"];
+	["utility_lineup_renders_constraint"]: ValueTypes["utility_lineup_renders_constraint"];
+	["utility_lineup_renders_delete_at_path_input"]: ValueTypes["utility_lineup_renders_delete_at_path_input"];
+	["utility_lineup_renders_delete_elem_input"]: ValueTypes["utility_lineup_renders_delete_elem_input"];
+	["utility_lineup_renders_delete_key_input"]: ValueTypes["utility_lineup_renders_delete_key_input"];
+	["utility_lineup_renders_inc_input"]: ValueTypes["utility_lineup_renders_inc_input"];
+	["utility_lineup_renders_insert_input"]: ValueTypes["utility_lineup_renders_insert_input"];
+	["utility_lineup_renders_max_order_by"]: ValueTypes["utility_lineup_renders_max_order_by"];
+	["utility_lineup_renders_min_order_by"]: ValueTypes["utility_lineup_renders_min_order_by"];
+	["utility_lineup_renders_on_conflict"]: ValueTypes["utility_lineup_renders_on_conflict"];
+	["utility_lineup_renders_order_by"]: ValueTypes["utility_lineup_renders_order_by"];
+	["utility_lineup_renders_pk_columns_input"]: ValueTypes["utility_lineup_renders_pk_columns_input"];
+	["utility_lineup_renders_prepend_input"]: ValueTypes["utility_lineup_renders_prepend_input"];
+	["utility_lineup_renders_select_column"]: ValueTypes["utility_lineup_renders_select_column"];
+	["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"]: ValueTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_and_arguments_columns"];
+	["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"]: ValueTypes["utility_lineup_renders_select_column_utility_lineup_renders_aggregate_bool_exp_bool_or_arguments_columns"];
+	["utility_lineup_renders_set_input"]: ValueTypes["utility_lineup_renders_set_input"];
+	["utility_lineup_renders_stddev_order_by"]: ValueTypes["utility_lineup_renders_stddev_order_by"];
+	["utility_lineup_renders_stddev_pop_order_by"]: ValueTypes["utility_lineup_renders_stddev_pop_order_by"];
+	["utility_lineup_renders_stddev_samp_order_by"]: ValueTypes["utility_lineup_renders_stddev_samp_order_by"];
+	["utility_lineup_renders_stream_cursor_input"]: ValueTypes["utility_lineup_renders_stream_cursor_input"];
+	["utility_lineup_renders_stream_cursor_value_input"]: ValueTypes["utility_lineup_renders_stream_cursor_value_input"];
+	["utility_lineup_renders_sum_order_by"]: ValueTypes["utility_lineup_renders_sum_order_by"];
+	["utility_lineup_renders_update_column"]: ValueTypes["utility_lineup_renders_update_column"];
+	["utility_lineup_renders_updates"]: ValueTypes["utility_lineup_renders_updates"];
+	["utility_lineup_renders_var_pop_order_by"]: ValueTypes["utility_lineup_renders_var_pop_order_by"];
+	["utility_lineup_renders_var_samp_order_by"]: ValueTypes["utility_lineup_renders_var_samp_order_by"];
+	["utility_lineup_renders_variance_order_by"]: ValueTypes["utility_lineup_renders_variance_order_by"];
 	["utility_lineup_repairs_aggregate_bool_exp"]: ValueTypes["utility_lineup_repairs_aggregate_bool_exp"];
 	["utility_lineup_repairs_aggregate_bool_exp_avg"]: ValueTypes["utility_lineup_repairs_aggregate_bool_exp_avg"];
 	["utility_lineup_repairs_aggregate_bool_exp_corr"]: ValueTypes["utility_lineup_repairs_aggregate_bool_exp_corr"];

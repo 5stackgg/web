@@ -185,7 +185,10 @@ watch(
             </template>
             <template v-else>
               <component :is="opt.icon" v-if="opt.icon" class="h-4 w-4" />
-              {{ opt.label }}
+              <!-- Wrapped so a caller can collapse the strip to its icons when its
+                   container runs out of room: a bare text node cannot be hidden,
+                   and as a flex item a span sits exactly where it did. -->
+              <span v-if="opt.label" class="af-label">{{ opt.label }}</span>
               <span v-if="opt.count !== undefined" class="ml-1 opacity-60">{{
                 opt.count
               }}</span>
@@ -229,7 +232,7 @@ watch(
         </template>
         <template v-else>
           <component :is="opt.icon" v-if="opt.icon" class="h-4 w-4" />
-          {{ opt.label }}
+          <span v-if="opt.label" class="af-label">{{ opt.label }}</span>
           <span v-if="opt.count !== undefined" class="ml-1 opacity-60">{{
             opt.count
           }}</span>

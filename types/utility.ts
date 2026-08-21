@@ -83,6 +83,8 @@ export type UtilityLineup = {
   team_id: string | null;
   author_steam_id: string | null;
   origin_source: UtilityOriginSource;
+  /** Where an imported lineup came from. Sometimes a clip, usually a page. */
+  source_url?: string | null;
   confidence: UtilityConfidence;
   /** Up to 32 quantized points — enough to draw the line on a list/board. */
   trajectory_preview: Array<[number, number, number]> | null;
@@ -103,6 +105,15 @@ export type UtilityLineup = {
   upvotes: number;
   downvotes: number;
   favorites: number;
+  /**
+   * The preview render. Computed fields, not the stored S3 keys: only the
+   * Cloudflare worker can serve one, and the raw key is not a URL. Null until
+   * the lineup goes public and the render pod has filmed it.
+   */
+  preview_url?: string | null;
+  preview_thumbnail_url?: string | null;
+  preview_duration_ms?: number | null;
+  preview_rendered_at?: string | null;
   verified_at: string | null;
   created_at?: string | null;
   updated_at?: string | null;
@@ -117,6 +128,57 @@ export type UtilityLineup = {
   author?: UtilityAuthorRef | null;
   team?: UtilityTeamRef | null;
   progress?: UtilityLineupProgress[] | null;
+};
+
+/**
+ * One lineup's preview render job. Mirrors utility_lineup_renders; only a
+ * moderator can read one, so nothing outside the review surfaces has it.
+ */
+export type UtilityLineupRender = {
+  id: string;
+  utility_lineup_id: string;
+  map_name: string;
+  status:
+    | "queued"
+    | "rendering"
+    | "uploading"
+    | "done"
+    | "error"
+    | "skipped"
+    | "cancelled";
+  /** Hasura sends numeric(4,3) as a STRING. */
+  progress: number | string | null;
+  error_message: string | null;
+  /**
+   * Why a lineup could not be filmed at all -- no physics seed, wrong runtime,
+   * wrong map. A verdict on the lineup, not a fault to retry.
+   */
+  skip_reason: string | null;
+  duration_ms: number | null;
+  k8s_job_name: string | null;
+  game_server_node_id: string | null;
+  paused: boolean;
+  sort_index: number | null;
+  status_history: Array<{
+    status: string;
+    at: string;
+    skip_reason?: string;
+  }> | null;
+  last_status_at: string | null;
+  created_at: string;
+  requested_by?: UtilityAuthorRef | null;
+  lineup?: Pick<
+    UtilityLineup,
+    | "id"
+    | "name"
+    | "map_name"
+    | "utility_type"
+    | "side"
+    | "confidence"
+    | "preview_url"
+    | "preview_thumbnail_url"
+    | "preview_rendered_at"
+  > | null;
 };
 
 export type UtilityCollection = {

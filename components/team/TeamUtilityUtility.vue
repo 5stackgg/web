@@ -27,6 +27,7 @@ import {
   tacticalSectionTickClasses,
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
+import { utilityLineupRoute } from "~/utilities/utilityDisplay";
 import { readUtilityTeamUtility } from "~/types/utility";
 import type {
   UtilityLineup,
@@ -258,10 +259,7 @@ const sortedRows = computed(() =>
             <TableRow v-for="row of sortedRows" :key="row.lineupId">
               <TableCell class="text-left">
                 <NuxtLink
-                  :to="{
-                    name: 'utility-lineup-id',
-                    params: { id: row.lineupId },
-                  }"
+                  :to="utilityLineupRoute(row.mapName, row.lineupId)"
                   class="underline-offset-2 hover:text-foreground hover:underline"
                 >
                   {{ row.name ?? $t("pages.utility.playbooks.unknown_lineup") }}

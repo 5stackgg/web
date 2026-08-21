@@ -4,19 +4,19 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   ClipboardCheck,
+  LayoutList,
   ListOrdered,
   Plus,
   Rocket,
   Rows3,
   ShieldHalf,
+  SquareStack,
   Users,
+  X,
 } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Pagination from "~/components/Pagination.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import UtilityFilters from "~/components/utility/UtilityFilters.vue";
@@ -43,6 +43,7 @@ import {
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
 } from "~/graphql/utilityGraphql";
+import { renderUtilityLineupPreviewMutation } from "~/graphql/utilityRenderGraphql";
 import { e_player_roles_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityReactions } from "~/composables/useUtilityReactions";
@@ -136,9 +137,10 @@ const selectedId = ref<string | null>(null);
 const hoveredId = ref<string | null>(null);
 const practiceOpen = ref(false);
 const forkOpen = ref(false);
-const forkLineup = ref<UtilityLineup | null>(null);
+type LineupRef = { id: string; name: string };
+const forkLineup = ref<LineupRef | null>(null);
 const archiveOpen = ref(false);
-const archiveLineup = ref<UtilityLineup | null>(null);
+const archiveLineup = ref<LineupRef | null>(null);
 
 const LIST_TAB = "lineups";
 const META_TAB = "meta";
@@ -197,15 +199,20 @@ const visibleMetaSpots = computed(() =>
 // The plan is ranked against the caller's own drill record, so there is nothing
 // to show a signed-out visitor. Meta is only a tab once the map has mined data.
 const listTabs = computed(() => {
+  // Every tab carries a title, because on a narrow board the strip collapses to
+  // its icons and the label stops being there to read.
   const tabs: Array<{
     key: string;
     label: string;
+    title?: string;
+    desc?: string;
     count?: number;
     icon?: unknown;
   }> = [
     {
       key: LIST_TAB,
       label: t("pages.utility.lineups"),
+      title: t("pages.utility.lineups"),
       count: totalCount.value,
       icon: Rows3,
     },
@@ -214,6 +221,8 @@ const listTabs = computed(() => {
     tabs.push({
       key: META_TAB,
       label: t("pages.utility.views.meta_tab"),
+      title: t("pages.utility.views.meta_tab"),
+      desc: t("pages.utility.views.meta_hint"),
       count: metaSpots.value.length,
       icon: Users,
     });
@@ -221,17 +230,23 @@ const listTabs = computed(() => {
   tabs.push({
     key: PLAYBOOKS_TAB,
     label: t("pages.utility.views.playbooks_tab"),
+    title: t("pages.utility.views.playbooks_tab"),
+    desc: t("pages.utility.views.playbooks_hint"),
     icon: ListOrdered,
   });
   tabs.push({
     key: BLOCK_TAB,
     label: t("pages.utility.views.block_tab"),
+    title: t("pages.utility.views.block_tab"),
+    desc: t("pages.utility.views.block_hint"),
     icon: ShieldHalf,
   });
   if (mySteamId.value) {
     tabs.push({
       key: PLAN_TAB,
       label: t("pages.utility.plan.tab"),
+      title: t("pages.utility.plan.tab"),
+      desc: t("pages.utility.plan.description"),
       icon: ClipboardCheck,
     });
   }
@@ -254,6 +269,88 @@ const showCreatePanel = computed(
 const showBlockPanel = computed(() => listTab.value === BLOCK_TAB);
 
 const showPlaybooks = computed(() => listTab.value === PLAYBOOKS_TAB);
+
+const playbooksPanel = ref<{ startCreate: () => void } | null>(null);
+
+/**
+ * One primary action -- Practice, true on every tab -- and one slot that belongs
+ * to the tab you are on. The header used to pin "Add a Lineup" above every view
+ * and then let Executes add a second amber button beside it, which wrapped onto
+ * its own row and competed with Practice for the same job.
+ */
+const secondaryAction = computed(() => {
+  if (!mySteamId.value) {
+    return null;
+  }
+  if (listTab.value === CREATE_TAB) {
+    return {
+      key: "cancel",
+      icon: X,
+      label: t("common.cancel"),
+      run: () => {
+        createSeed.value = null;
+        listTab.value = LIST_TAB;
+      },
+    };
+  }
+  if (listTab.value === PLAYBOOKS_TAB) {
+    return {
+      key: "playbook",
+      icon: Plus,
+      label: t("pages.utility.playbooks.new"),
+      run: () => playbooksPanel.value?.startCreate(),
+    };
+  }
+  if (listTab.value === LIST_TAB || listTab.value === META_TAB) {
+    return {
+      key: "create",
+      icon: Plus,
+      label: t("pages.utility.create.action"),
+      run: () => {
+        createSeed.value = null;
+        listTab.value = CREATE_TAB;
+      },
+    };
+  }
+  // Block draws its own search next to the two points it needs, and the plan is
+  // a ranking rather than something you add to. Neither has a second action, so
+  // neither gets a second button.
+  return null;
+});
+
+// The legend doubles as the type filter, so it belongs on every view that reads
+// one -- and nowhere else. Executes, the plan and the author panel do not.
+const boardFiltersApply = computed(
+  () =>
+    listTab.value === LIST_TAB ||
+    listTab.value === META_TAB ||
+    listTab.value === BLOCK_TAB,
+);
+
+// A view preference, so it outlives the route without following it into the URL.
+const listDensity = useState<"cards" | "rows">(
+  "utility-list-density",
+  () => "cards",
+);
+
+// Icon-only: the label rides in the tooltip, because two words beside two icons
+// would cost more of the options row than the search box can spare.
+const densityOptions = computed(() => [
+  {
+    key: "cards",
+    label: "",
+    icon: SquareStack,
+    title: t("pages.utility.density.cards"),
+    desc: t("pages.utility.density.cards_hint"),
+  },
+  {
+    key: "rows",
+    label: "",
+    icon: LayoutList,
+    title: t("pages.utility.density.rows"),
+    desc: t("pages.utility.density.rows_hint"),
+  },
+]);
 
 // A tab that stops driving the board must hand it back, or its markers outlive
 // the panel that drew them.
@@ -316,6 +413,13 @@ const where = computed<Record<string, unknown>>(() =>
     mySteamId: mySteamId.value,
     myTeamIds: myTeamIds.value,
   }),
+);
+
+// Declared above fetchScopeCounts because that function reads it, and the first
+// call runs at setup: with the auth store already warm, the old ordering threw
+// "Cannot access 'canReview' before initialization" and the page never mounted.
+const canReview = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
 );
 
 // One count per scope tab, so "MINE" says how many are yours before you click
@@ -497,20 +601,69 @@ function startFork(id: string) {
 
 const reactions = useUtilityReactions();
 
-const detailOpen = ref(false);
-const detailId = ref<string | null>(null);
+/**
+ * A lineup is an address, not a modal flag. `?lineup=<id>` is what a link to one
+ * looks like now that the standalone page is gone: the dialog is driven by the
+ * URL, so a link opens straight onto it and Back closes it.
+ */
+const detailId = computed<string | null>({
+  get: () =>
+    typeof route.query.lineup === "string" && route.query.lineup
+      ? route.query.lineup
+      : null,
+  set: (id) => setDetailId(id, "replace"),
+});
+
+function setDetailId(id: string | null, mode: "push" | "replace") {
+  const query = { ...route.query } as Record<string, unknown>;
+  if (id) {
+    query.lineup = id;
+  } else {
+    delete query.lineup;
+  }
+  const to = { path: route.path, query: query as any, hash: route.hash };
+  // Opening pushes so Back closes it; stepping through the set replaces, or
+  // flipping past ten lineups would bury the page you came from.
+  if (mode === "push") {
+    void router.push(to);
+  } else {
+    void router.replace(to);
+  }
+}
+
+const detailOpen = computed<boolean>({
+  get: () => !!detailId.value,
+  set: (value) => {
+    if (!value) {
+      setDetailId(null, "replace");
+    }
+  },
+});
 
 function openLineup(id: string) {
-  detailId.value = id;
-  detailOpen.value = true;
+  setDetailId(id, "push");
 }
 
 // Practising from the dialog hands off to the practice dialog rather than
 // stacking one modal on another.
 function practiceFromDetail(id: string) {
-  detailOpen.value = false;
+  setDetailId(null, "replace");
   selectedId.value = id;
   practiceOpen.value = true;
+}
+
+// Fork and archive are asked for from inside the dialog; both open a dialog of
+// their own, so the detail has to get out of the way first.
+function forkFromDetail(id: string, name: string) {
+  setDetailId(null, "replace");
+  forkLineup.value = { id, name };
+  forkOpen.value = true;
+}
+
+function archiveFromDetail(id: string, name: string) {
+  setDetailId(null, "replace");
+  archiveLineup.value = { id, name };
+  archiveOpen.value = true;
 }
 
 // Patched in place rather than refetched: the whole list would flicker to move
@@ -589,9 +742,6 @@ const populatedElsewhere = computed(() =>
   ).map((scope) => ({ scope, count: scopeCounts.value[scope] ?? 0 })),
 );
 
-const canReview = computed(() =>
-  useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
-);
 
 // Asking, not publishing. The table's trigger is what refuses a self-promotion,
 // so this cannot be talked into more than a request.
@@ -642,6 +792,31 @@ async function reviewPublic(id: string, approve: boolean) {
   }
 }
 
+// The approval itself books the first render through the table's event
+// trigger; this is the reviewer's re-run for one that came out wrong.
+async function rerenderPreview(id: string) {
+  try {
+    const { data } = await getGraphqlClient().mutate({
+      mutation: renderUtilityLineupPreviewMutation,
+      variables: { utility_lineup_id: id },
+    });
+    const result = (data as any)?.renderUtilityLineupPreview;
+    toast({
+      title: result?.success
+        ? t("pages.utility.render_queue.requeued")
+        : t("pages.utility.render_queue.not_requeued"),
+      description: result?.reason ?? undefined,
+      variant: result?.success ? undefined : "destructive",
+    });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.render_queue.not_requeued"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
+}
+
 function startArchive(id: string) {
   archiveLineup.value = lineups.value.find((entry) => entry.id === id) ?? null;
   archiveOpen.value = !!archiveLineup.value;
@@ -678,10 +853,14 @@ function selectLineup(id: string | null) {
   <PageTransition>
     <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
       <!-- The map is the page. Everything that used to sit in a band above it
-           now floats on it, so the board gets the room and the chrome stops
-           competing with the list's own controls. -->
+           floats on it, so the board gets the room and the chrome stops
+           competing with the list's own controls. `utility-board` makes this a
+           query container, because what crowds these overlays is the board's
+           width, not the viewport's -- collapsing the left nav or opening the
+           right hub narrows it on a desktop, so a viewport breakpoint would
+           fire at all the wrong times. -->
       <div
-        class="relative mx-auto w-full max-w-[calc(100vh-7rem)] lg:sticky lg:top-4 lg:self-start"
+        class="utility-board relative mx-auto w-full max-w-[calc(100vh-7rem)] lg:sticky lg:top-4 lg:self-start"
       >
         <UtilityRadarBoard
           :map-name="mapName"
@@ -714,13 +893,17 @@ function selectLineup(id: string | null) {
           class="pointer-events-none absolute inset-x-3 top-3 flex items-start justify-between gap-3"
         >
           <!-- The name IS the switcher, so there is no index page to go back
-               to and no "All Maps" link taking up a line under it. -->
-          <div class="pointer-events-auto min-w-0">
+               to and no "All Maps" link taking up a line under it. It is also
+               the page's identity, so it is the one thing here that never
+               yields its width: the strip used to be shrink-0 against a
+               min-w-0 name, which crushed the title to nothing under a 560px
+               board and covered it outright under 480px. -->
+          <div class="pointer-events-auto shrink-0">
             <UtilityMapPicker :map-name="mapName" />
           </div>
 
           <div
-            class="pointer-events-auto max-w-full shrink-0 overflow-x-auto rounded-lg border border-white/10 bg-background/80 p-1 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
+            class="utility-board-tabs pointer-events-auto min-w-0 overflow-x-auto rounded-lg border border-white/10 bg-background/80 p-1 shadow-[0_8px_28px_-12px_rgba(0,0,0,0.9)] [backdrop-filter:blur(10px)]"
           >
             <AnimatedFilters v-model="listTab" :options="listTabs" square />
           </div>
@@ -731,11 +914,12 @@ function selectLineup(id: string | null) {
              thing that hides them. On the board they read as map layers,
              which is what they are. -->
         <div
+          v-if="boardFiltersApply"
           class="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-end justify-between gap-2"
         >
           <div class="pointer-events-auto flex max-w-full flex-col gap-1.5">
             <span
-              class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-white/45 [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
+              class="utility-board-key font-mono text-[0.55rem] uppercase tracking-[0.16em] text-white/45 [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
             >
               {{ $t("pages.utility.board.key") }}
             </span>
@@ -761,18 +945,21 @@ function selectLineup(id: string | null) {
               />
             </div>
             <Button
-              v-if="metaSpots.length"
+              v-if="metaSpots.length && !showMetaPanel"
               size="sm"
               variant="outline"
               class="shrink-0 border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
               :class="showMeta ? 'text-[hsl(var(--tac-amber))]' : ''"
+              :title="$t('pages.utility.meta.overlay')"
               @click="showMeta = !showMeta"
             >
-              <Users class="mr-1 h-4 w-4" />
-              {{ $t("pages.utility.meta.overlay") }}
+              <Users class="h-4 w-4" />
+              <span class="utility-board-overlay-label ml-1">
+                {{ $t("pages.utility.meta.overlay") }}
+              </span>
               <span
                 v-if="showMeta"
-                class="ml-1 font-mono text-[0.6rem] opacity-70"
+                class="ml-1 font-mono text-[0.6rem] tabular-nums opacity-70"
               >
                 {{ visibleMetaSpots.length }}/{{ metaSpots.length }}
               </span>
@@ -782,21 +969,20 @@ function selectLineup(id: string | null) {
       </div>
 
       <div class="flex flex-col gap-2">
-        <!-- The two things you actually do on this page, at the head of the
-             column you do them from. -->
+        <!-- One constant action and one that belongs to the tab you are on. -->
         <div v-if="mySteamId" class="flex gap-2">
           <Button class="tac-amber-cta flex-1" @click="practiceOpen = true">
             <Rocket class="mr-1 h-4 w-4" />
             {{ $t("pages.utility.practice.start") }}
           </Button>
           <Button
+            v-if="secondaryAction"
             variant="outline"
             class="shrink-0"
-            :class="listTab === CREATE_TAB ? 'text-[hsl(var(--tac-amber))]' : ''"
-            @click="listTab = CREATE_TAB"
+            @click="secondaryAction.run()"
           >
-            <Plus class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.create.action") }}
+            <component :is="secondaryAction.icon" class="mr-1 h-4 w-4" />
+            {{ secondaryAction.label }}
           </Button>
         </div>
 
@@ -812,15 +998,25 @@ function selectLineup(id: string | null) {
             :parts="['scope']"
             bare
           />
-          <UtilityFilters
-            v-model="filters"
-            :available-tags="availableTags"
-            :signed-in="!!mySteamId"
-            :has-team="myTeamIds.length > 0"
-            :parts="['search', 'menu']"
-            bare
-            class="w-full flex-nowrap [&>div:first-child]:max-w-none [&>div:first-child]:flex-1"
-          />
+          <div class="flex items-center gap-2">
+            <UtilityFilters
+              v-model="filters"
+              :available-tags="availableTags"
+              :signed-in="!!mySteamId"
+              :has-team="myTeamIds.length > 0"
+              :parts="['search', 'menu']"
+              bare
+              class="min-w-0 flex-1 flex-nowrap [&>div:first-child]:max-w-none [&>div:first-child]:flex-1"
+            />
+            <!-- Cards read one lineup; rows read down a list of them. Which one
+                 you want depends on whether you are choosing or comparing. -->
+            <AnimatedFilters
+              v-model="listDensity"
+              :options="densityOptions"
+              square
+              class="shrink-0"
+            />
+          </div>
         </template>
 
         <UtilityPracticePlanPanel
@@ -832,7 +1028,9 @@ function selectLineup(id: string | null) {
 
         <UtilityPlaybooksPanel
           v-else-if="showPlaybooks"
+          ref="playbooksPanel"
           :map-name="mapName"
+          :hide-create="!!mySteamId"
         />
 
         <UtilityBlockPanel
@@ -857,6 +1055,7 @@ function selectLineup(id: string | null) {
           v-model:selected-key="selectedMetaKey"
           v-model:hovered-key="hoveredMetaKey"
           v-model:threshold="metaThresholdModel"
+          :map-name="mapName"
           :threshold-options="metaThresholdOptions"
           :spots="visibleMetaSpots"
           :lineups="lineups"
@@ -875,50 +1074,68 @@ function selectLineup(id: string | null) {
           <div
             v-for="i in 4"
             :key="`skeleton-${i}`"
-            class="animate-in fade-in rounded-md border border-border bg-card/40 p-3 [animation-duration:240ms] [animation-fill-mode:backwards]"
+            class="animate-in fade-in rounded-md border border-l-2 border-border bg-card/40 [animation-duration:240ms] [animation-fill-mode:backwards]"
+            :class="listDensity === 'rows' ? 'py-2 pl-3 pr-2' : 'p-3 pl-3.5'"
             :style="{ animationDelay: `${(i - 1) * 60}ms` }"
           >
-            <div class="flex items-start gap-2">
-              <Skeleton class="mt-1 h-3 w-3 shrink-0 rounded-[2px]" />
-              <div class="min-w-0 flex-1 space-y-1.5">
-                <Skeleton class="h-4 w-2/5" />
-                <Skeleton class="h-2.5 w-1/4" />
+            <div class="flex items-start justify-between gap-2">
+              <Skeleton class="h-4 w-2/5" />
+              <Skeleton class="h-4 w-4 rounded" />
+            </div>
+            <Skeleton class="mt-2 h-2.5 w-4/5" />
+            <template v-if="listDensity === 'cards'">
+              <Skeleton class="mt-2.5 h-[3px] w-full rounded-sm" />
+              <div class="mt-2.5 flex items-center justify-between">
+                <Skeleton class="h-5 w-24 rounded-full" />
+                <Skeleton class="h-5 w-16" />
               </div>
-            </div>
-            <div class="mt-2.5 flex flex-wrap gap-1.5">
-              <Skeleton class="h-5 w-20 rounded-full" />
-              <Skeleton class="h-5 w-12 rounded-full" />
-              <Skeleton class="h-5 w-24 rounded-full" />
-            </div>
-            <Skeleton class="mt-2.5 h-9 w-full rounded-md" />
-            <div class="mt-2.5 flex items-center justify-between">
-              <Skeleton class="h-6 w-28 rounded-full" />
-              <Skeleton class="h-4 w-14" />
-            </div>
+            </template>
           </div>
         </template>
 
-        <Empty v-else-if="!lineups.length">
-          <EmptyTitle>{{ $t("pages.utility.empty.no_lineups") }}</EmptyTitle>
-          <EmptyDescription>
+        <div
+          v-else-if="!lineups.length"
+          class="rounded-md border border-dashed border-border px-4 py-6 text-center"
+        >
+          <p class="text-sm font-semibold">
+            {{ $t("pages.utility.empty.no_lineups") }}
+          </p>
+          <p class="mx-auto mt-1 max-w-[36ch] text-xs leading-relaxed text-muted-foreground">
             {{ $t("pages.utility.empty.no_lineups_description") }}
-          </EmptyDescription>
+          </p>
+          <Button
+            v-if="mySteamId"
+            size="sm"
+            variant="outline"
+            class="mt-3 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+            @click="
+              createSeed = null;
+              listTab = CREATE_TAB;
+            "
+          >
+            <Plus class="mr-1 h-4 w-4" />
+            {{ $t("pages.utility.create.action") }}
+          </Button>
+
+          <!-- Telling someone the library is empty while three lineups sit one
+               tab away is how the counts stop being believed. -->
           <div
             v-if="populatedElsewhere.length"
-            class="mt-3 flex flex-wrap justify-center gap-1.5"
+            class="mt-3 flex flex-wrap justify-center gap-1.5 border-t border-border/60 pt-3"
           >
             <Button
               v-for="entry of populatedElsewhere"
               :key="entry.scope"
               size="sm"
-              variant="outline"
+              variant="ghost"
+              class="h-7 text-xs"
               @click="filters = { ...filters, scope: entry.scope }"
             >
               {{ $t(`pages.utility.scope.${entry.scope}`) }}
               <span class="ml-1 opacity-60">{{ entry.count }}</span>
             </Button>
           </div>
-        </Empty>
+        </div>
 
         <!-- A list that changes under you without moving is a list you have to
              re-read. Filtering, archiving and paging all reorder this, so the
@@ -940,8 +1157,16 @@ function selectLineup(id: string | null) {
             :id="`utility-card-${lineup.id}`"
             :key="lineup.id"
           >
+            <!-- In row mode the selected lineup opens back into a full card in
+                 place, so picking one on the board still shows you everything
+                 about it without leaving the list you were reading. -->
             <UtilityLineupCard
               :lineup="lineup"
+              :mode="
+                listDensity === 'rows' && selectedId !== lineup.id
+                  ? 'row'
+                  : 'card'
+              "
               :selected="selectedId === lineup.id"
               :meta-throwers="metaThrowersByLineup[lineup.id] ?? null"
               :show-fork="!!mySteamId"
@@ -957,6 +1182,7 @@ function selectLineup(id: string | null) {
               @restore="restoreLineup"
               @request-public="requestPublic"
               @review-public="reviewPublic"
+              @rerender-preview="rerenderPreview"
               @vote="onVote"
               @favorite="onFavorite"
             />
@@ -979,6 +1205,7 @@ function selectLineup(id: string | null) {
     v-model:open="forkOpen"
     :lineup-id="forkLineup?.id ?? null"
     :source-name="forkLineup?.name ?? null"
+    :map-name="mapName"
   />
 
   <UtilityLineupDialog
@@ -989,6 +1216,8 @@ function selectLineup(id: string | null) {
     @practice="practiceFromDetail"
     @vote="onVote"
     @favorite="onFavorite"
+    @fork="forkFromDetail"
+    @archive="archiveFromDetail"
   />
 
   <UtilityArchiveDialog

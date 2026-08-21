@@ -4005,10 +4005,11 @@
         "favorite": "Save to your list",
         "unfavorite": "Remove from your saved list",
         "open": "Open lineup",
-        "jump_bind": "Jump bind",
         "flight_time": "{seconds}s",
         "unknown_author": "Unknown author",
-        "jump_bind_unknown": "Jump bind?"
+        "downvote": "Mark this as a bad lineup",
+        "more_actions": "More actions",
+        "flight_time_hint": "How long the grenade is in the air after you throw it."
       },
       "viewer": {
         "replay_throw": "Replay throw",
@@ -4107,7 +4108,7 @@
         "volume": "{throws} throws · {matches} matches",
         "classification": "Cluster",
         "aim": "Representative Aim",
-        "aim_hint": "Yaw / pitch averaged across the cluster — a direction, not an alignment.",
+        "aim_hint": "The median yaw and pitch of everyone seen throwing this spot.",
         "usage": "Usage",
         "usage_detail": "{throwers} players · {throws} throws · {matches} matches",
         "seen": "Seen",
@@ -4117,7 +4118,18 @@
         "match_gap": "Showing {shown} of {count} saved lineups in this cluster — the rest are outside the lineups loaded here.",
         "summary": "{spots} spots · {throws} throws",
         "min_throwers": "Min players",
-        "write_up": "Write this up"
+        "write_up": "Write this up",
+        "unwritten": "Nobody has written this up",
+        "unwritten_count": "{count} unwritten",
+        "saved_count": "{count} saved",
+        "saved_lineups": "{count} saved lineups",
+        "players": "players",
+        "throws": "throws",
+        "matches": "matches",
+        "copy_aim": "Copy setang",
+        "aim_copied": "Aim copied",
+        "aim_copy_failed": "Could not copy that",
+        "write_up_hint": "Prefills origin + aim"
       },
       "playbooks": {
         "title": "Playbooks",
@@ -4450,7 +4462,24 @@
         "save": "Save Lineup",
         "save_requirements": "Place both points and give it a name.",
         "saved": "Lineup saved",
-        "save_failed": "Could not save the lineup"
+        "save_failed": "Could not save the lineup",
+        "step_place": "Place",
+        "step_describe": "Describe",
+        "step_throw": "Throw",
+        "step_place_todo": "two points",
+        "step_place_half": "one to go",
+        "step_place_done": "both ends",
+        "step_describe_todo": "needs a name",
+        "step_describe_done": "named",
+        "step_throw_todo": "no aim yet",
+        "step_throw_aimed": "aimed",
+        "placed": "Placed on the map",
+        "repick_note": "Click either end to re-pick it",
+        "ground_height": "Ground height",
+        "height_why": "Why this matters",
+        "check_placed": "Placed",
+        "check_named": "Named",
+        "check_aim": "Aim"
       },
       "publish": {
         "submit": "Submit for public",
@@ -4598,6 +4627,37 @@
         "practice_entry_title": "Save a throw",
         "practice_entry_hint": "Keep what you have been throwing in here as a lineup of your own.",
         "practice_entry_open": "Save From Practice"
+      },
+      "density": {
+        "cards": "Cards",
+        "cards_hint": "One lineup at a time, with your drill record and who wrote it.",
+        "rows": "Rows",
+        "rows_hint": "One line each, for reading down the list. The one you pick opens in place."
+      },
+      "throw_buttons": {
+        "left": "Left click",
+        "right": "Right click",
+        "both": "Left + right click",
+        "label": "Press",
+        "left_short": "LMB",
+        "right_short": "RMB",
+        "both_short": "LMB+RMB"
+      },
+      "preview": {
+        "play": "Play the preview"
+      },
+      "render_queue": {
+        "title": "Lineup Previews",
+        "empty": "No preview renders queued.",
+        "lineups": "{count} lineup | {count} lineups",
+        "rerender": "Re-render preview",
+        "retry": "Render again",
+        "cancel": "Cancel this render",
+        "clear_finished": "Clear finished",
+        "requeued": "Preview render queued",
+        "not_requeued": "Could not queue that render",
+        "cancel_failed": "Could not cancel that render",
+        "clear_failed": "Could not clear the queue"
       }
     }
   },

@@ -6539,7 +6539,15 @@
     "map_veto": {
       "is_picking": "is Picking a",
       "pick": "Pick",
-      "confirm": "Confirm {type}"
+      "confirm": "Confirm {type}",
+      "your_turn": "Your Turn",
+      "headline_side": "Pick your starting side",
+      "headline_pick": "Pick a map",
+      "headline_ban": "Ban a map",
+      "side_on_map": "{team} \u00b7 first half on {map}",
+      "side_for_map": "Side is for this map",
+      "side_role_ct": "Defend",
+      "side_role_t": "Attack"
     },
     "map_lineup": {
       "picked": "Picked"

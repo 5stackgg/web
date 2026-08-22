@@ -15,6 +15,10 @@ import type {
 } from "~/utilities/utilityDisplay";
 import type { UtilityLineup } from "~/types/utility";
 
+// The zoom stack is pinned to the shell, not to the square, so a class from
+// the call site still has to land on the square -- that is where the frame is.
+defineOptions({ inheritAttrs: false });
+
 const props = withDefaults(
   defineProps<{
     mapName: string;
@@ -64,7 +68,10 @@ const emit = defineEmits<{
 const radarFailed = ref(false);
 
 // One map failing must not condemn the next one.
-watch(() => props.mapName, () => (radarFailed.value = false));
+watch(
+  () => props.mapName,
+  () => (radarFailed.value = false),
+);
 
 /**
  * What is actually painted, as opposed to what the map name says should be.
@@ -122,7 +129,9 @@ watch(
 // two maps it is not, and nothing that belongs to the incoming map may be drawn
 // over the outgoing one -- so the overlay waits and the map arrives bare, then
 // fills in.
-const boardReady = computed(() => !!radarSrc.value && displaySrc.value === radarSrc.value);
+const boardReady = computed(
+  () => !!radarSrc.value && displaySrc.value === radarSrc.value,
+);
 
 type Marker = {
   id: string;
@@ -632,8 +641,7 @@ let lastX = 0;
 let lastY = 0;
 
 const boardTransform = computed(
-  () =>
-    `translate(${panX.value}px, ${panY.value}px) scale(${zoom.value})`,
+  () => `translate(${panX.value}px, ${panY.value}px) scale(${zoom.value})`,
 );
 
 // The whole board is scaled by one CSS transform, which is right for the map
@@ -847,92 +855,96 @@ const orderedMarkers = computed(() => {
        this way the map scales down on a short window until the whole thing is
        visible without scrolling, and mx-auto centres it in a box that keeps its
        full width for the controls pinned along its edges. -->
-  <div
-    ref="viewportRef"
-    class="relative mx-auto aspect-square w-full max-w-[calc(100vh-12rem)] overflow-hidden rounded-md border border-border bg-card/40"
-    :class="zoom > 1 ? (panning ? 'cursor-grabbing' : 'cursor-grab') : ''"
-    @wheel="onWheel"
-    @pointerdown="onPointerDown"
-    @pointermove="onPointerMove"
-    @pointerup="onPointerUp"
-    @pointercancel="onPointerUp"
-  >
-    <!-- Full bleed. Insetting this to clear the floating chrome cost far more
+  <div class="relative w-full">
+    <div
+      ref="viewportRef"
+      v-bind="$attrs"
+      class="relative mx-auto aspect-square w-full max-w-[calc(100vh-12rem)] overflow-hidden rounded-md border border-border bg-card/40"
+      :class="zoom > 1 ? (panning ? 'cursor-grabbing' : 'cursor-grab') : ''"
+      @wheel="onWheel"
+      @pointerdown="onPointerDown"
+      @pointermove="onPointerMove"
+      @pointerup="onPointerUp"
+      @pointercancel="onPointerUp"
+    >
+      <!-- Full bleed. Insetting this to clear the floating chrome cost far more
          than it bought: the map is square, so shortening it vertically shrinks
          it in BOTH axes and leaves wide empty margins. The name and the legend
          carry their own text shadows for exactly this reason. -->
-    <div
-      class="absolute inset-0"
-      :style="{
-        transform: boardTransform,
-        transformOrigin: 'center center',
-        // will-change pins the layer's raster at the scale it was promoted
-        // at, so a zoomed-in board stayed a 1x bitmap blown up -- the dashed
-        // rings furred and the thrower counts went soft. It buys smoothness
-        // during a drag and costs sharpness the rest of the time, so it is
-        // only on while a drag is actually happening; letting go re-rasterises
-        // the vectors at the scale you are looking at them.
-        willChange: panning || easing ? 'transform' : 'auto',
-        transition: easing
-          ? `transform ${ZOOM_EASE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`
-          : 'none',
-      }"
-    >
-    <!-- A blueprint grid under the map, not a grey card. Before the first radar
+      <div
+        class="absolute inset-0"
+        :style="{
+          transform: boardTransform,
+          transformOrigin: 'center center',
+          // will-change pins the layer's raster at the scale it was promoted
+          // at, so a zoomed-in board stayed a 1x bitmap blown up -- the dashed
+          // rings furred and the thrower counts went soft. It buys smoothness
+          // during a drag and costs sharpness the rest of the time, so it is
+          // only on while a drag is actually happening; letting go re-rasterises
+          // the vectors at the scale you are looking at them.
+          willChange: panning || easing ? 'transform' : 'auto',
+          transition: easing
+            ? `transform ${ZOOM_EASE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`
+            : 'none',
+        }"
+      >
+        <!-- A blueprint grid under the map, not a grey card. Before the first radar
          arrives this square is 740px of nothing with a border around it, which
          reads as a panel that failed rather than one that is still loading. -->
-    <div
-      v-if="!displaySrc"
-      aria-hidden="true"
-      class="utility-board-pending absolute inset-0"
-    />
+        <div
+          v-if="!displaySrc"
+          aria-hidden="true"
+          class="utility-board-pending absolute inset-0"
+        />
 
-    <!-- Both halves of a map change are absolutely positioned on the same
+        <!-- Both halves of a map change are absolutely positioned on the same
          square, so this is a true cross-fade rather than a swap: the outgoing
          map fades out from where it is while the incoming one -- already
          decoded, so it cannot flash -- fades up underneath it. -->
-    <Transition
-      enter-active-class="transition-opacity [transition-duration:280ms] ease-out motion-reduce:!transition-none"
-      leave-active-class="transition-opacity [transition-duration:280ms] ease-out motion-reduce:!transition-none"
-      enter-from-class="opacity-0"
-      leave-to-class="opacity-0"
-    >
-      <img
-        v-if="displaySrc"
-        :key="displaySrc"
-        :src="displaySrc"
-        alt=""
-        class="absolute inset-0 h-full w-full select-none object-cover"
-        draggable="false"
-      />
-    </Transition>
+        <Transition
+          enter-active-class="transition-opacity [transition-duration:280ms] ease-out motion-reduce:!transition-none"
+          leave-active-class="transition-opacity [transition-duration:280ms] ease-out motion-reduce:!transition-none"
+          enter-from-class="opacity-0"
+          leave-to-class="opacity-0"
+        >
+          <img
+            v-if="displaySrc"
+            :key="displaySrc"
+            :src="displaySrc"
+            alt=""
+            class="absolute inset-0 h-full w-full select-none object-cover"
+            draggable="false"
+          />
+        </Transition>
 
-    <div
-      v-if="!radarSrc && !hasCalibration"
-      class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center"
-    >
-      <MapPinOff class="h-6 w-6 text-muted-foreground" />
-      <span
-        class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
-      >
-        {{ $t("pages.utility.board.no_radar") }}
-      </span>
-    </div>
+        <div
+          v-if="!radarSrc && !hasCalibration"
+          class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center"
+        >
+          <MapPinOff class="h-6 w-6 text-muted-foreground" />
+          <span
+            class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
+          >
+            {{ $t("pages.utility.board.no_radar") }}
+          </span>
+        </div>
 
-    <svg
-      v-if="boardReady"
-      class="absolute inset-0 h-full w-full"
-      :class="picking ? 'cursor-crosshair' : ''"
-      :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
-      preserveAspectRatio="none"
-      @click="onBoardClick"
-    >
-      <g
-        :class="
-          metaInteractive && !picking ? 'cursor-pointer' : 'pointer-events-none'
-        "
-      >
-        <!-- Mined spots used to appear and vanish on a hard cut: toggling the
+        <svg
+          v-if="boardReady"
+          class="absolute inset-0 h-full w-full"
+          :class="picking ? 'cursor-crosshair' : ''"
+          :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
+          preserveAspectRatio="none"
+          @click="onBoardClick"
+        >
+          <g
+            :class="
+              metaInteractive && !picking
+                ? 'cursor-pointer'
+                : 'pointer-events-none'
+            "
+          >
+            <!-- Mined spots used to appear and vanish on a hard cut: toggling the
              overlay dumped forty rings onto the map in one frame, and nudging
              the threshold swapped a dozen of them the same way, which reads as
              the map redrawing rather than as an answer to the control. They now
@@ -940,86 +952,89 @@ const orderedMarkers = computed(() => {
              up about its own centre, stepped so the cluster fills in. The step
              caps at twelve rings -- past that a stagger stops reading as one
              gesture and starts reading as lag. -->
-        <!-- Outside the TransitionGroup, deliberately. Anything nested inside
+            <!-- Outside the TransitionGroup, deliberately. Anything nested inside
              one becomes a transitioning member: these got adopted, took the
              meta-enter-from class and stuck at opacity 0 forever. They are
              siblings, and they come first so the rings stack over their own
              leader lines rather than under them. -->
-        <!-- The leader lines live outside the travelling groups on purpose.
+            <!-- The leader lines live outside the travelling groups on purpose.
              A line runs from a point that stays put to one that moves, so it
              cannot ride either end; instead it is drawn at the fanned position
              from the start and fades in while the ring slides out along it.
              The ring IS the animation -- the line is just the path it took. -->
-        <g v-if="openCluster" class="pointer-events-none">
-          <template v-for="meta of metaMarkers" :key="`lead-${meta.key}`">
-            <line
-              v-if="metaFanned(meta)"
-              :x1="meta.anchor.x"
-              :y1="meta.anchor.y"
-              :x2="meta.fan.x"
-              :y2="meta.fan.y"
-              :stroke="meta.color"
-              stroke-opacity="0.4"
-              :stroke-width="1.2 * ink"
-              :stroke-dasharray="`${3 * ink} ${4 * ink}`"
-              class="meta-lead"
-            />
-          </template>
-        </g>
+            <g v-if="openCluster" class="pointer-events-none">
+              <template v-for="meta of metaMarkers" :key="`lead-${meta.key}`">
+                <line
+                  v-if="metaFanned(meta)"
+                  :x1="meta.anchor.x"
+                  :y1="meta.anchor.y"
+                  :x2="meta.fan.x"
+                  :y2="meta.fan.y"
+                  :stroke="meta.color"
+                  stroke-opacity="0.4"
+                  :stroke-width="1.2 * ink"
+                  :stroke-dasharray="`${3 * ink} ${4 * ink}`"
+                  class="meta-lead"
+                />
+              </template>
+            </g>
 
-        <!-- Where the cluster really is, held on screen while its members are
+            <!-- Where the cluster really is, held on screen while its members are
              out: without it the fan reads as five spots rather than as one
              place five throws land. -->
-        <template v-for="cluster of metaClusters" :key="`anchor-${cluster.cluster}`">
-          <circle
-            v-if="openCluster === cluster.cluster"
-            :cx="cluster.anchor.x"
-            :cy="cluster.anchor.y"
-            :r="2.5 * ink"
-            :fill="cluster.color"
-            fill-opacity="0.85"
-            class="meta-lead pointer-events-none"
-          />
-        </template>
+            <template
+              v-for="cluster of metaClusters"
+              :key="`anchor-${cluster.cluster}`"
+            >
+              <circle
+                v-if="openCluster === cluster.cluster"
+                :cx="cluster.anchor.x"
+                :cy="cluster.anchor.y"
+                :r="2.5 * ink"
+                :fill="cluster.color"
+                fill-opacity="0.85"
+                class="meta-lead pointer-events-none"
+              />
+            </template>
 
-        <!-- The line back to where the throw is made from. It cannot ride
+            <!-- The line back to where the throw is made from. It cannot ride
              inside the marker: that group travels when a cluster stacks or
              fans out, and an origin is a fixed place on the map. Carried
              along, the line swung around with the ring and pointed at wherever
              it had moved from instead of at the spot you stand on. Only the
              landing end follows the ring. -->
-        <g class="pointer-events-none">
-          <template v-for="meta of metaMarkers" :key="`origin-${meta.key}`">
-            <line
-              v-if="meta.origin && metaLit(meta.key)"
-              :x1="meta.origin.x"
-              :y1="meta.origin.y"
-              :x2="metaTarget(meta).x"
-              :y2="metaTarget(meta).y"
-              :stroke="meta.color"
-              :stroke-opacity="metaMuted(meta) ? 0.2 : 0.6"
-              :stroke-width="3 * ink"
-              stroke-linecap="round"
-              :stroke-dasharray="`${6 * ink} ${10 * ink}`"
-            />
-          </template>
-        </g>
+            <g class="pointer-events-none">
+              <template v-for="meta of metaMarkers" :key="`origin-${meta.key}`">
+                <line
+                  v-if="meta.origin && metaLit(meta.key)"
+                  :x1="meta.origin.x"
+                  :y1="meta.origin.y"
+                  :x2="metaTarget(meta).x"
+                  :y2="metaTarget(meta).y"
+                  :stroke="meta.color"
+                  :stroke-opacity="metaMuted(meta) ? 0.2 : 0.6"
+                  :stroke-width="3 * ink"
+                  stroke-linecap="round"
+                  :stroke-dasharray="`${6 * ink} ${10 * ink}`"
+                />
+              </template>
+            </g>
 
-        <TransitionGroup name="meta" tag="g">
-        <g
-          v-for="meta of metaMarkers"
-          :key="`meta-${meta.key}`"
-          :style="{ '--meta-delay': meta.delay }"
-          class="meta-marker"
-          :class="[
-            metaStacked(meta) ? 'meta-marker--stacked' : '',
-            metaMuted(meta) ? 'meta-marker--muted' : '',
-          ]"
-          @click.stop="onMetaClick(meta)"
-          @mouseenter="onMetaHover(meta.key)"
-          @mouseleave="onMetaHover(null)"
-        >
-        <!-- The travel is on an inner group and not on the TransitionGroup
+            <TransitionGroup name="meta" tag="g">
+              <g
+                v-for="meta of metaMarkers"
+                :key="`meta-${meta.key}`"
+                :style="{ '--meta-delay': meta.delay }"
+                class="meta-marker"
+                :class="[
+                  metaStacked(meta) ? 'meta-marker--stacked' : '',
+                  metaMuted(meta) ? 'meta-marker--muted' : '',
+                ]"
+                @click.stop="onMetaClick(meta)"
+                @mouseenter="onMetaHover(meta.key)"
+                @mouseleave="onMetaHover(null)"
+              >
+                <!-- The travel is on an inner group and not on the TransitionGroup
              child itself. A transform transition on the child is the exact
              signal TransitionGroup reads as "this list FLIP-animates its
              moves", and its FLIP writes an inline transform and then clears
@@ -1027,279 +1042,298 @@ const orderedMarkers = computed(() => {
              when its value next changes, so a ring silently drops back to its
              untranslated point and sits there, out of register with the badge
              and the leader lines. One level down, nothing reaches it. -->
-        <g class="meta-shift" :style="{ transform: metaTransform(meta) }">
-          <!-- The ring is a 2px dashed stroke, which is nearly impossible to
+                <g
+                  class="meta-shift"
+                  :style="{ transform: metaTransform(meta) }"
+                >
+                  <!-- The ring is a 2px dashed stroke, which is nearly impossible to
                point at. The disc inside it is the real hit target. -->
-          <circle
-            :cx="meta.point.x"
-            :cy="meta.point.y"
-            :r="meta.radius"
-            fill="transparent"
-          />
-          <circle
-            :cx="meta.point.x"
-            :cy="meta.point.y"
-            :r="meta.radius"
-            :fill="meta.color"
-            :fill-opacity="metaLit(meta.key) ? 0.12 : 0.04 + meta.weight * 0.08"
-            :stroke="meta.color"
-            :stroke-opacity="metaLit(meta.key) ? 0.95 : 0.16 + meta.weight * 0.54"
-            :stroke-width="(metaLit(meta.key) ? 4 : 1.2 + meta.weight * 2.2) * ink"
-            :stroke-dasharray="`${5 * ink} ${6 * ink}`"
-          />
-          <text
-            v-if="metaLit(meta.key) || meta.radius > 20"
-            :x="meta.point.x"
-            :y="meta.point.y + 6 * ink"
-            text-anchor="middle"
-            :fill="meta.color"
-            :fill-opacity="metaLit(meta.key) ? 1 : 0.35 + meta.weight * 0.6"
-            :font-size="(14 + meta.weight * 10) * ink"
-            font-weight="bold"
-            font-family="monospace"
-          >
-            {{ meta.throwers }}
-          </text>
-        </g>
-        </g>
-        </TransitionGroup>
+                  <circle
+                    :cx="meta.point.x"
+                    :cy="meta.point.y"
+                    :r="meta.radius"
+                    fill="transparent"
+                  />
+                  <circle
+                    :cx="meta.point.x"
+                    :cy="meta.point.y"
+                    :r="meta.radius"
+                    :fill="meta.color"
+                    :fill-opacity="
+                      metaLit(meta.key) ? 0.12 : 0.04 + meta.weight * 0.08
+                    "
+                    :stroke="meta.color"
+                    :stroke-opacity="
+                      metaLit(meta.key) ? 0.95 : 0.16 + meta.weight * 0.54
+                    "
+                    :stroke-width="
+                      (metaLit(meta.key) ? 4 : 1.2 + meta.weight * 2.2) * ink
+                    "
+                    :stroke-dasharray="`${5 * ink} ${6 * ink}`"
+                  />
+                  <text
+                    v-if="metaLit(meta.key) || meta.radius > 20"
+                    :x="meta.point.x"
+                    :y="meta.point.y + 6 * ink"
+                    text-anchor="middle"
+                    :fill="meta.color"
+                    :fill-opacity="
+                      metaLit(meta.key) ? 1 : 0.35 + meta.weight * 0.6
+                    "
+                    :font-size="(14 + meta.weight * 10) * ink"
+                    font-weight="bold"
+                    font-family="monospace"
+                  >
+                    {{ meta.throwers }}
+                  </text>
+                </g>
+              </g>
+            </TransitionGroup>
 
-        <!-- A pile of rings looks like one ring, so a closed cluster carries
+            <!-- A pile of rings looks like one ring, so a closed cluster carries
              its count. This is the only thing telling you there is anything to
              open; it goes the moment the fan does. -->
-        <g v-for="cluster of metaClusters" :key="`badge-${cluster.cluster}`">
-          <g
-            v-if="openCluster !== cluster.cluster"
-            class="meta-badge cursor-pointer"
-            :class="metaMuted(cluster) ? 'meta-marker--muted' : ''"
-            @click.stop="beginFan(cluster.cluster)"
-          >
-            <circle
-              :cx="cluster.anchor.x + cluster.radius * 0.72"
-              :cy="cluster.anchor.y - cluster.radius * 0.72"
-              :r="9 * ink"
-              fill="#05070b"
-              fill-opacity="0.92"
-              :stroke="cluster.color"
-              :stroke-width="1.6 * ink"
-            />
-            <text
-              :x="cluster.anchor.x + cluster.radius * 0.72"
-              :y="cluster.anchor.y - cluster.radius * 0.72"
-              text-anchor="middle"
-              dominant-baseline="central"
-              :fill="cluster.color"
-              :font-size="10 * ink"
-              font-weight="bold"
-              font-family="monospace"
-              class="pointer-events-none"
+            <g
+              v-for="cluster of metaClusters"
+              :key="`badge-${cluster.cluster}`"
             >
-              {{ cluster.clusterSize }}
-            </text>
+              <g
+                v-if="openCluster !== cluster.cluster"
+                class="meta-badge cursor-pointer"
+                :class="metaMuted(cluster) ? 'meta-marker--muted' : ''"
+                @click.stop="beginFan(cluster.cluster)"
+              >
+                <circle
+                  :cx="cluster.anchor.x + cluster.radius * 0.72"
+                  :cy="cluster.anchor.y - cluster.radius * 0.72"
+                  :r="9 * ink"
+                  fill="#05070b"
+                  fill-opacity="0.92"
+                  :stroke="cluster.color"
+                  :stroke-width="1.6 * ink"
+                />
+                <text
+                  :x="cluster.anchor.x + cluster.radius * 0.72"
+                  :y="cluster.anchor.y - cluster.radius * 0.72"
+                  text-anchor="middle"
+                  dominant-baseline="central"
+                  :fill="cluster.color"
+                  :font-size="10 * ink"
+                  font-weight="bold"
+                  font-family="monospace"
+                  class="pointer-events-none"
+                >
+                  {{ cluster.clusterSize }}
+                </text>
+              </g>
+            </g>
           </g>
-        </g>
-      </g>
 
-      <!-- Throws arrive and leave rather than blink. Hovering an execute in
+          <!-- Throws arrive and leave rather than blink. Hovering an execute in
            the rail swaps the whole set at once, and a hard cut there reads as a
            glitch on the map instead of an answer to the cursor. Opacity only:
            SVG geometry tweens would run on the main thread while the panel
            beside it is mounting. -->
-      <TransitionGroup name="mk" tag="g">
-      <g
-        v-for="marker of orderedMarkers"
-        :key="marker.id"
-        :class="picking ? 'pointer-events-none' : 'cursor-pointer'"
-        @click.stop="emit('select', marker.id)"
-        @mouseenter="emit('hover', marker.id)"
-        @mouseleave="emit('hover', null)"
-      >
-        <path
-          v-if="marker.path && isLit(marker.id)"
-          :d="marker.path"
-          fill="none"
-          :stroke="marker.color"
-          :stroke-opacity="activeId === marker.id ? 0.95 : 0.4"
-          :stroke-width="(activeId === marker.id ? 4 : 2) * ink"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <line
-          v-else-if="marker.landing && isLit(marker.id)"
-          :x1="marker.origin.x"
-          :y1="marker.origin.y"
-          :x2="marker.landing.x"
-          :y2="marker.landing.y"
-          :stroke="marker.color"
-          :stroke-opacity="activeId === marker.id ? 0.95 : 0.4"
-          :stroke-width="(activeId === marker.id ? 4 : 2) * ink"
-          stroke-linecap="round"
-          :stroke-dasharray="`${10 * ink} ${8 * ink}`"
-        />
-
-        <circle
-          v-if="marker.landing"
-          :cx="marker.landing.x"
-          :cy="marker.landing.y"
-          :r="(activeId === marker.id ? 13 : 9) * ink"
-          :fill="marker.color"
-          :fill-opacity="activeId === marker.id ? 0.9 : 0.45"
-          stroke="#05070b"
-          :stroke-width="2 * ink"
-        />
-
-        <!-- The throw origin is the part a player has to stand on, so it is
-             drawn as a hard square while the landing stays a soft dot. -->
-        <rect
-          :x="marker.origin.x - (activeId === marker.id ? 9 : 6) * ink"
-          :y="marker.origin.y - (activeId === marker.id ? 9 : 6) * ink"
-          :width="(activeId === marker.id ? 18 : 12) * ink"
-          :height="(activeId === marker.id ? 18 : 12) * ink"
-          :fill="marker.color"
-          :fill-opacity="activeId === marker.id ? 1 : 0.65"
-          stroke="#05070b"
-          :stroke-width="2 * ink"
-        />
-      </g>
-      </TransitionGroup>
-
-      <g :class="picking ? 'pointer-events-none' : ''">
-        <g v-for="segment of drawnSegments" :key="`segment-${segment.key}`">
-          <!-- A transparent fat line under the visible one: a 4px stroke is
-               almost impossible to hit with a mouse. -->
-          <line
-            v-if="!picking"
-            :x1="segment.from.x"
-            :y1="segment.from.y"
-            :x2="segment.to.x"
-            :y2="segment.to.y"
-            stroke="transparent"
-            :stroke-width="22 * ink"
-            class="cursor-pointer"
-            @click.stop="emit('select-segment', segment.key)"
-          />
-          <line
-            :x1="segment.from.x"
-            :y1="segment.from.y"
-            :x2="segment.to.x"
-            :y2="segment.to.y"
-            :stroke="segment.color"
-            :stroke-opacity="selectedSegmentKey === segment.key ? 1 : 0.7"
-            :stroke-width="(selectedSegmentKey === segment.key ? 6 : 4) * ink"
-            :stroke-dasharray="
-              segment.dashed ? `${12 * ink} ${10 * ink}` : undefined
-            "
-            stroke-linecap="round"
-            class="pointer-events-none"
-          />
-          <circle
-            :cx="segment.from.x"
-            :cy="segment.from.y"
-            :r="9 * ink"
-            :fill="segment.color"
-            stroke="#05070b"
-            :stroke-width="2 * ink"
-            class="pointer-events-none"
-          />
-          <circle
-            :cx="segment.to.x"
-            :cy="segment.to.y"
-            :r="9 * ink"
-            fill="#05070b"
-            :stroke="segment.color"
-            :stroke-width="4 * ink"
-            class="pointer-events-none"
-          />
-          <text
-            v-if="segment.label"
-            :x="(segment.from.x + segment.to.x) / 2"
-            :y="(segment.from.y + segment.to.y) / 2 - 12 * ink"
-            text-anchor="middle"
-            :fill="segment.color"
-            :font-size="20 * ink"
-            font-family="monospace"
-            class="pointer-events-none"
-          >
-            {{ segment.label }}
-          </text>
-        </g>
-
-        <TransitionGroup name="badge" tag="g">
-        <g
-          v-for="marker of drawnMarkers"
-          :key="`point-${marker.key}`"
-          class="pointer-events-none"
-          :style="{ transformOrigin: `${marker.point.x}px ${marker.point.y}px` }"
-        >
-          <template v-if="marker.shape === 'cross'">
-            <line
-              :x1="marker.point.x - 12 * ink"
-              :y1="marker.point.y"
-              :x2="marker.point.x + 12 * ink"
-              :y2="marker.point.y"
-              :stroke="marker.color"
-              :stroke-width="4 * ink"
-              stroke-linecap="round"
-            />
-            <line
-              :x1="marker.point.x"
-              :y1="marker.point.y - 12 * ink"
-              :x2="marker.point.x"
-              :y2="marker.point.y + 12 * ink"
-              :stroke="marker.color"
-              :stroke-width="4 * ink"
-              stroke-linecap="round"
-            />
-          </template>
-          <!-- A numbered token, dark so the map reads through the ring and
-               the digit never fights the marker it is counting. -->
-          <template v-else-if="marker.shape === 'badge'">
-            <circle
-              :cx="marker.point.x"
-              :cy="marker.point.y"
-              :r="14 * ink"
-              fill="#05070b"
-              fill-opacity="0.88"
-              :stroke="marker.color"
-              :stroke-width="3 * ink"
-            />
-            <text
-              v-if="marker.label"
-              :x="marker.point.x"
-              :y="marker.point.y"
-              text-anchor="middle"
-              dominant-baseline="central"
-              :fill="marker.color"
-              :font-size="17 * ink"
-              font-weight="bold"
-              font-family="monospace"
+          <TransitionGroup name="mk" tag="g">
+            <g
+              v-for="marker of orderedMarkers"
+              :key="marker.id"
+              :class="picking ? 'pointer-events-none' : 'cursor-pointer'"
+              @click.stop="emit('select', marker.id)"
+              @mouseenter="emit('hover', marker.id)"
+              @mouseleave="emit('hover', null)"
             >
-              {{ marker.label }}
-            </text>
-          </template>
-          <circle
-            v-else
-            :cx="marker.point.x"
-            :cy="marker.point.y"
-            :r="10 * ink"
-            :fill="marker.color"
-            stroke="#05070b"
-            :stroke-width="2 * ink"
-          />
-          <text
-            v-if="marker.label && marker.shape !== 'badge'"
-            :x="marker.point.x + 16 * ink"
-            :y="marker.point.y - 12 * ink"
-            :fill="marker.color"
-            :font-size="20 * ink"
-            font-family="monospace"
-          >
-            {{ marker.label }}
-          </text>
-        </g>
-        </TransitionGroup>
-      </g>
-    </svg>
+              <path
+                v-if="marker.path && isLit(marker.id)"
+                :d="marker.path"
+                fill="none"
+                :stroke="marker.color"
+                :stroke-opacity="activeId === marker.id ? 0.95 : 0.4"
+                :stroke-width="(activeId === marker.id ? 4 : 2) * ink"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <line
+                v-else-if="marker.landing && isLit(marker.id)"
+                :x1="marker.origin.x"
+                :y1="marker.origin.y"
+                :x2="marker.landing.x"
+                :y2="marker.landing.y"
+                :stroke="marker.color"
+                :stroke-opacity="activeId === marker.id ? 0.95 : 0.4"
+                :stroke-width="(activeId === marker.id ? 4 : 2) * ink"
+                stroke-linecap="round"
+                :stroke-dasharray="`${10 * ink} ${8 * ink}`"
+              />
+
+              <circle
+                v-if="marker.landing"
+                :cx="marker.landing.x"
+                :cy="marker.landing.y"
+                :r="(activeId === marker.id ? 13 : 9) * ink"
+                :fill="marker.color"
+                :fill-opacity="activeId === marker.id ? 0.9 : 0.45"
+                stroke="#05070b"
+                :stroke-width="2 * ink"
+              />
+
+              <!-- The throw origin is the part a player has to stand on, so it is
+             drawn as a hard square while the landing stays a soft dot. -->
+              <rect
+                :x="marker.origin.x - (activeId === marker.id ? 9 : 6) * ink"
+                :y="marker.origin.y - (activeId === marker.id ? 9 : 6) * ink"
+                :width="(activeId === marker.id ? 18 : 12) * ink"
+                :height="(activeId === marker.id ? 18 : 12) * ink"
+                :fill="marker.color"
+                :fill-opacity="activeId === marker.id ? 1 : 0.65"
+                stroke="#05070b"
+                :stroke-width="2 * ink"
+              />
+            </g>
+          </TransitionGroup>
+
+          <g :class="picking ? 'pointer-events-none' : ''">
+            <g v-for="segment of drawnSegments" :key="`segment-${segment.key}`">
+              <!-- A transparent fat line under the visible one: a 4px stroke is
+               almost impossible to hit with a mouse. -->
+              <line
+                v-if="!picking"
+                :x1="segment.from.x"
+                :y1="segment.from.y"
+                :x2="segment.to.x"
+                :y2="segment.to.y"
+                stroke="transparent"
+                :stroke-width="22 * ink"
+                class="cursor-pointer"
+                @click.stop="emit('select-segment', segment.key)"
+              />
+              <line
+                :x1="segment.from.x"
+                :y1="segment.from.y"
+                :x2="segment.to.x"
+                :y2="segment.to.y"
+                :stroke="segment.color"
+                :stroke-opacity="selectedSegmentKey === segment.key ? 1 : 0.7"
+                :stroke-width="
+                  (selectedSegmentKey === segment.key ? 6 : 4) * ink
+                "
+                :stroke-dasharray="
+                  segment.dashed ? `${12 * ink} ${10 * ink}` : undefined
+                "
+                stroke-linecap="round"
+                class="pointer-events-none"
+              />
+              <circle
+                :cx="segment.from.x"
+                :cy="segment.from.y"
+                :r="9 * ink"
+                :fill="segment.color"
+                stroke="#05070b"
+                :stroke-width="2 * ink"
+                class="pointer-events-none"
+              />
+              <circle
+                :cx="segment.to.x"
+                :cy="segment.to.y"
+                :r="9 * ink"
+                fill="#05070b"
+                :stroke="segment.color"
+                :stroke-width="4 * ink"
+                class="pointer-events-none"
+              />
+              <text
+                v-if="segment.label"
+                :x="(segment.from.x + segment.to.x) / 2"
+                :y="(segment.from.y + segment.to.y) / 2 - 12 * ink"
+                text-anchor="middle"
+                :fill="segment.color"
+                :font-size="20 * ink"
+                font-family="monospace"
+                class="pointer-events-none"
+              >
+                {{ segment.label }}
+              </text>
+            </g>
+
+            <TransitionGroup name="badge" tag="g">
+              <g
+                v-for="marker of drawnMarkers"
+                :key="`point-${marker.key}`"
+                class="pointer-events-none"
+                :style="{
+                  transformOrigin: `${marker.point.x}px ${marker.point.y}px`,
+                }"
+              >
+                <template v-if="marker.shape === 'cross'">
+                  <line
+                    :x1="marker.point.x - 12 * ink"
+                    :y1="marker.point.y"
+                    :x2="marker.point.x + 12 * ink"
+                    :y2="marker.point.y"
+                    :stroke="marker.color"
+                    :stroke-width="4 * ink"
+                    stroke-linecap="round"
+                  />
+                  <line
+                    :x1="marker.point.x"
+                    :y1="marker.point.y - 12 * ink"
+                    :x2="marker.point.x"
+                    :y2="marker.point.y + 12 * ink"
+                    :stroke="marker.color"
+                    :stroke-width="4 * ink"
+                    stroke-linecap="round"
+                  />
+                </template>
+                <!-- A numbered token, dark so the map reads through the ring and
+               the digit never fights the marker it is counting. -->
+                <template v-else-if="marker.shape === 'badge'">
+                  <circle
+                    :cx="marker.point.x"
+                    :cy="marker.point.y"
+                    :r="14 * ink"
+                    fill="#05070b"
+                    fill-opacity="0.88"
+                    :stroke="marker.color"
+                    :stroke-width="3 * ink"
+                  />
+                  <text
+                    v-if="marker.label"
+                    :x="marker.point.x"
+                    :y="marker.point.y"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                    :fill="marker.color"
+                    :font-size="17 * ink"
+                    font-weight="bold"
+                    font-family="monospace"
+                  >
+                    {{ marker.label }}
+                  </text>
+                </template>
+                <circle
+                  v-else
+                  :cx="marker.point.x"
+                  :cy="marker.point.y"
+                  :r="10 * ink"
+                  :fill="marker.color"
+                  stroke="#05070b"
+                  :stroke-width="2 * ink"
+                />
+                <text
+                  v-if="marker.label && marker.shape !== 'badge'"
+                  :x="marker.point.x + 16 * ink"
+                  :y="marker.point.y - 12 * ink"
+                  :fill="marker.color"
+                  :font-size="20 * ink"
+                  font-family="monospace"
+                >
+                  {{ marker.label }}
+                </text>
+              </g>
+            </TransitionGroup>
+          </g>
+        </svg>
+      </div>
     </div>
 
     <!-- Top corner, not the middle of the right edge. Centred, the stack grows
@@ -1307,7 +1341,13 @@ const orderedMarkers = computed(() => {
          it over the type chips and the threshold knob along the bottom. The
          map's top edge is free -- the name and the practice button sit in a
          reserved band above the map, not on it -- so it can grow downwards from
-         here and never reach the controls at any board size. -->
+         here and never reach the controls at any board size.
+
+         It hangs off the SHELL, not off the square. The square is capped by
+         the window height and centred, so on a wide board it stops short of
+         the frame -- pinning the stack to it walked the buttons inwards
+         whenever the map ran out of width. The shell is always the full width
+         of the box, so the stack sits in the same corner at every size. -->
     <div
       v-if="displaySrc"
       class="absolute right-2 top-2 flex flex-col overflow-hidden rounded-md border border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
@@ -1355,7 +1395,11 @@ const orderedMarkers = computed(() => {
     linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
   background-size: 44px 44px;
   background-position: center;
-  -webkit-mask-image: radial-gradient(circle at center, #000 25%, transparent 72%);
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    #000 25%,
+    transparent 72%
+  );
   mask-image: radial-gradient(circle at center, #000 25%, transparent 72%);
 }
 

@@ -13,30 +13,26 @@
  * without a page refresh.
  */
 import { computed, onBeforeUnmount, ref, watch } from "vue";
-import { Copy, LogOut, Rocket, Server, Share2, Square, Users } from "lucide-vue-next";
-import { NuxtLink } from "#components";
-import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { Repeat, Server } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { useI18n } from "vue-i18n";
-import { toast } from "~/components/ui/toast";
+import cleanMapName from "~/utilities/cleanMapName";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import {
-  leaveUtilityPracticeMutation,
-  stopUtilityPracticeMutation,
-} from "~/graphql/utilityGraphql";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
+import UtilityPracticeSessionPanel from "~/components/utility/UtilityPracticeSessionPanel.vue";
 
 const { t } = useI18n();
 const me = computed(() => useAuthStore().me);
 const load = useUtilityLoad();
-const { session, booting, canManage } = useUtilityPracticeSession();
+const { session, booting, canManage, switching } = useUtilityPracticeSession();
+const route = useRoute();
 
 const CONNECTED_POLL_MS = 15_000;
 let poll: ReturnType<typeof setInterval> | null = null;
@@ -71,15 +67,40 @@ onBeforeUnmount(stopPolling);
 // independent of the session: you can be on a server you did not book.
 const connected = computed(() => load.onServer.value);
 
-
 const mapName = computed(
   () => load.where.value?.map_name ?? session.value?.map_name ?? null,
 );
 
+// Routes and mutations take the file name; the strip shows the title.
+const mapDisplay = computed(() =>
+  mapName.value ? cleanMapName(mapName.value) : null,
+);
+
+// The map the page is reading, when that page is a utility library. Offering
+// the switch from the chrome means it is reachable from every tab of it, not
+// only from the strip beside the board.
+const pageMap = computed(() =>
+  route.name === "utility-map" ? String(route.params.map) : null,
+);
+
+const canSwitchToPageMap = computed(
+  () =>
+    canManage.value &&
+    !switching.value &&
+    !!pageMap.value &&
+    !!mapName.value &&
+    pageMap.value !== mapName.value,
+);
+
+async function switchToPageMap() {
+  if (pageMap.value) {
+    await load.switchMap(pageMap.value);
+  }
+}
+
 // Only with a server. The header is not the place to advertise practice to
 // somebody who has not asked for it -- starting one is the utility page's job.
 const visible = computed(() => !!session.value || connected.value);
-
 
 // One word for the state, because the caption underneath already says what
 // kind of thing this is. The old bar said "JOIN PRACTICE" in the status cell
@@ -90,6 +111,10 @@ const state = computed(() => {
     return t("pages.utility.practice.nav_connected");
   }
 
+  if (switching.value) {
+    return t("pages.utility.practice.nav_switching");
+  }
+
   if (booting.value) {
     return t("pages.utility.practice.nav_starting");
   }
@@ -98,79 +123,19 @@ const state = computed(() => {
   return t("pages.utility.practice.nav_ready");
 });
 
+// The popover holds the session panel, so it has to shut itself: ending a
+// session leaves it describing something that is no longer there.
+const open = ref(false);
 
-// Who can get in, said in the popover so the dialog is not the only place that
-// knows. Falls back to the old meaning for a session started before access
-// existed as a column.
-const accessLabel = computed(() => {
-  const access = (session.value as { access?: string } | null)?.access;
-
-  if (!access) {
-    return session.value?.is_open === true
-      ? t("pages.utility.practice.access_open")
-      : null;
-  }
-
-  return t(`pages.utility.practice.access_${access.toLowerCase()}`);
-});
-
-const inviteLink = computed(() =>
-  session.value?.invite_code && mapName.value
-    ? `${window.location.origin}/utility/${mapName.value}?practice=${session.value.invite_code}`
-    : null,
-);
-
-async function copyText(text: string | null, title: string) {
-  if (!text) {
-    return;
-  }
-
-  await navigator.clipboard.writeText(text);
-
-  toast({ title });
-}
-
-// Stopping is the host's; leaving is everybody else's. Offering the wrong one
-// is how somebody ends a server they only joined.
-async function endSession() {
-  const id = session.value?.id;
-
-  if (!id) {
-    return;
-  }
-
-  try {
-    await getGraphqlClient().mutate({
-      mutation: canManage.value
-        ? stopUtilityPracticeMutation
-        : leaveUtilityPracticeMutation,
-      variables: { session_id: id },
-    });
-  } catch (error: any) {
-    toast({
-      title: t("pages.utility.practice.stop_failed"),
-      description: error?.message,
-      variant: "destructive",
-    });
-  }
-}
-
-async function copyConnect() {
-  const connect = session.value?.connection_string;
-
-  if (!connect) {
-    return;
-  }
-
-  await navigator.clipboard.writeText(connect);
-
-  toast({ title: t("pages.utility.practice.nav_copied") });
+async function switchAndClose() {
+  open.value = false;
+  await switchToPageMap();
 }
 </script>
 
 <template>
-  <DropdownMenu v-if="visible">
-    <DropdownMenuTrigger as-child>
+  <Popover v-if="visible" v-model:open="open">
+    <PopoverTrigger as-child>
       <button
         type="button"
         class="group relative hidden h-12 items-center gap-2.5 overflow-hidden rounded-md border pl-2.5 pr-3 text-left shadow-sm backdrop-blur-sm transition-colors duration-150 md:flex"
@@ -189,7 +154,9 @@ async function copyConnect() {
 
         <span
           class="flex h-7 w-7 shrink-0 items-center justify-center rounded text-[hsl(var(--tac-amber))]"
-          :class="connected ? 'bg-[hsl(var(--tac-amber)/0.16)]' : 'bg-zinc-900/80'"
+          :class="
+            connected ? 'bg-[hsl(var(--tac-amber)/0.16)]' : 'bg-zinc-900/80'
+          "
         >
           <span v-if="booting" class="relative flex h-1.5 w-1.5">
             <span
@@ -205,121 +172,77 @@ async function copyConnect() {
         <!-- Name over caption, the same hierarchy the match bar uses. -->
         <span class="flex min-w-0 flex-col justify-center leading-tight">
           <span class="truncate text-xs font-medium text-foreground">
-            {{ mapName }}
+            {{ mapDisplay }}
           </span>
           <span
             class="truncate font-mono text-[0.58rem] uppercase tracking-[0.16em]"
             :class="
-              connected ? 'text-[hsl(var(--tac-amber))]' : 'text-muted-foreground'
+              connected
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground'
             "
           >
             {{ state }}
           </span>
         </span>
       </button>
-    </DropdownMenuTrigger>
+    </PopoverTrigger>
 
-    <!-- Everything you would otherwise reopen the Practice dialog for, plus
-         the state you would have opened it to read: which map, who can join,
-         and the connect string itself. A menu of verbs with no facts made you
-         open the dialog anyway just to check. -->
-    <DropdownMenuContent align="end" class="w-72">
-      <div @click.stop>
-        <div class="px-2 py-1.5">
-          <div class="flex items-center gap-2">
-            <span
-              class="h-1.5 w-1.5 shrink-0 rounded-full"
-              :class="
-                connected
-                  ? 'bg-[hsl(var(--tac-amber))]'
-                  : booting
-                    ? 'animate-pulse bg-[hsl(var(--tac-amber))]'
-                    : 'bg-muted-foreground/60'
-              "
-            ></span>
-            <span class="truncate text-sm font-medium">{{ mapName }}</span>
-            <span
-              class="ml-auto shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.14em] text-muted-foreground"
-            >
-              {{ state }}
-            </span>
+    <!-- The same panel the practice dialog renders, rather than a menu of
+         verbs beside a summary of the facts. One layout, one set of controls,
+         and nothing to keep in step between the chrome and the page. -->
+    <PopoverContent align="end" class="w-[23rem] p-3">
+      <UtilityPracticeSessionPanel
+        v-if="session"
+        :session="session"
+        :map-name="mapName"
+        show-header
+        @ended="open = false"
+      >
+        <template v-if="canSwitchToPageMap" #extra>
+          <Separator />
+          <div>
+            <Button variant="outline" class="w-full" @click="switchAndClose()">
+              <Repeat class="h-4 w-4" />
+              {{
+                $t("pages.utility.practice.switch_map", {
+                  map: cleanMapName(pageMap ?? ""),
+                })
+              }}
+            </Button>
           </div>
+        </template>
+      </UtilityPracticeSessionPanel>
 
-          <p
-            v-if="accessLabel"
-            class="mt-1 font-mono text-[0.55rem] uppercase tracking-[0.14em] text-muted-foreground"
+      <!-- Standing on a server somebody else booked: the row is the host's, so
+           there is nothing here to drive -- only the way back to its map. -->
+      <div v-else class="space-y-3">
+        <div class="flex items-center gap-2">
+          <span
+            class="h-1.5 w-1.5 shrink-0 rounded-full bg-[hsl(var(--tac-amber))]"
+          />
+          <span class="min-w-0 truncate text-sm font-medium">
+            {{ mapDisplay }}
+          </span>
+          <span
+            class="ml-auto shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
           >
-            {{ accessLabel }}
-          </p>
-
-          <p
-            v-if="session?.connection_string"
-            class="mt-1 truncate font-mono text-[0.6rem] text-muted-foreground/70"
-            :title="session.connection_string"
-          >
-            {{ session.connection_string }}
-          </p>
+            {{ state }}
+          </span>
         </div>
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem
-          v-if="!connected && session?.connection_link"
+        <Button
+          v-if="mapName"
           as-child
+          variant="outline"
+          class="w-full"
+          @click="open = false"
         >
-          <a :href="session.connection_link">
-            <Rocket />
-            {{ $t("pages.utility.practice.nav_join") }}
-          </a>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          v-if="session?.connection_string"
-          @click="
-            copyText(
-              session.connection_string,
-              $t('pages.utility.practice.nav_copied'),
-            )
-          "
-        >
-          <Copy />
-          {{ $t("pages.utility.practice.copy_connect") }}
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          v-if="inviteLink"
-          @click="
-            copyText(inviteLink, $t('pages.utility.practice.invite_copied'))
-          "
-        >
-          <Share2 />
-          {{ $t("pages.utility.practice.copy_invite") }}
-        </DropdownMenuItem>
-
-        <DropdownMenuItem v-if="mapName" as-child>
           <NuxtLink :to="`/utility/${mapName}`">
-            <Users />
-            {{ $t("pages.utility.practice.manage") }}
+            {{ $t("pages.utility.practice.open_library") }}
           </NuxtLink>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator v-if="session" />
-
-        <!-- Stopping is the host's, leaving is everybody else's. -->
-        <DropdownMenuItem
-          v-if="session"
-          class="text-red-400"
-          @click="endSession()"
-        >
-          <Square v-if="canManage" />
-          <LogOut v-else />
-          {{
-            canManage
-              ? $t("pages.utility.practice.stop")
-              : $t("pages.utility.practice.leave")
-          }}
-        </DropdownMenuItem>
+        </Button>
       </div>
-    </DropdownMenuContent>
-  </DropdownMenu>
+    </PopoverContent>
+  </Popover>
 </template>

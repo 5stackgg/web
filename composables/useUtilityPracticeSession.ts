@@ -55,11 +55,7 @@ export function useUtilityPracticeSession() {
     watching = true;
 
     effectScope(true).run(() => {
-      watch(
-        () => useAuthStore().me?.steam_id,
-        subscribe,
-        { immediate: true },
-      );
+      watch(() => useAuthStore().me?.steam_id, subscribe, { immediate: true });
     });
   }
 
@@ -68,6 +64,9 @@ export function useUtilityPracticeSession() {
     booting: computed(
       () => !!session.value && session.value.status !== "Ready",
     ),
+    // Where the server is going, which during a switch is not where it is.
+    mapName: computed(() => session.value?.map_name ?? null),
+    switching: computed(() => !!session.value?.map_changing_at),
     canManage: computed(() => session.value?.can_manage === true),
   };
 }

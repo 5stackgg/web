@@ -115,6 +115,7 @@ export const utilityCollectionFields = {
   created_at: true,
   can_view: true,
   can_edit: true,
+  owner_steam_id: true,
   items_aggregate: [{}, { aggregate: { count: true } }],
 } as const;
 
@@ -124,14 +125,19 @@ export const utilityPracticeSessionFields = {
   id: true,
   match_id: true,
   host_steam_id: true,
+  // Named, not just numbered: the only useful thing to tell a guest whose
+  // server is on the wrong map is who can move it.
+  host: { name: true },
   team_id: true,
   map_name: true,
+  map_changing_at: true,
   region: true,
   collection_id: true,
   playbook_id: true,
   status: true,
   invite_code: true,
   is_open: true,
+  access: true,
   expires_at: true,
   failure_reason: true,
   connection_string: true,
@@ -355,6 +361,19 @@ export const createUtilityCollectionMutation = generateMutation({
   ],
 });
 
+// Items are ON DELETE CASCADE, and a practice session pointing at this
+// collection is ON DELETE SET NULL, so the row is all that has to go.
+export const deleteUtilityCollectionMutation = generateMutation({
+  delete_utility_collections_by_pk: [
+    {
+      id: $("id", "uuid!"),
+    },
+    {
+      id: true,
+    },
+  ],
+});
+
 export const addLineupToCollectionMutation = generateMutation({
   insert_utility_collection_items_one: [
     {
@@ -444,7 +463,11 @@ export const startUtilityPracticeMutation = generateMutation({
       // Nullable server side: omitting a region lets the API resolve one.
       region: $("region", "String"),
       collection_id: $("collection_id", "uuid"),
+      // is_open is the old two-state flag and access is what actually decides;
+      // the API keeps them in step, and sends both so an older row still reads
+      // correctly.
       is_open: $("is_open", "Boolean"),
+      access: $("access", "String"),
       // Books one dedicated practice server outright; the region search and
       // the on-demand headroom reserve are both skipped when it is set.
       server_id: $("server_id", "uuid"),
@@ -513,6 +536,24 @@ export const leaveUtilityPracticeMutation = generateMutation({
   leaveUtilityPractice: [
     {
       session_id: $("session_id", "uuid!"),
+    },
+    {
+      success: true,
+    },
+  ],
+});
+
+/**
+ * Who may join, changed on a server that is already up. Access used to be fixed
+ * at start, so a host who opened a server to everybody had to stop it to close
+ * it again. Host-only, and the API rejects anything outside its own four
+ * levels.
+ */
+export const setUtilityPracticeAccessMutation = generateMutation({
+  setUtilityPracticeAccess: [
+    {
+      session_id: $("session_id", "uuid!"),
+      access: $("access", "String!"),
     },
     {
       success: true,
@@ -1314,6 +1355,37 @@ export const utilityPracticeWhereAmIQuery = gql`
       on_server
       map_name
       session_id
+      switching
+    }
+  }
+`;
+
+/**
+ * Move a running practice server onto another map, optionally naming what to
+ * stand the caller on once it is up.
+ *
+ * The lineup rides with the map change rather than following it: the caller
+ * spends the changelevel staring at a load screen, so there is no second moment
+ * for the website to send anything.
+ */
+export const changeUtilityPracticeMapMutation = gql`
+  mutation changeUtilityPracticeMap(
+    $session_id: uuid!
+    $map_name: String!
+    $lineup_id: uuid
+    $lineup_ids: [uuid!]
+    $scratch: UtilityScratchLineupInput
+  ) {
+    changeUtilityPracticeMap(
+      session_id: $session_id
+      map_name: $map_name
+      lineup_id: $lineup_id
+      lineup_ids: $lineup_ids
+      scratch: $scratch
+    ) {
+      success
+      map_name
+      queued
     }
   }
 `;

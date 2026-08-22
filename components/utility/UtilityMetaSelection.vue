@@ -1,25 +1,67 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { PencilLine, X } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+import { PencilLine, Rocket, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
+import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
+import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import type { UtilityLineup, UtilityMetaSpot } from "~/utilities/utilityDisplay";
 
-const props = defineProps<{
-  spot: UtilityMetaSpot;
-  /** Saved lineups already sitting in this cluster. */
-  lineups: UtilityLineup[];
-  /** The busiest spot on the map, so the meter reads against the same scale. */
-  busiest: number;
-  canAuthor: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    spot: UtilityMetaSpot;
+    mapName: string;
+    /** Saved lineups already sitting in this cluster. */
+    lineups: UtilityLineup[];
+    /** The busiest spot on the map, so the meter reads against the same scale. */
+    busiest: number;
+    canAuthor: boolean;
+    canPractice?: boolean;
+    /**
+     * The action alone. A tab that is a list of something else -- executes,
+     * collections, the drill plan -- already has a subject, and a card about a
+     * smoke sitting on top of it is a second one competing for the same column.
+     * What survives the cut is the only part of the card that is about doing
+     * something rather than reading something: put this throw in a server.
+     */
+    compact?: boolean;
+  }>(),
+  { canPractice: false, compact: false },
+);
 
 const emit = defineEmits<{
   (event: "close"): void;
   (event: "open", id: string): void;
   (event: "write-up", spot: UtilityMetaSpot): void;
+  (event: "practice", spot: UtilityMetaSpot): void;
 }>();
+
+const { t } = useI18n();
+const load = useUtilityLoad();
+
+// The card can be the only thing on screen offering this, so it asks rather
+// than waiting for a button that may never render to ask on its behalf.
+void load.check();
+
+// Standing on a practice server for this map is the difference between "send
+// it there" and "get me one" -- the same fork the lineup dialog draws.
+const canLoadHere = computed(() => load.canLoad(props.mapName));
+
+// A mined cluster has no name, so it is called what it is. This is what the
+// toast says and what the server files the scratch throw under.
+const spotName = computed(() => {
+  const parts = [t(`pages.utility.types.${props.spot.utilityType}`)];
+  if (props.spot.side) {
+    parts.push(t(`pages.utility.sides.${props.spot.side}`));
+  }
+  if (props.spot.technique) {
+    parts.push(t(`pages.utility.techniques.${props.spot.technique}`));
+  }
+  return parts.join(" \u00b7 ");
+});
 
 // The cluster's median look, which is the half of a lineup that is hard to
 // recover by standing in the right place and guessing.
@@ -41,10 +83,19 @@ const unwritten = computed(
 <template>
   <!-- Picking a ring on the map is a question about that ring, and the answer
        belongs where the answers live -- in the column, not in a popover pinned
-       to a moving target on the board. -->
+       to a moving target on the board.
+
+       Compact keeps the same root and drops the frame with the reading: what
+       is left is one action, and a bordered amber panel around a single button
+       is chrome announcing itself. -->
   <section
-    class="flex flex-col gap-2.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.05)] p-3"
+    :class="
+      compact
+        ? 'flex flex-col gap-2'
+        : 'flex flex-col gap-2.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.05)] p-3'
+    "
   >
+    <template v-if="!compact">
     <header class="flex items-start gap-2">
       <div class="flex min-w-0 flex-1 flex-col gap-1">
         <span
@@ -156,5 +207,43 @@ const unwritten = computed(
     <p v-else class="text-xs leading-relaxed text-muted-foreground">
       {{ $t("pages.utility.meta.match_gap", { shown: 0, count: spot.lineups }) }}
     </p>
+    </template>
+
+    <!-- A cluster is a place people throw from, and the only way to find out
+         whether you can throw it is to go stand there. On a live practice
+         server the throw itself goes over; otherwise the first step is having
+         a server at all, which is the same fork the lineup detail draws. -->
+    <div v-if="canPractice" class="flex items-center gap-2">
+      <UtilityPracticeButton
+        v-if="canLoadHere"
+        :spot="spot"
+        :map-name="mapName"
+        :name="spotName"
+        class="flex-1"
+      />
+      <FiveStackToolTip v-else as-child :delay-duration="120">
+        <template #trigger>
+          <Button size="sm" class="tac-amber-cta flex-1" @click="emit('practice', spot)">
+            <Rocket class="mr-1.5 h-3.5 w-3.5" />
+            {{ $t("pages.utility.detail.practice_this") }}
+          </Button>
+        </template>
+        <p class="max-w-[15rem] text-xs leading-relaxed">
+          {{ $t("pages.utility.practice.what_is") }}
+        </p>
+      </FiveStackToolTip>
+
+      <!-- Compact has no header, so the only way back out of a selection would
+           otherwise be the tab you came from. -->
+      <button
+        v-if="compact"
+        type="button"
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+        :title="$t('common.close')"
+        @click="emit('close')"
+      >
+        <X class="h-3.5 w-3.5" />
+      </button>
+    </div>
   </section>
 </template>

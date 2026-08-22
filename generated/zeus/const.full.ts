@@ -4639,6 +4639,72 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_tournament_status_set_input",
 		where:"e_tournament_status_bool_exp"
 	},
+	e_utility_practice_access:{
+		utility_practice_sessions:{
+			distinct_on:"utility_practice_sessions_select_column",
+			order_by:"utility_practice_sessions_order_by",
+			where:"utility_practice_sessions_bool_exp"
+		},
+		utility_practice_sessions_aggregate:{
+			distinct_on:"utility_practice_sessions_select_column",
+			order_by:"utility_practice_sessions_order_by",
+			where:"utility_practice_sessions_bool_exp"
+		}
+	},
+	e_utility_practice_access_aggregate_fields:{
+		count:{
+			columns:"e_utility_practice_access_select_column"
+		}
+	},
+	e_utility_practice_access_bool_exp:{
+		_and:"e_utility_practice_access_bool_exp",
+		_not:"e_utility_practice_access_bool_exp",
+		_or:"e_utility_practice_access_bool_exp",
+		description:"String_comparison_exp",
+		utility_practice_sessions:"utility_practice_sessions_bool_exp",
+		utility_practice_sessions_aggregate:"utility_practice_sessions_aggregate_bool_exp",
+		value:"String_comparison_exp"
+	},
+	e_utility_practice_access_constraint: "enum" as const,
+	e_utility_practice_access_enum: "enum" as const,
+	e_utility_practice_access_enum_comparison_exp:{
+		_eq:"e_utility_practice_access_enum",
+		_in:"e_utility_practice_access_enum",
+		_neq:"e_utility_practice_access_enum",
+		_nin:"e_utility_practice_access_enum"
+	},
+	e_utility_practice_access_insert_input:{
+		utility_practice_sessions:"utility_practice_sessions_arr_rel_insert_input"
+	},
+	e_utility_practice_access_on_conflict:{
+		constraint:"e_utility_practice_access_constraint",
+		update_columns:"e_utility_practice_access_update_column",
+		where:"e_utility_practice_access_bool_exp"
+	},
+	e_utility_practice_access_order_by:{
+		description:"order_by",
+		utility_practice_sessions_aggregate:"utility_practice_sessions_aggregate_order_by",
+		value:"order_by"
+	},
+	e_utility_practice_access_pk_columns_input:{
+
+	},
+	e_utility_practice_access_select_column: "enum" as const,
+	e_utility_practice_access_set_input:{
+
+	},
+	e_utility_practice_access_stream_cursor_input:{
+		initial_value:"e_utility_practice_access_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_utility_practice_access_stream_cursor_value_input:{
+
+	},
+	e_utility_practice_access_update_column: "enum" as const,
+	e_utility_practice_access_updates:{
+		_set:"e_utility_practice_access_set_input",
+		where:"e_utility_practice_access_bool_exp"
+	},
 	e_utility_practice_statuses:{
 		utility_practice_sessions:{
 			distinct_on:"utility_practice_sessions_select_column",
@@ -13251,6 +13317,12 @@ export const AllTypesProps: Record<string,any> = {
 		cancelUtilityLineupRender:{
 			render_id:"uuid"
 		},
+		changeUtilityPracticeMap:{
+			lineup_id:"uuid",
+			lineup_ids:"uuid",
+			scratch:"UtilityScratchLineupInput",
+			session_id:"uuid"
+		},
 		checkIntoMatch:{
 			match_id:"uuid"
 		},
@@ -13674,6 +13746,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_tournament_status_bool_exp"
 		},
 		delete_e_tournament_status_by_pk:{
+
+		},
+		delete_e_utility_practice_access:{
+			where:"e_utility_practice_access_bool_exp"
+		},
+		delete_e_utility_practice_access_by_pk:{
 
 		},
 		delete_e_utility_practice_statuses:{
@@ -14203,6 +14281,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_push_subscriptions_by_pk:{
 			id:"uuid"
+		},
+		delete_role_permissions:{
+			where:"role_permissions_bool_exp"
 		},
 		delete_seasons:{
 			where:"seasons_bool_exp"
@@ -15007,6 +15088,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"e_tournament_status_insert_input",
 			on_conflict:"e_tournament_status_on_conflict"
 		},
+		insert_e_utility_practice_access:{
+			objects:"e_utility_practice_access_insert_input",
+			on_conflict:"e_utility_practice_access_on_conflict"
+		},
+		insert_e_utility_practice_access_one:{
+			object:"e_utility_practice_access_insert_input",
+			on_conflict:"e_utility_practice_access_on_conflict"
+		},
 		insert_e_utility_practice_statuses:{
 			objects:"e_utility_practice_statuses_insert_input",
 			on_conflict:"e_utility_practice_statuses_on_conflict"
@@ -15673,6 +15762,12 @@ export const AllTypesProps: Record<string,any> = {
 			object:"push_subscriptions_insert_input",
 			on_conflict:"push_subscriptions_on_conflict"
 		},
+		insert_role_permissions:{
+			objects:"role_permissions_insert_input"
+		},
+		insert_role_permissions_one:{
+			object:"role_permissions_insert_input"
+		},
 		insert_seasons:{
 			objects:"seasons_insert_input",
 			on_conflict:"seasons_on_conflict"
@@ -16250,6 +16345,9 @@ export const AllTypesProps: Record<string,any> = {
 			proposed_scheduled_at:"timestamptz",
 			to_team_id:"uuid"
 		},
+		sendUtilityDrillToServer:{
+
+		},
 		sendUtilityLineupToServer:{
 			lineup_id:"uuid"
 		},
@@ -16280,6 +16378,9 @@ export const AllTypesProps: Record<string,any> = {
 		setTournamentAward:{
 			award_id:"uuid",
 			tournament_id:"uuid"
+		},
+		setUtilityPracticeAccess:{
+			session_id:"uuid"
 		},
 		skipShaders:{
 			match_id:"uuid"
@@ -17064,6 +17165,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_tournament_status_many:{
 			updates:"e_tournament_status_updates"
+		},
+		update_e_utility_practice_access:{
+			_set:"e_utility_practice_access_set_input",
+			where:"e_utility_practice_access_bool_exp"
+		},
+		update_e_utility_practice_access_by_pk:{
+			_set:"e_utility_practice_access_set_input",
+			pk_columns:"e_utility_practice_access_pk_columns_input"
+		},
+		update_e_utility_practice_access_many:{
+			updates:"e_utility_practice_access_updates"
 		},
 		update_e_utility_practice_statuses:{
 			_set:"e_utility_practice_statuses_set_input",
@@ -18208,6 +18320,13 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_push_subscriptions_many:{
 			updates:"push_subscriptions_updates"
+		},
+		update_role_permissions:{
+			_set:"role_permissions_set_input",
+			where:"role_permissions_bool_exp"
+		},
+		update_role_permissions_many:{
+			updates:"role_permissions_updates"
 		},
 		update_seasons:{
 			_inc:"seasons_inc_input",
@@ -26760,6 +26879,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_status_by_pk:{
 
 		},
+		e_utility_practice_access:{
+			distinct_on:"e_utility_practice_access_select_column",
+			order_by:"e_utility_practice_access_order_by",
+			where:"e_utility_practice_access_bool_exp"
+		},
+		e_utility_practice_access_aggregate:{
+			distinct_on:"e_utility_practice_access_select_column",
+			order_by:"e_utility_practice_access_order_by",
+			where:"e_utility_practice_access_bool_exp"
+		},
+		e_utility_practice_access_by_pk:{
+
+		},
 		e_utility_practice_statuses:{
 			distinct_on:"e_utility_practice_statuses_select_column",
 			order_by:"e_utility_practice_statuses_order_by",
@@ -28013,6 +28145,16 @@ export const AllTypesProps: Record<string,any> = {
 		readServerFile:{
 
 		},
+		role_permissions:{
+			distinct_on:"role_permissions_select_column",
+			order_by:"role_permissions_order_by",
+			where:"role_permissions_bool_exp"
+		},
+		role_permissions_aggregate:{
+			distinct_on:"role_permissions_select_column",
+			order_by:"role_permissions_order_by",
+			where:"role_permissions_bool_exp"
+		},
 		seasons:{
 			distinct_on:"seasons_select_column",
 			order_by:"seasons_order_by",
@@ -28973,6 +29115,44 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	restart_league_season_args:{
 		_league_season_id:"uuid"
+	},
+	role_permissions_aggregate_fields:{
+		count:{
+			columns:"role_permissions_select_column"
+		}
+	},
+	role_permissions_bool_exp:{
+		_and:"role_permissions_bool_exp",
+		_not:"role_permissions_bool_exp",
+		_or:"role_permissions_bool_exp",
+		can_create_events:"Boolean_comparison_exp",
+		can_create_matches:"Boolean_comparison_exp",
+		can_create_tournaments:"Boolean_comparison_exp",
+		role:"String_comparison_exp"
+	},
+	role_permissions_insert_input:{
+
+	},
+	role_permissions_order_by:{
+		can_create_events:"order_by",
+		can_create_matches:"order_by",
+		can_create_tournaments:"order_by",
+		role:"order_by"
+	},
+	role_permissions_select_column: "enum" as const,
+	role_permissions_set_input:{
+
+	},
+	role_permissions_stream_cursor_input:{
+		initial_value:"role_permissions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	role_permissions_stream_cursor_value_input:{
+
+	},
+	role_permissions_updates:{
+		_set:"role_permissions_set_input",
+		where:"role_permissions_bool_exp"
 	},
 	seasons:{
 		awards:{
@@ -30716,6 +30896,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"e_tournament_status_stream_cursor_input",
 			where:"e_tournament_status_bool_exp"
 		},
+		e_utility_practice_access:{
+			distinct_on:"e_utility_practice_access_select_column",
+			order_by:"e_utility_practice_access_order_by",
+			where:"e_utility_practice_access_bool_exp"
+		},
+		e_utility_practice_access_aggregate:{
+			distinct_on:"e_utility_practice_access_select_column",
+			order_by:"e_utility_practice_access_order_by",
+			where:"e_utility_practice_access_bool_exp"
+		},
+		e_utility_practice_access_by_pk:{
+
+		},
+		e_utility_practice_access_stream:{
+			cursor:"e_utility_practice_access_stream_cursor_input",
+			where:"e_utility_practice_access_bool_exp"
+		},
 		e_utility_practice_statuses:{
 			distinct_on:"e_utility_practice_statuses_select_column",
 			order_by:"e_utility_practice_statuses_order_by",
@@ -32285,6 +32482,20 @@ export const AllTypesProps: Record<string,any> = {
 		push_subscriptions_stream:{
 			cursor:"push_subscriptions_stream_cursor_input",
 			where:"push_subscriptions_bool_exp"
+		},
+		role_permissions:{
+			distinct_on:"role_permissions_select_column",
+			order_by:"role_permissions_order_by",
+			where:"role_permissions_bool_exp"
+		},
+		role_permissions_aggregate:{
+			distinct_on:"role_permissions_select_column",
+			order_by:"role_permissions_order_by",
+			where:"role_permissions_bool_exp"
+		},
+		role_permissions_stream:{
+			cursor:"role_permissions_stream_cursor_input",
+			where:"role_permissions_bool_exp"
 		},
 		seasons:{
 			distinct_on:"seasons_select_column",
@@ -40708,7 +40919,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"utility_practice_sessions_bool_exp",
 		_not:"utility_practice_sessions_bool_exp",
 		_or:"utility_practice_sessions_bool_exp",
-		access:"String_comparison_exp",
+		access:"e_utility_practice_access_enum_comparison_exp",
 		can_manage:"Boolean_comparison_exp",
 		can_view:"Boolean_comparison_exp",
 		collection:"utility_collections_bool_exp",
@@ -40731,6 +40942,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_open:"Boolean_comparison_exp",
 		is_render:"Boolean_comparison_exp",
 		last_occupied_at:"timestamptz_comparison_exp",
+		map_changing_at:"timestamptz_comparison_exp",
 		map_name:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
@@ -40747,6 +40959,7 @@ export const AllTypesProps: Record<string,any> = {
 		host_steam_id:"bigint"
 	},
 	utility_practice_sessions_insert_input:{
+		access:"e_utility_practice_access_enum",
 		collection:"utility_collections_obj_rel_insert_input",
 		collection_id:"uuid",
 		created_at:"timestamptz",
@@ -40759,6 +40972,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		invites:"utility_practice_invites_arr_rel_insert_input",
 		last_occupied_at:"timestamptz",
+		map_changing_at:"timestamptz",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		playbook:"utility_playbooks_obj_rel_insert_input",
@@ -40769,7 +40983,6 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	utility_practice_sessions_max_order_by:{
-		access:"order_by",
 		collection_id:"order_by",
 		created_at:"order_by",
 		empty_since:"order_by",
@@ -40780,6 +40993,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		invite_code:"order_by",
 		last_occupied_at:"order_by",
+		map_changing_at:"order_by",
 		map_name:"order_by",
 		match_id:"order_by",
 		playbook_id:"order_by",
@@ -40788,7 +41002,6 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"order_by"
 	},
 	utility_practice_sessions_min_order_by:{
-		access:"order_by",
 		collection_id:"order_by",
 		created_at:"order_by",
 		empty_since:"order_by",
@@ -40799,6 +41012,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		invite_code:"order_by",
 		last_occupied_at:"order_by",
+		map_changing_at:"order_by",
 		map_name:"order_by",
 		match_id:"order_by",
 		playbook_id:"order_by",
@@ -40838,6 +41052,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_open:"order_by",
 		is_render:"order_by",
 		last_occupied_at:"order_by",
+		map_changing_at:"order_by",
 		map_name:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
@@ -40856,6 +41071,7 @@ export const AllTypesProps: Record<string,any> = {
 	utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	utility_practice_sessions_set_input:{
+		access:"e_utility_practice_access_enum",
 		collection_id:"uuid",
 		created_at:"timestamptz",
 		empty_since:"timestamptz",
@@ -40864,6 +41080,7 @@ export const AllTypesProps: Record<string,any> = {
 		host_steam_id:"bigint",
 		id:"uuid",
 		last_occupied_at:"timestamptz",
+		map_changing_at:"timestamptz",
 		match_id:"uuid",
 		playbook_id:"uuid",
 		status:"e_utility_practice_statuses_enum",
@@ -40884,6 +41101,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	utility_practice_sessions_stream_cursor_value_input:{
+		access:"e_utility_practice_access_enum",
 		collection_id:"uuid",
 		created_at:"timestamptz",
 		empty_since:"timestamptz",
@@ -40892,6 +41110,7 @@ export const AllTypesProps: Record<string,any> = {
 		host_steam_id:"bigint",
 		id:"uuid",
 		last_occupied_at:"timestamptz",
+		map_changing_at:"timestamptz",
 		match_id:"uuid",
 		playbook_id:"uuid",
 		status:"e_utility_practice_statuses_enum",
@@ -45502,6 +45721,12 @@ export const ReturnTypes: Record<string,any> = {
 		lineups:"Int",
 		scan_id:"uuid"
 	},
+	UtilityDrillLoadOutput:{
+		map_name:"String",
+		queued:"Int",
+		reason:"String",
+		sent:"Boolean"
+	},
 	UtilityImportError:{
 		external_id:"String",
 		index:"Int",
@@ -45567,6 +45792,11 @@ export const ReturnTypes: Record<string,any> = {
 	UtilityPlaybookOutput:{
 		id:"uuid"
 	},
+	UtilityPracticeMapChangeOutput:{
+		map_name:"String",
+		queued:"Boolean",
+		success:"Boolean"
+	},
 	UtilityPracticePlanEntry:{
 		attempts:"Int",
 		difficulty:"String",
@@ -45604,7 +45834,8 @@ export const ReturnTypes: Record<string,any> = {
 	UtilityPracticeWhereOutput:{
 		map_name:"String",
 		on_server:"Boolean",
-		session_id:"uuid"
+		session_id:"uuid",
+		switching:"Boolean"
 	},
 	UtilityPurgeOutput:{
 		dry_run:"Boolean",
@@ -48072,6 +48303,33 @@ export const ReturnTypes: Record<string,any> = {
 	e_tournament_status_mutation_response:{
 		affected_rows:"Int",
 		returning:"e_tournament_status"
+	},
+	e_utility_practice_access:{
+		description:"String",
+		utility_practice_sessions:"utility_practice_sessions",
+		utility_practice_sessions_aggregate:"utility_practice_sessions_aggregate",
+		value:"String"
+	},
+	e_utility_practice_access_aggregate:{
+		aggregate:"e_utility_practice_access_aggregate_fields",
+		nodes:"e_utility_practice_access"
+	},
+	e_utility_practice_access_aggregate_fields:{
+		count:"Int",
+		max:"e_utility_practice_access_max_fields",
+		min:"e_utility_practice_access_min_fields"
+	},
+	e_utility_practice_access_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_utility_practice_access_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_utility_practice_access_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_utility_practice_access"
 	},
 	e_utility_practice_statuses:{
 		description:"String",
@@ -52400,6 +52658,7 @@ export const ReturnTypes: Record<string,any> = {
 		cancelReparseAllDemos:"SuccessOutput",
 		cancelScrimRequest:"SuccessOutput",
 		cancelUtilityLineupRender:"SuccessOutput",
+		changeUtilityPracticeMap:"UtilityPracticeMapChangeOutput",
 		checkIntoMatch:"SuccessOutput",
 		clearClipRenderBatch:"SuccessOutput",
 		clearFinishedClipRenders:"SuccessOutput",
@@ -52541,6 +52800,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_tournament_stage_types_by_pk:"e_tournament_stage_types",
 		delete_e_tournament_status:"e_tournament_status_mutation_response",
 		delete_e_tournament_status_by_pk:"e_tournament_status",
+		delete_e_utility_practice_access:"e_utility_practice_access_mutation_response",
+		delete_e_utility_practice_access_by_pk:"e_utility_practice_access",
 		delete_e_utility_practice_statuses:"e_utility_practice_statuses_mutation_response",
 		delete_e_utility_practice_statuses_by_pk:"e_utility_practice_statuses",
 		delete_e_utility_sources:"e_utility_sources_mutation_response",
@@ -52706,6 +52967,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_plugin_versions_by_pk:"plugin_versions",
 		delete_push_subscriptions:"push_subscriptions_mutation_response",
 		delete_push_subscriptions_by_pk:"push_subscriptions",
+		delete_role_permissions:"role_permissions_mutation_response",
 		delete_seasons:"seasons_mutation_response",
 		delete_seasons_by_pk:"seasons",
 		delete_server_regions:"server_regions_mutation_response",
@@ -52929,6 +53191,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_tournament_stage_types_one:"e_tournament_stage_types",
 		insert_e_tournament_status:"e_tournament_status_mutation_response",
 		insert_e_tournament_status_one:"e_tournament_status",
+		insert_e_utility_practice_access:"e_utility_practice_access_mutation_response",
+		insert_e_utility_practice_access_one:"e_utility_practice_access",
 		insert_e_utility_practice_statuses:"e_utility_practice_statuses_mutation_response",
 		insert_e_utility_practice_statuses_one:"e_utility_practice_statuses",
 		insert_e_utility_sources:"e_utility_sources_mutation_response",
@@ -53097,6 +53361,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_plugin_versions_one:"plugin_versions",
 		insert_push_subscriptions:"push_subscriptions_mutation_response",
 		insert_push_subscriptions_one:"push_subscriptions",
+		insert_role_permissions:"role_permissions_mutation_response",
+		insert_role_permissions_one:"role_permissions",
 		insert_seasons:"seasons_mutation_response",
 		insert_seasons_one:"seasons",
 		insert_server_regions:"server_regions_mutation_response",
@@ -53262,6 +53528,7 @@ export const ReturnTypes: Record<string,any> = {
 		scanSteamBans:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		sendScrimRequest:"SuccessOutput",
+		sendUtilityDrillToServer:"UtilityDrillLoadOutput",
 		sendUtilityLineupToServer:"UtilityLoadOutput",
 		sendUtilityScratchToServer:"UtilityLoadOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
@@ -53271,6 +53538,7 @@ export const ReturnTypes: Record<string,any> = {
 		setMatchWinner:"SuccessOutput",
 		setNewsPostStatus:"NewsPost",
 		setTournamentAward:"TournamentAward",
+		setUtilityPracticeAccess:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		skipShaders:"SuccessOutput",
 		solveUtilityLineup:"UtilitySolveOutput",
@@ -53484,6 +53752,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_tournament_status:"e_tournament_status_mutation_response",
 		update_e_tournament_status_by_pk:"e_tournament_status",
 		update_e_tournament_status_many:"e_tournament_status_mutation_response",
+		update_e_utility_practice_access:"e_utility_practice_access_mutation_response",
+		update_e_utility_practice_access_by_pk:"e_utility_practice_access",
+		update_e_utility_practice_access_many:"e_utility_practice_access_mutation_response",
 		update_e_utility_practice_statuses:"e_utility_practice_statuses_mutation_response",
 		update_e_utility_practice_statuses_by_pk:"e_utility_practice_statuses",
 		update_e_utility_practice_statuses_many:"e_utility_practice_statuses_mutation_response",
@@ -53733,6 +54004,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_push_subscriptions:"push_subscriptions_mutation_response",
 		update_push_subscriptions_by_pk:"push_subscriptions",
 		update_push_subscriptions_many:"push_subscriptions_mutation_response",
+		update_role_permissions:"role_permissions_mutation_response",
+		update_role_permissions_many:"role_permissions_mutation_response",
 		update_seasons:"seasons_mutation_response",
 		update_seasons_by_pk:"seasons",
 		update_seasons_many:"seasons_mutation_response",
@@ -59867,6 +60140,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_tournament_status:"e_tournament_status",
 		e_tournament_status_aggregate:"e_tournament_status_aggregate",
 		e_tournament_status_by_pk:"e_tournament_status",
+		e_utility_practice_access:"e_utility_practice_access",
+		e_utility_practice_access_aggregate:"e_utility_practice_access_aggregate",
+		e_utility_practice_access_by_pk:"e_utility_practice_access",
 		e_utility_practice_statuses:"e_utility_practice_statuses",
 		e_utility_practice_statuses_aggregate:"e_utility_practice_statuses_aggregate",
 		e_utility_practice_statuses_by_pk:"e_utility_practice_statuses",
@@ -60159,6 +60435,8 @@ export const ReturnTypes: Record<string,any> = {
 		push_subscriptions_aggregate:"push_subscriptions_aggregate",
 		push_subscriptions_by_pk:"push_subscriptions",
 		readServerFile:"FileContentResponse",
+		role_permissions:"role_permissions",
+		role_permissions_aggregate:"role_permissions_aggregate",
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
@@ -60372,6 +60650,31 @@ export const ReturnTypes: Record<string,any> = {
 		v_tournament_player_stats:"v_tournament_player_stats",
 		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate",
 		webPushStatus:"WebPushStatusOutput"
+	},
+	role_permissions:{
+		can_create_events:"Boolean",
+		can_create_matches:"Boolean",
+		can_create_tournaments:"Boolean",
+		role:"String"
+	},
+	role_permissions_aggregate:{
+		aggregate:"role_permissions_aggregate_fields",
+		nodes:"role_permissions"
+	},
+	role_permissions_aggregate_fields:{
+		count:"Int",
+		max:"role_permissions_max_fields",
+		min:"role_permissions_min_fields"
+	},
+	role_permissions_max_fields:{
+		role:"String"
+	},
+	role_permissions_min_fields:{
+		role:"String"
+	},
+	role_permissions_mutation_response:{
+		affected_rows:"Int",
+		returning:"role_permissions"
 	},
 	seasons:{
 		awards:"award_recipients",
@@ -61075,6 +61378,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_tournament_status_aggregate:"e_tournament_status_aggregate",
 		e_tournament_status_by_pk:"e_tournament_status",
 		e_tournament_status_stream:"e_tournament_status",
+		e_utility_practice_access:"e_utility_practice_access",
+		e_utility_practice_access_aggregate:"e_utility_practice_access_aggregate",
+		e_utility_practice_access_by_pk:"e_utility_practice_access",
+		e_utility_practice_access_stream:"e_utility_practice_access",
 		e_utility_practice_statuses:"e_utility_practice_statuses",
 		e_utility_practice_statuses_aggregate:"e_utility_practice_statuses_aggregate",
 		e_utility_practice_statuses_by_pk:"e_utility_practice_statuses",
@@ -61431,6 +61738,9 @@ export const ReturnTypes: Record<string,any> = {
 		push_subscriptions_aggregate:"push_subscriptions_aggregate",
 		push_subscriptions_by_pk:"push_subscriptions",
 		push_subscriptions_stream:"push_subscriptions",
+		role_permissions:"role_permissions",
+		role_permissions_aggregate:"role_permissions_aggregate",
+		role_permissions_stream:"role_permissions",
 		seasons:"seasons",
 		seasons_aggregate:"seasons_aggregate",
 		seasons_by_pk:"seasons",
@@ -65740,7 +66050,7 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	utility_practice_sessions:{
-		access:"String",
+		access:"e_utility_practice_access_enum",
 		can_manage:"Boolean",
 		can_view:"Boolean",
 		collection:"utility_collections",
@@ -65763,6 +66073,7 @@ export const ReturnTypes: Record<string,any> = {
 		is_open:"Boolean",
 		is_render:"Boolean",
 		last_occupied_at:"timestamptz",
+		map_changing_at:"timestamptz",
 		map_name:"String",
 		match:"matches",
 		match_id:"uuid",
@@ -65795,7 +66106,6 @@ export const ReturnTypes: Record<string,any> = {
 		host_steam_id:"Float"
 	},
 	utility_practice_sessions_max_fields:{
-		access:"String",
 		collection_id:"uuid",
 		connection_link:"String",
 		connection_string:"String",
@@ -65808,6 +66118,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		invite_code:"String",
 		last_occupied_at:"timestamptz",
+		map_changing_at:"timestamptz",
 		map_name:"String",
 		match_id:"uuid",
 		playbook_id:"uuid",
@@ -65816,7 +66127,6 @@ export const ReturnTypes: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	utility_practice_sessions_min_fields:{
-		access:"String",
 		collection_id:"uuid",
 		connection_link:"String",
 		connection_string:"String",
@@ -65829,6 +66139,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		invite_code:"String",
 		last_occupied_at:"timestamptz",
+		map_changing_at:"timestamptz",
 		map_name:"String",
 		match_id:"uuid",
 		playbook_id:"uuid",

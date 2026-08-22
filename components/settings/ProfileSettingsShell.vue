@@ -95,6 +95,20 @@ const contentRow = ref<HTMLElement | null>(null);
 
 useScrollIntoViewOnChange(contentRow, () => route.path);
 
+// The content pane owns its own scroll at lg, so a section switch has to be
+// sent back to the top by hand -- unlike the application shell, this pane is
+// not keyed per route.
+const contentPane = ref<HTMLElement | null>(null);
+
+watch(
+  () => route.path,
+  () => {
+    if (contentPane.value) {
+      contentPane.value.scrollTop = 0;
+    }
+  },
+);
+
 function linkDiscord() {
   if (hasDiscordLinked.value) return;
   window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(window.location.toString())}`;
@@ -123,73 +137,84 @@ async function unlinkDiscord() {
 </script>
 
 <template>
-  <TacticalPageHeader>
-    <template #title>{{ $t("layouts.account_settings.title") }}</template>
-    <template #subtitle>{{
-      $t("layouts.account_settings.description")
-    }}</template>
-  </TacticalPageHeader>
-  <Separator v-if="showSeparators" class="my-6" />
+  <!-- Two-pane console at lg: the page itself is pinned to the viewport and
+       each pane owns its own scrollbar, so the nav and the content scroll
+       independently. `overscroll-contain` is what keeps a flick that runs out
+       of one pane from ever leaking into the page behind it. -->
   <div
-    ref="contentRow"
-    class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0"
+    class="lg:flex lg:flex-col lg:h-[calc(var(--sidebar-height,100svh)-2rem-var(--main-bottom-dock-height,0px))]"
   >
-    <aside
-      class="w-full shrink-0 lg:sticky lg:top-4 lg:max-h-[calc(var(--sidebar-height,100svh)-2rem)] lg:w-auto lg:self-start lg:overflow-y-auto"
+    <TacticalPageHeader>
+      <template #title>{{ $t("layouts.account_settings.title") }}</template>
+      <template #subtitle>{{
+        $t("layouts.account_settings.description")
+      }}</template>
+    </TacticalPageHeader>
+    <Separator v-if="showSeparators" class="my-6" />
+    <div
+      ref="contentRow"
+      class="flex flex-col space-y-8 lg:min-h-0 lg:flex-1 lg:flex-row lg:space-x-12 lg:space-y-0"
     >
-      <!-- Mobile: single dropdown -->
-      <div class="lg:hidden">
-        <Select v-model="selectedPath">
-          <SelectTrigger
-            class="w-full"
-            :aria-label="$t('ui.tooltips.settings_section')"
-          >
-            <SelectValue
-              :placeholder="$t('layouts.account_settings.select_section')"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
-              v-for="item in navItems"
-              :key="item.path"
-              :value="item.path"
-            >
-              {{ item.label }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <SettingsSideTabs
-        :items="navItems"
-        :active-path="resolvedPath"
-        :aria-label="$t('ui.tooltips.settings_section')"
+      <aside
+        class="w-full shrink-0 lg:h-full lg:w-auto lg:overflow-y-auto lg:overscroll-contain"
       >
-        <template #actions>
-          <Button
-            v-if="hasDiscordLinked"
-            variant="ghost"
-            class="w-full justify-start rounded-sm px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
-            @click.stop.prevent="showUnlinkDiscordDialog = true"
-          >
-            <Unlink class="mr-2 h-4 w-4" />
-            {{ $t("pages.settings.account.discord.unlink") }}
-          </Button>
-          <Button
-            v-else-if="supportsDiscordBot"
-            variant="ghost"
-            class="w-full justify-start rounded-sm px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
-            @click="linkDiscord"
-          >
-            <Link class="mr-2 h-4 w-4" />
-            {{ $t("pages.settings.account.discord.link") }}
-          </Button>
-        </template>
-      </SettingsSideTabs>
-    </aside>
-    <!-- Every account page is a narrow form, so the measure is applied here
-         rather than asking each one to wrap itself in SettingsPage. -->
-    <div class="settings-measure min-w-0 flex-1 space-y-6">
-      <slot />
+        <!-- Mobile: single dropdown -->
+        <div class="lg:hidden">
+          <Select v-model="selectedPath">
+            <SelectTrigger
+              class="w-full"
+              :aria-label="$t('ui.tooltips.settings_section')"
+            >
+              <SelectValue
+                :placeholder="$t('layouts.account_settings.select_section')"
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="item in navItems"
+                :key="item.path"
+                :value="item.path"
+              >
+                {{ item.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <SettingsSideTabs
+          :items="navItems"
+          :active-path="resolvedPath"
+          :aria-label="$t('ui.tooltips.settings_section')"
+        >
+          <template #actions>
+            <Button
+              v-if="hasDiscordLinked"
+              variant="ghost"
+              class="w-full justify-start rounded-sm px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+              @click.stop.prevent="showUnlinkDiscordDialog = true"
+            >
+              <Unlink class="mr-2 h-4 w-4" />
+              {{ $t("pages.settings.account.discord.unlink") }}
+            </Button>
+            <Button
+              v-else-if="supportsDiscordBot"
+              variant="ghost"
+              class="w-full justify-start rounded-sm px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+              @click="linkDiscord"
+            >
+              <Link class="mr-2 h-4 w-4" />
+              {{ $t("pages.settings.account.discord.link") }}
+            </Button>
+          </template>
+        </SettingsSideTabs>
+      </aside>
+      <!-- Every account page is a narrow form, so the measure is applied here
+           rather than asking each one to wrap itself in SettingsPage. -->
+      <div
+        ref="contentPane"
+        class="settings-measure min-w-0 flex-1 space-y-6 lg:h-full lg:overflow-y-auto lg:overscroll-contain"
+      >
+        <slot />
+      </div>
     </div>
   </div>
 

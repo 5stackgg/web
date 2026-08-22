@@ -68,6 +68,11 @@ const props = withDefaults(
     // "row" is the index form: one line per lineup, for reading down a list
     // rather than reading one. The page swaps the selected row back to a card.
     mode?: "card" | "row";
+    // The thumb doubles as "send this to my practice server". Off wherever a
+    // press already means something else -- the pickers hand the card out for
+    // choosing, and there a tile that loads you into the game instead of
+    // ticking the row is the wrong verb on the only target there is.
+    showPractice?: boolean;
   }>(),
   {
     selected: false,
@@ -82,6 +87,7 @@ const props = withDefaults(
     canReact: false,
     openInPlace: false,
     mode: "card",
+    showPractice: true,
   },
 );
 
@@ -270,13 +276,26 @@ function open() {
          reads as a jump rather than as the row growing. Everything that only
          a card shows folds in underneath. -->
     <div class="flex items-center gap-2.5">
-      <UtilityRadarThumb
-        :map-name="lineup.map_name"
-        :origin="origin"
-        :landing="landing"
-        :color="color"
-        :size="40"
-      />
+      <!-- A throw is a place and this is the picture of it, so it is also the
+           way in: the send action wears the tile rather than taking a row of
+           its own under the fold. That put the card's only *do something*
+           button below its metadata and, worse, out of reach entirely in row
+           mode -- where a list you are scanning with a live server is exactly
+           when you want it. -->
+      <div class="relative shrink-0">
+        <UtilityRadarThumb
+          :map-name="lineup.map_name"
+          :origin="origin"
+          :landing="landing"
+          :color="color"
+          :size="40"
+        />
+        <UtilityPracticeButton
+          v-if="showPractice"
+          :lineup="lineup"
+          shape="overlay"
+        />
+      </div>
 
       <div class="flex min-w-0 flex-1 flex-col gap-1">
         <div class="flex items-center gap-1.5">
@@ -463,13 +482,6 @@ function open() {
             @favorite="(id) => emit('favorite', id)"
           />
         </div>
-
-        <UtilityPracticeButton
-          :lineup="lineup"
-          size="xs"
-          variant="outline"
-          block
-        />
 
         <!-- Publishing is a review. The author's side of it is the clock beside
              the name; this is the reviewer's side, and it stays inline because

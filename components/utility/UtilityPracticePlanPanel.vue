@@ -9,6 +9,7 @@ import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import { useRouteTab } from "~/composables/useRouteTab";
 import {
   utilityLineupsQuery,
   utilityPracticePlanQuery,
@@ -54,8 +55,20 @@ const PRIVATE_SOURCE = "private";
  */
 const PLAN_ORDER: UtilityPlanOrder = "priority";
 
-const side = ref<string>(ANY_SIDE);
-const source = ref<string>(PUBLIC_SOURCE);
+// Both live in the URL: the plan is a queue you work through over several
+// sittings, and coming back to it filtered the way you left it is the whole
+// point. `planSide`/`planSource` rather than `side`/`source` -- the page's own
+// lineup filters already own those two names.
+const side = useRouteTab({
+  param: "planSide",
+  defaultTab: ANY_SIDE,
+  tabs: [ANY_SIDE, "CT", "TERRORIST"],
+});
+const source = useRouteTab({
+  param: "planSource",
+  defaultTab: PUBLIC_SOURCE,
+  tabs: [PUBLIC_SOURCE, PRIVATE_SOURCE],
+});
 const plan = ref<UtilityPracticePlanView | null>(null);
 const lineupsById = ref<Record<string, UtilityLineup>>({});
 const loading = ref(true);

@@ -233,6 +233,7 @@ function pick(id: string) {
                   :lineup="lineup"
                   :selected="hoveredId === lineup.id"
                   :show-open-link="false"
+                  :show-practice="false"
                   class="transition-opacity duration-200"
                   :class="
                     pickedCounts[lineup.id] && hoveredId !== lineup.id

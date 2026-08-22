@@ -7,6 +7,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "~/components/ui/dialog";
+import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import DeleteRenderDialog from "~/components/utility/DeleteRenderDialog.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 import { utilityLineupRoute } from "~/utilities/utilityDisplay";
@@ -72,15 +73,32 @@ function onDeleted(id: string) {
   emit("update:open", false);
 }
 
-// Reset transient UI whenever the modal closes.
+// Same shared surface the clip modal uses, so playback is driven the same way:
+// the player never autoplays itself, the consumer calls play() once its clip is
+// mounted.
+const playerRef = ref<InstanceType<typeof ClipPlayer> | null>(null);
+
+// A lineup preview is a couple of seconds of one throw -- it is meant to be
+// watched over and over, so replay on end rather than leaving a dead frame.
+function replay() {
+  void playerRef.value?.play();
+}
+
+// The player itself is a watch source: the dialog's content mounts a beat after
+// `open` flips, so keying off `open` alone reaches for a ref that is still null
+// and the preview just sits on its poster.
 watch(
-  () => props.open,
-  (v) => {
-    if (!v) {
+  [() => props.open, () => props.src, playerRef],
+  ([open, src, player]) => {
+    // Reset transient UI whenever the modal closes.
+    if (!open) {
       linkCopied.value = false;
       showDelete.value = false;
+      return;
     }
+    if (src && player) void player.play();
   },
+  { flush: "post" },
 );
 </script>
 
@@ -97,49 +115,48 @@ watch(
       </DialogDescription>
 
       <div
-        class="grid gap-0 sm:grid-cols-[minmax(0,3fr)_minmax(240px,1fr)]"
+        class="grid gap-4 p-4 sm:grid-cols-[minmax(0,3fr)_minmax(240px,1fr)] sm:gap-5 sm:p-5"
       >
         <!-- Video hero -->
-        <div class="relative bg-black">
-          <video
-            v-if="src && open"
-            :key="src"
+        <div class="min-w-0">
+          <ClipPlayer
+            ref="playerRef"
             :src="src"
-            :poster="poster ?? undefined"
-            class="aspect-video w-full sm:h-full sm:rounded-l-lg"
-            controls
-            autoplay
-            loop
-            playsinline
-            preload="metadata"
-          />
-          <div
-            v-else
-            class="flex aspect-video w-full items-center justify-center bg-muted/20"
+            :poster="poster ?? null"
+            :clip-key="renderId ?? src"
+            @ended="replay"
           >
-            <Film class="h-6 w-6 text-muted-foreground" />
-          </div>
+            <template #empty>
+              <div
+                class="absolute inset-0 flex items-center justify-center bg-muted/20"
+              >
+                <Film class="h-6 w-6 text-muted-foreground" />
+              </div>
+            </template>
+            <template #top-left>
+              <h2
+                class="min-w-0 truncate font-mono text-sm font-semibold uppercase tracking-[0.14em] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)] sm:text-base"
+                :title="title || $t('pages.utility.preview.title')"
+              >
+                {{ title || $t("pages.utility.preview.title") }}
+              </h2>
+            </template>
+            <template #bottom>
+              <div
+                class="flex min-w-0 items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-white/60"
+              >
+                <span class="truncate">{{ cleanMapName(mapName ?? "") }}</span>
+                <template v-if="seconds">
+                  <span aria-hidden="true" class="text-white/30">/</span>
+                  <span class="shrink-0 tabular-nums">{{ seconds }}s</span>
+                </template>
+              </div>
+            </template>
+          </ClipPlayer>
         </div>
 
         <!-- Info + actions sidebar -->
-        <aside class="flex min-w-0 flex-col gap-3 border-l border-border/50 p-4">
-          <div class="min-w-0">
-            <div
-              class="truncate font-mono text-sm font-semibold uppercase tracking-[0.14em] text-foreground"
-            >
-              {{ title || $t("pages.utility.preview.title") }}
-            </div>
-            <div
-              class="mt-1 flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
-            >
-              <span>{{ cleanMapName(mapName ?? "") }}</span>
-              <template v-if="seconds">
-                <span aria-hidden="true" class="text-border">/</span>
-                <span class="tabular-nums">{{ seconds }}s</span>
-              </template>
-            </div>
-          </div>
-
+        <aside class="flex min-w-0 flex-col gap-3">
           <NuxtLink
             v-if="lineupRoute"
             :to="lineupRoute"

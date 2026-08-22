@@ -1867,6 +1867,13 @@ export type ValueTypes = {
 	scan_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityDrillLoadOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	queued?:boolean | `@${string}`,
+	reason?:boolean | `@${string}`,
+	sent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityImportError"]: AliasType<{
 	external_id?:boolean | `@${string}`,
 	index?:boolean | `@${string}`,
@@ -1949,6 +1956,12 @@ export type ValueTypes = {
 	offset_ms?: number | undefined | null | Variable<any, string>,
 	utility_lineup_id: ValueTypes["uuid"] | Variable<any, string>
 };
+	["UtilityPracticeMapChangeOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	queued?:boolean | `@${string}`,
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityPracticePlanEntry"]: AliasType<{
 	attempts?:boolean | `@${string}`,
 	difficulty?:boolean | `@${string}`,
@@ -1992,6 +2005,7 @@ export type ValueTypes = {
 	map_name?:boolean | `@${string}`,
 	on_server?:boolean | `@${string}`,
 	session_id?:boolean | `@${string}`,
+	switching?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["UtilityPurgeOutput"]: AliasType<{
@@ -11316,6 +11330,127 @@ count?: [{	columns?: Array<ValueTypes["e_tournament_status_select_column"]> | un
 	_set?: ValueTypes["e_tournament_status_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
 	where: ValueTypes["e_tournament_status_bool_exp"] | Variable<any, string>
+};
+	/** columns and relationships of "e_utility_practice_access" */
+["e_utility_practice_access"]: AliasType<{
+	description?:boolean | `@${string}`,
+utility_practice_sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_practice_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_practice_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_practice_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_practice_sessions"]],
+utility_practice_sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["utility_practice_sessions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["utility_practice_sessions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["utility_practice_sessions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_practice_sessions_aggregate"]],
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_utility_practice_access_aggregate_fields"],
+	nodes?:ValueTypes["e_utility_practice_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_utility_practice_access_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_utility_practice_access_max_fields"],
+	min?:ValueTypes["e_utility_practice_access_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_utility_practice_access". All fields are combined with a logical 'AND'. */
+["e_utility_practice_access_bool_exp"]: {
+	_and?: Array<ValueTypes["e_utility_practice_access_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_utility_practice_access_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	utility_practice_sessions?: ValueTypes["utility_practice_sessions_bool_exp"] | undefined | null | Variable<any, string>,
+	utility_practice_sessions_aggregate?: ValueTypes["utility_practice_sessions_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_utility_practice_access" */
+["e_utility_practice_access_constraint"]:e_utility_practice_access_constraint;
+	["e_utility_practice_access_enum"]:e_utility_practice_access_enum;
+	/** Boolean expression to compare columns of type "e_utility_practice_access_enum". All fields are combined with logical 'AND'. */
+["e_utility_practice_access_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_utility_practice_access_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_utility_practice_access_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_utility_practice_access_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_utility_practice_access_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_utility_practice_access" */
+["e_utility_practice_access_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	utility_practice_sessions?: ValueTypes["utility_practice_sessions_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_utility_practice_access_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_utility_practice_access_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_utility_practice_access" */
+["e_utility_practice_access_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_utility_practice_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_utility_practice_access" */
+["e_utility_practice_access_on_conflict"]: {
+	constraint: ValueTypes["e_utility_practice_access_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_utility_practice_access_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_utility_practice_access". */
+["e_utility_practice_access_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	utility_practice_sessions_aggregate?: ValueTypes["utility_practice_sessions_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_utility_practice_access */
+["e_utility_practice_access_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_utility_practice_access" */
+["e_utility_practice_access_select_column"]:e_utility_practice_access_select_column;
+	/** input type for updating data in table "e_utility_practice_access" */
+["e_utility_practice_access_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_utility_practice_access" */
+["e_utility_practice_access_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_utility_practice_access_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_utility_practice_access_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_utility_practice_access" */
+["e_utility_practice_access_update_column"]:e_utility_practice_access_update_column;
+	["e_utility_practice_access_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_utility_practice_access_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_utility_practice_access_bool_exp"] | Variable<any, string>
 };
 	/** columns and relationships of "e_utility_practice_statuses" */
 ["e_utility_practice_statuses"]: AliasType<{
@@ -27691,6 +27826,7 @@ cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueType
 	cancelReparseAllDemos?:ValueTypes["SuccessOutput"],
 cancelScrimRequest?: [{	request_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 cancelUtilityLineupRender?: [{	render_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+changeUtilityPracticeMap?: [{	lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	lineup_ids?: Array<ValueTypes["uuid"]> | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	scratch?: ValueTypes["UtilityScratchLineupInput"] | undefined | null | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityPracticeMapChangeOutput"]],
 checkIntoMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 clearClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Delete all terminal-state clip_render_jobs rows platform-wide. */
@@ -27899,6 +28035,9 @@ delete_e_tournament_stage_types_by_pk?: [{	value: string | Variable<any, string>
 delete_e_tournament_status?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_tournament_status_bool_exp"] | Variable<any, string>},ValueTypes["e_tournament_status_mutation_response"]],
 delete_e_tournament_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_tournament_status"]],
+delete_e_utility_practice_access?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_utility_practice_access_bool_exp"] | Variable<any, string>},ValueTypes["e_utility_practice_access_mutation_response"]],
+delete_e_utility_practice_access_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
 delete_e_utility_practice_statuses?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_utility_practice_statuses_bool_exp"] | Variable<any, string>},ValueTypes["e_utility_practice_statuses_mutation_response"]],
 delete_e_utility_practice_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_utility_practice_statuses"]],
@@ -28148,6 +28287,8 @@ delete_plugin_versions_by_pk?: [{	runtime: ValueTypes["e_plugin_runtimes_enum"] 
 delete_push_subscriptions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["push_subscriptions_bool_exp"] | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
 delete_push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
+delete_role_permissions?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["role_permissions_bool_exp"] | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["seasons_bool_exp"] | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["seasons"]],
@@ -28657,6 +28798,12 @@ insert_e_tournament_status?: [{	/** the rows to be inserted */
 insert_e_tournament_status_one?: [{	/** the row to be inserted */
 	object: ValueTypes["e_tournament_status_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_tournament_status_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_tournament_status"]],
+insert_e_utility_practice_access?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_utility_practice_access_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_utility_practice_access_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access_mutation_response"]],
+insert_e_utility_practice_access_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_utility_practice_access_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_utility_practice_access_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
 insert_e_utility_practice_statuses?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_utility_practice_statuses_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_utility_practice_statuses_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_statuses_mutation_response"]],
@@ -29155,6 +29302,10 @@ insert_push_subscriptions?: [{	/** the rows to be inserted */
 insert_push_subscriptions_one?: [{	/** the row to be inserted */
 	object: ValueTypes["push_subscriptions_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["push_subscriptions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
+insert_role_permissions?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["role_permissions_insert_input"]> | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
+insert_role_permissions_one?: [{	/** the row to be inserted */
+	object: ValueTypes["role_permissions_insert_input"] | Variable<any, string>},ValueTypes["role_permissions"]],
 insert_seasons?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["seasons_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["seasons_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["seasons_mutation_response"]],
@@ -29555,6 +29706,7 @@ saveUtilityPlaybook?: [{	description?: string | undefined | null | Variable<any,
 	scanSteamBans?:ValueTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 sendScrimRequest?: [{	best_of?: number | undefined | null | Variable<any, string>,	from_team_id: ValueTypes["uuid"] | Variable<any, string>,	proposed_scheduled_at: ValueTypes["timestamptz"] | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	to_team_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+sendUtilityDrillToServer?: [{	lineup_ids: Array<string> | Variable<any, string>},ValueTypes["UtilityDrillLoadOutput"]],
 sendUtilityLineupToServer?: [{	lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityLoadOutput"]],
 sendUtilityScratchToServer?: [{	lineup: ValueTypes["UtilityScratchLineupInput"] | Variable<any, string>},ValueTypes["UtilityLoadOutput"]],
 setGameNodeSchedulingState?: [{	enabled: boolean | Variable<any, string>,	game_server_node_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -29564,6 +29716,7 @@ setMapWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	match_ma
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ValueTypes["uuid"] | Variable<any, string>,	status: string | Variable<any, string>},ValueTypes["NewsPost"]],
 setTournamentAward?: [{	award_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	custom_name?: string | undefined | null | Variable<any, string>,	placement: number | Variable<any, string>,	silhouette?: number | undefined | null | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["TournamentAward"]],
+setUtilityPracticeAccess?: [{	access: string | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
 skipShaders?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 solveUtilityLineup?: [{	from_x?: number | undefined | null | Variable<any, string>,	from_y?: number | undefined | null | Variable<any, string>,	from_z?: number | undefined | null | Variable<any, string>,	name?: string | undefined | null | Variable<any, string>,	session_id: ValueTypes["uuid"] | Variable<any, string>,	target_x: number | Variable<any, string>,	target_y: number | Variable<any, string>,	target_z: number | Variable<any, string>,	tolerance?: number | undefined | null | Variable<any, string>,	utility_type?: string | undefined | null | Variable<any, string>},ValueTypes["UtilitySolveOutput"]],
@@ -29579,7 +29732,7 @@ specXray?: [{	enabled: boolean | Variable<any, string>,	match_id: ValueTypes["uu
 startLive?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startUtilityDriftScan?: [{	from_revision?: string | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	to_revision?: string | undefined | null | Variable<any, string>},ValueTypes["UtilityDriftScanOutput"]],
-startUtilityPractice?: [{	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	is_open?: boolean | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["UtilityPracticeSessionOutput"]],
+startUtilityPractice?: [{	access?: string | undefined | null | Variable<any, string>,	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	is_open?: boolean | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["UtilityPracticeSessionOutput"]],
 stopGpuSession?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 stopLive?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 stopUtilityPractice?: [{	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -30061,6 +30214,13 @@ update_e_tournament_status_by_pk?: [{	/** sets the columns of the filtered rows 
 	_set?: ValueTypes["e_tournament_status_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_tournament_status_pk_columns_input"] | Variable<any, string>},ValueTypes["e_tournament_status"]],
 update_e_tournament_status_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["e_tournament_status_updates"]> | Variable<any, string>},ValueTypes["e_tournament_status_mutation_response"]],
+update_e_utility_practice_access?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_utility_practice_access_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_utility_practice_access_bool_exp"] | Variable<any, string>},ValueTypes["e_utility_practice_access_mutation_response"]],
+update_e_utility_practice_access_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_utility_practice_access_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_utility_practice_access_pk_columns_input"] | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
+update_e_utility_practice_access_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_utility_practice_access_updates"]> | Variable<any, string>},ValueTypes["e_utility_practice_access_mutation_response"]],
 update_e_utility_practice_statuses?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_utility_practice_statuses_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_utility_practice_statuses_bool_exp"] | Variable<any, string>},ValueTypes["e_utility_practice_statuses_mutation_response"]],
@@ -30875,6 +31035,11 @@ update_push_subscriptions_by_pk?: [{	/** increments the numeric columns with giv
 	_set?: ValueTypes["push_subscriptions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["push_subscriptions_pk_columns_input"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
 update_push_subscriptions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["push_subscriptions_updates"]> | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
+update_role_permissions?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["role_permissions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["role_permissions_bool_exp"] | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
+update_role_permissions_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["role_permissions_updates"]> | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
 update_seasons?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["seasons_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["seasons_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -47805,6 +47970,19 @@ e_tournament_status_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["e_tournament_status_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_tournament_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_tournament_status_aggregate"]],
 e_tournament_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_tournament_status"]],
+e_utility_practice_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_utility_practice_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_utility_practice_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
+e_utility_practice_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_utility_practice_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_utility_practice_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access_aggregate"]],
+e_utility_practice_access_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
 e_utility_practice_statuses?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_utility_practice_statuses_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -49045,6 +49223,18 @@ push_subscriptions_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions_aggregate"]],
 push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
 readServerFile?: [{	file_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["FileContentResponse"]],
+role_permissions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["role_permissions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["role_permissions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["role_permissions"]],
+role_permissions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["role_permissions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["role_permissions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["role_permissions_aggregate"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["seasons_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -50054,6 +50244,98 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 };
 	["restart_league_season_args"]: {
 	_league_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "v_role_permissions" */
+["role_permissions"]: AliasType<{
+	can_create_events?:boolean | `@${string}`,
+	can_create_matches?:boolean | `@${string}`,
+	can_create_tournaments?:boolean | `@${string}`,
+	role?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_role_permissions" */
+["role_permissions_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["role_permissions_aggregate_fields"],
+	nodes?:ValueTypes["role_permissions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_role_permissions" */
+["role_permissions_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["role_permissions_max_fields"],
+	min?:ValueTypes["role_permissions_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_role_permissions". All fields are combined with a logical 'AND'. */
+["role_permissions_bool_exp"]: {
+	_and?: Array<ValueTypes["role_permissions_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["role_permissions_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["role_permissions_bool_exp"]> | undefined | null | Variable<any, string>,
+	can_create_events?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	can_create_matches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	can_create_tournaments?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	role?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "v_role_permissions" */
+["role_permissions_insert_input"]: {
+	can_create_events?: boolean | undefined | null | Variable<any, string>,
+	can_create_matches?: boolean | undefined | null | Variable<any, string>,
+	can_create_tournaments?: boolean | undefined | null | Variable<any, string>,
+	role?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["role_permissions_max_fields"]: AliasType<{
+	role?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["role_permissions_min_fields"]: AliasType<{
+	role?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "v_role_permissions" */
+["role_permissions_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["role_permissions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_role_permissions". */
+["role_permissions_order_by"]: {
+	can_create_events?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	can_create_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	can_create_tournaments?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "v_role_permissions" */
+["role_permissions_select_column"]:role_permissions_select_column;
+	/** input type for updating data in table "v_role_permissions" */
+["role_permissions_set_input"]: {
+	can_create_events?: boolean | undefined | null | Variable<any, string>,
+	can_create_matches?: boolean | undefined | null | Variable<any, string>,
+	can_create_tournaments?: boolean | undefined | null | Variable<any, string>,
+	role?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "role_permissions" */
+["role_permissions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["role_permissions_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["role_permissions_stream_cursor_value_input"]: {
+	can_create_events?: boolean | undefined | null | Variable<any, string>,
+	can_create_matches?: boolean | undefined | null | Variable<any, string>,
+	can_create_tournaments?: boolean | undefined | null | Variable<any, string>,
+	role?: string | undefined | null | Variable<any, string>
+};
+	["role_permissions_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["role_permissions_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["role_permissions_bool_exp"] | Variable<any, string>
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: AliasType<{
@@ -52650,6 +52932,23 @@ e_tournament_status_stream?: [{	/** maximum number of rows returned in a single 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["e_tournament_status_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_tournament_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_tournament_status"]],
+e_utility_practice_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_utility_practice_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_utility_practice_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
+e_utility_practice_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_utility_practice_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_utility_practice_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access_aggregate"]],
+e_utility_practice_access_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
+e_utility_practice_access_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_utility_practice_access_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_utility_practice_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_utility_practice_access"]],
 e_utility_practice_statuses?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_utility_practice_statuses_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -54211,6 +54510,22 @@ push_subscriptions_stream?: [{	/** maximum number of rows returned in a single b
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["push_subscriptions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
+role_permissions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["role_permissions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["role_permissions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["role_permissions"]],
+role_permissions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["role_permissions_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["role_permissions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["role_permissions_aggregate"]],
+role_permissions_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["role_permissions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["role_permissions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["role_permissions"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["seasons_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -69465,6 +69780,7 @@ invites_aggregate?: [{	/** distinct select on columns */
 	is_open?:boolean | `@${string}`,
 	is_render?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
+	map_changing_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
@@ -69558,7 +69874,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	_and?: Array<ValueTypes["utility_practice_sessions_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["utility_practice_sessions_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["utility_practice_sessions_bool_exp"]> | undefined | null | Variable<any, string>,
-	access?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	access?: ValueTypes["e_utility_practice_access_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_manage?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_view?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	collection?: ValueTypes["utility_collections_bool_exp"] | undefined | null | Variable<any, string>,
@@ -69581,6 +69897,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	is_open?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_render?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -69600,7 +69917,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
-	access?: string | undefined | null | Variable<any, string>,
+	access?: ValueTypes["e_utility_practice_access_enum"] | undefined | null | Variable<any, string>,
 	collection?: ValueTypes["utility_collections_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -69617,6 +69934,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	is_open?: boolean | undefined | null | Variable<any, string>,
 	is_render?: boolean | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -69630,7 +69948,6 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: AliasType<{
-	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -69645,6 +69962,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
+	map_changing_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	playbook_id?:boolean | `@${string}`,
@@ -69655,7 +69973,6 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 }>;
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
-	access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69666,6 +69983,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invite_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69675,7 +69993,6 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: AliasType<{
-	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -69690,6 +70007,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
+	map_changing_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	playbook_id?:boolean | `@${string}`,
@@ -69700,7 +70018,6 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 }>;
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
-	access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69711,6 +70028,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invite_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69762,6 +70080,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	is_open?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_render?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69785,7 +70104,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 ["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]:utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
-	access?: string | undefined | null | Variable<any, string>,
+	access?: ValueTypes["e_utility_practice_access_enum"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -69798,6 +70117,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	is_open?: boolean | undefined | null | Variable<any, string>,
 	is_render?: boolean | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -69842,7 +70162,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
-	access?: string | undefined | null | Variable<any, string>,
+	access?: ValueTypes["e_utility_practice_access_enum"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -69855,6 +70175,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	is_open?: boolean | undefined | null | Variable<any, string>,
 	is_render?: boolean | undefined | null | Variable<any, string>,
 	last_occupied_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	map_changing_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -80345,6 +80666,13 @@ export type ResolverInputTypes = {
 	scan_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityDrillLoadOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	queued?:boolean | `@${string}`,
+	reason?:boolean | `@${string}`,
+	sent?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityImportError"]: AliasType<{
 	external_id?:boolean | `@${string}`,
 	index?:boolean | `@${string}`,
@@ -80427,6 +80755,12 @@ export type ResolverInputTypes = {
 	offset_ms?: number | undefined | null,
 	utility_lineup_id: ResolverInputTypes["uuid"]
 };
+	["UtilityPracticeMapChangeOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	queued?:boolean | `@${string}`,
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityPracticePlanEntry"]: AliasType<{
 	attempts?:boolean | `@${string}`,
 	difficulty?:boolean | `@${string}`,
@@ -80470,6 +80804,7 @@ export type ResolverInputTypes = {
 	map_name?:boolean | `@${string}`,
 	on_server?:boolean | `@${string}`,
 	session_id?:boolean | `@${string}`,
+	switching?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["UtilityPurgeOutput"]: AliasType<{
@@ -89794,6 +90129,127 @@ count?: [{	columns?: Array<ResolverInputTypes["e_tournament_status_select_column
 	_set?: ResolverInputTypes["e_tournament_status_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_tournament_status_bool_exp"]
+};
+	/** columns and relationships of "e_utility_practice_access" */
+["e_utility_practice_access"]: AliasType<{
+	description?:boolean | `@${string}`,
+utility_practice_sessions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_practice_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_practice_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_practice_sessions_bool_exp"] | undefined | null},ResolverInputTypes["utility_practice_sessions"]],
+utility_practice_sessions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["utility_practice_sessions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["utility_practice_sessions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["utility_practice_sessions_bool_exp"] | undefined | null},ResolverInputTypes["utility_practice_sessions_aggregate"]],
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_utility_practice_access_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_utility_practice_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_utility_practice_access_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_utility_practice_access_max_fields"],
+	min?:ResolverInputTypes["e_utility_practice_access_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_utility_practice_access". All fields are combined with a logical 'AND'. */
+["e_utility_practice_access_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_utility_practice_access_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_utility_practice_access_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	utility_practice_sessions?: ResolverInputTypes["utility_practice_sessions_bool_exp"] | undefined | null,
+	utility_practice_sessions_aggregate?: ResolverInputTypes["utility_practice_sessions_aggregate_bool_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_utility_practice_access" */
+["e_utility_practice_access_constraint"]:e_utility_practice_access_constraint;
+	["e_utility_practice_access_enum"]:e_utility_practice_access_enum;
+	/** Boolean expression to compare columns of type "e_utility_practice_access_enum". All fields are combined with logical 'AND'. */
+["e_utility_practice_access_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_utility_practice_access_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_utility_practice_access_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_utility_practice_access_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_utility_practice_access_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_utility_practice_access" */
+["e_utility_practice_access_insert_input"]: {
+	description?: string | undefined | null,
+	utility_practice_sessions?: ResolverInputTypes["utility_practice_sessions_arr_rel_insert_input"] | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_utility_practice_access_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_utility_practice_access_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_utility_practice_access" */
+["e_utility_practice_access_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_utility_practice_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_utility_practice_access" */
+["e_utility_practice_access_on_conflict"]: {
+	constraint: ResolverInputTypes["e_utility_practice_access_constraint"],
+	update_columns: Array<ResolverInputTypes["e_utility_practice_access_update_column"]>,
+	where?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_utility_practice_access". */
+["e_utility_practice_access_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	utility_practice_sessions_aggregate?: ResolverInputTypes["utility_practice_sessions_aggregate_order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_utility_practice_access */
+["e_utility_practice_access_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_utility_practice_access" */
+["e_utility_practice_access_select_column"]:e_utility_practice_access_select_column;
+	/** input type for updating data in table "e_utility_practice_access" */
+["e_utility_practice_access_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_utility_practice_access" */
+["e_utility_practice_access_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_utility_practice_access_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_utility_practice_access_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_utility_practice_access" */
+["e_utility_practice_access_update_column"]:e_utility_practice_access_update_column;
+	["e_utility_practice_access_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_utility_practice_access_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_utility_practice_access_bool_exp"]
 };
 	/** columns and relationships of "e_utility_practice_statuses" */
 ["e_utility_practice_statuses"]: AliasType<{
@@ -106169,6 +106625,7 @@ cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Succe
 	cancelReparseAllDemos?:ResolverInputTypes["SuccessOutput"],
 cancelScrimRequest?: [{	request_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 cancelUtilityLineupRender?: [{	render_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+changeUtilityPracticeMap?: [{	lineup_id?: ResolverInputTypes["uuid"] | undefined | null,	lineup_ids?: Array<ResolverInputTypes["uuid"]> | undefined | null,	map_name: string,	scratch?: ResolverInputTypes["UtilityScratchLineupInput"] | undefined | null,	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityPracticeMapChangeOutput"]],
 checkIntoMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 clearClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	/** Delete all terminal-state clip_render_jobs rows platform-wide. */
@@ -106377,6 +106834,9 @@ delete_e_tournament_stage_types_by_pk?: [{	value: string},ResolverInputTypes["e_
 delete_e_tournament_status?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_tournament_status_bool_exp"]},ResolverInputTypes["e_tournament_status_mutation_response"]],
 delete_e_tournament_status_by_pk?: [{	value: string},ResolverInputTypes["e_tournament_status"]],
+delete_e_utility_practice_access?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_utility_practice_access_bool_exp"]},ResolverInputTypes["e_utility_practice_access_mutation_response"]],
+delete_e_utility_practice_access_by_pk?: [{	value: string},ResolverInputTypes["e_utility_practice_access"]],
 delete_e_utility_practice_statuses?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_utility_practice_statuses_bool_exp"]},ResolverInputTypes["e_utility_practice_statuses_mutation_response"]],
 delete_e_utility_practice_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_utility_practice_statuses"]],
@@ -106626,6 +107086,8 @@ delete_plugin_versions_by_pk?: [{	runtime: ResolverInputTypes["e_plugin_runtimes
 delete_push_subscriptions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["push_subscriptions_bool_exp"]},ResolverInputTypes["push_subscriptions_mutation_response"]],
 delete_push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
+delete_role_permissions?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["role_permissions_bool_exp"]},ResolverInputTypes["role_permissions_mutation_response"]],
 delete_seasons?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["seasons_bool_exp"]},ResolverInputTypes["seasons_mutation_response"]],
 delete_seasons_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["seasons"]],
@@ -107135,6 +107597,12 @@ insert_e_tournament_status?: [{	/** the rows to be inserted */
 insert_e_tournament_status_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["e_tournament_status_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_tournament_status_on_conflict"] | undefined | null},ResolverInputTypes["e_tournament_status"]],
+insert_e_utility_practice_access?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_utility_practice_access_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_utility_practice_access_on_conflict"] | undefined | null},ResolverInputTypes["e_utility_practice_access_mutation_response"]],
+insert_e_utility_practice_access_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_utility_practice_access_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_utility_practice_access_on_conflict"] | undefined | null},ResolverInputTypes["e_utility_practice_access"]],
 insert_e_utility_practice_statuses?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_utility_practice_statuses_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_utility_practice_statuses_on_conflict"] | undefined | null},ResolverInputTypes["e_utility_practice_statuses_mutation_response"]],
@@ -107633,6 +108101,10 @@ insert_push_subscriptions?: [{	/** the rows to be inserted */
 insert_push_subscriptions_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["push_subscriptions_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["push_subscriptions_on_conflict"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
+insert_role_permissions?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["role_permissions_insert_input"]>},ResolverInputTypes["role_permissions_mutation_response"]],
+insert_role_permissions_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["role_permissions_insert_input"]},ResolverInputTypes["role_permissions"]],
 insert_seasons?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["seasons_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["seasons_on_conflict"] | undefined | null},ResolverInputTypes["seasons_mutation_response"]],
@@ -108033,6 +108505,7 @@ saveUtilityPlaybook?: [{	description?: string | undefined | null,	map_name: stri
 	scanSteamBans?:ResolverInputTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 sendScrimRequest?: [{	best_of?: number | undefined | null,	from_team_id: ResolverInputTypes["uuid"],	proposed_scheduled_at: ResolverInputTypes["timestamptz"],	region?: string | undefined | null,	to_team_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+sendUtilityDrillToServer?: [{	lineup_ids: Array<string>},ResolverInputTypes["UtilityDrillLoadOutput"]],
 sendUtilityLineupToServer?: [{	lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityLoadOutput"]],
 sendUtilityScratchToServer?: [{	lineup: ResolverInputTypes["UtilityScratchLineupInput"]},ResolverInputTypes["UtilityLoadOutput"]],
 setGameNodeSchedulingState?: [{	enabled: boolean,	game_server_node_id: string},ResolverInputTypes["SuccessOutput"]],
@@ -108042,6 +108515,7 @@ setMapWinner?: [{	match_id: ResolverInputTypes["uuid"],	match_map_id: ResolverIn
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 setNewsPostStatus?: [{	id: ResolverInputTypes["uuid"],	status: string},ResolverInputTypes["NewsPost"]],
 setTournamentAward?: [{	award_id?: ResolverInputTypes["uuid"] | undefined | null,	custom_name?: string | undefined | null,	placement: number,	silhouette?: number | undefined | null,	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["TournamentAward"]],
+setUtilityPracticeAccess?: [{	access: string,	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
 skipShaders?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 solveUtilityLineup?: [{	from_x?: number | undefined | null,	from_y?: number | undefined | null,	from_z?: number | undefined | null,	name?: string | undefined | null,	session_id: ResolverInputTypes["uuid"],	target_x: number,	target_y: number,	target_z: number,	tolerance?: number | undefined | null,	utility_type?: string | undefined | null},ResolverInputTypes["UtilitySolveOutput"]],
@@ -108057,7 +108531,7 @@ specXray?: [{	enabled: boolean,	match_id: ResolverInputTypes["uuid"]},ResolverIn
 startLive?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInputTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 startUtilityDriftScan?: [{	from_revision?: string | undefined | null,	map_name: string,	to_revision?: string | undefined | null},ResolverInputTypes["UtilityDriftScanOutput"]],
-startUtilityPractice?: [{	collection_id?: ResolverInputTypes["uuid"] | undefined | null,	is_open?: boolean | undefined | null,	map_name: string,	region?: string | undefined | null,	server_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["UtilityPracticeSessionOutput"]],
+startUtilityPractice?: [{	access?: string | undefined | null,	collection_id?: ResolverInputTypes["uuid"] | undefined | null,	is_open?: boolean | undefined | null,	map_name: string,	region?: string | undefined | null,	server_id?: ResolverInputTypes["uuid"] | undefined | null,	team_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["UtilityPracticeSessionOutput"]],
 stopGpuSession?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 stopLive?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 stopUtilityPractice?: [{	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
@@ -108539,6 +109013,13 @@ update_e_tournament_status_by_pk?: [{	/** sets the columns of the filtered rows 
 	_set?: ResolverInputTypes["e_tournament_status_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_tournament_status_pk_columns_input"]},ResolverInputTypes["e_tournament_status"]],
 update_e_tournament_status_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["e_tournament_status_updates"]>},ResolverInputTypes["e_tournament_status_mutation_response"]],
+update_e_utility_practice_access?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_utility_practice_access_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_utility_practice_access_bool_exp"]},ResolverInputTypes["e_utility_practice_access_mutation_response"]],
+update_e_utility_practice_access_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_utility_practice_access_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_utility_practice_access_pk_columns_input"]},ResolverInputTypes["e_utility_practice_access"]],
+update_e_utility_practice_access_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_utility_practice_access_updates"]>},ResolverInputTypes["e_utility_practice_access_mutation_response"]],
 update_e_utility_practice_statuses?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_utility_practice_statuses_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_utility_practice_statuses_bool_exp"]},ResolverInputTypes["e_utility_practice_statuses_mutation_response"]],
@@ -109353,6 +109834,11 @@ update_push_subscriptions_by_pk?: [{	/** increments the numeric columns with giv
 	_set?: ResolverInputTypes["push_subscriptions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["push_subscriptions_pk_columns_input"]},ResolverInputTypes["push_subscriptions"]],
 update_push_subscriptions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["push_subscriptions_updates"]>},ResolverInputTypes["push_subscriptions_mutation_response"]],
+update_role_permissions?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["role_permissions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["role_permissions_bool_exp"]},ResolverInputTypes["role_permissions_mutation_response"]],
+update_role_permissions_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["role_permissions_updates"]>},ResolverInputTypes["role_permissions_mutation_response"]],
 update_seasons?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["seasons_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["seasons_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -126283,6 +126769,19 @@ e_tournament_status_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["e_tournament_status_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_tournament_status_bool_exp"] | undefined | null},ResolverInputTypes["e_tournament_status_aggregate"]],
 e_tournament_status_by_pk?: [{	value: string},ResolverInputTypes["e_tournament_status"]],
+e_utility_practice_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_utility_practice_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_utility_practice_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null},ResolverInputTypes["e_utility_practice_access"]],
+e_utility_practice_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_utility_practice_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_utility_practice_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null},ResolverInputTypes["e_utility_practice_access_aggregate"]],
+e_utility_practice_access_by_pk?: [{	value: string},ResolverInputTypes["e_utility_practice_access"]],
 e_utility_practice_statuses?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_utility_practice_statuses_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -127523,6 +128022,18 @@ push_subscriptions_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions_aggregate"]],
 push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
 readServerFile?: [{	file_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["FileContentResponse"]],
+role_permissions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["role_permissions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["role_permissions_bool_exp"] | undefined | null},ResolverInputTypes["role_permissions"]],
+role_permissions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["role_permissions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["role_permissions_bool_exp"] | undefined | null},ResolverInputTypes["role_permissions_aggregate"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["seasons_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -128532,6 +129043,98 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 };
 	["restart_league_season_args"]: {
 	_league_season_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "v_role_permissions" */
+["role_permissions"]: AliasType<{
+	can_create_events?:boolean | `@${string}`,
+	can_create_matches?:boolean | `@${string}`,
+	can_create_tournaments?:boolean | `@${string}`,
+	role?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_role_permissions" */
+["role_permissions_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["role_permissions_aggregate_fields"],
+	nodes?:ResolverInputTypes["role_permissions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_role_permissions" */
+["role_permissions_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["role_permissions_max_fields"],
+	min?:ResolverInputTypes["role_permissions_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_role_permissions". All fields are combined with a logical 'AND'. */
+["role_permissions_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["role_permissions_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["role_permissions_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["role_permissions_bool_exp"]> | undefined | null,
+	can_create_events?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	can_create_matches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	can_create_tournaments?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	role?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** input type for inserting data into table "v_role_permissions" */
+["role_permissions_insert_input"]: {
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** aggregate max on columns */
+["role_permissions_max_fields"]: AliasType<{
+	role?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["role_permissions_min_fields"]: AliasType<{
+	role?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "v_role_permissions" */
+["role_permissions_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["role_permissions"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_role_permissions". */
+["role_permissions_order_by"]: {
+	can_create_events?: ResolverInputTypes["order_by"] | undefined | null,
+	can_create_matches?: ResolverInputTypes["order_by"] | undefined | null,
+	can_create_tournaments?: ResolverInputTypes["order_by"] | undefined | null,
+	role?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_role_permissions" */
+["role_permissions_select_column"]:role_permissions_select_column;
+	/** input type for updating data in table "v_role_permissions" */
+["role_permissions_set_input"]: {
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** Streaming cursor of the table "role_permissions" */
+["role_permissions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["role_permissions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["role_permissions_stream_cursor_value_input"]: {
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	["role_permissions_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["role_permissions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["role_permissions_bool_exp"]
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: AliasType<{
@@ -131128,6 +131731,23 @@ e_tournament_status_stream?: [{	/** maximum number of rows returned in a single 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["e_tournament_status_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_tournament_status_bool_exp"] | undefined | null},ResolverInputTypes["e_tournament_status"]],
+e_utility_practice_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_utility_practice_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_utility_practice_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null},ResolverInputTypes["e_utility_practice_access"]],
+e_utility_practice_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_utility_practice_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_utility_practice_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null},ResolverInputTypes["e_utility_practice_access_aggregate"]],
+e_utility_practice_access_by_pk?: [{	value: string},ResolverInputTypes["e_utility_practice_access"]],
+e_utility_practice_access_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_utility_practice_access_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_utility_practice_access_bool_exp"] | undefined | null},ResolverInputTypes["e_utility_practice_access"]],
 e_utility_practice_statuses?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_utility_practice_statuses_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -132689,6 +133309,22 @@ push_subscriptions_stream?: [{	/** maximum number of rows returned in a single b
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["push_subscriptions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
+role_permissions?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["role_permissions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["role_permissions_bool_exp"] | undefined | null},ResolverInputTypes["role_permissions"]],
+role_permissions_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["role_permissions_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["role_permissions_bool_exp"] | undefined | null},ResolverInputTypes["role_permissions_aggregate"]],
+role_permissions_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["role_permissions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["role_permissions_bool_exp"] | undefined | null},ResolverInputTypes["role_permissions"]],
 seasons?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["seasons_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -147943,6 +148579,7 @@ invites_aggregate?: [{	/** distinct select on columns */
 	is_open?:boolean | `@${string}`,
 	is_render?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
+	map_changing_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
@@ -148036,7 +148673,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	_and?: Array<ResolverInputTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["utility_practice_sessions_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
-	access?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	access?: ResolverInputTypes["e_utility_practice_access_enum_comparison_exp"] | undefined | null,
 	can_manage?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_view?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	collection?: ResolverInputTypes["utility_collections_bool_exp"] | undefined | null,
@@ -148059,6 +148696,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	is_open?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_render?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -148078,7 +148716,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
-	access?: string | undefined | null,
+	access?: ResolverInputTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection?: ResolverInputTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
 	collection_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -148095,6 +148733,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -148108,7 +148747,6 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: AliasType<{
-	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -148123,6 +148761,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
+	map_changing_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	playbook_id?:boolean | `@${string}`,
@@ -148133,7 +148772,6 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 }>;
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
-	access?: ResolverInputTypes["order_by"] | undefined | null,
 	collection_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	empty_since?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148144,6 +148782,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invite_code?: ResolverInputTypes["order_by"] | undefined | null,
 	last_occupied_at?: ResolverInputTypes["order_by"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["order_by"] | undefined | null,
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	playbook_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148153,7 +148792,6 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: AliasType<{
-	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -148168,6 +148806,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
 	last_occupied_at?:boolean | `@${string}`,
+	map_changing_at?:boolean | `@${string}`,
 	map_name?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	playbook_id?:boolean | `@${string}`,
@@ -148178,7 +148817,6 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 }>;
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
-	access?: ResolverInputTypes["order_by"] | undefined | null,
 	collection_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	empty_since?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148189,6 +148827,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invite_code?: ResolverInputTypes["order_by"] | undefined | null,
 	last_occupied_at?: ResolverInputTypes["order_by"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["order_by"] | undefined | null,
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	playbook_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148240,6 +148879,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	is_open?: ResolverInputTypes["order_by"] | undefined | null,
 	is_render?: ResolverInputTypes["order_by"] | undefined | null,
 	last_occupied_at?: ResolverInputTypes["order_by"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["order_by"] | undefined | null,
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148263,7 +148903,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 ["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]:utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
-	access?: string | undefined | null,
+	access?: ResolverInputTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	empty_since?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -148276,6 +148916,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	playbook_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -148320,7 +148961,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
-	access?: string | undefined | null,
+	access?: ResolverInputTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	empty_since?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -148333,6 +148974,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	playbook_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -158724,6 +159366,12 @@ export type ModelTypes = {
 		lineups: number,
 	scan_id: ModelTypes["uuid"]
 };
+	["UtilityDrillLoadOutput"]: {
+		map_name?: string | undefined | null,
+	queued: number,
+	reason: string,
+	sent: boolean
+};
 	["UtilityImportError"]: {
 		external_id?: string | undefined | null,
 	index: number,
@@ -158795,6 +159443,11 @@ export type ModelTypes = {
 	offset_ms?: number | undefined | null,
 	utility_lineup_id: ModelTypes["uuid"]
 };
+	["UtilityPracticeMapChangeOutput"]: {
+		map_name: string,
+	queued: boolean,
+	success: boolean
+};
 	["UtilityPracticePlanEntry"]: {
 		attempts: number,
 	difficulty: string,
@@ -158832,7 +159485,8 @@ export type ModelTypes = {
 	["UtilityPracticeWhereOutput"]: {
 		map_name?: string | undefined | null,
 	on_server: boolean,
-	session_id?: ModelTypes["uuid"] | undefined | null
+	session_id?: ModelTypes["uuid"] | undefined | null,
+	switching: boolean
 };
 	["UtilityPurgeOutput"]: {
 		dry_run: boolean,
@@ -167343,6 +167997,110 @@ export type ModelTypes = {
 	_set?: ModelTypes["e_tournament_status_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["e_tournament_status_bool_exp"]
+};
+	/** columns and relationships of "e_utility_practice_access" */
+["e_utility_practice_access"]: {
+		description: string,
+	/** An array relationship */
+	utility_practice_sessions: Array<ModelTypes["utility_practice_sessions"]>,
+	/** An aggregate relationship */
+	utility_practice_sessions_aggregate: ModelTypes["utility_practice_sessions_aggregate"],
+	value: string
+};
+	/** aggregated selection of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate"]: {
+		aggregate?: ModelTypes["e_utility_practice_access_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["e_utility_practice_access"]>
+};
+	/** aggregate fields of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_utility_practice_access_max_fields"] | undefined | null,
+	min?: ModelTypes["e_utility_practice_access_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_utility_practice_access". All fields are combined with a logical 'AND'. */
+["e_utility_practice_access_bool_exp"]: {
+	_and?: Array<ModelTypes["e_utility_practice_access_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["e_utility_practice_access_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["e_utility_practice_access_bool_exp"]> | undefined | null,
+	description?: ModelTypes["String_comparison_exp"] | undefined | null,
+	utility_practice_sessions?: ModelTypes["utility_practice_sessions_bool_exp"] | undefined | null,
+	utility_practice_sessions_aggregate?: ModelTypes["utility_practice_sessions_aggregate_bool_exp"] | undefined | null,
+	value?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	["e_utility_practice_access_constraint"]:e_utility_practice_access_constraint;
+	["e_utility_practice_access_enum"]:e_utility_practice_access_enum;
+	/** Boolean expression to compare columns of type "e_utility_practice_access_enum". All fields are combined with logical 'AND'. */
+["e_utility_practice_access_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_utility_practice_access_enum"] | undefined | null,
+	_in?: Array<ModelTypes["e_utility_practice_access_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ModelTypes["e_utility_practice_access_enum"] | undefined | null,
+	_nin?: Array<ModelTypes["e_utility_practice_access_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_utility_practice_access" */
+["e_utility_practice_access_insert_input"]: {
+	description?: string | undefined | null,
+	utility_practice_sessions?: ModelTypes["utility_practice_sessions_arr_rel_insert_input"] | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_utility_practice_access_max_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_utility_practice_access_min_fields"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_utility_practice_access" */
+["e_utility_practice_access_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_utility_practice_access"]>
+};
+	/** on_conflict condition type for table "e_utility_practice_access" */
+["e_utility_practice_access_on_conflict"]: {
+	constraint: ModelTypes["e_utility_practice_access_constraint"],
+	update_columns: Array<ModelTypes["e_utility_practice_access_update_column"]>,
+	where?: ModelTypes["e_utility_practice_access_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_utility_practice_access". */
+["e_utility_practice_access_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined | null,
+	utility_practice_sessions_aggregate?: ModelTypes["utility_practice_sessions_aggregate_order_by"] | undefined | null,
+	value?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_utility_practice_access */
+["e_utility_practice_access_pk_columns_input"]: {
+	value: string
+};
+	["e_utility_practice_access_select_column"]:e_utility_practice_access_select_column;
+	/** input type for updating data in table "e_utility_practice_access" */
+["e_utility_practice_access_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_utility_practice_access" */
+["e_utility_practice_access_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_utility_practice_access_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_utility_practice_access_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	["e_utility_practice_access_update_column"]:e_utility_practice_access_update_column;
+	["e_utility_practice_access_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_utility_practice_access_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_utility_practice_access_bool_exp"]
 };
 	/** columns and relationships of "e_utility_practice_statuses" */
 ["e_utility_practice_statuses"]: {
@@ -182315,6 +183073,7 @@ export type ModelTypes = {
 	cancelScrimRequest?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Cancel an in-flight lineup preview render */
 	cancelUtilityLineupRender?: ModelTypes["SuccessOutput"] | undefined | null,
+	changeUtilityPracticeMap?: ModelTypes["UtilityPracticeMapChangeOutput"] | undefined | null,
 	/** checkIntoMatch */
 	checkIntoMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete terminal-state clip_render_jobs rows for a single match_map batch. */
@@ -182593,6 +183352,10 @@ export type ModelTypes = {
 	delete_e_tournament_status?: ModelTypes["e_tournament_status_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_tournament_status" */
 	delete_e_tournament_status_by_pk?: ModelTypes["e_tournament_status"] | undefined | null,
+	/** delete data from the table: "e_utility_practice_access" */
+	delete_e_utility_practice_access?: ModelTypes["e_utility_practice_access_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_utility_practice_access" */
+	delete_e_utility_practice_access_by_pk?: ModelTypes["e_utility_practice_access"] | undefined | null,
 	/** delete data from the table: "e_utility_practice_statuses" */
 	delete_e_utility_practice_statuses?: ModelTypes["e_utility_practice_statuses_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_utility_practice_statuses" */
@@ -182923,6 +183686,8 @@ export type ModelTypes = {
 	delete_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "push_subscriptions" */
 	delete_push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
+	/** delete data from the table: "v_role_permissions" */
+	delete_role_permissions?: ModelTypes["role_permissions_mutation_response"] | undefined | null,
 	/** delete data from the table: "seasons" */
 	delete_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
@@ -183365,6 +184130,10 @@ export type ModelTypes = {
 	insert_e_tournament_status?: ModelTypes["e_tournament_status_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_tournament_status" */
 	insert_e_tournament_status_one?: ModelTypes["e_tournament_status"] | undefined | null,
+	/** insert data into the table: "e_utility_practice_access" */
+	insert_e_utility_practice_access?: ModelTypes["e_utility_practice_access_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_utility_practice_access" */
+	insert_e_utility_practice_access_one?: ModelTypes["e_utility_practice_access"] | undefined | null,
 	/** insert data into the table: "e_utility_practice_statuses" */
 	insert_e_utility_practice_statuses?: ModelTypes["e_utility_practice_statuses_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_utility_practice_statuses" */
@@ -183701,6 +184470,10 @@ export type ModelTypes = {
 	insert_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "push_subscriptions" */
 	insert_push_subscriptions_one?: ModelTypes["push_subscriptions"] | undefined | null,
+	/** insert data into the table: "v_role_permissions" */
+	insert_role_permissions?: ModelTypes["role_permissions_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "v_role_permissions" */
+	insert_role_permissions_one?: ModelTypes["role_permissions"] | undefined | null,
 	/** insert data into the table: "seasons" */
 	insert_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
@@ -184017,6 +184790,7 @@ export type ModelTypes = {
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** sendScrimRequest */
 	sendScrimRequest?: ModelTypes["SuccessOutput"] | undefined | null,
+	sendUtilityDrillToServer?: ModelTypes["UtilityDrillLoadOutput"] | undefined | null,
 	sendUtilityLineupToServer?: ModelTypes["UtilityLoadOutput"] | undefined | null,
 	sendUtilityScratchToServer?: ModelTypes["UtilityLoadOutput"] | undefined | null,
 	setGameNodeSchedulingState?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -184031,6 +184805,7 @@ export type ModelTypes = {
 	setNewsPostStatus?: ModelTypes["NewsPost"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: ModelTypes["TournamentAward"] | undefined | null,
+	setUtilityPracticeAccess?: ModelTypes["SuccessOutput"] | undefined | null,
 	setupGameServer?: ModelTypes["SetupGameServeOutput"] | undefined | null,
 	skipShaders?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Ask a practice server to solve a throw onto a point */
@@ -184432,6 +185207,12 @@ export type ModelTypes = {
 	update_e_tournament_status_by_pk?: ModelTypes["e_tournament_status"] | undefined | null,
 	/** update multiples rows of table: "e_tournament_status" */
 	update_e_tournament_status_many?: Array<ModelTypes["e_tournament_status_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_utility_practice_access" */
+	update_e_utility_practice_access?: ModelTypes["e_utility_practice_access_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_utility_practice_access" */
+	update_e_utility_practice_access_by_pk?: ModelTypes["e_utility_practice_access"] | undefined | null,
+	/** update multiples rows of table: "e_utility_practice_access" */
+	update_e_utility_practice_access_many?: Array<ModelTypes["e_utility_practice_access_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_utility_practice_statuses" */
 	update_e_utility_practice_statuses?: ModelTypes["e_utility_practice_statuses_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_utility_practice_statuses" */
@@ -184930,6 +185711,10 @@ export type ModelTypes = {
 	update_push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** update multiples rows of table: "push_subscriptions" */
 	update_push_subscriptions_many?: Array<ModelTypes["push_subscriptions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "v_role_permissions" */
+	update_role_permissions?: ModelTypes["role_permissions_mutation_response"] | undefined | null,
+	/** update multiples rows of table: "v_role_permissions" */
+	update_role_permissions_many?: Array<ModelTypes["role_permissions_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "seasons" */
 	update_seasons?: ModelTypes["seasons_mutation_response"] | undefined | null,
 	/** update single row of the table: "seasons" */
@@ -200368,6 +201153,12 @@ export type ModelTypes = {
 	e_tournament_status_aggregate: ModelTypes["e_tournament_status_aggregate"],
 	/** fetch data from the table: "e_tournament_status" using primary key columns */
 	e_tournament_status_by_pk?: ModelTypes["e_tournament_status"] | undefined | null,
+	/** fetch data from the table: "e_utility_practice_access" */
+	e_utility_practice_access: Array<ModelTypes["e_utility_practice_access"]>,
+	/** fetch aggregated fields from the table: "e_utility_practice_access" */
+	e_utility_practice_access_aggregate: ModelTypes["e_utility_practice_access_aggregate"],
+	/** fetch data from the table: "e_utility_practice_access" using primary key columns */
+	e_utility_practice_access_by_pk?: ModelTypes["e_utility_practice_access"] | undefined | null,
 	/** fetch data from the table: "e_utility_practice_statuses" */
 	e_utility_practice_statuses: Array<ModelTypes["e_utility_practice_statuses"]>,
 	/** fetch aggregated fields from the table: "e_utility_practice_statuses" */
@@ -200948,6 +201739,10 @@ export type ModelTypes = {
 	push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** Read file content from game server */
 	readServerFile: ModelTypes["FileContentResponse"],
+	/** fetch data from the table: "v_role_permissions" */
+	role_permissions: Array<ModelTypes["role_permissions"]>,
+	/** fetch aggregated fields from the table: "v_role_permissions" */
+	role_permissions_aggregate: ModelTypes["role_permissions_aggregate"],
 	/** fetch data from the table: "seasons" */
 	seasons: Array<ModelTypes["seasons"]>,
 	/** fetch aggregated fields from the table: "seasons" */
@@ -201384,6 +202179,91 @@ export type ModelTypes = {
 };
 	["restart_league_season_args"]: {
 	_league_season_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "v_role_permissions" */
+["role_permissions"]: {
+		can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** aggregated selection of "v_role_permissions" */
+["role_permissions_aggregate"]: {
+		aggregate?: ModelTypes["role_permissions_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["role_permissions"]>
+};
+	/** aggregate fields of "v_role_permissions" */
+["role_permissions_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["role_permissions_max_fields"] | undefined | null,
+	min?: ModelTypes["role_permissions_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_role_permissions". All fields are combined with a logical 'AND'. */
+["role_permissions_bool_exp"]: {
+	_and?: Array<ModelTypes["role_permissions_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["role_permissions_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["role_permissions_bool_exp"]> | undefined | null,
+	can_create_events?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	can_create_matches?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	can_create_tournaments?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	role?: ModelTypes["String_comparison_exp"] | undefined | null
+};
+	/** input type for inserting data into table "v_role_permissions" */
+["role_permissions_insert_input"]: {
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** aggregate max on columns */
+["role_permissions_max_fields"]: {
+		role?: string | undefined | null
+};
+	/** aggregate min on columns */
+["role_permissions_min_fields"]: {
+		role?: string | undefined | null
+};
+	/** response of any mutation on the table "v_role_permissions" */
+["role_permissions_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["role_permissions"]>
+};
+	/** Ordering options when selecting data from "v_role_permissions". */
+["role_permissions_order_by"]: {
+	can_create_events?: ModelTypes["order_by"] | undefined | null,
+	can_create_matches?: ModelTypes["order_by"] | undefined | null,
+	can_create_tournaments?: ModelTypes["order_by"] | undefined | null,
+	role?: ModelTypes["order_by"] | undefined | null
+};
+	["role_permissions_select_column"]:role_permissions_select_column;
+	/** input type for updating data in table "v_role_permissions" */
+["role_permissions_set_input"]: {
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** Streaming cursor of the table "role_permissions" */
+["role_permissions_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["role_permissions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["role_permissions_stream_cursor_value_input"]: {
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	["role_permissions_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["role_permissions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["role_permissions_bool_exp"]
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: {
@@ -203320,6 +204200,14 @@ export type ModelTypes = {
 	e_tournament_status_by_pk?: ModelTypes["e_tournament_status"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "e_tournament_status" */
 	e_tournament_status_stream: Array<ModelTypes["e_tournament_status"]>,
+	/** fetch data from the table: "e_utility_practice_access" */
+	e_utility_practice_access: Array<ModelTypes["e_utility_practice_access"]>,
+	/** fetch aggregated fields from the table: "e_utility_practice_access" */
+	e_utility_practice_access_aggregate: ModelTypes["e_utility_practice_access_aggregate"],
+	/** fetch data from the table: "e_utility_practice_access" using primary key columns */
+	e_utility_practice_access_by_pk?: ModelTypes["e_utility_practice_access"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_utility_practice_access" */
+	e_utility_practice_access_stream: Array<ModelTypes["e_utility_practice_access"]>,
 	/** fetch data from the table: "e_utility_practice_statuses" */
 	e_utility_practice_statuses: Array<ModelTypes["e_utility_practice_statuses"]>,
 	/** fetch aggregated fields from the table: "e_utility_practice_statuses" */
@@ -204032,6 +204920,12 @@ export type ModelTypes = {
 	push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "push_subscriptions" */
 	push_subscriptions_stream: Array<ModelTypes["push_subscriptions"]>,
+	/** fetch data from the table: "v_role_permissions" */
+	role_permissions: Array<ModelTypes["role_permissions"]>,
+	/** fetch aggregated fields from the table: "v_role_permissions" */
+	role_permissions_aggregate: ModelTypes["role_permissions_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_role_permissions" */
+	role_permissions_stream: Array<ModelTypes["role_permissions"]>,
 	/** fetch data from the table: "seasons" */
 	seasons: Array<ModelTypes["seasons"]>,
 	/** fetch aggregated fields from the table: "seasons" */
@@ -217554,7 +218448,7 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "utility_practice_sessions" */
 ["utility_practice_sessions"]: {
-		access: string,
+		access: ModelTypes["e_utility_practice_access_enum"],
 	/** A computed field, executes function "can_manage_utility_practice_session" */
 	can_manage?: boolean | undefined | null,
 	/** A computed field, executes function "can_view_utility_practice_session" */
@@ -217587,6 +218481,7 @@ export type ModelTypes = {
 	is_open: boolean,
 	is_render: boolean,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name: string,
 	/** An object relationship */
 	match?: ModelTypes["matches"] | undefined | null,
@@ -217676,7 +218571,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["utility_practice_sessions_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
-	access?: ModelTypes["String_comparison_exp"] | undefined | null,
+	access?: ModelTypes["e_utility_practice_access_enum_comparison_exp"] | undefined | null,
 	can_manage?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	can_view?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	collection?: ModelTypes["utility_collections_bool_exp"] | undefined | null,
@@ -217699,6 +218594,7 @@ export type ModelTypes = {
 	is_open?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	is_render?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	match?: ModelTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -217717,7 +218613,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
-	access?: string | undefined | null,
+	access?: ModelTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection?: ModelTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
 	collection_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -217734,6 +218630,7 @@ export type ModelTypes = {
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
@@ -217747,8 +218644,7 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: {
-		access?: string | undefined | null,
-	collection_id?: ModelTypes["uuid"] | undefined | null,
+		collection_id?: ModelTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_string" */
@@ -217762,6 +218658,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
@@ -217771,7 +218668,6 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
-	access?: ModelTypes["order_by"] | undefined | null,
 	collection_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	empty_since?: ModelTypes["order_by"] | undefined | null,
@@ -217782,6 +218678,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	invite_code?: ModelTypes["order_by"] | undefined | null,
 	last_occupied_at?: ModelTypes["order_by"] | undefined | null,
+	map_changing_at?: ModelTypes["order_by"] | undefined | null,
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match_id?: ModelTypes["order_by"] | undefined | null,
 	playbook_id?: ModelTypes["order_by"] | undefined | null,
@@ -217791,8 +218688,7 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: {
-		access?: string | undefined | null,
-	collection_id?: ModelTypes["uuid"] | undefined | null,
+		collection_id?: ModelTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_string" */
@@ -217806,6 +218702,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
@@ -217815,7 +218712,6 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
-	access?: ModelTypes["order_by"] | undefined | null,
 	collection_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	empty_since?: ModelTypes["order_by"] | undefined | null,
@@ -217826,6 +218722,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined | null,
 	invite_code?: ModelTypes["order_by"] | undefined | null,
 	last_occupied_at?: ModelTypes["order_by"] | undefined | null,
+	map_changing_at?: ModelTypes["order_by"] | undefined | null,
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match_id?: ModelTypes["order_by"] | undefined | null,
 	playbook_id?: ModelTypes["order_by"] | undefined | null,
@@ -217876,6 +218773,7 @@ export type ModelTypes = {
 	is_open?: ModelTypes["order_by"] | undefined | null,
 	is_render?: ModelTypes["order_by"] | undefined | null,
 	last_occupied_at?: ModelTypes["order_by"] | undefined | null,
+	map_changing_at?: ModelTypes["order_by"] | undefined | null,
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match?: ModelTypes["matches_order_by"] | undefined | null,
 	match_id?: ModelTypes["order_by"] | undefined | null,
@@ -217896,7 +218794,7 @@ export type ModelTypes = {
 	["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]:utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
-	access?: string | undefined | null,
+	access?: ModelTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	empty_since?: ModelTypes["timestamptz"] | undefined | null,
@@ -217909,6 +218807,7 @@ export type ModelTypes = {
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
@@ -217950,7 +218849,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
-	access?: string | undefined | null,
+	access?: ModelTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	empty_since?: ModelTypes["timestamptz"] | undefined | null,
@@ -217963,6 +218862,7 @@ export type ModelTypes = {
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: ModelTypes["timestamptz"] | undefined | null,
+	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
@@ -227931,6 +228831,13 @@ export type GraphQLTypes = {
 	lineups: number,
 	scan_id: GraphQLTypes["uuid"]
 };
+	["UtilityDrillLoadOutput"]: {
+	__typename: "UtilityDrillLoadOutput",
+	map_name?: string | undefined | null,
+	queued: number,
+	reason: string,
+	sent: boolean
+};
 	["UtilityImportError"]: {
 	__typename: "UtilityImportError",
 	external_id?: string | undefined | null,
@@ -228013,6 +228920,12 @@ export type GraphQLTypes = {
 	offset_ms?: number | undefined | null,
 	utility_lineup_id: GraphQLTypes["uuid"]
 };
+	["UtilityPracticeMapChangeOutput"]: {
+	__typename: "UtilityPracticeMapChangeOutput",
+	map_name: string,
+	queued: boolean,
+	success: boolean
+};
 	["UtilityPracticePlanEntry"]: {
 	__typename: "UtilityPracticePlanEntry",
 	attempts: number,
@@ -228056,7 +228969,8 @@ export type GraphQLTypes = {
 	__typename: "UtilityPracticeWhereOutput",
 	map_name?: string | undefined | null,
 	on_server: boolean,
-	session_id?: GraphQLTypes["uuid"] | undefined | null
+	session_id?: GraphQLTypes["uuid"] | undefined | null,
+	switching: boolean
 };
 	["UtilityPurgeOutput"]: {
 	__typename: "UtilityPurgeOutput",
@@ -237225,6 +238139,119 @@ export type GraphQLTypes = {
 	_set?: GraphQLTypes["e_tournament_status_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["e_tournament_status_bool_exp"]
+};
+	/** columns and relationships of "e_utility_practice_access" */
+["e_utility_practice_access"]: {
+	__typename: "e_utility_practice_access",
+	description: string,
+	/** An array relationship */
+	utility_practice_sessions: Array<GraphQLTypes["utility_practice_sessions"]>,
+	/** An aggregate relationship */
+	utility_practice_sessions_aggregate: GraphQLTypes["utility_practice_sessions_aggregate"],
+	value: string
+};
+	/** aggregated selection of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate"]: {
+	__typename: "e_utility_practice_access_aggregate",
+	aggregate?: GraphQLTypes["e_utility_practice_access_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["e_utility_practice_access"]>
+};
+	/** aggregate fields of "e_utility_practice_access" */
+["e_utility_practice_access_aggregate_fields"]: {
+	__typename: "e_utility_practice_access_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_utility_practice_access_max_fields"] | undefined | null,
+	min?: GraphQLTypes["e_utility_practice_access_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "e_utility_practice_access". All fields are combined with a logical 'AND'. */
+["e_utility_practice_access_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_utility_practice_access_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["e_utility_practice_access_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["e_utility_practice_access_bool_exp"]> | undefined | null,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	utility_practice_sessions?: GraphQLTypes["utility_practice_sessions_bool_exp"] | undefined | null,
+	utility_practice_sessions_aggregate?: GraphQLTypes["utility_practice_sessions_aggregate_bool_exp"] | undefined | null,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_utility_practice_access" */
+["e_utility_practice_access_constraint"]: e_utility_practice_access_constraint;
+	["e_utility_practice_access_enum"]: e_utility_practice_access_enum;
+	/** Boolean expression to compare columns of type "e_utility_practice_access_enum". All fields are combined with logical 'AND'. */
+["e_utility_practice_access_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_utility_practice_access_enum"] | undefined | null,
+	_in?: Array<GraphQLTypes["e_utility_practice_access_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: GraphQLTypes["e_utility_practice_access_enum"] | undefined | null,
+	_nin?: Array<GraphQLTypes["e_utility_practice_access_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_utility_practice_access" */
+["e_utility_practice_access_insert_input"]: {
+		description?: string | undefined | null,
+	utility_practice_sessions?: GraphQLTypes["utility_practice_sessions_arr_rel_insert_input"] | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_utility_practice_access_max_fields"]: {
+	__typename: "e_utility_practice_access_max_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate min on columns */
+["e_utility_practice_access_min_fields"]: {
+	__typename: "e_utility_practice_access_min_fields",
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** response of any mutation on the table "e_utility_practice_access" */
+["e_utility_practice_access_mutation_response"]: {
+	__typename: "e_utility_practice_access_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_utility_practice_access"]>
+};
+	/** on_conflict condition type for table "e_utility_practice_access" */
+["e_utility_practice_access_on_conflict"]: {
+		constraint: GraphQLTypes["e_utility_practice_access_constraint"],
+	update_columns: Array<GraphQLTypes["e_utility_practice_access_update_column"]>,
+	where?: GraphQLTypes["e_utility_practice_access_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_utility_practice_access". */
+["e_utility_practice_access_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined | null,
+	utility_practice_sessions_aggregate?: GraphQLTypes["utility_practice_sessions_aggregate_order_by"] | undefined | null,
+	value?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_utility_practice_access */
+["e_utility_practice_access_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_utility_practice_access" */
+["e_utility_practice_access_select_column"]: e_utility_practice_access_select_column;
+	/** input type for updating data in table "e_utility_practice_access" */
+["e_utility_practice_access_set_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_utility_practice_access" */
+["e_utility_practice_access_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_utility_practice_access_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_utility_practice_access_stream_cursor_value_input"]: {
+		description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_utility_practice_access" */
+["e_utility_practice_access_update_column"]: e_utility_practice_access_update_column;
+	["e_utility_practice_access_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_utility_practice_access_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_utility_practice_access_bool_exp"]
 };
 	/** columns and relationships of "e_utility_practice_statuses" */
 ["e_utility_practice_statuses"]: {
@@ -252973,6 +254000,7 @@ export type GraphQLTypes = {
 	cancelScrimRequest?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Cancel an in-flight lineup preview render */
 	cancelUtilityLineupRender?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	changeUtilityPracticeMap?: GraphQLTypes["UtilityPracticeMapChangeOutput"] | undefined | null,
 	/** checkIntoMatch */
 	checkIntoMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete terminal-state clip_render_jobs rows for a single match_map batch. */
@@ -253251,6 +254279,10 @@ export type GraphQLTypes = {
 	delete_e_tournament_status?: GraphQLTypes["e_tournament_status_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_tournament_status" */
 	delete_e_tournament_status_by_pk?: GraphQLTypes["e_tournament_status"] | undefined | null,
+	/** delete data from the table: "e_utility_practice_access" */
+	delete_e_utility_practice_access?: GraphQLTypes["e_utility_practice_access_mutation_response"] | undefined | null,
+	/** delete single row from the table: "e_utility_practice_access" */
+	delete_e_utility_practice_access_by_pk?: GraphQLTypes["e_utility_practice_access"] | undefined | null,
 	/** delete data from the table: "e_utility_practice_statuses" */
 	delete_e_utility_practice_statuses?: GraphQLTypes["e_utility_practice_statuses_mutation_response"] | undefined | null,
 	/** delete single row from the table: "e_utility_practice_statuses" */
@@ -253581,6 +254613,8 @@ export type GraphQLTypes = {
 	delete_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "push_subscriptions" */
 	delete_push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
+	/** delete data from the table: "v_role_permissions" */
+	delete_role_permissions?: GraphQLTypes["role_permissions_mutation_response"] | undefined | null,
 	/** delete data from the table: "seasons" */
 	delete_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** delete single row from the table: "seasons" */
@@ -254023,6 +255057,10 @@ export type GraphQLTypes = {
 	insert_e_tournament_status?: GraphQLTypes["e_tournament_status_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_tournament_status" */
 	insert_e_tournament_status_one?: GraphQLTypes["e_tournament_status"] | undefined | null,
+	/** insert data into the table: "e_utility_practice_access" */
+	insert_e_utility_practice_access?: GraphQLTypes["e_utility_practice_access_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "e_utility_practice_access" */
+	insert_e_utility_practice_access_one?: GraphQLTypes["e_utility_practice_access"] | undefined | null,
 	/** insert data into the table: "e_utility_practice_statuses" */
 	insert_e_utility_practice_statuses?: GraphQLTypes["e_utility_practice_statuses_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "e_utility_practice_statuses" */
@@ -254359,6 +255397,10 @@ export type GraphQLTypes = {
 	insert_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "push_subscriptions" */
 	insert_push_subscriptions_one?: GraphQLTypes["push_subscriptions"] | undefined | null,
+	/** insert data into the table: "v_role_permissions" */
+	insert_role_permissions?: GraphQLTypes["role_permissions_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "v_role_permissions" */
+	insert_role_permissions_one?: GraphQLTypes["role_permissions"] | undefined | null,
 	/** insert data into the table: "seasons" */
 	insert_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "seasons" */
@@ -254675,6 +255717,7 @@ export type GraphQLTypes = {
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** sendScrimRequest */
 	sendScrimRequest?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	sendUtilityDrillToServer?: GraphQLTypes["UtilityDrillLoadOutput"] | undefined | null,
 	sendUtilityLineupToServer?: GraphQLTypes["UtilityLoadOutput"] | undefined | null,
 	sendUtilityScratchToServer?: GraphQLTypes["UtilityLoadOutput"] | undefined | null,
 	setGameNodeSchedulingState?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -254689,6 +255732,7 @@ export type GraphQLTypes = {
 	setNewsPostStatus?: GraphQLTypes["NewsPost"] | undefined | null,
 	/** Map a tournament placement to an award */
 	setTournamentAward?: GraphQLTypes["TournamentAward"] | undefined | null,
+	setUtilityPracticeAccess?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	setupGameServer?: GraphQLTypes["SetupGameServeOutput"] | undefined | null,
 	skipShaders?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Ask a practice server to solve a throw onto a point */
@@ -255090,6 +256134,12 @@ export type GraphQLTypes = {
 	update_e_tournament_status_by_pk?: GraphQLTypes["e_tournament_status"] | undefined | null,
 	/** update multiples rows of table: "e_tournament_status" */
 	update_e_tournament_status_many?: Array<GraphQLTypes["e_tournament_status_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "e_utility_practice_access" */
+	update_e_utility_practice_access?: GraphQLTypes["e_utility_practice_access_mutation_response"] | undefined | null,
+	/** update single row of the table: "e_utility_practice_access" */
+	update_e_utility_practice_access_by_pk?: GraphQLTypes["e_utility_practice_access"] | undefined | null,
+	/** update multiples rows of table: "e_utility_practice_access" */
+	update_e_utility_practice_access_many?: Array<GraphQLTypes["e_utility_practice_access_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "e_utility_practice_statuses" */
 	update_e_utility_practice_statuses?: GraphQLTypes["e_utility_practice_statuses_mutation_response"] | undefined | null,
 	/** update single row of the table: "e_utility_practice_statuses" */
@@ -255588,6 +256638,10 @@ export type GraphQLTypes = {
 	update_push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** update multiples rows of table: "push_subscriptions" */
 	update_push_subscriptions_many?: Array<GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "v_role_permissions" */
+	update_role_permissions?: GraphQLTypes["role_permissions_mutation_response"] | undefined | null,
+	/** update multiples rows of table: "v_role_permissions" */
+	update_role_permissions_many?: Array<GraphQLTypes["role_permissions_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "seasons" */
 	update_seasons?: GraphQLTypes["seasons_mutation_response"] | undefined | null,
 	/** update single row of the table: "seasons" */
@@ -271605,6 +272659,12 @@ export type GraphQLTypes = {
 	e_tournament_status_aggregate: GraphQLTypes["e_tournament_status_aggregate"],
 	/** fetch data from the table: "e_tournament_status" using primary key columns */
 	e_tournament_status_by_pk?: GraphQLTypes["e_tournament_status"] | undefined | null,
+	/** fetch data from the table: "e_utility_practice_access" */
+	e_utility_practice_access: Array<GraphQLTypes["e_utility_practice_access"]>,
+	/** fetch aggregated fields from the table: "e_utility_practice_access" */
+	e_utility_practice_access_aggregate: GraphQLTypes["e_utility_practice_access_aggregate"],
+	/** fetch data from the table: "e_utility_practice_access" using primary key columns */
+	e_utility_practice_access_by_pk?: GraphQLTypes["e_utility_practice_access"] | undefined | null,
 	/** fetch data from the table: "e_utility_practice_statuses" */
 	e_utility_practice_statuses: Array<GraphQLTypes["e_utility_practice_statuses"]>,
 	/** fetch aggregated fields from the table: "e_utility_practice_statuses" */
@@ -272185,6 +273245,10 @@ export type GraphQLTypes = {
 	push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** Read file content from game server */
 	readServerFile: GraphQLTypes["FileContentResponse"],
+	/** fetch data from the table: "v_role_permissions" */
+	role_permissions: Array<GraphQLTypes["role_permissions"]>,
+	/** fetch aggregated fields from the table: "v_role_permissions" */
+	role_permissions_aggregate: GraphQLTypes["role_permissions_aggregate"],
 	/** fetch data from the table: "seasons" */
 	seasons: Array<GraphQLTypes["seasons"]>,
 	/** fetch aggregated fields from the table: "seasons" */
@@ -272621,6 +273685,98 @@ export type GraphQLTypes = {
 };
 	["restart_league_season_args"]: {
 		_league_season_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "v_role_permissions" */
+["role_permissions"]: {
+	__typename: "role_permissions",
+	can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** aggregated selection of "v_role_permissions" */
+["role_permissions_aggregate"]: {
+	__typename: "role_permissions_aggregate",
+	aggregate?: GraphQLTypes["role_permissions_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["role_permissions"]>
+};
+	/** aggregate fields of "v_role_permissions" */
+["role_permissions_aggregate_fields"]: {
+	__typename: "role_permissions_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["role_permissions_max_fields"] | undefined | null,
+	min?: GraphQLTypes["role_permissions_min_fields"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "v_role_permissions". All fields are combined with a logical 'AND'. */
+["role_permissions_bool_exp"]: {
+		_and?: Array<GraphQLTypes["role_permissions_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["role_permissions_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["role_permissions_bool_exp"]> | undefined | null,
+	can_create_events?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	can_create_matches?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	can_create_tournaments?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	role?: GraphQLTypes["String_comparison_exp"] | undefined | null
+};
+	/** input type for inserting data into table "v_role_permissions" */
+["role_permissions_insert_input"]: {
+		can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** aggregate max on columns */
+["role_permissions_max_fields"]: {
+	__typename: "role_permissions_max_fields",
+	role?: string | undefined | null
+};
+	/** aggregate min on columns */
+["role_permissions_min_fields"]: {
+	__typename: "role_permissions_min_fields",
+	role?: string | undefined | null
+};
+	/** response of any mutation on the table "v_role_permissions" */
+["role_permissions_mutation_response"]: {
+	__typename: "role_permissions_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["role_permissions"]>
+};
+	/** Ordering options when selecting data from "v_role_permissions". */
+["role_permissions_order_by"]: {
+		can_create_events?: GraphQLTypes["order_by"] | undefined | null,
+	can_create_matches?: GraphQLTypes["order_by"] | undefined | null,
+	can_create_tournaments?: GraphQLTypes["order_by"] | undefined | null,
+	role?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_role_permissions" */
+["role_permissions_select_column"]: role_permissions_select_column;
+	/** input type for updating data in table "v_role_permissions" */
+["role_permissions_set_input"]: {
+		can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	/** Streaming cursor of the table "role_permissions" */
+["role_permissions_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["role_permissions_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["role_permissions_stream_cursor_value_input"]: {
+		can_create_events?: boolean | undefined | null,
+	can_create_matches?: boolean | undefined | null,
+	can_create_tournaments?: boolean | undefined | null,
+	role?: string | undefined | null
+};
+	["role_permissions_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["role_permissions_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["role_permissions_bool_exp"]
 };
 	/** columns and relationships of "seasons" */
 ["seasons"]: {
@@ -274646,6 +275802,14 @@ export type GraphQLTypes = {
 	e_tournament_status_by_pk?: GraphQLTypes["e_tournament_status"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "e_tournament_status" */
 	e_tournament_status_stream: Array<GraphQLTypes["e_tournament_status"]>,
+	/** fetch data from the table: "e_utility_practice_access" */
+	e_utility_practice_access: Array<GraphQLTypes["e_utility_practice_access"]>,
+	/** fetch aggregated fields from the table: "e_utility_practice_access" */
+	e_utility_practice_access_aggregate: GraphQLTypes["e_utility_practice_access_aggregate"],
+	/** fetch data from the table: "e_utility_practice_access" using primary key columns */
+	e_utility_practice_access_by_pk?: GraphQLTypes["e_utility_practice_access"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "e_utility_practice_access" */
+	e_utility_practice_access_stream: Array<GraphQLTypes["e_utility_practice_access"]>,
 	/** fetch data from the table: "e_utility_practice_statuses" */
 	e_utility_practice_statuses: Array<GraphQLTypes["e_utility_practice_statuses"]>,
 	/** fetch aggregated fields from the table: "e_utility_practice_statuses" */
@@ -275358,6 +276522,12 @@ export type GraphQLTypes = {
 	push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "push_subscriptions" */
 	push_subscriptions_stream: Array<GraphQLTypes["push_subscriptions"]>,
+	/** fetch data from the table: "v_role_permissions" */
+	role_permissions: Array<GraphQLTypes["role_permissions"]>,
+	/** fetch aggregated fields from the table: "v_role_permissions" */
+	role_permissions_aggregate: GraphQLTypes["role_permissions_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_role_permissions" */
+	role_permissions_stream: Array<GraphQLTypes["role_permissions"]>,
 	/** fetch data from the table: "seasons" */
 	seasons: Array<GraphQLTypes["seasons"]>,
 	/** fetch aggregated fields from the table: "seasons" */
@@ -289561,7 +290731,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "utility_practice_sessions" */
 ["utility_practice_sessions"]: {
 	__typename: "utility_practice_sessions",
-	access: string,
+	access: GraphQLTypes["e_utility_practice_access_enum"],
 	/** A computed field, executes function "can_manage_utility_practice_session" */
 	can_manage?: boolean | undefined | null,
 	/** A computed field, executes function "can_view_utility_practice_session" */
@@ -289594,6 +290764,7 @@ export type GraphQLTypes = {
 	is_open: boolean,
 	is_render: boolean,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name: string,
 	/** An object relationship */
 	match?: GraphQLTypes["matches"] | undefined | null,
@@ -289686,7 +290857,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["utility_practice_sessions_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
-	access?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	access?: GraphQLTypes["e_utility_practice_access_enum_comparison_exp"] | undefined | null,
 	can_manage?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	can_view?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	collection?: GraphQLTypes["utility_collections_bool_exp"] | undefined | null,
@@ -289709,6 +290880,7 @@ export type GraphQLTypes = {
 	is_open?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	is_render?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -289728,7 +290900,7 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
-		access?: string | undefined | null,
+		access?: GraphQLTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection?: GraphQLTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -289745,6 +290917,7 @@ export type GraphQLTypes = {
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -289759,7 +290932,6 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: {
 	__typename: "utility_practice_sessions_max_fields",
-	access?: string | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
@@ -289774,6 +290946,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -289783,8 +290956,7 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
-		access?: GraphQLTypes["order_by"] | undefined | null,
-	collection_id?: GraphQLTypes["order_by"] | undefined | null,
+		collection_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	empty_since?: GraphQLTypes["order_by"] | undefined | null,
 	expires_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -289794,6 +290966,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	invite_code?: GraphQLTypes["order_by"] | undefined | null,
 	last_occupied_at?: GraphQLTypes["order_by"] | undefined | null,
+	map_changing_at?: GraphQLTypes["order_by"] | undefined | null,
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
 	playbook_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -289804,7 +290977,6 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: {
 	__typename: "utility_practice_sessions_min_fields",
-	access?: string | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
@@ -289819,6 +290991,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -289828,8 +291001,7 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
-		access?: GraphQLTypes["order_by"] | undefined | null,
-	collection_id?: GraphQLTypes["order_by"] | undefined | null,
+		collection_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	empty_since?: GraphQLTypes["order_by"] | undefined | null,
 	expires_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -289839,6 +291011,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined | null,
 	invite_code?: GraphQLTypes["order_by"] | undefined | null,
 	last_occupied_at?: GraphQLTypes["order_by"] | undefined | null,
+	map_changing_at?: GraphQLTypes["order_by"] | undefined | null,
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
 	playbook_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -289890,6 +291063,7 @@ export type GraphQLTypes = {
 	is_open?: GraphQLTypes["order_by"] | undefined | null,
 	is_render?: GraphQLTypes["order_by"] | undefined | null,
 	last_occupied_at?: GraphQLTypes["order_by"] | undefined | null,
+	map_changing_at?: GraphQLTypes["order_by"] | undefined | null,
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match?: GraphQLTypes["matches_order_by"] | undefined | null,
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -289913,7 +291087,7 @@ export type GraphQLTypes = {
 ["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]: utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
-		access?: string | undefined | null,
+		access?: GraphQLTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	empty_since?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -289926,6 +291100,7 @@ export type GraphQLTypes = {
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -289970,7 +291145,7 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
-		access?: string | undefined | null,
+		access?: GraphQLTypes["e_utility_practice_access_enum"] | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	empty_since?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -289983,6 +291158,7 @@ export type GraphQLTypes = {
 	is_open?: boolean | undefined | null,
 	is_render?: boolean | undefined | null,
 	last_occupied_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -300945,6 +302121,26 @@ export enum e_tournament_status_update_column {
 	description = "description",
 	value = "value"
 }
+/** unique or primary key constraints on table "e_utility_practice_access" */
+export enum e_utility_practice_access_constraint {
+	e_utility_practice_access_pkey = "e_utility_practice_access_pkey"
+}
+export enum e_utility_practice_access_enum {
+	Friends = "Friends",
+	Invite = "Invite",
+	Open = "Open",
+	Private = "Private"
+}
+/** select columns of table "e_utility_practice_access" */
+export enum e_utility_practice_access_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_utility_practice_access" */
+export enum e_utility_practice_access_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_utility_practice_statuses" */
 export enum e_utility_practice_statuses_constraint {
 	e_utility_practice_statuses_pkey = "e_utility_practice_statuses_pkey"
@@ -303987,6 +305183,13 @@ export enum push_subscriptions_update_column {
 	steam_id = "steam_id",
 	user_agent = "user_agent"
 }
+/** select columns of table "v_role_permissions" */
+export enum role_permissions_select_column {
+	can_create_events = "can_create_events",
+	can_create_matches = "can_create_matches",
+	can_create_tournaments = "can_create_tournaments",
+	role = "role"
+}
 /** unique or primary key constraints on table "seasons" */
 export enum seasons_constraint {
 	seasons_pkey = "seasons_pkey"
@@ -305903,6 +307106,7 @@ export enum utility_practice_sessions_select_column {
 	is_open = "is_open",
 	is_render = "is_render",
 	last_occupied_at = "last_occupied_at",
+	map_changing_at = "map_changing_at",
 	map_name = "map_name",
 	match_id = "match_id",
 	playbook_id = "playbook_id",
@@ -305936,6 +307140,7 @@ export enum utility_practice_sessions_update_column {
 	is_open = "is_open",
 	is_render = "is_render",
 	last_occupied_at = "last_occupied_at",
+	map_changing_at = "map_changing_at",
 	map_name = "map_name",
 	match_id = "match_id",
 	playbook_id = "playbook_id",
@@ -307652,6 +308857,20 @@ type ZEUS_VARIABLES = {
 	["e_tournament_status_stream_cursor_value_input"]: ValueTypes["e_tournament_status_stream_cursor_value_input"];
 	["e_tournament_status_update_column"]: ValueTypes["e_tournament_status_update_column"];
 	["e_tournament_status_updates"]: ValueTypes["e_tournament_status_updates"];
+	["e_utility_practice_access_bool_exp"]: ValueTypes["e_utility_practice_access_bool_exp"];
+	["e_utility_practice_access_constraint"]: ValueTypes["e_utility_practice_access_constraint"];
+	["e_utility_practice_access_enum"]: ValueTypes["e_utility_practice_access_enum"];
+	["e_utility_practice_access_enum_comparison_exp"]: ValueTypes["e_utility_practice_access_enum_comparison_exp"];
+	["e_utility_practice_access_insert_input"]: ValueTypes["e_utility_practice_access_insert_input"];
+	["e_utility_practice_access_on_conflict"]: ValueTypes["e_utility_practice_access_on_conflict"];
+	["e_utility_practice_access_order_by"]: ValueTypes["e_utility_practice_access_order_by"];
+	["e_utility_practice_access_pk_columns_input"]: ValueTypes["e_utility_practice_access_pk_columns_input"];
+	["e_utility_practice_access_select_column"]: ValueTypes["e_utility_practice_access_select_column"];
+	["e_utility_practice_access_set_input"]: ValueTypes["e_utility_practice_access_set_input"];
+	["e_utility_practice_access_stream_cursor_input"]: ValueTypes["e_utility_practice_access_stream_cursor_input"];
+	["e_utility_practice_access_stream_cursor_value_input"]: ValueTypes["e_utility_practice_access_stream_cursor_value_input"];
+	["e_utility_practice_access_update_column"]: ValueTypes["e_utility_practice_access_update_column"];
+	["e_utility_practice_access_updates"]: ValueTypes["e_utility_practice_access_updates"];
 	["e_utility_practice_statuses_bool_exp"]: ValueTypes["e_utility_practice_statuses_bool_exp"];
 	["e_utility_practice_statuses_constraint"]: ValueTypes["e_utility_practice_statuses_constraint"];
 	["e_utility_practice_statuses_enum"]: ValueTypes["e_utility_practice_statuses_enum"];
@@ -309590,6 +310809,14 @@ type ZEUS_VARIABLES = {
 	["remove_league_team_from_season_args"]: ValueTypes["remove_league_team_from_season_args"];
 	["reorder_league_divisions_args"]: ValueTypes["reorder_league_divisions_args"];
 	["restart_league_season_args"]: ValueTypes["restart_league_season_args"];
+	["role_permissions_bool_exp"]: ValueTypes["role_permissions_bool_exp"];
+	["role_permissions_insert_input"]: ValueTypes["role_permissions_insert_input"];
+	["role_permissions_order_by"]: ValueTypes["role_permissions_order_by"];
+	["role_permissions_select_column"]: ValueTypes["role_permissions_select_column"];
+	["role_permissions_set_input"]: ValueTypes["role_permissions_set_input"];
+	["role_permissions_stream_cursor_input"]: ValueTypes["role_permissions_stream_cursor_input"];
+	["role_permissions_stream_cursor_value_input"]: ValueTypes["role_permissions_stream_cursor_value_input"];
+	["role_permissions_updates"]: ValueTypes["role_permissions_updates"];
 	["seasons_bool_exp"]: ValueTypes["seasons_bool_exp"];
 	["seasons_constraint"]: ValueTypes["seasons_constraint"];
 	["seasons_inc_input"]: ValueTypes["seasons_inc_input"];

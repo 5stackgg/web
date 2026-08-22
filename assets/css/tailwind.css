@@ -785,15 +785,24 @@ mark {
 }
 
 /* The strip, the toggle and the type chips beside them are all exactly 2rem,
-   but the strip spends 10px of that height on its frame -- so its amber pill
-   read as a third, smaller control sitting next to the amber toggle. A tighter
-   frame and a taller pill keeps the strip on 2rem (2px padding + 26px pill +
-   1px border, both sides) while the two amber shapes read as the same size. */
+   but any height the strip spends on a frame comes off the pill inside it, and
+   the pill is what the eye actually compares against the toggle: 26px of amber
+   next to a 32px amber square still read as two different controls. So the
+   frame costs nothing here -- no padding, and the hairline is an inset ring
+   rather than a border. The pill is then the full 2rem, exactly the toggle's
+   square, and the strip is still 2rem overall. */
 .utility-meta-threshold {
-  padding: 2px;
+  padding: 0;
+  border-width: 0;
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.1);
 }
 .utility-meta-threshold > button {
-  height: 1.625rem;
+  height: 2rem;
+}
+/* Full-bleed now, so the indicator wears the strip's own corner radius -- the
+   toggle's rounded-md -- instead of a smaller one floating inside a frame. */
+.utility-meta-threshold > span {
+  border-radius: 0.375rem;
 }
 
 /* On a narrow board the threshold knob leaves the chips' row entirely: it

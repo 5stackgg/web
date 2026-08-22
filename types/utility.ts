@@ -195,6 +195,9 @@ export type UtilityCollection = {
   created_at?: string | null;
   can_view?: boolean;
   can_edit?: boolean;
+  // can_edit covers a teammate editing a team collection; only the owner may
+  // delete one, which is what the Hasura delete permission filters on.
+  owner_steam_id?: string | null;
   items_aggregate?: {
     aggregate?: { count?: number | null } | null;
   } | null;
@@ -280,14 +283,20 @@ export type UtilityPracticeSession = {
   id: string;
   match_id: string | null;
   host_steam_id: string | null;
+  host: { name: string | null } | null;
   team_id: string | null;
   map_name: string;
+  // Set while the server is loading map_name. Until it clears, map_name is
+  // where the server is going rather than where it is.
+  map_changing_at: string | null;
   region: string | null;
   collection_id: string | null;
   playbook_id: string | null;
   status: string | null;
   invite_code: string | null;
   is_open: boolean | null;
+  /** Open | Friends | Invite | Private. Null on rows started before the column. */
+  access: string | null;
   expires_at: string | null;
   failure_reason: string | null;
   connection_string: string | null;
@@ -313,8 +322,13 @@ export type UtilityPracticeView = {
   status: string | null;
   inviteCode: string | null;
   playbookId: string | null;
+  mapName: string | null;
+  /** True while the server is loading `mapName`; nothing may be sent into that. */
+  switching: boolean;
   isMember: boolean;
   isOpen: boolean;
+  /** Open | Friends | Invite | Private. Null on rows started before the column. */
+  access: string | null;
   isLive: boolean;
   canManage: boolean;
 };
@@ -344,8 +358,11 @@ export function readUtilityPracticeSession(
     status: session?.status ?? started?.status ?? null,
     inviteCode: session?.invite_code ?? started?.invite_code ?? null,
     playbookId: session?.playbook_id ?? null,
+    mapName: session?.map_name ?? null,
+    switching: !!session?.map_changing_at,
     isMember: session?.is_member === true,
     isOpen: session?.is_open !== false,
+    access: session?.access ?? null,
     isLive: isLiveSession(session),
     canManage: session?.can_manage === true,
   };

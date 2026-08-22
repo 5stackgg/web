@@ -1,17 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  Globe,
-  ListOrdered,
-  Save,
-  Share2,
-  ShieldCheck,
-  Signal,
-  UserCheck,
-  UserPlus,
-  X,
-} from "lucide-vue-next";
+import { ListOrdered, Save, ShieldCheck, Signal } from "lucide-vue-next";
 import {
   Dialog,
   DialogContent,
@@ -30,32 +20,33 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
-import { Spinner } from "~/components/ui/spinner";
 import { Separator } from "~/components/ui/separator";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import ClipBoard from "~/components/ClipBoard.vue";
+import RegionLatency from "~/components/matchmaking/RegionLatency.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
-import PlayerSearch from "~/components/PlayerSearch.vue";
-import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import UtilityPracticeSessionPanel from "~/components/utility/UtilityPracticeSessionPanel.vue";
 import UtilitySaveLineupDialog from "~/components/utility/UtilitySaveLineupDialog.vue";
 import { toast } from "~/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
-  inviteToUtilityPracticeMutation,
   joinUtilityPracticeMutation,
-  leaveUtilityPracticeMutation,
   loadUtilityPlaybookIntoSessionMutation,
   utilityPlaybooksQuery,
   myUtilityPracticeSessionQuery,
   utilityPracticeServersQuery,
   utilityPracticeSessionSubscription,
   startUtilityPracticeMutation,
-  stopUtilityPracticeMutation,
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { readUtilityPracticeSession } from "~/types/utility";
+import {
+  UTILITY_ACCESS_FRIENDS,
+  UTILITY_ACCESS_OPEN,
+  utilityAccessOptions,
+} from "~/utilities/utilityPracticeAccess";
 import cleanMapName from "~/utilities/cleanMapName";
 import type {
   UtilityPlaybook,
@@ -96,28 +87,12 @@ const regions = computed(() => useApplicationSettingsStore().availableRegions);
 const region = ref<string>(ANY_REGION);
 const playbookChoice = ref<string>(NO_PLAYBOOK);
 
-// Lobby access vocabulary, minus the two settings a practice session has no
-// storage for: the row carries one `is_open` boolean, and its false side always
-// lets the host's friends in, so Invite and Private have nothing to map onto.
-const ACCESS_OPEN = "Open";
-const ACCESS_FRIENDS = "Friends";
+// Friends, not Open. A practice server is a solo drill by default and the host
+// is the only person who has asked to be on it -- handing a link to the whole
+// internet is the deliberate choice, not the one made for you.
+const access = ref<string>(UTILITY_ACCESS_FRIENDS);
 
-const access = ref<string>(ACCESS_OPEN);
-
-const accessOptions = [
-  {
-    value: ACCESS_OPEN,
-    icon: Globe,
-    label: "pages.utility.practice.access_open",
-    desc: "pages.utility.practice.access_open_desc",
-  },
-  {
-    value: ACCESS_FRIENDS,
-    icon: UserCheck,
-    label: "pages.utility.practice.access_friends",
-    desc: "pages.utility.practice.access_friends_desc",
-  },
-];
+const accessOptions = utilityAccessOptions;
 
 const accessFilterOptions = computed(() =>
   accessOptions.map((option) => ({
@@ -267,6 +242,56 @@ const selectedServerId = computed(() =>
     : null,
 );
 
+// Free first. A picker whose first three rows are greyed out reads as "there
+// is nothing here", and the one server you can actually have is below them.
+const sortedPracticeServers = computed(() =>
+  [...practiceServers.value].sort((a, b) => {
+    if (a.in_use !== b.in_use) {
+      return a.in_use ? 1 : -1;
+    }
+    return a.label.localeCompare(b.label);
+  }),
+);
+
+const freeServerCount = computed(
+  () => practiceServers.value.filter((entry) => !entry.in_use).length,
+);
+
+// LAN regions only exist for the people who can reach them, and the probe is
+// the only thing that knows which people those are -- the same test the
+// matchmaking region list runs.
+const onDemandRegions = computed(() =>
+  regions.value.filter(
+    (entry: any) =>
+      !entry.is_lan ||
+      useMatchmakingStore().getRegionlatencyResult(entry.value)?.isLan,
+  ),
+);
+
+// Only the automatic choice needs a line under the closed select: it is the one
+// row whose name does not say what it does. A named server and a named region
+// explain themselves, and captioning them just put a sentence under every
+// selection.
+const regionHint = computed(() =>
+  region.value === ANY_REGION ? "pages.utility.practice.region_any_hint" : null,
+);
+
+// A fixed gutter in front of every label, whether or not that row has a status
+// dot to put in it. Without it the dotted rows sit one gap further right than
+// the plain ones and the list has two left edges.
+const optionGutter = "flex w-1.5 shrink-0 items-center justify-center";
+
+// The item row lives inside reka's SelectItemText span, which is inline and
+// would not stretch -- so the ping on the right would sit against the label
+// rather than against the edge.
+const optionRow =
+  "[&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:flex-1 [&>span:last-child]:items-center [&>span:last-child]:gap-2";
+
+// The dropdown's own headings, in the same mono the form labels use -- the
+// shadcn default is a plain bold sentence, which read as another option.
+const groupLabel =
+  "flex items-center gap-1.5 px-2 pb-0 pt-2 font-mono text-[0.58rem] font-normal uppercase tracking-[0.16em] text-muted-foreground";
+
 const joinTarget = computed(() => {
   if (props.joinInviteCode) {
     return {
@@ -339,7 +364,8 @@ async function start() {
         // Collections have no browse surface anywhere in the app, so there is
         // nothing to choose from and nothing to send.
         collection_id: null,
-        is_open: access.value === ACCESS_OPEN,
+        is_open: access.value === UTILITY_ACCESS_OPEN,
+        access: access.value,
       },
     });
     const output = (data as any)?.startUtilityPractice as
@@ -364,116 +390,23 @@ async function start() {
   }
 }
 
-async function stop() {
-  const id = sessionId.value;
-  if (!id) {
-    return;
-  }
-  try {
-    await getGraphqlClient().mutate({
-      mutation: stopUtilityPracticeMutation,
-      variables: { session_id: id },
-    });
-    unsubscribeSession();
-    sessionId.value = null;
-    session.value = null;
-    started.value = null;
-    joinedKey.value = null;
-    pendingPlaybookId.value = null;
-  } catch (error: any) {
-    toast({
-      title: t("pages.utility.practice.stop_failed"),
-      description: error?.message,
-      variant: "destructive",
-    });
-  }
-}
-
-type UtilityInvitee = { steamId: string; name: string };
-
-const invitees = ref<UtilityInvitee[]>([]);
-const inviting = ref(false);
-
 /**
- * The other end of the session for everyone who is not the host. Stopping is
- * `can_manage`'s to do and always was; without this a joiner is stuck on the
- * roster of a server they cannot end.
+ * The panel ran the mutation; this is the local state that was tracking the
+ * session it just ended. `joinedKey` is cleared only for a stop: after a leave
+ * the invite code is still in the URL, and clearing it would let the join
+ * watcher put the leaver straight back in the next time this opens.
  */
-async function leave() {
-  const id = sessionId.value;
-  if (!id) {
-    return;
-  }
-  try {
-    await getGraphqlClient().mutate({
-      mutation: leaveUtilityPracticeMutation,
-      variables: { session_id: id },
-    });
-    unsubscribeSession();
-    sessionId.value = null;
-    session.value = null;
-    started.value = null;
-    pendingPlaybookId.value = null;
-    invitees.value = [];
-    // `joinedKey` is deliberately NOT cleared. The invite code is still in the
-    // URL, and clearing it lets the join watcher put the leaver straight back
-    // into the session they just left the next time this dialog opens.
-  } catch (error: any) {
-    toast({
-      title: t("pages.utility.practice.leave_failed"),
-      description: error?.message,
-      variant: "destructive",
-    });
-  }
-}
+function onSessionEnded() {
+  const wasHost = practice.value.canManage;
 
-const inviteeSteamIds = computed(() =>
-  invitees.value.map((entry) => entry.steamId),
-);
+  unsubscribeSession();
+  sessionId.value = null;
+  session.value = null;
+  started.value = null;
+  pendingPlaybookId.value = null;
 
-function addInvitee(player: { steam_id?: string; name?: string } | null) {
-  const steamId = String(player?.steam_id ?? "");
-  if (!steamId || inviteeSteamIds.value.includes(steamId)) {
-    return;
-  }
-  invitees.value = [
-    ...invitees.value,
-    { steamId, name: player?.name || steamId },
-  ];
-}
-
-function removeInvitee(steamId: string) {
-  invitees.value = invitees.value.filter((entry) => entry.steamId !== steamId);
-}
-
-async function invitePlayers() {
-  const id = sessionId.value;
-  if (!id || !invitees.value.length) {
-    return;
-  }
-  inviting.value = true;
-  try {
-    await getGraphqlClient().mutate({
-      mutation: inviteToUtilityPracticeMutation,
-      variables: {
-        session_id: id,
-        steam_ids: inviteeSteamIds.value,
-      },
-    });
-    toast({
-      title: t("pages.utility.practice.invited", {
-        count: invitees.value.length,
-      }),
-    });
-    invitees.value = [];
-  } catch (error: any) {
-    toast({
-      title: t("pages.utility.practice.invite_failed"),
-      description: error?.message,
-      variant: "destructive",
-    });
-  } finally {
-    inviting.value = false;
+  if (wasHost) {
+    joinedKey.value = null;
   }
 }
 
@@ -484,17 +417,8 @@ const practice = computed(() =>
   readUtilityPracticeSession(session.value, started.value),
 );
 
-// Access is fixed at start -- the session row carries no update permission for
-// anyone -- so a running session states it instead of offering it.
-const liveAccess = computed(() => {
-  const value = practice.value.isOpen ? ACCESS_OPEN : ACCESS_FRIENDS;
-  return (
-    accessOptions.find((option) => option.value === value) ?? accessOptions[0]
-  );
-});
-
-// Host-only, live-only. can_manage is the server's answer to "may this viewer
-// drive the session", so it gates the controls rather than a steam id compare.
+// Live and host-driven: what the queued execute waits for before it can be
+// pushed into the server.
 const canDriveSession = computed(
   () => !!sessionId.value && practice.value.isLive && practice.value.canManage,
 );
@@ -533,19 +457,6 @@ watch(canDriveSession, (ready) => {
   void applyPlaybook(id);
 });
 
-// Shares the invite code, never the primary key: the code is what the column
-// exists for, and a session can be re-shared without leaking its id.
-const inviteLink = computed(() => {
-  const code = practice.value.inviteCode;
-  if (!code || typeof window === "undefined") {
-    return null;
-  }
-  const path = props.lineupId
-    ? `/utility/lineup/${props.lineupId}`
-    : `/utility/${props.mapName}`;
-  return `${window.location.origin}${path}?practice=${code}`;
-});
-
 // The description says "this map"; the header says which one.
 const mapDisplay = computed(() => cleanMapName(props.mapName));
 
@@ -557,15 +468,6 @@ const fieldLabel =
 // The footer shows exactly one control at a time, so they share a shape: the
 // app's full-width tactical CTA treatment, as on the match and draft alerts.
 const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
-
-const isBooting = computed(
-  () => !!sessionId.value && !practice.value.connectionString,
-);
-
-const connectServer = computed(() => ({
-  connection_string: practice.value.connectionString,
-  connection_link: practice.value.connectionLink,
-}));
 </script>
 
 <template>
@@ -581,12 +483,16 @@ const connectServer = computed(() => ({
           {{ $t("pages.utility.practice.title") }}
         </DialogTitle>
         <DialogDescription>
-          {{ $t("pages.utility.practice.description") }}
+          {{
+            sessionId || joining
+              ? $t("pages.utility.practice.description_live")
+              : $t("pages.utility.practice.description")
+          }}
         </DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
-        <div v-if="!sessionId" class="space-y-4">
+        <div v-if="!sessionId && !joining" class="space-y-4">
           <div class="space-y-1.5">
             <span :class="fieldLabel">
               <Signal class="h-3.5 w-3.5" />
@@ -599,27 +505,66 @@ const connectServer = computed(() => ({
                 />
               </SelectTrigger>
               <SelectContent>
+                <!-- The default, and the only row that does not name a
+                     machine: it is a preference, not a place. It gets a
+                     heading like the other two groups so the list reads as
+                     three ways to answer rather than one loose row above two
+                     labelled sets. -->
                 <SelectGroup>
-                  <SelectItem :value="ANY_REGION">
-                    {{ $t("pages.utility.practice.any_region") }}
+                  <SelectLabel :class="groupLabel">
+                    {{ $t("pages.utility.practice.region_recommended") }}
+                  </SelectLabel>
+                  <SelectItem :value="ANY_REGION" :class="optionRow">
+                    <span :class="optionGutter" aria-hidden="true" />
+                    <span class="truncate">
+                      {{ $t("pages.utility.practice.any_region") }}
+                    </span>
                   </SelectItem>
                 </SelectGroup>
+
                 <SelectGroup v-if="practiceServers.length">
-                  <SelectLabel>
+                  <SelectLabel :class="groupLabel">
                     {{ $t("pages.utility.practice.dedicated_servers") }}
+                    <span
+                      v-if="freeServerCount"
+                      class="text-[hsl(var(--tac-amber))]"
+                    >
+                      ·
+                      {{
+                        $t("pages.utility.practice.servers_free", {
+                          count: freeServerCount,
+                        })
+                      }}
+                    </span>
                   </SelectLabel>
                   <SelectItem
-                    v-for="entry of practiceServers"
+                    v-for="entry of sortedPracticeServers"
                     :key="entry.id"
                     :value="`${SERVER_PREFIX}${entry.id}`"
                     :disabled="entry.in_use"
+                    :class="optionRow"
                   >
-                    {{ entry.label }}
-                    <span class="text-muted-foreground">
-                      ({{ entry.region }})
+                    <!-- Taken or yours to take, before the label is read. -->
+                    <span :class="optionGutter">
+                      <span
+                        class="h-1.5 w-1.5 rounded-full"
+                        :class="
+                          entry.in_use
+                            ? 'bg-muted-foreground/40'
+                            : 'bg-emerald-400'
+                        "
+                      />
                     </span>
-                    <span v-if="entry.in_use" class="text-muted-foreground">
-                      &mdash;
+                    <span class="truncate">
+                      {{ entry.label }}
+                      <span class="text-muted-foreground">
+                        ({{ entry.region }})
+                      </span>
+                    </span>
+                    <span
+                      v-if="entry.in_use"
+                      class="ml-auto shrink-0 truncate pl-2 text-xs text-muted-foreground"
+                    >
                       {{
                         entry.held_by
                           ? $t("pages.utility.practice.server_held_by", {
@@ -630,14 +575,27 @@ const connectServer = computed(() => ({
                     </span>
                   </SelectItem>
                 </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
+
+                <SelectGroup v-if="onDemandRegions.length">
+                  <SelectLabel :class="groupLabel">
+                    {{ $t("match.server.on_demand") }}
+                  </SelectLabel>
                   <SelectItem
-                    v-for="entry of regions"
+                    v-for="entry of onDemandRegions"
                     :key="entry.value"
                     :value="entry.value"
+                    :class="optionRow"
                   >
-                    {{ entry.description || entry.value }}
+                    <span :class="optionGutter" aria-hidden="true" />
+                    <span class="truncate">
+                      {{ entry.description || entry.value }}
+                    </span>
+                    <!-- Which of them is actually near you: the one thing a
+                         region name never says. -->
+                    <RegionLatency
+                      :region="entry.value"
+                      class="ml-auto shrink-0 pl-2"
+                    />
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -657,6 +615,14 @@ const connectServer = computed(() => ({
               class="text-xs text-muted-foreground"
             >
               {{ $t("pages.utility.practice.no_regions") }}
+            </p>
+            <!-- What the row you picked actually costs you, once the list that
+                 explained it has closed. -->
+            <p
+              v-else-if="regionHint"
+              class="text-xs leading-relaxed text-muted-foreground"
+            >
+              {{ $t(regionHint) }}
             </p>
           </div>
 
@@ -709,166 +675,46 @@ const connectServer = computed(() => ({
           </div>
         </div>
 
-        <div
-          v-if="isBooting || joining"
-          class="flex items-center gap-3 rounded-md border border-border bg-foreground/5 p-4"
-        >
-          <Spinner class="shrink-0" />
-          <div class="min-w-0">
-            <div class="text-sm font-medium">
-              {{ $t("pages.utility.practice.booting") }}
-            </div>
-            <p
-              v-if="practice.failureReason"
-              class="mt-1 whitespace-pre-wrap break-words text-xs text-[hsl(var(--tac-amber))]"
-            >
-              {{ practice.failureReason }}
-            </p>
-          </div>
-        </div>
-
-        <div
-          v-else-if="practice.connectionString"
-          class="space-y-3 rounded-md border border-border bg-foreground/5 p-4"
-        >
-          <QuickServerConnect :server="connectServer" highlight />
-
-          <Separator />
-          <div class="flex items-start gap-2">
-            <component
-              :is="liveAccess.icon"
-              class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-            />
-            <div class="min-w-0">
-              <div
-                class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                {{ $t("pages.utility.practice.access_current") }}
-                <span class="text-[hsl(var(--tac-amber))]">
-                  {{ $t(liveAccess.label) }}
+        <!-- One panel for a running session, shared with the top bar so the
+             two surfaces cannot drift into a panel and a menu again. -->
+        <div v-else>
+          <UtilityPracticeSessionPanel
+            :session="session"
+            :started="started"
+            :map-name="mapName"
+            :lineup-id="lineupId"
+            @ended="onSessionEnded"
+          >
+            <!-- Saving a throw is not driving the session -- anybody in a live
+                 one, drilling a lineup they opened this from, has a throw of
+                 their own to keep. -->
+            <template v-if="canSaveFromPractice" #extra>
+              <Separator />
+              <div class="space-y-2">
+                <span :class="fieldLabel">
+                  <Save class="h-3.5 w-3.5" />
+                  {{ $t("pages.utility.save.practice_entry_title") }}
                 </span>
-              </div>
-              <p class="text-xs text-muted-foreground/80">
-                {{ $t(liveAccess.desc) }}
-              </p>
-            </div>
-          </div>
-
-          <template v-if="inviteLink && practice.isOpen">
-            <Separator />
-            <div class="flex items-center gap-2">
-              <ClipBoard :data="inviteLink" />
-              <div class="min-w-0">
-                <div
-                  class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  <Share2 class="h-3 w-3" />
-                  {{ $t("pages.utility.practice.invite") }}
-                </div>
-                <p class="truncate text-xs text-muted-foreground/80">
-                  {{ inviteLink }}
+                <p class="text-xs text-muted-foreground">
+                  {{ $t("pages.utility.save.practice_entry_hint") }}
                 </p>
-              </div>
-            </div>
-          </template>
-
-          <!-- The link reaches somebody who is not on the panel. This reaches
-               the four people who are, and puts them on the roster directly. -->
-          <template v-if="canDriveSession">
-            <Separator />
-            <div class="space-y-2">
-              <div
-                class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                <UserPlus class="h-3 w-3" />
-                {{ $t("pages.utility.practice.invite_players") }}
-              </div>
-              <p class="text-xs text-muted-foreground">
-                {{ $t("pages.utility.practice.invite_players_hint") }}
-              </p>
-
-              <PlayerSearch
-                :label="$t('pages.utility.practice.pick_players')"
-                :exclude="inviteeSteamIds"
-                @selected="addInvitee"
-              />
-
-              <div v-if="invitees.length" class="flex flex-wrap gap-1.5">
-                <button
-                  v-for="entry of invitees"
-                  :key="entry.steamId"
-                  type="button"
-                  class="inline-flex items-center gap-1 rounded-sm border border-border bg-background px-1.5 py-0.5 text-[0.7rem] transition-colors hover:border-destructive/50"
-                  :title="$t('common.remove')"
-                  @click="removeInvitee(entry.steamId)"
+                <Button
+                  variant="outline"
+                  class="w-full"
+                  @click="saveFromPracticeOpen = true"
                 >
-                  {{ entry.name }}
-                  <X class="h-3 w-3 opacity-70" />
-                </button>
+                  {{ $t("pages.utility.save.practice_entry_open") }}
+                </Button>
               </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                :loading="inviting"
-                :disabled="!invitees.length"
-                @click="invitePlayers()"
-              >
-                {{
-                  $t("pages.utility.practice.send_invites", {
-                    count: invitees.length,
-                  })
-                }}
-              </Button>
-            </div>
-          </template>
-        </div>
-
-        <div
-          v-if="canSaveFromPractice"
-          class="space-y-2 rounded-md border border-border bg-foreground/5 p-4"
-        >
-          <span :class="fieldLabel">
-            <Save class="h-3.5 w-3.5" />
-            {{ $t("pages.utility.save.practice_entry_title") }}
-          </span>
-          <p class="text-xs text-muted-foreground">
-            {{ $t("pages.utility.save.practice_entry_hint") }}
-          </p>
-          <Button variant="outline" @click="saveFromPracticeOpen = true">
-            {{ $t("pages.utility.save.practice_entry_open") }}
-          </Button>
+            </template>
+          </UtilityPracticeSessionPanel>
         </div>
       </div>
 
-      <!-- Exactly one of these ever renders, and it is the only thing the
-           dialog asks for -- so it takes the whole width instead of sitting in
-           a corner of an otherwise empty row. -->
-      <DialogFooter>
-        <!-- can_manage, not a host_steam_id comparison: whether a viewer may
-             end the session is the server's call, not the client's. -->
+      <!-- Only the start CTA lives here: once a session exists the panel owns
+           the way out of it, on both surfaces. -->
+      <DialogFooter v-if="!sessionId && !joining">
         <Button
-          v-if="sessionId && practice.canManage"
-          variant="destructive"
-          size="lg"
-          :class="footerCta"
-          @click="stop()"
-        >
-          {{ $t("pages.utility.practice.stop") }}
-        </Button>
-        <!-- Everyone else gets the door rather than nothing: a joiner cannot
-             end a session that is not theirs, but they can stop being in it. -->
-        <Button
-          v-else-if="sessionId"
-          variant="outline"
-          size="lg"
-          :class="footerCta"
-          @click="leave()"
-        >
-          {{ $t("pages.utility.practice.leave") }}
-        </Button>
-        <Button
-          v-else
           size="lg"
           :class="['tac-amber-cta', footerCta]"
           :loading="starting"

@@ -548,9 +548,10 @@ export default {
                   tournament_id: this.$route.params.tournamentId,
                   name: teamName,
                   short_name: this.form.values.new_team ? shortName : null,
-                  ...(this.tournament.is_organizer && addPlayerSteamId
-                    ? { owner_steam_id: addPlayerSteamId }
-                    : {}),
+                  // `owner_steam_id` is a Hasura session preset on insert and
+                  // must never be submitted from here. The player an organizer
+                  // picks still reaches the team as its captain and its first
+                  // roster row; only the owner column is the caller.
                   ...(captainSteamId
                     ? { captain_steam_id: captainSteamId }
                     : {}),

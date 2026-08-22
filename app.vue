@@ -36,6 +36,20 @@ const manifestHref =
     ? "/manifest.webmanifest"
     : "/branding/manifest.webmanifest";
 
+// Every avatar, banner and clip thumbnail is served from the API origin, which
+// is a different host to the panel. The LCP element on /watch is one of those
+// banners, and its request cannot even be issued until the page's GraphQL has
+// resolved -- so without this the DNS + TCP + TLS handshake to that origin is
+// paid at ~4.1s, right on the critical path. Warming it during boot moves that
+// cost off the LCP chain entirely.
+const apiOrigin = (() => {
+  const domain = useRuntimeConfig().public.apiDomain;
+  if (!domain) {
+    return undefined;
+  }
+  return domain.startsWith("http") ? domain : `https://${domain}`;
+})();
+
 useHead({
   title: () => brandName.value || "5Stack",
   titleTemplate: (pageTitle?: string) => {
@@ -45,7 +59,15 @@ useHead({
     }
     return `${base} | ${t("branding.site_title_suffix")}`;
   },
-  link: [{ rel: "manifest", href: manifestHref }],
+  link: [
+    { rel: "manifest", href: manifestHref },
+    ...(apiOrigin
+      ? [
+          { rel: "preconnect", href: apiOrigin, crossorigin: "anonymous" },
+          { rel: "dns-prefetch", href: apiOrigin },
+        ]
+      : []),
+  ],
   // iOS home-screen label — plain brand name, no " | …" suffix.
   meta: [
     {
@@ -64,6 +86,7 @@ const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
 const TAB_QUERY_KEYS = new Set(["tab", "mode"]);
 
 function pageKeyWithoutTabQuery(route: {
+  name?: string | symbol | null;
   path: string;
   query: Record<string, unknown>;
   hash?: string;
@@ -76,6 +99,16 @@ function pageKeyWithoutTabQuery(route: {
   const plugin = route.path.match(/^\/apps\/([^/]+)/);
   if (plugin) {
     return `/apps/${plugin[1]}`;
+  }
+
+  // Same idea, and for the same reason: the map is a PARAMETER of the utility
+  // library, not a different page. Keying it on the path made every map switch
+  // a full remount — the whole page torn down and rebuilt behind a 520ms slide,
+  // the 740px board gone and back, every panel refiring its queries from
+  // nothing — for what is really one prop changing. The page watches `mapName`
+  // and swaps its contents in place instead.
+  if (route.name === "utility-map") {
+    return "/utility/:map";
   }
 
   const query = new URLSearchParams();

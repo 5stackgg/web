@@ -14,7 +14,6 @@ import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { isInCs2 } from "~/utilities/cs2Presence";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { webrtc } from "~/web-sockets/Webrtc";
 import { setActiveHub } from "~/composables/useHubState";
 
 const REGION_LATENCY_PREFIX = "5stack_region_latency_";
@@ -511,6 +510,12 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
       try {
         const buffer = new Uint8Array([0x01]).buffer;
+
+        // Imported here rather than at module scope: this is the only thing in
+        // the store that touches WebRTC, and a static import pulls simple-peer
+        // (96KB) into the entry chunk for every visitor -- including the ones
+        // who never open matchmaking. AuthStore constructs this store eagerly.
+        const { webrtc } = await import("~/web-sockets/Webrtc");
 
         const datachannel = await webrtc.connect(region, (data) => {
           if (data === "") {

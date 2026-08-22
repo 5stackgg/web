@@ -60,7 +60,7 @@ const pips = computed(() =>
       <div
         class="h-full rounded-sm transition-[width] duration-300"
         :class="mastered ? 'bg-success' : 'bg-[hsl(var(--tac-amber))]'"
-        :style="{ width: `${mastered ? 100 : (hitRate ?? 0)}%` }"
+        :style="{ width: `${hitRate ?? 0}%` }"
       />
     </div>
     <div

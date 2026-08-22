@@ -4042,7 +4042,8 @@
         "vote_failed": "Could not save your vote",
         "precision_failed": "Could not change the aim precision",
         "favorite_failed": "Could not update your saved lineups",
-        "aim_delta": "Inferred vs Recorded Aim"
+        "aim_delta": "Inferred vs Recorded Aim",
+        "technical": "Technical details"
       },
       "practice": {
         "title": "Practice Server",
@@ -4052,6 +4053,7 @@
         "no_regions": "No on-demand regions are available.",
         "booting": "Starting your practice server...",
         "start": "Practice",
+        "start_cta": "Start Server",
         "stop": "Stop Server",
         "invite": "Invite a friend",
         "start_failed": "Could not start the practice server",
@@ -4095,7 +4097,8 @@
       "collections": {
         "tab": "Collections",
         "hint": "Type a name to start a new collection with this lineup in it.",
-        "empty": "No collections yet.",
+        "empty": "No collections yet",
+        "empty_description": "Group the lineups you drill together — a smoke set for a map, an execute, a warm-up.",
         "count": "{count} lineups",
         "add_to": "Save to...",
         "new_placeholder": "New collection",
@@ -4104,7 +4107,9 @@
         "load_failed": "Could not load your collections",
         "update_failed": "Could not update the collection",
         "create_failed": "Could not create the collection",
-        "hint_choose": "Type a name to start a new collection and drop the copy into it."
+        "hint_choose": "Type a name to start a new collection and drop the copy into it.",
+        "new": "New Collection",
+        "created_empty": "Created {name}"
       },
       "progress": {
         "drilled": "Drilled",
@@ -4676,7 +4681,12 @@
         "both_short": "LMB+RMB"
       },
       "preview": {
-        "play": "Play the preview"
+        "play": "Play the preview",
+        "title": "Lineup preview",
+        "view_lineup": "View lineup",
+        "copy_link": "Copy link",
+        "download": "Download",
+        "link_copied": "Link copied"
       },
       "render_queue": {
         "title": "Lineup Previews",
@@ -4701,7 +4711,15 @@
         },
         "no_pod": "No pod dispatched yet",
         "stale": "Silent for {since}",
-        "render_pod_booting": "Render pod booting"
+        "render_pod_booting": "Render pod booting",
+        "delete": "Delete render",
+        "delete_failed": "Could not delete that render",
+        "delete_dialog": {
+          "title": "Delete this render?",
+          "description": "This removes the render and its preview clip. This cannot be undone.",
+          "delete": "Delete",
+          "deleting": "Deleting…"
+        }
       },
       "load": {
         "action": "Load me in",
@@ -4719,6 +4737,13 @@
         "drill_hint": "Runs these on the server you are on, three throws each",
         "test": "Test in game",
         "test_hint": "Stand on this throw before saving it"
+      },
+      "edit": {
+        "action": "Edit",
+        "saved": "Lineup updated",
+        "failed": "Could not save that",
+        "public_note": "Making it public is a review — use Submit for review from the row menu.",
+        "geometry_note": "Where you stand, where you aim and how far it flies cannot be edited. Fork it to change the throw itself."
       }
     }
   },

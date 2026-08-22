@@ -9,7 +9,9 @@ import {
   Film,
   Loader2,
   MinusCircle,
+  Play,
   RotateCw,
+  Trash2,
   Server,
   Upload,
   X,
@@ -27,6 +29,8 @@ import {
 } from "~/graphql/utilityRenderGraphql";
 import BootSequence from "~/components/match/BootSequence.vue";
 import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
+import UtilityPreviewDialog from "~/components/utility/UtilityPreviewDialog.vue";
+import DeleteRenderDialog from "~/components/utility/DeleteRenderDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
@@ -36,6 +40,7 @@ import {
 import { useBootStages } from "~/composables/useBootStages";
 import { useAuthStore } from "~/stores/AuthStore";
 import cleanMapName from "~/utilities/cleanMapName";
+import { utilityLineupRoute } from "~/utilities/utilityDisplay";
 import { toast } from "~/components/ui/toast";
 import type { UtilityLineupRender } from "~/types/utility";
 
@@ -391,6 +396,36 @@ async function cancel(render: UtilityLineupRender) {
 
 const clearing = ref(false);
 
+// The finished render, watched full-size like a highlight. Its clip is the
+// lineup's own preview_url, so it opens this small player rather than the
+// match-clip modal.
+const previewOpen = ref(false);
+const previewRender = shallowRef<UtilityLineupRender | null>(null);
+
+function openPreview(render: UtilityLineupRender) {
+  previewRender.value = render;
+  previewOpen.value = true;
+}
+
+// A DONE render whose clip actually landed -- the only rows worth a play button.
+function hasPreview(render: UtilityLineupRender): boolean {
+  return render.status === "done" && Boolean(render.lineup?.preview_url);
+}
+
+function lineupRoute(render: UtilityLineupRender) {
+  return utilityLineupRoute(render.map_name ?? null, render.utility_lineup_id);
+}
+
+// Delete goes through the same DeleteRenderDialog the highlights delete flow
+// uses -- a proper confirm, not an inline gamble.
+const deleteOpen = ref(false);
+const deleteTarget = shallowRef<UtilityLineupRender | null>(null);
+
+function askDelete(render: UtilityLineupRender) {
+  deleteTarget.value = render;
+  deleteOpen.value = true;
+}
+
 async function clearFinished() {
   clearing.value = true;
   try {
@@ -643,9 +678,12 @@ async function clearFinished() {
           />
           <div class="min-w-0 flex-1">
             <div class="flex items-baseline gap-2">
-              <span class="truncate text-xs">
+              <NuxtLink
+                :to="lineupRoute(render)"
+                class="truncate text-xs transition-colors hover:text-[hsl(var(--tac-amber))]"
+              >
                 {{ render.lineup?.name ?? render.utility_lineup_id }}
-              </span>
+              </NuxtLink>
               <span
                 class="shrink-0 font-mono text-[0.6rem] uppercase tabular-nums tracking-[0.14em] text-muted-foreground"
               >
@@ -671,6 +709,16 @@ async function clearFinished() {
             </p>
           </div>
           <Button
+            v-if="hasPreview(render)"
+            size="sm"
+            variant="ghost"
+            class="h-6 shrink-0 gap-1 px-1.5 text-[hsl(var(--tac-amber))]"
+            :title="$t('pages.utility.preview.play')"
+            @click="openPreview(render)"
+          >
+            <Play class="h-3.5 w-3.5 fill-current" />
+          </Button>
+          <Button
             v-if="render.status !== 'done'"
             size="sm"
             variant="ghost"
@@ -681,8 +729,37 @@ async function clearFinished() {
           >
             <RotateCw class="h-3.5 w-3.5" />
           </Button>
+
+          <Button
+            v-if="isAdmin"
+            size="sm"
+            variant="ghost"
+            class="h-6 shrink-0 px-1.5 text-muted-foreground hover:text-destructive"
+            :title="$t('pages.utility.render_queue.delete')"
+            @click="askDelete(render)"
+          >
+            <Trash2 class="h-3.5 w-3.5" />
+          </Button>
         </li>
       </ul>
     </div>
+
+    <UtilityPreviewDialog
+      v-model:open="previewOpen"
+      :render-id="previewRender?.id ?? null"
+      :src="previewRender?.lineup?.preview_url ?? null"
+      :poster="previewRender?.lineup?.preview_thumbnail_url ?? null"
+      :title="previewRender?.lineup?.name ?? null"
+      :map-name="previewRender?.map_name ?? null"
+      :lineup-id="previewRender?.utility_lineup_id ?? null"
+      :duration-ms="previewRender?.duration_ms ?? null"
+      :can-manage="isAdmin"
+    />
+
+    <DeleteRenderDialog
+      v-model="deleteOpen"
+      :render-id="deleteTarget?.id ?? null"
+      :title="deleteTarget?.lineup?.name ?? null"
+    />
   </section>
 </template>

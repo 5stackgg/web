@@ -4,9 +4,9 @@ import { PencilLine } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
+import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
 import { matchUtilityMetaSpot } from "~/utilities/utilityDisplay";
@@ -17,18 +17,25 @@ import type {
   UtilityType,
 } from "~/types/utility";
 
-const props = defineProps<{
-  mapName: string;
-  spots: UtilityMetaSpot[];
-  lineups: UtilityLineup[];
-  selectedKey: string | null;
-  hoveredKey: string | null;
-  canAuthor: boolean;
-  threshold: string;
-  thresholdOptions: Array<{ key: string; label: string }>;
-  types: UtilityType[];
-  sides: UtilitySide[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    mapName: string;
+    spots: UtilityMetaSpot[];
+    lineups: UtilityLineup[];
+    selectedKey: string | null;
+    hoveredKey: string | null;
+    canAuthor: boolean;
+    threshold: string;
+    thresholdOptions: Array<{ key: string; label: string }>;
+    types: UtilityType[];
+    sides: UtilitySide[];
+    // The page has not asked this map for its mined spots yet. An empty list
+    // is then not an answer, and "nobody throws anything here" is the wrong
+    // thing to print over a map that simply has not been queried.
+    loading?: boolean;
+  }>(),
+  { loading: false },
+);
 
 const emit = defineEmits<{
   (event: "update:selectedKey", value: string | null): void;
@@ -159,6 +166,7 @@ watch(visibleSpots, (list) => {
     </div>
 
     <div
+      v-if="!loading"
       class="flex items-center justify-between gap-2 px-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
     >
       <span>
@@ -180,12 +188,15 @@ watch(visibleSpots, (list) => {
       </span>
     </div>
 
-    <Empty v-if="!rows.length">
-      <EmptyTitle>{{ $t("pages.utility.meta.empty") }}</EmptyTitle>
-      <EmptyDescription>
-        {{ $t("pages.utility.meta.empty_description") }}
-      </EmptyDescription>
-    </Empty>
+    <HeightSwap>
+    <UtilitySkeletonList v-if="loading" key="loading" :count="3" />
+
+    <UtilityEmpty
+      v-else-if="!rows.length"
+      key="empty"
+      :title="$t('pages.utility.meta.empty')"
+      :description="$t('pages.utility.meta.empty_description')"
+    />
 
     <!-- The lineups themselves, in mined order: the busiest cluster's write-up
          first. A cluster nobody has written up has no lineup to show, so it
@@ -195,7 +206,7 @@ watch(visibleSpots, (list) => {
          rather than blink; the gap rides inside the clip (-mt on the list,
          pt inside each cell) so it collapses with a leaving row instead of
          leaving a hole. -->
-    <TransitionGroup v-else tag="div" name="mrow" class="-mt-2 flex flex-col">
+    <TransitionGroup v-else key="rows" tag="div" name="mrow" class="-mt-2 flex flex-col">
       <div v-for="row of rows" :key="row.spot.key" class="mrow">
         <div class="min-h-0 overflow-hidden">
         <div
@@ -279,6 +290,7 @@ watch(visibleSpots, (list) => {
         </div>
       </div>
     </TransitionGroup>
+    </HeightSwap>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeUnmount, ref } from "vue";
 
 // Swaps mutually-exclusive states whose sizes differ: the leaving side fades
 // where it stands (110ms), then the shell eases to the entering side's
@@ -28,6 +28,25 @@ const emit = defineEmits<{ settled: [] }>();
 
 const shell = ref<HTMLElement | null>(null);
 
+// While frozen the shell has a pixel height and clips, and it is transition
+// events that give that back. A tab hidden mid-swap throttles both the events
+// and the timer Vue falls back to, so the shell can be left clipped at a stale
+// height with the panel inside it cut off -- for a 700px column that reads as
+// a broken page, not as a missed animation. This is the floor: whatever
+// happens to the transition, the shell is unfrozen shortly after the tween
+// would have ended.
+const SAFETY_MS = 900;
+let safety: ReturnType<typeof setTimeout> | null = null;
+
+function clearSafety() {
+  if (safety) {
+    clearTimeout(safety);
+    safety = null;
+  }
+}
+
+onBeforeUnmount(clearSafety);
+
 function freeze() {
   const el = shell.value;
 
@@ -44,6 +63,28 @@ function freeze() {
   }
 
   el.classList.add("height-swap-animating");
+
+  clearSafety();
+  safety = setTimeout(() => {
+    const late = shell.value;
+
+    if (!late) {
+      return;
+    }
+
+    if (late.childElementCount) {
+      release();
+      return;
+    }
+
+    // Nothing landed behind the leaver. Park at zero the way collapseIfEmpty
+    // would have, since its requestAnimationFrame does not run either.
+    if (props.axis === "x") {
+      late.style.width = "0px";
+    } else {
+      late.style.height = "0px";
+    }
+  }, SAFETY_MS);
 }
 
 function tween(entering: Element) {
@@ -63,6 +104,8 @@ function tween(entering: Element) {
 }
 
 function release() {
+  clearSafety();
+
   const el = shell.value;
 
   if (!el) {

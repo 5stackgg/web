@@ -12,12 +12,11 @@ import {
   Rows3,
   Server,
   SquareStack,
-  Users,
   X,
 } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Button } from "~/components/ui/button";
-import { Skeleton } from "~/components/ui/skeleton";
 import Pagination from "~/components/Pagination.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import UtilityFilters from "~/components/utility/UtilityFilters.vue";
@@ -25,17 +24,22 @@ import UtilityBlockPanel from "~/components/utility/UtilityBlockPanel.vue";
 import UtilityPlaybooksPanel from "~/components/utility/UtilityPlaybooksPanel.vue";
 import UtilityCreatePanel from "~/components/utility/UtilityCreatePanel.vue";
 import UtilityMapPicker from "~/components/utility/UtilityMapPicker.vue";
+import UtilityMetaIcon from "~/components/utility/UtilityMetaIcon.vue";
 import UtilityMetaPanel from "~/components/utility/UtilityMetaPanel.vue";
+import UtilityMetaSelection from "~/components/utility/UtilityMetaSelection.vue";
 import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPanel.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityCollectionsPanel from "~/components/utility/UtilityCollectionsPanel.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
+import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
 import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
 import UtilityDeleteDialog from "~/components/utility/UtilityDeleteDialog.vue";
 import UtilityLineupDialog from "~/components/utility/UtilityLineupDialog.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { toast } from "~/components/ui/toast";
@@ -134,6 +138,17 @@ const filters = computed<UtilityFilterState>({
 
 const lineups = ref<UtilityLineup[]>([]);
 const loading = ref(true);
+
+// Changing scope, sorting or paging re-queries a list you are already reading.
+// Blanking it to four grey boxes and back is two layout changes to watch for
+// one click, so a refetch keeps its rows and dims them; only the first fill of
+// the column, and a change of map, are drawn as shapes.
+const {
+  skeleton: listSkeleton,
+  refreshing: listRefreshing,
+  reset: resetListLoading,
+} = useDeferredLoading(() => loading.value);
+
 const totalCount = ref(0);
 const page = ref(1);
 const perPage = 60;
@@ -171,7 +186,33 @@ const createSeed = ref<UtilityMetaSpot | null>(null);
 // top of it.
 const panelBoard = ref<UtilityPanelBoard | null>(null);
 
+/**
+ * Whether the panel on screen is showing its own empty state. An empty panel
+ * offers the add action inside that message, so the page's button underneath
+ * would be the same offer twice, one above the other.
+ */
+const panelEmpty = ref(false);
+
+// A tab you leave must not carry its emptiness to the next one: the panels
+// only speak up once they have loaded, so the gap between would otherwise be
+// answered with the last tab's answer.
+watch(listTab, () => {
+  panelEmpty.value = false;
+});
+
+/**
+ * The list draws its own empty state the same way the panels do, and the same
+ * rule applies to it: while the shelf is bare, the message owns the offer.
+ */
+const secondaryHidden = computed(() => {
+  if (listTab.value === LIST_TAB) {
+    return !loading.value && !lineups.value.length;
+  }
+  return panelEmpty.value;
+});
+
 const metaSpots = ref<UtilityMetaSpot[]>([]);
+const metaLoaded = ref(false);
 const showMeta = ref(false);
 
 // Distinct players, not throws, so the floor cannot be met by one person
@@ -193,8 +234,31 @@ const metaThresholdModel = computed<string>({
   },
 });
 
+// The type chips sit directly under these rings and used to do nothing to
+// them: the board filtered meta by thrower count alone, so turning everything
+// but smokes off left every molotov cluster on the map. The Meta tab has always
+// honoured type and side -- the overlay simply did not, which made the same
+// chips mean two different things depending on which tab you were on.
 const visibleMetaSpots = computed(() =>
-  metaSpots.value.filter((spot) => spot.throwers >= metaMinThrowers.value),
+  metaSpots.value.filter((spot) => {
+    if (spot.throwers < metaMinThrowers.value) {
+      return false;
+    }
+    if (filters.value.types.length && !filters.value.types.includes(spot.utilityType)) {
+      return false;
+    }
+    // A spot with no side recorded is not evidence that it is the wrong side,
+    // so it survives a side filter rather than being hidden by a gap in the
+    // mined data.
+    if (
+      filters.value.sides.length &&
+      spot.side &&
+      !filters.value.sides.includes(spot.side)
+    ) {
+      return false;
+    }
+    return true;
+  }),
 );
 
 // The plan is ranked against the caller's own drill record, so there is nothing
@@ -217,13 +281,17 @@ const listTabs = computed(() => {
       icon: Rows3,
     },
   ];
-  if (metaSpots.value.length) {
+  // Present while it has spots -- or while you are standing on it and the map
+  // you just switched to has not answered yet. Without the second clause the
+  // tab is briefly not in this list, and the watcher below reads that as "the
+  // tab you are on is gone" and moves you to Lineups.
+  if (metaSpots.value.length || (!metaLoaded.value && listTab.value === META_TAB)) {
     tabs.push({
       key: META_TAB,
       label: t("pages.utility.views.meta_tab"),
       title: t("pages.utility.views.meta_tab"),
       desc: t("pages.utility.views.meta_hint"),
-      icon: Users,
+      icon: UtilityMetaIcon,
     });
   }
   // Collections had nowhere to be looked at: you could add a lineup to one from
@@ -263,8 +331,22 @@ const listTabs = computed(() => {
 const showPlan = computed(
   () => listTab.value === PLAN_TAB && !!mySteamId.value,
 );
+/**
+ * Controls that exist only because this map has mined spots. Between two maps
+ * we do not yet know whether the next one does, and blinking them out and back
+ * on every switch is the switch drawing attention to its own plumbing -- so
+ * they hold their place through the wait, but only for someone who has the
+ * overlay on and would notice them leave. A first page load still gets the
+ * honest answer: nothing appears until the query says it should.
+ */
+const metaControlsHeld = computed(
+  () => metaSpots.value.length > 0 || (!metaLoaded.value && showMeta.value),
+);
+
 const showMetaPanel = computed(
-  () => listTab.value === META_TAB && metaSpots.value.length > 0,
+  () =>
+    listTab.value === META_TAB &&
+    (metaSpots.value.length > 0 || !metaLoaded.value),
 );
 const showCreatePanel = computed(
   () => listTab.value === CREATE_TAB && !!mySteamId.value,
@@ -274,6 +356,7 @@ const showBlockPanel = computed(() => listTab.value === BLOCK_TAB);
 const showPlaybooks = computed(() => listTab.value === PLAYBOOKS_TAB);
 
 const playbooksPanel = ref<{ startCreate: () => void } | null>(null);
+const collectionsPanel = ref<{ startCreate: () => void } | null>(null);
 
 /**
  * One primary action -- Practice, true on every tab -- and one slot that belongs
@@ -302,6 +385,14 @@ const secondaryAction = computed(() => {
       icon: Plus,
       label: t("pages.utility.playbooks.new"),
       run: () => playbooksPanel.value?.startCreate(),
+    };
+  }
+  if (listTab.value === COLLECTIONS_TAB) {
+    return {
+      key: "collection",
+      icon: Plus,
+      label: t("pages.utility.collections.new"),
+      run: () => collectionsPanel.value?.startCreate(),
     };
   }
   if (listTab.value === LIST_TAB || listTab.value === META_TAB) {
@@ -375,6 +466,48 @@ function onLineupCreated(id: string) {
   void fetchLineups();
   openLineup(id);
 }
+
+// Clicking a ring while the overlay is on is a question about that cluster, and
+// the Meta tab is not necessarily the tab you are on when you ask it. The card
+// answers it in the column instead, so the overlay stops being a picture you
+// can only look at. On the Meta tab the panel already owns the selection, so
+// the card stays out of its way.
+const selectedMetaSpot = computed(
+  () =>
+    (selectedMetaKey.value
+      ? (visibleMetaSpots.value.find(
+          (spot) => spot.key === selectedMetaKey.value,
+        ) ?? null)
+      : null),
+);
+
+const showMetaSelection = computed(
+  () => !!selectedMetaSpot.value && !showMetaPanel.value,
+);
+
+// visibleMetaSpots is the threshold's list, not the overlay's, so a spot picked
+// on the board outlives the toggle that drew it -- the card sat there answering
+// a question about a ring that was no longer on the map. Turning the overlay
+// off drops the selection with it, unless the Meta tab is the thing holding it.
+watch([showMeta, showMetaPanel], ([on, panel]) => {
+  if (!on && !panel) {
+    selectedMetaKey.value = null;
+  }
+});
+
+// Which saved lineups sit in the picked cluster. Read off the map the page
+// already builds rather than re-running the match: matchUtilityMetaSpot walks
+// every spot for every lineup, and doing that again on each selection change
+// would repeat the page's most expensive computed for one row of a card.
+const selectedMetaLineups = computed(() => {
+  const spot = selectedMetaSpot.value;
+  if (!spot) {
+    return [];
+  }
+  return lineups.value.filter(
+    (lineup) => metaSpotByLineup.value[lineup.id]?.key === spot.key,
+  );
+});
 
 // The overlay toggle is for reading the meta *against* the library; the Meta
 // tab is the meta itself, so it draws the clusters whatever the toggle says.
@@ -549,7 +682,16 @@ watch(page, () => {
 
 // Best effort by design: the mined meta is a nice-to-have overlay, and a page
 // full of lineups must still render if the aggregate is unavailable.
+//
+// Whether it has answered is load-bearing now that the page survives a map
+// change: "this map has no mined spots" and "we have not asked yet" both look
+// like an empty list, and the Meta tab exists or does not on the strength of
+// that list. Told apart, standing on the Meta tab and switching maps keeps you
+// there; conflated, the tab vanishes from under you mid-swap and the strip
+// bounces you back to Lineups.
+let metaFetch = 0;
 async function fetchMeta() {
+  const mine = ++metaFetch;
   try {
     const { data } = await getGraphqlClient().query({
       query: utilityMetaLineupsQuery,
@@ -560,16 +702,48 @@ async function fetchMeta() {
       },
       fetchPolicy: "cache-first",
     });
+    if (mine !== metaFetch) {
+      return;
+    }
     metaSpots.value = toUtilityMetaSpots(
       ((data as any)?.utility_meta_lineups ?? []) as UtilityMetaLineup[],
     );
   } catch (error) {
+    if (mine !== metaFetch) {
+      return;
+    }
     console.error("[utility] meta load error:", error);
     metaSpots.value = [];
+  } finally {
+    if (mine === metaFetch) {
+      metaLoaded.value = true;
+    }
   }
 }
 
-watch(mapName, () => void fetchMeta(), { immediate: true });
+// Everything on this page is scoped to one map, and the page no longer unmounts
+// between them -- so what a remount used to throw away has to be thrown away
+// here instead. Markers, meta rings and the list clear on the spot, which is
+// what lets the board dissolve into the next map with nothing stale drawn over
+// it; the fetches below refill them. `where` also changes with the map, so the
+// watcher on it resets the page and the selection and refires the queries.
+watch(
+  mapName,
+  () => {
+    resetListLoading();
+    lineups.value = [];
+    totalCount.value = 0;
+    metaSpots.value = [];
+    metaLoaded.value = false;
+    hoveredId.value = null;
+    selectedMetaKey.value = null;
+    hoveredMetaKey.value = null;
+    createSeed.value = null;
+    panelBoard.value = null;
+    void fetchMeta();
+  },
+  { immediate: true },
+);
 
 const metaBusiest = computed(() =>
   Math.max(0, ...metaSpots.value.map((spot) => spot.throwers)),
@@ -878,19 +1052,85 @@ function selectLineup(id: string | null) {
          reject intrinsic keywords, and an invalid value drops the whole
          grid-template-columns, collapsing the page to a single column. -->
     <div
-      class="mx-auto grid w-full gap-4 [--board:min(1000px,calc(100vh-7rem))] lg:max-w-[1900px] lg:grid-cols-[minmax(0,var(--board))_fit-content(60rem)] lg:justify-center"
+      class="mx-auto grid w-full gap-4 [--board:1000px] lg:max-w-[1900px] lg:grid-cols-[minmax(0,var(--board))_fit-content(60rem)] lg:justify-center"
     >
-      <!-- The map is the page. Everything that used to sit in a band above it
-           floats on it, so the board gets the room and the chrome stops
-           competing with the list's own controls. `utility-board` makes this a
+      <!-- --board sizes the BOX, and the box wants to be wide: the map picker,
+           the practice button, the type chips and the meta control all live
+           along its edges, and they are the things that get squeezed. So it is
+           capped by width alone. Fitting the viewport height is the MAP's job,
+           not the box's -- the map area carries its own height budget and
+           shrinks inside a box that stays full width. Tying the box to 100vh
+           instead is what kept crushing this chrome.
+
+           Both columns are capped: the board by --board and the list by its own tab strip,
+           which is why the panel below uses w-0 + min-w-full -- a long lineup
+           name must not set the column width. Two capped tracks in a wider
+           container means leftover space is unavoidable; the only decision is
+           where it goes.
+
+           An fr on either track puts it INSIDE, which is the one wrong answer.
+           On the board track it becomes a gap between the map and the list,
+           because the board is mx-auto and centres in a track wider than
+           itself; on the list track it stretches the list past its strip.
+           justify-center puts the leftover outside both, so the list always
+           sits directly beside the map. Below that width nothing is left over,
+           the tracks shrink, and the board -- min 0 against the list's
+           fit-content -- gives up width only once there is none to give. -->
+      <!-- The map is the page: the board's own frame holds the name, the
+           practice button and the legend, so the chrome stops competing with
+           the list's own controls. Only the legend still floats on the map --
+           the chips carry the colours the board draws with, so they belong on
+           it. `utility-board` makes this a
            query container, because what crowds these overlays is the board's
            width, not the viewport's -- collapsing the left nav or opening the
            right hub narrows it on a desktop, so a viewport breakpoint would
            fire at all the wrong times. -->
       <div
-        class="utility-board relative mx-auto w-full max-w-[var(--board)] lg:sticky lg:top-4 lg:self-start"
+        class="utility-board relative mx-auto w-full max-w-[var(--board)] overflow-hidden rounded-md border border-border bg-card/40 lg:sticky lg:top-4 lg:self-start"
       >
+        <!-- The map names itself, the way a map does everywhere else in the
+             app, and it still does it inside the board's own frame -- but in a
+             band the map cannot reach rather than on top of it. Floating
+             worked while the name was bare text with a shadow; now that the
+             switcher carries the map's patch and a wash of its screenshot it
+             is an opaque control, and an opaque control over the map hides the
+             part of the map under it. Reserving the strip makes the overlap
+             impossible at any board width, on any radar -- the frame moved out
+             to this wrapper so the band reads as part of the board. -->
+        <div class="relative z-10 flex items-center gap-2 px-3 py-2">
+          <!-- The name IS the switcher, so there is no index page to go back
+               to and no "All Maps" link taking up a line under it. It is also
+               the page's identity, so it is the one thing here that never
+               yields its width: the strip used to be shrink-0 against a
+               min-w-0 name, which crushed the title to nothing under a 560px
+               board and covered it outright under 480px. -->
+          <div class="shrink-0">
+            <UtilityMapPicker :map-name="mapName" />
+          </div>
+          <!-- Starting a server is the one thing the practice header cannot
+               offer, because it only appears once a server exists. This is
+               where that loop is broken. Desktop only: it ends in "join this
+               address in CS2", which a phone cannot do. -->
+          <div v-if="!isMobile" class="ml-auto shrink-0">
+            <Button
+              size="sm"
+              variant="outline"
+              class="utility-board-practice-btn border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
+              :title="$t('pages.utility.practice.description')"
+              @click="practiceOpen = true"
+            >
+              <Server class="h-4 w-4" />
+              <span class="utility-board-practice-label ml-1">
+                {{ $t("pages.utility.practice.title") }}
+              </span>
+            </Button>
+          </div>
+        </div>
+        <!-- The card chrome lives on the wrapper now, so the radar sheds its
+             own frame entirely: the band and the map are one surface, not two
+             stacked boxes. -->
         <UtilityRadarBoard
+          class="!rounded-none !border-0 !bg-transparent"
           :map-name="mapName"
           :lineups="panelBoard?.lineups ?? lineups"
           :selected-id="panelBoard ? (panelBoard.selectedId ?? null) : selectedId"
@@ -898,7 +1138,7 @@ function selectLineup(id: string | null) {
           :meta-spots="metaOnBoard"
           :selected-meta-key="selectedMetaKey"
           :hovered-meta-key="hoveredMetaKey"
-          :meta-interactive="showMetaPanel"
+          :meta-interactive="showMetaPanel || showMeta"
           :picking="!!panelBoard?.picking"
           :pick-z="panelBoard?.pickZ ?? 0"
           :markers="panelBoard?.markers ?? []"
@@ -918,37 +1158,14 @@ function selectLineup(id: string | null) {
           @pick="(point) => panelBoard?.onPick?.(point)"
           @select-segment="(key) => panelBoard?.onSelectSegment?.(key)"
         />
-        <!-- The map names itself, the way a map does everywhere else in the
-             app. A separate header band above it was mostly empty height. -->
-        <div class="pointer-events-none absolute inset-x-3 top-3 flex items-start">
-          <!-- The name IS the switcher, so there is no index page to go back
-               to and no "All Maps" link taking up a line under it. It is also
-               the page's identity, so it is the one thing here that never
-               yields its width: the strip used to be shrink-0 against a
-               min-w-0 name, which crushed the title to nothing under a 560px
-               board and covered it outright under 480px. -->
-          <div class="pointer-events-auto shrink-0">
-            <UtilityMapPicker :map-name="mapName" />
-          </div>
-          <!-- Starting a server is the one thing the practice header cannot
-               offer, because it only appears once a server exists. This is
-               where that loop is broken. Desktop only: it ends in "join this
-               address in CS2", which a phone cannot do. -->
-          <div v-if="!isMobile" class="pointer-events-auto ml-auto shrink-0">
-            <Button
-              size="sm"
-              variant="outline"
-              class="border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
-              :title="$t('pages.utility.practice.description')"
-              @click="practiceOpen = true"
-            >
-              <Server class="h-4 w-4" />
-              <span class="utility-board-overlay-label ml-1">
-                {{ $t("pages.utility.practice.title") }}
-              </span>
-            </Button>
-          </div>
-        </div>
+        <!-- The band's colour bled into the top of the radar. Without it the
+             map starts on a hard edge an inch under the name, which reads as
+             two stacked panels; with it the strip is the top of the map rather
+             than a lid on it. It is a gradient, not a bar, so nothing on the
+             board is hidden -- only dimmed where it meets the chrome. -->
+        <div
+          class="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background via-background/55 to-transparent"
+        ></div>
 
         <!-- Legend and filter in one: the chips carry the same colours the
              board draws with, so the thing that explains the markers is the
@@ -956,9 +1173,19 @@ function selectLineup(id: string | null) {
              which is what they are. -->
         <div
           v-if="boardFiltersApply"
-          class="pointer-events-none absolute inset-x-3 bottom-3 flex flex-wrap items-end justify-between gap-2"
+          class="pointer-events-none absolute inset-x-3 bottom-3 flex items-end justify-between gap-2"
         >
-          <div class="pointer-events-auto flex max-w-full flex-col gap-1.5">
+          <!-- No wrap, and the chips shrink instead. Wrapping put them on a
+               line ABOVE the meta column, and once that column stands its
+               threshold pills up as a ladder it is ~150px tall -- so the chips
+               were lifted clean off the top of a short board and clipped by its
+               overflow-hidden. Shrinking keeps them on the bottom line beside
+               the ladder, where they wrap among themselves and stay on screen
+               at any board height. min-w-0 is what actually lets them: a flex
+               item will not shrink below its content without it. -->
+          <div
+            class="utility-board-chips pointer-events-auto flex min-w-0 flex-1 flex-col gap-1.5"
+          >
             <span
               class="utility-board-key font-mono text-[0.55rem] uppercase tracking-[0.16em] text-white/45 [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
             >
@@ -972,39 +1199,91 @@ function selectLineup(id: string | null) {
               bare
             />
           </div>
-          <div class="pointer-events-auto flex shrink-0 items-center gap-2">
-            <!-- Only worth offering once the overlay is on: it is the knob that
-                 decides how much of the mined tail lands on the board. -->
-            <div
-              v-if="showMeta && !showMetaPanel && metaSpots.length"
-              class="rounded-md border border-white/10 bg-background/80 p-0.5 [backdrop-filter:blur(10px)]"
+          <!-- The mirror of the key column on the left: a caption over its
+               controls. Turning the overlay on used to grow the button
+               leftwards by the width of an n/total, which slid the glyph out
+               from under the cursor that had just pressed it. The button is now
+               a fixed square anchored to the corner and the count reads above
+               it, so the only thing toggling changes is what is on the map. -->
+          <div
+            class="utility-meta-cluster pointer-events-auto ml-auto flex shrink-0 flex-col items-end gap-1.5"
+          >
+            <!-- Both halves of the meta chrome arrive rather than appear. They
+                 sit over a map that is itself fading rings in underneath, so a
+                 hard cut here is the one frame that reads as a redraw. The
+                 count drops in from the button it reports on; the strip
+                 unfolds out of it, origin-right, so it looks like it came from
+                 under the toggle and not from off-screen. Neither can move the
+                 button: both are anchored to the same right edge. -->
+            <Transition
+              enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+              leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+              enter-from-class="translate-y-1 opacity-0"
+              leave-to-class="translate-y-1 opacity-0"
             >
-              <AnimatedFilters
-                v-model="metaThresholdModel"
-                :options="metaThresholdOptions"
-                square
-              />
-            </div>
-            <Button
-              v-if="metaSpots.length && !showMetaPanel"
-              size="sm"
-              variant="outline"
-              class="shrink-0 border-white/10 bg-background/80 [backdrop-filter:blur(10px)]"
-              :class="showMeta ? 'text-[hsl(var(--tac-amber))]' : ''"
-              :title="$t('pages.utility.meta.overlay')"
-              @click="showMeta = !showMeta"
-            >
-              <Users class="h-4 w-4" />
-              <span class="utility-board-overlay-label ml-1">
-                {{ $t("pages.utility.meta.overlay") }}
-              </span>
               <span
-                v-if="showMeta"
-                class="ml-1 font-mono text-[0.6rem] tabular-nums opacity-70"
+                v-if="showMeta && metaControlsHeld && !showMetaPanel"
+                class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(var(--tac-amber)/0.8)] [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]"
               >
-                {{ visibleMetaSpots.length }}/{{ metaSpots.length }}
+                {{ $t("pages.utility.meta.title") }}
+                <!-- The count waits for the query rather than printing 0/0 at
+                     it: the label holds the spot so nothing moves, and the
+                     numbers arrive when there are numbers. -->
+                <span v-if="metaLoaded" class="tabular-nums text-white/55">
+                  {{ visibleMetaSpots.length }}/{{ metaSpots.length }}
+                </span>
               </span>
-            </Button>
+            </Transition>
+            <div class="utility-meta-controls flex items-end gap-2">
+              <!-- Only worth offering once the overlay is on: it is the knob
+                   that decides how much of the mined tail lands on the board.
+                   It opens to the left of the button, and on a narrow board it
+                   stands up as a ladder directly above the toggle -- so the
+                   whole meta control reads as one column pinned to the corner
+                   and the chips get the entire row back.
+
+                   The frosting goes on the strip itself. A wrapper carrying it
+                   put a bordered box around an already-bordered one and pushed
+                   the strip to 38px beside a 32px button; square AnimatedFilters
+                   is built to measure exactly 2rem for this reason. -->
+              <Transition
+                enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+                leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+                enter-from-class="scale-95 opacity-0"
+                leave-to-class="scale-95 opacity-0"
+              >
+                <AnimatedFilters
+                  v-if="showMeta && !showMetaPanel && metaControlsHeld"
+                  v-model="metaThresholdModel"
+                  :options="metaThresholdOptions"
+                  square
+                  class="utility-meta-threshold origin-bottom-right !border-white/10 !bg-background/80 [backdrop-filter:blur(10px)]"
+                />
+              </Transition>
+              <!-- No label at any width. The glyph is a miniature of the
+                   dashed rings the overlay paints, so the words were saying a
+                   second time what the icon already showed -- and they were the
+                   thing crowding the chips off this row on a narrow board. On,
+                   it wears the amber in the frame and not just in the glyph: an
+                   icon-only toggle needs somewhere to carry its state. -->
+              <Button
+                v-if="metaControlsHeld && !showMetaPanel"
+                size="icon-sm"
+                variant="outline"
+                class="shrink-0 [backdrop-filter:blur(10px)]"
+                :class="
+                  showMeta
+                    ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:!bg-[hsl(var(--tac-amber)/0.18)]'
+                    : 'border-white/10 bg-background/80'
+                "
+                :title="$t('pages.utility.meta.overlay')"
+                :aria-label="$t('pages.utility.meta.overlay')"
+                :aria-pressed="showMeta"
+                @click="showMeta = !showMeta"
+              >
+                <UtilityMetaIcon class="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -1029,10 +1308,12 @@ function selectLineup(id: string | null) {
         </div>
 
         <!-- Whose lineups, and which of them -- a property of the list, not of
-             the page, so it lives with the list. It fades on the same clock as
-             the panel below it: chrome that snaps in over a panel still fading
-             out is the one frame where two tabs are on screen at once. -->
-        <PageTransition swap>
+             the page, so it lives with the list. It leaves on the same clock
+             as the panel below it, and folds rather than vanishing: chrome
+             that pops out from under a sticky bar drags everything below it up
+             by 70px in one frame, which is the jolt that made a tab click feel
+             like a page load. -->
+        <HeightSwap>
         <div
           v-if="listTab === LIST_TAB"
           key="list-controls"
@@ -1067,7 +1348,7 @@ function selectLineup(id: string | null) {
             />
           </div>
         </div>
-        </PageTransition>
+        </HeightSwap>
         </div>
 
         <!-- w-0 + min-w-full: this contributes NOTHING to the column's
@@ -1076,14 +1357,41 @@ function selectLineup(id: string | null) {
              single long lineup name would set the column width. -->
         <div class="flex w-0 min-w-full flex-col gap-2">
 
-        <!-- Every tab lands in the same slot, so switching tabs is a swap,
-             not a navigation. `swap` is out-in on purpose: two tabs hold
-             completely different content, and crossfading them prints one over
-             the other for 200ms. Out-in fades the old one away, changes the
-             column's height while nothing is visible, then fades the new one
-             in. Opacity only -- a tab change mounts a whole panel and fires its
-             queries, and a size tween would freeze mid-flight under that. -->
-        <PageTransition swap>
+        <!-- Above whichever tab is open, because the ring you picked is a
+             question you asked of the map and not of the list -- it should not
+             cost you the view you were in to read the answer. It rides in from
+             the board's side rather than fading, which is the direction the
+             click came from. -->
+        <Transition
+          enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+          leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+          enter-from-class="-translate-x-3 opacity-0"
+          leave-to-class="-translate-x-3 opacity-0"
+        >
+          <UtilityMetaSelection
+            v-if="showMetaSelection && selectedMetaSpot"
+            :spot="selectedMetaSpot"
+            :lineups="selectedMetaLineups"
+            :busiest="Math.max(1, metaBusiest)"
+            :can-author="!!mySteamId"
+            @close="selectedMetaKey = null"
+            @open="openLineup"
+            @write-up="writeUpMetaSpot"
+          />
+        </Transition>
+
+        <!-- Every tab lands in the same slot, so switching tabs is a swap, not
+             a navigation: out-in, because two tabs hold completely different
+             content and crossfading them prints one over the other.
+
+             It measures, rather than just fading. Opacity-only was chosen so a
+             size tween could not freeze mid-flight while the incoming panel
+             fired its queries -- but the cost was that the column dropped to
+             zero height between the two halves, and the add button and pager
+             below it flew up 700px and back down on every tab click. The
+             panels now hold their placeholder for longer than this tween runs,
+             so the shell is back to auto before any of them changes size. -->
+        <HeightSwap>
           <UtilityPracticePlanPanel
             v-if="showPlan"
             key="plan"
@@ -1095,7 +1403,9 @@ function selectLineup(id: string | null) {
           <UtilityCollectionsPanel
             v-else-if="listTab === COLLECTIONS_TAB"
             key="collections"
+            ref="collectionsPanel"
             :map-name="mapName"
+            @empty="(value) => (panelEmpty = value)"
           />
 
           <UtilityPlaybooksPanel
@@ -1105,6 +1415,7 @@ function selectLineup(id: string | null) {
             :map-name="mapName"
             :hide-create="!!mySteamId"
             @board="(state) => (panelBoard = state)"
+            @empty="(value) => (panelEmpty = value)"
           />
 
           <UtilityBlockPanel
@@ -1117,9 +1428,13 @@ function selectLineup(id: string | null) {
             @open="openLineup"
           />
 
+          <!-- Keyed on the map, unlike its neighbours. Every other panel takes
+               a map change as a refetch, but this one is holding points you
+               picked off the board: world coordinates that mean nothing on the
+               next map. It gets torn down and rebuilt rather than carried. -->
           <UtilityCreatePanel
             v-else-if="showCreatePanel"
-            key="create"
+            :key="`create-${mapName}`"
             :map-name="mapName"
             :seed="createSeed"
             @board="(state) => (panelBoard = state)"
@@ -1129,6 +1444,7 @@ function selectLineup(id: string | null) {
           <UtilityMetaPanel
             v-else-if="showMetaPanel"
             key="meta"
+            :loading="!metaLoaded"
             v-model:selected-key="selectedMetaKey"
             v-model:hovered-key="hoveredMetaKey"
             v-model:threshold="metaThresholdModel"
@@ -1143,77 +1459,52 @@ function selectLineup(id: string | null) {
             @write-up="writeUpMetaSpot"
           />
 
-          <!-- Shaped like the cards they stand in for. A short placeholder
-               that is replaced by a tall card makes the whole list jump, which
-               reads as jank even though nothing moved twice. The stagger keeps
-               them from strobing as one block. -->
-          <div v-else-if="loading" key="loading" class="flex flex-col gap-2">
-            <div
-              v-for="i in 4"
-              :key="`skeleton-${i}`"
-              class="animate-in fade-in rounded-md border border-l-2 border-border bg-card/40 [animation-duration:240ms] [animation-fill-mode:backwards]"
-              :class="listDensity === 'rows' ? 'py-2 pl-3 pr-2' : 'p-3 pl-3.5'"
-              :style="{ animationDelay: `${(i - 1) * 60}ms` }"
-            >
-              <div class="flex items-start justify-between gap-2">
-                <Skeleton class="h-4 w-2/5" />
-                <Skeleton class="h-4 w-4 rounded" />
-              </div>
-              <Skeleton class="mt-2 h-2.5 w-4/5" />
-              <template v-if="listDensity === 'cards'">
-                <Skeleton class="mt-2.5 h-[3px] w-full rounded-sm" />
-                <div class="mt-2.5 flex items-center justify-between">
-                  <Skeleton class="h-5 w-24 rounded-full" />
-                  <Skeleton class="h-5 w-16" />
-                </div>
-              </template>
-            </div>
-          </div>
+          <!-- Shaped like the rows they stand in for, in whichever density is
+               on: a short placeholder replaced by a tall card makes the whole
+               list jump, which reads as jank even though nothing moved twice. -->
+          <UtilitySkeletonList
+            v-else-if="listSkeleton"
+            key="loading"
+            :count="3"
+            :shape="listDensity === 'rows' ? 'row' : 'card'"
+          />
 
-          <div
+          <UtilityEmpty
             v-else-if="!lineups.length"
             key="no-lineups"
-            class="rounded-md border border-dashed border-border px-4 py-6 text-center"
-          >
-          <p class="text-sm font-semibold">
-            {{ $t("pages.utility.empty.no_lineups") }}
-          </p>
-          <p class="mx-auto mt-1 max-w-[36ch] text-xs leading-relaxed text-muted-foreground">
-            {{ $t("pages.utility.empty.no_lineups_description") }}
-          </p>
-          <Button
-            v-if="mySteamId"
-            size="sm"
-            variant="outline"
-            class="mt-3 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
-            @click="
-              createSeed = null;
-              listTab = CREATE_TAB;
-            "
-          >
-            <Plus class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.create.action") }}
-          </Button>
-
-          <!-- Telling someone the library is empty while three lineups sit one
-               tab away is how the counts stop being believed. -->
-          <div
-            v-if="populatedElsewhere.length"
-            class="mt-3 flex flex-wrap justify-center gap-1.5 border-t border-border/60 pt-3"
+            :title="$t('pages.utility.empty.no_lineups')"
+            :description="$t('pages.utility.empty.no_lineups_description')"
           >
             <Button
-              v-for="entry of populatedElsewhere"
-              :key="entry.scope"
+              v-if="mySteamId"
               size="sm"
-              variant="ghost"
-              class="h-7 text-xs"
-              @click="filters = { ...filters, scope: entry.scope }"
+              variant="outline"
+              class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+              @click="
+                createSeed = null;
+                listTab = CREATE_TAB;
+              "
             >
-              {{ $t(`pages.utility.scope.${entry.scope}`) }}
-              <span class="ml-1 opacity-60">{{ entry.count }}</span>
+              <Plus class="mr-1 h-4 w-4" />
+              {{ $t("pages.utility.create.action") }}
             </Button>
-          </div>
-          </div>
+
+            <!-- Telling someone the library is empty while three lineups sit
+                 one tab away is how the counts stop being believed. -->
+            <template v-if="populatedElsewhere.length" #footer>
+              <Button
+                v-for="entry of populatedElsewhere"
+                :key="entry.scope"
+                size="sm"
+                variant="ghost"
+                class="h-7 text-xs"
+                @click="filters = { ...filters, scope: entry.scope }"
+              >
+                {{ $t(`pages.utility.scope.${entry.scope}`) }}
+                <span class="ml-1 opacity-60">{{ entry.count }}</span>
+              </Button>
+            </template>
+          </UtilityEmpty>
 
           <!-- A list that changes under you without moving is a list you have
                to re-read. Filtering, archiving and paging all reorder this, so
@@ -1230,7 +1521,8 @@ function selectLineup(id: string | null) {
             key="list"
             tag="div"
             name="lrow"
-            class="-mt-2 flex flex-col"
+            class="-mt-2 flex flex-col transition-opacity [transition-duration:180ms]"
+            :class="listRefreshing ? 'pointer-events-none opacity-50' : ''"
           >
           <div
             v-for="lineup of lineups"
@@ -1276,13 +1568,13 @@ function selectLineup(id: string | null) {
             </div>
           </div>
           </TransitionGroup>
-        </PageTransition>
+        </HeightSwap>
 
         <!-- At the foot of the column, under whatever the tab is showing: an
              add button belongs after the thing you are adding to, not above
              it competing with the tab strip for the same corner. -->
         <button
-          v-if="mySteamId && secondaryAction"
+          v-if="mySteamId && secondaryAction && !secondaryHidden"
           type="button"
           class="group flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border/70 py-2.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
           @click="secondaryAction.run()"
@@ -1321,6 +1613,7 @@ function selectLineup(id: string | null) {
     @favorite="onFavorite"
     @fork="forkFromDetail"
     @archive="archiveFromDetail"
+    @updated="patchLineup"
   />
 
   <UtilityArchiveDialog

@@ -784,18 +784,86 @@ mark {
   }
 }
 
-/* The caption explaining the markers is the next thing worth losing: the chips
-   under it carry the same colours and say the same thing in less room. */
-@container utility-board (max-width: 34rem) {
-  .utility-board-key {
-    display: none;
+/* The strip, the toggle and the type chips beside them are all exactly 2rem,
+   but the strip spends 10px of that height on its frame -- so its amber pill
+   read as a third, smaller control sitting next to the amber toggle. A tighter
+   frame and a taller pill keeps the strip on 2rem (2px padding + 26px pill +
+   1px border, both sides) while the two amber shapes read as the same size. */
+.utility-meta-threshold {
+  padding: 2px;
+}
+.utility-meta-threshold > button {
+  height: 1.625rem;
+}
+
+/* On a narrow board the threshold knob leaves the chips' row entirely: it
+   stands up as a ladder and that ladder sits directly above the toggle, so the
+   whole meta control is one narrow column pinned to the bottom-right corner and
+   the chips get the full width of the row back.
+
+   Only direction is set here -- AnimatedFilters measures its indicator with
+   offsetLeft/offsetTop and re-measures on a ResizeObserver, so it follows the
+   flip on its own without needing a prop. */
+@container utility-board (max-width: 38rem) {
+  .utility-meta-controls {
+    flex-direction: column;
+    /* flex-end, not stretch: the toggle keeps its own 2rem square and never
+       grows to the ladder's width. Stretching it widened this whole right-hand
+       column, which is width taken straight off the type chips beside it --
+       the toggle is a fixed anchor in the corner and has to stay one. */
+    align-items: flex-end;
+    gap: 0.375rem;
+  }
+  .utility-meta-threshold {
+    flex-direction: column;
+  }
+  /* The pills already share a width down a column; this only centres their
+     labels in it rather than leaving them ragged. */
+  .utility-meta-threshold > button {
+    justify-content: center;
+  }
+
+  /* Opening the overlay must cost the chips nothing, and keeping the toggle a
+     fixed square was only half of it: the ladder is wider than the toggle and
+     the META n/total caption is wider still, so both grew this column and took
+     that width straight off the chips. Out of flow, the column contributes
+     nothing at all -- the chips are measured against the toggle alone, whether
+     the overlay is open or shut.
+
+     The row is already position:absolute, so it is its own containing block and
+     no extra positioning context is needed. Both extras stack upward from the
+     toggle, which is above the chips' line rather than on it, so nothing can
+     collide with them. */
+  .utility-meta-cluster {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  /* The gutter the absolute cluster no longer reserves for itself: the toggle's
+     2rem plus the row's gap. */
+  .utility-board-chips {
+    padding-right: 2.5rem;
   }
 }
 
-/* Then the overlay button drops its label and keeps its icon and its count. */
+/* The left-hand column keeps everything it has at every width. The legend used
+   to drop at 34rem to buy vertical air, but it sits above the chips rather than
+   beside them, so it never bought a single pixel of the width that was actually
+   under pressure -- and losing it left the colour chips explaining themselves.
+   The meta toggle is not in this cascade either: it is a bare square icon at
+   every width, because its glyph draws the rings the overlay draws. */
+
+/* Last, the practice button drops its word and squares off. A lone 16px glyph
+   sitting inside sm's px-3 reads as a button that failed to load its label
+   rather than as an icon button, so the padding has to go with the text. */
 @container utility-board (max-width: 26rem) {
-  .utility-board-overlay-label {
+  .utility-board-practice-label {
     display: none;
+  }
+  .utility-board-practice-btn {
+    width: 2rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 

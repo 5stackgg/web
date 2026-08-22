@@ -4,11 +4,9 @@ import { useI18n } from "vue-i18n";
 import { Crosshair, PlugZap, Search, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { toast } from "~/components/ui/toast";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
+import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -349,49 +347,39 @@ watch(
   {{ coordinate(from) }} → {{ coordinate(to) }}
 </p>
 
-<template v-if="searching">
-  <Skeleton v-for="i in 4" :key="i" class="h-28 w-full rounded-md" />
-</template>
+<UtilitySkeletonList v-if="searching" :count="3" />
 
-<Empty v-else-if="!searched">
-  <EmptyTitle>{{ $t("pages.utility.block.empty") }}</EmptyTitle>
-  <EmptyDescription>
-    {{ $t("pages.utility.block.empty_description") }}
-  </EmptyDescription>
-</Empty>
+<UtilityEmpty
+  v-else-if="!searched"
+  :title="$t('pages.utility.block.empty')"
+  :description="$t('pages.utility.block.empty_description')"
+/>
 
 <!-- "We could not check" and "nothing closes this angle" are opposite
      answers. Only the second one is a claim, and it is only earned
      when the parser actually answered. -->
-<Empty v-else-if="!rankedLineups.length && notice?.degraded">
-  <EmptyTitle>{{ $t("pages.utility.block.degraded") }}</EmptyTitle>
-  <EmptyDescription>
-    {{ $t("pages.utility.block.degraded_description") }}
-    <span
-      v-if="notice.message"
-      class="mt-1 block whitespace-pre-wrap break-words font-mono text-[0.6rem]"
-    >
-      {{ notice.message }}
-    </span>
-  </EmptyDescription>
-  <Button
-    size="sm"
-    variant="outline"
-    class="mt-3"
-    :loading="searching"
-    @click="search()"
+<UtilityEmpty
+  v-else-if="!rankedLineups.length && notice?.degraded"
+  :title="$t('pages.utility.block.degraded')"
+  :description="$t('pages.utility.block.degraded_description')"
+>
+  <span
+    v-if="notice.message"
+    class="w-full whitespace-pre-wrap break-words font-mono text-[0.6rem] text-muted-foreground"
   >
+    {{ notice.message }}
+  </span>
+  <Button size="sm" variant="outline" :loading="searching" @click="search()">
     <Search class="mr-1 h-4 w-4" />
     {{ $t("pages.utility.block.retry") }}
   </Button>
-</Empty>
+</UtilityEmpty>
 
-<Empty v-else-if="!rankedLineups.length">
-  <EmptyTitle>{{ $t("pages.utility.block.no_results") }}</EmptyTitle>
-  <EmptyDescription>
-    {{ $t("pages.utility.block.no_results_description") }}
-  </EmptyDescription>
-</Empty>
+<UtilityEmpty
+  v-else-if="!rankedLineups.length"
+  :title="$t('pages.utility.block.no_results')"
+  :description="$t('pages.utility.block.no_results_description')"
+/>
 
 <template v-else>
   <div

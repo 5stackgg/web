@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { Lock, MapPin, Pencil, Plus, Rocket, Users } from "lucide-vue-next";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Button } from "~/components/ui/button";
-import { Skeleton } from "~/components/ui/skeleton";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
+import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityPlaybookEditor from "~/components/utility/UtilityPlaybookEditor.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import {
   utilityLineupsQuery,
   utilityPlaybookStepsQuery,
@@ -30,6 +32,10 @@ import type {
 
 const emit = defineEmits<{
   (e: "board", state: UtilityPanelBoard | null): void;
+  // The page puts an add button under whichever panel is showing; while this
+  // one is empty it makes the offer itself, and two of the same button one
+  // above the other is the page arguing with the panel.
+  (e: "empty", value: boolean): void;
 }>();
 
 const props = withDefaults(
@@ -46,6 +52,12 @@ const playbooks = ref<UtilityPlaybook[]>([]);
 const steps = ref<UtilityPlaybookStep[]>([]);
 const lineupsById = ref<Record<string, UtilityLineup>>({});
 const loading = ref(true);
+
+// Saving or deleting an execute reloads the list. That is a refetch over
+// something you are still looking at, so it dims rather than emptying out. A
+// change of map is not: none of those executes belong to the map you are now
+// on, so that one goes back to shapes.
+const { skeleton, refreshing, reset } = useDeferredLoading(() => loading.value);
 
 const editingId = ref<string | null>(null);
 const creating = ref(false);
@@ -145,6 +157,14 @@ async function load() {
   }
 }
 
+watch(() => props.mapName, () => {
+  playbooks.value = [];
+  steps.value = [];
+  lineupsById.value = {};
+  closeEditor();
+  reset();
+});
+
 watch(() => props.mapName, load, { immediate: true });
 
 /**
@@ -243,6 +263,18 @@ function startEdit(id: string) {
   editingId.value = id;
 }
 
+// Only while it is genuinely bare: mid-fetch the panel does not know yet, and
+// flashing the page's button away and back is worse than leaving it alone.
+watch(
+  () => (loading.value ? null : !cards.value.length && !editorOpen.value),
+  (value) => {
+    if (value !== null) {
+      emit("empty", value);
+    }
+  },
+  { immediate: true },
+);
+
 defineExpose({ startCreate });
 
 function closeEditor() {
@@ -276,13 +308,16 @@ function practice(id: string) {
       </Button>
     </div>
 
-    <!-- One dissolve for every state this column can be in. The old markup ran
-         each branch through the page-ENTRY animation -- a 520ms slide up from
-         20px -- so opening an execute looked like navigating to a new page and
-         closing it looked like navigating back. `swap` is the in-place form of
-         the same primitive: 180ms out, then 180ms in, opacity only, with the
-         height change landing while nothing is on screen to be printed over. -->
-    <PageTransition swap class="mt-2">
+    <!-- One dissolve for every state this column can be in, and it measures.
+         The old markup ran each branch through the page-ENTRY animation -- a
+         520ms slide up from 20px -- so opening an execute looked like
+         navigating to a new page. Then it ran them through an opacity-only
+         swap, which fixed the slide but let the column collapse to nothing
+         between the two halves: the add button under it jumped up 400px and
+         back down every time this panel changed its mind. HeightSwap fades the
+         leaver out where it stands and eases the shell to the entering side's
+         measured height, so nothing below it moves twice. -->
+    <HeightSwap class="mt-2">
       <div v-if="editorOpen" key="editor">
         <UtilityPlaybookEditor
           :key="editing?.id ?? 'new'"
@@ -296,37 +331,36 @@ function practice(id: string) {
         />
       </div>
 
-      <div v-else-if="loading" key="loading" class="flex flex-col gap-2">
-        <Skeleton v-for="i in 4" :key="i" class="h-20 w-full rounded-md" />
-      </div>
+      <UtilitySkeletonList
+        v-else-if="skeleton"
+        key="loading"
+        :count="3"
+        shape="block"
+      />
 
-      <!-- Anchored to the top of the column rather than floating in the middle
-           of 700px of nothing, and carrying the one action that resolves it. -->
-      <div
+      <UtilityEmpty
         v-else-if="!cards.length"
         key="empty"
-        class="rounded-md border border-dashed border-border px-4 py-6 text-center"
+        :title="$t('pages.utility.playbooks.empty')"
+        :description="$t('pages.utility.playbooks.empty_description')"
       >
-        <p class="text-sm font-semibold">
-          {{ $t("pages.utility.playbooks.empty") }}
-        </p>
-        <p
-          class="mx-auto mt-1 max-w-[36ch] text-xs leading-relaxed text-muted-foreground"
-        >
-          {{ $t("pages.utility.playbooks.empty_description") }}
-        </p>
         <Button
           size="sm"
           variant="outline"
-          class="mt-3 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+          class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
           @click="startCreate()"
         >
           <Plus class="mr-1 h-4 w-4" />
           {{ $t("pages.utility.playbooks.new") }}
         </Button>
-      </div>
+      </UtilityEmpty>
 
-      <div v-else key="list" class="flex flex-col">
+      <div
+        v-else
+        key="list"
+        class="flex flex-col transition-opacity [transition-duration:180ms]"
+        :class="refreshing ? 'pointer-events-none opacity-50' : ''"
+      >
         <p
           class="flex items-center gap-1.5 pb-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
         >
@@ -477,7 +511,7 @@ function practice(id: string) {
           </div>
         </TransitionGroup>
       </div>
-    </PageTransition>
+    </HeightSwap>
 
     <StartPracticeDialog
       v-model:open="practiceOpen"

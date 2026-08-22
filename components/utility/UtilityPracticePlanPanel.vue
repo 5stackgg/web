@@ -2,13 +2,13 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Info, Users } from "lucide-vue-next";
-import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
+import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import {
   utilityLineupsQuery,
   utilityPracticePlanQuery,
@@ -59,6 +59,12 @@ const source = ref<string>(PUBLIC_SOURCE);
 const plan = ref<UtilityPracticePlanView | null>(null);
 const lineupsById = ref<Record<string, UtilityLineup>>({});
 const loading = ref(true);
+
+// Only the first open draws shapes. Flipping the side re-ranks a queue you are
+// already reading, so that one keeps the queue and dims it -- a 12-row list
+// replaced by four grey boxes and then by a 2-row list is three layouts to
+// watch for one click.
+const { skeleton, refreshing, reset } = useDeferredLoading(() => loading.value);
 
 const sideOptions = computed(() => [
   { key: ANY_SIDE, label: t("common.any") },
@@ -183,6 +189,8 @@ async function load() {
   }
 }
 
+watch(() => props.mapName, reset);
+
 watch(() => [props.mapName, side.value], () => void load(), {
   immediate: true,
 });
@@ -256,15 +264,18 @@ function showNeverThrown(entry: UtilityPracticePlanEntryView) {
       </p>
     </div>
 
-    <template v-if="loading">
-      <Skeleton v-for="i in 4" :key="i" class="h-28 w-full rounded-md" />
-    </template>
+    <!-- One shell for every answer this panel can give, measured so that a
+         four-row queue turning into a one-line notice eases instead of
+         snapping the column shut. -->
+    <HeightSwap>
+    <UtilitySkeletonList v-if="skeleton" key="loading" :count="3" />
 
     <!-- Never a zero and never an empty list: an unanalysed plan is the server
          saying it could not rank anything, which is a different sentence from
          "you have nothing left to learn". -->
     <div
       v-else-if="plan && !plan.analysed"
+      key="not-analysed"
       class="flex items-start gap-2 rounded-md border border-border bg-foreground/5 p-3"
     >
       <Info class="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
@@ -278,25 +289,30 @@ function showNeverThrown(entry: UtilityPracticePlanEntryView) {
       </div>
     </div>
 
-    <Empty v-else-if="!plan">
-      <EmptyTitle>{{ $t("pages.utility.plan.failed") }}</EmptyTitle>
-      <EmptyDescription>
-        {{ $t("pages.utility.plan.failed_description") }}
-      </EmptyDescription>
-    </Empty>
+    <UtilityEmpty
+      v-else-if="!plan"
+      key="failed"
+      :title="$t('pages.utility.plan.failed')"
+      :description="$t('pages.utility.plan.failed_description')"
+    />
 
-    <Empty v-else-if="!visibleEntries.length">
-      <EmptyTitle>{{ $t("pages.utility.plan.empty") }}</EmptyTitle>
-      <EmptyDescription>
-        {{ $t("pages.utility.plan.empty_description") }}
-      </EmptyDescription>
-    </Empty>
+    <UtilityEmpty
+      v-else-if="!visibleEntries.length"
+      key="empty"
+      :title="$t('pages.utility.plan.empty')"
+      :description="$t('pages.utility.plan.empty_description')"
+    />
 
     <!-- A numbered rail instead of a rank pill. The line is what makes this a
          queue rather than a list, and it also binds the reason above each card
          to the card -- loose chips between two bordered boxes belong to
          neither, which is what made the old layout unreadable. -->
-    <div v-else class="flex flex-col">
+    <div
+      v-else
+      key="queue"
+      class="flex flex-col transition-opacity [transition-duration:180ms]"
+      :class="refreshing ? 'pointer-events-none opacity-50' : ''"
+    >
       <div
         v-for="(entry, index) of visibleEntries"
         :key="entry.lineupId"
@@ -371,5 +387,6 @@ function showNeverThrown(entry: UtilityPracticePlanEntryView) {
         </div>
       </div>
     </div>
+    </HeightSwap>
   </div>
 </template>

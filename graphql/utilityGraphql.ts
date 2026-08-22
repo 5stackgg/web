@@ -712,6 +712,35 @@ export const setUtilityLineupPrecisionMutation = generateMutation({
   ],
 });
 
+/**
+ * What an author can change after the fact. Deliberately nothing geometric:
+ * the origin, the angles and the flight are what the throw IS, and a lineup
+ * edited into different coordinates is a different lineup that everybody
+ * else's drill record still points at. Re-record or fork instead.
+ */
+export const updateUtilityLineupMutation = generateMutation({
+  update_utility_lineups_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: {
+        name: $("name", "String!"),
+        description: $("description", "String"),
+        tags: $("tags", "[String!]"),
+        visibility: $("visibility", "e_utility_visibility_enum"),
+        team_id: $("team_id", "uuid"),
+      },
+    },
+    {
+      id: true,
+      name: true,
+      description: true,
+      tags: true,
+      visibility: true,
+      team_id: true,
+    },
+  ],
+});
+
 export const archiveUtilityLineupMutation = generateMutation({
   update_utility_lineups_by_pk: [
     {

@@ -672,6 +672,11 @@ export const InternalArgsBuilt = ({
         return varName;
       }
     }
+    // Serialize Date before consulting the schema map: the 'not' fallthrough would treat it
+    // as a plain object and emit {} (see scripts/patch-zeus-codegen.sh).
+    if (a instanceof Date) {
+      return JSON.stringify(a);
+    }
     const checkType = ResolveFromPath(props, returns, ops)(p);
     if (checkType.startsWith('scalar.')) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -27715,6 +27720,7 @@ deleteNewsPost?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["
 deleteOrphanedDemos?: [{	keys?: Array<string> | undefined | null | Variable<any, string>},ValueTypes["DeleteOrphansOutput"]],
 deleteServerItem?: [{	node_id: string | Variable<any, string>,	path: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteTournament?: [{	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+deleteUtilityLineupRender?: [{	render_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 deleteUtilityPlaybook?: [{	playbook_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["_map_pool_bool_exp"] | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
@@ -106192,6 +106198,7 @@ deleteNewsPost?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessO
 deleteOrphanedDemos?: [{	keys?: Array<string> | undefined | null},ResolverInputTypes["DeleteOrphansOutput"]],
 deleteServerItem?: [{	node_id: string,	path: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
 deleteTournament?: [{	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+deleteUtilityLineupRender?: [{	render_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 deleteUtilityPlaybook?: [{	playbook_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["_map_pool_bool_exp"]},ResolverInputTypes["_map_pool_mutation_response"]],
@@ -182346,6 +182353,8 @@ export type ModelTypes = {
 	deleteServerItem?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete a tournament and clean up demo files */
 	deleteTournament?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Delete a render and its preview clip */
+	deleteUtilityLineupRender?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Delete a utility playbook */
 	deleteUtilityPlaybook?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** delete data from the table: "_map_pool" */
@@ -217565,8 +217574,8 @@ export type ModelTypes = {
 	failure_reason?: string | undefined | null,
 	first_joined_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
-	host: ModelTypes["players"],
-	host_steam_id: ModelTypes["bigint"],
+	host?: ModelTypes["players"] | undefined | null,
+	host_steam_id?: ModelTypes["bigint"] | undefined | null,
 	id: ModelTypes["uuid"],
 	invite_code: string,
 	/** An array relationship */
@@ -253002,6 +253011,8 @@ export type GraphQLTypes = {
 	deleteServerItem?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete a tournament and clean up demo files */
 	deleteTournament?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Delete a render and its preview clip */
+	deleteUtilityLineupRender?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Delete a utility playbook */
 	deleteUtilityPlaybook?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** delete data from the table: "_map_pool" */
@@ -289570,8 +289581,8 @@ export type GraphQLTypes = {
 	failure_reason?: string | undefined | null,
 	first_joined_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An object relationship */
-	host: GraphQLTypes["players"],
-	host_steam_id: GraphQLTypes["bigint"],
+	host?: GraphQLTypes["players"] | undefined | null,
+	host_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	id: GraphQLTypes["uuid"],
 	invite_code: string,
 	/** An array relationship */

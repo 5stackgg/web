@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+
+import LoadingScreen from "~/components/LoadingScreen.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
-import { Skeleton } from "~/components/ui/skeleton";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { order_by } from "~/generated/zeus";
@@ -57,16 +56,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <PageTransition v-if="loading">
-    <Skeleton class="h-[60vh] w-full rounded-md" />
-  </PageTransition>
+  <!-- The same spinner the other utility redirect uses, not a placeholder for
+       content. This route exists only to pick a map and hand over, and it used
+       to fill the wait with a 60vh pulsing block: the largest thing on the
+       screen, first to arrive, gone a moment later without ever becoming
+       anything. That reads as a page that broke, not as a redirect in
+       flight. -->
+  <LoadingScreen v-if="loading" />
 
   <PageTransition v-else :delay="60">
-    <Empty>
-      <EmptyTitle>{{ $t("pages.utility.empty.no_maps") }}</EmptyTitle>
-      <EmptyDescription>
-        {{ $t("pages.utility.empty.no_maps_description") }}
-      </EmptyDescription>
-    </Empty>
+    <UtilityEmpty
+      class="mx-auto max-w-md"
+      :title="$t('pages.utility.empty.no_maps')"
+      :description="$t('pages.utility.empty.no_maps_description')"
+    />
   </PageTransition>
 </template>

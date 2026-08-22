@@ -5,9 +5,10 @@ import {
   Archive,
   ChevronLeft,
   ChevronRight,
-  Crosshair,
   GitFork,
+  PencilLine,
   Rocket,
+  X,
 } from "lucide-vue-next";
 import {
   Dialog,
@@ -17,7 +18,18 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Skeleton } from "~/components/ui/skeleton";
+import Fold from "~/components/ui/transitions/Fold.vue";
+import { toast } from "~/components/ui/toast";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
 import UtilityConfidenceNote from "~/components/utility/UtilityConfidenceNote.vue";
@@ -25,15 +37,17 @@ import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue"
 import UtilityMissPatternPanel from "~/components/utility/UtilityMissPatternPanel.vue";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
 import UtilityReactions from "~/components/utility/UtilityReactions.vue";
-import UtilitySightlinePanel from "~/components/utility/UtilitySightlinePanel.vue";
 import UtilitySpecLine from "~/components/utility/UtilitySpecLine.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { utilityLineupQuery } from "~/graphql/utilityGraphql";
+import {
+  updateUtilityLineupMutation,
+  utilityLineupQuery,
+} from "~/graphql/utilityGraphql";
 import cleanMapName from "~/utilities/cleanMapName";
 import { aimPrecisionFor, aimTolerance } from "~/utilities/utilityDisplay";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
-import type { UtilityLineup } from "~/types/utility";
+import type { UtilityLineup, UtilityVisibility } from "~/types/utility";
 
 const props = defineProps<{
   /** The list as filtered on the page, so stepping matches what you can see. */
@@ -53,6 +67,7 @@ const emit = defineEmits<{
   // it can arrive by link alone -- and both dialogs put the name in their copy.
   (e: "fork", id: string, name: string): void;
   (e: "archive", id: string, name: string): void;
+  (e: "updated", id: string, patch: Partial<UtilityLineup>): void;
 }>();
 
 const { t } = useI18n();
@@ -160,13 +175,109 @@ watch(
 
 const canLoadHere = computed(() => load.canLoad(lineup.value?.map_name));
 
-const sightlineOpen = ref(false);
+// The numbers below are the throw's telemetry, not its story: they answer
+// "why did this land there" on the rare day something is wrong with it, and
+// nothing at all on the ordinary day you came to learn it.
+const detailsOpen = ref(false);
+
+const editing = ref(false);
+const saving = ref(false);
+const form = ref({
+  name: "",
+  description: "",
+  tags: "",
+  visibility: "Private" as UtilityVisibility,
+});
+
+// Public is not a setting an author can flip: it goes through review, and the
+// submit action is the door to that. Coming back DOWN off Public is theirs.
+const visibilities = computed<UtilityVisibility[]>(() => {
+  const out: UtilityVisibility[] = ["Private", "Team"];
+  if (lineup.value?.visibility === "Public") {
+    out.push("Public");
+  }
+  return out;
+});
+
+function startEdit() {
+  const value = lineup.value;
+  if (!value) {
+    return;
+  }
+  form.value = {
+    name: value.name,
+    description: value.description ?? "",
+    tags: (value.tags ?? []).join(", "),
+    visibility: value.visibility,
+  };
+  editing.value = true;
+}
+
+const editedTags = computed(() =>
+  form.value.tags
+    .split(",")
+    .map((tag) => tag.trim().toLowerCase())
+    .filter((tag) => tag.length > 0),
+);
+
+const canSave = computed(
+  () => form.value.name.trim().length > 0 && !saving.value,
+);
+
+async function save() {
+  const value = lineup.value;
+  if (!value || !canSave.value) {
+    return;
+  }
+  saving.value = true;
+  const patch = {
+    name: form.value.name.trim(),
+    description: form.value.description.trim() || null,
+    tags: editedTags.value,
+    visibility: form.value.visibility,
+    // Team visibility without a team is a lineup nobody can reach, so the
+    // team only rides along while it is the thing being addressed.
+    team_id: form.value.visibility === "Team" ? value.team_id : null,
+  };
+  try {
+    await getGraphqlClient().mutate({
+      mutation: updateUtilityLineupMutation,
+      variables: { id: value.id, ...patch },
+    });
+    // The fetched copy is this dialog's own; the list's copy belongs to the
+    // page, which patches it in place rather than refetching the whole set.
+    if (fetched.value?.id === value.id) {
+      fetched.value = { ...fetched.value, ...patch };
+    }
+    emit("updated", value.id, patch);
+    editing.value = false;
+    toast({ title: t("pages.utility.edit.saved") });
+  } catch (error) {
+    console.error("[utility] lineup update error:", error);
+    toast({
+      title: t("pages.utility.edit.failed"),
+      description: (error as Error)?.message,
+      variant: "destructive",
+    });
+  } finally {
+    saving.value = false;
+  }
+}
+
+// Stepping to another lineup mid-edit would otherwise save this form onto it.
 watch(
   () => props.lineupId,
   () => {
-    sightlineOpen.value = false;
+    detailsOpen.value = false;
+    editing.value = false;
   },
 );
+
+watch(open, (isOpen) => {
+  if (!isOpen) {
+    editing.value = false;
+  }
+});
 
 function coords(x: unknown, y: unknown, z: unknown) {
   return `${Math.round(Number(x))}, ${Math.round(Number(y))}, ${Math.round(Number(z))}`;
@@ -269,6 +380,19 @@ const stats = computed(() => {
             </DialogDescription>
           </div>
 
+          <div class="flex shrink-0 items-center gap-1">
+            <Button
+              v-if="lineup?.can_edit && !lineup?.archived_at && !editing"
+              variant="ghost"
+              size="sm"
+              class="h-7 px-2 text-[0.7rem]"
+              @click="startEdit()"
+            >
+              <PencilLine class="mr-1 h-3.5 w-3.5" />
+              {{ $t("pages.utility.edit.action") }}
+            </Button>
+          </div>
+
           <!-- Stepping through the set is the reason this is a dialog and not a
                page, so the controls sit in the title bar rather than buried. -->
           <div v-if="steppable" class="flex shrink-0 items-center gap-1">
@@ -312,57 +436,112 @@ const stats = computed(() => {
           >
             {{ lineup.description }}
           </p>
-
-          <!-- Folded away until asked for: it is a second analysis of the same
-               throw, not something you need on the way to practising it. -->
-          <div class="rounded-md border border-border">
-            <button
-              type="button"
-              class="flex w-full items-center gap-2 p-2.5 text-left transition-colors hover:bg-muted/30"
-              @click="sightlineOpen = !sightlineOpen"
-            >
-              <Crosshair class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              <span class="min-w-0 flex-1">
-                <span class="block text-xs font-semibold">
-                  {{ $t("pages.utility.sightline.title") }}
-                </span>
-                <span class="block text-[0.68rem] text-muted-foreground">
-                  {{ $t("pages.utility.sightline.description") }}
-                </span>
-              </span>
-              <span
-                class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-              >
-                {{
-                  sightlineOpen
-                    ? $t("pages.utility.sightline.hide")
-                    : $t("pages.utility.sightline.open")
-                }}
-              </span>
-            </button>
-            <div v-if="sightlineOpen" class="border-t border-border p-2.5">
-              <UtilitySightlinePanel :lineup="lineup" />
-            </div>
-          </div>
         </div>
 
         <div class="flex min-w-0 flex-col gap-3">
+          <!-- Editing swaps the column, not the dialog: the throw stays on
+               screen, which is the thing you are naming. -->
+          <template v-if="editing">
+            <div class="flex flex-col gap-1">
+              <label
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("common.name") }}
+              </label>
+              <Input
+                v-model="form.name"
+                maxlength="120"
+                :placeholder="$t('pages.utility.create.name_placeholder')"
+              />
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("common.description") }}
+              </label>
+              <Textarea
+                v-model="form.description"
+                rows="4"
+                maxlength="1000"
+                :placeholder="$t('pages.utility.create.description_placeholder')"
+              />
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.utility.filters.tags") }}
+              </label>
+              <Input
+                v-model="form.tags"
+                maxlength="160"
+                :placeholder="$t('pages.utility.create.tags_placeholder')"
+              />
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.utility.playbooks.visibility") }}
+              </label>
+              <Select v-model="form.visibility">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="entry of visibilities"
+                    :key="entry"
+                    :value="entry"
+                  >
+                    {{ $t(`pages.utility.visibility.${entry}`) }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p
+                v-if="lineup.visibility !== 'Public'"
+                class="text-[0.68rem] leading-snug text-muted-foreground"
+              >
+                {{ $t("pages.utility.edit.public_note") }}
+              </p>
+            </div>
+
+            <!-- What the throw IS -- where you stand, where you aim, how long
+                 it flies -- is not on this form: everybody else's drill record
+                 points at those, so a different throw is a fork, not an edit. -->
+            <p class="text-[0.68rem] leading-snug text-muted-foreground">
+              {{ $t("pages.utility.edit.geometry_note") }}
+            </p>
+
+            <div class="mt-auto flex items-center gap-2 pt-1">
+              <Button
+                class="tac-amber-cta flex-1"
+                :disabled="!canSave"
+                @click="save()"
+              >
+                {{ $t("common.save") }}
+              </Button>
+              <Button variant="outline" @click="editing = false">
+                <X class="mr-1 h-4 w-4" />
+                {{ $t("common.cancel") }}
+              </Button>
+            </div>
+          </template>
+
+          <template v-else>
           <UtilityConfidenceNote :lineup="lineup" />
 
           <UtilitySpecLine :lineup="lineup" />
 
-          <dl
-            class="grid grid-cols-2 gap-x-3 gap-y-2 rounded-md border border-border bg-card/40 p-3 text-xs [backdrop-filter:blur(6px)]"
-          >
-            <div v-for="stat of stats" :key="stat.key" class="min-w-0">
-              <dt
-                class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground"
-              >
-                {{ $t(`pages.utility.detail.${stat.key}`) }}
-              </dt>
-              <dd class="truncate font-mono tabular-nums">{{ stat.value }}</dd>
-            </div>
-          </dl>
+          <!-- Why it gets missed is the one thing this view knows that the
+               list does not, so it leads rather than sits under the numbers. -->
+          <UtilityMissPatternPanel :lineup-id="lineup.id" />
+
+          <UtilityProgressPanel :progress="lineup.progress" />
 
           <div class="flex items-center justify-between gap-2">
             <PlayerDisplay
@@ -387,9 +566,47 @@ const stats = computed(() => {
             </span>
           </div>
 
-          <UtilityProgressPanel :progress="lineup.progress" />
-
-          <UtilityMissPatternPanel :lineup-id="lineup.id" />
+          <!-- The telemetry, folded: it answers "why did this land there" on
+               the day something is wrong with the lineup, and nothing at all
+               on the ordinary day you came to learn it. -->
+          <div class="rounded-md border border-border">
+            <button
+              type="button"
+              class="flex w-full items-center gap-2 p-2.5 text-left transition-colors hover:bg-muted/30"
+              @click="detailsOpen = !detailsOpen"
+            >
+              <span
+                class="min-w-0 flex-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.utility.detail.technical") }}
+              </span>
+              <span
+                class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+              >
+                {{
+                  detailsOpen
+                    ? $t("pages.utility.sightline.hide")
+                    : $t("pages.utility.sightline.open")
+                }}
+              </span>
+            </button>
+            <Fold :open="detailsOpen">
+              <dl
+                class="grid grid-cols-2 gap-x-3 gap-y-2 border-t border-border p-2.5 text-xs"
+              >
+                <div v-for="stat of stats" :key="stat.key" class="min-w-0">
+                  <dt
+                    class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground"
+                  >
+                    {{ $t(`pages.utility.detail.${stat.key}`) }}
+                  </dt>
+                  <dd class="truncate font-mono tabular-nums">
+                    {{ stat.value }}
+                  </dd>
+                </div>
+              </dl>
+            </Fold>
+          </div>
 
           <div class="mt-auto flex flex-col gap-2 pt-1">
             <div class="flex items-center gap-2">
@@ -440,6 +657,7 @@ const stats = computed(() => {
               </Button>
             </div>
           </div>
+          </template>
         </div>
       </div>
 

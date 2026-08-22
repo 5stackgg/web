@@ -11,10 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Skeleton } from "~/components/ui/skeleton";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
+import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityFilters from "~/components/utility/UtilityFilters.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
@@ -22,6 +20,7 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { utilityLineupsQuery } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { emptyUtilityFilters, utilityLineupWhere } from "~/utilities/utilityDisplay";
 import type { UtilityFilterState } from "~/utilities/utilityDisplay";
 import type { UtilityLineup, UtilitySide } from "~/types/utility";
@@ -54,6 +53,11 @@ const myTeamIds = computed(() =>
 const filters = ref<UtilityFilterState>(emptyUtilityFilters());
 const lineups = ref<UtilityLineup[]>([]);
 const loading = ref(false);
+
+// Only the first fill draws shapes; narrowing the filters afterwards keeps the
+// rows you are picking from and dims them.
+const { skeleton, refreshing, reset } = useDeferredLoading(() => loading.value);
+
 const hoveredId = ref<string | null>(null);
 const PER_PAGE = 60;
 
@@ -116,6 +120,9 @@ watch(open, (isOpen) => {
     return;
   }
   openingCount.value = props.pickedIds.length;
+  // Reopened on a different execute: whatever is still in the list belongs to
+  // the last visit.
+  reset();
   filters.value = {
     ...emptyUtilityFilters(),
     sides: props.side ? [props.side] : [],
@@ -190,23 +197,22 @@ function pick(id: string) {
                for, so re-filtering dissolves instead of collapsing the list to
                nothing and springing it back. -->
           <FadeSwap>
-            <div v-if="loading" key="loading" class="flex flex-col gap-2">
-              <Skeleton v-for="i in 5" :key="i" class="h-28 w-full rounded-md" />
-            </div>
+            <UtilitySkeletonList v-if="skeleton" key="loading" :count="4" />
 
-            <Empty v-else-if="!lineups.length" key="empty">
-              <EmptyTitle>{{ $t("pages.utility.empty.no_lineups") }}</EmptyTitle>
-              <EmptyDescription>
-                {{ $t("pages.utility.empty.no_lineups_description") }}
-              </EmptyDescription>
-            </Empty>
+            <UtilityEmpty
+              v-else-if="!lineups.length"
+              key="empty"
+              :title="$t('pages.utility.empty.no_lineups')"
+              :description="$t('pages.utility.empty.no_lineups_description')"
+            />
 
             <TransitionGroup
               v-else
               key="list"
               tag="div"
               name="pick"
-              class="flex flex-col gap-2"
+              class="flex flex-col gap-2 transition-opacity [transition-duration:180ms]"
+              :class="refreshing ? 'pointer-events-none opacity-50' : ''"
             >
               <!-- A lineup already in the execute stays pickable -- a re-smoke
                    is a real call -- but it has to look spent, or you add the

@@ -4,13 +4,10 @@ import { useI18n } from "vue-i18n";
 import {
   Globe,
   ListOrdered,
-  LogOut,
-  Rocket,
   Save,
   Share2,
   ShieldCheck,
   Signal,
-  Square,
   UserCheck,
   UserPlus,
   X,
@@ -37,6 +34,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Separator } from "~/components/ui/separator";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
+import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import UtilitySaveLineupDialog from "~/components/utility/UtilitySaveLineupDialog.vue";
@@ -58,6 +56,7 @@ import { order_by } from "~/generated/zeus";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { readUtilityPracticeSession } from "~/types/utility";
+import cleanMapName from "~/utilities/cleanMapName";
 import type {
   UtilityPlaybook,
   UtilityPracticeSession,
@@ -148,6 +147,9 @@ const sessionId = ref<string | null>(null);
 const session = ref<UtilityPracticeSession | null>(null);
 const started = ref<UtilityPracticeSessionOutput | null>(null);
 const joining = ref(false);
+// The mutation can sit for seconds on an on-demand region before a session id
+// comes back, and until it does nothing on screen has moved.
+const starting = ref(false);
 const pendingPlaybookId = ref<string | null>(null);
 
 let sessionSub: { unsubscribe: () => void } | null = null;
@@ -215,7 +217,8 @@ async function loadPracticeServers() {
       query: utilityPracticeServersQuery,
       fetchPolicy: "network-only",
     });
-    practiceServers.value = (data as any)?.utilityPracticeServers?.servers ?? [];
+    practiceServers.value =
+      (data as any)?.utilityPracticeServers?.servers ?? [];
   } catch (error: any) {
     // Surfaced, not swallowed: an empty picker and a broken lookup look
     // identical from the outside, and the difference is the whole diagnosis.
@@ -298,8 +301,7 @@ watch(
         variables: target.variables,
       });
       const output = (data as any)?.joinUtilityPractice as
-        | UtilityPracticeSessionOutput
-        | undefined;
+        UtilityPracticeSessionOutput | undefined;
       if (!output?.id) {
         throw new Error("no session");
       }
@@ -322,6 +324,7 @@ watch(
 onBeforeUnmount(unsubscribeSession);
 
 async function start() {
+  starting.value = true;
   try {
     const { data } = await getGraphqlClient().mutate({
       mutation: startUtilityPracticeMutation,
@@ -340,8 +343,7 @@ async function start() {
       },
     });
     const output = (data as any)?.startUtilityPractice as
-      | UtilityPracticeSessionOutput
-      | undefined;
+      UtilityPracticeSessionOutput | undefined;
     if (!output?.id) {
       throw new Error("no session");
     }
@@ -357,6 +359,8 @@ async function start() {
       description: error?.message,
       variant: "destructive",
     });
+  } finally {
+    starting.value = false;
   }
 }
 
@@ -542,6 +546,18 @@ const inviteLink = computed(() => {
   return `${window.location.origin}${path}?practice=${code}`;
 });
 
+// The description says "this map"; the header says which one.
+const mapDisplay = computed(() => cleanMapName(props.mapName));
+
+// One rhythm for every field heading in the form -- they were four copies of
+// the same string, drifting on padding.
+const fieldLabel =
+  "flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground";
+
+// The footer shows exactly one control at a time, so they share a shape: the
+// app's full-width tactical CTA treatment, as on the match and draft alerts.
+const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
+
 const isBooting = computed(
   () => !!sessionId.value && !practice.value.connectionString,
 );
@@ -556,8 +572,12 @@ const connectServer = computed(() => ({
   <Dialog v-model:open="open">
     <DialogContent class="sm:max-w-lg">
       <DialogHeader>
-        <DialogTitle class="flex items-center gap-2">
-          <Rocket class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+        <span
+          class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+        >
+          {{ mapDisplay }}
+        </span>
+        <DialogTitle>
           {{ $t("pages.utility.practice.title") }}
         </DialogTitle>
         <DialogDescription>
@@ -566,84 +586,82 @@ const connectServer = computed(() => ({
       </DialogHeader>
 
       <div class="space-y-4">
-        <div v-if="!sessionId" class="space-y-2">
-          <span
-            class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <Signal class="h-3.5 w-3.5" />
-            {{ $t("pages.utility.practice.region") }}
-          </span>
-          <Select v-model="region">
-            <SelectTrigger>
-              <SelectValue
-                :placeholder="$t('pages.utility.practice.select_region')"
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem :value="ANY_REGION">
-                  {{ $t("pages.utility.practice.any_region") }}
-                </SelectItem>
-              </SelectGroup>
-              <SelectGroup v-if="practiceServers.length">
-                <SelectLabel>
-                  {{ $t("pages.utility.practice.dedicated_servers") }}
-                </SelectLabel>
-                <SelectItem
-                  v-for="entry of practiceServers"
-                  :key="entry.id"
-                  :value="`${SERVER_PREFIX}${entry.id}`"
-                  :disabled="entry.in_use"
-                >
-                  {{ entry.label }}
-                  <span class="text-muted-foreground">
-                    ({{ entry.region }})
-                  </span>
-                  <span v-if="entry.in_use" class="text-muted-foreground">
-                    &mdash;
-                    {{
-                      entry.held_by
-                        ? $t("pages.utility.practice.server_held_by", {
-                            name: entry.held_by,
-                          })
-                        : $t("pages.utility.practice.server_in_use")
-                    }}
-                  </span>
-                </SelectItem>
-              </SelectGroup>
-              <SelectGroup>
-                <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
-                <SelectItem
-                  v-for="entry of regions"
-                  :key="entry.value"
-                  :value="entry.value"
-                >
-                  {{ entry.description || entry.value }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <p
-            v-if="practiceServersError"
-            class="text-xs text-[hsl(var(--tac-amber))]"
-          >
-            {{
-              $t("pages.utility.practice.servers_unavailable", {
-                error: practiceServersError,
-              })
-            }}
-          </p>
-          <p
-            v-else-if="!regions.length && !practiceServers.length"
-            class="text-xs text-muted-foreground"
-          >
-            {{ $t("pages.utility.practice.no_regions") }}
-          </p>
-
-          <template v-if="playbooks.length">
-            <span
-              class="flex items-center gap-2 pt-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+        <div v-if="!sessionId" class="space-y-4">
+          <div class="space-y-1.5">
+            <span :class="fieldLabel">
+              <Signal class="h-3.5 w-3.5" />
+              {{ $t("pages.utility.practice.region") }}
+            </span>
+            <Select v-model="region">
+              <SelectTrigger>
+                <SelectValue
+                  :placeholder="$t('pages.utility.practice.select_region')"
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem :value="ANY_REGION">
+                    {{ $t("pages.utility.practice.any_region") }}
+                  </SelectItem>
+                </SelectGroup>
+                <SelectGroup v-if="practiceServers.length">
+                  <SelectLabel>
+                    {{ $t("pages.utility.practice.dedicated_servers") }}
+                  </SelectLabel>
+                  <SelectItem
+                    v-for="entry of practiceServers"
+                    :key="entry.id"
+                    :value="`${SERVER_PREFIX}${entry.id}`"
+                    :disabled="entry.in_use"
+                  >
+                    {{ entry.label }}
+                    <span class="text-muted-foreground">
+                      ({{ entry.region }})
+                    </span>
+                    <span v-if="entry.in_use" class="text-muted-foreground">
+                      &mdash;
+                      {{
+                        entry.held_by
+                          ? $t("pages.utility.practice.server_held_by", {
+                              name: entry.held_by,
+                            })
+                          : $t("pages.utility.practice.server_in_use")
+                      }}
+                    </span>
+                  </SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
+                  <SelectItem
+                    v-for="entry of regions"
+                    :key="entry.value"
+                    :value="entry.value"
+                  >
+                    {{ entry.description || entry.value }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <p
+              v-if="practiceServersError"
+              class="text-xs text-[hsl(var(--tac-amber))]"
             >
+              {{
+                $t("pages.utility.practice.servers_unavailable", {
+                  error: practiceServersError,
+                })
+              }}
+            </p>
+            <p
+              v-else-if="!regions.length && !practiceServers.length"
+              class="text-xs text-muted-foreground"
+            >
+              {{ $t("pages.utility.practice.no_regions") }}
+            </p>
+          </div>
+
+          <div v-if="playbooks.length" class="space-y-1.5">
+            <span :class="fieldLabel">
               <ListOrdered class="h-3.5 w-3.5" />
               {{ $t("pages.utility.playbooks.load_label") }}
             </span>
@@ -664,24 +682,31 @@ const connectServer = computed(() => ({
                 </SelectItem>
               </SelectContent>
             </Select>
-          </template>
+          </div>
 
-          <span
-            class="flex items-center gap-2 pt-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <ShieldCheck class="h-3.5 w-3.5" />
-            {{ $t("pages.utility.practice.access") }}
-          </span>
-          <AnimatedFilters
-            v-model="access"
-            :options="accessFilterOptions"
-            square
-            size="lg"
-            block
-          />
-          <p class="text-[0.72rem] leading-snug text-muted-foreground">
-            {{ $t(accessDescription) }}
-          </p>
+          <div class="space-y-1.5">
+            <span :class="fieldLabel">
+              <ShieldCheck class="h-3.5 w-3.5" />
+              {{ $t("pages.utility.practice.access") }}
+            </span>
+            <AnimatedFilters
+              v-model="access"
+              :options="accessFilterOptions"
+              square
+              size="lg"
+              block
+            />
+            <!-- The two blurbs wrap to different heights at this width, so the
+                 trade is measured rather than letting the footer jump. -->
+            <HeightSwap>
+              <p
+                :key="accessDescription"
+                class="text-[0.72rem] leading-snug text-muted-foreground"
+              >
+                {{ $t(accessDescription) }}
+              </p>
+            </HeightSwap>
+          </div>
         </div>
 
         <div
@@ -789,7 +814,6 @@ const connectServer = computed(() => ({
                 :disabled="!invitees.length"
                 @click="invitePlayers()"
               >
-                <UserPlus class="mr-1 h-4 w-4" />
                 {{
                   $t("pages.utility.practice.send_invites", {
                     count: invitees.length,
@@ -804,9 +828,7 @@ const connectServer = computed(() => ({
           v-if="canSaveFromPractice"
           class="space-y-2 rounded-md border border-border bg-foreground/5 p-4"
         >
-          <span
-            class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
+          <span :class="fieldLabel">
             <Save class="h-3.5 w-3.5" />
             {{ $t("pages.utility.save.practice_entry_title") }}
           </span>
@@ -819,26 +841,40 @@ const connectServer = computed(() => ({
         </div>
       </div>
 
-      <DialogFooter class="gap-2 sm:justify-between">
+      <!-- Exactly one of these ever renders, and it is the only thing the
+           dialog asks for -- so it takes the whole width instead of sitting in
+           a corner of an otherwise empty row. -->
+      <DialogFooter>
         <!-- can_manage, not a host_steam_id comparison: whether a viewer may
              end the session is the server's call, not the client's. -->
         <Button
           v-if="sessionId && practice.canManage"
           variant="destructive"
+          size="lg"
+          :class="footerCta"
           @click="stop()"
         >
-          <Square class="mr-1 h-4 w-4" />
           {{ $t("pages.utility.practice.stop") }}
         </Button>
         <!-- Everyone else gets the door rather than nothing: a joiner cannot
              end a session that is not theirs, but they can stop being in it. -->
-        <Button v-else-if="sessionId" variant="outline" @click="leave()">
-          <LogOut class="mr-1 h-4 w-4" />
+        <Button
+          v-else-if="sessionId"
+          variant="outline"
+          size="lg"
+          :class="footerCta"
+          @click="leave()"
+        >
           {{ $t("pages.utility.practice.leave") }}
         </Button>
-        <Button v-else class="tac-amber-cta" @click="start()">
-          <Rocket class="mr-1 h-4 w-4" />
-          {{ $t("pages.utility.practice.start") }}
+        <Button
+          v-else
+          size="lg"
+          :class="['tac-amber-cta', footerCta]"
+          :loading="starting"
+          @click="start()"
+        >
+          {{ $t("pages.utility.practice.start_cta") }}
         </Button>
       </DialogFooter>
     </DialogContent>

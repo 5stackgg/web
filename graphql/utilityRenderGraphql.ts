@@ -93,6 +93,13 @@ export const cancelUtilityLineupRenderMutation = generateMutation({
   ],
 } as any);
 
+export const deleteUtilityLineupRenderMutation = generateMutation({
+  deleteUtilityLineupRender: [
+    { render_id: $("render_id", "uuid!") },
+    { success: true },
+  ],
+} as any);
+
 export const clearFinishedUtilityLineupRendersMutation = generateMutation({
   clearFinishedUtilityLineupRenders: [{}, { cleared: true }],
 } as any);

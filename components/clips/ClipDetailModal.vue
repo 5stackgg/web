@@ -20,7 +20,6 @@ import {
   Lock,
   Globe,
   X,
-  Radio,
   ChevronLeft,
   ChevronRight,
   ListVideo,
@@ -530,47 +529,15 @@ onMounted(() => {
           }}</DialogDescription>
         </VisuallyHidden>
 
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))] z-10"
-        ></span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute right-2 top-2 h-[14px] w-[14px] border-r-2 border-t-2 border-[hsl(var(--tac-amber))] z-10"
-        ></span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute left-2 bottom-2 h-[14px] w-[14px] border-l-2 border-b-2 border-[hsl(var(--tac-amber))] z-10"
-        ></span>
-        <span
-          aria-hidden="true"
-          class="pointer-events-none absolute right-2 bottom-2 h-[14px] w-[14px] border-r-2 border-b-2 border-[hsl(var(--tac-amber))] z-10"
-        ></span>
-
         <div
           class="relative flex items-center gap-3 border-b border-border/40 px-4 sm:px-5 py-2.5"
         >
-          <span class="relative flex h-2 w-2">
-            <span
-              class="absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--tac-amber))] opacity-60 animate-ping"
-            ></span>
-            <span
-              class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
-            ></span>
-          </span>
-          <Radio class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-          <span
-            class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-foreground/80"
-          >
-            {{ $t("clips.detail.default_title") }}
-          </span>
-
           <Popover
             v-if="clip && canEditVisibility"
             v-model:open="visPopoverOpen"
           >
             <PopoverTrigger
-              class="ml-auto inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               :class="
                 clip.visibility === 'public'
                   ? 'text-emerald-300 hover:text-emerald-200'
@@ -599,7 +566,7 @@ onMounted(() => {
               </span>
               {{ clip.visibility }}
             </PopoverTrigger>
-            <PopoverContent class="z-[70] w-64 p-1" align="end">
+            <PopoverContent class="z-[70] w-64 p-1" align="start">
               <div
                 class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
               >
@@ -643,7 +610,7 @@ onMounted(() => {
           </Popover>
           <span
             v-else-if="clip"
-            class="ml-auto inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]"
+            class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]"
             :class="
               clip.visibility === 'public'
                 ? 'text-emerald-300'
@@ -658,41 +625,43 @@ onMounted(() => {
             {{ clip.visibility }}
           </span>
 
-          <span
-            v-if="hasQueueNav"
-            class="hidden sm:inline-flex h-7 items-center rounded-full border border-border/60 bg-card/35 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
-          >
-            {{ queuePositionLabel }}
-          </span>
-          <div v-if="hasQueueNav" class="inline-flex items-center gap-1">
+          <div class="ml-auto flex items-center gap-3">
+            <span
+              v-if="hasQueueNav"
+              class="hidden sm:inline-flex h-7 items-center rounded-full border border-border/60 bg-card/35 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
+            >
+              {{ queuePositionLabel }}
+            </span>
+            <div v-if="hasQueueNav" class="inline-flex items-center gap-1">
+              <button
+                type="button"
+                class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
+                :disabled="!previousClip"
+                :title="previousClip?.title ?? $t('ui_extras.previous_clip')"
+                @click="openPreviousClip"
+              >
+                <ChevronLeft class="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
+                :disabled="!nextClip"
+                :title="nextClip?.title ?? $t('ui_extras.next_clip')"
+                @click="openNextClip"
+              >
+                <ChevronRight class="h-3.5 w-3.5" />
+              </button>
+            </div>
+
             <button
               type="button"
-              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
-              :disabled="!previousClip"
-              :title="previousClip?.title ?? $t('ui_extras.previous_clip')"
-              @click="openPreviousClip"
+              class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
+              @click="closeClip"
             >
-              <ChevronLeft class="h-3.5 w-3.5" />
-            </button>
-            <button
-              type="button"
-              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
-              :disabled="!nextClip"
-              :title="nextClip?.title ?? $t('ui_extras.next_clip')"
-              @click="openNextClip"
-            >
-              <ChevronRight class="h-3.5 w-3.5" />
+              <X class="h-3 w-3" />
+              <span class="hidden sm:inline">{{ $t("common.close") }}</span>
             </button>
           </div>
-
-          <button
-            type="button"
-            class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
-            @click="closeClip"
-          >
-            <X class="h-3 w-3" />
-            <span class="hidden sm:inline">{{ $t("common.close") }}</span>
-          </button>
         </div>
 
         <div
@@ -1145,7 +1114,7 @@ onMounted(() => {
                   @click="showDelete = true"
                 >
                   <Trash2 class="h-4 w-4" />
-                  <span>{{ $t("ui_extras.delete_clip") }}</span>
+                  <span>{{ $t("common.delete") }}</span>
                 </button>
               </div>
             </div>

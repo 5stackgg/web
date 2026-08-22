@@ -159,9 +159,16 @@ export type UtilityLineupRender = {
   game_server_node_id: string | null;
   paused: boolean;
   sort_index: number | null;
+  /**
+   * Boot ticks arrive as status "booting" with a boot_stage and never touch
+   * the row's status -- same shape clip_render_jobs carries, so BootSequence
+   * reads both. Within-stage ticks coalesce and keep the first `at`.
+   */
   status_history: Array<{
     status: string;
     at: string;
+    boot_stage?: string;
+    boot_progress?: number;
     skip_reason?: string;
   }> | null;
   last_status_at: string | null;

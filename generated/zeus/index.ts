@@ -1877,8 +1877,21 @@ export type ValueTypes = {
 	updated?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityLaunchSeedBackfillOutput"]: AliasType<{
+	done?:boolean | `@${string}`,
+	scanned?:boolean | `@${string}`,
+	seeded?:boolean | `@${string}`,
+	skipped?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityLineupOutput"]: AliasType<{
 	id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityLoadOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	reason?:boolean | `@${string}`,
+	sent?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["UtilityMissPatternOutput"]: AliasType<{
@@ -1970,6 +1983,12 @@ export type ValueTypes = {
 	status?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityPracticeWhereOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	on_server?:boolean | `@${string}`,
+	session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityPurgeOutput"]: AliasType<{
 	dry_run?:boolean | `@${string}`,
 	lineups?:boolean | `@${string}`,
@@ -1993,6 +2012,24 @@ export type ValueTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityScratchLineupInput"]: {
+	client_id: string | Variable<any, string>,
+	eye_z: number | Variable<any, string>,
+	land_x?: number | undefined | null | Variable<any, string>,
+	land_y?: number | undefined | null | Variable<any, string>,
+	land_z?: number | undefined | null | Variable<any, string>,
+	map_name: string | Variable<any, string>,
+	name: string | Variable<any, string>,
+	origin_x: number | Variable<any, string>,
+	origin_y: number | Variable<any, string>,
+	origin_z: number | Variable<any, string>,
+	side: string | Variable<any, string>,
+	technique: string | Variable<any, string>,
+	throw_strength: string | Variable<any, string>,
+	utility_type: string | Variable<any, string>,
+	view_pitch: number | Variable<any, string>,
+	view_yaw: number | Variable<any, string>
+};
 	["UtilitySightlineOutput"]: AliasType<{
 	degraded?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
@@ -27632,6 +27669,7 @@ approve_league_season_movements?: [{	/** input parameters for function "approve_
 backfillSeasonElo?: [{	season_id: string | Variable<any, string>},ValueTypes["RecomputeEloStartedOutput"]],
 	/** Return the progress of the season ELO backfill run (admin only). */
 	backfillSeasonEloStatus?:ValueTypes["SeasonBackfillStatusOutput"],
+backfillUtilityLaunchSeeds?: [{	limit?: number | undefined | null | Variable<any, string>},ValueTypes["UtilityLaunchSeedBackfillOutput"]],
 bakeShaders?: [{	game_server_node_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 callForOrganizer?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Request cancellation of the in-progress season ELO backfill (admin only). Stops after the current match. */
@@ -29511,6 +29549,8 @@ saveUtilityPlaybook?: [{	description?: string | undefined | null | Variable<any,
 	scanSteamBans?:ValueTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 sendScrimRequest?: [{	best_of?: number | undefined | null | Variable<any, string>,	from_team_id: ValueTypes["uuid"] | Variable<any, string>,	proposed_scheduled_at: ValueTypes["timestamptz"] | Variable<any, string>,	region?: string | undefined | null | Variable<any, string>,	to_team_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+sendUtilityLineupToServer?: [{	lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityLoadOutput"]],
+sendUtilityScratchToServer?: [{	lineup: ValueTypes["UtilityScratchLineupInput"] | Variable<any, string>},ValueTypes["UtilityLoadOutput"]],
 setGameNodeSchedulingState?: [{	enabled: boolean | Variable<any, string>,	game_server_node_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setGamePluginAutoUpdate?: [{	enabled: boolean | Variable<any, string>,	slug: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setHudMode?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -49372,6 +49412,7 @@ utilityMatchUtilityReport?: [{	match_id: ValueTypes["uuid"] | Variable<any, stri
 utilityPracticePlan?: [{	limit?: number | undefined | null | Variable<any, string>,	map_name: string | Variable<any, string>,	order?: string | undefined | null | Variable<any, string>,	side?: string | undefined | null | Variable<any, string>},ValueTypes["UtilityPracticePlanOutput"]],
 	/** Dedicated practice servers free to book right now */
 	utilityPracticeServers?:ValueTypes["UtilityPracticeServersOutput"],
+	utilityPracticeWhereAmI?:ValueTypes["UtilityPracticeWhereOutput"],
 utilitySolverCalibration?: [{	session_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityCalibrationOutput"]],
 utilityTeamUtilityReport?: [{	limit?: number | undefined | null | Variable<any, string>,	map_name?: string | undefined | null | Variable<any, string>,	team_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityTeamUtilityOutput"]],
 utility_collection_items?: [{	/** distinct select on columns */
@@ -69377,6 +69418,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_invites_select_column"]>
 };
 	/** columns and relationships of "utility_practice_sessions" */
 ["utility_practice_sessions"]: AliasType<{
+	access?:boolean | `@${string}`,
 	/** A computed field, executes function "can_manage_utility_practice_session" */
 	can_manage?:boolean | `@${string}`,
 	/** A computed field, executes function "can_view_utility_practice_session" */
@@ -69510,6 +69552,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	_and?: Array<ValueTypes["utility_practice_sessions_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["utility_practice_sessions_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["utility_practice_sessions_bool_exp"]> | undefined | null | Variable<any, string>,
+	access?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_manage?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_view?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	collection?: ValueTypes["utility_collections_bool_exp"] | undefined | null | Variable<any, string>,
@@ -69551,6 +69594,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
+	access?: string | undefined | null | Variable<any, string>,
 	collection?: ValueTypes["utility_collections_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -69580,6 +69624,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: AliasType<{
+	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -69604,6 +69649,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 }>;
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
+	access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69623,6 +69669,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: AliasType<{
+	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -69647,6 +69694,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 }>;
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
+	access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -69686,6 +69734,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** Ordering options when selecting data from "utility_practice_sessions". */
 ["utility_practice_sessions_order_by"]: {
+	access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_manage?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_view?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	collection?: ValueTypes["utility_collections_order_by"] | undefined | null | Variable<any, string>,
@@ -69730,6 +69779,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 ["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]:utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
+	access?: string | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -69786,6 +69836,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
+	access?: string | undefined | null | Variable<any, string>,
 	collection_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	empty_since?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -80303,8 +80354,21 @@ export type ResolverInputTypes = {
 	updated?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityLaunchSeedBackfillOutput"]: AliasType<{
+	done?:boolean | `@${string}`,
+	scanned?:boolean | `@${string}`,
+	seeded?:boolean | `@${string}`,
+	skipped?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityLineupOutput"]: AliasType<{
 	id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["UtilityLoadOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	reason?:boolean | `@${string}`,
+	sent?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["UtilityMissPatternOutput"]: AliasType<{
@@ -80396,6 +80460,12 @@ export type ResolverInputTypes = {
 	status?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityPracticeWhereOutput"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	on_server?:boolean | `@${string}`,
+	session_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["UtilityPurgeOutput"]: AliasType<{
 	dry_run?:boolean | `@${string}`,
 	lineups?:boolean | `@${string}`,
@@ -80419,6 +80489,24 @@ export type ResolverInputTypes = {
 	success?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["UtilityScratchLineupInput"]: {
+	client_id: string,
+	eye_z: number,
+	land_x?: number | undefined | null,
+	land_y?: number | undefined | null,
+	land_z?: number | undefined | null,
+	map_name: string,
+	name: string,
+	origin_x: number,
+	origin_y: number,
+	origin_z: number,
+	side: string,
+	technique: string,
+	throw_strength: string,
+	utility_type: string,
+	view_pitch: number,
+	view_yaw: number
+};
 	["UtilitySightlineOutput"]: AliasType<{
 	degraded?:boolean | `@${string}`,
 	message?:boolean | `@${string}`,
@@ -106058,6 +106146,7 @@ approve_league_season_movements?: [{	/** input parameters for function "approve_
 backfillSeasonElo?: [{	season_id: string},ResolverInputTypes["RecomputeEloStartedOutput"]],
 	/** Return the progress of the season ELO backfill run (admin only). */
 	backfillSeasonEloStatus?:ResolverInputTypes["SeasonBackfillStatusOutput"],
+backfillUtilityLaunchSeeds?: [{	limit?: number | undefined | null},ResolverInputTypes["UtilityLaunchSeedBackfillOutput"]],
 bakeShaders?: [{	game_server_node_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 callForOrganizer?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	/** Request cancellation of the in-progress season ELO backfill (admin only). Stops after the current match. */
@@ -107937,6 +108026,8 @@ saveUtilityPlaybook?: [{	description?: string | undefined | null,	map_name: stri
 	scanSteamBans?:ResolverInputTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 sendScrimRequest?: [{	best_of?: number | undefined | null,	from_team_id: ResolverInputTypes["uuid"],	proposed_scheduled_at: ResolverInputTypes["timestamptz"],	region?: string | undefined | null,	to_team_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+sendUtilityLineupToServer?: [{	lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityLoadOutput"]],
+sendUtilityScratchToServer?: [{	lineup: ResolverInputTypes["UtilityScratchLineupInput"]},ResolverInputTypes["UtilityLoadOutput"]],
 setGameNodeSchedulingState?: [{	enabled: boolean,	game_server_node_id: string},ResolverInputTypes["SuccessOutput"]],
 setGamePluginAutoUpdate?: [{	enabled: boolean,	slug: string},ResolverInputTypes["SuccessOutput"]],
 setHudMode?: [{	match_id: ResolverInputTypes["uuid"],	mode: string},ResolverInputTypes["SuccessOutput"]],
@@ -127798,6 +127889,7 @@ utilityMatchUtilityReport?: [{	match_id: ResolverInputTypes["uuid"],	steam_id?: 
 utilityPracticePlan?: [{	limit?: number | undefined | null,	map_name: string,	order?: string | undefined | null,	side?: string | undefined | null},ResolverInputTypes["UtilityPracticePlanOutput"]],
 	/** Dedicated practice servers free to book right now */
 	utilityPracticeServers?:ResolverInputTypes["UtilityPracticeServersOutput"],
+	utilityPracticeWhereAmI?:ResolverInputTypes["UtilityPracticeWhereOutput"],
 utilitySolverCalibration?: [{	session_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityCalibrationOutput"]],
 utilityTeamUtilityReport?: [{	limit?: number | undefined | null,	map_name?: string | undefined | null,	team_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityTeamUtilityOutput"]],
 utility_collection_items?: [{	/** distinct select on columns */
@@ -147803,6 +147895,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_invites_select_c
 };
 	/** columns and relationships of "utility_practice_sessions" */
 ["utility_practice_sessions"]: AliasType<{
+	access?:boolean | `@${string}`,
 	/** A computed field, executes function "can_manage_utility_practice_session" */
 	can_manage?:boolean | `@${string}`,
 	/** A computed field, executes function "can_view_utility_practice_session" */
@@ -147936,6 +148029,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	_and?: Array<ResolverInputTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["utility_practice_sessions_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
+	access?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	can_manage?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_view?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	collection?: ResolverInputTypes["utility_collections_bool_exp"] | undefined | null,
@@ -147977,6 +148071,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
+	access?: string | undefined | null,
 	collection?: ResolverInputTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
 	collection_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -148006,6 +148101,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: AliasType<{
+	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -148030,6 +148126,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 }>;
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
+	access?: ResolverInputTypes["order_by"] | undefined | null,
 	collection_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	empty_since?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148049,6 +148146,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: AliasType<{
+	access?:boolean | `@${string}`,
 	collection_id?:boolean | `@${string}`,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -148073,6 +148171,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 }>;
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
+	access?: ResolverInputTypes["order_by"] | undefined | null,
 	collection_id?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	empty_since?: ResolverInputTypes["order_by"] | undefined | null,
@@ -148112,6 +148211,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** Ordering options when selecting data from "utility_practice_sessions". */
 ["utility_practice_sessions_order_by"]: {
+	access?: ResolverInputTypes["order_by"] | undefined | null,
 	can_manage?: ResolverInputTypes["order_by"] | undefined | null,
 	can_view?: ResolverInputTypes["order_by"] | undefined | null,
 	collection?: ResolverInputTypes["utility_collections_order_by"] | undefined | null,
@@ -148156,6 +148256,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 ["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]:utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
+	access?: string | undefined | null,
 	collection_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	empty_since?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -148212,6 +148313,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
+	access?: string | undefined | null,
 	collection_id?: ResolverInputTypes["uuid"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	empty_since?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -158628,8 +158730,19 @@ export type ModelTypes = {
 	total: number,
 	updated: number
 };
+	["UtilityLaunchSeedBackfillOutput"]: {
+		done: boolean,
+	scanned: number,
+	seeded: number,
+	skipped: number
+};
 	["UtilityLineupOutput"]: {
 		id: ModelTypes["uuid"]
+};
+	["UtilityLoadOutput"]: {
+		map_name?: string | undefined | null,
+	reason: string,
+	sent: boolean
 };
 	["UtilityMissPatternOutput"]: {
 		analysed: boolean,
@@ -158709,6 +158822,11 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined | null,
 	status?: string | undefined | null
 };
+	["UtilityPracticeWhereOutput"]: {
+		map_name?: string | undefined | null,
+	on_server: boolean,
+	session_id?: ModelTypes["uuid"] | undefined | null
+};
 	["UtilityPurgeOutput"]: {
 		dry_run: boolean,
 	lineups: number,
@@ -158727,6 +158845,24 @@ export type ModelTypes = {
 	render_id?: ModelTypes["uuid"] | undefined | null,
 	status: string,
 	success: boolean
+};
+	["UtilityScratchLineupInput"]: {
+	client_id: string,
+	eye_z: number,
+	land_x?: number | undefined | null,
+	land_y?: number | undefined | null,
+	land_z?: number | undefined | null,
+	map_name: string,
+	name: string,
+	origin_x: number,
+	origin_y: number,
+	origin_z: number,
+	side: string,
+	technique: string,
+	throw_strength: string,
+	utility_type: string,
+	view_pitch: number,
+	view_yaw: number
 };
 	["UtilitySightlineOutput"]: {
 		degraded?: boolean | undefined | null,
@@ -182146,6 +182282,8 @@ export type ModelTypes = {
 	backfillSeasonElo?: ModelTypes["RecomputeEloStartedOutput"] | undefined | null,
 	/** Return the progress of the season ELO backfill run (admin only). */
 	backfillSeasonEloStatus?: ModelTypes["SeasonBackfillStatusOutput"] | undefined | null,
+	/** Recover launch seeds from recorded trajectories, one batch per call */
+	backfillUtilityLaunchSeeds?: ModelTypes["UtilityLaunchSeedBackfillOutput"] | undefined | null,
 	/** Launch a Vulkan shader pre-bake Job on a GPU node */
 	bakeShaders?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** callForOrganizer */
@@ -183870,6 +184008,8 @@ export type ModelTypes = {
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** sendScrimRequest */
 	sendScrimRequest?: ModelTypes["SuccessOutput"] | undefined | null,
+	sendUtilityLineupToServer?: ModelTypes["UtilityLoadOutput"] | undefined | null,
+	sendUtilityScratchToServer?: ModelTypes["UtilityLoadOutput"] | undefined | null,
 	setGameNodeSchedulingState?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Track new releases of a game plugin, or pin it where it is */
 	setGamePluginAutoUpdate?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -200980,6 +201120,7 @@ export type ModelTypes = {
 	utilityPracticePlan?: ModelTypes["UtilityPracticePlanOutput"] | undefined | null,
 	/** Dedicated practice servers free to book right now */
 	utilityPracticeServers?: ModelTypes["UtilityPracticeServersOutput"] | undefined | null,
+	utilityPracticeWhereAmI?: ModelTypes["UtilityPracticeWhereOutput"] | undefined | null,
 	/** Read the practice server solver's calibration gate */
 	utilitySolverCalibration?: ModelTypes["UtilityCalibrationOutput"] | undefined | null,
 	/** Aggregate a team's mined utility throws against its saved lineups */
@@ -217404,7 +217545,8 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "utility_practice_sessions" */
 ["utility_practice_sessions"]: {
-		/** A computed field, executes function "can_manage_utility_practice_session" */
+		access: string,
+	/** A computed field, executes function "can_manage_utility_practice_session" */
 	can_manage?: boolean | undefined | null,
 	/** A computed field, executes function "can_view_utility_practice_session" */
 	can_view?: boolean | undefined | null,
@@ -217525,6 +217667,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["utility_practice_sessions_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
+	access?: ModelTypes["String_comparison_exp"] | undefined | null,
 	can_manage?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	can_view?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	collection?: ModelTypes["utility_collections_bool_exp"] | undefined | null,
@@ -217565,6 +217708,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
+	access?: string | undefined | null,
 	collection?: ModelTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
 	collection_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -217594,7 +217738,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: {
-		collection_id?: ModelTypes["uuid"] | undefined | null,
+		access?: string | undefined | null,
+	collection_id?: ModelTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_string" */
@@ -217617,6 +217762,7 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
+	access?: ModelTypes["order_by"] | undefined | null,
 	collection_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	empty_since?: ModelTypes["order_by"] | undefined | null,
@@ -217636,7 +217782,8 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: {
-		collection_id?: ModelTypes["uuid"] | undefined | null,
+		access?: string | undefined | null,
+	collection_id?: ModelTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_string" */
@@ -217659,6 +217806,7 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
+	access?: ModelTypes["order_by"] | undefined | null,
 	collection_id?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	empty_since?: ModelTypes["order_by"] | undefined | null,
@@ -217697,6 +217845,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "utility_practice_sessions". */
 ["utility_practice_sessions_order_by"]: {
+	access?: ModelTypes["order_by"] | undefined | null,
 	can_manage?: ModelTypes["order_by"] | undefined | null,
 	can_view?: ModelTypes["order_by"] | undefined | null,
 	collection?: ModelTypes["utility_collections_order_by"] | undefined | null,
@@ -217738,6 +217887,7 @@ export type ModelTypes = {
 	["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]:utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
+	access?: string | undefined | null,
 	collection_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	empty_since?: ModelTypes["timestamptz"] | undefined | null,
@@ -217791,6 +217941,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
+	access?: string | undefined | null,
 	collection_id?: ModelTypes["uuid"] | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	empty_since?: ModelTypes["timestamptz"] | undefined | null,
@@ -227786,9 +227937,22 @@ export type GraphQLTypes = {
 	total: number,
 	updated: number
 };
+	["UtilityLaunchSeedBackfillOutput"]: {
+	__typename: "UtilityLaunchSeedBackfillOutput",
+	done: boolean,
+	scanned: number,
+	seeded: number,
+	skipped: number
+};
 	["UtilityLineupOutput"]: {
 	__typename: "UtilityLineupOutput",
 	id: GraphQLTypes["uuid"]
+};
+	["UtilityLoadOutput"]: {
+	__typename: "UtilityLoadOutput",
+	map_name?: string | undefined | null,
+	reason: string,
+	sent: boolean
 };
 	["UtilityMissPatternOutput"]: {
 	__typename: "UtilityMissPatternOutput",
@@ -227879,6 +228043,12 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
 	status?: string | undefined | null
 };
+	["UtilityPracticeWhereOutput"]: {
+	__typename: "UtilityPracticeWhereOutput",
+	map_name?: string | undefined | null,
+	on_server: boolean,
+	session_id?: GraphQLTypes["uuid"] | undefined | null
+};
 	["UtilityPurgeOutput"]: {
 	__typename: "UtilityPurgeOutput",
 	dry_run: boolean,
@@ -227901,6 +228071,24 @@ export type GraphQLTypes = {
 	render_id?: GraphQLTypes["uuid"] | undefined | null,
 	status: string,
 	success: boolean
+};
+	["UtilityScratchLineupInput"]: {
+		client_id: string,
+	eye_z: number,
+	land_x?: number | undefined | null,
+	land_y?: number | undefined | null,
+	land_z?: number | undefined | null,
+	map_name: string,
+	name: string,
+	origin_x: number,
+	origin_y: number,
+	origin_z: number,
+	side: string,
+	technique: string,
+	throw_strength: string,
+	utility_type: string,
+	view_pitch: number,
+	view_yaw: number
 };
 	["UtilitySightlineOutput"]: {
 	__typename: "UtilitySightlineOutput",
@@ -252750,6 +252938,8 @@ export type GraphQLTypes = {
 	backfillSeasonElo?: GraphQLTypes["RecomputeEloStartedOutput"] | undefined | null,
 	/** Return the progress of the season ELO backfill run (admin only). */
 	backfillSeasonEloStatus?: GraphQLTypes["SeasonBackfillStatusOutput"] | undefined | null,
+	/** Recover launch seeds from recorded trajectories, one batch per call */
+	backfillUtilityLaunchSeeds?: GraphQLTypes["UtilityLaunchSeedBackfillOutput"] | undefined | null,
 	/** Launch a Vulkan shader pre-bake Job on a GPU node */
 	bakeShaders?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** callForOrganizer */
@@ -254474,6 +254664,8 @@ export type GraphQLTypes = {
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** sendScrimRequest */
 	sendScrimRequest?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	sendUtilityLineupToServer?: GraphQLTypes["UtilityLoadOutput"] | undefined | null,
+	sendUtilityScratchToServer?: GraphQLTypes["UtilityLoadOutput"] | undefined | null,
 	setGameNodeSchedulingState?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Track new releases of a game plugin, or pin it where it is */
 	setGamePluginAutoUpdate?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -272163,6 +272355,7 @@ export type GraphQLTypes = {
 	utilityPracticePlan?: GraphQLTypes["UtilityPracticePlanOutput"] | undefined | null,
 	/** Dedicated practice servers free to book right now */
 	utilityPracticeServers?: GraphQLTypes["UtilityPracticeServersOutput"] | undefined | null,
+	utilityPracticeWhereAmI?: GraphQLTypes["UtilityPracticeWhereOutput"] | undefined | null,
 	/** Read the practice server solver's calibration gate */
 	utilitySolverCalibration?: GraphQLTypes["UtilityCalibrationOutput"] | undefined | null,
 	/** Aggregate a team's mined utility throws against its saved lineups */
@@ -289357,6 +289550,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "utility_practice_sessions" */
 ["utility_practice_sessions"]: {
 	__typename: "utility_practice_sessions",
+	access: string,
 	/** A computed field, executes function "can_manage_utility_practice_session" */
 	can_manage?: boolean | undefined | null,
 	/** A computed field, executes function "can_view_utility_practice_session" */
@@ -289481,6 +289675,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["utility_practice_sessions_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["utility_practice_sessions_bool_exp"]> | undefined | null,
+	access?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	can_manage?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	can_view?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	collection?: GraphQLTypes["utility_collections_bool_exp"] | undefined | null,
@@ -289522,7 +289717,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "utility_practice_sessions" */
 ["utility_practice_sessions_insert_input"]: {
-		collection?: GraphQLTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
+		access?: string | undefined | null,
+	collection?: GraphQLTypes["utility_collections_obj_rel_insert_input"] | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	e_utility_practice_status?: GraphQLTypes["e_utility_practice_statuses_obj_rel_insert_input"] | undefined | null,
@@ -289552,6 +289748,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["utility_practice_sessions_max_fields"]: {
 	__typename: "utility_practice_sessions_max_fields",
+	access?: string | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
@@ -289575,7 +289772,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_max_order_by"]: {
-		collection_id?: GraphQLTypes["order_by"] | undefined | null,
+		access?: GraphQLTypes["order_by"] | undefined | null,
+	collection_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	empty_since?: GraphQLTypes["order_by"] | undefined | null,
 	expires_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -289595,6 +289793,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["utility_practice_sessions_min_fields"]: {
 	__typename: "utility_practice_sessions_min_fields",
+	access?: string | undefined | null,
 	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	/** A computed field, executes function "utility_practice_connection_link" */
 	connection_link?: string | undefined | null,
@@ -289618,7 +289817,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "utility_practice_sessions" */
 ["utility_practice_sessions_min_order_by"]: {
-		collection_id?: GraphQLTypes["order_by"] | undefined | null,
+		access?: GraphQLTypes["order_by"] | undefined | null,
+	collection_id?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	empty_since?: GraphQLTypes["order_by"] | undefined | null,
 	expires_at?: GraphQLTypes["order_by"] | undefined | null,
@@ -289657,7 +289857,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "utility_practice_sessions". */
 ["utility_practice_sessions_order_by"]: {
-		can_manage?: GraphQLTypes["order_by"] | undefined | null,
+		access?: GraphQLTypes["order_by"] | undefined | null,
+	can_manage?: GraphQLTypes["order_by"] | undefined | null,
 	can_view?: GraphQLTypes["order_by"] | undefined | null,
 	collection?: GraphQLTypes["utility_collections_order_by"] | undefined | null,
 	collection_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -289701,7 +289902,8 @@ export type GraphQLTypes = {
 ["utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns"]: utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "utility_practice_sessions" */
 ["utility_practice_sessions_set_input"]: {
-		collection_id?: GraphQLTypes["uuid"] | undefined | null,
+		access?: string | undefined | null,
+	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	empty_since?: GraphQLTypes["timestamptz"] | undefined | null,
 	expires_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -289757,7 +289959,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["utility_practice_sessions_stream_cursor_value_input"]: {
-		collection_id?: GraphQLTypes["uuid"] | undefined | null,
+		access?: string | undefined | null,
+	collection_id?: GraphQLTypes["uuid"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	empty_since?: GraphQLTypes["timestamptz"] | undefined | null,
 	expires_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -305676,6 +305879,7 @@ export enum utility_practice_sessions_constraint {
 }
 /** select columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_select_column {
+	access = "access",
 	collection_id = "collection_id",
 	created_at = "created_at",
 	empty_since = "empty_since",
@@ -305708,6 +305912,7 @@ export enum utility_practice_sessions_select_column_utility_practice_sessions_ag
 }
 /** update columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_update_column {
+	access = "access",
 	collection_id = "collection_id",
 	created_at = "created_at",
 	empty_since = "empty_since",
@@ -306481,6 +306686,7 @@ type ZEUS_VARIABLES = {
 	["String_array_comparison_exp"]: ValueTypes["String_array_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
 	["UtilityPlaybookStepInput"]: ValueTypes["UtilityPlaybookStepInput"];
+	["UtilityScratchLineupInput"]: ValueTypes["UtilityScratchLineupInput"];
 	["UtilitySightlinePairInput"]: ValueTypes["UtilitySightlinePairInput"];
 	["_map_pool_bool_exp"]: ValueTypes["_map_pool_bool_exp"];
 	["_map_pool_constraint"]: ValueTypes["_map_pool_constraint"];

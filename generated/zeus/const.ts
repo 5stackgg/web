@@ -41,6 +41,9 @@ export const AllTypesProps: Record<string,any> = {
 	UtilityPlaybookStepInput:{
 		utility_lineup_id:"uuid"
 	},
+	UtilityScratchLineupInput:{
+
+	},
 	UtilitySightlinePairInput:{
 
 	},
@@ -13221,6 +13224,9 @@ export const AllTypesProps: Record<string,any> = {
 		backfillSeasonElo:{
 
 		},
+		backfillUtilityLaunchSeeds:{
+
+		},
 		bakeShaders:{
 			game_server_node_id:"uuid"
 		},
@@ -16240,6 +16246,12 @@ export const AllTypesProps: Record<string,any> = {
 			from_team_id:"uuid",
 			proposed_scheduled_at:"timestamptz",
 			to_team_id:"uuid"
+		},
+		sendUtilityLineupToServer:{
+			lineup_id:"uuid"
+		},
+		sendUtilityScratchToServer:{
+			lineup:"UtilityScratchLineupInput"
 		},
 		setGameNodeSchedulingState:{
 
@@ -40693,6 +40705,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"utility_practice_sessions_bool_exp",
 		_not:"utility_practice_sessions_bool_exp",
 		_or:"utility_practice_sessions_bool_exp",
+		access:"String_comparison_exp",
 		can_manage:"Boolean_comparison_exp",
 		can_view:"Boolean_comparison_exp",
 		collection:"utility_collections_bool_exp",
@@ -40753,6 +40766,7 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	utility_practice_sessions_max_order_by:{
+		access:"order_by",
 		collection_id:"order_by",
 		created_at:"order_by",
 		empty_since:"order_by",
@@ -40771,6 +40785,7 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"order_by"
 	},
 	utility_practice_sessions_min_order_by:{
+		access:"order_by",
 		collection_id:"order_by",
 		created_at:"order_by",
 		empty_since:"order_by",
@@ -40798,6 +40813,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"utility_practice_sessions_bool_exp"
 	},
 	utility_practice_sessions_order_by:{
+		access:"order_by",
 		can_manage:"order_by",
 		can_view:"order_by",
 		collection:"utility_collections_order_by",
@@ -45496,8 +45512,19 @@ export const ReturnTypes: Record<string,any> = {
 		total:"Int",
 		updated:"Int"
 	},
+	UtilityLaunchSeedBackfillOutput:{
+		done:"Boolean",
+		scanned:"Int",
+		seeded:"Int",
+		skipped:"Int"
+	},
 	UtilityLineupOutput:{
 		id:"uuid"
+	},
+	UtilityLoadOutput:{
+		map_name:"String",
+		reason:"String",
+		sent:"Boolean"
 	},
 	UtilityMissPatternOutput:{
 		analysed:"Boolean",
@@ -45570,6 +45597,11 @@ export const ReturnTypes: Record<string,any> = {
 		invite_code:"String",
 		match_id:"uuid",
 		status:"String"
+	},
+	UtilityPracticeWhereOutput:{
+		map_name:"String",
+		on_server:"Boolean",
+		session_id:"uuid"
 	},
 	UtilityPurgeOutput:{
 		dry_run:"Boolean",
@@ -52352,6 +52384,7 @@ export const ReturnTypes: Record<string,any> = {
 		attachDemo:"WatchDemoOutput",
 		backfillSeasonElo:"RecomputeEloStartedOutput",
 		backfillSeasonEloStatus:"SeasonBackfillStatusOutput",
+		backfillUtilityLaunchSeeds:"UtilityLaunchSeedBackfillOutput",
 		bakeShaders:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
 		cancelBackfillSeasonElo:"SuccessOutput",
@@ -53225,6 +53258,8 @@ export const ReturnTypes: Record<string,any> = {
 		scanSteamBans:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		sendScrimRequest:"SuccessOutput",
+		sendUtilityLineupToServer:"UtilityLoadOutput",
+		sendUtilityScratchToServer:"UtilityLoadOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
 		setGamePluginAutoUpdate:"SuccessOutput",
 		setHudMode:"SuccessOutput",
@@ -60211,6 +60246,7 @@ export const ReturnTypes: Record<string,any> = {
 		utilityMatchUtilityReport:"UtilityUtilityReportOutput",
 		utilityPracticePlan:"UtilityPracticePlanOutput",
 		utilityPracticeServers:"UtilityPracticeServersOutput",
+		utilityPracticeWhereAmI:"UtilityPracticeWhereOutput",
 		utilitySolverCalibration:"UtilityCalibrationOutput",
 		utilityTeamUtilityReport:"UtilityTeamUtilityOutput",
 		utility_collection_items:"utility_collection_items",
@@ -65700,6 +65736,7 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	utility_practice_sessions:{
+		access:"String",
 		can_manage:"Boolean",
 		can_view:"Boolean",
 		collection:"utility_collections",
@@ -65754,6 +65791,7 @@ export const ReturnTypes: Record<string,any> = {
 		host_steam_id:"Float"
 	},
 	utility_practice_sessions_max_fields:{
+		access:"String",
 		collection_id:"uuid",
 		connection_link:"String",
 		connection_string:"String",
@@ -65774,6 +65812,7 @@ export const ReturnTypes: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	utility_practice_sessions_min_fields:{
+		access:"String",
 		collection_id:"uuid",
 		connection_link:"String",
 		connection_string:"String",

@@ -14,11 +14,14 @@ const props = withDefaults(
     // line under it, instead of a bordered tile with its own heading. A card
     // in a 400px column cannot afford a second framed box inside it.
     variant?: "panel" | "track";
+    // Off where the card already prints the hit rate in its stat block.
+    showRate?: boolean;
   }>(),
   {
     progress: null,
     compact: false,
     variant: "panel",
+    showRate: true,
   },
 );
 
@@ -72,7 +75,7 @@ const pips = computed(() =>
           }}
         </span>
         {{ $t("pages.utility.progress.record", { successes, attempts }) }}
-        <template v-if="hitRate !== null">
+        <template v-if="showRate && hitRate !== null">
           · {{ $t("pages.utility.progress.hit_rate", { percent: hitRate }) }}
         </template>
       </span>

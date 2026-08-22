@@ -185,7 +185,7 @@ type DrawnMarker = {
   key: string;
   color: string;
   label: string | null;
-  cross: boolean;
+  shape: "dot" | "cross" | "badge";
   point: { x: number; y: number };
 };
 
@@ -200,7 +200,7 @@ const drawnMarkers = computed<DrawnMarker[]>(() => {
       key: marker.key,
       color: marker.color ?? "#ffffff",
       label: marker.label ?? null,
-      cross: marker.shape === "cross",
+      shape: marker.shape ?? "dot",
       point,
     });
   }
@@ -391,6 +391,10 @@ const orderedMarkers = computed(() => {
     @pointerup="onPointerUp"
     @pointercancel="onPointerUp"
   >
+    <!-- Full bleed. Insetting this to clear the floating chrome cost far more
+         than it bought: the map is square, so shortening it vertically shrinks
+         it in BOTH axes and leaves wide empty margins. The name and the legend
+         carry their own text shadows for exactly this reason. -->
     <div
       class="absolute inset-0"
       :style="{
@@ -487,6 +491,12 @@ const orderedMarkers = computed(() => {
         </g>
       </g>
 
+      <!-- Throws arrive and leave rather than blink. Hovering an execute in
+           the rail swaps the whole set at once, and a hard cut there reads as a
+           glitch on the map instead of an answer to the cursor. Opacity only:
+           SVG geometry tweens would run on the main thread while the panel
+           beside it is mounting. -->
+      <TransitionGroup name="mk" tag="g">
       <g
         v-for="marker of orderedMarkers"
         :key="marker.id"
@@ -542,6 +552,7 @@ const orderedMarkers = computed(() => {
           stroke-width="2"
         />
       </g>
+      </TransitionGroup>
 
       <g :class="picking ? 'pointer-events-none' : ''">
         <g v-for="segment of drawnSegments" :key="`segment-${segment.key}`">
@@ -602,12 +613,14 @@ const orderedMarkers = computed(() => {
           </text>
         </g>
 
+        <TransitionGroup name="badge" tag="g">
         <g
           v-for="marker of drawnMarkers"
           :key="`point-${marker.key}`"
           class="pointer-events-none"
+          :style="{ transformOrigin: `${marker.point.x}px ${marker.point.y}px` }"
         >
-          <template v-if="marker.cross">
+          <template v-if="marker.shape === 'cross'">
             <line
               :x1="marker.point.x - 12"
               :y1="marker.point.y"
@@ -627,6 +640,32 @@ const orderedMarkers = computed(() => {
               stroke-linecap="round"
             />
           </template>
+          <!-- A numbered token, dark so the map reads through the ring and
+               the digit never fights the marker it is counting. -->
+          <template v-else-if="marker.shape === 'badge'">
+            <circle
+              :cx="marker.point.x"
+              :cy="marker.point.y"
+              r="14"
+              fill="#05070b"
+              fill-opacity="0.88"
+              :stroke="marker.color"
+              stroke-width="3"
+            />
+            <text
+              v-if="marker.label"
+              :x="marker.point.x"
+              :y="marker.point.y"
+              text-anchor="middle"
+              dominant-baseline="central"
+              :fill="marker.color"
+              font-size="17"
+              font-weight="bold"
+              font-family="monospace"
+            >
+              {{ marker.label }}
+            </text>
+          </template>
           <circle
             v-else
             :cx="marker.point.x"
@@ -637,7 +676,7 @@ const orderedMarkers = computed(() => {
             stroke-width="2"
           />
           <text
-            v-if="marker.label"
+            v-if="marker.label && marker.shape !== 'badge'"
             :x="marker.point.x + 16"
             :y="marker.point.y - 12"
             :fill="marker.color"
@@ -647,6 +686,7 @@ const orderedMarkers = computed(() => {
             {{ marker.label }}
           </text>
         </g>
+        </TransitionGroup>
       </g>
     </svg>
     </div>
@@ -687,3 +727,43 @@ const orderedMarkers = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Opacity for the throws, opacity plus a small pop for the numbered beats --
+   the badge is answering a hover, so it is allowed to look like it landed. */
+.mk-enter-active {
+  transition: opacity 200ms ease-out;
+}
+.mk-leave-active {
+  transition: opacity 120ms ease-in;
+}
+.mk-enter-from,
+.mk-leave-to {
+  opacity: 0;
+}
+
+.badge-enter-active {
+  transition:
+    opacity 200ms ease-out,
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.badge-leave-active {
+  transition:
+    opacity 120ms ease-in,
+    transform 120ms ease-in;
+}
+.badge-enter-from,
+.badge-leave-to {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-enter-active,
+  .mk-leave-active,
+  .badge-enter-active,
+  .badge-leave-active {
+    transition-duration: 1ms;
+  }
+}
+</style>

@@ -31,6 +31,8 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { utilityLineupQuery } from "~/graphql/utilityGraphql";
 import cleanMapName from "~/utilities/cleanMapName";
 import { aimPrecisionFor, aimTolerance } from "~/utilities/utilityDisplay";
+import { useUtilityLoad } from "~/composables/useUtilityLoad";
+import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import type { UtilityLineup } from "~/types/utility";
 
 const props = defineProps<{
@@ -141,6 +143,22 @@ function onKey(event: KeyboardEvent) {
 
 onMounted(() => window.addEventListener("keydown", onKey));
 onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
+
+// Already standing on a practice server? Then "practice this" is not a booking
+// flow, it is one RCON away: stand them on it where they are.
+const load = useUtilityLoad();
+
+watch(
+  () => open.value,
+  (isOpen) => {
+    if (isOpen) {
+      void load.check();
+    }
+  },
+  { immediate: true },
+);
+
+const canLoadHere = computed(() => load.canLoad(lineup.value?.map_name));
 
 const sightlineOpen = ref(false);
 watch(
@@ -375,7 +393,14 @@ const stats = computed(() => {
 
           <div class="mt-auto flex flex-col gap-2 pt-1">
             <div class="flex items-center gap-2">
+              <UtilityPracticeButton
+                v-if="canLoadHere"
+                :lineup="lineup"
+                size="default"
+                class="flex-1"
+              />
               <Button
+                v-else
                 class="tac-amber-cta flex-1"
                 @click="emit('practice', lineup.id)"
               >

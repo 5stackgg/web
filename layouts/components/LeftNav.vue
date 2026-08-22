@@ -30,7 +30,6 @@ import {
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
-import UtilityDriftIcon from "~/components/icons/UtilityDriftIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
@@ -1014,25 +1013,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Database />
                   {{ $t("layouts.app_nav.system.database") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.utility_drift')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.utility_drift')"
-              >
-                <NuxtLink
-                  :to="{ name: 'utility-drift' }"
-                  :class="{
-                    'router-link-active': isRouteActive('utility-drift'),
-                  }"
-                >
-                  <UtilityDriftIcon class="size-4" />
-                  {{ $t("layouts.app_nav.system.utility_drift") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

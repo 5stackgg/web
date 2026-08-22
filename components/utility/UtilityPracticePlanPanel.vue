@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { Info, Trophy, Users } from "lucide-vue-next";
+import { Info, Users } from "lucide-vue-next";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import UtilityDifficultyChip from "~/components/utility/UtilityDifficultyChip.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -20,9 +19,10 @@ import {
   utilityPlanReasonKey,
   utilityPlanReasonTone,
 } from "~/utilities/utilityDisplay";
-import { UTILITY_PLAN_ORDERS, readUtilityPracticePlan } from "~/types/utility";
+import { readUtilityPracticePlan } from "~/types/utility";
 import type {
   UtilityLineup,
+  UtilityPlanOrder,
   UtilityPracticePlanEntryView,
   UtilityPracticePlanOutput,
   UtilityPracticePlanView,
@@ -42,8 +42,20 @@ const { t } = useI18n();
 const ANY_SIDE = "any";
 const PLAN_LIMIT = 12;
 
+const PUBLIC_SOURCE = "public";
+const PRIVATE_SOURCE = "private";
+
+/**
+ * The one order worth fetching. The server's other two sort the same set by
+ * difficulty, which is a question nobody opening "what to learn next" is
+ * asking -- and on a map with a dozen lineups all three returned the same
+ * handful anyway. Priority stays because it decides *which* lineups get
+ * ranked at all; how they are ordered on screen is popularity, below.
+ */
+const PLAN_ORDER: UtilityPlanOrder = "priority";
+
 const side = ref<string>(ANY_SIDE);
-const order = ref<string>("priority");
+const source = ref<string>(PUBLIC_SOURCE);
 const plan = ref<UtilityPracticePlanView | null>(null);
 const lineupsById = ref<Record<string, UtilityLineup>>({});
 const loading = ref(true);
@@ -54,24 +66,61 @@ const sideOptions = computed(() => [
   { key: "TERRORIST", label: t("pages.utility.sides.TERRORIST") },
 ]);
 
-// The plan's three orders, and the whole list of what may be sent — an order
-// the server does not know is an error, not a fallback to the default.
-const orderOptions = computed(() =>
-  UTILITY_PLAN_ORDERS.map((key) => ({
-    key,
-    label: t(`pages.utility.plan.orders.${key}`),
-    desc: t(`pages.utility.plan.order_notes.${key}`),
-  })),
+/**
+ * Which half of the library an entry came out of. A lineup the plan ranked but
+ * this viewer cannot resolve belongs to neither -- it is not something you can
+ * go and learn -- so it stays out of both counts and both lists.
+ */
+function entrySource(entry: UtilityPracticePlanEntryView) {
+  const lineup = lineupsById.value[entry.lineupId];
+  if (!lineup) {
+    return null;
+  }
+  return lineup.visibility === "Public" ? PUBLIC_SOURCE : PRIVATE_SOURCE;
+}
+
+const sourceCounts = computed(() => {
+  const counts: Record<string, number> = {
+    [PUBLIC_SOURCE]: 0,
+    [PRIVATE_SOURCE]: 0,
+  };
+  for (const entry of plan.value?.entries ?? []) {
+    const key = entrySource(entry);
+    if (key) {
+      counts[key] += 1;
+    }
+  }
+  return counts;
+});
+
+/**
+ * Ordered by how many players throw it on this map. The server's priority
+ * score decides which lineups are worth ranking; what puts one above another
+ * on screen is how many people actually run it, which is the only ordering a
+ * reader can check against the map in front of them.
+ */
+const visibleEntries = computed(() =>
+  (plan.value?.entries ?? [])
+    .filter((entry) => entrySource(entry) === source.value)
+    .sort((a, b) => b.metaThrowers - a.metaThrowers),
 );
 
-// The picker can only produce these three, but the guard is the contract: the
-// server rejects an order it does not know rather than falling back, so a
-// stale value out of any future persistence must never reach it.
-const planOrder = computed(() =>
-  (UTILITY_PLAN_ORDERS as readonly string[]).includes(order.value)
-    ? order.value
-    : "priority",
+const busiest = computed(() =>
+  Math.max(0, ...visibleEntries.value.map((entry) => entry.metaThrowers)),
 );
+
+const sourceOptions = computed(() => [
+  {
+    key: PUBLIC_SOURCE,
+    label: t("pages.utility.visibility.Public"),
+    count: sourceCounts.value[PUBLIC_SOURCE],
+  },
+  {
+    key: PRIVATE_SOURCE,
+    label: t("pages.utility.visibility.Private"),
+    count: sourceCounts.value[PRIVATE_SOURCE],
+  },
+]);
 
 let loadGen = 0;
 
@@ -86,7 +135,7 @@ async function load() {
         map_name: props.mapName,
         side: side.value === ANY_SIDE ? null : side.value,
         limit: PLAN_LIMIT,
-        order: planOrder.value,
+        order: PLAN_ORDER,
       },
       fetchPolicy: "no-cache",
     });
@@ -134,7 +183,7 @@ async function load() {
   }
 }
 
-watch(() => [props.mapName, side.value, order.value], () => void load(), {
+watch(() => [props.mapName, side.value], () => void load(), {
   immediate: true,
 });
 
@@ -150,25 +199,62 @@ function reasonNote(entry: UtilityPracticePlanEntryView) {
   const key = utilityPlanReasonKey(entry.reason);
   return key ? t(`pages.utility.plan.reason_notes.${key}`) : "";
 }
+
+
+// Padded, because the rail is a column of them and "1" beside "10" is a ragged
+// edge where the whole point is a queue you read straight down.
+function rankLabel(index: number) {
+  return String(index + 1).padStart(2, "0");
+}
+
+// The sample behind the rate, kept off the row. Two hundred throws and four
+// throws print the same percentage, and only one of them means anything.
+function everyoneHint(entry: UtilityPracticePlanEntryView) {
+  const parts = [t("pages.utility.plan.everyone")];
+  if (entry.globalPlayers) {
+    parts.push(
+      t("pages.utility.plan.global_players", { count: entry.globalPlayers }),
+    );
+  }
+  if (entry.globalAttempts) {
+    parts.push(
+      t("pages.utility.plan.global_attempts", { count: entry.globalAttempts }),
+    );
+  }
+  return parts.join(" \u00b7 ");
+}
+
+// Only when the chip has not already said it: "Never thrown" is both a reason
+// the plan ranked something and the state of your record, and on the entries
+// where it is both, printing it twice is the noise this row was trimmed of.
+function showNeverThrown(entry: UtilityPracticePlanEntryView) {
+  return (
+    !entry.attempts && utilityPlanReasonKey(entry.reason) !== "never_attempted"
+  );
+}
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <div class="flex flex-wrap items-center justify-between gap-2">
+  <div class="flex flex-col gap-3">
+    <!-- The side picker is three short words, so it rides beside the heading
+         rather than spending a row of a 400px column on its own. -->
+    <div class="flex items-center justify-between gap-2">
       <span
         class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
       >
         {{ $t("pages.utility.plan.title") }}
       </span>
-      <div class="flex flex-wrap items-center gap-2">
-        <AnimatedFilters v-model="order" :options="orderOptions" square />
-        <AnimatedFilters v-model="side" :options="sideOptions" square />
-      </div>
+      <AnimatedFilters v-model="side" :options="sideOptions" square />
     </div>
 
-    <p class="text-xs leading-relaxed text-muted-foreground">
-      {{ $t("pages.utility.plan.description") }}
-    </p>
+    <div class="flex flex-col gap-1.5">
+      <!-- Full width and equal halves: which library you are learning out of is
+           the panel's mode switch, not one filter among several. -->
+      <AnimatedFilters v-model="source" :options="sourceOptions" square block />
+      <p class="text-xs leading-relaxed text-muted-foreground">
+        {{ $t("pages.utility.plan.description") }}
+      </p>
+    </div>
 
     <template v-if="loading">
       <Skeleton v-for="i in 4" :key="i" class="h-28 w-full rounded-md" />
@@ -199,118 +285,91 @@ function reasonNote(entry: UtilityPracticePlanEntryView) {
       </EmptyDescription>
     </Empty>
 
-    <Empty v-else-if="!plan.entries.length">
+    <Empty v-else-if="!visibleEntries.length">
       <EmptyTitle>{{ $t("pages.utility.plan.empty") }}</EmptyTitle>
       <EmptyDescription>
         {{ $t("pages.utility.plan.empty_description") }}
       </EmptyDescription>
     </Empty>
 
-    <template v-else>
+    <!-- A numbered rail instead of a rank pill. The line is what makes this a
+         queue rather than a list, and it also binds the reason above each card
+         to the card -- loose chips between two bordered boxes belong to
+         neither, which is what made the old layout unreadable. -->
+    <div v-else class="flex flex-col">
       <div
-        v-for="(entry, index) of plan.entries"
+        v-for="(entry, index) of visibleEntries"
         :key="entry.lineupId"
-        class="flex flex-col gap-1.5"
+        class="flex gap-1.5"
       >
-        <div class="flex flex-wrap items-center gap-1.5">
+        <!-- Exactly wide enough for two digits: every pixel here comes off the
+             card, and the spec line inside it is already the thing that wraps
+             first in a 400px column. -->
+        <div class="flex w-4 shrink-0 flex-col items-center pt-[3px]">
           <span
-            class="rounded-sm border border-border px-1.5 py-0.5 font-mono text-[0.58rem] tabular-nums text-muted-foreground"
+            class="font-mono text-[0.68rem] font-bold leading-none tabular-nums text-muted-foreground/40"
           >
-            {{ $t("pages.utility.plan.rank", { rank: index + 1 }) }}
+            {{ rankLabel(index) }}
           </span>
           <span
-            class="rounded-sm border px-1.5 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.12em]"
-            :class="utilityPlanReasonTone(entry.reason)"
-            :title="reasonNote(entry)"
-          >
-            {{ reasonLabel(entry) }}
-          </span>
-          <!-- The plan answers "what next"; the grade answers "how long". Off
-               the entry rather than the lineup row, so it still shows on a row
-               whose lineup did not come back in the follow-up fetch. -->
-          <UtilityDifficultyChip :difficulty="entry.difficulty" compact />
-          <span
-            v-if="entry.metaThrowers"
-            class="inline-flex items-center gap-1 font-mono text-[0.58rem] tabular-nums text-muted-foreground"
-            :title="$t('pages.utility.meta.throwers_hint')"
-          >
-            <Users class="h-3 w-3" />
-            {{ $t("pages.utility.meta.throwers", { count: entry.metaThrowers }) }}
-          </span>
-          <span
-            v-if="entry.mastered"
-            class="inline-flex items-center gap-1 rounded-sm border border-success/40 bg-success/10 px-1.5 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.12em] text-success"
-          >
-            <Trophy class="h-3 w-3" />
-            {{ $t("pages.utility.progress.mastered") }}
-          </span>
-          <span
-            class="ml-auto font-mono text-[0.58rem] tabular-nums text-muted-foreground"
-          >
-            <template v-if="entry.attempts > 0">
+            v-if="index < visibleEntries.length - 1"
+            aria-hidden="true"
+            class="mt-1.5 w-px flex-1 bg-border/60"
+          />
+        </div>
+
+        <div class="flex min-w-0 flex-1 flex-col gap-1.5 pb-3">
+          <!-- Only what the plan knows and the card does not. The grade, your
+               record and the throw count are all on the card below; printing
+               them here as well is what turned one entry into three rows of
+               identical monospace. -->
+          <div class="flex items-center gap-2">
+            <span
+              class="rounded-sm border px-1.5 py-0.5 font-mono text-[0.58rem] uppercase leading-none tracking-[0.12em]"
+              :class="utilityPlanReasonTone(entry.reason)"
+              :title="reasonNote(entry)"
+            >
+              {{ reasonLabel(entry) }}
+            </span>
+            <!-- The other half of your own hit rate. Null landing rate means
+                 the grade is unmeasured, and no rate is printed rather than a
+                 zero -- so an entry you have never thrown says that instead. -->
+            <span
+              v-if="entry.globalLandingRate !== null"
+              class="ml-auto inline-flex shrink-0 items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.1em] tabular-nums text-muted-foreground"
+              :title="everyoneHint(entry)"
+            >
+              <Users class="h-3 w-3" />
               {{
-                $t("pages.utility.plan.your_record", {
-                  successes: entry.successes,
-                  attempts: entry.attempts,
+                $t("pages.utility.plan.global_landing_rate", {
+                  percent: entry.globalLandingRate,
                 })
               }}
-              <template v-if="entry.hitRate !== null">
-                · {{ $t("pages.utility.progress.hit_rate", { percent: entry.hitRate }) }}
-              </template>
-            </template>
-            <template v-else>
+            </span>
+            <span
+              v-else-if="showNeverThrown(entry)"
+              class="ml-auto shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground/60"
+            >
               {{ $t("pages.utility.plan.never_thrown") }}
-            </template>
-          </span>
-        </div>
+            </span>
+          </div>
 
-        <!-- How everyone else does on it. Without this the ranking is a number
-             nobody can argue with; with it, "you 1/9, everyone 62%" says what
-             the plan is actually claiming. Null landing rate means the grade is
-             unmeasured, and no rate is printed rather than a zero. -->
-        <div
-          v-if="entry.globalPlayers || entry.globalLandingRate !== null"
-          class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.58rem] tabular-nums text-muted-foreground"
-        >
-          <span class="uppercase tracking-[0.14em]">
-            {{ $t("pages.utility.plan.everyone") }}
-          </span>
-          <span v-if="entry.globalLandingRate !== null">
-            {{
-              $t("pages.utility.plan.global_landing_rate", {
-                percent: entry.globalLandingRate,
-              })
-            }}
-          </span>
-          <span v-if="entry.globalPlayers">
-            {{
-              $t("pages.utility.plan.global_players", {
-                count: entry.globalPlayers,
-              })
-            }}
-          </span>
-          <span v-if="entry.globalAttempts">
-            {{
-              $t("pages.utility.plan.global_attempts", {
-                count: entry.globalAttempts,
-              })
-            }}
-          </span>
+          <UtilityLineupCard
+            v-if="lineupsById[entry.lineupId]"
+            :lineup="lineupsById[entry.lineupId]"
+            :meta-throwers="entry.metaThrowers || null"
+            :meta-busiest="busiest"
+            @select="(id) => emit('select', id)"
+            @hover="(id) => emit('hover', id)"
+          />
+          <p
+            v-else
+            class="rounded-md border border-border bg-card/40 p-3 text-xs text-muted-foreground [backdrop-filter:blur(6px)]"
+          >
+            {{ $t("pages.utility.plan.unavailable") }}
+          </p>
         </div>
-
-        <UtilityLineupCard
-          v-if="lineupsById[entry.lineupId]"
-          :lineup="lineupsById[entry.lineupId]"
-          @select="(id) => emit('select', id)"
-          @hover="(id) => emit('hover', id)"
-        />
-        <p
-          v-else
-          class="rounded-md border border-border bg-card/40 p-3 text-xs text-muted-foreground [backdrop-filter:blur(6px)]"
-        >
-          {{ $t("pages.utility.plan.unavailable") }}
-        </p>
       </div>
-    </template>
+    </div>
   </div>
 </template>

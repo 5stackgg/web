@@ -1,26 +1,28 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Crosshair, Eye, PlugZap, Shield, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import { Input } from "~/components/ui/input";
 import { toast } from "~/components/ui/toast";
-import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { analyseUtilityPlaybookCoverageQuery } from "~/graphql/utilityGraphql";
-import { normalizeMapName } from "~/utilities/mapAssets";
 import {
   UTILITY_COVERAGE_COLORS,
   UTILITY_COVERAGE_TONES,
   UTILITY_EYE_HEIGHT_UNITS,
   UTILITY_SIGHTLINE_MAX_PAIRS,
   UTILITY_SIGHTLINE_UNCHECKED_COLOR,
+  UTILITY_TYPE_COLORS,
   readUtilityPlaybookCoverage,
+  utilityOrigin,
 } from "~/utilities/utilityDisplay";
 import type {
   UtilityBoardMarker,
   UtilityBoardSegment,
   UtilityCoverageView,
+  UtilityPanelBoard,
 } from "~/utilities/utilityDisplay";
 import { readUtilityAnalysisNotice } from "~/types/utility";
 import type {
@@ -36,7 +38,6 @@ import type {
 const props = withDefaults(
   defineProps<{
     playbookId: string;
-    mapName: string;
     steps?: UtilityPlaybookStep[];
     lineupsById?: Record<string, UtilityLineup>;
   }>(),
@@ -46,9 +47,13 @@ const props = withDefaults(
   },
 );
 
-const { t } = useI18n();
+const emit = defineEmits<{
+  // Null hands the page's board back: this panel borrows the map, it does not
+  // own one.
+  (e: "board", state: UtilityPanelBoard | null): void;
+}>();
 
-const mapName = computed(() => normalizeMapName(props.mapName));
+const { t } = useI18n();
 
 const open = ref(false);
 const pairs = ref<UtilitySightlinePair[]>([]);
@@ -111,18 +116,59 @@ const segments = computed<UtilityBoardSegment[]>(() =>
   })),
 );
 
-const markers = computed<UtilityBoardMarker[]>(() =>
-  pending.value
-    ? [
-        {
-          key: "pending",
-          point: pending.value,
-          color: UTILITY_SIGHTLINE_UNCHECKED_COLOR,
-          shape: "cross" as const,
-        },
-      ]
-    : [],
+const markers = computed<UtilityBoardMarker[]>(() => {
+  const out: UtilityBoardMarker[] = [];
+  // The verdict answers "closed by step 3", so the numbers stay on the board
+  // while the angle is being drawn -- otherwise the answer names something the
+  // map is no longer showing.
+  orderedSteps.value.forEach((step, index) => {
+    const lineup = props.lineupsById?.[step.utility_lineup_id];
+    if (lineup) {
+      out.push({
+        key: `step-${step.id}`,
+        point: utilityOrigin(lineup),
+        color: UTILITY_TYPE_COLORS[lineup.utility_type] ?? "#ffffff",
+        label: String(index + 1),
+        shape: "badge",
+      });
+    }
+  });
+  if (pending.value) {
+    out.push({
+      key: "pending",
+      point: pending.value,
+      color: UTILITY_SIGHTLINE_UNCHECKED_COLOR,
+      shape: "cross",
+    });
+  }
+  return out;
+});
+
+// While the check is open the page's board becomes the picking surface. A
+// third radar inside a 400px rail is not a second opinion, it is a smaller map.
+watch(
+  [open, boardLineups, segments, markers, pickHeight, selectedPairId],
+  () => {
+    if (!open.value) {
+      emit("board", null);
+      return;
+    }
+    emit("board", {
+      lineups: boardLineups.value,
+      showAllLines: true,
+      picking: true,
+      pickZ: pickHeight.value,
+      segments: segments.value,
+      markers: markers.value,
+      selectedSegmentKey: selectedPairId.value,
+      onPick,
+      onSelectSegment: (key: string) => (selectedPairId.value = key),
+    });
+  },
+  { immediate: true },
 );
+
+onUnmounted(() => emit("board", null));
 
 function onPick(point: UtilitySightlinePoint) {
   if (!pending.value) {
@@ -311,44 +357,37 @@ function coordinate(point: UtilitySightlinePoint) {
       </Button>
     </div>
 
-    <div
-      v-if="open"
-      class="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]"
-    >
-      <div class="flex flex-col gap-2">
-        <UtilityRadarBoard
-          :map-name="mapName"
-          :lineups="boardLineups"
-          show-all-lines
-          picking
-          :pick-z="pickHeight"
-          :segments="segments"
-          :markers="markers"
-          :selected-segment-key="selectedPairId"
-          @pick="onPick"
-          @select-segment="(key) => (selectedPairId = key)"
-        />
+    <!-- The picking happens on the page's board, so this column is only the
+         answers -- and the one instruction that says where to click. It folds
+         rather than appears: the button that opens it stays put, so the panel
+         has to grow out of it instead of shoving the rail down a screen. -->
+    <Fold :open="open">
+      <div class="mt-3 space-y-3">
+      <p
+        class="flex items-start gap-1.5 rounded-sm border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.07)] px-2 py-1.5 text-[0.7rem] leading-snug text-[hsl(var(--tac-amber))]"
+      >
+        <Crosshair class="mt-px h-3.5 w-3.5 shrink-0" />
+        {{
+          pending
+            ? $t("pages.utility.coverage.pending_hint")
+            : $t("pages.utility.coverage.hint")
+        }}
+      </p>
 
-        <p class="flex items-start gap-1.5 text-xs text-muted-foreground">
-          <Crosshair class="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          {{
-            pending
-              ? $t("pages.utility.coverage.pending_hint")
-              : $t("pages.utility.coverage.hint")
-          }}
+      <div>
+        <label
+          class="flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          {{ $t("pages.utility.sightline.height_label") }}
+          <Input
+            v-model="heightInput"
+            type="number"
+            class="h-7 w-20 text-xs tabular-nums"
+          />
+        </label>
+        <p class="mt-1 text-[0.65rem] leading-snug text-muted-foreground">
+          {{ $t("pages.utility.sightline.height_hint") }}
         </p>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <label
-            class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ $t("pages.utility.sightline.height_label") }}
-            <Input v-model="heightInput" type="number" class="h-8 w-24 text-xs" />
-          </label>
-          <span class="text-xs text-muted-foreground">
-            {{ $t("pages.utility.sightline.height_hint") }}
-          </span>
-        </div>
       </div>
 
       <div class="flex flex-col gap-3">
@@ -513,7 +552,8 @@ function coordinate(point: UtilitySightlinePoint) {
             {{ $t("pages.utility.sightline.not_checked") }}
           </p>
         </div>
+        </div>
       </div>
-    </div>
+    </Fold>
   </div>
 </template>

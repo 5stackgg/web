@@ -219,6 +219,30 @@ export const UTILITY_PLAYBOOK_MAX_STEPS = 32;
 export const UTILITY_PLAYBOOK_MAX_OFFSET_MS = 600000;
 
 /**
+ * Where a new beat lands and how far the stepper moves it. A first throw
+ * stamped 0.0 read as "not filled in" rather than "on the call", and tenths
+ * were finer than anyone has ever called an execute.
+ */
+export const UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS = 1;
+
+export const UTILITY_PLAYBOOK_OFFSET_STEP_SECONDS = 0.5;
+
+/**
+ * What one player can physically carry out of buy: two flashes, one of
+ * everything else, four grenades in total. A step list handing the same player
+ * five smokes is not an execute, it is five rounds of one.
+ */
+export const UTILITY_CARRY_LIMITS: Record<UtilityType, number> = {
+  Smoke: 1,
+  Flash: 2,
+  Molotov: 1,
+  HighExplosive: 1,
+  Decoy: 1,
+};
+
+export const UTILITY_CARRY_TOTAL = 4;
+
+/**
  * A mined lineup's aim comes out of the flight path, which lands within about a
  * degree or two. Past this the reconstruction and the demo's own view angles
  * genuinely disagree and the lineup has to be walked in a practice server.
@@ -569,7 +593,12 @@ export type UtilityBoardMarker = {
   point: UtilityTrajectoryPoint;
   color?: string;
   label?: string;
-  shape?: "dot" | "cross";
+  /**
+   * `badge` puts the label *inside* a ringed disc rather than beside the point.
+   * An execute numbers its beats, and a "1" floating next to a square reads as
+   * a count of something; a numbered token reads as the order it is.
+   */
+  shape?: "dot" | "cross" | "badge";
 };
 
 /** A line the board draws on top of everything else. */
@@ -580,6 +609,27 @@ export type UtilityBoardSegment = {
   color?: string;
   label?: string;
   dashed?: boolean;
+};
+
+/**
+ * What a panel asks the page's board to draw. The board belongs to the page and
+ * outlives every tab, so a panel that needs a map publishes this instead of
+ * mounting a second one beside the first.
+ */
+export type UtilityPanelBoard = {
+  picking?: boolean;
+  pickZ?: number;
+  markers?: UtilityBoardMarker[];
+  segments?: UtilityBoardSegment[];
+  selectedSegmentKey?: string | null;
+  lineups?: UtilityLineup[];
+  selectedId?: string | null;
+  hoveredId?: string | null;
+  showAllLines?: boolean;
+  onPick?: (point: { x: number; y: number; z: number }) => void;
+  onSelect?: (id: string | null) => void;
+  onHover?: (id: string | null) => void;
+  onSelectSegment?: (key: string) => void;
 };
 
 export const UTILITY_SIGHTLINE_MAX_PAIRS = 6;

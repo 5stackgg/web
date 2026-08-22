@@ -2,16 +2,17 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
-  Library,
+  Globe,
   ListOrdered,
   LogOut,
   Rocket,
   Save,
   Share2,
+  ShieldCheck,
   Signal,
   Square,
+  UserCheck,
   UserPlus,
-  Wand2,
   X,
 } from "lucide-vue-next";
 import {
@@ -33,12 +34,11 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { Spinner } from "~/components/ui/spinner";
-import { Switch } from "~/components/ui/switch";
 import { Separator } from "~/components/ui/separator";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
-import UtilitySolvePanel from "~/components/utility/UtilitySolvePanel.vue";
 import UtilitySaveLineupDialog from "~/components/utility/UtilitySaveLineupDialog.vue";
 import { toast } from "~/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -47,7 +47,6 @@ import {
   joinUtilityPracticeMutation,
   leaveUtilityPracticeMutation,
   loadUtilityPlaybookIntoSessionMutation,
-  utilityCollectionsQuery,
   utilityPlaybooksQuery,
   myUtilityPracticeSessionQuery,
   utilityPracticeServersQuery,
@@ -60,7 +59,6 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { readUtilityPracticeSession } from "~/types/utility";
 import type {
-  UtilityCollection,
   UtilityPlaybook,
   UtilityPracticeSession,
   UtilityPracticeSessionOutput,
@@ -92,15 +90,49 @@ const { t } = useI18n();
 // Reka Select rejects an empty-string value, so the "unset" choices ride
 // sentinels — same shape as the league forms' value="none".
 const ANY_REGION = "any";
-const NO_COLLECTION = "none";
 const NO_PLAYBOOK = "none";
 const SERVER_PREFIX = "server:";
 
 const regions = computed(() => useApplicationSettingsStore().availableRegions);
 const region = ref<string>(ANY_REGION);
-const collectionId = ref<string>(NO_COLLECTION);
 const playbookChoice = ref<string>(NO_PLAYBOOK);
-const isOpen = ref(true);
+
+// Lobby access vocabulary, minus the two settings a practice session has no
+// storage for: the row carries one `is_open` boolean, and its false side always
+// lets the host's friends in, so Invite and Private have nothing to map onto.
+const ACCESS_OPEN = "Open";
+const ACCESS_FRIENDS = "Friends";
+
+const access = ref<string>(ACCESS_OPEN);
+
+const accessOptions = [
+  {
+    value: ACCESS_OPEN,
+    icon: Globe,
+    label: "pages.utility.practice.access_open",
+    desc: "pages.utility.practice.access_open_desc",
+  },
+  {
+    value: ACCESS_FRIENDS,
+    icon: UserCheck,
+    label: "pages.utility.practice.access_friends",
+    desc: "pages.utility.practice.access_friends_desc",
+  },
+];
+
+const accessFilterOptions = computed(() =>
+  accessOptions.map((option) => ({
+    key: option.value,
+    label: t(option.label),
+    icon: option.icon,
+  })),
+);
+
+const accessDescription = computed(
+  () =>
+    accessOptions.find((option) => option.value === access.value)?.desc ??
+    accessOptions[0].desc,
+);
 const practiceServers = ref<
   Array<{
     id: string;
@@ -111,14 +143,12 @@ const practiceServers = ref<
   }>
 >([]);
 const practiceServersError = ref<string | null>(null);
-const collections = ref<UtilityCollection[]>([]);
 const playbooks = ref<UtilityPlaybook[]>([]);
 const sessionId = ref<string | null>(null);
 const session = ref<UtilityPracticeSession | null>(null);
 const started = ref<UtilityPracticeSessionOutput | null>(null);
 const joining = ref(false);
 const pendingPlaybookId = ref<string | null>(null);
-const mode = ref<"session" | "solve">("session");
 
 let sessionSub: { unsubscribe: () => void } | null = null;
 
@@ -147,24 +177,6 @@ function subscribeSession(id: string) {
 
 // A practice book preloads the whole set into the server, which beats walking
 // lineups in one at a time.
-async function loadCollections() {
-  try {
-    const { data } = await getGraphqlClient().query({
-      query: utilityCollectionsQuery,
-      variables: {
-        where: { can_view: { _eq: true } },
-        order_by: [{ created_at: order_by.desc }],
-        limit: 50,
-      },
-      fetchPolicy: "cache-first",
-    });
-    collections.value = (data as any)?.utility_collections ?? [];
-  } catch (error) {
-    console.error("[utility] practice collection load error:", error);
-    collections.value = [];
-  }
-}
-
 // A session outlives the page that started it. Without this the host refreshes,
 // the dialog forgets, and a server they are still holding looks like one they
 // never booked -- with no way back to its connect string or its stop button.
@@ -236,15 +248,11 @@ async function loadPlaybooks() {
 
 watch(open, (isDialogOpen) => {
   if (!isDialogOpen) {
-    mode.value = "session";
     return;
   }
   playbookChoice.value = props.playbookId ?? NO_PLAYBOOK;
   void restoreLiveSession();
   void loadPracticeServers();
-  if (collections.value.length === 0) {
-    void loadCollections();
-  }
   if (playbooks.value.length === 0) {
     void loadPlaybooks();
   }
@@ -325,9 +333,10 @@ async function start() {
             ? null
             : region.value,
         server_id: selectedServerId.value,
-        collection_id:
-          collectionId.value === NO_COLLECTION ? null : collectionId.value,
-        is_open: isOpen.value,
+        // Collections have no browse surface anywhere in the app, so there is
+        // nothing to choose from and nothing to send.
+        collection_id: null,
+        is_open: access.value === ACCESS_OPEN,
       },
     });
     const output = (data as any)?.startUtilityPractice as
@@ -367,7 +376,6 @@ async function stop() {
     started.value = null;
     joinedKey.value = null;
     pendingPlaybookId.value = null;
-    mode.value = "session";
   } catch (error: any) {
     toast({
       title: t("pages.utility.practice.stop_failed"),
@@ -403,7 +411,6 @@ async function leave() {
     started.value = null;
     pendingPlaybookId.value = null;
     invitees.value = [];
-    mode.value = "session";
     // `joinedKey` is deliberately NOT cleared. The invite code is still in the
     // URL, and clearing it lets the join watcher put the leaver straight back
     // into the session they just left the next time this dialog opens.
@@ -473,6 +480,15 @@ const practice = computed(() =>
   readUtilityPracticeSession(session.value, started.value),
 );
 
+// Access is fixed at start -- the session row carries no update permission for
+// anyone -- so a running session states it instead of offering it.
+const liveAccess = computed(() => {
+  const value = practice.value.isOpen ? ACCESS_OPEN : ACCESS_FRIENDS;
+  return (
+    accessOptions.find((option) => option.value === value) ?? accessOptions[0]
+  );
+});
+
 // Host-only, live-only. can_manage is the server's answer to "may this viewer
 // drive the session", so it gates the controls rather than a steam id compare.
 const canDriveSession = computed(
@@ -483,13 +499,6 @@ const canDriveSession = computed(
 // lineup they opened this from, has a throw of their own to keep.
 const canSaveFromPractice = computed(
   () => !!sessionId.value && practice.value.isLive && !!props.lineupId,
-);
-
-const loadedPlaybook = computed(
-  () =>
-    playbooks.value.find(
-      (entry) => entry.id === practice.value.playbookId,
-    ) ?? null,
 );
 
 async function applyPlaybook(id: string | null) {
@@ -545,7 +554,7 @@ const connectServer = computed(() => ({
 
 <template>
   <Dialog v-model:open="open">
-    <DialogContent :class="mode === 'solve' ? 'sm:max-w-3xl' : 'sm:max-w-lg'">
+    <DialogContent class="sm:max-w-lg">
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <Rocket class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
@@ -556,14 +565,7 @@ const connectServer = computed(() => ({
         </DialogDescription>
       </DialogHeader>
 
-      <UtilitySolvePanel
-        v-if="mode === 'solve' && sessionId"
-        :session-id="sessionId"
-        :map-name="mapName"
-        @back="mode = 'session'"
-      />
-
-      <div v-else class="space-y-4">
+      <div class="space-y-4">
         <div v-if="!sessionId" class="space-y-2">
           <span
             class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
@@ -638,30 +640,6 @@ const connectServer = computed(() => ({
             {{ $t("pages.utility.practice.no_regions") }}
           </p>
 
-          <span
-            class="flex items-center gap-2 pt-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <Library class="h-3.5 w-3.5" />
-            {{ $t("pages.utility.practice.collection") }}
-          </span>
-          <Select v-model="collectionId">
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem :value="NO_COLLECTION">
-                {{ $t("pages.utility.practice.no_collection") }}
-              </SelectItem>
-              <SelectItem
-                v-for="entry of collections"
-                :key="entry.id"
-                :value="entry.id"
-              >
-                {{ entry.name }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-
           <template v-if="playbooks.length">
             <span
               class="flex items-center gap-2 pt-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
@@ -688,22 +666,22 @@ const connectServer = computed(() => ({
             </Select>
           </template>
 
-          <label
-            class="flex items-center justify-between gap-3 rounded-md border border-border bg-foreground/5 px-3 py-2"
+          <span
+            class="flex items-center gap-2 pt-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
-            <span class="min-w-0">
-              <span class="block text-sm font-medium">
-                {{ $t("pages.utility.practice.open_session") }}
-              </span>
-              <span class="block text-xs text-muted-foreground">
-                {{ $t("pages.utility.practice.open_session_hint") }}
-              </span>
-            </span>
-            <Switch
-              :model-value="isOpen"
-              @update:model-value="(value) => (isOpen = value)"
-            />
-          </label>
+            <ShieldCheck class="h-3.5 w-3.5" />
+            {{ $t("pages.utility.practice.access") }}
+          </span>
+          <AnimatedFilters
+            v-model="access"
+            :options="accessFilterOptions"
+            square
+            size="lg"
+            block
+          />
+          <p class="text-[0.72rem] leading-snug text-muted-foreground">
+            {{ $t(accessDescription) }}
+          </p>
         </div>
 
         <div
@@ -729,6 +707,27 @@ const connectServer = computed(() => ({
           class="space-y-3 rounded-md border border-border bg-foreground/5 p-4"
         >
           <QuickServerConnect :server="connectServer" highlight />
+
+          <Separator />
+          <div class="flex items-start gap-2">
+            <component
+              :is="liveAccess.icon"
+              class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+            />
+            <div class="min-w-0">
+              <div
+                class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.utility.practice.access_current") }}
+                <span class="text-[hsl(var(--tac-amber))]">
+                  {{ $t(liveAccess.label) }}
+                </span>
+              </div>
+              <p class="text-xs text-muted-foreground/80">
+                {{ $t(liveAccess.desc) }}
+              </p>
+            </div>
+          </div>
 
           <template v-if="inviteLink && practice.isOpen">
             <Separator />
@@ -802,76 +801,6 @@ const connectServer = computed(() => ({
         </div>
 
         <div
-          v-if="canDriveSession"
-          class="space-y-2 rounded-md border border-border bg-foreground/5 p-4"
-        >
-          <span
-            class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <ListOrdered class="h-3.5 w-3.5" />
-            {{ $t("pages.utility.playbooks.load_label") }}
-          </span>
-          <p v-if="loadedPlaybook" class="text-xs text-muted-foreground">
-            {{
-              $t("pages.utility.playbooks.loaded", { name: loadedPlaybook.name })
-            }}
-          </p>
-          <div class="flex items-center gap-2">
-            <div class="min-w-0 flex-1">
-              <Select v-model="playbookChoice">
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem :value="NO_PLAYBOOK">
-                    {{ $t("common.none") }}
-                  </SelectItem>
-                  <SelectItem
-                    v-for="entry of playbooks"
-                    :key="entry.id"
-                    :value="entry.id"
-                  >
-                    {{ entry.name }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Button
-              variant="outline"
-              @click="
-                applyPlaybook(
-                  playbookChoice === NO_PLAYBOOK ? null : playbookChoice,
-                )
-              "
-            >
-              {{
-                playbookChoice === NO_PLAYBOOK
-                  ? $t("pages.utility.playbooks.unload")
-                  : $t("pages.utility.playbooks.load")
-              }}
-            </Button>
-          </div>
-        </div>
-
-        <div
-          v-if="canDriveSession"
-          class="space-y-2 rounded-md border border-border bg-foreground/5 p-4"
-        >
-          <span
-            class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <Wand2 class="h-3.5 w-3.5" />
-            {{ $t("pages.utility.solve.title") }}
-          </span>
-          <p class="text-xs text-muted-foreground">
-            {{ $t("pages.utility.solve.entry_hint") }}
-          </p>
-          <Button variant="outline" @click="mode = 'solve'">
-            {{ $t("pages.utility.solve.open") }}
-          </Button>
-        </div>
-
-        <div
           v-if="canSaveFromPractice"
           class="space-y-2 rounded-md border border-border bg-foreground/5 p-4"
         >
@@ -890,7 +819,7 @@ const connectServer = computed(() => ({
         </div>
       </div>
 
-      <DialogFooter v-if="mode !== 'solve'" class="gap-2 sm:justify-between">
+      <DialogFooter class="gap-2 sm:justify-between">
         <!-- can_manage, not a host_steam_id comparison: whether a viewer may
              end the session is the server's call, not the client's. -->
         <Button

@@ -1,3 +1,4 @@
+import gql from "graphql-tag";
 import { $, order_by } from "~/generated/zeus";
 import {
   generateMutation,
@@ -75,6 +76,12 @@ export const utilityLineupListFields = {
   preview_rendered_at: true,
   verified_at: true,
   created_at: true,
+  // Both are list fields, not detail fields: the card's own menu gates
+  // Archive/Restore and Submit-for-public on them, and a card that cannot see
+  // them offers to archive something already archived and to submit something
+  // already submitted.
+  archived_at: true,
+  public_requested_at: true,
   can_view: true,
   can_edit: true,
   my_vote: true,
@@ -94,8 +101,6 @@ export const utilityLineupFields = {
   description: true,
   trajectory_size: true,
   updated_at: true,
-  archived_at: true,
-  public_requested_at: true,
   public_reviewed_at: true,
   public_review_note: true,
 } as const;
@@ -720,6 +725,23 @@ export const archiveUtilityLineupMutation = generateMutation({
   ],
 });
 
+/**
+ * The end of the road for an archived lineup. Archive is the reversible step
+ * and the only one offered in the library; this is offered from the Archived
+ * scope alone, because a delete you can reach by mis-clicking a row menu is a
+ * drill history somebody loses by accident.
+ */
+export const deleteUtilityLineupMutation = generateMutation({
+  delete_utility_lineups_by_pk: [
+    {
+      id: $("id", "uuid!"),
+    },
+    {
+      id: true,
+    },
+  ],
+});
+
 export const deleteUtilityPlaybookMutation = generateMutation({
   deleteUtilityPlaybook: [
     {
@@ -1247,3 +1269,55 @@ export const utilityPracticeServersQuery = generateQuery({
     },
   },
 });
+
+// ---------------------------------------------------------------------------
+// Sending a lineup to the server somebody is already standing in.
+//
+// Hand-written rather than built through Zeus: these are actions, and Zeus only
+// knows about them after a codegen run against a Hasura that already has the
+// metadata applied. Raw documents work the moment the metadata lands, which is
+// the same pattern graphql/leagues.ts uses.
+// ---------------------------------------------------------------------------
+
+export const utilityPracticeWhereAmIQuery = gql`
+  query utilityPracticeWhereAmI {
+    utilityPracticeWhereAmI {
+      on_server
+      map_name
+      session_id
+    }
+  }
+`;
+
+export const sendUtilityLineupToServerMutation = gql`
+  mutation sendUtilityLineupToServer($lineup_id: uuid!) {
+    sendUtilityLineupToServer(lineup_id: $lineup_id) {
+      sent
+      reason
+      map_name
+    }
+  }
+`;
+
+// A drill over lineups the player picked here, run on the server they are
+// already standing in.
+export const sendUtilityDrillToServerMutation = gql`
+  mutation sendUtilityDrillToServer($lineup_ids: [String!]!) {
+    sendUtilityDrillToServer(lineup_ids: $lineup_ids) {
+      sent
+      reason
+      map_name
+      queued
+    }
+  }
+`;
+
+export const sendUtilityScratchToServerMutation = gql`
+  mutation sendUtilityScratchToServer($lineup: UtilityScratchLineupInput!) {
+    sendUtilityScratchToServer(lineup: $lineup) {
+      sent
+      reason
+      map_name
+    }
+  }
+`;

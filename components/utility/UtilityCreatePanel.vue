@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import { Check, Crosshair, MapPin, Save, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -363,6 +364,25 @@ watch(
 // The warning is about a lineup, and there is no lineup until an origin exists.
 // Firing it at an empty form taught people to read past it.
 const showConfidence = computed(() => !!origin.value);
+
+// What "test in game" sends: the form as it stands, whether or not it is
+// complete enough to save. Null until there is an origin, because a throw with
+// nowhere to stand is not one anybody can try.
+const draft = computed(() =>
+  origin.value
+    ? {
+        map_name: props.mapName,
+        utility_type: utilityType.value,
+        side: side.value,
+        technique: technique.value,
+        throw_strength: throwStrength.value,
+        origin: origin.value,
+        landing: landing.value,
+        view_yaw: yaw.value,
+        view_pitch: pitch.value,
+      }
+    : null,
+);
 
 async function save() {
   const start = origin.value;
@@ -936,16 +956,27 @@ watch(
         </button>
       </span>
 
-      <Button
-        class="tac-amber-cta ml-auto shrink-0"
-        size="sm"
-        :loading="saving"
-        :disabled="!canSave"
-        @click="save()"
-      >
-        <Save class="mr-1 h-3.5 w-3.5" />
-        {{ $t("pages.utility.create.save") }}
-      </Button>
+      <!-- Grouped so Save keeps the right edge whether or not there is a
+           server to test on -- the practice button hides itself. -->
+      <div class="ml-auto flex shrink-0 items-center gap-2">
+        <UtilityPracticeButton
+          :draft="draft"
+          :name="name.trim() || undefined"
+          :label="$t('pages.utility.load.test')"
+          variant="outline"
+        />
+
+        <Button
+          class="tac-amber-cta"
+          size="sm"
+          :loading="saving"
+          :disabled="!canSave"
+          @click="save()"
+        >
+          <Save class="mr-1 h-3.5 w-3.5" />
+          {{ $t("pages.utility.create.save") }}
+        </Button>
+      </div>
     </div>
   </div>
 </template>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { Check } from "lucide-vue-next";
+import { Check, Plus } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
@@ -99,10 +102,20 @@ async function fetchLineups() {
   }
 }
 
+// What this visit added, as opposed to what the execute already held. The
+// dialog stays open on purpose -- an execute is four or five throws and closing
+// after each one would make picking them feel like a mistake -- so it owes the
+// caller a running count and a way to say it is finished.
+const openingCount = ref(0);
+const addedHere = computed(() =>
+  Math.max(0, props.pickedIds.length - openingCount.value),
+);
+
 watch(open, (isOpen) => {
   if (!isOpen) {
     return;
   }
+  openingCount.value = props.pickedIds.length;
   filters.value = {
     ...emptyUtilityFilters(),
     sides: props.side ? [props.side] : [],
@@ -126,7 +139,15 @@ const availableTags = computed(() => {
   return [...tags].sort();
 });
 
-const picked = computed(() => new Set(props.pickedIds));
+// A count, not a flag: the second helping of a smoke is a different sentence
+// from the first, and the picker is where you find out you are ordering it.
+const pickedCounts = computed(() => {
+  const counts: Record<string, number> = {};
+  for (const id of props.pickedIds) {
+    counts[id] = (counts[id] ?? 0) + 1;
+  }
+  return counts;
+});
 
 function pick(id: string) {
   const lineup = lineups.value.find((entry) => entry.id === id);
@@ -164,44 +185,137 @@ function pick(id: string) {
           />
         </div>
 
-        <div class="flex max-h-[55vh] flex-col gap-2 overflow-y-auto pr-1">
-          <template v-if="loading">
-            <Skeleton v-for="i in 5" :key="i" class="h-28 w-full rounded-md" />
-          </template>
-
-          <Empty v-else-if="!lineups.length">
-            <EmptyTitle>{{ $t("pages.utility.empty.no_lineups") }}</EmptyTitle>
-            <EmptyDescription>
-              {{ $t("pages.utility.empty.no_lineups_description") }}
-            </EmptyDescription>
-          </Empty>
-
-          <template v-else>
-            <div
-              v-for="lineup of lineups"
-              :key="lineup.id"
-              class="relative"
-              @mouseenter="hoveredId = lineup.id"
-              @mouseleave="hoveredId = null"
-            >
-              <UtilityLineupCard
-                :lineup="lineup"
-                :selected="hoveredId === lineup.id"
-                :show-open-link="false"
-                @select="pick"
-                @hover="(id) => (hoveredId = id)"
-              />
-              <span
-                v-if="picked.has(lineup.id)"
-                class="pointer-events-none absolute right-2 top-2 inline-flex items-center gap-1 rounded-sm border border-[hsl(var(--tac-amber)/0.5)] bg-background/90 px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-              >
-                <Check class="h-3 w-3" />
-                {{ $t("pages.utility.playbooks.already_in") }}
-              </span>
+        <div class="max-h-[55vh] overflow-y-auto pr-1">
+          <!-- The skeletons are the same height as the cards they stand in
+               for, so re-filtering dissolves instead of collapsing the list to
+               nothing and springing it back. -->
+          <FadeSwap>
+            <div v-if="loading" key="loading" class="flex flex-col gap-2">
+              <Skeleton v-for="i in 5" :key="i" class="h-28 w-full rounded-md" />
             </div>
-          </template>
+
+            <Empty v-else-if="!lineups.length" key="empty">
+              <EmptyTitle>{{ $t("pages.utility.empty.no_lineups") }}</EmptyTitle>
+              <EmptyDescription>
+                {{ $t("pages.utility.empty.no_lineups_description") }}
+              </EmptyDescription>
+            </Empty>
+
+            <TransitionGroup
+              v-else
+              key="list"
+              tag="div"
+              name="pick"
+              class="flex flex-col gap-2"
+            >
+              <!-- A lineup already in the execute stays pickable -- a re-smoke
+                   is a real call -- but it has to look spent, or you add the
+                   same smoke five times and only find out in the step list. -->
+              <div
+                v-for="lineup of lineups"
+                :key="lineup.id"
+                class="relative rounded-md transition-[box-shadow,opacity] duration-200"
+                :class="
+                  pickedCounts[lineup.id]
+                    ? 'ring-1 ring-[hsl(var(--tac-amber)/0.55)]'
+                    : ''
+                "
+                @mouseenter="hoveredId = lineup.id"
+                @mouseleave="hoveredId = null"
+              >
+                <UtilityLineupCard
+                  :lineup="lineup"
+                  :selected="hoveredId === lineup.id"
+                  :show-open-link="false"
+                  class="transition-opacity duration-200"
+                  :class="
+                    pickedCounts[lineup.id] && hoveredId !== lineup.id
+                      ? 'opacity-50'
+                      : ''
+                  "
+                  @select="pick"
+                  @hover="(id) => (hoveredId = id)"
+                />
+                <Transition name="picked">
+                  <span
+                    v-if="pickedCounts[lineup.id]"
+                    class="pointer-events-none absolute right-2 top-2 inline-flex items-center gap-1 rounded-sm border border-[hsl(var(--tac-amber)/0.5)] bg-background/90 px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+                  >
+                    <Check class="h-3 w-3" />
+                    {{ $t("pages.utility.playbooks.already_in") }}
+                    <span
+                      v-if="pickedCounts[lineup.id] > 1"
+                      class="tabular-nums"
+                    >
+                      ×{{ pickedCounts[lineup.id] }}
+                    </span>
+                  </span>
+                </Transition>
+              </div>
+            </TransitionGroup>
+          </FadeSwap>
         </div>
       </div>
+
+      <!-- Closing the window was the only way out, which reads as abandoning
+           the picks rather than finishing with them. -->
+      <DialogFooter class="sm:justify-between">
+        <span
+          class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          <Plus
+            class="h-3 w-3"
+            :class="addedHere ? 'text-[hsl(var(--tac-amber))]' : 'opacity-40'"
+          />
+          <span
+            class="tabular-nums transition-colors"
+            :class="addedHere ? 'text-[hsl(var(--tac-amber))]' : ''"
+          >
+            {{ $t("pages.utility.playbooks.added_count", { count: addedHere }) }}
+          </span>
+        </span>
+        <Button class="tac-amber-cta" @click="open = false">
+          {{ $t("pages.utility.playbooks.done") }}
+        </Button>
+      </DialogFooter>
     </DialogContent>
   </Dialog>
 </template>
+
+<style scoped>
+.pick-move {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pick-enter-active {
+  transition:
+    opacity 240ms ease-out,
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pick-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* The badge is the receipt for the click that just happened, so it arrives
+   from the press rather than blinking into place. */
+.picked-enter-active,
+.picked-leave-active {
+  transition:
+    opacity 180ms ease,
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.picked-enter-from,
+.picked-leave-to {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pick-move,
+  .pick-enter-active,
+  .picked-enter-active,
+  .picked-leave-active {
+    transition-duration: 1ms;
+  }
+}
+</style>

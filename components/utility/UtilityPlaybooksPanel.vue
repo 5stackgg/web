@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { ListOrdered, Pencil, Plus, Rocket } from "lucide-vue-next";
+import { Lock, MapPin, Pencil, Plus, Rocket, Users } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
 import { Skeleton } from "~/components/ui/skeleton";
 import UtilityPlaybookEditor from "~/components/utility/UtilityPlaybookEditor.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
@@ -14,12 +13,24 @@ import {
   utilityPlaybooksQuery,
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
-import { UTILITY_TYPE_COLORS, formatUtilityOffset } from "~/utilities/utilityDisplay";
+import {
+  UTILITY_TYPE_COLORS,
+  formatUtilityOffset,
+  utilityOrigin,
+} from "~/utilities/utilityDisplay";
+import type {
+  UtilityBoardMarker,
+  UtilityPanelBoard,
+} from "~/utilities/utilityDisplay";
 import type {
   UtilityLineup,
   UtilityPlaybook,
   UtilityPlaybookStep,
 } from "~/types/utility";
+
+const emit = defineEmits<{
+  (e: "board", state: UtilityPanelBoard | null): void;
+}>();
 
 const props = withDefaults(
   defineProps<{
@@ -136,13 +147,30 @@ async function load() {
 
 watch(() => props.mapName, load, { immediate: true });
 
+/**
+ * An execute has a shape -- four smokes on one call is not the same thing as a
+ * staggered eight-second push -- and the shape is what tells two of them apart
+ * in a list. Each step becomes a tick placed at its real offset along the
+ * execute's own span and coloured by what it throws, so the strip reads as a
+ * fingerprint rather than a row of identical chips.
+ */
 const cards = computed(() =>
   playbooks.value.map((playbook) => {
     const own = stepsByPlaybook.value[playbook.id] ?? [];
+    const span = Math.max(...own.map((step) => step.offset_ms ?? 0), 0);
+    const types = new Set<string>();
+    for (const step of own) {
+      const lineup = lineupsById.value[step.utility_lineup_id];
+      if (lineup) {
+        types.add(lineup.utility_type);
+      }
+    }
     return {
       playbook,
       steps: own,
-      swatches: own.map((step, index) => {
+      duration: formatUtilityOffset(span),
+      typeCount: types.size,
+      beats: own.map((step, index) => {
         const lineup = lineupsById.value[step.utility_lineup_id];
         return {
           key: `${step.id}-${index}`,
@@ -150,11 +178,60 @@ const cards = computed(() =>
             ? (UTILITY_TYPE_COLORS[lineup.utility_type] ?? "#ffffff")
             : "#8a8a8a",
           offset: formatUtilityOffset(step.offset_ms),
+          // A single-beat execute has no span to place anything along, so it
+          // sits at the start rather than dividing by zero into the middle.
+          left: span > 0 ? ((step.offset_ms ?? 0) / span) * 100 : 0,
         };
       }),
+      lineups: own
+        .map((step) => lineupsById.value[step.utility_lineup_id])
+        .filter((lineup): lineup is UtilityLineup => !!lineup),
+      markers: own.reduce<UtilityBoardMarker[]>((out, step, index) => {
+        const lineup = lineupsById.value[step.utility_lineup_id];
+        if (lineup) {
+          out.push({
+            key: `${step.id}-${index}`,
+            point: utilityOrigin(lineup),
+            color: UTILITY_TYPE_COLORS[lineup.utility_type] ?? "#ffffff",
+            label: String(index + 1),
+            shape: "badge",
+          });
+        }
+        return out;
+      }, []),
     };
   }),
 );
+
+// The page already owns a map. Rather than draw a second one per card, the
+// row that is under the cursor is the one the map is showing.
+//
+// Deliberately no `onUnmounted` hand-back: the panel now leaves through a
+// crossfade, so its unmount lands AFTER the next tab's panel has published its
+// own board -- clearing on the way out would wipe it.
+const previewId = ref<string | null>(null);
+const editorBoard = ref<UtilityPanelBoard | null>(null);
+
+const preview = computed(
+  () => cards.value.find((card) => card.playbook.id === previewId.value) ?? null,
+);
+
+watch(
+  [editorOpen, editorBoard, preview],
+  () => {
+    if (editorOpen.value) {
+      emit("board", editorBoard.value);
+      return;
+    }
+    emit("board", {
+      lineups: preview.value?.lineups ?? [],
+      markers: preview.value?.markers ?? [],
+      showAllLines: true,
+    });
+  },
+  { immediate: true },
+);
+
 
 function startCreate() {
   editingId.value = null;
@@ -171,6 +248,7 @@ defineExpose({ startCreate });
 function closeEditor() {
   creating.value = false;
   editingId.value = null;
+  editorBoard.value = null;
 }
 
 async function onSaved() {
@@ -198,141 +276,252 @@ function practice(id: string) {
       </Button>
     </div>
 
-<PageTransition v-if="editorOpen" :delay="60" class="mt-4">
-  <UtilityPlaybookEditor
-    :key="editing?.id ?? 'new'"
-    :map-name="mapName"
-    :playbook="editing"
-    :steps="editingSteps"
-    @saved="onSaved"
-    @deleted="onDeleted"
-    @cancel="closeEditor"
-  />
-</PageTransition>
+    <!-- One dissolve for every state this column can be in. The old markup ran
+         each branch through the page-ENTRY animation -- a 520ms slide up from
+         20px -- so opening an execute looked like navigating to a new page and
+         closing it looked like navigating back. `swap` is the in-place form of
+         the same primitive: 180ms out, then 180ms in, opacity only, with the
+         height change landing while nothing is on screen to be printed over. -->
+    <PageTransition swap class="mt-2">
+      <div v-if="editorOpen" key="editor">
+        <UtilityPlaybookEditor
+          :key="editing?.id ?? 'new'"
+          :map-name="mapName"
+          :playbook="editing"
+          :steps="editingSteps"
+          @board="(state) => (editorBoard = state)"
+          @saved="onSaved"
+          @deleted="onDeleted"
+          @cancel="closeEditor"
+        />
+      </div>
 
-<template v-else>
-  <PageTransition v-if="loading" :delay="60" class="mt-4">
-    <div class="flex flex-col gap-2">
-      <Skeleton v-for="i in 4" :key="i" class="h-24 w-full rounded-md" />
-    </div>
-  </PageTransition>
+      <div v-else-if="loading" key="loading" class="flex flex-col gap-2">
+        <Skeleton v-for="i in 4" :key="i" class="h-20 w-full rounded-md" />
+      </div>
 
-  <!-- Anchored to the top of the column rather than floating in the middle of
-       700px of nothing, and carrying the one action that resolves it. -->
-  <PageTransition v-else-if="!cards.length" :delay="60" class="mt-2">
-    <div
-      class="rounded-md border border-dashed border-border px-4 py-6 text-center"
-    >
-      <p class="text-sm font-semibold">
-        {{ $t("pages.utility.playbooks.empty") }}
-      </p>
-      <p
-        class="mx-auto mt-1 max-w-[36ch] text-xs leading-relaxed text-muted-foreground"
-      >
-        {{ $t("pages.utility.playbooks.empty_description") }}
-      </p>
-      <Button
-        size="sm"
-        variant="outline"
-        class="mt-3 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
-        @click="startCreate()"
-      >
-        <Plus class="mr-1 h-4 w-4" />
-        {{ $t("pages.utility.playbooks.new") }}
-      </Button>
-    </div>
-  </PageTransition>
-
-  <PageTransition v-else :delay="60" class="mt-4">
-    <div
-      class="grid gap-3"
-      style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr))"
-    >
+      <!-- Anchored to the top of the column rather than floating in the middle
+           of 700px of nothing, and carrying the one action that resolves it. -->
       <div
-        v-for="card of cards"
-        :key="card.playbook.id"
-        class="flex flex-col gap-2 rounded-md border border-border bg-card/40 p-3 [backdrop-filter:blur(6px)]"
+        v-else-if="!cards.length"
+        key="empty"
+        class="rounded-md border border-dashed border-border px-4 py-6 text-center"
       >
-        <div class="flex items-start justify-between gap-2">
-          <div class="min-w-0">
-            <div class="truncate text-sm font-semibold">
-              {{ card.playbook.name }}
-            </div>
-            <div
-              class="mt-0.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              {{ $t(`pages.utility.sides.${card.playbook.side}`) }}
-              ·
-              {{ $t(`pages.utility.visibility.${card.playbook.visibility}`) }}
-            </div>
-          </div>
-          <Badge
-            variant="outline"
-            class="shrink-0 font-mono text-[0.6rem] tabular-nums uppercase"
-          >
-            <ListOrdered class="mr-1 h-3 w-3" />
-            {{ card.steps.length }}
-          </Badge>
-        </div>
-
+        <p class="text-sm font-semibold">
+          {{ $t("pages.utility.playbooks.empty") }}
+        </p>
         <p
-          v-if="card.playbook.description"
-          class="line-clamp-2 text-xs text-muted-foreground"
+          class="mx-auto mt-1 max-w-[36ch] text-xs leading-relaxed text-muted-foreground"
         >
-          {{ card.playbook.description }}
+          {{ $t("pages.utility.playbooks.empty_description") }}
+        </p>
+        <Button
+          size="sm"
+          variant="outline"
+          class="mt-3 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+          @click="startCreate()"
+        >
+          <Plus class="mr-1 h-4 w-4" />
+          {{ $t("pages.utility.playbooks.new") }}
+        </Button>
+      </div>
+
+      <div v-else key="list" class="flex flex-col">
+        <p
+          class="flex items-center gap-1.5 pb-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          <MapPin class="h-3 w-3 shrink-0" />
+          {{ $t("pages.utility.playbooks.hover_hint") }}
         </p>
 
-        <div v-if="card.swatches.length" class="flex flex-wrap gap-1">
-          <span
-            v-for="swatch of card.swatches"
-            :key="swatch.key"
-            class="inline-flex items-center gap-1 rounded-sm border border-border/60 px-1 py-0.5 font-mono text-[0.55rem] tabular-nums text-muted-foreground"
+        <!-- One execute per row. A 320px card grid inside a 400px rail was
+             always one column of cards pretending to be a grid. -->
+        <TransitionGroup name="pbrow" tag="div" class="flex flex-col">
+          <div
+            v-for="(card, index) of cards"
+            :key="card.playbook.id"
+            class="pbrow group border-t border-border/50 transition-colors last:border-b"
+            :class="
+              previewId === card.playbook.id
+                ? 'bg-[hsl(var(--tac-amber))]/[0.05] shadow-[inset_2px_0_0_hsl(var(--tac-amber))]'
+                : ''
+            "
+            :style="{ '--pbrow-delay': `${Math.min(index, 6) * 35}ms` }"
+            @mouseenter="previewId = card.playbook.id"
+            @mouseleave="previewId = null"
           >
-            <span
-              aria-hidden="true"
-              class="h-2 w-2 rounded-[1px]"
-              :style="{ backgroundColor: swatch.color }"
-            />
-            {{ swatch.offset }}s
-          </span>
-        </div>
+            <div class="min-h-0 overflow-hidden">
+              <div class="py-2.5">
+                <button
+                  type="button"
+                  class="flex w-full items-start gap-2 px-1.5 text-left"
+                  @click="startEdit(card.playbook.id)"
+                >
+                  <span class="min-w-0 flex-1">
+                    <span class="truncate text-sm font-semibold leading-tight">
+                      {{ card.playbook.name }}
+                    </span>
+                    <span
+                      class="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 font-mono text-[0.57rem] uppercase tracking-[0.13em] text-muted-foreground"
+                    >
+                      <span class="text-foreground/80">
+                        {{ $t(`pages.utility.sides.${card.playbook.side}`) }}
+                      </span>
+                      <span class="text-muted-foreground/40">·</span>
+                      <span>
+                        {{
+                          $t("pages.utility.playbooks.steps_short", {
+                            count: card.steps.length,
+                          })
+                        }}
+                      </span>
+                      <template v-if="Number(card.duration) > 0">
+                        <span class="text-muted-foreground/40">·</span>
+                        <span class="tabular-nums">
+                          {{
+                            $t("pages.utility.playbooks.duration", {
+                              seconds: card.duration,
+                            })
+                          }}
+                        </span>
+                      </template>
+                      <span class="text-muted-foreground/40">·</span>
+                      <span class="inline-flex items-center gap-1">
+                        <component
+                          :is="
+                            card.playbook.visibility === 'Team'
+                              ? Users
+                              : card.playbook.visibility === 'Private'
+                                ? Lock
+                                : MapPin
+                          "
+                          class="h-2.5 w-2.5"
+                        />
+                        {{
+                          $t(
+                            `pages.utility.visibility.${card.playbook.visibility}`,
+                          )
+                        }}
+                      </span>
+                    </span>
+                  </span>
+                </button>
 
-        <div class="mt-auto flex items-center gap-2 pt-1">
-          <Button
-            v-if="card.playbook.can_edit"
-            size="sm"
-            variant="outline"
-            @click="startEdit(card.playbook.id)"
-          >
-            <Pencil class="mr-1 h-4 w-4" />
-            {{ $t("common.edit") }}
-          </Button>
-          <Button
-            v-else
-            size="sm"
-            variant="outline"
-            @click="startEdit(card.playbook.id)"
-          >
-            {{ $t("common.view") }}
-          </Button>
-          <Button
-            size="sm"
-            class="tac-amber-cta ml-auto"
-            @click="practice(card.playbook.id)"
-          >
-            <Rocket class="mr-1 h-4 w-4" />
-            {{ $t("pages.utility.practice.start") }}
-          </Button>
-        </div>
+                <!-- The execute's own clock, drawn to scale: where the ticks
+                     bunch is where the calls bunch. -->
+                <div
+                  v-if="card.beats.length"
+                  class="relative mx-1.5 mt-2 h-4"
+                  :title="card.beats.map((beat) => `${beat.offset}s`).join(' · ')"
+                >
+                  <span
+                    aria-hidden="true"
+                    class="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/12"
+                  />
+                  <!-- End caps, so the strip reads as an axis with a start and
+                       a finish rather than three bars floating in a row. -->
+                  <span
+                    v-for="cap of ['left-0', 'right-0']"
+                    :key="cap"
+                    aria-hidden="true"
+                    :class="cap"
+                    class="absolute top-1/2 h-2 w-px -translate-y-1/2 bg-white/20"
+                  />
+                  <span
+                    v-for="beat of card.beats"
+                    :key="beat.key"
+                    aria-hidden="true"
+                    class="absolute top-1/2 h-3.5 w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-200 group-hover:scale-y-125"
+                    :style="{
+                      left: `calc(${beat.left}% * 0.97 + 1.5%)`,
+                      backgroundColor: beat.color,
+                    }"
+                  />
+                </div>
+
+                <p
+                  v-if="card.playbook.description"
+                  class="mt-1.5 line-clamp-2 px-1.5 text-[0.7rem] leading-snug text-muted-foreground"
+                >
+                  {{ card.playbook.description }}
+                </p>
+
+                <div class="mt-2 flex items-center gap-1.5 px-1.5">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    class="h-7 px-2 text-xs"
+                    @click="startEdit(card.playbook.id)"
+                  >
+                    <Pencil
+                      v-if="card.playbook.can_edit"
+                      class="mr-1 h-3.5 w-3.5"
+                    />
+                    {{
+                      card.playbook.can_edit
+                        ? $t("common.edit")
+                        : $t("common.view")
+                    }}
+                  </Button>
+                  <Button
+                    size="sm"
+                    class="tac-amber-cta ml-auto h-7 px-2 text-xs"
+                    @click="practice(card.playbook.id)"
+                  >
+                    <Rocket class="mr-1 h-3.5 w-3.5" />
+                    {{ $t("pages.utility.practice.start") }}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TransitionGroup>
       </div>
-    </div>
-  </PageTransition>
-</template>
+    </PageTransition>
 
-<StartPracticeDialog
-  v-model:open="practiceOpen"
-  :map-name="mapName"
-  :playbook-id="practicePlaybookId"
-/>
+    <StartPracticeDialog
+      v-model:open="practiceOpen"
+      :map-name="mapName"
+      :playbook-id="practicePlaybookId"
+    />
   </div>
 </template>
+
+<style scoped>
+/* Rows fold rather than blink: deleting an execute from the editor drops one
+   out of this list, and a list that re-lays out instantly is a list you have
+   to re-read. */
+.pbrow {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.pbrow-enter-active {
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 220ms ease-out;
+  /* Staggered, so a freshly loaded list arrives as a list instead of a block. */
+  transition-delay: var(--pbrow-delay, 0ms);
+}
+.pbrow-leave-active {
+  transition:
+    grid-template-rows 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 110ms ease-in;
+}
+.pbrow-enter-from,
+.pbrow-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.pbrow-move {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pbrow-enter-active,
+  .pbrow-leave-active,
+  .pbrow-move {
+    transition-duration: 1ms;
+    transition-delay: 0ms;
+  }
+}
+</style>

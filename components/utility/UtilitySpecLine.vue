@@ -22,8 +22,11 @@ const props = withDefaults(
     // (a required keybind, low confidence) inside the visible width instead of
     // clipping the warning off the end.
     compact?: boolean;
+    // The card's stat block carries flight time as a number; the line drops
+    // it there rather than say it twice.
+    showFlight?: boolean;
   }>(),
-  { showConfidence: true, compact: false },
+  { showConfidence: true, compact: false, showFlight: true },
 );
 
 const { t } = useI18n();
@@ -73,7 +76,7 @@ const segments = computed<Segment[]>(() => {
   ];
 
   const ms = Number(lineup.flight_time_ms ?? 0);
-  if (ms > 0 && !props.compact) {
+  if (ms > 0 && !props.compact && props.showFlight) {
     out.push({
       key: "flight",
       text: t("pages.utility.card.flight_time", {

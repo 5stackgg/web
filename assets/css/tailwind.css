@@ -798,3 +798,28 @@ mark {
     display: none;
   }
 }
+
+/* A field that stays out of the way until you go near it. An authoring panel
+   that is mostly *reading* -- an execute you are checking, a name you are not
+   changing -- turns into a wall of boxes when every value wears a border and a
+   label. The value is the interface; the box appears on hover or focus to say
+   it can be edited. Lives here rather than in a .ts class map because Tailwind
+   generates no CSS for arbitrary variants defined outside a scanned template
+   (same reason .tac-chip and .tac-amber-cta are here). */
+.tac-quiet-field {
+  border-color: transparent;
+  background-color: transparent;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+.tac-quiet-field:hover:not(:disabled),
+.tac-quiet-field:focus,
+.tac-quiet-field:focus-visible,
+.tac-quiet-field:focus-within {
+  border-color: hsl(var(--border));
+  background-color: hsl(var(--muted) / 0.3);
+}
+.tac-quiet-field:disabled {
+  opacity: 1;
+}

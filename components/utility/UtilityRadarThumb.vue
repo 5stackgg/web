@@ -64,6 +64,9 @@ const view = computed(() => {
 // Marker geometry is expressed in the crop's own units so the dots stay the
 // same visual size however far apart the two ends happen to be.
 const unit = computed(() => (view.value ? view.value.size / props.size : 1));
+
+// A 5px marker reads on a 40px tile and vanishes on a 112px map.
+const mark = computed(() => (props.size >= 80 ? 1.6 : 1));
 </script>
 
 <template>
@@ -92,22 +95,32 @@ const unit = computed(() => (view.value ? view.value.size / props.size : 1));
         :x2="to.x"
         :y2="to.y"
         :stroke="color"
-        :stroke-width="unit * 1"
-        :stroke-dasharray="`${unit * 2} ${unit * 2}`"
+        :stroke-width="unit * mark"
+        :stroke-dasharray="`${unit * 2 * mark} ${unit * 2 * mark}`"
         opacity="0.75"
       />
       <rect
-        :x="from.x - unit * 2.5"
-        :y="from.y - unit * 2.5"
-        :width="unit * 5"
-        :height="unit * 5"
+        :x="from.x - unit * 2.5 * mark"
+        :y="from.y - unit * 2.5 * mark"
+        :width="unit * 5 * mark"
+        :height="unit * 5 * mark"
         fill="#e6ebf5"
+      />
+      <circle
+        v-if="to && mark > 1"
+        :cx="to.x"
+        :cy="to.y"
+        :r="unit * 8"
+        fill="none"
+        :stroke="color"
+        :stroke-width="unit * 0.8"
+        opacity="0.45"
       />
       <circle
         v-if="to"
         :cx="to.x"
         :cy="to.y"
-        :r="unit * 3"
+        :r="unit * 3 * mark"
         :fill="color"
       />
     </svg>

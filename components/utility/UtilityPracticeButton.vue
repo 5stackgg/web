@@ -24,7 +24,6 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Repeat } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import { Spinner } from "~/components/ui/spinner";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilitySendToServerIcon from "~/components/utility/UtilitySendToServerIcon.vue";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
@@ -66,13 +65,11 @@ const props = withDefaults(
     variant?: "default" | "outline" | "ghost";
     block?: boolean;
     /**
-     * "overlay" is the same action wearing the tile it acts on: it fills a
-     * positioned parent (the row's radar thumb) instead of taking a line of
-     * its own. A throw is a place, the thumb is a picture of that place, and
-     * this puts you in it -- so the press target is the picture, and a list of
-     * twenty rows costs twenty tiles rather than twenty extra buttons.
+     * "icon" is the same action with no label, for rows that have no width to
+     * spend on two words -- the lineup card's right gutter and the meta
+     * panel's unwritten rows. The bubble carries what the label would have.
      */
-    shape?: "button" | "overlay";
+    shape?: "button" | "icon";
   }>(),
   {
     lineup: null,
@@ -97,8 +94,31 @@ const map = computed(
   () => props.lineup?.map_name ?? props.draft?.map_name ?? props.mapName ?? null,
 );
 
+// A mined cluster has no name, so it is called what it is. Derived here rather
+// than at each call site: this is the string the toast reads back and the name
+// the server files the scratch throw under, and two surfaces spelling the same
+// cluster differently is two names for one throw.
+const spotName = computed(() => {
+  const spot = props.spot;
+  if (!spot) {
+    return null;
+  }
+  const parts = [t(`pages.utility.types.${spot.utilityType}`)];
+  if (spot.side) {
+    parts.push(t(`pages.utility.sides.${spot.side}`));
+  }
+  if (spot.technique) {
+    parts.push(t(`pages.utility.techniques.${spot.technique}`));
+  }
+  return parts.join(" \u00b7 ");
+});
+
 const title = computed(
-  () => props.name ?? props.lineup?.name ?? t("pages.utility.create.untitled"),
+  () =>
+    props.name ??
+    props.lineup?.name ??
+    spotName.value ??
+    t("pages.utility.create.untitled"),
 );
 
 // The key useUtilityLoad reports progress under, so only the button that was
@@ -208,43 +228,21 @@ async function send() {
        that started the send. -->
   <FiveStackToolTip v-if="ready" as-child :delay-duration="120">
     <template #trigger>
-      <!-- The tile arms rather than announcing itself: at rest all it wears is
-           a hairline of amber, so twenty loadable rows still read as twenty
-           radar crops. Point at one and the map recedes behind a scrim and the
-           glyph lands in the middle of it -- the press target was always the
-           whole tile, the hover just says so.
-
-           Clicks and keys are stopped here: the card underneath is itself a
-           button, and without this every send would also open the lineup. -->
-      <button
-        v-if="shape === 'overlay'"
+      <!-- No label, because the row it sits on has no room for one and the
+           bubble says it better than two words would. Square and 1.75rem to
+           measure the same as the pencil beside it. -->
+      <Button
+        v-if="shape === 'icon'"
         v-bind="$attrs"
-        type="button"
-        class="group/load absolute inset-0 z-10 flex items-center justify-center rounded-[4px] ring-1 ring-[hsl(var(--tac-amber)/0.35)] transition-[box-shadow] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] [@media(hover:hover)]:hover:ring-[hsl(var(--tac-amber)/0.9)]"
-        :class="isSending ? 'ring-[hsl(var(--tac-amber)/0.9)]' : ''"
+        size="icon"
+        variant="ghost"
+        class="h-7 w-7 shrink-0 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
+        :loading="isSending"
         @click.stop="send()"
-        @keydown.enter.stop
-        @keydown.space.stop
-        @mousedown.stop
       >
-        <span
-          class="absolute inset-0 rounded-[3px] bg-background/80 opacity-0 transition-opacity duration-200 ease-out group-focus-visible/load:opacity-100 [@media(hover:hover)]:group-hover/load:opacity-100"
-          :class="isSending ? 'opacity-100' : ''"
-        />
-        <Spinner
-          v-if="isSending"
-          class="relative h-4 w-4 text-[hsl(var(--tac-amber))]"
-        />
-        <!-- The glyph is the promise: sending a throw to the server you are on
-             and moving that server to another map are not the same press, so
-             they are not the same picture. Visible without a hover where there
-             is no hover to give. -->
-        <component
-          :is="needsSwitch ? Repeat : UtilitySendToServerIcon"
-          v-else
-          class="relative h-4 w-4 scale-75 text-[hsl(var(--tac-amber))] opacity-0 transition duration-200 ease-out group-focus-visible/load:scale-100 group-focus-visible/load:opacity-100 [@media(hover:hover)]:group-hover/load:scale-100 [@media(hover:hover)]:group-hover/load:opacity-100 [@media(hover:none)]:scale-100 [@media(hover:none)]:opacity-90"
-        />
-      </button>
+        <Repeat v-if="needsSwitch" class="h-3.5 w-3.5" />
+        <UtilitySendToServerIcon v-else class="h-3.5 w-3.5" />
+      </Button>
 
       <Button
         v-else

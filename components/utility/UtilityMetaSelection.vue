@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { PencilLine, Rocket, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
@@ -39,7 +38,6 @@ const emit = defineEmits<{
   (event: "practice", spot: UtilityMetaSpot): void;
 }>();
 
-const { t } = useI18n();
 const load = useUtilityLoad();
 
 // The card can be the only thing on screen offering this, so it asks rather
@@ -50,18 +48,6 @@ void load.check();
 // it there" and "get me one" -- the same fork the lineup dialog draws.
 const canLoadHere = computed(() => load.canLoad(props.mapName));
 
-// A mined cluster has no name, so it is called what it is. This is what the
-// toast says and what the server files the scratch throw under.
-const spotName = computed(() => {
-  const parts = [t(`pages.utility.types.${props.spot.utilityType}`)];
-  if (props.spot.side) {
-    parts.push(t(`pages.utility.sides.${props.spot.side}`));
-  }
-  if (props.spot.technique) {
-    parts.push(t(`pages.utility.techniques.${props.spot.technique}`));
-  }
-  return parts.join(" \u00b7 ");
-});
 
 // The cluster's median look, which is the half of a lineup that is hard to
 // recover by standing in the right place and guessing.
@@ -218,7 +204,6 @@ const unwritten = computed(
         v-if="canLoadHere"
         :spot="spot"
         :map-name="mapName"
-        :name="spotName"
         class="flex-1"
       />
       <FiveStackToolTip v-else as-child :delay-duration="120">

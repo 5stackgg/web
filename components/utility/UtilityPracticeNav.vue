@@ -198,6 +198,7 @@ async function switchAndClose() {
         :map-name="mapName"
         show-header
         @ended="open = false"
+        @joined="open = false"
       >
         <template v-if="canSwitchToPageMap" #extra>
           <Separator />

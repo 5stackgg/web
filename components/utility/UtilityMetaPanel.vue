@@ -3,11 +3,13 @@ import { computed, watch } from "vue";
 import { PencilLine } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Button } from "~/components/ui/button";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
+import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
 import { matchUtilityMetaSpot } from "~/utilities/utilityDisplay";
 import type { UtilityMetaSpot } from "~/utilities/utilityDisplay";
@@ -235,7 +237,7 @@ watch(visibleSpots, (list) => {
             v-else
             role="button"
             tabindex="0"
-            class="flex cursor-pointer items-center gap-2.5 rounded-md border border-dashed py-2 pl-3 pr-2 transition-colors duration-150"
+            class="flex cursor-pointer items-center gap-2.5 rounded-md border border-dashed py-2 pl-3 pr-2.5 transition-colors duration-150"
             :class="
               selectedKey === row.spot.key
                 ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)]'
@@ -268,23 +270,56 @@ watch(visibleSpots, (list) => {
               </span>
             </div>
 
-            <Button
-              v-if="canAuthor"
-              size="sm"
-              variant="ghost"
-              class="h-7 shrink-0 px-2 text-[0.62rem] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-[hsl(var(--tac-amber))]"
-              :title="$t('pages.utility.meta.write_up_hint')"
-              @click.stop="emit('write-up', row.spot)"
-            >
-              <PencilLine class="mr-1 h-3.5 w-3.5" />
-              {{ $t("pages.utility.meta.write_up") }}
-            </Button>
+            <!-- Two verbs, no words. An unwritten spot offers exactly two
+                 things -- go throw it, or write it down -- and at this row
+                 height a pair of labels would push the classification line
+                 into a truncation. The glyphs carry it and the bubbles say
+                 the rest, which is what FiveStackToolTip is for.
+
+                 Try-it comes first because it is the cheaper of the two: you
+                 find out whether the spot is worth writing up by standing on
+                 it, not by opening the author form. -->
+            <div class="flex shrink-0 items-center gap-0.5" @click.stop>
+              <UtilityPracticeButton
+                :spot="row.spot"
+                :map-name="mapName"
+                shape="icon"
+              />
+              <FiveStackToolTip v-if="canAuthor" as-child :delay-duration="120">
+                <template #trigger>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    class="h-7 w-7 shrink-0 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
+                    @click.stop="emit('write-up', row.spot)"
+                  >
+                    <PencilLine class="h-3.5 w-3.5" />
+                  </Button>
+                </template>
+                <div class="flex max-w-[15rem] flex-col gap-1">
+                  <span class="text-xs font-medium">
+                    {{ $t("pages.utility.meta.write_up") }}
+                  </span>
+                  <span class="text-xs leading-relaxed text-muted-foreground">
+                    {{ $t("pages.utility.meta.write_up_hint") }}
+                  </span>
+                </div>
+              </FiveStackToolTip>
+            </div>
 
             <UtilityThrowersMeter
               :count="row.spot.throwers"
               :max="busiest"
               amber
             />
+
+            <!-- A written-up spot is a lineup card, and a lineup card always
+                 reserves its overflow trigger whether or not the trigger is
+                 showing. A stub has no menu to reserve, so without this its
+                 meter sat 34px right of every meter above and below it and the
+                 column read as a padding bug. Same box, same offsets, nothing
+                 in it. -->
+            <span class="-mr-0.5 h-6 w-6 shrink-0" aria-hidden="true" />
           </div>
         </div>
         </div>

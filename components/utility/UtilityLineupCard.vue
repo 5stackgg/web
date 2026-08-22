@@ -276,26 +276,13 @@ function open() {
          reads as a jump rather than as the row growing. Everything that only
          a card shows folds in underneath. -->
     <div class="flex items-center gap-2.5">
-      <!-- A throw is a place and this is the picture of it, so it is also the
-           way in: the send action wears the tile rather than taking a row of
-           its own under the fold. That put the card's only *do something*
-           button below its metadata and, worse, out of reach entirely in row
-           mode -- where a list you are scanning with a live server is exactly
-           when you want it. -->
-      <div class="relative shrink-0">
-        <UtilityRadarThumb
-          :map-name="lineup.map_name"
-          :origin="origin"
-          :landing="landing"
-          :color="color"
-          :size="40"
-        />
-        <UtilityPracticeButton
-          v-if="showPractice"
-          :lineup="lineup"
-          shape="overlay"
-        />
-      </div>
+      <UtilityRadarThumb
+        :map-name="lineup.map_name"
+        :origin="origin"
+        :landing="landing"
+        :color="color"
+        :size="40"
+      />
 
       <div class="flex min-w-0 flex-1 flex-col gap-1">
         <div class="flex items-center gap-1.5">
@@ -319,12 +306,27 @@ function open() {
         <UtilitySpecLine :lineup="lineup" compact class="truncate" />
       </div>
 
-      <UtilityThrowersMeter
-        v-if="metaThrowers"
-        :count="metaThrowers"
-        :max="metaBusiest"
-        :color="color"
-      />
+      <!-- Left of the count, exactly as the meta panel's unwritten rows carry
+           it beside their own throwers meter -- one placement for one action,
+           whichever list you are reading.
+
+           The cell holds its 1.75rem whether or not the button is in it, the
+           way the overflow trigger below already holds its own space: joining
+           a practice server must not reflow every name on the page. -->
+      <div
+        v-if="showPractice"
+        class="flex h-7 w-7 shrink-0 items-center justify-center"
+      >
+        <UtilityPracticeButton :lineup="lineup" shape="icon" />
+      </div>
+
+      <div class="flex shrink-0 items-center gap-2.5">
+        <UtilityThrowersMeter
+          v-if="metaThrowers"
+          :count="metaThrowers"
+          :max="metaBusiest"
+          :color="color"
+        />
 
       <!-- One trigger instead of a row of unlabelled glyphs. It holds its space
            on every row so the meter never shifts; it just stays quiet until the
@@ -408,6 +410,7 @@ function open() {
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
+      </div>
     </div>
 
     <!-- The card IS the row plus this. One height animation, one fade: the

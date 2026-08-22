@@ -7,7 +7,7 @@
  * drifted into a panel and a menu that agreed on nothing. This is the panel;
  * the bar renders it too, so there is one layout and one set of verbs.
  */
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { ExternalLink, UserPlus, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
@@ -50,7 +50,7 @@ const props = withDefaults(
   { started: null, mapName: null, lineupId: null, showHeader: false },
 );
 
-const emit = defineEmits<{ ended: [] }>();
+const emit = defineEmits<{ ended: []; joined: [] }>();
 
 const { t } = useI18n();
 
@@ -150,6 +150,41 @@ const canManage = computed(() => practice.value.canManage);
 const canDrive = computed(() => practice.value.isLive && canManage.value);
 
 type Invitee = { steamId: string; name: string };
+
+/**
+ * Handing off to Steam takes a moment and the page does not change while it
+ * happens, so the button holds a spinner rather than looking like a dead click.
+ * Same shape and same 10s as <QuickServerConnect>, which is what every match
+ * server's join button uses.
+ */
+const JOIN_SPINNER_MS = 10_000;
+
+const joiningServer = ref(false);
+let joinTimer: ReturnType<typeof setTimeout> | null = null;
+
+function onJoinClick() {
+  joiningServer.value = true;
+
+  // The hand-off to Steam is the end of what this panel is for, so whatever is
+  // hosting it gets out of the way rather than sitting over the game you are
+  // about to be looking at.
+  emit("joined");
+
+  if (joinTimer) {
+    clearTimeout(joinTimer);
+  }
+
+  joinTimer = setTimeout(() => {
+    joiningServer.value = false;
+    joinTimer = null;
+  }, JOIN_SPINNER_MS);
+}
+
+onBeforeUnmount(() => {
+  if (joinTimer) {
+    clearTimeout(joinTimer);
+  }
+});
 
 const invitees = ref<Invitee[]>([]);
 const inviting = ref(false);
@@ -305,7 +340,9 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
           as="a"
           :href="practice.connectionLink"
           size="lg"
-          class="min-w-0 flex-1 font-bold uppercase tracking-[0.22em] tac-amber-cta"
+          class="tac-amber-cta min-w-0 flex-1 font-bold uppercase tracking-[0.22em]"
+          :loading="joiningServer"
+          @click="onJoinClick()"
         >
           <ExternalLink class="h-4 w-4" />
           {{ $t("server.join_server") }}

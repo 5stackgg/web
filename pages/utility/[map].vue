@@ -317,10 +317,7 @@ const visibleMetaSpots = computed(() =>
     if (spot.throwers < metaMinThrowers.value) {
       return false;
     }
-    if (
-      filters.value.types.length &&
-      !filters.value.types.includes(spot.utilityType)
-    ) {
+    if (filters.value.types.length && !filters.value.types.includes(spot.utilityType)) {
       return false;
     }
     // A spot with no side recorded is not evidence that it is the wrong side,
@@ -361,10 +358,7 @@ const listTabs = computed(() => {
   // you just switched to has not answered yet. Without the second clause the
   // tab is briefly not in this list, and the watcher below reads that as "the
   // tab you are on is gone" and moves you to Lineups.
-  if (
-    metaSpots.value.length ||
-    (!metaLoaded.value && listTab.value === META_TAB)
-  ) {
+  if (metaSpots.value.length || (!metaLoaded.value && listTab.value === META_TAB)) {
     tabs.push({
       key: META_TAB,
       label: t("pages.utility.views.meta_tab"),
@@ -551,12 +545,13 @@ function onLineupCreated(id: string) {
 // answers it in the column instead, so the overlay stops being a picture you
 // can only look at. On the Meta tab the panel already owns the selection, so
 // the card stays out of its way.
-const selectedMetaSpot = computed(() =>
-  selectedMetaKey.value
-    ? (visibleMetaSpots.value.find(
-        (spot) => spot.key === selectedMetaKey.value,
-      ) ?? null)
-    : null,
+const selectedMetaSpot = computed(
+  () =>
+    (selectedMetaKey.value
+      ? (visibleMetaSpots.value.find(
+          (spot) => spot.key === selectedMetaKey.value,
+        ) ?? null)
+      : null),
 );
 
 /**
@@ -800,6 +795,7 @@ watch(page, () => {
   void fetchLineups();
 });
 
+
 // Best effort by design: the mined meta is a nice-to-have overlay, and a page
 // full of lineups must still render if the aggregate is unavailable.
 //
@@ -1041,6 +1037,7 @@ const populatedElsewhere = computed(() =>
   ).map((scope) => ({ scope, count: scopeCounts.value[scope] ?? 0 })),
 );
 
+
 // Asking, not publishing. The table's trigger is what refuses a self-promotion,
 // so this cannot be talked into more than a request.
 async function requestPublic(id: string) {
@@ -1275,9 +1272,7 @@ function selectLineup(id: string | null) {
           class="!rounded-none !border-0 !bg-transparent"
           :map-name="mapName"
           :lineups="panelBoard?.lineups ?? lineups"
-          :selected-id="
-            panelBoard ? (panelBoard.selectedId ?? null) : selectedId
-          "
+          :selected-id="panelBoard ? (panelBoard.selectedId ?? null) : selectedId"
           :hovered-id="panelBoard ? (panelBoard.hoveredId ?? null) : hoveredId"
           :meta-spots="metaOnBoard"
           :selected-meta-key="selectedMetaKey"
@@ -1538,122 +1533,122 @@ function selectLineup(id: string | null) {
              below it flew up 700px and back down on every tab click. The
              panels now hold their placeholder for longer than this tween runs,
              so the shell is back to auto before any of them changes size. -->
-          <HeightSwap>
-            <UtilityPracticePlanPanel
-              v-if="showPlan"
-              key="plan"
-              :map-name="mapName"
-              @select="selectLineup"
-              @hover="(id) => (hoveredId = id)"
-            />
+        <HeightSwap>
+          <UtilityPracticePlanPanel
+            v-if="showPlan"
+            key="plan"
+            :map-name="mapName"
+            @select="selectLineup"
+            @hover="(id) => (hoveredId = id)"
+          />
 
-            <UtilityCollectionsPanel
-              v-else-if="listTab === COLLECTIONS_TAB"
-              key="collections"
-              ref="collectionsPanel"
-              :map-name="mapName"
-              @empty="(value) => (panelEmpty = value)"
-            />
+          <UtilityCollectionsPanel
+            v-else-if="listTab === COLLECTIONS_TAB"
+            key="collections"
+            ref="collectionsPanel"
+            :map-name="mapName"
+            @empty="(value) => (panelEmpty = value)"
+          />
 
-            <UtilityPlaybooksPanel
-              v-else-if="showPlaybooks"
-              key="playbooks"
-              ref="playbooksPanel"
-              :map-name="mapName"
-              :hide-create="!!mySteamId"
-              @board="(state) => (panelBoard = state)"
-              @empty="(value) => (panelEmpty = value)"
-            />
+          <UtilityPlaybooksPanel
+            v-else-if="showPlaybooks"
+            key="playbooks"
+            ref="playbooksPanel"
+            :map-name="mapName"
+            :hide-create="!!mySteamId"
+            @board="(state) => (panelBoard = state)"
+            @empty="(value) => (panelEmpty = value)"
+          />
 
-            <UtilityBlockPanel
-              v-else-if="showBlockPanel"
-              key="block"
-              :map-name="mapName"
-              :types="filters.types"
-              :sides="filters.sides"
-              @board="(state) => (panelBoard = state)"
-              @open="openLineup"
-            />
+          <UtilityBlockPanel
+            v-else-if="showBlockPanel"
+            key="block"
+            :map-name="mapName"
+            :types="filters.types"
+            :sides="filters.sides"
+            @board="(state) => (panelBoard = state)"
+            @open="openLineup"
+          />
 
-            <!-- Keyed on the map, unlike its neighbours. Every other panel takes
+          <!-- Keyed on the map, unlike its neighbours. Every other panel takes
                a map change as a refetch, but this one is holding points you
                picked off the board: world coordinates that mean nothing on the
                next map. It gets torn down and rebuilt rather than carried. -->
-            <UtilityCreatePanel
-              v-else-if="showCreatePanel"
-              :key="`create-${mapName}`"
-              :map-name="mapName"
-              :seed="createSeed"
-              @board="(state) => (panelBoard = state)"
-              @created="onLineupCreated"
-            />
+          <UtilityCreatePanel
+            v-else-if="showCreatePanel"
+            :key="`create-${mapName}`"
+            :map-name="mapName"
+            :seed="createSeed"
+            @board="(state) => (panelBoard = state)"
+            @created="onLineupCreated"
+          />
 
-            <UtilityMetaPanel
-              v-else-if="showMetaPanel"
-              key="meta"
-              :loading="!metaLoaded"
-              v-model:selected-key="selectedMetaKey"
-              v-model:hovered-key="hoveredMetaKey"
-              v-model:threshold="metaThresholdModel"
-              :map-name="mapName"
-              :threshold-options="metaThresholdOptions"
-              :spots="visibleMetaSpots"
-              :lineups="lineups"
-              :types="filters.types"
-              :sides="filters.sides"
-              :can-author="!!mySteamId"
-              @open="openLineup"
-              @write-up="writeUpMetaSpot"
-            />
+          <UtilityMetaPanel
+            v-else-if="showMetaPanel"
+            key="meta"
+            :loading="!metaLoaded"
+            v-model:selected-key="selectedMetaKey"
+            v-model:hovered-key="hoveredMetaKey"
+            v-model:threshold="metaThresholdModel"
+            :map-name="mapName"
+            :threshold-options="metaThresholdOptions"
+            :spots="visibleMetaSpots"
+            :lineups="lineups"
+            :types="filters.types"
+            :sides="filters.sides"
+            :can-author="!!mySteamId"
+            @open="openLineup"
+            @write-up="writeUpMetaSpot"
+          />
 
-            <!-- Shaped like the rows they stand in for, in whichever density is
+          <!-- Shaped like the rows they stand in for, in whichever density is
                on: a short placeholder replaced by a tall card makes the whole
                list jump, which reads as jank even though nothing moved twice. -->
-            <UtilitySkeletonList
-              v-else-if="listSkeleton"
-              key="loading"
-              :count="3"
-              :shape="listDensity === 'rows' ? 'row' : 'card'"
-            />
+          <UtilitySkeletonList
+            v-else-if="listSkeleton"
+            key="loading"
+            :count="3"
+            :shape="listDensity === 'rows' ? 'row' : 'card'"
+          />
 
-            <UtilityEmpty
-              v-else-if="!lineups.length"
-              key="no-lineups"
-              :title="$t('pages.utility.empty.no_lineups')"
-              :description="$t('pages.utility.empty.no_lineups_description')"
+          <UtilityEmpty
+            v-else-if="!lineups.length"
+            key="no-lineups"
+            :title="$t('pages.utility.empty.no_lineups')"
+            :description="$t('pages.utility.empty.no_lineups_description')"
+          >
+            <Button
+              v-if="mySteamId"
+              size="sm"
+              variant="outline"
+              class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
+              @click="
+                createSeed = null;
+                listTab = CREATE_TAB;
+              "
             >
-              <Button
-                v-if="mySteamId"
-                size="sm"
-                variant="outline"
-                class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]"
-                @click="
-                  createSeed = null;
-                  listTab = CREATE_TAB;
-                "
-              >
-                <Plus class="mr-1 h-4 w-4" />
-                {{ $t("pages.utility.create.action") }}
-              </Button>
+              <Plus class="mr-1 h-4 w-4" />
+              {{ $t("pages.utility.create.action") }}
+            </Button>
 
-              <!-- Telling someone the library is empty while three lineups sit
+            <!-- Telling someone the library is empty while three lineups sit
                  one tab away is how the counts stop being believed. -->
-              <template v-if="populatedElsewhere.length" #footer>
-                <Button
-                  v-for="entry of populatedElsewhere"
-                  :key="entry.scope"
-                  size="sm"
-                  variant="ghost"
-                  class="h-7 text-xs"
-                  @click="filters = { ...filters, scope: entry.scope }"
-                >
-                  {{ $t(`pages.utility.scope.${entry.scope}`) }}
-                  <span class="ml-1 opacity-60">{{ entry.count }}</span>
-                </Button>
-              </template>
-            </UtilityEmpty>
+            <template v-if="populatedElsewhere.length" #footer>
+              <Button
+                v-for="entry of populatedElsewhere"
+                :key="entry.scope"
+                size="sm"
+                variant="ghost"
+                class="h-7 text-xs"
+                @click="filters = { ...filters, scope: entry.scope }"
+              >
+                {{ $t(`pages.utility.scope.${entry.scope}`) }}
+                <span class="ml-1 opacity-60">{{ entry.count }}</span>
+              </Button>
+            </template>
+          </UtilityEmpty>
 
-            <!-- A list that changes under you without moving is a list you have
+          <!-- A list that changes under you without moving is a list you have
                to re-read. Filtering, archiving and paging all reorder this, so
                the rows carry themselves to their new positions instead.
 
@@ -1663,79 +1658,81 @@ function selectLineup(id: string | null) {
                to the top of the list to die. The row gap rides inside the clip
                (-mt on the container, pt inside each cell) so it collapses with
                the row instead of leaving a hole. -->
-            <TransitionGroup
-              v-else
-              key="list"
-              tag="div"
-              name="lrow"
-              class="-mt-2 flex flex-col transition-opacity [transition-duration:180ms]"
-              :class="listRefreshing ? 'pointer-events-none opacity-50' : ''"
-            >
-              <div v-for="lineup of lineups" :key="lineup.id" class="lrow">
-                <div class="min-h-0 overflow-hidden">
-                  <div :id="`utility-card-${lineup.id}`" class="pt-2">
-                    <!-- In row mode the selected lineup opens back into a full card in
+          <TransitionGroup
+            v-else
+            key="list"
+            tag="div"
+            name="lrow"
+            class="-mt-2 flex flex-col transition-opacity [transition-duration:180ms]"
+            :class="listRefreshing ? 'pointer-events-none opacity-50' : ''"
+          >
+          <div
+            v-for="lineup of lineups"
+            :key="lineup.id"
+            class="lrow"
+          >
+            <div class="min-h-0 overflow-hidden">
+            <div :id="`utility-card-${lineup.id}`" class="pt-2">
+            <!-- In row mode the selected lineup opens back into a full card in
                  place, so picking one on the board still shows you everything
                  about it without leaving the list you were reading. -->
-                    <UtilityLineupCard
-                      :lineup="lineup"
-                      :mode="
-                        listDensity === 'rows' && selectedId !== lineup.id
-                          ? 'row'
-                          : 'card'
-                      "
-                      :selected="selectedId === lineup.id"
-                      :hovered="hoveredId === lineup.id"
-                      :meta-throwers="
-                        metaSpotByLineup[lineup.id]?.throwers ?? null
-                      "
-                      :meta-throws="metaSpotByLineup[lineup.id]?.throws ?? null"
-                      :meta-busiest="metaBusiest"
-                      :show-fork="!!mySteamId"
-                      :show-archive="!!mySteamId"
-                      :can-review="canReview"
-                      @select="selectLineup"
-                      @hover="(id) => (hoveredId = id)"
-                      :can-react="!!mySteamId"
-                      open-in-place
-                      @open="openLineup"
-                      @fork="startFork"
-                      @archive="startArchive"
-                      @restore="restoreLineup"
-                      @delete="startDelete"
-                      @request-public="requestPublic"
-                      @review-public="reviewPublic"
-                      @rerender-preview="rerenderPreview"
-                      @vote="onVote"
-                      @favorite="onFavorite"
-                    />
-                  </div>
-                </div>
-              </div>
-            </TransitionGroup>
-          </HeightSwap>
+            <UtilityLineupCard
+              :lineup="lineup"
+              :mode="
+                listDensity === 'rows' && selectedId !== lineup.id
+                  ? 'row'
+                  : 'card'
+              "
+              :selected="selectedId === lineup.id"
+              :hovered="hoveredId === lineup.id"
+              :meta-throwers="metaSpotByLineup[lineup.id]?.throwers ?? null"
+              :meta-throws="metaSpotByLineup[lineup.id]?.throws ?? null"
+              :meta-busiest="metaBusiest"
+              :show-fork="!!mySteamId"
+              :show-archive="!!mySteamId"
+              :can-review="canReview"
+              @select="selectLineup"
+              @hover="(id) => (hoveredId = id)"
+              :can-react="!!mySteamId"
+              open-in-place
+              @open="openLineup"
+              @fork="startFork"
+              @archive="startArchive"
+              @restore="restoreLineup"
+              @delete="startDelete"
+              @request-public="requestPublic"
+              @review-public="reviewPublic"
+              @rerender-preview="rerenderPreview"
+              @vote="onVote"
+              @favorite="onFavorite"
+            />
+            </div>
+            </div>
+          </div>
+          </TransitionGroup>
+        </HeightSwap>
 
-          <!-- At the foot of the column, under whatever the tab is showing: an
+        <!-- At the foot of the column, under whatever the tab is showing: an
              add button belongs after the thing you are adding to, not above
              it competing with the tab strip for the same corner. -->
-          <button
-            v-if="mySteamId && secondaryAction && !secondaryHidden"
-            type="button"
-            class="group flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border/70 py-2.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-            @click="secondaryAction.run()"
-          >
-            <component :is="secondaryAction.icon" class="h-3.5 w-3.5" />
-            {{ secondaryAction.label }}
-          </button>
+        <button
+          v-if="mySteamId && secondaryAction && !secondaryHidden"
+          type="button"
+          class="group flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border/70 py-2.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+          @click="secondaryAction.run()"
+        >
+          <component :is="secondaryAction.icon" class="h-3.5 w-3.5" />
+          {{ secondaryAction.label }}
+        </button>
 
-          <!-- Pages the list, so it belongs to the column the list is in -->
-          <Pagination
-            v-if="listTab === LIST_TAB && totalCount > perPage"
-            :total="totalCount"
-            :page="page"
-            :per-page="perPage"
-            @page="(value) => (page = value)"
-          />
+        <!-- Pages the list, so it belongs to the column the list is in -->
+        <Pagination
+          v-if="listTab === LIST_TAB && totalCount > perPage"
+          :total="totalCount"
+          :page="page"
+          :per-page="perPage"
+          @page="(value) => (page = value)"
+        />
         </div>
       </div>
     </div>

@@ -396,6 +396,11 @@ async function start() {
  * the invite code is still in the URL, and clearing it would let the join
  * watcher put the leaver straight back in the next time this opens.
  */
+// Handing off to Steam is the end of what this dialog is for.
+function onJoinedServer() {
+  open.value = false;
+}
+
 function onSessionEnded() {
   const wasHost = practice.value.canManage;
 
@@ -684,6 +689,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
             :map-name="mapName"
             :lineup-id="lineupId"
             @ended="onSessionEnded"
+            @joined="onJoinedServer"
           >
             <!-- Saving a throw is not driving the session -- anybody in a live
                  one, drilling a lineup they opened this from, has a throw of

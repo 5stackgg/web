@@ -25,18 +25,24 @@ const props = defineProps<{
   size?: "lg";
   block?: boolean;
   fill?: boolean;
+  // Count over label, in equal columns. For narrow columns where a row of
+  // label-plus-count pills does not fit and wrapping strands the last one.
+  stacked?: boolean;
 }>();
 
 const model = defineModel<string>();
 
 const containerShape = computed(() =>
-  props.square ? "rounded-md" : "rounded-full",
+  props.square || props.stacked ? "rounded-md" : "rounded-full",
 );
 const indicatorShape = computed(() =>
-  props.square ? "rounded" : "rounded-full",
+  props.square || props.stacked ? "rounded" : "rounded-full",
 );
 const buttonShape = computed(() => {
-  const base = props.block ? "flex-1" : "";
+  const base = props.block ? "min-w-0 flex-1" : "";
+  if (props.stacked) {
+    return "flex min-w-0 flex-col items-center justify-center gap-1 rounded px-1 py-1.5";
+  }
   if (props.size === "lg") {
     return `inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-2.5 font-mono text-[0.72rem] font-bold uppercase leading-tight tracking-[0.08em] ${base}`;
   }
@@ -46,6 +52,13 @@ const buttonShape = computed(() => {
     ? `inline-flex h-[1.375rem] items-center justify-center gap-1.5 rounded px-2.5 font-mono text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] ${base}`
     : `inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs tracking-[0.06em] ${base}`;
 });
+function countTone(opt: FilterOption) {
+  if (model.value === opt.key || opt.disabled) {
+    return "";
+  }
+  return (opt.count ?? 0) === 0 ? "opacity-35" : "";
+}
+
 function buttonState(opt: FilterOption) {
   const selected = model.value === opt.key;
   if (opt.disabled) {
@@ -119,7 +132,11 @@ watch(
     :class="[
       containerShape,
       fill ? 'flex-1 self-stretch' : 'self-start',
-      block ? 'flex w-full' : 'inline-flex w-fit flex-wrap',
+      stacked
+        ? 'grid w-full auto-cols-fr grid-flow-col'
+        : block
+          ? 'flex w-full'
+          : 'inline-flex w-fit flex-wrap',
     ]"
   >
     <span
@@ -155,11 +172,27 @@ watch(
             :class="[buttonShape, buttonState(opt)]"
             @click="!opt.disabled && (model = opt.key)"
           >
-            <component :is="opt.icon" v-if="opt.icon" class="h-4 w-4" />
-            {{ opt.label }}
-            <span v-if="opt.count !== undefined" class="ml-1 opacity-60">{{
-              opt.count
-            }}</span>
+            <template v-if="stacked">
+              <span
+                class="text-[0.95rem] font-semibold leading-none tabular-nums tracking-tight"
+                :class="countTone(opt)"
+              >
+                {{ opt.count ?? 0 }}
+              </span>
+              <span class="font-mono text-[0.5rem] uppercase leading-none tracking-[0.08em] opacity-80">
+                {{ opt.label }}
+              </span>
+            </template>
+            <template v-else>
+              <component :is="opt.icon" v-if="opt.icon" class="h-4 w-4" />
+              <!-- Wrapped so a caller can collapse the strip to its icons when its
+                   container runs out of room: a bare text node cannot be hidden,
+                   and as a flex item a span sits exactly where it did. -->
+              <span v-if="opt.label" class="af-label">{{ opt.label }}</span>
+              <span v-if="opt.count !== undefined" class="ml-1 opacity-60">{{
+                opt.count
+              }}</span>
+            </template>
           </button>
         </template>
         <div class="max-w-[220px] space-y-0.5">
@@ -186,11 +219,24 @@ watch(
         :class="[buttonShape, buttonState(opt)]"
         @click="!opt.disabled && (model = opt.key)"
       >
-        <component :is="opt.icon" v-if="opt.icon" class="h-4 w-4" />
-        {{ opt.label }}
-        <span v-if="opt.count !== undefined" class="ml-1 opacity-60">{{
-          opt.count
-        }}</span>
+        <template v-if="stacked">
+          <span
+            class="text-[0.95rem] font-semibold leading-none tabular-nums tracking-tight"
+            :class="countTone(opt)"
+          >
+            {{ opt.count ?? 0 }}
+          </span>
+          <span class="font-mono text-[0.5rem] uppercase leading-none tracking-[0.08em] opacity-80">
+            {{ opt.label }}
+          </span>
+        </template>
+        <template v-else>
+          <component :is="opt.icon" v-if="opt.icon" class="h-4 w-4" />
+          <span v-if="opt.label" class="af-label">{{ opt.label }}</span>
+          <span v-if="opt.count !== undefined" class="ml-1 opacity-60">{{
+            opt.count
+          }}</span>
+        </template>
       </button>
     </template>
   </div>

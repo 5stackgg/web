@@ -52,7 +52,6 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { systemAlertAdminFields } from "~/graphql/systemAlertsGraphql";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
-import { useAuthStore } from "~/stores/AuthStore";
 import { toast } from "@/components/ui/toast";
 
 definePageMeta({
@@ -207,6 +206,8 @@ const saveAlert = async () => {
       });
     } else {
       await getGraphqlClient().mutate({
+        // `created_by` is a Hasura session preset on insert and must never be
+        // submitted from here.
         mutation: generateMutation({
           insert_system_alerts_one: [
             {
@@ -217,7 +218,6 @@ const saveAlert = async () => {
                 dismissible: form.value.dismissible,
                 is_active: form.value.is_active,
                 expires_at,
-                created_by: useAuthStore().me?.steam_id,
               },
             },
             { id: true },

@@ -75,6 +75,10 @@ import {
 } from "~/components/ui/popover";
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 import RoundSelector from "~/components/match/RoundSelector.vue";
+import {
+  RADAR_CANVAS,
+  useRadarProjection,
+} from "~/composables/useRadarProjection";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import ReplayChrome from "~/components/match/ReplayChrome.vue";
 
@@ -226,16 +230,6 @@ type Damage = {
   health: number;
 };
 
-type MapSplit = {
-  bounds: { top: number; bottom: number };
-  offset: { x: number; y: number };
-};
-type RadarMeta = {
-  resolution: number;
-  offset: { x: number; y: number };
-  splits?: MapSplit[];
-};
-
 type DemoPlayer = { steam_id: string; name: string };
 
 const props = defineProps<{
@@ -281,25 +275,11 @@ const { t } = useI18n();
 const ROUND_TIME_SEC = 115;
 const BOMB_TIMER_SEC = 40;
 
-const calibrations = ref<Record<string, RadarMeta> | null>(null);
 const radarFailed = ref(false);
 
 // 2D top-down board vs lightweight 3D perspective (radar plane + Z-lifted
 // entities, no map geometry). Toggling preserves all playback state.
 const viewMode = ref<"2d" | "3d">(props.initialView ?? "2d");
-
-onMounted(async () => {
-  try {
-    const res = await fetch("/radars/metadata.json");
-    if (res.ok) {
-      const data = await res.json();
-      const { _comment, ...rest } = data;
-      calibrations.value = rest as Record<string, RadarMeta>;
-    }
-  } catch {
-    /* metadata absent — fall back to auto-fit */
-  }
-});
 
 const normalizedMap = computed(() =>
   (props.mapName || "")
@@ -308,16 +288,10 @@ const normalizedMap = computed(() =>
     .replace(/_night$/, ""),
 );
 
-const calibration = computed<RadarMeta | null>(() => {
-  if (!calibrations.value || !normalizedMap.value) return null;
-  return calibrations.value[normalizedMap.value] ?? null;
-});
-
-const radarSrc = computed(() => {
-  if (!calibration.value || !normalizedMap.value || radarFailed.value)
-    return null;
-  return `/radars/${normalizedMap.value}.png`;
-});
+const { calibration, radarSrc, projectCalibrated } = useRadarProjection(
+  normalizedMap,
+  { radarFailed },
+);
 
 // Lightweight collision mesh (awpy .tri) for 3D-lite, served from the CDN
 // (config.public.mapMeshCdn, build-tag pinned + Brotli'd). The 3D renderer
@@ -689,14 +663,14 @@ const currentTick = computed(() => ticks.value[tickIndex.value] ?? 0);
 const SCRUB_KILL_CT = "rgb(56,189,248)";
 const SCRUB_KILL_T = "rgb(251,191,36)";
 const SCRUB_KILL_NEUTRAL = "rgb(248,113,113)";
-const SCRUB_NADE_COLORS: Record<string, string> = {
+const SCRUB_UTILITY_COLORS: Record<string, string> = {
   HE: "rgb(239,68,68)",
   Molotov: "rgb(249,115,22)",
   Smoke: "rgb(148,163,184)",
   Flash: "rgb(250,204,21)",
   Decoy: "rgb(34,211,238)",
 };
-const NADE_SCRUB_ICON: Record<string, string> = {
+const UTILITY_SCRUB_ICON: Record<string, string> = {
   Smoke: "/img/equipment/smokegrenade.svg",
   Molotov: "/img/equipment/molotov.svg",
   HE: "/img/equipment/hegrenade.svg",
@@ -706,7 +680,7 @@ const NADE_SCRUB_ICON: Record<string, string> = {
 const scrubberMarkers = computed<
   Array<{
     left: number;
-    lane: "kill" | "nade" | "bomb";
+    lane: "kill" | "utility" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -721,7 +695,7 @@ const scrubberMarkers = computed<
   }
   const out: Array<{
     left: number;
-    lane: "kill" | "nade" | "bomb";
+    lane: "kill" | "utility" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -754,10 +728,10 @@ const scrubberMarkers = computed<
     }
     out.push({
       left: Math.max(0, Math.min(100, left)),
-      lane: "nade",
-      color: SCRUB_NADE_COLORS[g.type] ?? "rgb(148,163,184)",
+      lane: "utility",
+      color: SCRUB_UTILITY_COLORS[g.type] ?? "rgb(148,163,184)",
       title: g.type,
-      icon: NADE_SCRUB_ICON[g.type],
+      icon: UTILITY_SCRUB_ICON[g.type],
       gid: g.grenade_id ?? undefined,
     });
   }
@@ -1926,32 +1900,14 @@ const bounds = computed(() => {
   };
 });
 
-const CANVAS = 1024;
-const RADAR_PX = 1024;
-
-function applySplit(z: number, splits: MapSplit[] | undefined) {
-  if (!splits) return { dx: 0, dy: 0 };
-  for (const s of splits) {
-    if (z > s.bounds.bottom && z < s.bounds.top) {
-      return { dx: s.offset.x, dy: s.offset.y };
-    }
-  }
-  return { dx: 0, dy: 0 };
-}
+const CANVAS = RADAR_CANVAS;
 
 function projectRaw(p: { x: number; y: number; z?: number }) {
-  if (calibration.value) {
-    const { resolution, offset, splits } = calibration.value;
-    const split = applySplit(p.z ?? 0, splits);
-    const gameX = p.x + offset.x;
-    const gameY = p.y + offset.y;
-    const pxX = gameX / resolution + (split.dx / 100) * RADAR_PX;
-    const pxYFromBottom = gameY / resolution + (split.dy / 100) * RADAR_PX;
-    return {
-      x: pxX * (CANVAS / RADAR_PX),
-      y: CANVAS - pxYFromBottom * (CANVAS / RADAR_PX),
-    };
+  const projected = projectCalibrated(p);
+  if (projected) {
+    return projected;
   }
+  // No calibration for this map: auto-fit to the bbox of everything sampled.
   const b = bounds.value;
   const w = b.maxX - b.minX || 1;
   const h = b.maxY - b.minY || 1;
@@ -2637,7 +2593,7 @@ onMounted(() => {
   const compact = mobileChrome.value && !isTablet.value;
   chromeScoreboardOpen.value = !compact;
   if (compact) showPbpPanel.value = false;
-  // On touch, start with only smokes shown — the full nade set clutters the
+  // On touch, start with only smokes shown — the full utility set clutters the
   // smaller map; the rest are one tap away in the util filters.
   if (mobileChrome.value) {
     utilTypeFilter.value = {
@@ -3873,7 +3829,7 @@ const utilTypeFilter = ref<Record<string, boolean>>({
 const CT_HEX = "hsl(210, 80%, 60%)";
 const T_HEX = "hsl(33, 94%, 58%)";
 
-function nadeArray(lo: RoundInventoryEntry | undefined): string[] {
+function utilityArray(lo: RoundInventoryEntry | undefined): string[] {
   if (!lo) return [];
   const out: string[] = [];
   for (let i = 0; i < (lo.flash ?? 0); i++) out.push("flash");
@@ -3913,7 +3869,7 @@ function buildChromeRows(rows: RosterEntry[], side: number) {
       a: st.a,
       dmg: st.dmg,
       weapon: lo?.primary || lo?.secondary || null,
-      nades: nadeArray(lo),
+      utility: utilityArray(lo),
       bomb: hasBombFor(r.steamId),
       kit: lo?.kit ?? false,
       avatarUrl: r.avatarUrl,
@@ -3986,7 +3942,7 @@ const chromeUtilMarkers = computed(() => {
   for (const u of roundUtilities.value)
     if (u.gid != null) nameByGid.set(u.gid, u.name);
   return scrubberMarkers.value
-    .filter((m) => m.lane === "nade" && m.icon)
+    .filter((m) => m.lane === "utility" && m.icon)
     .map((m) => ({
       frac: m.left / 100,
       icon: m.icon as string,
@@ -4667,7 +4623,7 @@ watch(overlayMode, (on) => {
                 :cx="project({ x: g.rx, y: g.ry, z: g.rz }).x"
                 :cy="project({ x: g.rx, y: g.ry, z: g.rz }).y"
                 r="16"
-                :fill="SCRUB_NADE_COLORS[g.type] || 'rgb(148,163,184)'"
+                :fill="SCRUB_UTILITY_COLORS[g.type] || 'rgb(148,163,184)'"
                 :fill-opacity="
                   g.gid != null && selectedGi.includes(g.gid) ? 0.85 : 0.4
                 "
@@ -6255,7 +6211,7 @@ watch(overlayMode, (on) => {
           >
             <img
               v-for="(m, i) in scrubberMarkers"
-              v-show="m.lane === 'nade' && m.icon"
+              v-show="m.lane === 'utility' && m.icon"
               :key="'n' + i"
               :src="m.icon"
               class="absolute top-0 h-4 w-4 -translate-x-1/2 object-contain"

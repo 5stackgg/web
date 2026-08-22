@@ -247,7 +247,7 @@
       },
       "util_efficiency": {
         "num": "DMG (util)",
-        "den": "geworfene Nades"
+        "den": "geworfene Utility"
       },
       "enemies_flashed_per": {
         "num": "geblendete Gegner",
@@ -281,7 +281,7 @@
         "den": "Flashes auf Gegner"
       },
       "unused_utility": {
-        "expr": "gesamter Nade-$-Wert, den du beim Sterben noch dabei hast"
+        "expr": "gesamter Utility-$-Wert, den du beim Sterben noch dabei hast"
       },
       "wasted_magazine_pct": {
         "num": "Kugeln im Magazin beim Nachladen",
@@ -466,7 +466,7 @@
     },
     "utility": {
       "label": "Utility",
-      "description": "Granaten-Impact — Flash-Assists, wie stark du Gegner blendest und HE-/Molotov-Schaden pro Nade. Von 0–100 bewertet als Durchschnitts-Perzentil gegenüber allen Spielern. Vorläufig: Utility trennt Skill in unseren Daten noch nicht sauber."
+      "description": "Granaten-Impact — Flash-Assists, wie stark du Gegner blendest und HE-/Molotov-Schaden pro Utility. Von 0–100 bewertet als Durchschnitts-Perzentil gegenüber allen Spielern. Vorläufig: Utility trennt Skill in unseren Daten noch nicht sauber."
     },
     "consistency": {
       "label": "Konstanz",
@@ -510,7 +510,7 @@
     },
     "util_efficiency": {
       "label": "Utility-Schaden",
-      "description": "Schaden pro geworfener HE/Molotov — belohnt sitzende Nades, nicht bloß gekaufte."
+      "description": "Schaden pro geworfener HE/Molotov — belohnt sitzende Utility, nicht bloß gekaufte."
     },
     "trade_kills": {
       "label": "Trade Kills",
@@ -6178,7 +6178,7 @@
         },
         "util_eff_score": {
           "label": "Utility-Schaden",
-          "coach": "Lern ein paar HE- / Molotov-Line-ups für gängige Stellen, um echten Schaden aus jeder Nade zu holen."
+          "coach": "Lern ein paar HE- / Molotov-Line-ups für gängige Stellen, um echten Schaden aus jeder Utility zu holen."
         }
       }
     },

@@ -13,11 +13,15 @@ withDefaults(
     variant?: TournamentCardVariant;
     statusVariant?: TournamentStatusVariant;
     statusLabel?: string;
+    // Threaded through to the feature card's banner. Only the first card in a
+    // list should set it -- see TournamentFeatureCard for why.
+    priority?: boolean;
   }>(),
   {
     variant: "feature",
     statusVariant: "default",
     statusLabel: undefined,
+    priority: false,
   },
 );
 </script>
@@ -40,5 +44,6 @@ withDefaults(
     :tournament="tournament"
     :status-variant="statusVariant"
     :status-label="statusLabel"
+    :priority="priority"
   />
 </template>

@@ -2,6 +2,7 @@
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import RenderQueuePanel from "~/components/clips/RenderQueuePanel.vue";
+import UtilityRenderQueuePanel from "~/components/utility/UtilityRenderQueuePanel.vue";
 
 definePageMeta({
   middleware: "admin",
@@ -18,6 +19,10 @@ definePageMeta({
 
     <PageTransition :delay="60">
       <RenderQueuePanel />
+    </PageTransition>
+
+    <PageTransition :delay="100">
+      <UtilityRenderQueuePanel />
     </PageTransition>
   </div>
 </template>

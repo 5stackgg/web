@@ -247,7 +247,7 @@
       },
       "util_efficiency": {
         "num": "DMG (util)",
-        "den": "atılan nade"
+        "den": "atılan utility"
       },
       "enemies_flashed_per": {
         "num": "körleşen düşman",
@@ -281,7 +281,7 @@
         "den": "düşman flash'ı"
       },
       "unused_utility": {
-        "expr": "öldüğünde üzerinde kalan toplam nade $"
+        "expr": "öldüğünde üzerinde kalan toplam utility $"
       },
       "wasted_magazine_pct": {
         "num": "reload'da kalan mermi",
@@ -466,7 +466,7 @@
     },
     "utility": {
       "label": "Ekipman",
-      "description": "El bombası etkin — flash asistleri, düşmanları ne kadar körleştirdiğin ve nade başına HE/molotof hasarı. Tüm oyunculara göre yüzdelik dilim olarak 0-100 arası puanlanır. Geçici: ekipman puanı verilerimizde henüz beceriyi net biçimde ayırmıyor."
+      "description": "El bombası etkin — flash asistleri, düşmanları ne kadar körleştirdiğin ve utility başına HE/molotof hasarı. Tüm oyunculara göre yüzdelik dilim olarak 0-100 arası puanlanır. Geçici: ekipman puanı verilerimizde henüz beceriyi net biçimde ayırmıyor."
     },
     "consistency": {
       "label": "Tutarlılık",
@@ -6178,7 +6178,7 @@
         },
         "util_eff_score": {
           "label": "Ekipman hasarı",
-          "coach": "Her nadeden gerçek hasar almak için yaygın noktalara birkaç HE / molotof line-up öğren."
+          "coach": "Her utilityden gerçek hasar almak için yaygın noktalara birkaç HE / molotof line-up öğren."
         }
       }
     },

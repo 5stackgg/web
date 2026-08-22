@@ -13,7 +13,7 @@ import {
 // enlarged dialog so the quick-view shows the identical live frame, bigger.
 withDefaults(
   defineProps<{
-    kind: "live" | "demo" | "bake" | "clips";
+    kind: "live" | "demo" | "bake" | "clips" | "nades";
     id?: string | null;
     alt?: string;
     emptyLabel?: string;

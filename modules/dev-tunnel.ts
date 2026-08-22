@@ -1,6 +1,6 @@
 import { defineNuxtModule, useLogger } from "@nuxt/kit";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -15,7 +15,19 @@ import { join } from "node:path";
 
 const CLOUDFLARED_DIR = join(homedir(), ".cloudflared");
 
-type Check = { ok: boolean; fix?: string };
+// What first-time setup for a host learned, so it only has to happen once.
+// Deleting this file redoes it.
+const CACHE_FILE = join(CLOUDFLARED_DIR, "5stack-dev-tunnel.json");
+
+function credentialsPath(id: string) {
+  return join(CLOUDFLARED_DIR, `${id}.json`);
+}
+
+type Check = { ok: true } | { ok: false; fix: string };
+
+type Resolved = { ok: true; id: string } | { ok: false; fix: string };
+
+type Cache = Record<string, { tunnel: string; id: string }>;
 
 type NodeResponse = {
   setHeader: (name: string, value: unknown) => unknown;
@@ -25,11 +37,15 @@ export default defineNuxtModule({
   meta: { name: "dev-tunnel" },
 
   setup(_options, nuxt) {
-    const host = process.env.NUXT_DEV_TUNNEL_HOST?.trim();
+    const configured = process.env.NUXT_DEV_TUNNEL_HOST?.trim();
 
-    if (!host || !nuxt.options.dev) {
+    if (!configured || !nuxt.options.dev) {
       return;
     }
+
+    // Re-declared so the closures below see `string`; narrowing a
+    // `string | undefined` const does not survive being captured.
+    const host: string = configured;
 
     const logger = useLogger("dev-tunnel");
 
@@ -105,6 +121,27 @@ export default defineNuxtModule({
       return spawnSync("cloudflared", args, { encoding: "utf8" });
     }
 
+    function readCache(): Cache {
+      try {
+        return JSON.parse(readFileSync(CACHE_FILE, "utf8")) as Cache;
+      } catch {
+        return {};
+      }
+    }
+
+    function rememberTunnel(id: string) {
+      try {
+        writeFileSync(
+          CACHE_FILE,
+          `${JSON.stringify({ ...readCache(), [host]: { tunnel, id } }, null, 2)}\n`,
+        );
+      } catch (error) {
+        logger.warn(
+          `could not write ${CACHE_FILE}: ${(error as Error).message}`,
+        );
+      }
+    }
+
     function checkInstalled(): Check {
       if (run(["--version"]).status === 0) {
         return { ok: true };
@@ -126,31 +163,47 @@ export default defineNuxtModule({
       };
     }
 
-    function ensureTunnel(): Check {
+    function findTunnel(listing: string): string | null {
+      try {
+        const entries = JSON.parse(listing || "[]") as Array<{
+          name: string;
+          id: string;
+        }>;
+
+        return entries.find((entry) => entry.name === tunnel)?.id ?? null;
+      } catch {
+        // Fall through and try to create it; a duplicate is reported clearly.
+        return null;
+      }
+    }
+
+    function ensureTunnel(): Resolved {
       const listed = run(["tunnel", "list", "--output", "json"]);
 
       if (listed.status !== 0) {
         return { ok: false, fix: listed.stderr.trim() };
       }
 
-      try {
-        const existing = JSON.parse(listed.stdout || "[]") as Array<{
-          name: string;
-        }>;
+      const existing = findTunnel(listed.stdout);
 
-        if (existing.some((entry) => entry.name === tunnel)) {
-          return { ok: true };
-        }
-      } catch {
-        // Fall through and try to create it; a duplicate is reported clearly.
+      if (existing) {
+        return { ok: true, id: existing };
       }
 
       logger.info(`creating tunnel ${tunnel}`);
       const created = run(["tunnel", "create", tunnel]);
 
-      return created.status === 0
-        ? { ok: true }
-        : { ok: false, fix: created.stderr.trim() };
+      if (created.status !== 0) {
+        return { ok: false, fix: created.stderr.trim() };
+      }
+
+      // `tunnel create` prints the new id, but re-listing gets the same answer
+      // without depending on the wording of a log line.
+      const id = findTunnel(run(["tunnel", "list", "--output", "json"]).stdout);
+
+      return id
+        ? { ok: true, id }
+        : { ok: false, fix: `created ${tunnel} but it is not in tunnel list` };
     }
 
     // Idempotent in practice but not in its exit code: pointing an existing
@@ -265,6 +318,100 @@ export default defineNuxtModule({
       };
     }
 
+    // Naming a tunnel by UUID and handing over its credentials file is the one
+    // `tunnel run` form that talks to no Cloudflare API -- `cloudflared tunnel
+    // run --help` says so outright -- so the everyday path needs neither
+    // cert.pem nor a round trip before the server is reachable. That matters
+    // because cert.pem is what `cloudflared tunnel login` writes and it does
+    // not last: every `tunnel list` / `route dns` here used to depend on it, so
+    // one expiry meant logging in again to start a dev server that was already
+    // fully set up. Only genuine first-time setup for a host needs the API now,
+    // and what it learns is cached, so login is a once-per-host step again.
+    function resolveTunnel(): Resolved {
+      const cached = readCache()[host];
+
+      if (cached?.id && existsSync(credentialsPath(cached.id))) {
+        return { ok: true, id: cached.id };
+      }
+
+      const login = checkLoggedIn();
+
+      if (!login.ok) {
+        return login;
+      }
+
+      const ensured = ensureTunnel();
+
+      if (!ensured.ok) {
+        return ensured;
+      }
+
+      const routed = ensureDnsRoute();
+
+      if (!routed.ok) {
+        return routed;
+      }
+
+      // `tunnel create` writes this; a tunnel made in the dashboard, or on
+      // another machine, has no copy of the secret here and never will.
+      if (!existsSync(credentialsPath(ensured.id))) {
+        return {
+          ok: false,
+          fix: `no credentials for ${tunnel} at ${credentialsPath(ensured.id)} -- delete the tunnel (cloudflared tunnel delete ${tunnel}) and let this recreate it`,
+        };
+      }
+
+      rememberTunnel(ensured.id);
+
+      return ensured;
+    }
+
+    // A named tunnel accepts as many `tunnel run` processes as are started
+    // against it, and the edge fans requests across every connection all of
+    // them registered. So a dev server that died without its `close` hook
+    // firing -- terminal closed, SIGKILL, a crash -- leaves cloudflared
+    // orphaned to init, still advertising itself for a port nothing listens on
+    // any more. The next `yarn dev` then serves a coin flip: some requests
+    // reach this process and the rest get a 502 from the dead one, which reads
+    // as the tunnel being broken rather than as there being two of them.
+    function killStrays(id: string) {
+      const listed = spawnSync("ps", ["-A", "-o", "pid=,command="], {
+        encoding: "utf8",
+      });
+
+      if (listed.status !== 0) {
+        return 0;
+      }
+
+      // The id also appears inside --credentials-file, hence the boundary:
+      // only the bare trailing argument names the tunnel being run.
+      const ours = new RegExp(`(^|\\s)(${id}|${tunnel})(\\s|$)`);
+      let killed = 0;
+
+      for (const line of listed.stdout.split("\n")) {
+        const [, pid, command] = line.match(/^\s*(\d+)\s+(.*)$/) ?? [];
+
+        if (
+          !pid ||
+          !/cloudflared\b.*\btunnel\b.*\brun\b/.test(command) ||
+          !ours.test(command)
+        ) {
+          continue;
+        }
+
+        logger.info(`stopping orphaned cloudflared (pid ${pid})`);
+
+        try {
+          process.kill(Number(pid), "SIGTERM");
+          killed += 1;
+        } catch {
+          // Gone between listing and killing, or not ours to signal.
+        }
+      }
+
+      return killed;
+    }
+
     function stop() {
       child?.kill("SIGTERM");
       child = null;
@@ -295,29 +442,37 @@ export default defineNuxtModule({
         return;
       }
 
-      for (const [label, check] of [
-        ["cloudflared", checkInstalled()],
-        ["login", checkLoggedIn()],
-      ] as Array<[string, Check]>) {
-        if (!check.ok) {
-          logger.error(`${label}: not ready\n           ${check.fix}`);
-          return;
-        }
+      const installed = checkInstalled();
+
+      if (!installed.ok) {
+        logger.error(`cloudflared: not ready\n           ${installed.fix}`);
+        return;
       }
 
-      for (const [label, check] of [
-        ["tunnel", ensureTunnel()],
-        ["dns", ensureDnsRoute()],
-      ] as Array<[string, Check]>) {
-        if (!check.ok) {
-          logger.error(`${label}: ${check.fix}`);
-          return;
-        }
+      const resolved = resolveTunnel();
+
+      if (!resolved.ok) {
+        logger.error(`tunnel: ${resolved.fix}`);
+        return;
+      }
+
+      if (killStrays(resolved.id)) {
+        // Let the edge drop the connections they were holding, or the first
+        // requests through the tunnel still land on one of them.
+        await new Promise((settled) => setTimeout(settled, 1_000));
       }
 
       child = spawn(
         "cloudflared",
-        ["tunnel", "run", "--url", `http://localhost:${port}`, tunnel],
+        [
+          "tunnel",
+          "run",
+          "--credentials-file",
+          credentialsPath(resolved.id),
+          "--url",
+          `http://localhost:${port}`,
+          resolved.id,
+        ],
         { stdio: ["ignore", "ignore", "pipe"] },
       );
 
@@ -352,6 +507,7 @@ export default defineNuxtModule({
     nuxt.hook("close", stop);
     process.once("exit", stop);
     process.once("SIGINT", stop);
+    process.once("SIGHUP", stop);
     process.once("SIGTERM", stop);
   },
 });

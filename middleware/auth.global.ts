@@ -38,6 +38,13 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  // The library is public: a signed-out visitor gets Public lineups and the
+  // read-only views. Everything that needs an identity (Mine/Team/Saved,
+  // practice, voting, authoring) is hidden by the page, not by the route.
+  if (path === "/utility" || path.startsWith("/utility/")) {
+    return true;
+  }
+
   if (path.startsWith("/matches")) {
     // ...except the camera pages. Your own used to be reachable with a minted
     // token instead of a login, which is exactly what was retired: the phone
@@ -115,11 +122,32 @@ export default defineNuxtRouteMiddleware(async (to) => {
     });
   }
 
-  let hasMe: boolean = useAuthStore().me?.steam_id ? true : false;
+  const authStore = useAuthStore();
+
+  let hasMe: boolean = authStore.me?.steam_id ? true : false;
 
   if (!checkedMe) {
     checkedMe = true;
-    hasMe = await useAuthStore().getMe();
+
+    const verifying = authStore.getMe();
+
+    // A public route renders the same whether or not the session turns out to
+    // be alive -- the only thing `hasMe` decides below is the bounce to
+    // /login, and that branch is unreachable here. Awaiting anyway put a full
+    // Hasura round-trip in front of the very first route resolve, and the
+    // pre-loader spinner covers all of it (see plugins/preloader.client.ts,
+    // which reveals on app:suspense:resolve). So let it verify in the
+    // background and paint from the cached identity.
+    //
+    // /login is deliberately NOT in this fast path: it uses `hasMe` to send an
+    // already-signed-in visitor onward, so it has to know the real answer.
+    // Protected routes keep awaiting too -- a cached `me` is a paint hint, not
+    // proof of a session, and must never wave someone onto a guarded page.
+    if (isPublicRoute(to.path) && to.path !== "/login") {
+      void verifying;
+    } else {
+      hasMe = await verifying;
+    }
   }
 
   if (!hasMe && !isPublicRoute(to.path) && to.path !== "/login") {

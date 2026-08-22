@@ -247,7 +247,7 @@
       },
       "util_efficiency": {
         "num": "DMG (util)",
-        "den": "nades thrown"
+        "den": "utility thrown"
       },
       "enemies_flashed_per": {
         "num": "enemies blinded",
@@ -281,7 +281,7 @@
         "den": "enemy flashes"
       },
       "unused_utility": {
-        "expr": "total nade $ still on you when you die"
+        "expr": "total utility $ still on you when you die"
       },
       "wasted_magazine_pct": {
         "num": "bullets left at reload",

@@ -14,6 +14,7 @@ import MatchMapAnalysis from "~/components/match/MatchMapAnalysis.vue";
 import MatchEconomyTimeline from "~/components/match/MatchEconomyTimeline.vue";
 import HeadToHead from "~/components/match/HeadToHead.vue";
 import MatchRoles from "~/components/match/MatchRoles.vue";
+import MatchUtilityUtility from "~/components/match/MatchUtilityUtility.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
 import TeamUtilitySummary from "~/components/match/TeamUtilitySummary.vue";
@@ -208,6 +209,9 @@ provide("commander", commander);
                 <SelectItem value="map-analysis">
                   {{ $t("match.tabs.map_analysis") }}
                 </SelectItem>
+                <SelectItem value="utility">
+                  {{ $t("match.tabs.utility") }}
+                </SelectItem>
               </template>
               <SelectItem value="settings">
                 {{ $t("match.tabs.settings") }}
@@ -249,6 +253,9 @@ provide("commander", commander);
             </TabsTrigger>
             <TabsTrigger value="map-analysis">
               {{ $t("match.tabs.map_analysis") }}
+            </TabsTrigger>
+            <TabsTrigger value="utility">
+              {{ $t("match.tabs.utility") }}
             </TabsTrigger>
           </template>
         </TabsList>
@@ -550,6 +557,11 @@ provide("commander", commander);
     <TabsContent value="map-analysis">
       <div class="grid gap-4 max-w-[1500px]">
         <MatchMapAnalysis :match="match" :selected-map-id="activeMap?.id" />
+      </div>
+    </TabsContent>
+    <TabsContent value="utility">
+      <div class="grid gap-4 max-w-[1500px]">
+        <MatchUtilityUtility :match="match" />
       </div>
     </TabsContent>
     <TabsContent
@@ -991,6 +1003,9 @@ export default {
       handler(map, prev) {
         if (map) {
           void this.fetchMapStats();
+          // "utility" is deliberately missing: the utility report is per match and
+          // cannot honour a map filter, so picking a map drops back to the
+          // scoreboard rather than leaving unfiltered numbers under one.
           const statsTabs = [
             "scoreboard",
             "economy",
@@ -1257,7 +1272,7 @@ export default {
           tabs.push("clutches");
         }
 
-        tabs.push("head-to-head", "roles", "map-analysis");
+        tabs.push("head-to-head", "roles", "map-analysis", "utility");
       }
 
       tabs.push("settings");

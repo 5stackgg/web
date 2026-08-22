@@ -111,6 +111,7 @@ const pillBaseClasses =
           v-if="thumbnailSrc"
           :src="thumbnailSrc"
           :alt="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
+          loading="lazy"
           class="absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-500 group-hover/group-card:scale-[1.03]"
           :class="thumbLoaded ? 'opacity-100' : 'opacity-0'"
           @load="thumbLoaded = true"

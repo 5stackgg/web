@@ -32,10 +32,11 @@ NUXT_DEV_TUNNEL_HOST=dev.5stack.gg
 Then `yarn dev` as normal. `modules/dev-tunnel.ts` picks it up and does the
 rest: creates the tunnel and its DNS record if they do not exist, starts
 `cloudflared` against whatever port Nuxt actually bound (it walks forward from
-3000 when that one is taken) and stops it again on exit, adds the hostname to
-`vite.server.allowedHosts` (Vite answers an unexpected `Host` header with a bare
-"Blocked request"), repoints HMR at `wss://…:443` since TLS is terminated at the
-tunnel, and sets `deviceDomain`.
+3000 when that one is taken) and stops it again on exit, clears away any
+`cloudflared` a previous session left running against the same tunnel, adds the
+hostname to `vite.server.allowedHosts` (Vite answers an unexpected `Host`
+header with a bare "Blocked request"), repoints HMR at `wss://…:443` since TLS
+is terminated at the tunnel, and sets `deviceDomain`.
 
 That last one is what the QR codes are built from — `cameraPlayerJoinUrl` in
 `composables/useCameraApi.ts` and `CallPhoneQr.vue`, both absolute because a
@@ -95,6 +96,15 @@ brew install cloudflared        # if missing
 cloudflared tunnel login        # then pick the 5stack.gg zone
 ```
 
+Once per host, though, not once per `yarn dev`. Creating the tunnel and routing
+its DNS record are the only steps that talk to the Cloudflare API, and they are
+what `cloudflared tunnel login` writes `~/.cloudflared/cert.pem` for. Everyday
+runs skip both: setup caches the tunnel's UUID in
+`~/.cloudflared/5stack-dev-tunnel.json`, and a `tunnel run` that names the
+tunnel by UUID and passes its `--credentials-file` contacts nothing at all
+(`cloudflared tunnel run --help` says so). So the certificate expiring stops
+nothing that is already set up. Delete the cache file to run setup again.
+
 **Let the API accept the new origin.** Nothing to configure if the tunnel host
 is a subdomain of the API's own domain — `api/src/utilities/isAllowedOrigin.ts`
 allows anything inside the session cookie's scope, which a subdomain of
@@ -124,6 +134,13 @@ On the phone, open `https://dev.5stack.gg`, sign in, then join a lobby party
 and open a match's camera setup. Scan the QR from the desktop, or just navigate
 to `/matches/<id>/camera`.
 
+- **`error code: 502` on everything, while `curl localhost:3000` is fine.** Two
+  `cloudflared` processes are running the same named tunnel. The edge fans
+  requests across every connection all of them registered and the newest one
+  wins, so a single orphan — left behind by a session that was `SIGKILL`ed or
+  whose terminal was closed, still pointing at that session's port — takes the
+  whole hostname down. `ps -A | grep cloudflared` shows both of them. `yarn dev`
+  now stops them before starting its own, so this only survives from before.
 - **"Your camera needs a secure connection"** — the page is on `http`. The
   tunnel is not in front of it.
 - **Stuck on _Connecting_, then an ICE error** — signalling worked and the media

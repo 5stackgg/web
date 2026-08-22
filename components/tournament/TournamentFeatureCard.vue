@@ -15,10 +15,17 @@ const props = withDefaults(
     statusLabel?: string;
     statusVariant?: TournamentStatusVariant;
     tournament: any;
+    // Set on the first card in a list. Its banner is the LCP element on
+    // /watch, and it cannot start downloading until the page's GraphQL has
+    // resolved -- measured at 4149ms, with LCP landing at 4876ms. Left at the
+    // browser's own guess it gets Low priority and queues behind whatever else
+    // the render kicked off. Every other card is below the fold and lazies.
+    priority?: boolean;
   }>(),
   {
     statusLabel: undefined,
     statusVariant: "default",
+    priority: false,
   },
 );
 
@@ -127,6 +134,9 @@ const statusChipClasses = computed(() => {
       :src="bannerUrl"
       :alt="tournament.name"
       aria-hidden="true"
+      :loading="priority ? 'eager' : 'lazy'"
+      :fetchpriority="priority ? 'high' : 'auto'"
+      decoding="async"
       class="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover/tournament:scale-105"
     />
     <TournamentMapMosaic v-else-if="mapPosters.length" :posters="mapPosters" />

@@ -7,12 +7,11 @@
  * A practice server is booked in a dialog on one page and then used from
  * anywhere, so the only place this can live is the chrome.
  *
- * It also owns "am I on a practice server" for the whole app. useUtilityLoad
- * caches that at module scope, and nothing else asks on a timer -- so this
- * polling is what makes the Practice buttons on cards and dialogs appear
- * without a page refresh.
+ * "Am I on a practice server" belongs to useUtilityLoad, which the API pushes
+ * to over the socket -- this only nudges it to re-read at the two moments a
+ * push cannot cover: signing in, and a reservation turning Ready.
  */
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { Repeat, Server } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
@@ -34,34 +33,19 @@ const load = useUtilityLoad();
 const { session, booting, canManage, switching } = useUtilityPracticeSession();
 const route = useRoute();
 
-const CONNECTED_POLL_MS = 15_000;
-let poll: ReturnType<typeof setInterval> | null = null;
-
-function stopPolling() {
-  if (poll) {
-    clearInterval(poll);
-    poll = null;
-  }
-}
-
 watch(
   () => [me.value?.steam_id, session.value?.status] as const,
   ([steamId]) => {
-    stopPolling();
-
     if (!steamId) {
       return;
     }
 
-    // Immediately, because a reservation appearing or turning Ready is exactly
-    // when the answer is about to change.
+    // A reservation appearing or turning Ready is exactly when the answer is
+    // about to change, and no occupancy report is coming to say so.
     void load.check(true);
-    poll = setInterval(() => void load.check(true), CONNECTED_POLL_MS);
   },
   { immediate: true },
 );
-
-onBeforeUnmount(stopPolling);
 
 // Standing on a server, as opposed to holding a reservation for one. Kept
 // independent of the session: you can be on a server you did not book.

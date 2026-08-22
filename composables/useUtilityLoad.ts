@@ -10,6 +10,7 @@ import {
 } from "~/graphql/utilityGraphql";
 import { toast } from "~/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
+import socket from "~/web-sockets/Socket";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import cleanMapName from "~/utilities/cleanMapName";
 import { UTILITY_EYE_HEIGHT_UNITS } from "~/utilities/utilityDisplay";
@@ -44,42 +45,69 @@ let checkedAt = 0;
 // after anything that would change it.
 const FRESH_MS = 30_000;
 
+// The API pushes this to the player's own sockets the moment the practice
+// plugin reports them connecting or disconnecting, so nothing has to poll to
+// find out. Bound here rather than in a component because the answer belongs to
+// the module -- the nav that used to own the polling is `v-if="!isMobile"`, and
+// a phone would otherwise never learn the player had joined.
+let socketBound = false;
+
+function bindSocket() {
+  if (socketBound) {
+    return;
+  }
+
+  socketBound = true;
+
+  socket.listen("utility:where", (data: WhereAmI) => {
+    where.value = data;
+    checkedAt = Date.now();
+  });
+
+  // A flip that happened while the socket was down was pushed to nobody.
+  socket.listen("online", () => {
+    if (useAuthStore().me?.steam_id) {
+      void check(true);
+    }
+  });
+}
+
+async function check(force = false): Promise<WhereAmI | null> {
+  if (!useAuthStore().me?.steam_id) {
+    where.value = null;
+    return null;
+  }
+  if (!force && where.value && Date.now() - checkedAt < FRESH_MS) {
+    return where.value;
+  }
+  if (checking.value) {
+    return where.value;
+  }
+
+  checking.value = true;
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: utilityPracticeWhereAmIQuery,
+      fetchPolicy: "network-only",
+    });
+    where.value = (data as any)?.utilityPracticeWhereAmI ?? null;
+    checkedAt = Date.now();
+  } catch (error) {
+    // Never a reason to break a page: not knowing where somebody is just
+    // means offering the booking dialog, which is what used to happen always.
+    console.error("[utility] where-am-i error:", error);
+    where.value = null;
+  } finally {
+    checking.value = false;
+  }
+
+  return where.value;
+}
+
 export function useUtilityLoad() {
   const { t } = useI18n();
 
-  const signedIn = computed(() => !!useAuthStore().me?.steam_id);
-
-  async function check(force = false): Promise<WhereAmI | null> {
-    if (!signedIn.value) {
-      where.value = null;
-      return null;
-    }
-    if (!force && where.value && Date.now() - checkedAt < FRESH_MS) {
-      return where.value;
-    }
-    if (checking.value) {
-      return where.value;
-    }
-
-    checking.value = true;
-    try {
-      const { data } = await getGraphqlClient().query({
-        query: utilityPracticeWhereAmIQuery,
-        fetchPolicy: "network-only",
-      });
-      where.value = (data as any)?.utilityPracticeWhereAmI ?? null;
-      checkedAt = Date.now();
-    } catch (error) {
-      // Never a reason to break a page: not knowing where somebody is just
-      // means offering the booking dialog, which is what used to happen always.
-      console.error("[utility] where-am-i error:", error);
-      where.value = null;
-    } finally {
-      checking.value = false;
-    }
-
-    return where.value;
-  }
+  bindSocket();
 
   /** Whether "load me in" is worth offering for a lineup on this map. */
   function canLoad(mapName: string | null | undefined): boolean {

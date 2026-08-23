@@ -198,7 +198,7 @@ function canvasTex(canvas: HTMLCanvasElement) {
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
-const NADE_COL: Record<string, number> = {
+const UTILITY_COL: Record<string, number> = {
   Smoke: 0x32d6e0,
   Molotov: 0xff6a1a,
   HE: 0xff3b3b,
@@ -1816,7 +1816,7 @@ onMounted(() => {
   // the old 3D player). Shape reads the type; depthTest off = visible through
   // walls like the lines. =====
   const G = 11 * U; // base grenade dimension
-  const nadeMatU = (hex: number) =>
+  const utilityMatU = (hex: number) =>
     new THREE.MeshStandardMaterial({
       color: hex,
       emissive: hex,
@@ -1830,18 +1830,18 @@ onMounted(() => {
     g.add(
       new THREE.Mesh(
         new THREE.CylinderGeometry(G * 0.55, G * 0.55, G * 1.7, 14),
-        nadeMatU(hex),
+        utilityMatU(hex),
       ),
     );
     const cap = new THREE.Mesh(
       new THREE.CylinderGeometry(G * 0.46, G * 0.46, G * 0.45, 14),
-      nadeMatU(0x2a2e34),
+      utilityMatU(0x2a2e34),
     );
     cap.position.y = G * 0.95;
     g.add(cap);
     const lip = new THREE.Mesh(
       new THREE.CylinderGeometry(G * 0.6, G * 0.6, G * 0.2, 14),
-      nadeMatU(0x20242a),
+      utilityMatU(0x20242a),
     );
     lip.position.y = G * 0.72;
     g.add(lip);
@@ -1851,13 +1851,13 @@ onMounted(() => {
     const g = new THREE.Group();
     const b = new THREE.Mesh(
       new THREE.SphereGeometry(G * 0.8, 14, 12),
-      nadeMatU(hex),
+      utilityMatU(hex),
     );
     b.scale.set(1, 1.3, 1);
     g.add(b);
     const band = new THREE.Mesh(
       new THREE.CylinderGeometry(G * 0.85, G * 0.85, G * 0.3, 14),
-      nadeMatU(0x33373d),
+      utilityMatU(0x33373d),
     );
     g.add(band);
     return g;
@@ -1867,31 +1867,31 @@ onMounted(() => {
     g.add(
       new THREE.Mesh(
         new THREE.CylinderGeometry(G * 0.55, G * 0.62, G * 1.6, 14),
-        nadeMatU(hex),
+        utilityMatU(hex),
       ),
     );
     const neck = new THREE.Mesh(
       new THREE.CylinderGeometry(G * 0.24, G * 0.46, G * 0.7, 10),
-      nadeMatU(hex),
+      utilityMatU(hex),
     );
     neck.position.y = G;
     g.add(neck);
     const rag = new THREE.Mesh(
       new THREE.SphereGeometry(G * 0.3, 8, 6),
-      nadeMatU(0xe8d8b0),
+      utilityMatU(0xe8d8b0),
     );
     rag.position.y = G * 1.45;
     g.add(rag);
     return g;
   }
-  function makeNadeModels() {
+  function makeUtilityModels() {
     const grp = new THREE.Group();
     const models: Record<string, THREE.Object3D> = {
-      Smoke: makeCanister(NADE_COL.Smoke),
-      Flash: makeCanister(NADE_COL.Flash),
-      Decoy: makeCanister(NADE_COL.Decoy),
-      HE: makeFrag(NADE_COL.HE),
-      Molotov: makeBottle(NADE_COL.Molotov),
+      Smoke: makeCanister(UTILITY_COL.Smoke),
+      Flash: makeCanister(UTILITY_COL.Flash),
+      Decoy: makeCanister(UTILITY_COL.Decoy),
+      HE: makeFrag(UTILITY_COL.HE),
+      Molotov: makeBottle(UTILITY_COL.Molotov),
     };
     for (const k in models) {
       models[k].visible = false;
@@ -1905,7 +1905,7 @@ onMounted(() => {
     scene.add(grp);
     return { grp, models };
   }
-  const projs = Array.from({ length: 12 }, makeNadeModels);
+  const projs = Array.from({ length: 12 }, makeUtilityModels);
   const arcMat = () =>
     new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -2378,7 +2378,7 @@ onMounted(() => {
           ? 0xfff4d6
           : g.type === "HE"
             ? 0xff5a2a
-            : (NADE_COL[g.type] ?? 0xffffff);
+            : (UTILITY_COL[g.type] ?? 0xffffff);
         // The pressure front expands at the engine's own ~1250 u/s, so the ring
         // crosses a 250-unit influence radius in 0.2s. Previously it was a
         // taste-tuned curve stretched over the whole lifetime, which made an
@@ -2417,7 +2417,7 @@ onMounted(() => {
         m.position.copy(_v).setY(_v.y + 1);
         const r = (g.type === "Smoke" ? SMOKE_R : FIRE_R) / SMOKE_R;
         m.scale.set(r, r, r);
-        m.material.uniforms.uColor.value.setHex(NADE_COL[g.type]);
+        m.material.uniforms.uColor.value.setHex(UTILITY_COL[g.type]);
         m.material.uniforms.uRemain.value = life;
       }
     }
@@ -2530,12 +2530,12 @@ onMounted(() => {
         arcHeads[i].visible = false;
         continue;
       }
-      const hex = NADE_COL[g.type] ?? 0xffffff;
+      const hex = UTILITY_COL[g.type] ?? 0xffffff;
       const arc: any = arcs[i];
       // Rebuild the tube only when the slot changes grenade. This used to run
       // every frame — disposing and re-tessellating a 32-segment tube per
       // grenade per frame — which is pure waste, since the flight path is fixed
-      // the moment the nade is thrown.
+      // the moment the utility is thrown.
       const arcKey = `${g.key}`;
       if (arc.userData.arcKey !== arcKey) {
         arc.userData.arcKey = arcKey;
@@ -2556,12 +2556,12 @@ onMounted(() => {
       // Reveal the trail only as far as the grenade has actually flown. A
       // TubeGeometry emits its triangles in order along the curve, so a prefix
       // of the index buffer is exactly the flown portion — which turns a static
-      // line into the nade drawing its own arc as it travels.
+      // line into the utility drawing its own arc as it travels.
       const prog = Math.max(0, Math.min(1, g.progress));
       // Quantise to whole tube segments and drive BOTH the trail and the
       // grenade from that same value. Revealing the trail by a rounded segment
       // count while positioning the head at the exact fraction let the grenade
-      // run ahead of its own trail, which read as the nade arriving before the
+      // run ahead of its own trail, which read as the utility arriving before the
       // line caught up.
       // TubeGeometry lays its rings out by getPointAt — arc length — while
       // `progress` is a fraction of flight time, which getPoint consumes. On a
@@ -2605,7 +2605,7 @@ onMounted(() => {
         m.visible = true;
         m.position.copy(_v).setY(_v.y + 3);
         (m.material as THREE.MeshBasicMaterial).color.setHex(
-          NADE_COL[g.type] ?? 0xffffff,
+          UTILITY_COL[g.type] ?? 0xffffff,
         );
         (m.material as THREE.MeshBasicMaterial).opacity = 0.5;
         m.userData.gid = g.gid ?? null;
@@ -2668,7 +2668,7 @@ onMounted(() => {
         sa.geometry.dispose();
         sa.geometry = new THREE.TubeGeometry(curve, 48, 9 * U + 2, 8, false);
         sa.visible = true;
-        const hex = NADE_COL[u.type] ?? 0xffffff;
+        const hex = UTILITY_COL[u.type] ?? 0xffffff;
         const m = sa.material as THREE.MeshStandardMaterial;
         m.color.setHex(hex);
         m.emissive.setHex(hex);

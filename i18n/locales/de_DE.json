@@ -247,7 +247,7 @@
       },
       "util_efficiency": {
         "num": "DMG (util)",
-        "den": "geworfene Nades"
+        "den": "geworfene Utility"
       },
       "enemies_flashed_per": {
         "num": "geblendete Gegner",
@@ -281,7 +281,7 @@
         "den": "Flashes auf Gegner"
       },
       "unused_utility": {
-        "expr": "gesamter Nade-$-Wert, den du beim Sterben noch dabei hast"
+        "expr": "gesamter Utility-$-Wert, den du beim Sterben noch dabei hast"
       },
       "wasted_magazine_pct": {
         "num": "Kugeln im Magazin beim Nachladen",
@@ -466,7 +466,7 @@
     },
     "utility": {
       "label": "Utility",
-      "description": "Granaten-Impact — Flash-Assists, wie stark du Gegner blendest und HE-/Molotov-Schaden pro Nade. Von 0–100 bewertet als Durchschnitts-Perzentil gegenüber allen Spielern. Vorläufig: Utility trennt Skill in unseren Daten noch nicht sauber."
+      "description": "Granaten-Impact — Flash-Assists, wie stark du Gegner blendest und HE-/Molotov-Schaden pro Utility. Von 0–100 bewertet als Durchschnitts-Perzentil gegenüber allen Spielern. Vorläufig: Utility trennt Skill in unseren Daten noch nicht sauber."
     },
     "consistency": {
       "label": "Konstanz",
@@ -510,7 +510,7 @@
     },
     "util_efficiency": {
       "label": "Utility-Schaden",
-      "description": "Schaden pro geworfener HE/Molotov — belohnt sitzende Nades, nicht bloß gekaufte."
+      "description": "Schaden pro geworfener HE/Molotov — belohnt sitzende Utility, nicht bloß gekaufte."
     },
     "trade_kills": {
       "label": "Trade Kills",
@@ -954,7 +954,11 @@
     "loading_demo_in_cs2": "Demo wird in CS2 geladen",
     "queuing_demo": "Demo wird eingereiht",
     "loading_demo_into_cs2": "Demo wird in CS2 geladen",
-    "demo_loading": "Demo lädt"
+    "demo_loading": "Demo lädt",
+    "booking_server": "Übungsserver wird gebucht",
+    "server_starting": "Übungsserver startet",
+    "dispatching_pod": "Render-Pod wird gestartet",
+    "joining_practice_server": "Übungsserver wird betreten"
   },
   "stream_status": {
     "errored": "Fehlerhaft",
@@ -2489,6 +2493,74 @@
           "casual_only": "Nur Casual",
           "plugin_count": "{count} Plugins",
           "archived": "Archiviert"
+        },
+        "utility": {
+          "title": "Utility",
+          "rescan_section": "Bibliothek neu einlesen",
+          "rescan_section_description": "Baut das Wissen der Bibliothek aus bereits geparsten Demos neu auf.",
+          "rescan": "Demos neu einlesen",
+          "rescan_description": "Liest jede geparste Demo erneut und baut die daraus gewonnenen Spots neu auf. Nötig nach einer Änderung am Parser oder am Miner – die Standposition eines Wurfs zum Beispiel wird jetzt anders abgeleitet. Die Demos werden dabei nicht neu geparst; führe das vorher aus, wenn sie noch auf einem älteren Parser liegen.",
+          "rescan_progress": "{demos} Demo(s) · {throws} Wurf/Würfe",
+          "rescan_done": "{demos} Demo(s) und {throws} Wurf/Würfe neu eingelesen",
+          "rescan_failed": "Das erneute Einlesen konnte nicht abgeschlossen werden",
+          "library_section": "Utility-Bibliothek",
+          "library_description": "Die Lineup-Bibliothek: gespeicherte Würfe mit Standort, Zielpunkt und Landepunkt. Ausgeschaltet wird die Bibliothek nicht ausgeliefert und nichts Neues aufgenommen.",
+          "lineup_daily_limit": "Lineups pro Spieler und Tag",
+          "lineup_daily_limit_description": "Wie viele Lineups ein Spieler pro Tag anlegen darf – gezählt wird, was das Ingame-Plugin aufzeichnet, was das Demo-Mining ihm zuordnet und was er im Browser selbst schreibt. Eine Spam-Grenze, keine Quote, die jemand erreichen sollte.",
+          "practice_section": "Übungsserver",
+          "practice_description": "Server auf Knopfdruck, um ein Lineup selbst einzulaufen. Ausgeschaltet verschwinden die Übungs-Buttons und es lässt sich keine Sitzung starten.",
+          "practice_connect_minutes": "Verbindungsfrist (Minuten)",
+          "practice_connect_minutes_description": "Wie lange ein gebuchter Übungsserver auf seinen Host wartet, bevor er wieder freigegeben wird. Das ist der billigste Weg, einen Server zu blockieren, deshalb bekommt er eine kürzere Frist als das Leerlauf-Timeout.",
+          "practice_max_minutes": "Maximale Sitzung (Minuten)",
+          "practice_max_minutes_description": "Wird nur erzwungen, solange jemand auf einen Übungsserver wartet. Ist keiner frei und stehen Spieler in der Warteschlange, wird eine Sitzung ab diesem Alter beendet; wartet niemand, läuft sie so lange, wie ihr Host will.",
+          "practice_idle_minutes": "Leerlauf-Timeout (Minuten)",
+          "practice_idle_minutes_description": "Wie lange ein Übungsserver leer steht, bevor er sich selbst herunterfährt. Das ist für die Sitzungen, zu denen niemand zurückgekommen ist – es verhindert, dass ein vergessener Drill die ganze Nacht einen Server belegt.",
+          "practice_reserved_servers": "Reservierte On-Demand-Slots",
+          "practice_reserved_servers_description": "On-Demand-Server-Slots, die das Üben nie belegen darf. Das ist das Sicherheitsventil: damit kann eine Übungssitzung niemals den letzten Slot vor einem geplanten Match wegnehmen. Setze es nur auf 0, wenn es in Ordnung ist, einen Match-Server an einen Drill zu verlieren.",
+          "success_radius": "Trefferradius (Units)",
+          "success_radius_description": "Wie nah ein Wurf am Lineup landen muss, damit ein Drill ihn als Treffer wertet. Standard sind 96 Source-Units bei einem Smoke von rund 144 Units Durchmesser – der Standard verlangt also, dass die Utility gut im Smoke landet und ihn nicht bloß streift. Höher gesetzt ist Meisterschaft leichter zu erreichen, niedriger zählt nur das exakte Lineup.",
+          "success_radius_default": "96 (Standard)",
+          "import_section": "Lineup-Importe",
+          "import_description": "Ob Lineups aus einer Payload eingespielt statt im Spiel aufgezeichnet werden dürfen. Ein importiertes Lineup wird nie wie ein aufgezeichnetes bewertet – hier hat nichts es gemessen.",
+          "import": {
+            "payload": "Lineup-Payload",
+            "payload_description": "Füge die Payload ein oder lade sie aus einer Datei. Führe sie zuerst als Probelauf aus – die Zahlen und die Fehler pro Eintrag kommen so oder so zurück, und geschrieben wird erst, wenn du sie anwendest.",
+            "payload_placeholder": "Lineup-Payload einfügen (ein JSON-Array aus Lineup-Einträgen)",
+            "choose_file": "Datei laden",
+            "entries": "{count} Einträge auf oberster Ebene",
+            "too_many_entries": "Ein Aufruf fasst höchstens {max} Einträge. Teile die Payload auf und importiere sie in Portionen.",
+            "dry_run": "Probelauf",
+            "apply": "Importieren",
+            "dry_run_first": "Starte einen Probelauf, um zu sehen, was diese Payload bewirken würde.",
+            "invalid_json": "Das ist kein gültiges JSON.",
+            "dry_run_label": "Probelauf – es wurde nichts geschrieben",
+            "applied_label": "Importiert",
+            "total": "In der Payload",
+            "imported": "Importiert",
+            "updated": "Aktualisiert",
+            "failed_count": "Abgelehnt",
+            "errors": "{count} Einträge wurden abgelehnt",
+            "errors_truncated": "Es werden die ersten {shown} von {count} gezeigt – der Server begrenzt die Liste.",
+            "error_row": "Eintrag {index}",
+            "nothing_in_payload": "Die Payload enthielt nichts zum Importieren.",
+            "grading": "Wie ein importiertes Lineup bewertet wird",
+            "done": "{count} Lineups importiert",
+            "failed": "Der Import konnte nicht ausgeführt werden",
+            "dry_run_failed": "Der Probelauf konnte nicht ausgeführt werden",
+            "purge": "Importierte löschen",
+            "purge_description": "Entfernt jedes vom Importer geschriebene Lineup und sonst nichts. Das ist das Rückgängig für eine fehlerhafte Payload – sieh es dir zuerst in der Vorschau an, die Zahl ist der Schaden.",
+            "purge_preview": "Löschung vorschauen",
+            "purge_preview_result": "{count} importierte Lineups würden entfernt.",
+            "purge_preview_empty": "Es gibt keine importierten Lineups zum Entfernen.",
+            "purge_preview_failed": "Die Vorschau der Löschung war nicht möglich",
+            "confirm_purge": "{count} importierte Lineups entfernen?",
+            "confirm_purge_description": "Jedes vom Importer geschriebene Lineup verschwindet, auch die, die ein Spieler inzwischen gespeichert oder geübt hat. Im Spiel aufgezeichnete, im Editor erstellte oder aus Demos gewonnene Lineups bleiben unberührt.",
+            "purged": "{count} importierte Lineups gelöscht",
+            "purge_failed": "Die importierten Lineups konnten nicht gelöscht werden"
+          },
+          "server_default": "Server-Standard",
+          "invalid_number": "Gib eine ganze Zahl ab 0 ein.",
+          "updated": "Utility-Einstellungen aktualisiert"
         }
       },
       "language": {
@@ -3821,6 +3893,885 @@
       "memory": "Arbeitsspeicher",
       "no_resources": "Noch keine Pod-Metriken für den Medienserver — möglicherweise erfasst ihn der Metrics-Server des Clusters nicht.",
       "legend": "Ein Pfad ist ein benannter Stream-Slot — das Mikrofon einer Person oder eine Kamera. „Sendet“ zählt die, die gerade tatsächlich Medien übertragen; ein Pfad kann zwischen dem Beitritt einer Person und dem Anlaufen ihres Feeds untätig sein. Sitzungen sind WebRTC-Verbindungen, und jeder Zuschauer eines Streams ist eine davon — sie steigen daher schneller als die übrigen Werte."
+    },
+    "utility": {
+      "eyebrow": "Utility-Bibliothek",
+      "title": "Utility",
+      "subtitle": "Lineups für jede Map – wo du stehst, wohin du zielst, wo es landet.",
+      "lineups": "Lineups",
+      "views": {
+        "label": "Map-Ansichten",
+        "meta_hint": "Was Spieler hier tatsächlich werfen",
+        "playbooks_hint": "Getimte Executes aus Lineups",
+        "block_hint": "Finde einen Smoke, der einen Winkel schließt",
+        "meta_tab": "Meta",
+        "playbooks_tab": "Executes",
+        "block_tab": "Blocken",
+        "create_tab": "Neu"
+      },
+      "picker": {
+        "search": "Map suchen",
+        "none": "Keine Maps mit Radar"
+      },
+      "back_to_map": "Zurück zur Map",
+      "empty": {
+        "no_maps": "Keine Maps verfügbar",
+        "no_maps_description": "Eine Utility-Bibliothek braucht eine Map mit Radarbild. Bisher ist keine aktiviert.",
+        "no_lineups": "Hier gibt es noch keine Lineups",
+        "no_lineups_description": "Erweitere die Filter oder zeichne eines auf einem Übungsserver auf, um die Bibliothek zu starten."
+      },
+      "types": {
+        "Smoke": "Smoke",
+        "Flash": "Flash",
+        "Molotov": "Molotov",
+        "HighExplosive": "HE",
+        "Decoy": "Decoy"
+      },
+      "sides": {
+        "CT": "CT",
+        "TERRORIST": "T"
+      },
+      "techniques": {
+        "Stationary": "Stehend",
+        "Walking": "Gehend",
+        "Running": "Laufend",
+        "Crouch": "Geduckt",
+        "Jump": "Sprung",
+        "RunJump": "Laufsprung",
+        "WalkJump": "Gehsprung",
+        "CrouchJump": "Ducksprung"
+      },
+      "strengths": {
+        "Full": "Voll",
+        "Half": "Halb",
+        "Drop": "Fallen lassen"
+      },
+      "precisions": {
+        "exact": "Exakt",
+        "tight": "Eng",
+        "normal": "Normal",
+        "loose": "Locker"
+      },
+      "visibility": {
+        "Private": "Privat",
+        "Team": "Team",
+        "Public": "Öffentlich"
+      },
+      "origin_sources": {
+        "plugin": "Im Spiel",
+        "demo": "Demo",
+        "editor": "Editor",
+        "import": "Import"
+      },
+      "confidence": {
+        "exact": "Aufgezeichnet",
+        "exact_note": "Im Spiel erfasst, Haltung und Winkel sind also exakt.",
+        "derived": "Aus einer Demo",
+        "derived_note": "Aus einer Demo rekonstruiert: Das Zielen wird aus der Flugbahn der Granate abgeleitet, meist auf ein bis zwei Grad genau. Lauf es auf einem Übungsserver ein, bevor du es ein Lineup nennst.",
+        "low": "Geringe Sicherheit",
+        "low_note": "Ursprung und Winkel sind grob. Nimm das als Hinweis, nicht als Ausrichtung.",
+        "derived_off": "Bitte überprüfen",
+        "derived_off_note": "Das aus der Flugbahn abgeleitete Zielen und die in der Demo aufgezeichneten Blickwinkel weichen um mehr als ein paar Grad voneinander ab. Der Spot stimmt; die Fadenkreuzposition muss eingelaufen werden.",
+        "delta_short": "±{degrees}°",
+        "delta_detail": "Abgeleitet vs. aufgezeichnet: {yaw}° Yaw / {pitch}° Pitch"
+      },
+      "scope": {
+        "public": "Öffentlich",
+        "mine": "Meine",
+        "team": "Team",
+        "favorites": "Gespeichert",
+        "archived": "Archiviert",
+        "pending": "Prüfung"
+      },
+      "sort": {
+        "top": "Bestbewertet",
+        "new": "Neueste"
+      },
+      "filters": {
+        "search_placeholder": "Lineups durchsuchen",
+        "side": "Seite",
+        "technique": "Technik",
+        "throw_strength": "Wurf",
+        "tags": "Tags",
+        "sort": "Sortierung"
+      },
+      "board": {
+        "no_radar": "Kein Radar für diese Map",
+        "hint": "Quadrate sind Wurfpositionen, Punkte sind Landepunkte. Wähle eines aus, um es mit der Liste abzugleichen.",
+        "key": "Quadrate = Ursprung · Punkte = Landung",
+        "zoom_in": "Heranzoomen",
+        "zoom_out": "Herauszoomen",
+        "zoom_reset": "Map einpassen"
+      },
+      "card": {
+        "upvote": "Als gutes Lineup markieren",
+        "unvote": "Bewertung zurücknehmen",
+        "favorite": "In deiner Liste speichern",
+        "unfavorite": "Aus deiner Liste entfernen",
+        "open": "Lineup öffnen",
+        "flight_time": "{seconds}s",
+        "unknown_author": "Unbekannter Autor",
+        "downvote": "Als schlechtes Lineup markieren",
+        "more_actions": "Weitere Aktionen",
+        "flight_time_hint": "Wie lange die Granate nach dem Wurf in der Luft ist.",
+        "stat_hit_rate": "Meine Trefferquote",
+        "stat_flight": "Flug",
+        "stat_difficulty": "Schwierigkeit"
+      },
+      "viewer": {
+        "replay_throw": "Wurf abspielen",
+        "roof": "Dach"
+      },
+      "detail": {
+        "previous": "Vorheriges Lineup",
+        "next": "Nächstes Lineup",
+        "open_full": "Ganze Seite öffnen",
+        "practice_this": "Das üben",
+        "not_found": "Lineup nicht gefunden",
+        "not_found_description": "Es wurde vielleicht gelöscht oder ist nicht für dich freigegeben.",
+        "no_mesh": "Für diese Map gibt es noch kein 3D-Mesh – stattdessen wird der Radar gezeigt.",
+        "flight_time": "Flugzeit",
+        "stand": "Stehen bei",
+        "lands": "Landet bei",
+        "distance": "Wurfdistanz",
+        "eye_height": "Augen über Füßen",
+        "view_angles": "Yaw / Pitch",
+        "precision": "Zielgenauigkeit",
+        "origin_source": "Quelle",
+        "verified": "Verifiziert",
+        "vote_failed": "Deine Bewertung konnte nicht gespeichert werden",
+        "precision_failed": "Die Zielgenauigkeit konnte nicht geändert werden",
+        "favorite_failed": "Deine gespeicherten Lineups konnten nicht aktualisiert werden",
+        "aim_delta": "Abgeleitetes vs. aufgezeichnetes Zielen",
+        "technical": "Technische Details"
+      },
+      "practice": {
+        "title": "Übungsserver",
+        "description": "Starte einen Server auf dieser Map und lauf das Lineup selbst ein.",
+        "description_live": "Dein Server läuft. Spring rein oder hol die Leute dazu, die du dabeihaben willst.",
+        "what_is": "Dein eigener CS2-Server auf dieser Map. Warp dich auf jedes Lineup mit exakter Haltung und Ausrichtung, sieh dir den Wurf an, spiel einen ganzen Execute durch und lade Freunde ein, mit dir zu üben.",
+        "region": "Region",
+        "select_region": "Region wählen",
+        "no_regions": "Es sind keine On-Demand-Regionen verfügbar.",
+        "booting": "Dein Übungsserver startet ...",
+        "start": "Üben",
+        "start_cta": "Server starten",
+        "stop": "Server stoppen",
+        "start_failed": "Der Übungsserver konnte nicht gestartet werden",
+        "stop_failed": "Der Übungsserver konnte nicht gestoppt werden",
+        "join_failed": "Diesem Übungsserver konnte nicht beigetreten werden",
+        "any_region": "Beliebige Region",
+        "region_recommended": "Empfohlen",
+        "region_any_hint": "Wir wählen für dich: einen freien Übungsserver, falls einer läuft, sonst einen neuen in deiner nächstgelegenen Region.",
+        "servers_free": "{count} frei",
+        "dedicated_servers": "Übungsserver",
+        "servers_unavailable": "Übungsserver konnten nicht geladen werden: {error}",
+        "nav_label": "Üben",
+        "nav_connected": "Im Training",
+        "nav_starting": "Startet",
+        "nav_join": "Training beitreten",
+        "nav_ready": "Bereit zum Beitreten",
+        "nav_none": "Kein Server",
+        "nav_copied": "Connect kopiert",
+        "server_in_use": "in Benutzung",
+        "server_held_by": "in Benutzung von {name}",
+        "collection": "Sammlung laden",
+        "no_collection": "Keine",
+        "access": "Sitzungszugriff",
+        "access_failed": "Wer beitreten darf, konnte nicht geändert werden",
+        "access_open": "Offen",
+        "access_open_desc": "Jeder mit dem Einladungslink kann beitreten.",
+        "access_friends": "Freunde",
+        "access_friends_desc": "Nur deine Freunde und die von dir eingeladenen Spieler können beitreten.",
+        "access_invite_desc": "Nur die von dir eingeladenen Spieler können beitreten.",
+        "access_private_desc": "Sonst kann niemand beitreten. Nur du auf dem Server.",
+        "access_current": "Zugriff",
+        "leave": "Sitzung verlassen",
+        "leave_failed": "Der Übungsserver konnte nicht verlassen werden",
+        "invite_players": "Spieler einladen",
+        "open_library": "Lineup-Bibliothek öffnen",
+        "pick_players": "Spieler auswählen",
+        "send_invites": "{count} einladen",
+        "invited": "{count} eingeladen",
+        "invite_failed": "Sie konnten nicht zur Sitzung eingeladen werden",
+        "copy_connect": "Connect kopieren",
+        "copy_invite": "Einladungslink kopieren",
+        "invite_copied": "Einladungslink kopiert",
+        "access_invite": "Einladung",
+        "access_private": "Privat",
+        "map_banner": "Dein Übungsserver läuft auf {map}.",
+        "switch_map": "Zu {map} wechseln",
+        "switching": "Dein Server wechselt zu {map}",
+        "switching_description": "Alle darauf bekommen eine Warnung, dann lädt die Map.",
+        "switch_failed": "Die Map konnte nicht gewechselt werden",
+        "ask_host": "Bitte {host}, sie zu wechseln.",
+        "ask_the_host": "Bitte den Host, sie zu wechseln.",
+        "nav_switching": "Wechselt"
+      },
+      "collections": {
+        "tab": "Sammlungen",
+        "hint": "Gib einen Namen ein, um eine neue Sammlung mit diesem Lineup zu starten.",
+        "empty": "Noch keine Sammlungen",
+        "empty_description": "Fasse die Lineups zusammen, die du gemeinsam übst – ein Smoke-Set für eine Map, ein Execute, ein Warm-up.",
+        "count": "{count} Lineups",
+        "add_to": "Speichern unter ...",
+        "new_placeholder": "Neue Sammlung",
+        "create": "Sammlung erstellen",
+        "created": "Zu {name} hinzugefügt",
+        "load_failed": "Deine Sammlungen konnten nicht geladen werden",
+        "update_failed": "Die Sammlung konnte nicht aktualisiert werden",
+        "create_failed": "Die Sammlung konnte nicht erstellt werden",
+        "hint_choose": "Gib einen Namen ein, um eine neue Sammlung zu starten und die Kopie hineinzulegen.",
+        "new": "Neue Sammlung",
+        "created_empty": "{name} erstellt",
+        "delete": "Sammlung löschen",
+        "deleting": "Wird gelöscht ...",
+        "deleted": "{name} gelöscht",
+        "delete_failed": "Die Sammlung konnte nicht gelöscht werden",
+        "confirm_delete": "{name} löschen?",
+        "confirm_delete_description": "Die Lineups bleiben in der Bibliothek; nur die Sammlung verschwindet."
+      },
+      "progress": {
+        "drilled": "Geübt",
+        "mastered": "Gemeistert",
+        "record": "{successes} / {attempts}",
+        "hit_rate": "{percent}%",
+        "current_streak": "{count} in Folge",
+        "best_streak": "beste {count}",
+        "streak_hint": "Fünf Treffer in Folge innerhalb des Trefferradius meistern ein Lineup.",
+        "last_practiced": "Zuletzt geworfen"
+      },
+      "meta": {
+        "title": "Meta",
+        "eyebrow": "Aus echten Matches gewonnen",
+        "subtitle": "{clusters} Spots, {throws} in echten Matches geworfene Granaten.",
+        "overlay": "Meta-Overlay",
+        "throwers_hint": "Verschiedene Spieler, die das in echten Matches geworfen haben.",
+        "board_hint": "Gestrichelte Kreise sind Spots, auf die Spieler tatsächlich werfen. Größer heißt mehr davon.",
+        "empty": "Für diese Map wurde noch nichts gewonnen",
+        "empty_description": "In echten Matches geworfene Granaten erscheinen hier, sobald genug Demos geparst wurden.",
+        "has_lineups": "{count} gespeicherte Lineups passen",
+        "no_lineups": "Kein gespeichertes Lineup für diesen Spot",
+        "no_lineups_description": "Die Leute werfen es, aber niemand hat es aufgeschrieben. Das Zielen oben ist ein Ausgangspunkt: lauf es auf einem Übungsserver ein und speichere es.",
+        "matching_lineups": "Gespeicherte Lineups für diesen Spot",
+        "volume": "{throws} Würfe · {matches} Matches",
+        "classification": "Cluster",
+        "aim": "Repräsentatives Zielen",
+        "aim_hint": "Der Median aus Yaw und Pitch aller Spieler, die auf diesen Spot werfen.",
+        "usage": "Nutzung",
+        "usage_detail": "{throwers} Spieler · {throws} Würfe · {matches} Matches",
+        "seen": "Gesehen",
+        "first_seen": "zuerst",
+        "last_seen": "zuletzt",
+        "refreshed": "Aggregiert",
+        "match_gap": "Es werden {shown} von {count} gespeicherten Lineups in diesem Cluster gezeigt – der Rest liegt außerhalb der hier geladenen Lineups.",
+        "summary": "{spots} Spots · {throws} Würfe",
+        "min_throwers": "Min. Spieler",
+        "write_up": "Das aufschreiben",
+        "unwritten": "Das hat noch niemand aufgeschrieben",
+        "unwritten_count": "{count} unbeschrieben",
+        "players": "Spieler",
+        "throws": "Würfe",
+        "matches": "Matches",
+        "copy_aim": "setang kopieren",
+        "aim_copied": "Zielen kopiert",
+        "aim_copy_failed": "Das konnte nicht kopiert werden",
+        "write_up_hint": "Füllt Ursprung + Zielen vor"
+      },
+      "playbooks": {
+        "title": "Playbooks",
+        "eyebrow": "Team-Executes",
+        "subtitle": "Geordnete Utility mit Timings – wer wirft was, und wann.",
+        "new": "Neues Playbook",
+        "empty": "Keine Playbooks für diese Map",
+        "empty_description": "Bau einen Execute aus den Lineups, die dein Team bereits gespeichert hat.",
+        "name_placeholder": "A-Site Standard",
+        "description_placeholder": "Wofür dieser Execute gedacht ist und wann man ihn callt.",
+        "team": "Team",
+        "visibility": "Sichtbarkeit",
+        "team_required": "Wähle ein Team, sonst sieht es niemand außer dir.",
+        "steps_count": "{count} / {max} Schritte",
+        "add_step": "Schritt hinzufügen",
+        "step_limit": "Ein Playbook fasst höchstens {count} Schritte.",
+        "no_steps": "Noch keine Schritte. Füge ein Lineup hinzu, um den Execute zu starten.",
+        "unknown_lineup": "Lineup nicht verfügbar",
+        "move_up": "Schritt nach oben",
+        "move_down": "Schritt nach unten",
+        "offset_hint": "Sekunden nach dem Start des Executes.",
+        "seconds": "s",
+        "unassigned": "Beliebig",
+        "note_placeholder": "Call, z. B. „nach dem Flash“",
+        "no_roster": "Dieses Team hat keinen Kader, dem man etwas zuweisen könnte.",
+        "assign_needs_team": "Wähle ein Team, um Schritte an Spieler zu vergeben.",
+        "board_hint": "Jeder Schritt ist auf der Map nummeriert. Wähle einen aus, um ihn hervorzuheben.",
+        "saved": "Playbook gespeichert",
+        "save_failed": "Das Playbook konnte nicht gespeichert werden",
+        "delete_failed": "Das Playbook konnte nicht gelöscht werden",
+        "confirm_delete": "Dieses Playbook löschen?",
+        "confirm_delete_description": "Die Lineups bleiben in der Bibliothek; nur der Execute verschwindet.",
+        "pick_title": "Lineup hinzufügen",
+        "pick_description": "Wähle so viele aus, wie der Execute braucht – das bleibt offen, bis du auf Fertig drückst.",
+        "already_in": "In diesem Execute",
+        "load_label": "Execute laden",
+        "load": "Laden",
+        "unload": "Entladen",
+        "loaded": "Geladen: {name}",
+        "load_failed": "Dieses Playbook konnte nicht auf den Server geladen werden",
+        "unresolved": "{count} Schritte zeigen auf ein Lineup, das du nicht sehen kannst. Das Speichern wird abgelehnt, bis sie entfernt sind.",
+        "hover_hint": "Fahre über einen Execute, um ihn auf der Map zu zeichnen",
+        "steps_short": "{count} Schritte",
+        "duration": "{seconds}s",
+        "out_of_order": "{count} Schritte landen vor dem Schritt über ihnen.",
+        "seconds_label": "Sek.",
+        "repeat_of": "erneut ab Schritt {step}",
+        "repeats": "{count} Schritte werfen ein Lineup, das dieser Execute bereits verbraucht.",
+        "carry_over_type": "{player} wirft {count} {type} – ein Spieler trägt {limit}.",
+        "carry_over_total": "{player} wirft {count} Granaten – ein Spieler trägt {limit}.",
+        "creating": "Neuer Execute",
+        "editing": "Execute bearbeiten",
+        "back": "Zurück zu den Executes",
+        "done": "Fertig",
+        "added_count": "{count} hinzugefügt"
+      },
+      "sightline": {
+        "eyebrow": "Abdeckungsprüfung",
+        "title": "Sichtlinien-Prüfung",
+        "description": "Zieh eine Linie über die Map und frag, ob die Utility dieses Lineups sie schließt.",
+        "open": "Sichtlinie ziehen",
+        "hide": "Ausblenden",
+        "hint": "Klick dahin, von wo jemand schaut, und dann auf das, worauf er schaut.",
+        "pending_hint": "Klick jetzt auf das, worauf er schaut.",
+        "height_label": "Höhe wählen (Z)",
+        "height_hint": "Welthöhe, auf der der nächste Punkt gelesen wird. Auf Nuke und Vertigo wählt sie außerdem die Ebene.",
+        "max_pairs": "{count} Linien auf einmal sind das Limit.",
+        "check": "Abdeckung prüfen",
+        "check_one_way": "One-Way prüfen",
+        "clear": "Leeren",
+        "remove": "Diese Linie entfernen",
+        "threshold": "Server-Schwelle {value}",
+        "empty": "Noch nichts gezeichnet.",
+        "pair": "Linie {index}",
+        "not_checked": "Noch nicht geprüft.",
+        "depth": "{units}u durch den Smoke",
+        "visible": "{percent}% sichtbar",
+        "blocked_by": "Gestoppt von {what}",
+        "failed": "Diese Sichtlinie konnte nicht geprüft werden",
+        "one_way_failed": "Es konnte nicht auf ein One-Way geprüft werden",
+        "degraded": {
+          "coverage": "Abdeckungsprüfung nicht verfügbar",
+          "one_way": "One-Way-Prüfung nicht verfügbar",
+          "note": "Der Parser konnte nicht antworten, also gibt es hier kein Ergebnis – weder eine freie noch eine blockierte Linie. Versuch es gleich noch einmal.",
+          "retry": "Erneut versuchen"
+        },
+        "verdict": {
+          "world": "Die Map blockiert sie ohnehin",
+          "blocked": "Die Utility blockiert sie",
+          "grazing": "Streift den Rand",
+          "clear": "Weiterhin offen"
+        },
+        "verdict_note": {
+          "world": "Die Geometrie der Map selbst stoppt diese Linie. Die Utility ändert hier nichts – das ist nicht das Verdienst des Lineups.",
+          "blocked": "Die Utility liegt quer über der Linie. Von hier sieht niemand hindurch.",
+          "grazing": "Die Linie erwischt nur den Rand. Rechne mit einer Silhouette – und damit, beschossen werden zu können.",
+          "clear": "Die Utility liegt nicht im Weg. Diese Linie bleibt offen."
+        },
+        "one_way": {
+          "possible": "Mögliches One-Way",
+          "none": "Nichts hier liest sich wie ein One-Way.",
+          "contested": "Umstritten",
+          "contested_note": "Beide Enden bekommen etwas vom Vorteil ab, der Unterschied ist also klein und kann mit einem Schritt in die eine oder andere Richtung kippen.",
+          "favors": "Liest sich als Vorteil für {who}",
+          "cause": "Ursache: {cause}",
+          "caveat": "Ein Hinweis, keine Tatsache. Volumetrisches Licht und der Kontrast des Ziels werden nicht modelliert, ein echtes Ingame-One-Way kann sich hier also symmetrisch lesen und ein markiertes kann nichts sein. Stell dich hinein, bevor du es so nennst.",
+          "confidence": {
+            "none": "kein Signal",
+            "marginal": "grenzwertig",
+            "likely": "wahrscheinlich",
+            "strong": "deutlich"
+          },
+          "side": {
+            "from": "das nahe Ende",
+            "to": "das ferne Ende",
+            "attacker": "der Angreifer",
+            "defender": "der Verteidiger",
+            "ct": "CT",
+            "t": "T"
+          }
+        }
+      },
+      "block": {
+        "eyebrow": "Winkel schließen",
+        "title": "Sichtlinie blocken",
+        "subtitle": "Zieh auf {map} die Linie, die du schließen willst, und sieh, welche Lineups sie schließen.",
+        "hint": "Klick dahin, von wo der Gegner schaut, und dann auf das, worauf er schaut.",
+        "pending_hint": "Klick jetzt auf das, worauf er schaut.",
+        "height_label": "Augenhöhe (Z)",
+        "search": "Lineups finden",
+        "clear": "Linie löschen",
+        "failed": "Diese Linie konnte nicht durchsucht werden",
+        "results": "{count} Lineups legen Utility darüber",
+        "empty": "Zieh zuerst die Linie",
+        "empty_description": "Klick die beiden Enden der Sichtlinie auf dem Radar an und such dann.",
+        "no_results": "Nichts schließt diese Linie",
+        "no_results_description": "Kein gespeichertes Lineup auf dieser Map legt Utility darüber. Versuch die andere Seite oder leere die Utility-Filter.",
+        "degraded": "Diese Linie konnte nicht geprüft werden",
+        "degraded_description": "Der Parser konnte nicht antworten, das heißt also nicht „nichts schließt sie“, sondern „wir wissen es nicht“. Hier ist nichts ausgeschlossen worden.",
+        "degraded_partial": "Der Parser hat nur teilweise geantwortet, dieser Liste können also Lineups fehlen, die die Linie tatsächlich schließen.",
+        "retry": "Erneut versuchen",
+        "coverage": {
+          "world": "Map blockt sie",
+          "blocked": "Schließt sie",
+          "grazing": "Teilweise",
+          "clear": "Knapp"
+        }
+      },
+      "solve": {
+        "title": "Lineup lösen",
+        "open": "Lineup lösen",
+        "entry_hint": "Wähl einen Punkt auf der Map, und der Server rechnet einen Wurf aus, der dort landet.",
+        "back": "Zurück zur Sitzung",
+        "checking": "Solver wird geprüft ...",
+        "calibration_failed": "Die Kalibrierung des Solvers konnte nicht gelesen werden",
+        "check_again": "Erneut prüfen",
+        "state": {
+          "ready": "Solver bereit",
+          "no_sample": "Solver braucht erst einen Wurf",
+          "unsupported": "Dieser Server kann nicht lösen",
+          "unknown": "Solver nicht verfügbar"
+        },
+        "state_note": {
+          "ready": "Der Solver hat alles, was er braucht, und ist einsatzbereit.",
+          "no_sample": "Wirf irgendeine Utility auf dem Server. Der Solver kalibriert sich daran, und das hier erledigt sich von selbst.",
+          "unsupported": "Die Laufzeit auf diesem Übungsserver enthält keinen Solver. Daran ändert nichts, was du im Spiel tust – starte eine Sitzung auf einem Server, der einen hat.",
+          "unknown": "Der Server hat mit einem Status geantwortet, den diese Seite nicht kennt. Er wird unten genau so gezeigt, wie er kam."
+        },
+        "pick_target_hint": "Klick dahin, wo die Utility landen soll.",
+        "pick_from_hint": "Klick dahin, von wo du werfen willst.",
+        "pick_from": "Wurfpunkt wählen",
+        "repick_from": "Wurfpunkt verschieben",
+        "target_short": "LANDET",
+        "from_short": "WURF",
+        "utility": "Utility",
+        "name": "Name",
+        "name_placeholder": "Window-Smoke",
+        "height": "Höhe wählen (Z)",
+        "tolerance": "Toleranz (Units)",
+        "tolerance_placeholder": "Server-Standard",
+        "submit": "Lösen",
+        "failed": "Es konnte keine Lösung angefordert werden",
+        "rejected": "Der Server hat den Auftrag nicht angenommen",
+        "working": "Wird gelöst ...",
+        "working_note": "Der Server wirft so lange auf den Punkt, bis etwas dort landet. Das dauert bis zu zwei Minuten, und das Lineup erscheint von selbst in der Bibliothek.",
+        "cancel": "Nicht mehr warten",
+        "cancelled_note": "Beobachtung beendet. Der Server könnte trotzdem fertig werden – wenn ja, taucht das Lineup in der Bibliothek dieser Map auf.",
+        "timed_out": "Innerhalb von zwei Minuten kam kein Lineup an. Der Solver hat vielleicht aufgegeben oder landet es später doch noch; sieh in der Bibliothek der Map nach.",
+        "solved": "Gelöst – hier ist das Lineup"
+      },
+      "drift": {
+        "eyebrow": "Drift durch Map-Revisionen",
+        "title": "Utility-Drift",
+        "subtitle": "Was ein Map-Update mit den bereits darauf gespeicherten Lineups gemacht hat.",
+        "framing_title": "Nur die Differenz",
+        "framing": "Ein Ergebnis sagt, wie weit sich der simulierte Endpunkt eines Lineups zwischen zwei Map-Revisionen verschoben hat. Diese simulierte Position bedeutet für sich genommen nichts und ist nie der Ort, an dem die Utility im Spiel landet, deshalb werden nur die Verschiebung und die Schwere gezeigt.",
+        "map": "Map",
+        "from_revision": "Von Revision",
+        "to_revision": "Zu Revision",
+        "revision_placeholder": "Neueste",
+        "start": "Scan starten",
+        "started": "Scan über {count} Lineups gestartet",
+        "start_failed": "Der Scan konnte nicht gestartet werden",
+        "scans": "Scans",
+        "no_scans": "Noch keine Scans.",
+        "progress": "{scanned} von {lineups} gescannt",
+        "duration": "{seconds}s",
+        "requested_by": "Angefordert von",
+        "capped": "Es werden die ersten {shown} von {total} Zeilen gezeigt.",
+        "count_broken": "{count} kaputt",
+        "count_moved": "{count} verschoben",
+        "count_unsimulatable": "{count} nicht simulierbar",
+        "count_unchanged": "{count} unverändert",
+        "max_distance": "max. {units}u",
+        "no_scan_selected": "Wähle einen Scan",
+        "no_scan_selected_description": "Wähle links einen Scan aus oder starte einen für eine Map.",
+        "no_results": "Nichts zu prüfen",
+        "no_results_description": "Dieser Scan hat unter diesem Befund keine Ergebnisse.",
+        "verdicts": {
+          "unchanged": "Unverändert",
+          "moved": "Verschoben",
+          "broken": "Kaputt",
+          "unsimulatable": "Nicht simulierbar"
+        },
+        "severities": {
+          "minor": "Gering",
+          "major": "Schwer"
+        },
+        "reasons": {
+          "start_sealed": "Wurfposition versiegelt",
+          "out_of_world": "Hat die Welt verlassen",
+          "max_flight": "Nie gelandet",
+          "inside_geometry": "In der Geometrie geendet"
+        },
+        "reason_notes": {
+          "start_sealed": "Der Punkt, auf dem du zum Werfen stehst, wurde durch das Update zugebaut. Das ist der Fall, der ein Lineup wirklich tötet – der Wurf lässt sich überhaupt nicht mehr machen.",
+          "out_of_world": "Die Flugbahn hat den spielbaren Raum auf dem neuen Mesh verlassen, es gibt also keinen Endpunkt zum Vergleichen und keine Distanz anzugeben.",
+          "max_flight": "Die Granate war noch unterwegs, als die Simulation ihre Flugobergrenze erreichte – meist fehlt Geometrie, die sie früher gestoppt hat.",
+          "inside_geometry": "Die Flugbahn endete in solider Weltgeometrie. In der Praxis selten: Eine Granate kann nicht in eine Tasche fliegen, die zu klein für sie ist – halte das also eher für eine Merkwürdigkeit des Scans als für ein totes Lineup."
+        },
+        "moved": "{units}u verschoben",
+        "moved_axes": "({across}u seitlich, {up}u nach oben)",
+        "no_distance": "Keine Distanz: Eine Seite des Vergleichs wurde nie aufgelöst, es gibt also nichts dazwischen zu messen.",
+        "unsimulatable_note": "Entweder gab es keinen Physik-Seed zum Nachspielen, oder die Flugbahn ist auf beiden Meshes fehlgeschlagen – und ein Fehlschlag auf beiden sagt nichts über das Update aus. Das ist eine Aussage darüber, was simuliert werden konnte, kein fehlgeschlagener Scan, und es sagt nichts darüber, ob das Lineup noch funktioniert.",
+        "open_lineup": "Lineup öffnen"
+      },
+      "plan": {
+        "tab": "Plan",
+        "title": "Was du als Nächstes lernen solltest",
+        "description": "Was du noch nicht gemeistert hast, sortiert danach, wie viele Spieler es auf dieser Map werfen.",
+        "never_thrown": "nie geworfen",
+        "unavailable": "Dieses Lineup ist für dich nicht sichtbar.",
+        "not_analysed": "Noch kein Plan",
+        "not_analysed_description": "Der Plan konnte nicht erstellt werden. Das heißt nicht „nichts mehr zu lernen“ – es heißt „das hat noch niemand ausgerechnet“.",
+        "failed": "Der Plan konnte nicht geladen werden",
+        "failed_description": "Die Anfrage ist fehlgeschlagen. Versuch es gleich noch einmal.",
+        "empty": "Nichts in der Warteschlange",
+        "empty_description": "Hier ist nichts eingestuft. Versuch die andere Seite oder die andere Bibliothek.",
+        "reasons": {
+          "never_attempted": "Nie geworfen",
+          "popular_unmastered": "Beliebt, nicht gemeistert",
+          "unmastered": "Nicht gemeistert",
+          "mastered_slipping": "Lässt nach",
+          "other": "Eingestuft"
+        },
+        "reason_notes": {
+          "never_attempted": "Du hast das noch nie auf einem Übungsserver geworfen.",
+          "popular_unmastered": "Viele Spieler werfen das auf dieser Map, und du hast es nicht gemeistert.",
+          "unmastered": "Angefangen, aber nicht gemeistert – die Serie hat nie fünf erreicht.",
+          "mastered_slipping": "Du hattest das gemeistert, und die Serie ist seitdem gerissen."
+        },
+        "everyone": "Alle",
+        "global_landing_rate": "{percent}% landen es",
+        "global_players": "{count} Spieler",
+        "global_attempts": "{count} Versuche"
+      },
+      "repair": {
+        "action": "Reparieren",
+        "title": "Dieses Lineup reparieren",
+        "description": "Lös ein neues Lineup, das dort landet, wo dieses früher gelandet ist, bevor das Map-Update es verschoben hat.",
+        "unnamed": "Unbenanntes Lineup",
+        "target_note": "Der Solver wirft auf den Landepunkt, den dieses Lineup vor dem Update hatte, und speichert das Ergebnis als neues Lineup. Dieses hier bleibt genau so, wie es ist – Bewertungen, Speicherungen und Übungsfortschritt bleiben, wo sie sind.",
+        "needs_session": "Eine Reparatur läuft in einem Übungsserver auf dieser Map. Starte hier einen und lass ihn stehen, um den Rest des Scans zu reparieren.",
+        "submit": "Lineup reparieren",
+        "accepted": "In der Warteschlange",
+        "accepted_note": "Der Server hat den Auftrag angenommen. Er wirft weiter, bis etwas auf dem alten Punkt landet, und danach taucht eine reparierte Kopie in der Bibliothek auf – ein neues Lineup, aus diesem geforkt. Die Zeile, aus der du das geöffnet hast, ändert sich nicht, warte hier also nicht auf eine Korrektur.",
+        "failed": "Es konnte keine Reparatur angefordert werden",
+        "queued": "Reparatur in der Warteschlange",
+        "queued_hint": "Eine reparierte Kopie wird gerade gelöst. Dieses Lineup behält seinen Befund – die Korrektur kommt als neues Lineup in der Bibliothek an.",
+        "refusals": {
+          "not_scanned": "Dieses Lineup wurde nicht gescannt",
+          "not_moved": "Nichts zu reparieren",
+          "seedless": "Kein Physik-Seed zum Nachspielen",
+          "wrong_map": "Falsche Map für diese Sitzung"
+        },
+        "refusal_notes": {
+          "not_scanned": "Eine Reparatur zielt auf den Landepunkt, den ein Drift-Scan gemessen hat, und dieses Lineup wurde von keinem Scan erfasst. Scanne zuerst diese Map.",
+          "not_moved": "Nur ein Lineup, das ein Scan als verschoben eingestuft hat, hat einen alten Landepunkt zum Anvisieren. Kaputt, nicht simulierbar und unverändert heißen alle: hier gibt es nichts neu zu lösen.",
+          "seedless": "Hinter diesem Lineup steht kein aufgezeichneter Physik-Seed, der Solver hat also nichts zum Nachspielen.",
+          "wrong_map": "Der Übungsserver läuft auf einer anderen Map als dieses Lineup. Stopp ihn und starte einen auf der Map des Lineups."
+        }
+      },
+      "create": {
+        "action": "Lineup hinzufügen",
+        "eyebrow": "Lineup schreiben",
+        "title": "Neues Lineup",
+        "subtitle": "Setze Wurf und Landung auf {map} und beschreib es dann.",
+        "pick_origin_hint": "Klick dahin, wo du zum Werfen stehst.",
+        "pick_landing_hint": "Klick dahin, wo die Utility landet.",
+        "origin": "Wurf von",
+        "landing": "Landet bei",
+        "origin_short": "WURF",
+        "landing_short": "LANDET",
+        "repick": "Neu wählen",
+        "not_placed": "Nicht gesetzt",
+        "origin_height": "Stand-Z",
+        "landing_height": "Lande-Z",
+        "precision": "Zielgenauigkeit",
+        "precision_hint": "Wie nah das Fadenkreuz sein muss, bevor die Ingame-Markierung grün wird.",
+        "height_hint": "Ein Radarpixel trägt keine Höhe, jedes Ende wird also auf dem Z darüber gelesen – und auf Nuke und Vertigo wählt dieses Z zugleich die Ebene. Setz sie, bevor du klickst: Ein bereits gesetzter Punkt muss neu gewählt werden, weil seine Weltposition über die alte Ebene gelesen wurde.",
+        "clear_points": "Beide Punkte löschen",
+        "confidence_caption": "Hier wurde nichts auf einem Server gemessen, das Panel entscheidet also, wie dieses Lineup bewertet wird – und ein selbst geschriebenes wird nie wie ein aufgezeichnetes bewertet. Nimm es als Spot zum Einlaufen: Das Zielen unten ist ein Ausgangspunkt, und es lässt sich im Spiel nicht Schuss für Schuss nachspielen wie ein erfasstes Lineup.",
+        "utility": "Utility",
+        "name_placeholder": "Window-Smoke vom T-Spawn",
+        "description_placeholder": "Wo du dich ausrichtest, worauf du zielst und wann du es wirfst.",
+        "aim": "Zielen (Yaw / Pitch)",
+        "yaw": "Yaw",
+        "pitch": "Pitch",
+        "reset_aim": "Sichtlinie",
+        "aim_hint": "Abgeleitet aus der geraden Linie zwischen deinen beiden Punkten, was nicht der Wurfwinkel ist – eine Granate fliegt im Bogen, das echte Fadenkreuz sitzt also höher. Korrigier es hier, sobald du es geworfen hast.",
+        "tags_placeholder": "Kommagetrennt, z. B. execute, a site",
+        "save": "Lineup speichern",
+        "untitled": "Unbenanntes Lineup",
+        "save_requirements": "Setz beide Punkte und gib ihm einen Namen.",
+        "saved": "Lineup gespeichert",
+        "save_failed": "Das Lineup konnte nicht gespeichert werden",
+        "step_place": "Setzen",
+        "step_describe": "Beschreiben",
+        "step_throw": "Werfen",
+        "step_place_todo": "zwei Punkte",
+        "step_place_half": "noch einer",
+        "step_place_done": "beide Enden",
+        "step_describe_todo": "braucht einen Namen",
+        "step_describe_done": "benannt",
+        "step_throw_todo": "noch kein Zielen",
+        "step_throw_aimed": "ausgerichtet",
+        "placed": "Auf der Map gesetzt",
+        "repick_note": "Klick auf ein Ende, um es neu zu wählen",
+        "ground_height": "Bodenhöhe",
+        "height_why": "Warum das wichtig ist",
+        "check_placed": "Gesetzt",
+        "check_named": "Benannt",
+        "check_aim": "Zielen"
+      },
+      "publish": {
+        "submit": "Zur Veröffentlichung einreichen",
+        "pending": "Wartet auf Prüfung",
+        "requested": "Zur Prüfung eingereicht",
+        "request_failed": "Das konnte nicht zur Prüfung eingereicht werden",
+        "approve": "Öffentlich machen",
+        "reject": "Ablehnen",
+        "approved": "In der Bibliothek veröffentlicht",
+        "rejected": "Nicht in die Bibliothek aufgenommen",
+        "review_failed": "Dieses Lineup konnte nicht geprüft werden"
+      },
+      "archive": {
+        "action": "Lineup archivieren",
+        "title": "Dieses Lineup archivieren?",
+        "this_lineup": "dieses Lineup",
+        "description": "{name} verschwindet aus jeder Bibliothek, jedem Board und jeder Suche auf dieser Map.",
+        "keeps_history": "Es wird nichts zerstört. Übungsfortschritt, Bewertungen und jedes Playbook, das es nutzt, bleiben erhalten, und du kannst es aus dem Tab „Archiviert“ zurückholen.",
+        "confirm": "Archivieren",
+        "done": "{name} archiviert",
+        "undo": "Rückgängig",
+        "restore": "Lineup wiederherstellen",
+        "restored": "Zurückgeholt",
+        "failed": "Dieses Lineup konnte nicht archiviert werden",
+        "restore_failed": "Es konnte nicht zurückgeholt werden",
+        "delete": "Lineup löschen",
+        "delete_title": "Dieses Lineup löschen?",
+        "delete_description": "{name} ist endgültig weg. Das ist nicht der Tab „Archiviert“ – es gibt nichts, woraus man es zurückholen könnte.",
+        "loses_history": "Übungsfortschritt, Bewertungen und Reaktionen gehen mit. Ein Playbook, das es noch verwendet, verweigert das Löschen, statt den Schritt zu verlieren.",
+        "delete_confirm": "Löschen",
+        "deleted": "{name} gelöscht",
+        "delete_failed": "Dieses Lineup konnte nicht gelöscht werden"
+      },
+      "fork": {
+        "action": "Forken",
+        "title": "Dieses Lineup forken",
+        "description": "Legt eine Kopie in deiner eigenen Bibliothek an, damit du sie umbenennen, neu taggen und ihren Text umschreiben kannst, ohne das Original anzurühren.",
+        "name_placeholder": "Originalnamen behalten",
+        "collection": "Zu einer Sammlung hinzufügen",
+        "private_note": "Die Kopie gehört dir und startet als Privat. Bewertungen, Speicherungen und Übungsfortschritt bleiben beim Original.",
+        "confirm": "Forken",
+        "copy_of": "{name} (Kopie)",
+        "forked": "In deine Bibliothek geforkt",
+        "failed": "Dieses Lineup konnte nicht geforkt werden"
+      },
+      "coverage": {
+        "eyebrow": "Execute-Abdeckung",
+        "title": "Abdeckungslücken",
+        "description": "Zeichne die Winkel ein, die dieser Execute schließen soll, und sieh, welche er tatsächlich schließt.",
+        "open": "Sichtlinien ziehen",
+        "hide": "Ausblenden",
+        "hint": "Klick dahin, von wo ein Verteidiger schaut, und dann auf das, worauf er schaut.",
+        "pending_hint": "Klick jetzt auf das, worauf er schaut.",
+        "check": "Abdeckung prüfen",
+        "empty": "Noch nichts gezeichnet.",
+        "saved_only": "Geprüft wurde gegen den gespeicherten Execute – seit dem letzten Speichern hinzugefügte oder verschobene Schritte stecken nicht in dieser Antwort.",
+        "degraded": "Abdeckungsprüfung nicht verfügbar",
+        "degraded_note": "Der Parser konnte nicht antworten, also ist hier nichts eine freie Linie. Jeder Winkel, den er nicht geklärt hat, wird als unbekannt gezeigt statt als offen – „wir konnten es nicht prüfen“ ist nicht „niemand deckt es ab“.",
+        "failed": "Die Abdeckung des Executes konnte nicht geprüft werden",
+        "open_count": "{count} offen gelassen",
+        "unknown_count": "{count} unbekannt",
+        "verdict": {
+          "covered": "Geschlossen",
+          "open": "Offen gelassen",
+          "unknown": "Nicht beantwortet"
+        },
+        "verdict_note": {
+          "covered": "Der Execute legt Utility über diese Linie.",
+          "open": "Nichts im Execute deckt diesen Winkel ab. Jemand muss ihn halten, oder es braucht noch eine Utility.",
+          "unknown": "Diese Linie wurde nicht geklärt. Sie ist weder ein offener noch ein geschlossener Winkel – niemand hat sie angesehen."
+        },
+        "by_step": "Geschlossen von Schritt {step}",
+        "by_step_named": "Geschlossen von Schritt {step} – {name}"
+      },
+      "difficulty": {
+        "levels": {
+          "unmeasured": "Ungemessen",
+          "easy": "Leicht",
+          "moderate": "Mittel",
+          "hard": "Schwer",
+          "very_hard": "Sehr schwer"
+        },
+        "notes": {
+          "unmeasured": "Zu wenige Versuche von zu wenigen Leuten, um das einzustufen. Weder leicht noch schwer – niemand hat es oft genug geworfen, um es zu wissen.",
+          "easy": "Die meisten, die das üben, landen es schnell.",
+          "moderate": "Die meisten brauchen ein paar Sitzungen, bis das zuverlässig sitzt.",
+          "hard": "Die meisten brauchen sehr viele Wiederholungen, bis das sitzt.",
+          "very_hard": "Nur sehr wenige landen das zuverlässig, egal wie lange sie üben.",
+          "unknown": "Die Bibliothek hat das mit einem Wort eingestuft, das diese Seite nicht kennt. Es wird genau so gezeigt, wie es kam, und nicht als Einstufung gelesen."
+        }
+      },
+      "miss": {
+        "eyebrow": "Fehlermuster",
+        "title": "Wie das danebengeht",
+        "failed": "Das Fehlermuster konnte nicht geladen werden.",
+        "not_analysed": "Zu wenige aufgezeichnete Würfe, um zu sagen, wie das danebengeht. Unterhalb der Stichprobengrenze gibt es keine Richtung zu melden – eine Tendenz aus einer Handvoll Versuche ist eine erfundene Tendenz.",
+        "samples": "{samples} Würfe · {players} Spieler",
+        "centred": "Zentriert",
+        "offset": "{direction} um {units}u",
+        "single_player": "Jeder dieser Würfe stammt vom selben Spieler. Das ist die Angewohnheit einer Person, nicht die des Lineups.",
+        "caveat": "Wo die Würfe anderer Leute landen, zusammengezählt. Ob das als Abweichung zählt, entscheidet der Server, gemessen am konfigurierten Trefferradius. Es ist keine Korrektur und kein Vorwurf: Die aufgezeichneten Winkel des Lineups sind genauso wahrscheinlich schuld wie irgendjemandes Zielen.",
+        "axes": {
+          "along": "Tiefe",
+          "lateral": "Seitlich",
+          "vertical": "Höhe"
+        },
+        "directions": {
+          "short": "Kurz",
+          "long": "Weit",
+          "left": "Links",
+          "right": "Rechts",
+          "high": "Hoch",
+          "low": "Tief"
+        },
+        "biases": {
+          "short": "Landet zu kurz",
+          "long": "Landet zu weit",
+          "left": "Zieht nach links",
+          "right": "Zieht nach rechts",
+          "high": "Landet zu hoch",
+          "low": "Landet zu tief",
+          "scattered": "Gestreut",
+          "none": "Kein Muster"
+        },
+        "bias_notes": {
+          "short": "Die meisten Spieler landen das zu kurz vor der eigentlichen Stelle.",
+          "long": "Die meisten Spieler landen das hinter der eigentlichen Stelle.",
+          "left": "Die meisten Spieler landen das links von der eigentlichen Stelle.",
+          "right": "Die meisten Spieler landen das rechts von der eigentlichen Stelle.",
+          "high": "Die meisten Spieler landen das über der eigentlichen Stelle.",
+          "low": "Die meisten Spieler landen das unter der eigentlichen Stelle.",
+          "scattered": "Die Würfe landen überall. Die Leute verfehlen das in unterschiedliche Richtungen, es gibt also keine einzelne Tendenz.",
+          "none": "Die Würfe landen um die richtige Stelle herum, und die verbleibenden Fehlwürfe haben keine Richtung.",
+          "unknown": "Die Auswertung hat dieses Muster mit einem Wort beschrieben, das diese Seite nicht kennt. Es wird genau so gezeigt, wie es kam."
+        },
+        "below_floor": "Bisher {samples} Würfe aufgezeichnet.",
+        "means": "Gemessene Mittelwerte"
+      },
+      "save": {
+        "title_demo": "Diese Granate als Lineup speichern",
+        "description_demo": "Behält eine in diesem Match geworfene Granate als eigenes Lineup in der Bibliothek.",
+        "title_practice": "Diesen Wurf als Lineup speichern",
+        "description_practice": "Behält einen Wurf vom geöffneten Übungsserver als eigenes Lineup.",
+        "name_placeholder": "Window-Smoke vom T-Spawn",
+        "description_placeholder": "Wo du dich ausrichtest, worauf du zielst und wann du es wirfst.",
+        "tags_placeholder": "Kommagetrennt, z. B. execute, a site",
+        "collection": "Zu einer Sammlung hinzufügen",
+        "confirm": "Lineup speichern",
+        "saved": "Lineup gespeichert",
+        "failed": "Das Lineup konnte nicht gespeichert werden",
+        "practice_note": "Aus der geöffneten Sitzung gespeichert, gegen das Lineup, das du gerade übst. Der Ingame-Befehl .save macht dasselbe mit dem Wurf direkt vor dir.",
+        "practice_entry_title": "Wurf speichern",
+        "practice_entry_hint": "Behalte, was du hier geworfen hast, als eigenes Lineup.",
+        "practice_entry_open": "Aus dem Training speichern"
+      },
+      "density": {
+        "cards": "Karten",
+        "cards_hint": "Ein Lineup nach dem anderen, mit deinem Übungsstand und dem Autor.",
+        "rows": "Zeilen",
+        "rows_hint": "Je eine Zeile, zum Durchlesen der Liste. Die ausgewählte öffnet sich an Ort und Stelle."
+      },
+      "throw_buttons": {
+        "left": "Linksklick",
+        "right": "Rechtsklick",
+        "both": "Links- + Rechtsklick",
+        "label": "Drücken",
+        "left_short": "LMT",
+        "right_short": "RMT",
+        "both_short": "LMT+RMT"
+      },
+      "preview": {
+        "play": "Vorschau abspielen",
+        "title": "Lineup-Vorschau",
+        "view_lineup": "Lineup ansehen",
+        "copy_link": "Link kopieren",
+        "download": "Herunterladen",
+        "link_copied": "Link kopiert"
+      },
+      "render_queue": {
+        "title": "Lineup-Vorschauen",
+        "empty": "Keine Vorschau-Renders in der Warteschlange.",
+        "lineups": "{count} Lineup | {count} Lineups",
+        "rerender": "Vorschau neu rendern",
+        "retry": "Erneut rendern",
+        "cancel": "Dieses Rendern abbrechen",
+        "clear_finished": "Fertige entfernen",
+        "requeued": "Vorschau-Render eingereiht",
+        "not_requeued": "Dieses Rendern konnte nicht eingereiht werden",
+        "cancel_failed": "Dieses Rendern konnte nicht abgebrochen werden",
+        "clear_failed": "Die Warteschlange konnte nicht geleert werden",
+        "statuses": {
+          "queued": "In der Warteschlange",
+          "rendering": "Wird aufgenommen",
+          "uploading": "Wird hochgeladen",
+          "done": "Fertig",
+          "error": "Fehlgeschlagen",
+          "skipped": "Übersprungen",
+          "cancelled": "Abgebrochen"
+        },
+        "no_pod": "Noch kein Pod gestartet",
+        "stale": "Seit {since} still",
+        "render_pod_booting": "Render-Pod startet",
+        "delete": "Render löschen",
+        "delete_failed": "Dieses Rendern konnte nicht gelöscht werden",
+        "delete_dialog": {
+          "title": "Diesen Render löschen?",
+          "description": "Das entfernt den Render und seinen Vorschau-Clip. Das lässt sich nicht rückgängig machen.",
+          "delete": "Löschen",
+          "deleting": "Wird gelöscht …"
+        }
+      },
+      "load": {
+        "action": "Setz mich rein",
+        "try_it": "Auf dem Server ausprobieren",
+        "try_it_hint": "Es wird nichts gespeichert",
+        "tooltip_title": "An deinen Übungsserver schicken",
+        "tooltip": "Legt diesen Wurf auf den Server, auf dem du schon bist, und stellt dich darauf – gleicher Punkt, gleiche Ausrichtung. Es wird nichts in deinen Lineups gespeichert.",
+        "sent": "Du stehst jetzt auf {name}",
+        "sent_description": "Halte im Spiel Ausschau danach – der Geist zeigt den Wurf.",
+        "failed_not_on_a_server": "Du bist auf keinem Übungsserver",
+        "failed_wrong_map": "Dieses Lineup ist für eine andere Map",
+        "failed_not_visible": "Dieses Lineup steht dir nicht zur Verfügung",
+        "failed_unreachable": "Dein Server war nicht erreichbar",
+        "failed_nothing_to_drill": "Nichts zu üben",
+        "drill_name": "{count} Lineups",
+        "drill": "Im Spiel üben",
+        "drill_hint": "Spielt diese auf deinem Server durch, je drei Würfe",
+        "test": "Im Spiel testen",
+        "test_hint": "Stell dich auf diesen Wurf, bevor du ihn speicherst",
+        "switch_and_load": "Map wechseln und mich reinsetzen",
+        "switch_tooltip_title": "Deinen Übungsserver auf {map} umstellen",
+        "switch_tooltip": "Dein Server läuft auf einer anderen Map. Das stellt ihn um und stellt dich auf diesen Wurf, sobald sie geladen ist – alle auf dem Server bekommen vorher fünf Sekunden Vorwarnung.",
+        "switch_then_load": "Du landest auf {name}, sobald sie geladen ist.",
+        "failed_map_switching": "Dein Server lädt noch seine neue Map"
+      },
+      "edit": {
+        "action": "Bearbeiten",
+        "saved": "Lineup aktualisiert",
+        "failed": "Das konnte nicht gespeichert werden",
+        "public_note": "Öffentlich zu machen ist eine Prüfung – nutze „Zur Prüfung einreichen“ im Zeilenmenü.",
+        "geometry_note": "Wo du stehst, wohin du zielst und wie weit es fliegt, lässt sich nicht bearbeiten. Fork es, um den Wurf selbst zu ändern."
+      }
     }
   },
   "custom_match": {
@@ -3905,7 +4856,8 @@
         "highlights": "Highlights",
         "news": "News",
         "leagues": "Liga",
-        "events": "Events"
+        "events": "Events",
+        "utility": "Utility"
       },
       "community": {
         "title": "Community"
@@ -3936,7 +4888,8 @@
         "database": "Datenbank",
         "metrics": "Metriken",
         "render_queue": "Render-Queue",
-        "media_server": "Medienserver"
+        "media_server": "Medienserver",
+        "utility_drift": "Utility-Drift"
       },
       "profile": {
         "section": "Konto",
@@ -3976,7 +4929,9 @@
         "leagues": "Liga",
         "events": "Events",
         "manage_events": "Events verwalten",
-        "system_media_server": "Medienserver"
+        "system_media_server": "Medienserver",
+        "utility_drift": "Drift von Utility-Lineups",
+        "utility": "Utility-Lineups"
       },
       "logout_dialog": {
         "title": "Abmelden",
@@ -4049,6 +5004,17 @@
         "news": {
           "title": "News",
           "subtitle": "{brand} News"
+        },
+        "library": {
+          "title": "BIBLIOTHEK"
+        },
+        "utility": {
+          "title": "Utility-Bibliothek",
+          "subtitle": "Smokes, Flashes und Molotovs nach Map"
+        },
+        "events": {
+          "title": "Events",
+          "subtitle": "Community-Abende und einmalige Spiele"
         }
       }
     },
@@ -5070,7 +6036,24 @@
       "subscription_help": "Abonniere diese URL in deiner Kalender-App, um jedes Match dieses Teams zu sehen — Scrims, Liga-Spiele und Turniere.",
       "link_error": "Kalender-Link konnte nicht geladen werden"
     },
-    "roster_short": "Kader"
+    "roster_short": "Kader",
+    "utility_utility": {
+      "title": "Utility-Lineups",
+      "description": "Welchen gespeicherten Lineups die Granaten dieses Kaders in echten Matches ähnelten.",
+      "lineup": "Lineup",
+      "map": "Map",
+      "players": "Spieler",
+      "thrown": "Geworfen",
+      "landed": "Gelandet",
+      "land_rate": "Lande-%",
+      "attribution_note": "Ein Wurf wird einem Lineup über Start- und Landepunkt zugeordnet, eine Zeile zeigt also Würfe, die wie dieses Lineup aussehen – keinen Nachweis, dass das Lineup gecallt wurde.",
+      "not_analysed": "Noch nicht ausgewertet",
+      "not_analysed_description": "Der Bericht konnte nicht erstellt werden, das heißt also nicht „euer Team wirft nichts“ – es heißt „wir haben nicht gezählt“.",
+      "failed": "Der Utility-Bericht konnte nicht geladen werden",
+      "failed_description": "Die Anfrage ist fehlgeschlagen. Versuch es gleich noch einmal.",
+      "empty": "Keine zugeordnete Utility",
+      "empty_description": "Bisher passt keine in den Matches dieses Teams geworfene Granate zu einem gespeicherten Lineup."
+    }
   },
   "match": {
     "open_match": "Match öffnen",
@@ -5556,7 +6539,15 @@
     "map_veto": {
       "is_picking": "pickt gerade eine",
       "pick": "Pick",
-      "confirm": "{type} bestätigen"
+      "confirm": "{type} bestätigen",
+      "your_turn": "Du bist dran",
+      "headline_side": "Wähle deine Startseite",
+      "headline_pick": "Wähle eine Map",
+      "headline_ban": "Banne eine Map",
+      "side_on_map": "{team} · erste Hälfte auf {map}",
+      "side_for_map": "Die Seite gilt für diese Map",
+      "side_role_ct": "Verteidigen",
+      "side_role_t": "Angreifen"
     },
     "map_lineup": {
       "picked": "Gepickt"
@@ -6052,6 +7043,38 @@
     },
     "highlights": {
       "clip_count": "{count} Clips"
+    },
+    "utility": {
+      "title": "Utility vs. Lineups",
+      "description": "In diesem Match geworfene Granaten, abgeglichen mit der Lineup-Bibliothek über Wurf- und Landepunkt.",
+      "everyone": "Alle",
+      "utility": "Utility",
+      "throws": "Geworfen",
+      "matched": "Zugeordnet",
+      "matched_lineups": "Passte zu einem Lineup",
+      "matched_meta": "Passte zu einem Meta-Spot",
+      "landed": "Gelandet",
+      "match_note": "Ein Wurf wird über Start- und Endpunkt zugeordnet, das sind also Würfe, die wie das Lineup aussehen – kein Beweis, dass das Lineup gerade gespielt wurde.",
+      "match_note_radius": "Ein Wurf wird einem Lineup zugeordnet, wenn er innerhalb von {units} Units davon startet und landet – das sind also Würfe, die wie das Lineup aussehen, kein Beweis, dass das Lineup gerade gespielt wurde.",
+      "not_analysed": "Noch nicht ausgewertet",
+      "not_analysed_description": "Die Demo dieses Matches wurde nicht nach Granaten durchsucht, es gibt also nichts zu zählen. Nichts hier ist eine Null – die Frage wurde noch nicht gestellt.",
+      "failed": "Der Utility-Bericht konnte nicht geladen werden.",
+      "default_lineup_name": "{utility}, Runde {round}",
+      "grenades": {
+        "title": "Granaten in diesem Match",
+        "description": "Jede auf dieser Map geworfene Granate, aus der Demo gelesen. Speicher eine, und sie wird ein Lineup in der Bibliothek.",
+        "show": "Granaten anzeigen",
+        "hide": "Granaten ausblenden",
+        "failed": "Die Demo dieser Map konnte nicht gelesen werden.",
+        "empty": "In der Demo dieser Map sind keine Granaten.",
+        "none_for_player": "Dieser Spieler hat auf dieser Map nichts geworfen.",
+        "save": "Speichern",
+        "open_lineup": "Lineup öffnen",
+        "showing": "{shown} von {total} werden gezeigt",
+        "unidentified": "{count} Würfe in dieser Demo tragen keine Granaten-ID, es gibt also keine Möglichkeit, sie anzuzeigen, und nichts zu speichern.",
+        "no_detonation": "keine Landung",
+        "no_detonation_hint": "Die Demo hat diesem Wurf nie eine Detonation zugeordnet, wo er endete, wurde also nie aufgezeichnet."
+      }
     }
   },
   "ui": {
@@ -6178,7 +7201,7 @@
         },
         "util_eff_score": {
           "label": "Utility-Schaden",
-          "coach": "Lern ein paar HE- / Molotov-Line-ups für gängige Stellen, um echten Schaden aus jeder Nade zu holen."
+          "coach": "Lern ein paar HE- / Molotov-Line-ups für gängige Stellen, um echten Schaden aus jeder Utility zu holen."
         }
       }
     },
@@ -6232,7 +7255,8 @@
         "mute": "{name} stummgeschaltet",
         "gag": "{name} geknebelt",
         "silence": "{name} zum Schweigen gebracht"
-      }
+      },
+      "typed_player": "{type}-Spieler"
     },
     "search": {
       "no_players_found": "Keine Spieler gefunden.",
@@ -6642,6 +7666,7 @@
       "select_type": "Server-Typ wählen",
       "game_mode": "Spielmodus",
       "select_game_mode": "Spielmodus wählen",
+      "select_custom_preset": "Eigene Voreinstellung wählen",
       "valve_preset_group": "Valve-Presets",
       "custom_mode_group": "Eigene Modi",
       "custom_mode_group_locked": "benötigt eine Game-Server-Node",
@@ -6652,8 +7677,12 @@
       "csgo_ranked_unavailable_description": "Der Ranked-Modus ist für CS:GO-Server noch nicht verfügbar.",
       "ranked_server": "Ranked-Server",
       "ranked_server_description": "Vollständig von 5Stack verwaltetes Ranked-Erlebnis.",
-      "valve_presets": "Valve-Presets",
-      "valve_presets_description": "Wähle aus Casual/Competitive und weiteren Valve-Presets.",
+      "practice_server": "Übungsserver",
+      "practice_server_description": "Hostet Utility-Übungssitzungen. Läuft mit dem Übungs-Plugin statt dem Match-Plugin und wird nie fürs Matchmaking genutzt.",
+      "valve_modes": "Valve-Modi",
+      "valve_modes_description": "Führt eine Valve-Voreinstellung wie Casual oder Deathmatch aus.",
+      "custom_presets": "Eigene Voreinstellungen",
+      "custom_presets_description": "Führt einen eigenen Spielmodus mit den Plugins aus, die 5Stack dafür installiert.",
       "connect_password": "Connect-Passwort",
       "connect_password_description": "Passwort, das zum Verbinden mit dem Server nötig ist (optional)",
       "rcon_password": "RCON-Passwort",
@@ -8169,7 +9198,14 @@
         "start_short": "Kamera",
         "stop_short": "Stopp",
         "flip": "Wechseln",
-        "hand_back": "Zurückgeben"
+        "hand_back": "Zurückgeben",
+        "live": "Kamera an",
+        "idle": "Nicht geteilt",
+        "stop": "Teilen beenden",
+        "hint": "Kamera und Mikrofon sind getrennt – nimm eines oder beide.",
+        "take_mic": "Dieses Mikrofon verwenden",
+        "release_mic": "Mikrofon zurückgeben",
+        "mic_live": "Mikro"
       },
       "nobody_yet": "Es ist noch niemand verbunden.",
       "hide_video": "Seine Kamera ausblenden",
@@ -8183,7 +9219,10 @@
       "toast_kind": "Sprache",
       "toast_joined": "ist beigetreten",
       "toast_started_video": "hat Video gestartet in",
-      "floating_title": "Anruf"
+      "floating_title": "Anruf",
+      "join_to_see": "Schalte deine Kamera ein, um die der anderen zu sehen.",
+      "started_video": "{name} hat die Kamera eingeschaltet",
+      "joined_voice": "{name} ist dem Voice-Chat beigetreten"
     }
   },
   "media": {
@@ -8191,7 +9230,8 @@
       "system_default": "Systemstandard",
       "selected": "Ausgewähltes Gerät",
       "following_system": "Folgt deiner Systemeinstellung",
-      "device": "Gerät"
+      "device": "Gerät",
+      "camera": "Kamera"
     }
   },
   "chat_rail": {

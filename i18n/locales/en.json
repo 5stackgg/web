@@ -247,7 +247,7 @@
       },
       "util_efficiency": {
         "num": "DMG (util)",
-        "den": "nades thrown"
+        "den": "utility thrown"
       },
       "enemies_flashed_per": {
         "num": "enemies blinded",
@@ -281,7 +281,7 @@
         "den": "enemy flashes"
       },
       "unused_utility": {
-        "expr": "total nade $ still on you when you die"
+        "expr": "total utility $ still on you when you die"
       },
       "wasted_magazine_pct": {
         "num": "bullets left at reload",
@@ -466,7 +466,7 @@
     },
     "utility": {
       "label": "Utility",
-      "description": "Grenade impact — flash assists, how much you blind enemies, and HE/molotov damage per nade. Scored 0–100 as the average percentile vs all players. Provisional: utility doesn't yet cleanly separate skill on our data."
+      "description": "Grenade impact — flash assists, how much you blind enemies, and HE/molotov damage per utility. Scored 0–100 as the average percentile vs all players. Provisional: utility doesn't yet cleanly separate skill on our data."
     },
     "consistency": {
       "label": "Consistency",
@@ -510,7 +510,7 @@
     },
     "util_efficiency": {
       "label": "Utility Damage",
-      "description": "Damage dealt per HE/molotov you throw — rewards landing nades, not just buying them."
+      "description": "Damage dealt per HE/molotov you throw — rewards landing utility, not just buying them."
     },
     "trade_kills": {
       "label": "Trade Kills",
@@ -954,7 +954,11 @@
     "loading_demo_in_cs2": "Loading demo in CS2",
     "queuing_demo": "Queuing demo",
     "loading_demo_into_cs2": "Loading demo into CS2",
-    "demo_loading": "Demo Loading"
+    "demo_loading": "Demo Loading",
+    "booking_server": "Booking a practice server",
+    "server_starting": "Practice server starting",
+    "dispatching_pod": "Dispatching the render pod",
+    "joining_practice_server": "Joining the practice server"
   },
   "stream_status": {
     "errored": "Errored",
@@ -2489,6 +2493,74 @@
           "casual_only": "Hidden from drafts",
           "plugin_count": "{count} plugins",
           "archived": "Archived"
+        },
+        "utility": {
+          "title": "Utility",
+          "rescan_section": "Re-scan the library",
+          "rescan_section_description": "Rebuild what the library knows from demos that have already been parsed.",
+          "rescan": "Re-scan demos",
+          "rescan_description": "Reads every parsed demo again and rebuilds the mined spots from it. Needed after a parser or miner change — a throw's standing position, for one, is derived differently now. This does not re-parse demos; run that first if they are on an older parser.",
+          "rescan_progress": "{demos} demo(s) · {throws} throw(s)",
+          "rescan_done": "Re-scanned {demos} demo(s) and {throws} throw(s)",
+          "rescan_failed": "Could not finish the re-scan",
+          "library_section": "Utility Library",
+          "library_description": "The lineup library: saved throws with where to stand, where to aim and where the utility lands. Turned off, the library is not served and nothing new is taken in.",
+          "lineup_daily_limit": "Lineups per player per day",
+          "lineup_daily_limit_description": "How many lineups one player may add in a day, counting what the in-game plugin records, what demo mining attributes to them and what they author in the browser. A spam ceiling, not a quota anyone should reach.",
+          "practice_section": "Practice Servers",
+          "practice_description": "One-click servers for walking a lineup in. Turned off, the Practice buttons disappear and no session can be started.",
+          "practice_connect_minutes": "Connect grace (minutes)",
+          "practice_connect_minutes_description": "How long a booked practice server waits for its host to actually join before it is handed back. This is the cheapest way to hold a server hostage, so it gets a shorter clock than the idle timeout.",
+          "practice_max_minutes": "Maximum session (minutes)",
+          "practice_max_minutes_description": "Only enforced while somebody is queuing for a practice server. With none free and players waiting, a session is ended once it reaches this age; with nobody waiting, a session runs for as long as its host wants.",
+          "practice_idle_minutes": "Idle timeout (minutes)",
+          "practice_idle_minutes_description": "How long a practice server sits with nobody in it before it shuts itself down. This is for the sessions nobody came back to — it is what keeps an abandoned drill from holding a server all night.",
+          "practice_reserved_servers": "Reserved on-demand slots",
+          "practice_reserved_servers_description": "On-demand server slots practice is never allowed to take. This is the safety valve: with it set, a practice session can never take the last slot out from under a scheduled match. Set it to 0 only if losing a match server to a drill is acceptable.",
+          "success_radius": "Success radius (units)",
+          "success_radius_description": "How close a throw has to land to the lineup before a drill scores it as a hit. It defaults to 96 source units against a smoke roughly 144 units across, so the default asks the utility to land well inside the smoke rather than merely clipping it. Raise it and mastery comes easier; lower it and only the exact lineup counts.",
+          "success_radius_default": "96 (default)",
+          "import_section": "Lineup Imports",
+          "import_description": "Whether lineups may be seeded from a payload rather than recorded in game. An imported lineup is never graded as recorded — nothing here measured it.",
+          "import": {
+            "payload": "Lineup payload",
+            "payload_description": "Paste the payload, or load it from a file. Run it as a dry run first — the counts and the per-entry errors come back the same either way, and nothing is written until you apply it.",
+            "payload_placeholder": "Paste the lineup payload (a JSON array of lineup entries)",
+            "choose_file": "Load a file",
+            "entries": "{count} top-level entries",
+            "too_many_entries": "One call carries at most {max} entries. Split the payload and import it in batches.",
+            "dry_run": "Dry Run",
+            "apply": "Import",
+            "dry_run_first": "Run a dry run to see what this payload would do.",
+            "invalid_json": "That is not valid JSON.",
+            "dry_run_label": "Dry run — nothing was written",
+            "applied_label": "Imported",
+            "total": "In payload",
+            "imported": "Imported",
+            "updated": "Updated",
+            "failed_count": "Rejected",
+            "errors": "{count} entries were rejected",
+            "errors_truncated": "Showing the first {shown} of {count} — the server caps the list.",
+            "error_row": "Entry {index}",
+            "nothing_in_payload": "The payload held nothing to import.",
+            "grading": "How an imported lineup is graded",
+            "done": "Imported {count} lineups",
+            "failed": "Could not run the import",
+            "dry_run_failed": "Could not run the dry run",
+            "purge": "Purge Imported",
+            "purge_description": "Removes every lineup written by the importer, and nothing else. This is the undo for a bad payload — preview it first, the count is the damage.",
+            "purge_preview": "Preview Purge",
+            "purge_preview_result": "{count} imported lineups would be removed.",
+            "purge_preview_empty": "There are no imported lineups to remove.",
+            "purge_preview_failed": "Could not preview the purge",
+            "confirm_purge": "Remove {count} imported lineups?",
+            "confirm_purge_description": "Every lineup the importer wrote goes away, including any a player has since saved or drilled against. Lineups recorded in game, authored in the editor or mined from demos are untouched.",
+            "purged": "Purged {count} imported lineups",
+            "purge_failed": "Could not purge the imported lineups"
+          },
+          "server_default": "Server default",
+          "invalid_number": "Enter a whole number of 0 or more.",
+          "updated": "Utility settings updated"
         }
       },
       "language": {
@@ -3821,6 +3893,885 @@
       "memory": "Memory",
       "no_resources": "No pod metrics for the media server yet — the cluster's metrics server may not be scraping it.",
       "legend": "A path is one named stream slot — one person's microphone, or one camera. Publishing counts the ones actually sending media right now; a path can sit idle between someone joining and their feed coming up. Sessions are WebRTC connections, and every viewer of a stream is one of them, so it climbs faster than the others."
+    },
+    "utility": {
+      "eyebrow": "Utility Library",
+      "title": "Utility",
+      "subtitle": "Lineups for every map — where to stand, where to aim, where it lands.",
+      "lineups": "Lineups",
+      "views": {
+        "label": "Map views",
+        "meta_hint": "What players actually throw here",
+        "playbooks_hint": "Timed executes built from lineups",
+        "block_hint": "Find a smoke that cuts a given angle",
+        "meta_tab": "Meta",
+        "playbooks_tab": "Executes",
+        "block_tab": "Block",
+        "create_tab": "Add"
+      },
+      "picker": {
+        "search": "Find a map",
+        "none": "No maps with radars"
+      },
+      "back_to_map": "Back to Map",
+      "empty": {
+        "no_maps": "No maps available",
+        "no_maps_description": "A utility library needs a map with a radar image. None are enabled yet.",
+        "no_lineups": "No lineups here yet",
+        "no_lineups_description": "Widen the filters, or record one in a practice server to start the library."
+      },
+      "types": {
+        "Smoke": "Smoke",
+        "Flash": "Flash",
+        "Molotov": "Molotov",
+        "HighExplosive": "HE",
+        "Decoy": "Decoy"
+      },
+      "sides": {
+        "CT": "CT",
+        "TERRORIST": "T"
+      },
+      "techniques": {
+        "Stationary": "Standing",
+        "Walking": "Walking",
+        "Running": "Running",
+        "Crouch": "Crouch",
+        "Jump": "Jump",
+        "RunJump": "Run Jump",
+        "WalkJump": "Walk Jump",
+        "CrouchJump": "Crouch Jump"
+      },
+      "strengths": {
+        "Full": "Full",
+        "Half": "Half",
+        "Drop": "Drop"
+      },
+      "precisions": {
+        "exact": "Exact",
+        "tight": "Tight",
+        "normal": "Normal",
+        "loose": "Loose"
+      },
+      "visibility": {
+        "Private": "Private",
+        "Team": "Team",
+        "Public": "Public"
+      },
+      "origin_sources": {
+        "plugin": "In game",
+        "demo": "Demo",
+        "editor": "Editor",
+        "import": "Import"
+      },
+      "confidence": {
+        "exact": "Recorded",
+        "exact_note": "Captured in game, so the stance and the angles are exact.",
+        "derived": "From a demo",
+        "derived_note": "Reconstructed from a demo: the aim is inferred from the grenade's flight, usually within a degree or two. Walk it in a practice server before you call it a lineup.",
+        "low": "Low confidence",
+        "low_note": "The origin and angles are rough. Treat this as a hint, not an alignment.",
+        "derived_off": "Verify this one",
+        "derived_off_note": "The aim inferred from the flight and the view angles the demo recorded disagree by more than a couple of degrees. The spot is real; the crosshair placement needs walking in.",
+        "delta_short": "±{degrees}°",
+        "delta_detail": "Inferred vs recorded: {yaw}° yaw / {pitch}° pitch"
+      },
+      "scope": {
+        "public": "Public",
+        "mine": "Mine",
+        "team": "Team",
+        "favorites": "Saved",
+        "archived": "Archived",
+        "pending": "Review"
+      },
+      "sort": {
+        "top": "Top rated",
+        "new": "Newest"
+      },
+      "filters": {
+        "search_placeholder": "Search lineups",
+        "side": "Side",
+        "technique": "Technique",
+        "throw_strength": "Throw",
+        "tags": "Tags",
+        "sort": "Sort"
+      },
+      "board": {
+        "no_radar": "No radar for this map",
+        "hint": "Squares are throw origins, dots are where the utility lands. Pick one to line it up with the list.",
+        "key": "Squares = origin · Dots = landing",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
+        "zoom_reset": "Fit map"
+      },
+      "card": {
+        "upvote": "Mark this as a good lineup",
+        "unvote": "Take your vote back",
+        "favorite": "Save to your list",
+        "unfavorite": "Remove from your saved list",
+        "open": "Open lineup",
+        "flight_time": "{seconds}s",
+        "unknown_author": "Unknown author",
+        "downvote": "Mark this as a bad lineup",
+        "more_actions": "More actions",
+        "flight_time_hint": "How long the grenade is in the air after you throw it.",
+        "stat_hit_rate": "My hit rate",
+        "stat_flight": "Flight",
+        "stat_difficulty": "Difficulty"
+      },
+      "viewer": {
+        "replay_throw": "Replay throw",
+        "roof": "Roof"
+      },
+      "detail": {
+        "previous": "Previous lineup",
+        "next": "Next lineup",
+        "open_full": "Open the full page",
+        "practice_this": "Practice This",
+        "not_found": "Lineup not found",
+        "not_found_description": "It may have been deleted, or it is not shared with you.",
+        "no_mesh": "No 3D mesh for this map yet — showing the radar instead.",
+        "flight_time": "Flight time",
+        "stand": "Stand at",
+        "lands": "Lands at",
+        "distance": "Throw distance",
+        "eye_height": "Eye over feet",
+        "view_angles": "Yaw / Pitch",
+        "precision": "Aim precision",
+        "origin_source": "Source",
+        "verified": "Verified",
+        "vote_failed": "Could not save your vote",
+        "precision_failed": "Could not change the aim precision",
+        "favorite_failed": "Could not update your saved lineups",
+        "aim_delta": "Inferred vs Recorded Aim",
+        "technical": "Technical details"
+      },
+      "practice": {
+        "title": "Practice Server",
+        "description": "Spin up a server on this map and walk the lineup yourself.",
+        "description_live": "Your server is up. Jump in, or bring the people you want on it.",
+        "what_is": "Your own CS2 server on this map. Warp onto any lineup at the exact stance and aim, watch the throw play back, run a whole execute, and invite friends to drill it with you.",
+        "region": "Region",
+        "select_region": "Select a region",
+        "no_regions": "No on-demand regions are available.",
+        "booting": "Starting your practice server...",
+        "start": "Practice",
+        "start_cta": "Start Server",
+        "stop": "Stop Server",
+        "start_failed": "Could not start the practice server",
+        "stop_failed": "Could not stop the practice server",
+        "join_failed": "Could not join that practice server",
+        "any_region": "Any region",
+        "region_recommended": "Recommended",
+        "region_any_hint": "We pick for you: a free practice server if one is standing, otherwise a fresh one in your closest region.",
+        "servers_free": "{count} free",
+        "dedicated_servers": "Practice Servers",
+        "servers_unavailable": "Could not load practice servers: {error}",
+        "nav_label": "Practice",
+        "nav_connected": "In practice",
+        "nav_starting": "Starting",
+        "nav_join": "Join practice",
+        "nav_ready": "Ready to join",
+        "nav_none": "No server",
+        "nav_copied": "Connect copied",
+        "server_in_use": "in use",
+        "server_held_by": "in use by {name}",
+        "collection": "Load a collection",
+        "no_collection": "None",
+        "access": "Session Access",
+        "access_failed": "Could not change who can join",
+        "access_open": "Open",
+        "access_open_desc": "Anyone with the invite link can join.",
+        "access_friends": "Friends",
+        "access_friends_desc": "Only your friends and the players you invite can join.",
+        "access_invite_desc": "Only the players you invite can join.",
+        "access_private_desc": "Nobody else can join. Just you on the server.",
+        "access_current": "Access",
+        "leave": "Leave Session",
+        "leave_failed": "Could not leave the practice server",
+        "invite_players": "Invite players",
+        "open_library": "Open the lineup library",
+        "pick_players": "Pick a player",
+        "send_invites": "Invite {count}",
+        "invited": "Invited {count}",
+        "invite_failed": "Could not invite them to the session",
+        "copy_connect": "Copy connect",
+        "copy_invite": "Copy invite link",
+        "invite_copied": "Invite link copied",
+        "access_invite": "Invite",
+        "access_private": "Private",
+        "map_banner": "Your practice server is on {map}.",
+        "switch_map": "Switch to {map}",
+        "switching": "Switching your server to {map}",
+        "switching_description": "Everyone on it gets a warning, then the map loads.",
+        "switch_failed": "Could not change the map",
+        "ask_host": "Ask {host} to switch it.",
+        "ask_the_host": "Ask the host to switch it.",
+        "nav_switching": "Switching"
+      },
+      "collections": {
+        "tab": "Collections",
+        "hint": "Type a name to start a new collection with this lineup in it.",
+        "empty": "No collections yet",
+        "empty_description": "Group the lineups you drill together — a smoke set for a map, an execute, a warm-up.",
+        "count": "{count} lineups",
+        "add_to": "Save to...",
+        "new_placeholder": "New collection",
+        "create": "Create collection",
+        "created": "Added to {name}",
+        "load_failed": "Could not load your collections",
+        "update_failed": "Could not update the collection",
+        "create_failed": "Could not create the collection",
+        "hint_choose": "Type a name to start a new collection and drop the copy into it.",
+        "new": "New Collection",
+        "created_empty": "Created {name}",
+        "delete": "Delete collection",
+        "deleting": "Deleting...",
+        "deleted": "Deleted {name}",
+        "delete_failed": "Could not delete the collection",
+        "confirm_delete": "Delete {name}?",
+        "confirm_delete_description": "The lineups stay in the library; only the collection goes away."
+      },
+      "progress": {
+        "drilled": "Drilled",
+        "mastered": "Mastered",
+        "record": "{successes} / {attempts}",
+        "hit_rate": "{percent}%",
+        "current_streak": "{count} in a row",
+        "best_streak": "best {count}",
+        "streak_hint": "Five successes in a row inside the success radius masters a lineup.",
+        "last_practiced": "Last thrown"
+      },
+      "meta": {
+        "title": "Meta",
+        "eyebrow": "Mined From Real Matches",
+        "subtitle": "{clusters} spots, {throws} grenades thrown in real matches.",
+        "overlay": "Meta overlay",
+        "throwers_hint": "Distinct players seen throwing this in real matches.",
+        "board_hint": "Dashed circles are spots players actually throw at. Bigger means more of them.",
+        "empty": "Nothing mined for this map yet",
+        "empty_description": "Grenades thrown in real matches show up here once enough demos have been parsed.",
+        "has_lineups": "{count} saved lineups match",
+        "no_lineups": "No saved lineup for this spot",
+        "no_lineups_description": "People throw it, but nobody has written it down. The aim above is a starting point: walk it in a practice server and save it.",
+        "matching_lineups": "Saved lineups for this spot",
+        "volume": "{throws} throws · {matches} matches",
+        "classification": "Cluster",
+        "aim": "Representative Aim",
+        "aim_hint": "The median yaw and pitch of everyone seen throwing this spot.",
+        "usage": "Usage",
+        "usage_detail": "{throwers} players · {throws} throws · {matches} matches",
+        "seen": "Seen",
+        "first_seen": "first",
+        "last_seen": "last",
+        "refreshed": "Aggregated",
+        "match_gap": "Showing {shown} of {count} saved lineups in this cluster — the rest are outside the lineups loaded here.",
+        "summary": "{spots} spots · {throws} throws",
+        "min_throwers": "Min players",
+        "write_up": "Write this up",
+        "unwritten": "Nobody has written this up",
+        "unwritten_count": "{count} unwritten",
+        "players": "players",
+        "throws": "throws",
+        "matches": "matches",
+        "copy_aim": "Copy setang",
+        "aim_copied": "Aim copied",
+        "aim_copy_failed": "Could not copy that",
+        "write_up_hint": "Prefills origin + aim"
+      },
+      "playbooks": {
+        "title": "Playbooks",
+        "eyebrow": "Team Executes",
+        "subtitle": "Ordered utility with timings — who throws what, and when.",
+        "new": "New Playbook",
+        "empty": "No playbooks for this map",
+        "empty_description": "Build an execute from the lineups your team already saved.",
+        "name_placeholder": "A Site default",
+        "description_placeholder": "What this execute is for, and when to call it.",
+        "team": "Team",
+        "visibility": "Visibility",
+        "team_required": "Pick a team, or nobody but you can see it.",
+        "steps_count": "{count} / {max} steps",
+        "add_step": "Add Step",
+        "step_limit": "A playbook holds at most {count} steps.",
+        "no_steps": "No steps yet. Add a lineup to start the execute.",
+        "unknown_lineup": "Lineup unavailable",
+        "move_up": "Move step up",
+        "move_down": "Move step down",
+        "offset_hint": "Seconds after the execute starts.",
+        "seconds": "s",
+        "unassigned": "Anyone",
+        "note_placeholder": "Call, e.g. 'after the flash'",
+        "no_roster": "That team has no roster to assign from.",
+        "assign_needs_team": "Pick a team to assign steps to players.",
+        "board_hint": "Every step is numbered on the map. Pick one to highlight it.",
+        "saved": "Playbook saved",
+        "save_failed": "Could not save the playbook",
+        "delete_failed": "Could not delete the playbook",
+        "confirm_delete": "Delete this playbook?",
+        "confirm_delete_description": "The lineups stay in the library; only the execute goes away.",
+        "pick_title": "Add a lineup",
+        "pick_description": "Pick as many as the execute needs — this stays open until you press Done.",
+        "already_in": "In this execute",
+        "load_label": "Load an execute",
+        "load": "Load",
+        "unload": "Unload",
+        "loaded": "Loaded: {name}",
+        "load_failed": "Could not load that playbook into the server",
+        "unresolved": "{count} steps point at a lineup you cannot see. Saving will be rejected until they are removed.",
+        "hover_hint": "Hover an execute to draw it on the map",
+        "steps_short": "{count} steps",
+        "duration": "{seconds}s",
+        "out_of_order": "{count} steps land before the step above them.",
+        "seconds_label": "sec",
+        "repeat_of": "again from step {step}",
+        "repeats": "{count} steps throw a lineup this execute already spends.",
+        "carry_over_type": "{player} throws {count} {type} — a player carries {limit}.",
+        "carry_over_total": "{player} throws {count} grenades — a player carries {limit}.",
+        "creating": "New execute",
+        "editing": "Edit execute",
+        "back": "Back to executes",
+        "done": "Done",
+        "added_count": "{count} added"
+      },
+      "sightline": {
+        "eyebrow": "Coverage Check",
+        "title": "Sightline check",
+        "description": "Draw a line across the map and ask whether this lineup's utility closes it.",
+        "open": "Draw a sightline",
+        "hide": "Hide",
+        "hint": "Click where someone watches from, then click what they are watching.",
+        "pending_hint": "Now click what they are watching.",
+        "height_label": "Pick height (Z)",
+        "height_hint": "World height the next point is read at. On Nuke and Vertigo it also picks the level.",
+        "max_pairs": "{count} lines at a time is the limit.",
+        "check": "Check coverage",
+        "check_one_way": "Check one-way",
+        "clear": "Clear",
+        "remove": "Remove this line",
+        "threshold": "Server threshold {value}",
+        "empty": "Nothing drawn yet.",
+        "pair": "Line {index}",
+        "not_checked": "Not checked yet.",
+        "depth": "{units}u through smoke",
+        "visible": "{percent}% visible",
+        "blocked_by": "Stopped by {what}",
+        "failed": "Could not check that sightline",
+        "one_way_failed": "Could not check for a one-way",
+        "degraded": {
+          "coverage": "Coverage check unavailable",
+          "one_way": "One-way check unavailable",
+          "note": "The parser could not answer, so there is no result here — not a clear line and not a blocked one. Try again in a moment.",
+          "retry": "Try again"
+        },
+        "verdict": {
+          "world": "Map already blocks it",
+          "blocked": "Utility blocks it",
+          "grazing": "Clips the edge",
+          "clear": "Still open"
+        },
+        "verdict_note": {
+          "world": "The map's own geometry stops this line. The utility makes no difference here — this one is not the lineup's doing.",
+          "blocked": "The utility sits across the line. Nobody sees through it from here.",
+          "grazing": "The line only catches the edge. Expect a silhouette, and expect to be shootable.",
+          "clear": "The utility is not in the way. This line stays open."
+        },
+        "one_way": {
+          "possible": "Possible one-way",
+          "none": "Nothing here reads as a one-way.",
+          "contested": "Contested",
+          "contested_note": "Both ends get some of the advantage, so whatever edge exists is small and can swing with a step either way.",
+          "favors": "Reads as favouring {who}",
+          "cause": "Cause: {cause}",
+          "caveat": "An indication, not a fact. Volumetric lighting and target contrast are not modelled, so a real in-game one-way can read symmetric here and a flagged one can be nothing. Go stand in it before you call it.",
+          "confidence": {
+            "none": "no signal",
+            "marginal": "marginal",
+            "likely": "likely",
+            "strong": "strong"
+          },
+          "side": {
+            "from": "the near end",
+            "to": "the far end",
+            "attacker": "the attacker",
+            "defender": "the defender",
+            "ct": "CT",
+            "t": "T"
+          }
+        }
+      },
+      "block": {
+        "eyebrow": "Shut An Angle",
+        "title": "Block a Sightline",
+        "subtitle": "Draw the line you want closed on {map} and see which lineups close it.",
+        "hint": "Click where the enemy watches from, then click what they are watching.",
+        "pending_hint": "Now click what they are watching.",
+        "height_label": "Eye height (Z)",
+        "search": "Find Lineups",
+        "clear": "Clear line",
+        "failed": "Could not search that line",
+        "results": "{count} lineups put utility across it",
+        "empty": "Draw the line first",
+        "empty_description": "Click the two ends of the sightline on the radar, then search.",
+        "no_results": "Nothing closes that line",
+        "no_results_description": "No saved lineup on this map puts utility across it. Try the other side, or clear the utility filters.",
+        "degraded": "Could not check that line",
+        "degraded_description": "The parser could not answer, so this is not \"nothing closes it\" — it is \"we do not know\". Nothing here has been ruled out.",
+        "degraded_partial": "The parser only partly answered, so this list may be missing lineups that do close the line.",
+        "retry": "Try again",
+        "coverage": {
+          "world": "Map blocks it",
+          "blocked": "Closes it",
+          "grazing": "Partial",
+          "clear": "Barely"
+        }
+      },
+      "solve": {
+        "title": "Solve a lineup",
+        "open": "Solve a Lineup",
+        "entry_hint": "Pick a spot on the map and the server works out a throw that lands there.",
+        "back": "Back to the session",
+        "checking": "Checking the solver...",
+        "calibration_failed": "Could not read the solver's calibration",
+        "check_again": "Check again",
+        "state": {
+          "ready": "Solver ready",
+          "no_sample": "Solver needs a throw first",
+          "unsupported": "This server cannot solve",
+          "unknown": "Solver unavailable"
+        },
+        "state_note": {
+          "ready": "The solver has what it needs and is ready to work.",
+          "no_sample": "Throw any utility in the server. The solver calibrates itself from it, and this clears on its own.",
+          "unsupported": "The runtime on this practice server has no solver in it. Nothing you do in game changes that — start a session on a server that has one.",
+          "unknown": "The server answered with a status this page does not know. It is shown below exactly as it came."
+        },
+        "pick_target_hint": "Click where you want the utility to land.",
+        "pick_from_hint": "Click where you want to throw from.",
+        "pick_from": "Pick a throw spot",
+        "repick_from": "Move the throw spot",
+        "target_short": "LAND",
+        "from_short": "THROW",
+        "utility": "Utility",
+        "name": "Name",
+        "name_placeholder": "Window smoke",
+        "height": "Pick height (Z)",
+        "tolerance": "Tolerance (units)",
+        "tolerance_placeholder": "Server default",
+        "submit": "Solve",
+        "failed": "Could not ask for a solve",
+        "rejected": "The server did not take the job",
+        "working": "Solving...",
+        "working_note": "The server keeps throwing at the spot until something lands there. It takes up to two minutes, and the lineup appears in the library on its own.",
+        "cancel": "Stop waiting",
+        "cancelled_note": "Stopped watching. The server may still finish — if it does, the lineup turns up in this map's library.",
+        "timed_out": "No lineup arrived within two minutes. The solver may have given up, or it may still land it later; check the map's library.",
+        "solved": "Solved — here is the lineup"
+      },
+      "drift": {
+        "eyebrow": "Map Revision Drift",
+        "title": "Utility Drift",
+        "subtitle": "What a map update did to the lineups already saved on it.",
+        "framing_title": "Differential only",
+        "framing": "A result says how far a lineup's simulated end point moved between two map revisions. That simulated position means nothing on its own and is never where the utility lands in game, so only the movement and the severity are shown.",
+        "map": "Map",
+        "from_revision": "From revision",
+        "to_revision": "To revision",
+        "revision_placeholder": "Latest",
+        "start": "Start Scan",
+        "started": "Scan started over {count} lineups",
+        "start_failed": "Could not start the scan",
+        "scans": "Scans",
+        "no_scans": "No scans yet.",
+        "progress": "{scanned} of {lineups} scanned",
+        "duration": "{seconds}s",
+        "requested_by": "Requested by",
+        "capped": "Showing the first {shown} rows of {total}.",
+        "count_broken": "{count} broken",
+        "count_moved": "{count} moved",
+        "count_unsimulatable": "{count} not simulatable",
+        "count_unchanged": "{count} unchanged",
+        "max_distance": "max {units}u",
+        "no_scan_selected": "Pick a scan",
+        "no_scan_selected_description": "Choose a scan on the left, or start one for a map.",
+        "no_results": "Nothing to review",
+        "no_results_description": "This scan has no results under that verdict.",
+        "verdicts": {
+          "unchanged": "Unchanged",
+          "moved": "Moved",
+          "broken": "Broken",
+          "unsimulatable": "Not simulatable"
+        },
+        "severities": {
+          "minor": "Minor",
+          "major": "Major"
+        },
+        "reasons": {
+          "start_sealed": "Throw origin sealed",
+          "out_of_world": "Left the world",
+          "max_flight": "Never landed",
+          "inside_geometry": "Ended inside geometry"
+        },
+        "reason_notes": {
+          "start_sealed": "The spot you stand on to throw this got walled off by the update. This is the one that actually kills a lineup — the throw cannot be made at all any more.",
+          "out_of_world": "The flight left the playable space on the new mesh, so there is no end point to compare and no distance to give.",
+          "max_flight": "The grenade was still travelling when the simulation hit its flight ceiling — usually geometry that used to stop it is gone.",
+          "inside_geometry": "The flight resolved inside solid world. Rare in practice: a grenade cannot fly into a pocket too small to hold it, so treat this as a scan oddity before you treat it as a dead lineup."
+        },
+        "moved": "Moved {units}u",
+        "moved_axes": "({across}u across, {up}u up)",
+        "no_distance": "No distance: one side of the comparison never resolved, so there is nothing to measure between them.",
+        "unsimulatable_note": "Either there was no physics seed to replay, or the flight failed on both meshes — and a failure on both says nothing about the update. That is an answer about what could be simulated, not a failed scan, and it says nothing about whether the lineup still works.",
+        "open_lineup": "Open lineup"
+      },
+      "plan": {
+        "tab": "Plan",
+        "title": "What to learn next",
+        "description": "What you have not mastered yet, ordered by how many players throw it on this map.",
+        "never_thrown": "never thrown",
+        "unavailable": "This lineup is not visible to you.",
+        "not_analysed": "No plan yet",
+        "not_analysed_description": "The plan could not be built. That is not \"nothing left to learn\" — it is \"nobody has worked it out yet\".",
+        "failed": "Could not load the plan",
+        "failed_description": "The request failed. Try again in a moment.",
+        "empty": "Nothing queued",
+        "empty_description": "Nothing ranked here. Try the other side, or the other library.",
+        "reasons": {
+          "never_attempted": "Never thrown",
+          "popular_unmastered": "Popular, unmastered",
+          "unmastered": "Unmastered",
+          "mastered_slipping": "Slipping",
+          "other": "Ranked"
+        },
+        "reason_notes": {
+          "never_attempted": "You have never thrown this one in a practice server.",
+          "popular_unmastered": "Plenty of players throw this on this map, and you have not mastered it.",
+          "unmastered": "Started but not mastered — the streak has never reached five.",
+          "mastered_slipping": "You had mastered this one and the streak has since broken."
+        },
+        "everyone": "Everyone",
+        "global_landing_rate": "{percent}% land it",
+        "global_players": "{count} players",
+        "global_attempts": "{count} attempts"
+      },
+      "repair": {
+        "action": "Repair",
+        "title": "Repair this lineup",
+        "description": "Solve a new lineup that lands where this one used to, before the map update moved it.",
+        "unnamed": "Unnamed lineup",
+        "target_note": "The solver throws at the landing this lineup had before the update and saves what it finds as a new lineup. This one is left exactly as it is — its votes, saves and drill progress stay where they are.",
+        "needs_session": "A repair runs inside a practice server on this map. Start one here, and keep it up to repair the rest of the scan.",
+        "submit": "Repair Lineup",
+        "accepted": "Queued",
+        "accepted_note": "The server took the job. It keeps throwing until something lands on the old spot, and a repaired copy turns up in the library afterwards — a new lineup, forked from this one. The row you opened this from will not change, so do not sit watching it for a fix.",
+        "failed": "Could not ask for a repair",
+        "queued": "Repair queued",
+        "queued_hint": "A repaired copy is being solved. This lineup keeps its verdict — the fix arrives as a new lineup in the library.",
+        "refusals": {
+          "not_scanned": "This lineup has not been scanned",
+          "not_moved": "Nothing to repair",
+          "seedless": "No physics seed to replay",
+          "wrong_map": "Wrong map for this session"
+        },
+        "refusal_notes": {
+          "not_scanned": "A repair aims at the landing a drift scan measured, and no scan has covered this lineup yet. Scan this map first.",
+          "not_moved": "Only a lineup a scan called moved has an old landing to aim at. Broken, not simulatable and unchanged all mean there is nothing here to re-solve.",
+          "seedless": "There is no recorded physics seed behind this lineup, so the solver has nothing to replay.",
+          "wrong_map": "The practice server is on a different map from this lineup. Stop it and start one on the lineup's map."
+        }
+      },
+      "create": {
+        "action": "Add a Lineup",
+        "eyebrow": "Author a Lineup",
+        "title": "New Lineup",
+        "subtitle": "Place the throw and the landing on {map}, then describe it.",
+        "pick_origin_hint": "Click where you stand to throw.",
+        "pick_landing_hint": "Click where the utility lands.",
+        "origin": "Throw from",
+        "landing": "Lands at",
+        "origin_short": "THROW",
+        "landing_short": "LAND",
+        "repick": "Re-pick",
+        "not_placed": "Not placed",
+        "origin_height": "Stand Z",
+        "landing_height": "Land Z",
+        "precision": "Aim precision",
+        "precision_hint": "How close the crosshair must be before the in-game marker turns green.",
+        "height_hint": "A radar pixel carries no height, so each end is read at the Z above it — and on Nuke and Vertigo that Z also picks the level. Set it before you click: a point already placed has to be re-picked, because its world position was read through the old level.",
+        "clear_points": "Clear both points",
+        "confidence_caption": "Nothing here was measured in a server, so the panel decides how this lineup is graded — and an authored one is never graded as recorded. Treat it as a spot to walk in: the aim below is a starting point, and it cannot be replayed in game shot-for-shot the way a captured lineup can.",
+        "utility": "Utility",
+        "name_placeholder": "Window smoke from T spawn",
+        "description_placeholder": "Where to line up, what to aim at, and when to throw it.",
+        "aim": "Aim (yaw / pitch)",
+        "yaw": "Yaw",
+        "pitch": "Pitch",
+        "reset_aim": "Line of sight",
+        "aim_hint": "Seeded from the straight line between your two points, which is not the throw angle — a grenade arcs, so the real crosshair sits higher than this. Correct it here once you have thrown it.",
+        "tags_placeholder": "Comma separated, e.g. execute, a site",
+        "save": "Save Lineup",
+        "untitled": "Untitled lineup",
+        "save_requirements": "Place both points and give it a name.",
+        "saved": "Lineup saved",
+        "save_failed": "Could not save the lineup",
+        "step_place": "Place",
+        "step_describe": "Describe",
+        "step_throw": "Throw",
+        "step_place_todo": "two points",
+        "step_place_half": "one to go",
+        "step_place_done": "both ends",
+        "step_describe_todo": "needs a name",
+        "step_describe_done": "named",
+        "step_throw_todo": "no aim yet",
+        "step_throw_aimed": "aimed",
+        "placed": "Placed on the map",
+        "repick_note": "Click either end to re-pick it",
+        "ground_height": "Ground height",
+        "height_why": "Why this matters",
+        "check_placed": "Placed",
+        "check_named": "Named",
+        "check_aim": "Aim"
+      },
+      "publish": {
+        "submit": "Submit for public",
+        "pending": "Awaiting review",
+        "requested": "Sent for review",
+        "request_failed": "Could not send that for review",
+        "approve": "Make public",
+        "reject": "Decline",
+        "approved": "Published to the library",
+        "rejected": "Left out of the library",
+        "review_failed": "Could not review that lineup"
+      },
+      "archive": {
+        "action": "Archive lineup",
+        "title": "Archive this lineup?",
+        "this_lineup": "this lineup",
+        "description": "{name} will disappear from every library, board and search on this map.",
+        "keeps_history": "Nothing is destroyed. Drill progress, votes and any playbook using it are kept, and you can put it back from the Archived tab.",
+        "confirm": "Archive it",
+        "done": "Archived {name}",
+        "undo": "Undo",
+        "restore": "Restore lineup",
+        "restored": "Put it back",
+        "failed": "Could not archive that lineup",
+        "restore_failed": "Could not put it back",
+        "delete": "Delete lineup",
+        "delete_title": "Delete this lineup?",
+        "delete_description": "{name} goes for good. This is not the Archived tab — there is nothing to put it back from.",
+        "loses_history": "Drill progress, votes and reactions go with it. A playbook still using it will refuse the delete rather than lose the step.",
+        "delete_confirm": "Delete it",
+        "deleted": "Deleted {name}",
+        "delete_failed": "Could not delete that lineup"
+      },
+      "fork": {
+        "action": "Fork",
+        "title": "Fork this lineup",
+        "description": "Takes a copy into your own library, so you can rename it, retag it and rewrite what it says without touching the original.",
+        "name_placeholder": "Keep the original name",
+        "collection": "Add to a collection",
+        "private_note": "The copy is yours and starts Private. Votes, saves and drill progress stay with the original.",
+        "confirm": "Fork",
+        "copy_of": "{name} (copy)",
+        "forked": "Forked into your library",
+        "failed": "Could not fork that lineup"
+      },
+      "coverage": {
+        "eyebrow": "Execute Coverage",
+        "title": "Coverage gaps",
+        "description": "Draw the angles this execute is meant to close, and see which ones it actually closes.",
+        "open": "Draw sightlines",
+        "hide": "Hide",
+        "hint": "Click where a defender watches from, then click what they are watching.",
+        "pending_hint": "Now click what they are watching.",
+        "check": "Check coverage",
+        "empty": "Nothing drawn yet.",
+        "saved_only": "Checked against the saved execute — steps added or moved since the last save are not in this answer.",
+        "degraded": "Coverage check unavailable",
+        "degraded_note": "The parser could not answer, so nothing here is a clear line. Every angle it did not settle is shown as unknown rather than open — \"we could not check\" is not \"nobody covers it\".",
+        "failed": "Could not check the execute's coverage",
+        "open_count": "{count} left open",
+        "unknown_count": "{count} unknown",
+        "verdict": {
+          "covered": "Closed",
+          "open": "Left open",
+          "unknown": "Not answered"
+        },
+        "verdict_note": {
+          "covered": "The execute puts utility across this line.",
+          "open": "Nothing in the execute covers this angle. Somebody has to hold it, or it needs another utility.",
+          "unknown": "This line was not settled. It is not an open angle and it is not a closed one — nobody has looked at it."
+        },
+        "by_step": "Closed by step {step}",
+        "by_step_named": "Closed by step {step} — {name}"
+      },
+      "difficulty": {
+        "levels": {
+          "unmeasured": "Unmeasured",
+          "easy": "Easy",
+          "moderate": "Moderate",
+          "hard": "Hard",
+          "very_hard": "Very hard"
+        },
+        "notes": {
+          "unmeasured": "Too few attempts, by too few people, to grade this one. Not easy and not hard — nobody has thrown it enough to know.",
+          "easy": "Most people who drill this one are landing it quickly.",
+          "moderate": "Most people need a few sessions before this one lands consistently.",
+          "hard": "Most people need a lot of repetitions before this one sticks.",
+          "very_hard": "Very few people land this one consistently, however long they drill it.",
+          "unknown": "The library graded this one with a word this page has not seen. It is shown exactly as it came, and it is not being read as a grade."
+        }
+      },
+      "miss": {
+        "eyebrow": "Miss Pattern",
+        "title": "How this one gets missed",
+        "failed": "Could not load the miss pattern.",
+        "not_analysed": "Not enough recorded throws to say how this one gets missed. Below the sample floor there is no direction to report — a tendency read off a handful of attempts is a made-up tendency.",
+        "samples": "{samples} throws · {players} players",
+        "centred": "Centred",
+        "offset": "{direction} by {units}u",
+        "single_player": "Every one of these throws is the same player's. That is one person's habit, not the lineup's.",
+        "caveat": "Where other people's throws land, added up. Whether that counts as a bias is the server's call, measured against the configured success radius. It is not a correction and not a fault: the lineup's own recorded angles are as likely to be what is off as anybody's aim.",
+        "axes": {
+          "along": "Depth",
+          "lateral": "Sideways",
+          "vertical": "Height"
+        },
+        "directions": {
+          "short": "Short",
+          "long": "Long",
+          "left": "Left",
+          "right": "Right",
+          "high": "High",
+          "low": "Low"
+        },
+        "biases": {
+          "short": "Lands short",
+          "long": "Lands long",
+          "left": "Drifts left",
+          "right": "Drifts right",
+          "high": "Lands high",
+          "low": "Lands low",
+          "scattered": "Scattered",
+          "none": "No pattern"
+        },
+        "bias_notes": {
+          "short": "Most players land this one short of where it is supposed to go.",
+          "long": "Most players land this one past where it is supposed to go.",
+          "left": "Most players land this one left of where it is supposed to go.",
+          "right": "Most players land this one right of where it is supposed to go.",
+          "high": "Most players land this one above where it is supposed to go.",
+          "low": "Most players land this one below where it is supposed to go.",
+          "scattered": "Throws land all over. People are missing this one in different directions, so there is no single tendency to point at.",
+          "none": "Throws land around the right place, with no direction to the misses that are left.",
+          "unknown": "The aggregate described this pattern with a word this page has not seen. It is shown exactly as it came."
+        },
+        "below_floor": "{samples} throws recorded so far.",
+        "means": "Measured means"
+      },
+      "save": {
+        "title_demo": "Save this grenade as a lineup",
+        "description_demo": "Keeps a grenade thrown in this match in the library as a lineup of your own.",
+        "title_practice": "Save this throw as a lineup",
+        "description_practice": "Keeps a throw from the practice server you have open as a lineup of your own.",
+        "name_placeholder": "Window smoke from T spawn",
+        "description_placeholder": "Where to line up, what to aim at, and when to throw it.",
+        "tags_placeholder": "Comma separated, e.g. execute, a site",
+        "collection": "Add to a collection",
+        "confirm": "Save Lineup",
+        "saved": "Lineup saved",
+        "failed": "Could not save the lineup",
+        "practice_note": "Saved out of the session you have open, against the lineup you are drilling. The in-game .save command does the same job with the throw in front of you.",
+        "practice_entry_title": "Save a throw",
+        "practice_entry_hint": "Keep what you have been throwing in here as a lineup of your own.",
+        "practice_entry_open": "Save From Practice"
+      },
+      "density": {
+        "cards": "Cards",
+        "cards_hint": "One lineup at a time, with your drill record and who wrote it.",
+        "rows": "Rows",
+        "rows_hint": "One line each, for reading down the list. The one you pick opens in place."
+      },
+      "throw_buttons": {
+        "left": "Left click",
+        "right": "Right click",
+        "both": "Left + right click",
+        "label": "Press",
+        "left_short": "LMB",
+        "right_short": "RMB",
+        "both_short": "LMB+RMB"
+      },
+      "preview": {
+        "play": "Play the preview",
+        "title": "Lineup preview",
+        "view_lineup": "View lineup",
+        "copy_link": "Copy link",
+        "download": "Download",
+        "link_copied": "Link copied"
+      },
+      "render_queue": {
+        "title": "Lineup Previews",
+        "empty": "No preview renders queued.",
+        "lineups": "{count} lineup | {count} lineups",
+        "rerender": "Re-render preview",
+        "retry": "Render again",
+        "cancel": "Cancel this render",
+        "clear_finished": "Clear finished",
+        "requeued": "Preview render queued",
+        "not_requeued": "Could not queue that render",
+        "cancel_failed": "Could not cancel that render",
+        "clear_failed": "Could not clear the queue",
+        "statuses": {
+          "queued": "Queued",
+          "rendering": "Filming",
+          "uploading": "Uploading",
+          "done": "Done",
+          "error": "Failed",
+          "skipped": "Skipped",
+          "cancelled": "Cancelled"
+        },
+        "no_pod": "No pod dispatched yet",
+        "stale": "Silent for {since}",
+        "render_pod_booting": "Render pod booting",
+        "delete": "Delete render",
+        "delete_failed": "Could not delete that render",
+        "delete_dialog": {
+          "title": "Delete this render?",
+          "description": "This removes the render and its preview clip. This cannot be undone.",
+          "delete": "Delete",
+          "deleting": "Deleting…"
+        }
+      },
+      "load": {
+        "action": "Load me in",
+        "try_it": "Try it on the server",
+        "try_it_hint": "Nothing is saved",
+        "tooltip_title": "Send it to your practice server",
+        "tooltip": "Drops this throw into the server you are already in and stands you on it — same spot, same aim. Nothing is saved to your lineups.",
+        "sent": "Standing you on {name}",
+        "sent_description": "Look for it in game — the ghost shows the throw.",
+        "failed_not_on_a_server": "You are not on a practice server",
+        "failed_wrong_map": "That lineup is for another map",
+        "failed_not_visible": "That lineup is not available to you",
+        "failed_unreachable": "Could not reach your server",
+        "failed_nothing_to_drill": "Nothing to drill",
+        "drill_name": "{count} lineups",
+        "drill": "Drill in game",
+        "drill_hint": "Runs these on the server you are on, three throws each",
+        "test": "Test in game",
+        "test_hint": "Stand on this throw before saving it",
+        "switch_and_load": "Switch map & load me in",
+        "switch_tooltip_title": "Move your practice server to {map}",
+        "switch_tooltip": "Your server is on another map. This changes it and stands you on this throw once it loads — everyone on the server gets a five second warning first.",
+        "switch_then_load": "You will land on {name} once it loads.",
+        "failed_map_switching": "Your server is still loading its new map"
+      },
+      "edit": {
+        "action": "Edit",
+        "saved": "Lineup updated",
+        "failed": "Could not save that",
+        "public_note": "Making it public is a review — use Submit for review from the row menu.",
+        "geometry_note": "Where you stand, where you aim and how far it flies cannot be edited. Fork it to change the throw itself."
+      }
     }
   },
   "custom_match": {
@@ -3905,7 +4856,8 @@
         "highlights": "Highlights",
         "news": "News",
         "leagues": "League",
-        "events": "Events"
+        "events": "Events",
+        "utility": "Utility"
       },
       "community": {
         "title": "Community"
@@ -3936,7 +4888,8 @@
         "database": "Database",
         "metrics": "Metrics",
         "render_queue": "Render Queue",
-        "media_server": "Media Server"
+        "media_server": "Media Server",
+        "utility_drift": "Utility Drift"
       },
       "profile": {
         "section": "Account",
@@ -3976,7 +4929,9 @@
         "leagues": "League",
         "events": "Events",
         "manage_events": "Manage Events",
-        "system_media_server": "Media Server"
+        "system_media_server": "Media Server",
+        "utility_drift": "Utility Lineup Drift",
+        "utility": "Utility Lineups"
       },
       "logout_dialog": {
         "title": "Logout",
@@ -4049,6 +5004,17 @@
         "news": {
           "title": "News",
           "subtitle": "{brand} news"
+        },
+        "library": {
+          "title": "LIBRARY"
+        },
+        "utility": {
+          "title": "Utility Library",
+          "subtitle": "Smokes, flashes and molotovs by map"
+        },
+        "events": {
+          "title": "Events",
+          "subtitle": "Community nights and one-off games"
         }
       }
     },
@@ -5070,7 +6036,24 @@
       "subscription_help": "Subscribe to this URL in your calendar app to see every match this team plays — scrims, league fixtures and tournaments.",
       "link_error": "Could not get calendar link"
     },
-    "roster_short": "roster"
+    "roster_short": "roster",
+    "utility_utility": {
+      "title": "Utility Lineups",
+      "description": "Which saved lineups this roster's grenades looked like in real matches.",
+      "lineup": "Lineup",
+      "map": "Map",
+      "players": "Players",
+      "thrown": "Thrown",
+      "landed": "Landed",
+      "land_rate": "Land %",
+      "attribution_note": "A throw is matched to a lineup by where it started and where it landed, so a row is throws that look like this lineup — not a record of the lineup being called.",
+      "not_analysed": "Not analysed yet",
+      "not_analysed_description": "The report could not be built, so this is not \"your team throws nothing\" — it is \"we have not counted\".",
+      "failed": "Could not load the utility report",
+      "failed_description": "The request failed. Try again in a moment.",
+      "empty": "No matched utility",
+      "empty_description": "No grenade thrown in this team's matches lines up with a saved lineup yet."
+    }
   },
   "match": {
     "open_match": "Open match",
@@ -5556,7 +6539,15 @@
     "map_veto": {
       "is_picking": "is Picking a",
       "pick": "Pick",
-      "confirm": "Confirm {type}"
+      "confirm": "Confirm {type}",
+      "your_turn": "Your Turn",
+      "headline_side": "Pick your starting side",
+      "headline_pick": "Pick a map",
+      "headline_ban": "Ban a map",
+      "side_on_map": "{team} \u00b7 first half on {map}",
+      "side_for_map": "Side is for this map",
+      "side_role_ct": "Defend",
+      "side_role_t": "Attack"
     },
     "map_lineup": {
       "picked": "Picked"
@@ -6052,6 +7043,38 @@
     },
     "highlights": {
       "clip_count": "{count} clips"
+    },
+    "utility": {
+      "title": "Utility vs Lineups",
+      "description": "Grenades thrown in this match, matched against the lineup library by where they were thrown from and where they landed.",
+      "everyone": "Everyone",
+      "utility": "Utility",
+      "throws": "Thrown",
+      "matched": "Matched",
+      "matched_lineups": "Matched a lineup",
+      "matched_meta": "Matched a meta spot",
+      "landed": "Landed",
+      "match_note": "A throw is matched by where it started and where it ended, so these are throws that look like the lineup — not proof the lineup was the one being run.",
+      "match_note_radius": "A throw is matched to a lineup when it starts and lands within {units} units of it, so these are throws that look like the lineup — not proof the lineup was the one being run.",
+      "not_analysed": "Not mined yet",
+      "not_analysed_description": "This match's demo has not been mined for grenades, so there is nothing to count. Nothing here is zero — the question has not been asked yet.",
+      "failed": "Could not load the utility report.",
+      "default_lineup_name": "{utility}, round {round}",
+      "grenades": {
+        "title": "Grenades in this match",
+        "description": "Every grenade thrown on this map, read out of the demo. Save one and it becomes a lineup in the library.",
+        "show": "Show grenades",
+        "hide": "Hide grenades",
+        "failed": "Could not read this map's demo.",
+        "empty": "This map's demo has no grenades in it.",
+        "none_for_player": "That player threw nothing on this map.",
+        "save": "Save",
+        "open_lineup": "Open lineup",
+        "showing": "Showing {shown} of {total}",
+        "unidentified": "{count} throws in this demo carry no grenade id, so there is no way to point at them and nothing to save.",
+        "no_detonation": "no landing",
+        "no_detonation_hint": "The demo never paired a detonation with this throw, so where it ended up was never recorded."
+      }
     }
   },
   "ui": {
@@ -6178,7 +7201,7 @@
         },
         "util_eff_score": {
           "label": "Utility Damage",
-          "coach": "Learn a few HE / molotov line-ups for common spots to get real damage out of each nade."
+          "coach": "Learn a few HE / molotov line-ups for common spots to get real damage out of each utility."
         }
       }
     },
@@ -6232,7 +7255,8 @@
         "mute": "Muted {name}",
         "gag": "Gagged {name}",
         "silence": "Silenced {name}"
-      }
+      },
+      "typed_player": "{type} Player"
     },
     "search": {
       "no_players_found": "No Players Found.",
@@ -6642,6 +7666,7 @@
       "select_type": "Select Server Type",
       "game_mode": "Game Mode",
       "select_game_mode": "Select Game Mode",
+      "select_custom_preset": "Select Custom Preset",
       "valve_preset_group": "Valve presets",
       "custom_mode_group": "Custom modes",
       "custom_mode_group_locked": "needs a game server node",
@@ -6652,8 +7677,12 @@
       "csgo_ranked_unavailable_description": "Ranked mode is not yet available for CS:GO servers.",
       "ranked_server": "Ranked Server",
       "ranked_server_description": "Fully managed ranked experience by 5stack.",
-      "valve_presets": "Valve Presets & Custom Modes",
-      "valve_presets_description": "Run a Valve preset like casual or deathmatch, or a custom game mode with its plugins.",
+      "practice_server": "Practice Server",
+      "practice_server_description": "Hosts utility practice sessions. Runs the practice plugin instead of the match plugin, and is never used for matchmaking.",
+      "valve_modes": "Valve Modes",
+      "valve_modes_description": "Run a Valve preset like casual or deathmatch.",
+      "custom_presets": "Custom Presets",
+      "custom_presets_description": "Run a custom game mode with the plugins 5Stack installs for it.",
       "connect_password": "Connect Password",
       "connect_password_description": "Password required to connect to the server (optional)",
       "rcon_password": "RCON Password",
@@ -8169,7 +9198,14 @@
         "start_short": "Camera",
         "stop_short": "Stop",
         "flip": "Flip",
-        "hand_back": "Hand back"
+        "hand_back": "Hand back",
+        "live": "On camera",
+        "idle": "Not sharing",
+        "stop": "Stop sharing",
+        "hint": "Camera and microphone are separate — take either, or both.",
+        "take_mic": "Use this microphone",
+        "release_mic": "Give microphone back",
+        "mic_live": "Mic"
       },
       "nobody_yet": "Nobody's connected yet.",
       "hide_video": "Hide their camera",
@@ -8183,7 +9219,10 @@
       "toast_kind": "Voice",
       "toast_joined": "joined",
       "toast_started_video": "started video in",
-      "floating_title": "Call"
+      "floating_title": "Call",
+      "join_to_see": "Turn on your camera to see everyone else's.",
+      "started_video": "{name} turned their camera on",
+      "joined_voice": "{name} joined voice"
     }
   },
   "media": {
@@ -8191,7 +9230,8 @@
       "system_default": "System default",
       "selected": "Selected device",
       "following_system": "Follows your system setting",
-      "device": "Device"
+      "device": "Device",
+      "camera": "Camera"
     }
   },
   "chat_rail": {

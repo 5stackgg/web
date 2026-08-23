@@ -48,6 +48,7 @@ import { useTeamContext } from "~/composables/useTeamContext";
 import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import { useSeasonContext } from "~/composables/useSeasonContext";
 import { useAwardContext } from "~/composables/useAwardContext";
+import cleanMapName from "~/utilities/cleanMapName";
 
 export default {
   computed: {
@@ -168,6 +169,21 @@ export default {
           }
           breadcrumbs.push({
             text: ac.value.name,
+            to: path,
+          });
+          return;
+        }
+
+        // /utility/<map>: the segment is the map's file name, and every other
+        // surface -- the board title, the picker, the practice dialog -- shows
+        // the title. Named routes only, so /utility/lineup/<id> is untouched.
+        if (
+          segments[0] === "utility" &&
+          index === 1 &&
+          this.$route.name === "utility-map"
+        ) {
+          breadcrumbs.push({
+            text: cleanMapName(segment),
             to: path,
           });
           return;

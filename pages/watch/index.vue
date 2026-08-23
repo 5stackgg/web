@@ -36,9 +36,10 @@ import {
       </div>
       <div class="space-y-3">
         <TournamentFeatureCard
-          v-for="tournament in liveTournaments"
+          v-for="(tournament, index) in liveTournaments"
           :key="tournament.id"
           :tournament="tournament"
+          :priority="index === 0"
           status-variant="live"
           :status-label="$t('common.live')"
         />

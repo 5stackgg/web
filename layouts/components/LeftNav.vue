@@ -29,6 +29,7 @@ import {
   CalendarRange,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
+import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import ProfileMenu from "~/layouts/components/ProfileMenu.vue";
@@ -238,6 +239,23 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   <Badge size="sm" v-if="liveMatchesCount > 0" class="ml-auto">
                     {{ liveMatchesCount }}
                   </Badge>
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.utility')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.utility')"
+              >
+                <NuxtLink
+                  :to="{ name: 'utility' }"
+                  :class="{
+                    'router-link-active': isRouteActive('utility'),
+                  }"
+                >
+                  <HeGrenadeIcon class="size-4" />
+                  {{ $t("layouts.app_nav.navigation.utility") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

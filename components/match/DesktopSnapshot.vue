@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Monitor } from "lucide-vue-next";
 import socket from "~/web-sockets/Socket";
 
-type SnapshotKind = "live" | "demo" | "bake" | "clips";
+type SnapshotKind = "live" | "demo" | "bake" | "clips" | "nades";
 
 const props = withDefaults(
   defineProps<{

@@ -362,12 +362,13 @@ const shouldRender = computed(() => {
       @approaching-end="loadMore"
     >
       <TournamentCard
-        v-for="tournament in tournaments"
+        v-for="(tournament, index) in tournaments"
         :key="tournament.id"
         :tournament="tournament"
         :variant="cardVariant"
         :status-variant="statusVariant"
         :status-label="statusLabel"
+        :priority="index === 0"
         :class="[
           'shrink-0 snap-start',
           cardVariant === 'simple' ? '' : 'aspect-video w-96',
@@ -380,12 +381,13 @@ const shouldRender = computed(() => {
       :class="cardVariant === 'compact' ? 'space-y-2' : 'space-y-4'"
     >
       <TournamentCard
-        v-for="tournament in tournaments"
+        v-for="(tournament, index) in tournaments"
         :key="tournament.id"
         :tournament="tournament"
         :variant="cardVariant"
         :status-variant="statusVariant"
         :status-label="statusLabel"
+        :priority="index === 0"
       />
     </div>
 

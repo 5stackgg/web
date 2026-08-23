@@ -70,6 +70,9 @@ const containContent = computed(() => {
     case "apps-slug":
     case "news-manage-id":
     case "matches-id":
+    // Board on one side, list on the other: pinned to 7xl the tab strip wrapped
+    // and the map lost the width it needs to stay square and readable.
+    case "utility-map":
     case "map-pools":
     case "game-server-nodes":
     case "system-metrics":

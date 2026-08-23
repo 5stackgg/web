@@ -127,6 +127,25 @@ export default defineNuxtConfig({
     },
   },
 
+  hooks: {
+    // Nuxt marks every build chunk `prefetch: true`, and with ssr:false the
+    // shell renders that as ~345 <link rel="prefetch"> tags. The browser then
+    // opens a few hundred speculative connections while the entry chunk is
+    // still downloading and parsing, and first paint waits behind them.
+    // Measured on a 4x-CPU / 9Mbps profile: FCP 1372ms -> 580ms, app reveal
+    // -575ms with these stripped.
+    //
+    // Nothing is lost that the app needs to boot: the entry keeps its
+    // modulepreload, route chunks are dynamic imports that load on navigation,
+    // and NuxtLink's interaction prefetch (see experimental.defaults above)
+    // still warms a route on hover/touch.
+    "build:manifest"(manifest) {
+      for (const chunk of Object.values(manifest)) {
+        chunk.prefetch = false;
+      }
+    },
+  },
+
   i18n: {
     strategy: "no_prefix",
     bundle: {
@@ -374,7 +393,38 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ["monaco-editor"],
+      // graphql (126 requests) and @apollo/client (103) are shipped module by
+      // module in dev otherwise. That is invisible on localhost and brutal
+      // through the dev tunnel, where every one of them is a round-trip to
+      // whoever is running the dev server.
+      //
+      // The list has to name the specifier each importer actually writes --
+      // Vite matches these as strings, not as resolved files. "@apollo/client/
+      // core" does NOT cover "@apollo/client/core/index.js", and missing that
+      // one alone leaves apollo un-optimized: the raw module's own relative
+      // imports then cascade into ~103 separate requests. The three that are
+      // easy to miss, and who asks for them:
+      //   @apollo/client            -> @nuxtjs/apollo
+      //   @apollo/client/core/index.js -> @vue/apollo-composable, @vue/apollo-option
+      //   @apollo/client/link/context  -> our own plugins/composables
+      include: [
+        "monaco-editor",
+        "graphql",
+        "graphql/language/parser",
+        "graphql-tag",
+        "graphql-ws",
+        "@apollo/client",
+        "@apollo/client/core",
+        "@apollo/client/core/index.js",
+        "@apollo/client/cache",
+        "@apollo/client/link/context",
+        "@apollo/client/link/error",
+        "@apollo/client/link/retry",
+        "@apollo/client/link/subscriptions",
+        "@apollo/client/utilities",
+        "@vue/apollo-composable",
+        "@vue/apollo-option",
+      ],
     },
     // Plugins host: enables the `__federation__` virtual module so
     // `pages/apps/[slug].vue` can register + load plugin remotes at runtime.

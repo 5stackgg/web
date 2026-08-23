@@ -377,6 +377,23 @@ mark {
   opacity: 0.6;
 }
 
+/* The utility feature is iconed with the in-game HE artwork instead of a lucide
+   glyph, so the nav entry reads as the same thing as the utility markers in 2D
+   and 3D playback. The file is a single white path, so masking it lets the
+   silhouette take currentColor the way a lucide icon does. Plain CSS because
+   Tailwind will not generate the -webkit- half of the mask pair from arbitrary
+   values, and Safari still needs it. */
+.he-grenade-mask {
+  mask-image: url("/img/equipment/hegrenade.svg");
+  -webkit-mask-image: url("/img/equipment/hegrenade.svg");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
 /* Faint HUD scanlines laid over event banner media, so photography/video
    reads as composed into the tactical chrome instead of pasted above it. */
 .tac-scanlines {
@@ -746,4 +763,140 @@ mark {
 .tac-chip-x:hover {
   color: hsl(var(--tac-amber));
   background: hsl(var(--tac-amber) / 0.12);
+}
+
+/* The utility board's overlays are bounded by the board, not by the viewport:
+   collapsing the left nav or opening the right hub narrows it on a desktop, so
+   a viewport breakpoint fires at the wrong times. Written here rather than as a
+   Tailwind arbitrary variant because no container-query plugin is installed --
+   same reason .tac-chip and .tac-amber-cta live here. */
+.utility-board {
+  container-type: inline-size;
+  container-name: utility-board;
+}
+
+/* The view strip collapses to its icons before it can start eating the map's
+   name. Each tab keeps its icon, its count and its tooltip, and the strip still
+   scrolls -- so nothing is lost, it just stops competing for the same row. */
+@container utility-board (max-width: 44rem) {
+  .utility-board-tabs .af-label {
+    display: none;
+  }
+}
+
+/* The strip, the toggle and the type chips beside them are all exactly 2rem,
+   but any height the strip spends on a frame comes off the pill inside it, and
+   the pill is what the eye actually compares against the toggle: 26px of amber
+   next to a 32px amber square still read as two different controls. So the
+   frame costs nothing here -- no padding, and the hairline is an inset ring
+   rather than a border. The pill is then the full 2rem, exactly the toggle's
+   square, and the strip is still 2rem overall. */
+.utility-meta-threshold {
+  padding: 0;
+  border-width: 0;
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.1);
+}
+.utility-meta-threshold > button {
+  height: 2rem;
+}
+/* Full-bleed now, so the indicator wears the strip's own corner radius -- the
+   toggle's rounded-md -- instead of a smaller one floating inside a frame. */
+.utility-meta-threshold > span {
+  border-radius: 0.375rem;
+}
+
+/* On a narrow board the threshold knob leaves the chips' row entirely: it
+   stands up as a ladder and that ladder sits directly above the toggle, so the
+   whole meta control is one narrow column pinned to the bottom-right corner and
+   the chips get the full width of the row back.
+
+   Only direction is set here -- AnimatedFilters measures its indicator with
+   offsetLeft/offsetTop and re-measures on a ResizeObserver, so it follows the
+   flip on its own without needing a prop. */
+@container utility-board (max-width: 38rem) {
+  .utility-meta-controls {
+    flex-direction: column;
+    /* flex-end, not stretch: the toggle keeps its own 2rem square and never
+       grows to the ladder's width. Stretching it widened this whole right-hand
+       column, which is width taken straight off the type chips beside it --
+       the toggle is a fixed anchor in the corner and has to stay one. */
+    align-items: flex-end;
+    gap: 0.375rem;
+  }
+  .utility-meta-threshold {
+    flex-direction: column;
+  }
+  /* The pills already share a width down a column; this only centres their
+     labels in it rather than leaving them ragged. */
+  .utility-meta-threshold > button {
+    justify-content: center;
+  }
+
+  /* Opening the overlay must cost the chips nothing, and keeping the toggle a
+     fixed square was only half of it: the ladder is wider than the toggle and
+     the META n/total caption is wider still, so both grew this column and took
+     that width straight off the chips. Out of flow, the column contributes
+     nothing at all -- the chips are measured against the toggle alone, whether
+     the overlay is open or shut.
+
+     The row is already position:absolute, so it is its own containing block and
+     no extra positioning context is needed. Both extras stack upward from the
+     toggle, which is above the chips' line rather than on it, so nothing can
+     collide with them. */
+  .utility-meta-cluster {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  /* The gutter the absolute cluster no longer reserves for itself: the toggle's
+     2rem plus the row's gap. */
+  .utility-board-chips {
+    padding-right: 2.5rem;
+  }
+}
+
+/* The left-hand column keeps everything it has at every width. The legend used
+   to drop at 34rem to buy vertical air, but it sits above the chips rather than
+   beside them, so it never bought a single pixel of the width that was actually
+   under pressure -- and losing it left the colour chips explaining themselves.
+   The meta toggle is not in this cascade either: it is a bare square icon at
+   every width, because its glyph draws the rings the overlay draws. */
+
+/* Last, the practice button drops its word and squares off. A lone 16px glyph
+   sitting inside sm's px-3 reads as a button that failed to load its label
+   rather than as an icon button, so the padding has to go with the text. */
+@container utility-board (max-width: 26rem) {
+  .utility-board-practice-label {
+    display: none;
+  }
+  .utility-board-practice-btn {
+    width: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* A field that stays out of the way until you go near it. An authoring panel
+   that is mostly *reading* -- an execute you are checking, a name you are not
+   changing -- turns into a wall of boxes when every value wears a border and a
+   label. The value is the interface; the box appears on hover or focus to say
+   it can be edited. Lives here rather than in a .ts class map because Tailwind
+   generates no CSS for arbitrary variants defined outside a scanned template
+   (same reason .tac-chip and .tac-amber-cta are here). */
+.tac-quiet-field {
+  border-color: transparent;
+  background-color: transparent;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+.tac-quiet-field:hover:not(:disabled),
+.tac-quiet-field:focus,
+.tac-quiet-field:focus-visible,
+.tac-quiet-field:focus-within {
+  border-color: hsl(var(--border));
+  background-color: hsl(var(--muted) / 0.3);
+}
+.tac-quiet-field:disabled {
+  opacity: 1;
 }

@@ -104,7 +104,7 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
   <nav
     ref="navRef"
     :aria-label="ariaLabel"
-    class="relative hidden min-w-[12rem] flex-col gap-1 border-r border-border/70 pr-2 lg:flex"
+    class="relative hidden min-w-[12rem] flex-col gap-1 border-r border-border/70 pr-2 lg:flex lg:min-h-full"
   >
     <div
       v-show="showIndicator"

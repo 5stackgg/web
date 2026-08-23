@@ -1,9 +1,9 @@
 import { useI18n } from "vue-i18n";
 
-// The four operating modes a game-streamer pod boots through. Each maps to
+// The operating modes a game-streamer pod boots through. Each maps to
 // its own ordered stage list — the single source of truth shared by every
 // boot stepper (BootSequence.vue).
-export type BootMode = "live" | "demo" | "highlights" | "bake";
+export type BootMode = "live" | "demo" | "highlights" | "bake" | "nades";
 
 export type BootStageMeta =
   | "required"
@@ -161,6 +161,58 @@ export function useBootStages() {
             key: "connecting_to_game",
             label: t("live_stages.queuing_demo"),
             meta: "implicit",
+          },
+        ];
+      // A nade render is the one mode with phases BEFORE a pod exists: the api
+      // books a practice server and waits for it, and only then dispatches. The
+      // api stamps those three itself (stampBootStage); everything from
+      // downloading_cs2 on is the pod's own broadcast, exactly as highlights.
+      case "nades":
+        return [
+          {
+            key: "booking_server",
+            label: t("live_stages.booking_server"),
+            meta: "required",
+          },
+          {
+            key: "server_starting",
+            label: t("live_stages.server_starting"),
+            meta: "required",
+          },
+          {
+            key: "dispatching_pod",
+            label: t("live_stages.dispatching_pod"),
+            meta: "required",
+          },
+          {
+            key: "downloading_cs2",
+            label: t("live_stages.downloading_cs2"),
+            meta: "conditional",
+          },
+          {
+            key: "launching_steam",
+            label: t("live_stages.launching_steam"),
+            meta: "required",
+          },
+          {
+            key: "logging_in",
+            label: t("live_stages.logging_in"),
+            meta: "implicit",
+          },
+          {
+            key: "launching_cs2",
+            label: t("live_stages.launching_cs2"),
+            meta: "required",
+          },
+          {
+            key: "processing_shaders",
+            label: t("live_stages.processing_shaders"),
+            meta: "conditional",
+          },
+          {
+            key: "connecting_to_game",
+            label: t("live_stages.joining_practice_server"),
+            meta: "required",
           },
         ];
       case "bake":

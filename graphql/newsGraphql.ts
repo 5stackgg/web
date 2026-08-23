@@ -38,3 +38,11 @@ export const newsPostAdminFields = {
   updated_at: true,
   view_count: true,
 } as const;
+
+// Views live on the admin actions only — the public news_articles table never
+// exposes view_count — so surfaces that show counts to authors pull this
+// alongside their normal query instead of widening the guest permission.
+export const newsPostViewFields = {
+  id: true,
+  view_count: true,
+} as const;

@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateMutation } from "~/graphql/graphqlGen";
 import { newsPostAdminFields } from "~/graphql/newsGraphql";
+import NewsViewCount from "~/components/news/NewsViewCount.vue";
 
 interface NewsPost {
   id: string;
@@ -226,14 +227,7 @@ onBeforeUnmount(() => {
               : $t("pages.news.form.preview_full")
           }}
         </Button>
-        <span
-          v-if="!isNew"
-          class="inline-flex items-center gap-1 text-xs text-muted-foreground"
-          :title="$t('pages.news.manage.views')"
-        >
-          <Eye class="h-3.5 w-3.5" />
-          {{ viewCount.toLocaleString() }}
-        </span>
+        <NewsViewCount v-if="!isNew" :count="viewCount" />
         <span
           class="inline-flex items-center gap-1.5 text-[0.62rem] font-bold uppercase tracking-[0.16em]"
           :class="

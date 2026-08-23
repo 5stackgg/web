@@ -16,6 +16,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Separator } from "~/components/ui/separator";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
+import UtilityPracticeCommands from "~/components/utility/UtilityPracticeCommands.vue";
 import { toast } from "~/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -444,6 +445,13 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
           </div>
         </div>
       </template>
+
+      <!-- Everything the server can do once you are on it. The connect string
+           is only half of what a practice session is, and the other half was
+           discoverable only by knowing to type .help in chat. -->
+      <Separator />
+
+      <UtilityPracticeCommands />
     </template>
 
     <!-- Whatever the surface wants between the session and the way out of it. -->

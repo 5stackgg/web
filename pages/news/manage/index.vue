@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Plus, Trash2, Send, Undo2, Newspaper, Eye } from "lucide-vue-next";
+import { Plus, Trash2, Send, Undo2, Newspaper } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import {
   AlertDialog,
@@ -21,6 +21,7 @@ import {
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateMutation } from "~/graphql/graphqlGen";
 import { newsPostAdminFields } from "~/graphql/newsGraphql";
+import NewsViewCount from "~/components/news/NewsViewCount.vue";
 
 interface NewsPost {
   id: string;
@@ -190,13 +191,7 @@ onMounted(() => {
               <span class="text-xs text-muted-foreground">
                 {{ formatDate(post.published_at || post.updated_at) }}
               </span>
-              <span
-                class="inline-flex items-center gap-1 text-xs text-muted-foreground"
-                :title="$t('pages.news.manage.views')"
-              >
-                <Eye class="h-3.5 w-3.5" />
-                {{ Number(post.view_count || 0).toLocaleString() }}
-              </span>
+              <NewsViewCount :count="post.view_count" />
             </div>
             <p
               class="mt-1 truncate font-semibold transition-colors group-hover:text-[hsl(var(--tac-amber))]"

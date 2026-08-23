@@ -10,7 +10,8 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { newsArticleListFields } from "~/graphql/newsGraphql";
+import { newsArticleListFields, newsPostViewFields } from "~/graphql/newsGraphql";
+import NewsViewCount from "~/components/news/NewsViewCount.vue";
 
 interface NewsArticle {
   id: string;
@@ -24,6 +25,7 @@ interface NewsArticle {
 const PER_PAGE = 12;
 
 const articles = ref<NewsArticle[]>([]);
+const viewCounts = ref<Record<string, string>>({});
 const total = ref(0);
 const loading = ref(true);
 const page = ref(1);
@@ -68,6 +70,30 @@ const fetchCount = async () => {
   ).news_articles_aggregate.aggregate.count;
 };
 
+// view_count is admin-only, so it comes from the admin action rather than the
+// public list query — one fetch covers every page of the list.
+const fetchViewCounts = async () => {
+  if (!canPostNews.value) {
+    return;
+  }
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        newsPostsAdmin: newsPostViewFields,
+      }),
+      fetchPolicy: "network-only",
+    });
+    const posts =
+      (data as { newsPostsAdmin: Array<{ id: string; view_count: string }> })
+        .newsPostsAdmin ?? [];
+    viewCounts.value = Object.fromEntries(
+      posts.map((post) => [post.id, post.view_count]),
+    );
+  } catch {
+    viewCounts.value = {};
+  }
+};
+
 const fetchArticles = async () => {
   loading.value = true;
   try {
@@ -91,6 +117,7 @@ const fetchArticles = async () => {
 };
 
 watch(page, fetchArticles);
+watch(canPostNews, () => fetchViewCounts());
 
 onMounted(() => {
   if (!newsEnabled.value) {
@@ -99,6 +126,7 @@ onMounted(() => {
   }
   fetchCount();
   fetchArticles();
+  fetchViewCounts();
 });
 </script>
 
@@ -157,6 +185,10 @@ onMounted(() => {
           <div class="flex flex-1 flex-col gap-2 p-4">
             <div class="flex items-center gap-2 text-xs text-muted-foreground">
               <span>{{ formatDate(article.published_at) }}</span>
+              <NewsViewCount
+                v-if="canPostNews && viewCounts[article.id] !== undefined"
+                :count="viewCounts[article.id]"
+              />
             </div>
             <h2 class="font-semibold leading-snug group-hover:text-primary">
               {{ article.title }}

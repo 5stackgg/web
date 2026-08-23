@@ -11,7 +11,8 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { newsArticleFields } from "~/graphql/newsGraphql";
+import { newsArticleFields, newsPostViewFields } from "~/graphql/newsGraphql";
+import NewsViewCount from "~/components/news/NewsViewCount.vue";
 
 interface NewsAuthor {
   steam_id: string;
@@ -40,6 +41,7 @@ const route = useRoute();
 const slug = computed(() => String(route.params.slug));
 
 const article = ref<NewsArticle | null>(null);
+const viewCount = ref<string | null>(null);
 const loading = ref(true);
 
 const newsEnabled = computed(() => useApplicationSettingsStore().newsEnabled);
@@ -84,7 +86,7 @@ const wasUpdated = computed(() => {
   return new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 60_000;
 });
 
-const trackView = (articleSlug: string | null) => {
+const trackView = async (articleSlug: string | null) => {
   if (!import.meta.client || !articleSlug) {
     return;
   }
@@ -93,10 +95,34 @@ const trackView = (articleSlug: string | null) => {
     return;
   }
   sessionStorage.setItem(key, "1");
-  fetch(`https://${apiDomain.value}/news/${encodeURIComponent(articleSlug)}/view`, {
-    method: "POST",
-    credentials: "include",
-  }).catch(() => {});
+  await fetch(
+    `https://${apiDomain.value}/news/${encodeURIComponent(articleSlug)}/view`,
+    {
+      method: "POST",
+      credentials: "include",
+    },
+  ).catch(() => {});
+};
+
+// The public article query can't select view_count — only authors get it, via
+// the admin action, once we know which post we're on.
+const fetchViewCount = async (id: string) => {
+  if (!canPostNews.value) {
+    return;
+  }
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        newsPostAdmin: [{ id }, newsPostViewFields],
+      }),
+      fetchPolicy: "network-only",
+    });
+    viewCount.value =
+      (data as { newsPostAdmin: { view_count: string } | null }).newsPostAdmin
+        ?.view_count ?? null;
+  } catch {
+    viewCount.value = null;
+  }
 };
 
 const fetchArticle = async () => {
@@ -122,7 +148,8 @@ const fetchArticle = async () => {
     }
     article.value = found;
     useNotificationStore().markNewsRead(found.published_at);
-    trackView(found.slug);
+    // Count this visit first so authors don't read a number that's one behind.
+    trackView(found.slug).finally(() => fetchViewCount(found.id));
   } catch {
     return navigateTo("/news");
   } finally {
@@ -149,12 +176,15 @@ onMounted(() => {
             {{ $t("pages.news.back") }}
           </Button>
         </NuxtLink>
-        <NuxtLink v-if="canPostNews && article" :to="`/news/manage/${article.id}`">
-          <Button variant="outline" size="sm" class="gap-2">
-            <PencilLine class="h-4 w-4" />
-            {{ $t("pages.news.manage.edit") }}
-          </Button>
-        </NuxtLink>
+        <div v-if="canPostNews && article" class="flex items-center gap-4">
+          <NewsViewCount v-if="viewCount !== null" :count="viewCount" />
+          <NuxtLink :to="`/news/manage/${article.id}`">
+            <Button variant="outline" size="sm" class="gap-2">
+              <PencilLine class="h-4 w-4" />
+              {{ $t("pages.news.manage.edit") }}
+            </Button>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </PageTransition>

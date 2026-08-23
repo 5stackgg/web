@@ -2,6 +2,11 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { toast } from "@/components/ui/toast";
 
 let checkedMe = false;
+// The verification the public-route fast path below starts and does not wait
+// for. Held only while it is in the air: once it lands, authStore.me is the
+// answer, and a promise kept past that would still be saying "signed in" after
+// a sign-out.
+let verifyingMe: Promise<boolean> | null = null;
 
 function isPublicRoute(path: string): boolean {
   const publicRoutes = [
@@ -126,28 +131,40 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   let hasMe: boolean = authStore.me?.steam_id ? true : false;
 
+  // A public route renders the same whether or not the session turns out to be
+  // alive -- the only thing `hasMe` decides below is the bounce to /login, and
+  // that branch is unreachable there. /login is deliberately NOT in that fast
+  // path: it uses `hasMe` to send an already-signed-in visitor onward, so it
+  // has to know the real answer. Protected routes keep awaiting too -- a cached
+  // `me` is a paint hint, not proof of a session, and must never wave someone
+  // onto a guarded page.
+  const needsRealAnswer = !isPublicRoute(to.path) || to.path === "/login";
+
   if (!checkedMe) {
     checkedMe = true;
 
     const verifying = authStore.getMe();
+    verifyingMe = verifying;
+    void verifying.finally(() => {
+      if (verifyingMe === verifying) {
+        verifyingMe = null;
+      }
+    });
 
-    // A public route renders the same whether or not the session turns out to
-    // be alive -- the only thing `hasMe` decides below is the bounce to
-    // /login, and that branch is unreachable here. Awaiting anyway put a full
-    // Hasura round-trip in front of the very first route resolve, and the
-    // pre-loader spinner covers all of it (see plugins/preloader.client.ts,
-    // which reveals on app:suspense:resolve). So let it verify in the
-    // background and paint from the cached identity.
-    //
-    // /login is deliberately NOT in this fast path: it uses `hasMe` to send an
-    // already-signed-in visitor onward, so it has to know the real answer.
-    // Protected routes keep awaiting too -- a cached `me` is a paint hint, not
-    // proof of a session, and must never wave someone onto a guarded page.
-    if (isPublicRoute(to.path) && to.path !== "/login") {
-      void verifying;
-    } else {
+    // Awaiting on a public route put a full Hasura round-trip in front of the
+    // very first route resolve, and the pre-loader spinner covers all of it
+    // (see plugins/preloader.client.ts, which reveals on app:suspense:resolve).
+    // So let it verify in the background and paint from the cached identity.
+    if (needsRealAnswer) {
       hasMe = await verifying;
     }
+  } else if (!hasMe && needsRealAnswer && verifyingMe) {
+    // The fast path let that verification run in the background, and this is
+    // the navigation that needs its answer. Without this, a signed-in visitor
+    // who clicks off a public route before it lands is bounced to /login:
+    // `checkedMe` is already true, and the cached identity `hasMe` reads is
+    // absent in a private window, after a cache clear, or on a new device.
+    hasMe = await verifyingMe;
   }
 
   if (!hasMe && !isPublicRoute(to.path) && to.path !== "/login") {

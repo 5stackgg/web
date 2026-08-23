@@ -91,23 +91,38 @@ export function loadRadarCalibrations(): Promise<Record<
   if (sharedCalibrations) {
     return Promise.resolve(sharedCalibrations);
   }
-  if (!sharedLoad) {
-    sharedLoad = (async () => {
-      try {
-        const res = await fetch("/radars/metadata.json");
-        if (!res.ok) {
-          return null;
-        }
-        const data = await res.json();
-        const { _comment, ...rest } = data;
-        sharedCalibrations = rest as Record<string, RadarMeta>;
-        return sharedCalibrations;
-      } catch {
+  if (sharedLoad) {
+    return sharedLoad;
+  }
+
+  const load = (async () => {
+    try {
+      const res = await fetch("/radars/metadata.json");
+      if (!res.ok) {
         return null;
       }
-    })();
-  }
-  return sharedLoad;
+      const data = await res.json();
+      const { _comment, ...rest } = data;
+      sharedCalibrations = rest as Record<string, RadarMeta>;
+      return sharedCalibrations;
+    } catch {
+      return null;
+    }
+  })();
+
+  sharedLoad = load;
+
+  // A failure must not be memoised. This promise is what every later caller --
+  // the replay viewer, the analysis board, every utility panel -- gets back, so
+  // holding a resolved null here would leave the whole page with no calibration
+  // over one blip. Dropped instead, and the next caller re-fetches.
+  void load.then((result) => {
+    if (!result && sharedLoad === load) {
+      sharedLoad = null;
+    }
+  });
+
+  return load;
 }
 
 export function useRadarProjection(

@@ -42,6 +42,12 @@ const manifestHref =
 // resolved -- so without this the DNS + TCP + TLS handshake to that origin is
 // paid at ~4.1s, right on the critical path. Warming it during boot moves that
 // cost off the LCP chain entirely.
+//
+// Deliberately without `crossorigin`: the browser pools connections by
+// credentials mode, and NuxtImg renders a bare <img src> with no crossorigin
+// attribute. An anonymous-CORS socket is one those images cannot reuse, so the
+// handshake this exists to remove would still be paid -- on a second
+// connection, with the warmed one left idle.
 const apiOrigin = (() => {
   const domain = useRuntimeConfig().public.apiDomain;
   if (!domain) {
@@ -63,7 +69,7 @@ useHead({
     { rel: "manifest", href: manifestHref },
     ...(apiOrigin
       ? [
-          { rel: "preconnect", href: apiOrigin, crossorigin: "anonymous" },
+          { rel: "preconnect", href: apiOrigin },
           { rel: "dns-prefetch", href: apiOrigin },
         ]
       : []),

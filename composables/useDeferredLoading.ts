@@ -91,6 +91,18 @@ export function useDeferredLoading(
     loaded.value = false;
     shownAt = Date.now();
     holding.value = true;
+
+    // Nothing is in flight, and a load answered out of the Apollo cache never
+    // flips `source` at all -- so the watcher would never fire and the
+    // placeholder would sit there for good over data that is already up. Hold
+    // it for its minimum and then clear it, exactly like a load that landed
+    // instantly. A load that does start cancels this in the watcher.
+    if (!source()) {
+      hideTimer = setTimeout(() => {
+        holding.value = false;
+        loaded.value = true;
+      }, minVisible);
+    }
   }
 
   return {

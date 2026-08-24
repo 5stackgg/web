@@ -1792,7 +1792,56 @@ export type ValueTypes = {
 	online?:boolean | `@${string}`,
 	runtimes?:ValueTypes["TelemetryRuntimeCount"],
 	totals?:ValueTypes["TelemetryFleetTotals"],
+	utility?:ValueTypes["TelemetryUtilityTotals"],
+	utilitySources?:ValueTypes["TelemetryUtilitySourceCount"],
+	utilityTypes?:ValueTypes["TelemetryUtilityTypeCount"],
 	versions?:ValueTypes["TelemetryVersionCount"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryUtilitySourceCount"]: AliasType<{
+	lineups?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryUtilityTotals"]: AliasType<{
+	archived?:boolean | `@${string}`,
+	attempts?:boolean | `@${string}`,
+	authors?:boolean | `@${string}`,
+	collections?:boolean | `@${string}`,
+	demoThrows?:boolean | `@${string}`,
+	demosMined?:boolean | `@${string}`,
+	driftFlagged?:boolean | `@${string}`,
+	driftScans?:boolean | `@${string}`,
+	favorites?:boolean | `@${string}`,
+	hosts?:boolean | `@${string}`,
+	lineups?:boolean | `@${string}`,
+	maps?:boolean | `@${string}`,
+	mastered?:boolean | `@${string}`,
+	metaLineups?:boolean | `@${string}`,
+	month?:boolean | `@${string}`,
+	pendingReview?:boolean | `@${string}`,
+	playbookSteps?:boolean | `@${string}`,
+	playbooks?:boolean | `@${string}`,
+	practicing?:boolean | `@${string}`,
+	previews?:boolean | `@${string}`,
+	private?:boolean | `@${string}`,
+	public?:boolean | `@${string}`,
+	repairs?:boolean | `@${string}`,
+	reported?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+	sessionsFailed?:boolean | `@${string}`,
+	sessionsMonth?:boolean | `@${string}`,
+	sessionsWeek?:boolean | `@${string}`,
+	successes?:boolean | `@${string}`,
+	team?:boolean | `@${string}`,
+	verified?:boolean | `@${string}`,
+	votes?:boolean | `@${string}`,
+	week?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryUtilityTypeCount"]: AliasType<{
+	lineups?:boolean | `@${string}`,
+	type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryVersionCount"]: AliasType<{
@@ -80591,7 +80640,56 @@ export type ResolverInputTypes = {
 	online?:boolean | `@${string}`,
 	runtimes?:ResolverInputTypes["TelemetryRuntimeCount"],
 	totals?:ResolverInputTypes["TelemetryFleetTotals"],
+	utility?:ResolverInputTypes["TelemetryUtilityTotals"],
+	utilitySources?:ResolverInputTypes["TelemetryUtilitySourceCount"],
+	utilityTypes?:ResolverInputTypes["TelemetryUtilityTypeCount"],
 	versions?:ResolverInputTypes["TelemetryVersionCount"],
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryUtilitySourceCount"]: AliasType<{
+	lineups?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryUtilityTotals"]: AliasType<{
+	archived?:boolean | `@${string}`,
+	attempts?:boolean | `@${string}`,
+	authors?:boolean | `@${string}`,
+	collections?:boolean | `@${string}`,
+	demoThrows?:boolean | `@${string}`,
+	demosMined?:boolean | `@${string}`,
+	driftFlagged?:boolean | `@${string}`,
+	driftScans?:boolean | `@${string}`,
+	favorites?:boolean | `@${string}`,
+	hosts?:boolean | `@${string}`,
+	lineups?:boolean | `@${string}`,
+	maps?:boolean | `@${string}`,
+	mastered?:boolean | `@${string}`,
+	metaLineups?:boolean | `@${string}`,
+	month?:boolean | `@${string}`,
+	pendingReview?:boolean | `@${string}`,
+	playbookSteps?:boolean | `@${string}`,
+	playbooks?:boolean | `@${string}`,
+	practicing?:boolean | `@${string}`,
+	previews?:boolean | `@${string}`,
+	private?:boolean | `@${string}`,
+	public?:boolean | `@${string}`,
+	repairs?:boolean | `@${string}`,
+	reported?:boolean | `@${string}`,
+	sessions?:boolean | `@${string}`,
+	sessionsFailed?:boolean | `@${string}`,
+	sessionsMonth?:boolean | `@${string}`,
+	sessionsWeek?:boolean | `@${string}`,
+	successes?:boolean | `@${string}`,
+	team?:boolean | `@${string}`,
+	verified?:boolean | `@${string}`,
+	votes?:boolean | `@${string}`,
+	week?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["TelemetryUtilityTypeCount"]: AliasType<{
+	lineups?:boolean | `@${string}`,
+	type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["TelemetryVersionCount"]: AliasType<{
@@ -159302,7 +159400,53 @@ export type ModelTypes = {
 	online: number,
 	runtimes: Array<ModelTypes["TelemetryRuntimeCount"]>,
 	totals: ModelTypes["TelemetryFleetTotals"],
+	utility: ModelTypes["TelemetryUtilityTotals"],
+	utilitySources: Array<ModelTypes["TelemetryUtilitySourceCount"]>,
+	utilityTypes: Array<ModelTypes["TelemetryUtilityTypeCount"]>,
 	versions: Array<ModelTypes["TelemetryVersionCount"]>
+};
+	["TelemetryUtilitySourceCount"]: {
+		lineups: number,
+	source: string
+};
+	["TelemetryUtilityTotals"]: {
+		archived: number,
+	attempts: number,
+	authors: number,
+	collections: number,
+	demoThrows: number,
+	demosMined: number,
+	driftFlagged: number,
+	driftScans: number,
+	favorites: number,
+	hosts: number,
+	lineups: number,
+	maps: number,
+	mastered: number,
+	metaLineups: number,
+	month: number,
+	pendingReview: number,
+	playbookSteps: number,
+	playbooks: number,
+	practicing: number,
+	previews: number,
+	private: number,
+	public: number,
+	repairs: number,
+	reported: number,
+	sessions: number,
+	sessionsFailed: number,
+	sessionsMonth: number,
+	sessionsWeek: number,
+	successes: number,
+	team: number,
+	verified: number,
+	votes: number,
+	week: number
+};
+	["TelemetryUtilityTypeCount"]: {
+		lineups: number,
+	type: string
 };
 	["TelemetryVersionCount"]: {
 		installs: number,
@@ -228757,7 +228901,56 @@ export type GraphQLTypes = {
 	online: number,
 	runtimes: Array<GraphQLTypes["TelemetryRuntimeCount"]>,
 	totals: GraphQLTypes["TelemetryFleetTotals"],
+	utility: GraphQLTypes["TelemetryUtilityTotals"],
+	utilitySources: Array<GraphQLTypes["TelemetryUtilitySourceCount"]>,
+	utilityTypes: Array<GraphQLTypes["TelemetryUtilityTypeCount"]>,
 	versions: Array<GraphQLTypes["TelemetryVersionCount"]>
+};
+	["TelemetryUtilitySourceCount"]: {
+	__typename: "TelemetryUtilitySourceCount",
+	lineups: number,
+	source: string
+};
+	["TelemetryUtilityTotals"]: {
+	__typename: "TelemetryUtilityTotals",
+	archived: number,
+	attempts: number,
+	authors: number,
+	collections: number,
+	demoThrows: number,
+	demosMined: number,
+	driftFlagged: number,
+	driftScans: number,
+	favorites: number,
+	hosts: number,
+	lineups: number,
+	maps: number,
+	mastered: number,
+	metaLineups: number,
+	month: number,
+	pendingReview: number,
+	playbookSteps: number,
+	playbooks: number,
+	practicing: number,
+	previews: number,
+	private: number,
+	public: number,
+	repairs: number,
+	reported: number,
+	sessions: number,
+	sessionsFailed: number,
+	sessionsMonth: number,
+	sessionsWeek: number,
+	successes: number,
+	team: number,
+	verified: number,
+	votes: number,
+	week: number
+};
+	["TelemetryUtilityTypeCount"]: {
+	__typename: "TelemetryUtilityTypeCount",
+	lineups: number,
+	type: string
 };
 	["TelemetryVersionCount"]: {
 	__typename: "TelemetryVersionCount",

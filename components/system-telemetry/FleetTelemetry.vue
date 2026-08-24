@@ -421,6 +421,226 @@ import {
         </div>
       </section>
 
+      <!-- UTILITY -->
+      <section class="space-y-3">
+        <div :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses" />
+          {{ $t("pages.system_telemetry.utility.title") }}
+          <FiveStackToolTip>
+            {{ $t("pages.system_telemetry.utility.hint") }}
+          </FiveStackToolTip>
+        </div>
+
+        <div
+          v-if="!utilityReported"
+          class="rounded-lg border border-border/60 bg-card/40 p-4 text-sm text-muted-foreground"
+        >
+          {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
+        </div>
+
+        <div v-else class="grid gap-4 lg:grid-cols-3">
+          <div
+            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <div>
+              <div
+                class="font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                {{ $t("pages.system_telemetry.utility.lineups") }}
+              </div>
+              <div class="mt-1 text-3xl font-semibold leading-none">
+                {{ format(utility?.lineups ?? 0) }}
+              </div>
+              <div class="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
+                <span class="font-mono text-[hsl(var(--tac-amber))]">
+                  +{{ format(utility?.week ?? 0) }}
+                </span>
+                <span class="text-muted-foreground">
+                  {{ $t("pages.system_telemetry.totals.last_7d") }}
+                </span>
+              </div>
+            </div>
+
+            <FleetMeter :segments="utilityVisibility" />
+
+            <div class="mt-auto flex flex-wrap gap-x-5 gap-y-3">
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.authors')"
+                :value="utility?.authors ?? 0"
+                :hint="$t('pages.system_telemetry.utility.authors_hint')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.maps')"
+                :value="utility?.maps ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.archived')"
+                :value="utility?.archived ?? 0"
+                :caption="$t('pages.system_telemetry.utility.archived_caption')"
+              />
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
+            <div class="text-sm">
+              {{ $t("pages.system_telemetry.utility.by_type") }}
+            </div>
+            <div class="mt-3">
+              <FleetDistribution
+                bare
+                :items="utilityTypeItems"
+                label-field="label"
+                value-field="value"
+              />
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
+            <div class="flex items-center gap-1.5 text-sm">
+              {{ $t("pages.system_telemetry.utility.by_source") }}
+              <FiveStackToolTip>
+                {{ $t("pages.system_telemetry.utility.by_source_hint") }}
+              </FiveStackToolTip>
+            </div>
+            <div class="mt-3">
+              <FleetDistribution
+                bare
+                :items="utilitySourceItems"
+                label-field="label"
+                value-field="value"
+                :color="installsColor"
+              />
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <div>
+              <div
+                class="font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                {{ $t("pages.system_telemetry.utility.sessions") }}
+              </div>
+              <div class="mt-1 text-3xl font-semibold leading-none">
+                {{ format(utility?.sessions ?? 0) }}
+              </div>
+              <div class="mt-2 text-sm text-muted-foreground">
+                {{
+                  $t("pages.system_telemetry.utility.hit_rate", {
+                    percent: utilityHitRate,
+                  })
+                }}
+              </div>
+            </div>
+
+            <FleetMeter :segments="utilityAccuracy" />
+
+            <div class="mt-auto flex flex-wrap gap-x-5 gap-y-3">
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.practicing')"
+                :value="utility?.practicing ?? 0"
+                :hint="$t('pages.system_telemetry.utility.practicing_hint')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.hosts')"
+                :value="utility?.hosts ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.sessions_week')"
+                :value="utility?.sessionsWeek ?? 0"
+                :caption="$t('pages.system_telemetry.totals.last_7d')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.sessions_failed')"
+                :value="utility?.sessionsFailed ?? 0"
+                :hint="
+                  $t('pages.system_telemetry.utility.sessions_failed_hint')
+                "
+              />
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-2 gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.verified')"
+              :value="utility?.verified ?? 0"
+              :hint="$t('pages.system_telemetry.utility.verified_hint')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.pending_review')"
+              :value="utility?.pendingReview ?? 0"
+              :hint="$t('pages.system_telemetry.utility.pending_review_hint')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.previews')"
+              :value="utility?.previews ?? 0"
+              :caption="$t('pages.system_telemetry.utility.previews_caption')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.mastered')"
+              :value="utility?.mastered ?? 0"
+              :hint="$t('pages.system_telemetry.utility.mastered_hint')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.favorites')"
+              :value="utility?.favorites ?? 0"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.votes')"
+              :value="utility?.votes ?? 0"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.collections')"
+              :value="utility?.collections ?? 0"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.playbooks')"
+              :value="utility?.playbooks ?? 0"
+              :caption="
+                $t('pages.system_telemetry.utility.playbook_steps', {
+                  steps: format(utility?.playbookSteps ?? 0),
+                })
+              "
+            />
+          </div>
+
+          <div
+            class="grid grid-cols-2 gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.demo_throws')"
+              :value="utility?.demoThrows ?? 0"
+              :hint="$t('pages.system_telemetry.utility.demo_throws_hint')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.demos_mined')"
+              :value="utility?.demosMined ?? 0"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.meta_lineups')"
+              :value="utility?.metaLineups ?? 0"
+              :hint="$t('pages.system_telemetry.utility.meta_lineups_hint')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.drift_scans')"
+              :value="utility?.driftScans ?? 0"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.drift_flagged')"
+              :value="utility?.driftFlagged ?? 0"
+              :hint="$t('pages.system_telemetry.utility.drift_flagged_hint')"
+            />
+            <FleetReadout
+              :label="$t('pages.system_telemetry.utility.repairs')"
+              :value="utility?.repairs ?? 0"
+            />
+          </div>
+        </div>
+      </section>
+
       <!-- COMMUNITY -->
       <section class="space-y-3">
         <div :class="tacticalSectionLabelClasses">
@@ -775,6 +995,47 @@ export default {
             events: true,
             eventTeams: true,
           },
+          utility: {
+            reported: true,
+            lineups: true,
+            archived: true,
+            week: true,
+            public: true,
+            team: true,
+            private: true,
+            authors: true,
+            maps: true,
+            verified: true,
+            pendingReview: true,
+            previews: true,
+            favorites: true,
+            votes: true,
+            collections: true,
+            playbooks: true,
+            playbookSteps: true,
+            sessions: true,
+            sessionsWeek: true,
+            sessionsFailed: true,
+            hosts: true,
+            practicing: true,
+            attempts: true,
+            successes: true,
+            mastered: true,
+            demosMined: true,
+            demoThrows: true,
+            metaLineups: true,
+            driftScans: true,
+            driftFlagged: true,
+            repairs: true,
+          },
+          utilityTypes: {
+            type: true,
+            lineups: true,
+          },
+          utilitySources: {
+            source: true,
+            lineups: true,
+          },
           features: {
             key: true,
             kind: true,
@@ -836,6 +1097,11 @@ export default {
       }
 
       return Math.round((value / total) * 100);
+    },
+    utilityLabel(group: string, value: string) {
+      const path = `pages.utility.${group}.${value}`;
+
+      return this.$te(path) ? this.$t(path) : value;
     },
     featureLabel(key: string) {
       const path = `pages.system_telemetry.features.keys.${key}`;
@@ -912,6 +1178,73 @@ export default {
     },
     matchTypes() {
       return this.telemetryStats?.matchTypes ?? [];
+    },
+    utility() {
+      return this.telemetryStats?.utility;
+    },
+    utilityReported() {
+      return this.utility?.reported ?? 0;
+    },
+    utilityVisibility() {
+      const t = (key: string) =>
+        this.$t(`pages.system_telemetry.utility.${key}`);
+
+      return [
+        {
+          label: t("public"),
+          value: this.utility?.public ?? 0,
+          color: this.step(1),
+        },
+        {
+          label: t("team"),
+          value: this.utility?.team ?? 0,
+          color: this.step(3),
+        },
+        {
+          label: t("private"),
+          value: this.utility?.private ?? 0,
+          color: "hsl(var(--muted-foreground) / 0.35)",
+        },
+      ];
+    },
+    // Throws, not sessions: the practice plugin scores each grenade, so this is
+    // the fleet's hit rate against its own lineups.
+    utilityAccuracy() {
+      const attempts = this.utility?.attempts ?? 0;
+      const successes = Math.min(this.utility?.successes ?? 0, attempts);
+      const t = (key: string) =>
+        this.$t(`pages.system_telemetry.utility.${key}`);
+
+      return [
+        { label: t("landed"), value: successes, color: this.step(1) },
+        {
+          label: t("missed"),
+          value: attempts - successes,
+          color: "hsl(var(--muted-foreground) / 0.35)",
+        },
+      ];
+    },
+    utilityHitRate() {
+      const attempts = this.utility?.attempts ?? 0;
+
+      return attempts
+        ? Math.round(((this.utility?.successes ?? 0) / attempts) * 100)
+        : 0;
+    },
+    // Both lists borrow the utility feature's own labels rather than restating
+    // them here, and fall back to the raw value for anything a newer panel
+    // reports that this build has no name for.
+    utilityTypeItems() {
+      return (this.telemetryStats?.utilityTypes ?? []).map((entry) => ({
+        label: this.utilityLabel("types", entry.type),
+        value: entry.lineups,
+      }));
+    },
+    utilitySourceItems() {
+      return (this.telemetryStats?.utilitySources ?? []).map((entry) => ({
+        label: this.utilityLabel("origin_sources", entry.source),
+        value: entry.lineups,
+      }));
     },
     matchSources() {
       return this.telemetryStats?.matchSources ?? [];

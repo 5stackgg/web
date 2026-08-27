@@ -128,6 +128,9 @@ export const utilityPracticeSessionFields = {
   // Named, not just numbered: the only useful thing to tell a guest whose
   // server is on the wrong map is who can move it.
   host: { name: true },
+  // Only for the staff console and the pod log tail below the panel; nothing
+  // player-facing reads it.
+  match: { server_id: true },
   team_id: true,
   map_name: true,
   map_changing_at: true,

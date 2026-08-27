@@ -9,7 +9,7 @@
  */
 import { computed, onBeforeUnmount, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { ExternalLink, UserPlus, X } from "lucide-vue-next";
+import { ChevronDown, ExternalLink, Terminal, UserPlus, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Spinner } from "~/components/ui/spinner";
@@ -17,6 +17,13 @@ import { Separator } from "~/components/ui/separator";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import UtilityPracticeCommands from "~/components/utility/UtilityPracticeCommands.vue";
+import ServiceLogs from "~/components/ServiceLogs.vue";
+import RconCommander from "~/components/servers/RconCommander.vue";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
 import { toast } from "~/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -26,6 +33,8 @@ import {
   stopUtilityPracticeMutation,
 } from "~/graphql/utilityGraphql";
 import { readUtilityPracticeSession } from "~/types/utility";
+import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
 import type {
   UtilityPracticeSession,
   UtilityPracticeSessionOutput,
@@ -149,6 +158,23 @@ const showInviteLink = computed(
 // offered Stop, not Leave -- while inviting also needs the session to be up.
 const canManage = computed(() => practice.value.canManage);
 const canDrive = computed(() => practice.value.isLive && canManage.value);
+
+const matchId = computed(() => practice.value.matchId);
+const serverId = computed(() => practice.value.serverId);
+
+// Both operator tools are refused by the API for anyone below these roles, so
+// showing them lower would only ever render a console that answers with an
+// error. The log socket is administrator only; RCON also takes the moderator
+// running the match, which the practice host is.
+const isAdmin = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
+);
+
+const canOperate = computed(
+  () => isAdmin.value || useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
+);
+
+const operatorOpen = ref(false);
 
 type Invitee = { steamId: string; name: string };
 
@@ -452,6 +478,46 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
       <Separator />
 
       <UtilityPracticeCommands />
+
+      <!-- Operator tools. A practice pod is a game server like any other, and
+           when one refuses connections the only thing that answers why is its
+           console and its log -- which the match page has had all along and
+           this panel had no equivalent of. Both are staff-gated here because
+           both are staff-gated on the server: the log socket is administrator
+           only, and RCON needs an administrator or the moderator running the
+           match. -->
+      <template v-if="canOperate">
+        <Separator />
+
+        <Collapsible v-model:open="operatorOpen">
+          <CollapsibleTrigger
+            class="flex w-full items-center justify-between gap-2 text-left"
+          >
+            <span
+              class="flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
+            >
+              <Terminal class="h-3 w-3" />
+              {{ $t("pages.utility.practice.operator") }}
+            </span>
+            <ChevronDown
+              class="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform"
+              :class="operatorOpen ? 'rotate-180' : ''"
+            />
+          </CollapsibleTrigger>
+
+          <CollapsibleContent class="flex flex-col gap-3 pt-3">
+            <RconCommander
+              v-if="serverId"
+              :server-id="serverId"
+              :online="isLive"
+              :match-id="matchId ?? undefined"
+              compact
+            />
+
+            <ServiceLogs v-if="isAdmin && matchId" :service="`m-${matchId}`" compact />
+          </CollapsibleContent>
+        </Collapsible>
+      </template>
     </template>
 
     <!-- Whatever the surface wants between the session and the way out of it. -->

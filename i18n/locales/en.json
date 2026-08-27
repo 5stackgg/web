@@ -4186,7 +4186,8 @@
           "solo": "see only your own previews",
           "clear": "clears the loaded lineup, markers and ghosts",
           "help": "prints every command in game"
-        }
+        },
+        "operator": "Server console"
       },
       "collections": {
         "tab": "Collections",

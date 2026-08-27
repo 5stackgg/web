@@ -208,6 +208,33 @@ export function utilityScopeCountsQuery(scopes: string[]) {
 }
 
 /**
+ * The same tallies, live. The counts are what a player reads to find out
+ * whether the thing they just did registered -- submitting for review, saving a
+ * lineup -- and as a one-shot query they only moved when something else
+ * happened to refetch them, so the answer was "switch tabs and look again".
+ */
+export function utilityScopeCountsSubscription(scopes: string[]) {
+  const aliases: Record<string, unknown> = {};
+  for (const scope of scopes) {
+    aliases[`scope_${scope}`] = {
+      utility_lineups_aggregate: [
+        {
+          where: $(`where_${scope}`, "utility_lineups_bool_exp!"),
+        },
+        {
+          aggregate: {
+            count: true,
+          },
+        },
+      ],
+    };
+  }
+  return generateSubscription({
+    __alias: aliases,
+  } as any);
+}
+
+/**
  * One aggregate per map in a single round trip. Hasura has no GROUP BY, and
  * ten aliased counts beat ten queries or pulling every row down to tally them
  * in the browser.

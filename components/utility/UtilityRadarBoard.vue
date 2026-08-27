@@ -62,6 +62,8 @@ const emit = defineEmits<{
   (e: "select-meta", key: string | null): void;
   (e: "hover-meta", key: string | null): void;
   (e: "pick", point: { x: number; y: number; z: number }): void;
+  (e: "marker-grab", key: string): void;
+  (e: "marker-drag", key: string, point: { x: number; y: number; z: number }): void;
   (e: "select-segment", key: string): void;
 }>();
 
@@ -600,6 +602,7 @@ type DrawnMarker = {
   color: string;
   label: string | null;
   shape: "dot" | "cross" | "badge";
+  draggable: boolean;
   point: { x: number; y: number };
 };
 
@@ -615,6 +618,7 @@ const drawnMarkers = computed<DrawnMarker[]>(() => {
       color: marker.color ?? "#ffffff",
       label: marker.label ?? null,
       shape: marker.shape ?? "dot",
+      draggable: marker.draggable ?? false,
       point,
     });
   }
@@ -634,11 +638,21 @@ const zoom = ref(1);
 const panX = ref(0);
 const panY = ref(0);
 const viewportRef = ref<HTMLElement | null>(null);
+const svgRef = ref<SVGSVGElement | null>(null);
 const panning = ref(false);
 
 let dragged = false;
+let captured = false;
 let lastX = 0;
 let lastY = 0;
+let startX = 0;
+let startY = 0;
+
+// How far the pointer may wander before a press counts as a pan rather than a
+// pick. Measured from where the press started, not between consecutive move
+// events -- a slow drag never moves far enough in any single event, so it used
+// to pan the map and then register a pick at the end of it.
+const DRAG_SLOP = 3;
 
 const boardTransform = computed(
   () => `translate(${panX.value}px, ${panY.value}px) scale(${zoom.value})`,
@@ -736,15 +750,23 @@ function onWheel(event: WheelEvent) {
   );
 }
 
+// Capture is deliberately NOT taken here. While a pointer capture is set, the
+// compatibility click is dispatched at the capturing element instead of the
+// element under the pointer -- so capturing the viewport on press meant the
+// click never reached the <svg> beneath it, and picking a point silently
+// stopped working at any zoom above 1. It is taken on the first real movement
+// instead, by which time the gesture is a pan and there is no click to lose.
 function onPointerDown(event: PointerEvent) {
   if (zoom.value <= MIN_ZOOM || event.button !== 0) {
     return;
   }
   panning.value = true;
   dragged = false;
+  captured = false;
   lastX = event.clientX;
   lastY = event.clientY;
-  (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  startX = event.clientX;
+  startY = event.clientY;
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -753,8 +775,15 @@ function onPointerMove(event: PointerEvent) {
   }
   const dx = event.clientX - lastX;
   const dy = event.clientY - lastY;
-  if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+  if (
+    Math.abs(event.clientX - startX) > DRAG_SLOP ||
+    Math.abs(event.clientY - startY) > DRAG_SLOP
+  ) {
     dragged = true;
+  }
+  if (dragged && !captured) {
+    captured = true;
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
   }
   panX.value += dx;
   panY.value += dy;
@@ -768,7 +797,10 @@ function onPointerUp(event: PointerEvent) {
     return;
   }
   panning.value = false;
-  (event.currentTarget as HTMLElement).releasePointerCapture?.(event.pointerId);
+  if (captured) {
+    captured = false;
+    (event.currentTarget as HTMLElement).releasePointerCapture?.(event.pointerId);
+  }
 }
 
 function resetView() {
@@ -784,6 +816,28 @@ watch(
 );
 
 // correction.
+
+// Where a pointer is, in world units. The rect comes from the <svg>, which sits
+// INSIDE the zoom transform, so it already describes the transformed box and
+// none of this has to know the zoom exists.
+function worldAt(clientX: number, clientY: number) {
+  const target = svgRef.value;
+  if (!target) {
+    return null;
+  }
+  const rect = target.getBoundingClientRect();
+  if (!rect.width || !rect.height) {
+    return null;
+  }
+  return unprojectCalibrated(
+    {
+      x: ((clientX - rect.left) / rect.width) * CANVAS,
+      y: ((clientY - rect.top) / rect.height) * CANVAS,
+    },
+    props.pickZ,
+  );
+}
+
 function onBoardClick(event: MouseEvent) {
   // A drag that ended on the map is a pan, not a pick.
   if (dragged) {
@@ -799,25 +853,49 @@ function onBoardClick(event: MouseEvent) {
     emit("select", null);
     return;
   }
-  const target = event.currentTarget as SVGSVGElement | null;
-  if (!target) {
-    return;
-  }
-  const rect = target.getBoundingClientRect();
-  if (!rect.width || !rect.height) {
-    return;
-  }
-  const world = unprojectCalibrated(
-    {
-      x: ((event.clientX - rect.left) / rect.width) * CANVAS,
-      y: ((event.clientY - rect.top) / rect.height) * CANVAS,
-    },
-    props.pickZ,
-  );
+  const world = worldAt(event.clientX, event.clientY);
   if (!world) {
     return;
   }
   emit("pick", world);
+}
+
+// Grabbing one of the placed points. The press alone says "this is the end I
+// mean" -- which is what makes the two ends re-pickable by clicking them, the
+// thing the hint under the coordinates has always claimed -- and any movement
+// after it drags that end instead of dropping a new point somewhere else.
+const draggingKey = ref<string | null>(null);
+
+function onMarkerDown(event: PointerEvent, marker: DrawnMarker) {
+  if (!props.picking || !marker.draggable) {
+    return;
+  }
+  event.stopPropagation();
+  draggingKey.value = marker.key;
+  emit("marker-grab", marker.key);
+  (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
+}
+
+function onMarkerMove(event: PointerEvent) {
+  const key = draggingKey.value;
+  if (!key) {
+    return;
+  }
+  event.stopPropagation();
+  const world = worldAt(event.clientX, event.clientY);
+  if (!world) {
+    return;
+  }
+  emit("marker-drag", key, world);
+}
+
+function onMarkerUp(event: PointerEvent) {
+  if (!draggingKey.value) {
+    return;
+  }
+  event.stopPropagation();
+  (event.currentTarget as Element).releasePointerCapture?.(event.pointerId);
+  draggingKey.value = null;
 }
 
 const activeId = computed(() => props.hoveredId ?? props.selectedId ?? null);
@@ -931,6 +1009,7 @@ const orderedMarkers = computed(() => {
 
         <svg
           v-if="boardReady"
+          ref="svgRef"
           class="absolute inset-0 h-full w-full"
           :class="picking ? 'cursor-crosshair' : ''"
           :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
@@ -1259,11 +1338,29 @@ const orderedMarkers = computed(() => {
               <g
                 v-for="marker of drawnMarkers"
                 :key="`point-${marker.key}`"
-                class="pointer-events-none"
+                :class="
+                  picking && marker.draggable
+                    ? 'cursor-move'
+                    : 'pointer-events-none'
+                "
                 :style="{
                   transformOrigin: `${marker.point.x}px ${marker.point.y}px`,
                 }"
+                @pointerdown="onMarkerDown($event, marker)"
+                @pointermove="onMarkerMove"
+                @pointerup="onMarkerUp"
+                @pointercancel="onMarkerUp"
               >
+                <!-- The drawn cross and dot are thin, and a point you cannot
+                     hit is a point you cannot re-pick. This invisible disc is
+                     what the pointer actually grabs. -->
+                <circle
+                  v-if="picking && marker.draggable"
+                  :cx="marker.point.x"
+                  :cy="marker.point.y"
+                  :r="18 * ink"
+                  fill="transparent"
+                />
                 <template v-if="marker.shape === 'cross'">
                   <line
                     :x1="marker.point.x - 12 * ink"

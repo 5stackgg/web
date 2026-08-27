@@ -1295,6 +1295,10 @@ function selectLineup(id: string | null) {
           @select-meta="(key) => (selectedMetaKey = key)"
           @hover-meta="(key) => (hoveredMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
+          @marker-grab="(key) => panelBoard?.onMarkerGrab?.(key)"
+          @marker-drag="
+            (key, point) => panelBoard?.onMarkerDrag?.(key, point)
+          "
           @select-segment="(key) => panelBoard?.onSelectSegment?.(key)"
         />
         <!-- The band's colour bled into the top of the radar. Without it the

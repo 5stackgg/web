@@ -111,8 +111,11 @@ const tagsInput = ref("");
 const visibility = ref<UtilityVisibility>("Private");
 const teamId = ref<string>(NO_TEAM);
 
-const yawInput = ref("");
-const pitchInput = ref("");
+// Both fields are type="number", so Vue's v-model casts and hands back a
+// Number the moment either is touched -- a string only ever survives while the
+// field is empty. Anything reading these has to cope with both.
+const yawInput = ref<string | number>("");
+const pitchInput = ref<string | number>("");
 const anglesTouched = ref(false);
 
 const saving = ref(false);
@@ -225,10 +228,34 @@ const pitch = computed(() => {
 function onPick(point: UtilitySightlinePoint) {
   if (pickMode.value === "origin") {
     origin.value = point;
-    pickMode.value = "landing";
+    // Hand over to the other end only while first placing the pair. Once both
+    // exist the mode is a choice the user made -- by grabbing an end or by
+    // pressing its coordinates -- and moving it out from under them is why
+    // re-picking the throw silently relocated the landing instead.
+    if (!landing.value) {
+      pickMode.value = "landing";
+    }
     return;
   }
   landing.value = point;
+}
+
+/** Pressing an end says which end the next pick means. */
+function onMarkerGrab(key: string) {
+  if (key === "origin" || key === "landing") {
+    pickMode.value = key;
+  }
+}
+
+/** Dragging one moves that end, whatever the pick mode happens to be. */
+function onMarkerDrag(key: string, point: UtilitySightlinePoint) {
+  if (key === "origin") {
+    origin.value = point;
+    return;
+  }
+  if (key === "landing") {
+    landing.value = point;
+  }
 }
 
 function clearPoints() {
@@ -249,6 +276,7 @@ const markers = computed<UtilityBoardMarker[]>(() => {
       color: "#e6ebf5",
       shape: "cross" as const,
       label: t("pages.utility.create.origin_short"),
+      draggable: true,
     });
   }
   if (landing.value) {
@@ -257,6 +285,7 @@ const markers = computed<UtilityBoardMarker[]>(() => {
       point: landing.value,
       color: typeColor.value,
       label: t("pages.utility.create.landing_short"),
+      draggable: true,
     });
   }
   return out;
@@ -313,8 +342,16 @@ const step = ref<Step>("place");
 
 const placed = computed(() => !!origin.value && !!landing.value);
 const named = computed(() => name.value.trim().length > 0);
+
+function aimGiven(value: string | number): boolean {
+  if (typeof value === "number") {
+    return Number.isFinite(value);
+  }
+  return value.trim().length > 0;
+}
+
 const hasAim = computed(
-  () => yawInput.value.trim().length > 0 && pitchInput.value.trim().length > 0,
+  () => aimGiven(yawInput.value) && aimGiven(pitchInput.value),
 );
 
 const stepState = computed(() => ({
@@ -508,6 +545,8 @@ watch(
       markers: markers.value,
       segments: segments.value,
       onPick,
+      onMarkerGrab,
+      onMarkerDrag,
     });
   },
   { immediate: true },
@@ -548,6 +587,70 @@ watch(
           {{ stepState[key].note }}
         </span>
       </button>
+    </div>
+
+    <!-- Placed. Two coordinates on one line, because that is all there is to
+         say about it, and a way to take it back. -->
+    <div
+      v-if="placed"
+      class="flex flex-col gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.05)] p-2.5"
+    >
+      <div class="flex items-center justify-between gap-2">
+        <span
+          class="flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+        >
+          <MapPin class="h-3 w-3" />
+          {{ $t("pages.utility.create.placed") }}
+        </span>
+        <Button
+          size="sm"
+          variant="ghost"
+          class="h-6 px-2 text-[0.6rem]"
+          @click="clearPoints()"
+        >
+          <Trash2 class="mr-1 h-3 w-3" />
+          {{ $t("pages.utility.create.clear_points") }}
+        </Button>
+      </div>
+
+      <div
+        class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.62rem] tabular-nums"
+      >
+        <button
+          type="button"
+          class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
+          :title="$t('pages.utility.create.repick')"
+          @click="pickMode = 'origin'"
+        >
+          <span class="text-muted-foreground">
+            {{ $t("pages.utility.create.origin_short") }}
+          </span>
+          {{ coordinate(origin) }}
+        </button>
+        <span :style="{ color: typeColor }">&rarr;</span>
+        <button
+          type="button"
+          class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
+          :title="$t('pages.utility.create.repick')"
+          @click="pickMode = 'landing'"
+        >
+          <span class="text-muted-foreground">
+            {{ $t("pages.utility.create.landing_short") }}
+          </span>
+          {{ coordinate(landing) }}
+        </button>
+      </div>
+
+      <p
+        class="font-mono text-[0.55rem] uppercase tracking-[0.12em] text-muted-foreground"
+      >
+        <span
+          class="cursor-help border-b border-dotted border-muted-foreground/60"
+          :title="$t('pages.utility.create.height_hint')"
+        >
+          {{ $t("pages.utility.create.repick_note") }}
+        </span>
+      </p>
     </div>
 
     <!-- ============================ PLACE ============================ -->
@@ -615,70 +718,6 @@ watch(
           </div>
         </div>
       </template>
-
-      <!-- Placed. Two coordinates on one line, because that is all there is to
-           say about it, and a way to take it back. -->
-      <div
-        v-else
-        class="flex flex-col gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.05)] p-2.5"
-      >
-        <div class="flex items-center justify-between gap-2">
-          <span
-            class="flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-          >
-            <MapPin class="h-3 w-3" />
-            {{ $t("pages.utility.create.placed") }}
-          </span>
-          <Button
-            size="sm"
-            variant="ghost"
-            class="h-6 px-2 text-[0.6rem]"
-            @click="clearPoints()"
-          >
-            <Trash2 class="mr-1 h-3 w-3" />
-            {{ $t("pages.utility.create.clear_points") }}
-          </Button>
-        </div>
-
-        <div
-          class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.62rem] tabular-nums"
-        >
-          <button
-            type="button"
-            class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
-            :title="$t('pages.utility.create.repick')"
-            @click="pickMode = 'origin'"
-          >
-            <span class="text-muted-foreground">
-              {{ $t("pages.utility.create.origin_short") }}
-            </span>
-            {{ coordinate(origin) }}
-          </button>
-          <span :style="{ color: typeColor }">&rarr;</span>
-          <button
-            type="button"
-            class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
-            :title="$t('pages.utility.create.repick')"
-            @click="pickMode = 'landing'"
-          >
-            <span class="text-muted-foreground">
-              {{ $t("pages.utility.create.landing_short") }}
-            </span>
-            {{ coordinate(landing) }}
-          </button>
-        </div>
-
-        <p
-          class="font-mono text-[0.55rem] uppercase tracking-[0.12em] text-muted-foreground"
-        >
-          <span
-            class="cursor-help border-b border-dotted border-muted-foreground/60"
-            :title="$t('pages.utility.create.height_hint')"
-          >
-            {{ $t("pages.utility.create.repick_note") }}
-          </span>
-        </p>
-      </div>
     </template>
 
     <!-- =========================== DESCRIBE =========================== -->

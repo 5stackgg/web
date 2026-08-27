@@ -4604,7 +4604,7 @@
         "step_throw_todo": "no aim yet",
         "step_throw_aimed": "aimed",
         "placed": "Placed on the map",
-        "repick_note": "Click either end to re-pick it",
+        "repick_note": "Drag either end on the map to move it, or press its coordinates to re-pick it",
         "ground_height": "Ground height",
         "height_why": "Why this matters",
         "check_placed": "Placed",
@@ -6624,7 +6624,7 @@
       "headline_side": "Pick your starting side",
       "headline_pick": "Pick a map",
       "headline_ban": "Ban a map",
-      "side_on_map": "{team} \u00b7 first half on {map}",
+      "side_on_map": "{team} · first half on {map}",
       "side_for_map": "Side is for this map",
       "side_role_ct": "Defend",
       "side_role_t": "Attack"

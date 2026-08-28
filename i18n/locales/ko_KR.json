@@ -4196,7 +4196,8 @@
           "solo": "내 미리보기만 보기",
           "clear": "불러온 라인업, 마커, 고스트 지우기",
           "help": "모든 명령어를 게임 안에 표시"
-        }
+        },
+        "operator": "서버 콘솔"
       },
       "collections": {
         "tab": "컬렉션",
@@ -4276,6 +4277,7 @@
         "empty": "이 맵의 플레이북이 없습니다",
         "empty_description": "팀이 이미 저장해 둔 라인업으로 실행 플랜을 만들어 보세요.",
         "name_placeholder": "A 사이트 기본",
+        "name_required": "저장하기 전에 실행 플랜에 이름을 지어 주세요",
         "description_placeholder": "이 실행 플랜의 용도와 언제 콜할지.",
         "team": "팀",
         "visibility": "공개 범위",

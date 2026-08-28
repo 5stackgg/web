@@ -4196,7 +4196,8 @@
           "solo": "se kun dine egne forhåndsvisninger",
           "clear": "rydder den indlæste opstilling, markører og ghosts",
           "help": "viser alle kommandoer i spillet"
-        }
+        },
+        "operator": "Serverkonsol"
       },
       "collections": {
         "tab": "Samlinger",
@@ -4276,6 +4277,7 @@
         "empty": "Ingen playbooks til denne bane",
         "empty_description": "Byg en execute af de opstillinger, dit hold allerede har gemt.",
         "name_placeholder": "A-site standard",
+        "name_required": "Giv executen et navn, før du gemmer den",
         "description_placeholder": "Hvad denne execute er til, og hvornår man caller den.",
         "team": "Hold",
         "visibility": "Synlighed",

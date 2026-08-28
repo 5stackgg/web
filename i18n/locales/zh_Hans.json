@@ -4196,7 +4196,8 @@
           "solo": "只看自己的预览",
           "clear": "清除已载入的点位、标记和残影",
           "help": "在游戏里打印全部指令"
-        }
+        },
+        "operator": "服务器控制台"
       },
       "collections": {
         "tab": "合集",
@@ -4276,6 +4277,7 @@
         "empty": "这张地图还没有战术手册",
         "empty_description": "用你们战队已经保存的点位搭一套进攻套路。",
         "name_placeholder": "A 点标准打法",
+        "name_required": "保存前先给这套套路起个名字",
         "description_placeholder": "这套套路用来干什么，以及什么时候喊出来。",
         "team": "战队",
         "visibility": "可见范围",

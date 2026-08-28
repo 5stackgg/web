@@ -4196,7 +4196,8 @@
           "solo": "只看自己的預覽",
           "clear": "清除已載入的點位、標記與殘影",
           "help": "在遊戲裡列出全部指令"
-        }
+        },
+        "operator": "伺服器主控台"
       },
       "collections": {
         "tab": "合輯",
@@ -4276,6 +4277,7 @@
         "empty": "這張地圖還沒有戰術手冊",
         "empty_description": "用你們戰隊已儲存的點位組一套進攻套路。",
         "name_placeholder": "A 點標準打法",
+        "name_required": "儲存前先給這套套路取個名字",
         "description_placeholder": "這套套路用來做什麼，以及什麼時候喊出來。",
         "team": "戰隊",
         "visibility": "可見範圍",

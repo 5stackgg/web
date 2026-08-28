@@ -4196,7 +4196,8 @@
           "solo": "ver solo tus propias vistas previas",
           "clear": "borra el lineup cargado, los marcadores y los ghosts",
           "help": "imprime todos los comandos en el juego"
-        }
+        },
+        "operator": "Consola del servidor"
       },
       "collections": {
         "tab": "Colecciones",
@@ -4276,6 +4277,7 @@
         "empty": "No hay playbooks para este mapa",
         "empty_description": "Construye una ejecución con los lineups que tu equipo ya tiene guardados.",
         "name_placeholder": "Site A por defecto",
+        "name_required": "Ponle un nombre a la ejecución antes de guardarla",
         "description_placeholder": "Para qué sirve esta ejecución y cuándo pedirla.",
         "team": "Equipo",
         "visibility": "Visibilidad",

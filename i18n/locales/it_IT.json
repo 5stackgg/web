@@ -4196,7 +4196,8 @@
           "solo": "vedi solo le tue anteprime",
           "clear": "cancella il lineup caricato, i marker e i ghost",
           "help": "stampa tutti i comandi in gioco"
-        }
+        },
+        "operator": "Console del server"
       },
       "collections": {
         "tab": "Raccolte",
@@ -4276,6 +4277,7 @@
         "empty": "Nessun playbook per questa mappa",
         "empty_description": "Costruisci un execute con i lineup che la tua squadra ha già salvato.",
         "name_placeholder": "Sito A standard",
+        "name_required": "Dai un nome all'execute prima di salvarlo",
         "description_placeholder": "A cosa serve questo execute e quando chiamarlo.",
         "team": "Squadra",
         "visibility": "Visibilità",

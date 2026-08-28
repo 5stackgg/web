@@ -4196,7 +4196,8 @@
           "solo": "nur noch deine eigenen Vorschauen sehen",
           "clear": "löscht das geladene Lineup, Marker und Ghosts",
           "help": "gibt alle Befehle im Spiel aus"
-        }
+        },
+        "operator": "Server-Konsole"
       },
       "collections": {
         "tab": "Sammlungen",
@@ -4276,6 +4277,7 @@
         "empty": "Keine Playbooks für diese Map",
         "empty_description": "Bau einen Execute aus den Lineups, die dein Team bereits gespeichert hat.",
         "name_placeholder": "A-Site Standard",
+        "name_required": "Gib dem Execute einen Namen, bevor du ihn speicherst",
         "description_placeholder": "Wofür dieser Execute gedacht ist und wann man ihn callt.",
         "team": "Team",
         "visibility": "Sichtbarkeit",

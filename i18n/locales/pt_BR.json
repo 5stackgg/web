@@ -4196,7 +4196,8 @@
           "solo": "ver só as suas prévias",
           "clear": "limpa o lineup carregado, os marcadores e os ghosts",
           "help": "mostra todos os comandos no jogo"
-        }
+        },
+        "operator": "Console do servidor"
       },
       "collections": {
         "tab": "Coleções",
@@ -4276,6 +4277,7 @@
         "empty": "Nenhum playbook para este mapa",
         "empty_description": "Monte um execute com os lineups que seu time já salvou.",
         "name_placeholder": "Bomb A padrão",
+        "name_required": "Dê um nome ao execute antes de salvar",
         "description_placeholder": "Para que serve este execute e quando pedir por ele.",
         "team": "Time",
         "visibility": "Visibilidade",

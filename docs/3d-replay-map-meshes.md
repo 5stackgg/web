@@ -1,7 +1,81 @@
-# 3D replay map meshes (`.tri` collision geometry)
+# Map assets: collision meshes (`.tri.gz`) and callouts (`.callouts.json`)
 
-The 3D replay viewer (`components/match/Replay3DLite.vue`) renders a **lightweight
-collision mesh** of each map as the world — not the full textured render mesh.
+Both are built from the CS2 install the game-server nodes already run, and both
+are served by the panel's own Cloudflare worker
+(`cloudflare-workers/backblaze-proxy`) out of B2:
+
+```
+https://demo-dl.5stack.gg/maps/<cs2 build>/<map>.tri.gz
+https://demo-dl.5stack.gg/maps/<cs2 build>/<map>.callouts.json
+```
+
+## Building them (in-cluster — nothing to install locally)
+
+The `inventory-backend` pod already mounts the dedicated-server install at
+`/cs2-game` and already has Source2Viewer-CLI and Node:
+
+```bash
+export KUBECONFIG=~/.kube/5stackgg
+P=$(kubectl -n 5stack get pod -l app=inventory-backend -o name | head -1)
+kubectl -n 5stack cp scripts/ 5stack/${P#pod/}:/cs2-models/.work/callouts/scripts
+
+kubectl -n 5stack exec ${P#pod/} -- sh -c '
+  cd /cs2-models/.work/callouts
+  export CLI=/cs2-models/.work/cs2-model-extract/cli/Source2Viewer-CLI CS2_DIR=/cs2-game
+  node scripts/extract-map-meshes.mjs
+  node scripts/extract-map-callouts.mjs'
+```
+
+Stream the results back (`kubectl cp` truncates on directories this size — it
+gave a silent short read once already, so tar and verify):
+
+```bash
+kubectl -n 5stack exec ${P#pod/} -- tar cf - -C /cs2-models/.work/callouts/.cache/meshes . > /tmp/m.tar
+rm -rf .cache/meshes && mkdir -p .cache/meshes && tar xf /tmp/m.tar -C .cache/meshes
+```
+
+## Publishing
+
+```bash
+export S3_ACCESS_KEY=$(kubectl -n 5stack get secret s3-secrets -o jsonpath='{.data.S3_ACCESS_KEY}' | base64 -d)
+export S3_SECRET=$(kubectl -n 5stack get secret s3-secrets -o jsonpath='{.data.S3_SECRET}' | base64 -d)
+node scripts/publish-map-assets.mjs --build <cs2 build> --dry-run
+node scripts/publish-map-assets.mjs --build <cs2 build>
+```
+
+The CS2 build id is `buildid` in `/cs2-game/steamapps/appmanifest_730.acf`. It is
+the cache-buster: every URL under a build is immutable, which is what the
+worker's `max-age=2592000, immutable` assumes. **Never overwrite a published
+build in place.** Then move all three pins together:
+
+- `web/nuxt.config.ts` → `runtimeConfig.public.mapMeshCdn`
+- `demo-parser/internal/geometry/load.go` → `defaultMeshHost` / `defaultMeshCDN`
+- `api/src/utility/utility-callouts.service.ts` → `DEFAULT_CDN`
+
+(or set `MAP_MESH_CDN` / `NUXT_PUBLIC_MAP_MESH_CDN` in the deployment — all three
+read it).
+
+## Two things that are easy to get wrong
+
+> **⚠ Meshes carry their own gzip; callouts do not.** A mesh is published as
+> `<map>.tri.gz` and decompressed by the consumer (`fetchMeshBuffer` in
+> `utilities/mapAssets.ts`, `compress/gzip` in the Go loader). Relying on
+> `Content-Encoding` does NOT survive the path: a Worker's `fetch`
+> auto-decompresses a gzip subresponse and strips the header, and Cloudflare's
+> edge only re-compresses MIME types on its compressible list, which
+> `application/octet-stream` is not — inferno came back 18.6 MB instead of
+> 2.4 MB. Callouts are `application/json`, which the edge *does* compress, so
+> they ship plain and gzip on the wire anyway (8,971 → 1,295 bytes).
+
+> **⚠ The size cap is the CONSUMER's, not the CDN's.** Moving off jsDelivr
+> removed the ~20MiB per-file limit, but the demo parser drops any mesh over
+> 1.5M triangles or 96 MB and the 3D viewer over 96 MB — both silently, and line
+> of sight then answers "visible" for everything. `MESH_MAX_MB` defaults to 40
+> (~1.1M triangles). At that budget most of the active pool needs no decimation
+> at all; full fidelity would be 1.4 GB across 27 maps and inferno alone would
+> be rejected.
+
+---
 
 ## What the files are
 

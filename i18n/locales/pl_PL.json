@@ -4196,7 +4196,8 @@
           "solo": "widzisz tylko własne podglądy",
           "clear": "czyści wczytaną ustawkę, znaczniki i duchy",
           "help": "wypisuje wszystkie komendy w grze"
-        }
+        },
+        "operator": "Konsola serwera"
       },
       "collections": {
         "tab": "Kolekcje",
@@ -4276,6 +4277,7 @@
         "empty": "Brak playbooków dla tej mapy",
         "empty_description": "Zbuduj execute z ustawek, które twoja drużyna już zapisała.",
         "name_placeholder": "Standardowy A",
+        "name_required": "Nazwij execute, zanim go zapiszesz",
         "description_placeholder": "Do czego służy ten execute i kiedy go wołać.",
         "team": "Drużyna",
         "visibility": "Widoczność",

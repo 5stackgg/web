@@ -4196,7 +4196,8 @@
           "solo": "se bara dina egna förhandsvisningar",
           "clear": "rensar den inlästa uppställningen, markörer och ghosts",
           "help": "visar alla kommandon i spelet"
-        }
+        },
+        "operator": "Serverkonsol"
       },
       "collections": {
         "tab": "Samlingar",
@@ -4276,6 +4277,7 @@
         "empty": "Inga playbooks för den här kartan",
         "empty_description": "Bygg en execute av uppställningarna ditt lag redan sparat.",
         "name_placeholder": "A-site standard",
+        "name_required": "Ge executen ett namn innan du sparar den",
         "description_placeholder": "Vad den här executen är till för, och när man callar den.",
         "team": "Lag",
         "visibility": "Synlighet",

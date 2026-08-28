@@ -4196,7 +4196,8 @@
           "solo": "sadece kendi önizlemelerini gör",
           "clear": "yüklü dizilimi, işaretleri ve ghost'ları temizler",
           "help": "bütün komutları oyun içinde basar"
-        }
+        },
+        "operator": "Sunucu konsolu"
       },
       "collections": {
         "tab": "Koleksiyonlar",
@@ -4276,6 +4277,7 @@
         "empty": "Bu harita için playbook yok",
         "empty_description": "Takımının zaten kaydettiği dizilimlerden bir execute kur.",
         "name_placeholder": "A bölgesi standardı",
+        "name_required": "Kaydetmeden önce execute'a bir ad ver",
         "description_placeholder": "Bu execute ne işe yarar ve ne zaman çağrılır.",
         "team": "Takım",
         "visibility": "Görünürlük",

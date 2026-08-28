@@ -4196,7 +4196,8 @@
           "solo": "ne voir que vos propres aperçus",
           "clear": "efface le lineup chargé, les marqueurs et les ghosts",
           "help": "affiche toutes les commandes en jeu"
-        }
+        },
+        "operator": "Console du serveur"
       },
       "collections": {
         "tab": "Collections",
@@ -4276,6 +4277,7 @@
         "empty": "Aucun playbook pour cette map",
         "empty_description": "Construisez une exécution à partir des lineups que votre équipe a déjà enregistrés.",
         "name_placeholder": "Site A par défaut",
+        "name_required": "Donnez un nom à l'exécution avant de l'enregistrer",
         "description_placeholder": "À quoi sert cette exécution, et quand l'appeler.",
         "team": "Équipe",
         "visibility": "Visibilité",

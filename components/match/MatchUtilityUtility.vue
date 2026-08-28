@@ -29,6 +29,7 @@ import {
   fetchReplayBlob,
   normalizeBlobGrenades,
 } from "~/composables/useReplayBlob";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import { useAuthStore } from "~/stores/AuthStore";
 import cleanMapName from "~/utilities/cleanMapName";
 import {
@@ -188,6 +189,9 @@ type MatchGrenadeRow = {
   rawType: string;
   /** Paired with a detonation in the same demo, by grenade id. */
   landed: boolean;
+  /** Kept so the map can name the throw; the blob is the only place they exist. */
+  origin: { x: number; y: number; z: number } | null;
+  landing: { x: number; y: number; z: number } | null;
 };
 
 const matchMaps = computed<any[]>(() => props.match?.match_maps ?? []);
@@ -269,10 +273,14 @@ async function loadGrenades() {
       return;
     }
     const grenades = normalizeBlobGrenades(blob?.grenade_throws ?? []);
-    const detonated = new Set<number>();
+    const detonated = new Map<number, { x: number; y: number; z: number }>();
     for (const grenade of grenades) {
       if (grenade.phase === "detonated" && grenade.grenade_id != null) {
-        detonated.add(Number(grenade.grenade_id));
+        detonated.set(Number(grenade.grenade_id), {
+          x: Number(grenade.x ?? 0),
+          y: Number(grenade.y ?? 0),
+          z: Number(grenade.z ?? 0),
+        });
       }
     }
     const rows: MatchGrenadeRow[] = [];
@@ -297,6 +305,15 @@ async function loadGrenades() {
         utilityType: canonicalUtilityType(rawType),
         rawType,
         landed: detonated.has(grenadeId),
+        // The blob flattens a throw's ox/oy/oz into x/y/z (mapGrenade in the
+        // API's demo metadata service), so a "thrown" row's position IS the
+        // origin -- there is no ox on the wire.
+        origin: {
+          x: Number(grenade.x ?? 0),
+          y: Number(grenade.y ?? 0),
+          z: Number(grenade.z ?? 0),
+        },
+        landing: detonated.get(grenadeId) ?? null,
       });
     }
     rows.sort((a, b) => a.round - b.round || a.grenadeId - b.grenadeId);
@@ -375,15 +392,27 @@ function onSaved(id: string) {
   void load();
 }
 
+const { autoName } = useMapCallouts(
+  () => activeMatchMap.value?.map?.name ?? null,
+);
+
 const saveDefaultName = computed(() => {
   const row = saveTarget.value;
   if (!row) {
     return "";
   }
-  return t("match.utility.default_lineup_name", {
-    utility: grenadeTypeLabel(row),
-    round: row.round,
-  });
+  // Where it went and where it came from, when the map can say. "Smoke, round
+  // 7" only ever told you when it was thrown.
+  const named = row.utilityType
+    ? autoName(row.utilityType, row.origin, row.landing)
+    : "";
+  return (
+    named ||
+    t("match.utility.default_lineup_name", {
+      utility: grenadeTypeLabel(row),
+      round: row.round,
+    })
+  );
 });
 
 const canSaveLineups = computed(() => !!mySteamId.value);

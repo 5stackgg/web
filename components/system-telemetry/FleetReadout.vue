@@ -1,5 +1,10 @@
 <template>
-  <div class="flex h-full flex-col">
+  <!-- No h-full. Grid and flex parents already stretch a readout to its own
+       row, and `height: 100%` measures the whole container instead: in a
+       flex-wrap row it resolves to every line's height, so a readout on the
+       second line runs a full line past the bottom of the card and drops its
+       value into whatever section follows. -->
+  <div class="flex flex-col">
     <!-- flex-1, not a min-height: these sit in a row and their labels wrap to
          different line counts, so the label takes the slack and every value
          starts at the same baseline no matter how many lines it took. -->

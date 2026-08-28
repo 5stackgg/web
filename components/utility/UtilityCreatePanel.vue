@@ -23,6 +23,7 @@ import {
   utilityLineupsQuery,
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   UTILITY_EYE_HEIGHT_UNITS,
@@ -106,6 +107,9 @@ const technique = ref<UtilityTechnique>("Stationary");
 const throwStrength = ref<UtilityThrowStrength>("Full");
 const aimPrecision = ref<UtilityAimPrecision>("tight");
 const name = ref("");
+// Once somebody has typed, the map stops writing the name. Re-suggesting over
+// their words is the behaviour that makes an auto-name infuriating.
+const nameDirty = ref(false);
 const description = ref("");
 const tagsInput = ref("");
 const visibility = ref<UtilityVisibility>("Private");
@@ -388,7 +392,8 @@ watch(placed, (value, was) => {
 });
 
 // Seeding from a mined cluster arrives with both ends and the aim already
-// filled, so the only thing left to do is name it.
+// filled, and the map names it from those -- so the describe step opens with
+// nothing outstanding.
 watch(
   () => props.seed,
   (spot) => {
@@ -397,6 +402,28 @@ watch(
     }
   },
 );
+
+const { autoName } = useMapCallouts(() => props.mapName);
+
+// The name the map itself would give this throw. Recomputed as either end
+// moves, because moving a point is exactly when the suggestion stops being
+// right.
+const suggestedName = computed(() =>
+  origin.value
+    ? autoName(utilityType.value, origin.value, landing.value)
+    : "",
+);
+
+watch(suggestedName, (suggested) => {
+  if (!nameDirty.value) {
+    name.value = suggested;
+  }
+});
+
+function useSuggestedName() {
+  name.value = suggestedName.value;
+  nameDirty.value = false;
+}
 
 // The warning is about a lineup, and there is no lineup until an origin exists.
 // Firing it at an empty form taught people to read past it.
@@ -723,15 +750,32 @@ watch(
     <!-- =========================== DESCRIBE =========================== -->
     <template v-else-if="step === 'describe'">
       <div class="flex flex-col gap-1">
-        <label
-          class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("common.name") }}
-        </label>
+        <div class="flex items-baseline justify-between gap-2">
+          <label
+            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            {{ $t("common.name") }}
+          </label>
+          <span
+            v-if="!nameDirty && suggestedName"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-tac-amber/70"
+          >
+            {{ $t("pages.utility.create.name_suggested") }}
+          </span>
+          <button
+            v-else-if="suggestedName && name.trim() !== suggestedName"
+            type="button"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-tac-amber"
+            @click="useSuggestedName"
+          >
+            {{ $t("pages.utility.create.name_resuggest") }}
+          </button>
+        </div>
         <Input
           v-model="name"
           maxlength="120"
           :placeholder="$t('pages.utility.create.name_placeholder')"
+          @input="nameDirty = true"
         />
       </div>
 

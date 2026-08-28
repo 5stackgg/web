@@ -2554,6 +2554,9 @@
           "rescan_progress": "デモ {demos} 件 · 投げ {throws} 件",
           "rescan_done": "デモ {demos} 件、投げ {throws} 件を再スキャンしました",
           "rescan_failed": "再スキャンを完了できませんでした",
+          "sync_callouts": "コールアウトを同期",
+          "callouts_synced": "{maps} 個のマップのコールアウトを同期 · {callouts} エリア",
+          "callouts_failed": "マップのコールアウトを同期できませんでした",
           "library_section": "ユーティリティライブラリ",
           "library_description": "ラインナップのライブラリ。立ち位置、エイム先、着弾点をセットで保存した投げです。オフにするとライブラリは配信されず、新規の登録も行われません。",
           "lineup_daily_limit": "1人1日あたりのラインナップ数",
@@ -4052,7 +4055,14 @@
         "key": "四角＝投げ位置 · 点＝着弾",
         "zoom_in": "拡大",
         "zoom_out": "縮小",
-        "zoom_reset": "マップに合わせる"
+        "zoom_reset": "マップに合わせる",
+        "callouts_tip": "マップのコールアウトを表示"
+      },
+      "auto_name": {
+        "full": "{from}から{to}{type}",
+        "same": "{to}{type}",
+        "to_only": "{to}{type}",
+        "from_only": "{from}から{type}"
       },
       "card": {
         "upvote": "良いラインナップとして評価",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "ここではサーバー上で何も計測していないため、このラインナップの評価はこのパネルが決めます。手書きのものが記録済みとして評価されることはありません。実際に詰めるべき地点として扱ってください。下のエイムは出発点であり、取得済みのラインナップのようにゲーム内で1投ずつ再現することはできません。",
         "utility": "ユーティリティ",
         "name_placeholder": "T スポーンからのウィンドウスモーク",
+        "name_suggested": "マップから命名",
+        "name_resuggest": "マップが提案する名前を使う",
         "description_placeholder": "どこで位置を合わせ、何に狙いを付け、いつ投げるか。",
         "aim": "エイム（ヨー / ピッチ）",
         "yaw": "ヨー",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "アバター表示中 — クリックで番号表示",
         "showing_numbers": "番号表示中 — クリックでアバター表示",
         "trace_tip": "プレイヤー移動軌跡（点線）",
+        "callouts_tip": "マップのコールアウトを表示",
         "deaths_tip": "デス（キル位置）マーカー",
         "util_summary": "UTIL SUMMARY",
         "util_summary_tip": "ユーティリティサマリー — 複数の購入ラウンドを共通の時間軸に重ね、各チームのユーティリティ運用・タイミング・位置を比較",

@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo(s) · {throws} lanzamiento(s)",
           "rescan_done": "{demos} demo(s) y {throws} lanzamiento(s) reescaneados",
           "rescan_failed": "No se pudo terminar el reescaneo",
+          "sync_callouts": "Sincronizar zonas",
+          "callouts_synced": "Zonas sincronizadas en {maps} mapa(s) · {callouts} área(s)",
+          "callouts_failed": "No se pudieron sincronizar las zonas del mapa",
           "library_section": "Biblioteca de utilidad",
           "library_description": "La biblioteca de lineups: lanzamientos guardados con dónde colocarte, dónde apuntar y dónde cae la utilidad. Desactivada, la biblioteca no se sirve y no se registra nada nuevo.",
           "lineup_daily_limit": "Lineups por jugador y día",
@@ -4052,7 +4055,14 @@
         "key": "Cuadrados = origen · Puntos = caída",
         "zoom_in": "Acercar",
         "zoom_out": "Alejar",
-        "zoom_reset": "Ajustar mapa"
+        "zoom_reset": "Ajustar mapa",
+        "callouts_tip": "Mostrar las zonas de la mapa"
+      },
+      "auto_name": {
+        "full": "{type} a {to} desde {from}",
+        "same": "{type} a {to}",
+        "to_only": "{type} a {to}",
+        "from_only": "{type} desde {from}"
       },
       "card": {
         "upvote": "Marcar como buen lineup",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Aquí no se ha medido nada en un servidor, así que es este panel el que decide cómo se califica este lineup, y uno escrito a mano nunca se califica como grabado. Tómalo como un sitio que hay que ensayar: la puntería de abajo es un punto de partida y no se puede reproducir en el juego tiro a tiro como un lineup capturado.",
         "utility": "Utilidad",
         "name_placeholder": "Smoke a ventana desde spawn T",
+        "name_suggested": "Nombrado por el mapa",
+        "name_resuggest": "Usar el nombre que sugiere el mapa",
         "description_placeholder": "Dónde alinearte, a qué apuntar y cuándo lanzarlo.",
         "aim": "Puntería (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Mostrando avatares: haz clic para ver números",
         "showing_numbers": "Mostrando números: haz clic para ver avatares",
         "trace_tip": "Rastro de movimiento del jugador (línea punteada)",
+        "callouts_tip": "Mostrar las zonas de la mapa",
         "deaths_tip": "Marcadores de muerte (lugar de la baja)",
         "util_summary": "RESUMEN DE UTILIDAD",
         "util_summary_tip": "Resumen de utilidad: superpón varias rondas de compra en un mismo reloj para comparar los montajes, tiempos y posiciones de utilidad de cada equipo",

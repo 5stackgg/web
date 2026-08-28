@@ -75,6 +75,8 @@ import {
 } from "~/components/ui/popover";
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 import RoundSelector from "~/components/match/RoundSelector.vue";
+import RadarCallouts from "~/components/common/RadarCallouts.vue";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   RADAR_CANVAS,
   useRadarProjection,
@@ -2341,10 +2343,14 @@ function persistedBool(key: string, defaultValue: boolean) {
   });
   return r;
 }
+const { callouts: mapCallouts, hasCallouts } = useMapCallouts(normalizedMap);
 const showC4 = persistedBool("5s.replay.show_c4", true);
 const showDefuser = persistedBool("5s.replay.show_defuser", true);
 const showGroundBomb = persistedBool("5s.replay.show_ground_bomb", true);
 const showGroundKits = persistedBool("5s.replay.show_ground_kits", true);
+// The map's own vocabulary, off by default: it is a reference layer, and the
+// board is busy enough during a round without forty labelled boxes under it.
+const showCallouts = persistedBool("5s.replay.show_callouts", false);
 // Pathing always starts off — it's a heavy overlay, not a sticky preference.
 const pathingMode = ref<PathingMode>("off");
 // The Route button is a simple on/off for the live-tracing "progress" mode;
@@ -4075,6 +4081,14 @@ watch(overlayMode, (on) => {
           class="absolute inset-0 w-full h-full"
           preserveAspectRatio="xMidYMid meet"
         >
+          <!-- Under everything: the callouts say where the round is happening,
+           they are not part of what happens in it. -->
+          <RadarCallouts
+            v-if="showCallouts"
+            :callouts="mapCallouts"
+            :project="projectCalibrated"
+            :zoom="zoom2d"
+          />
           <defs>
             <!-- Volumetric smoke filter: turbulence-displaced edges that
                  slowly evolve. The animated baseFrequency on the
@@ -5579,6 +5593,9 @@ watch(overlayMode, (on) => {
         :on-toggle-avatars="() => (showAvatars = !showAvatars)"
         :on-toggle-trace="togglePathing"
         :on-toggle-deaths="() => (showDeaths = !showDeaths)"
+        :show-callouts="showCallouts"
+        :has-callouts="hasCallouts"
+        :on-toggle-callouts="() => (showCallouts = !showCallouts)"
       />
 
       <!-- Rotate gate: the stage is unusable at phone-portrait widths, so we

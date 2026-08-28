@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} lanci",
           "rescan_done": "Riscansionate {demos} demo e {throws} lanci",
           "rescan_failed": "Impossibile completare la riscansione",
+          "sync_callouts": "Sincronizza zone",
+          "callouts_synced": "Zone sincronizzate per {maps} mappa/e · {callouts} area/e",
+          "callouts_failed": "Impossibile sincronizzare le zone della mappa",
           "library_section": "Libreria utility",
           "library_description": "La libreria dei lineup: lanci salvati con dove posizionarsi, dove mirare e dove atterra l'utility. Disattivata, la libreria non viene servita e non viene registrato più nulla.",
           "lineup_daily_limit": "Lineup per giocatore al giorno",
@@ -4052,7 +4055,14 @@
         "key": "Quadrati = origine · Punti = atterraggio",
         "zoom_in": "Ingrandisci",
         "zoom_out": "Riduci",
-        "zoom_reset": "Adatta mappa"
+        "zoom_reset": "Adatta mappa",
+        "callouts_tip": "Mostra le zone della mappa"
+      },
+      "auto_name": {
+        "full": "{type} su {to} da {from}",
+        "same": "{type} su {to}",
+        "to_only": "{type} su {to}",
+        "from_only": "{type} da {from}"
       },
       "card": {
         "upvote": "Segna come un buon lineup",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Qui nulla è stato misurato su un server, quindi è questo pannello a decidere come viene valutato il lineup — e uno scritto a mano non viene mai valutato come registrato. Consideralo un punto da provare: la mira qui sotto è un punto di partenza e non può essere riprodotta in gioco colpo per colpo come un lineup catturato.",
         "utility": "Utility",
         "name_placeholder": "Smoke sulla finestra dallo spawn T",
+        "name_suggested": "Nominato dalla mappa",
+        "name_resuggest": "Usa il nome suggerito dalla mappa",
         "description_placeholder": "Dove allinearsi, cosa puntare e quando lanciarlo.",
         "aim": "Mira (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Avatar visibili — clicca per i numeri",
         "showing_numbers": "Numeri visibili — clicca per gli avatar",
         "trace_tip": "Traccia movimento giocatore (percorso punteggiato)",
+        "callouts_tip": "Mostra le zone della mappa",
         "deaths_tip": "Indicatori di morte (posizione kill)",
         "util_summary": "RIEPILOGO UTILITY",
         "util_summary_tip": "Riepilogo utility — sovrapponi più round di buy su un unico orologio condiviso per confrontare setup, tempistiche e posizioni di utility dei due team",

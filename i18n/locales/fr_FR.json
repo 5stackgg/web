@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} démo(s) · {throws} lancer(s)",
           "rescan_done": "{demos} démo(s) et {throws} lancer(s) réanalysés",
           "rescan_failed": "Impossible de terminer la réanalyse",
+          "sync_callouts": "Synchroniser les zones",
+          "callouts_synced": "Zones synchronisées pour {maps} carte(s) · {callouts} zone(s)",
+          "callouts_failed": "Impossible de synchroniser les zones de la carte",
           "library_section": "Bibliothèque d'utilitaires",
           "library_description": "La bibliothèque de lineups : des lancers enregistrés avec où se placer, où viser et où l'utilitaire atterrit. Désactivée, la bibliothèque n'est plus servie et plus rien n'est enregistré.",
           "lineup_daily_limit": "Lineups par joueur et par jour",
@@ -4052,7 +4055,14 @@
         "key": "Carrés = origine · Points = impact",
         "zoom_in": "Zoomer",
         "zoom_out": "Dézoomer",
-        "zoom_reset": "Ajuster la map"
+        "zoom_reset": "Ajuster la map",
+        "callouts_tip": "Afficher les zones de la carte"
+      },
+      "auto_name": {
+        "full": "{type} vers {to} depuis {from}",
+        "same": "{type} vers {to}",
+        "to_only": "{type} vers {to}",
+        "from_only": "{type} depuis {from}"
       },
       "card": {
         "upvote": "Marquer comme un bon lineup",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Rien ici n'a été mesuré sur un serveur : c'est donc ce panneau qui décide comment ce lineup est noté — et un lineup rédigé n'est jamais noté comme un lineup enregistré. Voyez-le comme un spot à répéter : la visée ci-dessous est un point de départ, et elle ne peut pas être rejouée en jeu au tir près comme un lineup capturé.",
         "utility": "Utilitaire",
         "name_placeholder": "Smoke fenêtre depuis le spawn T",
+        "name_suggested": "Nommé d'après la carte",
+        "name_resuggest": "Utiliser le nom proposé par la carte",
         "description_placeholder": "Où s'aligner, quoi viser, et quand le lancer.",
         "aim": "Visée (lacet / tangage)",
         "yaw": "Lacet",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Avatars affichés — clique pour les numéros",
         "showing_numbers": "Numéros affichés — clique pour les avatars",
         "trace_tip": "Trace de déplacement du joueur (trajet pointillé)",
+        "callouts_tip": "Afficher les zones de la carte",
         "deaths_tip": "Marqueurs de mort (lieu des kills)",
         "util_summary": "RÉSUMÉ UTIL",
         "util_summary_tip": "Résumé des utilitaires — superpose plusieurs rounds d'achat sur une même horloge pour comparer les setups, timings et positions d'utilitaires de chaque équipe",

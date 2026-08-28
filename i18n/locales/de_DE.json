@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} Demo(s) · {throws} Wurf/Würfe",
           "rescan_done": "{demos} Demo(s) und {throws} Wurf/Würfe neu eingelesen",
           "rescan_failed": "Das erneute Einlesen konnte nicht abgeschlossen werden",
+          "sync_callouts": "Callouts synchronisieren",
+          "callouts_synced": "Callouts für {maps} Karte(n) synchronisiert · {callouts} Bereich(e)",
+          "callouts_failed": "Callouts der Karte konnten nicht synchronisiert werden",
           "library_section": "Utility-Bibliothek",
           "library_description": "Die Lineup-Bibliothek: gespeicherte Würfe mit Standort, Zielpunkt und Landepunkt. Ausgeschaltet wird die Bibliothek nicht ausgeliefert und nichts Neues aufgenommen.",
           "lineup_daily_limit": "Lineups pro Spieler und Tag",
@@ -4052,7 +4055,14 @@
         "key": "Quadrate = Ursprung · Punkte = Landung",
         "zoom_in": "Heranzoomen",
         "zoom_out": "Herauszoomen",
-        "zoom_reset": "Map einpassen"
+        "zoom_reset": "Map einpassen",
+        "callouts_tip": "Callouts der Karte anzeigen"
+      },
+      "auto_name": {
+        "full": "{to} {type} von {from}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{type} von {from}"
       },
       "card": {
         "upvote": "Als gutes Lineup markieren",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Hier wurde nichts auf einem Server gemessen, das Panel entscheidet also, wie dieses Lineup bewertet wird – und ein selbst geschriebenes wird nie wie ein aufgezeichnetes bewertet. Nimm es als Spot zum Einlaufen: Das Zielen unten ist ein Ausgangspunkt, und es lässt sich im Spiel nicht Schuss für Schuss nachspielen wie ein erfasstes Lineup.",
         "utility": "Utility",
         "name_placeholder": "Window-Smoke vom T-Spawn",
+        "name_suggested": "Von der Karte benannt",
+        "name_resuggest": "Den von der Karte vorgeschlagenen Namen verwenden",
         "description_placeholder": "Wo du dich ausrichtest, worauf du zielst und wann du es wirfst.",
         "aim": "Zielen (Yaw / Pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Avatare aktiv — klicken für Nummern",
         "showing_numbers": "Nummern aktiv — klicken für Avatare",
         "trace_tip": "Bewegungsspur des Spielers (gepunkteter Pfad)",
+        "callouts_tip": "Callouts der Karte anzeigen",
         "deaths_tip": "Death-Marker (Kill-Positionen)",
         "util_summary": "UTIL-ÜBERSICHT",
         "util_summary_tip": "Utility-Übersicht — leg mehrere Buy-Runden auf eine gemeinsame Uhr, um Utility-Setups, Timings und Positionen beider Teams zu vergleichen",

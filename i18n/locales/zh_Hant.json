@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} 份 Demo · {throws} 次投擲",
           "rescan_done": "已重新掃描 {demos} 份 Demo 與 {throws} 次投擲",
           "rescan_failed": "無法完成重新掃描",
+          "sync_callouts": "同步報點",
+          "callouts_synced": "已同步 {maps} 張地圖的報點 · {callouts} 個區域",
+          "callouts_failed": "無法同步地圖報點",
           "library_section": "道具庫",
           "library_description": "道具點位庫：儲存下來的投擲，含站位、瞄準點與落點。關閉後不再提供道具庫，也不再收錄新內容。",
           "lineup_daily_limit": "每位玩家每日點位上限",
@@ -4052,7 +4055,14 @@
         "key": "方塊＝投擲點 · 圓點＝落點",
         "zoom_in": "放大",
         "zoom_out": "縮小",
-        "zoom_reset": "符合地圖"
+        "zoom_reset": "符合地圖",
+        "callouts_tip": "顯示地圖報點"
+      },
+      "auto_name": {
+        "full": "{from}投{to}{type}",
+        "same": "{to}{type}",
+        "to_only": "{to}{type}",
+        "from_only": "{from}投{type}"
       },
       "card": {
         "upvote": "標記為好點位",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "這裡沒有任何資料是在伺服器上實測的，所以這個點位怎麼評級由本面板決定——手寫的點位永遠不會以已錄製來評級。請把它當成一個需要自己走一遍的位置：下面的瞄準值只是起點，也無法像擷取來的點位那樣在遊戲裡逐發重現。",
         "utility": "道具",
         "name_placeholder": "T 出生點投窗戶煙",
+        "name_suggested": "由地圖命名",
+        "name_resuggest": "使用地圖建議的名稱",
         "description_placeholder": "在哪裡對位、瞄準什麼、什麼時候投。",
         "aim": "瞄準（偏航 / 俯仰）",
         "yaw": "偏航",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "顯示頭像——點擊切換為數字",
         "showing_numbers": "顯示數字——點擊切換為頭像",
         "trace_tip": "玩家移動軌跡（虛線路徑）",
+        "callouts_tip": "顯示地圖報點",
         "deaths_tip": "死亡（擊殺位置）標記",
         "util_summary": "道具摘要",
         "util_summary_tip": "道具摘要——在共用時間軸上疊加多個購買回合，以比較雙方隊伍的道具配置、時機與位置",

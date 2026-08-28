@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { MapPinOff, Maximize2, Minus, Plus } from "lucide-vue-next";
+import { MapPinOff, Maximize2, Minus, Plus, Tags } from "lucide-vue-next";
+import RadarCallouts from "~/components/common/RadarCallouts.vue";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import {
   UTILITY_TYPE_COLORS,
@@ -95,6 +97,30 @@ const {
   unprojectCalibrated,
   CANVAS,
 } = useRadarProjection(() => props.mapName, { radarFailed });
+
+const { callouts, hasCallouts } = useMapCallouts(() => props.mapName);
+
+// The board loads the callouts itself rather than taking them as a prop: it
+// already knows which map it is showing, and the composable serves every board
+// on the page from one request.
+const CALLOUTS_KEY = "5s.utility.show_callouts";
+const showCallouts = ref(false);
+
+onMounted(() => {
+  try {
+    showCallouts.value = localStorage.getItem(CALLOUTS_KEY) === "1";
+  } catch {
+    // private browsing -- the default stands
+  }
+});
+
+watch(showCallouts, (on) => {
+  try {
+    localStorage.setItem(CALLOUTS_KEY, on ? "1" : "0");
+  } catch {
+    // private browsing -- the toggle still works for this session
+  }
+});
 
 watch(
   radarSrc,
@@ -1016,6 +1042,14 @@ const orderedMarkers = computed(() => {
           preserveAspectRatio="none"
           @click="onBoardClick"
         >
+          <!-- First in the stack: the map's own vocabulary is a backdrop for
+           the lineups, never something drawn over them. -->
+          <RadarCallouts
+            v-if="showCallouts"
+            :callouts="callouts"
+            :project="projectCalibrated"
+            :zoom="zoom"
+          />
           <g
             :class="
               metaInteractive && !picking
@@ -1477,6 +1511,18 @@ const orderedMarkers = computed(() => {
         @click.stop="easeZoom(() => resetView())"
       >
         <Maximize2 class="h-3.5 w-3.5" />
+      </button>
+      <button
+        v-if="hasCallouts"
+        type="button"
+        class="flex h-7 w-7 items-center justify-center border-t border-white/10 transition-colors hover:bg-muted/50 hover:text-foreground"
+        :class="
+          showCallouts ? 'bg-tac-amber/15 text-tac-amber' : 'text-muted-foreground'
+        "
+        :title="$t('pages.utility.board.callouts_tip')"
+        @click.stop="showCallouts = !showCallouts"
+      >
+        <Tags class="h-3.5 w-3.5" />
       </button>
     </div>
   </div>

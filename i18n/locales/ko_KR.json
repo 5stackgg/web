@@ -2554,6 +2554,9 @@
           "rescan_progress": "데모 {demos}개 · 투척 {throws}개",
           "rescan_done": "데모 {demos}개와 투척 {throws}개를 다시 스캔했습니다",
           "rescan_failed": "다시 스캔을 끝내지 못했습니다",
+          "sync_callouts": "콜아웃 동기화",
+          "callouts_synced": "맵 {maps}개 콜아웃 동기화 · 구역 {callouts}개",
+          "callouts_failed": "맵 콜아웃을 동기화할 수 없습니다",
           "library_section": "유틸리티 라이브러리",
           "library_description": "라인업 라이브러리입니다. 어디에 서고, 어디를 조준하고, 유틸이 어디에 떨어지는지까지 함께 저장한 투척 모음입니다. 끄면 라이브러리가 제공되지 않고 새로 등록되지도 않습니다.",
           "lineup_daily_limit": "하루 플레이어당 라인업 수",
@@ -4052,7 +4055,14 @@
         "key": "사각형 = 투척 위치 · 점 = 낙하 지점",
         "zoom_in": "확대",
         "zoom_out": "축소",
-        "zoom_reset": "맵에 맞추기"
+        "zoom_reset": "맵에 맞추기",
+        "callouts_tip": "맵 콜아웃 표시"
+      },
+      "auto_name": {
+        "full": "{from}에서 {to} {type}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{from}에서 {type}"
       },
       "card": {
         "upvote": "좋은 라인업으로 표시",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "여기서는 서버에서 측정한 것이 없으므로, 이 라인업의 평가는 이 패널이 정합니다. 직접 작성한 것은 결코 기록된 것으로 평가되지 않습니다. 직접 맞춰 봐야 할 지점으로 여기세요. 아래 조준값은 출발점일 뿐이며, 캡처된 라인업처럼 게임에서 한 발씩 그대로 재현할 수는 없습니다.",
         "utility": "유틸리티",
         "name_placeholder": "T 스폰에서 창문 스모크",
+        "name_suggested": "맵에서 이름 지정됨",
+        "name_resuggest": "맵이 제안한 이름 사용",
         "description_placeholder": "어디에 맞춰 서고, 무엇을 조준하고, 언제 던지는지.",
         "aim": "조준(요 / 피치)",
         "yaw": "요",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "아바타 표시 중 — 클릭하면 번호로 전환",
         "showing_numbers": "번호 표시 중 — 클릭하면 아바타로 전환",
         "trace_tip": "플레이어 이동 경로(점선)",
+        "callouts_tip": "맵 콜아웃 표시",
         "deaths_tip": "사망(킬 위치) 마커",
         "util_summary": "유틸 요약",
         "util_summary_tip": "유틸 요약 — 여러 구매 라운드를 하나의 공유 시계에 겹쳐서 각 팀의 유틸 세팅, 타이밍, 위치를 비교합니다",

@@ -111,6 +111,76 @@ run with env vars: `WALL_THIN` / `WALL_TALL` / `WALL_VERT` (thresholds), or
 
 ---
 
+## Callouts (`<map>.callouts.json`)
+
+The same tagged snapshot also carries each map's **callouts** — the named areas
+CS2 defines as `env_cs_place` entities. The panel draws them on the radar behind
+a toggle, and names a utility throw from them ("Mid Smoke from T Spawn") so
+nobody has to type a name.
+
+```
+https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@<tag>/<map>.callouts.json
+```
+
+Shape: `{ map, generatedAt, callouts: [{ name, boxes: [{ min: [x,y,z], max: [x,y,z] }] }] }`.
+One entry per **name** — a place is legitimately several disjoint volumes — in
+raw CS2 source units, the same space as the `.tri` meshes.
+
+### Extracting
+
+Needs CS2 installed. `Source2Viewer-CLI` is downloaded into `.cache/s2v/` on
+first run (override with `CLI=<path>`):
+
+```bash
+node scripts/extract-map-callouts.mjs                 # every map in the CS2 maps dir
+node scripts/extract-map-callouts.mjs de_mirage       # specific map(s)
+node scripts/extract-map-callouts.mjs de_mirage --print
+CS2_DIR=/path/to/Counter-Strike\ Global\ Offensive node scripts/extract-map-callouts.mjs
+```
+
+It decompiles `maps/<map>/entities/default_ents.vents_c`, keeps the
+`env_cs_place` blocks, and recovers each volume's box from the `.vmdl` its
+`model` points at — the vertex min/max under `position$0`, translated by the
+entity's `origin`. Output lands in `.cache/callouts/` (gitignored).
+
+> **⚠ The same coordinate trap as the meshes.** The numbers in the lump and the
+> vmdl are already source units; nothing here should apply the glTF `0.0254`
+> inch→metre scale. The script asserts the map spans thousands of units and
+> fails loudly if it reads tens.
+
+### Publishing
+
+Callouts ride the mesh repo and the mesh tag, because they change on the same
+event a mesh does — Valve patched the map:
+
+```bash
+node scripts/fetch-map-meshes.mjs --publish --with-callouts --tag <build>-6
+```
+
+Then bump the tag in **all three** consumers, which must stay in step or the
+browser, the raycaster and the API disagree about the same map:
+
+- `web/nuxt.config.ts` → `runtimeConfig.public.mapMeshCdn`
+- `demo-parser/internal/geometry/load.go` → `defaultMeshCDN`
+- `api/src/utility/utility-callouts.service.ts` → `DEFAULT_CDN` (or set
+  `MAP_MESH_CDN` in the deployment, which all three read)
+
+The API pulls the JSON into `public.map_callouts` on a daily job and at boot;
+force it from **Settings ▸ Application ▸ Utility ▸ Sync callouts**. A map the
+extract does not cover — anything from the workshop — is filled in instead by
+the practice plugin, which reports what it finds on map load. The published
+extract always wins where it exists.
+
+### Checking a map's callouts
+
+The engine resolves the same entities itself, and writes the result into
+`player_kills.attacker_location` alongside `attacker_location_coordinates`.
+That is a few thousand labelled samples per hosted match, and it is the way to
+verify an extract before trusting anything named from it. In a practice server,
+`.callouts` dumps what the running level says its areas are.
+
+---
+
 ## Keeping it small
 
 - Use the **collision/physics** mesh, never the render mesh.

@@ -762,11 +762,24 @@ import {
                 :key="feature.key"
                 class="border-b border-border/30 last:border-0"
               >
-                <td class="py-2 pl-4 pr-4 font-medium">
-                  {{ featureLabel(feature.key) }}
+                <td
+                  class="py-2 pl-4 pr-4 font-medium"
+                  :class="feature.reporting ? '' : 'text-muted-foreground'"
+                >
+                  <span class="flex items-center gap-1.5">
+                    {{ featureLabel(feature.key) }}
+                    <FiveStackToolTip v-if="!feature.reporting">
+                      {{
+                        $t("pages.system_telemetry.totals.not_reported_hint")
+                      }}
+                    </FiveStackToolTip>
+                  </span>
                 </td>
                 <td v-if="group.showFlag" class="py-2 pr-4">
-                  <span class="flex items-center gap-2">
+                  <span v-if="!feature.reporting" class="text-muted-foreground">
+                    {{ NO_METRIC }}
+                  </span>
+                  <span v-else class="flex items-center gap-2">
                     <span
                       class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-border/60"
                     >
@@ -783,7 +796,13 @@ import {
                   </span>
                 </td>
                 <td class="py-2 pr-4">
-                  <span v-if="!feature.counted" class="text-muted-foreground">
+                  <span v-if="!feature.reporting" class="text-muted-foreground">
+                    {{ NO_METRIC }}
+                  </span>
+                  <span
+                    v-else-if="!feature.counted"
+                    class="text-muted-foreground"
+                  >
                     {{ NO_METRIC }}
                     <FiveStackToolTip>
                       {{ $t("pages.system_telemetry.features.no_metric_hint") }}
@@ -806,7 +825,10 @@ import {
                   </span>
                 </td>
                 <td class="py-2 pr-4 text-right font-mono tabular-nums">
-                  <span v-if="!feature.counted" class="text-muted-foreground">
+                  <span
+                    v-if="!feature.reporting || !feature.counted"
+                    class="text-muted-foreground"
+                  >
                     {{ NO_METRIC }}
                   </span>
                   <template v-else>{{ format(feature.total) }}</template>
@@ -822,7 +844,11 @@ import {
           <span :class="tacticalSectionTickClasses" />
           {{ $t("pages.system_telemetry.plugins.title") }}
           <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.plugins.hint", { panels: pluginsReported }) }}
+            {{
+              $t("pages.system_telemetry.plugins.hint", {
+                panels: pluginsReported,
+              })
+            }}
           </FiveStackToolTip>
         </div>
 
@@ -874,7 +900,9 @@ import {
             <FleetReadout
               :label="$t('pages.system_telemetry.plugins.modes_unranked')"
               :value="totals?.gameModesUnranked ?? 0"
-              :caption="$t('pages.system_telemetry.plugins.modes_unranked_caption')"
+              :caption="
+                $t('pages.system_telemetry.plugins.modes_unranked_caption')
+              "
             />
           </div>
         </div>
@@ -1562,6 +1590,14 @@ export default {
           feature.kind ?? (feature.flagged > 0 ? "setting" : "always");
 
         (buckets[kind] ?? buckets.always).push(feature);
+      }
+
+      // Live rows first. The server sorts by total, which leaves a feature no
+      // panel has reported yet sitting among the ones that are simply at zero.
+      for (const bucket of Object.values(buckets)) {
+        bucket.sort(
+          (a, b) => Number(b.reporting > 0) - Number(a.reporting > 0),
+        );
       }
 
       return [

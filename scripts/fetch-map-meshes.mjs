@@ -54,6 +54,7 @@ import {
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { glbToTri, mapNameFromGlb } from "./glb-to-tri.mjs";
+import { fitToCap } from "./lib-mesh.mjs";
 
 const BUILD_ID = process.env.AWPY_BUILD_ID || "17595823";
 const ZIP_URL = `https://awpycs.com/${BUILD_ID}/tris.zip`;
@@ -74,6 +75,10 @@ const valOf = (f) => {
 const all = has("--all");
 const fromAll = has("--from-all"); // process every .glb/.tri in --from dir
 const publish = has("--publish");
+// Callouts are a few KB per map and change on the same event a mesh does (Valve
+// patched the map), so they ride the same repo and the same immutable tag
+// rather than earning a second CDN pin to keep in sync.
+const withCallouts = has("--with-callouts");
 const fromDir = valOf("--from") ? resolve(valOf("--from")) : null;
 const tag = valOf("--tag") || BUILD_ID;
 const flagVals = new Set([valOf("--from"), valOf("--tag")].filter(Boolean));
@@ -96,61 +101,8 @@ const DEFAULT_POOL = [
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const stageDir = join(root, ".cache", "meshes");
+const calloutStageDir = join(root, ".cache", "callouts");
 const tmpZip = join("/tmp", `awpy-tris-${BUILD_ID}.zip`);
-
-// ── decimation ────────────────────────────────────────────────────────────────
-// Shrink a non-indexed float32 triangle buffer by snapping vertices to a grid
-// and dropping degenerate + duplicate triangles. Source collision soups carry a
-// lot of fine, coplanar tessellation that collapses away under quantization,
-// which cuts the file while preserving the rough wall/height shapes the 3D
-// viewer needs. `grid` is in source units (player ~32 wide, 72 tall).
-function decimate(buf, grid) {
-  const f = new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4);
-  const tris = f.length / 9;
-  const out = [];
-  const seen = new Set();
-  const snap = (v) => Math.round(v / grid) * grid;
-  for (let i = 0; i < tris; i++) {
-    const o = i * 9;
-    const ax = snap(f[o]), ay = snap(f[o + 1]), az = snap(f[o + 2]);
-    const bx = snap(f[o + 3]), by = snap(f[o + 4]), bz = snap(f[o + 5]);
-    const cx = snap(f[o + 6]), cy = snap(f[o + 7]), cz = snap(f[o + 8]);
-    // drop zero-area triangles (snapped verts collapsed onto each other)
-    const ux = bx - ax, uy = by - ay, uz = bz - az;
-    const vx = cx - ax, vy = cy - ay, vz = cz - az;
-    const nx = uy * vz - uz * vy;
-    const ny = uz * vx - ux * vz;
-    const nz = ux * vy - uy * vx;
-    if (nx * nx + ny * ny + nz * nz < 1e-3) continue;
-    // dedup identical triangles regardless of winding/vertex order
-    const v = [
-      [ax, ay, az],
-      [bx, by, bz],
-      [cx, cy, cz],
-    ].sort((p, q) => p[0] - q[0] || p[1] - q[1] || p[2] - q[2]);
-    const key = v[0].join() + "|" + v[1].join() + "|" + v[2].join();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(ax, ay, az, bx, by, bz, cx, cy, cz);
-  }
-  return Buffer.from(new Float32Array(out).buffer);
-}
-
-// Bring a buffer under MAX_MB (best-effort, progressively coarser grids).
-function fitToCap(buf, name) {
-  const before = buf.length / 1e6;
-  if (before <= MAX_MB || NO_DECIMATE) {
-    return { buf, note: `${before.toFixed(1)} MB`, drop: before > MAX_MB };
-  }
-  let best = buf;
-  for (const grid of [8, 16, 24, 32, 48, 64, 96, 128]) {
-    best = decimate(buf, grid);
-    if (best.length / 1e6 <= MAX_MB) break;
-  }
-  const after = best.length / 1e6;
-  const tag = after > MAX_MB ? "⚠ still over cap" : "decimated";
-  return { buf: best, note: `${tag} ${before.toFixed(1)}→${after.toFixed(1)} MB` };
-}
 
 // ── source: awpy zip ──────────────────────────────────────────────────────────
 let zipMembers = [];
@@ -237,7 +189,7 @@ for (const name of wanted) {
     console.warn(`  ⚠ ${name}.tri not in awpy pack or --from dir — skipping`);
     continue;
   }
-  const { buf, note, drop } = fitToCap(raw, name);
+  const { buf, note, drop } = fitToCap(raw, MAX_MB, NO_DECIMATE);
   if (drop) {
     console.warn(`  ✗ ${name}.tri ${note} > ${MAX_MB} MB cap — skipped (MESH_NO_DECIMATE)`);
     continue;
@@ -255,7 +207,19 @@ if (!publish) {
 }
 
 // ── publish: clone meshes repo, copy built tris, commit, tag, push ────────────
-if (!built.length) {
+const callouts =
+  withCallouts && existsSync(calloutStageDir)
+    ? readdirSync(calloutStageDir).filter((f) => f.endsWith(".callouts.json")).sort()
+    : [];
+
+if (withCallouts && !callouts.length) {
+  console.error(
+    `nothing in ${calloutStageDir} — run scripts/extract-map-callouts.mjs first`,
+  );
+  process.exit(1);
+}
+
+if (!built.length && !callouts.length) {
   console.error("nothing built — aborting publish");
   process.exit(1);
 }
@@ -279,9 +243,15 @@ if (exists) {
 for (const name of built) {
   execFileSync("cp", [join(stageDir, `${name}.tri`), join(cloneDir, `${name}.tri`)]);
 }
+for (const file of callouts) {
+  execFileSync("cp", [join(calloutStageDir, file), join(cloneDir, file)]);
+}
 
 const present = readdirSync(cloneDir)
   .filter((f) => f.endsWith(".tri"))
+  .sort();
+const presentCallouts = readdirSync(cloneDir)
+  .filter((f) => f.endsWith(".callouts.json"))
   .sort();
 writeFileSync(
   join(cloneDir, "README.md"),
@@ -302,6 +272,15 @@ https://cdn.jsdelivr.net/gh/${REPO}@<tag>/<map>.tri
 ## Maps (tag \`${tag}\`)
 
 ${present.map((f) => `- ${f}`).join("\n")}
+
+## Callouts
+
+Each \`<map>.callouts.json\` lists the map's \`env_cs_place\` volumes — a name and
+one or more axis-aligned boxes in the same source units as the meshes. Built by
+\`scripts/extract-map-callouts.mjs\` in the web repo. The panel draws them on the
+radar and names utility throws from them.
+
+${presentCallouts.length ? presentCallouts.map((f) => `- ${f}`).join("\n") : "_none published yet_"}
 `,
 );
 
@@ -317,7 +296,7 @@ if (dirty) {
     "-c", "user.email=bot@5stack.gg",
     "commit",
     "-m",
-    `Publish meshes (build ${BUILD_ID}, tag ${tag}): ${built.join(", ")}`,
+    `Publish meshes (build ${BUILD_ID}, tag ${tag}): ${[...built, ...callouts].join(", ")}`,
   );
 } else {
   console.log("  • no file changes — tagging existing HEAD");
@@ -328,4 +307,8 @@ git("push", "origin", tag);
 
 console.log(`\n✓ published ${built.length} mesh(es) to ${REPO} @ ${tag}`);
 console.log(`  CDN: https://cdn.jsdelivr.net/gh/${REPO}@${tag}/<map>.tri`);
+if (callouts.length) {
+  console.log(`✓ published ${callouts.length} callout file(s)`);
+  console.log(`  CDN: https://cdn.jsdelivr.net/gh/${REPO}@${tag}/<map>.callouts.json`);
+}
 console.log(`  → bump the tag in nuxt.config.ts mapMeshCdn (or NUXT_PUBLIC_MAP_MESH_CDN)`);

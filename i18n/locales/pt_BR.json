@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo(s) · {throws} arremesso(s)",
           "rescan_done": "{demos} demo(s) e {throws} arremesso(s) reescaneados",
           "rescan_failed": "Não foi possível concluir o reescaneamento",
+          "sync_callouts": "Sincronizar pontos",
+          "callouts_synced": "Pontos sincronizados em {maps} mapa(s) · {callouts} área(s)",
+          "callouts_failed": "Não foi possível sincronizar os pontos do mapa",
           "library_section": "Biblioteca de utilitário",
           "library_description": "A biblioteca de lineups: arremessos salvos com onde ficar, onde mirar e onde o utilitário cai. Desligada, a biblioteca não é servida e nada novo é registrado.",
           "lineup_daily_limit": "Lineups por jogador por dia",
@@ -4052,7 +4055,14 @@
         "key": "Quadrados = origem · Pontos = queda",
         "zoom_in": "Aproximar",
         "zoom_out": "Afastar",
-        "zoom_reset": "Ajustar mapa"
+        "zoom_reset": "Ajustar mapa",
+        "callouts_tip": "Mostrar os pontos do mapa"
+      },
+      "auto_name": {
+        "full": "{type} para {to} de {from}",
+        "same": "{type} para {to}",
+        "to_only": "{type} para {to}",
+        "from_only": "{type} de {from}"
       },
       "card": {
         "upvote": "Marcar como um bom lineup",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Nada aqui foi medido num servidor, então é este painel que decide como este lineup é avaliado — e um lineup escrito à mão nunca é avaliado como gravado. Trate como um ponto para ensaiar: a mira abaixo é um ponto de partida e não pode ser reproduzida no jogo tiro a tiro como um lineup capturado.",
         "utility": "Utilitário",
         "name_placeholder": "Smoke na janela do spawn T",
+        "name_suggested": "Nomeado pelo mapa",
+        "name_resuggest": "Usar o nome sugerido pelo mapa",
         "description_placeholder": "Onde se alinhar, no que mirar e quando arremessar.",
         "aim": "Mira (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Mostrando avatares — clique para números",
         "showing_numbers": "Mostrando números — clique para avatares",
         "trace_tip": "Traço de movimento do jogador (caminho pontilhado)",
+        "callouts_tip": "Mostrar os pontos do mapa",
         "deaths_tip": "Marcadores de mortes (localização de kills)",
         "util_summary": "RESUMO DE UTILITÁRIOS",
         "util_summary_tip": "Resumo de utilitários — empilhe múltiplos buy-rounds em um relógio compartilhado para comparar setups, timings e posições de cada time",

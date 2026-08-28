@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} kast",
           "rescan_done": "Skannede {demos} demo og {throws} kast igen",
           "rescan_failed": "Kunne ikke gennemføre skanningen",
+          "sync_callouts": "Synkronisér kaldenavne",
+          "callouts_synced": "Kaldenavne synkroniseret for {maps} kort · {callouts} områder",
+          "callouts_failed": "Kunne ikke synkronisere kortets kaldenavne",
           "library_section": "Utility-bibliotek",
           "library_description": "Opstillingsbiblioteket: gemte kast med hvor du skal stå, hvor du skal sigte, og hvor utility'en lander. Slået fra leveres biblioteket ikke, og der optages intet nyt.",
           "lineup_daily_limit": "Opstillinger pr. spiller pr. dag",
@@ -4052,7 +4055,14 @@
         "key": "Firkanter = kast · Prikker = landing",
         "zoom_in": "Zoom ind",
         "zoom_out": "Zoom ud",
-        "zoom_reset": "Tilpas banen"
+        "zoom_reset": "Tilpas banen",
+        "callouts_tip": "Vis kortets kaldenavne"
+      },
+      "auto_name": {
+        "full": "{to} {type} fra {from}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{type} fra {from}"
       },
       "card": {
         "upvote": "Markér som en god opstilling",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Intet her er målt på en server, så det er dette panel, der afgør, hvordan opstillingen bedømmes — og en skrevet opstilling bedømmes aldrig som optaget. Tag det som et sted at gå igennem: sigtet nedenfor er et udgangspunkt, og det kan ikke afspilles i spillet skud for skud som en optaget opstilling.",
         "utility": "Utility",
         "name_placeholder": "Vinduessmoke fra T-spawn",
+        "name_suggested": "Navngivet af kortet",
+        "name_resuggest": "Brug navnet kortet foreslår",
         "description_placeholder": "Hvor du stiller dig, hvad du sigter på, og hvornår du kaster den.",
         "aim": "Sigte (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Viser avatarer — klik for numre",
         "showing_numbers": "Viser numre — klik for avatarer",
         "trace_tip": "Spor af spillerens bevægelse (stiplet rute)",
+        "callouts_tip": "Vis kortets kaldenavne",
         "deaths_tip": "Markører for deaths (kill-positioner)",
         "util_summary": "UTIL-OVERSIGT",
         "util_summary_tip": "Utility-oversigt — læg flere buy-runder oven på hinanden på samme ur for at sammenligne holdenes utility-opsætninger, timings og positioner",

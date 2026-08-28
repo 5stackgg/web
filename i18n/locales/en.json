@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo(s) · {throws} throw(s)",
           "rescan_done": "Re-scanned {demos} demo(s) and {throws} throw(s)",
           "rescan_failed": "Could not finish the re-scan",
+          "sync_callouts": "Sync callouts",
+          "callouts_synced": "Callouts synced for {maps} map(s) · {callouts} area(s)",
+          "callouts_failed": "Could not sync the map callouts",
           "library_section": "Utility Library",
           "library_description": "The lineup library: saved throws with where to stand, where to aim and where the utility lands. Turned off, the library is not served and nothing new is taken in.",
           "lineup_daily_limit": "Lineups per player per day",
@@ -4052,7 +4055,14 @@
         "key": "Squares = origin · Dots = landing",
         "zoom_in": "Zoom in",
         "zoom_out": "Zoom out",
-        "zoom_reset": "Fit map"
+        "zoom_reset": "Fit map",
+        "callouts_tip": "Show the map's callouts"
+      },
+      "auto_name": {
+        "full": "{to} {type} from {from}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{type} from {from}"
       },
       "card": {
         "upvote": "Mark this as a good lineup",
@@ -4583,6 +4593,8 @@
         "confidence_caption": "Nothing here was measured in a server, so the panel decides how this lineup is graded — and an authored one is never graded as recorded. Treat it as a spot to walk in: the aim below is a starting point, and it cannot be replayed in game shot-for-shot the way a captured lineup can.",
         "utility": "Utility",
         "name_placeholder": "Window smoke from T spawn",
+        "name_suggested": "Named from the map",
+        "name_resuggest": "Use the name the map suggests",
         "description_placeholder": "Where to line up, what to aim at, and when to throw it.",
         "aim": "Aim (yaw / pitch)",
         "yaw": "Yaw",
@@ -7007,6 +7019,7 @@
         "showing_avatars": "Showing avatars — click for numbers",
         "showing_numbers": "Showing numbers — click for avatars",
         "trace_tip": "Player movement trace (dotted path)",
+        "callouts_tip": "Show the map's callouts",
         "deaths_tip": "Death (kill-location) markers",
         "util_summary": "UTIL SUMMARY",
         "util_summary_tip": "Utility Summary — stack multiple buy rounds on one shared clock to compare each team's utility setups, timings and positions",

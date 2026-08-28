@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} atış",
           "rescan_done": "{demos} demo ve {throws} atış yeniden tarandı",
           "rescan_failed": "Yeniden tarama tamamlanamadı",
+          "sync_callouts": "Bölge adlarını eşitle",
+          "callouts_synced": "{maps} harita için bölge adları eşitlendi · {callouts} alan",
+          "callouts_failed": "Harita bölge adları eşitlenemedi",
           "library_section": "Utility Kütüphanesi",
           "library_description": "Dizilim kütüphanesi: nerede duracağın, nereye nişan alacağın ve utility'nin nereye düşeceği ile birlikte kaydedilmiş atışlar. Kapalıyken kütüphane sunulmaz ve yeni hiçbir şey alınmaz.",
           "lineup_daily_limit": "Oyuncu başına günlük dizilim",
@@ -4052,7 +4055,14 @@
         "key": "Kare = atış · Nokta = düşüş",
         "zoom_in": "Yakınlaştır",
         "zoom_out": "Uzaklaştır",
-        "zoom_reset": "Haritayı sığdır"
+        "zoom_reset": "Haritayı sığdır",
+        "callouts_tip": "Haritanın bölge adlarını göster"
+      },
+      "auto_name": {
+        "full": "{from} konumundan {to} {type}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{from} konumundan {type}"
       },
       "card": {
         "upvote": "İyi bir dizilim olarak işaretle",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Burada hiçbir şey bir sunucuda ölçülmedi, dolayısıyla bu dizilimin nasıl derecelendirileceğine bu panel karar verir — ve elle yazılmış bir dizilim asla kaydedilmiş gibi derecelendirilmez. Bunu denenecek bir nokta say: aşağıdaki nişan bir başlangıç noktasıdır ve yakalanmış bir dizilim gibi oyunda atış atış tekrar oynatılamaz.",
         "utility": "Utility",
         "name_placeholder": "T spawn'dan pencere smoke'u",
+        "name_suggested": "Haritadan adlandırıldı",
+        "name_resuggest": "Haritanın önerdiği adı kullan",
         "description_placeholder": "Nereye hizalanacağın, neye nişan alacağın ve ne zaman atacağın.",
         "aim": "Nişan (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Avatarlar gösteriliyor — numaralar için tıkla",
         "showing_numbers": "Numaralar gösteriliyor — avatarlar için tıkla",
         "trace_tip": "Oyuncu hareket izi (noktalı yol)",
+        "callouts_tip": "Haritanın bölge adlarını göster",
         "deaths_tip": "Ölüm (kill konumu) işaretleri",
         "util_summary": "EKİPMAN ÖZETİ",
         "util_summary_tip": "Ekipman özeti — takımların ekipman düzenlerini, zamanlamalarını ve konumlarını karşılaştırmak için birden fazla alım raundunu tek bir ortak zaman çizelgesinde üst üste bindir",

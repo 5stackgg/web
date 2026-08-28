@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} 份录像 · {throws} 次投掷",
           "rescan_done": "已重新扫描 {demos} 份录像和 {throws} 次投掷",
           "rescan_failed": "无法完成重新扫描",
+          "sync_callouts": "同步报点",
+          "callouts_synced": "已同步 {maps} 张地图的报点 · {callouts} 个区域",
+          "callouts_failed": "无法同步地图报点",
           "library_section": "道具库",
           "library_description": "道具点位库：保存下来的投掷，含站位、瞄准点和落点。关闭后不再提供道具库，也不再收录新内容。",
           "lineup_daily_limit": "每位玩家每日点位上限",
@@ -4052,7 +4055,14 @@
         "key": "方块＝投掷点 · 圆点＝落点",
         "zoom_in": "放大",
         "zoom_out": "缩小",
-        "zoom_reset": "适应地图"
+        "zoom_reset": "适应地图",
+        "callouts_tip": "显示地图报点"
+      },
+      "auto_name": {
+        "full": "{from}投{to}{type}",
+        "same": "{to}{type}",
+        "to_only": "{to}{type}",
+        "from_only": "{from}投{type}"
       },
       "card": {
         "upvote": "标记为好点位",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "这里没有任何数据是在服务器上实测的，所以这个点位怎么评级由本面板决定——手写的点位永远不会按已录制来评级。请把它当成一个需要自己走一遍的位置：下面的瞄准值只是起点，也无法像采集来的点位那样在游戏里逐发复现。",
         "utility": "道具",
         "name_placeholder": "T 出生点投窗户烟",
+        "name_suggested": "由地图命名",
+        "name_resuggest": "使用地图建议的名称",
         "description_placeholder": "在哪里对位、瞄准什么、什么时候投。",
         "aim": "瞄准（偏航 / 俯仰）",
         "yaw": "偏航",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "显示头像——点击切换为数字",
         "showing_numbers": "显示数字——点击切换为头像",
         "trace_tip": "玩家移动轨迹（虚线路径）",
+        "callouts_tip": "显示地图报点",
         "deaths_tip": "死亡（击杀位置）标记",
         "util_summary": "道具摘要",
         "util_summary_tip": "道具摘要——在共享时间线上叠加多个购买回合，以比较双方队伍的道具配置、时机和位置",

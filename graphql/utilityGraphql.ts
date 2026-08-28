@@ -767,6 +767,16 @@ export const remineUtilityMetaMutation = generateMutation({
   ],
 });
 
+export const syncMapCalloutsMutation = generateMutation({
+  syncMapCallouts: [
+    {},
+    {
+      maps: true,
+      callouts: true,
+    },
+  ],
+});
+
 // How precise the throw has to be before its in-game marker turns green. Set
 // after the fact rather than at .save: the plugin records a throw, it cannot
 // know whether landing it depends on the exact pixel or roughly the right wall.

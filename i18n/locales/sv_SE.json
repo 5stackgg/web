@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} kast",
           "rescan_done": "Skannade om {demos} demo och {throws} kast",
           "rescan_failed": "Kunde inte slutföra omskanningen",
+          "sync_callouts": "Synkronisera callouts",
+          "callouts_synced": "Callouts synkroniserade för {maps} karta/kartor · {callouts} område(n)",
+          "callouts_failed": "Kunde inte synkronisera kartans callouts",
           "library_section": "Utility-bibliotek",
           "library_description": "Uppställningsbiblioteket: sparade kast med var du ska stå, var du ska sikta och var utilityn landar. Avstängt levereras biblioteket inte och inget nytt tas emot.",
           "lineup_daily_limit": "Uppställningar per spelare och dag",
@@ -4052,7 +4055,14 @@
         "key": "Rutor = kast · Prickar = landning",
         "zoom_in": "Zooma in",
         "zoom_out": "Zooma ut",
-        "zoom_reset": "Anpassa kartan"
+        "zoom_reset": "Anpassa kartan",
+        "callouts_tip": "Visa kartans callouts"
+      },
+      "auto_name": {
+        "full": "{to} {type} från {from}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{type} från {from}"
       },
       "card": {
         "upvote": "Markera som en bra uppställning",
@@ -4581,6 +4591,8 @@
         "confidence_caption": "Inget här har mätts på en server, så det är den här panelen som avgör hur uppställningen bedöms — och en skriven uppställning bedöms aldrig som inspelad. Se det som en plats att gå igenom: siktet nedan är en utgångspunkt, och det kan inte spelas upp i spelet skott för skott som en inspelad uppställning.",
         "utility": "Utility",
         "name_placeholder": "Fönstersmoke från T-spawn",
+        "name_suggested": "Namngiven av kartan",
+        "name_resuggest": "Använd namnet kartan föreslår",
         "description_placeholder": "Var du ställer dig, vad du siktar på och när du kastar den.",
         "aim": "Sikte (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7017,7 @@
         "showing_avatars": "Visar avatarer — klicka för nummer",
         "showing_numbers": "Visar nummer — klicka för avatarer",
         "trace_tip": "Spelarens rörelsespår (prickad bana)",
+        "callouts_tip": "Visa kartans callouts",
         "deaths_tip": "Death-markörer (kill-platser)",
         "util_summary": "UTILITY-SAMMANFATTNING",
         "util_summary_tip": "Utility-sammanfattning — lägg flera köpronder på samma delade klocka för att jämföra lagens utility-uppsättningar, timing och positioner",

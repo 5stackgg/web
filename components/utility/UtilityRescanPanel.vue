@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { RefreshCw } from "lucide-vue-next";
+import { RefreshCw, Tags } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { remineUtilityMetaMutation } from "~/graphql/utilityGraphql";
+import {
+  remineUtilityMetaMutation,
+  syncMapCalloutsMutation,
+} from "~/graphql/utilityGraphql";
 
 const { t } = useI18n();
 
@@ -66,6 +69,43 @@ async function rescan() {
   }
 }
 
+const syncing = ref(false);
+
+// The daily job is the normal path. This is for the run right after a new
+// callouts tag is published, when waiting for it means every throw named in
+// between is named from the old map.
+async function syncCallouts() {
+  if (syncing.value) {
+    return;
+  }
+
+  syncing.value = true;
+
+  try {
+    const { data } = await getGraphqlClient().mutate({
+      mutation: syncMapCalloutsMutation,
+      fetchPolicy: "no-cache",
+    });
+
+    const result = (data as any)?.syncMapCallouts;
+
+    toast({
+      title: t("pages.settings.application.utility.callouts_synced", {
+        maps: Number(result?.maps ?? 0),
+        callouts: Number(result?.callouts ?? 0),
+      }),
+    });
+  } catch (error: any) {
+    toast({
+      title: t("pages.settings.application.utility.callouts_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  } finally {
+    syncing.value = false;
+  }
+}
+
 const progress = computed(() =>
   t("pages.settings.application.utility.rescan_progress", {
     demos: demos.value,
@@ -84,6 +124,11 @@ const progress = computed(() =>
       <Button variant="outline" :loading="running" @click="rescan()">
         <RefreshCw class="mr-1 h-4 w-4" />
         {{ $t("pages.settings.application.utility.rescan") }}
+      </Button>
+
+      <Button variant="outline" :loading="syncing" @click="syncCallouts()">
+        <Tags class="mr-1 h-4 w-4" />
+        {{ $t("pages.settings.application.utility.sync_callouts") }}
       </Button>
 
       <span

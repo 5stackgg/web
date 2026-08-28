@@ -46,7 +46,13 @@ const value = (flag, fallback) => {
   const i = args.indexOf(flag);
   return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
 };
-const only = args.filter((a) => !a.startsWith("--") && !/^\d/.test(a));
+// The token AFTER a value-taking flag is that flag's value, not a map name --
+// `--cs2 /opt/cs2` would otherwise be read as a request to extract a map called
+// "/opt/cs2", which skips the directory scan entirely and reports FAILED.
+const VALUE_FLAGS = new Set(["--cs2"]);
+const only = args.filter(
+  (a, i) => !a.startsWith("--") && !VALUE_FLAGS.has(args[i - 1]),
+);
 
 const CS2_DIR =
   process.env.CS2_DIR ??

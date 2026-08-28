@@ -509,7 +509,7 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
             <RconCommander
               v-if="serverId"
               :server-id="serverId"
-              :online="isLive"
+              :online="practice.isLive"
               :match-id="matchId ?? undefined"
               compact
             />

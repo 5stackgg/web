@@ -556,6 +556,9 @@ watch(() => props.seed, applySeed, { immediate: true });
 function reset() {
   clearPoints();
   name.value = "";
+  // The next lineup is a new one, so it gets the map's name again. Left set,
+  // one hand-typed name turns auto-naming off for the rest of the session.
+  nameDirty.value = false;
   description.value = "";
   tagsInput.value = "";
   step.value = "place";

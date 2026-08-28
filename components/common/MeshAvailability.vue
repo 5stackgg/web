@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
+import { MESH_EXT } from "~/utilities/mapAssets";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { Boxes, Check, X } from "lucide-vue-next";
@@ -39,7 +40,7 @@ async function probe(name: string): Promise<boolean | null> {
     return null;
   }
   try {
-    const res = await fetch(`${meshCdn}/${name}.tri`, { method: "HEAD" });
+    const res = await fetch(`${meshCdn}/${name}${MESH_EXT}`, { method: "HEAD" });
     if (res.status === 404) {
       return false;
     }

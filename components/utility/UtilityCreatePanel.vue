@@ -23,6 +23,7 @@ import {
   utilityLineupsQuery,
 } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   UTILITY_EYE_HEIGHT_UNITS,
@@ -106,13 +107,19 @@ const technique = ref<UtilityTechnique>("Stationary");
 const throwStrength = ref<UtilityThrowStrength>("Full");
 const aimPrecision = ref<UtilityAimPrecision>("tight");
 const name = ref("");
+// Once somebody has typed, the map stops writing the name. Re-suggesting over
+// their words is the behaviour that makes an auto-name infuriating.
+const nameDirty = ref(false);
 const description = ref("");
 const tagsInput = ref("");
 const visibility = ref<UtilityVisibility>("Private");
 const teamId = ref<string>(NO_TEAM);
 
-const yawInput = ref("");
-const pitchInput = ref("");
+// Both fields are type="number", so Vue's v-model casts and hands back a
+// Number the moment either is touched -- a string only ever survives while the
+// field is empty. Anything reading these has to cope with both.
+const yawInput = ref<string | number>("");
+const pitchInput = ref<string | number>("");
 const anglesTouched = ref(false);
 
 const saving = ref(false);
@@ -225,10 +232,34 @@ const pitch = computed(() => {
 function onPick(point: UtilitySightlinePoint) {
   if (pickMode.value === "origin") {
     origin.value = point;
-    pickMode.value = "landing";
+    // Hand over to the other end only while first placing the pair. Once both
+    // exist the mode is a choice the user made -- by grabbing an end or by
+    // pressing its coordinates -- and moving it out from under them is why
+    // re-picking the throw silently relocated the landing instead.
+    if (!landing.value) {
+      pickMode.value = "landing";
+    }
     return;
   }
   landing.value = point;
+}
+
+/** Pressing an end says which end the next pick means. */
+function onMarkerGrab(key: string) {
+  if (key === "origin" || key === "landing") {
+    pickMode.value = key;
+  }
+}
+
+/** Dragging one moves that end, whatever the pick mode happens to be. */
+function onMarkerDrag(key: string, point: UtilitySightlinePoint) {
+  if (key === "origin") {
+    origin.value = point;
+    return;
+  }
+  if (key === "landing") {
+    landing.value = point;
+  }
 }
 
 function clearPoints() {
@@ -249,6 +280,7 @@ const markers = computed<UtilityBoardMarker[]>(() => {
       color: "#e6ebf5",
       shape: "cross" as const,
       label: t("pages.utility.create.origin_short"),
+      draggable: true,
     });
   }
   if (landing.value) {
@@ -257,6 +289,7 @@ const markers = computed<UtilityBoardMarker[]>(() => {
       point: landing.value,
       color: typeColor.value,
       label: t("pages.utility.create.landing_short"),
+      draggable: true,
     });
   }
   return out;
@@ -313,8 +346,16 @@ const step = ref<Step>("place");
 
 const placed = computed(() => !!origin.value && !!landing.value);
 const named = computed(() => name.value.trim().length > 0);
+
+function aimGiven(value: string | number): boolean {
+  if (typeof value === "number") {
+    return Number.isFinite(value);
+  }
+  return value.trim().length > 0;
+}
+
 const hasAim = computed(
-  () => yawInput.value.trim().length > 0 && pitchInput.value.trim().length > 0,
+  () => aimGiven(yawInput.value) && aimGiven(pitchInput.value),
 );
 
 const stepState = computed(() => ({
@@ -351,7 +392,8 @@ watch(placed, (value, was) => {
 });
 
 // Seeding from a mined cluster arrives with both ends and the aim already
-// filled, so the only thing left to do is name it.
+// filled, and the map names it from those -- so the describe step opens with
+// nothing outstanding.
 watch(
   () => props.seed,
   (spot) => {
@@ -360,6 +402,28 @@ watch(
     }
   },
 );
+
+const { autoName } = useMapCallouts(() => props.mapName);
+
+// The name the map itself would give this throw. Recomputed as either end
+// moves, because moving a point is exactly when the suggestion stops being
+// right.
+const suggestedName = computed(() =>
+  origin.value
+    ? autoName(utilityType.value, origin.value, landing.value)
+    : "",
+);
+
+watch(suggestedName, (suggested) => {
+  if (!nameDirty.value) {
+    name.value = suggested;
+  }
+});
+
+function useSuggestedName() {
+  name.value = suggestedName.value;
+  nameDirty.value = false;
+}
 
 // The warning is about a lineup, and there is no lineup until an origin exists.
 // Firing it at an empty form taught people to read past it.
@@ -492,6 +556,9 @@ watch(() => props.seed, applySeed, { immediate: true });
 function reset() {
   clearPoints();
   name.value = "";
+  // The next lineup is a new one, so it gets the map's name again. Left set,
+  // one hand-typed name turns auto-naming off for the rest of the session.
+  nameDirty.value = false;
   description.value = "";
   tagsInput.value = "";
   step.value = "place";
@@ -508,6 +575,8 @@ watch(
       markers: markers.value,
       segments: segments.value,
       onPick,
+      onMarkerGrab,
+      onMarkerDrag,
     });
   },
   { immediate: true },
@@ -548,6 +617,70 @@ watch(
           {{ stepState[key].note }}
         </span>
       </button>
+    </div>
+
+    <!-- Placed. Two coordinates on one line, because that is all there is to
+         say about it, and a way to take it back. -->
+    <div
+      v-if="placed"
+      class="flex flex-col gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.05)] p-2.5"
+    >
+      <div class="flex items-center justify-between gap-2">
+        <span
+          class="flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+        >
+          <MapPin class="h-3 w-3" />
+          {{ $t("pages.utility.create.placed") }}
+        </span>
+        <Button
+          size="sm"
+          variant="ghost"
+          class="h-6 px-2 text-[0.6rem]"
+          @click="clearPoints()"
+        >
+          <Trash2 class="mr-1 h-3 w-3" />
+          {{ $t("pages.utility.create.clear_points") }}
+        </Button>
+      </div>
+
+      <div
+        class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.62rem] tabular-nums"
+      >
+        <button
+          type="button"
+          class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
+          :title="$t('pages.utility.create.repick')"
+          @click="pickMode = 'origin'"
+        >
+          <span class="text-muted-foreground">
+            {{ $t("pages.utility.create.origin_short") }}
+          </span>
+          {{ coordinate(origin) }}
+        </button>
+        <span :style="{ color: typeColor }">&rarr;</span>
+        <button
+          type="button"
+          class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
+          :title="$t('pages.utility.create.repick')"
+          @click="pickMode = 'landing'"
+        >
+          <span class="text-muted-foreground">
+            {{ $t("pages.utility.create.landing_short") }}
+          </span>
+          {{ coordinate(landing) }}
+        </button>
+      </div>
+
+      <p
+        class="font-mono text-[0.55rem] uppercase tracking-[0.12em] text-muted-foreground"
+      >
+        <span
+          class="cursor-help border-b border-dotted border-muted-foreground/60"
+          :title="$t('pages.utility.create.height_hint')"
+        >
+          {{ $t("pages.utility.create.repick_note") }}
+        </span>
+      </p>
     </div>
 
     <!-- ============================ PLACE ============================ -->
@@ -615,84 +748,37 @@ watch(
           </div>
         </div>
       </template>
-
-      <!-- Placed. Two coordinates on one line, because that is all there is to
-           say about it, and a way to take it back. -->
-      <div
-        v-else
-        class="flex flex-col gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.05)] p-2.5"
-      >
-        <div class="flex items-center justify-between gap-2">
-          <span
-            class="flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-          >
-            <MapPin class="h-3 w-3" />
-            {{ $t("pages.utility.create.placed") }}
-          </span>
-          <Button
-            size="sm"
-            variant="ghost"
-            class="h-6 px-2 text-[0.6rem]"
-            @click="clearPoints()"
-          >
-            <Trash2 class="mr-1 h-3 w-3" />
-            {{ $t("pages.utility.create.clear_points") }}
-          </Button>
-        </div>
-
-        <div
-          class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.62rem] tabular-nums"
-        >
-          <button
-            type="button"
-            class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
-            :title="$t('pages.utility.create.repick')"
-            @click="pickMode = 'origin'"
-          >
-            <span class="text-muted-foreground">
-              {{ $t("pages.utility.create.origin_short") }}
-            </span>
-            {{ coordinate(origin) }}
-          </button>
-          <span :style="{ color: typeColor }">&rarr;</span>
-          <button
-            type="button"
-            class="text-left transition-colors hover:text-[hsl(var(--tac-amber))]"
-            :title="$t('pages.utility.create.repick')"
-            @click="pickMode = 'landing'"
-          >
-            <span class="text-muted-foreground">
-              {{ $t("pages.utility.create.landing_short") }}
-            </span>
-            {{ coordinate(landing) }}
-          </button>
-        </div>
-
-        <p
-          class="font-mono text-[0.55rem] uppercase tracking-[0.12em] text-muted-foreground"
-        >
-          <span
-            class="cursor-help border-b border-dotted border-muted-foreground/60"
-            :title="$t('pages.utility.create.height_hint')"
-          >
-            {{ $t("pages.utility.create.repick_note") }}
-          </span>
-        </p>
-      </div>
     </template>
 
     <!-- =========================== DESCRIBE =========================== -->
     <template v-else-if="step === 'describe'">
       <div class="flex flex-col gap-1">
-        <label
-          class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("common.name") }}
-        </label>
+        <div class="flex items-baseline justify-between gap-2">
+          <label
+            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            {{ $t("common.name") }}
+          </label>
+          <span
+            v-if="!nameDirty && suggestedName"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-tac-amber/70"
+          >
+            {{ $t("pages.utility.create.name_suggested") }}
+          </span>
+          <button
+            v-else-if="suggestedName && name.trim() !== suggestedName"
+            type="button"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-tac-amber"
+            @click="useSuggestedName"
+          >
+            {{ $t("pages.utility.create.name_resuggest") }}
+          </button>
+        </div>
         <Input
           v-model="name"
           maxlength="120"
           :placeholder="$t('pages.utility.create.name_placeholder')"
+          @input="nameDirty = true"
         />
       </div>
 

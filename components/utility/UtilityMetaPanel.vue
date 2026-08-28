@@ -11,6 +11,7 @@ import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import { matchUtilityMetaSpot } from "~/utilities/utilityDisplay";
 import type { UtilityMetaSpot } from "~/utilities/utilityDisplay";
 import type {
@@ -104,6 +105,15 @@ const rows = computed(() =>
 const totalThrows = computed(() =>
   visibleSpots.value.reduce((sum, spot) => sum + spot.throws, 0),
 );
+
+const { autoName } = useMapCallouts(() => props.mapName);
+
+// A cluster nobody has written up still has a name -- the map's, from where the
+// throw goes and where it comes from. Better than "Nobody has written this up"
+// as the thing you scan a list by.
+function spotName(spot: UtilityMetaSpot): string {
+  return autoName(spot.utilityType, spot.origin, spot.landing);
+}
 
 const unwrittenCount = computed(
   () => rows.value.filter((row) => row.unwritten).length,
@@ -253,9 +263,12 @@ watch(visibleSpots, (list) => {
           >
             <div class="flex min-w-0 flex-1 flex-col gap-1">
               <span
-                class="truncate text-sm font-medium leading-tight text-muted-foreground"
+                class="truncate text-sm font-medium leading-tight"
+                :class="
+                  spotName(row.spot) ? '' : 'text-muted-foreground'
+                "
               >
-                {{ $t("pages.utility.meta.unwritten") }}
+                {{ spotName(row.spot) || $t("pages.utility.meta.unwritten") }}
               </span>
               <span
                 class="truncate font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground"

@@ -28,6 +28,11 @@ routes = [
   { pattern = "demo-dl.5stack.gg/demo*",  zone_name = "5stack.gg" },
   { pattern = "demo-dl.5stack.gg/clips*", zone_name = "5stack.gg" },
   { pattern = "demo-dl.5stack.gg/news*",  zone_name = "5stack.gg" },
+  # Map assets: collision meshes (.tri) and callouts (.callouts.json), keyed
+  # maps/<cs2 build>/<map>.*. Off jsDelivr because its ~20MiB per-file cap
+  # forced heavy decimation; the build id in the path keeps every URL immutable,
+  # which is what the worker's max-age=2592000 assumes.
+  { pattern = "demo-dl.5stack.gg/maps*",   zone_name = "5stack.gg" },
 ]
 
 # Secrets (S3_ACCESS_KEY, S3_SECRET):

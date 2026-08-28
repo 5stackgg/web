@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} Demo(s) · {throws} Wurf/Würfe",
           "rescan_done": "{demos} Demo(s) und {throws} Wurf/Würfe neu eingelesen",
           "rescan_failed": "Das erneute Einlesen konnte nicht abgeschlossen werden",
+          "sync_callouts": "Callouts synchronisieren",
+          "callouts_synced": "Callouts für {maps} Karte(n) synchronisiert · {callouts} Bereich(e)",
+          "callouts_failed": "Callouts der Karte konnten nicht synchronisiert werden",
           "library_section": "Utility-Bibliothek",
           "library_description": "Die Lineup-Bibliothek: gespeicherte Würfe mit Standort, Zielpunkt und Landepunkt. Ausgeschaltet wird die Bibliothek nicht ausgeliefert und nichts Neues aufgenommen.",
           "lineup_daily_limit": "Lineups pro Spieler und Tag",
@@ -4052,7 +4055,14 @@
         "key": "Quadrate = Ursprung · Punkte = Landung",
         "zoom_in": "Heranzoomen",
         "zoom_out": "Herauszoomen",
-        "zoom_reset": "Map einpassen"
+        "zoom_reset": "Map einpassen",
+        "callouts_tip": "Callouts der Karte anzeigen"
+      },
+      "auto_name": {
+        "full": "{to} {type} von {from}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{type} von {from}"
       },
       "card": {
         "upvote": "Als gutes Lineup markieren",
@@ -4172,7 +4182,9 @@
           "rethrow": "zurück zum geladenen Lineup",
           "last": "zurück zu einem Wurf von dir",
           "list": "verwalte deine Bibliothek aus dem Spiel",
+          "edit": "das geladene Lineup umbenennen, beschreiben oder ändern, wer es sehen darf",
           "drill": "drillt dein Buch, je drei Würfe, und wertet es aus",
+          "drill_here": "wiederholt das Lineup, auf dem du stehst, bis du aufhörst",
           "skip": "überspringt das Lineup, das du gerade drillst",
           "cancel": "beendet den laufenden Drill",
           "playbook": "spielt den geladenen Execute nach seinen Zeiten ab",
@@ -4181,12 +4193,21 @@
           "solve": "sucht einen Wurf auf den Punkt, den du ansiehst",
           "pos": "eine Position speichern und wieder dorthin zurück",
           "spawn": "teleportiert dich zu einem Spawnpunkt",
+          "spawns": "zeigt die kompetitiven Spawns",
           "noclip": "fliegen, und keinen Schaden mehr nehmen",
           "timer": "Stoppuhr starten und stoppen",
           "solo": "nur noch deine eigenen Vorschauen sehen",
+          "colors": "jeder Wurf bekommt seine eigene Farbe, damit du deine erkennst",
           "clear": "löscht das geladene Lineup, Marker und Ghosts",
-          "help": "gibt alle Befehle im Spiel aus"
-        }
+          "help": "gibt alle Befehle im Spiel aus",
+          "group_panels": "Panels auf dem Bildschirm",
+          "panels_hint": "Server mit dem HUD-Addon zeigen klickbare Panels statt Text in der Bildschirmmitte. Ohne das Addon fällt alles auf den Text zurück, den es ersetzt hat.",
+          "menu": "die Lineup-Auswahl, mit Filtern für Sichtbarkeit, Seite und Typ",
+          "map": "eine Minimap, wo die Würfe landen; klick auf eine Stelle für ihre Lineups",
+          "hud": "schaltet die Panels zurück auf Text in der Bildschirmmitte, nur für dich",
+          "here": "beschränkt die Liste auf Lineups, die du von deiner Position aus werfen kannst"
+        },
+        "operator": "Server-Konsole"
       },
       "collections": {
         "tab": "Sammlungen",
@@ -4266,6 +4287,7 @@
         "empty": "Keine Playbooks für diese Map",
         "empty_description": "Bau einen Execute aus den Lineups, die dein Team bereits gespeichert hat.",
         "name_placeholder": "A-Site Standard",
+        "name_required": "Gib dem Execute einen Namen, bevor du ihn speicherst",
         "description_placeholder": "Wofür dieser Execute gedacht ist und wann man ihn callt.",
         "team": "Team",
         "visibility": "Sichtbarkeit",
@@ -4581,6 +4603,8 @@
         "confidence_caption": "Hier wurde nichts auf einem Server gemessen, das Panel entscheidet also, wie dieses Lineup bewertet wird – und ein selbst geschriebenes wird nie wie ein aufgezeichnetes bewertet. Nimm es als Spot zum Einlaufen: Das Zielen unten ist ein Ausgangspunkt, und es lässt sich im Spiel nicht Schuss für Schuss nachspielen wie ein erfasstes Lineup.",
         "utility": "Utility",
         "name_placeholder": "Window-Smoke vom T-Spawn",
+        "name_suggested": "Von der Karte benannt",
+        "name_resuggest": "Den von der Karte vorgeschlagenen Namen verwenden",
         "description_placeholder": "Wo du dich ausrichtest, worauf du zielst und wann du es wirfst.",
         "aim": "Zielen (Yaw / Pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7029,7 @@
         "showing_avatars": "Avatare aktiv — klicken für Nummern",
         "showing_numbers": "Nummern aktiv — klicken für Avatare",
         "trace_tip": "Bewegungsspur des Spielers (gepunkteter Pfad)",
+        "callouts_tip": "Callouts der Karte anzeigen",
         "deaths_tip": "Death-Marker (Kill-Positionen)",
         "util_summary": "UTIL-ÜBERSICHT",
         "util_summary_tip": "Utility-Übersicht — leg mehrere Buy-Runden auf eine gemeinsame Uhr, um Utility-Setups, Timings und Positionen beider Teams zu vergleichen",

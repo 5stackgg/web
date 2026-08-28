@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
@@ -51,9 +51,9 @@ import {
   requestUtilityLineupPublicMutation,
   reviewUtilityLineupPublicMutation,
   utilityLineupsCountQuery,
-  utilityScopeCountsQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
+  utilityScopeCountsSubscription,
 } from "~/graphql/utilityGraphql";
 import { renderUtilityLineupPreviewMutation } from "~/graphql/utilityRenderGraphql";
 import { e_player_roles_enum, order_by } from "~/generated/zeus";
@@ -244,24 +244,38 @@ const panelBoard = ref<UtilityPanelBoard | null>(null);
  * offers the add action inside that message, so the page's button underneath
  * would be the same offer twice, one above the other.
  */
-const panelEmpty = ref(false);
+// null is "the panel has not said yet", which is not the same as "the panel
+// says it has something". Resetting to false meant every tab switch asserted a
+// full panel for as long as the new one took to load, which is exactly how
+// long the footer button flashed up and vanished again.
+const panelEmpty = ref<boolean | null>(null);
 
 // A tab you leave must not carry its emptiness to the next one: the panels
 // only speak up once they have loaded, so the gap between would otherwise be
 // answered with the last tab's answer.
 watch(listTab, () => {
-  panelEmpty.value = false;
+  panelEmpty.value = null;
 });
 
 /**
  * The list draws its own empty state the same way the panels do, and the same
  * rule applies to it: while the shelf is bare, the message owns the offer.
  */
+// The only two panels that draw their own offer when they are bare, and so the
+// only two whose emptiness can silence the footer.
+const REPORTS_EMPTY = [COLLECTIONS_TAB, PLAYBOOKS_TAB];
+
 const secondaryHidden = computed(() => {
   if (listTab.value === LIST_TAB) {
     return !loading.value && !lineups.value.length;
   }
-  return panelEmpty.value;
+  if (!REPORTS_EMPTY.includes(listTab.value)) {
+    return false;
+  }
+  // Hidden until that panel has actually answered. Treating "not asked yet" as
+  // "has something" is what put the button on screen for the length of every
+  // tab switch and then took it away again.
+  return panelEmpty.value !== false;
 });
 
 const metaSpots = ref<UtilityMetaSpot[]>([]);
@@ -655,9 +669,10 @@ const where = computed<Record<string, unknown>>(() =>
   }),
 );
 
-// Declared above fetchScopeCounts because that function reads it, and the first
-// call runs at setup: with the auth store already warm, the old ordering threw
-// "Cannot access 'canReview' before initialization" and the page never mounted.
+// Declared above the scope-count subscription because it reads this, and that
+// subscription is armed at setup: with the auth store already warm, the old
+// ordering threw "Cannot access 'canReview' before initialization" and the
+// page never mounted.
 const canReview = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
 );
@@ -692,33 +707,72 @@ const scopeWheres = computed(() =>
   ),
 );
 
-async function fetchScopeCounts() {
-  // A signed-out visitor only ever sees Public, so three of the four counts
-  // would be a round trip spent on tabs they cannot press.
-  const scopes = mySteamId.value
+// A signed-out visitor only ever sees Public, so the other counts would be work
+// spent on tabs they cannot press.
+const countedScopes = computed(() =>
+  mySteamId.value
     ? SCOPES.filter((scope) => scope !== "pending" || canReview.value)
-    : ["public"];
+    : ["public"],
+);
 
-  try {
-    const { data } = await getGraphqlClient().query({
-      query: utilityScopeCountsQuery(scopes),
+function readScopeCounts(data: any, scopes: readonly string[]) {
+  return Object.fromEntries(
+    scopes.map((scope) => [
+      scope,
+      data?.[`scope_${scope}`]?.aggregate?.count ?? 0,
+    ]),
+  );
+}
+
+/**
+ * The tallies above the list, kept live.
+ *
+ * These are what a player reads to find out whether what they just did
+ * registered -- a lineup saved, a submission put in the review queue -- and as
+ * a one-shot query they only moved when something else happened to refetch
+ * them, so the honest answer to "did it work" was to switch tabs and look
+ * again. Subscribed rather than polled: the counts change when anybody's
+ * lineup changes, not only when this player does something.
+ */
+let scopeCountsSub: { unsubscribe: () => void } | null = null;
+
+function subscribeScopeCounts() {
+  scopeCountsSub?.unsubscribe();
+  scopeCountsSub = null;
+
+  const scopes = countedScopes.value;
+
+  scopeCountsSub = getGraphqlClient()
+    .subscribe({
+      query: utilityScopeCountsSubscription(scopes),
       variables: Object.fromEntries(
         scopes.map((scope) => [`where_${scope}`, scopeWheres.value[scope]]),
       ),
-      fetchPolicy: "network-only",
+    })
+    .subscribe({
+      next: ({ data }: { data: any }) => {
+        scopeCounts.value = readScopeCounts(data, scopes);
+      },
+      error: (error: unknown) => {
+        console.error("[utility] scope count subscription error:", error);
+      },
     });
-
-    scopeCounts.value = Object.fromEntries(
-      scopes.map((scope) => [
-        scope,
-        (data as any)?.[`scope_${scope}`]?.aggregate?.count ?? 0,
-      ]),
-    );
-  } catch (error) {
-    console.error("[utility] scope count error:", error);
-    scopeCounts.value = {};
-  }
 }
+
+// Serialised for the same reason the list query is: `scopeWheres` rebuilds its
+// object on every query-string change, so watching it by reference would tear
+// down and re-open six live aggregates every time the open lineup or the meta
+// overlay moved. What the counts care about is whether the question changed.
+const scopeCountsKey = computed(() =>
+  JSON.stringify([countedScopes.value, scopeWheres.value]),
+);
+
+watch(scopeCountsKey, subscribeScopeCounts, { immediate: true });
+
+onBeforeUnmount(() => {
+  scopeCountsSub?.unsubscribe();
+  scopeCountsSub = null;
+});
 
 const orderBy = computed(() =>
   filters.value.sort === "new"
@@ -769,7 +823,6 @@ async function fetchLineups() {
 }
 
 fetchLineups();
-fetchScopeCounts();
 
 // Serialised, not watched by reference. `filters` rebuilds its object on every
 // change to the query string, and so therefore does `where` -- so with the tab,
@@ -783,7 +836,6 @@ const listQueryKey = computed(() =>
 
 watch(listQueryKey, () => {
   selectedId.value = null;
-  void fetchScopeCounts();
   if (page.value !== 1) {
     page.value = 1;
     return;
@@ -996,10 +1048,7 @@ async function onFavorite(id: string) {
   const before = { ...lineup };
   patchLineup(id, reactions.afterFavorite(lineup));
 
-  if (await reactions.toggleFavorite(lineup, steamId)) {
-    // SAVED is a scope, so favouriting changes what one of the tabs holds.
-    void fetchScopeCounts();
-  } else {
+  if (!(await reactions.toggleFavorite(lineup, steamId))) {
     patchLineup(id, before);
   }
 }
@@ -1016,7 +1065,6 @@ async function restoreLineup(id: string) {
     lineups.value = lineups.value.filter((entry) => entry.id !== id);
     totalCount.value = Math.max(0, totalCount.value - 1);
     toast({ title: t("pages.utility.archive.restored") });
-    void fetchScopeCounts();
   } catch (error: any) {
     toast({
       title: t("pages.utility.archive.restore_failed"),
@@ -1077,7 +1125,6 @@ async function reviewPublic(id: string, approve: boolean) {
         ? t("pages.utility.publish.approved")
         : t("pages.utility.publish.rejected"),
     });
-    void fetchScopeCounts();
   } catch (error: any) {
     toast({
       title: t("pages.utility.publish.review_failed"),
@@ -1136,8 +1183,6 @@ function onArchived(id: string) {
   if (selectedId.value === id) {
     selectedId.value = null;
   }
-
-  void fetchScopeCounts();
 }
 
 function selectLineup(id: string | null) {
@@ -1295,6 +1340,10 @@ function selectLineup(id: string | null) {
           @select-meta="(key) => (selectedMetaKey = key)"
           @hover-meta="(key) => (hoveredMetaKey = key)"
           @pick="(point) => panelBoard?.onPick?.(point)"
+          @marker-grab="(key) => panelBoard?.onMarkerGrab?.(key)"
+          @marker-drag="
+            (key, point) => panelBoard?.onMarkerDrag?.(key, point)
+          "
           @select-segment="(key) => panelBoard?.onSelectSegment?.(key)"
         />
         <!-- The band's colour bled into the top of the radar. Without it the

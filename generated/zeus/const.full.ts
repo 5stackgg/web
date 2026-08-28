@@ -9743,6 +9743,84 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
+	map_callouts:{
+		boxes:{
+
+		}
+	},
+	map_callouts_aggregate_fields:{
+		count:{
+			columns:"map_callouts_select_column"
+		}
+	},
+	map_callouts_append_input:{
+		boxes:"jsonb"
+	},
+	map_callouts_bool_exp:{
+		_and:"map_callouts_bool_exp",
+		_not:"map_callouts_bool_exp",
+		_or:"map_callouts_bool_exp",
+		boxes:"jsonb_comparison_exp",
+		map_name:"String_comparison_exp",
+		name:"String_comparison_exp",
+		source:"String_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	map_callouts_constraint: "enum" as const,
+	map_callouts_delete_at_path_input:{
+
+	},
+	map_callouts_delete_elem_input:{
+
+	},
+	map_callouts_delete_key_input:{
+
+	},
+	map_callouts_insert_input:{
+		boxes:"jsonb",
+		updated_at:"timestamptz"
+	},
+	map_callouts_on_conflict:{
+		constraint:"map_callouts_constraint",
+		update_columns:"map_callouts_update_column",
+		where:"map_callouts_bool_exp"
+	},
+	map_callouts_order_by:{
+		boxes:"order_by",
+		map_name:"order_by",
+		name:"order_by",
+		source:"order_by",
+		updated_at:"order_by"
+	},
+	map_callouts_pk_columns_input:{
+
+	},
+	map_callouts_prepend_input:{
+		boxes:"jsonb"
+	},
+	map_callouts_select_column: "enum" as const,
+	map_callouts_set_input:{
+		boxes:"jsonb",
+		updated_at:"timestamptz"
+	},
+	map_callouts_stream_cursor_input:{
+		initial_value:"map_callouts_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	map_callouts_stream_cursor_value_input:{
+		boxes:"jsonb",
+		updated_at:"timestamptz"
+	},
+	map_callouts_update_column: "enum" as const,
+	map_callouts_updates:{
+		_append:"map_callouts_append_input",
+		_delete_at_path:"map_callouts_delete_at_path_input",
+		_delete_elem:"map_callouts_delete_elem_input",
+		_delete_key:"map_callouts_delete_key_input",
+		_prepend:"map_callouts_prepend_input",
+		_set:"map_callouts_set_input",
+		where:"map_callouts_bool_exp"
+	},
 	map_pools:{
 		maps:{
 			distinct_on:"v_pool_maps_select_column",
@@ -13994,6 +14072,12 @@ export const AllTypesProps: Record<string,any> = {
 			lobby_id:"uuid",
 			steam_id:"bigint"
 		},
+		delete_map_callouts:{
+			where:"map_callouts_bool_exp"
+		},
+		delete_map_callouts_by_pk:{
+
+		},
 		delete_map_pools:{
 			where:"map_pools_bool_exp"
 		},
@@ -15405,6 +15489,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_lobby_players_one:{
 			object:"lobby_players_insert_input",
 			on_conflict:"lobby_players_on_conflict"
+		},
+		insert_map_callouts:{
+			objects:"map_callouts_insert_input",
+			on_conflict:"map_callouts_on_conflict"
+		},
+		insert_map_callouts_one:{
+			object:"map_callouts_insert_input",
+			on_conflict:"map_callouts_on_conflict"
 		},
 		insert_map_pools:{
 			objects:"map_pools_insert_input",
@@ -17702,6 +17794,27 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_lobby_players_many:{
 			updates:"lobby_players_updates"
+		},
+		update_map_callouts:{
+			_append:"map_callouts_append_input",
+			_delete_at_path:"map_callouts_delete_at_path_input",
+			_delete_elem:"map_callouts_delete_elem_input",
+			_delete_key:"map_callouts_delete_key_input",
+			_prepend:"map_callouts_prepend_input",
+			_set:"map_callouts_set_input",
+			where:"map_callouts_bool_exp"
+		},
+		update_map_callouts_by_pk:{
+			_append:"map_callouts_append_input",
+			_delete_at_path:"map_callouts_delete_at_path_input",
+			_delete_elem:"map_callouts_delete_elem_input",
+			_delete_key:"map_callouts_delete_key_input",
+			_prepend:"map_callouts_prepend_input",
+			_set:"map_callouts_set_input",
+			pk_columns:"map_callouts_pk_columns_input"
+		},
+		update_map_callouts_many:{
+			updates:"map_callouts_updates"
 		},
 		update_map_pools:{
 			_set:"map_pools_set_input",
@@ -27486,6 +27599,19 @@ export const AllTypesProps: Record<string,any> = {
 			lobby_id:"uuid",
 			steam_id:"bigint"
 		},
+		map_callouts:{
+			distinct_on:"map_callouts_select_column",
+			order_by:"map_callouts_order_by",
+			where:"map_callouts_bool_exp"
+		},
+		map_callouts_aggregate:{
+			distinct_on:"map_callouts_select_column",
+			order_by:"map_callouts_order_by",
+			where:"map_callouts_bool_exp"
+		},
+		map_callouts_by_pk:{
+
+		},
 		map_pools:{
 			distinct_on:"map_pools_select_column",
 			order_by:"map_pools_order_by",
@@ -31629,6 +31755,23 @@ export const AllTypesProps: Record<string,any> = {
 		lobby_players_stream:{
 			cursor:"lobby_players_stream_cursor_input",
 			where:"lobby_players_bool_exp"
+		},
+		map_callouts:{
+			distinct_on:"map_callouts_select_column",
+			order_by:"map_callouts_order_by",
+			where:"map_callouts_bool_exp"
+		},
+		map_callouts_aggregate:{
+			distinct_on:"map_callouts_select_column",
+			order_by:"map_callouts_order_by",
+			where:"map_callouts_bool_exp"
+		},
+		map_callouts_by_pk:{
+
+		},
+		map_callouts_stream:{
+			cursor:"map_callouts_stream_cursor_input",
+			where:"map_callouts_bool_exp"
 		},
 		map_pools:{
 			distinct_on:"map_pools_select_column",
@@ -45262,6 +45405,10 @@ export const ReturnTypes: Record<string,any> = {
 		relation:"String",
 		usename:"String"
 	},
+	MapCalloutSyncOutput:{
+		callouts:"Int",
+		maps:"Int"
+	},
 	MeResponse:{
 		avatar_url:"String",
 		country:"String",
@@ -51057,6 +51204,38 @@ export const ReturnTypes: Record<string,any> = {
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
+	map_callouts:{
+		boxes:"jsonb",
+		map_name:"String",
+		name:"String",
+		source:"String",
+		updated_at:"timestamptz"
+	},
+	map_callouts_aggregate:{
+		aggregate:"map_callouts_aggregate_fields",
+		nodes:"map_callouts"
+	},
+	map_callouts_aggregate_fields:{
+		count:"Int",
+		max:"map_callouts_max_fields",
+		min:"map_callouts_min_fields"
+	},
+	map_callouts_max_fields:{
+		map_name:"String",
+		name:"String",
+		source:"String",
+		updated_at:"timestamptz"
+	},
+	map_callouts_min_fields:{
+		map_name:"String",
+		name:"String",
+		source:"String",
+		updated_at:"timestamptz"
+	},
+	map_callouts_mutation_response:{
+		affected_rows:"Int",
+		returning:"map_callouts"
+	},
 	map_pools:{
 		e_type:"e_map_pool_types",
 		enabled:"Boolean",
@@ -52925,6 +53104,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_lobbies_by_pk:"lobbies",
 		delete_lobby_players:"lobby_players_mutation_response",
 		delete_lobby_players_by_pk:"lobby_players",
+		delete_map_callouts:"map_callouts_mutation_response",
+		delete_map_callouts_by_pk:"map_callouts",
 		delete_map_pools:"map_pools_mutation_response",
 		delete_map_pools_by_pk:"map_pools",
 		delete_maps:"maps_mutation_response",
@@ -53317,6 +53498,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_lobbies_one:"lobbies",
 		insert_lobby_players:"lobby_players_mutation_response",
 		insert_lobby_players_one:"lobby_players",
+		insert_map_callouts:"map_callouts_mutation_response",
+		insert_map_callouts_one:"map_callouts",
 		insert_map_pools:"map_pools_mutation_response",
 		insert_map_pools_one:"map_pools",
 		insert_maps:"maps_mutation_response",
@@ -53609,6 +53792,7 @@ export const ReturnTypes: Record<string,any> = {
 		swapLineups:"SuccessOutput",
 		switchLineup:"SuccessOutput",
 		switchLiveMatch:"SuccessOutput",
+		syncMapCallouts:"MapCalloutSyncOutput",
 		syncPluginRegistry:"SyncPluginRegistryOutput",
 		syncSteamFriends:"SuccessOutput",
 		testFaceitIntegration:"FaceitTestOutput",
@@ -53917,6 +54101,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_lobby_players:"lobby_players_mutation_response",
 		update_lobby_players_by_pk:"lobby_players",
 		update_lobby_players_many:"lobby_players_mutation_response",
+		update_map_callouts:"map_callouts_mutation_response",
+		update_map_callouts_by_pk:"map_callouts",
+		update_map_callouts_many:"map_callouts_mutation_response",
 		update_map_pools:"map_pools_mutation_response",
 		update_map_pools_by_pk:"map_pools",
 		update_map_pools_many:"map_pools_mutation_response",
@@ -60334,6 +60521,9 @@ export const ReturnTypes: Record<string,any> = {
 		lobby_players:"lobby_players",
 		lobby_players_aggregate:"lobby_players_aggregate",
 		lobby_players_by_pk:"lobby_players",
+		map_callouts:"map_callouts",
+		map_callouts_aggregate:"map_callouts_aggregate",
+		map_callouts_by_pk:"map_callouts",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",
@@ -61591,6 +61781,10 @@ export const ReturnTypes: Record<string,any> = {
 		lobby_players_aggregate:"lobby_players_aggregate",
 		lobby_players_by_pk:"lobby_players",
 		lobby_players_stream:"lobby_players",
+		map_callouts:"map_callouts",
+		map_callouts_aggregate:"map_callouts_aggregate",
+		map_callouts_by_pk:"map_callouts",
+		map_callouts_stream:"map_callouts",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",

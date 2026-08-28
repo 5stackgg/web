@@ -128,6 +128,9 @@ export const utilityPracticeSessionFields = {
   // Named, not just numbered: the only useful thing to tell a guest whose
   // server is on the wrong map is who can move it.
   host: { name: true },
+  // Only for the staff console and the pod log tail below the panel; nothing
+  // player-facing reads it.
+  match: { server_id: true },
   team_id: true,
   map_name: true,
   map_changing_at: true,
@@ -203,6 +206,33 @@ export function utilityScopeCountsQuery(scopes: string[]) {
     };
   }
   return generateQuery({
+    __alias: aliases,
+  } as any);
+}
+
+/**
+ * The same tallies, live. The counts are what a player reads to find out
+ * whether the thing they just did registered -- submitting for review, saving a
+ * lineup -- and as a one-shot query they only moved when something else
+ * happened to refetch them, so the answer was "switch tabs and look again".
+ */
+export function utilityScopeCountsSubscription(scopes: string[]) {
+  const aliases: Record<string, unknown> = {};
+  for (const scope of scopes) {
+    aliases[`scope_${scope}`] = {
+      utility_lineups_aggregate: [
+        {
+          where: $(`where_${scope}`, "utility_lineups_bool_exp!"),
+        },
+        {
+          aggregate: {
+            count: true,
+          },
+        },
+      ],
+    };
+  }
+  return generateSubscription({
     __alias: aliases,
   } as any);
 }
@@ -733,6 +763,16 @@ export const remineUtilityMetaMutation = generateMutation({
       demos: true,
       throws: true,
       done: true,
+    },
+  ],
+});
+
+export const syncMapCalloutsMutation = generateMutation({
+  syncMapCallouts: [
+    {},
+    {
+      maps: true,
+      callouts: true,
     },
   ],
 });

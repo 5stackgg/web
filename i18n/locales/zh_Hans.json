@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} 份录像 · {throws} 次投掷",
           "rescan_done": "已重新扫描 {demos} 份录像和 {throws} 次投掷",
           "rescan_failed": "无法完成重新扫描",
+          "sync_callouts": "同步报点",
+          "callouts_synced": "已同步 {maps} 张地图的报点 · {callouts} 个区域",
+          "callouts_failed": "无法同步地图报点",
           "library_section": "道具库",
           "library_description": "道具点位库：保存下来的投掷，含站位、瞄准点和落点。关闭后不再提供道具库，也不再收录新内容。",
           "lineup_daily_limit": "每位玩家每日点位上限",
@@ -4052,7 +4055,14 @@
         "key": "方块＝投掷点 · 圆点＝落点",
         "zoom_in": "放大",
         "zoom_out": "缩小",
-        "zoom_reset": "适应地图"
+        "zoom_reset": "适应地图",
+        "callouts_tip": "显示地图报点"
+      },
+      "auto_name": {
+        "full": "{from}投{to}{type}",
+        "same": "{to}{type}",
+        "to_only": "{to}{type}",
+        "from_only": "{from}投{type}"
       },
       "card": {
         "upvote": "标记为好点位",
@@ -4172,7 +4182,9 @@
           "rethrow": "回到已载入的点位",
           "last": "回到你投掷时的位置",
           "list": "在游戏里管理你的点位库",
+          "edit": "重命名已载入的点位、写说明，或改谁能看到",
           "drill": "把你的点位每个练三次并打分",
+          "drill_here": "反复练习你所站的这个点位，直到你停下",
           "skip": "跳过正在训练的点位",
           "cancel": "停止当前的训练",
           "playbook": "按时间轴播放已载入的套路",
@@ -4181,12 +4193,21 @@
           "solve": "为你正在看的位置找一条投掷线路",
           "pos": "保存一个位置并随时回到那里",
           "spawn": "传送到出生点",
+          "spawns": "显示竞技模式的出生点",
           "noclip": "飞行，并且不再受到伤害",
           "timer": "开始和停止秒表",
           "solo": "只看自己的预览",
+          "colors": "每次投掷各用一种颜色，方便分辨自己的",
           "clear": "清除已载入的点位、标记和残影",
-          "help": "在游戏里打印全部指令"
-        }
+          "help": "在游戏里打印全部指令",
+          "group_panels": "屏幕面板",
+          "panels_hint": "装了 HUD 插件的服务器会显示可点击的面板，取代屏幕中央的文字。没装的话，一切都退回它替换掉的文字。",
+          "menu": "点位选择器，可按可见范围、阵营和类型筛选",
+          "map": "落点小地图；点一处即可看到该处的点位",
+          "hud": "把面板换回屏幕中央的文字，只对你自己生效",
+          "here": "只列出你从当前位置能投的点位"
+        },
+        "operator": "服务器控制台"
       },
       "collections": {
         "tab": "合集",
@@ -4266,6 +4287,7 @@
         "empty": "这张地图还没有战术手册",
         "empty_description": "用你们战队已经保存的点位搭一套进攻套路。",
         "name_placeholder": "A 点标准打法",
+        "name_required": "保存前先给这套套路起个名字",
         "description_placeholder": "这套套路用来干什么，以及什么时候喊出来。",
         "team": "战队",
         "visibility": "可见范围",
@@ -4581,6 +4603,8 @@
         "confidence_caption": "这里没有任何数据是在服务器上实测的，所以这个点位怎么评级由本面板决定——手写的点位永远不会按已录制来评级。请把它当成一个需要自己走一遍的位置：下面的瞄准值只是起点，也无法像采集来的点位那样在游戏里逐发复现。",
         "utility": "道具",
         "name_placeholder": "T 出生点投窗户烟",
+        "name_suggested": "由地图命名",
+        "name_resuggest": "使用地图建议的名称",
         "description_placeholder": "在哪里对位、瞄准什么、什么时候投。",
         "aim": "瞄准（偏航 / 俯仰）",
         "yaw": "偏航",
@@ -7005,6 +7029,7 @@
         "showing_avatars": "显示头像——点击切换为数字",
         "showing_numbers": "显示数字——点击切换为头像",
         "trace_tip": "玩家移动轨迹（虚线路径）",
+        "callouts_tip": "显示地图报点",
         "deaths_tip": "死亡（击杀位置）标记",
         "util_summary": "道具摘要",
         "util_summary_tip": "道具摘要——在共享时间线上叠加多个购买回合，以比较双方队伍的道具配置、时机和位置",

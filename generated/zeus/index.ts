@@ -1295,6 +1295,11 @@ export type ValueTypes = {
 	usename?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["MapCalloutSyncOutput"]: AliasType<{
+	callouts?:boolean | `@${string}`,
+	maps?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["MeResponse"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
 	country?:boolean | `@${string}`,
@@ -21424,6 +21429,156 @@ count?: [{	columns?: Array<ValueTypes["lobby_players_select_column"]> | undefine
 	invited_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "map_callouts" */
+["map_callouts"]: AliasType<{
+boxes?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	map_name?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "map_callouts" */
+["map_callouts_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["map_callouts_aggregate_fields"],
+	nodes?:ValueTypes["map_callouts"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "map_callouts" */
+["map_callouts_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["map_callouts_max_fields"],
+	min?:ValueTypes["map_callouts_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_append_input"]: {
+	boxes?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "map_callouts". All fields are combined with a logical 'AND'. */
+["map_callouts_bool_exp"]: {
+	_and?: Array<ValueTypes["map_callouts_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["map_callouts_bool_exp"]> | undefined | null | Variable<any, string>,
+	boxes?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "map_callouts" */
+["map_callouts_constraint"]:map_callouts_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_callouts_delete_at_path_input"]: {
+	boxes?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_callouts_delete_elem_input"]: {
+	boxes?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_callouts_delete_key_input"]: {
+	boxes?: string | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "map_callouts" */
+["map_callouts_insert_input"]: {
+	boxes?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_name?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["map_callouts_max_fields"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["map_callouts_min_fields"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "map_callouts" */
+["map_callouts_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["map_callouts"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "map_callouts" */
+["map_callouts_on_conflict"]: {
+	constraint: ValueTypes["map_callouts_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["map_callouts_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "map_callouts". */
+["map_callouts_order_by"]: {
+	boxes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: map_callouts */
+["map_callouts_pk_columns_input"]: {
+	map_name: string | Variable<any, string>,
+	name: string | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_prepend_input"]: {
+	boxes?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "map_callouts" */
+["map_callouts_select_column"]:map_callouts_select_column;
+	/** input type for updating data in table "map_callouts" */
+["map_callouts_set_input"]: {
+	boxes?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_name?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "map_callouts" */
+["map_callouts_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["map_callouts_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["map_callouts_stream_cursor_value_input"]: {
+	boxes?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	map_name?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>,
+	source?: string | undefined | null | Variable<any, string>,
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "map_callouts" */
+["map_callouts_update_column"]:map_callouts_update_column;
+	["map_callouts_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["map_callouts_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["map_callouts_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["map_callouts_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["map_callouts_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["map_callouts_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["map_callouts_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["map_callouts_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: AliasType<{
 	/** An object relationship */
@@ -28203,6 +28358,9 @@ delete_lobbies_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueT
 delete_lobby_players?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["lobby_players_bool_exp"] | Variable<any, string>},ValueTypes["lobby_players_mutation_response"]],
 delete_lobby_players_by_pk?: [{	lobby_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["lobby_players"]],
+delete_map_callouts?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["map_callouts_bool_exp"] | Variable<any, string>},ValueTypes["map_callouts_mutation_response"]],
+delete_map_callouts_by_pk?: [{	map_name: string | Variable<any, string>,	name: string | Variable<any, string>},ValueTypes["map_callouts"]],
 delete_map_pools?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["map_pools_bool_exp"] | Variable<any, string>},ValueTypes["map_pools_mutation_response"]],
 delete_map_pools_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["map_pools"]],
@@ -29085,6 +29243,12 @@ insert_lobby_players?: [{	/** the rows to be inserted */
 insert_lobby_players_one?: [{	/** the row to be inserted */
 	object: ValueTypes["lobby_players_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["lobby_players_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["lobby_players"]],
+insert_map_callouts?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["map_callouts_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["map_callouts_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts_mutation_response"]],
+insert_map_callouts_one?: [{	/** the row to be inserted */
+	object: ValueTypes["map_callouts_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["map_callouts_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts"]],
 insert_map_pools?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["map_pools_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["map_pools_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["map_pools_mutation_response"]],
@@ -29790,6 +29954,8 @@ submitSteamPresenceSteamGuard?: [{	account_id: string | Variable<any, string>,	c
 swapLineups?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 switchLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 switchLiveMatch?: [{	from_match_id: ValueTypes["uuid"] | Variable<any, string>,	mode: string | Variable<any, string>,	to_match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+	/** Pull the published map callouts for every enabled map */
+	syncMapCallouts?:ValueTypes["MapCalloutSyncOutput"],
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?:ValueTypes["SyncPluginRegistryOutput"],
 	syncSteamFriends?:ValueTypes["SuccessOutput"],
@@ -30642,6 +30808,23 @@ update_lobby_players_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ValueTypes["lobby_players_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["lobby_players_pk_columns_input"] | Variable<any, string>},ValueTypes["lobby_players"]],
 update_lobby_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["lobby_players_updates"]> | Variable<any, string>},ValueTypes["lobby_players_mutation_response"]],
+update_map_callouts?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["map_callouts_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["map_callouts_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["map_callouts_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["map_callouts_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["map_callouts_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["map_callouts_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["map_callouts_bool_exp"] | Variable<any, string>},ValueTypes["map_callouts_mutation_response"]],
+update_map_callouts_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["map_callouts_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["map_callouts_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["map_callouts_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["map_callouts_delete_key_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["map_callouts_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["map_callouts_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["map_callouts_pk_columns_input"] | Variable<any, string>},ValueTypes["map_callouts"]],
+update_map_callouts_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["map_callouts_updates"]> | Variable<any, string>},ValueTypes["map_callouts_mutation_response"]],
 update_map_pools?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["map_pools_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["map_pools_bool_exp"] | Variable<any, string>},ValueTypes["map_pools_mutation_response"]],
@@ -48623,6 +48806,19 @@ lobby_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["lobby_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["lobby_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["lobby_players_aggregate"]],
 lobby_players_by_pk?: [{	lobby_id: ValueTypes["uuid"] | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["lobby_players"]],
+map_callouts?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_callouts_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts"]],
+map_callouts_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_callouts_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts_aggregate"]],
+map_callouts_by_pk?: [{	map_name: string | Variable<any, string>,	name: string | Variable<any, string>},ValueTypes["map_callouts"]],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["map_pools_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -53716,6 +53912,23 @@ lobby_players_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["lobby_players_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["lobby_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["lobby_players"]],
+map_callouts?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_callouts_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts"]],
+map_callouts_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["map_callouts_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["map_callouts_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts_aggregate"]],
+map_callouts_by_pk?: [{	map_name: string | Variable<any, string>,	name: string | Variable<any, string>},ValueTypes["map_callouts"]],
+map_callouts_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["map_callouts_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["map_callouts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["map_callouts"]],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["map_pools_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -80143,6 +80356,11 @@ export type ResolverInputTypes = {
 	usename?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["MapCalloutSyncOutput"]: AliasType<{
+	callouts?:boolean | `@${string}`,
+	maps?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["MeResponse"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
 	country?:boolean | `@${string}`,
@@ -100272,6 +100490,156 @@ count?: [{	columns?: Array<ResolverInputTypes["lobby_players_select_column"]> | 
 	invited_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "map_callouts" */
+["map_callouts"]: AliasType<{
+boxes?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	map_name?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "map_callouts" */
+["map_callouts_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["map_callouts_aggregate_fields"],
+	nodes?:ResolverInputTypes["map_callouts"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "map_callouts" */
+["map_callouts_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["map_callouts_max_fields"],
+	min?:ResolverInputTypes["map_callouts_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_append_input"]: {
+	boxes?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "map_callouts". All fields are combined with a logical 'AND'. */
+["map_callouts_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["map_callouts_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["map_callouts_bool_exp"]> | undefined | null,
+	boxes?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	source?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "map_callouts" */
+["map_callouts_constraint"]:map_callouts_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_callouts_delete_at_path_input"]: {
+	boxes?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_callouts_delete_elem_input"]: {
+	boxes?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_callouts_delete_key_input"]: {
+	boxes?: string | undefined | null
+};
+	/** input type for inserting data into table "map_callouts" */
+["map_callouts_insert_input"]: {
+	boxes?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["map_callouts_max_fields"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["map_callouts_min_fields"]: AliasType<{
+	map_name?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+	source?:boolean | `@${string}`,
+	updated_at?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "map_callouts" */
+["map_callouts_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["map_callouts"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "map_callouts" */
+["map_callouts_on_conflict"]: {
+	constraint: ResolverInputTypes["map_callouts_constraint"],
+	update_columns: Array<ResolverInputTypes["map_callouts_update_column"]>,
+	where?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "map_callouts". */
+["map_callouts_order_by"]: {
+	boxes?: ResolverInputTypes["order_by"] | undefined | null,
+	map_name?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	source?: ResolverInputTypes["order_by"] | undefined | null,
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: map_callouts */
+["map_callouts_pk_columns_input"]: {
+	map_name: string,
+	name: string
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_prepend_input"]: {
+	boxes?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "map_callouts" */
+["map_callouts_select_column"]:map_callouts_select_column;
+	/** input type for updating data in table "map_callouts" */
+["map_callouts_set_input"]: {
+	boxes?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "map_callouts" */
+["map_callouts_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["map_callouts_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["map_callouts_stream_cursor_value_input"]: {
+	boxes?: ResolverInputTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+};
+	/** update columns of table "map_callouts" */
+["map_callouts_update_column"]:map_callouts_update_column;
+	["map_callouts_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["map_callouts_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["map_callouts_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["map_callouts_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["map_callouts_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["map_callouts_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["map_callouts_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["map_callouts_bool_exp"]
+};
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: AliasType<{
 	/** An object relationship */
@@ -107051,6 +107419,9 @@ delete_lobbies_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["lo
 delete_lobby_players?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["lobby_players_bool_exp"]},ResolverInputTypes["lobby_players_mutation_response"]],
 delete_lobby_players_by_pk?: [{	lobby_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["lobby_players"]],
+delete_map_callouts?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["map_callouts_bool_exp"]},ResolverInputTypes["map_callouts_mutation_response"]],
+delete_map_callouts_by_pk?: [{	map_name: string,	name: string},ResolverInputTypes["map_callouts"]],
 delete_map_pools?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["map_pools_bool_exp"]},ResolverInputTypes["map_pools_mutation_response"]],
 delete_map_pools_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["map_pools"]],
@@ -107933,6 +108304,12 @@ insert_lobby_players?: [{	/** the rows to be inserted */
 insert_lobby_players_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["lobby_players_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["lobby_players_on_conflict"] | undefined | null},ResolverInputTypes["lobby_players"]],
+insert_map_callouts?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["map_callouts_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["map_callouts_on_conflict"] | undefined | null},ResolverInputTypes["map_callouts_mutation_response"]],
+insert_map_callouts_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["map_callouts_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["map_callouts_on_conflict"] | undefined | null},ResolverInputTypes["map_callouts"]],
 insert_map_pools?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["map_pools_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["map_pools_on_conflict"] | undefined | null},ResolverInputTypes["map_pools_mutation_response"]],
@@ -108638,6 +109015,8 @@ submitSteamPresenceSteamGuard?: [{	account_id: string,	code: string},ResolverInp
 swapLineups?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 switchLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 switchLiveMatch?: [{	from_match_id: ResolverInputTypes["uuid"],	mode: string,	to_match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+	/** Pull the published map callouts for every enabled map */
+	syncMapCallouts?:ResolverInputTypes["MapCalloutSyncOutput"],
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?:ResolverInputTypes["SyncPluginRegistryOutput"],
 	syncSteamFriends?:ResolverInputTypes["SuccessOutput"],
@@ -109490,6 +109869,23 @@ update_lobby_players_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ResolverInputTypes["lobby_players_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["lobby_players_pk_columns_input"]},ResolverInputTypes["lobby_players"]],
 update_lobby_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["lobby_players_updates"]>},ResolverInputTypes["lobby_players_mutation_response"]],
+update_map_callouts?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["map_callouts_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["map_callouts_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["map_callouts_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["map_callouts_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["map_callouts_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["map_callouts_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["map_callouts_bool_exp"]},ResolverInputTypes["map_callouts_mutation_response"]],
+update_map_callouts_by_pk?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["map_callouts_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["map_callouts_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["map_callouts_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["map_callouts_delete_key_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["map_callouts_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["map_callouts_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["map_callouts_pk_columns_input"]},ResolverInputTypes["map_callouts"]],
+update_map_callouts_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["map_callouts_updates"]>},ResolverInputTypes["map_callouts_mutation_response"]],
 update_map_pools?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["map_pools_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["map_pools_bool_exp"]},ResolverInputTypes["map_pools_mutation_response"]],
@@ -127471,6 +127867,19 @@ lobby_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["lobby_players_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["lobby_players_bool_exp"] | undefined | null},ResolverInputTypes["lobby_players_aggregate"]],
 lobby_players_by_pk?: [{	lobby_id: ResolverInputTypes["uuid"],	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["lobby_players"]],
+map_callouts?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_callouts_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null},ResolverInputTypes["map_callouts"]],
+map_callouts_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_callouts_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null},ResolverInputTypes["map_callouts_aggregate"]],
+map_callouts_by_pk?: [{	map_name: string,	name: string},ResolverInputTypes["map_callouts"]],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["map_pools_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -132564,6 +132973,23 @@ lobby_players_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["lobby_players_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["lobby_players_bool_exp"] | undefined | null},ResolverInputTypes["lobby_players"]],
+map_callouts?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_callouts_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null},ResolverInputTypes["map_callouts"]],
+map_callouts_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["map_callouts_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["map_callouts_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null},ResolverInputTypes["map_callouts_aggregate"]],
+map_callouts_by_pk?: [{	map_name: string,	name: string},ResolverInputTypes["map_callouts"]],
+map_callouts_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["map_callouts_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["map_callouts_bool_exp"] | undefined | null},ResolverInputTypes["map_callouts"]],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["map_pools_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -158953,6 +159379,10 @@ export type ModelTypes = {
 	relation?: string | undefined | null,
 	usename?: string | undefined | null
 };
+	["MapCalloutSyncOutput"]: {
+		callouts: number,
+	maps: number
+};
 	["MeResponse"]: {
 		avatar_url: string,
 	country?: string | undefined | null,
@@ -177327,6 +177757,146 @@ export type ModelTypes = {
 	invited_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	steam_id?: ModelTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "map_callouts" */
+["map_callouts"]: {
+		boxes: ModelTypes["jsonb"],
+	map_name: string,
+	name: string,
+	source: string,
+	updated_at: ModelTypes["timestamptz"]
+};
+	/** aggregated selection of "map_callouts" */
+["map_callouts_aggregate"]: {
+		aggregate?: ModelTypes["map_callouts_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["map_callouts"]>
+};
+	/** aggregate fields of "map_callouts" */
+["map_callouts_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["map_callouts_max_fields"] | undefined | null,
+	min?: ModelTypes["map_callouts_min_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_append_input"]: {
+	boxes?: ModelTypes["jsonb"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "map_callouts". All fields are combined with a logical 'AND'. */
+["map_callouts_bool_exp"]: {
+	_and?: Array<ModelTypes["map_callouts_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["map_callouts_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["map_callouts_bool_exp"]> | undefined | null,
+	boxes?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	name?: ModelTypes["String_comparison_exp"] | undefined | null,
+	source?: ModelTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	["map_callouts_constraint"]:map_callouts_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_callouts_delete_at_path_input"]: {
+	boxes?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_callouts_delete_elem_input"]: {
+	boxes?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_callouts_delete_key_input"]: {
+	boxes?: string | undefined | null
+};
+	/** input type for inserting data into table "map_callouts" */
+["map_callouts_insert_input"]: {
+	boxes?: ModelTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["map_callouts_max_fields"]: {
+		map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["map_callouts_min_fields"]: {
+		map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "map_callouts" */
+["map_callouts_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["map_callouts"]>
+};
+	/** on_conflict condition type for table "map_callouts" */
+["map_callouts_on_conflict"]: {
+	constraint: ModelTypes["map_callouts_constraint"],
+	update_columns: Array<ModelTypes["map_callouts_update_column"]>,
+	where?: ModelTypes["map_callouts_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "map_callouts". */
+["map_callouts_order_by"]: {
+	boxes?: ModelTypes["order_by"] | undefined | null,
+	map_name?: ModelTypes["order_by"] | undefined | null,
+	name?: ModelTypes["order_by"] | undefined | null,
+	source?: ModelTypes["order_by"] | undefined | null,
+	updated_at?: ModelTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: map_callouts */
+["map_callouts_pk_columns_input"]: {
+	map_name: string,
+	name: string
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_prepend_input"]: {
+	boxes?: ModelTypes["jsonb"] | undefined | null
+};
+	["map_callouts_select_column"]:map_callouts_select_column;
+	/** input type for updating data in table "map_callouts" */
+["map_callouts_set_input"]: {
+	boxes?: ModelTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "map_callouts" */
+["map_callouts_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["map_callouts_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["map_callouts_stream_cursor_value_input"]: {
+	boxes?: ModelTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: ModelTypes["timestamptz"] | undefined | null
+};
+	["map_callouts_update_column"]:map_callouts_update_column;
+	["map_callouts_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["map_callouts_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["map_callouts_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["map_callouts_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["map_callouts_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["map_callouts_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["map_callouts_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["map_callouts_bool_exp"]
+};
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: {
 		/** An object relationship */
@@ -183654,6 +184224,10 @@ export type ModelTypes = {
 	delete_lobby_players?: ModelTypes["lobby_players_mutation_response"] | undefined | null,
 	/** delete single row from the table: "lobby_players" */
 	delete_lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
+	/** delete data from the table: "map_callouts" */
+	delete_map_callouts?: ModelTypes["map_callouts_mutation_response"] | undefined | null,
+	/** delete single row from the table: "map_callouts" */
+	delete_map_callouts_by_pk?: ModelTypes["map_callouts"] | undefined | null,
 	/** delete data from the table: "map_pools" */
 	delete_map_pools?: ModelTypes["map_pools_mutation_response"] | undefined | null,
 	/** delete single row from the table: "map_pools" */
@@ -184434,6 +185008,10 @@ export type ModelTypes = {
 	insert_lobby_players?: ModelTypes["lobby_players_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "lobby_players" */
 	insert_lobby_players_one?: ModelTypes["lobby_players"] | undefined | null,
+	/** insert data into the table: "map_callouts" */
+	insert_map_callouts?: ModelTypes["map_callouts_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "map_callouts" */
+	insert_map_callouts_one?: ModelTypes["map_callouts"] | undefined | null,
 	/** insert data into the table: "map_pools" */
 	insert_map_pools?: ModelTypes["map_pools_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "map_pools" */
@@ -184980,6 +185558,8 @@ export type ModelTypes = {
 	swapLineups?: ModelTypes["SuccessOutput"] | undefined | null,
 	switchLineup?: ModelTypes["SuccessOutput"] | undefined | null,
 	switchLiveMatch?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Pull the published map callouts for every enabled map */
+	syncMapCallouts?: ModelTypes["MapCalloutSyncOutput"] | undefined | null,
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?: ModelTypes["SyncPluginRegistryOutput"] | undefined | null,
 	syncSteamFriends?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -185589,6 +186169,12 @@ export type ModelTypes = {
 	update_lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
 	/** update multiples rows of table: "lobby_players" */
 	update_lobby_players_many?: Array<ModelTypes["lobby_players_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "map_callouts" */
+	update_map_callouts?: ModelTypes["map_callouts_mutation_response"] | undefined | null,
+	/** update single row of the table: "map_callouts" */
+	update_map_callouts_by_pk?: ModelTypes["map_callouts"] | undefined | null,
+	/** update multiples rows of table: "map_callouts" */
+	update_map_callouts_many?: Array<ModelTypes["map_callouts_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "map_pools" */
 	update_map_pools?: ModelTypes["map_pools_mutation_response"] | undefined | null,
 	/** update single row of the table: "map_pools" */
@@ -201589,6 +202175,12 @@ export type ModelTypes = {
 	lobby_players_aggregate: ModelTypes["lobby_players_aggregate"],
 	/** fetch data from the table: "lobby_players" using primary key columns */
 	lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
+	/** fetch data from the table: "map_callouts" */
+	map_callouts: Array<ModelTypes["map_callouts"]>,
+	/** fetch aggregated fields from the table: "map_callouts" */
+	map_callouts_aggregate: ModelTypes["map_callouts_aggregate"],
+	/** fetch data from the table: "map_callouts" using primary key columns */
+	map_callouts_by_pk?: ModelTypes["map_callouts"] | undefined | null,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<ModelTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -204678,6 +205270,14 @@ export type ModelTypes = {
 	lobby_players_by_pk?: ModelTypes["lobby_players"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "lobby_players" */
 	lobby_players_stream: Array<ModelTypes["lobby_players"]>,
+	/** fetch data from the table: "map_callouts" */
+	map_callouts: Array<ModelTypes["map_callouts"]>,
+	/** fetch aggregated fields from the table: "map_callouts" */
+	map_callouts_aggregate: ModelTypes["map_callouts_aggregate"],
+	/** fetch data from the table: "map_callouts" using primary key columns */
+	map_callouts_by_pk?: ModelTypes["map_callouts"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "map_callouts" */
+	map_callouts_stream: Array<ModelTypes["map_callouts"]>,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<ModelTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -228403,6 +229003,11 @@ export type GraphQLTypes = {
 	relation?: string | undefined | null,
 	usename?: string | undefined | null
 };
+	["MapCalloutSyncOutput"]: {
+	__typename: "MapCalloutSyncOutput",
+	callouts: number,
+	maps: number
+};
 	["MeResponse"]: {
 	__typename: "MeResponse",
 	avatar_url: string,
@@ -248062,6 +248667,155 @@ export type GraphQLTypes = {
 		invited_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "map_callouts" */
+["map_callouts"]: {
+	__typename: "map_callouts",
+	boxes: GraphQLTypes["jsonb"],
+	map_name: string,
+	name: string,
+	source: string,
+	updated_at: GraphQLTypes["timestamptz"]
+};
+	/** aggregated selection of "map_callouts" */
+["map_callouts_aggregate"]: {
+	__typename: "map_callouts_aggregate",
+	aggregate?: GraphQLTypes["map_callouts_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["map_callouts"]>
+};
+	/** aggregate fields of "map_callouts" */
+["map_callouts_aggregate_fields"]: {
+	__typename: "map_callouts_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["map_callouts_max_fields"] | undefined | null,
+	min?: GraphQLTypes["map_callouts_min_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_append_input"]: {
+		boxes?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "map_callouts". All fields are combined with a logical 'AND'. */
+["map_callouts_bool_exp"]: {
+		_and?: Array<GraphQLTypes["map_callouts_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["map_callouts_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["map_callouts_bool_exp"]> | undefined | null,
+	boxes?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	source?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "map_callouts" */
+["map_callouts_constraint"]: map_callouts_constraint;
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["map_callouts_delete_at_path_input"]: {
+		boxes?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["map_callouts_delete_elem_input"]: {
+		boxes?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["map_callouts_delete_key_input"]: {
+		boxes?: string | undefined | null
+};
+	/** input type for inserting data into table "map_callouts" */
+["map_callouts_insert_input"]: {
+		boxes?: GraphQLTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate max on columns */
+["map_callouts_max_fields"]: {
+	__typename: "map_callouts_max_fields",
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** aggregate min on columns */
+["map_callouts_min_fields"]: {
+	__typename: "map_callouts_min_fields",
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** response of any mutation on the table "map_callouts" */
+["map_callouts_mutation_response"]: {
+	__typename: "map_callouts_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["map_callouts"]>
+};
+	/** on_conflict condition type for table "map_callouts" */
+["map_callouts_on_conflict"]: {
+		constraint: GraphQLTypes["map_callouts_constraint"],
+	update_columns: Array<GraphQLTypes["map_callouts_update_column"]>,
+	where?: GraphQLTypes["map_callouts_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "map_callouts". */
+["map_callouts_order_by"]: {
+		boxes?: GraphQLTypes["order_by"] | undefined | null,
+	map_name?: GraphQLTypes["order_by"] | undefined | null,
+	name?: GraphQLTypes["order_by"] | undefined | null,
+	source?: GraphQLTypes["order_by"] | undefined | null,
+	updated_at?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: map_callouts */
+["map_callouts_pk_columns_input"]: {
+		map_name: string,
+	name: string
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["map_callouts_prepend_input"]: {
+		boxes?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "map_callouts" */
+["map_callouts_select_column"]: map_callouts_select_column;
+	/** input type for updating data in table "map_callouts" */
+["map_callouts_set_input"]: {
+		boxes?: GraphQLTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** Streaming cursor of the table "map_callouts" */
+["map_callouts_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["map_callouts_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["map_callouts_stream_cursor_value_input"]: {
+		boxes?: GraphQLTypes["jsonb"] | undefined | null,
+	map_name?: string | undefined | null,
+	name?: string | undefined | null,
+	source?: string | undefined | null,
+	updated_at?: GraphQLTypes["timestamptz"] | undefined | null
+};
+	/** update columns of table "map_callouts" */
+["map_callouts_update_column"]: map_callouts_update_column;
+	["map_callouts_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["map_callouts_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["map_callouts_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["map_callouts_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["map_callouts_delete_key_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["map_callouts_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["map_callouts_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["map_callouts_bool_exp"]
+};
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: {
 	__typename: "map_pools",
@@ -254630,6 +255384,10 @@ export type GraphQLTypes = {
 	delete_lobby_players?: GraphQLTypes["lobby_players_mutation_response"] | undefined | null,
 	/** delete single row from the table: "lobby_players" */
 	delete_lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
+	/** delete data from the table: "map_callouts" */
+	delete_map_callouts?: GraphQLTypes["map_callouts_mutation_response"] | undefined | null,
+	/** delete single row from the table: "map_callouts" */
+	delete_map_callouts_by_pk?: GraphQLTypes["map_callouts"] | undefined | null,
 	/** delete data from the table: "map_pools" */
 	delete_map_pools?: GraphQLTypes["map_pools_mutation_response"] | undefined | null,
 	/** delete single row from the table: "map_pools" */
@@ -255410,6 +256168,10 @@ export type GraphQLTypes = {
 	insert_lobby_players?: GraphQLTypes["lobby_players_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "lobby_players" */
 	insert_lobby_players_one?: GraphQLTypes["lobby_players"] | undefined | null,
+	/** insert data into the table: "map_callouts" */
+	insert_map_callouts?: GraphQLTypes["map_callouts_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "map_callouts" */
+	insert_map_callouts_one?: GraphQLTypes["map_callouts"] | undefined | null,
 	/** insert data into the table: "map_pools" */
 	insert_map_pools?: GraphQLTypes["map_pools_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "map_pools" */
@@ -255956,6 +256718,8 @@ export type GraphQLTypes = {
 	swapLineups?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	switchLineup?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	switchLiveMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Pull the published map callouts for every enabled map */
+	syncMapCallouts?: GraphQLTypes["MapCalloutSyncOutput"] | undefined | null,
 	/** Pull the game plugin registry into this panel's catalog */
 	syncPluginRegistry?: GraphQLTypes["SyncPluginRegistryOutput"] | undefined | null,
 	syncSteamFriends?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -256565,6 +257329,12 @@ export type GraphQLTypes = {
 	update_lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
 	/** update multiples rows of table: "lobby_players" */
 	update_lobby_players_many?: Array<GraphQLTypes["lobby_players_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "map_callouts" */
+	update_map_callouts?: GraphQLTypes["map_callouts_mutation_response"] | undefined | null,
+	/** update single row of the table: "map_callouts" */
+	update_map_callouts_by_pk?: GraphQLTypes["map_callouts"] | undefined | null,
+	/** update multiples rows of table: "map_callouts" */
+	update_map_callouts_many?: Array<GraphQLTypes["map_callouts_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "map_pools" */
 	update_map_pools?: GraphQLTypes["map_pools_mutation_response"] | undefined | null,
 	/** update single row of the table: "map_pools" */
@@ -273144,6 +273914,12 @@ export type GraphQLTypes = {
 	lobby_players_aggregate: GraphQLTypes["lobby_players_aggregate"],
 	/** fetch data from the table: "lobby_players" using primary key columns */
 	lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
+	/** fetch data from the table: "map_callouts" */
+	map_callouts: Array<GraphQLTypes["map_callouts"]>,
+	/** fetch aggregated fields from the table: "map_callouts" */
+	map_callouts_aggregate: GraphQLTypes["map_callouts_aggregate"],
+	/** fetch data from the table: "map_callouts" using primary key columns */
+	map_callouts_by_pk?: GraphQLTypes["map_callouts"] | undefined | null,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<GraphQLTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -276329,6 +277105,14 @@ export type GraphQLTypes = {
 	lobby_players_by_pk?: GraphQLTypes["lobby_players"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "lobby_players" */
 	lobby_players_stream: Array<GraphQLTypes["lobby_players"]>,
+	/** fetch data from the table: "map_callouts" */
+	map_callouts: Array<GraphQLTypes["map_callouts"]>,
+	/** fetch aggregated fields from the table: "map_callouts" */
+	map_callouts_aggregate: GraphQLTypes["map_callouts_aggregate"],
+	/** fetch data from the table: "map_callouts" using primary key columns */
+	map_callouts_by_pk?: GraphQLTypes["map_callouts"] | undefined | null,
+	/** fetch data from the table in a streaming manner: "map_callouts" */
+	map_callouts_stream: Array<GraphQLTypes["map_callouts"]>,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<GraphQLTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -303429,6 +304213,26 @@ export enum lobby_players_update_column {
 	status = "status",
 	steam_id = "steam_id"
 }
+/** unique or primary key constraints on table "map_callouts" */
+export enum map_callouts_constraint {
+	map_callouts_pkey = "map_callouts_pkey"
+}
+/** select columns of table "map_callouts" */
+export enum map_callouts_select_column {
+	boxes = "boxes",
+	map_name = "map_name",
+	name = "name",
+	source = "source",
+	updated_at = "updated_at"
+}
+/** update columns of table "map_callouts" */
+export enum map_callouts_update_column {
+	boxes = "boxes",
+	map_name = "map_name",
+	name = "name",
+	source = "source",
+	updated_at = "updated_at"
+}
 /** unique or primary key constraints on table "map_pools" */
 export enum map_pools_constraint {
 	map_pools_pkey = "map_pools_pkey"
@@ -309862,6 +310666,23 @@ type ZEUS_VARIABLES = {
 	["lobby_players_var_pop_order_by"]: ValueTypes["lobby_players_var_pop_order_by"];
 	["lobby_players_var_samp_order_by"]: ValueTypes["lobby_players_var_samp_order_by"];
 	["lobby_players_variance_order_by"]: ValueTypes["lobby_players_variance_order_by"];
+	["map_callouts_append_input"]: ValueTypes["map_callouts_append_input"];
+	["map_callouts_bool_exp"]: ValueTypes["map_callouts_bool_exp"];
+	["map_callouts_constraint"]: ValueTypes["map_callouts_constraint"];
+	["map_callouts_delete_at_path_input"]: ValueTypes["map_callouts_delete_at_path_input"];
+	["map_callouts_delete_elem_input"]: ValueTypes["map_callouts_delete_elem_input"];
+	["map_callouts_delete_key_input"]: ValueTypes["map_callouts_delete_key_input"];
+	["map_callouts_insert_input"]: ValueTypes["map_callouts_insert_input"];
+	["map_callouts_on_conflict"]: ValueTypes["map_callouts_on_conflict"];
+	["map_callouts_order_by"]: ValueTypes["map_callouts_order_by"];
+	["map_callouts_pk_columns_input"]: ValueTypes["map_callouts_pk_columns_input"];
+	["map_callouts_prepend_input"]: ValueTypes["map_callouts_prepend_input"];
+	["map_callouts_select_column"]: ValueTypes["map_callouts_select_column"];
+	["map_callouts_set_input"]: ValueTypes["map_callouts_set_input"];
+	["map_callouts_stream_cursor_input"]: ValueTypes["map_callouts_stream_cursor_input"];
+	["map_callouts_stream_cursor_value_input"]: ValueTypes["map_callouts_stream_cursor_value_input"];
+	["map_callouts_update_column"]: ValueTypes["map_callouts_update_column"];
+	["map_callouts_updates"]: ValueTypes["map_callouts_updates"];
 	["map_pools_bool_exp"]: ValueTypes["map_pools_bool_exp"];
 	["map_pools_constraint"]: ValueTypes["map_pools_constraint"];
 	["map_pools_insert_input"]: ValueTypes["map_pools_insert_input"];

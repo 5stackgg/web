@@ -175,15 +175,24 @@ export function glbToTri(inPath, opts = {}) {
   for (const mesh of gltf.meshes) {
     for (const prim of mesh.primitives) {
       if (prim.attributes.POSITION == null) continue;
+      // The surface name has moved. Source2Viewer used to export these hulls
+      // with one MATERIAL per physics group; it now exports one MESH per group
+      // and no materials at all, so a material-only test silently matched
+      // nothing and every clip brush came through as world geometry. On mirage
+      // that was 9,576 triangles of invisible playerclip, grenadeclip and
+      // skybox -- the phantom walls and roofs this filter exists to remove.
+      // Both are read so either export shape keeps working.
       const matName =
-        prim.material != null ? gltf.materials[prim.material]?.name || "" : "";
-      const drop = skipClips && SKIP_MATERIAL.test(matName);
+        prim.material != null ? gltf.materials?.[prim.material]?.name || "" : "";
+      const groupName = mesh.name || "";
+      const drop =
+        skipClips && (SKIP_MATERIAL.test(matName) || SKIP_MATERIAL.test(groupName));
       const pos = readAccessor(prim.attributes.POSITION);
       const idx = prim.indices != null ? readAccessor(prim.indices) : null;
       const count = idx ? idx.length : pos.length / 3;
       if (drop) {
         skipped += count / 3;
-        skippedMats.add(matName);
+        skippedMats.add(matName || groupName);
         continue;
       }
       for (let i = 0; i < count; i++) {

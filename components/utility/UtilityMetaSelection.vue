@@ -6,6 +6,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityThrowersMeter from "~/components/utility/UtilityThrowersMeter.vue";
+import { useMapCallouts } from "~/composables/useMapCallouts";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import type { UtilityLineup, UtilityMetaSpot } from "~/utilities/utilityDisplay";
 
@@ -37,6 +38,15 @@ const emit = defineEmits<{
   (event: "write-up", spot: UtilityMetaSpot): void;
   (event: "practice", spot: UtilityMetaSpot): void;
 }>();
+
+const { autoName } = useMapCallouts(() => props.mapName);
+
+// A mined cluster has no name of its own -- nobody has written it up. The map
+// still knows where it goes and where it comes from, which is a better handle
+// than the classification line underneath it.
+const name = computed(() =>
+  autoName(props.spot.utilityType, props.spot.origin, props.spot.landing),
+);
 
 const load = useUtilityLoad();
 
@@ -90,7 +100,14 @@ const unwritten = computed(
           {{ $t("pages.utility.meta.classification") }}
         </span>
         <span
+          v-if="name"
+          class="truncate text-sm font-semibold leading-tight"
+        >
+          {{ name }}
+        </span>
+        <span
           class="truncate font-mono text-[0.68rem] uppercase leading-tight tracking-[0.1em]"
+          :class="name ? 'text-muted-foreground' : ''"
         >
           {{ $t(`pages.utility.types.${spot.utilityType}`) }}
           <template v-if="spot.side">

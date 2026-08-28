@@ -599,6 +599,12 @@ export type UtilityBoardMarker = {
    * a count of something; a numbered token reads as the order it is.
    */
   shape?: "dot" | "cross" | "badge";
+  /**
+   * Whether the viewer may grab this point and move it. Only a draggable
+   * marker takes pointer events while the board is picking -- everything else
+   * stays transparent so a click lands on the map underneath it.
+   */
+  draggable?: boolean;
 };
 
 /** A line the board draws on top of everything else. */
@@ -627,6 +633,12 @@ export type UtilityPanelBoard = {
   hoveredId?: string | null;
   showAllLines?: boolean;
   onPick?: (point: { x: number; y: number; z: number }) => void;
+  /** A draggable marker was pressed -- said before any movement. */
+  onMarkerGrab?: (key: string) => void;
+  onMarkerDrag?: (
+    key: string,
+    point: { x: number; y: number; z: number },
+  ) => void;
   onSelect?: (id: string | null) => void;
   onHover?: (id: string | null) => void;
   onSelectSegment?: (key: string) => void;

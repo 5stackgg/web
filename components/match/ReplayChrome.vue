@@ -3,7 +3,7 @@
 // ONE player looks identical in 2D and 3D. Purely presentational: it renders
 // HUD / kill feed / play-by-play / scoreboard / transport over whatever map
 // the host (ReplayViewer) shows underneath. All data + actions come via props.
-import { Skull } from "lucide-vue-next";
+import { Skull, Tags } from "lucide-vue-next";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { weaponIconPath } from "~/utilities/weaponIcon";
 import Kbd from "~/components/ui/kbd/Kbd.vue";
@@ -120,6 +120,8 @@ const props = defineProps<{
   showAvatars?: boolean;
   traceOn?: boolean;
   showDeaths?: boolean;
+  showCallouts?: boolean;
+  hasCallouts?: boolean;
   // mobile: compact the floating panels for phone-sized touch screens
   mobile?: boolean;
   // scoreboard visibility — collapsible so there's room to move around the map
@@ -145,6 +147,7 @@ const props = defineProps<{
   onToggleAvatars?: () => void;
   onToggleTrace?: () => void;
   onToggleDeaths?: () => void;
+  onToggleCallouts?: () => void;
 }>();
 
 const UTIL_TYPES = ["Smoke", "Molotov", "HE", "Flash", "Decoy"] as const;
@@ -855,6 +858,20 @@ const utilClusters = computed(() => {
           </TooltipTrigger>
           <TooltipContent>{{
             $t("match.replay.chrome.deaths_tip")
+          }}</TooltipContent>
+        </Tooltip>
+        <Tooltip v-if="view === '2d' && hasCallouts">
+          <TooltipTrigger as-child>
+            <button
+              class="sbt sbt-icon"
+              :class="{ on: showCallouts }"
+              @click="onToggleCallouts && onToggleCallouts()"
+            >
+              <Tags :size="15" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>{{
+            $t("match.replay.chrome.callouts_tip")
           }}</TooltipContent>
         </Tooltip>
       </div>

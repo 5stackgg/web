@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} kast",
           "rescan_done": "Skannede {demos} demo og {throws} kast igen",
           "rescan_failed": "Kunne ikke gennemføre skanningen",
+          "sync_callouts": "Synkronisér kaldenavne",
+          "callouts_synced": "Kaldenavne synkroniseret for {maps} kort · {callouts} områder",
+          "callouts_failed": "Kunne ikke synkronisere kortets kaldenavne",
           "library_section": "Utility-bibliotek",
           "library_description": "Opstillingsbiblioteket: gemte kast med hvor du skal stå, hvor du skal sigte, og hvor utility'en lander. Slået fra leveres biblioteket ikke, og der optages intet nyt.",
           "lineup_daily_limit": "Opstillinger pr. spiller pr. dag",
@@ -4052,7 +4055,14 @@
         "key": "Firkanter = kast · Prikker = landing",
         "zoom_in": "Zoom ind",
         "zoom_out": "Zoom ud",
-        "zoom_reset": "Tilpas banen"
+        "zoom_reset": "Tilpas banen",
+        "callouts_tip": "Vis kortets kaldenavne"
+      },
+      "auto_name": {
+        "full": "{to} {type} fra {from}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{type} fra {from}"
       },
       "card": {
         "upvote": "Markér som en god opstilling",
@@ -4172,7 +4182,9 @@
           "rethrow": "tilbage til den indlæste opstilling",
           "last": "tilbage til et kast, du har lavet",
           "list": "styr dit bibliotek inde fra spillet",
+          "edit": "omdøb den indlæste opstilling, beskriv den, eller skift hvem der kan se den",
           "drill": "kører din bog igennem, tre kast hver, og giver point",
+          "drill_here": "kører den opstilling, du står på, igen og igen, indtil du stopper",
           "skip": "spring den opstilling over, du træner",
           "cancel": "stop den drill, du er i gang med",
           "playbook": "kører den indlæste execute på dens timings",
@@ -4181,12 +4193,21 @@
           "solve": "finder et kast til det sted, du kigger på",
           "pos": "gem en position, og vend tilbage til den",
           "spawn": "teleporterer dig til et spawnpunkt",
+          "spawns": "viser de kompetitive spawns",
           "noclip": "flyv, og tag ikke skade",
           "timer": "start og stop et stopur",
           "solo": "se kun dine egne forhåndsvisninger",
+          "colors": "hvert kast får sin egen farve, så du kan kende dine egne",
           "clear": "rydder den indlæste opstilling, markører og ghosts",
-          "help": "viser alle kommandoer i spillet"
-        }
+          "help": "viser alle kommandoer i spillet",
+          "group_panels": "Paneler på skærmen",
+          "panels_hint": "Servere med HUD-tilføjelsen monteret viser klikbare paneler i stedet for tekst midt på skærmen. Uden den falder alt tilbage til den tekst, det erstattede.",
+          "menu": "opstillingsvælgeren, med filtre for omfang, side og type",
+          "map": "et minikort over, hvor kastene lander; klik på et sted for at se dets opstillinger",
+          "hud": "skifter panelerne tilbage til tekst midt på skærmen, kun for dig",
+          "here": "indsnævrer listen til opstillinger, du kan kaste fra der, hvor du står"
+        },
+        "operator": "Serverkonsol"
       },
       "collections": {
         "tab": "Samlinger",
@@ -4266,6 +4287,7 @@
         "empty": "Ingen playbooks til denne bane",
         "empty_description": "Byg en execute af de opstillinger, dit hold allerede har gemt.",
         "name_placeholder": "A-site standard",
+        "name_required": "Giv executen et navn, før du gemmer den",
         "description_placeholder": "Hvad denne execute er til, og hvornår man caller den.",
         "team": "Hold",
         "visibility": "Synlighed",
@@ -4581,6 +4603,8 @@
         "confidence_caption": "Intet her er målt på en server, så det er dette panel, der afgør, hvordan opstillingen bedømmes — og en skrevet opstilling bedømmes aldrig som optaget. Tag det som et sted at gå igennem: sigtet nedenfor er et udgangspunkt, og det kan ikke afspilles i spillet skud for skud som en optaget opstilling.",
         "utility": "Utility",
         "name_placeholder": "Vinduessmoke fra T-spawn",
+        "name_suggested": "Navngivet af kortet",
+        "name_resuggest": "Brug navnet kortet foreslår",
         "description_placeholder": "Hvor du stiller dig, hvad du sigter på, og hvornår du kaster den.",
         "aim": "Sigte (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7029,7 @@
         "showing_avatars": "Viser avatarer — klik for numre",
         "showing_numbers": "Viser numre — klik for avatarer",
         "trace_tip": "Spor af spillerens bevægelse (stiplet rute)",
+        "callouts_tip": "Vis kortets kaldenavne",
         "deaths_tip": "Markører for deaths (kill-positioner)",
         "util_summary": "UTIL-OVERSIGT",
         "util_summary_tip": "Utility-oversigt — læg flere buy-runder oven på hinanden på samme ur for at sammenligne holdenes utility-opsætninger, timings og positioner",

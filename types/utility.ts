@@ -282,6 +282,7 @@ export type UtilityMetaLineup = {
 export type UtilityPracticeSession = {
   id: string;
   match_id: string | null;
+  match: { server_id: string | null } | null;
   host_steam_id: string | null;
   host: { name: string | null } | null;
   team_id: string | null;
@@ -331,6 +332,10 @@ export type UtilityPracticeView = {
   access: string | null;
   isLive: boolean;
   canManage: boolean;
+  /** The match behind the session, for the pod log tail. */
+  matchId: string | null;
+  /** The box it is running on, for the RCON console. */
+  serverId: string | null;
 };
 
 /**
@@ -365,6 +370,8 @@ export function readUtilityPracticeSession(
     access: session?.access ?? null,
     isLive: isLiveSession(session),
     canManage: session?.can_manage === true,
+    matchId: session?.match_id ?? started?.match_id ?? null,
+    serverId: session?.match?.server_id ?? null,
   };
 }
 

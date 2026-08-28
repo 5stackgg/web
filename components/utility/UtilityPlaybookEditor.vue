@@ -584,6 +584,8 @@ const lastBeatSeconds = computed(() =>
   rows.value.length ? Math.max(...timeline.value.map((b) => b.seconds)) : 0,
 );
 
+const named = computed(() => name.value.trim().length > 0);
+
 /**
  * Every complaint the execute has, in one list. Five separately-framed amber
  * paragraphs stacked under the timeline read as five alarms; one framed list
@@ -591,6 +593,15 @@ const lastBeatSeconds = computed(() =>
  */
 const notices = computed(() => {
   const out: Array<{ key: string; text: string }> = [];
+  // The one complaint that actually blocks Save. The field is quiet until it
+  // is hovered and its placeholder reads like a real name, so an empty one
+  // looks filled in -- without this the button is simply dead and says nothing.
+  if (!named.value) {
+    out.push({
+      key: "name",
+      text: t("pages.utility.playbooks.name_required"),
+    });
+  }
   if (unresolvedSteps.value) {
     out.push({
       key: "unresolved",
@@ -639,7 +650,7 @@ const showBoardHint = computed(
   () => rowViews.value.length > 0 && !selectedKey.value,
 );
 
-const canSave = computed(() => !readOnly.value && name.value.trim().length > 0);
+const canSave = computed(() => !readOnly.value && named.value);
 
 async function save() {
   if (!canSave.value) {
@@ -763,13 +774,21 @@ async function destroy() {
     </div>
 
     <!-- The name and the blurb are the execute's own words, so they are set
-         like words. The field only draws itself when you go near it. -->
+         like words. The field only draws itself when you go near it -- except
+         while it is empty and blocking the save, when it has to draw itself
+         whether you are near it or not. -->
     <div class="flex flex-col">
       <Input
         v-model="name"
         :disabled="readOnly"
         maxlength="120"
-        class="tac-quiet-field h-8 px-1.5 text-sm font-semibold shadow-none"
+        class="h-8 px-1.5 text-sm font-semibold shadow-none"
+        :class="
+          named || readOnly
+            ? 'tac-quiet-field'
+            : 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.05)]'
+        "
+        :aria-invalid="!named && !readOnly"
         :placeholder="$t('pages.utility.playbooks.name_placeholder')"
       />
       <Textarea

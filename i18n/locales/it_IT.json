@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} lanci",
           "rescan_done": "Riscansionate {demos} demo e {throws} lanci",
           "rescan_failed": "Impossibile completare la riscansione",
+          "sync_callouts": "Sincronizza zone",
+          "callouts_synced": "Zone sincronizzate per {maps} mappa/e · {callouts} area/e",
+          "callouts_failed": "Impossibile sincronizzare le zone della mappa",
           "library_section": "Libreria utility",
           "library_description": "La libreria dei lineup: lanci salvati con dove posizionarsi, dove mirare e dove atterra l'utility. Disattivata, la libreria non viene servita e non viene registrato più nulla.",
           "lineup_daily_limit": "Lineup per giocatore al giorno",
@@ -4052,7 +4055,14 @@
         "key": "Quadrati = origine · Punti = atterraggio",
         "zoom_in": "Ingrandisci",
         "zoom_out": "Riduci",
-        "zoom_reset": "Adatta mappa"
+        "zoom_reset": "Adatta mappa",
+        "callouts_tip": "Mostra le zone della mappa"
+      },
+      "auto_name": {
+        "full": "{type} su {to} da {from}",
+        "same": "{type} su {to}",
+        "to_only": "{type} su {to}",
+        "from_only": "{type} da {from}"
       },
       "card": {
         "upvote": "Segna come un buon lineup",
@@ -4172,7 +4182,9 @@
           "rethrow": "torna al lineup caricato",
           "last": "torna a un tuo lancio",
           "list": "gestisci la tua libreria dal gioco",
+          "edit": "rinomina il lineup caricato, descrivilo o cambia chi può vederlo",
           "drill": "allena il tuo repertorio, tre lanci ciascuno, e lo valuta",
+          "drill_here": "ripete il lineup su cui sei finché non lo fermi",
           "skip": "salta il lineup che stai allenando",
           "cancel": "ferma il drill in corso",
           "playbook": "esegue l'execute caricato sui suoi tempi",
@@ -4181,12 +4193,21 @@
           "solve": "trova un lancio sul punto che stai guardando",
           "pos": "salva una posizione e torna lì",
           "spawn": "ti teletrasporta a un punto di spawn",
+          "spawns": "mostra gli spawn competitivi",
           "noclip": "vola, e non prendi più danni",
           "timer": "avvia e ferma un cronometro",
           "solo": "vedi solo le tue anteprime",
+          "colors": "ogni lancio prende un colore suo, così riconosci i tuoi",
           "clear": "cancella il lineup caricato, i marker e i ghost",
-          "help": "stampa tutti i comandi in gioco"
-        }
+          "help": "stampa tutti i comandi in gioco",
+          "group_panels": "Pannelli a schermo",
+          "panels_hint": "I server con l'addon HUD montato mostrano pannelli cliccabili invece del testo al centro. Senza, tutto torna al testo che sostituiva.",
+          "menu": "il selettore dei lineup, con filtri per ambito, lato e tipo",
+          "map": "una minimappa di dove atterrano i lanci; clicca un punto per i suoi lineup",
+          "hud": "riporta i pannelli al testo al centro, solo per te",
+          "here": "restringe la lista ai lineup che puoi lanciare da dove sei"
+        },
+        "operator": "Console del server"
       },
       "collections": {
         "tab": "Raccolte",
@@ -4266,6 +4287,7 @@
         "empty": "Nessun playbook per questa mappa",
         "empty_description": "Costruisci un execute con i lineup che la tua squadra ha già salvato.",
         "name_placeholder": "Sito A standard",
+        "name_required": "Dai un nome all'execute prima di salvarlo",
         "description_placeholder": "A cosa serve questo execute e quando chiamarlo.",
         "team": "Squadra",
         "visibility": "Visibilità",
@@ -4581,6 +4603,8 @@
         "confidence_caption": "Qui nulla è stato misurato su un server, quindi è questo pannello a decidere come viene valutato il lineup — e uno scritto a mano non viene mai valutato come registrato. Consideralo un punto da provare: la mira qui sotto è un punto di partenza e non può essere riprodotta in gioco colpo per colpo come un lineup catturato.",
         "utility": "Utility",
         "name_placeholder": "Smoke sulla finestra dallo spawn T",
+        "name_suggested": "Nominato dalla mappa",
+        "name_resuggest": "Usa il nome suggerito dalla mappa",
         "description_placeholder": "Dove allinearsi, cosa puntare e quando lanciarlo.",
         "aim": "Mira (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7029,7 @@
         "showing_avatars": "Avatar visibili — clicca per i numeri",
         "showing_numbers": "Numeri visibili — clicca per gli avatar",
         "trace_tip": "Traccia movimento giocatore (percorso punteggiato)",
+        "callouts_tip": "Mostra le zone della mappa",
         "deaths_tip": "Indicatori di morte (posizione kill)",
         "util_summary": "RIEPILOGO UTILITY",
         "util_summary_tip": "Riepilogo utility — sovrapponi più round di buy su un unico orologio condiviso per confrontare setup, tempistiche e posizioni di utility dei due team",

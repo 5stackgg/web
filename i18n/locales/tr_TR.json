@@ -2554,6 +2554,9 @@
           "rescan_progress": "{demos} demo · {throws} atış",
           "rescan_done": "{demos} demo ve {throws} atış yeniden tarandı",
           "rescan_failed": "Yeniden tarama tamamlanamadı",
+          "sync_callouts": "Bölge adlarını eşitle",
+          "callouts_synced": "{maps} harita için bölge adları eşitlendi · {callouts} alan",
+          "callouts_failed": "Harita bölge adları eşitlenemedi",
           "library_section": "Utility Kütüphanesi",
           "library_description": "Dizilim kütüphanesi: nerede duracağın, nereye nişan alacağın ve utility'nin nereye düşeceği ile birlikte kaydedilmiş atışlar. Kapalıyken kütüphane sunulmaz ve yeni hiçbir şey alınmaz.",
           "lineup_daily_limit": "Oyuncu başına günlük dizilim",
@@ -4052,7 +4055,14 @@
         "key": "Kare = atış · Nokta = düşüş",
         "zoom_in": "Yakınlaştır",
         "zoom_out": "Uzaklaştır",
-        "zoom_reset": "Haritayı sığdır"
+        "zoom_reset": "Haritayı sığdır",
+        "callouts_tip": "Haritanın bölge adlarını göster"
+      },
+      "auto_name": {
+        "full": "{from} konumundan {to} {type}",
+        "same": "{to} {type}",
+        "to_only": "{to} {type}",
+        "from_only": "{from} konumundan {type}"
       },
       "card": {
         "upvote": "İyi bir dizilim olarak işaretle",
@@ -4172,7 +4182,9 @@
           "rethrow": "yüklü dizilime geri dön",
           "last": "yaptığın bir atışa geri dön",
           "list": "kütüphaneni oyun içinden yönet",
+          "edit": "yüklü dizilimi yeniden adlandır, açıkla ya da kimlerin göreceğini değiştir",
           "drill": "defterini çalıştırır, üçer atış, ve puanlar",
+          "drill_here": "üzerinde durduğun dizilimi sen durdurana kadar tekrarlar",
           "skip": "çalıştığın dizilimi atla",
           "cancel": "içinde olduğun drill'i durdur",
           "playbook": "yüklü execute'u kendi zamanlamasıyla oynatır",
@@ -4181,12 +4193,21 @@
           "solve": "baktığın noktaya bir atış bulur",
           "pos": "bir konum kaydet ve oraya dön",
           "spawn": "seni bir spawn noktasına ışınlar",
+          "spawns": "rekabetçi spawn noktalarını gösterir",
           "noclip": "uç, ve hasar alma",
           "timer": "kronometreyi başlat ve durdur",
           "solo": "sadece kendi önizlemelerini gör",
+          "colors": "her atış kendi rengini alır, böylece kendininkileri ayırırsın",
           "clear": "yüklü dizilimi, işaretleri ve ghost'ları temizler",
-          "help": "bütün komutları oyun içinde basar"
-        }
+          "help": "bütün komutları oyun içinde basar",
+          "group_panels": "Ekran panelleri",
+          "panels_hint": "HUD eklentisi yüklü sunucular, ekranın ortasındaki yazı yerine tıklanabilir paneller gösterir. Eklenti yoksa her şey yerini aldığı yazıya geri döner.",
+          "menu": "kapsam, taraf ve tür filtreleriyle dizilim seçici",
+          "map": "atışların nereye düştüğünü gösteren mini harita; bir noktaya tıkla, dizilimlerini gör",
+          "hud": "panelleri ekran ortasındaki yazıya döndürür, yalnızca sana",
+          "here": "listeyi durduğun yerden atabileceğin dizilimlere daraltır"
+        },
+        "operator": "Sunucu konsolu"
       },
       "collections": {
         "tab": "Koleksiyonlar",
@@ -4266,6 +4287,7 @@
         "empty": "Bu harita için playbook yok",
         "empty_description": "Takımının zaten kaydettiği dizilimlerden bir execute kur.",
         "name_placeholder": "A bölgesi standardı",
+        "name_required": "Kaydetmeden önce execute'a bir ad ver",
         "description_placeholder": "Bu execute ne işe yarar ve ne zaman çağrılır.",
         "team": "Takım",
         "visibility": "Görünürlük",
@@ -4581,6 +4603,8 @@
         "confidence_caption": "Burada hiçbir şey bir sunucuda ölçülmedi, dolayısıyla bu dizilimin nasıl derecelendirileceğine bu panel karar verir — ve elle yazılmış bir dizilim asla kaydedilmiş gibi derecelendirilmez. Bunu denenecek bir nokta say: aşağıdaki nişan bir başlangıç noktasıdır ve yakalanmış bir dizilim gibi oyunda atış atış tekrar oynatılamaz.",
         "utility": "Utility",
         "name_placeholder": "T spawn'dan pencere smoke'u",
+        "name_suggested": "Haritadan adlandırıldı",
+        "name_resuggest": "Haritanın önerdiği adı kullan",
         "description_placeholder": "Nereye hizalanacağın, neye nişan alacağın ve ne zaman atacağın.",
         "aim": "Nişan (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7029,7 @@
         "showing_avatars": "Avatarlar gösteriliyor — numaralar için tıkla",
         "showing_numbers": "Numaralar gösteriliyor — avatarlar için tıkla",
         "trace_tip": "Oyuncu hareket izi (noktalı yol)",
+        "callouts_tip": "Haritanın bölge adlarını göster",
         "deaths_tip": "Ölüm (kill konumu) işaretleri",
         "util_summary": "EKİPMAN ÖZETİ",
         "util_summary_tip": "Ekipman özeti — takımların ekipman düzenlerini, zamanlamalarını ve konumlarını karşılaştırmak için birden fazla alım raundunu tek bir ortak zaman çizelgesinde üst üste bindir",

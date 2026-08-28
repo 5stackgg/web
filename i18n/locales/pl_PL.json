@@ -2554,6 +2554,9 @@
           "rescan_progress": "dema: {demos} · rzuty: {throws}",
           "rescan_done": "Przeskanowano dem: {demos}, rzutów: {throws}",
           "rescan_failed": "Nie udało się dokończyć skanowania",
+          "sync_callouts": "Synchronizuj nazwy miejsc",
+          "callouts_synced": "Zsynchronizowano nazwy miejsc dla {maps} map · {callouts} obszarów",
+          "callouts_failed": "Nie udało się zsynchronizować nazw miejsc",
           "library_section": "Biblioteka utility",
           "library_description": "Biblioteka ustawek: zapisane rzuty z miejscem, gdzie stanąć, gdzie celować i gdzie granat wyląduje. Wyłączona — biblioteka nie jest udostępniana i nic nowego nie jest zapisywane.",
           "lineup_daily_limit": "Ustawek na gracza dziennie",
@@ -4052,7 +4055,14 @@
         "key": "Kwadraty = rzut · Kropki = lądowanie",
         "zoom_in": "Przybliż",
         "zoom_out": "Oddal",
-        "zoom_reset": "Dopasuj mapę"
+        "zoom_reset": "Dopasuj mapę",
+        "callouts_tip": "Pokaż nazwy miejsc na mapie"
+      },
+      "auto_name": {
+        "full": "{type} na {to} z {from}",
+        "same": "{type} na {to}",
+        "to_only": "{type} na {to}",
+        "from_only": "{type} z {from}"
       },
       "card": {
         "upvote": "Oznacz jako dobrą ustawkę",
@@ -4172,7 +4182,9 @@
           "rethrow": "z powrotem na wczytaną ustawkę",
           "last": "z powrotem do twojego rzutu",
           "list": "zarządzaj biblioteką z poziomu gry",
+          "edit": "zmień nazwę wczytanej ustawki, opisz ją albo zmień, kto ją widzi",
           "drill": "przerabia twój zestaw, po trzy rzuty, i ocenia go",
+          "drill_here": "powtarza ustawkę, na której stoisz, aż ją zatrzymasz",
           "skip": "pomiń ustawkę, którą właśnie ćwiczysz",
           "cancel": "przerwij trwający drill",
           "playbook": "odtwarza wczytany execute w jego czasach",
@@ -4181,12 +4193,21 @@
           "solve": "znajduje rzut w punkt, na który patrzysz",
           "pos": "zapisz pozycję i wróć do niej",
           "spawn": "teleportuje cię do punktu startowego",
+          "spawns": "pokazuje spawny z trybu rankingowego",
           "noclip": "latanie i brak obrażeń",
           "timer": "start i stop stopera",
           "solo": "widzisz tylko własne podglądy",
+          "colors": "każdy rzut dostaje własny kolor, żebyś poznał swoje",
           "clear": "czyści wczytaną ustawkę, znaczniki i duchy",
-          "help": "wypisuje wszystkie komendy w grze"
-        }
+          "help": "wypisuje wszystkie komendy w grze",
+          "group_panels": "Panele na ekranie",
+          "panels_hint": "Serwery z dodatkiem HUD pokazują klikalne panele zamiast tekstu na środku ekranu. Bez niego wszystko wraca do tekstu, który zastępował.",
+          "menu": "wybór ustawek, z filtrami zakresu, strony i typu",
+          "map": "minimapa miejsc, w które lecą rzuty; kliknij punkt, żeby zobaczyć jego ustawki",
+          "hud": "przełącza panele z powrotem na tekst na środku, tylko dla ciebie",
+          "here": "zawęża listę do ustawek, które rzucisz z miejsca, w którym stoisz"
+        },
+        "operator": "Konsola serwera"
       },
       "collections": {
         "tab": "Kolekcje",
@@ -4266,6 +4287,7 @@
         "empty": "Brak playbooków dla tej mapy",
         "empty_description": "Zbuduj execute z ustawek, które twoja drużyna już zapisała.",
         "name_placeholder": "Standardowy A",
+        "name_required": "Nazwij execute, zanim go zapiszesz",
         "description_placeholder": "Do czego służy ten execute i kiedy go wołać.",
         "team": "Drużyna",
         "visibility": "Widoczność",
@@ -4581,6 +4603,8 @@
         "confidence_caption": "Nic tutaj nie zostało zmierzone na serwerze, więc to ten panel decyduje, jak ta ustawka jest oceniana — a napisana ręcznie nigdy nie jest oceniana jak nagrana. Potraktuj to jako miejsce do przećwiczenia: celowanie poniżej to punkt wyjścia i nie da się go odtworzyć w grze rzut po rzucie tak jak nagranej ustawki.",
         "utility": "Utility",
         "name_placeholder": "Smoke w okno ze spawnu T",
+        "name_suggested": "Nazwane przez mapę",
+        "name_resuggest": "Użyj nazwy proponowanej przez mapę",
         "description_placeholder": "Gdzie się ustawić, na co celować i kiedy rzucić.",
         "aim": "Celowanie (yaw / pitch)",
         "yaw": "Yaw",
@@ -7005,6 +7029,7 @@
         "showing_avatars": "Pokazano awatary — kliknij dla numerów",
         "showing_numbers": "Pokazano numery — kliknij dla awatarów",
         "trace_tip": "Ślad ruchu gracza (kropkowana ścieżka)",
+        "callouts_tip": "Pokaż nazwy miejsc na mapie",
         "deaths_tip": "Znaczniki śmierci (miejsce zabójstwa)",
         "util_summary": "PODSUMOWANIE UTILITY",
         "util_summary_tip": "Podsumowanie utility — nałóż kilka rund z zakupem na wspólny zegar, aby porównać ustawienia, timing i pozycje utility obu drużyn",

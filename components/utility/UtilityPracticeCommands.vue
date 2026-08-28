@@ -31,18 +31,20 @@ const groups = [
   {
     label: `${base}.group_lineups`,
     items: [
-      { command: ".save <name>", desc: `${base}.save` },
+      { command: ".save [name]", desc: `${base}.save` },
       { command: ".load <query>", desc: `${base}.load` },
       { command: ".next / .prev", desc: `${base}.next` },
       { command: ".jump", desc: `${base}.jump` },
       { command: ".rethrow", desc: `${base}.rethrow` },
       { command: ".last / .back <n>", desc: `${base}.last` },
       { command: ".list / .reload / .delete", desc: `${base}.list` },
+      { command: ".edit", desc: `${base}.edit` },
     ],
   },
   {
     label: `${base}.group_drills`,
     items: [
+      { command: ".drill", desc: `${base}.drill_here` },
       { command: ".drill [count] [worst]", desc: `${base}.drill` },
       { command: ".skip", desc: `${base}.skip` },
       { command: ".drill / .cancel", desc: `${base}.cancel` },
@@ -51,15 +53,26 @@ const groups = [
     ],
   },
   {
+    label: `${base}.group_panels`,
+    hint: `${base}.panels_hint`,
+    items: [
+      { command: ".menu", desc: `${base}.menu` },
+      { command: ".map", desc: `${base}.map` },
+      { command: ".here", desc: `${base}.here` },
+      { command: ".hud", desc: `${base}.hud` },
+    ],
+  },
+  {
     label: `${base}.group_tools`,
     items: [
       { command: ".bloom", desc: `${base}.bloom` },
       { command: ".solve [name]", desc: `${base}.solve` },
       { command: ".pos save <name> / .pos <name>", desc: `${base}.pos` },
-      { command: ".spawn <n>", desc: `${base}.spawn` },
+      { command: ".spawns / .spawn <n>", desc: `${base}.spawn` },
       { command: ".noclip / .god", desc: `${base}.noclip` },
       { command: ".timer", desc: `${base}.timer` },
       { command: ".solo", desc: `${base}.solo` },
+      { command: ".colors", desc: `${base}.colors` },
       { command: ".clear", desc: `${base}.clear` },
       { command: ".help", desc: `${base}.help` },
     ],
@@ -105,6 +118,14 @@ const sectionLabel =
             >
               {{ $t(group.label) }}
             </div>
+            <!-- Only the panels group carries one: it is the only group whose
+                 commands do nothing without the HUD addon mounted. -->
+            <p
+              v-if="group.hint"
+              class="text-[0.65rem] leading-snug text-muted-foreground/70"
+            >
+              {{ $t(group.hint) }}
+            </p>
             <div
               v-for="item of group.items"
               :key="item.command"

@@ -12,10 +12,15 @@
 // build and the URL changes, which is the whole cache-busting story -- exactly
 // what the tag did on jsDelivr. Never overwrite a published build in place.
 //
-// Objects are stored GZIPPED with `Content-Encoding: gzip`. The worker copies
-// upstream B2 headers through untouched, so browsers and Go's http client both
-// decompress transparently and no consumer needs a change. It is worth a lot:
-// inferno is 18.6 MB raw and 2.4 MB on the wire.
+// MESHES ARE PUBLISHED AS `<map>.tri.gz` AND DECOMPRESSED BY THE CONSUMER.
+// Storing them with `Content-Encoding: gzip` and letting the CDN handle it does
+// NOT work, measured: a Worker's `fetch` auto-decompresses a gzip subresponse
+// and strips the header, and Cloudflare's edge only re-compresses MIME types on
+// its compressible list -- `application/octet-stream` is not one. Inferno came
+// back 18.6 MB on the wire instead of 2.4 MB. So the mesh carries its own gzip,
+// the same way the replay blob does (see `fetchReplayBlob`, which pipes through
+// a DecompressionStream). Callouts stay plain `.json`, where `Content-Encoding`
+// DOES survive because the edge compresses JSON itself (8,971 -> 1,295 bytes).
 //
 //   S3_ACCESS_KEY=... S3_SECRET=... node scripts/publish-map-assets.mjs --build 24957633
 //   ... --build 24957633 --dry-run
@@ -59,21 +64,30 @@ const client = DRY
   : new AwsClient({ accessKeyId: ACCESS, secretAccessKey: SECRET, service: "s3" });
 
 const sources = [
-  { dir: join(root, ".cache", "meshes"), match: /\.tri$/, type: "application/octet-stream" },
+  {
+    dir: join(root, ".cache", "meshes"),
+    match: /\.tri$/,
+    // The gzip IS the artifact here, not a transfer encoding.
+    suffix: ".gz",
+    type: "application/gzip",
+    encoding: null,
+  },
   {
     dir: join(root, ".cache", "callouts"),
     match: /\.callouts\.json$/,
+    suffix: "",
     type: "application/json",
+    encoding: "gzip",
   },
 ];
 
-async function put(key, body, contentType) {
+async function put(key, body, contentType, encoding) {
   const url = `https://${BUCKET}.${ENDPOINT}/${key}`;
   const signed = await client.sign(url, {
     method: "PUT",
     headers: {
       "Content-Type": contentType,
-      "Content-Encoding": "gzip",
+      ...(encoding ? { "Content-Encoding": encoding } : {}),
       "Content-Length": String(body.length),
     },
     body,
@@ -104,7 +118,7 @@ async function main() {
     for (const name of readdirSync(source.dir).filter((f) => source.match.test(f)).sort()) {
       const body = readFileSync(join(source.dir, name));
       const packed = gzipSync(body, { level: 9 });
-      const key = `maps/${BUILD}/${name}`;
+      const key = `maps/${BUILD}/${name}${source.suffix}`;
 
       files += 1;
       raw += body.length;
@@ -117,7 +131,7 @@ async function main() {
         continue;
       }
 
-      await put(key, packed, source.type);
+      await put(key, packed, source.type, source.encoding);
       console.log(
         `  ${key.padEnd(46)} ${(body.length / 1e6).toFixed(1)} MB -> ${(packed.length / 1e6).toFixed(1)} MB`,
       );

@@ -76,6 +76,7 @@ import {
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
+import { meshUrlForMap } from "~/utilities/mapAssets";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   RADAR_CANVAS,
@@ -300,7 +301,7 @@ const { calibration, radarSrc, projectCalibrated } = useRadarProjection(
 // falls back to the flat radar plane when this 404s (map not yet generated).
 const meshCdn = useRuntimeConfig().public.mapMeshCdn;
 const mapMeshUrl = computed(() =>
-  normalizedMap.value ? `${meshCdn}/${normalizedMap.value}.tri` : null,
+  meshUrlForMap(meshCdn as string, normalizedMap.value ?? ""),
 );
 
 // Per-map ceiling boost (source-z units) added to the auto-detected ceiling, as

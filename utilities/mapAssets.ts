@@ -40,6 +40,35 @@ export async function hasRadarForMap(mapName: string): Promise<boolean> {
 
 const meshMemo: Record<string, Promise<boolean>> = {};
 
+/**
+ * Meshes are published gzipped and decompressed HERE rather than by the CDN.
+ * Measured: a Worker's `fetch` auto-decompresses a gzip subresponse and strips
+ * the header, and Cloudflare's edge only re-compresses MIME types on its
+ * compressible list, which `application/octet-stream` is not -- inferno arrived
+ * 18.6 MB instead of 2.4 MB. Same shape as the replay blob (`fetchReplayBlob`).
+ */
+export const MESH_EXT = ".tri.gz";
+
+export function meshUrlForMap(cdn: string, mapName: string): string | null {
+  const norm = normalizeMapName(mapName);
+  return cdn && norm ? `${cdn}/${norm}${MESH_EXT}` : null;
+}
+
+export async function fetchMeshBuffer(url: string): Promise<ArrayBuffer> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(String(response.status));
+  }
+  if (!response.body) {
+    throw new Error("mesh response had no body");
+  }
+
+  return await new Response(
+    response.body.pipeThrough(new DecompressionStream("gzip")),
+  ).arrayBuffer();
+}
+
 export function hasMeshForMap(cdn: string, mapName: string): Promise<boolean> {
   const norm = normalizeMapName(mapName);
   if (!cdn || !norm) {
@@ -60,7 +89,7 @@ export function hasMeshForMap(cdn: string, mapName: string): Promise<boolean> {
       let result: boolean | null = null;
       for (let attempt = 0; attempt < 3 && result === null; attempt++) {
         try {
-          const res = await fetch(`${cdn}/${norm}.tri`, { method: "HEAD" });
+          const res = await fetch(`${cdn}/${norm}${MESH_EXT}`, { method: "HEAD" });
           if (res.status === 404) {
             result = false;
           } else if (res.ok) {

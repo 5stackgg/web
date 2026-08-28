@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { fetchMeshBuffer } from "~/utilities/mapAssets";
 import { useI18n } from "vue-i18n";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -537,11 +538,7 @@ onMounted(() => {
   if (meshMode) {
     status.value = t("match.replay.loading_map");
     loading.value = true;
-    fetch(props.mapMeshUrl!)
-      .then((r) => {
-        if (!r.ok) throw new Error(String(r.status));
-        return r.arrayBuffer();
-      })
+    fetchMeshBuffer(props.mapMeshUrl!)
       .then((buf) => {
         // sanity cap: our decimated meshes are well under this; guards against a
         // malformed/oversized file allocating a huge BufferGeometry and OOMing.

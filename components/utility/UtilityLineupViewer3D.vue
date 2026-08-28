@@ -4,7 +4,7 @@ import { Play, RotateCcw } from "lucide-vue-next";
 import { Slider } from "~/components/ui/slider";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
-import { normalizeMapName } from "~/utilities/mapAssets";
+import { meshUrlForMap, normalizeMapName } from "~/utilities/mapAssets";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
   utilityLanding,
@@ -37,7 +37,7 @@ const apiDomain = runtimeConfig.public.apiDomain as string;
 
 const mapMeshUrl = computed(() => {
   const name = normalizeMapName(props.lineup.map_name);
-  return name ? `${meshCdn}/${name}.tri` : null;
+  return meshUrlForMap(meshCdn, name ?? "");
 });
 
 const replayType = computed(() => replayUtilityType(props.lineup.utility_type));

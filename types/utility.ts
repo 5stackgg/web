@@ -341,9 +341,19 @@ export type UtilityPracticeView = {
 /**
  * loadUtilityPlaybookIntoSession is rejected on anything but a live session, and a
  * session is only usefully live once it has handed back somewhere to connect.
+ *
+ * The connect string is NOT on its own that signal. It is derived from the
+ * match's server row, so it resolves the moment a server is assigned -- which
+ * for an on-demand session is the instant the pod is scheduled, minutes before
+ * cs2 is listening. `Ready` is the only honest answer: the API sets it when the
+ * practice plugin asks for its roster, which cannot happen until the server is
+ * actually up.
  */
-function isLiveSession(session: UtilityPracticeSession | null | undefined) {
-  return !!session?.connection_string;
+function isLiveSession(
+  status: string | null,
+  connectionString: string | null,
+) {
+  return status === "Ready" && !!connectionString;
 }
 
 /**
@@ -356,11 +366,17 @@ export function readUtilityPracticeSession(
   session: UtilityPracticeSession | null | undefined,
   started?: UtilityPracticeSessionOutput | null,
 ): UtilityPracticeView {
+  // Read once and answered from once: `isLive` deciding on the row while
+  // `status` answers from the merge is how the same object came to say Ready
+  // and not-live at the same time.
+  const status = session?.status ?? started?.status ?? null;
+  const connectionString = session?.connection_string ?? null;
+
   return {
-    connectionString: session?.connection_string ?? null,
+    connectionString,
     connectionLink: session?.connection_link ?? null,
     failureReason: session?.failure_reason ?? null,
-    status: session?.status ?? started?.status ?? null,
+    status,
     inviteCode: session?.invite_code ?? started?.invite_code ?? null,
     playbookId: session?.playbook_id ?? null,
     mapName: session?.map_name ?? null,
@@ -368,7 +384,7 @@ export function readUtilityPracticeSession(
     isMember: session?.is_member === true,
     isOpen: session?.is_open !== false,
     access: session?.access ?? null,
-    isLive: isLiveSession(session),
+    isLive: isLiveSession(status, connectionString),
     canManage: session?.can_manage === true,
     matchId: session?.match_id ?? started?.match_id ?? null,
     serverId: session?.match?.server_id ?? null,

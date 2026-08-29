@@ -61,7 +61,14 @@ const { t } = useI18n();
 // Reka Select rejects an empty-string value, so "unset" rides a sentinel.
 const ANY_REGION = "any";
 
-const regions = computed(() => useApplicationSettingsStore().availableRegions);
+// Under an ON DEMAND heading, so only the regions that can actually boot one.
+// A region with no node is not a slower answer, it is no answer -- the API
+// refuses it outright.
+const regions = computed(() =>
+  useApplicationSettingsStore().availableRegions.filter(
+    (entry: { has_node: boolean }) => entry.has_node,
+  ),
+);
 const region = ref<string>(ANY_REGION);
 const sessionId = ref<string | null>(null);
 const session = ref<UtilityPracticeSession | null>(null);
@@ -128,9 +135,11 @@ watch(
   },
 );
 
-const isBooting = computed(
-  () => !!sessionId.value && !practice.value.connectionString,
-);
+// Not "has a connect string": that is derived from the match's server row, so
+// it resolves the moment a server is assigned -- for an on-demand session, the
+// instant the pod is scheduled and minutes before cs2 is listening. Offering
+// the connect then hands somebody an address that refuses them.
+const isBooting = computed(() => !!sessionId.value && !practice.value.isLive);
 
 const canRepair = computed(
   () =>

@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Wird nur erzwungen, solange jemand auf einen Übungsserver wartet. Ist keiner frei und stehen Spieler in der Warteschlange, wird eine Sitzung ab diesem Alter beendet; wartet niemand, läuft sie so lange, wie ihr Host will.",
           "practice_idle_minutes": "Leerlauf-Timeout (Minuten)",
           "practice_idle_minutes_description": "Wie lange ein Übungsserver leer steht, bevor er sich selbst herunterfährt. Das ist für die Sitzungen, zu denen niemand zurückgekommen ist – es verhindert, dass ein vergessener Drill die ganze Nacht einen Server belegt.",
+          "practice_waitlist_minutes": "Lebensdauer eines Warteschlangeneintrags (Minuten)",
+          "practice_waitlist_minutes_description": "Wie lange ein abgewiesener Spieler noch als wartend zählt. Nichts arbeitet die Warteschlange ab; sie leert sich erst, wenn dieser Spieler endlich einen Server bekommt. Ein Eintrag, der das Interesse seines Urhebers überdauert, hält also alle anderen Sitzungen unter der Uhr für die maximale Sitzung. Senke den Wert, wenn Sitzungen abgebrochen werden, obwohl niemand wirklich wartet.",
           "practice_reserved_servers": "Reservierte On-Demand-Slots",
           "practice_reserved_servers_description": "On-Demand-Server-Slots, die das Üben nie belegen darf. Das ist das Sicherheitsventil: damit kann eine Übungssitzung niemals den letzten Slot vor einem geplanten Match wegnehmen. Setze es nur auf 0, wenn es in Ordnung ist, einen Match-Server an einen Drill zu verlieren.",
           "success_radius": "Trefferradius (Units)",

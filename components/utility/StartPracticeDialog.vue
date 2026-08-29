@@ -200,6 +200,21 @@ async function loadPracticeServers() {
     practiceServersError.value = error?.message ?? "unknown error";
     console.error("[utility] practice server load error:", error);
     practiceServers.value = [];
+  } finally {
+    forgetPickedServer();
+  }
+}
+
+// `region` outlives the dialog, so a server picked last time is still picked
+// when it reopens -- and by then it can be gone from the list entirely. A
+// selection the picker cannot show is one the trigger cannot name, and Start
+// would send it anyway.
+function forgetPickedServer() {
+  if (
+    selectedServerId.value &&
+    !practiceServers.value.some((entry) => entry.id === selectedServerId.value)
+  ) {
+    region.value = ANY_REGION;
   }
 }
 
@@ -257,16 +272,79 @@ const freeServerCount = computed(
   () => practiceServers.value.filter((entry) => !entry.in_use).length,
 );
 
-// LAN regions only exist for the people who can reach them, and the probe is
-// the only thing that knows which people those are -- the same test the
-// matchmaking region list runs.
+// Offered only where a pod could actually be booted. A region with no node is
+// not a slower answer, it is no answer -- the API refuses it outright, and
+// listing it under ON DEMAND turns "start a server" into an error message.
+//
+// LAN regions narrow it further: they only exist for the people who can reach
+// them, and the probe is the only thing that knows which people those are --
+// the same test the matchmaking region list runs.
 const onDemandRegions = computed(() =>
   regions.value.filter(
     (entry: any) =>
-      !entry.is_lan ||
-      useMatchmakingStore().getRegionlatencyResult(entry.value)?.isLan,
+      entry.has_node &&
+      (!entry.is_lan ||
+        useMatchmakingStore().getRegionlatencyResult(entry.value)?.isLan),
   ),
 );
+
+// Spelled once and read by both the trigger and the row: the two drifting
+// apart is how the closed select came to name a region the list had renamed.
+function regionLabel(value: string) {
+  const entry = onDemandRegions.value.find(
+    (candidate: any) => candidate.value === value,
+  );
+
+  return entry?.description || value;
+}
+
+function serverStateLabel(entry: { in_use: boolean; held_by: string | null }) {
+  if (!entry.in_use) {
+    return null;
+  }
+
+  return entry.held_by
+    ? t("pages.utility.practice.server_held_by", { name: entry.held_by })
+    : t("pages.utility.practice.server_in_use");
+}
+
+// What the closed select says. Reka builds that from the selected item's
+// flattened textContent, so every decoration in the row came with it and ran
+// straight into the name -- "US-EAST1ms", and "US-East Boxin use by Someone"
+// for a taken server. Structured instead, so the trigger keeps the one
+// decoration that changes what Start does: a server somebody else has claimed
+// since it was picked is still selected, and pressing Start on it fails.
+const selection = computed<{
+  name: string;
+  region: string | null;
+  state: string | null;
+}>(() => {
+  if (region.value === ANY_REGION) {
+    return {
+      name: t("pages.utility.practice.any_region"),
+      region: null,
+      state: null,
+    };
+  }
+
+  if (selectedServerId.value) {
+    // forgetPickedServer is what keeps this from being the trigger saying
+    // "select a region" over a server id Start would still send: every open
+    // reloads the list and drops a pick that is no longer on it. This is the
+    // window before that lands.
+    const server = practiceServers.value.find(
+      (entry) => entry.id === selectedServerId.value,
+    );
+
+    return {
+      name: server?.label ?? t("pages.utility.practice.select_region"),
+      region: server?.region ?? null,
+      state: server ? serverStateLabel(server) : null,
+    };
+  }
+
+  return { name: regionLabel(region.value), region: null, state: null };
+});
 
 // Only the automatic choice needs a line under the closed select: it is the one
 // row whose name does not say what it does. A named server and a named region
@@ -507,7 +585,23 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
               <SelectTrigger>
                 <SelectValue
                   :placeholder="$t('pages.utility.practice.select_region')"
-                />
+                >
+                  <span class="flex min-w-0 items-center gap-1.5">
+                    <span class="truncate">{{ selection.name }}</span>
+                    <span
+                      v-if="selection.region"
+                      class="shrink-0 text-muted-foreground"
+                    >
+                      ({{ selection.region }})
+                    </span>
+                    <span
+                      v-if="selection.state"
+                      class="truncate text-xs text-muted-foreground"
+                    >
+                      {{ selection.state }}
+                    </span>
+                  </span>
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <!-- The default, and the only row that does not name a
@@ -567,16 +661,10 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
                       </span>
                     </span>
                     <span
-                      v-if="entry.in_use"
+                      v-if="serverStateLabel(entry)"
                       class="ml-auto shrink-0 truncate pl-2 text-xs text-muted-foreground"
                     >
-                      {{
-                        entry.held_by
-                          ? $t("pages.utility.practice.server_held_by", {
-                              name: entry.held_by,
-                            })
-                          : $t("pages.utility.practice.server_in_use")
-                      }}
+                      {{ serverStateLabel(entry) }}
                     </span>
                   </SelectItem>
                 </SelectGroup>
@@ -593,7 +681,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
                   >
                     <span :class="optionGutter" aria-hidden="true" />
                     <span class="truncate">
-                      {{ entry.description || entry.value }}
+                      {{ regionLabel(entry.value) }}
                     </span>
                     <!-- Which of them is actually near you: the one thing a
                          region name never says. -->
@@ -616,7 +704,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
               }}
             </p>
             <p
-              v-else-if="!regions.length && !practiceServers.length"
+              v-else-if="!onDemandRegions.length && !practiceServers.length"
               class="text-xs text-muted-foreground"
             >
               {{ $t("pages.utility.practice.no_regions") }}

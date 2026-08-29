@@ -197,6 +197,11 @@ const NUMBER_SETTINGS = [
     fallbackLabel: null,
   },
   {
+    name: "public.utility_practice_waitlist_minutes",
+    label: "practice_waitlist_minutes",
+    fallbackLabel: null,
+  },
+  {
     name: "public.utility_practice_reserved_servers",
     label: "practice_reserved_servers",
     fallbackLabel: null,

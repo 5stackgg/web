@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "僅在有人排隊等練習伺服器時才生效。若沒有空閒伺服器且有人在等，工作階段達到這個時長就會被結束；沒人在等的話，主辦者想開多久都行。",
           "practice_idle_minutes": "閒置逾時（分鐘）",
           "practice_idle_minutes_description": "練習伺服器空無一人多久後會自動關閉。這是為那些沒人再回來的工作階段準備的，可避免被遺忘的練習整晚佔著一台伺服器。",
+          "practice_waitlist_minutes": "排隊記錄保留時長（分鐘）",
+          "practice_waitlist_minutes_description": "被拒絕的玩家還會被算作在等待多久。沒有任何機制會處理這個佇列，只有該玩家最終拿到伺服器時才會清除，所以一筆在玩家早已離開後仍然留著的記錄，會讓其他所有工作階段都受單次工作階段上限的限制。如果明明沒人在等、工作階段卻被提前結束，就把這個值調小。",
           "practice_reserved_servers": "保留的隨選名額",
           "practice_reserved_servers_description": "練習永遠不能佔用的隨選伺服器名額。這是安全閥：設定之後，練習工作階段絕不會把最後一個名額從已排程的比賽手中搶走。只有當你能接受為了練習而失去一台比賽伺服器時，才把它設為 0。",
           "success_radius": "成功半徑（單位）",

@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Tillämpas bara medan någon står i kö för en träningsserver. Om ingen är ledig och spelare väntar avslutas en session när den når den här åldern; väntar ingen får den pågå så länge värden vill.",
           "practice_idle_minutes": "Inaktivitetstid (minuter)",
           "practice_idle_minutes_description": "Hur länge en träningsserver står tom innan den stänger av sig själv. Det här gäller sessioner ingen kom tillbaka till — det är det som hindrar en övergiven övning från att hålla en server hela natten.",
+          "practice_waitlist_minutes": "Köpostens livslängd (minuter)",
+          "practice_waitlist_minutes_description": "Hur länge en spelare som nekats fortfarande räknas som väntande. Ingenting betjänar kön; den rensas först när spelaren till slut får en server, så en post som överlever spelarens intresse håller alla andra sessioner under klockan för längsta session. Sänk värdet om sessioner avbryts utan att någon egentligen väntar.",
           "practice_reserved_servers": "Reserverade on demand-platser",
           "practice_reserved_servers_description": "Serverplatser on demand som träning aldrig får ta. Det här är säkerhetsventilen: med den satt kan en träningssession aldrig ta den sista platsen från en inbokad match. Sätt den till 0 bara om det är okej att förlora en matchserver till en övning.",
           "success_radius": "Träffradie (enheter)",

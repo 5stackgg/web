@@ -591,16 +591,31 @@ export const setUtilityPracticeAccessMutation = generateMutation({
   ],
 });
 
-// The session a refresh has to find again. Scoped to the caller: can_view also
-// covers other people's open sessions, and rejoining a stranger's server on
-// page load is not what "my session" means.
+// Mine as in "one I am on", host or guest. A practice match seats everybody in
+// lineup_1, so that is the whole roster.
+//
+// Deliberately narrower than can_view, which also covers other people's open
+// sessions: rejoining a stranger's server on page load is not what "my
+// session" means.
+const mySession = {
+  _or: [
+    { host_steam_id: { _eq: $("steam_id", "bigint!") } },
+    {
+      match: {
+        lineup_1: {
+          lineup_players: { steam_id: { _eq: $("steam_id", "bigint!") } },
+        },
+      },
+    },
+  ],
+  status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
+};
+
+// The session a refresh has to find again.
 export const myUtilityPracticeSessionQuery = generateQuery({
   utility_practice_sessions: [
     {
-      where: {
-        host_steam_id: { _eq: $("steam_id", "bigint!") },
-        status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
-      },
+      where: mySession,
       order_by: [{ created_at: order_by.desc }],
       limit: 1,
     },
@@ -610,14 +625,13 @@ export const myUtilityPracticeSessionQuery = generateQuery({
 
 // The nav chip tracks this rather than polling: a reservation appears the
 // moment it is booked and disappears the moment it is handed back, on whatever
-// page the player happens to be on.
+// page the player happens to be on. A guest gets the chip too -- being told
+// the server is up is the whole point, and can_manage is what keeps Stop off
+// it.
 export const myUtilityPracticeSessionSubscription = generateSubscription({
   utility_practice_sessions: [
     {
-      where: {
-        host_steam_id: { _eq: $("steam_id", "bigint!") },
-        status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
-      },
+      where: mySession,
       order_by: [{ created_at: order_by.desc }],
       limit: 1,
     },

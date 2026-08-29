@@ -272,14 +272,19 @@ const freeServerCount = computed(
   () => practiceServers.value.filter((entry) => !entry.in_use).length,
 );
 
-// LAN regions only exist for the people who can reach them, and the probe is
-// the only thing that knows which people those are -- the same test the
-// matchmaking region list runs.
+// Offered only where a pod could actually be booted. A region with no node is
+// not a slower answer, it is no answer -- the API refuses it outright, and
+// listing it under ON DEMAND turns "start a server" into an error message.
+//
+// LAN regions narrow it further: they only exist for the people who can reach
+// them, and the probe is the only thing that knows which people those are --
+// the same test the matchmaking region list runs.
 const onDemandRegions = computed(() =>
   regions.value.filter(
     (entry: any) =>
-      !entry.is_lan ||
-      useMatchmakingStore().getRegionlatencyResult(entry.value)?.isLan,
+      entry.has_node &&
+      (!entry.is_lan ||
+        useMatchmakingStore().getRegionlatencyResult(entry.value)?.isLan),
   ),
 );
 
@@ -699,7 +704,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
               }}
             </p>
             <p
-              v-else-if="!regions.length && !practiceServers.length"
+              v-else-if="!onDemandRegions.length && !practiceServers.length"
               class="text-xs text-muted-foreground"
             >
               {{ $t("pages.utility.practice.no_regions") }}

@@ -268,6 +268,35 @@ const onDemandRegions = computed(() =>
   ),
 );
 
+// What the closed select says. Reka builds that from the selected item's
+// flattened textContent, so every decoration in the row came with it and ran
+// straight into the name -- "US-EAST1ms", and "US-East Boxin use by Someone"
+// for a taken server. The trigger names the choice; the rows keep the detail
+// that only helps while the list is open.
+const selectedLabel = computed(() => {
+  if (region.value === ANY_REGION) {
+    return t("pages.utility.practice.any_region");
+  }
+
+  if (selectedServerId.value) {
+    const server = practiceServers.value.find(
+      (entry) => entry.id === selectedServerId.value,
+    );
+
+    if (server) {
+      return `${server.label} (${server.region})`;
+    }
+
+    return t("pages.utility.practice.select_region");
+  }
+
+  const entry = onDemandRegions.value.find(
+    (candidate: any) => candidate.value === region.value,
+  );
+
+  return entry?.description || region.value;
+});
+
 // Only the automatic choice needs a line under the closed select: it is the one
 // row whose name does not say what it does. A named server and a named region
 // explain themselves, and captioning them just put a sentence under every
@@ -507,7 +536,9 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
               <SelectTrigger>
                 <SelectValue
                   :placeholder="$t('pages.utility.practice.select_region')"
-                />
+                >
+                  <span class="truncate">{{ selectedLabel }}</span>
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <!-- The default, and the only row that does not name a

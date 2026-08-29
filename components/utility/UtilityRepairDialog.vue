@@ -128,9 +128,11 @@ watch(
   },
 );
 
-const isBooting = computed(
-  () => !!sessionId.value && !practice.value.connectionString,
-);
+// Not "has a connect string": that is derived from the match's server row, so
+// it resolves the moment a server is assigned -- for an on-demand session, the
+// instant the pod is scheduled and minutes before cs2 is listening. Offering
+// the connect then hands somebody an address that refuses them.
+const isBooting = computed(() => !!sessionId.value && !practice.value.isLive);
 
 const canRepair = computed(
   () =>

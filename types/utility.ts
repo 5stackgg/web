@@ -341,9 +341,16 @@ export type UtilityPracticeView = {
 /**
  * loadUtilityPlaybookIntoSession is rejected on anything but a live session, and a
  * session is only usefully live once it has handed back somewhere to connect.
+ *
+ * The connect string is NOT on its own that signal. It is derived from the
+ * match's server row, so it resolves the moment a server is assigned -- which
+ * for an on-demand session is the instant the pod is scheduled, minutes before
+ * cs2 is listening. `Ready` is the only honest answer: the API sets it when the
+ * practice plugin asks for its roster, which cannot happen until the server is
+ * actually up.
  */
 function isLiveSession(session: UtilityPracticeSession | null | undefined) {
-  return !!session?.connection_string;
+  return session?.status === "Ready" && !!session.connection_string;
 }
 
 /**

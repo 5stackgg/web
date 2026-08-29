@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Só é aplicado enquanto alguém está na fila por um servidor de treino. Se nenhum estiver livre e houver jogadores esperando, uma sessão é encerrada ao atingir essa idade; se ninguém estiver esperando, ela dura o quanto o dono quiser.",
           "practice_idle_minutes": "Tempo ocioso (minutos)",
           "practice_idle_minutes_description": "Quanto tempo um servidor de treino fica vazio antes de se desligar. É para as sessões às quais ninguém voltou — é o que impede um treino abandonado de segurar um servidor a noite toda.",
+          "practice_waitlist_minutes": "Validade da entrada na fila (minutos)",
+          "practice_waitlist_minutes_description": "Por quanto tempo um jogador recusado ainda conta como esperando. Nada atende a fila; ela só é limpa quando esse jogador finalmente consegue um servidor, então uma entrada que sobrevive ao interesse dele mantém todas as outras sessões sob o relógio de sessão máxima. Diminua se as sessões estiverem sendo encerradas sem ninguém realmente esperando.",
           "practice_reserved_servers": "Vagas sob demanda reservadas",
           "practice_reserved_servers_description": "Vagas de servidor sob demanda que o treino nunca pode ocupar. É a válvula de segurança: com isso definido, uma sessão de treino nunca toma a última vaga de uma partida agendada. Só coloque 0 se perder um servidor de partida para um treino for aceitável.",
           "success_radius": "Raio de acerto (unidades)",

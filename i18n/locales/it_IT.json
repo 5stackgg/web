@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Applicato solo mentre qualcuno è in coda per un server di allenamento. Se non ce n'è nessuno libero e ci sono giocatori in attesa, una sessione viene chiusa al raggiungimento di questa durata; se non aspetta nessuno, dura quanto vuole il suo host.",
           "practice_idle_minutes": "Timeout di inattività (minuti)",
           "practice_idle_minutes_description": "Quanto resta vuoto un server di allenamento prima di spegnersi da solo. È per le sessioni a cui nessuno è tornato: è ciò che impedisce a un esercizio abbandonato di occupare un server tutta la notte.",
+          "practice_waitlist_minutes": "Durata di una voce in coda (minuti)",
+          "practice_waitlist_minutes_description": "Per quanto tempo un giocatore respinto conta ancora come in attesa. Nulla serve la coda; si svuota solo quando quel giocatore ottiene finalmente un server, quindi una voce che sopravvive al suo interesse tiene tutte le altre sessioni sotto il timer della sessione massima. Abbassalo se le sessioni vengono interrotte senza che nessuno stia davvero aspettando.",
           "practice_reserved_servers": "Slot on-demand riservati",
           "practice_reserved_servers_description": "Slot di server on-demand che l'allenamento non può mai occupare. È la valvola di sicurezza: così una sessione di allenamento non può mai portare via l'ultimo slot a una partita programmata. Mettilo a 0 solo se perdere un server di partita per un esercizio è accettabile.",
           "success_radius": "Raggio di successo (unità)",

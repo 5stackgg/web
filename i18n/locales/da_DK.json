@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Håndhæves kun, mens nogen står i kø til en træningsserver. Er ingen ledig, og venter der spillere, afsluttes en session, når den når denne alder; venter ingen, kører den, så længe værten vil.",
           "practice_idle_minutes": "Tomgangstid (minutter)",
           "practice_idle_minutes_description": "Hvor længe en træningsserver står tom, før den lukker sig selv ned. Det gælder de sessioner, ingen kom tilbage til — det er det, der forhindrer en forladt øvelse i at holde en server hele natten.",
+          "practice_waitlist_minutes": "Køpladsens levetid (minutter)",
+          "practice_waitlist_minutes_description": "Hvor længe en spiller, der blev afvist, stadig tæller som ventende. Intet betjener køen; den ryddes først, når den spiller endelig får en server, så en plads, der overlever spillerens interesse, holder alle andre sessioner under uret for længste session. Sænk den, hvis sessioner afbrydes for tidligt, uden at nogen reelt venter.",
           "practice_reserved_servers": "Reserverede on demand-pladser",
           "practice_reserved_servers_description": "On demand-serverpladser, som træning aldrig må tage. Det er sikkerhedsventilen: med den sat kan en træningssession aldrig snuppe den sidste plads fra en planlagt kamp. Sæt den kun til 0, hvis det er i orden at miste en kampserver til en øvelse.",
           "success_radius": "Træfradius (enheder)",

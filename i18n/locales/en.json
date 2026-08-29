@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Only enforced while somebody is queuing for a practice server. With none free and players waiting, a session is ended once it reaches this age; with nobody waiting, a session runs for as long as its host wants.",
           "practice_idle_minutes": "Idle timeout (minutes)",
           "practice_idle_minutes_description": "How long a practice server sits with nobody in it before it shuts itself down. This is for the sessions nobody came back to — it is what keeps an abandoned drill from holding a server all night.",
+          "practice_waitlist_minutes": "Queue entry lifetime (minutes)",
+          "practice_waitlist_minutes_description": "How long a player who was turned away still counts as waiting. Nothing serves the queue; it only clears when that player finally gets a server, so an entry that outlives their interest keeps every other session under the maximum-session clock. Lower it if sessions are being cut short with nobody actually waiting.",
           "practice_reserved_servers": "Reserved on-demand slots",
           "practice_reserved_servers_description": "On-demand server slots practice is never allowed to take. This is the safety valve: with it set, a practice session can never take the last slot out from under a scheduled match. Set it to 0 only if losing a match server to a drill is acceptable.",
           "success_radius": "Success radius (units)",

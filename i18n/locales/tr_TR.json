@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Yalnızca biri antrenman sunucusu için sırada beklerken uygulanır. Boşta sunucu yokken oyuncular beklerken bir oturum bu yaşa ulaştığında sonlandırılır; kimse beklemiyorsa sahibi istediği sürece devam eder.",
           "practice_idle_minutes": "Boşta kalma süresi (dakika)",
           "practice_idle_minutes_description": "Bir antrenman sunucusu kendini kapatmadan önce ne kadar boş bekler. Bu, kimsenin geri dönmediği oturumlar içindir — terk edilmiş bir çalışmanın bütün gece sunucuyu tutmasını engelleyen şey budur.",
+          "practice_waitlist_minutes": "Sıra kaydının ömrü (dakika)",
+          "practice_waitlist_minutes_description": "Geri çevrilen bir oyuncunun ne kadar süre daha bekliyor sayılacağı. Sırayı işleyen hiçbir şey yok; yalnızca o oyuncu sonunda bir sunucu aldığında temizlenir, dolayısıyla ilgisi bittikten sonra kalan bir kayıt diğer bütün oturumları en uzun oturum saatine bağlı tutar. Gerçekte kimse beklemezken oturumlar yarıda kesiliyorsa bu değeri düşürün.",
           "practice_reserved_servers": "Ayrılmış istek üzerine yuvalar",
           "practice_reserved_servers_description": "Antrenmanın asla alamayacağı istek üzerine sunucu yuvaları. Emniyet valfi budur: bu ayarlıyken bir antrenman oturumu planlanmış bir maçın son yuvasını asla kapamaz. Bir çalışma uğruna maç sunucusu kaybetmek kabul edilebilirse 0 yap.",
           "success_radius": "Başarı yarıçapı (birim)",

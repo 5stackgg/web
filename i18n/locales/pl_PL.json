@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Egzekwowane tylko wtedy, gdy ktoś czeka w kolejce na serwer treningowy. Jeśli żaden nie jest wolny, a gracze czekają, sesja jest kończona po osiągnięciu tego czasu; jeśli nikt nie czeka, trwa tak długo, jak chce właściciel.",
           "practice_idle_minutes": "Limit bezczynności (minuty)",
           "practice_idle_minutes_description": "Jak długo serwer treningowy stoi pusty, zanim sam się wyłączy. To dla sesji, do których nikt nie wrócił — dzięki temu porzucony trening nie blokuje serwera przez całą noc.",
+          "practice_waitlist_minutes": "Czas życia wpisu w kolejce (minuty)",
+          "practice_waitlist_minutes_description": "Jak długo odprawiony gracz nadal liczy się jako czekający. Nic nie obsługuje kolejki; czyści się dopiero, gdy ten gracz w końcu dostanie serwer, więc wpis, który przetrwa jego zainteresowanie, trzyma wszystkie pozostałe sesje pod zegarem maksymalnej sesji. Zmniejsz wartość, jeśli sesje są przerywane, choć nikt naprawdę nie czeka.",
           "practice_reserved_servers": "Zarezerwowane sloty on-demand",
           "practice_reserved_servers_description": "Sloty serwerów on-demand, których trening nigdy nie może zająć. To zawór bezpieczeństwa: dzięki temu sesja treningowa nigdy nie zabierze ostatniego slotu zaplanowanemu meczowi. Ustaw 0 tylko wtedy, gdy strata serwera meczowego na rzecz treningu jest do przyjęcia.",
           "success_radius": "Promień trafienia (jednostki)",

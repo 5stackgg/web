@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Solo se aplica mientras alguien está esperando un servidor de práctica. Si no hay ninguno libre y hay jugadores en cola, una sesión se corta al alcanzar esta antigüedad; si no espera nadie, dura lo que quiera su anfitrión.",
           "practice_idle_minutes": "Tiempo de inactividad (minutos)",
           "practice_idle_minutes_description": "Cuánto tiempo permanece vacío un servidor de práctica antes de apagarse solo. Es para las sesiones a las que nadie volvió: evita que un ejercicio abandonado ocupe un servidor toda la noche.",
+          "practice_waitlist_minutes": "Duración de la entrada en cola (minutos)",
+          "practice_waitlist_minutes_description": "Cuánto tiempo sigue contando como en espera un jugador al que se rechazó. Nada atiende la cola; solo se limpia cuando ese jugador consigue por fin un servidor, así que una entrada que sobrevive a su interés mantiene todas las demás sesiones bajo el reloj de sesión máxima. Bájalo si las sesiones se cortan sin que haya nadie esperando de verdad.",
           "practice_reserved_servers": "Espacios bajo demanda reservados",
           "practice_reserved_servers_description": "Espacios de servidor bajo demanda que la práctica nunca puede ocupar. Es la válvula de seguridad: con esto puesto, una sesión de práctica jamás puede quitarle el último espacio a un partido programado. Ponlo a 0 solo si te parece bien perder un servidor de partido por un ejercicio.",
           "success_radius": "Radio de acierto (unidades)",

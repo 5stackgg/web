@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "Appliqué uniquement quand quelqu'un attend un serveur d'entraînement. Si aucun n'est libre et que des joueurs patientent, une session est arrêtée dès qu'elle atteint cet âge ; si personne n'attend, elle dure aussi longtemps que son hôte le souhaite.",
           "practice_idle_minutes": "Délai d'inactivité (minutes)",
           "practice_idle_minutes_description": "Combien de temps un serveur d'entraînement reste vide avant de s'éteindre. C'est pour les sessions que personne n'a reprises — c'est ce qui empêche un exercice abandonné de monopoliser un serveur toute la nuit.",
+          "practice_waitlist_minutes": "Durée de vie d'une entrée en file (minutes)",
+          "practice_waitlist_minutes_description": "Combien de temps un joueur refusé compte encore comme en attente. Rien ne traite la file ; elle ne se vide que lorsque ce joueur obtient enfin un serveur, donc une entrée qui survit à son intérêt maintient toutes les autres sessions sous l'horloge de session maximale. Baissez-la si des sessions sont coupées alors que personne n'attend vraiment.",
           "practice_reserved_servers": "Emplacements à la demande réservés",
           "practice_reserved_servers_description": "Emplacements de serveurs à la demande que l'entraînement n'a jamais le droit de prendre. C'est la soupape de sécurité : ainsi, une session d'entraînement ne peut jamais prendre le dernier emplacement au nez d'un match programmé. Ne le mettez à 0 que si perdre un serveur de match au profit d'un exercice est acceptable.",
           "success_radius": "Rayon de réussite (unités)",

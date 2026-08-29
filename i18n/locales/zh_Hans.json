@@ -2569,6 +2569,8 @@
           "practice_max_minutes_description": "仅在有人排队等练习服务器时才生效。若没有空闲服务器且有人在等，会话达到这个时长就会被结束；没人等的话，主机想开多久都行。",
           "practice_idle_minutes": "闲置超时（分钟）",
           "practice_idle_minutes_description": "练习服务器空无一人多久后会自动关闭。这是为那些没人再回来的会话准备的，它能防止被遗忘的练习整晚占着一台服务器。",
+          "practice_waitlist_minutes": "排队记录保留时长（分钟）",
+          "practice_waitlist_minutes_description": "被拒绝的玩家还会被算作在等待多久。没有任何机制会处理这个队列，只有该玩家最终拿到服务器时才会清除，所以一条在玩家早已离开后仍然留着的记录，会让其他所有会话都受单次会话上限的限制。如果明明没人在等、会话却被提前结束，就把这个值调小。",
           "practice_reserved_servers": "预留的按需槽位",
           "practice_reserved_servers_description": "练习永远不能占用的按需服务器槽位。这是安全阀：设置之后，练习会话绝不会把最后一个槽位从已排期的比赛手里抢走。只有当你能接受为了练习而丢掉一台比赛服务器时，才把它设为 0。",
           "success_radius": "成功半径（单位）",

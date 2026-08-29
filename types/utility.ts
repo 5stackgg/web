@@ -349,8 +349,11 @@ export type UtilityPracticeView = {
  * practice plugin asks for its roster, which cannot happen until the server is
  * actually up.
  */
-function isLiveSession(session: UtilityPracticeSession | null | undefined) {
-  return session?.status === "Ready" && !!session.connection_string;
+function isLiveSession(
+  status: string | null,
+  connectionString: string | null,
+) {
+  return status === "Ready" && !!connectionString;
 }
 
 /**
@@ -363,11 +366,17 @@ export function readUtilityPracticeSession(
   session: UtilityPracticeSession | null | undefined,
   started?: UtilityPracticeSessionOutput | null,
 ): UtilityPracticeView {
+  // Read once and answered from once: `isLive` deciding on the row while
+  // `status` answers from the merge is how the same object came to say Ready
+  // and not-live at the same time.
+  const status = session?.status ?? started?.status ?? null;
+  const connectionString = session?.connection_string ?? null;
+
   return {
-    connectionString: session?.connection_string ?? null,
+    connectionString,
     connectionLink: session?.connection_link ?? null,
     failureReason: session?.failure_reason ?? null,
-    status: session?.status ?? started?.status ?? null,
+    status,
     inviteCode: session?.invite_code ?? started?.invite_code ?? null,
     playbookId: session?.playbook_id ?? null,
     mapName: session?.map_name ?? null,
@@ -375,7 +384,7 @@ export function readUtilityPracticeSession(
     isMember: session?.is_member === true,
     isOpen: session?.is_open !== false,
     access: session?.access ?? null,
-    isLive: isLiveSession(session),
+    isLive: isLiveSession(status, connectionString),
     canManage: session?.can_manage === true,
     matchId: session?.match_id ?? started?.match_id ?? null,
     serverId: session?.match?.server_id ?? null,

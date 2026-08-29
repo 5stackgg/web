@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Filo Telemetrisi",
+      "filter": {
+        "all": "Tüm filo",
+        "self_hosted": "Yalnızca kendi barındıranlar"
+      },
       "no_data": "Henüz veri bildirilmedi",
       "installs": {
         "title": "Paneller",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "Harita bul",
-        "none": "Radarı olan harita yok"
+        "none": "Radarı olan harita yok",
+        "count_public": "Bu haritadaki herkese açık dizilimler",
+        "count_private": "Herkese açık değil ama senin görebildiklerin — seninkiler, takımınınkiler veya incelemede olanlar. Arşivlenenler sayılmaz."
       },
       "back_to_map": "Haritaya dön",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "Takımlar",
       "format": "Format",
       "starts": "Başlangıç",
-      "location": "Konum"
+      "location": "Konum",
+      "title": "İstatistikler",
+      "leaderboard_title": "Oyuncu sıralaması",
+      "matches": "Maçlar",
+      "rounds": "Rauntlar",
+      "players": "Oyuncular",
+      "top_rating": "En iyi puan",
+      "col_team": "Takım",
+      "col_rating": "Puan",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "Ö",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "Haritalar",
+      "empty_title": "Henüz istatistik yok",
+      "empty_description": "Turnuva maçları tamamlandıkça sıralama dolar."
     },
     "wizard": {
       "information": "Bilgi",
       "location": "Konum",
       "match_options": "Maç Seçenekleri",
-      "prizes": "Ödüller"
+      "prizes": "Ödüller",
+      "registration": "Kayıt"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6030,173 @@
       "expand": "Genişlet",
       "collapse_all": "Tümünü daralt",
       "expand_all": "Tümünü genişlet"
+    },
+    "registration": {
+      "section": "Kayıt",
+      "who": {
+        "label": "Kimler kaydolabilir?",
+        "teams": {
+          "label": "Sadece takımlar",
+          "description": "Kaptanlar mevcut bir takımı kaydeder. Varsayılan seçenek."
+        },
+        "free_agents": {
+          "label": "Serbest oyuncular",
+          "description": "Oyuncular tek başına kaydolur ve kayıtlar kapandığında dengeli takımlara dağıtılır."
+        },
+        "both": {
+          "label": "Takımlar + serbest oyuncular",
+          "description": "İkisi birden. Artan serbest oyuncular, kayıtlı takımların yanına ek takımlar olarak dağıtılır."
+        }
+      },
+      "min_role": {
+        "label": "Minimum rol",
+        "none": "Kısıtlama yok",
+        "description": "Sadece tıklayan kişide değil, eklenen oyuncuda kontrol edilir — böylece bir kaptan uygun olmayan oyuncuları kadroya alamaz."
+      },
+      "rank": {
+        "label": "ELO aralığı",
+        "min": "Min ELO",
+        "max": "Maks ELO",
+        "description": "Sınır koymamak için birini boş bırak. İkisi de boşsa her rank'a açıktır.",
+        "invalid_range": "Maks ELO en az min ELO kadar olmalı."
+      },
+      "regions": {
+        "label": "Tercih edilen bölgeler",
+        "description": "Bu turnuvanın maçlarının hangi bölgede barındırılacağı. Oyuncu filtresi değildir — 5stack'te oyuncu bazlı bölge verisi yok.",
+        "empty": "Şu anda kullanılabilir bölge yok."
+      },
+      "invite_only": {
+        "label": "Sadece davetle",
+        "description": "Kayıtlar herkese kapalı. Organizatörler takımları doğrudan davet eder ya da katılımcılar bir erişim kodu girer."
+      },
+      "passcode": {
+        "label": "Erişim kodu",
+        "optional": "(isteğe bağlı)",
+        "description": "Kodu olan herkes davetsiz girebilir. Sadece organizatörler."
+      }
+    },
+    "check_in": {
+      "section": "Katılım Onayı",
+      "required": {
+        "label": "Katılım onayı iste",
+        "description": "Takımlar, eşleşme tablosu oluşturulmadan önce katılacaklarını onaylar. Pencere programa göre açılır; onaylamak manueldir."
+      },
+      "who": {
+        "label": "Katılımı kim onaylar?",
+        "Captains": {
+          "label": "Kaptanlar",
+          "description": "Kaptan tüm takım adına onaylar. Tek tık, tek takım."
+        },
+        "Players": {
+          "label": "Her oyuncu",
+          "description": "Kadrodaki her oyuncu tek tek onaylar. {count} oyuncu onay verdiğinde takım katılmış olur — yedeklerin onaylaması gerekmez."
+        },
+        "Admin": {
+          "label": "Sadece organizatör",
+          "description": "Oyuncular kendi katılımlarını onaylayamaz; takımları sen mevcut olarak işaretlersin."
+        }
+      },
+      "opens": {
+        "label": "Pencere açılıyor"
+      },
+      "closes": {
+        "label": "Pencere kapanıyor"
+      },
+      "minutes_before_start": "başlangıçtan kaç dakika önce",
+      "window_too_short": "Pencere en az 5 dakika açık kalmalı.",
+      "timeline": {
+        "opens": "Pencere açılıyor",
+        "closes": "Pencere kapanıyor",
+        "start": "Turnuva başlıyor"
+      },
+      "lock_note": "Pencere bir kez açıldığında başlangıç saati ve her iki sapma da kilitlenir. Takımlar bu programa göre hareket ediyor, dolayısıyla pencere açıkken programı değiştirmek işleyen bir süreyi kaydırırdı.",
+      "late_registration_note": "Pencere sırasında kaydolan bir takımın katılımı otomatik olarak onaylanır — hiç görmediği bir uyarıyı kaçırdı diye cezalandırılamaz.",
+      "no_show_note": "Gelmeyen takımlar asla silinmez. Katılım onayını kaçıran bir takım kadrosunu korur, sadece eşleşme tablosuna alınmaz — turnuva başlamadan önce istediğin an yeniden kabul edebilirsin.",
+      "frozen": "Katılım onayı çoktan açıldı, bu yüzden başlangıç saati ve her iki sapma da kilitli. Bunun yerine katılım onayı penceresini uzat.",
+      "required_title": "Bu turnuva katılım onayı gerektiriyor.",
+      "required_window": "Takımın o gün {opens} ile {closes} arasında onay vermeli, yoksa eşleşme tablosuna alınmaz.",
+      "register_heading": "Takımını kaydet",
+      "register_hint": "Katılım onayı açıldığında bildirim, kapanmadan önce de hatırlatma alırsın.",
+      "register_cta": "Takımı kaydet",
+      "chip_required": "katılım onayı gerekli",
+      "opens_at_heading": "Katılım onayı {time} itibarıyla açılıyor",
+      "opens_at_hint": "Takımın kayıtlı. Pencere açıldığında haber vereceğiz.",
+      "opens_in": "açılmasına",
+      "closes_in": "kapanmasına",
+      "starts_in": "başlamasına",
+      "chip_action_needed": "işlem gerekli",
+      "chip_open": "katılım onayı açık",
+      "observer_heading": "Katılım onayı açık",
+      "observer_hint": "Takımlar, eşleşme tablosu oluşturulmadan önce katılacaklarını onaylar. {time} itibarıyla onay vermeyen her takım, turnuvayı senin incelemen için bekletir.",
+      "confirm_heading": "Takımının katılacağını onayla",
+      "confirm_hint": "{time} itibarıyla onay vermeyen takımlar eşleşme tablosuna alınmaz.",
+      "players_progress": "{required} oyuncudan {checked} tanesi onayladı",
+      "players_heading": "Her oyuncu katılımını onaylamalı",
+      "players_hint": "{count} oyuncu onay verdiğinde takımın katılmış olur. Yedeklerin onaylaması gerekmez.",
+      "admin_heading": "Takımları mevcut olarak işaretle",
+      "admin_hint": "Bu turnuvada oyuncular kendi katılımlarını onaylayamaz. Pencere kapanmadan her takımı mevcut olarak işaretle.",
+      "check_in": "Katılımı onayla",
+      "mark_present": "Mevcut olarak işaretle",
+      "checked_in": "katılım onaylandı",
+      "checked_in_at": "katılım onaylandı · {time}",
+      "waiting": "bekliyor",
+      "not_needed": "gerekmiyor",
+      "role_captain": "kaptan",
+      "role_starter": "ilk 5",
+      "role_sub": "yedek",
+      "field_status": "Katılımcı durumu",
+      "field_count": "{total} takımdan {checked} tanesi onayladı",
+      "done_heading": "Kadrodasınız. Eşleşme tablosu {time} itibarıyla oluşturuluyor.",
+      "done_hint": "{team} için {time} itibarıyla onaylandı.",
+      "chip_removed": "çıkarıldı",
+      "missed_heading": "Takımın katılım onayını kaçırdı",
+      "missed_hint": "Katılım onayı {time} itibarıyla kapandı ve eşleşme tablosu takımın olmadan oluşturuluyor.",
+      "missed_contact": "Bunun yanlış olduğunu düşünüyorsan bir organizatörle iletişime geç — turnuva başlamadan önce bir takımı istediği an yeniden kabul edebilir.",
+      "failed": "Katılım onayı başarısız"
+    },
+    "check_in_review": {
+      "heading": "{count} takım katılım onayını kaçırdı",
+      "subheading": "Turnuva bekletiliyor. Hiçbir şey oluşturulmadı ve hiçbir şey silinmedi — her takım tam kadrosunu koruyor.",
+      "chip_held_at": "bekletiliyor · {time} itibarıyla kendiliğinden sürüyor",
+      "chip_held": "bekletiliyor",
+      "roster_size": "{count} oyuncu",
+      "partial_roster": "{required} oyuncudan {checked} tanesi onayladı · {short} eksik",
+      "registered": "kayıtlı",
+      "chip_no_check_in": "onay yok",
+      "chip_incomplete": "eksik",
+      "readmit": "Yeniden kabul et",
+      "readmit_failed": "Takım yeniden kabul edilemedi",
+      "continue": "Onlarsız devam et",
+      "continue_failed": "Turnuvaya devam edilemedi",
+      "extend": "Katılım onayını uzat",
+      "extend_by": "+{minutes} dakika",
+      "extend_failed": "Katılım onayı uzatılamadı",
+      "extend_hint": "Uzatmak kayıtları yeniden açar ve eksik {count} takıma tekrar bildirim gönderir.",
+      "auto_continue": "Kimse bir şey yapmazsa turnuva {time} itibarıyla, onay verenlerle kendiliğinden devam eder. Bekletilen bir turnuva, organizatör uyuyakaldı diye sessizce ölmez.",
+      "auto_continue_no_time": "Kimse bir şey yapmazsa turnuva kendi başlangıç saatinde, onay verenlerle kendiliğinden devam eder.",
+      "reseed_warning": "Bir takımı yeniden kabul etmek eşleşme tablosunu baştan kurar. Başlamadan önce bu güvenlidir ama seribaşılıkları karıştırır."
+    },
+    "free_agents": {
+      "title": "Serbest oyuncular",
+      "signed_up": "{count} kayıtlı",
+      "filter_all": "Tümü",
+      "filter_drafted": "Seçilenler",
+      "filter_waitlist": "Yedek listesi",
+      "sign_up": "Kaydol",
+      "leave": "Havuzdan ayrıl",
+      "status_drafted": "seçildi",
+      "status_waitlisted": "yedek listesi",
+      "status_registered": "kayıtlı",
+      "empty_title": "Henüz serbest oyuncu yok",
+      "empty_description": "Tek başına kaydolan oyuncular burada görünür ve kayıtlar kapandığında dengeli takımlara dağıtılır.",
+      "waitlist_explainer": "{name} en yüksek puanlı katılımcı ama hâlâ yedek listesinde — kontenjan dolduktan sonra kaydoldu. Kimin yer alacağına kayıt zamanı karar verir; ELO yalnızca hangi takıma gideceğini belirler. Bu kural düzgün işliyor, hata değil.",
+      "organizer": "Organizatör",
+      "draft_summary": "{agents} serbest oyuncu → {size} kişilik {teams} takım, {waitlisted} yedek listesinde.",
+      "regenerate": "Takımları yeniden oluştur",
+      "regenerated": "{count} takım oluşturuldu",
+      "regenerate_failed": "Takımlar yeniden oluşturulamadı",
+      "join_failed": "Serbest oyuncu havuzuna katılınamadı",
+      "leave_failed": "Serbest oyuncu havuzundan ayrılınamadı"
     }
   },
   "team": {

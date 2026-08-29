@@ -113,6 +113,14 @@ import {
 } from "~/components/ui/select";
 import { parseDate, type DateValue } from "@internationalized/date";
 
+// `CheckInReview` only joins e_tournament_status_enum once codegen has run
+// against the check-in migration; until then the enum member is undefined and
+// would poison the status filter in the template. The raw column value is what
+// the row carries either way. Declared after the imports on purpose: a const
+// ahead of a later import makes vue-tsc treat that import as non-top-level.
+const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
+
+
 type RangeKey =
   | "l30"
   | "7d"
@@ -2890,6 +2898,7 @@ const playerHeroTeamChipDotClasses =
             e_tournament_status_enum.RegistrationOpen,
             e_tournament_status_enum.RegistrationClosed,
             e_tournament_status_enum.Setup,
+            CHECK_IN_REVIEW_STATUS,
           ]"
           status-variant="finished"
           order-direction="desc"

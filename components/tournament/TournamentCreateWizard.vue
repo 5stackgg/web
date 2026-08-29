@@ -22,6 +22,7 @@ import CategorySelect from "~/components/tournament/CategorySelect.vue";
 import DateTimePicker from "~/components/tournament/DateTimePicker.vue";
 import ImageUploadTile from "~/components/ImageUploadTile.vue";
 import PrizeRowsEditor from "~/components/tournament/PrizeRowsEditor.vue";
+import TournamentRegistrationForm from "~/components/tournament/TournamentRegistrationForm.vue";
 import { HeightMorph, Fold } from "~/components/ui/transitions";
 </script>
 
@@ -70,7 +71,7 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
       </li>
     </ol>
 
-    <!-- The four steps are wildly different heights (a banner + schedule vs
+    <!-- The steps are wildly different heights (a banner + schedule vs
          one address field vs the whole MatchOptions tree). The shell eases
          between them while the leaver fades out of flow, so the navigation
          bar below glides instead of teleporting out from under the pointer.
@@ -192,9 +193,19 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
     </div>
     </Transition>
 
-    <!-- Step 3: Match Options -->
+    <!-- Step 3: Registration -->
     <Transition name="wiz-step">
     <div v-show="currentStep === 2" class="grid gap-4">
+      <TournamentRegistrationForm
+        :form="form"
+        :min-players-per-lineup="minPlayersPerLineup"
+      />
+    </div>
+    </Transition>
+
+    <!-- Step 4: Match Options -->
+    <Transition name="wiz-step">
+    <div v-show="currentStep === 3" class="grid gap-4">
       <MatchOptions
         :form="form"
         :force-veto="true"
@@ -265,9 +276,9 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
     </div>
     </Transition>
 
-    <!-- Step 4: Prizes -->
+    <!-- Step 5: Prizes -->
     <Transition name="wiz-step">
-    <div v-show="currentStep === 3" class="grid gap-4">
+    <div v-show="currentStep === 4" class="grid gap-4">
       <p class="text-sm text-muted-foreground">
         {{ $t("tournament.prizes.manage_hint") }}
       </p>
@@ -310,6 +321,13 @@ import { useForm } from "vee-validate";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
+import { EXPECTED_PLAYERS } from "~/utilities/matchmakingPartySize";
+import {
+  REGISTRATION_FIELD,
+  canManageRegistrationPasscode,
+  registrationColumns,
+  registrationSchemaShape,
+} from "~/utilities/tournamentRegistration";
 import { effectivePlace, normalizePrize } from "~/utilities/prizes";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
@@ -348,6 +366,7 @@ export default {
               categories: z.string().array().default([]),
               auto_start: z.boolean().default(true),
               negotiated_scheduling: z.boolean().default(false),
+              ...registrationSchemaShape(this),
             },
             useApplicationSettingsStore().settings,
           ),
@@ -361,11 +380,24 @@ export default {
         { key: "information", label: this.$t("tournament.wizard.information") },
         { key: "location", label: this.$t("tournament.wizard.location") },
         {
+          key: "registration",
+          label: this.$t("tournament.wizard.registration"),
+        },
+        {
           key: "match_options",
           label: this.$t("tournament.wizard.match_options"),
         },
         { key: "prizes", label: this.$t("tournament.wizard.prizes") },
       ];
+    },
+    // There is no tournament row yet, so the lineup minimum comes from the
+    // match type the organizer picked (EXPECTED_PLAYERS counts both lineups).
+    minPlayersPerLineup(): number | null {
+      const expected =
+        EXPECTED_PLAYERS[
+          this.form.values.type as keyof typeof EXPECTED_PLAYERS
+        ];
+      return expected ? expected / 2 : null;
     },
   },
   methods: {
@@ -435,14 +467,23 @@ export default {
       });
     },
     async validateStep(step: number): Promise<boolean> {
-      // Only the Information step has required fields; the rest have defaults.
-      if (step !== 0) {
+      // Every field on the remaining steps has a default; only Information
+      // (required) and Registration (a range that can contradict itself) can
+      // be left in a state worth stopping on.
+      const fields: Record<number, string[]> = {
+        0: ["name", "start"],
+        2: [
+          REGISTRATION_FIELD.max_elo,
+          REGISTRATION_FIELD.check_in_opens_before_minutes,
+          REGISTRATION_FIELD.check_in_closes_before_minutes,
+        ],
+      };
+      if (!fields[step]) {
         return true;
       }
-      const results = await Promise.all([
-        this.form.validateField("name"),
-        this.form.validateField("start"),
-      ]);
+      const results = await Promise.all(
+        fields[step].map((field) => this.form.validateField(field)),
+      );
       return results.every((result) => result.valid);
     },
     // Sync on purpose — returning a promise here makes ui/Button flash its
@@ -497,12 +538,17 @@ export default {
           this.form.setFieldValue("match_mode", "admin");
         }
         const form = this.form.values;
+        const canSetPasscode = canManageRegistrationPasscode();
 
         const { data } = await this.$apollo.mutate({
           variables: setupOptionsVariables(form),
           mutation: generateMutation({
             insert_tournaments_one: [
               {
+                // Cast: the registration/check-in columns ship with the API
+                // migration, and the generated Zeus types only learn about them
+                // once `yarn codegen` runs against a migrated stack. Drop the
+                // cast then — it is hiding nothing else.
                 object: {
                   name: form.name,
                   start: form.start,
@@ -517,10 +563,13 @@ export default {
                   scheduling_mode: form.negotiated_scheduling
                     ? "negotiated"
                     : "auto",
+                  ...registrationColumns(form, {
+                    includePasscode: canSetPasscode,
+                  }),
                   options: {
                     data: setupOptionsSetMutation(!!form.map_pool_id),
                   },
-                },
+                } as any,
               },
               { id: true },
             ],

@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Flådetelemetri",
+      "filter": {
+        "all": "Hele flåden",
+        "self_hosted": "Kun selv-hostede"
+      },
       "no_data": "Ingen data rapporteret endnu",
       "installs": {
         "title": "Paneler",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "Find en bane",
-        "none": "Ingen baner med radar"
+        "none": "Ingen baner med radar",
+        "count_public": "Offentlige lineups på denne bane",
+        "count_private": "Ikke offentlige, men synlige for dig — dine, dit holds eller afventer gennemsyn. Arkiverede tælles ikke med."
       },
       "back_to_map": "Tilbage til banen",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "Hold",
       "format": "Format",
       "starts": "Starter",
-      "location": "Lokation"
+      "location": "Lokation",
+      "title": "Statistik",
+      "leaderboard_title": "Spillerrangliste",
+      "matches": "Kampe",
+      "rounds": "Runder",
+      "players": "Spillere",
+      "top_rating": "Bedste rating",
+      "col_team": "Hold",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "Maps",
+      "empty_title": "Ingen statistik endnu",
+      "empty_description": "Ranglisten fyldes ud, efterhånden som turneringens kampe bliver spillet færdig."
     },
     "wizard": {
       "information": "Information",
       "location": "Lokation",
       "match_options": "Kampindstillinger",
-      "prizes": "Præmier"
+      "prizes": "Præmier",
+      "registration": "Tilmelding"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6030,173 @@
       "expand": "Fold ud",
       "collapse_all": "Fold alt sammen",
       "expand_all": "Fold alt ud"
+    },
+    "registration": {
+      "section": "Tilmelding",
+      "who": {
+        "label": "Hvem kan tilmelde sig?",
+        "teams": {
+          "label": "Kun hold",
+          "description": "Anførere tilmelder et eksisterende hold. Standardvalget."
+        },
+        "free_agents": {
+          "label": "Free agents",
+          "description": "Spillere tilmelder sig alene og bliver draftet ind i balancerede hold, når tilmeldingen lukker."
+        },
+        "both": {
+          "label": "Hold + free agents",
+          "description": "Begge dele. Overskydende free agents bliver draftet ind i ekstra hold ved siden af de tilmeldte."
+        }
+      },
+      "min_role": {
+        "label": "Laveste rolle",
+        "none": "Ingen begrænsning",
+        "description": "Tjekkes på den spiller, der bliver tilføjet, ikke kun på den, der klikker — så en anfører ikke kan sætte spillere på truppen, der ikke må deltage."
+      },
+      "rank": {
+        "label": "ELO-interval",
+        "min": "ELO min.",
+        "max": "ELO maks.",
+        "description": "Lad et af felterne stå tomt for ingen grænse. Begge tomme betyder åbent for alle ranks.",
+        "invalid_range": "ELO maks. skal mindst være lig med ELO min."
+      },
+      "regions": {
+        "label": "Foretrukne regioner",
+        "description": "Hvor kampene i denne turnering hostes. Det er ikke et spillerfilter — 5stack har ingen regionsdata pr. spiller.",
+        "empty": "Ingen regioner er tilgængelige lige nu."
+      },
+      "invite_only": {
+        "label": "Kun med invitation",
+        "description": "Tilmeldingen er lukket for offentligheden. Arrangørerne inviterer hold direkte, eller deltagerne angiver en adgangskode."
+      },
+      "passcode": {
+        "label": "Adgangskode",
+        "optional": "(valgfri)",
+        "description": "Alle med koden kan komme ind uden en invitation. Kun arrangører."
+      }
+    },
+    "check_in": {
+      "section": "Check-in",
+      "required": {
+        "label": "Kræv check-in",
+        "description": "Holdene bekræfter, at de deltager, før bracketen sættes op. Vinduet åbner efter tidsplanen; bekræftelsen er manuel."
+      },
+      "who": {
+        "label": "Hvem checker ind?",
+        "Captains": {
+          "label": "Anførere",
+          "description": "Anføreren bekræfter for hele holdet. Ét klik, ét hold."
+        },
+        "Players": {
+          "label": "Hver spiller",
+          "description": "Hver spiller på truppen bekræfter selv. Holdet er med, så snart {count} har checket ind — reserver behøver ikke."
+        },
+        "Admin": {
+          "label": "Kun arrangøren",
+          "description": "Spillerne kan ikke checke sig selv ind; du markerer holdene som til stede."
+        }
+      },
+      "opens": {
+        "label": "Vinduet åbner"
+      },
+      "closes": {
+        "label": "Vinduet lukker"
+      },
+      "minutes_before_start": "minutter før start",
+      "window_too_short": "Vinduet skal være åbent i mindst 5 minutter.",
+      "timeline": {
+        "opens": "Vinduet åbner",
+        "closes": "Vinduet lukker",
+        "start": "Turneringen starter"
+      },
+      "lock_note": "Så snart vinduet åbner, låses starttidspunktet og begge forskydninger. Holdene handler allerede efter denne tidsplan, så at flytte den midt i vinduet ville rykke en deadline, der er i gang.",
+      "late_registration_note": "Et hold, der tilmelder sig i løbet af vinduet, bliver checket ind automatisk — det kan ikke straffes for en besked, det aldrig fik vist.",
+      "no_show_note": "Udeblevne hold bliver aldrig slettet. Et hold, der misser check-in, beholder sin trup og kommer bare ikke i bracketen — du kan genindsætte det når som helst, før turneringen går i gang.",
+      "frozen": "Check-in er allerede åbnet, så starttidspunktet og begge forskydninger er låst. Forlæng check-in-vinduet i stedet.",
+      "required_title": "Denne turnering kræver check-in.",
+      "required_window": "Dit hold skal bekræfte mellem {opens} og {closes} på dagen, ellers kommer det ikke i bracketen.",
+      "register_heading": "Tilmeld dit hold",
+      "register_hint": "Du får en besked, når check-in åbner, og en påmindelse, før det lukker.",
+      "register_cta": "Tilmeld hold",
+      "chip_required": "check-in påkrævet",
+      "opens_at_heading": "Check-in åbner kl. {time}",
+      "opens_at_hint": "Dit hold er tilmeldt. Vi giver besked, når vinduet åbner.",
+      "opens_in": "åbner om",
+      "closes_in": "lukker om",
+      "starts_in": "starter om",
+      "chip_action_needed": "handling påkrævet",
+      "chip_open": "check-in åbent",
+      "observer_heading": "Check-in er åbent",
+      "observer_hint": "Holdene bekræfter, at de deltager, før bracketen sættes op. Ethvert hold, der ikke har checket ind kl. {time}, sætter turneringen på hold til din gennemgang.",
+      "confirm_heading": "Bekræft at dit hold deltager",
+      "confirm_hint": "Hold, der ikke har checket ind kl. {time}, kommer ikke i bracketen.",
+      "players_progress": "{checked} ud af {required} har checket ind",
+      "players_heading": "Alle spillere skal checke ind",
+      "players_hint": "Dit hold er med, så snart {count} spillere bekræfter. Reserver behøver ikke.",
+      "admin_heading": "Markér hold som til stede",
+      "admin_hint": "Spillerne kan ikke checke sig selv ind i denne turnering. Markér hvert hold som til stede, før vinduet lukker.",
+      "check_in": "Check ind",
+      "mark_present": "Markér til stede",
+      "checked_in": "checket ind",
+      "checked_in_at": "checket ind · {time}",
+      "waiting": "venter",
+      "not_needed": "ikke nødvendigt",
+      "role_captain": "anfører",
+      "role_starter": "starter",
+      "role_sub": "reserve",
+      "field_status": "Deltagerstatus",
+      "field_count": "{checked} ud af {total} har checket ind",
+      "done_heading": "I er med. Bracketen sættes op kl. {time}.",
+      "done_hint": "Bekræftet for {team} kl. {time}.",
+      "chip_removed": "fjernet",
+      "missed_heading": "Dit hold missede check-in",
+      "missed_hint": "Check-in lukkede kl. {time}, og bracketen sættes op uden dit hold.",
+      "missed_contact": "Kontakt en arrangør, hvis du mener, det er forkert — de kan genindsætte et hold når som helst, før turneringen går i gang.",
+      "failed": "Check-in mislykkedes"
+    },
+    "check_in_review": {
+      "heading": "{count} hold missede check-in",
+      "subheading": "Turneringen er sat på hold. Intet er sat op, og intet er slettet — hvert hold beholder hele sin trup.",
+      "chip_held_at": "på hold · fortsætter {time}",
+      "chip_held": "på hold",
+      "roster_size": "{count} spillere",
+      "partial_roster": "{checked} ud af {required} har checket ind · mangler {short}",
+      "registered": "tilmeldt",
+      "chip_no_check_in": "intet check-in",
+      "chip_incomplete": "ufuldstændigt",
+      "readmit": "Genindsæt",
+      "readmit_failed": "Holdet kunne ikke genindsættes",
+      "continue": "Fortsæt uden dem",
+      "continue_failed": "Turneringen kunne ikke fortsætte",
+      "extend": "Forlæng check-in",
+      "extend_by": "+{minutes} minutter",
+      "extend_failed": "Check-in kunne ikke forlænges",
+      "extend_hint": "En forlængelse genåbner tilmeldingen og giver de {count} manglende hold besked igen.",
+      "auto_continue": "Hvis ingen gør noget, fortsætter turneringen af sig selv kl. {time} med dem, der checkede ind. En turnering på hold kan aldrig dø stille, fordi en arrangør sov.",
+      "auto_continue_no_time": "Hvis ingen gør noget, fortsætter turneringen af sig selv på sit starttidspunkt med dem, der checkede ind.",
+      "reseed_warning": "Genindsætter du et hold, sættes bracketen op igen. Det er sikkert før start, men det blander seedingen."
+    },
+    "free_agents": {
+      "title": "Free agents",
+      "signed_up": "{count} tilmeldt",
+      "filter_all": "Alle",
+      "filter_drafted": "Draftet",
+      "filter_waitlist": "Venteliste",
+      "sign_up": "Tilmeld dig",
+      "leave": "Forlad puljen",
+      "status_drafted": "draftet",
+      "status_waitlisted": "venteliste",
+      "status_registered": "tilmeldt",
+      "empty_title": "Ingen free agents endnu",
+      "empty_description": "Spillere, der tilmelder sig alene, dukker op her og bliver draftet ind i balancerede hold, når tilmeldingen lukker.",
+      "waitlist_explainer": "{name} har den højeste rating og står stadig på venteliste — tilmeldingen kom, efter pladserne var fyldt. Tilmeldingstidspunktet afgør, hvem der får en plads; ELO afgør kun hvilket hold. Det er reglen, der virker, ikke en fejl.",
+      "organizer": "Arrangør",
+      "draft_summary": "{agents} free agents → {teams} hold à {size}, {waitlisted} på venteliste.",
+      "regenerate": "Draft holdene igen",
+      "regenerated": "{count} hold draftet",
+      "regenerate_failed": "Holdene kunne ikke draftes igen",
+      "join_failed": "Kunne ikke tilmelde sig free agent-puljen",
+      "leave_failed": "Kunne ikke forlade free agent-puljen"
     }
   },
   "team": {

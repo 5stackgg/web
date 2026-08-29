@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Flottelemetri",
+      "filter": {
+        "all": "Hela flottan",
+        "self_hosted": "Endast egenhostade"
+      },
       "no_data": "Inga data rapporterade än",
       "installs": {
         "title": "Paneler",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "Hitta en karta",
-        "none": "Inga kartor med radar"
+        "none": "Inga kartor med radar",
+        "count_public": "Offentliga lineups på den här kartan",
+        "count_private": "Inte offentliga, men synliga för dig — dina, ditt lags eller under granskning. Arkiverade räknas inte."
       },
       "back_to_map": "Tillbaka till kartan",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "Lag",
       "format": "Format",
       "starts": "Startar",
-      "location": "Plats"
+      "location": "Plats",
+      "title": "Statistik",
+      "leaderboard_title": "Spelartopplista",
+      "matches": "Matcher",
+      "rounds": "Ronder",
+      "players": "Spelare",
+      "top_rating": "Bästa rating",
+      "col_team": "Lag",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "Kartor",
+      "empty_title": "Ingen statistik än",
+      "empty_description": "Topplistan fylls på efterhand som turneringens matcher spelas klart."
     },
     "wizard": {
       "information": "Information",
       "location": "Plats",
       "match_options": "Matchalternativ",
-      "prizes": "Priser"
+      "prizes": "Priser",
+      "registration": "Anmälan"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6030,173 @@
       "expand": "Fäll ut",
       "collapse_all": "Fäll ihop alla",
       "expand_all": "Fäll ut alla"
+    },
+    "registration": {
+      "section": "Anmälan",
+      "who": {
+        "label": "Vem får anmäla sig?",
+        "teams": {
+          "label": "Endast lag",
+          "description": "Lagkaptener anmäler ett befintligt lag. Standardvalet."
+        },
+        "free_agents": {
+          "label": "Free agents",
+          "description": "Spelare anmäler sig ensamma och draftas in i jämna lag när anmälan stänger."
+        },
+        "both": {
+          "label": "Lag + free agents",
+          "description": "Båda. Free agents som blir över draftas in i extra lag vid sidan av de anmälda."
+        }
+      },
+      "min_role": {
+        "label": "Lägsta roll",
+        "none": "Ingen begränsning",
+        "description": "Kontrolleras mot spelaren som läggs till, inte bara mot den som klickar — så att en lagkapten inte kan ta in spelare som inte får delta."
+      },
+      "rank": {
+        "label": "ELO-intervall",
+        "min": "Elo min",
+        "max": "Elo max",
+        "description": "Lämna något av fälten tomt för ingen gräns. Båda tomma är öppet för alla ranks.",
+        "invalid_range": "Elo max måste vara minst lika högt som Elo min."
+      },
+      "regions": {
+        "label": "Föredragna regioner",
+        "description": "Var turneringens matcher hostas. Det är inget spelarfilter — 5stack har ingen regionsdata per spelare.",
+        "empty": "Inga regioner tillgängliga just nu."
+      },
+      "invite_only": {
+        "label": "Endast med inbjudan",
+        "description": "Anmälan är stängd för allmänheten. Arrangörerna bjuder in lag direkt, eller så anger deltagarna en åtkomstkod."
+      },
+      "passcode": {
+        "label": "Åtkomstkod",
+        "optional": "(valfritt)",
+        "description": "Alla med koden kommer in utan inbjudan. Endast arrangörer."
+      }
+    },
+    "check_in": {
+      "section": "Incheckning",
+      "required": {
+        "label": "Kräv incheckning",
+        "description": "Lagen bekräftar att de deltar innan slutspelsträdet sätts. Fönstret öppnar enligt schemat; att bekräfta är manuellt."
+      },
+      "who": {
+        "label": "Vem checkar in?",
+        "Captains": {
+          "label": "Lagkaptener",
+          "description": "Lagkaptenen bekräftar för hela laget. Ett klick, ett lag."
+        },
+        "Players": {
+          "label": "Varje spelare",
+          "description": "Varje spelare i truppen bekräftar själv. Laget är med så snart {count} har checkat in — reserver behöver inte."
+        },
+        "Admin": {
+          "label": "Endast arrangören",
+          "description": "Spelarna kan inte checka in sig själva; du markerar lagen som närvarande."
+        }
+      },
+      "opens": {
+        "label": "Fönstret öppnar"
+      },
+      "closes": {
+        "label": "Fönstret stänger"
+      },
+      "minutes_before_start": "minuter före start",
+      "window_too_short": "Fönstret måste vara öppet i minst 5 minuter.",
+      "timeline": {
+        "opens": "Fönstret öppnar",
+        "closes": "Fönstret stänger",
+        "start": "Turneringen startar"
+      },
+      "lock_note": "När fönstret väl har öppnat låses starttiden och båda förskjutningarna. Lagen planerar redan efter det här schemat, så att flytta det mitt i fönstret skulle rubba en deadline som redan löper.",
+      "late_registration_note": "Ett lag som anmäler sig under fönstret checkas in automatiskt — det kan inte straffas för en uppmaning det aldrig fick se.",
+      "no_show_note": "Lag som uteblir raderas aldrig. Ett lag som missar incheckningen behåller sin trupp och hamnar bara inte i slutspelsträdet — du kan återinsätta det när som helst innan turneringen drar igång.",
+      "frozen": "Incheckningen har redan öppnat, så starttiden och båda förskjutningarna är låsta. Förläng incheckningsfönstret i stället.",
+      "required_title": "Den här turneringen kräver incheckning.",
+      "required_window": "Ditt lag måste bekräfta mellan {opens} och {closes} på dagen, annars placeras det inte i slutspelsträdet.",
+      "register_heading": "Anmäl ditt lag",
+      "register_hint": "Du får en avisering när incheckningen öppnar och en påminnelse innan den stänger.",
+      "register_cta": "Anmäl lag",
+      "chip_required": "incheckning krävs",
+      "opens_at_heading": "Incheckningen öppnar {time}",
+      "opens_at_hint": "Ditt lag är anmält. Vi hör av oss när fönstret öppnar.",
+      "opens_in": "öppnar om",
+      "closes_in": "stänger om",
+      "starts_in": "startar om",
+      "chip_action_needed": "åtgärd krävs",
+      "chip_open": "incheckning öppen",
+      "observer_heading": "Incheckningen är öppen",
+      "observer_hint": "Lagen bekräftar att de deltar innan slutspelsträdet sätts. Varje lag som inte har checkat in {time} pausar turneringen för din granskning.",
+      "confirm_heading": "Bekräfta att ditt lag deltar",
+      "confirm_hint": "Lag som inte har checkat in {time} placeras inte i slutspelsträdet.",
+      "players_progress": "{checked} av {required} incheckade",
+      "players_heading": "Alla spelare måste checka in",
+      "players_hint": "Ditt lag är med så snart {count} spelare bekräftar. Reserver behöver inte.",
+      "admin_heading": "Markera lag som närvarande",
+      "admin_hint": "Spelarna kan inte checka in sig själva i den här turneringen. Markera varje lag som närvarande innan fönstret stänger.",
+      "check_in": "Checka in",
+      "mark_present": "Markera närvarande",
+      "checked_in": "incheckad",
+      "checked_in_at": "incheckad · {time}",
+      "waiting": "väntar",
+      "not_needed": "behövs inte",
+      "role_captain": "lagkapten",
+      "role_starter": "startspelare",
+      "role_sub": "reserv",
+      "field_status": "Deltagarstatus",
+      "field_count": "{checked} av {total} incheckade",
+      "done_heading": "Ni är med. Slutspelsträdet sätts {time}.",
+      "done_hint": "Bekräftat för {team} {time}.",
+      "chip_removed": "borttaget",
+      "missed_heading": "Ditt lag missade incheckningen",
+      "missed_hint": "Incheckningen stängde {time} och slutspelsträdet sätts utan ditt lag.",
+      "missed_contact": "Kontakta en arrangör om du tycker att det blivit fel — hen kan återinsätta ett lag när som helst innan turneringen drar igång.",
+      "failed": "Incheckningen misslyckades"
+    },
+    "check_in_review": {
+      "heading": "{count} lag missade incheckningen",
+      "subheading": "Turneringen är pausad. Ingenting har satts och ingenting har raderats — varje lag behåller hela sin trupp.",
+      "chip_held_at": "pausad · fortsätter {time}",
+      "chip_held": "pausad",
+      "roster_size": "{count} spelare",
+      "partial_roster": "{checked} av {required} incheckade · saknar {short}",
+      "registered": "anmält",
+      "chip_no_check_in": "ingen incheckning",
+      "chip_incomplete": "ofullständigt",
+      "readmit": "Återinsätt",
+      "readmit_failed": "Kunde inte återinsätta laget",
+      "continue": "Fortsätt utan dem",
+      "continue_failed": "Kunde inte fortsätta turneringen",
+      "extend": "Förläng incheckningen",
+      "extend_by": "+{minutes} minuter",
+      "extend_failed": "Kunde inte förlänga incheckningen",
+      "extend_hint": "En förlängning öppnar anmälan igen och aviserar de {count} lag som saknas på nytt.",
+      "auto_continue": "Om ingen gör något fortsätter turneringen av sig själv {time} med dem som checkade in. En pausad turnering kan aldrig dö i tysthet för att en arrangör sov.",
+      "auto_continue_no_time": "Om ingen gör något fortsätter turneringen av sig själv vid sin starttid med dem som checkade in.",
+      "reseed_warning": "Att återinsätta ett lag sätter om slutspelsträdet. Det är riskfritt före start, men det blandar om seedningen."
+    },
+    "free_agents": {
+      "title": "Free agents",
+      "signed_up": "{count} anmälda",
+      "filter_all": "Alla",
+      "filter_drafted": "Draftade",
+      "filter_waitlist": "Väntelista",
+      "sign_up": "Anmäl dig",
+      "leave": "Lämna poolen",
+      "status_drafted": "draftad",
+      "status_waitlisted": "väntelista",
+      "status_registered": "anmäld",
+      "empty_title": "Inga free agents än",
+      "empty_description": "Spelare som anmäler sig ensamma dyker upp här och draftas in i jämna lag när anmälan stänger.",
+      "waitlist_explainer": "{name} har högst rating och står ändå på väntelistan — anmälan kom efter att platserna fyllts. Anmälningstiden avgör vem som får en plats; ELO avgör bara vilket lag. Det är regeln som fungerar, inte en bugg.",
+      "organizer": "Arrangör",
+      "draft_summary": "{agents} free agents → {teams} lag på {size}, {waitlisted} på väntelista.",
+      "regenerate": "Drafta om lagen",
+      "regenerated": "{count} lag draftade",
+      "regenerate_failed": "Kunde inte drafta om lagen",
+      "join_failed": "Kunde inte gå med i free agent-poolen",
+      "leave_failed": "Kunde inte lämna free agent-poolen"
     }
   },
   "team": {

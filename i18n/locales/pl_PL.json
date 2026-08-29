@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Telemetria floty",
+      "filter": {
+        "all": "Cała flota",
+        "self_hosted": "Tylko self-hosted"
+      },
       "no_data": "Brak zgłoszonych danych",
       "installs": {
         "title": "Panele",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "Znajdź mapę",
-        "none": "Brak map z radarem"
+        "none": "Brak map z radarem",
+        "count_public": "Publiczne ustawienia na tej mapie",
+        "count_private": "Niepubliczne, ale widoczne dla ciebie — twoje, twojej drużyny lub oczekujące na przegląd. Zarchiwizowane nie są liczone."
       },
       "back_to_map": "Powrót do mapy",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "Drużyny",
       "format": "Format",
       "starts": "Start",
-      "location": "Lokalizacja"
+      "location": "Lokalizacja",
+      "title": "Statystyki",
+      "leaderboard_title": "Ranking graczy",
+      "matches": "Mecze",
+      "rounds": "Rundy",
+      "players": "Gracze",
+      "top_rating": "Najlepszy rating",
+      "col_team": "Drużyna",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "Z",
+      "col_deaths": "Ś",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "Mapy",
+      "empty_title": "Brak statystyk",
+      "empty_description": "Ranking wypełnia się w miarę kończenia meczów turnieju."
     },
     "wizard": {
       "information": "Informacje",
       "location": "Lokalizacja",
       "match_options": "Opcje meczu",
-      "prizes": "Nagrody"
+      "prizes": "Nagrody",
+      "registration": "Rejestracja"
     },
     "banner": {
       "label": "Baner",
@@ -6006,6 +6030,173 @@
       "expand": "Rozwiń",
       "collapse_all": "Zwiń wszystko",
       "expand_all": "Rozwiń wszystko"
+    },
+    "registration": {
+      "section": "Rejestracja",
+      "who": {
+        "label": "Kto może się zarejestrować?",
+        "teams": {
+          "label": "Tylko drużyny",
+          "description": "Kapitanowie rejestrują istniejącą drużynę. Ustawienie domyślne."
+        },
+        "free_agents": {
+          "label": "Wolni zawodnicy",
+          "description": "Gracze zapisują się sami i po zamknięciu rejestracji trafiają w drafcie do wyrównanych drużyn."
+        },
+        "both": {
+          "label": "Drużyny + wolni zawodnicy",
+          "description": "Obie opcje. Pozostali wolni zawodnicy trafiają w drafcie do dodatkowych drużyn obok tych zarejestrowanych."
+        }
+      },
+      "min_role": {
+        "label": "Minimalna rola",
+        "none": "Bez ograniczeń",
+        "description": "Sprawdzana dla dodawanego gracza, a nie tylko dla tego, kto klika — dzięki temu kapitan nie wstawi do składu graczy bez uprawnień."
+      },
+      "rank": {
+        "label": "Zakres ELO",
+        "min": "ELO min",
+        "max": "ELO maks",
+        "description": "Zostaw jedno pole puste, aby nie ustawiać granicy. Oba puste oznaczają otwarte dla każdej rangi.",
+        "invalid_range": "ELO maks musi być co najmniej równe ELO min."
+      },
+      "regions": {
+        "label": "Preferowane regiony",
+        "description": "Gdzie hostowane są mecze tego turnieju. To nie jest filtr graczy — 5stack nie ma danych o regionie dla pojedynczego gracza.",
+        "empty": "Obecnie brak dostępnych regionów"
+      },
+      "invite_only": {
+        "label": "Tylko na zaproszenie",
+        "description": "Rejestracja jest zamknięta dla publiczności. Organizatorzy zapraszają drużyny bezpośrednio albo uczestnicy podają kod dostępu."
+      },
+      "passcode": {
+        "label": "Kod dostępu",
+        "optional": "(opcjonalnie)",
+        "description": "Każdy, kto ma kod, wejdzie bez zaproszenia. Tylko dla organizatorów."
+      }
+    },
+    "check_in": {
+      "section": "Potwierdzenie obecności",
+      "required": {
+        "label": "Wymagaj potwierdzenia obecności",
+        "description": "Drużyny potwierdzają udział, zanim powstanie drabinka. Okno otwiera się zgodnie z harmonogramem; potwierdzenie jest ręczne."
+      },
+      "who": {
+        "label": "Kto potwierdza obecność?",
+        "Captains": {
+          "label": "Kapitanowie",
+          "description": "Kapitan potwierdza za całą drużynę. Jedno kliknięcie, jedna drużyna."
+        },
+        "Players": {
+          "label": "Każdy gracz",
+          "description": "Każdy gracz ze składu potwierdza osobno. Drużyna jest w turnieju, gdy obecność potwierdzi {count} — rezerwowi nie muszą."
+        },
+        "Admin": {
+          "label": "Tylko organizator",
+          "description": "Gracze nie mogą potwierdzić obecności samodzielnie; to ty oznaczasz drużyny jako obecne."
+        }
+      },
+      "opens": {
+        "label": "Okno otwiera się"
+      },
+      "closes": {
+        "label": "Okno zamyka się"
+      },
+      "minutes_before_start": "minut przed startem",
+      "window_too_short": "Okno musi pozostać otwarte przez co najmniej 5 minut.",
+      "timeline": {
+        "opens": "Okno otwiera się",
+        "closes": "Okno zamyka się",
+        "start": "Start turnieju"
+      },
+      "lock_note": "Gdy okno się otworzy, godzina startu i oba przesunięcia zostają zablokowane. Drużyny już działają według tego harmonogramu, więc zmiana w trakcie przesunęłaby trwający termin.",
+      "late_registration_note": "Drużyna, która rejestruje się w trakcie okna, ma obecność potwierdzoną automatycznie — nie można jej ukarać za monit, którego nigdy nie zobaczyła.",
+      "no_show_note": "Nieobecne drużyny nigdy nie są usuwane. Drużyna, która przegapi potwierdzenie, zachowuje skład i po prostu nie trafia do drabinki — możesz ją przywrócić w dowolnej chwili przed startem turnieju.",
+      "frozen": "Potwierdzanie obecności już się rozpoczęło, więc godzina startu i oba przesunięcia są zablokowane. Zamiast tego wydłuż okno potwierdzania.",
+      "required_title": "Ten turniej wymaga potwierdzenia obecności.",
+      "required_window": "Twoja drużyna musi potwierdzić między {opens} a {closes} tego dnia, inaczej nie trafi do drabinki.",
+      "register_heading": "Zarejestruj drużynę",
+      "register_hint": "Dostaniesz powiadomienie, gdy otworzy się potwierdzanie obecności, oraz przypomnienie przed jego zamknięciem.",
+      "register_cta": "Zarejestruj drużynę",
+      "chip_required": "wymagane potwierdzenie",
+      "opens_at_heading": "Potwierdzanie obecności otwiera się o {time}",
+      "opens_at_hint": "Twoja drużyna jest zarejestrowana. Damy znać, gdy otworzy się okno.",
+      "opens_in": "otwiera się za",
+      "closes_in": "zamyka się za",
+      "starts_in": "zaczyna się za",
+      "chip_action_needed": "wymagane działanie",
+      "chip_open": "potwierdzanie otwarte",
+      "observer_heading": "Potwierdzanie obecności jest otwarte",
+      "observer_hint": "Drużyny potwierdzają udział, zanim powstanie drabinka. Każda drużyna, która nie potwierdzi obecności do {time}, wstrzymuje turniej do twojej decyzji.",
+      "confirm_heading": "Potwierdź udział swojej drużyny",
+      "confirm_hint": "Drużyny, które nie potwierdzą obecności do {time}, nie trafiają do drabinki.",
+      "players_progress": "{checked} z {required} potwierdziło obecność",
+      "players_heading": "Każdy gracz musi potwierdzić obecność",
+      "players_hint": "Twoja drużyna jest w turnieju, gdy potwierdzi {count} graczy. Rezerwowi nie muszą.",
+      "admin_heading": "Oznacz obecne drużyny",
+      "admin_hint": "W tym turnieju gracze nie mogą sami potwierdzić obecności. Oznacz każdą drużynę jako obecną, zanim okno się zamknie.",
+      "check_in": "Potwierdź obecność",
+      "mark_present": "Oznacz jako obecną",
+      "checked_in": "obecność potwierdzona",
+      "checked_in_at": "obecność potwierdzona · {time}",
+      "waiting": "oczekuje",
+      "not_needed": "niewymagane",
+      "role_captain": "kapitan",
+      "role_starter": "podstawowy",
+      "role_sub": "rezerwowy",
+      "field_status": "Status uczestników",
+      "field_count": "{checked} z {total} potwierdziło obecność",
+      "done_heading": "Jesteście w turnieju. Drabinka powstaje o {time}.",
+      "done_hint": "Potwierdzono dla {team} o {time}.",
+      "chip_removed": "usunięta",
+      "missed_heading": "Twoja drużyna przegapiła potwierdzenie obecności",
+      "missed_hint": "Potwierdzanie zamknęło się o {time} i drabinka powstaje bez twojej drużyny.",
+      "missed_contact": "Skontaktuj się z organizatorem, jeśli uważasz, że to pomyłka — może przywrócić drużynę w dowolnej chwili przed startem turnieju.",
+      "failed": "Nie udało się potwierdzić obecności"
+    },
+    "check_in_review": {
+      "heading": "{count} drużyn przegapiło potwierdzenie obecności",
+      "subheading": "Turniej jest wstrzymany. Nic nie zostało rozstawione ani usunięte — każda drużyna zachowuje pełny skład.",
+      "chip_held_at": "wstrzymany · sam ruszy o {time}",
+      "chip_held": "wstrzymany",
+      "roster_size": "{count} graczy",
+      "partial_roster": "{checked} z {required} potwierdziło · brakuje {short}",
+      "registered": "zarejestrowana",
+      "chip_no_check_in": "brak potwierdzenia",
+      "chip_incomplete": "niepełna",
+      "readmit": "Przywróć",
+      "readmit_failed": "Nie udało się przywrócić drużyny",
+      "continue": "Kontynuuj bez nich",
+      "continue_failed": "Nie udało się kontynuować turnieju",
+      "extend": "Wydłuż potwierdzanie",
+      "extend_by": "+{minutes} minut",
+      "extend_failed": "Nie udało się wydłużyć potwierdzania",
+      "extend_hint": "Wydłużenie ponownie otwiera rejestrację i powiadamia {count} brakujących drużyn.",
+      "auto_continue": "Jeśli nikt nie zareaguje, turniej ruszy sam o {time} z tymi, którzy potwierdzili obecność. Wstrzymany turniej nigdy nie umrze po cichu dlatego, że organizator spał.",
+      "auto_continue_no_time": "Jeśli nikt nie zareaguje, turniej ruszy sam o swojej godzinie startu z tymi, którzy potwierdzili obecność.",
+      "reseed_warning": "Przywrócenie drużyny rozstawia drabinkę od nowa. Przed startem jest to bezpieczne, ale zmienia rozstawienie."
+    },
+    "free_agents": {
+      "title": "Wolni zawodnicy",
+      "signed_up": "zapisanych: {count}",
+      "filter_all": "Wszyscy",
+      "filter_drafted": "Wybrani w drafcie",
+      "filter_waitlist": "Lista rezerwowa",
+      "sign_up": "Zapisz się",
+      "leave": "Opuść pulę",
+      "status_drafted": "wybrany w drafcie",
+      "status_waitlisted": "lista rezerwowa",
+      "status_registered": "zarejestrowany",
+      "empty_title": "Brak wolnych zawodników",
+      "empty_description": "Gracze, którzy zapisują się sami, pojawiają się tutaj i po zamknięciu rejestracji trafiają w drafcie do wyrównanych drużyn.",
+      "waitlist_explainer": "{name} ma najwyższy rating i wciąż jest na liście rezerwowej — zapisał się po tym, jak miejsca się zapełniły. O miejscu decyduje czas zapisu, a ELO tylko o tym, do której drużyny trafisz. Tak działa ta zasada, to nie błąd.",
+      "organizer": "Organizator",
+      "draft_summary": "{agents} wolnych zawodników → {teams} drużyn po {size}, {waitlisted} na liście rezerwowej.",
+      "regenerate": "Ułóż drużyny od nowa",
+      "regenerated": "Ułożono drużyn: {count}",
+      "regenerate_failed": "Nie udało się ułożyć drużyn od nowa",
+      "join_failed": "Nie udało się dołączyć do puli wolnych zawodników",
+      "leave_failed": "Nie udało się opuścić puli wolnych zawodników"
     }
   },
   "team": {

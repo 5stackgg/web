@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Fleet Telemetry",
+      "filter": {
+        "all": "Whole Fleet",
+        "self_hosted": "Self-Hosted Only"
+      },
       "no_data": "No data reported yet",
       "installs": {
         "title": "Panels",
@@ -1244,11 +1248,11 @@
         "recency_hint": "Every panel ever seen, cut into disjoint bands by how recently it last checked in. The bands do not overlap, so they add up to the all-time total.",
         "seen_24h": "Today",
         "dormant": "Dormant",
-        "reporting": "In Totals",
-        "reporting_hint": "Panels whose latest report is detailed enough to count toward the fleet totals below. Panels quiet for over 30 days are left out, so the totals do not keep counting servers that were torn down."
+        "reporting": "Current State",
+        "reporting_hint": "Panels whose latest report is recent enough and detailed enough to count toward infrastructure and the rolling windows below. The all-time counts are not held to this — they are summed over every panel that ever reported, All Time above."
       },
       "totals": {
-        "self_reported": "Summed across the latest report of every panel active in the last 30 days — In Totals above is how many that is. Panels are self-hosted and report these counts themselves; values are validated on arrival but cannot be independently verified. Infrastructure is a point-in-time count, not a running total.",
+        "self_reported": "All-time counts — matches, maps, players, competition — are summed across the latest report of every panel that ever sent one, including panels that have since gone quiet: a panel going dark does not un-play its matches. Infrastructure and the rolling windows count only panels heard from in the last 30 days — Current State above is how many that is — because a node torn down a year ago is not capacity, and a quiet panel's last 7 days ended whenever it stopped reporting. Panels are self-hosted and report these counts themselves; values are validated on arrival but cannot be independently verified.",
         "game_server_nodes": "Game Server Nodes",
         "nodes_online": "Nodes Online",
         "nodes_offline": "Offline",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "Find a map",
-        "none": "No maps with radars"
+        "none": "No maps with radars",
+        "count_public": "Public lineups on this map",
+        "count_private": "Not public, but visible to you — yours, your team's, or waiting on review. Archived is not counted."
       },
       "back_to_map": "Back to Map",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "Teams",
       "format": "Format",
       "starts": "Starts",
-      "location": "Location"
+      "location": "Location",
+      "title": "Stats",
+      "leaderboard_title": "Player leaderboard",
+      "matches": "Matches",
+      "rounds": "Rounds",
+      "players": "Players",
+      "top_rating": "Top rating",
+      "col_team": "Team",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "Maps",
+      "empty_title": "No stats yet",
+      "empty_description": "The leaderboard fills in as tournament matches finish."
     },
     "wizard": {
       "information": "Information",
       "location": "Location",
       "match_options": "Match Options",
-      "prizes": "Prizes"
+      "prizes": "Prizes",
+      "registration": "Registration"
     },
     "banner": {
       "label": "Banner",
@@ -6006,6 +6030,173 @@
       "expand": "Expand",
       "collapse_all": "Collapse All",
       "expand_all": "Expand All"
+    },
+    "registration": {
+      "section": "Registration",
+      "who": {
+        "label": "Who can register?",
+        "teams": {
+          "label": "Teams only",
+          "description": "Captains register an existing team. The default."
+        },
+        "free_agents": {
+          "label": "Free Agents",
+          "description": "Players sign up alone and are drafted into balanced teams when registration closes."
+        },
+        "both": {
+          "label": "Teams + Free Agents",
+          "description": "Both. Leftover free agents are drafted into extra teams alongside the registered ones."
+        }
+      },
+      "min_role": {
+        "label": "Minimum role",
+        "none": "No restriction",
+        "description": "Checked against the player being added, not just whoever clicks — so a captain can't roster ineligible players."
+      },
+      "rank": {
+        "label": "Rank range",
+        "min": "Min ELO",
+        "max": "Max ELO",
+        "description": "Leave either blank for no bound. Blank on both is open to any rank.",
+        "invalid_range": "Max ELO must be at least the min ELO."
+      },
+      "regions": {
+        "label": "Preferred regions",
+        "description": "Where this tournament's matches are hosted. Not a player gate — 5stack has no per-player region data.",
+        "empty": "No regions are currently available."
+      },
+      "invite_only": {
+        "label": "Invite only",
+        "description": "Registration is closed to the public. Organizers invite teams directly, or entrants supply a passcode."
+      },
+      "passcode": {
+        "label": "Passcode",
+        "optional": "(optional)",
+        "description": "Anyone with the code can enter without an invite. Organizers only."
+      }
+    },
+    "check_in": {
+      "section": "Check-In",
+      "required": {
+        "label": "Require check-in",
+        "description": "Teams confirm they're attending before the bracket is seeded. The window opens on a schedule; confirming is manual."
+      },
+      "who": {
+        "label": "Who checks in?",
+        "Captains": {
+          "label": "Captains",
+          "description": "The captain confirms for the whole team. One click, one team."
+        },
+        "Players": {
+          "label": "Every player",
+          "description": "Each rostered player confirms individually. The team is in once {count} have checked in — substitutes don't have to."
+        },
+        "Admin": {
+          "label": "Organizer only",
+          "description": "Players can't check themselves in; you mark teams present."
+        }
+      },
+      "opens": {
+        "label": "Window opens"
+      },
+      "closes": {
+        "label": "Window closes"
+      },
+      "minutes_before_start": "minutes before start",
+      "window_too_short": "The window must stay open for at least 5 minutes.",
+      "timeline": {
+        "opens": "Window opens",
+        "closes": "Window closes",
+        "start": "Tournament starts"
+      },
+      "lock_note": "Once the window opens, the start time and both offsets lock. Teams are already acting on this schedule, so moving it mid-window would shift a live deadline.",
+      "late_registration_note": "A team that registers during the window is checked in automatically — it can't be penalised for missing a prompt it was never shown.",
+      "no_show_note": "No-shows are never deleted. A team that misses check-in keeps its roster and simply isn't seeded — you can re-admit it any time before the tournament goes live.",
+      "frozen": "Check-in has already opened, so the start time and both offsets are locked. Extend the check-in window instead.",
+      "required_title": "This tournament requires check-in.",
+      "required_window": "Your team must confirm between {opens} and {closes} on the day, or it won't be placed in the bracket.",
+      "register_heading": "Register your team",
+      "register_hint": "You'll get a notification when check-in opens, and a reminder before it closes.",
+      "register_cta": "Register team",
+      "chip_required": "check-in required",
+      "opens_at_heading": "Check-in opens at {time}",
+      "opens_at_hint": "Your team is registered. We'll notify you when the window opens.",
+      "opens_in": "opens in",
+      "closes_in": "closes in",
+      "starts_in": "starts in",
+      "chip_action_needed": "action needed",
+      "chip_open": "check-in open",
+      "observer_heading": "Check-in is open",
+      "observer_hint": "Teams confirm they're attending before the bracket is seeded. Any team that hasn't checked in by {time} holds the tournament for your review.",
+      "confirm_heading": "Confirm your team is attending",
+      "confirm_hint": "Teams that haven't checked in by {time} are not seeded into the bracket.",
+      "players_progress": "{checked} of {required} checked in",
+      "players_heading": "Every player must check in",
+      "players_hint": "Your team is in once {count} players confirm. Substitutes don't need to.",
+      "admin_heading": "Mark teams present",
+      "admin_hint": "Players can't check themselves in for this tournament. Mark each team present before the window closes.",
+      "check_in": "Check in",
+      "mark_present": "Mark present",
+      "checked_in": "checked in",
+      "checked_in_at": "checked in · {time}",
+      "waiting": "waiting",
+      "not_needed": "not needed",
+      "role_captain": "captain",
+      "role_starter": "starter",
+      "role_sub": "sub",
+      "field_status": "Field status",
+      "field_count": "{checked} of {total} checked in",
+      "done_heading": "You're in. The bracket is seeded at {time}.",
+      "done_hint": "Confirmed for {team} at {time}.",
+      "chip_removed": "removed",
+      "missed_heading": "Your team missed check-in",
+      "missed_hint": "Check-in closed at {time} and the bracket is seeded without your team.",
+      "missed_contact": "Contact an organizer if you think this is wrong — they can re-admit a team any time before the tournament goes live.",
+      "failed": "Check-in failed"
+    },
+    "check_in_review": {
+      "heading": "{count} teams missed check-in",
+      "subheading": "The tournament is held. Nothing has been seeded and nothing has been deleted — every team keeps its full roster.",
+      "chip_held_at": "held · auto-continues {time}",
+      "chip_held": "held",
+      "roster_size": "{count} players",
+      "partial_roster": "{checked} of {required} checked in · short by {short}",
+      "registered": "registered",
+      "chip_no_check_in": "no check-in",
+      "chip_incomplete": "incomplete",
+      "readmit": "Re-admit",
+      "readmit_failed": "Failed to re-admit team",
+      "continue": "Continue without them",
+      "continue_failed": "Failed to continue the tournament",
+      "extend": "Extend check-in",
+      "extend_by": "+{minutes} minutes",
+      "extend_failed": "Failed to extend check-in",
+      "extend_hint": "Extending reopens registration and re-notifies the {count} missing teams.",
+      "auto_continue": "If nobody acts, the tournament continues on its own at {time} with whoever checked in. A held tournament can never quietly die because an organizer was asleep.",
+      "auto_continue_no_time": "If nobody acts, the tournament continues on its own at its start time with whoever checked in.",
+      "reseed_warning": "Re-admitting a team re-seeds the bracket. That is safe before kickoff, but it reshuffles the seeds."
+    },
+    "free_agents": {
+      "title": "Free Agents",
+      "signed_up": "{count} signed up",
+      "filter_all": "All",
+      "filter_drafted": "Drafted",
+      "filter_waitlist": "Waitlist",
+      "sign_up": "Sign up",
+      "leave": "Leave pool",
+      "status_drafted": "drafted",
+      "status_waitlisted": "waitlist",
+      "status_registered": "registered",
+      "empty_title": "No free agents yet",
+      "empty_description": "Players who sign up alone appear here, and are drafted into balanced teams when registration closes.",
+      "waitlist_explainer": "{name} is the highest-rated entrant and still waitlisted — they signed up after the slots filled. Sign-up time decides who gets a slot; ELO only decides which team. That is the rule working, not a bug.",
+      "organizer": "Organizer",
+      "draft_summary": "{agents} free agents → {teams} teams of {size}, {waitlisted} waitlisted.",
+      "regenerate": "Regenerate teams",
+      "regenerated": "Drafted {count} teams",
+      "regenerate_failed": "Failed to regenerate teams",
+      "join_failed": "Failed to join the free agent pool",
+      "leave_failed": "Failed to leave the free agent pool"
     }
   },
   "team": {

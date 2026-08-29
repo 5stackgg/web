@@ -71,6 +71,11 @@ const statusGroups: Record<
   upcoming: [
     e_tournament_status_enum.RegistrationClosed,
     e_tournament_status_enum.Setup,
+    // Held at the check-in cutoff: registration is over and it has not started,
+    // so it belongs here. Omitting it drops a held tournament out of every
+    // filter tab, which is exactly when an organizer goes looking for it.
+    // String cast because the enum member only exists after codegen.
+    ("CheckInReview" as e_tournament_status_enum),
   ],
   finished: [
     e_tournament_status_enum.Finished,

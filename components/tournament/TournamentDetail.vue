@@ -14,6 +14,10 @@ import TournamentNotifications from "~/components/tournament/TournamentNotificat
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
 import TournamentAwardsConfig from "~/components/tournament/TournamentAwardsConfig.vue";
 import TournamentAwardsManage from "~/components/tournament/TournamentAwardsManage.vue";
+import TournamentCheckInPanel from "~/components/tournament/TournamentCheckInPanel.vue";
+import TournamentCheckInReview from "~/components/tournament/TournamentCheckInReview.vue";
+import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
+import TournamentStats from "~/components/tournament/TournamentStats.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
@@ -495,11 +499,25 @@ function clearTeamEnterDelay(el: Element) {
                 {{ $t("tournament.page.match_settings") }}
               </TabsTrigger>
               <TabsTrigger
+                v-if="freeAgentsTabVisible"
+                value="free-agents"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.free_agents.title") }}
+              </TabsTrigger>
+              <TabsTrigger
                 v-if="standingsTabVisible"
                 value="standings"
                 :class="tacticalTabsTriggerClasses"
               >
                 {{ $t("tournament.standings.title") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="statsTabVisible"
+                value="stats"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.stats.title") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="
@@ -557,6 +575,23 @@ function clearTeamEnterDelay(el: Element) {
           </div>
         </header>
       </PageTransition>
+
+      <!-- Directly under the hero, above every tab: a check-in deadline the
+           reader scrolls past is a team that misses the bracket. -->
+      <TournamentCheckInPanel
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+        :teams="checkInTeams"
+        :my-team-id="myTeamId"
+        @register="handleJoinTournament"
+      />
+
+      <TournamentCheckInReview
+        v-if="checkInReviewVisible"
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+        :teams="checkInTeams"
+      />
 
       <div
         v-if="tournament.status === e_tournament_status_enum.Paused"
@@ -822,6 +857,11 @@ function clearTeamEnterDelay(el: Element) {
             </div>
           </PageTransition>
         </TabsContent>
+        <TabsContent v-if="freeAgentsTabVisible" value="free-agents">
+          <PageTransition>
+            <TournamentFreeAgents :tournament="tournament" />
+          </PageTransition>
+        </TabsContent>
         <TabsContent v-if="standingsTabVisible" value="standings">
           <PageTransition>
             <TournamentResults
@@ -829,6 +869,11 @@ function clearTeamEnterDelay(el: Element) {
               :show-standings="true"
               :show-matches="false"
             />
+          </PageTransition>
+        </TabsContent>
+        <TabsContent v-if="statsTabVisible" value="stats">
+          <PageTransition>
+            <TournamentStats :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent
@@ -994,7 +1039,11 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { playerFields } from "~/graphql/playerFields";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { formatPrizePool } from "~/utilities/prizePool";
@@ -1005,11 +1054,18 @@ import {
   replaceRouteTab,
 } from "~/composables/useRouteTab";
 
+// `CheckInReview` only joins e_tournament_status_enum once codegen has run
+// against the check-in migration; the raw column value is what the row
+// actually carries either way.
+const CHECK_IN_REVIEW_STATUS = "CheckInReview";
+
 export default {
   data() {
     return {
       myTeam: undefined,
       tournament: undefined,
+      tournamentRegistration: null as Record<string, any> | null,
+      checkInTeams: [] as Array<Record<string, any>>,
       tournamentDialog: false,
       teamSearchQuery: undefined,
       settingsDialogOpen: false,
@@ -1414,6 +1470,107 @@ export default {
           }
         },
       },
+      // Deliberately separate from the main tournament subscription: these
+      // columns only exist after the registration/check-in migration, and a
+      // field the server has never heard of fails the whole document. Kept
+      // apart, a stack that has not migrated yet loses the check-in surfaces
+      // and nothing else.
+      tournamentRegistration: {
+        query: generateSubscription({
+          tournaments_by_pk: [
+            {
+              id: $("tournamentId", "uuid!"),
+            },
+            {
+              id: true,
+              registration_type: true,
+              check_in_required: true,
+              check_in_setting: true,
+              check_in_opens_before_minutes: true,
+              check_in_closes_before_minutes: true,
+              check_in_ends_at: true,
+              check_in_open: true,
+              check_in_started: true,
+              can_review_check_in: true,
+              missed_check_in_count: true,
+            },
+          ],
+          // Zeus types for the new columns land with `yarn codegen`; until
+          // then the selection is asserted rather than inferred.
+        } as any),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.tournamentRegistration = data?.tournaments_by_pk ?? null;
+        },
+      },
+      // Only ever opened for a tournament that actually requires check-in —
+      // it duplicates the roster the main subscription already carries, and
+      // the 99% of tournaments with check-in off should not pay for it.
+      checkInTeams: {
+        query: generateSubscription({
+          tournament_teams: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+              },
+              order_by: [
+                {
+                  created_at: order_by.asc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              short_name: true,
+              created_at: true,
+              checked_in_at: true,
+              owner_steam_id: true,
+              captain_steam_id: true,
+              team: {
+                id: true,
+                name: true,
+                short_name: true,
+                avatar_url: true,
+              },
+              roster: [
+                {},
+                {
+                  player_steam_id: true,
+                  role: true,
+                  checked_in_at: true,
+                  player: playerFields,
+                },
+              ],
+              roster_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
+          ],
+        } as any),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return this.tournamentRegistration?.check_in_required !== true;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.checkInTeams = data?.tournament_teams ?? [];
+        },
+      },
       tournament_teams: {
         query: typedGql("subscription")({
           tournament_teams: [
@@ -1673,6 +1830,9 @@ export default {
         return "pending";
       }
       if (s === e_tournament_status_enum.Paused) return "paused";
+      // Held for an organizer, not running and not cancelled — the warning
+      // tier is the one that reads as "this needs a decision".
+      if (s === CHECK_IN_REVIEW_STATUS) return "paused";
       if (s === e_tournament_status_enum.Finished) return "finished";
       if (
         s === e_tournament_status_enum.Cancelled ||
@@ -1695,8 +1855,16 @@ export default {
         tabs.push("match-settings");
       }
 
+      if (this.freeAgentsTabVisible) {
+        tabs.push("free-agents");
+      }
+
       if (this.standingsTabVisible) {
         tabs.push("standings");
+      }
+
+      if (this.statsTabVisible) {
+        tabs.push("stats");
       }
 
       if (
@@ -1726,6 +1894,28 @@ export default {
         status === e_tournament_status_enum.Paused ||
         status === e_tournament_status_enum.Finished
       );
+    },
+    freeAgentsTabVisible() {
+      const type = this.tournamentRegistration?.registration_type;
+      return type === "free_agents" || type === "both";
+    },
+    // The leaderboard has nothing in it until maps have been played, which is
+    // exactly when standings become meaningful too.
+    statsTabVisible() {
+      return this.standingsTabVisible;
+    },
+    // can_review_check_in already answers "is this session allowed to act on
+    // the hold"; the status check keeps the panel off every other screen.
+    checkInReviewVisible() {
+      const tournament = this.tournament as Record<string, any> | undefined;
+      return (
+        tournament?.status === CHECK_IN_REVIEW_STATUS &&
+        (this.tournamentRegistration?.can_review_check_in === true ||
+          tournament?.is_organizer === true)
+      );
+    },
+    myTeamId() {
+      return (this.myTeam as Record<string, any> | undefined)?.id ?? null;
     },
   },
   methods: {

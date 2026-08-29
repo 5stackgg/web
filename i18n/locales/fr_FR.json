@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "Télémétrie de la flotte",
+      "filter": {
+        "all": "Toute la flotte",
+        "self_hosted": "Auto-hébergés uniquement"
+      },
       "no_data": "Aucune donnée signalée pour l'instant",
       "installs": {
         "title": "Panneaux",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "Trouver une map",
-        "none": "Aucune map avec radar"
+        "none": "Aucune map avec radar",
+        "count_public": "Lineups publiques sur cette map",
+        "count_private": "Non publiques mais visibles par toi : les tiennes, celles de ton équipe ou en attente de validation. Les archivées ne comptent pas."
       },
       "back_to_map": "Retour à la map",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "Équipes",
       "format": "Format",
       "starts": "Début",
-      "location": "Lieu"
+      "location": "Lieu",
+      "title": "Stats",
+      "leaderboard_title": "Classement des joueurs",
+      "matches": "Matchs",
+      "rounds": "Rounds",
+      "players": "Joueurs",
+      "top_rating": "Meilleur rating",
+      "col_team": "Équipe",
+      "col_rating": "Rating",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "Maps",
+      "empty_title": "Aucune stat pour l'instant",
+      "empty_description": "Le classement se remplit au fur et à mesure que les matchs du tournoi se terminent."
     },
     "wizard": {
       "information": "Informations",
       "location": "Lieu",
       "match_options": "Options de match",
-      "prizes": "Prix"
+      "prizes": "Prix",
+      "registration": "Inscription"
     },
     "banner": {
       "label": "Bannière",
@@ -6006,6 +6030,173 @@
       "expand": "Déplier",
       "collapse_all": "Tout replier",
       "expand_all": "Tout déplier"
+    },
+    "registration": {
+      "section": "Inscription",
+      "who": {
+        "label": "Qui peut s'inscrire ?",
+        "teams": {
+          "label": "Équipes uniquement",
+          "description": "Les capitaines inscrivent une équipe existante. Par défaut."
+        },
+        "free_agents": {
+          "label": "Agents libres",
+          "description": "Les joueurs s'inscrivent seuls et sont draftés dans des équipes équilibrées à la clôture des inscriptions."
+        },
+        "both": {
+          "label": "Équipes + agents libres",
+          "description": "Les deux. Les agents libres restants sont draftés dans des équipes supplémentaires, en plus des équipes inscrites."
+        }
+      },
+      "min_role": {
+        "label": "Rôle minimum",
+        "none": "Aucune restriction",
+        "description": "Vérifié sur le joueur ajouté, pas seulement sur celui qui clique — un capitaine ne peut donc pas inscrire de joueurs inéligibles."
+      },
+      "rank": {
+        "label": "Plage de rang",
+        "min": "ELO min",
+        "max": "ELO max",
+        "description": "Laisse vide pour ne pas fixer de limite. Les deux vides : ouvert à tous les rangs.",
+        "invalid_range": "L'ELO max doit être au moins égal à l'ELO min."
+      },
+      "regions": {
+        "label": "Régions préférées",
+        "description": "Où sont hébergés les matchs de ce tournoi. Ce n'est pas un filtre joueur — 5stack n'a pas de données de région par joueur.",
+        "empty": "Aucune région n'est disponible actuellement."
+      },
+      "invite_only": {
+        "label": "Sur invitation",
+        "description": "Les inscriptions ne sont pas publiques. Les organisateurs invitent les équipes directement, ou les participants saisissent un code d'accès."
+      },
+      "passcode": {
+        "label": "Code d'accès",
+        "optional": "(facultatif)",
+        "description": "Toute personne ayant le code peut entrer sans invitation. Organisateurs uniquement."
+      }
+    },
+    "check_in": {
+      "section": "Check-in",
+      "required": {
+        "label": "Exiger un check-in",
+        "description": "Les équipes confirment leur présence avant la constitution du bracket. La fenêtre s'ouvre selon le calendrier ; la confirmation est manuelle."
+      },
+      "who": {
+        "label": "Qui fait le check-in ?",
+        "Captains": {
+          "label": "Capitaines",
+          "description": "Le capitaine confirme pour toute l'équipe. Un clic, une équipe."
+        },
+        "Players": {
+          "label": "Chaque joueur",
+          "description": "Chaque joueur du roster confirme individuellement. L'équipe est validée dès que {count} ont fait leur check-in — les remplaçants ne sont pas obligés."
+        },
+        "Admin": {
+          "label": "Organisateur uniquement",
+          "description": "Les joueurs ne peuvent pas faire leur check-in eux-mêmes ; tu marques les équipes présentes."
+        }
+      },
+      "opens": {
+        "label": "Ouverture de la fenêtre"
+      },
+      "closes": {
+        "label": "Fermeture de la fenêtre"
+      },
+      "minutes_before_start": "minutes avant le début",
+      "window_too_short": "La fenêtre doit rester ouverte au moins 5 minutes.",
+      "timeline": {
+        "opens": "Ouverture de la fenêtre",
+        "closes": "Fermeture de la fenêtre",
+        "start": "Début du tournoi"
+      },
+      "lock_note": "Une fois la fenêtre ouverte, l'heure de début et les deux décalages sont verrouillés. Les équipes se basent déjà sur ce calendrier : le modifier en cours décalerait une échéance en direct.",
+      "late_registration_note": "Une équipe qui s'inscrit pendant la fenêtre fait automatiquement son check-in — elle ne peut pas être pénalisée pour une demande qu'elle n'a jamais vue.",
+      "no_show_note": "Les absents ne sont jamais supprimés. Une équipe qui rate le check-in garde son roster et n'est simplement pas placée dans le bracket — tu peux la réadmettre à tout moment avant le lancement du tournoi.",
+      "frozen": "Le check-in a déjà commencé : l'heure de début et les deux décalages sont verrouillés. Prolonge plutôt la fenêtre de check-in.",
+      "required_title": "Ce tournoi exige un check-in.",
+      "required_window": "Ton équipe doit confirmer entre {opens} et {closes} le jour même, sinon elle ne sera pas placée dans le bracket.",
+      "register_heading": "Inscris ton équipe",
+      "register_hint": "Tu recevras une notification à l'ouverture du check-in, et un rappel avant sa fermeture.",
+      "register_cta": "Inscrire l'équipe",
+      "chip_required": "check-in requis",
+      "opens_at_heading": "Le check-in ouvre à {time}",
+      "opens_at_hint": "Ton équipe est inscrite. On te préviendra à l'ouverture de la fenêtre.",
+      "opens_in": "ouvre dans",
+      "closes_in": "ferme dans",
+      "starts_in": "commence dans",
+      "chip_action_needed": "action requise",
+      "chip_open": "check-in ouvert",
+      "observer_heading": "Le check-in est ouvert",
+      "observer_hint": "Les équipes confirment leur présence avant la constitution du bracket. Toute équipe qui n'a pas fait son check-in à {time} met le tournoi en attente de ton examen.",
+      "confirm_heading": "Confirme la présence de ton équipe",
+      "confirm_hint": "Les équipes qui n'ont pas fait leur check-in à {time} ne sont pas placées dans le bracket.",
+      "players_progress": "{checked} sur {required} ont fait leur check-in",
+      "players_heading": "Chaque joueur doit faire son check-in",
+      "players_hint": "Ton équipe est validée dès que {count} joueurs confirment. Les remplaçants ne sont pas obligés.",
+      "admin_heading": "Marquer les équipes présentes",
+      "admin_hint": "Les joueurs ne peuvent pas faire leur check-in eux-mêmes sur ce tournoi. Marque chaque équipe présente avant la fermeture de la fenêtre.",
+      "check_in": "Faire le check-in",
+      "mark_present": "Marquer présent",
+      "checked_in": "check-in fait",
+      "checked_in_at": "check-in fait · {time}",
+      "waiting": "en attente",
+      "not_needed": "non requis",
+      "role_captain": "capitaine",
+      "role_starter": "titulaire",
+      "role_sub": "remplaçant",
+      "field_status": "État des participants",
+      "field_count": "{checked} sur {total} ont fait leur check-in",
+      "done_heading": "C'est bon. Le bracket est constitué à {time}.",
+      "done_hint": "Confirmé pour {team} à {time}.",
+      "chip_removed": "retirée",
+      "missed_heading": "Ton équipe a raté le check-in",
+      "missed_hint": "Le check-in a fermé à {time} et le bracket est constitué sans ton équipe.",
+      "missed_contact": "Contacte un organisateur si tu penses que c'est une erreur — il peut réadmettre une équipe à tout moment avant le lancement du tournoi.",
+      "failed": "Échec du check-in"
+    },
+    "check_in_review": {
+      "heading": "{count} équipes ont raté le check-in",
+      "subheading": "Le tournoi est en attente. Rien n'a été constitué et rien n'a été supprimé — chaque équipe garde son roster complet.",
+      "chip_held_at": "en attente · reprend {time}",
+      "chip_held": "en attente",
+      "roster_size": "{count} joueurs",
+      "partial_roster": "{checked} sur {required} ont fait leur check-in · il en manque {short}",
+      "registered": "inscrite",
+      "chip_no_check_in": "aucun check-in",
+      "chip_incomplete": "incomplète",
+      "readmit": "Réadmettre",
+      "readmit_failed": "Impossible de réadmettre l'équipe",
+      "continue": "Continuer sans elles",
+      "continue_failed": "Impossible de poursuivre le tournoi",
+      "extend": "Prolonger le check-in",
+      "extend_by": "+{minutes} minutes",
+      "extend_failed": "Impossible de prolonger le check-in",
+      "extend_hint": "Prolonger rouvre les inscriptions et renotifie les {count} équipes manquantes.",
+      "auto_continue": "Si personne n'agit, le tournoi reprend tout seul à {time} avec celles qui ont fait leur check-in. Un tournoi en attente ne meurt jamais en silence parce qu'un organisateur dormait.",
+      "auto_continue_no_time": "Si personne n'agit, le tournoi reprend tout seul à son heure de début avec celles qui ont fait leur check-in.",
+      "reseed_warning": "Réadmettre une équipe reconstitue le bracket. C'est sans risque avant le coup d'envoi, mais cela rebat les têtes de série."
+    },
+    "free_agents": {
+      "title": "Agents libres",
+      "signed_up": "{count} inscrits",
+      "filter_all": "Tous",
+      "filter_drafted": "Draftés",
+      "filter_waitlist": "Liste d'attente",
+      "sign_up": "S'inscrire",
+      "leave": "Quitter le pool",
+      "status_drafted": "drafté",
+      "status_waitlisted": "liste d'attente",
+      "status_registered": "inscrit",
+      "empty_title": "Aucun agent libre pour l'instant",
+      "empty_description": "Les joueurs qui s'inscrivent seuls apparaissent ici et sont draftés dans des équipes équilibrées à la clôture des inscriptions.",
+      "waitlist_explainer": "{name} a le meilleur rating et reste sur liste d'attente — son inscription est arrivée après le remplissage des places. L'heure d'inscription décide de la place, l'ELO ne décide que de l'équipe. C'est la règle qui s'applique, pas un bug.",
+      "organizer": "Organisateur",
+      "draft_summary": "{agents} agents libres → {teams} équipes de {size}, {waitlisted} sur liste d'attente.",
+      "regenerate": "Redrafter les équipes",
+      "regenerated": "{count} équipes draftées",
+      "regenerate_failed": "Impossible de redrafter les équipes",
+      "join_failed": "Impossible de rejoindre le pool d'agents libres",
+      "leave_failed": "Impossible de quitter le pool d'agents libres"
     }
   },
   "team": {

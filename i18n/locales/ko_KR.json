@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "플릿 텔레메트리",
+      "filter": {
+        "all": "전체 플릿",
+        "self_hosted": "셀프 호스팅만"
+      },
       "no_data": "아직 보고된 데이터가 없습니다",
       "installs": {
         "title": "패널",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "맵 찾기",
-        "none": "레이더가 있는 맵이 없습니다"
+        "none": "레이더가 있는 맵이 없습니다",
+        "count_public": "이 맵의 공개 라인업",
+        "count_private": "비공개이지만 볼 수 있는 항목 — 내 것, 팀의 것, 검토 대기 중. 보관된 항목은 포함되지 않습니다."
       },
       "back_to_map": "맵으로 돌아가기",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "팀",
       "format": "형식",
       "starts": "시작",
-      "location": "위치"
+      "location": "위치",
+      "title": "통계",
+      "leaderboard_title": "선수 리더보드",
+      "matches": "매치",
+      "rounds": "라운드",
+      "players": "플레이어",
+      "top_rating": "최고 레이팅",
+      "col_team": "팀",
+      "col_rating": "레이팅",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "맵",
+      "empty_title": "아직 통계가 없습니다",
+      "empty_description": "토너먼트 매치가 끝날 때마다 리더보드가 채워집니다."
     },
     "wizard": {
       "information": "정보",
       "location": "위치",
       "match_options": "매치 옵션",
-      "prizes": "상금"
+      "prizes": "상금",
+      "registration": "참가 신청"
     },
     "banner": {
       "label": "배너",
@@ -6006,6 +6030,173 @@
       "expand": "펼치기",
       "collapse_all": "모두 접기",
       "expand_all": "모두 펼치기"
+    },
+    "registration": {
+      "section": "참가 신청",
+      "who": {
+        "label": "누가 참가 신청할 수 있나요?",
+        "teams": {
+          "label": "팀만",
+          "description": "팀장이 기존 팀으로 신청합니다. 기본값입니다."
+        },
+        "free_agents": {
+          "label": "프리 에이전트",
+          "description": "선수가 혼자 신청하고, 참가 신청이 마감되면 균형 잡힌 팀으로 드래프트됩니다."
+        },
+        "both": {
+          "label": "팀 + 프리 에이전트",
+          "description": "둘 다입니다. 남은 프리 에이전트는 신청한 팀들과 함께 추가 팀으로 드래프트됩니다."
+        }
+      },
+      "min_role": {
+        "label": "최소 역할",
+        "none": "제한 없음",
+        "description": "클릭한 사람뿐 아니라 추가되는 선수를 기준으로 확인합니다. 그래서 팀장이 자격 없는 선수를 로스터에 넣을 수 없습니다."
+      },
+      "rank": {
+        "label": "ELO 범위",
+        "min": "ELO 최소",
+        "max": "ELO 최대",
+        "description": "한쪽을 비우면 그쪽 제한이 없습니다. 둘 다 비우면 모든 랭크에 열립니다.",
+        "invalid_range": "ELO 최대는 ELO 최소 이상이어야 합니다."
+      },
+      "regions": {
+        "label": "선호 지역",
+        "description": "이 토너먼트의 매치가 호스팅되는 곳입니다. 선수를 거르는 조건이 아닙니다 — 5stack에는 선수별 지역 데이터가 없습니다.",
+        "empty": "현재 이용 가능한 지역이 없습니다."
+      },
+      "invite_only": {
+        "label": "초대 전용",
+        "description": "참가 신청이 외부에 공개되지 않습니다. 주최자가 팀을 직접 초대하거나, 참가자가 참가 코드를 입력합니다."
+      },
+      "passcode": {
+        "label": "참가 코드",
+        "optional": "(선택)",
+        "description": "코드를 아는 사람은 초대 없이 참가할 수 있습니다. 주최자 전용입니다."
+      }
+    },
+    "check_in": {
+      "section": "체크인",
+      "required": {
+        "label": "체크인 필수",
+        "description": "대진표를 짜기 전에 팀이 참가를 확정합니다. 창은 일정에 맞춰 열리고, 확정은 수동입니다."
+      },
+      "who": {
+        "label": "누가 체크인하나요?",
+        "Captains": {
+          "label": "팀장",
+          "description": "팀장이 팀 전체를 대신해 확정합니다. 클릭 한 번에 한 팀."
+        },
+        "Players": {
+          "label": "모든 선수",
+          "description": "로스터의 각 선수가 개별로 확정합니다. {count}명이 체크인하면 팀이 확정됩니다 — 교체 선수는 하지 않아도 됩니다."
+        },
+        "Admin": {
+          "label": "주최자만",
+          "description": "선수는 직접 체크인할 수 없고, 회원님이 팀을 참석으로 표시합니다."
+        }
+      },
+      "opens": {
+        "label": "창 열림"
+      },
+      "closes": {
+        "label": "창 닫힘"
+      },
+      "minutes_before_start": "시작 몇 분 전",
+      "window_too_short": "창은 최소 5분 동안 열려 있어야 합니다.",
+      "timeline": {
+        "opens": "창 열림",
+        "closes": "창 닫힘",
+        "start": "토너먼트 시작"
+      },
+      "lock_note": "창이 열리면 시작 시각과 두 오프셋이 모두 잠깁니다. 팀들이 이미 이 일정에 맞춰 움직이고 있어서, 진행 중에 옮기면 이미 흐르고 있는 마감이 밀리게 됩니다.",
+      "late_registration_note": "창이 열려 있는 동안 신청한 팀은 자동으로 체크인 처리됩니다 — 본 적도 없는 안내를 놓쳤다고 불이익을 줄 수는 없습니다.",
+      "no_show_note": "불참 팀은 절대 삭제되지 않습니다. 체크인을 놓친 팀은 로스터를 그대로 유지하고 대진표에만 들어가지 않습니다 — 토너먼트가 시작되기 전이라면 언제든 재승인할 수 있습니다.",
+      "frozen": "체크인이 이미 시작되어 시작 시각과 두 오프셋이 잠겨 있습니다. 대신 체크인 창을 연장하세요.",
+      "required_title": "이 토너먼트는 체크인이 필요합니다.",
+      "required_window": "당일 {opens}부터 {closes} 사이에 팀이 확정해야 하며, 그러지 않으면 대진표에 들어가지 않습니다.",
+      "register_heading": "팀 참가 신청",
+      "register_hint": "체크인이 열리면 알림이, 닫히기 전에는 리마인더가 갑니다.",
+      "register_cta": "팀 신청",
+      "chip_required": "체크인 필요",
+      "opens_at_heading": "체크인은 {time}에 열립니다",
+      "opens_at_hint": "팀이 신청되어 있습니다. 창이 열리면 알려드리겠습니다.",
+      "opens_in": "열리기까지",
+      "closes_in": "닫히기까지",
+      "starts_in": "시작까지",
+      "chip_action_needed": "조치 필요",
+      "chip_open": "체크인 진행 중",
+      "observer_heading": "체크인이 열렸습니다",
+      "observer_hint": "대진표를 짜기 전에 팀이 참가를 확정합니다. {time}까지 체크인하지 않은 팀이 있으면 토너먼트는 회원님의 검토를 기다리며 보류됩니다.",
+      "confirm_heading": "팀의 참가를 확정하세요",
+      "confirm_hint": "{time}까지 체크인하지 않은 팀은 대진표에 들어가지 않습니다.",
+      "players_progress": "{required}명 중 {checked}명 체크인",
+      "players_heading": "모든 선수가 체크인해야 합니다",
+      "players_hint": "{count}명의 선수가 확정하면 팀이 확정됩니다. 교체 선수는 하지 않아도 됩니다.",
+      "admin_heading": "팀을 참석으로 표시",
+      "admin_hint": "이 토너먼트에서는 선수가 직접 체크인할 수 없습니다. 창이 닫히기 전에 각 팀을 참석으로 표시하세요.",
+      "check_in": "체크인",
+      "mark_present": "참석으로 표시",
+      "checked_in": "체크인 완료",
+      "checked_in_at": "체크인 완료 · {time}",
+      "waiting": "대기 중",
+      "not_needed": "필요 없음",
+      "role_captain": "팀장",
+      "role_starter": "주전",
+      "role_sub": "교체",
+      "field_status": "참가 팀 현황",
+      "field_count": "{total}팀 중 {checked}팀 체크인",
+      "done_heading": "참가가 확정되었습니다. 대진표는 {time}에 짜입니다.",
+      "done_hint": "{team} 소속으로 {time}에 확정됨.",
+      "chip_removed": "제외됨",
+      "missed_heading": "팀이 체크인을 놓쳤습니다",
+      "missed_hint": "체크인은 {time}에 마감되었고, 대진표는 회원님의 팀 없이 짜입니다.",
+      "missed_contact": "잘못되었다고 생각되면 주최자에게 연락하세요 — 토너먼트가 시작되기 전이라면 언제든 팀을 재승인할 수 있습니다.",
+      "failed": "체크인에 실패했습니다"
+    },
+    "check_in_review": {
+      "heading": "{count}개 팀이 체크인을 놓쳤습니다",
+      "subheading": "토너먼트가 보류 중입니다. 대진표는 짜이지 않았고 삭제된 것도 없습니다 — 모든 팀이 로스터를 그대로 유지합니다.",
+      "chip_held_at": "보류 · {time}에 자동 진행",
+      "chip_held": "보류",
+      "roster_size": "{count}명",
+      "partial_roster": "{required}명 중 {checked}명 체크인 · {short}명 부족",
+      "registered": "신청 완료",
+      "chip_no_check_in": "체크인 없음",
+      "chip_incomplete": "인원 부족",
+      "readmit": "재승인",
+      "readmit_failed": "팀을 재승인하지 못했습니다",
+      "continue": "빼고 진행",
+      "continue_failed": "토너먼트를 진행하지 못했습니다",
+      "extend": "체크인 연장",
+      "extend_by": "+{minutes}분",
+      "extend_failed": "체크인을 연장하지 못했습니다",
+      "extend_hint": "연장하면 참가 신청이 다시 열리고, 체크인하지 않은 {count}개 팀에 다시 알림이 갑니다.",
+      "auto_continue": "아무도 조치하지 않으면 토너먼트는 {time}에 체크인한 팀들만으로 알아서 진행됩니다. 보류된 토너먼트가 주최자가 잠들었다는 이유로 조용히 사라지는 일은 없습니다.",
+      "auto_continue_no_time": "아무도 조치하지 않으면 토너먼트는 시작 시각에 체크인한 팀들만으로 알아서 진행됩니다.",
+      "reseed_warning": "팀을 재승인하면 대진표를 다시 짭니다. 시작 전이라 안전하지만 시드는 다시 섞입니다."
+    },
+    "free_agents": {
+      "title": "프리 에이전트",
+      "signed_up": "{count}명 신청",
+      "filter_all": "전체",
+      "filter_drafted": "드래프트됨",
+      "filter_waitlist": "대기 명단",
+      "sign_up": "신청하기",
+      "leave": "풀에서 나가기",
+      "status_drafted": "드래프트됨",
+      "status_waitlisted": "대기 명단",
+      "status_registered": "신청 완료",
+      "empty_title": "아직 프리 에이전트가 없습니다",
+      "empty_description": "혼자 신청한 선수가 여기에 표시되고, 참가 신청이 마감되면 균형 잡힌 팀으로 드래프트됩니다.",
+      "waitlist_explainer": "{name} 님은 레이팅이 가장 높은데도 대기 명단에 있습니다 — 자리가 찬 뒤에 신청했기 때문입니다. 자리를 얻는 기준은 신청 시각이고, ELO는 어느 팀에 갈지만 정합니다. 버그가 아니라 규칙대로 동작한 것입니다.",
+      "organizer": "주최자",
+      "draft_summary": "프리 에이전트 {agents}명 → {size}명 구성 {teams}개 팀, 대기 명단 {waitlisted}명.",
+      "regenerate": "팀 다시 구성",
+      "regenerated": "{count}개 팀을 구성했습니다",
+      "regenerate_failed": "팀을 다시 구성하지 못했습니다",
+      "join_failed": "프리 에이전트 풀에 참가하지 못했습니다",
+      "leave_failed": "프리 에이전트 풀에서 나가지 못했습니다"
     }
   },
   "team": {

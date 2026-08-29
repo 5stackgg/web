@@ -1229,6 +1229,10 @@
     },
     "system_telemetry": {
       "title": "機群遙測",
+      "filter": {
+        "all": "全部機群",
+        "self_hosted": "僅自架"
+      },
       "no_data": "尚未回報任何資料",
       "installs": {
         "title": "面板",
@@ -3967,7 +3971,9 @@
       },
       "picker": {
         "search": "尋找地圖",
-        "none": "沒有附雷達圖的地圖"
+        "none": "沒有附雷達圖的地圖",
+        "count_public": "本圖的公開陣型",
+        "count_private": "非公開但你看得到的 — 你的、戰隊的，或待審核的。已封存的不計入。"
       },
       "back_to_map": "返回地圖",
       "empty": {
@@ -5946,13 +5952,31 @@
       "teams": "隊伍",
       "format": "賽制",
       "starts": "開始時間",
-      "location": "地點"
+      "location": "地點",
+      "title": "數據",
+      "leaderboard_title": "選手排行榜",
+      "matches": "比賽",
+      "rounds": "回合",
+      "players": "玩家",
+      "top_rating": "最高評分",
+      "col_team": "隊伍",
+      "col_rating": "評分",
+      "col_adr": "ADR",
+      "col_kills": "K",
+      "col_deaths": "D",
+      "col_assists": "A",
+      "col_kd": "K/D",
+      "col_hs": "HS%",
+      "col_maps": "地圖",
+      "empty_title": "尚無數據",
+      "empty_description": "隨著賽事比賽陸續結束，排行榜會逐步填入。"
     },
     "wizard": {
       "information": "資訊",
       "location": "地點",
       "match_options": "比賽選項",
-      "prizes": "獎金"
+      "prizes": "獎金",
+      "registration": "報名"
     },
     "banner": {
       "label": "橫幅",
@@ -6006,6 +6030,173 @@
       "expand": "展開",
       "collapse_all": "全部收合",
       "expand_all": "全部展開"
+    },
+    "registration": {
+      "section": "報名",
+      "who": {
+        "label": "誰可以報名？",
+        "teams": {
+          "label": "僅限隊伍",
+          "description": "由隊長以現有隊伍報名。預設選項。"
+        },
+        "free_agents": {
+          "label": "自由選手",
+          "description": "選手單獨報名，報名截止時會被選入實力平均的隊伍。"
+        },
+        "both": {
+          "label": "隊伍 + 自由選手",
+          "description": "兩者皆可。剩下的自由選手會在已報名隊伍之外，另行組成新隊伍。"
+        }
+      },
+      "min_role": {
+        "label": "最低角色",
+        "none": "不限制",
+        "description": "以被加入的選手為準檢查，而不只是看點擊的人——這樣隊長就無法把不符資格的選手放進陣容。"
+      },
+      "rank": {
+        "label": "ELO 範圍",
+        "min": "最低 ELO",
+        "max": "最高 ELO",
+        "description": "任一欄留空即代表該側不設限制。兩欄都留空則對所有段位開放。",
+        "invalid_range": "最高 ELO 不能低於最低 ELO。"
+      },
+      "regions": {
+        "label": "偏好地區",
+        "description": "本賽事的比賽在哪裡開伺服器。這不是對選手的限制——5stack 沒有依選手記錄的地區資料。",
+        "empty": "目前沒有可用地區。"
+      },
+      "invite_only": {
+        "label": "僅限邀請",
+        "description": "報名不對外開放。由主辦方直接邀請隊伍，或由參賽者輸入報名碼。"
+      },
+      "passcode": {
+        "label": "報名碼",
+        "optional": "（選填）",
+        "description": "拿到此碼的人無須邀請即可加入。僅主辦方可見。"
+      }
+    },
+    "check_in": {
+      "section": "報到",
+      "required": {
+        "label": "要求報到",
+        "description": "在產生對戰表之前，隊伍須確認參賽。報到時段會依排程開啟，確認則是手動操作。"
+      },
+      "who": {
+        "label": "由誰報到？",
+        "Captains": {
+          "label": "隊長",
+          "description": "由隊長代表全隊確認。點一次，搞定一支隊伍。"
+        },
+        "Players": {
+          "label": "每位選手",
+          "description": "陣容中的每位選手各自確認。有 {count} 人報到後隊伍即算參賽——替補不用報到。"
+        },
+        "Admin": {
+          "label": "僅主辦方",
+          "description": "選手無法自行報到，由你把隊伍標記為已到場。"
+        }
+      },
+      "opens": {
+        "label": "時段開啟"
+      },
+      "closes": {
+        "label": "時段關閉"
+      },
+      "minutes_before_start": "開賽前分鐘數",
+      "window_too_short": "時段至少須保持開啟 5 分鐘。",
+      "timeline": {
+        "opens": "時段開啟",
+        "closes": "時段關閉",
+        "start": "賽事開始"
+      },
+      "lock_note": "時段一旦開啟，開始時間與兩個偏移值都會鎖定。各隊伍已經照這個時間表在行動，中途更動會挪走一個正在倒數的截止時間。",
+      "late_registration_note": "在時段期間報名的隊伍會自動完成報到——不能因為錯過一則從未向它顯示過的提示而受罰。",
+      "no_show_note": "缺席的隊伍不會被刪除。錯過報到的隊伍會保留完整陣容，只是不進入對戰表——在賽事正式開始前，你隨時可以重新接納它。",
+      "frozen": "報到已經開始，因此開始時間與兩個偏移值均已鎖定。請改為延長報到時段。",
+      "required_title": "本賽事需要報到。",
+      "required_window": "你的隊伍必須在當天 {opens} 至 {closes} 之間確認，否則不會進入對戰表。",
+      "register_heading": "為隊伍報名",
+      "register_hint": "報到開啟時你會收到通知，關閉前還會再收到提醒。",
+      "register_cta": "隊伍報名",
+      "chip_required": "需要報到",
+      "opens_at_heading": "報到於 {time} 開啟",
+      "opens_at_hint": "你的隊伍已報名。時段開啟時我們會通知你。",
+      "opens_in": "距開啟",
+      "closes_in": "距關閉",
+      "starts_in": "距開始",
+      "chip_action_needed": "需要處理",
+      "chip_open": "報到進行中",
+      "observer_heading": "報到已開啟",
+      "observer_hint": "在產生對戰表之前，隊伍須確認參賽。任何在 {time} 前未報到的隊伍都會讓賽事暫停，等你處理。",
+      "confirm_heading": "確認你的隊伍參賽",
+      "confirm_hint": "在 {time} 前未報到的隊伍不會進入對戰表。",
+      "players_progress": "{required} 人中已有 {checked} 人報到",
+      "players_heading": "所有選手都需要報到",
+      "players_hint": "有 {count} 位選手確認後，你的隊伍即算參賽。替補不用報到。",
+      "admin_heading": "標記已到場的隊伍",
+      "admin_hint": "本賽事中選手無法自行報到。請在時段關閉前把每支隊伍標記為已到場。",
+      "check_in": "報到",
+      "mark_present": "標記為已到場",
+      "checked_in": "已報到",
+      "checked_in_at": "已報到 · {time}",
+      "waiting": "等待中",
+      "not_needed": "無須報到",
+      "role_captain": "隊長",
+      "role_starter": "先發",
+      "role_sub": "替補",
+      "field_status": "參賽隊伍狀態",
+      "field_count": "{total} 支隊伍中已有 {checked} 支報到",
+      "done_heading": "你們已入圍。對戰表將於 {time} 產生。",
+      "done_hint": "已於 {time} 代表 {team} 確認。",
+      "chip_removed": "已移除",
+      "missed_heading": "你的隊伍錯過了報到",
+      "missed_hint": "報到已於 {time} 關閉，對戰表將不包含你的隊伍。",
+      "missed_contact": "如果你認為這有誤，請聯絡主辦方——在賽事正式開始前，他們隨時可以重新接納隊伍。",
+      "failed": "報到失敗"
+    },
+    "check_in_review": {
+      "heading": "{count} 支隊伍錯過了報到",
+      "subheading": "賽事已暫停。對戰表尚未產生，也沒有刪除任何內容——每支隊伍都保有完整陣容。",
+      "chip_held_at": "暫停 · {time} 自動繼續",
+      "chip_held": "暫停",
+      "roster_size": "{count} 名選手",
+      "partial_roster": "{required} 人中已有 {checked} 人報到 · 還差 {short} 人",
+      "registered": "已報名",
+      "chip_no_check_in": "未報到",
+      "chip_incomplete": "人數不足",
+      "readmit": "重新接納",
+      "readmit_failed": "重新接納隊伍失敗",
+      "continue": "不帶他們繼續",
+      "continue_failed": "繼續賽事失敗",
+      "extend": "延長報到",
+      "extend_by": "+{minutes} 分鐘",
+      "extend_failed": "延長報到失敗",
+      "extend_hint": "延長會重新開放報名，並再次通知缺席的 {count} 支隊伍。",
+      "auto_continue": "如果沒有人處理，賽事會在 {time} 帶著已報到的隊伍自動繼續。暫停中的賽事絕不會因為主辦方睡著了就悄悄夭折。",
+      "auto_continue_no_time": "如果沒有人處理，賽事會在其開始時間帶著已報到的隊伍自動繼續。",
+      "reseed_warning": "重新接納隊伍會重新產生對戰表。開賽前這麼做是安全的，但種子排序會被打亂。"
+    },
+    "free_agents": {
+      "title": "自由選手",
+      "signed_up": "已報名 {count} 人",
+      "filter_all": "全部",
+      "filter_drafted": "已選入",
+      "filter_waitlist": "候補",
+      "sign_up": "報名",
+      "leave": "退出選手池",
+      "status_drafted": "已選入",
+      "status_waitlisted": "候補",
+      "status_registered": "已報名",
+      "empty_title": "尚無自由選手",
+      "empty_description": "單獨報名的選手會顯示在這裡，並在報名截止時被選入實力平均的隊伍。",
+      "waitlist_explainer": "{name} 是評分最高的參賽者，卻仍在候補——因為報名時名額已滿。名額由報名先後決定，ELO 只決定進哪支隊伍。這是規則正常運作，不是 bug。",
+      "organizer": "主辦方",
+      "draft_summary": "{agents} 名自由選手 → {teams} 支 {size} 人隊伍，{waitlisted} 人候補。",
+      "regenerate": "重新分隊",
+      "regenerated": "已組成 {count} 支隊伍",
+      "regenerate_failed": "重新分隊失敗",
+      "join_failed": "加入自由選手池失敗",
+      "leave_failed": "退出自由選手池失敗"
     }
   },
   "team": {

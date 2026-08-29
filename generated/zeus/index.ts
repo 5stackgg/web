@@ -70047,6 +70047,7 @@ invites_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
+	notify_when_ready?:boolean | `@${string}`,
 	/** An object relationship */
 	playbook?:ValueTypes["utility_playbooks"],
 	playbook_id?:boolean | `@${string}`,
@@ -70163,6 +70164,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	map_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	notify_when_ready?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	playbook?: ValueTypes["utility_playbooks_bool_exp"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -70200,6 +70202,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	map_name?: string | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	notify_when_ready?: boolean | undefined | null | Variable<any, string>,
 	playbook?: ValueTypes["utility_playbooks_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	region?: string | undefined | null | Variable<any, string>,
@@ -70346,6 +70349,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	map_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	notify_when_ready?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	playbook?: ValueTypes["utility_playbooks_order_by"] | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -70382,6 +70386,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	map_changing_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	notify_when_ready?: boolean | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	region?: string | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_utility_practice_statuses_enum"] | undefined | null | Variable<any, string>,
@@ -70440,6 +70445,7 @@ count?: [{	columns?: Array<ValueTypes["utility_practice_sessions_select_column"]
 	map_changing_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	map_name?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	notify_when_ready?: boolean | undefined | null | Variable<any, string>,
 	playbook_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	region?: string | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_utility_practice_statuses_enum"] | undefined | null | Variable<any, string>,
@@ -149108,6 +149114,7 @@ invites_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
+	notify_when_ready?:boolean | `@${string}`,
 	/** An object relationship */
 	playbook?:ResolverInputTypes["utility_playbooks"],
 	playbook_id?:boolean | `@${string}`,
@@ -149224,6 +149231,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	map_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	notify_when_ready?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	playbook?: ResolverInputTypes["utility_playbooks_bool_exp"] | undefined | null,
 	playbook_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	region?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -149261,6 +149269,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	map_name?: string | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook?: ResolverInputTypes["utility_playbooks_obj_rel_insert_input"] | undefined | null,
 	playbook_id?: ResolverInputTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
@@ -149407,6 +149416,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	map_name?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	notify_when_ready?: ResolverInputTypes["order_by"] | undefined | null,
 	playbook?: ResolverInputTypes["utility_playbooks_order_by"] | undefined | null,
 	playbook_id?: ResolverInputTypes["order_by"] | undefined | null,
 	region?: ResolverInputTypes["order_by"] | undefined | null,
@@ -149443,6 +149453,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	map_changing_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook_id?: ResolverInputTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
 	status?: ResolverInputTypes["e_utility_practice_statuses_enum"] | undefined | null,
@@ -149501,6 +149512,7 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_practice_sessions_select_
 	map_changing_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook_id?: ResolverInputTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
 	status?: ResolverInputTypes["e_utility_practice_statuses_enum"] | undefined | null,
@@ -219230,6 +219242,7 @@ export type ModelTypes = {
 	/** An object relationship */
 	match?: ModelTypes["matches"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
+	notify_when_ready: boolean,
 	/** An object relationship */
 	playbook?: ModelTypes["utility_playbooks"] | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
@@ -219342,6 +219355,7 @@ export type ModelTypes = {
 	map_name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	match?: ModelTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	notify_when_ready?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	playbook?: ModelTypes["utility_playbooks_bool_exp"] | undefined | null,
 	playbook_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	region?: ModelTypes["String_comparison_exp"] | undefined | null,
@@ -219378,6 +219392,7 @@ export type ModelTypes = {
 	map_name?: string | undefined | null,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook?: ModelTypes["utility_playbooks_obj_rel_insert_input"] | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
@@ -219521,6 +219536,7 @@ export type ModelTypes = {
 	map_name?: ModelTypes["order_by"] | undefined | null,
 	match?: ModelTypes["matches_order_by"] | undefined | null,
 	match_id?: ModelTypes["order_by"] | undefined | null,
+	notify_when_ready?: ModelTypes["order_by"] | undefined | null,
 	playbook?: ModelTypes["utility_playbooks_order_by"] | undefined | null,
 	playbook_id?: ModelTypes["order_by"] | undefined | null,
 	region?: ModelTypes["order_by"] | undefined | null,
@@ -219554,6 +219570,7 @@ export type ModelTypes = {
 	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
 	status?: ModelTypes["e_utility_practice_statuses_enum"] | undefined | null,
@@ -219609,6 +219626,7 @@ export type ModelTypes = {
 	map_changing_at?: ModelTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: ModelTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook_id?: ModelTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
 	status?: ModelTypes["e_utility_practice_statuses_enum"] | undefined | null,
@@ -291746,6 +291764,7 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	match?: GraphQLTypes["matches"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	notify_when_ready: boolean,
 	/** An object relationship */
 	playbook?: GraphQLTypes["utility_playbooks"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -291861,6 +291880,7 @@ export type GraphQLTypes = {
 	map_name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	notify_when_ready?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	playbook?: GraphQLTypes["utility_playbooks_bool_exp"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	region?: GraphQLTypes["String_comparison_exp"] | undefined | null,
@@ -291898,6 +291918,7 @@ export type GraphQLTypes = {
 	map_name?: string | undefined | null,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook?: GraphQLTypes["utility_playbooks_obj_rel_insert_input"] | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
@@ -292044,6 +292065,7 @@ export type GraphQLTypes = {
 	map_name?: GraphQLTypes["order_by"] | undefined | null,
 	match?: GraphQLTypes["matches_order_by"] | undefined | null,
 	match_id?: GraphQLTypes["order_by"] | undefined | null,
+	notify_when_ready?: GraphQLTypes["order_by"] | undefined | null,
 	playbook?: GraphQLTypes["utility_playbooks_order_by"] | undefined | null,
 	playbook_id?: GraphQLTypes["order_by"] | undefined | null,
 	region?: GraphQLTypes["order_by"] | undefined | null,
@@ -292080,6 +292102,7 @@ export type GraphQLTypes = {
 	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
 	status?: GraphQLTypes["e_utility_practice_statuses_enum"] | undefined | null,
@@ -292138,6 +292161,7 @@ export type GraphQLTypes = {
 	map_changing_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	map_name?: string | undefined | null,
 	match_id?: GraphQLTypes["uuid"] | undefined | null,
+	notify_when_ready?: boolean | undefined | null,
 	playbook_id?: GraphQLTypes["uuid"] | undefined | null,
 	region?: string | undefined | null,
 	status?: GraphQLTypes["e_utility_practice_statuses_enum"] | undefined | null,
@@ -308106,6 +308130,7 @@ export enum utility_practice_sessions_select_column {
 	map_changing_at = "map_changing_at",
 	map_name = "map_name",
 	match_id = "match_id",
+	notify_when_ready = "notify_when_ready",
 	playbook_id = "playbook_id",
 	region = "region",
 	status = "status",
@@ -308115,12 +308140,14 @@ export enum utility_practice_sessions_select_column {
 /** select "utility_practice_sessions_aggregate_bool_exp_bool_and_arguments_columns" columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_and_arguments_columns {
 	is_open = "is_open",
-	is_render = "is_render"
+	is_render = "is_render",
+	notify_when_ready = "notify_when_ready"
 }
 /** select "utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns" columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_select_column_utility_practice_sessions_aggregate_bool_exp_bool_or_arguments_columns {
 	is_open = "is_open",
-	is_render = "is_render"
+	is_render = "is_render",
+	notify_when_ready = "notify_when_ready"
 }
 /** update columns of table "utility_practice_sessions" */
 export enum utility_practice_sessions_update_column {
@@ -308140,6 +308167,7 @@ export enum utility_practice_sessions_update_column {
 	map_changing_at = "map_changing_at",
 	map_name = "map_name",
 	match_id = "match_id",
+	notify_when_ready = "notify_when_ready",
 	playbook_id = "playbook_id",
 	region = "region",
 	status = "status",

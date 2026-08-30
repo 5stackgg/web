@@ -18,6 +18,7 @@ import TournamentCheckInPanel from "~/components/tournament/TournamentCheckInPan
 import TournamentCheckInReview from "~/components/tournament/TournamentCheckInReview.vue";
 import TournamentEntryGate from "~/components/tournament/TournamentEntryGate.vue";
 import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
+import TournamentInvites from "~/components/tournament/TournamentInvites.vue";
 import TournamentStats from "~/components/tournament/TournamentStats.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -903,7 +904,20 @@ function clearTeamEnterDelay(el: Element) {
         </TabsContent>
         <TabsContent value="information" v-if="tournament?.is_organizer">
           <PageTransition>
-            <TournamentInformationForm :tournament="tournament" />
+            <div class="grid gap-8">
+              <TournamentInformationForm :tournament="tournament" />
+              <!-- A sibling of the form, never nested inside it: the invite
+                   list writes immediately and carries its own buttons, and any
+                   button inside a <form> defaults to type="submit". Invite-only
+                   is read from the registration subscription rather than the
+                   form's live value so the panel follows what is SAVED — an
+                   invite against a tournament that is still open to everyone
+                   would be meaningless. -->
+              <TournamentInvites
+                v-if="tournamentRegistration?.invite_only"
+                :tournament="tournament"
+              />
+            </div>
           </PageTransition>
         </TabsContent>
         <TabsContent value="match-options" v-if="tournament?.is_organizer">

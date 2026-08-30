@@ -37,6 +37,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
             v-if="
               team_invites.length > 0 ||
               tournament_team_invites.length > 0 ||
+              tournament_invites.length > 0 ||
               notifications.length > 0
             "
           >
@@ -62,6 +63,21 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
                 :invite="invite"
                 :key="invite.id"
                 v-for="invite of tournament_team_invites"
+              />
+              <Separator v-if="notifications.length > 0"></Separator>
+            </div>
+
+            <!-- Register-for-a-tournament invites, kept apart from the team
+                 invites above: different table, different accept type. -->
+            <div
+              v-if="tournament_invites.length > 0"
+              class="mb-4 p-4 bg-accent rounded-lg"
+            >
+              <TeamInviteNotification
+                type="tournament-registration"
+                :invite="invite"
+                :key="invite.id"
+                v-for="invite of tournament_invites"
               />
               <Separator v-if="notifications.length > 0"></Separator>
             </div>
@@ -284,6 +300,9 @@ export default {
     },
     tournament_team_invites() {
       return useNotificationStore().tournament_team_invites;
+    },
+    tournament_invites() {
+      return useNotificationStore().tournament_invites;
     },
     hasNotifications() {
       return useNotificationStore().hasNotifications;

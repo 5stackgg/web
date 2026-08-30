@@ -27,6 +27,20 @@ const formatBanExpiry = (value: unknown) => {
   });
 };
 
+// A scoped sanction whose ladder rung is 0 resolves to 'infinity'::timestamptz
+// and arrives here as the literal string "infinity". new Date() turns that into
+// an Invalid Date, which formatBanExpiry reports as "" -- indistinguishable
+// from a missing expiry. It has to be caught first and read as permanent.
+const isPermanentExpiry = (value: unknown) => String(value) === "infinity";
+
+// PRE-CODEGEN ESCAPE HATCH -- read `me` untyped and drop the cast once
+// `yarn codegen` has run. `players.tournament_cooldown` lands with the
+// sanctions migration, so the generated player type does not carry it yet even
+// though meFields already selects it.
+const tournamentCooldown = computed(
+  () => (useAuthStore().me as Record<string, any> | null)?.tournament_cooldown,
+);
+
 const mmCardBase =
   "group/mmc relative flex flex-col flex-1 min-h-[120px] px-[1.1rem] pt-4 pb-5 text-left cursor-pointer overflow-hidden isolate border border-border text-foreground [background:linear-gradient(135deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.35)_60%,hsl(var(--tac-amber)/0.05)_100%)] [transition:border-color_180ms_ease,background_220ms_ease,box-shadow_220ms_ease] hover:border-[hsl(var(--tac-amber)/0.55)] hover:[background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--card)/0.45)_55%,hsl(var(--tac-amber)/0.12)_100%)] hover:shadow-[0_0_24px_hsl(var(--tac-amber)/0.12)] focus-visible:outline-none focus-visible:border-[hsl(var(--tac-amber))] focus-visible:shadow-[0_0_0_2px_hsl(var(--tac-amber)/0.35)]";
 
@@ -66,6 +80,23 @@ function releaseSwapHeight(el: Element): void {
 
 <template>
   <div v-if="matchmakingAllowed || (isGuest && matchmakingEnabled)">
+    <!-- Deliberately outside the ban/cooldown chain below rather than another
+         branch of it: a tournament cooldown bars tournament rosters and the
+         free-agent pool and NEVER the queue, so it is reported alongside
+         matchmaking instead of standing in for it. -->
+    <Alert v-if="tournamentCooldown" class="my-3">
+      <AlertDescription class="flex items-center gap-2">
+        <AlertTriangle class="h-4 w-4" />
+        {{
+          isPermanentExpiry(tournamentCooldown) ||
+          !formatBanExpiry(tournamentCooldown)
+            ? $t("matchmaking.tournament_banned")
+            : $t("matchmaking.tournament_banned_until", {
+                time: formatBanExpiry(tournamentCooldown),
+              })
+        }}
+      </AlertDescription>
+    </Alert>
     <template v-if="me?.is_banned">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">

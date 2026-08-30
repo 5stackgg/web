@@ -4,16 +4,23 @@ import TimeAgo from "./TimeAgo.vue";
 
 <template>
   <div>
-    <h3 class="text-lg font-semibold mb-2">
-      <template v-if="type === 'tournament'">
-        {{
-          $t("team.invite.tournament_title", { id: invite.tournament_team_id })
-        }}
-      </template>
-      {{ $t("team.invite.team_title") }}
-    </h3>
+    <!-- One title, chosen by type. The three invites read almost the same and
+         the only thing telling them apart is this line, so it must never show
+         two of them at once. -->
+    <h3 class="text-lg font-semibold mb-2">{{ title }}</h3>
 
-    <template v-if="type === 'tournament'">
+    <template v-if="isRegistration">
+      {{ $t("team.invite.tournament_registration_message") }}
+      <p class="text-sm text-muted-foreground mb-2">
+        <NuxtLink
+          :to="`/tournaments/${invite.tournament.id}`"
+          class="underline"
+        >
+          {{ invite.tournament.name }}
+        </NuxtLink>
+      </p>
+    </template>
+    <template v-else-if="isTournamentTeam">
       {{ $t("team.invite.tournament_message", { team: invite.team.name }) }}
       <p class="text-sm text-muted-foreground mb-2">
         <NuxtLink
@@ -49,6 +56,20 @@ import TimeAgo from "./TimeAgo.vue";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 
+/**
+ * `type` is passed straight through to the shared acceptInvite/denyInvite
+ * action, whose dispatch is now explicit and throws on anything it does not
+ * know:
+ *
+ *   "team"                     -> team_invites
+ *   "tournament" (legacy) /
+ *   "tournament-team"          -> tournament_team_invites  (join a REGISTERED team)
+ *   "tournament-registration"  -> tournament_invites       (register at all)
+ *
+ * The existing call sites still send "tournament": it is what every deployed
+ * client sends, and repointing it would break accept/deny mid-upgrade for
+ * anyone whose tab has not reloaded.
+ */
 export default {
   props: {
     invite: {
@@ -58,6 +79,23 @@ export default {
     type: {
       type: String,
       required: true,
+    },
+  },
+  computed: {
+    isRegistration(): boolean {
+      return this.type === "tournament-registration";
+    },
+    isTournamentTeam(): boolean {
+      return this.type === "tournament" || this.type === "tournament-team";
+    },
+    title(): string {
+      if (this.isRegistration) {
+        return this.$t("team.invite.tournament_registration_title") as string;
+      }
+      if (this.isTournamentTeam) {
+        return this.$t("team.invite.tournament_title") as string;
+      }
+      return this.$t("team.invite.team_title") as string;
     },
   },
   methods: {
@@ -76,7 +114,14 @@ export default {
         }),
       });
 
-      if (this.type === "tournament") {
+      // Accepting a registration invite writes the same
+      // tournament_registration_unlocks row the passcode writes, so the
+      // tournament page's existing entry gate is already satisfied when we
+      // land on it — there is nothing extra to do here.
+      if (this.isRegistration) {
+        return this.$router.push(`/tournaments/${this.invite.tournament.id}`);
+      }
+      if (this.isTournamentTeam) {
         return this.$router.push(
           `/tournaments/${this.invite.team.tournament.id}`,
         );

@@ -1814,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "Match chat messages",
             "description": "A new message in a match's room."
+          },
+          "TournamentInvite": {
+            "title": "Tournament registration invites",
+            "description": "An organizer invited you to register for a tournament."
           }
         },
         "quiet_hours": {
@@ -2621,6 +2625,72 @@
           "server_default": "Server default",
           "invalid_number": "Enter a whole number of 0 or more.",
           "updated": "Utility settings updated"
+        },
+        "sanctions": {
+          "title": "Sanctions",
+          "section": "Automatic Sanctions",
+          "description": "How 5stack punishes the things it can detect on its own. Each source counts occurrences inside a window and applies the matching step of an escalation ladder.",
+          "defaults_note": "The values below are the ones 5stack has always used. Reading this page changes nothing — only an edit does.",
+          "unavailable": "No sanction sources are available. The API may not have run the sanctions migration yet.",
+          "load_failed": "Could not load the sanctions policy",
+          "reset": "Reset to default",
+          "permanent": "Permanent",
+          "platform_ban_narrowed": "At any scope other than “Bars everything” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
+          "threshold": {
+            "label": "Sanction after",
+            "first_offence": "The first occurrence is punished.",
+            "free_passes": "The first {count} occurrences are free.",
+            "free_passes_one": "The first occurrence is free."
+          },
+          "window": {
+            "label": "Counting window (days)",
+            "never": "Never decays — every occurrence ever recorded still counts.",
+            "decays": "Occurrences older than {count} days stop counting.",
+            "decays_one": "Occurrences older than a day stop counting."
+          },
+          "ladder": {
+            "label": "Escalation ladder",
+            "add": "Add step",
+            "remove": "Remove step",
+            "clamp_hint": "The last step repeats forever. Set a step to 0 to make the sanction permanent.",
+            "occurrence": "Occurrence {count}",
+            "occurrence_and_after": "Occurrence {count}+",
+            "unit": {
+              "minutes": "Minutes",
+              "hours": "Hours",
+              "days": "Days"
+            },
+            "unit_value": {
+              "minutes": "{count} minutes",
+              "hours": "{count} hours",
+              "days": "{count} days",
+              "minutes_one": "1 minute",
+              "hours_one": "1 hour",
+              "days_one": "1 day"
+            }
+          },
+          "scope": {
+            "label": "What it bars"
+          },
+          "scopes": {
+            "matchmaking": "Bars matchmaking",
+            "tournaments": "Bars tournaments",
+            "both": "Bars both"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "Match Abandon",
+              "description": "A player left or never connected to a match they were rostered for. The clock runs from the last abandon, not from now."
+            },
+            "vac_ban": {
+              "title": "VAC / Game Ban",
+              "description": "Steam reports a VAC or game ban on the player's account. The counting window is measured against Steam's own days-since-last-ban."
+            },
+            "tournament_no_show": {
+              "title": "Tournament No-Show",
+              "description": "A team missed a required tournament check-in. Checked on the way in only, so a player already in a running bracket keeps their place."
+            }
+          }
         }
       },
       "language": {
@@ -4943,7 +5013,9 @@
         "actor_host": "The host",
         "actor_teammate": "A teammate",
         "actor_organizer": "An organizer",
-        "actor_player": "A player"
+        "actor_player": "A player",
+        "tournament_registration_invite": "Tournament Registration",
+        "invited_you_register": "invited you to register for"
       },
       "season_rebuild": {
         "title": "Season {number} ELO rebuild required",
@@ -6235,6 +6307,21 @@
       "ok_chip": "eligible",
       "locked_chip": "locked",
       "blocked_chip": "not eligible"
+    },
+    "invites": {
+      "title": "Invited Players",
+      "description": "This tournament is invite only. Invite a player directly and they can register without the passcode.",
+      "add": "Invite a player",
+      "pending": "Pending",
+      "invited_by": "Invited by {name}",
+      "revoke": "Revoke",
+      "confirm_revoke": "Revoke this invite?",
+      "revoke_description": "{name} will no longer be able to register unless they have the passcode.",
+      "empty": "Nobody has been invited yet.",
+      "sent": "Invite sent",
+      "send_failed": "Could not send that invite",
+      "already_invited": "Already invited",
+      "revoked": "Invite revoked"
     }
   },
   "team": {
@@ -6287,7 +6374,9 @@
       "team_message": "You have been invited to join a team",
       "invited_by": "Invited by",
       "deny": "Deny",
-      "accept": "Accept"
+      "accept": "Accept",
+      "tournament_registration_title": "Tournament Registration Invite",
+      "tournament_registration_message": "You have been invited to register for a tournament"
     },
     "roles": {
       "captain": "Captain"
@@ -7799,7 +7888,9 @@
       "requirement": "Queue with {half} or fewer, or exactly {full} players"
     },
     "temp_banned_until": "You are temporarily banned from matchmaking until {time}",
-    "new_invites_count": "New Invites ({count})"
+    "new_invites_count": "New Invites ({count})",
+    "tournament_banned": "You are barred from joining tournament rosters and the free agent pool.",
+    "tournament_banned_until": "You are barred from joining tournament rosters and the free agent pool until {time}."
   },
   "game_server": {
     "lan_ip": "LAN IP",

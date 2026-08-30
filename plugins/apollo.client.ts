@@ -95,6 +95,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   });
 
   const errorLink = onError((error) => {
+    // `context: { optional: true }` marks a document the caller expects may be
+    // rejected outright — a field or table that only exists once the api has run
+    // a migration web is allowed to ship ahead of. Those callers already degrade
+    // to showing nothing, so the global toast would report a failure the viewer
+    // can neither act on nor even see the consequence of.
+    if (error.operation.getContext().optional) {
+      return;
+    }
     nuxtApp.callHook("apollo:error", error);
   });
 

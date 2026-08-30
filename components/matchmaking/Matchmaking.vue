@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { dateLocale } from "~/utilities/dateLocale";
 import { useMediaQuery } from "@vueuse/core";
+import { useSubscription } from "@vue/apollo-composable";
 import { AlertTriangle } from "lucide-vue-next";
+import { TOURNAMENT_COOLDOWN_SUBSCRIPTION } from "~/graphql/tournamentCooldown";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { Button } from "~/components/ui/button";
 import { Spinner } from "~/components/ui/spinner";
@@ -33,12 +35,28 @@ const formatBanExpiry = (value: unknown) => {
 // from a missing expiry. It has to be caught first and read as permanent.
 const isPermanentExpiry = (value: unknown) => String(value) === "infinity";
 
-// PRE-CODEGEN ESCAPE HATCH -- read `me` untyped and drop the cast once
-// `yarn codegen` has run. `players.tournament_cooldown` lands with the
-// sanctions migration, so the generated player type does not carry it yet even
-// though meFields already selects it.
+// Deliberately NOT part of `me`. api and web ship as separate images on
+// separate release channels, so web can reach a stack whose api has not run the
+// sanctions migration; inside the `me` document that rejection took sign-in down
+// with it. Here the same rejection costs only the readout: `optional` keeps it
+// out of the global error toast (plugins/apollo.client.ts), useSubscription
+// parks the failure on its own `error` ref rather than throwing, and `result`
+// simply stays undefined -- which renders as no cooldown.
+const meSteamId = computed(() => useAuthStore().me?.steam_id);
+
+const { result: tournamentCooldownResult } = useSubscription(
+  TOURNAMENT_COOLDOWN_SUBSCRIPTION,
+  () => ({ steamId: meSteamId.value }),
+  () => ({
+    enabled: !!meSteamId.value,
+    context: { optional: true },
+  }),
+);
+
 const tournamentCooldown = computed(
-  () => (useAuthStore().me as Record<string, any> | null)?.tournament_cooldown,
+  () =>
+    (tournamentCooldownResult.value as Record<string, any> | undefined)
+      ?.players_by_pk?.tournament_cooldown,
 );
 
 const mmCardBase =

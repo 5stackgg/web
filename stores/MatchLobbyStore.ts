@@ -152,6 +152,9 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
                   e_tournament_status_enum.Setup,
                   e_tournament_status_enum.RegistrationOpen,
                   e_tournament_status_enum.RegistrationClosed,
+                  // A tournament held at the check-in cutoff is exactly when
+                  // the organizer and the excluded teams need the chat.
+                  e_tournament_status_enum.CheckInReview,
                   e_tournament_status_enum.Live,
                   e_tournament_status_enum.Paused,
                 ],
@@ -254,6 +257,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
                   e_tournament_status_enum.Live,
                   e_tournament_status_enum.RegistrationClosed,
                   e_tournament_status_enum.RegistrationOpen,
+                  e_tournament_status_enum.CheckInReview,
                   e_tournament_status_enum.Setup,
                 ],
               },

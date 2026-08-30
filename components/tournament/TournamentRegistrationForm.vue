@@ -507,9 +507,10 @@ export default {
     frozen(): boolean {
       return isTournamentScheduleFrozen(this.tournament);
     },
-    // Hidden rather than disabled for a role that cannot write the column: an
-    // input whose value is silently dropped from every mutation is worse than
-    // no input. Invite-only itself still works — organizers invite directly.
+    // Hidden rather than disabled for a session that cannot write the column:
+    // an input whose value is silently dropped from every mutation is worse
+    // than no input. In practice that is only a signed-out session, which
+    // never reaches this form.
     canSetPasscode(): boolean {
       return canManageRegistrationPasscode();
     },

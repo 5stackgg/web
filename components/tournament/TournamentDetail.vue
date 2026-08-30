@@ -16,6 +16,7 @@ import TournamentAwardsConfig from "~/components/tournament/TournamentAwardsConf
 import TournamentAwardsManage from "~/components/tournament/TournamentAwardsManage.vue";
 import TournamentCheckInPanel from "~/components/tournament/TournamentCheckInPanel.vue";
 import TournamentCheckInReview from "~/components/tournament/TournamentCheckInReview.vue";
+import TournamentEntryGate from "~/components/tournament/TournamentEntryGate.vue";
 import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
 import TournamentStats from "~/components/tournament/TournamentStats.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
@@ -576,6 +577,14 @@ function clearTeamEnterDelay(el: Element) {
         </header>
       </PageTransition>
 
+      <!-- Before the check-in panel invites them to register: whether they can
+           enter at all, and which gate stops them if not. -->
+      <TournamentEntryGate
+        :tournament="tournament"
+        :registration="tournamentRegistration"
+        :already-entered="!!myTeam || !!myFreeAgent"
+      />
+
       <!-- Directly under the hero, above every tab: a check-in deadline the
            reader scrolls past is a team that misses the bracket. -->
       <TournamentCheckInPanel
@@ -583,6 +592,7 @@ function clearTeamEnterDelay(el: Element) {
         :registration="tournamentRegistration"
         :teams="checkInTeams"
         :my-team-id="myTeamId"
+        :my-free-agent="myFreeAgent"
         @register="handleJoinTournament"
       />
 
@@ -1054,11 +1064,6 @@ import {
   replaceRouteTab,
 } from "~/composables/useRouteTab";
 
-// `CheckInReview` only joins e_tournament_status_enum once codegen has run
-// against the check-in migration; the raw column value is what the row
-// actually carries either way.
-const CHECK_IN_REVIEW_STATUS = "CheckInReview";
-
 export default {
   data() {
     return {
@@ -1066,6 +1071,7 @@ export default {
       tournament: undefined,
       tournamentRegistration: null as Record<string, any> | null,
       checkInTeams: [] as Array<Record<string, any>>,
+      myFreeAgent: null as Record<string, any> | null,
       tournamentDialog: false,
       teamSearchQuery: undefined,
       settingsDialogOpen: false,
@@ -1484,6 +1490,16 @@ export default {
             {
               id: true,
               registration_type: true,
+              invite_only: true,
+              min_role: true,
+              min_elo: true,
+              max_elo: true,
+              // The two gates a would-be entrant hits: the role floor (server
+              // truth, session-scoped) and whether invite-only has been
+              // unlocked for them. Without both, "Join" is offered and then
+              // fails with a raw Hasura error.
+              meets_min_role: true,
+              registration_unlocked: true,
               check_in_required: true,
               check_in_setting: true,
               check_in_opens_before_minutes: true,
@@ -1533,6 +1549,10 @@ export default {
               checked_in_at: true,
               owner_steam_id: true,
               captain_steam_id: true,
+              // can_manage_tournament_team: the exact predicate the check-in
+              // action accepts. Re-deriving it from captain/owner locks out a
+              // roster Admin the API would have let through.
+              can_manage: true,
               team: {
                 id: true,
                 name: true,
@@ -1569,6 +1589,43 @@ export default {
         },
         result: function (this: any, { data }: { data: any }) {
           this.checkInTeams = data?.tournament_teams ?? [];
+        },
+      },
+      // An undrafted free agent has no tournament_teams row at all, so every
+      // team-shaped check-in surface misses them — while the check-in job
+      // still pushes them "confirm your spot". This row is what lets them.
+      myFreeAgent: {
+        query: generateSubscription({
+          tournament_free_agents: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+                player_steam_id: {
+                  _eq: $("steamId", "bigint!"),
+                },
+              },
+            },
+            {
+              id: true,
+              status: true,
+              checked_in_at: true,
+              tournament_team_id: true,
+            },
+          ],
+        }),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+            steamId: this.me?.steam_id,
+          };
+        },
+        skip: function (this: any): boolean {
+          return !this.me?.steam_id || !this.freeAgentsTabVisible;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.myFreeAgent = data?.tournament_free_agents?.[0] ?? null;
         },
       },
       tournament_teams: {
@@ -1768,6 +1825,12 @@ export default {
         e_tournament_status_enum.Setup,
         e_tournament_status_enum.RegistrationOpen,
         e_tournament_status_enum.RegistrationClosed,
+        // Nothing is seeded while the tournament is held for review, but
+        // re-admitting one team re-runs assign_seeds_to_teams, which nulls
+        // eligible_at for every team still missing a check-in. Treating the
+        // hold as "started" would filter those teams off the Teams tab even
+        // though they are still registered with a full roster.
+        e_tournament_status_enum.CheckInReview,
       ].includes(status);
     },
     visibleTeams() {
@@ -1832,7 +1895,7 @@ export default {
       if (s === e_tournament_status_enum.Paused) return "paused";
       // Held for an organizer, not running and not cancelled — the warning
       // tier is the one that reads as "this needs a decision".
-      if (s === CHECK_IN_REVIEW_STATUS) return "paused";
+      if (s === e_tournament_status_enum.CheckInReview) return "paused";
       if (s === e_tournament_status_enum.Finished) return "finished";
       if (
         s === e_tournament_status_enum.Cancelled ||
@@ -1909,7 +1972,7 @@ export default {
     checkInReviewVisible() {
       const tournament = this.tournament as Record<string, any> | undefined;
       return (
-        tournament?.status === CHECK_IN_REVIEW_STATUS &&
+        tournament?.status === e_tournament_status_enum.CheckInReview &&
         (this.tournamentRegistration?.can_review_check_in === true ||
           tournament?.is_organizer === true)
       );

@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   CHECK_IN_CLOSES_DEFAULT_MINUTES,
@@ -38,14 +37,19 @@ export const REGISTRATION_FIELD = {
 } as const;
 
 /**
- * Hasura grants `tournaments.registration_passcode` — select, insert and update
- * — to the tournament_organizer role alone, while a plain `user` with
- * can_create_tournaments can still own one. Naming the column at all in their
- * mutation fails the entire statement, so the same test has to gate the field's
- * visibility, its hydration and every write. One definition, three callers.
+ * Hasura grants `tournaments.registration_passcode` on INSERT and UPDATE to the
+ * `user` role — and so to every role that inherits it — because a plain `user`
+ * with can_create_tournaments still owns tournaments. Only SELECT is restricted
+ * to tournament_organizer; the passcode is read back through the row-level
+ * `organizer_registration_passcode` computed field instead (granted to `user`,
+ * NULL for anyone who is not an organizer of that row).
+ *
+ * Gating this on tournament_organizer is what let an organizer turn on Invite
+ * only with no passcode input and save `invite_only = true, passcode = NULL` —
+ * a tournament nobody can ever enter, with no UI path back out.
  */
 export function canManageRegistrationPasscode(): boolean {
-  return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
+  return !!useAuthStore().me;
 }
 
 // A blank ELO input arrives as "", null or NaN; every one of them means "no
@@ -187,8 +191,12 @@ export function registrationFormValues(tournament: Record<string, any>) {
       tournament.max_elo != null ? Number(tournament.max_elo) : null,
     [REGISTRATION_FIELD.regions]: [...(tournament.regions ?? [])],
     [REGISTRATION_FIELD.invite_only]: !!tournament.invite_only,
+    // Whichever of the two the session was allowed to select: the raw column
+    // for tournament_organizer, the computed field for everyone else.
     [REGISTRATION_FIELD.registration_passcode]:
-      tournament.registration_passcode ?? null,
+      tournament.registration_passcode ??
+      tournament.organizer_registration_passcode ??
+      null,
     [REGISTRATION_FIELD.check_in_required]: !!tournament.check_in_required,
     [REGISTRATION_FIELD.check_in_setting]:
       tournament.check_in_setting ?? CHECK_IN_SETTING_DEFAULT,

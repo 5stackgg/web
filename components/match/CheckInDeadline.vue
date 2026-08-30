@@ -10,6 +10,13 @@ const props = withDefaults(
     // sits on the page background and has to draw its own frame.
     variant?: "cta" | "standalone";
     checkedIn?: boolean;
+    // The readout is reused for countdowns that are not a match check-in
+    // deadline -- a tournament check-in window opening, or kickoff. The match
+    // copy would then announce "Check in within" on a window that is not open
+    // yet, and promise an auto-cancellation that nothing performs. Pass a
+    // prefix (and `null` help to drop the tooltip) for those.
+    prefixLabel?: string;
+    helpLabel?: string | null;
   }>(),
   {
     variant: "cta",
@@ -113,12 +120,26 @@ const description = computed(() => {
     return "";
   }
 
-  const prefix = props.checkedIn
-    ? t("match.check_in.deadline_checked_in")
-    : t("match.check_in.deadline");
+  const prefix =
+    props.prefixLabel ??
+    (props.checkedIn
+      ? t("match.check_in.deadline_checked_in")
+      : t("match.check_in.deadline"));
 
   return `${prefix} ${label.value}`;
 });
+
+// `undefined` means "not overridden" and falls back to the match copy; an
+// explicit `null` means this countdown has no consequence worth a tooltip.
+const help = computed(() =>
+  props.helpLabel === undefined
+    ? t("match.check_in.deadline_help")
+    : props.helpLabel,
+);
+
+const title = computed(() =>
+  help.value ? `${description.value} — ${help.value}` : description.value,
+);
 </script>
 
 <template>
@@ -132,7 +153,7 @@ const description = computed(() => {
       ]"
       role="timer"
       :aria-label="description"
-      :title="`${description} — ${$t('match.check_in.deadline_help')}`"
+      :title="title"
     >
       <!-- Only in the last ten seconds, and only ever as an indicator dot --
            the digits stay still so they stay readable. -->

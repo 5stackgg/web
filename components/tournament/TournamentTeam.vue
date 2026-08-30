@@ -669,6 +669,9 @@ export default {
         e_tournament_status_enum.Setup,
         e_tournament_status_enum.RegistrationOpen,
         e_tournament_status_enum.RegistrationClosed,
+        // Held for check-in review: nothing has been seeded and no team has
+        // been dropped, so the eligibility badge is still the honest readout.
+        e_tournament_status_enum.CheckInReview,
       ].includes(status);
     },
     showEligibilityBadge() {

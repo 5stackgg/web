@@ -128,7 +128,30 @@ const stageMaxTeams = computed(() => {
   return max ? Number(max) : null;
 });
 
+// `both` mode drafts into whatever room the bracket has LEFT, not the whole
+// cap: the server's limit is GREATEST(max_teams - existing_teams, 0). Ignoring
+// the registered teams promises slots that were already taken.
+const existingTeams = computed(
+  () => Number(props.tournament?.teams_aggregate?.aggregate?.count) || 0,
+);
+
 const hasDrafted = computed(() => draftedAgents.value.length > 0);
+
+// draft_tournament_free_agent_teams short-circuits to 0 the moment a drafted
+// team exists, and the action refuses outright once the bracket is in play.
+// Both cases return "Drafted 0 teams" as a success, so the button has to go
+// rather than lie.
+const draftLocked = computed(() =>
+  [
+    e_tournament_status_enum.Live,
+    e_tournament_status_enum.Paused,
+    e_tournament_status_enum.Finished,
+    e_tournament_status_enum.Cancelled,
+    e_tournament_status_enum.CancelledMinTeams,
+  ].includes(props.tournament?.status),
+);
+
+const canDraft = computed(() => !hasDrafted.value && !draftLocked.value);
 
 // Before the draft runs this is a projection of what will happen; afterwards it
 // is a report of what did. Both read the same, which is the point — an
@@ -152,7 +175,10 @@ const projection = computed(() => {
   const teams =
     stageMaxTeams.value === null
       ? possible
-      : Math.min(possible, stageMaxTeams.value);
+      : Math.min(
+          possible,
+          Math.max(stageMaxTeams.value - existingTeams.value, 0),
+        );
   return {
     teams,
     waitlisted: pool.value.length - teams * teamSize.value,
@@ -218,15 +244,14 @@ const myEntry = computed(() => {
   );
 });
 
-const registrationOpen = computed(() =>
-  [
-    e_tournament_status_enum.Setup,
-    e_tournament_status_enum.RegistrationOpen,
-  ].includes(props.tournament?.status),
-);
-
+// joinTournamentAsFreeAgent requires exactly RegistrationOpen, while the leave
+// rule also allows Setup. Offering Sign up during Setup produces a button that
+// can only ever fail, so the two windows are kept apart.
 const canSignUp = computed(
-  () => !!me.value && registrationOpen.value && !myEntry.value,
+  () =>
+    !!me.value &&
+    props.tournament?.status === e_tournament_status_enum.RegistrationOpen &&
+    !myEntry.value,
 );
 
 // Leaving after the draft would tear a hole in a seeded team, and the API's
@@ -234,7 +259,10 @@ const canSignUp = computed(
 const canLeave = computed(
   () =>
     !!myEntry.value &&
-    registrationOpen.value &&
+    [
+      e_tournament_status_enum.Setup,
+      e_tournament_status_enum.RegistrationOpen,
+    ].includes(props.tournament?.status) &&
     myEntry.value.status !== "drafted",
 );
 
@@ -322,7 +350,7 @@ async function leavePool() {
   );
 }
 
-async function regenerateTeams() {
+async function draftTeams() {
   const data = await runAction(
     {
       draftTournamentTeams: [
@@ -341,10 +369,20 @@ async function regenerateTeams() {
     return;
   }
 
+  const created = Number(data.draftTournamentTeams?.teams_created ?? 0);
+  if (created < 1) {
+    toast({
+      title: t("tournament.free_agents.nothing_drafted"),
+      description: t("tournament.free_agents.nothing_drafted_hint", {
+        size: teamSize.value,
+      }),
+      variant: "destructive",
+    });
+    return;
+  }
+
   toast({
-    title: t("tournament.free_agents.regenerated", {
-      count: data.draftTournamentTeams?.teams_created ?? 0,
-    }),
+    title: t("tournament.free_agents.regenerated", { count: created }),
   });
 }
 </script>
@@ -487,14 +525,25 @@ async function regenerateTeams() {
           </div>
         </div>
         <Button
+          v-if="canDraft"
           variant="outline"
           size="sm"
           class="h-8 shrink-0"
-          @click="regenerateTeams"
+          @click="draftTeams"
         >
           <RefreshCw class="mr-1.5 h-3.5 w-3.5" />
           {{ $t("tournament.free_agents.regenerate") }}
         </Button>
+        <span
+          v-else
+          class="max-w-[34ch] shrink-0 text-[0.78rem] leading-snug text-muted-foreground"
+        >
+          {{
+            hasDrafted
+              ? $t("tournament.free_agents.already_drafted")
+              : $t("tournament.free_agents.draft_locked")
+          }}
+        </span>
       </div>
 
       <div

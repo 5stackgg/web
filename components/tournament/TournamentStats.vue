@@ -247,7 +247,7 @@ onMounted(fetchLeaderboard);
         </EmptyDescription>
       </Empty>
 
-      <!-- Eleven columns never fit a phone: the table scrolls inside this box
+      <!-- Twelve columns never fit a phone: the table scrolls inside this box
            so the page itself never gains a horizontal scrollbar. -->
       <div
         v-else
@@ -290,7 +290,12 @@ onMounted(fetchLeaderboard);
                 {{ $t("tournament.stats.col_hs") }}
               </TableHead>
               <TableHead class="text-right">
-                {{ $t("tournament.stats.col_maps") }}
+                {{ $t("tournament.stats.rounds") }}
+              </TableHead>
+              <!-- matches_played is COUNT(DISTINCT match_id) — a series, not a
+                   map. A Bo3 player reads 1 here, so it must not say "Maps". -->
+              <TableHead class="text-right">
+                {{ $t("tournament.stats.matches") }}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -361,6 +366,11 @@ onMounted(fetchLeaderboard);
                 class="text-right font-mono tabular-nums text-muted-foreground"
               >
                 {{ number(entry.headshot_percentage, 1) }}
+              </TableCell>
+              <TableCell
+                class="text-right font-mono tabular-nums text-muted-foreground"
+              >
+                {{ entry.rounds_played }}
               </TableCell>
               <TableCell
                 class="text-right font-mono tabular-nums text-muted-foreground"

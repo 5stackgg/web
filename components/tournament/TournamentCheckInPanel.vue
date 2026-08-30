@@ -23,6 +23,10 @@ const props = defineProps<{
   // until the parent's check-in subscription resolves.
   teams?: Array<Record<string, any>> | null;
   myTeamId?: string | null;
+  // The viewer's own tournament_free_agents row, when they have one. An
+  // undrafted free agent has no tournament_teams row at all, so nothing else
+  // in this panel can see them.
+  myFreeAgent?: Record<string, any> | null;
 }>();
 
 const emit = defineEmits<{ (e: "register"): void }>();
@@ -148,6 +152,18 @@ const myTeam = computed(() => {
 
 const myTeamCheckedIn = computed(() => !!myTeam.value?.checked_in_at);
 
+// checkIntoTournament stamps an undrafted free agent's own row and returns
+// before it ever looks at check_in_setting, and ProcessTournamentCheckIn
+// UNIONs free agents into the "confirm your spot" push. A team-shaped panel is
+// why twenty people got that push and had nowhere to act on it.
+const freeAgent = computed(() =>
+  !myTeam.value && props.myFreeAgent ? props.myFreeAgent : null,
+);
+
+const isFreeAgent = computed(() => freeAgent.value !== null);
+
+const freeAgentCheckedIn = computed(() => !!freeAgent.value?.checked_in_at);
+
 function teamName(team: Record<string, any> | null | undefined) {
   return team?.name || team?.team?.name || t("common.untitled");
 }
@@ -246,30 +262,40 @@ const myRosterEntry = computed(() =>
   ),
 );
 
-const iAmCaptain = computed(() => {
-  const steamId = me.value?.steam_id;
-  if (!steamId || !myTeam.value) {
-    return false;
-  }
-  return (
-    myTeam.value.captain_steam_id === steamId ||
-    myTeam.value.owner_steam_id === steamId
-  );
-});
+// can_manage IS can_manage_tournament_team — the predicate the API accepts. It
+// is true for a tournament_team_roster row with role = 'Admin' and for the
+// linked team's own owner/captain/Admin as well, none of which re-deriving from
+// captain_steam_id/owner_steam_id would find.
+const canManageMyTeam = computed(() => myTeam.value?.can_manage === true);
 
-// The API enforces the same three rules; offering a button the server will
-// reject is worse than offering none, so the gate is duplicated verbatim.
-const canAct = computed(() => {
+// Marking OTHER teams present, which is Admin mode and the organizer alone.
+const canMarkTeamsPresent = computed(
+  () =>
+    windowOpen.value &&
+    isAdminMode.value &&
+    props.tournament?.is_organizer === true,
+);
+
+// Confirming for MYSELF. The API enforces the same rules; offering a button
+// the server will reject is worse than offering none, so the gate is
+// duplicated verbatim.
+const canCheckInSelf = computed(() => {
   if (!windowOpen.value) {
     return false;
   }
+  // The action stamps an undrafted free agent's own row and returns before it
+  // ever reaches the check_in_setting switch, so the mode never gates them —
+  // including in Admin mode, where nobody would mark a team-less player in.
+  if (isFreeAgent.value) {
+    return !freeAgentCheckedIn.value;
+  }
   if (isAdminMode.value) {
-    return !!props.tournament?.is_organizer;
+    return false;
   }
   if (isPlayersMode.value) {
     return !!myRosterEntry.value && !myRosterEntry.value.checked_in_at;
   }
-  return iAmCaptain.value && !myTeamCheckedIn.value;
+  return canManageMyTeam.value && !myTeamCheckedIn.value;
 });
 
 const registrationOpen = computed(
@@ -278,10 +304,14 @@ const registrationOpen = computed(
 );
 
 // An organizer watching a Captains-mode window is reading the field, not being
-// asked to do anything — the open state has to speak to them differently.
-const isObserver = computed(() => !myTeam.value);
+// asked to do anything — the open state has to speak to them differently. A
+// free agent is a participant, not an observer, even with no team row.
+const isObserver = computed(() => !myTeam.value && !isFreeAgent.value);
 
 const openHeading = computed(() => {
+  if (isFreeAgent.value) {
+    return t("tournament.check_in.free_agent_heading");
+  }
   if (isObserver.value && !isAdminMode.value) {
     return t("tournament.check_in.observer_heading");
   }
@@ -295,6 +325,11 @@ const openHeading = computed(() => {
 });
 
 const openHint = computed(() => {
+  if (isFreeAgent.value) {
+    return t("tournament.check_in.free_agent_hint", {
+      time: closesAtLabel.value,
+    });
+  }
   if (isObserver.value && !isAdminMode.value) {
     return t("tournament.check_in.observer_hint", { time: closesAtLabel.value });
   }
@@ -308,7 +343,7 @@ const openHint = computed(() => {
 });
 
 const openChip = computed(() => {
-  if (isPlayersMode.value && !isObserver.value) {
+  if (isPlayersMode.value && !isObserver.value && !isFreeAgent.value) {
     return t("tournament.check_in.players_progress", {
       checked: myRosterCheckedInCount.value,
       required: minPlayers.value,
@@ -320,6 +355,57 @@ const openChip = computed(() => {
   return t("tournament.check_in.chip_action_needed");
 });
 
+const pendingHint = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_opens_at_hint")
+    : t("tournament.check_in.opens_at_hint"),
+);
+
+const doneHeading = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_done_heading", {
+        time: closesAtLabel.value,
+      })
+    : t("tournament.check_in.done_heading", { time: closesAtLabel.value }),
+);
+
+const doneHint = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_done_hint", {
+        time: formatClock(freeAgent.value?.checked_in_at),
+      })
+    : t("tournament.check_in.done_hint", {
+        team: teamName(myTeam.value),
+        time: formatClock(myTeam.value?.checked_in_at),
+      }),
+);
+
+const missedChip = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_chip_waitlisted")
+    : t("tournament.check_in.chip_removed"),
+);
+
+const missedHeading = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_missed_heading")
+    : t("tournament.check_in.missed_heading"),
+);
+
+const missedHint = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_missed_hint", {
+        time: closesAtLabel.value,
+      })
+    : t("tournament.check_in.missed_hint", { time: closesAtLabel.value }),
+);
+
+const missedContact = computed(() =>
+  isFreeAgent.value
+    ? t("tournament.check_in.free_agent_missed_contact")
+    : t("tournament.check_in.missed_contact"),
+);
+
 // Six mutually exclusive states, resolved once so the template is a switch
 // rather than a pile of overlapping v-ifs.
 const state = computed<
@@ -327,6 +413,31 @@ const state = computed<
 >(() => {
   if (!checkInRequired.value) {
     return "hidden";
+  }
+
+  // Before anything else: an Admin-mode organizer is the only route by which
+  // ANY team gets marked present, and those buttons live in the open state
+  // alone. Letting their own team's stamp collapse the panel to "done" takes
+  // the whole field list — and every other team's only check-in — with it.
+  if (
+    isAdminMode.value &&
+    props.tournament?.is_organizer === true &&
+    windowOpen.value
+  ) {
+    return "open";
+  }
+
+  if (isFreeAgent.value) {
+    if (freeAgentCheckedIn.value) {
+      return "done";
+    }
+    if (windowClosed.value) {
+      return "missed";
+    }
+    if (windowOpen.value) {
+      return "open";
+    }
+    return "pending";
   }
 
   if (!myTeam.value) {
@@ -382,7 +493,9 @@ async function runAction(
 
 async function checkIn(teamId?: string | null) {
   const tournamentTeamId = teamId ?? myTeam.value?.id;
-  if (!tournamentTeamId) {
+  // The free-agent branch of the action is reached only by sending no team at
+  // all — an explicit null would still be a team argument to resolve.
+  if (!tournamentTeamId && !isFreeAgent.value) {
     return;
   }
   await runAction(
@@ -390,7 +503,7 @@ async function checkIn(teamId?: string | null) {
       checkIntoTournament: [
         {
           tournament_id: props.tournament.id,
-          tournament_team_id: tournamentTeamId,
+          ...(tournamentTeamId ? { tournament_team_id: tournamentTeamId } : {}),
         },
         {
           success: true,
@@ -467,7 +580,7 @@ async function checkIn(teamId?: string | null) {
             }}
           </h3>
           <p class="text-[0.8rem] text-muted-foreground">
-            {{ $t("tournament.check_in.opens_at_hint") }}
+            {{ pendingHint }}
           </p>
         </div>
         <div class="shrink-0 text-right">
@@ -476,7 +589,12 @@ async function checkIn(teamId?: string | null) {
           >
             {{ $t("tournament.check_in.opens_in") }}
           </div>
-          <CheckInDeadline :cancels-at="opensAtIso" variant="standalone" />
+          <CheckInDeadline
+            :cancels-at="opensAtIso"
+            variant="standalone"
+            :prefix-label="$t('tournament.check_in.a11y_opens_in')"
+            :help-label="$t('tournament.check_in.a11y_opens_help')"
+          />
         </div>
       </div>
     </template>
@@ -507,12 +625,17 @@ async function checkIn(teamId?: string | null) {
             >
               {{ $t("tournament.check_in.closes_in") }}
             </div>
-            <CheckInDeadline :cancels-at="closesAtIso" variant="standalone" />
+            <CheckInDeadline
+              :cancels-at="closesAtIso"
+              variant="standalone"
+              :prefix-label="$t('tournament.check_in.a11y_closes_in')"
+              :help-label="$t('tournament.check_in.a11y_closes_help')"
+            />
           </div>
           <!-- Button, not a bare <button>: it tracks the returned promise, so
                a second click while the action is in flight is impossible. -->
           <Button
-            v-if="canAct && !isAdminMode"
+            v-if="canCheckInSelf"
             :class="[tacticalCtaButtonClasses, 'px-6 py-3.5']"
             @click="checkIn()"
           >
@@ -522,81 +645,15 @@ async function checkIn(teamId?: string | null) {
         </div>
       </div>
 
-      <div class="my-4 h-px bg-border"></div>
+      <!-- A free agent has neither a roster nor a stake in the field: their
+           whole action is the button above. -->
+      <template v-if="!isFreeAgent">
+        <div class="my-4 h-px bg-border"></div>
 
-      <!-- Players mode: the reader's own roster, not the field. An organizer
-           with no team of their own falls through to the field list below. -->
-      <TransitionGroup
-        v-if="isPlayersMode && !isObserver"
-        tag="div"
-        class="flex flex-col gap-1.5"
-        enter-active-class="transition-[opacity,transform] [transition-duration:380ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
-        enter-from-class="opacity-0 translate-y-2 motion-reduce:translate-y-0"
-        leave-active-class="absolute w-full transition-opacity duration-150 ease-in motion-reduce:![transition-duration:1ms]"
-        leave-to-class="opacity-0"
-        move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
-      >
-        <div
-          v-for="row in myRosterRows"
-          :key="row.key"
-          class="flex items-center justify-between gap-3 rounded-md border border-border bg-card/40 px-3 py-1.5"
-          :class="{ 'opacity-55': row.state === 'not_needed' }"
-        >
-          <PlayerDisplay
-            :player="row.player"
-            size="xs"
-            :linkable="true"
-            :show-elo="false"
-            :show-online="false"
-            :show-role="false"
-          />
-          <div class="flex shrink-0 items-center gap-2">
-            <TournamentChip>
-              {{
-                row.isCaptain
-                  ? $t("tournament.check_in.role_captain")
-                  : row.state === "not_needed"
-                    ? $t("tournament.check_in.role_sub")
-                    : $t("tournament.check_in.role_starter")
-              }}
-            </TournamentChip>
-            <TournamentChip
-              :tone="
-                row.state === 'checked_in'
-                  ? 'ok'
-                  : row.state === 'waiting'
-                    ? 'warn'
-                    : 'muted'
-              "
-            >
-              {{
-                row.state === "checked_in"
-                  ? $t("tournament.check_in.checked_in")
-                  : row.state === "waiting"
-                    ? $t("tournament.check_in.waiting")
-                    : $t("tournament.check_in.not_needed")
-              }}
-            </TournamentChip>
-          </div>
-        </div>
-      </TransitionGroup>
-
-      <!-- Captains / Admin mode: the state of the field. -->
-      <template v-else>
-        <div
-          class="mb-2 flex items-center justify-between gap-3 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-        >
-          <span>{{ $t("tournament.check_in.field_status") }}</span>
-          <span>
-            {{
-              $t("tournament.check_in.field_count", {
-                checked: checkedInTeamCount,
-                total: (teams ?? []).length,
-              })
-            }}
-          </span>
-        </div>
+        <!-- Players mode: the reader's own roster, not the field. An organizer
+             with no team of their own falls through to the field list below. -->
         <TransitionGroup
+          v-if="isPlayersMode && !isObserver"
           tag="div"
           class="flex flex-col gap-1.5"
           enter-active-class="transition-[opacity,transform] [transition-duration:380ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
@@ -606,45 +663,115 @@ async function checkIn(teamId?: string | null) {
           move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
         >
           <div
-            v-for="team in teams ?? []"
-            :key="team.id"
-            class="flex items-center justify-between gap-3 rounded-md border border-border bg-card/40 px-3 py-2"
-            :class="{
-              'border-[hsl(var(--tac-amber)_/_0.4)]': team.id === myTeam?.id,
-            }"
+            v-for="row in myRosterRows"
+            :key="row.key"
+            class="flex items-center justify-between gap-3 rounded-md border border-border bg-card/40 px-3 py-1.5"
+            :class="{ 'opacity-55': row.state === 'not_needed' }"
           >
-            <div class="flex min-w-0 items-center gap-2.5">
-              <span
-                class="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.08)] font-mono text-[0.55rem] font-bold uppercase tracking-[0.08em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ teamInitials(team) }}
-              </span>
-              <span class="truncate text-sm font-semibold text-foreground">
-                {{ teamName(team) }}
-              </span>
-            </div>
+            <PlayerDisplay
+              :player="row.player"
+              size="xs"
+              :linkable="true"
+              :show-elo="false"
+              :show-online="false"
+              :show-role="false"
+            />
             <div class="flex shrink-0 items-center gap-2">
-              <TournamentChip :tone="team.checked_in_at ? 'ok' : 'warn'">
+              <TournamentChip>
                 {{
-                  team.checked_in_at
-                    ? $t("tournament.check_in.checked_in_at", {
-                        time: formatClock(team.checked_in_at),
-                      })
-                    : $t("tournament.check_in.waiting")
+                  row.isCaptain
+                    ? $t("tournament.check_in.role_captain")
+                    : row.state === "not_needed"
+                      ? $t("tournament.check_in.role_sub")
+                      : $t("tournament.check_in.role_starter")
                 }}
               </TournamentChip>
-              <Button
-                v-if="isAdminMode && canAct && !team.checked_in_at"
-                variant="outline"
-                size="sm"
-                class="h-7"
-                @click="checkIn(team.id)"
+              <TournamentChip
+                :tone="
+                  row.state === 'checked_in'
+                    ? 'ok'
+                    : row.state === 'waiting'
+                      ? 'warn'
+                      : 'muted'
+                "
               >
-                {{ $t("tournament.check_in.mark_present") }}
-              </Button>
+                {{
+                  row.state === "checked_in"
+                    ? $t("tournament.check_in.checked_in")
+                    : row.state === "waiting"
+                      ? $t("tournament.check_in.waiting")
+                      : $t("tournament.check_in.not_needed")
+                }}
+              </TournamentChip>
             </div>
           </div>
         </TransitionGroup>
+
+        <!-- Captains / Admin mode: the state of the field. -->
+        <template v-else>
+          <div
+            class="mb-2 flex items-center justify-between gap-3 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <span>{{ $t("tournament.check_in.field_status") }}</span>
+            <span>
+              {{
+                $t("tournament.check_in.field_count", {
+                  checked: checkedInTeamCount,
+                  total: (teams ?? []).length,
+                })
+              }}
+            </span>
+          </div>
+          <TransitionGroup
+            tag="div"
+            class="flex flex-col gap-1.5"
+            enter-active-class="transition-[opacity,transform] [transition-duration:380ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+            enter-from-class="opacity-0 translate-y-2 motion-reduce:translate-y-0"
+            leave-active-class="absolute w-full transition-opacity duration-150 ease-in motion-reduce:![transition-duration:1ms]"
+            leave-to-class="opacity-0"
+            move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
+          >
+            <div
+              v-for="team in teams ?? []"
+              :key="team.id"
+              class="flex items-center justify-between gap-3 rounded-md border border-border bg-card/40 px-3 py-2"
+              :class="{
+                'border-[hsl(var(--tac-amber)_/_0.4)]': team.id === myTeam?.id,
+              }"
+            >
+              <div class="flex min-w-0 items-center gap-2.5">
+                <span
+                  class="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.08)] font-mono text-[0.55rem] font-bold uppercase tracking-[0.08em] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ teamInitials(team) }}
+                </span>
+                <span class="truncate text-sm font-semibold text-foreground">
+                  {{ teamName(team) }}
+                </span>
+              </div>
+              <div class="flex shrink-0 items-center gap-2">
+                <TournamentChip :tone="team.checked_in_at ? 'ok' : 'warn'">
+                  {{
+                    team.checked_in_at
+                      ? $t("tournament.check_in.checked_in_at", {
+                          time: formatClock(team.checked_in_at),
+                        })
+                      : $t("tournament.check_in.waiting")
+                  }}
+                </TournamentChip>
+                <Button
+                  v-if="canMarkTeamsPresent && !team.checked_in_at"
+                  variant="outline"
+                  size="sm"
+                  class="h-7"
+                  @click="checkIn(team.id)"
+                >
+                  {{ $t("tournament.check_in.mark_present") }}
+                </Button>
+              </div>
+            </div>
+          </TransitionGroup>
+        </template>
       </template>
     </template>
 
@@ -658,17 +785,10 @@ async function checkIn(teamId?: string | null) {
           <h3
             class="mb-1 mt-[0.6rem] font-sans text-[1.05rem] font-bold tracking-[0.01em] text-foreground"
           >
-            {{
-              $t("tournament.check_in.done_heading", { time: closesAtLabel })
-            }}
+            {{ doneHeading }}
           </h3>
           <p class="text-[0.8rem] text-muted-foreground">
-            {{
-              $t("tournament.check_in.done_hint", {
-                team: teamName(myTeam),
-                time: formatClock(myTeam?.checked_in_at),
-              })
-            }}
+            {{ doneHint }}
           </p>
         </div>
         <div class="shrink-0 text-right">
@@ -677,7 +797,14 @@ async function checkIn(teamId?: string | null) {
           >
             {{ $t("tournament.check_in.starts_in") }}
           </div>
-          <CheckInDeadline :cancels-at="startIso" variant="standalone" checked-in />
+          <!-- Nothing auto-cancels at kickoff, so the match readout's
+               "Auto-cancels in" copy and its tooltip must not be inherited. -->
+          <CheckInDeadline
+            :cancels-at="startIso"
+            variant="standalone"
+            :prefix-label="$t('tournament.check_in.a11y_starts_in')"
+            :help-label="null"
+          />
         </div>
       </div>
     </template>
@@ -687,17 +814,15 @@ async function checkIn(teamId?: string | null) {
       <div class="flex flex-wrap items-center justify-between gap-5">
         <div class="min-w-0">
           <TournamentChip tone="bad">
-            {{ $t("tournament.check_in.chip_removed") }}
+            {{ missedChip }}
           </TournamentChip>
           <h3
             class="mb-1 mt-[0.6rem] font-sans text-[1.05rem] font-bold tracking-[0.01em] text-foreground"
           >
-            {{ $t("tournament.check_in.missed_heading") }}
+            {{ missedHeading }}
           </h3>
           <p class="text-[0.8rem] text-muted-foreground">
-            {{
-              $t("tournament.check_in.missed_hint", { time: closesAtLabel })
-            }}
+            {{ missedHint }}
           </p>
         </div>
         <Button variant="outline" size="sm" disabled class="shrink-0">
@@ -709,7 +834,7 @@ async function checkIn(teamId?: string | null) {
         class="mt-4 flex items-start gap-2.5 rounded-md border border-destructive/45 bg-destructive/10 px-4 py-3 text-[0.82rem] leading-relaxed text-destructive"
       >
         <ShieldAlert class="mt-px h-4 w-4 shrink-0" />
-        <span>{{ $t("tournament.check_in.missed_contact") }}</span>
+        <span>{{ missedContact }}</span>
       </div>
     </template>
   </section>

@@ -202,7 +202,7 @@ import { useForm } from "vee-validate";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import {
-  tournamentPasscodeField,
+  tournamentOrganizerPasscodeField,
   tournamentRegistrationFields,
 } from "~/graphql/simpleTournamentFields";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
@@ -229,11 +229,6 @@ export default {
       isDirty: false,
       registrationSettings: null as Record<string, any> | null,
       registrationSeeded: false,
-      // Selecting a column the session's role cannot see fails the whole
-      // subscription, so the field is asked for conditionally — and a save from
-      // a session that could not read it leaves the column alone rather than
-      // blanking out a passcode it was never shown.
-      canReadPasscode: canManageRegistrationPasscode(),
       form: useForm({
         keepValuesOnUnmount: true,
         validationSchema: toTypedSchema(
@@ -266,7 +261,9 @@ export default {
                 id: true,
                 start: true,
                 ...tournamentRegistrationFields,
-                ...(this.canReadPasscode ? tournamentPasscodeField : {}),
+                ...(this.canReadPasscode
+                  ? tournamentOrganizerPasscodeField
+                  : {}),
               } as any,
             ],
           });
@@ -310,6 +307,14 @@ export default {
     },
   },
   computed: {
+    // A computed, not a data() snapshot: `me` is undefined at data() time on a
+    // first login, a cleared cache, or a private window where localStorage
+    // throws. Snapshotting `false` there rendered the passcode input while
+    // silently dropping the column from every mutation — a success toast over
+    // a write that never happened.
+    canReadPasscode(): boolean {
+      return canManageRegistrationPasscode();
+    },
     // Only the live subscription carries `check_in_started`; the page's own
     // tournament object never selects it, and a missing field would read as
     // "not frozen" and quietly drop the lock explanation.

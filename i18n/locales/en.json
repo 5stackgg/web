@@ -2635,7 +2635,7 @@
           "load_failed": "Could not load the sanctions policy",
           "reset": "Reset to default",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "At any scope other than “Bars both” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
+          "platform_ban_narrowed": "At any scope other than “Bars everything” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
           "threshold": {
             "label": "Sanction after",
             "first_offence": "The first occurrence is punished.",
@@ -6275,7 +6275,7 @@
       "lobby_size": "{count} of {size}",
       "lobby_hint": "Signing up with your lobby puts all {count} of you in the pool now, and the draft keeps you on the same team. Teams here are {size} players.",
       "lobby_too_big": "Your lobby of {count} is larger than a team of {size}, so it cannot be drafted together. Sign up alone, or drop to {size} and try again.",
-      "lobby_not_captain": "Only {name} can sign the lobby up, the same way only the captain queues it.",
+      "lobby_not_captain": "Only {name} can sign the lobby up, the same way only the party leader queues it.",
       "lobby_already_signed_up": "{count} of them already signed up alone; they keep their place in line and join your party.",
       "status_drafted": "drafted",
       "status_waitlisted": "waitlist",

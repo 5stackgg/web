@@ -53,7 +53,7 @@ import {
   utilityLineupsCountQuery,
   utilityLineupsQuery,
   utilityMetaLineupsQuery,
-  utilityScopeCountsSubscription,
+  utilityScopeCountSubscription,
 } from "~/graphql/utilityGraphql";
 import { renderUtilityLineupPreviewMutation } from "~/graphql/utilityRenderGraphql";
 import { e_player_roles_enum, order_by } from "~/generated/zeus";
@@ -715,15 +715,6 @@ const countedScopes = computed(() =>
     : ["public"],
 );
 
-function readScopeCounts(data: any, scopes: readonly string[]) {
-  return Object.fromEntries(
-    scopes.map((scope) => [
-      scope,
-      data?.[`scope_${scope}`]?.aggregate?.count ?? 0,
-    ]),
-  );
-}
-
 /**
  * The tallies above the list, kept live.
  *
@@ -733,30 +724,45 @@ function readScopeCounts(data: any, scopes: readonly string[]) {
  * them, so the honest answer to "did it work" was to switch tabs and look
  * again. Subscribed rather than polled: the counts change when anybody's
  * lineup changes, not only when this player does something.
+ *
+ * One subscription per scope rather than one aliased six-in-one: Hasura only
+ * accepts a single top level field in a subscription, so the aliased shape was
+ * rejected wholesale -- every tab read 0 while the list beneath it showed rows.
  */
-let scopeCountsSub: { unsubscribe: () => void } | null = null;
+let scopeCountSubs: Array<{ unsubscribe: () => void }> = [];
+
+function unsubscribeScopeCounts() {
+  for (const sub of scopeCountSubs) {
+    sub.unsubscribe();
+  }
+  scopeCountSubs = [];
+}
 
 function subscribeScopeCounts() {
-  scopeCountsSub?.unsubscribe();
-  scopeCountsSub = null;
+  unsubscribeScopeCounts();
 
-  const scopes = countedScopes.value;
+  const client = getGraphqlClient();
 
-  scopeCountsSub = getGraphqlClient()
-    .subscribe({
-      query: utilityScopeCountsSubscription(scopes),
-      variables: Object.fromEntries(
-        scopes.map((scope) => [`where_${scope}`, scopeWheres.value[scope]]),
-      ),
-    })
-    .subscribe({
-      next: ({ data }: { data: any }) => {
-        scopeCounts.value = readScopeCounts(data, scopes);
-      },
-      error: (error: unknown) => {
-        console.error("[utility] scope count subscription error:", error);
-      },
-    });
+  for (const scope of countedScopes.value) {
+    scopeCountSubs.push(
+      client
+        .subscribe({
+          query: utilityScopeCountSubscription,
+          variables: { where: scopeWheres.value[scope] },
+        })
+        .subscribe({
+          next: ({ data }: { data: any }) => {
+            scopeCounts.value = {
+              ...scopeCounts.value,
+              [scope]: data?.utility_lineups_aggregate?.aggregate?.count ?? 0,
+            };
+          },
+          error: (error: unknown) => {
+            console.error(`[utility] ${scope} count subscription error:`, error);
+          },
+        }),
+    );
+  }
 }
 
 // Serialised for the same reason the list query is: `scopeWheres` rebuilds its
@@ -769,10 +775,7 @@ const scopeCountsKey = computed(() =>
 
 watch(scopeCountsKey, subscribeScopeCounts, { immediate: true });
 
-onBeforeUnmount(() => {
-  scopeCountsSub?.unsubscribe();
-  scopeCountsSub = null;
-});
+onBeforeUnmount(unsubscribeScopeCounts);
 
 const orderBy = computed(() =>
   filters.value.sort === "new"
@@ -889,6 +892,14 @@ async function fetchMeta() {
   }
 }
 
+// The panel column, so a map switch can hold the height it already has.
+const panelShell = ref<{ $el?: HTMLElement } | null>(null);
+const reservedPanelHeight = ref<number | null>(null);
+
+// Past this the column is taller than the screen and the shrink is happening
+// whatever we do, so holding it only means a wall of shimmer on the way down.
+const MAX_RESERVED_PANEL_PX = 640;
+
 // Everything on this page is scoped to one map, and the page no longer unmounts
 // between them -- so what a remount used to throw away has to be thrown away
 // here instead. Markers, meta rings and the list clear on the spot, which is
@@ -898,6 +909,19 @@ async function fetchMeta() {
 watch(
   mapName,
   () => {
+    // Measured before the list is cleared, while the outgoing answer is still
+    // standing: the placeholder then comes in at exactly that height, so the
+    // column moves once -- when the new map's lineups land -- instead of
+    // spiking to three cards and dropping back. Only while the list is the
+    // thing standing there; every other tab fills the same shell with a panel
+    // of its own, and its height is not a promise about this one.
+    const height =
+      listTab.value === LIST_TAB
+        ? (panelShell.value?.$el?.getBoundingClientRect().height ?? 0)
+        : 0;
+    reservedPanelHeight.value =
+      height > 0 ? Math.min(height, MAX_RESERVED_PANEL_PX) : null;
+
     resetListLoading();
     lineups.value = [];
     totalCount.value = 0;
@@ -1582,7 +1606,7 @@ function selectLineup(id: string | null) {
              below it flew up 700px and back down on every tab click. The
              panels now hold their placeholder for longer than this tween runs,
              so the shell is back to auto before any of them changes size. -->
-        <HeightSwap>
+        <HeightSwap ref="panelShell">
           <UtilityPracticePlanPanel
             v-if="showPlan"
             key="plan"
@@ -1657,6 +1681,7 @@ function selectLineup(id: string | null) {
             v-else-if="listSkeleton"
             key="loading"
             :count="3"
+            :fill="reservedPanelHeight"
             :shape="listDensity === 'rows' ? 'row' : 'card'"
           />
 

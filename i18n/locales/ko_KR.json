@@ -1814,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "경기 채팅 메시지",
             "description": "경기 방의 새 메시지."
+          },
+          "TournamentInvite": {
+            "title": "토너먼트 참가 신청 초대",
+            "description": "주최자가 토너먼트에 참가 신청하도록 초대했습니다."
           }
         },
         "quiet_hours": {
@@ -2621,6 +2625,72 @@
           "server_default": "서버 기본값",
           "invalid_number": "0 이상의 정수를 입력하세요.",
           "updated": "유틸리티 설정을 갱신했습니다"
+        },
+        "sanctions": {
+          "title": "제재",
+          "section": "자동 제재",
+          "description": "5stack이 스스로 감지할 수 있는 행위를 어떻게 제재하는지입니다. 각 항목은 일정 기간 안의 위반 횟수를 세고, 단계별 제재에서 해당하는 단계를 적용합니다.",
+          "defaults_note": "아래 값은 5stack이 지금까지 계속 사용해 온 값입니다. 이 페이지를 여는 것만으로는 아무것도 바뀌지 않고, 수정해야만 바뀝니다.",
+          "unavailable": "사용 가능한 제재 항목이 없습니다. API가 아직 제재 마이그레이션을 실행하지 않았을 수 있습니다.",
+          "load_failed": "제재 정책을 불러오지 못했습니다",
+          "reset": "기본값으로 초기화",
+          "permanent": "영구",
+          "platform_ban_narrowed": "‘둘 다 차단’ 이외의 범위에서는 이 항목이 플랫폼 전체 차단을 기록하지 않고 범위가 한정된 이용 제한만 적용합니다 — VAC 차단된 계정도 5stack의 나머지 절반은 그대로 쓸 수 있습니다.",
+          "threshold": {
+            "label": "제재 시작 횟수",
+            "first_offence": "첫 위반부터 제재합니다.",
+            "free_passes": "처음 {count}회 위반은 제재하지 않습니다.",
+            "free_passes_one": "첫 위반은 제재하지 않습니다."
+          },
+          "window": {
+            "label": "집계 기간 (일)",
+            "never": "만료되지 않습니다 — 기록된 모든 위반이 계속 집계됩니다.",
+            "decays": "{count}일보다 오래된 위반은 집계에서 빠집니다.",
+            "decays_one": "하루보다 오래된 위반은 집계에서 빠집니다."
+          },
+          "ladder": {
+            "label": "단계별 제재",
+            "add": "단계 추가",
+            "remove": "단계 삭제",
+            "clamp_hint": "마지막 단계는 그 이후로 계속 반복됩니다. 단계를 0으로 두면 제재가 영구가 됩니다.",
+            "occurrence": "{count}회차",
+            "occurrence_and_after": "{count}회차 이상",
+            "unit": {
+              "minutes": "분",
+              "hours": "시간",
+              "days": "일"
+            },
+            "unit_value": {
+              "minutes": "{count}분",
+              "hours": "{count}시간",
+              "days": "{count}일",
+              "minutes_one": "1분",
+              "hours_one": "1시간",
+              "days_one": "1일"
+            }
+          },
+          "scope": {
+            "label": "무엇을 차단하는지"
+          },
+          "scopes": {
+            "matchmaking": "매치메이킹 차단",
+            "tournaments": "토너먼트 차단",
+            "both": "둘 다 차단"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "매치 이탈",
+              "description": "로스터에 포함된 매치에서 플레이어가 이탈했거나 아예 접속하지 않았습니다. 기간은 지금이 아니라 마지막 이탈 시점부터 계산됩니다."
+            },
+            "vac_ban": {
+              "title": "VAC / 게임 차단",
+              "description": "Steam이 플레이어 계정에 VAC 또는 게임 차단을 보고했습니다. 집계 기간은 Steam이 제공하는 마지막 차단 이후 경과 일수를 기준으로 측정합니다."
+            },
+            "tournament_no_show": {
+              "title": "토너먼트 불참",
+              "description": "팀이 필수 토너먼트 체크인을 놓쳤습니다. 진입할 때만 확인하므로 이미 진행 중인 대진표에 있는 플레이어는 자리를 유지합니다."
+            }
+          }
         }
       },
       "language": {
@@ -4943,7 +5013,9 @@
         "actor_host": "호스트",
         "actor_teammate": "팀원",
         "actor_organizer": "주최자",
-        "actor_player": "플레이어"
+        "actor_player": "플레이어",
+        "tournament_registration_invite": "토너먼트 참가 신청",
+        "invited_you_register": "님이 참가 신청에 초대했습니다:"
       },
       "season_rebuild": {
         "title": "시즌 {number}의 ELO 재계산이 필요합니다",
@@ -6235,6 +6307,21 @@
       "ok_chip": "참가 가능",
       "locked_chip": "잠김",
       "blocked_chip": "참가 불가"
+    },
+    "invites": {
+      "title": "초대된 플레이어",
+      "description": "이 토너먼트는 초대 전용입니다. 플레이어를 직접 초대하면 참가 코드 없이 신청할 수 있습니다.",
+      "add": "플레이어 초대",
+      "pending": "대기 중",
+      "invited_by": "{name} 님이 초대",
+      "revoke": "초대 취소",
+      "confirm_revoke": "이 초대를 취소할까요?",
+      "revoke_description": "참가 코드가 없다면 {name} 님은 더 이상 신청할 수 없습니다.",
+      "empty": "아직 초대된 사람이 없습니다.",
+      "sent": "초대를 보냈습니다",
+      "send_failed": "초대를 보내지 못했습니다",
+      "already_invited": "이미 초대됨",
+      "revoked": "초대를 취소했습니다"
     }
   },
   "team": {
@@ -6287,7 +6374,9 @@
       "team_message": "팀 가입 초대를 받았습니다",
       "invited_by": "초대한 사람",
       "deny": "거절",
-      "accept": "수락"
+      "accept": "수락",
+      "tournament_registration_title": "토너먼트 참가 신청 초대",
+      "tournament_registration_message": "토너먼트에 참가 신청하도록 초대받았습니다"
     },
     "roles": {
       "captain": "팀장"
@@ -7799,7 +7888,9 @@
       "requirement": "{half}명 이하 또는 정확히 {full}명으로 대기열에 참가하세요"
     },
     "temp_banned_until": "{time}까지 매치메이킹이 일시적으로 제한됩니다",
-    "new_invites_count": "새 초대 ({count})"
+    "new_invites_count": "새 초대 ({count})",
+    "tournament_banned": "토너먼트 로스터와 프리 에이전트 풀에 참가할 수 없습니다.",
+    "tournament_banned_until": "{time}까지 토너먼트 로스터와 프리 에이전트 풀에 참가할 수 없습니다."
   },
   "game_server": {
     "lan_ip": "LAN IP",

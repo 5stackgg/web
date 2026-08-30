@@ -1814,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "比賽聊天訊息",
             "description": "比賽房間中的新訊息。"
+          },
+          "TournamentInvite": {
+            "title": "賽事報名邀請",
+            "description": "主辦方邀請你報名參加一個賽事。"
           }
         },
         "quiet_hours": {
@@ -2621,6 +2625,72 @@
           "server_default": "伺服器預設值",
           "invalid_number": "請輸入 0 或更大的整數。",
           "updated": "道具設定已更新"
+        },
+        "sanctions": {
+          "title": "處罰",
+          "section": "自動處罰",
+          "description": "5stack 如何處理它能自行偵測到的行為。每個來源統計一個時間範圍內的違規次數，並套用處罰階梯中對應的一階。",
+          "defaults_note": "下面的值就是 5stack 一直在用的值。只看這個頁面不會改變任何設定，只有編輯才會。",
+          "unavailable": "沒有可用的處罰來源。API 可能還沒有執行處罰相關的遷移。",
+          "load_failed": "無法載入處罰政策",
+          "reset": "恢復預設",
+          "permanent": "永久",
+          "platform_ban_narrowed": "在「兩者都禁止」以外的任何範圍下，此來源不再寫入全平台封鎖，只會下發範圍受限的冷卻——被 VAC 封鎖的帳號仍可使用 5stack 的另一半功能。",
+          "threshold": {
+            "label": "達到多少次後處罰",
+            "first_offence": "第一次違規就會被處罰。",
+            "free_passes": "前 {count} 次違規不予處罰。",
+            "free_passes_one": "第一次違規不予處罰。"
+          },
+          "window": {
+            "label": "計數期間（天）",
+            "never": "永不衰減——每一筆曾經記錄過的違規都仍然計入。",
+            "decays": "超過 {count} 天的違規不再計入。",
+            "decays_one": "超過一天的違規不再計入。"
+          },
+          "ladder": {
+            "label": "處罰階梯",
+            "add": "新增一階",
+            "remove": "刪除該階",
+            "clamp_hint": "最後一階會一直重複下去。把某一階設為 0，該處罰即為永久。",
+            "occurrence": "第 {count} 次違規",
+            "occurrence_and_after": "第 {count} 次違規起",
+            "unit": {
+              "minutes": "分鐘",
+              "hours": "小時",
+              "days": "天"
+            },
+            "unit_value": {
+              "minutes": "{count} 分鐘",
+              "hours": "{count} 小時",
+              "days": "{count} 天",
+              "minutes_one": "1 分鐘",
+              "hours_one": "1 小時",
+              "days_one": "1 天"
+            }
+          },
+          "scope": {
+            "label": "禁止的範圍"
+          },
+          "scopes": {
+            "matchmaking": "禁止配對",
+            "tournaments": "禁止賽事",
+            "both": "兩者都禁止"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "棄賽",
+              "description": "玩家離開了自己在陣容中的比賽，或者從未連線。計時從最後一次棄賽開始，而不是從現在開始。"
+            },
+            "vac_ban": {
+              "title": "VAC / 遊戲封鎖",
+              "description": "Steam 回報該玩家帳號存在 VAC 或遊戲封鎖。計數期間依 Steam 自己提供的「距上次封鎖天數」來衡量。"
+            },
+            "tournament_no_show": {
+              "title": "賽事缺席",
+              "description": "隊伍錯過了賽事的必要報到。僅在進入時檢查，因此已經在進行中的對戰表裡的玩家會保留位置。"
+            }
+          }
         }
       },
       "language": {
@@ -4943,7 +5013,9 @@
         "actor_host": "房主",
         "actor_teammate": "一位隊友",
         "actor_organizer": "一位主辦方",
-        "actor_player": "一位玩家"
+        "actor_player": "一位玩家",
+        "tournament_registration_invite": "賽事報名",
+        "invited_you_register": "邀請您報名參加"
       },
       "season_rebuild": {
         "title": "第 {number} 賽季需要重新計算 ELO",
@@ -6235,6 +6307,21 @@
       "ok_chip": "可參賽",
       "locked_chip": "已鎖定",
       "blocked_chip": "不可參賽"
+    },
+    "invites": {
+      "title": "受邀玩家",
+      "description": "本賽事僅限邀請。直接邀請一位玩家，他無須報名碼即可報名。",
+      "add": "邀請玩家",
+      "pending": "待處理",
+      "invited_by": "{name} 邀請",
+      "revoke": "撤銷",
+      "confirm_revoke": "要撤銷這個邀請嗎？",
+      "revoke_description": "除非擁有報名碼，{name} 將無法再報名。",
+      "empty": "還沒有邀請任何人。",
+      "sent": "邀請已送出",
+      "send_failed": "無法傳送該邀請",
+      "already_invited": "已邀請",
+      "revoked": "邀請已撤銷"
     }
   },
   "team": {
@@ -6287,7 +6374,9 @@
       "team_message": "您受邀加入一個隊伍",
       "invited_by": "邀請人",
       "deny": "拒絕",
-      "accept": "接受"
+      "accept": "接受",
+      "tournament_registration_title": "賽事報名邀請",
+      "tournament_registration_message": "您受邀報名參加一個賽事"
     },
     "roles": {
       "captain": "隊長"
@@ -7799,7 +7888,9 @@
       "requirement": "請以 {half} 人以下，或剛好 {full} 人進行配對"
     },
     "temp_banned_until": "你被暫時禁止使用配對，直到 {time}",
-    "new_invites_count": "新邀請（{count}）"
+    "new_invites_count": "新邀請（{count}）",
+    "tournament_banned": "你被禁止加入賽事陣容和自由選手池。",
+    "tournament_banned_until": "你被禁止加入賽事陣容和自由選手池，直到 {time}。"
   },
   "game_server": {
     "lan_ip": "LAN IP",

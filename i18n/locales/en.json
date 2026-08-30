@@ -2635,7 +2635,7 @@
           "load_failed": "Could not load the sanctions policy",
           "reset": "Reset to default",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "At any scope other than “Bars everything” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
+          "platform_ban_narrowed": "At any scope other than “Bars both” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
           "threshold": {
             "label": "Sanction after",
             "first_offence": "The first occurrence is punished.",

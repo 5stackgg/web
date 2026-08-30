@@ -1814,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "Meddelanden i matchchatt",
             "description": "Ett nytt meddelande i en matchs rum."
+          },
+          "TournamentInvite": {
+            "title": "Inbjudningar till turneringsanmälan",
+            "description": "En arrangör har bjudit in dig att anmäla dig till en turnering."
           }
         },
         "quiet_hours": {
@@ -2621,6 +2625,72 @@
           "server_default": "Serverns standard",
           "invalid_number": "Ange ett heltal som är 0 eller större.",
           "updated": "Utility-inställningarna uppdaterade"
+        },
+        "sanctions": {
+          "title": "Sanktioner",
+          "section": "Automatiska sanktioner",
+          "description": "Hur 5stack bestraffar det som den själv kan upptäcka. Varje källa räknar förseelser inom en period och tillämpar motsvarande steg i en upptrappningsskala.",
+          "defaults_note": "Värdena nedan är de som 5stack alltid har använt. Att läsa den här sidan ändrar ingenting — bara en redigering gör det.",
+          "unavailable": "Inga sanktionskällor tillgängliga. API:et kanske inte har kört sanktionsmigreringen än.",
+          "load_failed": "Kunde inte läsa in sanktionspolicyn",
+          "reset": "Återställ till standard",
+          "permanent": "Permanent",
+          "platform_ban_narrowed": "Vid varje omfattning utom ”Blockerar båda” skriver den här källan inte längre en plattformsomfattande avstängning, utan bara en avgränsad karantän — ett VAC-bannat konto behåller den andra halvan av 5stack.",
+          "threshold": {
+            "label": "Sanktionera från",
+            "first_offence": "Redan den första förseelsen bestraffas.",
+            "free_passes": "De första {count} förseelserna är gratis.",
+            "free_passes_one": "Den första förseelsen är gratis."
+          },
+          "window": {
+            "label": "Räkningsperiod (dagar)",
+            "never": "Förfaller aldrig — varje registrerad förseelse räknas fortfarande.",
+            "decays": "Förseelser äldre än {count} dagar slutar räknas.",
+            "decays_one": "Förseelser äldre än en dag slutar räknas."
+          },
+          "ladder": {
+            "label": "Upptrappningssteg",
+            "add": "Lägg till steg",
+            "remove": "Ta bort steg",
+            "clamp_hint": "Det sista steget upprepas för alltid. Sätt ett steg till 0 för att göra sanktionen permanent.",
+            "occurrence": "Förseelse {count}",
+            "occurrence_and_after": "Förseelse {count}+",
+            "unit": {
+              "minutes": "Minuter",
+              "hours": "Timmar",
+              "days": "Dagar"
+            },
+            "unit_value": {
+              "minutes": "{count} minuter",
+              "hours": "{count} timmar",
+              "days": "{count} dagar",
+              "minutes_one": "1 minut",
+              "hours_one": "1 timme",
+              "days_one": "1 dag"
+            }
+          },
+          "scope": {
+            "label": "Vad den blockerar"
+          },
+          "scopes": {
+            "matchmaking": "Blockerar matchmaking",
+            "tournaments": "Blockerar turneringar",
+            "both": "Blockerar båda"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "Övergiven match",
+              "description": "En spelare lämnade en match hen stod i truppen för, eller anslöt aldrig. Tiden räknas från den senaste övergivna matchen, inte från nu."
+            },
+            "vac_ban": {
+              "title": "VAC-/spelavstängning",
+              "description": "Steam rapporterar en VAC- eller spelavstängning på spelarens konto. Räkningsperioden mäts mot Steams eget antal dagar sedan senaste avstängning."
+            },
+            "tournament_no_show": {
+              "title": "Utebliven i turnering",
+              "description": "Ett lag missade en obligatorisk turneringsincheckning. Kontrolleras bara vid ingången, så en spelare som redan är i ett pågående slutspelsträd behåller sin plats."
+            }
+          }
         }
       },
       "language": {
@@ -4943,7 +5013,9 @@
         "actor_host": "Värden",
         "actor_teammate": "En lagkamrat",
         "actor_organizer": "En arrangör",
-        "actor_player": "En spelare"
+        "actor_player": "En spelare",
+        "tournament_registration_invite": "Turneringsanmälan",
+        "invited_you_register": "bjöd in dig att anmäla dig till"
       },
       "season_rebuild": {
         "title": "ELO för säsong {number} behöver räknas om",
@@ -6235,6 +6307,21 @@
       "ok_chip": "får delta",
       "locked_chip": "låst",
       "blocked_chip": "får inte delta"
+    },
+    "invites": {
+      "title": "Inbjudna spelare",
+      "description": "Den här turneringen är endast med inbjudan. Bjud in en spelare direkt så kan hen anmäla sig utan åtkomstkoden.",
+      "add": "Bjud in en spelare",
+      "pending": "Väntande",
+      "invited_by": "Inbjuden av {name}",
+      "revoke": "Återkalla",
+      "confirm_revoke": "Återkalla den här inbjudan?",
+      "revoke_description": "{name} kommer inte längre att kunna anmäla sig, om hen inte har åtkomstkoden.",
+      "empty": "Ingen har bjudits in än.",
+      "sent": "Inbjudan skickad",
+      "send_failed": "Kunde inte skicka den inbjudan",
+      "already_invited": "Redan inbjuden",
+      "revoked": "Inbjudan återkallad"
     }
   },
   "team": {
@@ -6287,7 +6374,9 @@
       "team_message": "Du har blivit inbjuden att gå med i ett lag",
       "invited_by": "Inbjuden av",
       "deny": "Neka",
-      "accept": "Acceptera"
+      "accept": "Acceptera",
+      "tournament_registration_title": "Inbjudan till turneringsanmälan",
+      "tournament_registration_message": "Du har blivit inbjuden att anmäla dig till en turnering"
     },
     "roles": {
       "captain": "Lagkapten"
@@ -7799,7 +7888,9 @@
       "requirement": "Köa med {half} eller färre, eller exakt {full} spelare"
     },
     "temp_banned_until": "Du är tillfälligt avstängd från matchmaking till {time}",
-    "new_invites_count": "Nya inbjudningar ({count})"
+    "new_invites_count": "Nya inbjudningar ({count})",
+    "tournament_banned": "Du får inte gå med i turneringstrupper eller free agent-poolen.",
+    "tournament_banned_until": "Du får inte gå med i turneringstrupper eller free agent-poolen förrän {time}."
   },
   "game_server": {
     "lan_ip": "LAN-IP",

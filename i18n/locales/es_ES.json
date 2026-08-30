@@ -1814,6 +1814,10 @@
           "MatchChatMessage": {
             "title": "Mensajes del chat de partida",
             "description": "Un mensaje nuevo en la sala de una partida."
+          },
+          "TournamentInvite": {
+            "title": "Invitaciones de inscripción a torneos",
+            "description": "Un organizador te ha invitado a inscribirte en un torneo."
           }
         },
         "quiet_hours": {
@@ -2621,6 +2625,72 @@
           "server_default": "Valor del servidor",
           "invalid_number": "Introduce un número entero de 0 o más.",
           "updated": "Ajustes de utilidad actualizados"
+        },
+        "sanctions": {
+          "title": "Sanciones",
+          "section": "Sanciones automáticas",
+          "description": "Cómo castiga 5stack lo que puede detectar por su cuenta. Cada fuente cuenta infracciones dentro de una ventana y aplica el escalón correspondiente de una escala de sanciones.",
+          "defaults_note": "Los valores de abajo son los que 5stack ha usado siempre. Leer esta página no cambia nada; solo lo hace una edición.",
+          "unavailable": "No hay fuentes de sanción disponibles. Puede que la API aún no haya ejecutado la migración de sanciones.",
+          "load_failed": "No se ha podido cargar la política de sanciones",
+          "reset": "Restablecer valores por defecto",
+          "permanent": "Permanente",
+          "platform_ban_narrowed": "Con cualquier alcance que no sea «Bloquea ambos», esta fuente deja de aplicar un baneo de toda la plataforma y solo impone un bloqueo limitado: una cuenta baneada por VAC conserva la otra mitad de 5stack.",
+          "threshold": {
+            "label": "Sancionar a partir de",
+            "first_offence": "Ya se castiga la primera infracción.",
+            "free_passes": "Las primeras {count} infracciones no se castigan.",
+            "free_passes_one": "La primera infracción no se castiga."
+          },
+          "window": {
+            "label": "Ventana de conteo (días)",
+            "never": "No caduca nunca: sigue contando cada infracción registrada.",
+            "decays": "Las infracciones de más de {count} días dejan de contar.",
+            "decays_one": "Las infracciones de más de un día dejan de contar."
+          },
+          "ladder": {
+            "label": "Escala de sanciones",
+            "add": "Añadir escalón",
+            "remove": "Quitar escalón",
+            "clamp_hint": "El último escalón se repite indefinidamente. Pon un escalón a 0 para que la sanción sea permanente.",
+            "occurrence": "Infracción {count}",
+            "occurrence_and_after": "Infracción {count}+",
+            "unit": {
+              "minutes": "Minutos",
+              "hours": "Horas",
+              "days": "Días"
+            },
+            "unit_value": {
+              "minutes": "{count} minutos",
+              "hours": "{count} horas",
+              "days": "{count} días",
+              "minutes_one": "1 minuto",
+              "hours_one": "1 hora",
+              "days_one": "1 día"
+            }
+          },
+          "scope": {
+            "label": "Qué bloquea"
+          },
+          "scopes": {
+            "matchmaking": "Bloquea el matchmaking",
+            "tournaments": "Bloquea los torneos",
+            "both": "Bloquea ambos"
+          },
+          "sources": {
+            "match_abandon": {
+              "title": "Abandono de partida",
+              "description": "Un jugador se fue de una partida en la que estaba inscrito o nunca se conectó. El plazo cuenta desde el último abandono, no desde ahora."
+            },
+            "vac_ban": {
+              "title": "Baneo VAC / de juego",
+              "description": "Steam informa de un baneo VAC o de juego en la cuenta del jugador. La ventana de conteo se mide con los días desde el último baneo que da la propia Steam."
+            },
+            "tournament_no_show": {
+              "title": "Ausencia en torneo",
+              "description": "Un equipo se perdió un check-in obligatorio del torneo. Solo se comprueba al entrar, así que un jugador que ya está en un cuadro en marcha conserva su plaza."
+            }
+          }
         }
       },
       "language": {
@@ -4943,7 +5013,9 @@
         "actor_host": "El anfitrión",
         "actor_teammate": "Un compañero",
         "actor_organizer": "Un organizador",
-        "actor_player": "Un jugador"
+        "actor_player": "Un jugador",
+        "tournament_registration_invite": "Inscripción a torneo",
+        "invited_you_register": "te ha invitado a inscribirte en"
       },
       "season_rebuild": {
         "title": "Se requiere recalcular el ELO de la temporada {number}",
@@ -6235,6 +6307,21 @@
       "ok_chip": "puedes entrar",
       "locked_chip": "bloqueado",
       "blocked_chip": "no puedes entrar"
+    },
+    "invites": {
+      "title": "Jugadores invitados",
+      "description": "Este torneo es solo por invitación. Invita a un jugador directamente y podrá inscribirse sin el código de acceso.",
+      "add": "Invitar a un jugador",
+      "pending": "Pendiente",
+      "invited_by": "Invitado por {name}",
+      "revoke": "Revocar",
+      "confirm_revoke": "¿Revocar esta invitación?",
+      "revoke_description": "{name} ya no podrá inscribirse a menos que tenga el código de acceso.",
+      "empty": "Todavía no se ha invitado a nadie.",
+      "sent": "Invitación enviada",
+      "send_failed": "No se ha podido enviar esa invitación",
+      "already_invited": "Ya invitado",
+      "revoked": "Invitación revocada"
     }
   },
   "team": {
@@ -6287,7 +6374,9 @@
       "team_message": "Te han invitado a unirte a un equipo",
       "invited_by": "Invitado por",
       "deny": "Rechazar",
-      "accept": "Aceptar"
+      "accept": "Aceptar",
+      "tournament_registration_title": "Invitación de inscripción a torneo",
+      "tournament_registration_message": "Te han invitado a inscribirte en un torneo"
     },
     "roles": {
       "captain": "Capitán"
@@ -7799,7 +7888,9 @@
       "requirement": "Entra en cola con {half} o menos, o con exactamente {full} jugadores"
     },
     "temp_banned_until": "Tienes vetado temporalmente el emparejamiento hasta {time}",
-    "new_invites_count": "Invitaciones nuevas ({count})"
+    "new_invites_count": "Invitaciones nuevas ({count})",
+    "tournament_banned": "No puedes entrar en rosters de torneo ni en el grupo de agentes libres.",
+    "tournament_banned_until": "No puedes entrar en rosters de torneo ni en el grupo de agentes libres hasta {time}."
   },
   "game_server": {
     "lan_ip": "IP LAN",

@@ -5967,7 +5967,6 @@
       "col_assists": "A",
       "col_kd": "K/D",
       "col_hs": "HS%",
-      "col_maps": "Maps",
       "empty_title": "No stats yet",
       "empty_description": "The leaderboard fills in as tournament matches finish."
     },

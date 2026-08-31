@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "招待制",
-        "description": "参加登録は一般公開されません。主催者がチームを直接招待するか、参加者がアクセスコードを入力します。"
-      },
-      "passcode": {
-        "label": "パスコード",
-        "optional": "（任意）",
-        "description": "コードを知っていれば招待なしで参加できます。主催者のみ。"
+        "description": "参加登録は一般公開されません。主催者がチームやプレイヤーを直接招待するか、招待リンクを共有します。"
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "参加条件",
       "requirements_hint": "クリックした人だけでなく、追加されるすべてのプレイヤーで判定します。1人でも条件を満たさない場合、参加登録は拒否されます。",
       "locked_title": "このトーナメントは招待制です",
-      "locked_hint": "主催者のパスコードを入力して参加登録を解除するか、チームを直接招待してもらってください。",
-      "passcode_label": "パスコード",
-      "passcode_placeholder": "パスコードを入力",
-      "unlock": "解除",
-      "unlocked": "参加登録を解除しました",
-      "unlock_failed": "参加登録を解除できませんでした",
       "min_role": "最低ロール: {role}",
       "elo_between": "ELO {min} 〜 {max}",
       "elo_min": "ELO {min} 以上",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "条件を満たしていません",
       "ok_chip": "参加可能",
       "locked_chip": "ロック中",
-      "blocked_chip": "参加不可"
+      "blocked_chip": "参加不可",
+      "invite_hint": "主催者にチームの招待、または招待リンクの送付を依頼してください。"
     },
     "invites": {
-      "title": "招待済みプレイヤー",
-      "description": "このトーナメントは招待制です。プレイヤーを直接招待すると、パスコードなしで参加登録できます。",
+      "title": "招待",
+      "description": "チームやプレイヤーを直接招待すれば、このトーナメントが招待制でも参加登録できます。",
       "add": "プレイヤーを招待",
       "pending": "保留中",
       "invited_by": "{name} が招待",
       "revoke": "取り消し",
       "confirm_revoke": "この招待を取り消しますか？",
-      "revoke_description": "パスコードを持っていない限り、{name} は参加登録できなくなります。",
-      "empty": "まだ誰も招待されていません。",
+      "revoke_description": "有効な招待リンクを持っていない限り、{name} はアクセスできなくなります。",
+      "empty": "まだ招待は送られていません。",
       "sent": "招待を送信しました",
       "send_failed": "この招待を送信できませんでした",
       "already_invited": "招待済み",
-      "revoked": "招待を取り消しました"
+      "revoked": "招待を取り消しました",
+      "hint_open": "このトーナメントは誰でも参加できるため、招待は必須ではなく近道にすぎません。",
+      "add_team": "チームを招待",
+      "team_label": "チーム招待"
+    },
+    "invite_links": {
+      "title": "招待リンク",
+      "hint": "リンクを持っている人は誰でも参加登録できます。リンクには有効期限と使用回数の上限があり、いつでも取り消せます。",
+      "expires_after": "有効期限",
+      "max_uses": "使用回数の上限",
+      "expiry_never": "無期限",
+      "expiry_minutes": "{count}分",
+      "expiry_hour": "1時間",
+      "expiry_hours": "{count}時間",
+      "expiry_day": "1日",
+      "expiry_days": "{count}日",
+      "uses_one": "1回",
+      "uses_limit": "{count}回",
+      "uses_unlimited": "無制限",
+      "create": "リンクを生成",
+      "created": "招待リンクを作成してコピーしました",
+      "create_failed": "この招待リンクを作成できませんでした",
+      "share": "共有",
+      "revoke": "取り消し",
+      "revoked": "招待リンクを取り消しました",
+      "revoke_failed": "この招待リンクを取り消せませんでした",
+      "confirm_revoke": "この招待リンクを取り消しますか？",
+      "revoke_description": "リンクをまだ持っている人は、直ちにアクセスできなくなります。すでにこのリンクから参加登録したチームの枠はそのまま残ります。",
+      "expires": "期限",
+      "expired": "期限切れ",
+      "exhausted": "上限に達しました",
+      "never_expires": "有効期限なし",
+      "uses_count": "{count}回使用",
+      "who_used": "使用履歴",
+      "uses_empty": "このリンクはまだ誰も使用していません。",
+      "empty": "招待リンクはまだありません。"
+    },
+    "invite_accept": {
+      "title": "招待が届いています",
+      "hint": "承諾すると、このトーナメントへの参加登録が可能になります。",
+      "guest_hint": "ログインするとこの招待を承諾し、参加登録できるようになります。",
+      "accept": "招待を承諾",
+      "sign_in": "ログインして承諾",
+      "dismiss": "後で",
+      "accepted": "招待を承諾しました",
+      "failed": "この招待は使用できませんでした: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "拒否",
       "accept": "承諾",
       "tournament_registration_title": "トーナメント参加登録の招待",
-      "tournament_registration_message": "トーナメントへの参加登録に招待されました"
+      "tournament_registration_message": "トーナメントへの参加登録に招待されました",
+      "tournament_team_registration_title": "チームへの参加登録の招待",
+      "tournament_team_registration_message": "{team} がトーナメントへの参加登録に招待されました"
     },
     "roles": {
       "captain": "キャプテン"

@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Tylko na zaproszenie",
-        "description": "Rejestracja jest zamknięta dla publiczności. Organizatorzy zapraszają drużyny bezpośrednio albo uczestnicy podają kod dostępu."
-      },
-      "passcode": {
-        "label": "Kod dostępu",
-        "optional": "(opcjonalnie)",
-        "description": "Każdy, kto ma kod, wejdzie bez zaproszenia. Tylko dla organizatorów."
+        "description": "Rejestracja jest zamknięta dla publiczności. Organizatorzy zapraszają drużyny i graczy bezpośrednio albo udostępniają link z zaproszeniem."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Wymagania udziału",
       "requirements_hint": "Sprawdzane dla każdego dodawanego gracza, a nie tylko dla tego, kto klika. Rejestracja zostaje odrzucona, jeśli choć jeden ich nie spełnia.",
       "locked_title": "Ten turniej jest tylko na zaproszenie",
-      "locked_hint": "Podaj kod dostępu od organizatora, aby odblokować rejestrację, albo poproś go o bezpośrednie zaproszenie drużyny.",
-      "passcode_label": "Kod dostępu",
-      "passcode_placeholder": "Wpisz kod dostępu",
-      "unlock": "Odblokuj",
-      "unlocked": "Rejestracja odblokowana",
-      "unlock_failed": "Nie udało się odblokować rejestracji",
       "min_role": "Minimalna rola: {role}",
       "elo_between": "ELO między {min} a {max}",
       "elo_min": "ELO {min} lub więcej",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "niespełnione",
       "ok_chip": "może dołączyć",
       "locked_chip": "zablokowane",
-      "blocked_chip": "nie może dołączyć"
+      "blocked_chip": "nie może dołączyć",
+      "invite_hint": "Poproś organizatora, żeby zaprosił twoją drużynę albo wysłał ci link z zaproszeniem."
     },
     "invites": {
-      "title": "Zaproszeni gracze",
-      "description": "Ten turniej jest tylko na zaproszenie. Zaproś gracza bezpośrednio, a zarejestruje się bez kodu dostępu.",
+      "title": "Zaproszenia",
+      "description": "Zaproś drużynę lub gracza bezpośrednio, a będą mogli się zarejestrować, nawet gdy turniej jest tylko na zaproszenie.",
       "add": "Zaproś gracza",
       "pending": "Oczekujące",
       "invited_by": "Zaprosił(a) {name}",
       "revoke": "Cofnij",
       "confirm_revoke": "Cofnąć to zaproszenie?",
-      "revoke_description": "{name} nie będzie już mógł się zarejestrować, chyba że ma kod dostępu.",
+      "revoke_description": "{name} traci dostęp, chyba że nadal ma ważny link z zaproszeniem.",
       "empty": "Nikt nie został jeszcze zaproszony.",
       "sent": "Zaproszenie wysłane",
       "send_failed": "Nie udało się wysłać tego zaproszenia",
       "already_invited": "Już zaproszony",
-      "revoked": "Zaproszenie cofnięte"
+      "revoked": "Zaproszenie cofnięte",
+      "hint_open": "Ten turniej jest otwarty dla wszystkich, więc zaproszenie to skrót, a nie wymóg.",
+      "add_team": "Zaproś drużynę",
+      "team_label": "Drużyna"
+    },
+    "invite_links": {
+      "title": "Linki z zaproszeniem",
+      "hint": "Zarejestrować się może każdy, kto ma link. Link wygasa, ogranicza liczbę użyć i można go cofnąć w dowolnej chwili.",
+      "expires_after": "Wygasa po",
+      "max_uses": "Maks. użyć",
+      "expiry_never": "Nigdy",
+      "expiry_minutes": "{count} minut",
+      "expiry_hour": "1 godzina",
+      "expiry_hours": "{count} godzin",
+      "expiry_day": "1 dzień",
+      "expiry_days": "{count} dni",
+      "uses_one": "1 użycie",
+      "uses_limit": "{count} użyć",
+      "uses_unlimited": "Bez limitu",
+      "create": "Wygeneruj link",
+      "created": "Link z zaproszeniem utworzony i skopiowany",
+      "create_failed": "Nie udało się utworzyć tego linku z zaproszeniem",
+      "share": "Udostępnij",
+      "revoke": "Cofnij",
+      "revoked": "Link z zaproszeniem cofnięty",
+      "revoke_failed": "Nie udało się cofnąć tego linku z zaproszeniem",
+      "confirm_revoke": "Cofnąć ten link z zaproszeniem?",
+      "revoke_description": "Każdy, kto wciąż ma ten link, natychmiast traci dostęp. Drużyny, które już się przez niego zarejestrowały, zachowują swoje miejsce.",
+      "expires": "Wygasa",
+      "expired": "Wygasł",
+      "exhausted": "Limit wyczerpany",
+      "never_expires": "Nie wygasa",
+      "uses_count": "użyto: {count}",
+      "who_used": "Kto użył",
+      "uses_empty": "Nikt jeszcze nie użył tego linku.",
+      "empty": "Nie ma jeszcze linków z zaproszeniem."
+    },
+    "invite_accept": {
+      "title": "Masz zaproszenie",
+      "hint": "Zaakceptuj je, aby odblokować rejestrację na ten turniej.",
+      "guest_hint": "Zaloguj się, aby zaakceptować to zaproszenie i odblokować rejestrację.",
+      "accept": "Akceptuj zaproszenie",
+      "sign_in": "Zaloguj się, aby zaakceptować",
+      "dismiss": "Nie teraz",
+      "accepted": "Zaproszenie zaakceptowane",
+      "failed": "Nie udało się użyć tego zaproszenia: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Odrzuć",
       "accept": "Akceptuj",
       "tournament_registration_title": "Zaproszenie do rejestracji na turniej",
-      "tournament_registration_message": "Zostałeś zaproszony do rejestracji na turniej"
+      "tournament_registration_message": "Zostałeś zaproszony do rejestracji na turniej",
+      "tournament_team_registration_title": "Zaproszenie drużyny na turniej",
+      "tournament_team_registration_message": "Drużyna {team} została zaproszona do rejestracji na turniej"
     },
     "roles": {
       "captain": "Kapitan"

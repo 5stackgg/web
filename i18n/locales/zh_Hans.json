@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "仅限邀请",
-        "description": "报名不对外开放。由主办方直接邀请队伍，或由参赛者输入报名码。"
-      },
-      "passcode": {
-        "label": "报名码",
-        "optional": "（可选）",
-        "description": "拿到该码的人无需邀请即可加入。仅主办方可见。"
+        "description": "报名不对外开放。由主办方直接邀请队伍和玩家，或分享邀请链接。"
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "参赛条件",
       "requirements_hint": "对每一位被添加的选手进行校验，而不只是看点击的人。只要有一人不符合，报名就会被拒绝。",
       "locked_title": "本赛事仅限邀请",
-      "locked_hint": "输入主办方的报名码以解锁报名，或者请他们直接邀请你的队伍。",
-      "passcode_label": "报名码",
-      "passcode_placeholder": "请输入报名码",
-      "unlock": "解锁",
-      "unlocked": "报名已解锁",
-      "unlock_failed": "无法解锁报名",
       "min_role": "最低角色：{role}",
       "elo_between": "ELO 介于 {min} 与 {max} 之间",
       "elo_min": "ELO {min} 及以上",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "未满足",
       "ok_chip": "可参赛",
       "locked_chip": "已锁定",
-      "blocked_chip": "不可参赛"
+      "blocked_chip": "不可参赛",
+      "invite_hint": "请联系主办方邀请你的队伍，或向你发送邀请链接。"
     },
     "invites": {
-      "title": "受邀玩家",
-      "description": "本赛事仅限邀请。直接邀请一位玩家，他无需报名码即可报名。",
+      "title": "邀请",
+      "description": "直接邀请队伍或玩家，即使本赛事仅限邀请，他们也能报名。",
       "add": "邀请玩家",
       "pending": "待处理",
       "invited_by": "{name} 邀请",
       "revoke": "撤销",
       "confirm_revoke": "要撤销这个邀请吗？",
-      "revoke_description": "除非拥有报名码，{name} 将无法再报名。",
-      "empty": "还没有邀请任何人。",
+      "revoke_description": "除非仍持有有效的邀请链接，{name} 将失去访问权限。",
+      "empty": "还没有发出任何邀请。",
       "sent": "邀请已发送",
       "send_failed": "无法发送该邀请",
       "already_invited": "已邀请",
-      "revoked": "邀请已撤销"
+      "revoked": "邀请已撤销",
+      "hint_open": "本赛事对所有人开放，邀请只是捷径，并非必需。",
+      "add_team": "邀请队伍",
+      "team_label": "队伍邀请"
+    },
+    "invite_links": {
+      "title": "邀请链接",
+      "hint": "任何拿到链接的人都能报名。链接会过期、可限制使用次数，并且随时可以撤销。",
+      "expires_after": "有效期",
+      "max_uses": "最大使用次数",
+      "expiry_never": "永不过期",
+      "expiry_minutes": "{count} 分钟",
+      "expiry_hour": "1 小时",
+      "expiry_hours": "{count} 小时",
+      "expiry_day": "1 天",
+      "expiry_days": "{count} 天",
+      "uses_one": "1 次",
+      "uses_limit": "{count} 次",
+      "uses_unlimited": "不限次数",
+      "create": "生成链接",
+      "created": "已创建邀请链接并复制",
+      "create_failed": "无法创建该邀请链接",
+      "share": "分享",
+      "revoke": "撤销",
+      "revoked": "邀请链接已撤销",
+      "revoke_failed": "无法撤销该邀请链接",
+      "confirm_revoke": "要撤销这个邀请链接吗？",
+      "revoke_description": "仍持有该链接的人将立即失去访问权限。已通过它报名的队伍会保留名额。",
+      "expires": "过期时间",
+      "expired": "已过期",
+      "exhausted": "已用完",
+      "never_expires": "永不过期",
+      "uses_count": "已使用 {count} 次",
+      "who_used": "使用记录",
+      "uses_empty": "还没有人使用过这个链接。",
+      "empty": "还没有邀请链接。"
+    },
+    "invite_accept": {
+      "title": "你收到一个邀请",
+      "hint": "接受后即可报名参加本赛事。",
+      "guest_hint": "登录后即可接受该邀请并开始报名。",
+      "accept": "接受邀请",
+      "sign_in": "登录后接受",
+      "dismiss": "暂不",
+      "accepted": "已接受邀请",
+      "failed": "该邀请无法使用：{reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "拒绝",
       "accept": "接受",
       "tournament_registration_title": "赛事报名邀请",
-      "tournament_registration_message": "您受邀报名参加一个赛事"
+      "tournament_registration_message": "您受邀报名参加一个赛事",
+      "tournament_team_registration_title": "队伍报名邀请",
+      "tournament_team_registration_message": "{team} 受邀报名参加赛事"
     },
     "roles": {
       "captain": "队长"

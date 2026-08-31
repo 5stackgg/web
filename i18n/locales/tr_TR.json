@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Sadece davetle",
-        "description": "Kayıtlar herkese kapalı. Organizatörler takımları doğrudan davet eder ya da katılımcılar bir erişim kodu girer."
-      },
-      "passcode": {
-        "label": "Erişim kodu",
-        "optional": "(isteğe bağlı)",
-        "description": "Kodu olan herkes davetsiz girebilir. Sadece organizatörler."
+        "description": "Kayıtlar herkese kapalı. Organizatörler takımları ve oyuncuları doğrudan davet eder ya da bir davet bağlantısı paylaşır."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Katılım koşulları",
       "requirements_hint": "Sadece tıklayan kişide değil, eklenen her oyuncuda kontrol edilir. İçlerinden biri bile koşulu sağlamazsa kayıt reddedilir.",
       "locked_title": "Bu turnuva sadece davetle",
-      "locked_hint": "Kaydı açmak için organizatörün erişim kodunu gir ya da takımını doğrudan davet etmesini iste.",
-      "passcode_label": "Erişim kodu",
-      "passcode_placeholder": "Erişim kodunu gir",
-      "unlock": "Kilidi aç",
-      "unlocked": "Kayıt açıldı",
-      "unlock_failed": "Kayıt açılamadı",
       "min_role": "Minimum rol: {role}",
       "elo_between": "ELO {min} ile {max} arasında",
       "elo_min": "ELO {min} veya üzeri",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "sağlanmıyor",
       "ok_chip": "katılabilir",
       "locked_chip": "kilitli",
-      "blocked_chip": "katılamaz"
+      "blocked_chip": "katılamaz",
+      "invite_hint": "Bir organizatörden takımını davet etmesini ya da sana bir davet bağlantısı göndermesini iste."
     },
     "invites": {
-      "title": "Davet edilen oyuncular",
-      "description": "Bu turnuva sadece davetle. Bir oyuncuyu doğrudan davet et, erişim kodu olmadan kaydolabilsin.",
+      "title": "Davetler",
+      "description": "Bir takımı ya da oyuncuyu doğrudan davet et; bu turnuva sadece davetle olsa bile kaydolabilirler.",
       "add": "Oyuncu davet et",
       "pending": "Bekliyor",
       "invited_by": "{name} davet etti",
       "revoke": "Geri al",
       "confirm_revoke": "Bu davet geri alınsın mı?",
-      "revoke_description": "{name} erişim kodu yoksa artık kaydolamayacak.",
+      "revoke_description": "Geçerli bir davet bağlantısı elinde yoksa {name} erişimi kaybeder.",
       "empty": "Henüz kimse davet edilmedi.",
       "sent": "Davet gönderildi",
       "send_failed": "Bu davet gönderilemedi",
       "already_invited": "Zaten davetli",
-      "revoked": "Davet geri alındı"
+      "revoked": "Davet geri alındı",
+      "hint_open": "Bu turnuva herkese açık, bu yüzden davet bir zorunluluk değil, kısayoldur.",
+      "add_team": "Takım davet et",
+      "team_label": "Takım daveti"
+    },
+    "invite_links": {
+      "title": "Davet Bağlantıları",
+      "hint": "Bağlantıya sahip olan herkes kaydolabilir. Bir bağlantının süresi dolar, kaç kez kullanılabileceği sınırlanır ve istediğin zaman geri alınabilir.",
+      "expires_after": "Geçerlilik süresi",
+      "max_uses": "Maksimum kullanım",
+      "expiry_never": "Süresiz",
+      "expiry_minutes": "{count} dakika",
+      "expiry_hour": "1 saat",
+      "expiry_hours": "{count} saat",
+      "expiry_day": "1 gün",
+      "expiry_days": "{count} gün",
+      "uses_one": "1 kullanım",
+      "uses_limit": "{count} kullanım",
+      "uses_unlimited": "Sınırsız",
+      "create": "Bağlantı oluştur",
+      "created": "Davet bağlantısı oluşturuldu ve kopyalandı",
+      "create_failed": "Bu davet bağlantısı oluşturulamadı",
+      "share": "Paylaş",
+      "revoke": "Geri al",
+      "revoked": "Davet bağlantısı geri alındı",
+      "revoke_failed": "Bu davet bağlantısı geri alınamadı",
+      "confirm_revoke": "Bu davet bağlantısı geri alınsın mı?",
+      "revoke_description": "Bağlantı hâlâ elinde olan herkes erişimi anında kaybeder. Bağlantı üzerinden zaten kaydolmuş takımlar yerlerini korur.",
+      "expires": "Bitiş",
+      "expired": "Süresi doldu",
+      "exhausted": "Hakkı doldu",
+      "never_expires": "Süresi dolmaz",
+      "uses_count": "{count} kez kullanıldı",
+      "who_used": "Kimler kullandı",
+      "uses_empty": "Bu bağlantıyı henüz kimse kullanmadı.",
+      "empty": "Henüz davet bağlantısı yok."
+    },
+    "invite_accept": {
+      "title": "Bir davetin var",
+      "hint": "Bu turnuvada kaydı açmak için daveti kabul et.",
+      "guest_hint": "Bu daveti kabul edip kaydı açmak için giriş yap.",
+      "accept": "Daveti kabul et",
+      "sign_in": "Kabul etmek için giriş yap",
+      "dismiss": "Şimdi değil",
+      "accepted": "Davet kabul edildi",
+      "failed": "Bu davet kullanılamadı: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Reddet",
       "accept": "Kabul et",
       "tournament_registration_title": "Turnuva Kayıt Daveti",
-      "tournament_registration_message": "Bir turnuvaya kaydolman için davet edildin"
+      "tournament_registration_message": "Bir turnuvaya kaydolman için davet edildin",
+      "tournament_team_registration_title": "Takım Kayıt Daveti",
+      "tournament_team_registration_message": "{team} bir turnuvaya kaydolmak için davet edildi"
     },
     "roles": {
       "captain": "Kaptan"

@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "僅限邀請",
-        "description": "報名不對外開放。由主辦方直接邀請隊伍，或由參賽者輸入報名碼。"
-      },
-      "passcode": {
-        "label": "報名碼",
-        "optional": "（選填）",
-        "description": "拿到此碼的人無須邀請即可加入。僅主辦方可見。"
+        "description": "報名不對外開放。由主辦方直接邀請隊伍和玩家，或分享邀請連結。"
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "參賽條件",
       "requirements_hint": "對每一位被加入的選手進行檢查，而不只是看點擊的人。只要有一人不符合，報名就會被拒絕。",
       "locked_title": "本賽事僅限邀請",
-      "locked_hint": "輸入主辦方的報名碼以解鎖報名，或者請他們直接邀請你的隊伍。",
-      "passcode_label": "報名碼",
-      "passcode_placeholder": "請輸入報名碼",
-      "unlock": "解鎖",
-      "unlocked": "報名已解鎖",
-      "unlock_failed": "無法解鎖報名",
       "min_role": "最低角色：{role}",
       "elo_between": "ELO 介於 {min} 與 {max} 之間",
       "elo_min": "ELO {min} 以上",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "未符合",
       "ok_chip": "可參賽",
       "locked_chip": "已鎖定",
-      "blocked_chip": "不可參賽"
+      "blocked_chip": "不可參賽",
+      "invite_hint": "請聯絡主辦方邀請你的隊伍，或向你發送邀請連結。"
     },
     "invites": {
-      "title": "受邀玩家",
-      "description": "本賽事僅限邀請。直接邀請一位玩家，他無須報名碼即可報名。",
+      "title": "邀請",
+      "description": "直接邀請隊伍或玩家，即使本賽事僅限邀請，他們也能報名。",
       "add": "邀請玩家",
       "pending": "待處理",
       "invited_by": "{name} 邀請",
       "revoke": "撤銷",
       "confirm_revoke": "要撤銷這個邀請嗎？",
-      "revoke_description": "除非擁有報名碼，{name} 將無法再報名。",
-      "empty": "還沒有邀請任何人。",
+      "revoke_description": "除非仍持有有效的邀請連結，{name} 將失去存取權限。",
+      "empty": "還沒有發出任何邀請。",
       "sent": "邀請已送出",
       "send_failed": "無法傳送該邀請",
       "already_invited": "已邀請",
-      "revoked": "邀請已撤銷"
+      "revoked": "邀請已撤銷",
+      "hint_open": "本賽事對所有人開放，邀請只是捷徑，並非必需。",
+      "add_team": "邀請隊伍",
+      "team_label": "隊伍邀請"
+    },
+    "invite_links": {
+      "title": "邀請連結",
+      "hint": "任何拿到連結的人都能報名。連結會過期、可限制使用次數，並且隨時可以撤銷。",
+      "expires_after": "有效期",
+      "max_uses": "最大使用次數",
+      "expiry_never": "永不過期",
+      "expiry_minutes": "{count} 分鐘",
+      "expiry_hour": "1 小時",
+      "expiry_hours": "{count} 小時",
+      "expiry_day": "1 天",
+      "expiry_days": "{count} 天",
+      "uses_one": "1 次",
+      "uses_limit": "{count} 次",
+      "uses_unlimited": "不限次數",
+      "create": "產生連結",
+      "created": "已建立邀請連結並複製",
+      "create_failed": "無法建立該邀請連結",
+      "share": "分享",
+      "revoke": "撤銷",
+      "revoked": "邀請連結已撤銷",
+      "revoke_failed": "無法撤銷該邀請連結",
+      "confirm_revoke": "要撤銷這個邀請連結嗎？",
+      "revoke_description": "仍持有該連結的人將立即失去存取權限。已透過它報名的隊伍會保留名額。",
+      "expires": "到期時間",
+      "expired": "已過期",
+      "exhausted": "已用完",
+      "never_expires": "永不過期",
+      "uses_count": "已使用 {count} 次",
+      "who_used": "使用紀錄",
+      "uses_empty": "還沒有人使用過這個連結。",
+      "empty": "還沒有邀請連結。"
+    },
+    "invite_accept": {
+      "title": "你收到一個邀請",
+      "hint": "接受後即可報名參加本賽事。",
+      "guest_hint": "登入後即可接受該邀請並開始報名。",
+      "accept": "接受邀請",
+      "sign_in": "登入後接受",
+      "dismiss": "暫不",
+      "accepted": "已接受邀請",
+      "failed": "該邀請無法使用：{reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "拒絕",
       "accept": "接受",
       "tournament_registration_title": "賽事報名邀請",
-      "tournament_registration_message": "您受邀報名參加一個賽事"
+      "tournament_registration_message": "您受邀報名參加一個賽事",
+      "tournament_team_registration_title": "隊伍報名邀請",
+      "tournament_team_registration_message": "{team} 受邀報名參加賽事"
     },
     "roles": {
       "captain": "隊長"

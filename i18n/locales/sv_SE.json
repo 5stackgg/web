@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Endast med inbjudan",
-        "description": "Anmälan är stängd för allmänheten. Arrangörerna bjuder in lag direkt, eller så anger deltagarna en åtkomstkod."
-      },
-      "passcode": {
-        "label": "Åtkomstkod",
-        "optional": "(valfritt)",
-        "description": "Alla med koden kommer in utan inbjudan. Endast arrangörer."
+        "description": "Anmälan är stängd för allmänheten. Arrangörerna bjuder in lag och spelare direkt, eller delar en inbjudningslänk."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Deltagarkrav",
       "requirements_hint": "Kontrolleras mot varje spelare som läggs till, inte bara mot den som klickar. Anmälan nekas om någon av dem inte uppfyller kraven.",
       "locked_title": "Den här turneringen är endast med inbjudan",
-      "locked_hint": "Ange arrangörens åtkomstkod för att låsa upp anmälan, eller be dem bjuda in ditt lag direkt.",
-      "passcode_label": "Åtkomstkod",
-      "passcode_placeholder": "Ange åtkomstkod",
-      "unlock": "Lås upp",
-      "unlocked": "Anmälan upplåst",
-      "unlock_failed": "Kunde inte låsa upp anmälan",
       "min_role": "Lägsta roll: {role}",
       "elo_between": "Elo mellan {min} och {max}",
       "elo_min": "Elo {min} eller högre",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "ej uppfyllt",
       "ok_chip": "får delta",
       "locked_chip": "låst",
-      "blocked_chip": "får inte delta"
+      "blocked_chip": "får inte delta",
+      "invite_hint": "Be en arrangör bjuda in ditt lag eller skicka dig en inbjudningslänk."
     },
     "invites": {
-      "title": "Inbjudna spelare",
-      "description": "Den här turneringen är endast med inbjudan. Bjud in en spelare direkt så kan hen anmäla sig utan åtkomstkoden.",
+      "title": "Inbjudningar",
+      "description": "Bjud in ett lag eller en spelare direkt, så kan de anmäla sig även när den här turneringen bara är med inbjudan.",
       "add": "Bjud in en spelare",
       "pending": "Väntande",
       "invited_by": "Inbjuden av {name}",
       "revoke": "Återkalla",
       "confirm_revoke": "Återkalla den här inbjudan?",
-      "revoke_description": "{name} kommer inte längre att kunna anmäla sig, om hen inte har åtkomstkoden.",
+      "revoke_description": "{name} förlorar åtkomsten om hen inte fortfarande har en giltig inbjudningslänk.",
       "empty": "Ingen har bjudits in än.",
       "sent": "Inbjudan skickad",
       "send_failed": "Kunde inte skicka den inbjudan",
       "already_invited": "Redan inbjuden",
-      "revoked": "Inbjudan återkallad"
+      "revoked": "Inbjudan återkallad",
+      "hint_open": "Den här turneringen är öppen för alla, så en inbjudan är en genväg snarare än ett krav.",
+      "add_team": "Bjud in ett lag",
+      "team_label": "Laginbjudan"
+    },
+    "invite_links": {
+      "title": "Inbjudningslänkar",
+      "hint": "Alla som har länken kan anmäla sig. En länk går ut, har ett tak för hur många gånger den kan användas och kan återkallas när som helst.",
+      "expires_after": "Går ut efter",
+      "max_uses": "Max antal användningar",
+      "expiry_never": "Aldrig",
+      "expiry_minutes": "{count} minuter",
+      "expiry_hour": "1 timme",
+      "expiry_hours": "{count} timmar",
+      "expiry_day": "1 dag",
+      "expiry_days": "{count} dagar",
+      "uses_one": "1 användning",
+      "uses_limit": "{count} användningar",
+      "uses_unlimited": "Ingen gräns",
+      "create": "Generera en länk",
+      "created": "Inbjudningslänk skapad och kopierad",
+      "create_failed": "Kunde inte skapa den inbjudningslänken",
+      "share": "Dela",
+      "revoke": "Återkalla",
+      "revoked": "Inbjudningslänk återkallad",
+      "revoke_failed": "Kunde inte återkalla den inbjudningslänken",
+      "confirm_revoke": "Återkalla den här inbjudningslänken?",
+      "revoke_description": "Alla som fortfarande har länken förlorar åtkomsten direkt. Lag som redan har anmält sig via den behåller sin plats.",
+      "expires": "Går ut",
+      "expired": "Utgången",
+      "exhausted": "Förbrukad",
+      "never_expires": "Går aldrig ut",
+      "uses_count": "Använd {count} gånger",
+      "who_used": "Vilka har använt den",
+      "uses_empty": "Ingen har använt den här länken än.",
+      "empty": "Inga inbjudningslänkar än."
+    },
+    "invite_accept": {
+      "title": "Du har en inbjudan",
+      "hint": "Acceptera den för att låsa upp anmälan till den här turneringen.",
+      "guest_hint": "Logga in för att acceptera inbjudan och låsa upp anmälan.",
+      "accept": "Acceptera inbjudan",
+      "sign_in": "Logga in för att acceptera",
+      "dismiss": "Inte nu",
+      "accepted": "Inbjudan accepterad",
+      "failed": "Inbjudan kunde inte användas: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Neka",
       "accept": "Acceptera",
       "tournament_registration_title": "Inbjudan till turneringsanmälan",
-      "tournament_registration_message": "Du har blivit inbjuden att anmäla dig till en turnering"
+      "tournament_registration_message": "Du har blivit inbjuden att anmäla dig till en turnering",
+      "tournament_team_registration_title": "Laginbjudan till turneringsanmälan",
+      "tournament_team_registration_message": "{team} har bjudits in att anmäla sig till en turnering"
     },
     "roles": {
       "captain": "Lagkapten"

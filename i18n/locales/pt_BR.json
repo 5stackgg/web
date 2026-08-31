@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Somente por convite",
-        "description": "As inscrições não são públicas. Os organizadores convidam as equipes diretamente, ou os participantes informam um código de acesso."
-      },
-      "passcode": {
-        "label": "Código de acesso",
-        "optional": "(opcional)",
-        "description": "Quem tiver o código entra sem convite. Apenas organizadores."
+        "description": "As inscrições não são públicas. Os organizadores convidam equipes e jogadores diretamente ou compartilham um link de convite."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Requisitos de participação",
       "requirements_hint": "Verificado em cada jogador que está sendo adicionado, não só em quem clica. A inscrição é recusada se algum deles não atender.",
       "locked_title": "Este torneio é somente por convite",
-      "locked_hint": "Informe o código de acesso do organizador para liberar a inscrição, ou peça para ele convidar sua equipe diretamente.",
-      "passcode_label": "Código de acesso",
-      "passcode_placeholder": "Informe o código de acesso",
-      "unlock": "Liberar",
-      "unlocked": "Inscrição liberada",
-      "unlock_failed": "Não foi possível liberar a inscrição",
       "min_role": "Cargo mínimo: {role}",
       "elo_between": "ELO entre {min} e {max}",
       "elo_min": "ELO {min} ou mais",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "não atendido",
       "ok_chip": "pode participar",
       "locked_chip": "bloqueado",
-      "blocked_chip": "não pode participar"
+      "blocked_chip": "não pode participar",
+      "invite_hint": "Peça a um organizador para convidar sua equipe ou para te enviar um link de convite."
     },
     "invites": {
-      "title": "Jogadores convidados",
-      "description": "Este torneio é somente por convite. Convide um jogador diretamente e ele poderá se inscrever sem o código de acesso.",
+      "title": "Convites",
+      "description": "Convide uma equipe ou um jogador diretamente e eles poderão se inscrever mesmo com o torneio somente por convite.",
       "add": "Convidar um jogador",
       "pending": "Pendente",
       "invited_by": "Convidado por {name}",
       "revoke": "Revogar",
       "confirm_revoke": "Revogar este convite?",
-      "revoke_description": "{name} não vai mais conseguir se inscrever, a menos que tenha o código de acesso.",
+      "revoke_description": "{name} perde o acesso, a menos que ainda tenha um link de convite válido.",
       "empty": "Ninguém foi convidado ainda.",
       "sent": "Convite enviado",
       "send_failed": "Não foi possível enviar esse convite",
       "already_invited": "Já convidado",
-      "revoked": "Convite revogado"
+      "revoked": "Convite revogado",
+      "hint_open": "Este torneio é aberto a todos, então um convite é um atalho, não um requisito.",
+      "add_team": "Convidar uma equipe",
+      "team_label": "Equipe"
+    },
+    "invite_links": {
+      "title": "Links de convite",
+      "hint": "Qualquer um com o link pode se inscrever. Um link expira, limita quantas vezes pode ser usado e pode ser revogado a qualquer momento.",
+      "expires_after": "Expira após",
+      "max_uses": "Máx. de usos",
+      "expiry_never": "Nunca",
+      "expiry_minutes": "{count} minutos",
+      "expiry_hour": "1 hora",
+      "expiry_hours": "{count} horas",
+      "expiry_day": "1 dia",
+      "expiry_days": "{count} dias",
+      "uses_one": "1 uso",
+      "uses_limit": "{count} usos",
+      "uses_unlimited": "Sem limite",
+      "create": "Gerar um link",
+      "created": "Link de convite criado e copiado",
+      "create_failed": "Não foi possível criar esse link de convite",
+      "share": "Compartilhar",
+      "revoke": "Revogar",
+      "revoked": "Link de convite revogado",
+      "revoke_failed": "Não foi possível revogar esse link de convite",
+      "confirm_revoke": "Revogar este link de convite?",
+      "revoke_description": "Quem ainda tiver o link perde o acesso na hora. As equipes que já se inscreveram por ele mantêm sua vaga.",
+      "expires": "Expira",
+      "expired": "Expirado",
+      "exhausted": "Esgotado",
+      "never_expires": "Não expira",
+      "uses_count": "usos: {count}",
+      "who_used": "Quem usou",
+      "uses_empty": "Ninguém usou este link ainda.",
+      "empty": "Ainda não há links de convite."
+    },
+    "invite_accept": {
+      "title": "Você tem um convite",
+      "hint": "Aceite para liberar a inscrição neste torneio.",
+      "guest_hint": "Entre para aceitar este convite e liberar a inscrição.",
+      "accept": "Aceitar convite",
+      "sign_in": "Entrar para aceitar",
+      "dismiss": "Agora não",
+      "accepted": "Convite aceito",
+      "failed": "Não foi possível usar esse convite: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Recusar",
       "accept": "Aceitar",
       "tournament_registration_title": "Convite para Inscrição no Torneio",
-      "tournament_registration_message": "Você foi convidado para se inscrever em um torneio"
+      "tournament_registration_message": "Você foi convidado para se inscrever em um torneio",
+      "tournament_team_registration_title": "Convite de Torneio para a Equipe",
+      "tournament_team_registration_message": "{team} foi convidada para se inscrever em um torneio"
     },
     "roles": {
       "captain": "Capitão"

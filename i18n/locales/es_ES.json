@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Solo por invitación",
-        "description": "La inscripción no es pública. Los organizadores invitan a los equipos directamente, o los participantes introducen un código de acceso."
-      },
-      "passcode": {
-        "label": "Código de acceso",
-        "optional": "(opcional)",
-        "description": "Cualquiera con el código puede entrar sin invitación. Solo organizadores."
+        "description": "La inscripción no es pública. Los organizadores invitan directamente a equipos y jugadores, o comparten un enlace de invitación."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Requisitos de acceso",
       "requirements_hint": "Se comprueba sobre cada jugador que se añade, no solo sobre quien hace clic. La inscripción se rechaza si alguno no los cumple.",
       "locked_title": "Este torneo es solo por invitación",
-      "locked_hint": "Introduce el código de acceso del organizador para desbloquear la inscripción, o pídele que invite a tu equipo directamente.",
-      "passcode_label": "Código de acceso",
-      "passcode_placeholder": "Introduce el código de acceso",
-      "unlock": "Desbloquear",
-      "unlocked": "Inscripción desbloqueada",
-      "unlock_failed": "No se ha podido desbloquear la inscripción",
       "min_role": "Rol mínimo: {role}",
       "elo_between": "ELO entre {min} y {max}",
       "elo_min": "ELO {min} o más",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "no cumplido",
       "ok_chip": "puedes entrar",
       "locked_chip": "bloqueado",
-      "blocked_chip": "no puedes entrar"
+      "blocked_chip": "no puedes entrar",
+      "invite_hint": "Pide a un organizador que invite a tu equipo o que te envíe un enlace de invitación."
     },
     "invites": {
-      "title": "Jugadores invitados",
-      "description": "Este torneo es solo por invitación. Invita a un jugador directamente y podrá inscribirse sin el código de acceso.",
+      "title": "Invitaciones",
+      "description": "Invita directamente a un equipo o a un jugador y podrán inscribirse aunque este torneo sea solo por invitación.",
       "add": "Invitar a un jugador",
       "pending": "Pendiente",
       "invited_by": "Invitado por {name}",
       "revoke": "Revocar",
       "confirm_revoke": "¿Revocar esta invitación?",
-      "revoke_description": "{name} ya no podrá inscribirse a menos que tenga el código de acceso.",
+      "revoke_description": "{name} pierde el acceso, salvo que siga teniendo un enlace de invitación válido.",
       "empty": "Todavía no se ha invitado a nadie.",
       "sent": "Invitación enviada",
       "send_failed": "No se ha podido enviar esa invitación",
       "already_invited": "Ya invitado",
-      "revoked": "Invitación revocada"
+      "revoked": "Invitación revocada",
+      "hint_open": "Este torneo está abierto a todos, así que una invitación es un atajo y no un requisito.",
+      "add_team": "Invitar a un equipo",
+      "team_label": "Invitación de equipo"
+    },
+    "invite_links": {
+      "title": "Enlaces de invitación",
+      "hint": "Cualquiera que tenga el enlace puede inscribirse. Un enlace caduca, limita cuántas veces se puede usar y se puede revocar en cualquier momento.",
+      "expires_after": "Caduca tras",
+      "max_uses": "Usos máximos",
+      "expiry_never": "Nunca",
+      "expiry_minutes": "{count} minutos",
+      "expiry_hour": "1 hora",
+      "expiry_hours": "{count} horas",
+      "expiry_day": "1 día",
+      "expiry_days": "{count} días",
+      "uses_one": "1 uso",
+      "uses_limit": "{count} usos",
+      "uses_unlimited": "Sin límite",
+      "create": "Generar un enlace",
+      "created": "Enlace de invitación creado y copiado",
+      "create_failed": "No se ha podido crear ese enlace de invitación",
+      "share": "Compartir",
+      "revoke": "Revocar",
+      "revoked": "Enlace de invitación revocado",
+      "revoke_failed": "No se ha podido revocar ese enlace de invitación",
+      "confirm_revoke": "¿Revocar este enlace de invitación?",
+      "revoke_description": "Quien todavía tenga el enlace pierde el acceso de inmediato. Los equipos que ya se hayan inscrito con él mantienen su plaza.",
+      "expires": "Caduca",
+      "expired": "Caducado",
+      "exhausted": "Agotado",
+      "never_expires": "No caduca nunca",
+      "uses_count": "Usos: {count}",
+      "who_used": "Quién lo ha usado",
+      "uses_empty": "Todavía nadie ha usado este enlace.",
+      "empty": "Todavía no hay enlaces de invitación."
+    },
+    "invite_accept": {
+      "title": "Tienes una invitación",
+      "hint": "Acéptala para desbloquear la inscripción a este torneo.",
+      "guest_hint": "Inicia sesión para aceptar esta invitación y desbloquear la inscripción.",
+      "accept": "Aceptar invitación",
+      "sign_in": "Inicia sesión para aceptar",
+      "dismiss": "Ahora no",
+      "accepted": "Invitación aceptada",
+      "failed": "No se ha podido usar esa invitación: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Rechazar",
       "accept": "Aceptar",
       "tournament_registration_title": "Invitación de inscripción a torneo",
-      "tournament_registration_message": "Te han invitado a inscribirte en un torneo"
+      "tournament_registration_message": "Te han invitado a inscribirte en un torneo",
+      "tournament_team_registration_title": "Invitación para inscribir a tu equipo",
+      "tournament_team_registration_message": "{team} ha recibido una invitación para inscribirse en un torneo"
     },
     "roles": {
       "captain": "Capitán"

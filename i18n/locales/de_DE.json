@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Nur mit Einladung",
-        "description": "Die Anmeldung ist nicht öffentlich. Veranstalter laden Teams direkt ein, oder Teilnehmer geben einen Zugangscode an."
-      },
-      "passcode": {
-        "label": "Zugangscode",
-        "optional": "(optional)",
-        "description": "Wer den Code hat, kommt ohne Einladung rein. Nur für Veranstalter."
+        "description": "Die Anmeldung ist nicht öffentlich. Veranstalter laden Teams und Spieler direkt ein oder teilen einen Einladungslink."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Teilnahmevoraussetzungen",
       "requirements_hint": "Wird für jeden hinzugefügten Spieler geprüft, nicht nur für den Klickenden. Die Anmeldung wird abgelehnt, wenn einer davon durchfällt.",
       "locked_title": "Dieses Turnier ist nur mit Einladung",
-      "locked_hint": "Gib den Zugangscode des Veranstalters ein, um die Anmeldung freizuschalten, oder bitte ihn, dein Team direkt einzuladen.",
-      "passcode_label": "Zugangscode",
-      "passcode_placeholder": "Zugangscode eingeben",
-      "unlock": "Freischalten",
-      "unlocked": "Anmeldung freigeschaltet",
-      "unlock_failed": "Anmeldung konnte nicht freigeschaltet werden",
       "min_role": "Mindestrolle: {role}",
       "elo_between": "ELO zwischen {min} und {max}",
       "elo_min": "ELO {min} oder höher",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "nicht erfüllt",
       "ok_chip": "teilnahmeberechtigt",
       "locked_chip": "gesperrt",
-      "blocked_chip": "nicht berechtigt"
+      "blocked_chip": "nicht berechtigt",
+      "invite_hint": "Bitte einen Veranstalter, dein Team einzuladen oder dir einen Einladungslink zu schicken."
     },
     "invites": {
-      "title": "Eingeladene Spieler",
-      "description": "Dieses Turnier ist nur mit Einladung. Lade einen Spieler direkt ein, dann kann er sich ohne Zugangscode anmelden.",
+      "title": "Einladungen",
+      "description": "Lade ein Team oder einen Spieler direkt ein, dann können sie sich anmelden, auch solange dieses Turnier nur mit Einladung ist.",
       "add": "Spieler einladen",
       "pending": "Ausstehend",
       "invited_by": "Eingeladen von {name}",
       "revoke": "Widerrufen",
       "confirm_revoke": "Diese Einladung widerrufen?",
-      "revoke_description": "{name} kann sich dann nicht mehr anmelden, außer mit dem Zugangscode.",
+      "revoke_description": "{name} verliert den Zugang, sofern kein gültiger Einladungslink mehr vorliegt.",
       "empty": "Es wurde noch niemand eingeladen.",
       "sent": "Einladung gesendet",
       "send_failed": "Diese Einladung konnte nicht gesendet werden",
       "already_invited": "Bereits eingeladen",
-      "revoked": "Einladung widerrufen"
+      "revoked": "Einladung widerrufen",
+      "hint_open": "Dieses Turnier steht allen offen – eine Einladung ist also eine Abkürzung und keine Voraussetzung.",
+      "add_team": "Team einladen",
+      "team_label": "Team-Einladung"
+    },
+    "invite_links": {
+      "title": "Einladungslinks",
+      "hint": "Jeder mit dem Link kann sich anmelden. Ein Link läuft ab, begrenzt die Zahl der Verwendungen und kann jederzeit widerrufen werden.",
+      "expires_after": "Ablauf nach",
+      "max_uses": "Max. Verwendungen",
+      "expiry_never": "Nie",
+      "expiry_minutes": "{count} Minuten",
+      "expiry_hour": "1 Stunde",
+      "expiry_hours": "{count} Stunden",
+      "expiry_day": "1 Tag",
+      "expiry_days": "{count} Tage",
+      "uses_one": "1 Verwendung",
+      "uses_limit": "{count} Verwendungen",
+      "uses_unlimited": "Kein Limit",
+      "create": "Link erzeugen",
+      "created": "Einladungslink erstellt und kopiert",
+      "create_failed": "Dieser Einladungslink konnte nicht erstellt werden",
+      "share": "Teilen",
+      "revoke": "Widerrufen",
+      "revoked": "Einladungslink widerrufen",
+      "revoke_failed": "Dieser Einladungslink konnte nicht widerrufen werden",
+      "confirm_revoke": "Diesen Einladungslink widerrufen?",
+      "revoke_description": "Wer den Link noch hat, verliert sofort den Zugang. Teams, die sich darüber bereits angemeldet haben, behalten ihren Platz.",
+      "expires": "Läuft ab",
+      "expired": "Abgelaufen",
+      "exhausted": "Aufgebraucht",
+      "never_expires": "Läuft nie ab",
+      "uses_count": "{count}× verwendet",
+      "who_used": "Wer ihn verwendet hat",
+      "uses_empty": "Diesen Link hat noch niemand verwendet.",
+      "empty": "Noch keine Einladungslinks."
+    },
+    "invite_accept": {
+      "title": "Du hast eine Einladung",
+      "hint": "Nimm sie an, um die Anmeldung für dieses Turnier freizuschalten.",
+      "guest_hint": "Melde dich an, um diese Einladung anzunehmen und die Turnier-Anmeldung freizuschalten.",
+      "accept": "Einladung annehmen",
+      "sign_in": "Zum Annehmen anmelden",
+      "dismiss": "Jetzt nicht",
+      "accepted": "Einladung angenommen",
+      "failed": "Diese Einladung konnte nicht verwendet werden: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Ablehnen",
       "accept": "Annehmen",
       "tournament_registration_title": "Einladung zur Turnier-Anmeldung",
-      "tournament_registration_message": "Du wurdest eingeladen, dich für ein Turnier anzumelden"
+      "tournament_registration_message": "Du wurdest eingeladen, dich für ein Turnier anzumelden",
+      "tournament_team_registration_title": "Turnier-Anmeldung für dein Team",
+      "tournament_team_registration_message": "{team} wurde eingeladen, sich für ein Turnier anzumelden"
     },
     "roles": {
       "captain": "Captain"

@@ -6138,12 +6138,7 @@
       },
       "invite_only": {
         "label": "Kun med invitation",
-        "description": "Tilmeldingen er lukket for offentligheden. Arrangørerne inviterer hold direkte, eller deltagerne angiver en adgangskode."
-      },
-      "passcode": {
-        "label": "Adgangskode",
-        "optional": "(valgfri)",
-        "description": "Alle med koden kan komme ind uden en invitation. Kun arrangører."
+        "description": "Tilmeldingen er lukket for offentligheden. Arrangørerne inviterer hold og spillere direkte eller deler et invitationslink."
       }
     },
     "check_in": {
@@ -6307,12 +6302,6 @@
       "title": "Adgangskrav",
       "requirements_hint": "Tjekkes på hver enkelt spiller, der bliver tilføjet, ikke kun på den, der klikker. Tilmeldingen afvises, hvis bare én af dem ikke lever op til kravene.",
       "locked_title": "Denne turnering er kun med invitation",
-      "locked_hint": "Indtast arrangørens adgangskode for at låse tilmeldingen op, eller bed dem invitere dit hold direkte.",
-      "passcode_label": "Adgangskode",
-      "passcode_placeholder": "Indtast adgangskode",
-      "unlock": "Lås op",
-      "unlocked": "Tilmelding låst op",
-      "unlock_failed": "Tilmeldingen kunne ikke låses op",
       "min_role": "Laveste rolle: {role}",
       "elo_between": "ELO mellem {min} og {max}",
       "elo_min": "ELO {min} eller derover",
@@ -6322,22 +6311,68 @@
       "requirement_failed": "ikke opfyldt",
       "ok_chip": "kan deltage",
       "locked_chip": "låst",
-      "blocked_chip": "kan ikke deltage"
+      "blocked_chip": "kan ikke deltage",
+      "invite_hint": "Bed en arrangør om at invitere dit hold eller sende dig et invitationslink."
     },
     "invites": {
-      "title": "Inviterede spillere",
-      "description": "Denne turnering er kun med invitation. Inviter en spiller direkte, så kan de tilmelde sig uden adgangskoden.",
+      "title": "Invitationer",
+      "description": "Inviter et hold eller en spiller direkte, så kan de tilmelde sig, selvom denne turnering kun er med invitation.",
       "add": "Inviter en spiller",
       "pending": "Afventer",
       "invited_by": "Inviteret af {name}",
       "revoke": "Tilbagekald",
       "confirm_revoke": "Tilbagekald denne invitation?",
-      "revoke_description": "{name} vil ikke længere kunne tilmelde sig, medmindre de har adgangskoden.",
+      "revoke_description": "{name} mister adgangen, medmindre de stadig har et gyldigt invitationslink.",
       "empty": "Ingen er inviteret endnu.",
       "sent": "Invitation sendt",
       "send_failed": "Invitationen kunne ikke sendes",
       "already_invited": "Allerede inviteret",
-      "revoked": "Invitation tilbagekaldt"
+      "revoked": "Invitation tilbagekaldt",
+      "hint_open": "Denne turnering er åben for alle, så en invitation er en genvej og ikke et krav.",
+      "add_team": "Inviter et hold",
+      "team_label": "Holdinvitation"
+    },
+    "invite_links": {
+      "title": "Invitationslinks",
+      "hint": "Alle med linket kan tilmelde sig. Et link udløber, har et loft over antal anvendelser og kan tilbagekaldes når som helst.",
+      "expires_after": "Udløber efter",
+      "max_uses": "Maks. antal anvendelser",
+      "expiry_never": "Aldrig",
+      "expiry_minutes": "{count} minutter",
+      "expiry_hour": "1 time",
+      "expiry_hours": "{count} timer",
+      "expiry_day": "1 dag",
+      "expiry_days": "{count} dage",
+      "uses_one": "1 anvendelse",
+      "uses_limit": "{count} anvendelser",
+      "uses_unlimited": "Ingen grænse",
+      "create": "Generér et link",
+      "created": "Invitationslink oprettet og kopieret",
+      "create_failed": "Invitationslinket kunne ikke oprettes",
+      "share": "Del",
+      "revoke": "Tilbagekald",
+      "revoked": "Invitationslink tilbagekaldt",
+      "revoke_failed": "Invitationslinket kunne ikke tilbagekaldes",
+      "confirm_revoke": "Tilbagekald dette invitationslink?",
+      "revoke_description": "Alle, der stadig har linket, mister adgangen med det samme. Hold, der allerede har tilmeldt sig via det, beholder deres plads.",
+      "expires": "Udløber",
+      "expired": "Udløbet",
+      "exhausted": "Opbrugt",
+      "never_expires": "Udløber aldrig",
+      "uses_count": "Brugt {count} gange",
+      "who_used": "Hvem har brugt det",
+      "uses_empty": "Ingen har brugt dette link endnu.",
+      "empty": "Ingen invitationslinks endnu."
+    },
+    "invite_accept": {
+      "title": "Du har en invitation",
+      "hint": "Accepter den for at låse op for tilmelding til denne turnering.",
+      "guest_hint": "Log ind for at acceptere denne invitation og låse op for tilmelding.",
+      "accept": "Accepter invitation",
+      "sign_in": "Log ind for at acceptere",
+      "dismiss": "Ikke nu",
+      "accepted": "Invitation accepteret",
+      "failed": "Invitationen kunne ikke bruges: {reason}"
     }
   },
   "team": {
@@ -6392,7 +6427,9 @@
       "deny": "Afvis",
       "accept": "Accepter",
       "tournament_registration_title": "Invitation til turneringstilmelding",
-      "tournament_registration_message": "Du er inviteret til at tilmelde dig en turnering"
+      "tournament_registration_message": "Du er inviteret til at tilmelde dig en turnering",
+      "tournament_team_registration_title": "Holdinvitation til turneringstilmelding",
+      "tournament_team_registration_message": "{team} er inviteret til at tilmelde sig en turnering"
     },
     "roles": {
       "captain": "Anfører"

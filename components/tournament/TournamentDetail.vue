@@ -164,9 +164,9 @@ const tournamentAdminPanelClasses =
   "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
 const tournamentAdminCornerClasses =
   "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
-// One tool at a time in a 360px frame. The three used to be stacked behind
-// hairline rules, which made the column grow without bound the moment a
-// tournament had more than a couple of invites out.
+// The aside holds one tool now — Add Team. The invite and link lists moved to
+// the wide column, which is what stopped this 360px frame growing without bound
+// the moment a tournament had more than a couple of invites out.
 const tournamentAdminSectionClasses = "grid gap-3";
 const tournamentAdminSectionHintClasses =
   "text-[0.75rem] leading-snug text-muted-foreground/80";
@@ -722,7 +722,28 @@ function clearTeamEnterDelay(el: Element) {
                 <div
                   class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
                 >
-                  <div :class="tacticalSectionLabelClasses">
+                  <!-- The organizer's tools live in the WIDE column, not the
+                       360px aside. An invite list and a link list are rows of
+                       names, URLs and timestamps; rows need width, and the aside
+                       is the one place on this page that has none. The strip
+                       stands exactly where the ROSTER label stood so the tab
+                       itself is the heading — the count rides on it rather than
+                       in a second label nobody would read twice.
+                       size="lg" is load-bearing, not decoration: the team filter
+                       to its right is another amber-indicator segmented strip,
+                       and two identical ones in a single row read as one broken
+                       control. Taller and bolder makes the hierarchy obvious. -->
+                  <AnimatedFilters
+                    v-if="tournament.is_organizer"
+                    v-model="teamsPanel"
+                    :options="teamsPanelTabs"
+                    square
+                    size="lg"
+                  />
+
+                  <!-- No tabs for a viewer: there is nothing to switch to, so
+                       the page keeps the plain label it has always had. -->
+                  <div v-else :class="tacticalSectionLabelClasses">
                     <span :class="tacticalSectionTickClasses"></span>
                     {{ $t("tournament.page.roster_section") }}
                     <span :class="tacticalSectionCountClasses">
@@ -730,7 +751,13 @@ function clearTeamEnterDelay(el: Element) {
                     </span>
                   </div>
 
-                  <div class="flex flex-wrap items-center gap-2">
+                  <!-- Filtering and expand-all are roster verbs. On the Invites
+                       or Links pane they would filter nothing and collapse
+                       nothing, so they leave with the list they act on. -->
+                  <div
+                    v-if="teamsPanel === 'roster'"
+                    class="flex flex-wrap items-center gap-2"
+                  >
                     <AnimatedFilters
                       v-if="visibleTeams.length > 1"
                       v-model="teamFilter"
@@ -798,65 +825,101 @@ function clearTeamEnterDelay(el: Element) {
                   </div>
                 </div>
 
-                <FadeSwap>
-                  <div
-                    v-if="visibleTeams.length === 0"
-                    key="no-teams"
-                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                  >
-                    {{ $t("tournament.page.no_teams_yet") }}
+                <!-- Panes are v-show, never v-if: each invite pane owns a live
+                     subscription whose row count is the badge on its own tab,
+                     and TournamentInviteLinks holds the organizer's unsubmitted
+                     expiry/max-uses choice. Unmounting would zero both — the
+                     badge would only ever be right for the tab you are already
+                     looking at, which is the one tab that does not need it.
+                     HeightMorph exists for exactly this: it tweens the frame
+                     across a swap it does not control. -->
+                <HeightMorph :state="teamsPanel">
+                  <div v-show="teamsPanel === 'roster'">
+                    <FadeSwap>
+                      <div
+                        v-if="visibleTeams.length === 0"
+                        key="no-teams"
+                        class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                      >
+                        {{ $t("tournament.page.no_teams_yet") }}
+                      </div>
+
+                      <div
+                        v-else-if="filteredTeams.length === 0"
+                        key="no-matches"
+                        class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                      >
+                        {{ $t("tournament.teams_filter.no_matches") }}
+                      </div>
+
+                      <TransitionGroup
+                        v-else
+                        key="teams"
+                        tag="div"
+                        class="flex flex-col gap-4"
+                        enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+                        enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
+                        leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
+                        leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
+                        move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
+                        @before-enter="setTeamEnterDelay"
+                        @after-enter="clearTeamEnterDelay"
+                        @enter-cancelled="clearTeamEnterDelay"
+                      >
+                        <div
+                          v-for="(team, index) of filteredTeams"
+                          :key="team.id"
+                          :data-stagger="Math.min(index, 12)"
+                          :class="tournamentTeamCardClasses"
+                        >
+                          <TournamentTeam
+                            :tournament="tournament"
+                            :team="team"
+                            :collapsible="true"
+                            :collapsed="collapsedTeams.has(team.id)"
+                            @toggle-collapsed="toggleTeamCollapsed(team.id)"
+                          ></TournamentTeam>
+                        </div>
+                      </TransitionGroup>
+                    </FadeSwap>
                   </div>
 
-                  <div
-                    v-else-if="filteredTeams.length === 0"
-                    key="no-matches"
-                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                  >
-                    {{ $t("tournament.teams_filter.no_matches") }}
-                  </div>
-
-                  <TransitionGroup
-                    v-else
-                    key="teams"
-                    tag="div"
-                    class="flex flex-col gap-4"
-                    enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
-                    enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
-                    leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
-                    leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
-                    move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
-                    @before-enter="setTeamEnterDelay"
-                    @after-enter="clearTeamEnterDelay"
-                    @enter-cancelled="clearTeamEnterDelay"
-                  >
+                  <!-- v-if on the ROLE, v-show on the TAB. A viewer must never
+                       mount these at all (they are organizer-only
+                       subscriptions); an organizer must never unmount them. -->
+                  <template v-if="tournament.is_organizer">
                     <div
-                      v-for="(team, index) of filteredTeams"
-                      :key="team.id"
-                      :data-stagger="Math.min(index, 12)"
-                      :class="tournamentTeamCardClasses"
+                      v-show="teamsPanel === 'invites'"
+                      :class="tacticalCornerCardClasses"
                     >
-                      <TournamentTeam
+                      <TournamentInvites
                         :tournament="tournament"
-                        :team="team"
-                        :collapsible="true"
-                        :collapsed="collapsedTeams.has(team.id)"
-                        @toggle-collapsed="toggleTeamCollapsed(team.id)"
-                      ></TournamentTeam>
+                        :registration="tournamentRegistration"
+                        @count="adminInviteCount = $event"
+                      />
                     </div>
-                  </TransitionGroup>
-                </FadeSwap>
+
+                    <div
+                      v-show="teamsPanel === 'links'"
+                      :class="tacticalCornerCardClasses"
+                    >
+                      <TournamentInviteLinks
+                        :tournament="tournament"
+                        @count="adminLinkCount = $event"
+                      />
+                    </div>
+                  </template>
+                </HeightMorph>
               </div>
 
-              <!-- Sticky is worth keeping now and was not before: split across
-                   sub-tabs the panel is finally short enough to fit a viewport,
-                   which is the only condition under which a sticky element
-                   actually follows the reader down a long team list. -->
+              <!-- The aside is back to its one job: put a team in the bracket.
+                   `sticky` is kept precisely because the panel is short again —
+                   a column taller than the viewport cannot follow anyone
+                   anywhere, which is why it was wrong while three tools were
+                   stacked here. Beside a roster of thirty teams, a short Add
+                   Team frame that stays in reach is the whole point. -->
               <div v-if="tournament.is_organizer" class="lg:sticky lg:top-6">
                 <PageTransition :delay="150">
-                  <!-- Everything an organizer does to fill the bracket lives in
-                       this one column: add a team, invite one directly, or hand
-                       out a link. The invite panels used to sit at the bottom of
-                       the Information settings tab, where nobody found them. -->
                   <aside :class="tournamentAdminPanelClasses">
                     <div
                       :class="[
@@ -871,62 +934,18 @@ function clearTeamEnterDelay(el: Element) {
                       ]"
                     ></div>
 
-                    <div :class="tacticalSectionLabelClasses">
-                      <span :class="tacticalSectionTickClasses"></span>
-                      {{ $t("tournament.organizer_panel.title") }}
-                    </div>
-
-                    <!-- Not `block`: at 320px of usable width three equal
-                         columns would wrap a translated label inside a
-                         1.375rem-tall pill and spill it out of the amber
-                         indicator. Content-width lets the strip take a second
-                         row instead, which the indicator already tracks. -->
-                    <AnimatedFilters
-                      v-model="adminTab"
-                      :options="adminPanelTabs"
-                      square
-                    />
-
-                    <!-- Panes are v-show, never v-if: each owns a live
-                         subscription whose row count is the badge on its own
-                         tab, and TournamentInviteLinks holds the organizer's
-                         unsubmitted expiry/max-uses choice. Unmounting would
-                         zero both. HeightMorph exists for exactly this — it
-                         tweens the frame across a swap it does not control. -->
-                    <HeightMorph :state="adminTab" class="mt-4">
-                      <section
-                        v-show="adminTab === 'roster'"
-                        :class="tournamentAdminSectionClasses"
-                      >
-                        <p :class="tournamentAdminSectionHintClasses">
-                          {{ $t("tournament.add_team.description") }}
-                        </p>
-                        <TournamentJoinForm
-                          :tournament="tournament"
-                        ></TournamentJoinForm>
-                      </section>
-
-                      <section
-                        v-show="adminTab === 'invites'"
-                        :class="tournamentAdminSectionClasses"
-                      >
-                        <TournamentInvites
-                          :tournament="tournament"
-                          :registration="tournamentRegistration"
-                          @count="adminInviteCount = $event"
-                        />
-                      </section>
-
-                      <section
-                        v-show="adminTab === 'links'"
-                        :class="tournamentAdminSectionClasses"
-                      >
-                        <TournamentInviteLinks
-                          :tournament="tournament"
-                          @count="adminLinkCount = $event"
-                        />
-                      </section>
-                    </HeightMorph>
+                    <section :class="tournamentAdminSectionClasses">
+                      <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                        <span :class="tacticalSectionTickClasses"></span>
+                        {{ $t("tournament.add_team.title") }}
+                      </div>
+                      <p :class="tournamentAdminSectionHintClasses">
+                        {{ $t("tournament.add_team.description") }}
+                      </p>
+                      <TournamentJoinForm
+                        :tournament="tournament"
+                      ></TournamentJoinForm>
+                    </section>
                   </aside>
                 </PageTransition>
               </div>
@@ -1134,7 +1153,10 @@ export default {
   data() {
     return {
       myTeam: undefined,
-      tournament: undefined,
+      // Typed rather than left to infer `undefined`: a bare `undefined` narrows
+      // to `never`, and every `tournament.x` in this file's 1000-line template
+      // then type-errors on a value that is plainly an object at runtime.
+      tournament: undefined as Record<string, any> | undefined,
       tournamentRegistration: null as Record<string, any> | null,
       checkInTeams: [] as Array<Record<string, any>>,
       myFreeAgent: null as Record<string, any> | null,
@@ -1149,7 +1171,10 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
-      adminTab: "roster",
+      // Which pane the wide column of the Teams tab is showing. Organizer-only
+      // in the UI, but always "roster" for everyone else, so every v-show below
+      // reads true for a viewer without a second code path.
+      teamsPanel: "roster",
       // Reported up by the two panels rather than counted here: they already
       // hold the live subscriptions, and a second aggregate subscription just
       // to badge a tab would be a socket paying for a number we already have.
@@ -1922,7 +1947,10 @@ export default {
     incompleteTeams() {
       return this.visibleTeams.filter((team) => !team.eligible_at);
     },
-    filteredTeams() {
+    // Return type spelled out because `tournament.teams` is `any`: without it
+    // the v-for index below widens to `string | number` (the object-iteration
+    // signature) and every numeric use of it fails to type-check.
+    filteredTeams(): Array<Record<string, any>> {
       if (this.teamFilter === "incomplete") return this.incompleteTeams;
       if (this.teamFilter === "ready") {
         return this.visibleTeams.filter((team) => !!team.eligible_at);
@@ -1949,13 +1977,16 @@ export default {
         },
       ];
     },
-    // Add Team carries no badge on purpose: it is a form, and a count there
-    // would read as "teams", which is what the column to the left already says.
-    adminPanelTabs() {
+    // Every badge counts exactly what its own pane lists, which is why Roster
+    // carries the FILTERED total rather than the registered one: the number on
+    // the tab and the number of cards under it can then never disagree, and the
+    // per-filter breakdown is already on the chip strip beside it.
+    teamsPanelTabs() {
       return [
         {
           key: "roster",
-          label: this.$t("tournament.add_team.title"),
+          label: this.$t("tournament.page.roster_section"),
+          count: this.filteredTeams.length,
         },
         {
           key: "invites",

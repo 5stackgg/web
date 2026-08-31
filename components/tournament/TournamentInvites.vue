@@ -50,10 +50,10 @@ const props = defineProps<{
   registration?: Record<string, any> | null;
 }>();
 
-// The organizer panel's tab strip renders this as a live badge, which is the
-// whole reason the sub-tabs beat the old stack: "there are 3 people waiting"
-// has to be readable without opening the tab. The panel keeps every pane
-// mounted (v-show) precisely so this stays live while another tab is showing.
+// The Teams tab's strip renders this as a live badge, which is the whole reason
+// the tabs beat the old stack: "there are 3 people waiting" has to be readable
+// without opening the tab. TournamentDetail keeps every pane mounted (v-show)
+// precisely so this stays live while another tab is showing.
 const emit = defineEmits<{ count: [number] }>();
 
 const { t } = useI18n();
@@ -205,7 +205,7 @@ async function revoke(inviteId: string) {
   <div class="grid gap-3">
     <p
       v-if="canInvite"
-      class="text-[0.75rem] leading-snug text-muted-foreground/80"
+      class="max-w-prose text-[0.75rem] leading-snug text-muted-foreground/80"
     >
       {{
         inviteOnly
@@ -216,7 +216,7 @@ async function revoke(inviteId: string) {
 
     <div
       v-else
-      class="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[0.72rem] leading-snug text-warning"
+      class="flex max-w-prose items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[0.72rem] leading-snug text-warning"
     >
       <Lock class="mt-px h-3.5 w-3.5 shrink-0" />
       <span>{{ $t("tournament.invites.registration_closed") }}</span>
@@ -226,8 +226,11 @@ async function revoke(inviteId: string) {
          so the control must fall back to its own label after each one rather
          than sitting on the last recipient. TeamSearch would otherwise pin the
          chosen team in the trigger (it reads `modelValue`, where PlayerSearch
-         reads `selected`). -->
-    <template v-if="canInvite">
+         reads `selected`).
+         Side by side once there is room: they are two halves of one question
+         ("who do I invite"), and stacked across the full width of the Teams tab
+         each search stretches into a banner that reads as two unrelated steps. -->
+    <div v-if="canInvite" class="grid gap-3 sm:grid-cols-2">
       <TeamSearch
         :label="$t('tournament.invites.add_team')"
         :ineligible="ineligibleTeams"
@@ -239,17 +242,22 @@ async function revoke(inviteId: string) {
         :ineligible="ineligiblePlayers"
         @selected="invitePlayer"
       />
-    </template>
+    </div>
 
     <ul v-if="invites.length > 0" class="grid gap-1.5">
+      <!-- One wrapping flex row rather than a two-line grid. `order` is what
+           makes it work at both widths: narrow, the revoke button stays pinned
+           to the name it revokes and the meta drops to its own full-width line;
+           wide, the meta slides inline and the button goes to the far edge
+           instead of leaving a lane of empty row behind it. -->
       <li
         v-for="invite in invites"
         :key="invite.id"
-        class="grid gap-1.5 rounded-md border border-dashed border-border bg-muted/15 px-3 py-2.5"
+        class="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-md border border-dashed border-border bg-muted/15 px-3 py-2.5"
       >
-        <div class="flex min-w-0 items-center justify-between gap-2">
+        <div class="order-1 flex min-w-0 flex-1 items-center gap-2">
           <PlayerDisplay v-if="invite.player" :player="invite.player" />
-          <div v-else class="flex min-w-0 items-center gap-2">
+          <template v-else>
             <Avatar class="h-5 w-5 shrink-0 rounded">
               <AvatarImage
                 v-if="teamAvatarSrc(invite.team)"
@@ -266,47 +274,47 @@ async function revoke(inviteId: string) {
               </AvatarFallback>
             </Avatar>
             <span class="truncate text-sm">{{ invite.team?.name }}</span>
-          </div>
-
-          <AlertDialog>
-            <AlertDialogTrigger as-child>
-              <Button
-                variant="ghost"
-                size="icon"
-                class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
-                :title="$t('tournament.invites.revoke')"
-              >
-                <Trash2 class="h-3.5 w-3.5" />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  {{ $t("tournament.invites.confirm_revoke") }}
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  {{
-                    $t("tournament.invites.revoke_description", {
-                      name: inviteName(invite),
-                    })
-                  }}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-                <AlertDialogAction
-                  variant="destructive"
-                  @click="revoke(invite.id)"
-                >
-                  {{ $t("tournament.invites.revoke") }}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          </template>
         </div>
 
+        <AlertDialog>
+          <AlertDialogTrigger as-child>
+            <Button
+              variant="ghost"
+              size="icon"
+              class="order-2 h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive sm:order-3"
+              :title="$t('tournament.invites.revoke')"
+            >
+              <Trash2 class="h-3.5 w-3.5" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {{ $t("tournament.invites.confirm_revoke") }}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {{
+                  $t("tournament.invites.revoke_description", {
+                    name: inviteName(invite),
+                  })
+                }}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+              <AlertDialogAction
+                variant="destructive"
+                @click="revoke(invite.id)"
+              >
+                {{ $t("tournament.invites.revoke") }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <div
-          class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] text-muted-foreground"
+          class="order-3 flex w-full flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] text-muted-foreground sm:order-2 sm:w-auto sm:justify-end"
         >
           <span
             class="rounded-full bg-muted/40 px-[0.4rem] py-[0.05rem] font-mono text-[0.55rem] font-bold uppercase tracking-[0.18em]"

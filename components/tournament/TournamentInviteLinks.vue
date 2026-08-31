@@ -58,9 +58,9 @@ const props = defineProps<{
   tournament: Record<string, any>;
 }>();
 
-// Live badge on the organizer panel's Links tab. Counts exactly what the list
-// below shows (every non-revoked link), so the two can never disagree — a dead
-// link is still a link the organizer handed out and may be asked about.
+// Live badge on the Teams tab's Links tab. Counts exactly what the list below
+// shows (every non-revoked link), so the two can never disagree — a dead link is
+// still a link the organizer handed out and may be asked about.
 const emit = defineEmits<{ count: [number] }>();
 
 const { t } = useI18n();
@@ -319,20 +319,29 @@ async function toggleUses(code: Record<string, any>) {
   <div class="grid gap-3">
     <p
       v-if="canInvite"
-      class="text-[0.75rem] leading-snug text-muted-foreground/80"
+      class="max-w-prose text-[0.75rem] leading-snug text-muted-foreground/80"
     >
       {{ $t("tournament.invite_links.hint") }}
     </p>
 
     <div
       v-else
-      class="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[0.72rem] leading-snug text-warning"
+      class="flex max-w-prose items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-[0.72rem] leading-snug text-warning"
     >
       <Lock class="mt-px h-3.5 w-3.5 shrink-0" />
       <span>{{ $t("tournament.invite_links.registration_closed") }}</span>
     </div>
 
-    <div v-if="canInvite" class="grid grid-cols-2 gap-2">
+    <!-- Expiry, cap and the mint button are one sentence, so at width they get
+         one row. Stacked, the button stretched into a full-width banner that
+         read as the pane's primary action rather than the tail of the two
+         selects above it. Fixed tracks, not `1fr`: across the full Teams column
+         a fraction would blow a "30 minutes" dropdown out to 400px, so the row
+         sizes to its controls and leaves the slack on the right. -->
+    <div
+      v-if="canInvite"
+      class="grid grid-cols-2 gap-2 sm:grid-cols-[minmax(0,13rem)_minmax(0,13rem)_auto] sm:items-end sm:gap-3"
+    >
       <label class="grid gap-1">
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
@@ -380,33 +389,58 @@ async function toggleUses(code: Record<string, any>) {
           </SelectContent>
         </Select>
       </label>
+
+      <!-- Button, not a bare <button>: it tracks the returned promise, so a
+           double click cannot mint two links. `sm` so it lands on the same 2rem
+           row height as the two selects it sits beside. -->
+      <Button
+        variant="tactical"
+        size="sm"
+        class="col-span-2 w-full sm:col-span-1 sm:w-auto"
+        @click="createLink"
+      >
+        <Link2 class="h-4 w-4" />
+        {{ $t("tournament.invite_links.create") }}
+      </Button>
     </div>
 
-    <!-- Button, not a bare <button>: it tracks the returned promise, so a
-         double click cannot mint two links. -->
-    <Button
-      v-if="canInvite"
-      variant="tactical"
-      class="w-full"
-      @click="createLink"
-    >
-      <Link2 class="h-4 w-4" />
-      {{ $t("tournament.invite_links.create") }}
-    </Button>
-
     <ul v-if="codes.length > 0" class="grid gap-1.5">
+      <!-- One wrapping flex row rather than a stack of full-width lines. The
+           `order` swap is what makes the same markup work in both places: on a
+           phone the copy/share/revoke cluster stays welded to the code it acts
+           on and the status drops below, while at width the status slides
+           inline instead of leaving an empty lane across the row. -->
       <li
         v-for="code in codes"
         :key="code.id"
-        class="grid gap-1.5 rounded-md border border-dashed border-border bg-muted/15 px-3 py-2.5 transition-opacity duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        class="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-md border border-dashed border-border bg-muted/15 px-3 py-2.5 transition-opacity duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
         :class="isDead(code) ? 'opacity-55' : ''"
       >
-        <div class="flex min-w-0 items-center gap-1">
-          <span
-            class="min-w-0 flex-1 truncate font-mono text-[0.78rem] tracking-[0.08em] text-foreground"
-          >
-            {{ code.code }}
+        <span
+          class="order-1 min-w-0 flex-1 truncate font-mono text-[0.78rem] tracking-[0.08em] text-foreground"
+        >
+          {{ code.code }}
+        </span>
+
+        <div
+          class="order-3 flex w-full flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] text-muted-foreground sm:order-2 sm:w-auto sm:justify-end"
+        >
+          <span class="tabular-nums">{{ usesLabel(code) }}</span>
+          <span class="opacity-40">·</span>
+          <span v-if="isExhausted(code)" class="text-warning">
+            {{ $t("tournament.invite_links.exhausted") }}
           </span>
+          <span v-else-if="isExpired(code)" class="text-warning">
+            {{ $t("tournament.invite_links.expired") }}
+          </span>
+          <span v-else-if="code.expires_at" class="inline-flex gap-1">
+            {{ $t("tournament.invite_links.expires") }}
+            <TimeAgo :date="code.expires_at" hide-icon />
+          </span>
+          <span v-else>{{ $t("tournament.invite_links.never_expires") }}</span>
+        </div>
+
+        <div class="order-2 flex shrink-0 items-center gap-1 sm:order-3">
           <!-- The whole URL, not the bare code: what an organizer pastes into
                Discord has to be clickable. -->
           <ClipBoard :data="linkFor(code)" class="h-7 w-7 shrink-0">
@@ -455,64 +489,54 @@ async function toggleUses(code: Record<string, any>) {
           </AlertDialog>
         </div>
 
-        <div
-          class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] text-muted-foreground"
-        >
-          <span class="tabular-nums">{{ usesLabel(code) }}</span>
-          <span class="opacity-40">·</span>
-          <span v-if="isExhausted(code)" class="text-warning">
-            {{ $t("tournament.invite_links.exhausted") }}
-          </span>
-          <span v-else-if="isExpired(code)" class="text-warning">
-            {{ $t("tournament.invite_links.expired") }}
-          </span>
-          <span v-else-if="code.expires_at" class="inline-flex gap-1">
-            {{ $t("tournament.invite_links.expires") }}
-            <TimeAgo :date="code.expires_at" hide-icon />
-          </span>
-          <span v-else>{{ $t("tournament.invite_links.never_expires") }}</span>
-        </div>
+        <!-- Wrapper gated on the same condition as the toggle inside it: an
+             always-rendered `w-full` flex child would claim a row of its own
+             plus the row gap even while empty, so an unused link would sit in a
+             taller card than a used one. -->
+        <div v-if="Number(code.uses ?? 0) > 0" class="order-4 w-full">
+          <button
+            type="button"
+            class="inline-flex items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-opacity duration-150 hover:opacity-80 motion-reduce:transition-none"
+            @click="toggleUses(code)"
+          >
+            {{ $t("tournament.invite_links.who_used") }}
+            <ChevronDown
+              class="h-3 w-3 transition-transform duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+              :class="expanded[code.id] ? 'rotate-180' : ''"
+            />
+          </button>
 
-        <button
-          v-if="Number(code.uses ?? 0) > 0"
-          type="button"
-          class="flex items-center gap-1 justify-self-start font-mono text-[0.58rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-opacity duration-150 hover:opacity-80 motion-reduce:transition-none"
-          @click="toggleUses(code)"
-        >
-          {{ $t("tournament.invite_links.who_used") }}
-          <ChevronDown
-            class="h-3 w-3 transition-transform duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
-            :class="expanded[code.id] ? 'rotate-180' : ''"
-          />
-        </button>
-
-        <Fold :open="!!expanded[code.id]">
-          <ul class="grid gap-1 pt-1.5">
-            <li
-              v-for="use in usesByCode[code.id] ?? []"
-              :key="`${use.player_steam_id}`"
-              class="flex min-w-0 items-center justify-between gap-2 text-[0.7rem]"
-            >
-              <span class="truncate">
-                {{ use.player?.name ?? use.player_steam_id }}
-                <span v-if="use.team" class="text-muted-foreground">
-                  · {{ use.team.name }}
+          <Fold :open="!!expanded[code.id]">
+            <!-- Two per row at width: a name and a timestamp pushed to opposite
+                 ends of the full column would be joined by nothing but rule-less
+                 whitespace. -->
+            <ul class="grid gap-1 pt-1.5 sm:grid-cols-2 sm:gap-x-8">
+              <li
+                v-for="use in usesByCode[code.id] ?? []"
+                :key="`${use.player_steam_id}`"
+                class="flex min-w-0 items-center justify-between gap-2 text-[0.7rem]"
+              >
+                <span class="truncate">
+                  {{ use.player?.name ?? use.player_steam_id }}
+                  <span v-if="use.team" class="text-muted-foreground">
+                    · {{ use.team.name }}
+                  </span>
                 </span>
-              </span>
-              <TimeAgo
-                :date="use.used_at"
-                hide-icon
-                class="shrink-0 text-muted-foreground"
-              />
-            </li>
-            <li
-              v-if="(usesByCode[code.id] ?? []).length === 0"
-              class="text-[0.7rem] text-muted-foreground"
-            >
-              {{ $t("tournament.invite_links.uses_empty") }}
-            </li>
-          </ul>
-        </Fold>
+                <TimeAgo
+                  :date="use.used_at"
+                  hide-icon
+                  class="shrink-0 text-muted-foreground"
+                />
+              </li>
+              <li
+                v-if="(usesByCode[code.id] ?? []).length === 0"
+                class="text-[0.7rem] text-muted-foreground sm:col-span-2"
+              >
+                {{ $t("tournament.invite_links.uses_empty") }}
+              </li>
+            </ul>
+          </Fold>
+        </div>
       </li>
     </ul>
 
